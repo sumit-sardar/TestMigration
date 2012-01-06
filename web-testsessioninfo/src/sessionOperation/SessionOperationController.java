@@ -14,9 +14,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
- 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -25,6 +26,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import util.MessageResourceBundle;
 import util.RequestUtil;
+import viewmonitorstatus.ViewMonitorStatusController.ViewMonitorStatusForm;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -38,12 +40,18 @@ import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
+import com.ctb.bean.testAdmin.StudentManifest;
+import com.ctb.bean.testAdmin.StudentManifestData;
 import com.ctb.bean.testAdmin.StudentNodeData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
@@ -55,14 +63,15 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
-
 import com.ctb.exception.validation.ValidationException;
-
 import com.ctb.testSessionInfo.data.SubtestVO;
 import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
+import com.ctb.testSessionInfo.dto.SubtestDetail;
+import com.ctb.testSessionInfo.dto.TestRosterFilter;
+import com.ctb.testSessionInfo.dto.TestRosterVO;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.testSessionInfo.utils.Base;
@@ -72,8 +81,9 @@ import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
-import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
+import com.ctb.testSessionInfo.utils.Row;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
+import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
 import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
@@ -97,6 +107,7 @@ public class SessionOperationController extends PageFlowController {
     /**
      * @common:control
      */
+	 
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
 
@@ -106,12 +117,52 @@ public class SessionOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
     
-
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
     
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
+    
+    //Added for view/monitor test status
+   
+    protected void onCreate() {
+	}
+
+	/**
+	 * Callback that is invoked when this controller instance is destroyed.
+	 */
+	@Override
+	protected void onDestroy(HttpSession session) {
+	}
+	
+	private boolean sessionDetailsShowScores = false;
+	private boolean subtestValidationAllowed = false;
+	private List studentStatusSubtests = null; 
+	private boolean showStudentReportButton = false;
+	private String genFile = null;
+	private List TABETestElements = null;    
+	//goto json
+	private TestRosterFilter  testRosterFilter = null;
+	private ArrayList selectedRosterIds = null;
+	public CustomerConfiguration[] customerConfigurations = null;
+	private CustomerConfigurationValue[] customerConfigurationsValue = null;
+	//private String userName = (String)getSession().getAttribute("userName");
+	private Integer sessionId = null;
+	private String[] testStatusOptions = {FilterSortPageUtils.FILTERTYPE_SHOWALL, FilterSortPageUtils.FILTERTYPE_COMPLETED, FilterSortPageUtils.FILTERTYPE_INCOMPLETE, 
+            FilterSortPageUtils.FILTERTYPE_INPROGRESS, FilterSortPageUtils.FILTERTYPE_NOTTAKEN, FilterSortPageUtils.FILTERTYPE_SCHEDULED, 
+            FilterSortPageUtils.FILTERTYPE_STUDENTSTOP, FilterSortPageUtils.FILTERTYPE_SYSTEMSTOP, FilterSortPageUtils.FILTERTYPE_TESTLOCKED,
+            FilterSortPageUtils.FILTERTYPE_TESTABANDONED, FilterSortPageUtils.FILTERTYPE_STUDENTPAUSE};
+	private String setCustomerFlagToogleButton="false";
+	private String[] validationStatusOptions = {FilterSortPageUtils.FILTERTYPE_SHOWALL, FilterSortPageUtils.FILTERTYPE_INVALID, FilterSortPageUtils.FILTERTYPE_VALID};
+	
+	private String fileName = null;
+	private String fileType = null;
+	private String userEmail = null;
+	private List fileTypeOptions = null;
+	public boolean isLasLinkCustomer = false;
+
+	
+	//Added for view/monitor test status
     
 	private String userName = null;
 	private Integer customerId = null;
@@ -125,13 +176,13 @@ public class SessionOperationController extends PageFlowController {
 
     public LinkedHashMap<String, String> hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
-	//private TestProductData testProductData = null;  
+	private TestProductData testProductData = null;  
 	private TestProduct [] tps;
 	private static final String ACTION_INIT = "init";
 	boolean isPopulatedSuccessfully = false;
-	//boolean isPopulatedSuccessfully1 = false;
+	boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
-	//ScheduleTestVo userProductsDetails = new ScheduleTestVo();
+	ScheduleTestVo userProductsDetails = new ScheduleTestVo();
 
 	//public Condition condition = new Condition();
 	
@@ -3290,4 +3341,1044 @@ public class SessionOperationController extends PageFlowController {
 	        }  
 	        return studentCount;
 	 }
+	 
+	//Added for view/monitor test status: Start
+	 
+	 private void initializeTestSession () {
+			
+			retrieveInfoFromSession();                        
+	        this.testRosterFilter = new TestRosterFilter();            
+	        getCustomerConfigurations();  
+	        this.sessionDetailsShowScores = isSessionDetailsShowScores();
+	        this.subtestValidationAllowed = isSubtestValidationAllowed();
+	        this.studentStatusSubtests = new ArrayList();
+	        this.showStudentReportButton = showStudentReportButton();
+	        this.selectedRosterIds = new ArrayList();
+	        genFile = getRequest().getParameter("genFile");
+	        if ("generate_report_file".equals(genFile)) {   
+	        	initGenerateReportFile();
+	        }
+	    }
+			
+	    
+	    /**
+	     * @jpf:action
+	     * @jpf:forward name="done" path="from_view_subtests_detail.do"
+	     * @jpf:forward name="success" path="validate_subtests_detail.jsp"
+	     */ 
+	    @Jpf.Action(forwards = { 
+	         
+	        @Jpf.Forward(name = "success",
+	                     path = "validate_subtests_detail.jsp")
+	    })
+	    protected Forward to_validate_subtests_detail()
+	    {
+	        //String forwardName = handleValidateAction(form);
+	    	Integer testRosterID = Integer.valueOf(getRequest().getParameter("testRosterID"));
+	    	String[] selectedItemSetIds = getRequest().getParameterValues("selectedItemSetIds");
+	        prepareSubtestsDetailInformation(testRosterID, selectedItemSetIds, true);
+	        
+	        return new Forward("success");
+	    }
+	    
+	    
+	    /**
+	     * @jpf:action
+	     * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
+	     * @jpf:forward name="error" path="/error.jsp"
+	     */
+		@Jpf.Action(
+			forwards = { 
+				@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
+				@Jpf.Forward(name = "error", path = "/error.jsp")
+			}
+		)
+	    protected Forward viewIndividualReport()
+	    {
+			
+	        try {
+	        	// Defect 60476 
+	        	if (this.userName == null) {
+	        		
+	        		 java.security.Principal principal = getRequest().getUserPrincipal();
+	        	        if (principal != null) 
+	        	            this.userName = principal.toString();  
+	        	}
+	        	Integer testRosterID = Integer.valueOf(getRequest().getParameter("testRosterID"));
+	            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterID);           
+	            this.getRequest().setAttribute("reportUrl", reportUrl);
+	            this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new Forward("error");
+	        }
+	                    
+	        return new Forward("report");
+	    }
+	    
+	    
+	    
+	    private void prepareValidateButtons(String[] itemSetIds)
+	    {            
+	        if ((itemSetIds != null) && (itemSetIds.length > 0) && (itemSetIds[0] != null))
+	            this.getRequest().setAttribute("disableToogleButton", "false");
+	        else 
+	            this.getRequest().setAttribute("disableToogleButton", "true");
+	    }
+	    
+	    private String getTestLevel(List subtestList)
+	    {
+	        String level = null;
+	        for (int i=0; i < subtestList.size(); i++)
+	        {
+	            SubtestDetail sd = (SubtestDetail)subtestList.get(i);
+	            if ((sd.getLevel() != null) && (sd.getLevel() != ""))
+	            {
+	                return sd.getLevel();    
+	            }
+	        }
+	        return level;
+	    }
+	    
+	    private String getTestGrade(List subtestList)
+	    {
+	        String grade = null;
+	        for (int i=0; i < subtestList.size(); i++)
+	        {
+	            SubtestDetail sd = (SubtestDetail)subtestList.get(i);
+	            if ((sd.getGrade() != null) && (sd.getGrade() != ""))
+	            {
+	                return sd.getGrade();    
+	            }
+	        }
+	        return grade;
+	    }
+	    
+	    private void addTABESubtest(TestElement te) 
+	    {
+	        if (this.TABETestElements == null)
+	            this.TABETestElements = new ArrayList();
+	            
+	        boolean found = false;
+	        for (int i=0 ; i<this.TABETestElements.size() ; i++) {
+	            TestElement tte = (TestElement)this.TABETestElements.get(i);
+	            if (tte.getItemSetId().intValue() == te.getItemSetId().intValue()) {
+	                found = true;
+	                break;
+	            }
+	        }
+	        if (! found) {
+	            this.TABETestElements.add(te);
+	        }
+	    }
+	    
+	    private TestElement[] getTestElementsForParent(Integer parentItemSetId, String itemSetType) 
+	    {
+	        TestElement[] tes = null;
+	        try
+	        {      
+	            TestElementData ted = this.testSessionStatus.getTestElementsForParent(this.userName, parentItemSetId, itemSetType, null, null, null);
+	            tes = ted.getTestElements();            
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	            be.printStackTrace();
+	        }
+	        return tes;
+	    }
+	    
+	    private TestElement []  orderedSubtestList(TestElement[] subtestelements,Integer studentId,Integer testAdminId)
+	    {
+	        TestElement [] orderedSubtestElements = new TestElement[subtestelements.length];
+	        StudentManifest [] sms = getStudentManifests(studentId,testAdminId);
+	        HashMap smHM = new HashMap();
+	        for(int i=0;i<sms.length;i++){
+	           StudentManifest  sm = sms[i];
+	           smHM.put(sm.getItemSetId(),new Integer(i));
+	        }  
+	        for(int j=0;j<subtestelements.length;j++){
+	            TestElement te = subtestelements[j];
+	            if(smHM.containsKey(te.getItemSetId())){
+	                orderedSubtestElements[((Integer)smHM.get(te.getItemSetId())).intValue()] = te;
+	            }
+	        }
+	        return orderedSubtestElements;
+	    }
+	    
+	    private StudentManifest [] getStudentManifests(Integer studentId,Integer testAdminId)
+	    {
+	        StudentManifest [] sm = null;
+	        try {  
+	                StudentManifestData  smd =  this.scheduleTest.getManifestForRoster(this.userName,studentId,testAdminId,null,null,null);
+	                sm = smd.getStudentManifests();
+	        }catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	        }   
+	        return sm;
+	    }
+	    
+	    private StudentSessionStatus[] getStudentItemSetStatusesForRoster(Integer studentId, Integer testAdminId) 
+	    {
+	        StudentSessionStatus[] ssss = null;
+	        try
+	        {
+	            SortParams sort = FilterSortPageUtils.buildSortParams("ItemSetOrder", ColumnSortEntry.ASCENDING);
+	            StudentSessionStatusData sssData = testSessionStatus.getStudentItemSetStatusesForRoster(this.userName, studentId, testAdminId, null, null, sort);
+	            ssss = sssData.getStudentSessionStatuses();            
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	            be.printStackTrace();
+	        }
+	        return ssss;
+	    }
+	    
+	    private boolean isTestSessionCompleted(TestSessionVO testSession)
+	    {
+	        boolean completed = false;
+	        if (testSession.getTestAdminStatus().equalsIgnoreCase("PA")) {
+	            completed = true;
+	        }
+	        return completed;
+	    }
+	    
+	    private void isLasLinkCustomer()
+	    {               
+	        
+	        boolean isLasLinkCustomer = false;
+
+	            
+				 for (int i=0; i < this.customerConfigurations.length; i++)
+	            {
+	            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            	//isLasLink customer
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("LASLINK_Customer") && cc.getDefaultValue().equals("T")	)
+	                {
+	                	isLasLinkCustomer = true;
+	                    break;
+	                } 
+	            }
+	       
+	        this.isLasLinkCustomer = isLasLinkCustomer;
+	       
+	    }
+	    
+	    private boolean isTabeLocatorSession(String productType)
+	    {
+	        if (productType.equalsIgnoreCase("TL"))
+	            return true;   
+	        else             
+	            return false;
+	    }
+	    
+	    private boolean isTabeSession(String productType)
+	    {
+	        if (productType.equalsIgnoreCase("TB") || productType.equalsIgnoreCase("TL"))
+	            return true;   
+	        else             
+	            return false;
+	    }
+	    
+	    private TestProduct getProductForTestAdmin(Integer testAdminId)
+	    {
+	        TestProduct tp = null;
+	        try {      
+	            tp = this.testSessionStatus.getProductForTestAdmin(this.userName, testAdminId);
+	        }
+	        catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	        }   
+	        return tp;
+	    }
+	    
+	    private RosterElement getTestRosterDetails(Integer testRosterId) 
+	    {
+	        RosterElement re = null;      
+	        try
+	        {
+	            re = this.testSessionStatus.getRoster(testRosterId);
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	            be.printStackTrace();
+	        }    
+	        return re;
+	    }  
+		
+		 private TestSessionVO getTestSessionDetails(Integer sessionId) 
+		    {
+		        TestSessionVO testSession = null;
+		        try
+		        {      
+		            TestSessionData tsd = this.testSessionStatus.getTestSessionDetails(this.userName, sessionId);
+		            TestSession[] testsessions = tsd.getTestSessions();            
+		            TestSession ts = testsessions[0];
+		            testSession = new TestSessionVO(ts);            
+		        }
+		        catch (CTBBusinessException be)
+		        {
+		            be.printStackTrace();
+		        }
+		        return testSession;
+		    }
+
+			
+			private boolean isSameAccessCode(List subtestList)
+		    {
+		        if (subtestList.size() <= 1)
+		            return true;
+		            
+		        boolean sameAccessCode = true;
+		        SubtestDetail sd = (SubtestDetail)subtestList.get(0);
+		        String accessCode = sd.getAccessCode();
+		        for (int i=1; i < subtestList.size(); i++)
+		        {
+		            sd = (SubtestDetail)subtestList.get(i);
+		            if (! sd.getAccessCode().equals(accessCode))
+		                sameAccessCode = false;    
+		        }
+		        return sameAccessCode;
+		    }
+	    
+		 private TestElementData getTestElementsForTestSession(Integer sessionId) 
+		    {
+		        TestElementData ted = null;
+		        try
+		        {      
+		            ted = this.testSessionStatus.getTestElementsForTestSession(this.userName, sessionId, null, null, null);
+		        }
+		        catch (CTBBusinessException be)
+		        {
+		            be.printStackTrace();
+		        }
+		        return ted;
+		    }
+		
+		private RosterElementData getRosterForViewTestSession(Integer sessionId) 
+	    {
+	        if (this.testRosterFilter == null)
+	            this.testRosterFilter = new TestRosterFilter();            
+
+	       // FilterParams filter = FilterSortPageUtils.buildTestRosterFilterParams(this.testRosterFilter);
+	        FilterParams filter = null;
+	        PageParams page = null;
+	        SortParams sort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.TESTROSTER_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
+	        
+	        RosterElementData red = null;
+	        try
+	        {      
+	            red = this.testSessionStatus.getRosterForTestSession(this.userName, sessionId, filter, page, sort);
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	            be.printStackTrace();
+	        }        
+	        return red;
+	    }
+		
+		private List buildSubtestList(TestElementData ted)
+	    {
+	        List subtestList = new ArrayList();        
+	        TestElement[] subtestelements = ted.getTestElements();  
+	        int sequence = 1;
+	        for (int i=0; i < subtestelements.length; i++)
+	        {
+	            TestElement te = subtestelements[i];
+	            if (te != null && "T".equals(te.getSessionDefault()))
+	            {
+	                SubtestDetail sd = new SubtestDetail(te, sequence);
+	                subtestList.add(sd);
+	                sequence++;
+	            }
+	        }        
+	                
+	        return subtestList;
+	    }
+		
+		 private List buildRosterList(RosterElementData red)
+		    {
+		        List rosterList = new ArrayList();    
+		        if (red != null){
+			        RosterElement[] rosterElements = red.getRosterElements();
+			        for (int i=0; i < rosterElements.length; i++)
+			        {
+			            RosterElement rosterElt = rosterElements[i];
+			            if (rosterElt != null)
+			            {
+			                TestRosterVO vo = new TestRosterVO(rosterElt);   
+			                rosterList.add(vo);
+			            }
+			        }   
+		        }
+		        return rosterList;
+		    }
+		 private void createGson(Base  base){
+			 	OutputStream stream = null;
+				HttpServletRequest req = getRequest();
+				HttpServletResponse resp = getResponse();
+				try {
+					try {
+						Gson gson = new Gson();
+						String json = gson.toJson(base);
+						System.out.println("*********************************************************************");
+						System.out.println(json);
+						resp.setContentType("application/json");
+						resp.flushBuffer();
+						stream = resp.getOutputStream();
+						stream.write(json.getBytes());
+
+					} finally{
+						if (stream!=null){
+							stream.close();
+						}
+					}
+					
+				}
+				catch (Exception e) {
+					System.err.println("Exception while retrieving optionList.");
+					e.printStackTrace();
+				}
+			}
+		 
+		public List getStudentStatusSubtests() {
+			return studentStatusSubtests;
+		}
+
+		public void setStudentStatusSubtests(List studentStatusSubtests) {
+			this.studentStatusSubtests = studentStatusSubtests;
+		}
+
+		public boolean isShowStudentReportButton() {
+			return showStudentReportButton;
+		}
+
+		public void setShowStudentReportButton(boolean showStudentReportButton) {
+			this.showStudentReportButton = showStudentReportButton;
+		}
+
+		public String getGenFile() {
+			return genFile;
+		}
+
+		public void setGenFile(String genFile) {
+			this.genFile = genFile;
+		}
+
+		public TestRosterFilter getTestRosterFilter() {
+			return testRosterFilter;
+		}
+
+		public void setTestRosterFilter(TestRosterFilter testRosterFilter) {
+			this.testRosterFilter = testRosterFilter;
+		}
+
+		public ArrayList getSelectedRosterIds() {
+			return selectedRosterIds;
+		}
+
+		public void setSelectedRosterIds(ArrayList selectedRosterIds) {
+			this.selectedRosterIds = selectedRosterIds;
+		}
+
+		public CustomerConfigurationValue[] getCustomerConfigurationsValue() {
+			return customerConfigurationsValue;
+		}
+
+		public void setCustomerConfigurationsValue(
+				CustomerConfigurationValue[] customerConfigurationsValue) {
+			this.customerConfigurationsValue = customerConfigurationsValue;
+		}
+
+		/*public String getUserName() {
+			return userName;
+		}
+
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}*/
+
+		public Integer getSessionId() {
+			return sessionId;
+		}
+
+		public void setSessionId(Integer sessionId) {
+			this.sessionId = sessionId;
+		}
+
+		public String[] getTestStatusOptions() {
+			return testStatusOptions;
+		}
+
+		public void setTestStatusOptions(String[] testStatusOptions) {
+			this.testStatusOptions = testStatusOptions;
+		}
+
+		public String getSetCustomerFlagToogleButton() {
+			return setCustomerFlagToogleButton;
+		}
+
+		public void setSetCustomerFlagToogleButton(String setCustomerFlagToogleButton) {
+			this.setCustomerFlagToogleButton = setCustomerFlagToogleButton;
+		}
+
+		public String[] getValidationStatusOptions() {
+			return validationStatusOptions;
+		}
+
+		public void setValidationStatusOptions(String[] validationStatusOptions) {
+			this.validationStatusOptions = validationStatusOptions;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
+
+		public String getFileType() {
+			return fileType;
+		}
+
+		public void setFileType(String fileType) {
+			this.fileType = fileType;
+		}
+
+		public String getUserEmail() {
+			return userEmail;
+		}
+
+		public void setUserEmail(String userEmail) {
+			this.userEmail = userEmail;
+		}
+
+		public List getFileTypeOptions() {
+			return fileTypeOptions;
+		}
+
+		public void setFileTypeOptions(List fileTypeOptions) {
+			this.fileTypeOptions = fileTypeOptions;
+		}
+
+		public void setSessionDetailsShowScores(boolean sessionDetailsShowScores) {
+			this.sessionDetailsShowScores = sessionDetailsShowScores;
+		}
+
+		public void setSubtestValidationAllowed(boolean subtestValidationAllowed) {
+			this.subtestValidationAllowed = subtestValidationAllowed;
+		}
+
+		public void setCustomerConfigurations(
+				CustomerConfiguration[] customerConfigurations) {
+			this.customerConfigurations = customerConfigurations;
+		}
+
+		/**
+		 * New method added for CR - GA2011CR001
+		 * getCustomerConfigurations
+		 */
+		private void getCustomerConfigurations()
+		{
+			try {
+					User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+					Customer customer = user.getCustomer();
+					Integer customerId = customer.getCustomerId();
+					this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
+			}
+			catch (CTBBusinessException be) {
+				be.printStackTrace();
+			}
+		}
+		
+		private boolean retrieveInfoFromSession()
+	    {
+	        boolean success = true;
+	        this.userName = (String)getSession().getAttribute("userName");
+	        if (this.userName == null)
+	        {
+	            success = false;
+	        }
+	        
+	                    
+	        if (getSession().getAttribute("sessionId") != null)
+	            this.sessionId = new Integer((String)getSession().getAttribute("sessionId")); 
+	        else if (getRequest().getParameter("sessionId") != null)
+	            this.sessionId = new Integer((String)getRequest().getParameter("sessionId")); 
+	        else
+	            success = false;
+
+	        String sessionFilterTab = "CU";            
+	        if (getSession().getAttribute("sessionFilterTab") != null)
+	            sessionFilterTab = (String)getSession().getAttribute("sessionFilterTab"); 
+	        setTestStatusOptions(sessionFilterTab); 
+	                
+	        return success;
+	    }
+		
+		private void setTestStatusOptions(String sessionFilterTab)
+	    {
+	        if (sessionFilterTab.equals("CU")) {    // current
+	            testStatusOptions = new String[7];
+	            testStatusOptions[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
+	            testStatusOptions[1] = FilterSortPageUtils.FILTERTYPE_COMPLETED;
+	            testStatusOptions[2] = FilterSortPageUtils.FILTERTYPE_INPROGRESS; 
+	            testStatusOptions[3] = FilterSortPageUtils.FILTERTYPE_SCHEDULED; 
+	            testStatusOptions[4] = FilterSortPageUtils.FILTERTYPE_STUDENTPAUSE;
+	            testStatusOptions[5] = FilterSortPageUtils.FILTERTYPE_STUDENTSTOP; 
+	            testStatusOptions[6] = FilterSortPageUtils.FILTERTYPE_SYSTEMSTOP; 
+	        }
+	        else 
+	        if (sessionFilterTab.equals("FU")) {    // future
+	            testStatusOptions = new String[2];
+	            testStatusOptions[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
+	            testStatusOptions[1] = FilterSortPageUtils.FILTERTYPE_SCHEDULED; 
+	        }
+	        else {                                  // completed
+	            testStatusOptions = new String[6];
+	            testStatusOptions[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
+	            testStatusOptions[1] = FilterSortPageUtils.FILTERTYPE_COMPLETED;
+	            testStatusOptions[2] = FilterSortPageUtils.FILTERTYPE_INPROGRESS; 
+	            testStatusOptions[3] = FilterSortPageUtils.FILTERTYPE_INCOMPLETE; 
+	            testStatusOptions[4] = FilterSortPageUtils.FILTERTYPE_NOTTAKEN; 
+	            testStatusOptions[5] = FilterSortPageUtils.FILTERTYPE_STUDENTPAUSE;
+	        }
+	    }
+		
+		private boolean isSessionDetailsShowScores() 
+	    {               
+	        boolean showScores = false; 
+
+	       	for (int i=0; i < this.customerConfigurations.length; i++)
+	            {
+	                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Details_Show_Scores") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	                {
+	                    showScores = true; 
+	                }
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Roster_Status_Flag"))
+	                {
+	                    this.setCustomerFlagToogleButton = "true";
+	                     
+	                }
+	            }
+	            this.getRequest().setAttribute("setCustomerFlagToogleButton", setCustomerFlagToogleButton);  
+	                
+	      
+	        return showScores;
+	    }
+		
+		 private boolean isSubtestValidationAllowed()
+		    {
+		        boolean isValidationAllowed = false; 
+		        try
+		        {    
+		            isValidationAllowed = this.testSessionStatus.allowSubtestInvalidation(this.userName).booleanValue();
+		        }
+		        catch (CTBBusinessException be)
+		        {
+		            be.printStackTrace();
+		        }   
+
+		        if (isValidationAllowed)
+		        {
+		            List options = new ArrayList();
+		            options.add(FilterSortPageUtils.FILTERTYPE_SHOWALL);
+		            options.add(FilterSortPageUtils.FILTERTYPE_INVALID);
+		            options.add(FilterSortPageUtils.FILTERTYPE_PARTIALLY_INVALID);
+		            options.add(FilterSortPageUtils.FILTERTYPE_VALID);
+		            this.validationStatusOptions = (String[])options.toArray(new String[0]);
+		        }
+
+		        return isValidationAllowed;
+		    }
+		 private boolean showStudentReportButton() 
+		    {               
+		        boolean showButton = false; 
+
+		        for (int i=0; i < this.customerConfigurations.length; i++)
+		            {
+		                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Status_Student_Reports") && cc.getDefaultValue().equalsIgnoreCase("T"))
+		                {
+		                    showButton = true; 
+		                }
+		            }     
+		      
+		        return showButton;
+		    }
+		 
+		 private void initGenerateReportFile() {
+		    	
+				try {
+					User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+					Date currentDate = new Date();
+					String strDate = DateUtils.formatDateToDateString(currentDate);
+					strDate = strDate.replace('/', '_');
+					String fileName = user.getUserName() + "_" + strDate + ".zip";
+			    	setFileName(fileName);
+			    	setUserEmail(user.getEmail());
+				} catch (CTBBusinessException e) {
+					e.printStackTrace();
+				}
+		    	
+		        this.fileTypeOptions = new ArrayList();
+		        this.fileTypeOptions.add("One file for all students");
+		        this.fileTypeOptions.add("One file per student");
+		    	setFileType((String)this.fileTypeOptions.get(0));
+		 }
+		 @Jpf.Action(forwards = { 
+		        @Jpf.Forward(name = "success",
+		                     path = "view_test_session.jsp")
+		    })
+		    protected Forward getRosterDetails()
+		    {	
+				List rosterList = null;
+		        String testAdminId = getRequest().getParameter("testAdminId");
+		        initializeTestSession();
+		        
+		        if (testAdminId != null)
+		            this.sessionId = Integer.valueOf(testAdminId);
+		        RosterElementData red = getRosterForViewTestSession(this.sessionId);
+		        rosterList = buildRosterList(red);   
+		       
+		        
+		        Base base = new Base();
+				base.setPage("1");
+				base.setRecords("10");
+				base.setTotal("2");
+				List <Row> rows = new ArrayList<Row>();
+				base.setRosterElement(rosterList);
+				base.setSubtestValidationAllowed(this.subtestValidationAllowed);
+				/*Integer breakCount = ted.getBreakCount();
+		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
+		            if (isSameAccessCode(subtestList)) 
+		            	base.setHasBreak("singleAccesscode");
+		            else
+		            	base.setHasBreak("multiAccesscodes");
+		        } else {
+		        	base.setHasBreak("false");
+		        }
+*/
+		        TestSessionVO testSession = getTestSessionDetails(this.sessionId);
+		        base.setTestSession(testSession);
+		        createGson(base);
+		        return null;
+		    }
+			
+			/**
+		     * @jpf:action
+		     * @jpf:forward name="success" path="view_subtests_detail.jsp"
+		     */ 
+		    @Jpf.Action(forwards = { 
+		        @Jpf.Forward(name = "success",
+		                     path = "view_subtests_detail.jsp")
+		    })
+		    protected Forward getSubtestDetails() {
+		    	Integer testRosterID = Integer.valueOf(getRequest().getParameter("testRosterId"));
+		    	String[] selectedItemSetIds = getRequest().getParameterValues("selectedItemSetIds");
+		    	Base base = prepareSubtestsDetailInformation(testRosterID, selectedItemSetIds, this.subtestValidationAllowed);
+		    	base.setSubtestValidationAllowed(this.subtestValidationAllowed);
+		    	createGson(base);
+		        return null;
+		    }
+		    
+		    protected Base prepareSubtestsDetailInformation(Integer testRosterID, String[] selectedItemSetIds, boolean validation)
+		    {
+		    	Base base = new Base();
+		        RosterElement re = getTestRosterDetails(testRosterID);
+		        TestSessionVO testSession = getTestSessionDetails(this.sessionId);
+		        TestProduct testProduct = getProductForTestAdmin(this.sessionId);
+		        boolean isTabeSession = isTabeSession(testProduct.getProductType());
+		        boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
+		       
+		        // START- Added for LLO-109 
+		        isLasLinkCustomer();
+		        boolean isLaslinkSession  = this.isLasLinkCustomer;
+		        boolean testSessionCompleted = isTestSessionCompleted(testSession);
+		        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession, isLaslinkSession);       
+		       
+		        String testGrade = getTestGrade(this.studentStatusSubtests);
+		        String testLevel = getTestLevel(this.studentStatusSubtests);
+		        
+		        base.setStudentName(re.getFirstName() + " " + re.getLastName());
+		        base.setLoginName(re.getUserName());
+		        base.setPassword(re.getPassword());
+		        base.setTestSession(testSession);
+		        base.setTestStatus(FilterSortPageUtils.testStatus_CodeToString(re.getTestCompletionStatus()));
+		        base.setTestElement(this.studentStatusSubtests);
+		        if (!isTabeSession) {
+		            if (!testGrade.equals("--")) {
+		            	base.setTestGrade(testGrade);
+		            }
+		            if (!testLevel.equals("--")) {
+		            	base.setTestLevel(testLevel);
+		            }
+		        }
+		        boolean showStudentFeedback = false;
+		        if ((testSession.getShowStudentFeedback() != null) 
+		        		&& (testSession.getShowStudentFeedback().equalsIgnoreCase("T"))) {
+		            showStudentFeedback = true;
+		        }
+		        boolean isShowScores = this.sessionDetailsShowScores;
+		        base.setShowScores(isShowScores);
+		        
+		        int numberColumn = 4;
+		        if (isTabeSession)
+		            numberColumn += 1;
+		        if (isShowScores)
+		            numberColumn += 3;
+		        if (isLaslinkSession)
+		        	numberColumn += 2;
+		        	
+		       // END- Added for LLO-109 
+		        if (validation) {
+		            numberColumn += 1;
+		            if (this.setCustomerFlagToogleButton.equals("true"))
+		                numberColumn += 1;
+		            prepareValidateButtons(selectedItemSetIds);
+		        }
+		        base.setNumberColumn(numberColumn);
+		        base.setSubtestValidationAllowed(this.subtestValidationAllowed);
+		        base.setTabeSession(isTabeSession);
+		        base.setLaslinkSession(isLaslinkSession);
+		        return base;
+		    }
+		    
+		    private List buildStudentStatusSubtests(Integer studentId, Integer testAdminId, boolean testSessionCompleted, boolean isTabeSession, boolean isTabeLocatorSession,boolean isLaslinkSession)
+		    {
+		    	   
+		        String userTimeZone = this.user.getTimeZone();//(String)getSession().getAttribute("userTimeZone"); 
+		        List subtestList = new ArrayList();        
+		        TestElementData ted = getTestElementsForTestSession(testAdminId); 
+		        StudentSessionStatus[] ssss = getStudentItemSetStatusesForRoster(studentId, testAdminId);                 
+		        TestElement[] subtestelements = ted.getTestElements(); 
+		        HashMap recLevelHM = new HashMap();
+		        if (isTabeSession) {
+		            subtestelements = orderedSubtestList(subtestelements, studentId, testAdminId);
+		        }                
+		        boolean isLocatorTD = false;
+		        for (int i=0; i < subtestelements.length; i++)
+		        {
+		            TestElement te = subtestelements[i];          
+		              
+		            if (te != null)
+		            {
+		                SubtestDetail sd_TS = new SubtestDetail(te, i + 1);
+		          
+		                TestElement[] tes = getTestElementsForParent(sd_TS.getItemSetId(), "TD"); 
+		                boolean addTS = true;               
+		                HashMap subTestHM = new HashMap();
+		                for (int j=0; j < ssss.length; j++)
+		                {
+		                    StudentSessionStatus sss = ssss[j];
+		                    
+		                    for (int k=0; k < tes.length; k++)
+		                    {
+		                        TestElement te_TD = tes[k];
+
+		                        if (isTabeSession)
+		                        {
+		                            addTABESubtest(te_TD);
+		                        }
+		                        
+		                        if (sss.getItemSetId().intValue() == te_TD.getItemSetId().intValue())
+		                        {
+		                            
+		                            SubtestDetail sd_TD = new SubtestDetail(te_TD, -1);
+		                            
+		                            sd_TD.setValidationStatus(FilterSortPageUtils.validationStatus_CodeToString(sss.getValidationStatus()));
+		                            sd_TD.setCustomStatus(FilterSortPageUtils.customStatus_ToString(sss.getCustomerFlagStatus()));
+		                            
+		                            if (addTS)
+		                            {
+		                                if (sd_TD.getSubtestName().indexOf("Locator") < 0)
+		                                {                                    
+		                                    subtestList.add(sd_TS); 
+		                                    addTS = false;                                                         
+		                                }
+		                                else
+		                                {  
+		                                    isLocatorTD = true;                                      
+		                                }                                
+		                            }
+		                            
+		                            if (isTabeSession)
+		                            {
+		                                String level = te_TD.getItemSetForm();
+		                                if ((level == null) || level.equals("1"))
+		                                    level = "";
+		                                sd_TD.setLevel(level);
+		                            }
+		                            
+		                            
+		                            String status = FilterSortPageUtils.testStatus_CodeToString(sss.getCompletionStatus());
+		                            if (testSessionCompleted)
+		                            {
+		                                if (status.equals(FilterSortPageUtils.FILTERTYPE_SCHEDULED))
+		                                {
+		                                    status = FilterSortPageUtils.FILTERTYPE_NOTTAKEN; 
+		                                }
+		                                if (status.equals(FilterSortPageUtils.FILTERTYPE_SYSTEMSTOP) || status.equals(FilterSortPageUtils.FILTERTYPE_STUDENTSTOP) || status.equals(FilterSortPageUtils.FILTERTYPE_INPROGRESS))
+		                                {
+		                                    status = FilterSortPageUtils.FILTERTYPE_INCOMPLETE; 
+		                                }
+		                            }
+		                            sd_TD.setCompletionStatus(status);
+		                                                        
+		                            if (sss.getStartDateTime() != null)
+		                            {                                
+		                                Date adjStartDate = com.ctb.util.DateUtils.getAdjustedDate(sss.getStartDateTime(), "GMT", userTimeZone, sss.getStartDateTime());
+		                                String startDate = DateUtils.formatDateToDateString(adjStartDate);
+		                                String startTime = DateUtils.formatDateToTimeString(adjStartDate);                                
+		                                sd_TD.setStartDate(startDate + " " + startTime);
+		                            }
+		                            
+		                            if (sss.getCompletionDateTime() != null)
+		                            {
+		                                Date adjEndDate = com.ctb.util.DateUtils.getAdjustedDate(sss.getCompletionDateTime(), "GMT", userTimeZone, sss.getCompletionDateTime());
+		                                String endDate = DateUtils.formatDateToDateString(adjEndDate);
+		                                String endTime = DateUtils.formatDateToTimeString(adjEndDate);                                
+		                                sd_TD.setEndDate(endDate + " " + endTime);
+		                            }
+		                            
+		                            sd_TD.setMaxScore(sss.getMaxScore());
+		                            sd_TD.setRawScore(sss.getRawScore());
+		                            sd_TD.setUnScored(sss.getUnscored());
+		                            String tdSubtestName = sd_TD.getSubtestName();
+		                            String sn = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+		                                        tdSubtestName;
+		                            sd_TD.setSubtestName(sn);
+		                               
+		                            // START- Added for LLO-109 
+		                            if(isLaslinkSession)
+		                            {
+		                               	sd_TD.setTestExemptions(sss.getTestExemptions());
+		                            	sd_TD.setAbsent(sss.getAbsent());
+		                             }
+		                             // END- Added for LLO-109 
+		                             
+		                            if (!isLocatorTD)
+		                            {                                
+		                                subtestList.add(sd_TD);
+		                            }
+		                            else
+		                            {
+		                                if (!subTestHM.containsValue(tdSubtestName))
+		                                {
+		                                    if (addTS)
+		                                    {                                    
+		                                        subtestList.add(sd_TS); 
+		                                        addTS = false;
+		                                    }
+		                                    if (status.equals(FilterSortPageUtils.FILTERTYPE_COMPLETED))
+		                                    {
+		                                        if (sss.getRecommendedLevel() != null)
+		                                        {   
+		                                            if (tdSubtestName.indexOf("Reading") > 0)                                         
+		                                                recLevelHM.put("Reading", sss.getRecommendedLevel());
+		                                            else if (tdSubtestName.indexOf("Mathematics Computation") > 0)
+		                                                recLevelHM.put("Mathematics Computation", sss.getRecommendedLevel());
+		                                            else if (tdSubtestName.indexOf("Applied Mathematics") > 0)
+		                                                recLevelHM.put("Applied Mathematics", sss.getRecommendedLevel());
+		                                            else if (tdSubtestName.indexOf("Language") > 0)
+		                                                recLevelHM.put("Language", sss.getRecommendedLevel());
+		                                        }
+		                                    }
+		                                    else
+		                                        sd_TD.setLevel("");
+		                                    
+		                                    String subtestName = tdSubtestName.substring(5, tdSubtestName.length()).trim();
+		                                    if (subtestName.indexOf("Sample") > 0)
+		                                    {
+		                                        int indexOfSample = subtestName.indexOf("Sample");
+		                                        subtestName = subtestName.substring(0, indexOfSample).trim();
+		                                    }
+		                                    if (recLevelHM.size() > 0)
+		                                    {                                      
+		                                        if (recLevelHM.containsKey(subtestName))
+		                                        {
+		                                            if (subtestName.indexOf("Mathematics Computation") >= 0 || subtestName.indexOf("Applied Mathematics") >= 0)
+		                                            {                                        
+		                                                if (recLevelHM.containsKey("Mathematics Computation") && recLevelHM.containsKey("Applied Mathematics"))
+		                                                {
+		                                                    sd_TD.setLevel(recLevelHM.get(subtestName).toString());
+		                                                }                                               
+		                                            }
+		                                            else
+		                                            {
+		                                                sd_TD.setLevel(recLevelHM.get(subtestName).toString());
+		                                            }
+		                                        }
+		                                        if (subtestName.indexOf("Vocabulary") >= 0 && recLevelHM.containsKey("Reading"))
+		                                            sd_TD.setLevel(recLevelHM.get("Reading").toString());
+		                                        if (recLevelHM.containsKey("Language"))
+		                                        {
+		                                            if (subtestName.indexOf("Language Mechanics") >= 0)
+		                                                sd_TD.setLevel(recLevelHM.get("Language").toString());
+		                                            else if (subtestName.indexOf("Spelling") >= 0)
+		                                                sd_TD.setLevel(recLevelHM.get("Language").toString());
+		                                        }                                   
+		                                    }
+		                                        
+		                                    subtestList.add(sd_TD);  
+		                                    subTestHM.put(sd_TD, tdSubtestName);
+		                                }                              
+		                            }
+		                            break;
+		                            
+		                        }
+		                    }
+		                }
+		            }
+		        }                                        
+		        return subtestList;
+		    }
+		    
+		 @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success",
+	                     path = "view_subtest_details.jsp")
+	     })
+		 protected Forward toggleValidationStatus(ViewMonitorStatusForm form) {
+	        Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+			try {      
+	            this.testSessionStatus.toggleRosterValidationStatus(this.userName, testRosterId);
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return null;
+		}
+			
+		@Jpf.Action(forwards = { 
+		    @Jpf.Forward(name = "success",
+	                     path = "view_subtest_details.jsp")
+	    })
+		 protected Forward toggleSubtestValidationStatus(ViewMonitorStatusForm form)  {       
+			String strItemSetIds = null;
+			String[] itemSetIdsList = null;
+			Base base = new Base();
+            TestProduct testProduct = getProductForTestAdmin(this.sessionId);
+            boolean isTabeSession = isTabeSession(testProduct.getProductType());
+            base.setTabeSession(isTabeSession);
+            Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+	        if(getRequest().getParameter("itemSetIds") != null){
+	        	strItemSetIds = getRequest().getParameter("itemSetIds");
+	        	itemSetIdsList = strItemSetIds.split("\\|");
+	        }
+	        Integer[] itemSetIds = new Integer[itemSetIdsList.length];
+	        for(int i=0; i<itemSetIdsList.length; i++){
+	        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
+	        }
+	        try {
+	        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ValidationStatus" );
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        createGson(base);
+ 		    return null;
+		}
+
+	//Added for view/monitor test status: End
 }
