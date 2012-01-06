@@ -78,11 +78,19 @@ public class SoftwareOperationController extends PageFlowController {
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
         String LINUX_URI = "'" + getdownloadURI("TDCINSTLIN") + "'";
+
+        String RUN_PC_URI = "'" + getdownloadURI("TDCRUNPC") + "'";
+        String RUN_MAC_URI = "'" + getdownloadURI("TDCRUNMAC") + "'";
+        String RUN_LINUX_URI = "'" + getdownloadURI("TDCRUNLIN") + "'";
         
         this.getRequest().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
         this.getRequest().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
         this.getRequest().setAttribute("downloadURI_LINUX", "location.href=" + LINUX_URI);
 
+        this.getRequest().setAttribute("runURI_PC", "location.href=" + RUN_PC_URI);
+        this.getRequest().setAttribute("runURI_MAC", "location.href=" + RUN_MAC_URI);
+        this.getRequest().setAttribute("runURI_LINUX", "location.href=" + RUN_LINUX_URI);
+        
    		return new Forward("success");
     }
 	

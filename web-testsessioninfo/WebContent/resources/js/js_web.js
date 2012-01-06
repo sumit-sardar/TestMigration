@@ -101,10 +101,14 @@ function allowDownLoadBinFile(){
     if (firefox) {
         showElement(getElement("allowDownload", "div"));
         hideElement(getElement("notAllowDownload", "div"));
+        showElement(getElement("allowDownload2", "div"));
+        hideElement(getElement("notAllowDownload2", "div"));
     }
 	else {
         showElement(getElement("notAllowDownload", "div"));
         hideElement(getElement("allowDownload", "div"));
+        showElement(getElement("notAllowDownload2", "div"));
+        hideElement(getElement("allowDownload2", "div"));
     }
 }
 
