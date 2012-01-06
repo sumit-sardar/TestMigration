@@ -65,7 +65,7 @@
 						</div>  
 						<div id="ShowButtons" style="width:1000px; display:none; float:left;">
 							<div id="viewStatus" style="float:right;padding-left:5px;">
-								<a href="#" id="viewStatusButton" onclick="" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.viewStatus']}"/></a>
+								<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.viewStatus']}"/></a>
 							</div> 
 						    <%if(canRegisterStudent) { %>
 							    <div id="registerStudent" style="float:right;padding-left:5px;">
@@ -181,3 +181,4 @@
 </div>
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
+<jsp:include page="/sessionOperation/view_test_session.jsp" />
