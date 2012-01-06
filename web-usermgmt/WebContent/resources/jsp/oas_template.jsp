@@ -101,9 +101,9 @@
 					  <!-- TABS HEADERS -->
 					<jsp:include page="/resources/jsp/oas_navigation_menu.jsp" />
 						<div class="feature" id="bodySection">
-							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0" cellspacing="12" >
+							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0">
 							<tr>
-				  			<td align="left" valign="top">
+				  			<td align="left" valign="top" style="padding:10px;">
 							<netui-template:includeSection name="bodySection"/>
 							</td>
 							</tr>
