@@ -41,7 +41,7 @@ function hideSelectedProctor (){
 
 	delete orgDataInform;
 	delete allSelectOrgProctor;
-	delete proctorIdObjArray;
+	
 	
 	orgDataInform = {};
 	allSelectOrgProctor = {};
@@ -62,8 +62,10 @@ function hideSelectedProctor (){
 		orgDataInform[j] = count;
 	}
 	
-	proctorIdObjArray = jsonDataOrg;	
-	
+	if (jsonDataOrg != null || jsonDataOrg != undefined){
+		delete proctorIdObjArray;
+		proctorIdObjArray = jsonDataOrg;	
+	}
 	isOnBackProctor = true;
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');	
@@ -183,10 +185,10 @@ function populateSelectProctorGrid() {
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'defaultScheduler',index:'defaultScheduler', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'userId',index:'userId', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'userName',index:'userName', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'copyable',index:'copyable', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'defaultScheduler',index:'defaultScheduler',hidden:true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userId',index:'userId',hidden:true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userName',index:'userName',hidden:true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'copyable',index:'copyable', hidden:true,width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) {		   	 
@@ -222,10 +224,7 @@ function populateSelectProctorGrid() {
 				}
 				if(reqestedPage <= minPageSize){
 					$('#selectProctor').setGridParam({"page": minPageSize});
-				}
-				
-				
-				
+				}			
 				
 			},
 			gridComplete: function() {		
@@ -264,7 +263,7 @@ function populateSelectProctorGrid() {
 				if(!onloadGrid){
 					if(status) {
 						for(var key in allProctorIds['dataList']) {
-							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
+							if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
 								proctorIdObjArray[key] = allProctorIds['dataList'][key];																							
 								
 					 		}				
@@ -277,7 +276,7 @@ function populateSelectProctorGrid() {
 						orgDataInform[proctorForSelectedOrg] = 0;
 						allSelectOrgProctor[proctorForSelectedOrg] = false;
 						for(var key in allProctorIds['dataList']) {
-							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
+							if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
 								delete proctorIdObjArray[key];
 							}
 							else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
@@ -346,10 +345,6 @@ function populateSelectProctorGrid() {
 				}
 				var width = jQuery("#scheduleSession").width();
 		    	width = width - 280; // Fudge factor to prevent horizontal scrollbars
-		    	$("#selectProctor").jqGrid("hideCol","defaultScheduler");
-		    	$("#selectProctor").jqGrid("hideCol","userId");
-		    	$("#selectProctor").jqGrid("hideCol","userName");
-		    	$("#selectProctor").jqGrid("hideCol","copyable");
 		    	jQuery("#selectProctor").setGridWidth(width,true);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){

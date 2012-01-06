@@ -1673,7 +1673,7 @@ function registerDelegate(tree){
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -2270,11 +2270,25 @@ function registerDelegate(tree){
 	 		
 	 		var val=[] ;
 		 	val.push(jsondata);
-		    
-		    addProctorLocaldata = val;
+		    proctorIdObjArray = {};	
+		    proctorIdObjArray[schedulerUserId] = jsondata;	 	
+		 	if(state == "EDIT"){
+			 	for (var i=0,j = addProctorLocaldata.length; i < j; i++){
+						if(addProctorLocaldata[i].userId = val[0].userId){ 		
+						  addProctorLocaldata.splice(i,1);
+						  break;
+						}
+			 	}
+			 	val = val.concat(addProctorLocaldata);	 
+			 	for (var i = 0, j = val.length; i < j; i++){			 	
+			 		if(val[i].userId != schedulerUserId){
+			 			 proctorIdObjArray[val[i].userId] = val[i];
+			 		}
+			 	}
+		 	}
 		 	
-			proctorIdObjArray = {};
-			proctorIdObjArray[schedulerUserId] = jsondata;
+		 	addProctorLocaldata = val;
+		
 			//alert(JSON.stringify(proctorIdObjArray));	
 		 	
 	 	}

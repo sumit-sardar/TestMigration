@@ -4,6 +4,7 @@
     var selectedTestAdminId = null;
     var state = null;
     var stdsLogIn = false;
+    var isTestExpired = false;
     var selectedTestSession;
     var editDataCache = new Map();
     var editDataMrkStds = new Map();
@@ -34,9 +35,13 @@
 								document.getElementById("testDiv").style.display = "inline";
 							}
 							
-							if (data.savedTestDetails.studentsLoggedIn > 0){
-								stdsLogIn = true;
-								disableInEdit();
+								
+							if(data.testSessionExpired){							
+								isTestExpired = true;								
+							}
+							if (data.savedTestDetails.studentsLoggedIn > 0 || isTestExpired){
+								stdsLogIn = true;	
+								disableInEdit();							
 							} else {
 								removeDisableInEdit();
 							}
@@ -69,6 +74,7 @@
 							closeOnEscape: false,
 							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); },
 							 beforeClose: function(event, ui) { resetEditTestSession();
+							 removeDisableInEdit();
 							 }
 							});	
 						setPopupPosition();
@@ -178,7 +184,7 @@
 									document.getElementById("testBreak").disabled=true;	
 								}
 														
-								if(stdsLogIn){					
+								if(stdsLogIn || isTestExpired){					
 								disableSelectTest();
 								}else{
 								removeDisableInEdit();
@@ -343,7 +349,7 @@
     }
     
   	function resetEditTestSession(){
-	  	$('#ssAccordion').accordion('activate', 1 );
+	  	$('#ssAccordion').accordion('activate', 0 );
 	  	selectedTestAdminId = null;
 	    state = null;
 	    stdsLogIn = false;
@@ -353,6 +359,8 @@
 	    AddStudentLocaldata = {};
 	    ProductData = null;
 		editDataCache = new Map();
+		removeDisableInEdit();
+		isTestExpired = false;
   	}
   	
   	function calculateTimeInMin(val){
@@ -423,6 +431,13 @@
   	function disableTestDetails() {
   		$('#testSessionName').attr("disabled",true);
   		$('#startDate').attr("disabled",true);
+  		if(isTestExpired){
+  		$('#endDate').attr("disabled",true);  
+  		$( "#slider-range" ).slider( "option", "disabled", true );	
+  		$('#timeZoneList').attr("disabled",true);  
+  		$('#testLocation').attr("disabled",true);  
+  		$('#topOrgNode').attr("disabled",true);    		
+  		}
   	}
   
 	function removeDisableInEdit() {
@@ -432,6 +447,13 @@
 		$('#aCode').removeAttr("disabled");
 		$('#testSessionName').removeAttr("disabled");
 		$('#startDate').removeAttr("disabled");
+		$('#endDate').removeAttr("disabled"); 
+		if(isTestExpired){
+			$( "#slider-range" ).slider( "option", "disabled", false );	
+	  		$('#timeZoneList').removeAttr("disabled",true);  
+	  		$('#testLocation').removeAttr("disabled",true);  
+	  		$('#topOrgNode').removeAttr("disabled",true);
+  		}    	 
 		if($('#aCode') != undefined && $('#aCode') != null) {
   			$('#aCode').removeAttr("disabled");
   		}
