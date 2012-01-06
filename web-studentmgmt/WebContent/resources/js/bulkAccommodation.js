@@ -103,7 +103,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    	clearList();
 	    	resetBulk();
 	    	$('#cb_studentAccommGrid').attr('checked', false);
-	    	setAnchorButtonState('assignAccommButton', true);
+	    	determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 			SelectedOrgNodeId = $(this).parent().attr("id");
 			var topNodeSelected = $(this).parent().attr("cid");
 			if(topNodeSelected == leafNodeCategoryId || topNodeSelected == (leafNodeCategoryId -1)) {
@@ -254,7 +254,7 @@ function populateBulkStudentGrid() {
 					 applyChange = false;
 					//onNodechange = false;
 				} 
-				
+				determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 				 if(totalRowSelectedOnPage == studentArrId.length ) {
 				 	$('#cb_studentAccommGrid').attr('checked', true);
 				 } else {
@@ -289,7 +289,6 @@ function populateBulkStudentGrid() {
 				
 						}	
 						totalRowSelectedOnPage = 0;
-						setAnchorButtonState('assignAccommButton', true);
 						$.unblockUI();  
 					} else {
 						UIBlock();
@@ -311,8 +310,7 @@ function populateBulkStudentGrid() {
 								  
 							}
 							
-						}	
-						setAnchorButtonState('assignAccommButton', false);
+						}
 						$.unblockUI();
 						var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');  
 						
@@ -320,15 +318,11 @@ function populateBulkStudentGrid() {
 				 if(submittedSuccesfully != ""){
 		           	 resetBulk();
 		         }
+		         determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
 				var isRowSelected = $("#studentAccommGrid").jqGrid('getGridParam', 'selrow');
-				if(isRowSelected != null) {
-					setAnchorButtonState('assignAccommButton', false);
-				} else {
-					setAnchorButtonState('assignAccommButton', true);
-				}
 				if(status) {
 					totalRowSelectedOnPage = totalRowSelectedOnPage+1;
 					selectedStudentObjArr[selectedRowId]= selectedRowId;
@@ -346,6 +340,7 @@ function populateBulkStudentGrid() {
 				  if(submittedSuccesfully != ""){
 		           	 resetBulk();
 		         }
+		         determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 			},
 			loadComplete: function () {
 				var isSAGridEmpty = false;
@@ -533,8 +528,10 @@ function populateBulkStudentGrid() {
 									if(alldata){
 										for(var key in selectedStudentObjArr){
 											var index = jQuery.inArray(key, studentArrId);
-											for(var prop in dataToBeAdded){											
-												alldata[index][prop] = dataToBeAdded[prop];
+											if(alldata[index] != null && alldata[index] != undefined) {
+												for(var prop in dataToBeAdded){
+													alldata[index][prop] = dataToBeAdded[prop];
+												}
 											}
 										}
 										

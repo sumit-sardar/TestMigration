@@ -74,7 +74,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
 	    $("#bulkStudentMoveOrgNode").delegate("a","click", function(e) {
 	    	submittedSuccesfully = "";
 	    	$("#displayBulkMessageMain").hide();
-	    	setAnchorButtonState('bulkMoveButton', true);
+	    	determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 			SelectedOrgNodeId = $(this).parent().attr("id");
 			var topNodeSelected = $(this).parent().attr("cid");
 			if(topNodeSelected == leafNodeCategoryId || topNodeSelected == (leafNodeCategoryId -1)) {
@@ -188,7 +188,8 @@ function populateBulkMoveStudentGrid() {
 					 }
 					 applyChange = false;
 					//onNodechange = false;
-				} 
+				}
+				determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 				
 				 if(bulkMoveStuCounterPage == allStudentInGrid.length ) {
 				 	$('#cb_studentBulkMoveGrid').attr('checked', true);
@@ -206,7 +207,6 @@ function populateBulkMoveStudentGrid() {
 							delete selectedStudentForMove[allStudentInGrid[i].studentId];
 						}
 						bulkMoveStuCounterPage = 0;
-						setAnchorButtonState('bulkMoveButton', true);
 						$.unblockUI();  
 					} else {
 						UIBlock();
@@ -214,10 +214,9 @@ function populateBulkMoveStudentGrid() {
 							selectedStudentForMove[parseInt(allStudentInGrid[i].studentId)] = parseInt(allStudentInGrid[i].studentId);
 						}
 						bulkMoveStuCounterPage = allStudentInGrid.length;
-						setAnchorButtonState('bulkMoveButton', false);
 						$.unblockUI();
+						//The below condition is used to stop select all in grid if the grid is empty
 						if(allStudentInGrid == undefined || allStudentInGrid.length <=0) {
-							setAnchorButtonState('bulkMoveButton', true);
 							var noStudents = $('.ui-state-highlight');
 							if(noStudents.length > 0) {
 								for(var k = 0; k < noStudents.length; k++) {
@@ -226,16 +225,12 @@ function populateBulkMoveStudentGrid() {
 							}
 						}
 					}
+					determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 			},
 			onSelectRow: function (rowid, status) {
 				$("#displayBulkMessageMain").hide();
 				var selectedRowId = rowid;
 				var isRowSelected = $("#studentBulkMoveGrid").jqGrid('getGridParam', 'selrow');
-				if(isRowSelected != null) {
-					setAnchorButtonState('bulkMoveButton', false);
-				} else {
-					setAnchorButtonState('bulkMoveButton', true);
-				}
 				if(status) {
 					bulkMoveStuCounterPage = bulkMoveStuCounterPage+1;
 					selectedStudentForMove[selectedRowId]= selectedRowId;
@@ -249,6 +244,7 @@ function populateBulkMoveStudentGrid() {
 				 } else {
 				 	$('#cb_studentBulkMoveGrid').attr('checked', false);
 				 }
+				 determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 			},
 			loadComplete: function () {
 				var isSAGridEmpty = false;
@@ -460,10 +456,23 @@ function saveBulkMoveData() {
 		$('#displayBMPopupMessage').attr("style",'border:2px solid #D4ECFF');
 		
 	}
-	
-	function setBulkPopupMessage(){
-			$("#contentBulkMovePopup").text(BULK_MOVE_NOTSELECTED);
-			$("#messageBulkMovePopup").text("");
-			$("#errorImgPopup").show();
-		}
+}
+
+function setBulkPopupMessage(){
+	$("#contentBulkMovePopup").text(BULK_MOVE_NOTSELECTED);
+	$("#messageBulkMovePopup").text("");
+	$("#errorImgPopup").show();
+}
+
+function determineStudentSel(selectedStdArry, buttonId) { // Added for defect #67829
+	var present = false;
+	for(var key in selectedStdArry) {
+		present = true;
+		break;
+	}
+	if(present) {
+		setAnchorButtonState(buttonId, false);
+	} else {
+		setAnchorButtonState(buttonId, true);
+	}
 }
