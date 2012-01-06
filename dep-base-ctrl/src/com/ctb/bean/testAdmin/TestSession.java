@@ -79,6 +79,7 @@ public class TestSession extends CTBBean
     private String loginEndDateString;
     private String dailyLoginStartTimeString;
     private String dailyLoginEndTimeString;
+    private String productType;
    
    
     /**
@@ -631,5 +632,21 @@ public class TestSession extends CTBBean
 	 */
 	public void setDailyLoginEndTimeString(String dailyLoginEndTimeString) {
 		this.dailyLoginEndTimeString = dailyLoginEndTimeString;
+	}
+
+	
+	/**
+	 * @return the productType
+	 */
+	public String getProductType() {
+		return productType;
+	}
+
+	
+	/**
+	 * @param productType the productType to set
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
 	}
 } 

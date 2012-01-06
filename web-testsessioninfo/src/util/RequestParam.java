@@ -29,6 +29,7 @@ public interface RequestParam {
 	
 	String ACTION 					= "action";
 	String STUDENTS 				= "students";
+	String PROCTORS 				= "proctors";
 	String IS_STUDENT_LIST_UPDATED	= "isStudentUpdated";
 	String IS_PROCTOR_LIST_UPDATED	= "isProctorUpdated";
 	String IS_TEST_UPDATED			= "isTestUpdated";

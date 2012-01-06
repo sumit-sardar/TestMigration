@@ -2564,7 +2564,7 @@ function registerDelegate(tree){
 
 	    var selectedProctors =getProctorListArray(addProctorLocaldata);
 	    param = param+"&proctors="+selectedProctors.toString();
-	    param = param+"&action='ADD'";
+	    param = param+"&action=ADD";
 	 } else {
 		    var param1 =$("#testDiv *").serialize(); 
 		    var param2 = $("#Test_Detail *").serialize();
@@ -2576,7 +2576,7 @@ function registerDelegate(tree){
 		    
 		    var selectedProctors =getProctorListArray(addProctorLocaldata);
 		    param = param+"&proctors="+selectedProctors.toString() ;
-		    param = param+"&action='EDIT'";
+		    param = param+"&action=EDIT";
 		   	param = param+"&isStudentUpdated="+isStdDetClicked;
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;

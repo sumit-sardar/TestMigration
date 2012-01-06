@@ -21,6 +21,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private List<ObjectIdName> testZoneDropDownList = new ArrayList<ObjectIdName>();
 	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private OperationStatus status;
+	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,6 +71,22 @@ public class ScheduledSavedTestVo implements Serializable {
 			topNodeDropDownList.add(new ObjectIdName(entry.getKey().toString(), entry.getValue()));
 		}
 		
+	}
+
+	
+	/**
+	 * @return the productType
+	 */
+	public String getProductType() {
+		return productType;
+	}
+
+	
+	/**
+	 * @param productType the productType to set
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
 	}
 
 }

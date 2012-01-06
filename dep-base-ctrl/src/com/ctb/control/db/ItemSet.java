@@ -757,5 +757,7 @@ public interface ItemSet extends JdbcControl
             arrayMaxLength = 100000)
     CustomerTestResource [] getCustomerTestResources(Integer customerId) throws SQLException;
        
+    @JdbcControl.SQL(statement = "select iset.ITEM_SET_ID  as itemSetId, iset.ITEM_SET_NAME as itemSetName, max(ontc.RANDOM_DISTRACTOR_ALLOWABLE) as isRandomize, max(ontc.override_form_assignment) as overrideFormAssignmentMethod,  max(ontc.override_login_start_date) as overrideLoginStartDate  from item_set iset , org_node_test_catalog ontc  where  ontc.item_set_id = iset.item_set_id  and ontc.activation_status = 'AC'  and iset.activation_status = 'AC'  and iset.item_set_id = {itemSetId}  group by iset.ITEM_SET_ID , iset.ITEM_SET_NAME")
+    TestElement getTestElementMinInfoById(Integer itemSetId) throws SQLException;
     static final long serialVersionUID = 1L;
 }

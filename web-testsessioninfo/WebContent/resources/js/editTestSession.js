@@ -53,6 +53,7 @@
 							    var optionHtml = "<option  value='"+data.savedTestDetails.testSession.productId+"'>"+data.savedTestDetails.testSession.productId+"</option>";
      						    $("#testGroupList").html(optionHtml);
 							    $("#sData").removeClass("ui-state-disabled");
+							    $("#productType").val(data.productType);
 								document.getElementById("sData").disabled=false;
 							}
 							

@@ -3349,6 +3349,11 @@ public class ScheduleTestImpl implements ScheduleTest
             TestElement [] testUnits = itemSet.getTestElementsForSession(testAdminId);
             session.setScheduledUnits(testUnits);
             TestSession testSession = admins.getTestAdminDetails(testAdminId);
+            
+            Integer productId = testSession.getProductId();
+            TestProduct testProduct = product.getProduct(productId);
+            testSession.setProductType(testProduct.getProductType());
+            
             String [] forms = itemSet.getFormsForTest(testSession.getItemSetId());
             for(int i=0;i<testUnits.length && testUnits[i] != null;i++) {
                 TestElement testUnit = testUnits[i];
@@ -3638,6 +3643,22 @@ public class ScheduleTestImpl implements ScheduleTest
             tee.setStackTrace(se.getStackTrace());
             throw tee;
         }
+    }
+    
+    
+    public TestElement getTestElementMinInfoById(Integer itemsetIdTC) throws CTBBusinessException
+    {
+    	 try {
+
+    		 TestElement test = itemSet.getTestElementMinInfoById(itemsetIdTC);
+    		 test.setForms(itemSet.getFormsForTest(test.getItemSetId()));
+    		 return test;
+    	 } catch (SQLException se){
+    		 UserDataNotFoundException tee = new UserDataNotFoundException("ScheduleTestImpl: getTestElementMinInfoById: " + se.getMessage());
+             tee.setStackTrace(se.getStackTrace());
+             throw tee;
+    	 }
+    	
     }
     
     

@@ -586,12 +586,12 @@ public class SessionOperationController extends PageFlowController {
         		if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1)
                     studentCountBeforeSave = studentsBeforeSave.trim().split(",").length;
         	} else {
-        		
+        		//TODO
         	}
         	
             try
             {
-                testAdminId = createSaveTest(this.getRequest(), validationFailedInfo);
+                testAdminId = createSaveTest(this.getRequest(), validationFailedInfo, isAddOperation);
                 if(!validationFailedInfo.isValidationFailed()) {
                 	isValidationFailed = false;
                 	RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName,
@@ -801,6 +801,7 @@ public class SessionOperationController extends PageFlowController {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setSavedTestDetails(scheduledSession);
+    	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
 
     	    	if (this.user == null || topNodesMap.size() ==0 ){
     	    		initialize();
@@ -968,30 +969,35 @@ public class SessionOperationController extends PageFlowController {
   }
     	
    
-    	 private Integer createSaveTest(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) throws CTBBusinessException
+    	 private Integer createSaveTest(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) throws CTBBusinessException
     	    {  
     		 Integer newTestAdminId = null;
     		 ScheduledSession scheduledSession = new ScheduledSession();
-    		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo );
+    		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo , isAddOperation);
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo ); 
+    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo, isAddOperation ); 
     		 }
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo );
-    		 }
-    		 
-    		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo);
+    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo, isAddOperation );
     		 }
     		 
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, scheduledSession);  
+    			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo, isAddOperation);
+    		 }
+    		 
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 if(scheduledSession.getTestSession().getTestAdminId()!=null){
+    				 newTestAdminId = this.scheduleTest.updateTestSession(this.userName, scheduledSession);  
+    			 } else {
+    				 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, scheduledSession);  
+    			 }
+    			 
     		 }    		 
     	        return newTestAdminId;
     }
     
      private void populateScheduledUnits(ScheduledSession scheduledSession,
-				HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
+				HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
     	/* List subtestList = null;*/
 	     //boolean sessionHasLocator = false;
     	 try{
@@ -1086,7 +1092,7 @@ public class SessionOperationController extends PageFlowController {
     	        }
     	        
     	        scheduledSession.setScheduledUnits(newTEs);
-    	        validateScheduledUnits(scheduledSession, hasBreakBoolean, validationFailedInfo);
+    	        validateScheduledUnits(scheduledSession, hasBreakBoolean, validationFailedInfo, isAddOperation);
             
     	       
     	 } catch (Exception e) {
@@ -1106,50 +1112,61 @@ public class SessionOperationController extends PageFlowController {
 
 	private void populateProctor(ScheduledSession scheduledSession,
 			HttpServletRequest request,
-			ValidationFailedInfo validationFailedInfo) {
+			ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 		
 
 		try {
-			String proctorsData = RequestUtil.getValueFromRequest(this
-					.getRequest(), "proctors", true, "");
-			int proctorCount = 0;
-			if (proctorsData != null
-					&& proctorsData.trim().length() > 1) {
-				proctorCount = proctorsData.split(",").length;
+			boolean isProcListUpdated = true;
+			if(!isAddOperation){
+				String isStudentUpdated = RequestUtil.getValueFromRequest(request, RequestUtil.IS_PROCTOR_LIST_UPDATED, true, "true");
+				if(isStudentUpdated.equalsIgnoreCase("false"))
+					isProcListUpdated = false;
 			}
-			if (proctorCount > 0) {
-				ArrayList<User> proctorList = new ArrayList<User>(proctorCount);
-				String[] procs = proctorsData.split(",");
-				for (String procrec : procs) {
-					StringTokenizer st = new StringTokenizer(procrec, ":");
-					User us = new User();
-					while (st.hasMoreTokens()) {
-						StringTokenizer keyVal = new StringTokenizer(st
-								.nextToken(), "=");
-
-						String key = keyVal.nextToken();
-						String val = null;
-						if (keyVal.countTokens() > 0) {
-							val = keyVal.nextToken();
-						}
-
-						if (key.equalsIgnoreCase("userId")) {
-							us.setUserId(Integer.valueOf(val));
-						} else if (key.equalsIgnoreCase("userName")) {
-							us.setUserName(val);
-						} else if (key.equalsIgnoreCase("copyable")) {
-							us.setCopyable(val);
-						} 
-					}
-
-					proctorList.add(us);
+			
+			if(isAddOperation || isProcListUpdated) {
+				String proctorsData = RequestUtil.getValueFromRequest(request, RequestUtil.PROCTORS, true, "");
+				int proctorCount = 0;
+				if (proctorsData != null
+						&& proctorsData.trim().length() > 1) {
+					proctorCount = proctorsData.split(",").length;
 				}
-
-				scheduledSession.setProctors(proctorList.toArray(new User[proctorList.size()]));
+				if (proctorCount > 0) {
+					ArrayList<User> proctorList = new ArrayList<User>(proctorCount);
+					String[] procs = proctorsData.split(",");
+					for (String procrec : procs) {
+						StringTokenizer st = new StringTokenizer(procrec, ":");
+						User us = new User();
+						while (st.hasMoreTokens()) {
+							StringTokenizer keyVal = new StringTokenizer(st
+									.nextToken(), "=");
+	
+							String key = keyVal.nextToken();
+							String val = null;
+							if (keyVal.countTokens() > 0) {
+								val = keyVal.nextToken();
+							}
+	
+							if (key.equalsIgnoreCase("userId")) {
+								us.setUserId(Integer.valueOf(val));
+							} else if (key.equalsIgnoreCase("userName")) {
+								us.setUserName(val);
+							} else if (key.equalsIgnoreCase("copyable")) {
+								us.setCopyable(val);
+							} 
+						}
+	
+						proctorList.add(us);
+					}
+	
+					scheduledSession.setProctors(proctorList.toArray(new User[proctorList.size()]));
+				} else {
+					User[] proctorArray = new User[1];
+					proctorArray[0]= this.user;
+					scheduledSession.setProctors(proctorArray);
+				}
 			} else {
-				User[] proctorArray = new User[1];
-				proctorArray[0]= this.user;
-				scheduledSession.setProctors(proctorArray);
+				ScheduledSession schSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
+				scheduledSession.setProctors(schSession.getProctors());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1164,55 +1181,70 @@ public class SessionOperationController extends PageFlowController {
 
 	private void populateSessionStudent(ScheduledSession scheduledSession,
 				HttpServletRequest httpServletRequest,
-			ValidationFailedInfo validationFailedInfo) {
+			ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 
 		try {
-			String studentsBeforeSave = RequestUtil.getValueFromRequest(this
-					.getRequest(), "students", true, "");
-			int studentCountBeforeSave = 0;
-			if (studentsBeforeSave != null
-					&& studentsBeforeSave.trim().length() > 1) {
-				studentCountBeforeSave = studentsBeforeSave.split(",").length;
+			
+			boolean isStudentListUpdated = true;
+			if(!isAddOperation){
+				String isStudentUpdated = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
+				if(isStudentUpdated.equalsIgnoreCase("false"))
+					isStudentListUpdated = false;
 			}
-			if (studentCountBeforeSave > 0) {
-				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
-				String[] studs = studentsBeforeSave.split(",");
-				for (String std : studs) {
-					StringTokenizer st = new StringTokenizer(std, ":");
-					SessionStudent ss = new SessionStudent();
-					while (st.hasMoreTokens()) {
-						StringTokenizer keyVal = new StringTokenizer(st.nextToken(), "=");
-						
-						String key = keyVal.nextToken();
-						String val = null;
-						if(keyVal.countTokens()>0) {
-							val= keyVal.nextToken();
-						}
-
-
-						if (key.equalsIgnoreCase("studentId")) {
-							ss.setStudentId(Integer.valueOf(val));
-						} else if (key.equalsIgnoreCase("orgNodeId")) {
-							ss.setOrgNodeId(Integer.valueOf(val));
-						} else if (key.equalsIgnoreCase("extendedTimeAccom")) {
-							ss.setExtendedTimeAccom(val);
-						} else if (key.equalsIgnoreCase("statusCopyable")) {
-							EditCopyStatus status = new EditCopyStatus();
-							status.setCopyable(val);
-							ss.setStatus(status);
-						} else if (key.equalsIgnoreCase("itemSetForm")) {
-							ss.setItemSetForm(val);
-						}
-					}
-
-					sessionStudents.add(ss);
-
+			
+			if(isAddOperation || isStudentListUpdated){
+	
+				String studentsBeforeSave = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.STUDENTS, true, "");
+				int studentCountBeforeSave = 0;
+				if (studentsBeforeSave != null
+						&& studentsBeforeSave.trim().length() > 1) {
+					studentCountBeforeSave = studentsBeforeSave.split(",").length;
 				}
-
-				scheduledSession.setStudents(sessionStudents
-						.toArray(new SessionStudent[sessionStudents.size()]));
+				if (studentCountBeforeSave > 0) {
+					ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
+					String[] studs = studentsBeforeSave.split(",");
+					for (String std : studs) {
+						StringTokenizer st = new StringTokenizer(std, ":");
+						SessionStudent ss = new SessionStudent();
+						while (st.hasMoreTokens()) {
+							StringTokenizer keyVal = new StringTokenizer(st.nextToken(), "=");
+							
+							String key = keyVal.nextToken();
+							String val = null;
+							if(keyVal.countTokens()>0) {
+								val= keyVal.nextToken();
+							}
+	
+							if (key.equalsIgnoreCase("studentId")) {
+								ss.setStudentId(Integer.valueOf(val));
+							} else if (key.equalsIgnoreCase("orgNodeId")) {
+								ss.setOrgNodeId(Integer.valueOf(val));
+							} else if (key.equalsIgnoreCase("extendedTimeAccom")) {
+								ss.setExtendedTimeAccom(val);
+							} else if (key.equalsIgnoreCase("statusCopyable")) {
+								EditCopyStatus status = new EditCopyStatus();
+								status.setCopyable(val);
+								ss.setStatus(status);
+							} else if (key.equalsIgnoreCase("itemSetForm")) {
+								ss.setItemSetForm(val);
+							}
+						}
+	
+						sessionStudents.add(ss);
+	
+					}
+					
+					scheduledSession.setStudents(sessionStudents
+							.toArray(new SessionStudent[sessionStudents.size()]));
 
 			}
+		
+		} else {
+			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
+	    	scheduledSession.setStudents(schSession.getStudents());
+		}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			validationFailedInfo.setKey("SYSTEM_EXCEPTION");
@@ -1226,7 +1258,7 @@ public class SessionOperationController extends PageFlowController {
              
 	
 
-	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
+	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 		
 		 try{
 			 TestSession testSession = new TestSession();
@@ -1235,7 +1267,8 @@ public class SessionOperationController extends PageFlowController {
 			 Integer creatorOrgNod    		= topnodeids[0];
 			 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
 			 
-			 TestVO selectedTest = idToTestMap.get(itemSetId);
+			 //TestVO selectedTest = idToTestMap.get(itemSetId);
+			 
 			 Integer productId        			= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
 			 String dailyLoginEndTimeString		=RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null);
 			 String dailyLoginStartTimeString	= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_TIME, false, null);
@@ -1265,13 +1298,27 @@ public class SessionOperationController extends PageFlowController {
 				 overrideLoginSDate = DateUtils.getDateFromDateString(overrideLoginStartDate);*/
 			 //String formAssigned			= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_ASSIGNED, true, "");
 			 
-			 
-			 String formOperand       		=  selectedTest.getFormOperand();
-			 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignment();
+			 String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
+			 Integer testAdminId = null;
+			 if(!isAddOperation ){
+				 testAdminId = Integer.valueOf(testAdminIdString.trim());
+			 }
+			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
+			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(itemSetId); 
+			 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
+				 formOperand = selectedTest.getOverrideFormAssignmentMethod();
+	           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {
+	        	   formOperand = TestSession.FormAssignment.ROUND_ROBIN;
+	            } else {
+	            	formOperand = TestSession.FormAssignment.ROUND_ROBIN;
+	           }
+
+			 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignmentMethod();
 			 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
 			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
-			 String testName       		    = 	selectedTest.getTestName(); 
+			 String testName       		    = 	selectedTest.getItemSetName(); 
 			 // setting default value
+			 testSession.setTestAdminId(testAdminId);
 			 testSession.setTestAdminStatus("CU");
 	         testSession.setTestAdminType("SE");
 	         testSession.setActivationStatus("AC");
@@ -1325,7 +1372,7 @@ public class SessionOperationController extends PageFlowController {
 	         
 	         validateTestSession(testSession, validationFailedInfo);
 	         if(!validationFailedInfo.isValidationFailed()) {
-	        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate, validationFailedInfo); 
+	        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate, validationFailedInfo, isAddOperation); 
 	         }
 	         
 	         scheduledSession.setTestSession(testSession);
@@ -1346,7 +1393,7 @@ public class SessionOperationController extends PageFlowController {
      private void validateTestSessionDate(String dailyLoginEndDateString,
 			String dailyLoginStartDateString, String dailyLoginEndTimeString,
 			String dailyLoginStartTimeString, String timeZonep,
-			Date overrideLoginSDate, ValidationFailedInfo validationFailedInfo) {
+			Date overrideLoginSDate, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
     	 if ((DateUtils.validateDateString(dailyLoginStartDateString) == DateUtils.DATE_INVALID) ||( DateUtils.validateDateString(dailyLoginEndDateString)== DateUtils.DATE_INVALID)){
     		 validationFailedInfo.setKey("SaveTest.InvalidDate");
  			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.InvalidDate.Header"));
@@ -1368,11 +1415,11 @@ public class SessionOperationController extends PageFlowController {
     		 if( overrideLoginSDate != null && dateStarted.compareTo(overrideLoginSDate ) < 0){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Header","" +DateUtils.formatDateToDateString(overrideLoginSDate)));
-    		 } else if ( DateUtils.isBeforeToday(dateStarted, timeZone) ){
+    		 } else if ( isAddOperation && DateUtils.isBeforeToday(dateStarted, timeZone) ){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Header"));
      			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Body"));
-    		 } else if ( DateUtils.isBeforeNow(datetimeEnded, timeZone) ) {
+    		 } else if ( isAddOperation && DateUtils.isBeforeNow(datetimeEnded, timeZone) ) {
     			 validationFailedInfo.setKey("SaveTest.EndDateTimeBeforeNow");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.EndDateTimeBeforeNow.Header"));
      			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.EndDateTimeBeforeNow.Body"));
@@ -1426,7 +1473,7 @@ public class SessionOperationController extends PageFlowController {
 		}  
 
 	}
-     private void validateScheduledUnits(ScheduledSession scheduledSession,	boolean hasBreakBoolean, ValidationFailedInfo validationFailedInfo) {
+     private void validateScheduledUnits(ScheduledSession scheduledSession,	boolean hasBreakBoolean, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
     	try{
     		TestElement[] newTEs = scheduledSession.getScheduledUnits();
     		//boolean hasAL = ((form.getAutoLocator() != null) && form.getAutoLocator().equals("true"));
