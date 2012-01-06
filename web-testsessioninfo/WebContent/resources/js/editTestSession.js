@@ -11,7 +11,8 @@
     var isProcDetClicked = false;
   
   function editTestSession(){  
-    
+     resetEditSessionPopulatedData();
+      
  	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -549,4 +550,17 @@
 			document.getElementById("subtestGrid").style.display = "none";
 			document.getElementById("noSubtest").style.display = "";
 		}*/
+	}
+	
+	
+	function resetEditSessionPopulatedData(){
+	    state = null;
+		isStdDetClicked = false;
+     	isProcDetClicked = false;
+     	$("#selectedNewTestId").val("");
+	 	$("#showStudentFeedback").val("");
+     	$("#testGroupList").html("");
+      	$("#productType").val(data.productType);
+      	stdsLogIn = false;
+	
 	}
