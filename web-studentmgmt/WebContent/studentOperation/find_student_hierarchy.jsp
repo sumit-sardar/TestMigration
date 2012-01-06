@@ -52,7 +52,7 @@
 <table class="transparent">
 
     <tr class="transparent">
-        <td style="border-color : #2E6E9E">
+        <td style="border-color : #2E6E9E;padding-left:5px;">
         
       	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
 			<font style="color: red; font-size:12px; font-weight:bold"><div id="titleMain"></div></font>
@@ -62,7 +62,7 @@
 		
 	 <table class="transparent">
 	    <tr class="transparent">
-	        <td class="transparent"  valign="middle">
+	        <td style="vertical-align:top;">
 	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 	    	<script>populateTree();</script>
 
@@ -75,21 +75,7 @@
 	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader gridPos">
-	      			&nbsp;<lb:label key="stu.label.list" />
-	      		<!-- 
-	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
-	      			<table border="0" width="100%">
-	    			<tr>
-	    				<td width="90%">&nbsp;Student List</td>
-	    				<td width="10%">
-							<div class="search_input_box">
-								<input class="search_input" type="text" name="searchControl" >
-								<img src="/StudentWeb/resources/images/magnifier.png" class="search_image" onclick="alert('search');">
-							 </div>
-	    				</td>
-	      			</tr>
-	      			</table>
-	      		 -->
+	      			&nbsp;<lb:label key="stu.label.list" />	      		
 	      		</div>
 	    		<table id="list2" class="gridTable"></table>
 				<div id="pager2" class="gridTable"></div>			
