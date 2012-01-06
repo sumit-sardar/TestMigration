@@ -650,7 +650,7 @@ public class SessionOperationController extends PageFlowController {
                 }
 
             } 
-           if (!isValidationFailed && studentCountBeforeSave == studentCountAfterSave) {
+           if (!isValidationFailed && studentCountBeforeSave <= studentCountAfterSave) {
         	   
            		String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
            		//String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body");
