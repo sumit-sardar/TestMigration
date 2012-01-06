@@ -152,10 +152,15 @@ function selectServicesContent(menuId)
 
 function setMenuActive(topMenuId, menuId) 
 {
-	document.getElementById("assessments").className = "simpleMenu";
-	document.getElementById("organizations").className = "simpleMenu";
-	document.getElementById("reports").className = "simpleMenu";
-	document.getElementById("services").className = "simpleMenu";
+	var assessmentsObj = document.getElementById("assessments");
+	var organizationsObj = document.getElementById("organizations");
+	var reportsObj = document.getElementById("reports");
+	var servicesObj = document.getElementById("services");
+
+	if(assessmentsObj != null) { assessmentsObj.className = "simpleMenu"; }
+	if(organizationsObj != null) { organizationsObj.className = "simpleMenu"; }
+	if(reportsObj != null) { reportsObj.className = "simpleMenu"; }
+	if(servicesObj != null) { servicesObj.className = "simpleMenu"; }
 	
 	var topMenu = document.getElementById(topMenuId);
 	topMenu.className = "simpleMenu active";
