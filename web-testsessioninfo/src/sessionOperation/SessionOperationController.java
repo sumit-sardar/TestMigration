@@ -509,7 +509,7 @@ public class SessionOperationController extends PageFlowController {
     
             Gson gson = new Gson();
         	jsonData = gson.toJson(vo);
-        	System.out.println(jsonData);
+        	//System.out.println(jsonData);
         	try {
 
     			resp.setContentType(CONTENT_TYPE_JSON);
@@ -685,7 +685,7 @@ public class SessionOperationController extends PageFlowController {
             
            Gson gson = new Gson();
 	       jsonData = gson.toJson(status);
-	       System.out.println(jsonData);
+	     //  System.out.println(jsonData);
 	       	try {
 	   			resp.setContentType(CONTENT_TYPE_JSON);
  	   			stream = resp.getOutputStream();
@@ -774,7 +774,7 @@ public class SessionOperationController extends PageFlowController {
 			Gson gson = new Gson();
 	
 			jsonData = gson.toJson(vo);
-			System.out.println(jsonData);
+			//System.out.println(jsonData);
 			try {
 				resp.setContentType(CONTENT_TYPE_JSON);
 				stream = resp.getOutputStream();
@@ -851,7 +851,7 @@ public class SessionOperationController extends PageFlowController {
 			Gson gson = new Gson();
 	
 			jsonData = gson.toJson(vo);
-			System.out.println(jsonData);
+			//System.out.println(jsonData);
 			try {
 				resp.setContentType(CONTENT_TYPE_JSON);
 				stream = resp.getOutputStream();
@@ -904,7 +904,7 @@ public class SessionOperationController extends PageFlowController {
     		
 			Gson gson = new Gson();
 			jsonData = gson.toJson(vo);
-			System.out.println(jsonData);
+			//System.out.println(jsonData);
 			try {
 				resp.setContentType(CONTENT_TYPE_JSON);
 				stream = resp.getOutputStream();
@@ -955,7 +955,7 @@ public class SessionOperationController extends PageFlowController {
 		
 		Gson gson = new Gson();
 		jsonData = gson.toJson(vo);
-		System.out.println(jsonData);
+		//System.out.println(jsonData);
 		try {
 			resp.setContentType(CONTENT_TYPE_JSON);
 			stream = resp.getOutputStream();
@@ -1809,10 +1809,10 @@ public class SessionOperationController extends PageFlowController {
 			
 			//System.out.println("just b4 gson");	
 			Gson gson = new Gson();
-			System.out.println ("Json process time Start:"+new Date());
+			//System.out.println ("Json process time Start:"+new Date());
 			
 			json = gson.toJson(base);
-			System.out.println ("Json process time End:"+new Date() +".."+json);
+			//System.out.println ("Json process time End:"+new Date() +".."+json);
 
 
 			
