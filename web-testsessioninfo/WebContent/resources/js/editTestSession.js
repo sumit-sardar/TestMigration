@@ -560,7 +560,7 @@
      	$("#selectedNewTestId").val("");
 	 	$("#showStudentFeedback").val("");
      	$("#testGroupList").html("");
-      	$("#productType").val(data.productType);
+      	$("#productType").val("");
       	stdsLogIn = false;
 	
 	}
