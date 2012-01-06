@@ -39,30 +39,20 @@
 <table class="transparent">
 
     <tr class="transparent">
-        <td style="border-color : #2E6E9E;">
-        <table width="100%">
-        <tr width="100%" >
-		   <td align="left" style="padding: 0 0 0 8px;">
-		      	<div id="displayMessageMain" style="display:none; width:99.5%; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-					<div id= "contentMain" style="padding-bottom: 5px"> </div>
-				</div>
-			</td>
-		</tr>
-		</table>
+        <td style="border-color : #2E6E9E;padding-left:5px;">
+        <div id="displayMessageMain" style="display:none; width:99.5%; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+			<div id= "contentMain" style="padding-bottom: 5px"> </div>
+		</div>
 		<table>  
-			<!-- <tr class="transparent">
-	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
-   	 		</tr> -->
-		  
 	      <tr class="transparent">
-	        <td class="transparent" valign="middle">
+	        <td style="vertical-align:top;">
 		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
 		    	  <script>populateTree();</script>
 		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
 				</div> 
 		    </td>
 		    
-		 	<td class="transparent" width="8px">&nbsp;</td>
+		 	<td class="transparent" width="5px">&nbsp;</td>
 		 	 
 		 	<td >	      
 		    	<table id="list2" class="gridTable"></table>

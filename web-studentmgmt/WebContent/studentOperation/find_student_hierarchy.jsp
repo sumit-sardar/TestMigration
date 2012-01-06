@@ -48,7 +48,13 @@
     		<h1><lb:label key="stu.students.title" /></h1>
 		</td>
 	</tr>
+	<tr> 
+		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
+			<lb:label key="stu.students.subtitle" />
+		</td>	
+	</tr>
 </table>
+<br/>
 <table class="transparent">
 
     <tr class="transparent">
