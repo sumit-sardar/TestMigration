@@ -1836,7 +1836,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
-            	updateTestAdminRecord(userId, session);
+            	updateTestAdminRecord(userId, session, customerId);
                 ArrayList subtests = updateTestAdminItemSetRecords(newSession);
                 updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 updateProctorAssignments(userName, userId, newSession);
@@ -1918,8 +1918,9 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    private void updateTestAdminRecord(Integer userId, TestSession session) throws SessionCreationException {
+    private void updateTestAdminRecord(Integer userId, TestSession session, Integer customerId) throws SessionCreationException {
         try {
+        	session.setCustomerId(customerId);
             session.setUpdatedBy(String.valueOf(userId.intValue()));
             Date now = new Date();
             session.setUpdatedDateTime(now);
