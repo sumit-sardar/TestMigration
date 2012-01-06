@@ -187,6 +187,7 @@
 					max: 1425,
 					values: [ 480, 1020 ],
 					step: 5,
+					disabled: false,
 					slide: function( event, ui ) {
 						minutes0 = parseInt(ui.values[0] % 60,10);
 						hours0 = parseInt(ui.values[0] / 60 % 24,10);
