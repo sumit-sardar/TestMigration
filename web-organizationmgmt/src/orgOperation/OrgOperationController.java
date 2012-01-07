@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -255,11 +256,20 @@ public class OrgOperationController extends PageFlowController {
 			jsonTree = jsonTree.replace(pattern, "");
 
 			try {
-
 				resp.setContentType(contentType);
+	    		stream = resp.getOutputStream();
+
+	    		String acceptEncoding = req.getHeader("Accept-Encoding");
+	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+	    		    resp.setHeader("Content-Encoding", "gzip");
+	    		    stream = new GZIPOutputStream(stream);
+	    		}
+	    		
 				resp.flushBuffer();
-				stream = resp.getOutputStream();
-				stream.write(jsonTree.getBytes());
+	    		stream.write(jsonTree.getBytes());
+	    		
 			} finally{
 				if (stream!=null){
 					stream.close();
@@ -309,7 +319,24 @@ public class OrgOperationController extends PageFlowController {
 			    		stream = resp.getOutputStream();
 			    		resp.flushBuffer();
 			    		stream.write(json.getBytes());
-				
+						
+			    	  /*resp.setContentType(contentType);
+			    		resp.setContentType("application/json");
+			    		resp.setCharacterEncoding("UTF-8");
+						
+			    		stream = resp.getOutputStream();
+
+			    		String acceptEncoding = req.getHeader("Accept-Encoding");
+			    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+			    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+			    		    resp.setHeader("Content-Encoding", "gzip");
+			    		    stream = new GZIPOutputStream(stream);
+			    		}
+			    		
+						resp.flushBuffer();
+			    		stream.write(json.getBytes());
+			    	   	*/
 			    		}
 				
 			    		 finally{
@@ -367,7 +394,22 @@ public class OrgOperationController extends PageFlowController {
 			    		resp.setContentType("application/json");
 			    		stream = resp.getOutputStream();
 			    		resp.flushBuffer();
-			    		stream.write(json.getBytes());
+
+			    		
+			    		//response.setContentType("application/json");
+			    		//response.setCharacterEncoding("UTF-8");
+			    		//OutputStream output = response.getOutputStream();
+
+			    		String acceptEncoding = req.getHeader("Accept-Encoding");
+			    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+			    		    resp.setHeader("Content-Encoding", "gzip");
+			    		    stream = new GZIPOutputStream(stream);
+			    		}
+
+			    		stream.write(json.getBytes("UTF-8"));
+			    		
+			    		
+			    		//stream.write(json.getBytes());
 				
 			    		}
 				
