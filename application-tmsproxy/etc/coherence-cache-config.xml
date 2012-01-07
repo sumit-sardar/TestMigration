@@ -40,12 +40,12 @@
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
    			<scheme-name>BackMemoryScheme</scheme-name>
-   			<high-units>1073741824</high-units>
+   			<high-units>536870912</high-units>
    			<unit-calculator>BINARY</unit-calculator>
 		</local-scheme>
 		<local-scheme>
    			<scheme-name>FrontMemoryScheme</scheme-name>
-   			<high-units>250000</high-units>
+   			<high-units>100000</high-units>
    			<unit-calculator>FIXED</unit-calculator>
 		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
@@ -85,6 +85,7 @@
             </backing-map-scheme>
             <partition-count>509</partition-count>
             <backup-count>1</backup-count>
+            <backup-count-after-writebehind>0</backup-count-after-writebehind>
             <autostart>true</autostart>
         </distributed-scheme>
         <!--        2-tier (memory, disk/db) scheme definition -->
