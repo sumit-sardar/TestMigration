@@ -1031,6 +1031,11 @@ function registerDelegate(tree){
 	element.title = 'Remove Student';
 	var element = document.getElementById('refresh_list6'); // Added to remove refresh button from grid also
 	element.style.display = 'none';
+	if(isTestExpired){
+       	$("#del_list6").addClass('ui-state-disabled');      
+     }else{
+     	$("#del_list6").removeClass('ui-state-disabled');      
+     }
 	}
 	
 	function checkPresenceInDelStuIdObjArray(deleteId) {
@@ -2478,6 +2483,11 @@ function registerDelegate(tree){
 		element.style.display = 'none'; 
 		var element = document.getElementById('del_listProctor');
 		element.title = 'Remove Proctor'; 
+		if(isTestExpired){		    	 
+          	$("#del_listProctor").addClass('ui-state-disabled');	
+        }else{
+        	$("#del_listProctor").removeClass('ui-state-disabled');	
+        }
 	}
 	
 	function removeSelectedProctor() {
@@ -2602,6 +2612,7 @@ function registerDelegate(tree){
 		   	param = param+"&isStudentUpdated="+isStdDetClicked;
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;
+		   	param = param+"&isEndTestSession="+isEndTestSession;
 		    
 	    
 	 }
