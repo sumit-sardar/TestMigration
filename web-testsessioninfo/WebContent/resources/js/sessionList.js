@@ -769,6 +769,7 @@ function registerDelegate(tree){
 			resetProctor();
 			$('#studentAddDeleteInfo').hide();
 			stdsLogIn = false;
+			selectAllForDelete = false;
 
 		}
 		$("#"+dailogId).dialog("close");
