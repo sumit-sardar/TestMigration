@@ -534,7 +534,7 @@ function populateSelectStudentGrid() {
 							var orgListAll = String(selectedRowData.orgNodeId);
 							var orgListAllName = String(selectedRowData.orgNodeName);
 							if(orgList.indexOf(orgListAll) == -1) {
-							     if(addToStudentTempMap(studentData.studentId, studentData)) {
+							     if(addToStudentTempMap(studentDataVal.studentId, studentDataVal)) {
 								     orgList = orgList + "," + orgListAll;
 									 orgListName = orgListName + "," + orgListAllName;
 									 studentDataVal.orgNodeId = orgList;
