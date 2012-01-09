@@ -382,7 +382,7 @@ function closeBulkMovePopup() {
 		hideBulkMovePopup();
 	} else {
 		$("#unSaveBulkConfirmationPopup").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmMoveAlert").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',

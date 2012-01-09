@@ -33,6 +33,7 @@
 <input type="hidden" id="addStuID" name="addStuID" value=<lb:label key="stu.label.addStu" prefix="'" suffix="'"/>/>
 <input type="hidden" id="moveStuGrid" name="moveStuGrid" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
 <input type="hidden" id="selectMoveOrg" name="selectMoveOrg" value=<lb:label key="stu.label.moveSelectOrg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="confirmMoveAlert" name="confirmMoveAlert" value=<lb:label key="stu.label.confirmAlert" prefix="'" suffix="'"/>/>
 
 
 
