@@ -2400,7 +2400,7 @@ public class ScheduleTestImpl implements ScheduleTest
                    oldMap.put(oldUnits[i].getStudentId(), oldUnits[i]);
             }
             ArrayList assignments = new ArrayList();
-            for(int j=0;j<newUnits.length;j++) {
+            for(int j=0;newUnits!=null && j<newUnits.length;j++) {
                 String form = newSession.getTestSession().getPreferredForm();
                 SessionStudent newUnit = newUnits[j];
                 //Integer testRosterId = null;

@@ -1201,8 +1201,8 @@ public class SessionOperationController extends PageFlowController {
 						&& studentsBeforeSave.trim().length() > 1) {
 					studentCountBeforeSave = studentsBeforeSave.split(",").length;
 				}
+				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
 				if (studentCountBeforeSave > 0) {
-					ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
 					String[] studs = studentsBeforeSave.split(",");
 					for (String std : studs) {
 						StringTokenizer st = new StringTokenizer(std, ":");
@@ -1234,11 +1234,10 @@ public class SessionOperationController extends PageFlowController {
 						sessionStudents.add(ss);
 	
 					}
-					
-					scheduledSession.setStudents(sessionStudents
-							.toArray(new SessionStudent[sessionStudents.size()]));
-
+				
 			}
+				scheduledSession.setStudents(sessionStudents
+						.toArray(new SessionStudent[sessionStudents.size()]));
 		
 		} else {
 			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
