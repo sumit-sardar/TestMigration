@@ -3,6 +3,17 @@
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
  <br>
+ 	<table>
+			<tr>
+				<td>
+					<div style="clear:both;float:left;width:875px;padding: 0 5px 5px 0;">
+						<div id="endTest" style="float:right;padding-left:5px;">
+							<a href="#" id="endTestButton" onclick="endTestSession();" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.endTestSession']}"/></a>
+						</div> 
+					</div>
+				</td>
+			</tr>
+	</table>
  <table width="900" height="360" align="left" class="shadowBorderFull">
 	<tbody>
 		<tr>

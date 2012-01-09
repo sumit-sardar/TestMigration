@@ -38,5 +38,6 @@ public interface RequestParam {
 	String TEST_ITEM_IND_ACCESS_CODE= "aCodeB";
 	String TEST_ITEM_SET_FORM		= "itemSetForm";
 	String TEST_ITEM_IS_SESSION_DEFAULT	= "sessionDefault";
+	String TEST_ADMIN_STATUS 		= "isEndTestSession";
 	
 }

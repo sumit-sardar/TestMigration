@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1279,6 +1280,7 @@ public class SessionOperationController extends PageFlowController {
 			 String showStdFeedbackVal   	= RequestUtil.getValueFromRequest(request, RequestUtil.SHOW_STUDENT_FEEDBACK, true, "false");
 			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
 			 String productType				= RequestUtil.getValueFromRequest(request, RequestUtil.PRODUCT_TYPE, true, "");
+			 String isEndTestSession 		= RequestUtil.getValueFromRequest(request, RequestUtil.TEST_ADMIN_STATUS, true, "");
 			 //String formOperand       		= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_OPERAND, true, TestSession.FormAssignment.ROUND_ROBIN);
 			 //String overrideFormAssignment 	= RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_FORM_ASSIGNMENT, false, null);
 			 //String overrideLoginStartDate    = RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_LOGIN_START_DATE, false, null);
@@ -1306,9 +1308,22 @@ public class SessionOperationController extends PageFlowController {
 			 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
 			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
 			 String testName       		    = 	selectedTest.getItemSetName(); 
+			 
+			 TimeZone defaultTimeZone = TimeZone.getDefault();
+			 Date now = new Date(System.currentTimeMillis());
+	         now = com.ctb.util.DateUtils.getAdjustedDate(now, defaultTimeZone.getID(), timeZone, now);
+    		 String timeStr = DateUtils.formatDateToTimeString(now);
+		     String dateStr = DateUtils.formatDateToDateString(now);
 			 // setting default value
-			 testSession.setTestAdminId(testAdminId);
+			 testSession.setTestAdminId(testAdminId);			 
+		
+			 if(isEndTestSession == "false"){
 			 testSession.setTestAdminStatus("CU");
+			 testSession.setLoginEndDate(dailyLoginEndDate);		    
+			 }else{
+			 testSession.setTestAdminStatus("PA"); 				 
+			 testSession.setLoginEndDate(now);		
+			 }
 	         testSession.setTestAdminType("SE");
 	         testSession.setActivationStatus("AC");
 	         testSession.setEnforceTimeLimit("T");
@@ -1317,13 +1332,12 @@ public class SessionOperationController extends PageFlowController {
 	         
 	         testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         testSession.setShowStudentFeedback(showStdFeedback);
-	         testSession.setProductId(productId);
-	         testSession.setDailyLoginEndTime(dailyLoginEndTime);
+	         testSession.setProductId(productId);	    
 	         testSession.setDailyLoginStartTime(dailyLoginStartTime);
+	         testSession.setDailyLoginEndTime(dailyLoginEndTime);
 	         testSession.setLocation(location);
 	         testSession.setEnforceBreak(hasBreak);
-	         testSession.setIsRandomize(isRandomize);
-	         testSession.setLoginEndDate(dailyLoginEndDate);
+	         testSession.setIsRandomize(isRandomize);	         	       
 	         testSession.setLoginStartDate(dailyLoginStartDate);
 	         testSession.setTimeZone(timeZone);
 	         testSession.setTestName(testName);
