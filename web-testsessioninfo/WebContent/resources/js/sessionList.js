@@ -1544,7 +1544,7 @@ function registerDelegate(tree){
 		   	colModel:[
 		   		{name:'testName',index:'testName', width:55, align:"left",sorttype:'text',sortable:isSortable, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   		{name:'level',index:'level', width:18, align:"left",sorttype:'text',sortable:isSortable,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
-		   		{name:'subtestCount',index:'subtestCount', width:20, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'subtestCount',index:'subtestCount', width:20, align:"left",sorttype:'text',sortable:isSortable,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   		{name:'duration',index:'duration',width:22, align:"left", sortable:isSortable, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"id",
