@@ -2472,6 +2472,8 @@ function registerDelegate(tree){
 		element.style.display = 'none'; 
 		var element = document.getElementById('search_listProctor');
 		element.style.display = 'none';  
+		var element = document.getElementById('refresh_listProctor');
+		element.style.display = 'none'; 
 		var element = document.getElementById('del_listProctor');
 		element.title = 'Remove Proctor'; 
 	}
