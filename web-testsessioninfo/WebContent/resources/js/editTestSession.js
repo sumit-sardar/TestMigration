@@ -275,8 +275,8 @@
 					success:	function(data, textStatus, XMLHttpRequest){
 									
 									if (data.status.isSuccess){	
-										editDataCache.put(index,data.savedProctorsDetails.proctors);	
-										addProctorLocaldata = data.savedProctorsDetails.proctors;		
+										editDataCache.put(index,data.savedProctorsDetails);	
+										addProctorLocaldata = data.savedProctorsDetails;		
 										processProctorAccordion();
 									}
 									wizard.accordion("activate", index);					

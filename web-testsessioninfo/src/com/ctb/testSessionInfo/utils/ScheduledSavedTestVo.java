@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.util.OperationStatus;
 
 @SuppressWarnings("all")
@@ -14,7 +15,7 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	private ScheduledSession savedTestDetails = null;
 	private List<SessionStudent> savedStudentsDetails = null;
-	private ScheduledSession savedProctorsDetails = null;
+	private  List<UserProfileInformation> savedProctorsDetails = null;
 	private ScheduleTestVo productsDetails = null;
 	private boolean testSessionExpired  = false;
 	private String userRoleName = "";
@@ -49,7 +50,7 @@ public class ScheduledSavedTestVo implements Serializable {
 		
 	}
 
-	public void setSavedProctorsDetails(ScheduledSession savedProctorsDetails) {
+	public void setSavedProctorsDetails(List<UserProfileInformation> savedProctorsDetails) {
 		this.savedProctorsDetails =savedProctorsDetails;
 		
 	}

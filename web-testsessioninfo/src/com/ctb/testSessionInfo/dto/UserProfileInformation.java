@@ -40,6 +40,7 @@ public class UserProfileInformation extends SanitizedFormField
     private String  orgNodeNamesStr = "";
     private String defaultScheduler = "F";
     private String copyable;
+    private String editable;
     /**
      * ext_pin1 is added for DEX CR
      */
@@ -82,6 +83,8 @@ public class UserProfileInformation extends SanitizedFormField
             this.userPassword.setHintAnswer(user.getPasswordHintAnswer());
         }
         this.setCopyable(user.getCopyable());
+        this.setEditable(user.getEditable());
+        
         this.orgNodeNamesStr = getOrgNodeNamesString();
     }
 
@@ -498,6 +501,24 @@ public class UserProfileInformation extends SanitizedFormField
 	 */
 	public void setCopyable(String copyable) {
 		this.copyable = copyable;
+	}
+
+
+	
+	/**
+	 * @return the editable
+	 */
+	public String getEditable() {
+		return editable;
+	}
+
+
+	
+	/**
+	 * @param editable the editable to set
+	 */
+	public void setEditable(String editable) {
+		this.editable = editable;
 	} 
 	
     

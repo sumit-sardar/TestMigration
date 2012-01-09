@@ -930,7 +930,8 @@ public class SessionOperationController extends PageFlowController {
 	    try {
 	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
 	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminId);
-	    	vo.setSavedProctorsDetails(scheduledSession);
+	    	 List<UserProfileInformation> proctors= buildProctorList(scheduledSession.getProctors());
+	    	 vo.setSavedProctorsDetails(proctors);
             status.setSuccess(true);
             vo.setOperationStatus(status) ;
             
@@ -3257,7 +3258,7 @@ public class SessionOperationController extends PageFlowController {
 	        // Get the list of proctors
 	        UserData ud = getProctors(selectedOrgNodeId, proctorFilter, proctorPage, proctorSort);
 	        if( ud != null) {
-	        	proctorNodes = buildProctorList(ud);
+	        	proctorNodes = buildProctorList(ud.getUsers());
 	        }
 			Base base = new Base();
 			base.setPage("1");
@@ -3302,10 +3303,10 @@ public class SessionOperationController extends PageFlowController {
     }
 
 	
-	public List<UserProfileInformation> buildProctorList(UserData uData) {
+	public List<UserProfileInformation> buildProctorList(User[] users) {
         ArrayList<UserProfileInformation> userList = new ArrayList<UserProfileInformation>();
-        if (uData != null) {
-            User[] users = uData.getUsers();
+        if (users != null) {
+            //User[] users = uData.getUsers();
             if(users != null){
                 for (int i=0 ; i<users.length ; i++) {
                     User user = users[i];
