@@ -354,6 +354,7 @@ function populateSelectProctorGrid() {
 			}
 	 });
 	  jQuery("#selectProctor").jqGrid('navGrid','#selectProctorPager',{edit:false,add:false,del:false,search:false,refresh:false});
+	   $("#selectProctorPager_left").width(175);
 	  //jQuery("#selectProctor").jqGrid('filterToolbar');
 
 }
