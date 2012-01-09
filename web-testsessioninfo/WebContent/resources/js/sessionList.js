@@ -773,6 +773,10 @@ function registerDelegate(tree){
 			selectAllForDelete = false;
 			noOfProctorAdded = 0;
 			resetEditSessionPopulatedData();
+			$("#displayEditInfo").hide();
+			$("#titleEditInfo").html("");
+			$("#messageEditInfo").html("");
+			$("#endTest").hide();
 
 		}
 		$("#"+dailogId).dialog("close");
@@ -1092,6 +1096,7 @@ function registerDelegate(tree){
 	
 	function scheduleNewSession() {
 	$('#showSaveTestMessage').hide();
+	$("#endTest").hide();
 	state = "ADD";
 	$.ajax({
 		async:		true,

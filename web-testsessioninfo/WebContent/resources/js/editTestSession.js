@@ -47,7 +47,9 @@
 							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
 								stdsLogIn = true;
-								$("#endTest").show();	
+								if(!isTestExpired){
+								$("#endTest").show();
+								}	
 							}							
 							if (stdsLogIn || isTestExpired){
 								isSortable = false;								
