@@ -54,7 +54,7 @@
 				    </netui-data:repeaterHeader>
 				    <netui-data:repeaterItem>
 				        <tr class="sortable">
-				            <td class="sortable alignLeft">
+				            <td class="simple">
 				        		<netui-data:getData resultId="fileName" value="${container.item.fileName}"/>    
 				        		<% String fileName = (String)pageContext.getAttribute("fileName"); %>         		          
 				            	<a href="<%= fileName %>">

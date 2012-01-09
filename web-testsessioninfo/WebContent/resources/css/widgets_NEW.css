@@ -33,7 +33,6 @@
 }
 
 
-
 /** TOOLTIP *******************************************************************/
 
 #toolTip {
@@ -341,7 +340,7 @@ td.simple {
 
 td.simple a {
     color: #00f;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 td.simple a:hover {
@@ -511,7 +510,7 @@ hr.sortableControls {
 
 td.sortable a {
     color: #00f;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 td.sortable a:hover {
