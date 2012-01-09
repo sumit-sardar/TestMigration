@@ -61,15 +61,18 @@
 		
 			$(function(){
 				// Accordion
-				var wizardAcc = $("#accordion").accordion({ header: "h3",event:false});				
+				var wizardAcc = $("#accordion").accordion({ header: "h3" });
+				//var wizardAcc = $("#accordion").accordion({ header: "h3",event:false});				
 			
 				$("h3", wizardAcc).each(function(index) {			
 					$(this).click(function(e){
-						wizardAcc.accordion("activate", index);
+						//wizardAcc.accordion("activate", index);
 						setAnchorButtonState('printTicketButton', true);
-						var rId = document.getElementById('selectedTestSessionId').value;
-						$("#list2 #"+rId).removeClass("ui-state-highlight");
-						$("#list3 #"+rId).removeClass("ui-state-highlight");
+						if(document.getElementById('selectedTestSessionId').value != ""){
+							var rId = document.getElementById('selectedTestSessionId').value;
+							$("#list2 #"+rId).removeClass("ui-state-highlight");
+							$("#list3 #"+rId).removeClass("ui-state-highlight");
+						}
 					});
 				}); 
 				
