@@ -20,6 +20,10 @@
 <input type="hidden" id="accomStuGrid" name="accomStuGrid" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
 <input type="hidden" id="selectAccomPopup" name="selectAccomPopup" value=<lb:label key="stu.label.accomPopup" prefix="'" suffix="'"/>/>
 <input type="hidden" id="confirmAlert" name="confirmAlert" value=<lb:label key="stu.label.confirmAlert" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgLastNameID" name="jqgLastNameID" value=<lb:label key="stu.info.lastName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgFirstNameID" name="jqgFirstNameID" value=<lb:label key="stu.info.firstName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgMiddleIniID" name="jqgMiddleIniID" value=<lb:label key="stu.label.mi" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgGradeID" name="jqgGradeID" value=<lb:label key="stu.info.grade" prefix="'" suffix="'"/>/>
 	
 <table> 
 	<tr>

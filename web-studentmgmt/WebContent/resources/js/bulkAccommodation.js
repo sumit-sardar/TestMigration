@@ -180,7 +180,7 @@ function populateBulkStudentGrid() {
           url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I.', 'Grade', calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
+          colNames:[ $("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(), calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:152, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:153, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -209,7 +209,7 @@ function populateBulkStudentGrid() {
 			sortorder: "asc",
 			height: 392,  
 			width:1000,
-			caption:"Student List",
+			caption:$("#accomStuGrid").val(),
 			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#studentAccommGrid').getGridParam("page"));
@@ -470,7 +470,7 @@ function populateBulkStudentGrid() {
 		return true;
 		
 	 $("#AssignAccommPopup").dialog({  
-		title:"Select Accommodation",  
+		title:$("#selectAccomPopup").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '560px',
@@ -810,7 +810,7 @@ function populateBulkStudentGrid() {
 	 	var dataToBeAdded  = getDataToBeAdded(param);
 		if(dataToBeAdded['isAccommodationSelected']){
 			 $("#unSaveConfirmationPopup").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmAlert").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
