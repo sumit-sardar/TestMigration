@@ -10,10 +10,13 @@
     var editDataMrkStds = new Map();
     var isStdDetClicked = false;
     var isProcDetClicked = false;
+    var isTestDataExported = false;
+    var isEndTestSession = false;
   
   function editTestSession(){  
      resetEditSessionPopulatedData();
-      
+     $("#showSaveTestMessage").hide();
+     $("#endTest").hide(); 
  	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -34,13 +37,18 @@
 								document.getElementById("noTestDiv").style.display = "none";
 								document.getElementById("testDiv").style.display = "inline";
 							}
-							
-								
+															
 							if(data.testSessionExpired){							
-								isTestExpired = true;								
+								isTestExpired = true;
+								if (data.savedTestDetails.testSession.isTestSessionDataExported == "T"){
+								isTestDataExported == true;
+								}						
 							}
-							if (data.savedTestDetails.studentsLoggedIn > 0 || isTestExpired){
-								stdsLogIn = true;	
+							if(data.savedTestDetails.studentsLoggedIn > 0){
+								stdsLogIn = true;
+								$("#endTest").show();	
+							}							
+							if (stdsLogIn || isTestExpired){								
 								disableInEdit();							
 							} else {
 								removeDisableInEdit();
@@ -71,8 +79,25 @@
 							autoOpen: true,
 							width: '1024px',
 							modal: true,
-							closeOnEscape: false,
-							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); },
+							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); 
+							$("#displayEditInfo").show();
+							if(isTestExpired) {
+								$("#displayEditInfo").show();
+								$("#titleEditInfo").html($("#fieldDisabled").val());
+								$("#messageEditInfo").html($("#sessionEnd").val());
+							} else {
+								if(stdsLogIn) {
+									$("#displayEditInfo").show();
+									$("#titleEditInfo").html($("#fieldDisabled").val());
+									$("#messageEditInfo").html($("#stuLogged").val());
+								} else {
+									$("#displayEditInfo").show();
+									$("#titleEditInfo").html("");
+									$("#contentEditInfo").html($("#noStudentLogged").val());
+									$("#messageEditInfo").html($("#noStudentLogged2").val());
+								}
+							}
+							},
 							 beforeClose: function(event, ui) { resetEditTestSession();
 							 removeDisableInEdit();
 							 }
@@ -90,11 +115,7 @@
 		complete :  function(){
 						 $.unblockUI(); 
 					}
-	}); 
-    
-   
- 		
-   
+	});   
     }
     
     
@@ -294,56 +315,12 @@
 				}); 
 			}    
     }
-    
- 
-    function saveEditTestData(){   
-    
-    	var param;
-		var param1 =$("#testDiv *").serialize(); 
-	    var param2 = $("#Test_Detail *").serialize();
-	    var time = document.getElementById("time").innerHTML;
-	    var timeArray = time.split("-");
-	    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
-	    
-	    
-	    var selectedstudent = getStudentListArray(AddStudentLocaldata);
-	    param = param+"&students="+selectedstudent.toString();
-	    
-	    var selectedProctors =getProctorListArray(addProctorLocaldata);
-	    param = param+"&proctors="+selectedProctors.toString();
-	    
-	    
-	    
-	    $.ajax({
-			async:		true,
-			beforeSend:	function(){
-							UIBlock();
-						},
-			url:		'saveTest.do',
-			type:		'POST',
-			data:		 param,
-			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest){						   
-						   
-					
-								$.unblockUI();
-						
-							  	closePopUp("scheduleSession");
-					
-							 						
-						},
-			error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							$.unblockUI();
-							window.location.href="/SessionWeb/logout.do";
-							
-						},
-			complete :  function(){
-							 $.unblockUI(); 
-						}
-		});    	
-    	
+        
+    function endTestSession(){
+    	isEndTestSession = true;
+    	saveTest();    
     }
-    
+   
     function setSelectedTestAdminId(id){    
    	 selectedTestAdminId = id;
     }
@@ -361,6 +338,8 @@
 		editDataCache = new Map();
 		removeDisableInEdit();
 		isTestExpired = false;
+		isEndTestSession = false;
+		$("#endTest").hide();
   	}
   	
   	function calculateTimeInMin(val){
@@ -431,12 +410,16 @@
   	function disableTestDetails() {
   		$('#testSessionName').attr("disabled",true);
   		$('#startDate').attr("disabled",true);
-  		if(isTestExpired){
-  		$('#endDate').attr("disabled",true);  
+  		if(isTestExpired){  
+	  		if(isTestDataExported){		
+	  			$('#endDate').attr("disabled",true);
+	  		}  
   		$( "#slider-range" ).slider( "option", "disabled", true );	
   		$('#timeZoneList').attr("disabled",true);  
   		$('#testLocation').attr("disabled",true);  
-  		$('#topOrgNode').attr("disabled",true);    		
+  		$('#topOrgNode').attr("disabled",true);
+  		$("#addStudent").hide();  		
+  		$("#addProctor").hide();  	
   		}
   	}
   
@@ -472,6 +455,10 @@
   			$("#subtestGrid").removeClass("ui-state-disabled");
   		if($("#noSubtest") != undefined)
   			$("#noSubtest").removeClass("ui-state-disabled");
+  		$("#del_list6").removeClass('ui-state-disabled');
+   	   	$("#addStudent").show();	
+  		$("#del_listProctor").removeClass('ui-state-disabled');	
+  		$("#addProctor").show(); 
 	}
 	
 	function createSubtestGridInEdit(savedTestDetails){
