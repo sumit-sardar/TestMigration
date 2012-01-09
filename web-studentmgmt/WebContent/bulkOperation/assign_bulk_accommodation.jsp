@@ -17,6 +17,9 @@
 <input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['student.noStuSelected.title']}"/>
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['student.noStuSelected.message']}"/>
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value="${bundle.web['student.filterNoStuSelected.message']}"/>
+<input type="hidden" id="accomStuGrid" name="accomStuGrid" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
+<input type="hidden" id="selectAccomPopup" name="selectAccomPopup" value=<lb:label key="stu.label.accomPopup" prefix="'" suffix="'"/>/>
+<input type="hidden" id="confirmAlert" name="confirmAlert" value=<lb:label key="stu.label.confirmAlert" prefix="'" suffix="'"/>/>
 	
 <table> 
 	<tr>
@@ -26,7 +29,7 @@
 	</tr>
 	<tr> 
 		<td style="padding-left:6px;font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">
-		<netui:content value="${bundle.web['student.assignAccommodation.text']}"/>
+		<lb:label key="stu.msg.AssignAccomText" />
 	</td>	
 	</tr>
 </table>
@@ -58,7 +61,7 @@
 							</div>
 						</div>
 						<div id="viewStatus" style="float:right;padding-left:5px;display:none;">
-							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.assignAccommodation.EditAccom.Button']}"/></a>
+							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.assignAcom" /></a>
 						</div> 
 					</div> 
 				</td>
@@ -71,7 +74,7 @@
 	 <table class="transparent">
 	    <tr class="transparent">
 	        <td class="transparent"  valign="bottom" style="vertical-align: bottom !important;">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
+	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 	    	<script>populateBulkAccommTree();</script>
 	    	<div id = "studentBulkOrgNode" class="treeCtrl" style="height:568px !important">
 				
@@ -141,7 +144,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p><netui:content value="${bundle.web['student.assignAccommodation.ConfirmMsg']}"/></p>
+			<p><lb:label key="stu.msg.assignAccomConfirm" /></p>
 			<br/>
 			</td>
 		</tr>
