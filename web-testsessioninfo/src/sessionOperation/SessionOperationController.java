@@ -170,24 +170,15 @@ public class SessionOperationController extends PageFlowController {
     private List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
     private List<TestSessionVO> sessionListPA = new ArrayList<TestSessionVO>(); 
     private boolean hasLicenseConfig = false; 
-    //private List productNameList = null;
-    //private Hashtable productNameToIndexHash = null;
     public static final String CONTENT_TYPE_JSON = "application/json";
-
     public LinkedHashMap<String, String> hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
-	//private TestProductData testProductData = null;  
 	private TestProduct [] tps;
 	private static final String ACTION_INIT = "init";
 	boolean isPopulatedSuccessfully = false;
-	//boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
-	//ScheduleTestVo userProductsDetails = new ScheduleTestVo();
-
-	//public Condition condition = new Condition();
 	
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
-	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
 	
 	private List<String> studentGradesForCustomer;
     
@@ -469,7 +460,6 @@ public class SessionOperationController extends PageFlowController {
             	 if( tps!=null ) {
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
-                 	vo.populateTestIdToTestMap(idToTestMap); 
             	 }
             	 isPopulatedSuccessfully = true;
             }
@@ -480,7 +470,7 @@ public class SessionOperationController extends PageFlowController {
                 {
                      selectedProductId = tps[0].getProductId().toString();
                      vo.populateAccessCode(scheduleTest);
-                     vo.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
+                     vo.populateDefaultDateAndTime(this.user.getTimeZone());
                 }
            } 
             if(tps.length<=0) {
@@ -718,7 +708,6 @@ public class SessionOperationController extends PageFlowController {
                 	 if( tps!=null ) {
                 		 this.vo.populate(userName, tps, itemSet, scheduleTest);
                 		 this.vo.populateTopOrgnode(this.topNodesMap);
-                		 this.vo.populateTestIdToTestMap(idToTestMap); 
                 	 }
                 	 isPopulatedSuccessfully = true;
                 }
@@ -729,7 +718,7 @@ public class SessionOperationController extends PageFlowController {
                 	 //productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
                      this.vo.populateAccessCode(scheduleTest);
-                     this.vo.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
+                     this.vo.populateDefaultDateAndTime(this.user.getTimeZone());
                     }
            
                 if(tps.length<=0) {

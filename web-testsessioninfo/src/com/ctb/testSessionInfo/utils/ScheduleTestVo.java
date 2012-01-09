@@ -372,6 +372,7 @@ public class ScheduleTestVo implements Serializable{
 	}
 
 
+	@Deprecated
 	public void populateTestIdToTestMap(Map<Integer, TestVO> idToTestMap) {
 		for(ProductBean productBean :  this.product) {
 			for(TestVO testVO : productBean.getTestSessionList()) {
@@ -382,21 +383,23 @@ public class ScheduleTestVo implements Serializable{
 	}
 
 	@SuppressWarnings("deprecation")
-	public void populateDefaultDateAndTime(String timeZone, Map<Integer, TestVO> idToTestMap) {
+	public void populateDefaultDateAndTime(String timeZone) {
 		Date now = new Date(System.currentTimeMillis());
         Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZone, now);
-        for(TestVO testVO : idToTestMap.values()) {
-        	if (testVO.getOverrideLoginStartDate() != null && !(DateUtils.isBeforeToday(testVO.getOverrideLoginStartDate(), timeZone ))) {
-        		Date loginEndDate = (Date)testVO.getOverrideLoginStartDate().clone();
-                loginEndDate.setDate(loginEndDate.getDate() + 1);
-                testVO.setStartDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginStartDate()));
-                testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
-        	
-        	} else {
-        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
-        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
-        	}
+        for(ProductBean productBean :  this.product) {
+	        for(TestVO testVO : productBean.getTestSessionList()) {
+	        	if (testVO.getOverrideLoginStartDate() != null && !(DateUtils.isBeforeToday(testVO.getOverrideLoginStartDate(), timeZone ))) {
+	        		Date loginEndDate = (Date)testVO.getOverrideLoginStartDate().clone();
+	                loginEndDate.setDate(loginEndDate.getDate() + 1);
+	                testVO.setStartDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginStartDate()));
+	                testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+	        	
+	        	} else {
+	        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
+	        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+	        	}
+	        }
         }
 		
 	}
