@@ -768,6 +768,7 @@ function registerDelegate(tree){
 			resetOnSelectTestSessionData();
 			resetProctor();
 			$('#studentAddDeleteInfo').hide();
+			$("#proctorAddDeleteInfo").hide();
 			stdsLogIn = false;
 			selectAllForDelete = false;
 
