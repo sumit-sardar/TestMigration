@@ -2581,7 +2581,11 @@ function registerDelegate(tree){
 	    param = param+"&action=ADD";
 	 } else {
 		    var param1 =$("#testDiv *").serialize(); 
+		    param1 = param1 +serializeDisabledFieldFromDiv("testDiv");
+		    
 		    var param2 = $("#Test_Detail *").serialize();
+		    param1 = param1 +serializeDisabledFieldFromDiv("Test_Detail");
+		     
 		    var time = document.getElementById("time").innerHTML;
 		    var timeArray = time.split("-");
 		    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
@@ -3380,3 +3384,15 @@ function registerDelegate(tree){
 		}
 	}
 	// Added for TAS View-Montitor Student Test Status user story: End
+
+		
+	function serializeDisabledFieldFromDiv(element) {
+		var disParam = "";
+		 $("#"+element+" *").find(":disabled").each( function() {
+		        if( this.name != undefined &&  this.name!=null && this.name!="")
+		    	 	disParam = disParam + '&' + this.name + '=' + $(this).val();
+		    });
+		 
+		 return disParam;
+
+	}
