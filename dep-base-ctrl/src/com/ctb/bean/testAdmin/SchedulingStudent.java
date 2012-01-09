@@ -39,6 +39,8 @@ public class SchedulingStudent extends Student
     private String  maskingTool;
     private String  magnifyingGlass;
     private String  musicFileId;
+    private String statusEditable;
+    private String statusCopyable;
     
    	public Integer getPriorAdmin() {
         return this.priorAdmin;
@@ -383,5 +385,37 @@ public class SchedulingStudent extends Student
 
 	public void setMusicFileId(String musicFileId) {
 		this.musicFileId = musicFileId;
+	}
+
+	
+	/**
+	 * @return the statusEditable
+	 */
+	public String getStatusEditable() {
+		return statusEditable;
+	}
+
+	
+	/**
+	 * @param statusEditable the statusEditable to set
+	 */
+	public void setStatusEditable(String statusEditable) {
+		this.statusEditable = statusEditable;
+	}
+
+	
+	/**
+	 * @return the statusCopyable
+	 */
+	public String getStatusCopyable() {
+		return statusCopyable;
+	}
+
+	
+	/**
+	 * @param statusCopyable the statusCopyable to set
+	 */
+	public void setStatusCopyable(String statusCopyable) {
+		this.statusCopyable = statusCopyable;
 	}
 } 

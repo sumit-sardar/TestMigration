@@ -3041,6 +3041,16 @@ public class SessionOperationController extends PageFlowController {
         List<SessionStudent> studentList = new ArrayList<SessionStudent>();
         for (int i=0 ; i<sessionStudents.length; i++) {
             SessionStudent ss = (SessionStudent)sessionStudents[i];
+            if(ss.getStatus()!=null) {
+            	ss.setStatusEditable(ss.getStatus().getEditable());
+            	 ss.setStatusCopyable(ss.getStatus().getCopyable());
+            } else {
+            	ss.setStatusEditable("T");
+            	ss.setStatusCopyable("T");
+            }
+
+           
+            
             if (ss != null) {                
                 StringBuffer buf = new StringBuffer();
                 buf.append(ss.getFirstName()).append(" ").append(ss.getLastName()).append(": ");

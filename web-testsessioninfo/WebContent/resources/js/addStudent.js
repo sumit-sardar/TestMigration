@@ -251,10 +251,10 @@ function populateSelectStudentGrid() {
 		   		{name:'testPause',index:'testPause',editable: true, width:38, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'screenReader',index:'screenReader',editable: true, width:38, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'untimedTest',index:'untimedTest',editable: true, width:38, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
-		   		{name:'status.copyable',index:'statusCopyable',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'statusCopyable',index:'statusCopyable',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'extendedTimeAccom',index:'extendedTimeAccom',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'status.editable',index:'editable1',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'statusEditable',index:'editable1',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'extPin2',index:'extPin2',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
@@ -284,7 +284,7 @@ function populateSelectStudentGrid() {
 		   	 	studentEditStatusMap = new Map(); //changes for ie issue
 		   	 	for(var ii=0; ii<obj.studentNode.length;ii++){
 		   	 	   var data1= obj.studentNode[ii];
-		   	 	   studentEditStatusMap.put(data1.studentId,data1.status.editable );
+		   	 	   studentEditStatusMap.put(data1.studentId,data1.statusEditable );
 		   	 	}
 
 		   	 if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
@@ -948,7 +948,7 @@ function getStudentListArray(studentArray) {
 	  var l = 0;
 	  for (var i=0; i<studentArray.length; i++) {
 	    if(studentArray[i]!= undefined && studentArray[i] != null) {
-	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["status.copyable"],  studentArray[i].itemSetForm );
+	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["statusCopyable"],  studentArray[i].itemSetForm );
 	        resultStdArray[l]= val.toString();
 	        ++l;
 	    }
@@ -1177,10 +1177,10 @@ function getStudentListArray(studentArray) {
 		document.getElementById("statusLegend").style.display = "none";
 	}
 	function addToStudentTempMap(studentId,studentRow){
-	  if(studentRow["status.editable"] != undefined && studentRow["status.editable"] =="T") {
+	  if(studentRow["statusEditable"] != undefined && studentRow["statusEditable"] =="T") {
 	  	studentTempMap.put(studentId, studentRow);
 	  		return true;
-	  } else if (studentRow.status != undefined && studentRow.status.editable != undefined && studentRow.status.editable =="T"){
+	  } else if (studentRow.status != undefined && studentRow.statusEditable != undefined && studentRow.statusEditable =="T"){
 	  		studentTempMap.put(studentId, studentRow);
 	  		return true;
 	  

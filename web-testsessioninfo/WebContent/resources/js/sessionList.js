@@ -771,6 +771,8 @@ function registerDelegate(tree){
 			$("#proctorAddDeleteInfo").hide();
 			stdsLogIn = false;
 			selectAllForDelete = false;
+			noOfProctorAdded = 0;
+			resetEditSessionPopulatedData();
 
 		}
 		$("#"+dailogId).dialog("close");
@@ -851,7 +853,7 @@ function registerDelegate(tree){
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
          datatype: 'local',         
-          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId', 'testCompletionStatus'],
+          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId', 'testCompletionStatus','Editable'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -861,7 +863,8 @@ function registerDelegate(tree){
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'testCompletionStatus',index:'testCompletionStatus',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } }
+		   		{name:'testCompletionStatus',index:'testCompletionStatus',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } },
+		   		{name:'statusEditable',index:'statusEditable',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"studentId",
 		   	records: function(obj) { 
@@ -896,7 +899,7 @@ function registerDelegate(tree){
 					var allRowsInGridPresent = $('#list6').jqGrid('getDataIDs');
 					for(var k = 0; k < allRowsInGridPresent.length; k++) {
 						var selectedRowData = $("#list6").getRowData(allRowsInGridPresent[k]);
-						if(selectedRowData.testCompletionStatus != "SC" && selectedRowData.testCompletionStatus != "" && selectedRowData.testCompletionStatus != "NT"){
+						if((selectedRowData.testCompletionStatus != "SC" && selectedRowData.testCompletionStatus != "" && selectedRowData.testCompletionStatus != "NT") || (selectedRowData.statusEditable =="F")){
 							$("#"+(k+1)+" td input","#list6").attr("disabled", true);
 				 			$("#"+(k+1), "#list6").addClass('ui-state-disabled');
 				 			editDataMrkStds.put(selectedRowData.studentId,selectedRowData.studentId);
@@ -1680,7 +1683,7 @@ function registerDelegate(tree){
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -2267,7 +2270,7 @@ function registerDelegate(tree){
  		
  		proctorGridloaded = true;
 
- 		if(noOfProctorAdded == 0) {
+ 		if(state != "EDIT" && noOfProctorAdded == 0) {
 	 		var jsondata = {};
 	 		jsondata['userId'] = schedulerUserId;
 	 		jsondata['lastName'] = schedulerLastName;
@@ -2279,26 +2282,21 @@ function registerDelegate(tree){
 		 	val.push(jsondata);
 		    proctorIdObjArray = {};	
 		    proctorIdObjArray[schedulerUserId] = jsondata;	 	
-		 	if(state == "EDIT"){
-			 	for (var i=0,j = addProctorLocaldata.length; i < j; i++){
-						if(addProctorLocaldata[i].userId = val[0].userId){ 		
-						  addProctorLocaldata.splice(i,1);
-						  break;
-						}
-			 	}
-			 	val = val.concat(addProctorLocaldata);	 
-			 	for (var i = 0, j = val.length; i < j; i++){			 	
-			 		if(val[i].userId != schedulerUserId){
-			 			 proctorIdObjArray[val[i].userId] = val[i];
-			 		}
-			 	}
-		 	}
-		 	
 		 	addProctorLocaldata = val;
 		
 			//alert(JSON.stringify(proctorIdObjArray));	
 		 	
-	 	}
+	 	}else if(state == "EDIT"){
+	 		var val=[] ;
+			
+			val = val.concat(addProctorLocaldata);	 
+			for (var i = 0, j = val.length; i < j; i++){			 	
+			 	if(val[i].userId != schedulerUserId){
+			 		proctorIdObjArray[val[i].userId] = val[i];
+			 	}
+			}
+			 addProctorLocaldata = val;
+		 }
 	 	
 	 	noOfProctorAdded = addProctorLocaldata.length;
 		$("#totalAssignedProctors").text(noOfProctorAdded);
@@ -2308,12 +2306,13 @@ function registerDelegate(tree){
  		$("#listProctor").jqGrid({         
          data:  addProctorLocaldata,
 		 datatype: "local",         
-          colNames:[ 'Last Name','First Name','Default Scheduler','User Id'],
+          colNames:[ 'Last Name','First Name','Default Scheduler','User Id','Editable'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'defaultScheduler',index:'defaultScheduler', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'userId',index:'userId', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'userId',index:'userId', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'editable',index:'editable', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"userId", records: function(obj) {} },
 		   	//jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -2347,7 +2346,7 @@ function registerDelegate(tree){
 					var selectedRowData;
 					for(var i = 0; i < allRowsInGrid.length; i++) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
-						if (selectedRowData.defaultScheduler == 'T') {
+						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F")) {
 							$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
@@ -2374,7 +2373,7 @@ function registerDelegate(tree){
 						var selectedRowData;
 						for(var i = 0; i < addProctorLocaldata.length; i++) {						
 							selectedRowData = addProctorLocaldata[i];
-							if (selectedRowData.defaultScheduler == 'F') {
+							if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
 							
 								selectedRowData = addProctorLocaldata[i];
 								$("#"+selectedRowData.userId+" td input").attr("checked", true); 
@@ -2393,7 +2392,7 @@ function registerDelegate(tree){
 						for(var i = 0; i < addProctorLocaldata.length; i++) {
 							
 							selectedRowData = addProctorLocaldata[i];
-							if (selectedRowData.defaultScheduler == 'F') {
+							if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
 							
 								selectedRowData = addProctorLocaldata[i];
 								$("#"+selectedRowData.userId+" td input").attr("checked", false); 
@@ -2454,6 +2453,7 @@ function registerDelegate(tree){
 		    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
 		    	$("#listProctor").jqGrid("hideCol","defaultScheduler");
 		    	$("#listProctor").jqGrid("hideCol","userId");
+		    	$("#listProctor").jqGrid("hideCol","editable");
 		    	
 		    	jQuery("#listProctor").setGridWidth(width,true);
 		    	

@@ -299,7 +299,8 @@
 									
 									if (data.status.isSuccess){	
 										editDataCache.put(index,data.savedProctorsDetails);	
-										addProctorLocaldata = data.savedProctorsDetails;		
+										addProctorLocaldata = data.savedProctorsDetails;
+										noOfProctorAdded = 	addProctorLocaldata.length;	
 										processProctorAccordion();
 									}
 									wizard.accordion("activate", index);					
