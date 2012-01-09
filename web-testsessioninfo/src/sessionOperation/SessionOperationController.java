@@ -1316,13 +1316,11 @@ public class SessionOperationController extends PageFlowController {
 		     String dateStr = DateUtils.formatDateToDateString(now);
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 
-		
-			 if(isEndTestSession == "false"){
 			 testSession.setTestAdminStatus("CU");
-			 testSession.setLoginEndDate(dailyLoginEndDate);		    
-			 }else{
-			 testSession.setTestAdminStatus("PA"); 				 
-			 testSession.setLoginEndDate(now);		
+			 testSession.setLoginEndDate(dailyLoginEndDate);
+			 if(testAdminId!=null && isEndTestSession == "true"){
+				 testSession.setTestAdminStatus("PA");
+				 testSession.setLoginEndDate(now);
 			 }
 	         testSession.setTestAdminType("SE");
 	         testSession.setActivationStatus("AC");
