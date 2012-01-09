@@ -52,7 +52,7 @@
 						</div>
 					</div>
 					<div id="viewStatus" style="float:right;padding-left:5px;display:none;">
-						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.bulkMove.moveStudent.Button']}"/></a>
+						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.move" /></a>
 					</div> 
 					<div style="clear:both;">
 					</div>
@@ -64,7 +64,7 @@
 	 <table class="transparent">
 	    <tr class="transparent">
 	        <td style="vertical-align:top;">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
+	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 	    	<script>populateBulkMoveTree();</script>
 	    	<div id = "bulkStudentMoveOrgNode" class="treeCtrl" style="height:512px !important">
 				
@@ -140,7 +140,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p><netui:content value="${bundle.web['student.bulkMove.ConfirmMsg']}"/></p>
+			<p><lb:label key="stu.msg.moveCancelConfirm" /></p>
 			<br/>
 			</td>
 		</tr>

@@ -149,7 +149,7 @@ function populateBulkMoveStudentGrid() {
 			sortorder: "asc",
 			height: 390, 
 			width:980, 
-			caption:"Student List",
+			caption:$("#moveStuGrid").val(),
 			onPaging: function() {
 				$("#displayBulkMessageMain").hide();
 				var reqestedPage = parseInt($('#studentBulkMoveGrid').getGridParam("page"));
@@ -286,7 +286,7 @@ function openBulkMovePopup(element) {
 	createMultiNodeBulkMoveTree(orgTreeHierarchy);
 	finalSelectedNode = undefined;
 	$("#moveStudentPopup").dialog({  
-		title:"Select Orgnization",  
+		title:$("#selectMoveOrg").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '480px',
