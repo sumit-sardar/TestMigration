@@ -260,8 +260,10 @@ function populateBulkStudentGrid() {
 				 } else {
 				 	$('#cb_studentAccommGrid').attr('checked', false);
 				 }
-				if(allRowsInGrid.length <= 0)
+				if(allRowsInGrid.length <= 0){
+					setAnchorButtonState('assignAccommButton', true);
 					$('#cb_studentAccommGrid').attr('checked', false);
+				}
 			},
 			onSelectAll: function (rowIds, status) {
 					var grade = $('#gs_grade').val();
@@ -310,15 +312,29 @@ function populateBulkStudentGrid() {
 								  
 							}
 							
-						}
+						}						
+						//setAnchorButtonState('assignAccommButton', false);
 						$.unblockUI();
-						var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');  
+						//The below condition is used to stop select all in grid if the grid is empty
+						if(studentArrId == undefined || studentArrId.length <=0) {
+							var noStudents = $('.ui-state-highlight');
+							if(noStudents.length > 0) {
+								for(var k = 0; k < noStudents.length; k++) {
+									$(noStudents[k]).removeClass('ui-state-highlight');
+								}
+							}
+						}
+						
 						
 					}
-				 if(submittedSuccesfully != ""){
-		           	 resetBulk();
-		         }
-		         determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
+					var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
+					determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
+			        if(allRowsInGrid.length <= 0){
+						setAnchorButtonState('assignAccommButton', true);
+					}
+					if(submittedSuccesfully != ""){
+			           	resetBulk();
+			        }
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -336,11 +352,10 @@ function populateBulkStudentGrid() {
 				 } else {
 				 	$('#cb_studentAccommGrid').attr('checked', false);
 				 }
-				 
+				 determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 				  if(submittedSuccesfully != ""){
 		           	 resetBulk();
 		         }
-		         determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
 			},
 			loadComplete: function () {
 				var isSAGridEmpty = false;
@@ -539,6 +554,7 @@ function populateBulkStudentGrid() {
 									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
 									document.getElementById('displayBulkMessageMain').style.display = "block";
 									selectedStudentObjArr = {};
+									totalRowSelectedOnPage = 0;
 									$.unblockUI();			
 									}
 									else{
