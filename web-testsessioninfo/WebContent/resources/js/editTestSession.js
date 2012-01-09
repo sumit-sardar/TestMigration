@@ -12,6 +12,7 @@
     var isProcDetClicked = false;
     var isTestDataExported = false;
     var isEndTestSession = false;
+    var isSortable = true;
   
   function editTestSession(){  
      resetEditSessionPopulatedData();
@@ -48,7 +49,8 @@
 								stdsLogIn = true;
 								$("#endTest").show();	
 							}							
-							if (stdsLogIn || isTestExpired){								
+							if (stdsLogIn || isTestExpired){
+								isSortable = false;								
 								disableInEdit();							
 							} else {
 								removeDisableInEdit();
@@ -340,6 +342,7 @@
 		isTestExpired = false;
 		isEndTestSession = false;
 		$("#endTest").hide();
+		isSortable = true;
   	}
   	
   	function calculateTimeInMin(val){
