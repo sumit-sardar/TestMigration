@@ -3055,7 +3055,7 @@ function registerDelegate(tree){
 				}
 			},
 			loadComplete: function () {
-			
+				
 				if ($('#rosterList').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
             		$('#sp_1_rosterPager').text("1");
@@ -3070,7 +3070,7 @@ function registerDelegate(tree){
             	selectedTestRosterId = topRowid;
             	
             	var status = $('#rosterList').getCell(selectedTestRosterId, '5');
-				if($.trim($(status).text()) != 'Partially Invalid') {
+				if($.trim($(status).text()) != 'PI') {
 					setAnchorButtonState('toggleValidationButton', false);
 					$("#toggleValidationButton").attr("disabled", false);
 				} else {
@@ -3083,9 +3083,10 @@ function registerDelegate(tree){
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				var cellData = null;
 				var gridIds = $("#rosterList").getDataIDs();
 				for(var i=0; i<gridIds.length; i++) {
-					var cellData = $('#rosterList').getCell(gridIds[i], '5');
+					cellData = $.trim($('#rosterList').getCell(gridIds[i], '5'));
 					if(cellData == 'VA') {
 						$("#rosterList").setCell(gridIds[i], '5', 'Valid', "", "", true);
 					} else if(cellData == 'IN') {
@@ -3093,7 +3094,7 @@ function registerDelegate(tree){
 					} else if(cellData == 'PI') {
 						$("#rosterList").setCell(gridIds[i], '5', '<font color="red">Partially Invalid</font>', "", "", true);
 					}
-					cellData = $('#rosterList').getCell(gridIds[i], '6');
+					cellData = $.trim($('#rosterList').getCell(gridIds[i], '6'));
 					if(cellData == 'SC') {
 						$("#rosterList").setCell(gridIds[i], '6', 'Scheduled', "", "", true);
 					} else if(cellData == 'CO') {
@@ -3123,7 +3124,7 @@ function registerDelegate(tree){
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				//window.location.href="/SessionWeb/logout.do";
+				window.location.href="/SessionWeb/logout.do";
 			}
 	 });
 	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
@@ -3212,9 +3213,9 @@ function registerDelegate(tree){
 									}
 									if(data.subtestValidationAllowed) {
 										if(row.validationStatus != 'Invalid') {
-											html += '<td class="sortable alignCenter"> <span>'+row.validationStatus+'</span></td>';
+											html += '<td class="sortable alignCenter">'+row.validationStatus+'</td>';
 										} else{
-											html += '<td class="sortable alignCenter"> <span><font color="red">'+row.validationStatus+'</font></span></td>';
+											html += '<td class="sortable alignCenter"> <font color="red">'+row.validationStatus+'</font></td>';
 										}
 									}
 									html += '<td class="sortable alignCenter"> <span>'+row.completionStatus+'</span></td>';
@@ -3259,7 +3260,7 @@ function registerDelegate(tree){
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
-							//window.location.href="/SessionWeb/logout.do";
+							window.location.href="/SessionWeb/logout.do";
 						},
 			complete :  function(){
 							$.unblockUI(); 
@@ -3295,6 +3296,7 @@ function registerDelegate(tree){
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 								 $.unblockUI(); 
@@ -3341,7 +3343,7 @@ function registerDelegate(tree){
 											$(cell).html('Valid');
 										}
 									}
-									if($(cell).text() == 'Invalid') {
+									if($.trim($(cell).text()) == 'Invalid') {
 										invalidCount++;
 									}
 									subTestCount++;
@@ -3359,7 +3361,7 @@ function registerDelegate(tree){
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 								$.unblockUI();
-								
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 								 $.unblockUI(); 
@@ -3369,6 +3371,7 @@ function registerDelegate(tree){
 	}
 	
 	function changeToggleButton() {
+		$("#displayMessageViewTestSubtest").hide();
 		var statusFlag = false;
 		$("input[name=toggleSubtest]").each(function(idx) {
 			if(this.checked) {

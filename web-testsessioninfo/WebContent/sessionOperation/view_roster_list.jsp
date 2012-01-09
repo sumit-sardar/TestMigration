@@ -2,46 +2,44 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
-<div id="displayMessageViewTestRoster" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
-	<table>
-		<tr>
-			<td rowspan="3" valign="top">
-                 	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-			</td>
+
+<div id = "displayMessageViewTestRoster" 
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;padding-bottom:5px;">	
+<table>
+	<tbody>
+		<tr width='100%'>
+			<th style='padding-right: 6px; text-align: right;' rowspan='2'>
+				<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+			</th>
+		</tr>
+		<tr width='100%'>
 			<td>
-				<table>
-					<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="rosterTitle"></div></font></td></tr>
-					<tr><td><div id= "rosterContent">	</div></td></tr>
-					<tr><td><div id= "rosterMessage" style="color: red; font-size:12px; font-weight:bold">	</div></td></tr>
-				</table>
+				<span id = 'rosterMessage'></span>
 			</td>
 		</tr>
-	</table>
-</div>	
-<table width="865px" style="margin-bottom: 10px;">
+	</tbody>
+</table>
+</div>
+<table width="865px" style="margin-bottom: 2px;">
 	<tr>
-		<td align="left" width="20%"><netui:content value="${bundle.web['viewStatus.testName']}"/></td>
+		<td align="left" width="14%"><netui:content value="${bundle.web['viewStatus.testName']}"/></td>
 		<td width="80%"><span id = "testName"></span></td>
 	</tr>
-	<tr>
-		<td align="left"><netui:content value="${bundle.web['viewStatus.testAccessCode']}"/></td>
-		<td><span id = "testAccessCode"></span></td>
-	</tr>
-	<tr>
-		<td align="left"><netui:content value="${bundle.web['viewStatus.totalStudents']}"/></td>
-		<td><span id = "totalStudents"></span></td>
-	</tr>
 </table>
-<table width="865px" style="margin-bottom: 10px;">
+<table width="865px" style="margin-bottom: 12px;">
 	<tr>
-		<td>
-			<div id="toggleValidation" style="float:left;padding-top:5px;padding-right:5px;display:none;">
-				<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.toggleValidation.button']}" /></a>
-			</div>
-			<div id="refreshList" style="float:left;padding-top:5px;padding-right:5px;">
+		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.testAccessCode']}"/></td>
+		<td width="15%"><span id = "testAccessCode"></span></td>
+		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.totalStudents']}"/></td>
+		<td width="10%"><span id = "totalStudents"></span></td>
+		<td width="45%">
+			<div id="refreshList" style="float:right;padding-left:5px;">
 				<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.refreshList.button']}"/></a>
 				<input type="hidden" name="subtestValidationAllowed" id="subtestValidationAllowed" value="" />
 			</div> 
+			<div id="toggleValidation" style="float:right;padding-left:5px;display:none;">
+				<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.toggleValidation.button']}" /></a>
+			</div>
 		</td>
 	</tr>
 </table>

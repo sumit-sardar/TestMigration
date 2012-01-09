@@ -2,23 +2,23 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
-
-<div id="displayMessageViewTestSubtest" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
-	<table>
-		<tr>
-			<td rowspan="3" valign="top">
-                 	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-			</td>
+<div id = "displayMessageViewTestSubtest" 
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;padding-bottom:5px;">	
+<table>
+	<tbody>
+		<tr width='100%'>
+			<th style='padding-right: 6px; text-align: right;' rowspan='2'>
+				<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+			</th>
+		</tr>
+		<tr width='100%'>
 			<td>
-				<table>
-					<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="subtestTitle"></div></font></td></tr>
-					<tr><td><div id= "subtestContent">	</div></td></tr>
-					<tr><td><div id= "subtestMessage" style="color: red; font-size:12px; font-weight:bold">	</div></td></tr>
-				</table>
+				<span id = 'subtestMessage'></span>
 			</td>
 		</tr>
-	</table>
-</div>	
+	</tbody>
+</table>
+</div>
 <table width="928px" style="margin-bottom: 10px;">
 	<tr>
 		<td><netui:content value="${bundle.web['viewStatus.subtest.loginName']}"/></td>
