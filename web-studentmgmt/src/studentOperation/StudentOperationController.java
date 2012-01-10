@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -322,10 +323,24 @@ public class StudentOperationController extends PageFlowController {
 
 			
 			try{
-				resp.setContentType("application/json");
+/*				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
 				stream.write(json.getBytes());
+*/
+				resp.setContentType(contentType);
+	    		stream = resp.getOutputStream();
+
+	    		String acceptEncoding = req.getHeader("Accept-Encoding");
+	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+	    		    resp.setHeader("Content-Encoding", "gzip");
+	    		    stream = new GZIPOutputStream(stream);
+	    		}
+	    		
+				resp.flushBuffer();
+	    		stream.write(json.getBytes());
 
 			}
 
