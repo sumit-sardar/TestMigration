@@ -33,7 +33,6 @@ function viewBroadcastMessage() {
 								
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								$(this).dialog("close"); 
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
