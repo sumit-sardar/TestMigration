@@ -10,7 +10,7 @@
 				<td>
 					<div style="clear:both;float:left;width:875px;padding: 0 5px 5px 0;">
 						<div id="endTest" style="float:right;padding-left:5px;">
-							<a href="#" id="endTestButton" onclick="endTestSession();" class="rounded {transparent} button"><lb:label key="sessionDetails.button.endTestSession" /></a>
+							<a href="#" id="endTestButton" onclick="endTestSessionConfirmation();" class="rounded {transparent} button"><lb:label key="sessionDetails.button.endTestSession" /></a>
 						</div> 
 					</div>
 				</td>
@@ -110,3 +110,25 @@
 		</tr>
 	</tbody>
 </table>
+<div id="endTestSessionConfirmationPopUp"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<p><lb:label key="editTest.endTestSession1.message" /></p>
+			<p><span id="endTestSessionStudentMessage"><lb:label key="session.edit.stuLogged" /></span></p>
+			<p><lb:label key="editTest.endTestSession2.message" /></p>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:endTestSession(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('endTestSessionConfirmationPopUp'); return false;" class="ui-widget-header">
+				</center>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
