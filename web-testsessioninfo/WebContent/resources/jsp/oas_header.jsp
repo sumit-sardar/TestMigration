@@ -20,7 +20,7 @@
 				<td>
 					<div class="roundedHeader">
 					&nbsp;&nbsp;
-					<a href="#" onclick="viewBroadcastMessage();"><b>Messages</b></a>
+					<a href="#" onclick="viewBroadcastMessage();"><b>Home</b></a>
 					<% if (broadcastMessages.intValue() > 0) { %>
 						<span class="messageheader"><%=broadcastMessages.toString()%></span>
 					<% } %>
