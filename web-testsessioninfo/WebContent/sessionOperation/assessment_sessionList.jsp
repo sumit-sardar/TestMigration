@@ -58,11 +58,9 @@
 			
 	</div>
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
-			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><lb:label key="homepage.viewTestSessions.message" />
-				 <%if(canRegisterStudent) { %>
+			<p class="subtitle"><lb:label key="homepage.viewTestSessions.message" />
+				<%if(canRegisterStudent) { %>
 					<lb:label key="homepage.rapidRegister.message" />
-			</p>
-			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
 				<%} if (userScheduleAndFindSessionPermission) {%>
 					<lb:label key="homepage.OrgSearchInfo.message" />
 				<% } %>
@@ -71,9 +69,9 @@
 	<jsp:include page="/sessionOperation/print_ticket.jsp" /> 
 	<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
-		   		<td >
-		       		<div style="float:left;width:1210px;padding: 5px 5px 5px 0;">
-						<div  style="float:left;width:210px;white-space: nowrap;" class="transparent">
+		   		<td style="clear: both; min-height: 25px; height: 25px;">
+		       		<div style="float:left;width:1200px;padding-top: 10px;">
+						<div  style="float:left;width:200px;white-space: nowrap;" class="transparent">
 							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
 						</div>  
 						<div id="ShowButtons" style="width:1000px; display:none; float:left;">
@@ -96,12 +94,9 @@
 					</div>
 	     	   </td>
 		   	</tr>
-		   	<tr>
-		   		
-	 </tr>
 	</table>
 	
-	<div style="float:left;width:1210px;">
+	<div style="float:left;width:1200px;padding-left:3px;">
 	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
@@ -116,9 +111,9 @@
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
 		</div>  
 	<%if(userScheduleAndFindSessionPermission) { %>		     
-		<div id="sessionGrid" style="float:right;width:1175px;position:relative;z-index:100;"> 
+		<div id="sessionGrid" style="float:right;width:1150px;position:relative;z-index:100;vertical-align:top;"> 
 	<%} else {%>
-		<div id="sessionGrid" style="float:right;width:1210px;position:relative;z-index:100;"> 	
+		<div id="sessionGrid" style="float:right;width:1200px;position:relative;z-index:100;vertical-align:top;"> 	
 	<% } %>		      		    				
 					<div id="accordion" style="width:100%;position:relative;">							
 						<div style="position:relative;">

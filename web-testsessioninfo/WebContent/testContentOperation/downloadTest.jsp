@@ -22,7 +22,7 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="services_downloadTest">
-	<table width="100%" border="0"> 
+	<table width="97%" style="margin:15px auto;" border="0"> 
 		<tr>
 			<td style="padding-left:5px;">
 	    		<h1><lb:label key="services.downloadTest.title" /></h1>

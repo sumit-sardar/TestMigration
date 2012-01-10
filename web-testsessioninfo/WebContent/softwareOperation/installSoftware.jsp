@@ -24,16 +24,22 @@
 <!-- ********************************************************************************************************************* -->
 
 
-
-<h1><netui:content value="${bundle.web['installClient.title']}"/></h1>
-<p style="color:#000"><netui:content value="${bundle.web['installClient.message']}"/></p>
-<p align="right">
-    <a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
-</p>    
-
-<netui:form action="services_installSoftware">
-
-<table class="transparent">
+<table width="97%" style="margin:15px auto;" border="0"> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="services.installSoftware.title" /></h1>
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<p style="color:#000"><netui:content value="${bundle.web['installClient.message']}"/></p>
+			<p align="right">
+			    <a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
+			</p> 
+		
+			<netui:form action="services_installSoftware">
+			
+			<table class="transparent">
 
    	<%-- Check Java Version --%>
     <tr class="transparent">
@@ -259,15 +265,12 @@ Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return s
 		        </tr>     
 
             </table>
-        </td>
-    </tr>
-    
-
+			
+			
+			</netui:form>
+</td>	
+	</tr>
 </table>
-
-
-</netui:form>
-
 <script type="text/javascript">
 	allowDownLoadBinFile();
 </script>

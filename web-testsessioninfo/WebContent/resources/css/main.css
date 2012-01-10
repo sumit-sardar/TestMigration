@@ -129,7 +129,7 @@ h4 {
 p {
     font-family: Arial, Helvetica, Sans Serif;
     font-size: 12px;
-    margin: 0px 0px 15px 0px;
+    /*margin: 0px 0px 15px 0px;*/
 }
 
 
@@ -645,4 +645,12 @@ clear: both;
 
 input[type="button"] {
 	cursor: pointer;
+}
+
+.subtitle{
+	font-family: Arial, Verdana, Sans Serif;
+	font-size: 12px;
+	font-style: normal;
+	padding-left: 2px;
+	color:#003399;
 }

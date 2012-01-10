@@ -28,7 +28,7 @@
 <input type="hidden" id="stuForOrgNodeId" />
 <input type="hidden" id="selectedTestId" />
 <input type="hidden" id="proctorOrgNodeId" />
-<table width="100%" border="0">
+<table border="0" width="97%" style="margin:15px auto;">
 <tr>
 <td>
     <h1><lb:label key="assessments.sessions.title" /></h1>
