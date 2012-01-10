@@ -1,8 +1,21 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
+<netui-data:declareBundle bundlePath="webResources" name="web"/>
 
-
-<netui-data:declareBundle bundlePath="webResources" name="web"/>	
+<input type="hidden" id="fieldDisabled" name="fieldDisabled" value=<lb:label key="session.edit.fieldDisable" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuLogged" name="stuLogged" value=<lb:label key="session.edit.stuLogged" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sessionEnd" name="sessionEnd" value=<lb:label key="session.edit.sessionEnded" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noStudentLogged" name="noStudentLogged" value=<lb:label key="session.edit.noStudentLogged" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noStudentLogged2" name="noStudentLogged2" value=<lb:label key="session.edit.noStudentLoggedMsg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sessionList" name="sessionList" value=<lb:label key="homePage.grid.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sessionName" name="sessionName" value=<lb:label key="homepage.grid.sessionName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="testName" name="testName" value=<lb:label key="homepage.grid.testName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="organization" name="organization" value=<lb:label key="homepage.grid.org" prefix="'" suffix="'"/>/>
+<input type="hidden" id="myRole" name="myRole" value=<lb:label key="homepage.grid.myRole" prefix="'" suffix="'"/>/>
+<input type="hidden" id="startDate" name="startDate" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="endDate" name="endDate" value=<lb:label key="homepage.grid.endDate" prefix="'" suffix="'"/>/>
 	
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
@@ -45,13 +58,13 @@
 			
 	</div>
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
-			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><netui:content value="${bundle.web['homepage.viewTestSessions.message']}"/>
+			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><lb:label key="homepage.viewTestSessions.message" />
 				 <%if(canRegisterStudent) { %>
-					<netui:content value="${bundle.web['homepage.rapidRegister.message']}"/>	
+					<lb:label key="homepage.rapidRegister.message" />
 			</p>
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
 				<%} if (userScheduleAndFindSessionPermission) {%>
-					<netui:content value="${bundle.web['homepage.OrgSearchInfo.message']}"/>	
+					<lb:label key="homepage.OrgSearchInfo.message" />
 				<% } %>
 			</p>
 	</div>	
@@ -61,23 +74,23 @@
 		   		<td >
 		       		<div style="float:left;width:1210px;padding: 5px 5px 5px 0;">
 						<div  style="float:left;width:210px;white-space: nowrap;" class="transparent">
-							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.mySession']}"/></a> 
+							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
 						</div>  
 						<div id="ShowButtons" style="width:1000px; display:none; float:left;">
 							<div id="viewStatus" style="float:right;padding-left:5px;">
-								<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.viewStatus']}"/></a>
+								<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
 							</div> 
 						    <%if(canRegisterStudent) { %>
 							    <div id="registerStudent" style="float:right;padding-left:5px;">
-								<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.registerStudent']}"/></a>
+								<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
 							    </div>
 						    <%} if (userScheduleAndFindSessionPermission) {%>
 							    <div id="scSession" style="float:right;padding-left:5px;">
-								<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
+								<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.scheduleSession" /></a>
 							    </div> 
 						    <%} %>	
 						    <div id="printTicket" style="float:right;padding-left:5px;">
-								<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.printTicket']}"/></a>
+								<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 							</div> 		
 						</div>  
 					</div>
@@ -96,7 +109,7 @@
    	<%} %>
 		<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
 			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
-				<div style="float:left;" >&nbsp;<netui:content value="${bundle.web['homepage.hierarchy.title']}"/></div> 
+				<div style="float:left;" >&nbsp;<lb:label key="homepage.hierarchy.title" /></div> 
 				<div style="float:right;" title="${bundle.web['homepage.icon.hideOrganization']}"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
 				<div style="clear:both;"></div>     
 			</div>
@@ -109,14 +122,14 @@
 	<% } %>		      		    				
 					<div id="accordion" style="width:100%;position:relative;">							
 						<div style="position:relative;">
-						  	<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.currentAndFuture']}"/></a></h3>
+						  	<h3><a href="#"><lb:label key="homepage.tab.currentAndFuture" /></a></h3>
 							<div id="CurrentFuture" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list2" class="gridTable"></table>
 								<div id="pager2" class="gridTable"></div>		
 							</div>								
 						</div>
 						<div style="position:relative;">
-							<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.completed']}"/></a></h3>
+							<h3><a href="#"><lb:label key="homepage.tab.completed" /></a></h3>
 							<div id="Completed" style="background-color: #FFFFFF;overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list3" class="gridTable"></table>
 								<div id="pager3" class="gridTable"></div>	
@@ -135,7 +148,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p><netui:content value="${bundle.web['common.message.user.browse.topNodeSelection']}"/></p>
+			<p><lb:label key="common.topNodeSelection.message" /></p>
 			<br/>
 			</td>
 		</tr>
@@ -158,23 +171,23 @@
 <table width="360" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
 	<tbody>
 		<tr>
-			<td colspan="2" align="left">Status Key:</td>
+			<td colspan="2" align="left"><lb:label key="selectstudentpage.Msg.statusKey" /></td>
 		</tr>
 		<tr>
-			<td align="left" width="30">Cmp</td>
-			<td align="left" width="320">Completed the test.</td>
+			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.completed" /></td>
+			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.completedMsg" /></td>
 		</tr>
 		<tr>
-			<td align="left" width="30">Inp</td>
-			<td align="left" width="320">In progress, taking the test.</td>
+			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.inprogress" /></td>
+			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.inprogressMsg" /></td>
 		</tr>
 		<tr>
-			<td align="left" width="30">Org</td>
-			<td align="left" width="320">Scheduled through other organization. Cannot override.</td>
+			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.schedule" /></td>
+			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.scheduleMsg" /></td>
 		</tr>
 		<tr>
-			<td align="left" width="30">Ses</td>
-			<td align="left" width="320">Previously scheduled for this test in different test session.</td>
+			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.Preschedule" /></td>
+			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.PrescheduleMsg" /></td>
 		</tr>
 	</tbody>
 </table>  

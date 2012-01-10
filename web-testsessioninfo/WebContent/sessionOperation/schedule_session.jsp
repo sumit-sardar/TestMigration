@@ -1,6 +1,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
 <div id="scheduleSession"
@@ -44,7 +46,7 @@
 		
 		<div id="ssAccordion" style="width:99.5%;">
 			<div id="selectTestId">
-				<h3><a href="#" >Select Test</a></h3>
+				<h3><a href="#" ><lb:label key="session.accordion.selectTest" /></a></h3>
 				<div id="Select_Test" style="background-color: #FFFFFF;">
 					<div id="noTestDiv" style="display:none;">
 					<table width="100%" height="300" cellpadding="0" cellspacing="0" class="transparent">
@@ -57,10 +59,10 @@
 									<tr width='100%'>
 										<th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23'
 											src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
-										<th colspan='6' align="left"><netui:content value="${bundle.web['sessionList.selectTest.noTestExistsHead']}" /></th>
+										<th colspan='6' align="left"><lb:label key="sessionList.selectTest.noTestExistsHead" /></th>
 									</tr>
 									<tr width='100%'>
-										<td colspan='6'><netui:content value="${bundle.web['sessionList.selectTest.noTestExists']}" /></td>
+										<td colspan='6'><lb:label key="sessionList.selectTest.noTestExists" /></td>
 									</tr>
 								</tbody>
 							</table>
@@ -74,7 +76,7 @@
 				</div>
 			</div>
 			<div id="testDetailId">
-				<h3><a href="#" >Test Detail</a></h3>
+				<h3><a href="#" ><lb:label key="session.accordion.testDetail" /></a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div align="center">
 						<jsp:include page="/sessionOperation/test_details.jsp" />
@@ -82,7 +84,7 @@
 				</div>
 			</div>
 			<div id="addStudentId">
-				<h3><a href="#" >Add Student</a></h3>
+				<h3><a href="#" ><lb:label key="session.accordion.addStudent" /></a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
 					<div id="Student_Tab" style ="display:block;">
 						<jsp:include page="/sessionOperation/add_student_tab.jsp" />
@@ -93,7 +95,7 @@
 				</div>
 			</div>
 			<div id="addProctorId">
-				<h3><a href="#" >Add Proctor</a></h3>
+				<h3><a href="#" ><lb:label key="session.accordion.addProctor" /></a></h3>
 				<div id="Add_Proctor" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
 					<div id="Proctor_Tab" style ="display:block;">
 						<jsp:include page="/sessionOperation/add_proctor_tab.jsp" />
@@ -136,7 +138,7 @@
 	<table>
 		<tr>
 			<td colspan="2">
-				<p><netui:content value="${bundle.web['scheduleTest.cancelConfirmation.message']}"/></p>
+				<p><lb:label key="scheduleTest.cancelConfirmation.message" /></p>
 				<p></p>
 			</td>
 		</tr>
@@ -156,8 +158,8 @@
 	<table>
 		<tr>
 			<td colspan="2">
-				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.message']}"/></p>
-				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.removeStudent.message']}"/></p>
+				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
+				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
 			</td>
 		</tr>
 		<tr>
@@ -175,8 +177,8 @@
 	<table>
 		<tr>
 			<td colspan="2">
-				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.message']}"/></p>
-				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.removeStudent.message']}"/></p>
+				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
+				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
 			</td>
 		</tr>
 		<tr>

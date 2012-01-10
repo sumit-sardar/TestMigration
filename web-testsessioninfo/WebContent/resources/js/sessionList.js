@@ -100,7 +100,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Session Name','Test Name', 'Organization', 'creatorOrgNodeId', 'My Role','Start Date', 'End Date'],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDate").val(), $("#endDate").val()],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -130,7 +130,7 @@ function populateSessionListGrid(homePageLoad) {
 			sortorder: "asc",
 			height: 370,  
 			editurl: 'getSessionForUserHomeGrid.do',
-			caption:"Session List",
+			caption: $("#sessionList").val(),
 			ondblClickRow: function(rowid) {
 				setSelectedTestAdminId(rowid);
 				editTestSession();
@@ -222,7 +222,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:['Session Name','Test Name', 'Organization', 'creatorOrgNodeId', 'My Role','Start Date', 'End Date'],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDate").val(), $("#endDate").val()],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -246,7 +246,7 @@ function populateCompletedSessionListGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,  
-			caption:"Session List",
+			caption: $("#sessionList").val(),
 			ondblClickRow: function(rowid) {setSelectedTestAdminId(rowid);editTestSession();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list3').getGridParam("page"));
