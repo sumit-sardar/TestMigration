@@ -484,7 +484,7 @@ function populateGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,
-			width: 975, 
+			width: $("#jqGrid-content-section").width(), 
 			editurl: 'userOrgNodeHierarchyGrid.do',
 			ondblClickRow: function(rowid) {EditUserDetail();},
 			caption:"User List",
@@ -498,7 +498,11 @@ function populateGrid() {
 				if(reqestedPage <= minPageSize){
 					$('#list2').setGridParam({"page": minPageSize});
 				}
+				setAnchorButtonState('changePWButton', true);
 				
+			},
+			onSortCol:function(){
+				setAnchorButtonState('changePWButton', true);
 			},
 			onSelectRow: function () {
 				//alert($("#roleNameID").val());

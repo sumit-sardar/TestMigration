@@ -37,51 +37,58 @@
 <input type="hidden" id="inFormatID" name = "inFormatID" value=<lb:label key="user.msg.invalid.format" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
-<table> 
-	<tr>
-		<td style="padding-left:5px;">
-    		<h1><lb:label key="user.title" /></h1>
+
+<table class="transparent" width="97%" style="margin:15px auto;">
+ 	<tr class="transparent">
+        <td>
+		<table class="transparent">
+			<tr class="transparent">
+				<td>
+				<h1><lb:label key="user.title" /></h1>
+				</td>
+			</tr>
+			<tr>
+				<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; padding-left: 2px;">
+				<lb:label key="user.msg.pos.button" /></td>
+			</tr>
+		</table>
 		</td>
-	</tr>
-	<tr> 
-		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
-			<lb:label key="user.msg.pos.button" />
-		</td>	
-	</tr>
-</table>
-<table class="transparent">
-    <tr class="transparent">
-        <td style="border-color : #2E6E9E;padding-left:5px;">        
-		<table> 
-		<tr width="100%" >
-		       <td align="right" colspan="12" style="padding: 0 0 0px 8px; clear:both;min-height:25px; height: 25px; ">
-		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
-					<div id= "contentMain" style="padding-top: 5px;">	</div>
-				</div>
-		       	<div id="changePW" style="display:none;">
-		       		<div id="cpw">
-                		<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button"><lb:label key="user.changepassword" /></a>
-                	</div>      
-                </div>          		     	        
-	     	   </td>
-		   	</tr>
-		  
-	      <tr class="transparent">
-	        <td style="vertical-align:top;">
-		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="user.label.usersearch" /></div>
-		    	  <script>populateTree();</script>
-		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
-				</div> 
-		    </td>
-		    
-		 	<td class="transparent" width="5px">&nbsp;</td>
-		 	 
-		 	<td >	      
-		    	<table id="list2" class="gridTable"></table>
-				<div id="pager2"  class="gridTable"></div>
-			</td>
-			
-	      </tr>
+    </tr>
+	
+	<tr class="transparent">
+        <td align="center">        
+		<table width="100%"> 
+		      <tr>
+				<td colspan="3" style="clear: both; min-height: 25px; height: 25px;">
+					<div id="displayMessageMain"
+						style="display: none; width: 50%; float: left; text-align: left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+						<div id="contentMain" style="padding-top: 5px; padding-bottom:5px;"></div>
+					</div>
+					<div id="changePW" style="display: none;float: right;>
+						<div id="cpw">
+							<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">
+								<lb:label key="user.changepassword" />
+							</a>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr class="transparent">
+		        <td style="vertical-align:top; width:16%;" align="left">
+			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="user.label.usersearch" /></div>
+			    	  <script>populateTree();</script>
+			    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
+					</div> 
+			    </td>
+			    
+			 	<td class="transparent" width="5px">&nbsp;</td>
+			 	 
+			 	<td style="vertical-align:top;"  id="jqGrid-content-section">	      
+			    	<table id="list2" class="gridTable"></table>
+					<div id="pager2"  class="gridTable"></div>
+				</td>
+				
+		      </tr>
 	    </table>
         </td>
     </tr>
