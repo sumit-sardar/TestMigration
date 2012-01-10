@@ -184,7 +184,8 @@ public class SessionOperationController extends PageFlowController {
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
 	
 	private List<String> studentGradesForCustomer;
-    
+	private List<BroadcastMessage> broadcastMessages = null;
+	
 	/**
 	 * @return the userName
 	 */
@@ -253,6 +254,9 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward gotoCurrentUI()
     {
+		this.broadcastMessages = getBroadcastMessages();
+        this.getSession().setAttribute("broadcastMessages", new Integer(this.broadcastMessages.size()));
+		    	
         return new Forward("success");
     }
 	
@@ -2444,14 +2448,16 @@ public class SessionOperationController extends PageFlowController {
         HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-        String broadcastMessages = getBroadcastMessages();
+		
+		this.broadcastMessages = getBroadcastMessages();
+        String bcmString = buildBroadcastMessages();
 		
 		try{
     		resp.setContentType(CONTENT_TYPE_JSON);
 			try {
 				stream = resp.getOutputStream();
 	    		resp.flushBuffer();
-	    		stream.write(broadcastMessages.getBytes());
+	    		stream.write(bcmString.getBytes());
 			} 
 			finally {
 				if (stream!=null){
@@ -2466,39 +2472,58 @@ public class SessionOperationController extends PageFlowController {
         return null;
     }
 
+    private List getBroadcastMessages()
+    {      
+    	if (this.broadcastMessages == null) {
+    	
+	    	if (this.userName == null) {
+	    		this.userName = (String)getSession().getAttribute("userName");
+	    	}
+	    	
+	    	this.broadcastMessages = new ArrayList();
+	    	
+	        try
+	        { 
+	        	BroadcastMessageData bmd = this.testSessionStatus.getBroadcastMessages(this.userName);
+	        	BroadcastMessage[] bcMessages = bmd.getBroadcastMessages();
+	            if (bcMessages.length > 0) {
+	                for (int i=0; i<bcMessages.length ; i++) {
+	                	this.broadcastMessages.add(bcMessages[i]);
+	                }
+	            }                        	        	
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	        	this.broadcastMessages = null;
+	            be.printStackTrace();
+	        }
+    	}
+    	
+        return this.broadcastMessages;
+    }
     
-    private String getBroadcastMessages()
+    private String buildBroadcastMessages()
     {        
-        BroadcastMessage[] broadcastMessages = null;
-        try
-        { 
-        	BroadcastMessageData bmd = this.testSessionStatus.getBroadcastMessages(this.userName);
-            broadcastMessages = bmd.getBroadcastMessages();
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }
-        
         String html = "<table class='simpletable'>";        
-		String messages = "You have no messages at this time. The Messages link will display [an alert symbol] when you have active messages.";
+		String messages = "You have no messages at this time. The Messages link will display <span class='messageheader'>&nbsp;</span> when you have active messages.";
 		
-        if (broadcastMessages.length > 0)
+        if (this.broadcastMessages.size() > 0)
         {
             html += "<tr class='simpletable'>";
             html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
             html += "</tr>";
             messages = "";
-            for (int i=0; i<broadcastMessages.length; i++) {
+            for (int i=0; i<this.broadcastMessages.size(); i++) {
+            	BroadcastMessage bm = (BroadcastMessage)this.broadcastMessages.get(i);
                 html += "<tr class='simpletable'>";
-            	html += "<td class='simpletable'>" + broadcastMessages[i].getMessage() + "</td>";
-            	String dateStr = DateUtils.formatDateToDateString(broadcastMessages[i].getCreatedDateTime());
+            	html += "<td class='simpletable'>" + bm.getMessage() + "</td>";
+            	String dateStr = DateUtils.formatDateToDateString(bm.getCreatedDateTime());
             	html += "<td class='simpletable'>" + dateStr + "</td>";
                 html += "</tr>";
             }
         }   
         else {
-            html += "<tr class='simpletable'><td class='simpletable'>";
+            html += "<tr class='simpletable'><td class='simpletable alignCenter'>";
         	html += "<br/>";
         	html += messages;
         	html += "<br/><br/>";

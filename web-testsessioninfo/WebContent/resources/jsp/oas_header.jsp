@@ -47,11 +47,11 @@
 	</div>
 	<br>
 	<div>
-		<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
-				<tr id="Act_Buttons" align="center">
+		<table cellspacing="0" cellpadding="0" border="0" class="EditTable" width="100%">
+				<tr align="center">
 					<td  width="100%">
 						<center>
-						<input type="button" id="closeId" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
+						<input type="button" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
 						</center>
 						<br>
 					</td>
