@@ -857,7 +857,7 @@ function registerDelegate(tree){
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
          datatype: 'local',         
-          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId', 'testCompletionStatus','Editable'],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, $("#testStuAccom").val(), leafNodeCategoryName , $("#testStuForm").val(), 'studentId', 'testCompletionStatus','Editable'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
