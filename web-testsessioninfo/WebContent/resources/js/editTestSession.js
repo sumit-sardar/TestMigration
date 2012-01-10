@@ -87,18 +87,24 @@
 							$("#displayEditInfo").show();
 							if(isTestExpired) {
 								$("#displayEditInfo").show();
-								$("#titleEditInfo").html($("#fieldDisabled").val());
-								$("#messageEditInfo").html($("#sessionEnd").val());
+								//$("#titleEditInfo").html($("#fieldDisabled").val());
+								$("#titleEditInfo").html("Certain fields are unavailable for editing because:");
+								//$("#messageEditInfo").html($("#sessionEnd").val());
+								$("#messageEditInfo").html("This test session has ended.");
 							} else {
 								if(stdsLogIn) {
 									$("#displayEditInfo").show();
-									$("#titleEditInfo").html($("#fieldDisabled").val());
-									$("#messageEditInfo").html($("#stuLogged").val());
+									//$("#titleEditInfo").html($("#fieldDisabled").val());
+									//$("#messageEditInfo").html($("#stuLogged").val());
+									$("#titleEditInfo").html("Certain fields are unavailable for editing because:");
+									$("#messageEditInfo").html("At least one student has logged into this test session.");
 								} else {
 									$("#displayEditInfo").show();
 									$("#titleEditInfo").html("");
-									$("#contentEditInfo").html($("#noStudentLogged").val());
-									$("#messageEditInfo").html($("#noStudentLogged2").val());
+									//$("#contentEditInfo").html($("#noStudentLogged").val());
+									//$("#messageEditInfo").html($("#noStudentLogged2").val());
+									$("#contentEditInfo").html("No students have logged into the test. Review and change the information below as needed. <br>Required fields are marked with a blue asterisk *.");
+									$("#messageEditInfo").html("Click <b>Save</b> at any time to save your settings and exit.");
 								}
 							}
 							},
