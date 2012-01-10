@@ -23,6 +23,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private OperationStatus status;
 	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
+	private String toDay = "";
 
 	private static final long serialVersionUID = 1L;
 
@@ -89,5 +90,23 @@ public class ScheduledSavedTestVo implements Serializable {
 	public void setProductType(String productType) {
 		this.productType = productType;
 	}
+
+	
+	/**
+	 * @return the toDay
+	 */
+	public String getToDay() {
+		return toDay;
+	}
+
+	
+	/**
+	 * @param toDay the toDay to set
+	 */
+	public void setToDay(String toDay) {
+		this.toDay = toDay;
+	}
+
+	
 
 }

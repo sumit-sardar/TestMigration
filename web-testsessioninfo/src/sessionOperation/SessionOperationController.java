@@ -794,6 +794,9 @@ public class SessionOperationController extends PageFlowController {
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setSavedTestDetails(scheduledSession);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
+    	    	Date now = new Date(System.currentTimeMillis());
+    	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
+    	    	vo.setToDay(DateUtils.formatDateToDateString(today));
 
     	    	if (this.user == null || topNodesMap.size() ==0 ){
     	    		initialize();
