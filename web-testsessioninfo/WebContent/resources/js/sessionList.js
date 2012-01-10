@@ -369,8 +369,8 @@ function populateCompletedSessionListGrid() {
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
 			 $("#gap").width("3%");
-			 $("#orgSlider").width("210");
-			 $("#sessionGrid").width("990");
+			 $("#orgSlider").width("200");
+			 $("#sessionGrid").width("980");
 			 document.getElementById('orgSlider').style.display = 'block';
 			// $("#sessionGrid").css('padding-left',10);
 			$('#orgSlider').show('slide', {direction: 'left'}, 50);
@@ -393,7 +393,7 @@ function populateCompletedSessionListGrid() {
 		 $("#show").css('display', 'block');
 		 $("#gap").width("0%");
 		 $("#orgSlider").width("0");
-		 $("#sessionGrid").width("1175");
+		 $("#sessionGrid").width("1150");
 		// $("#sessionGrid").css('padding-left',0);
 		$('#orgSlider').show('slide', {direction: 'right'}, 1000);
 		document.getElementById('orgSlider').style.display = 'none';
