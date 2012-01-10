@@ -29,14 +29,28 @@
 		</td>
 	</tr>
 </table>
-
  
 <!-- Broadcast Message Dialog -->
-<div id="broadcastMsgDialogId" style="display: none; background-color: #d4ecff; padding: 10px;">
-	<div class="feature" style="padding: 10px;" id="broadcastMsgBody">
-		<div id="broadcastMsgContent">
-		</div>
-	</div>
+<div id="broadcastMsgDialogId"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<br>
+	<div class="feature" style="padding: 10px;" id="broadcastMsgBody"></div>
+	<br>
+	<div>
+		<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
+				<tr id="Act_Buttons" align="center">
+					<td  width="100%">
+						<center>
+						<input type="button" id="sData" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
+						</center>
+						<br>
+					</td>
+				</tr>
+				<tr class="binfo" style="display: none;">
+					<td colspan="2" class="bottominfo"></td>
+				</tr>
+		</table>
+	</div>	
 </div>
  
 <!-- My profile Dialog -->

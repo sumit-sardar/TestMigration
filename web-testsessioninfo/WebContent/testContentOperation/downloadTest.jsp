@@ -21,9 +21,6 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
-	<link href="<%=request.getContextPath()%>/resources/css/widgets_NEW.css" type="text/css" rel="stylesheet" />
-
-
 <netui:form action="services_downloadTest">
 	<table width="100%" border="0"> 
 		<tr>
@@ -40,28 +37,28 @@
 					<br/>
 				</c:if>
 				<p>
-				<table class="sortable">
+				<table class="simpletable">
 				<netui-data:repeater dataSource="requestScope.fileInfoList">
 				    <netui-data:repeaterHeader>
-				       <tr class="sortable">
-				                <th class="sortable alignLeft" nowrap>
-				                    <div class="notCurrentSort"><span>Product Type</span></div>
+				       <tr class="simpletable">
+				                <th class="simpletable alignLeft" nowrap>
+				                    <span>Product Type</span>
 				                </th>
-				                <th class="sortable alignRight" nowrap>
-				                    <div class="notCurrentSort"><span>Size</span></div>
+				                <th class="simpletable alignRight" nowrap>
+				                    <span>Size</span>
 				                </th>
 				        </tr>
 				    </netui-data:repeaterHeader>
 				    <netui-data:repeaterItem>
-				        <tr class="sortable">
-				            <td class="simple">
+				        <tr class="simpletable">
+				            <td class="simpletable">
 				        		<netui-data:getData resultId="fileName" value="${container.item.fileName}"/>    
 				        		<% String fileName = (String)pageContext.getAttribute("fileName"); %>         		          
 				            	<a href="<%= fileName %>">
 				               		<netui:span value="${container.item.displayName}" defaultValue="&nbsp;"/>
 				            	</a>
 				            </td>
-				            <td class="sortable alignRight">
+				            <td class="simpletable alignRight">
 				               <netui:span value="${container.item.size}" defaultValue="&nbsp;"/>
 				            </td>
 				        </tr>
@@ -69,8 +66,8 @@
 				</netui-data:repeater>
 				
 				    <ctb:tableNoResults dataSource="request.fileInfoList">
-				        <tr class="sortable">
-				            <td class="sortable" colspan="2">
+				        <tr class="simpletable">
+				            <td class="simpletable" colspan="2">
 				                 <ctb:message title="${bundle.web['loadTest.noContent.title']}" style="tableMessage">
 				                     <netui:content value="${bundle.web['loadTest.noContent.message']}"/>
 				                 </ctb:message>

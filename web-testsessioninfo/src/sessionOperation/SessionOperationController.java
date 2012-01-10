@@ -34,6 +34,8 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
+import com.ctb.bean.testAdmin.BroadcastMessage;
+import com.ctb.bean.testAdmin.BroadcastMessageData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -2432,11 +2434,79 @@ public class SessionOperationController extends PageFlowController {
         return null;
 	}
     
+    
 	@Jpf.Action()
     protected Forward broadcastMessage()
     {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+        String broadcastMessages = getBroadcastMessages();
+		
+		try{
+    		resp.setContentType(CONTENT_TYPE_JSON);
+			try {
+				stream = resp.getOutputStream();
+	    		resp.flushBuffer();
+	    		stream.write(broadcastMessages.getBytes());
+			} 
+			finally {
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
         return null;
     }
+
+    
+    private String getBroadcastMessages()
+    {        
+        BroadcastMessage[] broadcastMessages = null;
+        try
+        { 
+        	BroadcastMessageData bmd = this.testSessionStatus.getBroadcastMessages(this.userName);
+            broadcastMessages = bmd.getBroadcastMessages();
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        
+        String html = "<table class='simpletable'>";        
+		String messages = "You have no messages at this time. The Messages link will display [an alert symbol] when you have active messages.";
+		
+        if (broadcastMessages.length > 0)
+        {
+            html += "<tr class='simpletable'>";
+            html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
+            html += "</tr>";
+            messages = "";
+            for (int i=0; i<broadcastMessages.length; i++) {
+                html += "<tr class='simpletable'>";
+            	html += "<td class='simpletable'>" + broadcastMessages[i].getMessage() + "</td>";
+            	String dateStr = DateUtils.formatDateToDateString(broadcastMessages[i].getCreatedDateTime());
+            	html += "<td class='simpletable'>" + dateStr + "</td>";
+                html += "</tr>";
+            }
+        }   
+        else {
+            html += "<tr class='simpletable'><td class='simpletable'>";
+        	html += "<br/>";
+        	html += messages;
+        	html += "<br/><br/>";
+            html += "</td></tr>";
+        }
+		
+        html += "</table>";
+        
+        return html;    
+    }
+    
 
     
     @Jpf.Action()

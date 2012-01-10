@@ -11,7 +11,7 @@ function viewBroadcastMessage() {
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'broadcastMessage.do',
+				url:		'/SessionWeb/sessionOperation/broadcastMessage.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',
@@ -26,19 +26,15 @@ function viewBroadcastMessage() {
 									autoOpen: true,
 									modal: true,
 								    title:"Broadcast Message", 
-									width: 600,
+									width: "800px",
 									resizable: false,
-									buttons: {
-										"Close": function() { 
-    										var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    										//broadcastMsgBody.innerHTML = "";
-											$(this).dialog("close"); 
-										}
-									}
+									open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 								});
 								
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$(this).dialog("close"); 
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 							}
@@ -47,6 +43,9 @@ function viewBroadcastMessage() {
 	}	
 }
 
+function closeBroadcastMessage() {
+	$('#broadcastMsgDialogId').dialog("close");
+}
 
 function viewMyProfile() {
 	
