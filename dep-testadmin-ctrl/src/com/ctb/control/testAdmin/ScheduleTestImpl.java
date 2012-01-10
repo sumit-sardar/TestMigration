@@ -3465,11 +3465,16 @@ public class ScheduleTestImpl implements ScheduleTest
             ScheduledSession session = new ScheduledSession();
             //User [] proctors = users.getProctorUsersForAdmin(testAdminId);
             User [] proctors = users.getProctorUsersMinimalInfoForAdmin(testAdminId);
+            TestSession testSession = admins.getTestAdminDetails(testAdminId);
+            User scheduler = users.getUserDetailsWithoutPassword(testSession.getCreatedBy());
             for(int i=0;i<proctors.length;i++) {
                 boolean editable = users.isUserEditableByUserForAdmin(userName, proctors[i].getUserId(), testAdminId).intValue() > 0;
                 proctors[i].setCopyable(editable ? "T" : "F");
                 editable = editable && !proctors[i].getUserName().equals(userName);
                 proctors[i].setEditable(editable ? "T" : "F");
+                if(proctors[i].getUserId().intValue() == scheduler.getUserId().intValue()){
+                	proctors[i].setEditable("F");
+                }
             }
             session.setProctors(proctors);
             //session.setCopyable(admins.checkCopyable(userName, testAdminId));
