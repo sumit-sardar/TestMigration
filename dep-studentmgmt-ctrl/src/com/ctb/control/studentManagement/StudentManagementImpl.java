@@ -246,6 +246,8 @@ public class StudentManagementImpl implements StudentManagement
 				accommodation.createStudentAccommodations(studentAccommodations);
 			else    
 				accommodation.updateStudentAccommodations(studentAccommodations);
+			
+			studentManagement.setRosterUpdateFlag(studentId);
 		} catch (SQLException se) {
 			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateStudentAccommodations: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());

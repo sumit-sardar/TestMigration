@@ -978,6 +978,9 @@ public interface StudentManagement extends JdbcControl
     StudentAccommodations getStudentAccommodations(Integer studentId) throws SQLException;
 
 
+    @JdbcControl.SQL(statement = "update test_roster set updated_date_time = updated_date_time where student_id = {studentId} and test_completion_status not in ('CO','NT')")
+    void setRosterUpdateFlag(Integer studentId) throws SQLException;
+    
     /**
      * @jc:sql statement::
      * delete from 
