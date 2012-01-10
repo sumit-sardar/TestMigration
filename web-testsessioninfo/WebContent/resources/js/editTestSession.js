@@ -78,7 +78,7 @@
 						}
 					
 						 $("#scheduleSession").dialog({  
-							title:"Edit a Test Session:",  
+							title:$("#editTestSn").val(),  
 							resizable:false,
 							autoOpen: true,
 							width: '1024px',

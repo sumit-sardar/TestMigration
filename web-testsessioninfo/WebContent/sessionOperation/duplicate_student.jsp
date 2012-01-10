@@ -1,5 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
@@ -8,10 +10,10 @@
 	<br>
 		 <div style="width:965px;text-align: left;background-color: #FFFFFF; padding:5px;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
-					<netui:content value="${bundle.web['homepage.deuplicatestudent.message']}"/>
+					<lb:label key="homepage.deuplicatestudent.message"/>
 			</p>
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
-					<netui:content value="${bundle.web['homepage.deuplicatestudent2.message']}"/>
+					<lb:label key="homepage.deuplicatestudent2.message"/>
 			</p>
 	 	</div>	
 			<br>
@@ -25,8 +27,8 @@
 							
 							<td  width="100%">
 								<center>
-								<input type="button"  id="dsData" value="&nbsp;Apply&nbsp;"  onclick="javascript:updateDupStudent(); return false;" class="ui-widget-header">
-								<input type="button"  id="dcData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('duplicateStudent'); return false;" class="ui-widget-header">
+								<input type="button"  id="dsData" value=<lb:label key="common.button.apply" prefix="'&nbsp;" suffix="&nbsp;'"/>  onclick="javascript:updateDupStudent(); return false;" class="ui-widget-header">
+								<input type="button"  id="dcData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('duplicateStudent'); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>

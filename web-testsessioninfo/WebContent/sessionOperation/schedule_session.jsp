@@ -118,8 +118,8 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveTest(); return false;" disabled="disabled" class="ui-widget-header">
-								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCloseScheduleSessionPopUp(); return false;" class="ui-widget-header">
+								<input type="button"  id="sData" value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveTest(); return false;" disabled="disabled" class="ui-widget-header">
+								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:onCloseScheduleSessionPopUp(); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>
@@ -145,8 +145,8 @@
 		<tr>
 			<td >
 				<center>
-					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeScheduleSessionPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUp('closeScheduleSessionPopup'); return false;" class="ui-widget-header" style="width:60px">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeScheduleSessionPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('closeScheduleSessionPopup'); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 			</td>
 		</tr>
@@ -165,8 +165,8 @@
 		<tr>
 			<td >
 				<center>
-					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeProductConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closeProductConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeProductConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeProductConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 			</td>
 		</tr>		
@@ -184,8 +184,8 @@
 		<tr>
 			<td >
 				<center>
-					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closeSubtestConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeSubtestConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 			</td>
 		</tr>		

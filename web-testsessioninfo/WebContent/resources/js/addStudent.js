@@ -301,7 +301,7 @@ function populateSelectStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 162,  
-			caption:"Student List",
+			caption:$("#stuListGrid").val(),
 			//toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#selectStudent').getGridParam("page"));
@@ -813,7 +813,7 @@ function updateAddStudentLocaldata() {
 function openDuplicateStudentPopup(duplicateStuArray, orgForDupStu){
 	populateDuplicateStudentGrid(duplicateStuArray, orgForDupStu);
 	$("#duplicateStudent").dialog({  
-		title:"Resolve Multiple Assignments",  
+		title:$("#dupStuResolve").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '1024px',

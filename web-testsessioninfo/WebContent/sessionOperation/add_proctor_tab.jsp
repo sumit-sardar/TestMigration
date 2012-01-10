@@ -1,5 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
@@ -9,8 +11,8 @@
 			<td>
 				<div id="proctorInformationText">
 					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">
-						The person scheduling the test session is automatically assigned as a proctor.
-						Click the Add Proctor button to select additional proctors for this session.
+						<lb:label key="scheduleTest.addProc.message1"/>
+						<lb:label key="scheduleTest.addProc.message2"/>
 					</span>
 				</div>
 			</td>
@@ -39,19 +41,19 @@
 			<td>
 				<div style="float:left;"> 
 						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
-								<netui:content value="${bundle.web['sessionList.proctors.assigned']}"/> 
+								<lb:label key="sessionList.proctors.assigned"/> 
 								<span id = "totalAssignedProctors"></span>	
 						</p>
 			
 						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
-								<netui:content value="${bundle.web['sessionList.proctors.testscheduler']}"/> 
+								<lb:label key="sessionList.proctors.testscheduler"/>  
 								<span id = "testSchedulerId"></span>	
 						</p>
 				</div>
 			</td>
 			<td>
 				<div id="addProctor" style="float:right;padding-top:5px;">
-					<a href="#" id="addProctorButton" onclick="showSelectProctor();" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.addProctor']}"/></a>
+					<a href="#" id="addProctorButton" onclick="showSelectProctor();" class="rounded {transparent} button"><lb:label key="session.accordion.addProctor"/></a>
 				</div> 
 			</td>
 		</tr>
@@ -68,15 +70,15 @@
 	<table>
 		<tr>
 			<td colspan="2">
-				<p><netui:content value="${bundle.web['homepage.delProctorConfirmation1.message']}"/></p>
-				<p><netui:content value="${bundle.web['homepage.delProctorConfirmation2.message']}"/></p>
+				<p><lb:label key="homepage.delProctorConfirmation1.message"/></p>
+				<p><lb:label key="homepage.delProctorConfirmation2.message"/></p>
 			</td>
 		</tr>
 		<tr>
 			<td >
 				<center>
-					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUpForProctor('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUpForProctor('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 			</td>
 		</tr>

@@ -100,7 +100,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDate").val(), $("#endDate").val()],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -222,7 +222,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDate").val(), $("#endDate").val()],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -883,7 +883,7 @@ function registerDelegate(tree){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 162,  
-			caption:"Student List",
+			caption:$("#stuListGrid").val(),
 			onPaging: function() {
 				//clearMessage();
 				$("#studentAddDeleteInfo").hide();
@@ -1562,7 +1562,7 @@ function registerDelegate(tree){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 150,
-			caption:"Tests",
+			caption:$("#testListGrid").val(),
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
@@ -2331,7 +2331,7 @@ function registerDelegate(tree){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 162,  
-			caption:"Proctor List",
+			caption:$("#procListGrid").val(),
 			onPaging: function() {
 				$("#proctorAddDeleteInfo").hide();
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));

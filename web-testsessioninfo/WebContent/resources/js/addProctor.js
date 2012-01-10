@@ -214,7 +214,7 @@ function populateSelectProctorGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 162,  
-			caption:"Proctor List",
+			caption:$("#procListGrid").val(),
 			onPaging: function() {
 			
 			var reqestedPage = parseInt($('#selectProctor').getGridParam("page"));

@@ -14,8 +14,14 @@
 <input type="hidden" id="testName" name="testName" value=<lb:label key="homepage.grid.testName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="organization" name="organization" value=<lb:label key="homepage.grid.org" prefix="'" suffix="'"/>/>
 <input type="hidden" id="myRole" name="myRole" value=<lb:label key="homepage.grid.myRole" prefix="'" suffix="'"/>/>
-<input type="hidden" id="startDate" name="startDate" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
-<input type="hidden" id="endDate" name="endDate" value=<lb:label key="homepage.grid.endDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="startDateGrid" name="startDateGrid" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="endDateGrid" name="endDateGrid" value=<lb:label key="homepage.grid.endDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="procListGrid" name="procListGrid" value=<lb:label key="proc.grid.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuListGrid" name="stuListGrid" value=<lb:label key="session.menu.studentList" prefix="'" suffix="'"/>/>
+<input type="hidden" id="dupStuResolve" name="dupStuResolve" value=<lb:label key="stu.dupStudent.resolve" prefix="'" suffix="'"/>/>
+<input type="hidden" id="editTestSn" name="editTestSn" value=<lb:label key="sessionList.editTest.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="printTT" name="printTT" value=<lb:label key="sessionList.testTicket.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="testListGrid" name="testListGrid" value=<lb:label key="testList.grid.title" prefix="'" suffix="'"/>/>
 	
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
@@ -150,8 +156,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;${bundle.web['homepage.button.yes']}&nbsp;" onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;${bundle.web['homepage.button.no']}&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

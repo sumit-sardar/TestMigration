@@ -1,5 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <%
@@ -26,12 +28,12 @@
 	<div style="width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;padding: 0 5px 4px 0;">
 				 
-					<netui:content value="${bundle.web['sessionList.studentTab.totalStu']}"/> <span id = "totalStudent"></span>	
+					<lb:label key="sessionList.studentTab.totalStu" /> <span id = "totalStudent"></span>	
 			</p>
 			<% if (supportAccommodations) {%>
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
 				
-					<netui:content value="${bundle.web['sessionList.studentTab.stuWithAcc']}"/> <span id = "stuWithAcc"></span>	
+					<lb:label key="sessionList.studentTab.stuWithAcc" /> <span id = "stuWithAcc"></span>	
 				
 			</p>
 			<% } %>
@@ -41,7 +43,7 @@
 				<td>
 					<div style="clear:both;float:left;width:925px;padding: 0 5px 5px 0;">
 						<div id="addStudent" style="float:right;padding-left:5px;">
-							<a href="#" id="addStudentButton" onclick="showSelectStudent();" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.addStudent']}"/></a>
+							<a href="#" id="addStudentButton" onclick="showSelectStudent();" class="rounded {transparent} button"><lb:label key="session.accordion.addStudent" /></a>
 						</div> 
 					</div>
 				</td>
@@ -60,15 +62,15 @@
 	<table>
 		<tr>
 			<td colspan="2">
-			<p><netui:content value="${bundle.web['homepage.delStuConfirmation.message']}"/></p>
-			<p><netui:content value="${bundle.web['homepage.delStuConfirmation2.message']}"/></p>
+			<p><lb:label key="scheduleTest.delStuConfirmation.message" /></p>
+			<p><lb:label key="scheduleTest.delStuConfirmation2.message" /></p>
 			</td>
 		</tr>
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;${bundle.web['homepage.button.ok']}&nbsp;" onclick="javascript:removeSelectedStudent(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;${bundle.web['homepage.button.cancel']}&nbsp;&nbsp;" onclick="javascript:closePopUp('removeStuConfirmationPopup'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedStudent(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('removeStuConfirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 		</td>
 		
