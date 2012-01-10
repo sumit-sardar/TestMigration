@@ -59,8 +59,8 @@
 <input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value="${bundle.web['ViewSubtestDetails.text.validationStatus']}"/>
 <input type="hidden" name="startDateLbl" id="startDateLbl" value="${bundle.web['ViewSubtestDetails.text.startDate']}"/>
 <input type="hidden" name="completionDateLbl" id="completionDateLbl" value="${bundle.web['ViewSubtestDetails.text.completionDate']}"/>
-<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value="Total Items"/>
-<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value="Items Correct"/>
-<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value="Items to be Scored"/>
+<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value="${bundle.web['ViewSubtestDetails.text.totalItems']}"/>
+<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value="${bundle.web['ViewSubtestDetails.text.itemCorrect']}"/>
+<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value="${bundle.web['ViewSubtestDetails.text.itemToBeScored']}"/>
 
 <div id="subtestPager" class="gridTable"></div>

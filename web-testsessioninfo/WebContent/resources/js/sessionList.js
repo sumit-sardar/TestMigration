@@ -3014,7 +3014,7 @@ function registerDelegate(tree){
        	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
           type:   "POST",
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name','Student ID','Login ID',"Password","Validation Status","Online Test Status"],
+          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },

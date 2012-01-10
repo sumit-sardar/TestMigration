@@ -43,5 +43,14 @@
 		</td>
 	</tr>
 </table>
+
+<input type="hidden" name="lastNameLbl" id="lastNameLbl" value="${bundle.web['viewStatus.text.lastNameLbl']}"/>
+<input type="hidden" name="firstNameLbl" id="firstNameLbl" value="${bundle.web['viewStatus.text.firstNameLbl']}"/>
+<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="${bundle.web['viewStatus.text.studentId']}"/>
+<input type="hidden" name="loginIdLbl" id="loginIdLbl" value="${bundle.web['viewStatus.text.loginId']}"/>
+<input type="hidden" name="passwordLbl" id="passwordLbl" value="${bundle.web['viewStatus.text.password']}"/>
+<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value="${bundle.web['viewStatus.text.validationStatus']}"/>
+<input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value="${bundle.web['viewStatus.text.onlineTestStatus']}"/>
+
 <table id="rosterList" class="gridTable"></table>
 <div id="rosterPager" class="gridTable"></div>
