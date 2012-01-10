@@ -1600,7 +1600,10 @@ public class ViewMonitorStatusController extends PageFlowController
         	            this.userName = principal.toString();  
         	}
         	
-            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, form.getTestRosterId());           
+            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, form.getTestRosterId());
+            if (reportUrl.indexOf("http:") == 0) {
+            	reportUrl = reportUrl.replaceAll("http:", "https:");
+            }            
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
         } catch (Exception e) {
