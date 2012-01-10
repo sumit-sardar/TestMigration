@@ -1531,16 +1531,16 @@ function registerDelegate(tree){
 	 		if(showLevelOrGrade== undefined || showLevelOrGrade=='undefined'){
 	 			levelOrGradeTitle = 'None';
 	 		} else if (showLevelOrGrade=='level') {
-	 			levelOrGradeTitle = "Level";
+	 			levelOrGradeTitle = $("#testDetLevel").val();
 	 		} else if (showLevelOrGrade=='grade') {
-	 			levelOrGradeTitle = "Grade";
+	 			levelOrGradeTitle = $("#testDetGrade").val();
 	 		} 
  		} 
  		//reset();
  		$("#testList").jqGrid({         
         	data: testSessionlist,
 			datatype: "local",         
-			colNames:['Test Name',levelOrGradeTitle, 'Subtest', 'Duration'],
+			colNames:[$("#testName").val(),levelOrGradeTitle, $("#testDetsubTest").val(), $("#testDetDuration").val()],
 		   	colModel:[
 		   		{name:'testName',index:'testName', width:55, align:"left",sorttype:'text',sortable:isSortable, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   		{name:'level',index:'level', width:18, align:"left",sorttype:'text',sortable:isSortable,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
@@ -2311,7 +2311,7 @@ function registerDelegate(tree){
  		$("#listProctor").jqGrid({         
          data:  addProctorLocaldata,
 		 datatype: "local",         
-          colNames:[ 'Last Name','First Name','Default Scheduler','User Id','Editable'],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(),'Default Scheduler','User Id','Editable'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
