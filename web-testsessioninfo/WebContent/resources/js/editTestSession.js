@@ -103,8 +103,8 @@
 									$("#titleEditInfo").html("");
 									//$("#contentEditInfo").html($("#noStudentLogged").val());
 									//$("#messageEditInfo").html($("#noStudentLogged2").val());
-									$("#contentEditInfo").html("No students have logged into the test. Review and change the information below as needed. <br>Required fields are marked with a blue asterisk *.");
-									$("#messageEditInfo").html("Click <b>Save</b> at any time to save your settings and exit.");
+									$("#contentEditInfo").html("No students have logged into the test. Review and change the information below as needed. <br>Required fields are marked with a blue asterisk *.");
+									$("#messageEditInfo").html("Click <b>Save</b> at any time to save your settings and exit.");
 								}
 							}
 							},
