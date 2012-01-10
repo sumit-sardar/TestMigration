@@ -968,10 +968,10 @@ public class OrgOperationController extends PageFlowController {
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
         this.getSession().setAttribute("hasUploadDownloadConfigured", 
-        		new Boolean( hasUploadDownloadConfig().booleanValue() && adminUser));
+        		new Boolean( hasUploadDownloadConfig(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasProgramStatusConfigured", 
-        		new Boolean( hasProgramStatusConfig().booleanValue() && adminUser));
+        		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
@@ -1148,28 +1148,38 @@ public class OrgOperationController extends PageFlowController {
         return ccArray;
     }
     
-    private Boolean hasUploadDownloadConfig()
+    private Boolean hasUploadDownloadConfig(CustomerConfiguration[] customerConfigurations)
     {
-        Boolean hasUploadDownloadConfig = Boolean.FALSE;
-        try {   
-            hasUploadDownloadConfig = this.testSessionStatus.hasUploadDownloadConfig(this.userName);
-        } 
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return hasUploadDownloadConfig;
+    	Boolean hasUploadDownloadConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download") && 
+						cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasUploadDownloadConfig);
     }
 
-    private Boolean hasProgramStatusConfig()
+    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
     {	
-        Boolean hasProgramStatusConfig = Boolean.FALSE;
-        try {   
-            hasProgramStatusConfig = this.testSessionStatus.hasProgramStatusConfig(this.userName);
-        } 
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return hasProgramStatusConfig;
+    	Boolean hasProgramStatusConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasProgramStatusConfig);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
