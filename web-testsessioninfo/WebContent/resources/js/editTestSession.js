@@ -13,7 +13,7 @@
     var isTestDataExported = false;
     var isEndTestSession = false;
     var isSortable = true;
-  
+  	var isProctor = false;
   function editTestSession(){  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
@@ -47,11 +47,14 @@
 							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
 								stdsLogIn = true;
-								if(!isTestExpired){
+								if(!isTestExpired && !isProctor){
 								$("#endTest").show();
 								}	
+							}														
+							if(data.userRoleName == "PROCTOR"){
+								isProctor = true;
 							}							
-							if (stdsLogIn || isTestExpired){
+							if (stdsLogIn || isTestExpired || isProctor){
 								isSortable = false;								
 								disableInEdit();							
 							} else {
@@ -85,7 +88,17 @@
 							modal: true,
 							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); 
 							$("#displayEditInfo").show();
-							if(isTestExpired) {
+							if(isProctor){
+								$("#displayEditInfo").show();
+								$("#titleEditInfo").html($("#fieldDisabled").val());
+								$("#messageEditInfo").html($("#noPermission").val());	
+								if(stdsLogIn){
+								$("#endTestSessionStudentMessage").show();
+								}else{					
+								$("#endTestSessionStudentMessage").hide();
+								}
+							}
+							else if(isTestExpired) {
 								$("#displayEditInfo").show();
 								$("#titleEditInfo").html($("#fieldDisabled").val());
 								$("#messageEditInfo").html($("#sessionEnd").val());
@@ -100,7 +113,7 @@
 									$("#contentEditInfo").html($("#noStudentLogged").val());
 									$("#messageEditInfo").html($("#noStudentLogged2").val());
 								}
-							}
+							}						
 							},
 							 beforeClose: function(event, ui) { resetEditTestSession();
 							 removeDisableInEdit();
@@ -150,7 +163,7 @@
     	var testSessionList ={};
     	
     if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){   
-    	  if(stdsLogIn){
+    	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
     	  removeDisableInEdit();    	  
@@ -220,7 +233,7 @@
 									document.getElementById("testBreak").disabled=true;	
 								}
 														
-								if(stdsLogIn || isTestExpired){					
+								if(stdsLogIn || isTestExpired || isProctor){					
 								disableSelectTest();
 								}else{
 								removeDisableInEdit();
@@ -334,8 +347,24 @@
         
     function endTestSession(){
     	isEndTestSession = true;
-    	saveTest();    
+    	saveTest();        
     }
+   	function endTestSessionConfirmation(){
+    	$("#endTestSessionConfirmationPopUp").dialog({  
+			title:"Confirmation Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#endTestSessionConfirmationPopUp").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#endTestSessionConfirmationPopUp").parent().css("top",toppos);
+		 $("#endTestSessionConfirmationPopUp").parent().css("left",leftpos);	  		
+   		
+   	}
    
     function setSelectedTestAdminId(id){    
    	 selectedTestAdminId = id;
@@ -427,15 +456,17 @@
   	function disableTestDetails() {
   		$('#testSessionName').attr("disabled",true);
   		$('#startDate').attr("disabled",true);
-  		if(isTestExpired){  
-	  		if(isTestDataExported){		
+  		if(isTestExpired || isProctor){  
+	  		if(isTestDataExported || isProctor){		
 	  			$('#endDate').attr("disabled",true);
 	  		}  
   		$( "#slider-range" ).slider( "option", "disabled", true );	
   		$('#timeZoneList').attr("disabled",true);  
   		$('#testLocation').attr("disabled",true);  
   		$('#topOrgNode').attr("disabled",true);
-  		$("#addStudent").hide();  		
+	  		if(!isProctor){
+	  			$("#addStudent").hide();
+	  		}  		
   		$("#addProctor").hide();  	
   		}
   	}
