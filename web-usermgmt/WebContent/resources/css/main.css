@@ -414,3 +414,11 @@ clear: both;
 	position:relative;
 	z-index:100;
 }
+
+.subtitle{
+	font-family: Arial, Verdana, Sans Serif;
+	font-size: 12px;
+	font-style: normal;
+	padding-left: 2px;
+	color:#003399;
+}

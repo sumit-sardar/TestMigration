@@ -48,7 +48,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; padding-left: 2px;">
+				<td class="subtitle">
 				<lb:label key="user.msg.pos.button" /></td>
 			</tr>
 		</table>
