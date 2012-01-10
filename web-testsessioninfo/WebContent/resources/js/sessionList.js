@@ -3000,9 +3000,9 @@ function registerDelegate(tree){
 	
 	function closeViewStatusPopup() {
 		closePopUp('viewTestSessionId');
-		$("#testName").text('');
-		$("#testAccessCode").text('');
-		$("#totalStudents").text('');
+		$("#rosterTestName").text('');
+		$("#rosterTestAccessCode").text('');
+		$("#rosterTotalStudents").text('');
 		$('#rosterList').GridUnload();
 		$("#viewTestSessionAccordion").accordion("destroy");	
 	}
@@ -3032,8 +3032,8 @@ function registerDelegate(tree){
 				} else {
 					$("#toggleValidation").hide();
 				}
-				$("#testName").text(obj.testSession.testName);
-				$("#testAccessCode").text(obj.testSession.accessCode);
+				$("#rosterTestName").text(obj.testSession.testName);
+				$("#rosterTestAccessCode").text(obj.testSession.accessCode);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,
@@ -3084,7 +3084,7 @@ function registerDelegate(tree){
             	} else {
             		isPAGridEmpty = false;
             	}
-            	$("#totalStudents").text($('#rosterList').getGridParam('records'));
+            	$("#rosterTotalStudents").text($('#rosterList').getGridParam('records'));
 				var topRowid = $('#rosterList tr:nth-child(2)').attr('id');
             	$("#rosterList").setSelection(topRowid, true);
             	selectedTestRosterId = topRowid;

@@ -23,15 +23,15 @@
 <table width="865px" style="margin-bottom: 2px;">
 	<tr>
 		<td align="left" width="14%"><netui:content value="${bundle.web['viewStatus.testName']}"/></td>
-		<td width="80%"><span id = "testName"></span></td>
+		<td width="80%"><span id = "rosterTestName"></span></td>
 	</tr>
 </table>
 <table width="865px" style="margin-bottom: 12px;">
 	<tr>
 		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.testAccessCode']}"/></td>
-		<td width="15%"><span id = "testAccessCode"></span></td>
+		<td width="15%"><span id = "rosterTestAccessCode"></span></td>
 		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.totalStudents']}"/></td>
-		<td width="10%"><span id = "totalStudents"></span></td>
+		<td width="10%"><span id = "rosterTotalStudents"></span></td>
 		<td width="45%">
 			<div id="refreshList" style="float:right;padding-left:5px;">
 				<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.refreshList.button']}"/></a>
