@@ -523,9 +523,10 @@ td.sortable a:hover {
 
 /** SIMPLETABLE **************************************************************/
 
+
 table.simpletable {    
     border-collapse: collapse; 
-    border-color: #e9e9e9; 
+    border-color: #999999; 
     border-style: solid; 
     border-width: 1px; 
     width: 100%;
@@ -535,11 +536,11 @@ tr.simpletable {
 }
 
 th.simpletable { 
-    background-color: #d4ecff; 
-    border-color: #e9e9e9; 
+    background-color: #d0e5f5;
+    border-color: #999999; 
     border-style: solid; 
     border-width: 1px; 
-    color: #00f;
+    color: #2E6E9E;
     font-family: Arial, Verdana, Sans Serif;
     font-size: 11px;
     font-style: normal;
@@ -549,7 +550,7 @@ th.simpletable {
 
 td.simpletable { 
     background-color: #fff; 
-    border-color: #e9e9e9; 
+    border-color: #999999; 
     border-style: solid; 
     border-width: 1px; 
     color: #000;
@@ -570,6 +571,11 @@ td.simpletable a:hover {
     text-decoration: underline;
 }
 
+.messageheader {
+	background-color: #f00; 
+	color: #ffffff; 
+	padding: 0px 5px 0px 5px;
+}
 
 /** COMPLEX TABLE *************************************************************/
 
