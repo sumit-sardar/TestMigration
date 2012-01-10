@@ -173,7 +173,18 @@
 													 
 								//$('#testList').GridUnload();				
 								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
+								// Start : to show the test as selected when it appears in next page 
+								var curPage = parseInt($('#testList').jqGrid('getGridParam','page')); 
+								while(!isTestExistInCurrentPage(selectedTestSession.testSession.itemSetId)){
+								   curPage = eval(curPage)+eval(1);
+								   jQuery("#testList").jqGrid('setGridParam', {page:curPage}).trigger("reloadGrid");
+								   var loadedPage = parseInt($('#testList').jqGrid('getGridParam','page')); 
+								   if(loadedPage != curPage) {
+								   		break;
+								   }
+								}
 								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
+								// End : to show the test as selected when it appears in next page 
 								if(selectedTestSession.testSession.isRandomize == 'Y'){
 									$("#randomDis").show();	
 									$("#randDisLbl").show();		
@@ -577,5 +588,20 @@
      	$("#testGroupList").html("");
       	$("#productType").val("");
       	stdsLogIn = false;
+	
+	}
+	function isTestExistInCurrentPage(itemSetId){
+		var isetIdArray = $('#testList').jqGrid('getDataIDs');
+		if(isetIdArray.length == 0 ){
+			return true;
+		}
+		var found= false;
+		for(var ll =0, len =isetIdArray.length; ll<len; ll++ ){
+			if(eval(isetIdArray[ll])== eval(itemSetId)){
+				found = true;
+				break;
+			}
+		}
+	return found;
 	
 	}
