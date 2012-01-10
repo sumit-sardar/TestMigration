@@ -12,6 +12,8 @@ var listStr;
 var submittedSuccesfully = "";
 var previousDataForpaging = {};
 var applyChange = false;
+var filterLoadFlag = false;
+var filterTimer = null;
 
 
 var selectedStudentObjArr = {};
@@ -379,8 +381,7 @@ function populateBulkStudentGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				
-				
+				filterLoadFlag = true;
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -797,10 +798,25 @@ function populateBulkStudentGrid() {
 	
 	function applyList(){
 		UIBlock();
+		filterLoadFlag = false;
 		applyChange = true;
 		gridReloadForBulkStudent();
-		clearFilterDropDown();
+		filterTimer = setTimeout("applyFilter()", 200);
+		//clearFilterDropDown();
 		//$.unblockUI();   
+	}
+	function applyFilter() {
+		if(filterLoadFlag) {
+			$('#gs_grade').trigger('change');
+			$('#gs_calculator').trigger('change');
+			$('#gs_hasColorFontAccommodations').trigger('change');
+			$('#gs_testPause').trigger('change');
+			$('#gs_screenReader').trigger('change');
+			$('#gs_untimedTest').trigger('change');
+			$('#gs_highLighter').trigger('change');
+		} else {
+			filterTimer = setTimeout("applyFilter()", 200);
+		}
 	}
 	
 	 function defaultFilterApplied(){
