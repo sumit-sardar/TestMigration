@@ -2296,9 +2296,7 @@ function registerDelegate(tree){
 			
 			val = val.concat(addProctorLocaldata);	 
 			for (var i = 0, j = val.length; i < j; i++){			 	
-			 	if(val[i].userId != schedulerUserId){
 			 		proctorIdObjArray[val[i].userId] = val[i];
-			 	}
 			}
 			 addProctorLocaldata = val;
 		 }
