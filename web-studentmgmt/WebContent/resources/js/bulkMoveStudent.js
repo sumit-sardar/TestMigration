@@ -88,7 +88,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
 				gridReloadForBulkMoveStudent();
 				
 				 if(bulkMoveGridLoaded) {
-				 	document.getElementById('viewStatus').style.display = "block";
+				 	document.getElementById('viewStatus').style.visibility = "visible";
 				}
 			}
 			totalRowSelectedOnPage = 0;
@@ -148,7 +148,7 @@ function populateBulkMoveStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 390, 
-			width:980, 
+			width: $("#jqGrid-content-section").width(), 
 			caption:$("#moveStuGrid").val(),
 			onPaging: function() {
 				$("#displayBulkMessageMain").hide();

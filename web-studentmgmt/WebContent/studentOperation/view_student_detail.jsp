@@ -9,12 +9,10 @@
 	
 
 %>
+<div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
 <input type="hidden" id="isStudentIdConfigurable" value = '<%=isStudentIdConfigurable %>' />
-
-
-
-
+</div>
 
 <div id="viewStudentDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

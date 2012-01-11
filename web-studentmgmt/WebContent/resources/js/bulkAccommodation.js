@@ -120,7 +120,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 				gridReloadForBulkStudent();
 				
 				 if(bulkStudentgridLoaded) {
-				 	document.getElementById('viewStatus').style.display = "block";
+				 	document.getElementById('viewStatus').style.visibility = "visible";
 				 	var showAccommodations = $("#supportAccommodations").val();
 					if(showAccommodations  == 'false') {
 						$("#studentAccommGrid").jqGrid("hideCol",["calculator","hasColorFontAccommodations","testPause","screenReader","untimedTest"]); 
@@ -210,7 +210,7 @@ function populateBulkStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 392,  
-			width:1000,
+			width: $("#jqGrid-content-section").width(), 
 			caption:$("#accomStuGrid").val(),
 			toolbar: [true,"top"],
 			onPaging: function() {
@@ -593,7 +593,7 @@ function populateBulkStudentGrid() {
   function setBulkMessageMain(title, content, type, message){
 			//$("#titleBulkMain").text(title);
 			$("#contentBulkMain").text(content);
-			$("#messageBulkMain").text(message);
+			//$("#messageBulkMain").text(message);
 		}
 		function setPopupMessage(){
 			//$("#titleBulkPopup").text(BULK_ADD_TITLE);

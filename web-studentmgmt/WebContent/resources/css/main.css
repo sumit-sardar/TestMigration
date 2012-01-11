@@ -508,3 +508,30 @@ clear: both;
 	position:relative;
 	z-index:100;
 }
+
+.subtitle{
+	font-family: Arial, Verdana, Sans Serif;
+	font-size: 12px;
+	font-style: normal;
+	padding-left: 2px;
+	color:#003399;
+}
+
+.buttonsRow{
+	padding-bottom:1px; 
+	min-height: 25px; 
+	height: 25px;
+}
+
+.errMsgs{
+	 text-align: left; 
+	 background-color: #FFFFFF; 
+	 font-family: Arial, Verdana, Sans Serif; 
+	 font-size: 12px; 
+	 font-style: normal; 
+	 font-weight: bold;
+	 align: left;
+	 padding-top: 5px;
+	 padding-left: 2px;
+	 padding-bottom: 5px;
+}

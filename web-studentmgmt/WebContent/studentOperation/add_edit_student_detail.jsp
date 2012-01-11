@@ -21,6 +21,7 @@
 	
 
 %>
+<div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
 <input type="hidden" id="isMandatoryBirthDate"  value = '<%=isMandatoryBirthDate %>' />
 <input type="hidden" id="isMandatoryStudentId" value = '<%=isMandatoryStudentId %>' />
@@ -36,9 +37,7 @@
 <input type="hidden" id="showEditButton" value = '<%=showEditButton %>' />
 <input type="hidden" id="showDeleteButton" value = '<%=showDeleteButton %>' />
 <input type="hidden" id="stuCreatedBy" value = '<%=stuCreatedBy %>' />
-
-
-
+</div>
 
 <div id="addEditStudentDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

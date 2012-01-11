@@ -42,54 +42,53 @@
 <input type="hidden" id="middleNameID" name="middleNameID" value=<lb:label key="stu.info.middleName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
 
-<table> 
-	<tr>
-		<td style="padding-left:5px;">
-    		<h1><lb:label key="stu.students.title" /></h1>
+<table class="transparent" width="97%" style="margin:15px auto;"> 
+	<tr class="transparent">
+        <td>
+		<table class="transparent">
+			<tr class="transparent">
+				<td>
+		    		<h1><lb:label key="stu.students.title" /></h1>
+				</td>
+			</tr>
+			<tr> 
+				<td class="subtitle">  
+					<lb:label key="stu.students.subtitle" />
+				</td>	
+			</tr>
+		</table>
 		</td>
 	</tr>
-	<tr> 
-		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
-			<lb:label key="stu.students.subtitle" />
-		</td>	
-	</tr>
-</table>
-<br/>
-<table class="transparent">
 
     <tr class="transparent">
-        <td style="border-color : #2E6E9E;padding-left:5px;">
-        
-      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
-			<font style="color: red; font-size:12px; font-weight:bold"><div id="titleMain"></div></font>
-			<div id= "contentMain">	</div>
-			<div id= "messageMain">	</div>
-		</div>
-		
-	 <table class="transparent">
-	    <tr class="transparent">
-	        <td style="vertical-align:top;">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
-	    	<script>populateTree();</script>
-
-	    	<div id="outertreebgdiv" class="treeCtrl">
-		    	<div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
-				</div>
-			</div> 
-			
-		 	</td>
-	 		<td class="transparent" width="5px">&nbsp;</td>
-		 	<td >
-	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader gridPos">
-	      			&nbsp;<lb:label key="stu.label.list" />	      		
-	      		</div>
-	    		<table id="list2" class="gridTable"></table>
-				<div id="pager2" class="gridTable"></div>			
-		 </td>
-	    </tr>
-	</table>
-	
-
+    	<td align="center">        
+			<table width="100%">
+				<tr>
+					<td colspan="3" class="buttonsRow">
+				        <div id="displayMessageMain" style="display:none; width:99.5%;" class="errMsgs">
+							<font style="color: red;"><div id="titleMain"></div></font>
+							<div id= "contentMain">	</div>
+							<div id= "messageMain">	</div>
+						</div>
+					</td>
+				</tr>
+				<tr class="transparent">
+		        <td style="vertical-align:top; width:16%;" align="left">
+			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
+			    	<script>populateTree();</script>		
+			    	<div id="orgNodeHierarchy"  class="treeCtrl">
+					</div>
+				 </td>
+				 
+			 	 <td class="transparent" width="5px">&nbsp;</td>
+			 	
+				 <td style="vertical-align:top;"  id="jqGrid-content-section">
+			      	<table id="list2" class="gridTable"></table>
+					<div id="pager2" class="gridTable"></div>			
+				</td>
+				
+				</tr>
+			</table>
         </td>
     </tr>
 </table>
@@ -141,8 +140,9 @@
 		
 	</table>
 </div>
-
-<input type="hidden" id="deleteStatus" name="deleteStatus" value=""/>
+<div>
+	<input type="hidden" id="deleteStatus" name="deleteStatus" value=""/>
+</div>
 <div id="deleteStudentPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table border="0" width="100%">

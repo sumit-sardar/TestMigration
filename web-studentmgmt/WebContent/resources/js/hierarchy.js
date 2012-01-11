@@ -520,7 +520,7 @@ function updateOrganization(element, isChecked){
 			
 	function populateGrid() {
 	
-		$("#searchresultheader").css("visibility","visible");	
+		//$("#searchresultheader").css("visibility","visible");	
 	
 		var studentIdTitle = $("#studentIdLabelName").val();
         $("#list2").jqGrid({         
@@ -554,9 +554,11 @@ function updateOrganization(element, isChecked){
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 370,
+			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			caption:"Student List",
 			onPaging: function() {
 				clearMessage();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
@@ -610,7 +612,7 @@ function updateOrganization(element, isChecked){
 	
 	
 	function populateGridWithoutAccommodation() {
-	$("#searchresultheader").css("visibility","visible");	
+	//$("#searchresultheader").css("visibility","visible");	
 	var studentIdTitle = $("#studentIdLabelName").val();
          $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
@@ -642,9 +644,11 @@ function updateOrganization(element, isChecked){
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 370,
+			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			caption:"Student List",
 			onPaging: function() {
 				clearMessage();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
