@@ -23,23 +23,25 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
-
+<netui:form action="services_installSoftware">
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>
-		<td style="padding-left:5px;">
+		<td style="padding-left:5px;" colspan="2">
     		<h1><lb:label key="services.installSoftware.title" /></h1>
 		</td>
 	</tr>
 	<tr> 
-		<td style="padding-left:6px;">
+		<td style="padding-left:6px;" colspan="2">
 			<p style="color:#000"><netui:content value="${bundle.web['installClient.message']}"/></p>
 			<p align="right">
 			    <a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
 			</p> 
-		
-			<netui:form action="services_installSoftware">
-			
-			<table class="transparent">
+		</td>
+	</tr>
+	<tr class="transparent">
+        <td class="transparent-top" colspan="2">&nbsp;</td>
+    </tr>
+				
 
    	<%-- Check Java Version --%>
     <tr class="transparent">
@@ -266,11 +268,12 @@ Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return s
 
             </table>
 			
-			
-			</netui:form>
 </td>	
 	</tr>
 </table>
+</netui:form>
+
+
 <script type="text/javascript">
 	allowDownLoadBinFile();
 </script>
