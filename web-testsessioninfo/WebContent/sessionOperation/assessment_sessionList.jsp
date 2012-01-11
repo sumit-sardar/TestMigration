@@ -64,8 +64,8 @@
 					<td>
 					   	<table>
 							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size:12px; font-weight:bold"><div id="saveTestTitle"></div></font></td></tr>
-							<tr><td><font style="font-family: Arial,Verdana,Sans Serif; font-size: 12px; font-style: normal;"><div id= "saveTestContent">	</div></font></td></tr>
-							<tr><td><font style="font-family: Arial,Verdana,Sans Serif; font-size: 12px; font-style: normal;"><div id= "saveTestMessage">	</div></font></td></tr>
+							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size: 12px; font-style: normal;"><div id= "saveTestContent">	</div></font></td></tr>
+							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size: 12px; font-style: normal;"><div id= "saveTestMessage">	</div></font></td></tr>
 						</table>
 					</td>
 				</tr>
