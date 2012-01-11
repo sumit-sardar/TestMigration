@@ -140,8 +140,8 @@
     	selectedTestSession =  data.savedTestDetails;	  	
 		fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.savedTestDetails.testSession.timeZone);
 		$("#testSessionName").val(data.savedTestDetails.testSession.testAdminName);
-		$( "#startDate" ).datepicker( "option" , "minDate" , data.savedTestDetails.testSession.loginStartDateString ) ;
-		$( "#endDate" ).datepicker( "option" , "minDate" , data.savedTestDetails.testSession.loginEndDateString ) ;
+		$( "#startDate" ).datepicker( "option" , "minDate" , data.toDay ) ;
+		$( "#endDate" ).datepicker( "option" , "minDate" , data.toDay ) ;
 		$( "#endDate" ).datepicker( "refresh" );
 		$( "#startDate" ).datepicker( "refresh" );
 		document.getElementById("startDate").value = data.savedTestDetails.testSession.loginStartDateString;
