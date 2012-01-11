@@ -4,8 +4,14 @@ var bulkMoveStuCounterPage = 0;
 var allStudentInGrid = [];
 var selectedStudentForMove = [];
 var finalSelectedNode;
-var BULK_MOVE_NOTSELECTED = $("#noBulkMoveID").val();
-var STUDENTS_MOVED = $("#stuBulkMovedID").val();
+var BULK_MOVE_NOTSELECTED = "";
+var STUDENTS_MOVED = "";
+
+$(document).ready(function(){//need to ensure if page is rendered so that the id elements will be available
+
+	BULK_MOVE_NOTSELECTED = $("#noBulkMoveID").val();
+	STUDENTS_MOVED = $("#stuBulkMovedID").val();
+});
 
 function populateBulkMoveTree() {
 	isBulkMove = true;
