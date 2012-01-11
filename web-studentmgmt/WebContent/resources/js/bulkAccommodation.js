@@ -478,7 +478,7 @@ function populateBulkStudentGrid() {
   	
   	document.getElementById('displayPopupMessage').style.display = "none";	
 	document.getElementById('displayBulkMessageMain').style.display = "none";	
-	document.getElementById('errorImg').style.display = "none";	
+	//document.getElementById('errorImg').style.display = "none";	
   }
   
   function openAssignAccommPopup(element){
@@ -564,7 +564,7 @@ function populateBulkStudentGrid() {
 										} else {
 											setBulkMessageMain(data.title, data.content, data.type, "");
 											document.getElementById('displayBulkMessageMain').style.display = "block";	
-											document.getElementById('errorImg').style.display = "block";	
+											//document.getElementById('errorImg').style.display = "block";	
 											resetRadioAccommodation();
 											closePopUp('AssignAccommPopup');
 										}
