@@ -78,7 +78,27 @@
 								document.getElementById("sData").disabled=false;
 							}
 							
-						}
+						} else if (data.status.IsSystemError) {
+							 var length = 0;
+							 
+							 if(data.status.validationFailedInfo.message!=undefined){
+								   	length= data.status.validationFailedInfo.message.length;
+						 	 }
+								if(length==0) {
+									setSessionSaveMessage(data.status.validationFailedInfo.messageHeader, "", "errorMessage","");
+									$('#displayMessage').show(); 
+								} else if (length==1) {
+									setSessionSaveMessage(data.status.validationFailedInfo.messageHeader, data.status.validationFailedInfo.message[0], "errorMessage","");
+									$('#displayMessage').show(); 
+								} else  {
+									setSessionSaveMessage(data.status.validationFailedInfo.messageHeader,  data.status.validationFailedInfo.message[0], "errorMessage", data.status.validationFailedInfo.message[1]);
+									$('#displayMessage').show(); 
+								}
+								$.unblockUI();
+								$('#showSaveTestMessage').show();
+							  	closePopUp("scheduleSession");
+							  	return;
+					  }
 					
 						 $("#scheduleSession").dialog({  
 							title:$("#editTestSn").val(),  
