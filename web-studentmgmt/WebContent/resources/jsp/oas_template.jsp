@@ -30,6 +30,16 @@
 #innerID li {
 	clear: both;
 }
+
+#bulkStudentMoveOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#bulkStudentMoveOrgNode li {
+	clear: both;
+}
+
 </style>
 <![endif]-->
   <head>

@@ -52,8 +52,11 @@
 		        <td style="vertical-align:top; width:16%;" align="left">
 			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 			    	<script>populateBulkMoveTree();</script>
-			    	<div id = "bulkStudentMoveOrgNode" class="treeCtrl" style="height:512px !important">					
-					</div>				
+			
+			    	<div id="outertreebcgdiv" class="treeCtrl" style="height:512px !important">
+				    	<div id = "bulkStudentMoveOrgNode" style="width:auto;height:auto;display:table">
+						</div>
+					</div>
 			 	</td>
 			 	
 	 			<td class="transparent" width="5px">&nbsp;</td>
