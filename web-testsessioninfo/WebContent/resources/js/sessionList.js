@@ -939,8 +939,10 @@ function registerDelegate(tree){
 				if(status) {
 					selectAllForDelete = true;
 					for(var i = 0; i < AddStudentLocaldata.length; i++) {
-						delStuIdObjArray[deleteStudentCounter] = AddStudentLocaldata[i].studentId;
-						deleteStudentCounter++;
+					    if(!((AddStudentLocaldata[i].testCompletionStatus != "SC" && AddStudentLocaldata[i].testCompletionStatus != "" && AddStudentLocaldata[i].testCompletionStatus != "NT") || (AddStudentLocaldata[i].statusEditable =="F"))){
+							delStuIdObjArray[deleteStudentCounter] = AddStudentLocaldata[i].studentId;
+							deleteStudentCounter++;
+						}
 					}
 				} else {
 					selectAllForDelete = false;					
@@ -1038,11 +1040,11 @@ function registerDelegate(tree){
 	element.title = 'Remove Student';
 	var element = document.getElementById('refresh_list6'); // Added to remove refresh button from grid also
 	element.style.display = 'none';
-	if(isTestExpired){
-       	$("#del_list6").addClass('ui-state-disabled');      
-     }else{
-     	$("#del_list6").removeClass('ui-state-disabled');      
-     }
+	//if(isTestExpired){
+    //   	$("#del_list6").addClass('ui-state-disabled');      
+    // }else{
+    // 	$("#del_list6").removeClass('ui-state-disabled');      
+    // }
 	}
 	
 	function checkPresenceInDelStuIdObjArray(deleteId) {
