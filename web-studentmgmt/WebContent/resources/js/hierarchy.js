@@ -558,7 +558,7 @@ function updateOrganization(element, isChecked){
 			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			ondblClickRow: function(rowid) {viewEditStudentPopup();},
-			caption:"Student List",
+			caption:$("#stuCapId").val(),
 			onPaging: function() {
 				clearMessage();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
@@ -648,7 +648,7 @@ function updateOrganization(element, isChecked){
 			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			ondblClickRow: function(rowid) {viewEditStudentPopup();},
-			caption:"Student List",
+			caption:$("#stuCapId").val(),
 			onPaging: function() {
 				clearMessage();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));

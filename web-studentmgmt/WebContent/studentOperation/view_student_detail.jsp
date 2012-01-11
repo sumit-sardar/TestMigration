@@ -22,7 +22,7 @@
 	<div id="viewaccordion" style="width:99.5%;">
 			
 			<div>
-				<h3><a href="#">Student Information</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.info"/></a></h3>
 				
 					<div id="view_Student_Information" style="background-color: #FFFFFF;">
 	
@@ -131,7 +131,7 @@
 					<td>&nbsp;</td>
 				<td  width="100%">
 					<center>
-					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('viewStudentDetail'); return false;" class="ui-widget-header">
+					<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('viewStudentDetail'); return false;" class="ui-widget-header">
 					</center>
 					<br>
 				</td>

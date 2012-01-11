@@ -40,7 +40,7 @@
 	        <td class="simple" style="background-color : #ffffff" valign="top">
 	        
 		      	<div  id="searchheader" class="treeHeader">
-		      		&nbsp;User Search
+		      		&nbsp;<lb:label key="stu.label.usrSearch"/>
 		      	</div>
 			      	
 		    	<script>

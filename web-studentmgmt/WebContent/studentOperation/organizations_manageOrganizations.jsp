@@ -38,7 +38,7 @@
 	        <td class="simple" style="background-color : #ffffff" valign="top">
 	        
 		      	<div id="searchheader" class="treeHeader">
-		      		&nbsp;Organization Search
+		      		&nbsp;<lb:label key="stu.label.orgnSearch"/>
 		      	</div>
 			      	
 		    	<script>

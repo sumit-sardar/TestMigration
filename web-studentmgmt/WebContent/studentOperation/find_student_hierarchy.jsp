@@ -41,6 +41,7 @@
 <input type="hidden" id="missRequiredFieldsID" name="missRequiredFieldsID" value=<lb:label key="stu.msg.missRequiredFields" prefix="'" suffix="s'"/>/>
 <input type="hidden" id="middleNameID" name="middleNameID" value=<lb:label key="stu.info.middleName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuCapId" name="stuCapId" value=<lb:label key="stu.menu.studentList" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
@@ -108,8 +109,8 @@
 		<tr>
 		<td>
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>
@@ -130,8 +131,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>
@@ -157,8 +158,8 @@
 		</tr>
 		<tr align="center">
 			<td>
-				<input type="button"  value="&nbsp;OK&nbsp;" onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
-				<input type="button"  value="&nbsp;Cancel&nbsp;" onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
 			</td>		
 		</tr>
 		
