@@ -17,8 +17,8 @@ var filterTimer = null;
 
 
 var selectedStudentObjArr = {};
-var BULK_ADD_TITLE      = "Edit Accommodations";
-var BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated.";	
+var BULK_ADD_TITLE      = $("#stuEditAccoID").val();
+var BULK_ACCOM_NOTSELECTED = $("#stuNoAccoID").val();	
 	
 function populateBulkAccommTree() {
 	
