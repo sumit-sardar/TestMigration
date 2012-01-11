@@ -649,7 +649,12 @@ public class SessionOperationController extends PageFlowController {
             } 
            if (!isValidationFailed && studentCountBeforeSave <= studentCountAfterSave) {
         	   
-           		String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+           		String messageHeader = "";
+           		if(isAddOperation) {
+           			messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+           		} else {
+           			messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionEdited.Header");
+           		}
            		//String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body");
            		successInfo.setKey("TEST_SESSION_SAVED");
            		successInfo.setMessageHeader(messageHeader);
@@ -661,7 +666,12 @@ public class SessionOperationController extends PageFlowController {
            } else if (!isValidationFailed)
             {
                 int removedCount = studentCountBeforeSave - studentCountAfterSave;
-                String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+                String messageHeader = "";
+           		if(isAddOperation) {
+           			messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+           		} else {
+           			messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionEdited.Header");
+           		}
            		String messageBody = MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
            		successInfo.setKey("TEST_SESSION_SAVED_RES_STD");
            		successInfo.setMessageHeader(messageHeader);
