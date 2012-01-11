@@ -138,7 +138,7 @@
         </td>
         <td class="transparent-top">
             
-            <table class="transparent">
+            <table class="transparent" width="100%">
 
                 <tr class="transparent">
                     <td class="transparent-top" width="5%">&nbsp;</td>
