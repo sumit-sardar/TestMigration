@@ -716,6 +716,7 @@ public class SessionOperationController extends PageFlowController {
     	    //String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    OperationStatus status = new OperationStatus();
+    	    vo.setOperationStatus(status) ;
     	    
     	    try {
 
@@ -770,6 +771,7 @@ public class SessionOperationController extends PageFlowController {
     			 status.setValidationFailedInfo(validationFailedInfo);
     	    	
     	    } catch(Exception e) {
+    	    	e.printStackTrace(); 
     	    	status.setSystemError(true);
     	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
     	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
@@ -803,6 +805,7 @@ public class SessionOperationController extends PageFlowController {
     	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    OperationStatus status = new OperationStatus();
+    	    vo.setOperationStatus(status) ;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
@@ -830,7 +833,7 @@ public class SessionOperationController extends PageFlowController {
                 vo.populateTimeZone();
                 
                 status.setSuccess(true);
-                vo.setOperationStatus(status) ;
+                
                 String timeZone = testSession.getTimeZone();
                 testSession.setTimeZone(DateUtils.getUITimeZone(timeZone));
                 testSession.setLoginStartDateString(DateUtils.formatDateToDateString(testSession.getLoginStartDate()));
@@ -850,6 +853,7 @@ public class SessionOperationController extends PageFlowController {
     			 status.setValidationFailedInfo(validationFailedInfo);
     	    	
     	    } catch(Exception e) {
+    	    	e.printStackTrace(); 
     	    	status.setSystemError(true);
     	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
     	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
@@ -883,6 +887,7 @@ public class SessionOperationController extends PageFlowController {
     	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    OperationStatus status = new OperationStatus();
+    	    vo.setOperationStatus(status) ;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
@@ -890,7 +895,7 @@ public class SessionOperationController extends PageFlowController {
     	    	List<SessionStudent> studentsList = buildStudentList(students);
     	    	vo.setSavedStudentsDetails(studentsList);
                 status.setSuccess(true);
-                vo.setOperationStatus(status) ;
+               
                 
     	    	
     	    } catch(CTBBusinessException e){
@@ -904,6 +909,7 @@ public class SessionOperationController extends PageFlowController {
     			 status.setValidationFailedInfo(validationFailedInfo);
     	    	
     	    } catch(Exception e) {
+    	    	e.printStackTrace(); 
     	    	status.setSystemError(true);
     	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
     	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
@@ -935,14 +941,15 @@ public class SessionOperationController extends PageFlowController {
 	    resp.setCharacterEncoding("UTF-8"); 
 	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
 	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
-	    OperationStatus status = new OperationStatus();
+	    OperationStatus status = new OperationStatus(); 
+	    vo.setOperationStatus(status) ;
 	    try {
 	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
 	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminId);
 	    	 List<UserProfileInformation> proctors= buildProctorList(scheduledSession.getProctors());
 	    	 vo.setSavedProctorsDetails(proctors);
             status.setSuccess(true);
-            vo.setOperationStatus(status) ;
+           
             
 	    	
 	    } catch(CTBBusinessException e){
@@ -956,6 +963,7 @@ public class SessionOperationController extends PageFlowController {
 			 status.setValidationFailedInfo(validationFailedInfo);
 	    	
 	    } catch(Exception e) {
+	    	e.printStackTrace(); 
 	    	status.setSystemError(true);
 	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
 	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
