@@ -2498,35 +2498,37 @@ public class ManageUserController extends PageFlowController
     
     private void updateCreatorOrgNodeIdForUserSessions(String userName, List selectedOrgNodes) 
     {
-        try
-        {      
-        	TestSessionData tsd = this.testSessionStatus.getTestSessionsForUser(userName, null, null, null);    
-            
-            PathNode node = (PathNode)selectedOrgNodes.get(0);
-            Integer defaultOrgNodeId = node.getId();
-            
-            TestSession[] testsessions = tsd.getTestSessions();            
-            for (int i=0; i < testsessions.length; i++) {
-                TestSession ts = testsessions[i];
-                if (ts != null) {
-                	boolean found = false;
-                    for (int j=0 ; j<selectedOrgNodes.size() ; j++) {
-                        node = (PathNode)selectedOrgNodes.get(j);
-                        if (node.getId().intValue() == ts.getCreatorOrgNodeId().intValue()) {
-                        	found = true;
-                        }
-                    }
-                    if (! found) {
-                    	// move this test session to user's default location
-                        this.scheduleTest.updateCreatorOrgNodeIdForTestSession(ts.getTestAdminId(), defaultOrgNodeId);                        
-                    }
-                }
-            }
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }
+    	if (selectedOrgNodes != null && selectedOrgNodes.size() > 0) {
+	        try
+	        {      
+	        	TestSessionData tsd = this.testSessionStatus.getTestSessionsForUser(userName, null, null, null);    
+	            
+	            PathNode node = (PathNode)selectedOrgNodes.get(0);
+	            Integer defaultOrgNodeId = node.getId();
+	            
+	            TestSession[] testsessions = tsd.getTestSessions();            
+	            for (int i=0; i < testsessions.length; i++) {
+	                TestSession ts = testsessions[i];
+	                if (ts != null) {
+	                	boolean found = false;
+	                    for (int j=0 ; j<selectedOrgNodes.size() ; j++) {
+	                        node = (PathNode)selectedOrgNodes.get(j);
+	                        if (node.getId().intValue() == ts.getCreatorOrgNodeId().intValue()) {
+	                        	found = true;
+	                        }
+	                    }
+	                    if (! found) {
+	                    	// move this test session to user's default location
+	                        this.scheduleTest.updateCreatorOrgNodeIdForTestSession(ts.getTestAdminId(), defaultOrgNodeId);                        
+	                    }
+	                }
+	            }
+	        }
+	        catch (CTBBusinessException be)
+	        {
+	            be.printStackTrace();
+	        }
+    	}
     }
     
     /**
