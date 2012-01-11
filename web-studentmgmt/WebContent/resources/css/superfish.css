@@ -207,3 +207,13 @@ li.sfHover > a > .sf-sub-indicator {
 .ui-jqgrid-view {
 	z-index: 100;
 }
+.hidemenu {
+	display: none;
+}
+
+li.scollSection:hover {
+	background:#D4ECFF !important;
+}
+li.scollSection a{
+	padding-left:128px;
+}

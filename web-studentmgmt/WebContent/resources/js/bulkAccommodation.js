@@ -659,19 +659,80 @@ function populateBulkStudentGrid() {
 	function createDemoList(){
 		var liMenuStr = "<div><ul class='sf-menu' id='menu'>";
 		 for (var i=0; i<3; i++) {
-		 	liMenuStr = liMenuStr + "<li class='selected roundedBorder' id='sf-menu-sub"+i+"'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul><li><a href='#' id='ps_"+parseInt(i+1)+"'>Please select</a>";
+		 	liMenuStr = liMenuStr + "<li class='selected roundedBorder' id='sf-menu-sub"+i+"'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul>";
+		 	if(customerDemographicList.length > demomenuShowCount){
+		 		if(i==0){
+	 				showScrollMenu1 = true;
+	 			}else if(i == 1){
+	 				showScrollMenu2 = true;
+	 			}else {
+	 				showScrollMenu3 = true;
+	 			}
+		 	}
+		 	
+		 	if(i == 0 && showScrollMenu1){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollUp' style='display:none;' href='#' onclick='scrollmenu(0,&#34;M&#34;,&#34;U&#34;,event);return false;'>&#x25B2;</a></li>";
+		 	}
+		 	
+		 	if(i == 1 && showScrollMenu2){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollUp' style='display:none;' href='#' onclick='scrollmenu(1,&#34;M&#34;,&#34;U&#34;,event);return false;'>&#x25B2;</a></li>";
+		 	}
+		 	
+		 	if(i == 2 && showScrollMenu3){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollUp' style='display:none;' href='#' onclick='scrollmenu(2,&#34;M&#34;,&#34;U&#34;,event);return false;'>&#x25B2;</a></li>";
+		 	}
+		 	
+		 	liMenuStr = liMenuStr + "<li><a href='#' id='ps_"+parseInt(i+1)+"'>Please select</a>";
 		 	for(var j=0; j<customerDemographicList.length; j++) {
-		 		liMenuStr= liMenuStr + "<li><a href='#' id='"+customerDemographicList[j].id+"_"+parseInt(i+1)+"'>"+customerDemographicList[j].labelName+"</a>";
+		 		
+		 		if(j>=demomenuShowCount){
+		 			liMenuStr= liMenuStr + "<li class='hidemenu'><a href='#' id='"+customerDemographicList[j].id+"_"+parseInt(i+1)+"'>"+customerDemographicList[j].labelName+"</a>";
+		 		}else {
+		 			liMenuStr= liMenuStr + "<li class='showMenu'><a href='#' id='"+customerDemographicList[j].id+"_"+parseInt(i+1)+"'>"+customerDemographicList[j].labelName+"</a>";
+		 		}
 		 		var cDemoValues = customerDemographicList[j].customerDemographicValues;
+		 		
 		 		if (cDemoValues.length > 0){
-		 			liMenuStr= liMenuStr + "<ul>";
-		 			for(var k=0; k< cDemoValues.length; k++){
-		 				liMenuStr = liMenuStr + "<li><a href='#' id='"+cDemoValues[k].valueName+"'>"+cDemoValues[k].valueName+"</a></li>";
+		 			if(cDemoValues.length > demoSubmenuShowCount) {
+		 				showSubMenuScroll = true;
+		 			}else {
+		 				showSubMenuScroll = false;
 		 			}
+		 			
+		 			var innerUlId = i + "" + j;
+		 			liMenuStr= liMenuStr + "<ul class='sf-menu-sub-level2' id='sf-menu-sub-level" +i + "" + j+"'>";
+		 			if(showSubMenuScroll){
+		 				liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollUp' style='display:none;' href='#' onclick='scrollmenu(&#34;"+innerUlId+"&#34;,&#34;S&#34;,&#34;U&#34;,event);return false;'>&#x25B2;</a></li>";
+		 			}
+		 			
+		 			for(var k=0; k< cDemoValues.length; k++){
+		 				if(k>=demoSubmenuShowCount){
+		 					liMenuStr = liMenuStr + "<li class='hidemenu'><a href='#' id='"+cDemoValues[k].valueName+"'>"+cDemoValues[k].valueName+"</a></li>";
+		 				}else {
+		 					liMenuStr = liMenuStr + "<li class='showMenu'><a href='#' id='"+cDemoValues[k].valueName+"'>"+cDemoValues[k].valueName+"</a></li>";
+		 				}
+		 				
+		 			}
+		 			if(showSubMenuScroll){
+		 				liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollDown'  href='#' onclick='scrollmenu(&#34;"+innerUlId+"&#34;,&#34;S&#34;,&#34;D&#34;,event);return false;'>&#x25BC;</a></li>";
+		 			}
+		 			
 		 			liMenuStr= liMenuStr + "</ul>";
 		 		}
 		 		liMenuStr= liMenuStr + "</li>";
 		 	}
+		 	if(i == 0 && showScrollMenu1){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollDown' href='#' onclick='scrollmenu(0,&#34;M&#34;,&#34;D&#34;,event);return false;'>&#x25BC;</a></li>";
+		 	}
+		 	
+		 	if(i == 1 && showScrollMenu2){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollDown' href='#' onclick='scrollmenu(1,&#34;M&#34;,&#34;D&#34;,event);return false;'>&#x25BC;</a></li>";
+		 	}
+		 	
+		 	if(i == 2 && showScrollMenu3){
+		 		liMenuStr= liMenuStr + "<li class='scollSection'><a class='scrollDown' href='#' onclick='scrollmenu(2,&#34;M&#34;,&#34;D&#34;,event);return false;'>&#x25BC;</a></li>";
+		 	}
+		 	
 		 	liMenuStr= liMenuStr + "</ul></li>";
 		 	
 		 	
@@ -683,12 +744,123 @@ function populateBulkStudentGrid() {
 	}
 	
 	
+	function scrollmenu(menuNo,menyType,action,e){
+		// menuNo : 1st, 2nd or 3rd menu
+		// menyType : menu(M) or submenu(S)
+		//action: up(U) or down(D)
+		disableHover = true;
+		if(menyType == 'M'){
+			var menuID = 'sf-menu-sub' + menuNo;
+			var submenuUL = $("#" +menuID).children("ul");
+		}else {
+			var menuID = 'sf-menu-sub-level' + menuNo;
+			var submenuUL = $("#" +menuID);
+		}
+		
+		var scrollCount;
+		
+		if(action == 'D'){
+			$(submenuUL).children("li.scollSection").children(".scrollUp").show();
+				var count = $(submenuUL).children(".showMenu:first").prevAll(".hidemenu").length + $(submenuUL).children(".showMenu").length;
+				if(menyType == 'M'){
+					var downDiff = $(submenuUL).children(':not(.scollSection)').length - count - 1;
+				}else {
+					var downDiff = $(submenuUL).children(':not(.scollSection)').length - count;
+				}
+				
+				if(downDiff > 0){
+					if(downDiff<demomenuShowCount){
+						scrollCount = downDiff;
+					}else {
+						scrollCount = demomenuShowCount;
+					}
+					for(var i =0;i<scrollCount;i++){
+						$(submenuUL).children('.showMenu:first').removeClass("showMenu").addClass("hidemenu");
+						$(submenuUL).children('.showMenu:last').next(".hidemenu").removeClass("hidemenu").addClass("showMenu");
+					}
+					if($(submenuUL).children(".showMenu:last").next("li.hidemenu").length == 0){
+						$(submenuUL).children("li.scollSection").children(".scrollDown").hide();
+					}
+				}
+		}else {			
+			$(submenuUL).children("li.scollSection").children(".scrollDown").show();
+			var count = $(submenuUL).children(".showMenu").length + $(submenuUL).children(".showMenu:last").nextAll(".hidemenu").length;
+			if(menyType == 'M'){
+				var upDiff = $(submenuUL).children(':not(.scollSection)').length - count - 1;
+			}else {
+				var upDiff = $(submenuUL).children(':not(.scollSection)').length - count;
+			}
+			
+			if(upDiff < demomenuShowCount){
+				scrollCount = upDiff;
+			}else {
+				scrollCount = demomenuShowCount;
+			}
+			for(var i =0;i<scrollCount;i++){
+				$(submenuUL).children('.showMenu:last').removeClass("showMenu").addClass("hidemenu");
+				$(submenuUL).children('.showMenu:first').prev(".hidemenu").removeClass("hidemenu").addClass("showMenu");
+			}
+			if($(submenuUL).children(".showMenu:first").prev("li.hidemenu").length == 0){
+				$(submenuUL).children("li.scollSection").children(".scrollUp").hide();
+			}
+		}
+		
+		if(e.preventDefault){
+			e.preventDefault();
+		}else {
+			e.returnValue = false;
+			
+		}		
+		e.cancelBubble = true;
+		
+		window.setTimeout(function(){disableHover = false;},100);
+		return false;
+	}
+	
+	
+	
+	var demomenuShowCount = 12;
+	var demoSubmenuShowCount = 8;
+	var showScrollMenu1 = false;
+	var showScrollMenu2 = false;
+	var showScrollMenu3 = false;
+	var showSubMenuScroll = false;
+	var disableHover = false;
+	
+	var menuDiffTobeCheckedAgainst = (demoSubmenuShowCount)*32;
 	function loadMenu()
 	{	
 	$('#menu').superfish({
 		delay:10,
-		speed:'fast'
-	}).delegate("a","click",function(e) {
+		speed:'fast',
+		onBeforeShow:  function(){ 
+			if($(this).hasClass('sf-menu-sub-level2')){
+				var subMenuOffSet = $(this).parent().offset().top;
+				var menuOffset=$('ul.sf-menu').offset().top;
+				var diff = subMenuOffSet - menuOffset;
+				if(diff > menuDiffTobeCheckedAgainst){
+					var subMenuHght = $(this).height() - $(this).parent().outerHeight();
+					$(this).css('top',parseInt(-1 * subMenuHght)+'px');
+				}
+			}
+			$(this).children("li.scollSection").children(".scrollUp").hide();
+			$(this).children("li.scollSection").children(".scrollDown").show();
+			
+			if($(this).hasClass('sf-menu-sub-level2')){
+				var childrenLength = $(this).children(':not(.scollSection)').length;
+				if(childrenLength>(demoSubmenuShowCount+1)){
+					$(this).children(':not(.scollSection)').slice(1,demoSubmenuShowCount+1).addClass('showMenu').removeClass('hidemenu');
+					$(this).children(':not(.scollSection)').slice(demoSubmenuShowCount+1,childrenLength).addClass('hidemenu').removeClass('showMenu');
+				}
+			}else {
+				var childrenLength = $(this).children(':not(.scollSection)').length;
+				if(childrenLength>(demomenuShowCount+1)){
+					$(this).children(':not(.scollSection)').slice(1,demomenuShowCount+1).addClass('showMenu').removeClass('hidemenu');
+					$(this).children(':not(.scollSection)').slice(demomenuShowCount+1,childrenLength).addClass('hidemenu').removeClass('showMenu');
+				}
+			}
+		}	
+	}).delegate("li[class!='scollSection'] a","click",function(e) {
 		
 		var selected = $(this);
 		var selectedFullId = "";	
