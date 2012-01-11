@@ -24,6 +24,8 @@
 <input type="hidden" id="jqgFirstNameID" name="jqgFirstNameID" value=<lb:label key="stu.info.firstName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="jqgMiddleIniID" name="jqgMiddleIniID" value=<lb:label key="stu.label.mi" prefix="'" suffix="'"/>/>
 <input type="hidden" id="jqgGradeID" name="jqgGradeID" value=<lb:label key="stu.info.grade" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuAssEditAccoID" name="stuAssEditAccoID" value=<lb:label key="stu.label.editAcco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuAssNoAccoID" name="stuAssNoAccoID" value=<lb:label key="stu.msg.noAcco" prefix="'" suffix="'"/>/>
 	
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
