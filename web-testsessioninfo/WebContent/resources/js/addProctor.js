@@ -181,7 +181,7 @@ function populateSelectProctorGrid() {
           url: 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name','Default Scheduler','User Id',"User Name","Copyable","Editable"],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(),'Default Scheduler','User Id',"User Name","Copyable","Editable"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },

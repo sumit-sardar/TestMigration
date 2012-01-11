@@ -800,7 +800,7 @@ function registerDelegate(tree){
 	
 	function openConfirmationPopup(){
 	$("#confirmationPopup").dialog({  
-		title:"Confirmation Alert",  
+		title:$("confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
@@ -817,7 +817,7 @@ function registerDelegate(tree){
 	
 	function removeStuConfirmationPopup(){
 	$("#removeStuConfirmationPopup").dialog({  
-		title:"Confirmation Alert",  
+		title:$("confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
@@ -1146,7 +1146,7 @@ function registerDelegate(tree){
 					}
 	});
 		$("#scheduleSession").dialog({  
-		title:"Schedule Session",  
+		title:$("#schSession").val(),  
 		resizable:false,
 		autoOpen: true,
 		width: '1024px',
@@ -1272,7 +1272,7 @@ function registerDelegate(tree){
 	function changeSubtestConfirmPopup() {
 		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
 			$("#subtestChangeConfirmationPopup").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
@@ -1292,7 +1292,7 @@ function registerDelegate(tree){
 	function changeProductConfirmed() {
 		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
 			$("#productChangeConfirmationPopup").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
@@ -2534,7 +2534,7 @@ function registerDelegate(tree){
 	
 	function removeProctorConfirmationPopup(){
 	$("#removeProctorConfirmationPopup").dialog({  
-		title:"Confirmation Alert",  
+		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
@@ -2556,7 +2556,7 @@ function registerDelegate(tree){
 	 
 	function openCloseScheduleSessionPopup(){
 		$("#closeScheduleSessionPopup").dialog({  
-		title:"Confirmation Alert",  
+		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
@@ -2966,7 +2966,7 @@ function registerDelegate(tree){
 				}
 			}});
 			$("#viewTestSessionId").dialog({  
-				title:"View Status",  
+				title:$("#schViewSts").val(),  
 				resizable:false,
 				autoOpen: true,
 				width: '1024px',
@@ -3044,7 +3044,7 @@ function registerDelegate(tree){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 162,  
-			caption:"Student Test Roster",
+			caption:$("#stuRos").val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#rosterList').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_rosterPager').text());

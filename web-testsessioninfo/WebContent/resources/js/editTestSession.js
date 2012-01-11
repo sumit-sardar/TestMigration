@@ -371,7 +371,7 @@
     }
    	function endTestSessionConfirmation(){
     	$("#endTestSessionConfirmationPopUp").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',

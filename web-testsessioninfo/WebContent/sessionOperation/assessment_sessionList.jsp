@@ -31,6 +31,10 @@
 <input type="hidden" id="testDetGrade" name="testDetGrade" value=<lb:label key="testSession.grid.grade" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testDetsubTest" name="testDetsubTest" value=<lb:label key="testSession.grid.subtest" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testDetDuration" name="testDetDuration" value=<lb:label key="selectTest.label.duration" prefix="'" suffix="'"/>/>
+<input type="hidden" id="confirmAlrt" name="confirmAlrt" value=<lb:label key="common.alert.confirmAlert" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuRos" name="stuRos" value=<lb:label key="viewStatus.dialog.stuRos" prefix="'" suffix="'"/>/>
+<input type="hidden" id="schSession" name="schSession" value=<lb:label key="homepage.button.scheduleSession" prefix="'" suffix="'"/>/>
+<input type="hidden" id="schViewSts" name="schViewSts" value=<lb:label key="homepage.button.viewStatus" prefix="'" suffix="'"/>/>
 	
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");

@@ -235,7 +235,7 @@ function populateSelectStudentGrid() {
           url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel, 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip"],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -837,7 +837,7 @@ function populateDuplicateStudentGrid(duplicateStuArray, orgForDupStu) {
        $("#dupStudentlist").jqGrid({
       	  data: duplicateStuArray,         
           datatype: 'local',          
-          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, leafNodeCategoryName],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, leafNodeCategoryName],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:200, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
