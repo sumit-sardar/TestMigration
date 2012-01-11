@@ -114,9 +114,9 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Reset&nbsp;" onclick="javascript:resetAccommpopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Submit&nbsp;" onclick="javascript:saveBulkStudentData(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:cancelAssignAccom(); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.reset" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:resetAccommpopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.submit" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveBulkStudentData(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:cancelAssignAccom(); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>
@@ -139,8 +139,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;OK&nbsp;" onclick="javascript:closeUnsaveConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('unSaveConfirmationPopup'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeUnsaveConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('unSaveConfirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>
