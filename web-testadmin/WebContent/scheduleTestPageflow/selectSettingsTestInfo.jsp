@@ -216,7 +216,7 @@
 
 
 
-<c:if test="${isTabeBatterySurveyProduct}"> 
+<c:if test="${isTabeBatterySurveyProduct || isTabeAdaptiveProduct}"> 
         <tr class="transparent">
             <td class="transparent" colspan="2">&nbsp;</td>
         </tr>          
