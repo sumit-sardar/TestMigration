@@ -76,6 +76,13 @@
 					});
 				}); 
 				
+				var sessionWizard = $("#accordion").accordion({ header: "h3",event:false});
+				$("h3", sessionWizard).each(function(index) { 				
+					$(this).click(function(e){
+						$("#list2").jqGrid('resetSelection');
+						$("#list3").jqGrid('resetSelection');
+					})
+				});
 				
 				var wizard = $("#ssAccordion").accordion({ header: "h3",event:false});
 				$("h3", wizard).each(function(index) { 				
