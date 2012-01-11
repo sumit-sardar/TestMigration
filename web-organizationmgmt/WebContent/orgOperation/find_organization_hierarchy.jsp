@@ -23,49 +23,50 @@
 <input type="hidden" id="mMissRequiredID" name = "mMissRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="s'"/>/>
 <input type="hidden" id="orgListID" name = "orgListID" value=<lb:label key="org.label.orgList" prefix="'" suffix="'"/>/>
 
-<table> 
-	<tr>
-		<td style="padding-left:5px;">
-    		<h1><lb:label key="org.title" /></h1>
+<table class="transparent" width="97%" style="margin:15px auto;">  
+	<tr class="transparent">
+        <td>
+		<table class="transparent">
+			<tr class="transparent">
+				<td>
+				<h1><lb:label key="org.title" /></h1>
+				</td>
+			</tr>
+			<tr>
+				<td class="subtitle">
+				<lb:label key="org.msg.pos.button" />
+			</tr>
+		</table>
 		</td>
-	</tr>
-	<tr> 
-		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
-			<lb:label key="org.msg.pos.button" />
-		</td>	
-	</tr>
-</table>
-<br/>
-<table class="transparent">
-
-    <tr class="transparent">
-        <td style="border-color : #2E6E9E;padding-left:5px;">
-        <div id="displayMessageMain" style="display:none; width:99.5%; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-			<div id= "contentMain" style="padding-bottom: 5px"> </div>
-		</div>
-		<table>  
-	      <tr class="transparent">
-	        <td style="vertical-align:top;">
-		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
-		    	  <script>populateTree();</script>
-		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
-				</div> 
-		    </td>
-		    
-		 	<td class="transparent" width="5px">&nbsp;</td>
-		 	 
-		 	<td >	      
-		    	<table id="list2" class="gridTable"></table>
-				<div id="pager2" class="gridTable" ></div>
-			</td>
-			
-	      </tr>
-	      <!-- 
-	      <tr class="transparent">
-	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
-   	 	  </tr>
-   	 	   -->
-	    </table>
+    </tr>
+	
+	<tr class="transparent">
+        <td align="center">        
+			<table width="100%"> 
+		      	<tr>
+					<td colspan="3" class="buttonsRow">
+			        <div id="displayMessageMain" class="errMsgs" style="display:none; width:99.5%;float:left;">
+						<div id= "contentMain"> </div>
+					</div>
+					</td>
+				</tr>
+				<tr class="transparent">
+			        <td style="vertical-align:top; width:16%;" align="left">
+				      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
+				    	  <script>populateTree();</script>
+				    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
+						</div> 
+				    </td>
+					    
+					<td class="transparent" width="5px">&nbsp;</td>
+					 	 
+					<td style="vertical-align:top;" id="jqGrid-content-section">      
+					    <table id="list2" class="gridTable"></table>
+						<div id="pager2" class="gridTable" ></div>
+					</td>
+						
+				</tr>
+			</table>
         </td>
     </tr>
 </table>

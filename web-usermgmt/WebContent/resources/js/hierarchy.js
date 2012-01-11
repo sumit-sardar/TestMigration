@@ -453,7 +453,7 @@ function populateTreeSelect() {
 			
 function populateGrid() {
 
-		document.getElementById('changePW').style.display = "block";
+		document.getElementById('changePW').style.visibility = "visible";
 		// $("#changePWDBtn").attr('disabled', true); 
 		setAnchorButtonState('changePWButton', true);
 			
@@ -590,7 +590,7 @@ function changePwdForUser(element){
 	
 	resetPassword();
 	
-	document.getElementById('changePW').style.display = "block";
+	document.getElementById('changePW').style.visibility = "visible";
 	
 			$("#changeUserPassword").dialog({  
 					title:$("#chgPwdID").val()+getUserName(),  

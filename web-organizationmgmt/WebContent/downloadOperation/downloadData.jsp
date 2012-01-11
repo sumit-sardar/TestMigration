@@ -26,15 +26,27 @@
 
 <netui:form action="services_downloadData">
 
-<table width="100%" border="0"> 
-	<tr>
-		<td style="padding-left:5px;">
-    		<h1><lb:label key="services.import.title" /></h1>
+<table class="transparent" width="97%" style="margin:15px auto;"> 
+	<tr class="transparent">
+		<td>
+    		<table class="transparent">
+				<tr class="transparent">
+					<td>
+			    		<h1><lb:label key="services.import.title" /></h1>
+					</td>
+				</tr>				
+			</table>		
 		</td>
 	</tr>
-	<tr height="400" align="center"> 
-		<td>
-			 <p align="center"><netui:content value="Content goes here"/></p>
+	<tr class="transparent">
+        <td align="center">        
+			<table width="100%">
+				<tr> 
+					<td height="400" align="center">  
+						<p align="center"><netui:content value="Content goes here"/></p>
+					</td>	
+				</tr>			
+			</table>
 		</td>	
 	</tr>
 </table>

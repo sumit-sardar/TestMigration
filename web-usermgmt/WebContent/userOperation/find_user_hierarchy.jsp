@@ -59,18 +59,18 @@
         <td align="center">        
 		<table width="100%"> 
 		      <tr>
-				<td colspan="3" style="clear: both; min-height: 25px; height: 25px;">
-					<div id="displayMessageMain"
-						style="display: none; width: 50%; float: left; text-align: left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-						<div id="contentMain" style="padding-top: 5px; padding-bottom:5px;"></div>
+				<td colspan="3" class="buttonsRow">
+					<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
+						<div id="contentMain"></div>
 					</div>
-					<div id="changePW" style="display: none;float: right;>
+					<div id="changePW" style="visibility:hidden;float: right;">
 						<div id="cpw">
 							<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">
 								<lb:label key="user.changepassword" />
 							</a>
 						</div>
 					</div>
+					<div style="clear:both;"></div>
 				</td>
 			</tr>
 			<tr class="transparent">
@@ -83,7 +83,7 @@
 			    
 			 	<td class="transparent" width="5px">&nbsp;</td>
 			 	 
-			 	<td style="vertical-align:top;"  id="jqGrid-content-section">	      
+			 	<td style="vertical-align:top;" id="jqGrid-content-section">	      
 			    	<table id="list2" class="gridTable"></table>
 					<div id="pager2"  class="gridTable"></div>
 				</td>

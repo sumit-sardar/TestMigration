@@ -452,7 +452,7 @@ function populateGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,
-			width: 975, 
+			width: $("#jqGrid-content-section").width(), 
 			editurl: 'OrgNodeHierarchyGrid.do',
 			ondblClickRow: function(rowid) {EditOrganizationDetail();},
 			caption:$("#orgListID").val(),

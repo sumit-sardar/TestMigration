@@ -43,7 +43,7 @@ public class Message implements java.io.Serializable
 
     public static final String EDIT_TITLE      = "Edit Organization: ";
 //    public static final String EDIT_SUCCESSFUL    = "Organization information has been updated successfully.";
-    public static final String EDIT_SUCCESSFUL    = "Organization was updated successfully.";
+    public static final String EDIT_SUCCESSFUL    = "Organization has been updated successfully.";
     public static final String EDIT_ERROR = "Failed to update this organization.";
     public static final String INVALID_PARENT = "An organization must belong to an organization above it. Select a valid parent organization.";
     public static final String EDIT_TITLE_WEB      = "CTB/McGraw-Hill OAS - Edit Organization";
