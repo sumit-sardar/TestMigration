@@ -111,8 +111,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Save&nbsp;" onclick="javascript:saveBulkMoveData(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closeBulkMovePopup(); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveBulkMoveData(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeBulkMovePopup(); return false;" class="ui-widget-header">
 				</center>
 		</td>
 		
@@ -134,8 +134,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;OK&nbsp;" onclick="javascript:closeUnsaveBulkConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('unSaveBulkConfirmationPopup'); return false;" class="ui-widget-header">
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeUnsaveBulkConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('unSaveBulkConfirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

@@ -34,7 +34,8 @@
 <input type="hidden" id="moveStuGrid" name="moveStuGrid" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
 <input type="hidden" id="selectMoveOrg" name="selectMoveOrg" value=<lb:label key="stu.label.moveSelectOrg" prefix="'" suffix="'"/>/>
 <input type="hidden" id="confirmMoveAlert" name="confirmMoveAlert" value=<lb:label key="stu.label.confirmAlert" prefix="'" suffix="'"/>/>
-
+<input type="hidden" id="noBulkMoveID" name="noBulkMoveID" value=<lb:label key="stu.msg.bulkMoveNotSelected" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuBulkMovedID" name="stuBulkMovedID" value=<lb:label key="stu.msg.bulkStuMoved" prefix="'" suffix="'"/>/>
 
 
 <!-- start form -->

@@ -4,8 +4,8 @@ var bulkMoveStuCounterPage = 0;
 var allStudentInGrid = [];
 var selectedStudentForMove = [];
 var finalSelectedNode;
-var BULK_MOVE_NOTSELECTED = "No organization was selected. Organization for the selected set of students was not updated.";
-var STUDENTS_MOVED = "Selected students were successfully moved to the selected organization."
+var BULK_MOVE_NOTSELECTED = $("#noBulkMoveID").val();
+var STUDENTS_MOVED = $("#stuBulkMovedID").val();
 
 function populateBulkMoveTree() {
 	isBulkMove = true;
