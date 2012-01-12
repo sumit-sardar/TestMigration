@@ -2948,21 +2948,25 @@ function registerDelegate(tree){
 	
 	// Added for TAS View-Montitor Student Test Status user story: Start
     function viewTestStatus() {
-    	if(selectedTestAdminId != "") {
+    	
+    	if(selectedTestAdminId != undefined && selectedTestAdminId != "") {
 			$('#displayMessageViewTestSession').hide();
 			$("#displayMessageViewTestRoster").hide();
 			$("#displayMessageViewTestSubtest").hide();
 			$("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, change: function(event, ui) {
-				$("#displayMessageViewTestRoster").hide();
-				$("#displayMessageViewTestSubtest").hide();
-				if(ui.newHeader.parent().attr("id") == 'subtestDetailsSectionId') {
-					$("#loginName").text("");
-					$("#password").text("");
-					$("#testAdminName").text("");
-					$("#subTestName").text("");
-					$("#testStatus").text("");
-					$("#subtestList").html("");
-					viewSubtestDetails();
+					$("#displayMessageViewTestRoster").hide();
+					$("#displayMessageViewTestSubtest").hide();
+					if(ui.newHeader.parent().attr("id") == 'subtestDetailsSectionId') {
+						$("#loginName").text("");
+						$("#password").text("");
+						$("#testAdminName").text("");
+						$("#subTestName").text("");
+						$("#testStatus").text("");
+						$("#subtestList").html("");
+						$("#toggleValidationSubTest").hide();
+					if($.trim(selectedTestRosterId) != "") {
+						viewSubtestDetails();
+					}
 				}
 			}});
 			$("#viewTestSessionId").dialog({  

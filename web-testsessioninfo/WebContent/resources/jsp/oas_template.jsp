@@ -68,6 +68,7 @@
 					$(this).click(function(e){
 						//wizardAcc.accordion("activate", index);
 						setAnchorButtonState('printTicketButton', true);
+						setAnchorButtonState('viewStatusButton', true);
 						if(document.getElementById('selectedTestSessionId').value != ""){
 							var rId = document.getElementById('selectedTestSessionId').value;
 							$("#list2 #"+rId).removeClass("ui-state-highlight");
@@ -81,6 +82,7 @@
 					$(this).click(function(e){
 						$("#list2").jqGrid('resetSelection');
 						$("#list3").jqGrid('resetSelection');
+						setSelectedTestAdminId("");
 					})
 				});
 				
