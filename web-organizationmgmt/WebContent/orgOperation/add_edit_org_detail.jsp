@@ -101,13 +101,13 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 											<tbody>
 											<tr>
 											<td>
-											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;<lb:label key="org.label.selOrg" /></div>
+											<div style=" height:25px;width: 350px;visibility: visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.selOrg" /></div>
 											</td>
 											</tr>
 												<tr>
 													<td >
 														<div  id="innerID" 
-																style="overflow:auto; height: 200px;  width: 350px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal; position: absolute;">
+																style="overflow:auto; height: 200px;  width: 350px;position: absolute;visibility: visible;" class="treeCtrl">
 														</div>
 													
 													</td>
