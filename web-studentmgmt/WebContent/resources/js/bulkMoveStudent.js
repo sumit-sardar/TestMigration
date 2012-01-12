@@ -292,7 +292,7 @@ function openBulkMovePopup(element) {
 	createMultiNodeBulkMoveTree(orgTreeHierarchy);
 	finalSelectedNode = undefined;
 	$("#moveStudentPopup").dialog({  
-		title:$("#selectMoveOrg").val(),  
+		title:$("#moveStuDialogTitle").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '480px',
