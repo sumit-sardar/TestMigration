@@ -1,5 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
@@ -22,35 +24,35 @@
 </div>
 <table width="865px" style="margin-bottom: 2px;">
 	<tr>
-		<td align="left" width="14%"><netui:content value="${bundle.web['viewStatus.testName']}"/></td>
+		<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 		<td width="80%"><span id = "rosterTestName"></span></td>
 	</tr>
 </table>
 <table width="865px" style="margin-bottom: 12px;">
 	<tr>
-		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.testAccessCode']}"/></td>
+		<td align="left" width="15%"><lb:label key="viewStatus.testAccessCode" /></td>
 		<td width="15%"><span id = "rosterTestAccessCode"></span></td>
-		<td align="left" width="15%"><netui:content value="${bundle.web['viewStatus.totalStudents']}"/></td>
+		<td align="left" width="15%"><lb:label key="viewStatus.totalStudents" /></td>
 		<td width="10%"><span id = "rosterTotalStudents"></span></td>
 		<td width="45%">
 			<div id="refreshList" style="float:right;padding-left:5px;">
-				<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.refreshList.button']}"/></a>
+				<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><lb:label key="viewStatus.refreshList.button" /></a>
 				<input type="hidden" name="subtestValidationAllowed" id="subtestValidationAllowed" value="" />
 			</div> 
 			<div id="toggleValidation" style="float:right;padding-left:5px;display:none;">
-				<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.toggleValidation.button']}" /></a>
+				<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button" /></a>
 			</div>
 		</td>
 	</tr>
 </table>
 
-<input type="hidden" name="lastNameLbl" id="lastNameLbl" value="${bundle.web['viewStatus.text.lastNameLbl']}"/>
-<input type="hidden" name="firstNameLbl" id="firstNameLbl" value="${bundle.web['viewStatus.text.firstNameLbl']}"/>
-<input type="hidden" name="studentIdLbl" id="studentIdLbl" value="${bundle.web['viewStatus.text.studentId']}"/>
-<input type="hidden" name="loginIdLbl" id="loginIdLbl" value="${bundle.web['viewStatus.text.loginId']}"/>
-<input type="hidden" name="passwordLbl" id="passwordLbl" value="${bundle.web['viewStatus.text.password']}"/>
-<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value="${bundle.web['viewStatus.text.validationStatus']}"/>
-<input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value="${bundle.web['viewStatus.text.onlineTestStatus']}"/>
+<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
+<input type="hidden" name="firstNameLbl" id="firstNameLbl" value=<lb:label key="viewStatus.text.firstNameLbl" prefix="'" suffix="'"/>/>
+<input type="hidden" name="studentIdLbl" id="studentIdLbl" value=<lb:label key="viewStatus.text.studentId" prefix="'" suffix="'"/>/>
+<input type="hidden" name="loginIdLbl" id="loginIdLbl" value=<lb:label key="viewStatus.text.loginId" prefix="'" suffix="'"/>/>
+<input type="hidden" name="passwordLbl" id="passwordLbl" value=<lb:label key="viewStatus.text.password" prefix="'" suffix="'"/>/>
+<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="viewStatus.text.validationStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value=<lb:label key="viewStatus.text.onlineTestStatus" prefix="'" suffix="'"/>/>
 
 <table id="rosterList" class="gridTable"></table>
 <div id="rosterPager" class="gridTable"></div>

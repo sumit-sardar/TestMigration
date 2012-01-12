@@ -1,5 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <div id = "displayMessageViewTestSubtest" 
@@ -21,23 +23,23 @@
 </div>
 <table width="928px" style="margin-bottom: 10px;">
 	<tr>
-		<td><netui:content value="${bundle.web['viewStatus.subtest.loginName']}"/></td>
+		<td><lb:label key="viewStatus.subtest.loginName"/></td>
 		<td><span id = "loginName"></span></td>
 	</tr>
 	<tr>
-		<td><netui:content value="${bundle.web['viewStatus.subtest.password']}"/></td>
+		<td><lb:label key="viewStatus.subtest.password"/></td>
 		<td><span id = "password"></span></td>
 	</tr>
 	<tr>
-		<td><netui:content value="${bundle.web['viewStatus.subtest.testSessionName']}"/></td>
+		<td><lb:label key="viewStatus.subtest.testSessionName"/></td>
 		<td><span id = "testAdminName"></span></td>
 	</tr>
 	<tr>
-		<td><netui:content value="${bundle.web['viewStatus.subtest.testName']}"/></td>
+		<td><lb:label key="viewStatus.subtest.testName"/></td>
 		<td><span id = "subTestName"></span></td>
 	</tr>
 	<tr>
-		<td><netui:content value="${bundle.web['viewStatus.subtest.testStatus']}"/></td>
+		<td><lb:label key="viewStatus.subtest.testStatus"/></td>
 		<td><span id = "testStatus"></span></td>
 	</tr>
 </table>
@@ -45,22 +47,22 @@
 	<tr>
 		<td>
 			<div id="toggleValidationSubTest" style="float:left;padding-top:5px;display:none">
-				<a href="#" id="toggleValidationSubtestButton" onclick="javascript:toggleSubtestValidationStatus(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['viewStatus.toggleValidation.button']}"/></a>
+				<a href="#" id="toggleValidationSubtestButton" onclick="javascript:toggleSubtestValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button"/></a>
 			</div> 
 		</td>
 	</tr>
 </table>
 
 <table id="subtestList" class="rosterSubtestTable"></table>
-<input type="hidden" name="itemsSelectLbl" id="itemsSelectLbl" value="${bundle.web['common.column.select']}"/>
-<input type="hidden" name="subtestNameLbl" id="subtestNameLbl" value="${bundle.web['ViewSubtestDetails.text.subtestName']}"/>
-<input type="hidden" name="subtestLevelLbl" id="subtestLevelLbl" value="${bundle.web['ViewSubtestDetails.text.subtestLevel']}"/>
-<input type="hidden" name="subtestStatusLbl" id="subtestStatusLbl" value="${bundle.web['ViewSubtestDetails.text.subtestStatus']}"/>
-<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value="${bundle.web['ViewSubtestDetails.text.validationStatus']}"/>
-<input type="hidden" name="startDateLbl" id="startDateLbl" value="${bundle.web['ViewSubtestDetails.text.startDate']}"/>
-<input type="hidden" name="completionDateLbl" id="completionDateLbl" value="${bundle.web['ViewSubtestDetails.text.completionDate']}"/>
-<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value="${bundle.web['ViewSubtestDetails.text.totalItems']}"/>
-<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value="${bundle.web['ViewSubtestDetails.text.itemCorrect']}"/>
-<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value="${bundle.web['ViewSubtestDetails.text.itemToBeScored']}"/>
+<input type="hidden" name="itemsSelectLbl" id="itemsSelectLbl" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
+<input type="hidden" name="subtestNameLbl" id="subtestNameLbl" value=<lb:label key="ViewSubtestDetails.text.subtestName" prefix="'" suffix="'"/>/>
+<input type="hidden" name="subtestLevelLbl" id="subtestLevelLbl" value=<lb:label key="ViewSubtestDetails.text.subtestLevel" prefix="'" suffix="'"/>/>
+<input type="hidden" name="subtestStatusLbl" id="subtestStatusLbl" value=<lb:label key="ViewSubtestDetails.text.subtestStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="ViewSubtestDetails.text.validationStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" name="startDateLbl" id="startDateLbl" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
+<input type="hidden" name="completionDateLbl" id="completionDateLbl" value=<lb:label key="ViewSubtestDetails.text.completionDate" prefix="'" suffix="'"/>/>
+<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value=<lb:label key="ViewSubtestDetails.text.totalItems" prefix="'" suffix="'"/>/>
+<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value=<lb:label key="ViewSubtestDetails.text.itemCorrect" prefix="'" suffix="'"/>/>
+<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value=<lb:label key="ViewSubtestDetails.text.itemToBeScored" prefix="'" suffix="'"/>/>
 
 <div id="subtestPager" class="gridTable"></div>
