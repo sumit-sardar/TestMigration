@@ -40,6 +40,15 @@
 	clear: both;
 }
 
+#studentBulkOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#studentBulkOrgNode li {
+	clear: both;
+}
+
 </style>
 <![endif]-->
   <head>

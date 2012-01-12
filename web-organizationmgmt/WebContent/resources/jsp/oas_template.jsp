@@ -11,6 +11,27 @@
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8">    <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9">    <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<!--[if lt IE 8]>
+<style type='text/css'>
+#orgNodeHierarchy ul {
+	float: left;
+	clear: both;
+}
+
+#orgNodeHierarchy li {
+	clear: both;
+}	
+
+#innerID ul {
+	float: left;
+	clear: both;
+}
+
+#innerID li {
+	clear: both;
+}
+</style>
+<![endif]-->
   <head>
     <title><netui-template:attribute name="title"/></title>
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />

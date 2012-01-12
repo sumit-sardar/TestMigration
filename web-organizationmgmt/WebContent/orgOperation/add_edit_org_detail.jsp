@@ -106,8 +106,9 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 											</tr>
 												<tr>
 													<td >
-														<div  id="innerID" 
-																style="overflow:auto; height: 200px;  width: 350px;position: absolute;visibility: visible;" class="treeCtrl">
+														<div  id="innertreebgdiv" class="innertreeCtrl treeCtrl">
+															<div id="innerID" style="width:auto;height:auto;display:table">
+															</div>
 														</div>
 													
 													</td>

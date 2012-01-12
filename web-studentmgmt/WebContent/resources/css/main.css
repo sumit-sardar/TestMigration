@@ -384,7 +384,7 @@ input:focus {
 #treebackgrounddiv {
 	float:left;
 }
-
+/*
 #studentBulkOrgNode ul {
 	float: left;
 	clear: both;
@@ -393,6 +393,7 @@ input:focus {
 #studentBulkOrgNode li {
 	clear: both;
 }
+*/
 
 /*
 #bulkStudentMoveOrgNode ul {

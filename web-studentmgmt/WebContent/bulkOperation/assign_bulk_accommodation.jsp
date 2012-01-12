@@ -65,7 +65,9 @@
 			        <td style="vertical-align:top; width:16%;" align="left">
 				      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 				    	<script>populateBulkAccommTree();</script>
-				    	<div id = "studentBulkOrgNode" class="treeCtrl" style="height:568px !important">							
+				    	<div id="outertreebgdiv" class="treeCtrl" style="height:568px !important">
+					    	<div id="studentBulkOrgNode" style="width:auto;height:auto;display:table">
+							</div>
 						</div> 					
 				 	</td>
 				 	

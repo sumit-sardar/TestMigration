@@ -116,8 +116,9 @@
 											</tr>
 												<tr>
 													<td >
-														<div  id="innerID" 
-																style="overflow:auto; height: 200px;  width: 350px;visibility:visible;" class="treeCtrl">
+														<div  id="innertreebgdiv" class="innertreeCtrl treeCtrl" style="visibility:visible;">
+															<div id="innerID" style="width:auto;height:auto;display:table">
+															</div>
 														</div>
 													
 													</td>

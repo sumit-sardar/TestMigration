@@ -76,9 +76,11 @@
 			<tr class="transparent">
 		        <td style="vertical-align:top; width:16%;" align="left">
 			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="user.label.usersearch" /></div>
-			    	  <script>populateTree();</script>
-			    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
-					</div> 
+			    	<script>populateTree();</script>
+			    	<div id="outertreebgdiv" class="treeCtrl">
+				    	<div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
+						</div>
+					</div>  
 			    </td>
 			    
 			 	<td class="transparent" width="5px">&nbsp;</td>
