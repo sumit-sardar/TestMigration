@@ -59,6 +59,7 @@
 <input type="hidden" id="snNmInChBdyMsg" name="snNmInChBdyMsg" value=<lb:label key="common.snNmInChBdy.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tstLcnInChHdrMsg" name="tstLcnInChHdrMsg" value=<lb:label key="common.tstLcnInChHdr.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tstLcnInChBdyMsg" name="tstLcnInChBdyMsg" value=<lb:label key="common.tstLcnInChBdy.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="monitorStsValidMsg" name="monitorStsValidMsg" value=<lb:label key="monitorSts.snValid.message" prefix="'" suffix="'"/>/>
 	
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");

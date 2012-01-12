@@ -3321,7 +3321,7 @@ function registerDelegate(tree){
 									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
 								}
 								$("#displayMessageViewTestRoster").show();
-								$("#rosterMessage").html("Session Validation has been updated successfully");
+								$("#rosterMessage").html($("#monitorStsValidMsg").val());
 								$.unblockUI(); 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -3386,7 +3386,7 @@ function registerDelegate(tree){
 									$("#rosterList").setCell(selectedTestRosterId, '5', '<font color="red">Invalid</font>', "", "", true);
 								}
 								$("#displayMessageViewTestSubtest").show();
-								$("#subtestMessage").html("Session Validation has been updated successfully");
+								$("#subtestMessage").html($("#monitorStsValidMsg").val());
 								$.unblockUI(); 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){

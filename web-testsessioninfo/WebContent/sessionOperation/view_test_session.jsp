@@ -1,6 +1,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
 <div id="viewTestSessionId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
@@ -8,13 +10,13 @@
 
 <div id="viewTestSessionAccordion" style="width:99.5%;">
 	<div id="rosterDetailsSectionId">
-		<h3><a href="#">Roster Details</a></h3>
+		<h3><a href="#"><lb:label key="viewStatus.rosDet.title" /></a></h3>
 		<div id="View_Roster" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
 			<jsp:include page="/sessionOperation/view_roster_list.jsp" />
 		</div>
 	</div>
 	<div id="subtestDetailsSectionId">
-		<h3><a href="#">Subtest Details</a></h3>
+		<h3><a href="#"><lb:label key="viewStatus.subDet.title" /></a></h3>
 		<div id="View_Subtest" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
 			<jsp:include page="/sessionOperation/view_subtest_details.jsp" />
 		</div>
@@ -30,7 +32,7 @@
 						<td>&nbsp;</td>
 					<td  width="100%">
 						<center>
-							<input type="button"  id="cDataView" value="Close" onclick="javascript:closeViewStatusPopup(); return false;" class="ui-widget-header" style="width:60px">
+							<input type="button"  id="cDataView" value=<lb:label key="common.button.close" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeViewStatusPopup(); return false;" class="ui-widget-header" style="width:60px">
 						</center>
 						<br>
 					</td>
