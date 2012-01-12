@@ -1835,7 +1835,7 @@ function registerDelegate(tree){
 			if ( testSessionName.length == 0 ) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test Name", requiredFieldCount, requiredFields);
-					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);       
+					setMessage("Missing required field", requiredFields, "errorMessage", $("#reqTextmsg").val());       
 				}
 			return false;
 		}
@@ -1890,22 +1890,22 @@ function registerDelegate(tree){
 		} 
 			
 		if(startDate.length != 0 && endDate.length != 0 && !validateDate(startDate,endDate)){
-			 	setMessage(INVALID_DATES_MSG, "", "errorMessage", "");       
+			 	setMessage($("#invDateMsg").val(), "", "errorMessage", "");       
 		}	
 		if (requiredFieldCount > 0) {
 			if (requiredFieldCount == 1) {
-				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+				setMessage("Missing required field", requiredFields, "errorMessage", $("#reqTextmsg").val());
 			}
 			else {
-				setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+				setMessage("Missing required fields", requiredFields, "errorMessage", $("#reqTextMultimsg").val());
 			}
 			return;
 		}
 		
 		 if (testSessionName != "" && !validString(testSessionName) ) {
-		 	setMessage(TEST_SESSIONNAME_INVALIDCHARACTERS_HEADER, TEST_SESSIONNAME_INVALIDCHARACTERS_BODY , "errorMessage","");
+		 	setMessage($("#snNmInChHdrMsg").val(), $("#snNmInChBdyMsg").val() , "errorMessage","");
 		 } else if(testLocation != "" && !validString(testLocation)){
-		 	setMessage(TEST_TESTLOCATION_INVALIDCHARACTERS_HEADER, TEST_TESTLOCATION_INVALIDCHARACTERS_BODY , "errorMessage","");
+		 	setMessage($("#tstLcnInChHdrMsg").val(), $("#tstLcnInChBdyMsg").val() , "errorMessage","");
 		 }	
 
 	 }
@@ -1943,32 +1943,32 @@ function registerDelegate(tree){
 				var testBreak = document.getElementById("testBreak");
 				if(!testBreak.checked){	
 					if(!validateMissingTestAccessCode()) {
-						setMessage(TAC_MISSING_TEST_ACCESSCODE_HEADER, TAC_MISSING_TEST_ACCESSCODE, "errorMessage","");
+						setMessage($("#missTacHdrMsg").val(), $("#missTacMsg").val(), "errorMessage","");
 					} else if(!validateAccessCodeMinLength( false) ) {
-						setMessage(TAC_SIXCHARS, "", "errorMessage","");
+						setMessage($("#tacSixCharsMsg").val(), "", "errorMessage","");
 					} else if(!validateAccessCodeSpecialChar(false)) {
-						setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
+						setMessage($("#tacSpCharHdrMsg").val(), $("#tacSpCharNAMsg").val(), "errorMessage","");
 					}
 				}else{
 					if(!validateMissingTestAccessCodes()) {
-						setMessage(TAC_MISSING_TEST_ACCESSCODES_HEADER, TAC_MISSING_TEST_ACCESSCODES1, "errorMessage",TAC_MISSING_TEST_ACCESSCODES2);
+						setMessage($("#missTacHdrMulMsg").val(), $("#missTac1Msg").val(), "errorMessage", $("#missTac2Msg").val());
 					} else if(!validateAccessCodeMinLength( true) ) { 
-						setMessage(TAC_SIXCHARS, "", "errorMessage","");
+						setMessage($("#tacSixCharsMsg").val(), "", "errorMessage","");
 					} else if(!validateAccessCodeSpecialChar(true)) {
-						setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
+						setMessage($("#tacSpCharHdrMsg").val(), $("#tacSpCharNAMsg").val(), "errorMessage","");
 					}else if(!validateIdenticalTestAccessCodes()) {
-						setMessage(TAC_IDENTICAL_TESTACCESSCODES_HEADER , TAC_IDENTICAL_TEST_ACCESSCODES1, "errorMessage", TAC_IDENTICAL_TEST_ACCESSCODES2);
+						setMessage($("#tacIdentTacHdrMsg").val() , $("#tacIdentTac1Msg").val(), "errorMessage", $("#tacIdentTac2Msg").val());
 					}
 					
 				}
 			} else {
 				
 				if(!validateMissingTestAccessCode()) {
-					setMessage(TAC_MISSING_TEST_ACCESSCODE_HEADER, TAC_MISSING_TEST_ACCESSCODE, "errorMessage","");
+					setMessage($("#missTacHdrMsg").val(), $("#missTacMsg").val(), "errorMessage","");
 				} else if(!validateAccessCodeMinLength( false) ) {
-					setMessage(TAC_SIXCHARS, "", "errorMessage","");
+					setMessage($("#tacSixCharsMsg").val(), "", "errorMessage","");
 				} else if(!validateAccessCodeSpecialChar(false)) {
-					setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
+					setMessage($("#tacSpCharHdrMsg").val(), $("#tacSpCharNAMsg").val(), "errorMessage","");
 				}
 			
 			}
@@ -2523,9 +2523,9 @@ function registerDelegate(tree){
 		}
 		
 		if (allProctorSelected && deletedProcCount > 0){
-			message = deletedProcCount + "  " + ALL_PROCTORS_DELETED;
+			message = deletedProcCount + "  " + $("#procDelAllMsg").val();
 		}else {
-			message = deletedProcCount + "  " + PROCTORS_DELETED;
+			message = deletedProcCount + "  " + $("#procDelMsg").val();
 		}
 		noOfProctorAdded = addProctorLocaldata.length;
 		allProctorSelected	= false;	

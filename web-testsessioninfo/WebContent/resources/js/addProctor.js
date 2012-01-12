@@ -412,11 +412,11 @@ function returnSelectedProctor() {
 			previousDataCount = 1;
 		}
 		var value = val.length - previousDataCount;
-		message = value + "  " + PROCTORS_ADDED;			
+		message = value + "  " + $("#procAddMsg").val();			
 	}
 	else if(val.length < previousDataCount) {
 		var value = previousDataCount - val.length;
-		message = value + "  " + PROCTORS_DELETED;			
+		message = value + "  " + $("#procDelMsg").val();			
 	}
 	else {
 		$("#proctorAddDeleteInfo").hide();

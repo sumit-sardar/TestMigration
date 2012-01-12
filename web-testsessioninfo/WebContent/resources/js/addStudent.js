@@ -677,16 +677,16 @@ function updateDupStudent(){
 	 if(finalValue < 0) {
 	 	finalValue = 0 - finalValue;
 	 	if(newValue == 0)
-	 		message = ALL_STUDENTS_DELETED;
+	 		message = $("#stuDelAllMsg").val();
 	 	else
-	 		message = finalValue + "  " + STUDENTS_DELETED;
+	 		message = finalValue + "  " + $("#stuDelMsg").val();
 	 } else if (finalValue > 0) {
-	 	message = finalValue + "  " + STUDENTS_ADDED;
+	 	message = finalValue + "  " + $("#stuAddedMsg").val();
 	 } else {
 	 	$("#studentAddDeleteInfo").hide();
 	 }
 	 $("#studentAddDeleteInfo").show();
-	 var message = finalValue + "  " + STUDENTS_ADDED;
+	 var message = finalValue + "  " + $("#stuAddedMsg").val();
 	 $("#addDeleteStud").text(message);
 	 hideSelectStudentPopup();
 	 gridReloadStu(false);
@@ -780,11 +780,11 @@ function returnSelectedStudent() {
 	 if(finalValue < 0) {
 	 	finalValue = 0 - finalValue;
 	 	if(newValue == 0)
-	 		message = ALL_STUDENTS_DELETED;
+	 		message = $("#stuDelAllMsg").val();
 	 	else
-	 		message = finalValue + "  " + STUDENTS_DELETED;
+	 		message = finalValue + "  " + $("#stuDelMsg").val();
 	 } else if (finalValue > 0) {
-	 	message = finalValue + "  " + STUDENTS_ADDED;
+	 	message = finalValue + "  " + $("#stuAddedMsg").val();
 	 } else {
 	 	$("#studentAddDeleteInfo").hide();
 	 }

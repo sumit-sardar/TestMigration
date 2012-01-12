@@ -35,6 +35,30 @@
 <input type="hidden" id="stuRos" name="stuRos" value=<lb:label key="viewStatus.dialog.stuRos" prefix="'" suffix="'"/>/>
 <input type="hidden" id="schSession" name="schSession" value=<lb:label key="homepage.button.scheduleSession" prefix="'" suffix="'"/>/>
 <input type="hidden" id="schViewSts" name="schViewSts" value=<lb:label key="homepage.button.viewStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" id="reqTextmsg" name="reqTextmsg" value=<lb:label key="common.requiredText.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="reqTextMultimsg" name="reqTextMultimsg" value=<lb:label key="common.requiredTextMulti.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invDateMsg" name="invDateMsg" value=<lb:label key="common.invalidDates.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacSixCharsMsg" name="tacSixCharsMsg" value=<lb:label key="common.tacSixChars.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacSpCharHdrMsg" name="tacSpCharHdrMsg" value=<lb:label key="common.tacSpCharHdr.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacSpCharNAMsg" name="tacSpCharNAMsg" value=<lb:label key="common.tacSpCharNA.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacIdentTacHdrMsg" name="tacIdentTacHdrMsg" value=<lb:label key="common.tacIdentTacHdr.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacIdentTac1Msg" name="tacIdentTac1Msg" value=<lb:label key="common.tacIdentTac1.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tacIdentTac2Msg" name="tacIdentTac2Msg" value=<lb:label key="common.tacIdentTac2.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missTacHdrMsg" name="missTacHdrMsg" value=<lb:label key="common.missTacHdr.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missTacMsg" name="missTacMsg" value=<lb:label key="common.missTac.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missTacHdrMulMsg" name="missTacHdrMulMsg" value=<lb:label key="common.missTacHdrMulti.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missTac1Msg" name="missTac1Msg" value=<lb:label key="common.missTac1.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missTac2Msg" name="missTac2Msg" value=<lb:label key="common.missTac2.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuDelMsg" name="stuDelMsg" value=<lb:label key="common.stuDel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuAddedMsg" name="stuAddedMsg" value=<lb:label key="common.stuAdded.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuDelAllMsg" name="stuDelAllMsg" value=<lb:label key="common.stuDelAll.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="procDelMsg" name="procDelMsg" value=<lb:label key="common.procDel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="procAddMsg" name="procAddMsg" value=<lb:label key="common.procAdded.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="procDelAllMsg" name="procDelAllMsg" value=<lb:label key="common.stuDelAll.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="snNmInChHdrMsg" name="snNmInChHdrMsg" value=<lb:label key="common.snNmInChHdr.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="snNmInChBdyMsg" name="snNmInChBdyMsg" value=<lb:label key="common.snNmInChBdy.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tstLcnInChHdrMsg" name="tstLcnInChHdrMsg" value=<lb:label key="common.tstLcnInChHdr.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tstLcnInChBdyMsg" name="tstLcnInChBdyMsg" value=<lb:label key="common.tstLcnInChBdy.message" prefix="'" suffix="'"/>/>
 	
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
