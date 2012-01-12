@@ -1,17 +1,8 @@
-
 var bulkMoveGridLoaded = false;
 var bulkMoveStuCounterPage = 0;
 var allStudentInGrid = [];
 var selectedStudentForMove = [];
 var finalSelectedNode;
-var BULK_MOVE_NOTSELECTED = "";
-var STUDENTS_MOVED = "";
-
-$(document).ready(function(){//need to ensure if page is rendered so that the id elements will be available
-
-	BULK_MOVE_NOTSELECTED = $("#noBulkMoveID").val();
-	STUDENTS_MOVED = $("#stuBulkMovedID").val();
-});
 
 function populateBulkMoveTree() {
 	isBulkMove = true;
@@ -447,7 +438,7 @@ function saveBulkMoveData() {
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayBulkMessageMain").show();
-									$("#contentBulkMain").text(STUDENTS_MOVED);
+									$("#contentBulkMain").text($("#stuBulkMovedID").val());
 									setAnchorButtonState('bulkMoveButton', true);
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -466,7 +457,7 @@ function saveBulkMoveData() {
 }
 
 function setBulkPopupMessage(){
-	$("#contentBulkMovePopup").text(BULK_MOVE_NOTSELECTED);
+	$("#contentBulkMovePopup").text($("#noBulkMoveID").val());
 	$("#messageBulkMovePopup").text("");
 	$("#errorImgPopup").show();
 }
