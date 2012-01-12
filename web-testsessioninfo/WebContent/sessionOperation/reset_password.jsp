@@ -1,6 +1,8 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page import="com.ctb.util.web.sanitizer.JavaScriptSanitizer"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -82,8 +84,8 @@
 
 <!-- title message -->
 <p>
-    <netui:content value="You must change your password to continue. Either this is your first login, your password has expired, or your administrator has changed your password."/><br/>
-    <netui:content value="Required fields are marked by a blue asterisk "/><span class="asterisk">*</span><netui:content value=". New password cannot be any of five previous passwords."/>
+    <lb:label key="resetPassword1.message"/><br/>
+    <lb:label key="resetPassword2.message" suffix="&nbsp;"/><span class="asterisk">*</span><lb:label key="resetPassword3.message"/>
 </p>
 
 
@@ -109,7 +111,7 @@
 
 <table class="transparent">
     <tr> 
-        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="Old Password:"/></td>
+        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<lb:label key="resetPass.oldPass"/></td>
         <td class="transparent">
             <netui:textBox password="true" tagId="oldPassword" dataSource="pageFlow.userProfile.userPassword.oldPassword" tabindex="1" maxlength="32" style="width:290px"/>
         </td>
@@ -121,13 +123,13 @@
    
     
     <tr class="transparent">
-        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="New Password:"/></td>
+        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<lb:label key="resetPass.newPass"/></td>
         <td class="transparent">
             <netui:textBox password="true" tagId="newPassword" dataSource="pageFlow.userProfile.userPassword.newPassword" tabindex="2" maxlength="32" style="width:290px"/>
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="130" nowrap><span class="asterisk">*</span>&nbsp;<netui:content value="Confirm Password:"/></td>
+        <td class="transparent alignRight" width="130" nowrap><span class="asterisk">*</span>&nbsp;<lb:label key="resetPass.confirmPass"/></td>
         <td class="transparent">
             <netui:textBox password="true" tagId="confirmPassword" dataSource="pageFlow.userProfile.userPassword.confirmPassword" tabindex="3" maxlength="32" style="width:290px"/>
         </td>
@@ -137,13 +139,13 @@
     </tr>
 
     <tr class="transparent">
-        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="Hint Question:"/></td>
+        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<lb:label key="resetPass.hintQues"/></td>
         <td class="transparent">
             <netui:select optionsDataSource="${pageFlow.hintQuestionOptions}" dataSource="pageFlow.userProfile.userPassword.hintQuestionId" tabindex="4" size="1" style="width:290px" defaultValue="${pageFlow.userProfile.userPassword.hintQuestionId}"/>
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="Hint Answer:"/></td>
+        <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<lb:label key="resetPass.hintAns"/></td>
         <td class="transparent">
             <netui:textBox tagId="hintAnswer" dataSource="pageFlow.userProfile.userPassword.hintAnswer" tabindex="5" maxlength="255" style="width:290px"/>
         </td>
@@ -153,7 +155,7 @@
 		   	<a href="#" onclick="submitPage();" class="rounded {transparent} button" 
 		   	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
 		   	onkeypress="return handleEnterKey(event, this);" >
-		   	Save
+		   	<lb:label key="common.button.save"/>
 		   	</a>                	
     	</td>
     </tr>
@@ -167,7 +169,7 @@
         <tr>
             <td class="transparent">
                 <div class="roundedPrivacy" style="text-align: left">
-                    Enter old password for verification.
+                    <lb:label key="resetPassword.old.message"/>
                 </div>
             </td>
         </tr>
@@ -175,18 +177,18 @@
         <tr>
             <td class="transparent">
                 <div class="roundedPrivacy" style="text-align: left">
-                    The password must contain at least eight characters.
+                    <lb:label key="resetPassword.new1.message"/>
                 </div>
-                At least one character must be a number and at least one character must be a letter.
+                <lb:label key="resetPassword.new2.message"/>
             </td>
        </tr>
        <tr><td>&nbsp;</td></tr>        
        <tr>
         <td class="transparent">
         		<div class="roundedPrivacy" style="text-align: left">
-                Remember your hint answer.
+                	<lb:label key="resetPassword.hint1.message"/>
             	</div>
-                It can be used to validate you as a user in the event you forget your password.
+                <lb:label key="resetPassword.hint2.message"/>
         </td>
     </tr>
 </table>
@@ -228,19 +230,19 @@
 					  <tr>
 						<td class="footerLayout">
 						    <span>
-						        Copyright &copy; 2008 by CTB/McGraw-Hill LLC. All rights reserved.
+						        <lb:label key="resetPassword.footer1.message"/> &copy; <lb:label key="resetPassword.footer2.message"/>
 						    </span>
 						
 						    <span>
-						        Subject to <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
+						        <lb:label key="resetPassword.footer3.message"/> <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="resetPassword.footer4.message"/></a>.
 						    </span>
 						
 						    <span>
-						        Read our <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
+						        <lb:label key="resetPassword.footer5.message"/> <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="resetPassword.footer6.message"/></a>.
 						    </span>
 						
 						    <span>
-						        Review <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
+						        <lb:label key="resetPassword.footer7.message"/> <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;"><lb:label key="resetPassword.footer8.message"/></a>.
 						    </span>
 						</td>
 					  </tr>
