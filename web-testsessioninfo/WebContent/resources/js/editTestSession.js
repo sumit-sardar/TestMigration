@@ -392,7 +392,7 @@
     
   	function resetEditTestSession(){
 	  	$('#ssAccordion').accordion('activate', 0 );
-	  	selectedTestAdminId = null;
+	  	//selectedTestAdminId = null;
 	    state = null;
 	    stdsLogIn = false;
 	    studentMap = new Map();
