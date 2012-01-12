@@ -71,7 +71,7 @@
 				 	
 	 				<td class="transparent" width="5px">&nbsp;</td>
 	 				
-		 			<td style="vertical-align:top;" id="jqGrid-content-section">
+		 			<td style="vertical-align:top;" id="jqGrid-content-section" align="left">
 	      				<table id="studentAccommGrid" class="gridTable"></table>
 						<div id="studentAccommpager" class="gridTable"></div>			
 		 			</td>
