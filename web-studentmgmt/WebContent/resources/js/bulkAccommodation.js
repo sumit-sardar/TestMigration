@@ -263,7 +263,7 @@ function populateBulkStudentGrid() {
 				 	$('#cb_studentAccommGrid').attr('checked', false);
 				 }
 				if(allRowsInGrid.length <= 0){
-					setAnchorButtonState('assignAccommButton', true);
+					//setAnchorButtonState('assignAccommButton', true);
 					$('#cb_studentAccommGrid').attr('checked', false);
 				}
 			},
@@ -331,9 +331,7 @@ function populateBulkStudentGrid() {
 					}
 					var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 					determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
-			        if(allRowsInGrid.length <= 0){
-						setAnchorButtonState('assignAccommButton', true);
-					}
+
 					if(submittedSuccesfully != ""){
 			           	resetBulk();
 			        }
