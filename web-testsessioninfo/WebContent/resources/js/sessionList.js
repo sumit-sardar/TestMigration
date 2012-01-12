@@ -830,7 +830,13 @@ function registerDelegate(tree){
 		 var leftpos = ($(window).width() - 410) /2 + 'px';
 		 $("#removeStuConfirmationPopup").parent().css("top",toppos);
 		 $("#removeStuConfirmationPopup").parent().css("left",leftpos);	
-		 
+		 if(state == "EDIT") {
+		 	$("#editRemove").show();
+		 	$("#scheduleRemove").hide();
+		 } else {
+		 	$("#scheduleRemove").show();
+		 	$("#editRemove").hide();
+		 }
 	}	
 	
 	

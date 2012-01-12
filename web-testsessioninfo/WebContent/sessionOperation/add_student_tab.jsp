@@ -63,7 +63,8 @@
 		<tr>
 			<td colspan="2">
 			<p><lb:label key="scheduleTest.delStuConfirmation.message" /></p>
-			<p><lb:label key="scheduleTest.delStuConfirmation2.message" /></p>
+			<p id= "scheduleRemove" ><lb:label key="scheduleTest.delStuConfirmation2.message" /></p>
+			<p id= "editRemove" ><lb:label key="scheduleTest.delStuConfirmation2.editMessage" /></p>
 			</td>
 		</tr>
 		<tr>
