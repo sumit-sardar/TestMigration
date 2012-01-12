@@ -17,8 +17,6 @@ var filterTimer = null;
 
 
 var selectedStudentObjArr = {};
-var BULK_ADD_TITLE      = $("#stuAssEditAccoID").val();
-var BULK_ACCOM_NOTSELECTED = $("#stuAssNoAccoID").val();	
 	
 function populateBulkAccommTree() {
 	
@@ -595,7 +593,7 @@ function populateBulkStudentGrid() {
 		}
 		function setPopupMessage(){
 			//$("#titleBulkPopup").text(BULK_ADD_TITLE);
-			$("#contentBulkPopup").text(BULK_ACCOM_NOTSELECTED);
+			$("#contentBulkPopup").text($("#stuAssNoAccoID").val());
 			$("#messageBulkPopup").text("");
 		}
       
