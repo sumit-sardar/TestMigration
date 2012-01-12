@@ -800,7 +800,7 @@ function registerDelegate(tree){
 	
 	function openConfirmationPopup(){
 	$("#confirmationPopup").dialog({  
-		title:$("confirmAlrt").val(),  
+		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
@@ -817,7 +817,7 @@ function registerDelegate(tree){
 	
 	function removeStuConfirmationPopup(){
 	$("#removeStuConfirmationPopup").dialog({  
-		title:$("confirmAlrt").val(),  
+		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
