@@ -111,13 +111,13 @@
 											<tbody>
 											<tr>
 											<td>
-											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;<lb:label key="user.label.sel.org" /></div>
+												<div class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="visibility:visible;width:140px;">&nbsp;<lb:label key="user.label.sel.org" /></div>
 											</td>
 											</tr>
 												<tr>
 													<td >
 														<div  id="innerID" 
-																style="overflow:auto; height: 200px;  width: 350px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal; position: absolute;">
+																style="overflow:auto; height: 200px;  width: 350px;visibility:visible;" class="treeCtrl">
 														</div>
 													
 													</td>

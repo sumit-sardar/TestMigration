@@ -442,3 +442,7 @@ clear: both;
 	 padding-bottom: 5px;
 	 padding-left: 2px;
 }
+
+input[type="button"] {
+	cursor: pointer;
+}

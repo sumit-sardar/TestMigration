@@ -178,19 +178,19 @@
 										<table class="transparent" id="orgTable">
 											<tbody>
 											<tr>
-											<td>
-											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;<lb:label key="stu.label.selNode" /></div>
-											</td>
+												<td>
+													<div style="width: 150px;visibility:visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.selNode" /></div>
+												</td>
 											</tr>
-												<tr>
-													<td >
-													<div  id="innertreebgdiv" class="innertreeCtrl">
-														<div id="innerID" style="width:auto;height:auto;display:table">
-														</div>
+											<tr>
+												<td >
+												<div  id="innertreebgdiv" class="innertreeCtrl treeCtrl">
+													<div id="innerID" style="width:100%;height:auto;display:table">
 													</div>
-													
-													</td>
-												</tr>
+												</div>
+												
+												</td>
+											</tr>
 											</tbody>
 										</table>
 
