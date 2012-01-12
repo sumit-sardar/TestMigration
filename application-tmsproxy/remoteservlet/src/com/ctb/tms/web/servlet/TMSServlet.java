@@ -704,7 +704,7 @@ public class TMSServlet extends HttpServlet {
 	        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
 	            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
-	            			oasSink.putItemResponse(rdirt[j], true);
+	            			//oasSink.putItemResponse(rdirt[j], true);
 	            			netirt.add(rdirt[j]);
 	                    }
 	        		}
