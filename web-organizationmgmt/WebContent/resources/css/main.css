@@ -378,6 +378,7 @@ input:focus {
 	font-size: 13px;  
 	font-style: normal;  
 	font-weight: bold; 	
+	width: 197px; 	
 }
 
 .innertreeCtrl {
