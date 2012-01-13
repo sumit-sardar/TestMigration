@@ -42,6 +42,14 @@
 		<td><lb:label key="viewStatus.subtest.testStatus"/></td>
 		<td><span id = "testStatus"></span></td>
 	</tr>
+	<tr id="testGradeRow" style="display: none;">
+		<td><lb:label key="viewStatus.subtest.testGrade"/></td>
+		<td><span id = "testGrade"></span></td>
+	</tr>
+	<tr id="testLevelRow" style="display: none;">
+		<td><lb:label key="viewStatus.subtest.testLevel"/></td>
+		<td><span id = "testLevel"></span></td>
+	</tr>
 </table>
 <table width="928px" style="margin-bottom: 10px;">
 	<tr>

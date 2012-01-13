@@ -2968,7 +2968,11 @@ function registerDelegate(tree){
 						$("#testAdminName").text("");
 						$("#subTestName").text("");
 						$("#testStatus").text("");
+						$("#testGrade").text("");
+						$("#testLevel").text("");
 						$("#subtestList").html("");
+						$("#testGradeRow").hide();
+						$("#testLevelRow").hide();
 						$("#toggleValidationSubTest").hide();
 					if($.trim(selectedTestRosterId) != "") {
 						viewSubtestDetails();
@@ -3176,6 +3180,14 @@ function registerDelegate(tree){
 							$("#testAdminName").text(data.testSession.testAdminName);
 							$("#subTestName").text(data.testSession.testName);
 							$("#testStatus").text(data.testStatus);
+							if(data.testGrade != null) {
+								$("#testGradeRow").show();
+								$("#testGrade").text(data.testGrade);
+							}
+							if(data.testLevel != null) {
+								$("#testLevelRow").show();
+								$("#testLevel").text(data.testLevel);
+							}
 							
 							var html = '<tr class="rosterSubtestHeader">';
 							if(data.subtestValidationAllowed) {
