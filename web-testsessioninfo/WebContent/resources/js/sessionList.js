@@ -3105,10 +3105,8 @@ function registerDelegate(tree){
             	var status = $('#rosterList').getCell(selectedTestRosterId, '5');
 				if($.trim($(status).text()) != 'PI') {
 					setAnchorButtonState('toggleValidationButton', false);
-					$("#toggleValidationButton").attr("disabled", false);
 				} else {
 					setAnchorButtonState('toggleValidationButton', true);
-					$("#toggleValidationButton").attr("disabled", true);
 				}
 				
 	           	$("#rosterList").setGridParam({datatype:'local'});
@@ -3294,7 +3292,6 @@ function registerDelegate(tree){
 							if(data.subtestValidationAllowed) {
 								$("#toggleValidationSubTest").show();
 								setAnchorButtonState('toggleValidationSubtestButton', true);
-								//$("#toggleValidationSubtestButton").attr("disabled", true);
 							} else {
 								$("#toggleValidationSubTest").hide();
 							}
@@ -3421,10 +3418,8 @@ function registerDelegate(tree){
 		});
 		if(statusFlag) {
 			setAnchorButtonState('toggleValidationSubtestButton', false);
-			//$("#toggleValidationSubtestButton").attr("disabled", false);
 		} else {
 			setAnchorButtonState('toggleValidationSubtestButton', true);
-			//$("#toggleValidationSubtestButton").attr("disabled", true);
 		}
 	}
 	// Added for TAS View-Montitor Student Test Status user story: End
