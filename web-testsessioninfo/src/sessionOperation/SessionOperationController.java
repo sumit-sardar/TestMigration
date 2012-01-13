@@ -2523,7 +2523,7 @@ public class SessionOperationController extends PageFlowController {
     private String buildBroadcastMessages()
     {        
         String html = "<table class='simpletable'>";        
-		String messages = "You have no messages at this time. The Messages link will display <span class='messageheader'>&nbsp;</span> when you have active messages.";
+		String messages = "You have no messages at this time. The Messages link will display a numbered red square <span class='messageheader'>&nbsp;</span> when you have active messages.";
 		
         if (this.broadcastMessages.size() > 0)
         {

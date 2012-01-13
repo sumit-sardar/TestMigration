@@ -20,7 +20,7 @@
 				<td>
 					<div class="roundedHeader">
 					&nbsp;&nbsp;
-					<a href="#" onclick="viewBroadcastMessage();"><b>Home</b></a>
+					<a href="#" onclick="viewBroadcastMessage();"><b>Messages</b></a>
 					<% if (broadcastMessages.intValue() > 0) { %>
 						<span class="messageheader"><%=broadcastMessages.toString()%></span>
 					<% } %>
@@ -47,18 +47,11 @@
 	</div>
 	<br>
 	<div>
-		<table cellspacing="0" cellpadding="0" border="0" class="EditTable" width="100%">
-				<tr align="center">
-					<td  width="100%">
-						<center>
-						<input type="button" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
-						</center>
-						<br>
-					</td>
-				</tr>
-				<tr class="binfo" style="display: none;">
-					<td colspan="2" class="bottominfo"></td>
-				</tr>
+		<table cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr align="center"><td>
+					<input type="button" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
+				</td></tr>
+				<tr><td>&nbsp;</td></tr>
 		</table>
 	</div>	
 </div>
