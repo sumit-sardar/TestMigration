@@ -830,6 +830,9 @@ function populateBulkStudentGrid() {
 		delay:10,
 		speed:'fast',
 		onBeforeShow:  function(){ 
+			if($(this).hasClass('sf-menu-sub-level2') && $(this).parents("#sf-menu-sub2").length > 0){
+				$(this,"#sf-menu-sub2").css('left',parseInt(-1 * $(this).parent().outerWidth()) + 'px');
+			}
 			if($(this).hasClass('sf-menu-sub-level2')){
 				var subMenuOffSet = $(this).parent().offset().top;
 				var menuOffset=$('ul.sf-menu').offset().top;
