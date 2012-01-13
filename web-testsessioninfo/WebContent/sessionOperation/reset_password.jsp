@@ -230,19 +230,19 @@
 					  <tr>
 						<td class="footerLayout">
 						    <span>
-						        <lb:label key="resetPassword.footer1.message" suffix="&nbsp;"/> &copy; <lb:label key="resetPassword.footer2.message"/>
+						        <lb:label key="resetPassword.footer1.message"/>&copy;<lb:label key="resetPassword.footer2.message" prefix="&nbsp;"/>
 						    </span>
 						
 						    <span>
-						        <lb:label key="resetPassword.footer3.message" suffix="&nbsp;"/> <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="resetPassword.footer4.message" prefix="&nbsp;"/></a>.
+						        <lb:label key="resetPassword.footer3.message" suffix="&nbsp;"/><a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="resetPassword.footer4.message"/></a>.
 						    </span>
 						
 						    <span>
-						        <lb:label key="resetPassword.footer5.message" suffix="&nbsp;"/> <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="resetPassword.footer6.message" prefix="&nbsp;"/></a>.
+						        <lb:label key="resetPassword.footer5.message" suffix="&nbsp;"/><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="resetPassword.footer6.message"/></a>.
 						    </span>
 						
 						    <span>
-						        <lb:label key="resetPassword.footer7.message" suffix="&nbsp;"/> <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;"><lb:label key="resetPassword.footer8.message" prefix="&nbsp;"/></a>.
+						        <lb:label key="resetPassword.footer7.message" suffix="&nbsp;"/><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;"><lb:label key="resetPassword.footer8.message"/></a>.
 						    </span>
 						</td>
 					  </tr>
