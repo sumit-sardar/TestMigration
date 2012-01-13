@@ -45,7 +45,7 @@ public class StudentPredictedScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTABEPredSubjectFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 mapper.insert(newFact);
             }
         }
@@ -155,7 +155,8 @@ public class StudentPredictedScoresController {
                    IrsTABEPredSubjectFactData newFact = (IrsTABEPredSubjectFactData) factIter.next();
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setFormid(this.formid);
-                   newFact.setCurrentResultid(context.getCurrentResultId());
+                   if(newFact.getCurrentResultid() == null) // Current result id will not be empty only if subtest is invalid for scoring
+                	   newFact.setCurrentResultid(context.getCurrentResultId());
                    newFact.setGradeid(context.getGradeId());
                    newFact.setOrgNodeid(context.getOrgNodeId());
                    newFact.setProgramid(context.getProgramId());
