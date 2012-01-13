@@ -2784,12 +2784,31 @@ public class StudentManagementImpl implements StudentManagement
 	//Added for updating the organization node for bulk move student
 	public void updateBulkMoveOperation(Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
 		try {
-			for(int i = 0; i < studentIds.length; i++) {
-				studentManagement.moveBulkStudents(orgId, studentIds[i]);				
+			int inClauselimit = 999;
+			if(studentIds != null) {
+				int totLenDiv = studentIds.length / inClauselimit;
+				if(studentIds.length % inClauselimit > 0) {
+					totLenDiv = totLenDiv + 1;
+				}
+				for(int k = 0; k < totLenDiv; k++) {
+					Integer[] newselectedStudentid = null;
+					if((k+1) != totLenDiv) {
+						newselectedStudentid = new Integer [inClauselimit];
+						System.arraycopy(studentIds, (k*inClauselimit) , newselectedStudentid, 0, inClauselimit);
+						
+					} else {
+						int count = studentIds.length % inClauselimit;
+						newselectedStudentid = new Integer [count];
+						System.arraycopy(studentIds, ((totLenDiv-1)*inClauselimit) , newselectedStudentid, 0, count);
+					}
+					String inClaus = SQLutils.generateSQLCriteria("student_id in  ",newselectedStudentid);
+					studentManagement.moveBulkStudents(orgId, inClaus);
+				}
 			}
 		} catch (SQLException se) {
 			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateBulkMoveOperation: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());
+			se.printStackTrace();
 			throw tee;
 		}
 	}

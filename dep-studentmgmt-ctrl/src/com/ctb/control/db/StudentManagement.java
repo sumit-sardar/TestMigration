@@ -1095,7 +1095,7 @@ public interface StudentManagement extends JdbcControl
 	//Added for bulk student move.
 	//This method will update the organization id in org_node_Student table for the corresponding studentId. 
 	//So that the student will be logically transferred to the new organization.
-	@JdbcControl.SQL(statement = "update org_node_student set org_node_id = {orgNodeId} where student_id = {studentId}")
-    void moveBulkStudents(Integer orgNodeId, Integer studentId) throws SQLException;
+	@JdbcControl.SQL(statement = "update org_node_student set org_node_id = {orgNodeId} where {sql: studentIdClause}")
+    void moveBulkStudents(Integer orgNodeId, String studentIdClause) throws SQLException;
     
 }
