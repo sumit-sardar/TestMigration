@@ -45,15 +45,15 @@
 								isTestDataExported == true;
 								}						
 							}
+							if(data.userRoleName == "PROCTOR"){
+								isProctor = true;
+							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
 								stdsLogIn = true;
 								if(!isTestExpired && !isProctor){
 								$("#endTest").show();
 								}	
-							}														
-							if(data.userRoleName == "PROCTOR"){
-								isProctor = true;
-							}							
+							}
 							if (stdsLogIn || isTestExpired || isProctor){
 								isSortable = false;								
 								disableInEdit();							
