@@ -3022,7 +3022,6 @@ function registerDelegate(tree){
 	}
 	
 	function populateRosterList() {
- 	   
  	   UIBlock();
        $("#rosterList").jqGrid({   
        	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
@@ -3422,10 +3421,10 @@ function registerDelegate(tree){
 		});
 		if(statusFlag) {
 			setAnchorButtonState('toggleValidationSubtestButton', false);
-			$("#toggleValidationSubtestButton").attr("disabled", false);
+			//$("#toggleValidationSubtestButton").attr("disabled", false);
 		} else {
 			setAnchorButtonState('toggleValidationSubtestButton', true);
-			$("#toggleValidationSubtestButton").attr("disabled", true);
+			//$("#toggleValidationSubtestButton").attr("disabled", true);
 		}
 	}
 	// Added for TAS View-Montitor Student Test Status user story: End
