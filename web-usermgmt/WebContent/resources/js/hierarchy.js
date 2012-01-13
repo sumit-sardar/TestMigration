@@ -1453,7 +1453,8 @@ function fillDropDown( elementId, optionList) {
 
 function saveChangePassword() {
 	var userId = $("#list2").jqGrid('getGridParam', 'selrow');
-	var userName = getColValueJson(userId,'userName');
+	//var userName = getColValueJson(userId,'userName');
+	var userName = $('#list2').jqGrid('getCell',userId,'loginId');
 	
 				$.ajax(
 						{
