@@ -642,6 +642,7 @@ function registerDelegate(tree){
 	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
+     	   jQuery("#selectStudent").sortGrid('lastName',true);
            var sortArrowPA = jQuery("#selectStudent");
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
@@ -2259,7 +2260,7 @@ function registerDelegate(tree){
 	      var urlVal = 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(); 
      	  jQuery("#selectProctor").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
           var sortArrowPA = jQuery("#selectProctor");
-          jQuery("#selectProctor").sortGrid('lastName',false);
+          jQuery("#selectProctor").sortGrid('lastName',true);
           var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
