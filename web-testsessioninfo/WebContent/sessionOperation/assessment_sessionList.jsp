@@ -153,8 +153,11 @@
 				<div style="float:right;" title="${bundle.web['homepage.icon.hideOrganization']}"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
 				<div style="clear:both;"></div>     
 			</div>
-	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
-		</div>  
+	    	<div id="outertreebgdiv" class="treeCtrl" style="text-align: left !important;">
+			    <div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
+				</div>
+			</div> 
+		</div>	  
 	<%if(userScheduleAndFindSessionPermission) { %>		     
 		<div id="sessionGrid" style="float:right;width:1150px;position:relative;z-index:100;vertical-align:top;"> 
 	<%} else {%>

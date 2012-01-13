@@ -9,9 +9,10 @@
     <tr class="transparent">
         <td class="transparent"  valign="middle">
       	<div  id= "innerSearchheader" class="ui-corner-tl ui-corner-tr ui-widget-header innerTreeCtrlHeader"><lb:label key="sessionList.stuTab.gridTitle"/></div>
-    	<div id = "stuOrgNodeHierarchy" class="innerTreeCtrl">
-			
-		</div> 
+    	<div  id="innertreebgdivStu" class="innerTreeCtrl">
+			<div id="stuOrgNodeHierarchy" style="width:auto;height:auto;display:table">
+			</div>
+		</div>
 		
 	 	</td>
  		<td class="transparent" width="3px">&nbsp;</td>

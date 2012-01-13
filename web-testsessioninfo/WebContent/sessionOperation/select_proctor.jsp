@@ -9,9 +9,10 @@
     <tr class="transparent">
         <td class="transparent"  valign="middle">
       	<div  id= "innerProctorSearchheader" class="ui-corner-tl ui-corner-tr ui-widget-header innerTreeCtrlHeader">&nbsp;<lb:label key="sessionList.procTab.gridTitle"/></div>
-    	<div id = "proctorOrgNodeHierarchy" class="innerProctorTreeCtrl">
-			
-		</div> 
+    	<div  id="innertreebgdivProctor" class="innerProctorTreeCtrl">
+			<div id="proctorOrgNodeHierarchy" style="width:auto;height:auto;display:table">
+			</div>
+		</div>
 		
 	 	</td>
  		<td class="transparent" width="5px">&nbsp;</td>

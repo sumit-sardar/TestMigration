@@ -8,7 +8,35 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html>
+<!--[if lt IE 8]>
+<style type='text/css'>
+#orgNodeHierarchy ul {
+	float: left;
+	clear: both;
+}
 
+#orgNodeHierarchy li {
+	clear: both;
+}	
+
+#stuOrgNodeHierarchy ul {
+float: left;
+clear: both;
+}
+
+#stuOrgNodeHierarchy li {
+	clear: both;
+}
+#proctorOrgNodeHierarchy ul {
+float: left;
+clear: both;
+}
+
+#proctorOrgNodeHierarchy li {
+	clear: both;
+}
+</style>
+<![endif]-->
   <head>
     <title><netui-template:attribute name="title"/></title>
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />

@@ -34,7 +34,9 @@
 		<div style="float:left;" >&nbsp;<lb:label key="testTicket.organizations"/></div> 
 		<div style="clear:both;"></div>     
 	</div>
-	<div style="width:49%;float:left; padding-right: 0px;height:255px; margin-bottom:10px;" id="orgTktTreeDiv" class="ticketTreeCtrl">		
+	<div  id="innertreebgdivTkt" class="ticketTreeCtrl" style="width:49%;float:left; padding-right: 0px;height:255px; margin-bottom:10px;">
+		<div id="orgTktTreeDiv" style="width:auto;height:auto;display:table">
+		</div>
 	</div>
 	
 	<div style="width:48%;float:right;">
