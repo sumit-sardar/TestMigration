@@ -3294,7 +3294,7 @@ function registerDelegate(tree){
 							if(data.subtestValidationAllowed) {
 								$("#toggleValidationSubTest").show();
 								setAnchorButtonState('toggleValidationSubtestButton', true);
-								$("#toggleValidationSubtestButton").attr("disabled", true);
+								//$("#toggleValidationSubtestButton").attr("disabled", true);
 							} else {
 								$("#toggleValidationSubTest").hide();
 							}
