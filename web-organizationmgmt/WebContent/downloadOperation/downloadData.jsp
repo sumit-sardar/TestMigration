@@ -18,40 +18,72 @@
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.downloadData']}"/>
 <netui-template:section name="bodySection">
  
+ 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
+<%
+    String userName = (String)request.getSession().getAttribute("userName"); 
+    String userFile = userName + "_User.xls";  
+    String studentFile = userName + "_Student.xls";
+%>
 
 
-<netui:form action="services_downloadData">
+<netui:form action="downloadData">
 
-<table class="transparent" width="97%" style="margin:15px auto;"> 
-	<tr class="transparent">
-		<td>
-    		<table class="transparent">
-				<tr class="transparent">
-					<td>
-			    		<h1><lb:label key="services.import.title" /></h1>
-					</td>
-				</tr>				
-			</table>		
+<table width="97%" style="margin:15px auto;" border="0"> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="services.export.title" /></h1>
+			<lb:label key="services.export.msg" /> 		
 		</td>
 	</tr>
-	<tr class="transparent">
-        <td align="center">        
-			<table width="100%">
-				<tr> 
-					<td height="400" align="center">  
-						<p align="center"><netui:content value="Content goes here"/></p>
-					</td>	
-				</tr>			
-			</table>
-		</td>	
+	<tr>
+		<td align="right">
+        	<a href="#" onclick="submitPage();" class="rounded {transparent} button" style="text-decoration: none;" >
+          		<lb:label key="services.export.button" />
+           	</a>                	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<table class="simpletable" style="padding: 5px" > 
+			    <tr class="simpletable">
+			        <th class="simpletable alignCenter" height="25" nowrap width="50">Select</th>                
+			        <th class="simpletable alignLeft" height="25" nowrap>&nbsp;&nbsp;Name</th>
+			        <th class="simpletable alignLeft" height="25" nowrap>&nbsp;&nbsp;Description</th>
+			    </tr>    
+			    <tr class="simpletable">
+			        <td class="simpletable alignCenter">
+			            <netui:radioButtonGroup dataSource="actionForm.fileName">
+			                &nbsp;<netui:radioButtonOption value="<%=userFile%>" onClick="return enableDownloadData();">&nbsp;</netui:radioButtonOption>                
+			            </netui:radioButtonGroup>        
+			        </td>
+			        <td class="simpletable">
+			        	<lb:label key="services.export.userdata" />
+			        </td>        
+			        <td class="simpletable">
+			        	<lb:label key="services.export.userdata.msg" />
+			        </td>        
+			    </tr>
+			    <tr class="simpletable">
+			        <td class="simpletable alignCenter">
+			            <netui:radioButtonGroup dataSource="actionForm.fileName">
+			                &nbsp;<netui:radioButtonOption value="<%=studentFile%>" onClick="return enableDownloadData();">&nbsp;</netui:radioButtonOption>                
+			            </netui:radioButtonGroup>        
+			        </td>
+			        <td class="simpletable">
+			        	<lb:label key="services.export.studentdata" />
+			        </td>        
+			        <td class="simpletable">
+			        	<lb:label key="services.export.userdata.msg" />
+			        </td>        
+			    </tr>
+			</table>	
+		</td>
 	</tr>
 </table>
-
-
 
 </netui:form>
 
