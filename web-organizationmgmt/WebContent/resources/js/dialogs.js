@@ -9,7 +9,7 @@ function viewBroadcastMessage() {
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'broadcastMessage.do',
+				url:		'/OrganizationWeb/orgOperation/broadcastMessage.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',

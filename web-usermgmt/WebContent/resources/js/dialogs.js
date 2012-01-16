@@ -10,7 +10,7 @@ function viewBroadcastMessage() {
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'broadcastMessage.do',
+				url:		'/UserWeb/userOperation/broadcastMessage.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',
