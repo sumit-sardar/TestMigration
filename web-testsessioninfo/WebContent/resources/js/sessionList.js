@@ -2960,26 +2960,32 @@ function registerDelegate(tree){
 			$('#displayMessageViewTestSession').hide();
 			$("#displayMessageViewTestRoster").hide();
 			$("#displayMessageViewTestSubtest").hide();
-			$("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, change: function(event, ui) {
-					$("#displayMessageViewTestRoster").hide();
-					$("#displayMessageViewTestSubtest").hide();
-					if(ui.newHeader.parent().attr("id") == 'subtestDetailsSectionId') {
-						$("#loginName").text("");
-						$("#password").text("");
-						$("#testAdminName").text("");
-						$("#subTestName").text("");
-						$("#testStatus").text("");
-						$("#testGrade").text("");
-						$("#testLevel").text("");
-						$("#subtestList").html("");
-						$("#testGradeRow").hide();
-						$("#testLevelRow").hide();
-						$("#toggleValidationSubTest").hide();
+			var wizard = $("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, event:false });
+			$("h3", wizard).each(function(index) {
+				$(this).click(function(e) {
+				  if($(this).parent().attr("id") == 'subtestDetailsSectionId') {
+					$("#loginName").text("");
+					$("#password").text("");
+					$("#testAdminName").text("");
+					$("#subTestName").text("");
+					$("#testStatus").text("");
+					$("#testGrade").text("");
+					$("#testLevel").text("");
+					$("#testGradeRow").hide();
+					$("#testLevelRow").hide();
+					$("#toggleValidationSubTest").hide();
+					$("#subtestList").html("");
 					if($.trim(selectedTestRosterId) != "") {
+						wizard.accordion("activate", index);
 						viewSubtestDetails();
 					}
-				}
-			}});
+				  } else {
+					wizard.accordion("activate", index);
+				  }
+				  $("#displayMessageViewTestRoster").hide();
+				  $("#displayMessageViewTestSubtest").hide();
+			  });
+			});
 			$("#viewTestSessionId").dialog({  
 				title:$("#schViewSts").val(),  
 				resizable:false,
@@ -3093,10 +3099,8 @@ function registerDelegate(tree){
             		$('#sp_1_rosterPager').text("1");
             		$('#next_rosterPager').addClass('ui-state-disabled');
             	 	$('#last_rosterPager').addClass('ui-state-disabled');
-            	 	$("#viewTestSessionAccordion").accordion("disable");
             	} else {
             		isPAGridEmpty = false;
-            		$("#viewTestSessionAccordion").accordion("enable");
             	}
             	$("#rosterTotalStudents").text($('#rosterList').getGridParam('records'));
 				var topRowid = $('#rosterList tr:nth-child(2)').attr('id');
