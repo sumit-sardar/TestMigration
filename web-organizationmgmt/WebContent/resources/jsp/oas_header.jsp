@@ -4,6 +4,7 @@
 
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
+	if (broadcastMessages == null) broadcastMessages = new Integer(0);		
 %>
 
 
