@@ -44,6 +44,7 @@
 			<p style="color:#000"><lb:label key="services.export.msg" /></p> 		
 		</td>
 	</tr>
+	<!-- 
 	<tr>
 		<td align="right">
 			<div style="float:left; width:1070px;">
@@ -61,6 +62,7 @@
 			</div>								
 		</td>
 	</tr>
+	 -->
 </table>
 
 <br/><br/>
