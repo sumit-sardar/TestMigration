@@ -280,7 +280,9 @@ function openBulkMovePopup(element) {
 		
 	removeBulkPopupMessage();
 	isPopUp = true;
-	createMultiNodeBulkMoveTree(orgTreeHierarchy);
+	if($("#innerID ul li") == undefined || $("#innerID ul li").length <= 0) {
+		createMultiNodeBulkMoveTree(orgTreeHierarchy);
+	}
 	finalSelectedNode = undefined;
 	$("#moveStudentPopup").dialog({  
 		title:$("#moveStuDialogTitle").val(),  
@@ -433,13 +435,14 @@ function saveBulkMoveData() {
 				success:	function(data, textStatus, XMLHttpRequest){
 									selectedStudentForMove = [];
 									bulkMoveStuCounterPage = 0;
-									$("#innerID").undelegate();
-									$("#innerID").unbind();
+									//$("#innerID").undelegate();
+									//$("#innerID").unbind();
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayBulkMessageMain").show();
 									$("#contentBulkMain").text($("#stuBulkMovedID").val());
 									setAnchorButtonState('bulkMoveButton', true);
+									$('#innerID').jstree('close_all', -1);
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 									$.unblockUI();  

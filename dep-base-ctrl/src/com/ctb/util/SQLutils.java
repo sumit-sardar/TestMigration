@@ -52,17 +52,20 @@ public class SQLutils {
 
 	public static String generateSQLCriteria (String columnName, Integer []orgnodeId) {
 
-		String temp = "";
+		StringBuilder temp = new StringBuilder("");
+		String tempString = "";
 
 		for (Integer nodeId : orgnodeId) {
-
-			temp += nodeId.toString()+",";
+			temp.append(nodeId.intValue()).append(",");
 		}
-
-		temp = temp.substring(0, temp.length() - 1);
-		temp = columnName + "( "+ temp+")";
+		tempString = temp.toString();
+		if(tempString.length()>0){
+			tempString = tempString.substring(0, temp.length() - 1);
+			tempString = columnName + "( "+ tempString+")";
+		}
 		
-		return temp;
+		
+		return tempString;
 	}
 
 
