@@ -26,11 +26,6 @@ function populateDownloadListGrid() {
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
-			/*
-            	var width = jQuery("#downloadData").width();
-			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
-			    jQuery("#list2").setGridWidth(width);
-			*/
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -62,16 +57,52 @@ function populateDownloadTemplateListGrid() {
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
-			/*
-            	var width = jQuery("#templates").width();
-			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
-			    jQuery("#list2").setGridWidth(width);
-			*/
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
 				window.location.href="/SessionWeb/logout.do";
 			}
 	 });
+}
+
+function populateUploadListGrid() {
+ 		$("#list3").jqGrid({         
+         url: 'populateUploadListGrid.do', 
+		 type:   'POST',
+		 datatype: "json",         
+          colNames:['Name', 'Description'],
+		   	colModel:[
+		   		{name:'cid',index:'cid', width:200, align:"left", editable:false, sortable:false},
+		   		{name:'tcl',index:'tcl', width:790, align:"left", editable:false, sortable:false}
+		   	],
+		   	loadui: "disable",
+			rowNum:2,
+			loadonce:true, 
+			multiselect:false,
+			viewrecords: true, 
+			height: '30px',  			
+			caption: "Download Template",
+			onSelectRow: function (rowId) {
+				setAnchorButtonState('exportDataButton', false);
+			},
+			loadComplete: function () {
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+			}
+	 });
+}
+
+function enableUpload()
+{
+    var fileName = document.getElementById("inputbox").value;
+    var element = document.getElementById("upload");
+    if (fileName != "") {  
+		setAnchorButtonState('upload', false);
+    } else {
+		setAnchorButtonState('upload', true);
+    }
+    
 }
 

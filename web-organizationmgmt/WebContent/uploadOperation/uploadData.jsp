@@ -37,8 +37,7 @@
 					<div id="accordion" style="width:100%;position:relative;">							
 						<div style="position:relative;">
 						  	<h3><a href="#"><lb:label key="services.import.templates" /></a></h3>
-							<div id="templates" style="background-color: #FFFFFF;" >
-							
+							<div id="templates" style="background-color: #FFFFFF;" >							
 <table> 
 	<tr>
 		<td style="padding-left:5px;">
@@ -73,7 +72,9 @@
 								<p style="color:#000"><lb:label key="services.import.uploadfile.msg" /></p> 		
 					            <netui:fileUpload tagId="inputbox" dataSource="actionForm.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
 					            &nbsp;
-					            <netui:button tagId="upload" type="submit" value="Upload" action="uploadData" onClick="return checkFileType();" disabled="true"/>
+        	<a href="#" id="upload" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.import.button" />
+           	</a>
 							</div>									
 						</div>					
 						
@@ -81,6 +82,30 @@
 						<div style="position:relative;">
 							<h3><a href="#"><lb:label key="services.import.viewUploads" /></a></h3>
 							<div id="viewUploads" style="background-color: #FFFFFF;">
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+			<lb:label key="services.import.viewUploads.msg" /> 		
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="transparent">
+			<div style="float:left; width:1000px;">
+        	<a href="#" id="Button1" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button" />
+           	</a>
+            </div>               	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<div id="viewUploads" style="float:left; width:1210px; background-color: #FFFFFF;">
+				<table id="list3" class="gridTable"></table>
+				<script>populateUploadListGrid();</script>
+			</div>								
+		</td>
+	</tr>
+</table>
 							</div>									
 						</div>							
 					</div>
