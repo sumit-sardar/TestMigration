@@ -3360,10 +3360,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 TestElement testUnit = testUnits[i];
                 testUnit.setForms(forms);
             }
-            // Subhendu added this blok
+            
             studentsLoggedIn =  students.getLoggedInSessionStudentCountForAdmin(testAdminId);
-            // Subhendu added this blok
-
+           
             TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(testSession);
             session.setTestSession(testSession);
             session.setStudentsLoggedIn(new Integer(studentsLoggedIn));
