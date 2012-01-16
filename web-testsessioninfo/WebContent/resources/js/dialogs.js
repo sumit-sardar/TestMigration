@@ -11,7 +11,7 @@ function viewBroadcastMessage() {
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'/SessionWeb/sessionOperation/broadcastMessage.do',
+				url:		'broadcastMessage.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',
@@ -19,7 +19,7 @@ function viewBroadcastMessage() {
 								 	
 								//alert(data);
     							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    							//broadcastMsgBody.innerHTML = data;
+    							broadcastMsgBody.innerHTML = data;
 									 	
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
