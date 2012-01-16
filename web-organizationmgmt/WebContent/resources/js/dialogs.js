@@ -17,7 +17,7 @@ function viewBroadcastMessage() {
 								 	
 								//alert(data);
     							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    							broadcastMsgBody.innerHTML = data;
+    							//broadcastMsgBody.innerHTML = data;
 									 	
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
