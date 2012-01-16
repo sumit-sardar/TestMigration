@@ -3082,10 +3082,8 @@ function registerDelegate(tree){
 				var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
 				if($.trim($(cellData).text()) != 'Partially Invalid') {
 					setAnchorButtonState('toggleValidationButton', false);
-					$("#toggleValidationButton").attr("disabled", false);
 				} else {
 					setAnchorButtonState('toggleValidationButton', true);
-					$("#toggleValidationButton").attr("disabled", true);
 				}
 			},
 			loadComplete: function () {
