@@ -22,6 +22,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Base;
 import utils.BaseTree;
+import utils.DateUtils;
 import utils.MessageInfo;
 import utils.Organization;
 import utils.OrganizationPathListUtils;
@@ -29,6 +30,8 @@ import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
 import utils.TreeData;
 
+import com.ctb.bean.testAdmin.BroadcastMessage;
+import com.ctb.bean.testAdmin.BroadcastMessageData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.Node;
@@ -37,6 +40,7 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.SQLutils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
@@ -77,6 +81,11 @@ public class OrgOperationController extends PageFlowController {
     @org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.OrgNode orgnode;
 	
+    
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
+    
+    
     public static String CONTENT_TYPE_JSON = "application/json";
 
     /**
@@ -89,6 +98,7 @@ public class OrgOperationController extends PageFlowController {
 	private Integer customerId = null;
     private User user = null;
 
+	private List<BroadcastMessage> broadcastMessages = null;
 
 	/**
 	 * @return the userName
@@ -161,6 +171,9 @@ public class OrgOperationController extends PageFlowController {
 		
 		setupUserPermission();
 
+		this.broadcastMessages = getBroadcastMessages();
+        this.getSession().setAttribute("broadcastMessages", new Integer(this.broadcastMessages.size()));
+		
     	return new Forward("success");
         
     }
@@ -909,16 +922,107 @@ public class OrgOperationController extends PageFlowController {
 		 return null;
 	 }
 
-    
-	/**
-	 * @jpf:action
-	 */
-	@Jpf.Action()
-	protected Forward broadcastMessage()
-	{
-	    return null;
-	}
-	
+	    
+		@Jpf.Action()
+	    protected Forward broadcastMessage()
+	    {
+	        HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			OutputStream stream = null;
+			
+			this.broadcastMessages = getBroadcastMessages();
+	        String bcmString = buildBroadcastMessages();
+			
+			try{
+	    		resp.setContentType(CONTENT_TYPE_JSON);
+				try {
+					stream = resp.getOutputStream();
+		    		resp.flushBuffer();
+		    		stream.write(bcmString.getBytes());
+				} 
+				finally {
+					if (stream!=null){
+						stream.close();
+					}
+				}
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+	        
+	        return null;
+	    }
+
+	    private List getBroadcastMessages()
+	    {      
+	    	if (this.broadcastMessages == null) {
+	    	
+		    	if (this.userName == null) {
+		    		this.userName = (String)getSession().getAttribute("userName");
+		    	}
+		    	
+		    	this.broadcastMessages = new ArrayList();
+		    	
+	            try {
+	               BroadcastMessageData bmd = new BroadcastMessageData();
+	               Integer [] prodId = message.getFrameworkProductForUser(userName);
+	               Integer pageSize = null;
+	               String qString = "''";
+	               
+	               if (prodId != null && prodId.length > 0 ){
+	            	   qString = SQLutils.convertArraytoString(prodId);
+	               }
+	              
+	               bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
+	               
+	               BroadcastMessage[] bcMessages = bmd.getBroadcastMessages();
+		           if (bcMessages.length > 0) {
+		                for (int i=0; i<bcMessages.length ; i++) {
+		                	this.broadcastMessages.add(bcMessages[i]);
+		                }
+		           } 
+	               
+	            } catch (Exception e) {
+		            e.printStackTrace();
+	            }
+	    	}
+	    	
+	        return this.broadcastMessages;
+	    }
+	    
+	    private String buildBroadcastMessages()
+	    {        
+	        String html = "<table class='simpletable'>";        
+			String messages = "You have no messages at this time. The Messages link will display a numbered red square <span class='messageheader'>&nbsp;</span> when you have active messages.";
+			
+	        if (this.broadcastMessages.size() > 0)
+	        {
+	            html += "<tr class='simpletable'>";
+	            html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
+	            html += "</tr>";
+	            messages = "";
+	            for (int i=0; i<this.broadcastMessages.size(); i++) {
+	            	BroadcastMessage bm = (BroadcastMessage)this.broadcastMessages.get(i);
+	                html += "<tr class='simpletable'>";
+	            	html += "<td class='simpletable'>" + bm.getMessage() + "</td>";
+	            	String dateStr = DateUtils.formatDateToDateString(bm.getCreatedDateTime());
+	            	html += "<td class='simpletable'>" + dateStr + "</td>";
+	                html += "</tr>";
+	            }
+	        }   
+	        else {
+	            html += "<tr class='simpletable'><td class='simpletable alignCenter'>";
+	        	html += "<br/>";
+	        	html += messages;
+	        	html += "<br/><br/>";
+	            html += "</td></tr>";
+	        }
+			
+	        html += "</table>";
+	        
+	        return html;    
+	    }
+	    
 	
 	@Jpf.Action()
 	protected Forward myProfile()

@@ -89,6 +89,21 @@ public class DateUtils
         return result;
     }    
 
+    public static String formatDateToDateString(Date date){
+        String result = null;
+        if (date == null)
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(DATE_FORMAT);
+        try{
+            result = sdf.format(date);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }    
 
     public static String formatDateToDateString(Date date, String pattern){
         String result = null;

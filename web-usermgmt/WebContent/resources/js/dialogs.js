@@ -18,32 +18,31 @@ function viewBroadcastMessage() {
 								 	
 								//alert(data);
     							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    							//broadcastMsgBody.innerHTML = data;
+    							broadcastMsgBody.innerHTML = data;
 									 	
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
 									autoOpen: true,
 									modal: true,
 								    title:"Broadcast Message", 
-									width: 600,
+									width: "800px",
 									resizable: false,
-									buttons: {
-										"Close": function() { 
-    										var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    										//broadcastMsgBody.innerHTML = "";
-											$(this).dialog("close"); 
-										}
-									}
+									open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 								});
 								
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 							}
 				}
 			);
 	}	
+}
+
+function closeBroadcastMessage() {
+	$('#broadcastMsgDialogId').dialog("close");
 }
 
 

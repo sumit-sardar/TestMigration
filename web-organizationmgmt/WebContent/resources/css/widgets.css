@@ -545,6 +545,7 @@ td.sortable a:hover {
 }
 
 
+
 /** SIMPLETABLE **************************************************************/
 
 
@@ -592,7 +593,7 @@ td.simpletable a {
 
 td.simpletable a:hover {
     color: #00f;
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 .messageheader {
@@ -600,7 +601,6 @@ td.simpletable a:hover {
 	color: #ffffff; 
 	padding: 0px 5px 0px 5px;
 }
-
 
 
 /** COMPLEX TABLE *************************************************************/

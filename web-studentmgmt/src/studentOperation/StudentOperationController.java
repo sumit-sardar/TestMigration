@@ -47,6 +47,8 @@ import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.testAdmin.BroadcastMessage;
+import com.ctb.bean.testAdmin.BroadcastMessageData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -55,6 +57,7 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
+import com.ctb.util.SQLutils;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
@@ -69,12 +72,17 @@ import dto.StudentProfileInformation;
 public class StudentOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
 
+	
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
 
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
+
+    
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
@@ -82,6 +90,7 @@ public class StudentOperationController extends PageFlowController {
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
+	private List<BroadcastMessage> broadcastMessages = null;
 
 
 
@@ -720,6 +729,9 @@ public class StudentOperationController extends PageFlowController {
 		this.getRequest().setAttribute("showEditButton", PermissionsUtils.showEditButton(roleName));
 		this.getRequest().setAttribute("showDeleteButton", PermissionsUtils.showDeleteButton(roleName));
 		
+		this.broadcastMessages = getBroadcastMessages();
+        this.getSession().setAttribute("broadcastMessages", new Integer(this.broadcastMessages.size()));
+				
 		try{
 			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
 			this.getRequest().setAttribute("musicList", musicList);
@@ -2310,16 +2322,6 @@ public class StudentOperationController extends PageFlowController {
     }
 
 	
-	/**
-	 * @jpf:action
-	 */
-	@Jpf.Action()
-	protected Forward broadcastMessage()
-	{
-	    return null;
-	}
-	
-	
 	@Jpf.Action()
 	protected Forward myProfile()
 	{
@@ -2528,6 +2530,108 @@ public class StudentOperationController extends PageFlowController {
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
 
+    
+	@Jpf.Action()
+    protected Forward broadcastMessage()
+    {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		
+		this.broadcastMessages = getBroadcastMessages();
+        String bcmString = buildBroadcastMessages();
+		
+		try{
+    		resp.setContentType(CONTENT_TYPE_JSON);
+			try {
+				stream = resp.getOutputStream();
+	    		resp.flushBuffer();
+	    		stream.write(bcmString.getBytes());
+			} 
+			finally {
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return null;
+    }
+
+    private List getBroadcastMessages()
+    {      
+    	if (this.broadcastMessages == null) {
+    	
+	    	if (this.userName == null) {
+	    		this.userName = (String)getSession().getAttribute("userName");
+	    	}
+	    	
+	    	this.broadcastMessages = new ArrayList();
+	    	
+            try {
+               BroadcastMessageData bmd = new BroadcastMessageData();
+               Integer [] prodId = message.getFrameworkProductForUser(userName);
+               Integer pageSize = null;
+               String qString = "''";
+               
+               if (prodId != null && prodId.length > 0 ){
+            	   qString = SQLutils.convertArraytoString(prodId);
+               }
+              
+               bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
+               
+               BroadcastMessage[] bcMessages = bmd.getBroadcastMessages();
+	           if (bcMessages.length > 0) {
+	                for (int i=0; i<bcMessages.length ; i++) {
+	                	this.broadcastMessages.add(bcMessages[i]);
+	                }
+	           } 
+               
+            } catch (Exception e) {
+	            e.printStackTrace();
+            }
+    	}
+    	
+        return this.broadcastMessages;
+    }
+    
+    private String buildBroadcastMessages()
+    {        
+        String html = "<table class='simpletable'>";        
+		String messages = "You have no messages at this time. The Messages link will display a numbered red square <span class='messageheader'>&nbsp;</span> when you have active messages.";
+		
+        if (this.broadcastMessages.size() > 0)
+        {
+            html += "<tr class='simpletable'>";
+            html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
+            html += "</tr>";
+            messages = "";
+            for (int i=0; i<this.broadcastMessages.size(); i++) {
+            	BroadcastMessage bm = (BroadcastMessage)this.broadcastMessages.get(i);
+                html += "<tr class='simpletable'>";
+            	html += "<td class='simpletable'>" + bm.getMessage() + "</td>";
+            	String dateStr = DateUtils.formatDateToDateString(bm.getCreatedDateTime());
+            	html += "<td class='simpletable'>" + dateStr + "</td>";
+                html += "</tr>";
+            }
+        }   
+        else {
+            html += "<tr class='simpletable'><td class='simpletable alignCenter'>";
+        	html += "<br/>";
+        	html += messages;
+        	html += "<br/><br/>";
+            html += "</td></tr>";
+        }
+		
+        html += "</table>";
+        
+        return html;    
+    }
+    
+    
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    

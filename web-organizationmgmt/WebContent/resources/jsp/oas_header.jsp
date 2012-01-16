@@ -2,6 +2,11 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 
+<%
+	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
+%>
+
+
 <table class="headerLayout">
 	<tr>
 		<td align="left" width="70%" style="padding: 3px 0px 0px 3px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
@@ -15,7 +20,12 @@
 			<tr>
 				<td>
 					<div class="roundedHeader">
-					&nbsp;&nbsp;<a href="#" onClick="viewBroadcastMessage();"><b>Home</b></a>&nbsp;&nbsp;
+					&nbsp;&nbsp;
+					<a href="#" onclick="viewBroadcastMessage();"><b>Messages</b></a>
+					<% if (broadcastMessages.intValue() > 0) { %>
+						<span class="messageheader"><%=broadcastMessages.toString()%></span>
+					<% } %>
+					&nbsp;								
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
@@ -32,11 +42,23 @@
 
  
 <!-- Broadcast Message Dialog -->
-<div id="broadcastMsgDialogId" style="display: none; background-color: #d4ecff; padding: 10px;">
-	<div class="feature" style="padding: 10px;" id="broadcastMsgBody">
+<div id="broadcastMsgDialogId"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<br>
+	<div class="feature" style="padding: 10px; background-color: #ffffff;" id="broadcastMsgBody">
 	</div>
+	<br>
+	<div>
+		<table cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr align="center"><td>
+					<input type="button" value="&nbsp;Close&nbsp;" onclick="javascript:closeBroadcastMessage(); return false;" class="ui-widget-header" style="width:60px">
+				</td></tr>
+				<tr><td>&nbsp;</td></tr>
+		</table>
+	</div>	
 </div>
- 
+
+
 <!-- My profile Dialog -->
 <div id="myProfileDialogId" style="display: none; background-color: #d4ecff; padding: 10px;">
 	<div class="feature" style="padding: 10px;">
