@@ -19,6 +19,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import utils.BroadcastUtils;
 import utils.Base;
 import utils.BaseTree;
 import utils.FilterSortPageUtils;
@@ -62,6 +63,8 @@ public class BulkOperationController extends PageFlowController {
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
 
+    @Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
 	
 	private String userName = null;
 	private Integer customerId = null;
@@ -604,6 +607,9 @@ public class BulkOperationController extends PageFlowController {
 		this.getRequest().setAttribute("accommodations",accommodations);
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE); 
 		String roleName = this.user.getRole().getRoleName();
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 		
 		try{
 			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	

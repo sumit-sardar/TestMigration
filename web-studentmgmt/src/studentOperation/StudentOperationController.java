@@ -24,6 +24,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Base;
 import utils.BaseTree;
+import utils.BroadcastUtils;
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.MessageInfo;
@@ -90,7 +91,6 @@ public class StudentOperationController extends PageFlowController {
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
-	private List<BroadcastMessage> broadcastMessages = null;
 
 
 
@@ -729,8 +729,8 @@ public class StudentOperationController extends PageFlowController {
 		this.getRequest().setAttribute("showEditButton", PermissionsUtils.showEditButton(roleName));
 		this.getRequest().setAttribute("showDeleteButton", PermissionsUtils.showDeleteButton(roleName));
 		
-		this.broadcastMessages = getBroadcastMessages();
-        this.getSession().setAttribute("broadcastMessages", new Integer(this.broadcastMessages.size()));
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 				
 		try{
 			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
@@ -2538,8 +2538,13 @@ public class StudentOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
-		this.broadcastMessages = getBroadcastMessages();
-        String bcmString = buildBroadcastMessages();
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			this.userName = (String)getSession().getAttribute("userName");
+		}
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        String bcmString = BroadcastUtils.buildBroadcastMessages(broadcastMessages);
 		
 		try{
     		resp.setContentType(CONTENT_TYPE_JSON);
@@ -2560,77 +2565,6 @@ public class StudentOperationController extends PageFlowController {
         
         return null;
     }
-
-    private List getBroadcastMessages()
-    {      
-    	if (this.broadcastMessages == null) {
-    	
-	    	if (this.userName == null) {
-	    		this.userName = (String)getSession().getAttribute("userName");
-	    	}
-	    	
-	    	this.broadcastMessages = new ArrayList();
-	    	
-            try {
-               BroadcastMessageData bmd = new BroadcastMessageData();
-               Integer [] prodId = message.getFrameworkProductForUser(userName);
-               Integer pageSize = null;
-               String qString = "''";
-               
-               if (prodId != null && prodId.length > 0 ){
-            	   qString = SQLutils.convertArraytoString(prodId);
-               }
-              
-               bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
-               
-               BroadcastMessage[] bcMessages = bmd.getBroadcastMessages();
-	           if (bcMessages.length > 0) {
-	                for (int i=0; i<bcMessages.length ; i++) {
-	                	this.broadcastMessages.add(bcMessages[i]);
-	                }
-	           } 
-               
-            } catch (Exception e) {
-	            e.printStackTrace();
-            }
-    	}
-    	
-        return this.broadcastMessages;
-    }
-    
-    private String buildBroadcastMessages()
-    {        
-        String html = "<table class='simpletable'>";        
-		String messages = "You have no messages at this time. The Messages link will display a numbered red square <span class='messageheader'>&nbsp;</span> when you have active messages.";
-		
-        if (this.broadcastMessages.size() > 0)
-        {
-            html += "<tr class='simpletable'>";
-            html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
-            html += "</tr>";
-            messages = "";
-            for (int i=0; i<this.broadcastMessages.size(); i++) {
-            	BroadcastMessage bm = (BroadcastMessage)this.broadcastMessages.get(i);
-                html += "<tr class='simpletable'>";
-            	html += "<td class='simpletable'>" + bm.getMessage() + "</td>";
-            	String dateStr = DateUtils.formatDateToDateString(bm.getCreatedDateTime());
-            	html += "<td class='simpletable'>" + dateStr + "</td>";
-                html += "</tr>";
-            }
-        }   
-        else {
-            html += "<tr class='simpletable'><td class='simpletable alignCenter'>";
-        	html += "<br/>";
-        	html += messages;
-        	html += "<br/><br/>";
-            html += "</td></tr>";
-        }
-		
-        html += "</table>";
-        
-        return html;    
-    }
-    
     
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    

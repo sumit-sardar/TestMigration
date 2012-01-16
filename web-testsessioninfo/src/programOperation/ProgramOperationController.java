@@ -1,6 +1,7 @@
 package programOperation;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,6 +9,8 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
+import util.BroadcastUtils;
 
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
@@ -25,6 +28,9 @@ public class ProgramOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
 	
+    @Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
+    
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
@@ -84,6 +90,9 @@ public class ProgramOperationController extends PageFlowController {
 		getUserDetails();
 
 		setupUserPermission();
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 		
 		return new Forward("success");
 	}

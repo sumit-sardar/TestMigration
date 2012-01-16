@@ -1,6 +1,7 @@
 package softwareOperation;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +10,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import util.BroadcastUtils;
 import weblogic.logging.NonCatalogLogger;
 
 import com.ctb.bean.testAdmin.Customer;
@@ -28,6 +30,9 @@ public class SoftwareOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
 	
+    @Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
+    
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
@@ -75,6 +80,9 @@ public class SoftwareOperationController extends PageFlowController {
 
 		setupUserPermission();
     	    	
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+		
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
         String LINUX_URI = "'" + getdownloadURI("TDCINSTLIN") + "'";
@@ -112,6 +120,7 @@ public class SoftwareOperationController extends PageFlowController {
         return uri;
     }
 	
+    
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    

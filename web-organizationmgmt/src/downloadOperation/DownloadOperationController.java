@@ -1,10 +1,10 @@
 package downloadOperation;
 
-import java.awt.List;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +19,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Attribute;
 import utils.Base;
+import utils.BroadcastUtils;
 import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
 import utils.Row;
@@ -86,6 +87,8 @@ public class DownloadOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.db.Users users;
     
+    @Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
 
 
 	
@@ -136,6 +139,9 @@ public class DownloadOperationController extends PageFlowController {
         
         this.savedForm = initialize();
 		
+        List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);		
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+        
    		return new Forward("success");
     }
 	

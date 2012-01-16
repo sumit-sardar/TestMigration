@@ -23,6 +23,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+import utils.BroadcastUtils;
 import utils.FilterSortPageUtils;
 import utils.MessageResourceBundle;
 import utils.PathFinderUtils;
@@ -82,6 +83,9 @@ public class UploadOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.db.Users users;
+    
+    @Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
     
     
     // LLO- 118 - Change for Ematrix UI
@@ -169,6 +173,9 @@ public class UploadOperationController extends PageFlowController {
 
 		setupUserPermission();
 
+        List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);		
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+		
    		return new Forward("success");
     }
 	
