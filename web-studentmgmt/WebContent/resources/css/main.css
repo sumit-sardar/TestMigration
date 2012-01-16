@@ -6,6 +6,7 @@ body {
 	color:#000000; 
 	padding:0px; 
 	margin:0px;
+	width:100%;
 }
  
 .bodyContent {
@@ -168,9 +169,18 @@ table.simpleBody {
     border-collapse: collapse; 
     border-style: none; 
     padding: 0px; 
-    width: 100%;
-	color:#003399; 
+    width: 1280px;
+	color:#003399;
+	margin:0px auto; 
 }
+.ie table.simpleBody {
+	width: 1270px;
+}
+
+.ie6 table.simpleBody,.ie7 table.simpleBody {
+	width: 1255px;
+}
+
 
 tr.simpleBody {
 }
