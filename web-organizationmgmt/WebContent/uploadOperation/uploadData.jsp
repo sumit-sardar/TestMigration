@@ -23,33 +23,72 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
+<netui:form action="manageUpload">
 
-
-<netui:form action="services_uploadData">
-<table class="transparent" width="97%" style="margin:15px auto;"> 
-	<tr class="transparent">
-		<td>
-    		<table class="transparent">
-				<tr class="transparent">
-					<td>
-			    		<h1><lb:label key="services.export.title" /></h1>
-					</td>
-				</tr>				
-			</table>		
+<table width="97%" style="margin:15px auto;" border="0"> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="services.import.title" /></h1>
 		</td>
 	</tr>
-	<tr class="transparent">
-        <td align="center">        
-			<table width="100%">
-				<tr> 
-					<td height="400" align="center">  
-						<p align="center"><netui:content value="Content goes here"/></p>
-					</td>	
-				</tr>			
-			</table>
-		</td>	
-	</tr>	
+	<tr> 
+		<td style="padding-left:6px;">
+			    
+					<div id="accordion" style="width:100%;position:relative;">							
+						<div style="position:relative;">
+						  	<h3><a href="#"><lb:label key="services.import.templates" /></a></h3>
+							<div id="templates" style="background-color: #FFFFFF;" >
+							
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+			<lb:label key="services.import.template.msg" /> 		
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="transparent">
+			<div style="float:left; width:1000px;">
+        	<a href="#" id="exportDataButton" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button" />
+           	</a>
+            </div>               	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<div id="uploadData" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="list2" class="gridTable"></table>
+				<script>populateDownloadTemplateListGrid();</script>
+			</div>								
+		</td>
+	</tr>
 </table>
+							</div>
+						</div>
+						
+						
+						<div style="position:relative;">
+							<h3><a href="#"><lb:label key="services.import.uploadFile" /></a></h3>
+							<div id="uploadFile" style="background-color: #FFFFFF;">
+								<p style="color:#000"><lb:label key="services.import.uploadfile.msg" /></p> 		
+					            <netui:fileUpload tagId="inputbox" dataSource="actionForm.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
+					            &nbsp;
+					            <netui:button tagId="upload" type="submit" value="Upload" action="uploadData" onClick="return checkFileType();" disabled="true"/>
+							</div>									
+						</div>					
+						
+								
+						<div style="position:relative;">
+							<h3><a href="#"><lb:label key="services.import.viewUploads" /></a></h3>
+							<div id="viewUploads" style="background-color: #FFFFFF;">
+							</div>									
+						</div>							
+					</div>
+					
+		</td>
+	</tr>
+</table>
+
 </netui:form>
 
 <script type="text/javascript">

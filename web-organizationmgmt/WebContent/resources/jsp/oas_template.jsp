@@ -66,6 +66,8 @@
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
+
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/upload_download.js"></script>
   	
 	<script type="text/javascript">
 	var SelectedUserId;

@@ -1,9 +1,12 @@
 package downloadOperation;
 
+import java.awt.List;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +17,12 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import utils.Attribute;
+import utils.Base;
 import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
+import utils.Row;
+import utils.UploadDownload;
 import utils.UploadDownloadFormUtils;
 
 import com.ctb.bean.testAdmin.Customer;
@@ -28,6 +35,7 @@ import com.ctb.bean.testAdmin.UserFileRow;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.google.gson.Gson;
 
 import dto.Message;
 
@@ -111,7 +119,7 @@ public class DownloadOperationController extends PageFlowController {
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="uploadData.jsp"
+     * @jpf:forward name="success" path="manageDownload.do"
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success", path = "manageDownload.do")
@@ -150,6 +158,7 @@ public class DownloadOperationController extends PageFlowController {
      */
     @Jpf.Action(
 		forwards = { 
+	        @Jpf.Forward(name = "success",  path = "downloadData.jsp"),
 			@Jpf.Forward(name = "error", path = "downloadData.jsp")
 		}
 	)
@@ -159,7 +168,11 @@ public class DownloadOperationController extends PageFlowController {
         
         byte []data = null;
         String fileContent = "";
-        String fileName = form.getFileName();
+        String fileName = (String)this.getRequest().getParameter("downloadFile");        
+        System.out.println(fileName);
+        
+        if (true)
+        	return new Forward("success",form);
         
         String userFileName = userName + "_User.xls"; 
         
@@ -228,7 +241,8 @@ public class DownloadOperationController extends PageFlowController {
             //setFormInfoOnRequest(form);
         }
         
-        return null;
+        //return null;
+        return new Forward("success",form);
     }
     
     private void setFormInfoOnRequest(ManageDownloadForm form) {
@@ -260,6 +274,57 @@ public class DownloadOperationController extends PageFlowController {
         ManageDownloadForm form = new ManageDownloadForm();
         form.init();
         return form;
+    }
+    
+	@Jpf.Action()
+    protected Forward populateDownloadListGrid()
+    {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		
+		Row row1 = new Row(1);		
+		String[] atts1 = new String[2];
+		atts1[0] = "User Data";
+		atts1[1] = "Users in your organization located at or below your organizational assignment.";
+		row1.setCell(atts1);
+
+		Row row2 = new Row(2);		
+		String[] atts2 = new String[2];
+		atts2[0] = "Student Data";
+		atts2[1] = "Students in your organization associated with your user login.";
+		row2.setCell(atts2);
+		
+		ArrayList rows = new ArrayList();
+		rows.add(row1);
+		rows.add(row2);
+		
+		UploadDownload base = new UploadDownload();
+		//base.setPage("1");
+		//base.setRecords("2");
+		//base.setTotal("2");
+		base.setRows(rows);
+		
+        Gson gson = new Gson();
+        String jsonData = gson.toJson(base);
+		
+        System.out.println(jsonData);
+        
+		try{
+	       	try {
+	   			resp.setContentType("application/json");
+ 	   			stream = resp.getOutputStream();
+	   			stream.write(jsonData.getBytes("UTF-8"));
+	   			resp.flushBuffer();
+	   		} catch (IOException e) {
+	   			e.printStackTrace();
+	   		} 
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        return null;
     }
     
     /**

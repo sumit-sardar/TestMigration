@@ -30,60 +30,40 @@
 %>
 
 
+
 <netui:form action="downloadData">
 
+<input type="hidden" id="userFile" name = "userFile" value='<%= userFile %>'/>
+<input type="hidden" id="studentFile" name = "studentFile" value='<%= studentFile %>'/>
+<input type="hidden" id="downloadFile" name = "downloadFile" value='<%= userFile %>'/>
+ 
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>
 		<td style="padding-left:5px;">
     		<h1><lb:label key="services.export.title" /></h1>
-			<lb:label key="services.export.msg" /> 		
+			<p style="color:#000"><lb:label key="services.export.msg" /></p> 		
 		</td>
 	</tr>
 	<tr>
 		<td align="right">
-        	<a href="#" onclick="submitPage();" class="rounded {transparent} button" style="text-decoration: none;" >
+			<div style="float:left; width:1070px;">
+        	<a href="#" id="exportDataButton" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button" />
-           	</a>                	                                    
+           	</a>
+            </div>               	                                    
 		</td>
 	</tr>
 	<tr> 
 		<td style="padding-left:6px;">
-			<table class="simpletable" style="padding: 5px" > 
-			    <tr class="simpletable">
-			        <th class="simpletable alignCenter" height="25" nowrap width="50">Select</th>                
-			        <th class="simpletable alignLeft" height="25" nowrap>&nbsp;&nbsp;Name</th>
-			        <th class="simpletable alignLeft" height="25" nowrap>&nbsp;&nbsp;Description</th>
-			    </tr>    
-			    <tr class="simpletable">
-			        <td class="simpletable alignCenter">
-			            <netui:radioButtonGroup dataSource="actionForm.fileName">
-			                &nbsp;<netui:radioButtonOption value="<%=userFile%>" onClick="return enableDownloadData();">&nbsp;</netui:radioButtonOption>                
-			            </netui:radioButtonGroup>        
-			        </td>
-			        <td class="simpletable">
-			        	<lb:label key="services.export.userdata" />
-			        </td>        
-			        <td class="simpletable">
-			        	<lb:label key="services.export.userdata.msg" />
-			        </td>        
-			    </tr>
-			    <tr class="simpletable">
-			        <td class="simpletable alignCenter">
-			            <netui:radioButtonGroup dataSource="actionForm.fileName">
-			                &nbsp;<netui:radioButtonOption value="<%=studentFile%>" onClick="return enableDownloadData();">&nbsp;</netui:radioButtonOption>                
-			            </netui:radioButtonGroup>        
-			        </td>
-			        <td class="simpletable">
-			        	<lb:label key="services.export.studentdata" />
-			        </td>        
-			        <td class="simpletable">
-			        	<lb:label key="services.export.userdata.msg" />
-			        </td>        
-			    </tr>
-			</table>	
+			<div id="downloadData" style="float:left; width:1275px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="list2" class="gridTable"></table>
+				<script>populateDownloadListGrid();</script>
+			</div>								
 		</td>
 	</tr>
 </table>
+
+<br/><br/>
 
 </netui:form>
 
