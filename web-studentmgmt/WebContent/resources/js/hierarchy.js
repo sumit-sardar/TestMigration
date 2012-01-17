@@ -1787,6 +1787,9 @@ function fillselectedOrgNode( elementId, orgList) {
 				str = str.substring(parseInt(indexOfId), str.length);
 				//createBy
 				indexOfCreatedBy = str.indexOf("createBy");
+				if(indexOfCreatedBy == -1) {//if no createBy, return ""
+					return createBy;
+				}
 				indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
 				indexOfCreatedBy += 10;
 				createBy = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
