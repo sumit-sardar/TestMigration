@@ -778,6 +778,8 @@ function registerDelegate(tree){
 			$("#titleEditInfo").html("");
 			$("#messageEditInfo").html("");
 			$("#endTest").hide();
+			$("#stuOrgNodeHierarchy").undelegate();
+			$("#proctorOrgNodeHierarchy").undelegate();
 
 		}
 		$("#"+dailogId).dialog("close");
