@@ -3034,7 +3034,7 @@ function registerDelegate(tree){
        	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
           type:   "POST",
 		  datatype: "json",          
-          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val()],
+          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), "DNS"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -3042,18 +3042,26 @@ function registerDelegate(tree){
 		   		{name:'loginName',index:'loginName', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'dnsStatus',index:'dnsStatus', hidden:true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
 		   		 var subtestValAllowed = JSON.stringify(obj.subtestValidationAllowed);
 		   		 if(subtestValAllowed == 'false') {
 					$("#toggleValidation").show();
-				} else {
+				 } else {
 					$("#toggleValidation").hide();
-				}
-				$("#rosterTestName").text(obj.testSession.testName);
-				$("#rosterTestAccessCode").text(obj.testSession.accessCode);
+				 }
+				 var donotScoreAllowed = JSON.stringify(obj.donotScoreAllowed);
+		   		 if(donotScoreAllowed == 'true') {
+					$("#doNotScore").show();
+				 } else {
+					$("#doNotScore").hide();
+				 }
+				 $("#doNotScore").show();
+				 $("#rosterTestName").text(obj.testSession.testName);
+				 $("#rosterTestAccessCode").text(obj.testSession.accessCode);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,
@@ -3439,4 +3447,35 @@ function registerDelegate(tree){
 		 
 		 return disParam;
 
+	}
+	function toggleDonotScoreStatus(){
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		var dnsStatus = $('#rosterList').getCell(selectedTestRosterId, 7);
+		if($.trim(dnsStatus) == "Y") {
+			dnsStatus = "N";
+		} else {
+			dnsStatus = "Y";
+		}
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'toggleDonotScoreStatus.do?testRosterId='+selectedTestRosterId+'&dnsStatus='+dnsStatus,
+			type:		'POST',
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest) {	
+							$("#displayMessageViewTestRoster").show();
+							$("#rosterMessage").html($("#doNotScoreMsg").val());
+							$('#rosterList').jqGrid('setCell', selectedTestRosterId, '7', dnsStatus);
+							$.unblockUI(); 						
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
 	}
