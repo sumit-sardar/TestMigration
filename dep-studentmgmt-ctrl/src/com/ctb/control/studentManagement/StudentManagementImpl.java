@@ -2813,4 +2813,21 @@ public class StudentManagementImpl implements StudentManagement
 		}
 	}
 
+	public ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(String userName, Integer orgNodeId, SortParams sort) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.findStudentsForOrgNode");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			ManageStudent [] students = studentManagement.getStudentsMinimalInfoForSelectedOrgNode(orgNodeId);
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+
 } 

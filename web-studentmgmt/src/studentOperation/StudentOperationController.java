@@ -1,7 +1,6 @@
 package studentOperation;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import utils.OptionList;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
-import utils.Row;
 import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
 import utils.TreeData;
@@ -45,7 +43,6 @@ import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.MusicFiles;
-import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.BroadcastMessage;
@@ -61,11 +58,9 @@ import com.ctb.exception.studentManagement.StudentDataDeletionException;
 import com.ctb.util.SQLutils;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
-import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
 import dto.Message;
-import dto.PathNode;
 import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
 
@@ -292,16 +287,13 @@ public class StudentOperationController extends PageFlowController {
 	})
 	protected Forward getStudentForSelectedOrgNodeGrid(StudentOperationForm form){
 
-		String jsonTree = "";
 		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
-		String treeOrgNodeId = getRequest().getParameter("treeOrgNodeId");
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
-		List studentList = new ArrayList(0);
+		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>(0);
 		String studentArray = "";
+		StringBuffer  buffer= new StringBuffer("");
 		String json = "";
-		ObjectOutput output = null;
 		try {
 			System.out.println ("db process time Start:"+new Date());
 			ManageStudentData msData = findStudentByHierarchy();
@@ -310,24 +302,22 @@ public class StudentOperationController extends PageFlowController {
 			if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
-				studentList = StudentSearchUtils.buildStudentList(msData);
-				studentArray = StudentSearchUtils.buildStudentListString(msData);
+				studentList = StudentSearchUtils.buildStudentList(msData, buffer);
+				studentArray = buffer.toString();
 				System.out.println ("List process time End:"+new Date());
 			}
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
-			String fName=null,lName=null,address=null ,email= null,role= null;
 
 			System.out.println("just b4 gson");	
 			Gson gson = new Gson();
-			System.out.println ("Json process time Start:"+new Date());
+			
 			base.setStudentProfileInformation(studentList);
 			base.setStudentIdArray(studentArray);
 			json = gson.toJson(base);
-			System.out.println ("Json process time End:"+new Date());
+			
 
 
 			
@@ -337,7 +327,7 @@ public class StudentOperationController extends PageFlowController {
 				resp.flushBuffer();
 				stream.write(json.getBytes());
 */
-				resp.setContentType(contentType);
+				resp.setContentType(CONTENT_TYPE_JSON);
 	    		stream = resp.getOutputStream();
 
 	    		String acceptEncoding = req.getHeader("Accept-Encoding");
@@ -1201,8 +1191,7 @@ public class StudentOperationController extends PageFlowController {
 
 		if (selectedOrgNodeId != null)
 		{
-			sort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.LAST_NAME_SORT, FilterSortPageUtils.ASCENDING);
-			msData = StudentSearchUtils.searchStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, filter, page, sort);
+			msData = StudentSearchUtils.getStudentsMinimalInfoForSelectedOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, filter, page, sort);
 
 		}
 

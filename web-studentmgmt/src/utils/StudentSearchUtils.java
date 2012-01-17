@@ -66,6 +66,27 @@ public class StudentSearchUtils
     /**
      * buildStudentList
      */    
+    public static List<StudentProfileInformation> buildStudentList(ManageStudentData msData, StringBuffer buffer) 
+    {
+        ArrayList<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
+        if (msData != null) {
+            ManageStudent[] students = msData.getManageStudents();
+            for (int i=0 ; i<students.length ; i++) {
+                ManageStudent student = (ManageStudent)students[i];
+                if (student != null) {
+                    StudentProfileInformation studentDetail = new StudentProfileInformation(student);
+                    studentList.add(studentDetail);
+                    if(i == 0)
+                    	 buffer.append( student.getId());
+                	else
+                		 buffer.append(",").append( student.getId());
+                		
+                }
+            }
+        }
+        return studentList;
+    }
+    
     public static List buildStudentList(ManageStudentData msData) 
     {
         ArrayList studentList = new ArrayList();
@@ -178,6 +199,22 @@ public class StudentSearchUtils
         ManageStudentData msData = null;
         try {    
             msData = studentManagement.findStudentsForOrgNode(userName, orgNodeId, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
+    }
+    
+    /**
+     * searchStudentsByOrgNode with minimal information
+     */
+     public static ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId,
+                                                           FilterParams filter, PageParams page, SortParams sort)
+    {    
+        ManageStudentData msData = null;
+        try {    
+            msData = studentManagement.getStudentsMinimalInfoForSelectedOrgNode(userName, orgNodeId, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

@@ -71,6 +71,9 @@ public class ManageStudent extends CTBBean
     
     private String orgNodeName;
     private Integer orgNodeId;
+    private String orgIdList;
+    private String orgNameList;
+    
     
 	/**
 	 * @return the testPurpose
@@ -617,6 +620,34 @@ public class ManageStudent extends CTBBean
 	}
 	public void setOrgNodeId(Integer orgNodeId) {
 		this.orgNodeId = orgNodeId;
+	}
+	
+	/**
+	 * @return the orgIdList
+	 */
+	public String getOrgIdList() {
+		return orgIdList;
+	}
+	
+	/**
+	 * @param orgIdList the orgIdList to set
+	 */
+	public void setOrgIdList(String orgIdList) {
+		this.orgIdList = orgIdList;
+	}
+	
+	/**
+	 * @return the orgNameList
+	 */
+	public String getOrgNameList() {
+		return orgNameList;
+	}
+	
+	/**
+	 * @param orgNameList the orgNameList to set
+	 */
+	public void setOrgNameList(String orgNameList) {
+		this.orgNameList = orgNameList;
 	}
 	
     
