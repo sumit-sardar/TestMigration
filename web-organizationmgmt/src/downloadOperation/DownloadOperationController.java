@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import manageDownload.ManageDownloadController.ManageDownloadForm;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -61,7 +59,6 @@ public class DownloadOperationController extends PageFlowController {
 	private com.ctb.control.db.OrgNode orgnode;
     
     private String userName = null;
-    private ManageDownloadForm savedForm = null;
     private User user = null;
 	private Integer customerId = null;
     
@@ -78,18 +75,12 @@ public class DownloadOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
 
-    /**
-     * @common:control
-     */
-    @Control()
-    private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
 
     @Control()
     private com.ctb.control.db.Users users;
     
     @Control()
     private com.ctb.control.db.BroadcastMessageLog message;
-
 
 	
 	/**
@@ -136,8 +127,6 @@ public class DownloadOperationController extends PageFlowController {
 		setupUserPermission();
 
         isTopLevelUser();
-        
-        this.savedForm = initialize();
 		
         List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);		
         this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
@@ -152,33 +141,27 @@ public class DownloadOperationController extends PageFlowController {
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",  path = "downloadData.jsp")
     })
-    protected Forward manageDownload(ManageDownloadForm form)
+    protected Forward manageDownload()
     {  
     	isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
-        return new Forward("success", form);
+        return new Forward("success");
     }
 	
     /**
      * @jpf:action
-     * @jpf:forward name="error" path="manage_download.jsp"
+     * @jpf:forward name="error" path="downloadData.jsp"
      */
     @Jpf.Action(
 		forwards = { 
-	        @Jpf.Forward(name = "success",  path = "downloadData.jsp"),
 			@Jpf.Forward(name = "error", path = "downloadData.jsp")
 		}
 	)
-    protected Forward downloadData(ManageDownloadForm form)
+    protected Forward downloadData()
     {         
-        form.clearMessage();
-        
         byte []data = null;
         String fileContent = "";
         String fileName = (String)this.getRequest().getParameter("downloadFile");        
         System.out.println(fileName);
-        
-        if (true)
-        	return new Forward("success",form);
         
         String userFileName = userName + "_User.xls"; 
         
@@ -189,11 +172,7 @@ public class DownloadOperationController extends PageFlowController {
                 UserFileRow []userFileRow = userFile.getUserFileRows();
                 
                 if (userFileRow.length > CTBConstants.MAX_EXCEL_SIZE) {
-                   
-                    form.setMessage(Message.DOWNLOAD_TITLE, Message.DOWNLOAD_ERROR_MSG, Message.ERROR);
-                    setFormInfoOnRequest(form);
-                    return new Forward("error",form);
-                    
+                    return new Forward("error");
                 }
                 
                 //fileContent = UploadDownloadFormUtils.downLoadUserData(userFile);
@@ -206,11 +185,7 @@ public class DownloadOperationController extends PageFlowController {
                 StudentFileRow []studentFileRow = studentFile.getStudentFileRows();
                 
                 if (studentFileRow.length > CTBConstants.MAX_EXCEL_SIZE) {
-                    
-                    form.setMessage(Message.DOWNLOAD_TITLE, Message.DOWNLOAD_ERROR_MSG, Message.ERROR);
-                    setFormInfoOnRequest(form);
-                    return new Forward("error",form);
-                    
+                    return new Forward("error");
                 }
                 //fileContent = UploadDownloadFormUtils.downLoadStudentData(studentFile);
                 
@@ -219,40 +194,25 @@ public class DownloadOperationController extends PageFlowController {
                 
             }
             
-        setFormInfoOnRequest(form);
-            
-        HttpServletResponse resp = this.getResponse();        
-        String bodypart = "attachment; filename=\"" + fileName + "\" ";
-
-        resp.setContentType("application/vnd.ms-excel");
-        resp.setHeader("Content-Disposition", bodypart);
-        /*resp.setHeader("Cache-Control", "no-cache");
-        resp.setHeader("Pragma", "no-cache");*/
-        
-        resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        resp.setHeader("Cache-Control", "cache");
-        resp.setHeader("Pragma", "public");
-        resp.flushBuffer();
-            /*PrintWriter pw = resp.getWriter();
-            pw.write(fileContent);
-            pw.close();*/
-        OutputStream stream = resp.getOutputStream();
-        stream.write(data);
-        stream.close();
-            
+	        HttpServletResponse resp = this.getResponse();        
+	        String bodypart = "attachment; filename=\"" + fileName + "\" ";
+	
+	        resp.setContentType("application/vnd.ms-excel");
+	        resp.setHeader("Content-Disposition", bodypart);
+	        resp.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+	        resp.setHeader("Cache-Control", "cache");
+	        resp.setHeader("Pragma", "public");
+	        resp.flushBuffer();
+	
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(data);
+	        stream.close();
+	            
         } catch(Exception e) {
             e.printStackTrace();
-            String msg = MessageResourceBundle.getMessage(e.getMessage());
-            form.setMessage(Message.DOWNLOAD_TITLE, msg, Message.ERROR);
-            //setFormInfoOnRequest(form);
         }
         
-        //return null;
-        return new Forward("success",form);
-    }
-    
-    private void setFormInfoOnRequest(ManageDownloadForm form) {
-    	this.getRequest().setAttribute("pageMessage", form.getMessage());
+        return null;
     }
     
     private void isTopLevelUser(){
@@ -269,18 +229,11 @@ public class DownloadOperationController extends PageFlowController {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 	}
     
-    private ManageDownloadForm initialize()
-    {                
-        ManageDownloadForm form = new ManageDownloadForm();
-        form.init();
-        return form;
-    }
     
 	@Jpf.Action()
     protected Forward populateDownloadListGrid()
@@ -306,9 +259,6 @@ public class DownloadOperationController extends PageFlowController {
 		rows.add(row2);
 		
 		UploadDownload base = new UploadDownload();
-		//base.setPage("1");
-		//base.setRecords("2");
-		//base.setTotal("2");
 		base.setRows(rows);
 		
         Gson gson = new Gson();
@@ -331,77 +281,6 @@ public class DownloadOperationController extends PageFlowController {
 		}
         
         return null;
-    }
-    
-    /**
-     * FormData get and set methods may be overwritten by the Form Bean editor.
-     */
-    public static class ManageDownloadForm extends SanitizedFormData
-    {
-        private String userName;
-
-        private String actionElement;
-        private String currentAction;
-        private String fileName;
-        private Message message;
-        
-
-        public ManageDownloadForm()
-        {
-        }
-        
-        public void init()
-        {
-            this.actionElement = ACTION_DEFAULT;
-            this.currentAction = ACTION_DEFAULT;
-            this.message = new Message(); 
-            this.fileName = "";
-        }
-
-        public void setActionElement(String actionElement)
-        {
-            this.actionElement = actionElement;
-        }        
-        public String getActionElement()
-        {
-            return this.actionElement != null ? this.actionElement : ACTION_DEFAULT;
-        }
-        public void setCurrentAction(String currentAction)
-        {
-            this.currentAction = currentAction;
-        }
-        public String getCurrentAction()
-        {
-            return this.currentAction != null ? this.currentAction : ACTION_DEFAULT;
-        }
-        public void setFileName(String fileName)
-        {
-            this.fileName = fileName;
-        }
-        public String getFileName()
-        {
-            return this.fileName;
-        }
-        
-          // clear message
-        public void clearMessage() {   
-            this.message = null;
-        }
-        public Message getMessage()
-        {
-            return this.message != null ? this.message : new Message();
-        }       
-        
-        public void setMessage(Message message)
-        {
-            this.message = message;
-        }
-        
-        public void setMessage(String title, String content, String type)
-        {
-            this.message = new Message(title, content, type);
-        }
-        
     }
     
 	/////////////////////////////////////////////////////////////////////////////////////////////    
