@@ -81,6 +81,7 @@ public class TestSession extends CTBBean
     private String dailyLoginStartTimeString;
     private String dailyLoginEndTimeString;
     private String productType;
+    private String offGradeBlocked;
    
    
     /**
@@ -665,5 +666,19 @@ public class TestSession extends CTBBean
 	 */
 	public void setOverrideLoginEndDate(Date overrideLoginEndDate) {
 		this.overrideLoginEndDate = overrideLoginEndDate;
+	}
+
+	/**
+	 * @return the offGradeBlocked
+	 */
+	public String getOffGradeBlocked() {
+		return offGradeBlocked;
+	}
+
+	/**
+	 * @param offGradeBlocked the offGradeBlocked to set
+	 */
+	public void setOffGradeBlocked(String offGradeBlocked) {
+		this.offGradeBlocked = offGradeBlocked;
 	}
 } 
