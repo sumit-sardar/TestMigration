@@ -111,12 +111,7 @@
 							if(isProctor){
 								$("#displayEditInfo").show();
 								$("#titleEditInfo").html($("#fieldDisabled").val());
-								$("#messageEditInfo").html($("#noPermission").val());	
-								if(stdsLogIn){
-								$("#endTestSessionStudentMessage").show();
-								}else{					
-								$("#endTestSessionStudentMessage").hide();
-								}
+								$("#messageEditInfo").html($("#noPermission").val());
 							}
 							else if(isTestExpired) {
 								$("#displayEditInfo").show();

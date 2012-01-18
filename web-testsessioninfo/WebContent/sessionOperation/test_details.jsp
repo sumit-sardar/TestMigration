@@ -116,7 +116,6 @@
 		<tr>
 			<td colspan="2">
 			<p><lb:label key="editTest.endTestSession1.message" /></p>
-			<p><span id="endTestSessionStudentMessage"><lb:label key="session.edit.stuLogged" /></span></p>
 			<p><lb:label key="editTest.endTestSession2.message" /></p>
 			</td>
 		</tr>
