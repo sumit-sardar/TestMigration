@@ -415,12 +415,14 @@ function removeBulkPopupMessage() {
 
 function saveBulkMoveData() {
 
-	var param;
+	var param = {};
 	var studentIds = "";
 	for(var key in selectedStudentForMove){
 		studentIds =  selectedStudentForMove[key] + "," + studentIds;
 	}
 	studentIds = studentIds.substring(0,studentIds.length-1);
+	param.studentIds = studentIds;
+	param.selectedOrgId = finalSelectedNode;
 	if(finalSelectedNode != undefined && finalSelectedNode.length > 0) {
 		$.ajax(
 		{
@@ -428,7 +430,7 @@ function saveBulkMoveData() {
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'saveBulkStudentData.do?studentIds='+studentIds+'&selectedOrgId='+finalSelectedNode,
+				url:		'saveBulkStudentData.do',
 				type:		'POST',
 				data:		 param,
 				dataType:	'json',
