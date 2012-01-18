@@ -4215,6 +4215,7 @@ public class SessionOperationController extends PageFlowController {
 				List <Row> rows = new ArrayList<Row>();
 				base.setRosterElement(rosterList);
 				base.setSubtestValidationAllowed(this.subtestValidationAllowed);
+				base.setDonotScoreAllowed(isDonotScoreAllowed());
 				/*Integer breakCount = ted.getBreakCount();
 		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
 		            if (isSameAccessCode(subtestList)) 

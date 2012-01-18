@@ -38,8 +38,14 @@ public class Base {
 	private int numberColumn;
 	private boolean subtestValidationAllowed;
 	private boolean isLaslinkSession;
+	private boolean donotScoreAllowed;
 	
-	
+	public boolean isDonotScoreAllowed() {
+		return donotScoreAllowed;
+	}
+	public void setDonotScoreAllowed(boolean donotScoreAllowed) {
+		this.donotScoreAllowed = donotScoreAllowed;
+	}
 	public String getResponse() {
 		return response;
 	}
