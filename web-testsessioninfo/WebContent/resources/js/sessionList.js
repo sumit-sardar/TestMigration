@@ -708,7 +708,8 @@ function registerDelegate(tree){
 						document.getElementById("aCode").value = "";
 					}
 					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
-					document.getElementById("testSessionName").value = sessionList[i].testName;	
+					if(state != "EDIT")
+						document.getElementById("testSessionName").value = sessionList[i].testName;	
 					str = sessionList[i].subtests;
 					if(sessionList[i].isRandomize == "Y" ){
 						$("#randomDis").show();	
