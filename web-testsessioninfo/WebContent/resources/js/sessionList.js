@@ -3051,7 +3051,7 @@ function registerDelegate(tree){
        	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
           type:   "POST",
 		  datatype: "json",          
-          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), "DNS"],
+          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -3060,7 +3060,7 @@ function registerDelegate(tree){
 		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'dnsStatus',index:'dnsStatus', hidden:true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'dnsStatus',index:'dnsStatus', width:70, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
@@ -3075,8 +3075,8 @@ function registerDelegate(tree){
 					$("#doNotScore").show();
 				 } else {
 					$("#doNotScore").hide();
+					//$('#rosterList').jqGrid('hideCol', $('#rosterList').getGridParam("colModel")[7].name);
 				 }
-				 $("#doNotScore").show();
 				 $("#rosterTestName").text(obj.testSession.testName);
 				 $("#rosterTestAccessCode").text(obj.testSession.accessCode);
 		   	}},
@@ -3179,6 +3179,10 @@ function registerDelegate(tree){
 					} else if(cellData == 'SP') {
 						$("#rosterList").setCell(gridIds[i], '6', 'Student pause', "", "", true);
 					}
+					cellData = $.trim($('#rosterList').getCell(gridIds[i], '7'));
+					if(cellData == '') {
+						$("#rosterList").setCell(gridIds[i], '7', 'N', "", "", true);
+					}
 				}
 				$.unblockUI();
 				//jQuery("#rosterList").setGridWidth(width);
@@ -3189,7 +3193,7 @@ function registerDelegate(tree){
 			}
 	 });
 	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
-}
+	}
 	
 	function viewSubtestDetails() {
 		

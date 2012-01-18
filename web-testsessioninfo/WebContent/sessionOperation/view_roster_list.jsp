@@ -22,13 +22,13 @@
 	</tbody>
 </table>
 </div>
-<table width="865px" style="margin-bottom: 2px;">
+<table width="940px" style="margin-bottom: 2px;">
 	<tr>
 		<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 		<td width="80%"><span id = "rosterTestName"></span></td>
 	</tr>
 </table>
-<table width="865px" style="margin-bottom: 12px;">
+<table width="940px" style="margin-bottom: 12px;">
 	<tr>
 		<td align="left" width="15%"><lb:label key="viewStatus.testAccessCode" /></td>
 		<td width="15%"><span id = "rosterTestAccessCode"></span></td>
@@ -56,6 +56,7 @@
 <input type="hidden" name="passwordLbl" id="passwordLbl" value=<lb:label key="viewStatus.text.password" prefix="'" suffix="'"/>/>
 <input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="viewStatus.text.validationStatus" prefix="'" suffix="'"/>/>
 <input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value=<lb:label key="viewStatus.text.onlineTestStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" name="dnsLbl" id="dnsLbl" value=<lb:label key="viewStatus.text.dnsLbl" prefix="'" suffix="'"/>/>
 
 <table id="rosterList" class="gridTable"></table>
 <div id="rosterPager" class="gridTable"></div>

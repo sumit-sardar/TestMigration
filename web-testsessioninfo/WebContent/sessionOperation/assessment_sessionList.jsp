@@ -61,6 +61,7 @@
 <input type="hidden" id="tstLcnInChHdrMsg" name="tstLcnInChHdrMsg" value=<lb:label key="common.tstLcnInChHdr.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tstLcnInChBdyMsg" name="tstLcnInChBdyMsg" value=<lb:label key="common.tstLcnInChBdy.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="monitorStsValidMsg" name="monitorStsValidMsg" value=<lb:label key="monitorSts.snValid.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="doNotScoreMsg" name="doNotScoreMsg" value=<lb:label key="donotScore.snValid.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="delSessionTitle" name="delSessionTitle" value=<lb:label key="sessionList.deleteTest.title" prefix="'" suffix="'"/>/>	
 <input type="hidden" id="deleteSuccessMsg" name="deleteSuccessMsg" value=<lb:label key="session.msg.deleteSuccess" prefix="'" suffix="'"/>/>
 <input type="hidden" id="deleteFailureMsg" name="deleteFailureMsg" value=<lb:label key="session.msg.deleteFailure" prefix="'" suffix="'"/>/>
