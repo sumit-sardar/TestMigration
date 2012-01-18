@@ -1065,4 +1065,111 @@ public class OrganizationManagementImpl implements OrganizationManagement
  		}
  		return leafNodeCategoryId;
  	}
+     
+     /**
+      * To Handle Delete Organization for New UI
+      *
+      * @common:operation
+      * @throws CTBBusinessException
+      */
+
+    public void deleteOrganizationNew(String userName,
+    		 Node currentOrgnode)
+     throws CTBBusinessException{
+    	 Integer selectedOrgNodeId = null;
+
+//  	 START - changes for TABE BAUM to delete organization node and assign remaining license to top node
+
+    	 Boolean isOrgNodeLicenseEntry = false;
+    	 try {
+    		 selectedOrgNodeId = currentOrgnode.getOrgNodeId();
+    		 if ( selectedOrgNodeId != null) {
+
+    			 validator.validateNode(userName, 
+    					 selectedOrgNodeId,
+    			 "createOrganization.validateParentOrgNodeId");
+
+    		 }
+    	 } catch (ValidationException ve) {
+    		 throw ve;
+    	 }
+
+    	 try {
+    		 
+    		 //Cannot delete an organization that has childOrganizations
+             Node[] childOrgNode = orgNode.getOrgNodesByParent(selectedOrgNodeId);
+             if (childOrgNode != null && childOrgNode.length > 0){
+            	 CTBBusinessException be = 
+                     new CTBBusinessException("DeleteOrganization.Failed");
+             throw be;
+          	   
+             }
+             
+             //Cannot delete an organization that has students
+             Student[] studentdata = student.getStudentsForOrgNode(selectedOrgNodeId);             
+             if (studentdata != null  && studentdata.length > 0) {                   
+                 CTBBusinessException be = 
+                         new CTBBusinessException("DeleteOrganization.StudentsCreated");
+                 throw be;
+             }
+              
+             // Cannot delete an organization that has users
+             User[] userData = users.getUsersForOrgNode(selectedOrgNodeId);
+             if (userData != null && userData.length>0) {                   
+                 CTBBusinessException be = 
+                         new CTBBusinessException("DeleteOrganization.UsersCreated");
+                 throw be;
+             }
+
+             //cannot delete an organization if it has any test session.
+             TestSession [] testSessions = testAdmin.getTestAdminsForOrgNode(
+                                                                 selectedOrgNodeId );               
+               if (testSessions != null && testSessions.length > 0) {
+                   CTBBusinessException be = 
+                           new CTBBusinessException("DeleteOrganization.TestsCreated");
+                   throw be;
+               } 
+               
+    		 User loginUser = users.getUserDetails(userName);
+    		 Integer loginUserId = loginUser.getUserId(); 
+    		 Integer[] productIdList;
+    		 Integer customerId = orgNode.getCustomerIdbyOrgNode(selectedOrgNodeId);
+    		 currentOrgnode.setUpdatedDateTime(new Date());
+
+    		 orgNode.inActivateTestCatalogForOrgId(selectedOrgNodeId,loginUserId);
+    		 orgNode.deleteOrgNodeParentForOrgNode(currentOrgnode);
+    		 orgNode.inActivateOrganization(currentOrgnode,loginUserId);
+    		 Node customerTopNode = orgNode.getTopOrgNodeForCustomer(customerId);
+
+    		 productIdList = orgNode.getProductIdList(selectedOrgNodeId, customerId);
+    		 if(productIdList != null){
+    			 isOrgNodeLicenseEntry =  orgNode.getOrgNodeLiceseEntryPresent(selectedOrgNodeId, customerId);
+    			 if(isOrgNodeLicenseEntry)
+    			 {
+    				 for(int i=0;i< productIdList.length;i++) {
+    					 Integer availableLicense;
+    					 availableLicense = orgNode.getAvailableLicenseQuantityForOrgNode(selectedOrgNodeId,customerId,productIdList[i]);
+    					 if (customerTopNode.getOrgNodeId() != null ) {
+    						 orgNode.addDeletedNodeLicenseToTopNode(customerTopNode.getOrgNodeId(),availableLicense,productIdList[i]);
+    					 }
+    				 }
+    				 orgNode.deleteOrgNodeDetails(selectedOrgNodeId, customerId);
+    			 }
+    		 }
+
+//  		 END - changes for TABE BAUM to delete organization node and assign remaining license to top node
+
+    	 } catch(SQLException se){
+    		 OrgDataDeletedException dataNotDeletedException = 
+    			 new OrgDataDeletedException
+    			 ("DeleteOrganization.Failed");
+    		 throw dataNotDeletedException;                                                
+    	 } catch (Exception e) {
+    		 OrgDataDeletedException dataNotDeletedException = 
+    			 new OrgDataDeletedException
+    			 ("DeleteOrganization.Failed");
+    		 dataNotDeletedException.setStackTrace(e.getStackTrace());
+    		 throw dataNotDeletedException;
+    	 } 
+     } 
 } 

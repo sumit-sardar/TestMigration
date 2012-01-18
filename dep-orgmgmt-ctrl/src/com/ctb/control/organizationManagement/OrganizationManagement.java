@@ -126,4 +126,11 @@ public interface OrganizationManagement
     
     java.lang.Integer getLeafNodeCategoryId(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
 
+    /**
+     * To Handle delete Organization for new UI
+     * @param userName
+     * @param currentOrgnode
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    void deleteOrganizationNew(java.lang.String userName, com.ctb.bean.testAdmin.Node currentOrgnode) throws com.ctb.exception.CTBBusinessException;
 } 

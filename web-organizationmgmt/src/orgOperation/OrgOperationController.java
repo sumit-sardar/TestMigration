@@ -25,6 +25,7 @@ import utils.Base;
 import utils.BaseTree;
 import utils.DateUtils;
 import utils.MessageInfo;
+import utils.MessageResourceBundle;
 import utils.Organization;
 import utils.OrganizationPathListUtils;
 import utils.OrgnizationComparator;
@@ -272,7 +273,7 @@ public class OrgOperationController extends PageFlowController {
 	    		stream = resp.getOutputStream();
 
 	    		String acceptEncoding = req.getHeader("Accept-Encoding");
-	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+	    		//System.out.println("acceptEncoding..."+acceptEncoding.toString());
 
 	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
 	    		    resp.setHeader("Content-Encoding", "gzip");
@@ -387,9 +388,6 @@ public class OrgOperationController extends PageFlowController {
 		 if(getRequest().getParameter("currentNodeIdForEdit") != null)
 			 orgNodeToEdit = Integer.parseInt(getRequest().getParameter("currentNodeIdForEdit"));
 		 
-		 System.out.println("isAddOrganization ::"+isAddOrganization);
-		 System.out.println("orgNodeToEdit ::"+orgNodeToEdit);
-		 System.out.println("selectedParentNode ::"+selectedParentNode);
 		 
 			try {
 				if(isAddOrganization){
@@ -403,23 +401,10 @@ public class OrgOperationController extends PageFlowController {
 				json = gson.toJson(orgCatagories);
 				
 					try{
-			    		resp.setContentType("application/json");
+						resp.setContentType("application/json");
 			    		stream = resp.getOutputStream();
 			    		resp.flushBuffer();
-
-			    		
-			    		//response.setContentType("application/json");
-			    		//response.setCharacterEncoding("UTF-8");
-			    		//OutputStream output = response.getOutputStream();
-
-			    		String acceptEncoding = req.getHeader("Accept-Encoding");
-			    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
-			    		    resp.setHeader("Content-Encoding", "gzip");
-			    		    stream = new GZIPOutputStream(stream);
-			    		}
-
-			    		stream.write(json.getBytes("UTF-8"));
-			    		
+			    		stream.write(json.getBytes());
 			    		
 			    		//stream.write(json.getBytes());
 				
@@ -459,8 +444,7 @@ public class OrgOperationController extends PageFlowController {
 	 		 Node [] organizationNodes = null; //added on 10.12.2011 for open node functionality in new jstree 
 	 		 Node orgNodeDetail = new Node();
 	 		 Integer orgNodeId = Integer.parseInt(getRequest().getParameter("selectedOrgId").toString());
-	 		 System.out.println("userName ::"+this.userName);
-	 		 System.out.println("orgNodeId ::"+orgNodeId);
+
 	 		
 	 		 try{
 	 			orgNodeDetail = this.organizationManagement.getOrganization(this.userName, orgNodeId);
@@ -650,6 +634,74 @@ public class OrgOperationController extends PageFlowController {
 		 
 		}
 	 
+	 
+	 
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward deleteOrg(ManageOrganizationForm form)
+		{
+		 	
+		 	String json = "";
+			OutputStream stream = null;
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			Node deleteNode = new Node();
+			//added on 08.11.2011
+			MessageInfo messageInfo = new MessageInfo();
+			//Message message = null;
+			Integer orgNodeId = null;
+			if(getRequest().getParameter("selectedOrgId")!=null){
+				orgNodeId = Integer.parseInt(getRequest().getParameter("selectedOrgId").toString());
+			}
+			
+			deleteNode.setOrgNodeId(orgNodeId);
+			String userName = getSession().getAttribute("userName").toString();
+			
+			System.out.println("userName" + userName);
+			try {
+				this.organizationManagement.deleteOrganizationNew(userName, deleteNode);
+				messageInfo = createMessageInfo(messageInfo, Message.DELETE_TITLE, Message.DELETE_SUCCESSFUL, Message.INFORMATION, false, true );
+			
+			}
+			catch (CTBBusinessException be){
+				//be.printStackTrace();
+				 String msg = MessageResourceBundle.getMessage(be.getMessage());
+				 messageInfo = createMessageInfo(messageInfo,Message.DELETE_TITLE,msg,Message.INFORMATION,true, false);
+				
+			}catch (Exception e){
+				//e.printStackTrace();
+				messageInfo = createMessageInfo(messageInfo,Message.DELETE_TITLE,Message.DELETE_ERROR_UNKNOWN,Message.INFORMATION,true, false);
+			}
+
+			Gson gson = new Gson();
+			json = gson.toJson(messageInfo);
+			//System.out.println("Json after saveOrg ::"+json);
+			try{
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes());
+
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}	
+			finally{
+				if (stream!=null){
+					try {
+						stream.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}		
+				
+		return null;
+		 
+		}
 	 
 	 
 	
