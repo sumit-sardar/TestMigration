@@ -510,6 +510,7 @@ function populateBulkStudentGrid() {
 	studentIds = studentIds.substring(0,studentIds.length-1)
 	param = $("#AssignAccommPopup *").serialize();
 	var dataToBeAdded  = getDataToBeAdded(param);
+	param = param + "&studentIds="+studentIds;
 	if(dataToBeAdded['isAccommodationSelected']) {
 	$.ajax(
 		{
@@ -517,7 +518,7 @@ function populateBulkStudentGrid() {
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'saveBulkStudentData.do?studentIds='+studentIds,
+				url:		'saveBulkStudentData.do',
 				type:		'POST',
 				data:		 param,
 				dataType:	'json',
