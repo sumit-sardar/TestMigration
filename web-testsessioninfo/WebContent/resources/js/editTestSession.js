@@ -77,6 +77,12 @@
 							    $("#productType").val(data.productType);
 								document.getElementById("sData").disabled=false;
 							}
+							if(data.savedTestDetails.testSession.offGradeBlocked == 'T') {
+								blockOffGradeTesting = true;
+								selectedLevel = data.savedTestDetails.scheduledUnits[0].itemSetLevel;
+							} else {
+								blockOffGradeTesting = false;
+							}
 							
 						} else if (data.status.IsSystemError) {
 							 var length = 0;
