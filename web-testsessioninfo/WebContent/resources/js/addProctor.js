@@ -438,8 +438,7 @@ function returnSelectedProctor() {
 	//$("#proctorAddDeleteInfo").show();
 	$("#addDeleteProc").text(message);	
 	$("#totalAssignedProctors").text(noOfProctorAdded);
-	
-			 
+	$("#proctorOrgNodeHierarchy").undelegate();
 }
 
 function getProctorListArray(proctorArray) {

@@ -70,6 +70,7 @@ function hideSelectStudent(){
 	cloneStudentMapToTemp();
 	hideSelectStudentPopup();
 	allSelectOrg = allSelectOrgTmp.slice(0);
+	$("#stuOrgNodeHierarchy").undelegate();
 }
 
 function hideSelectStudentPopup() {
@@ -85,7 +86,7 @@ function loadInnerStuOrgTree() {
 	//if(!isOnBack) {
 		createinnSingleNodeSelectedTree (orgTreeHierarchy);
 	//} else{
-		$("#stuOrgNodeHierarchy").jstree("close_all");
+	//	$("#stuOrgNodeHierarchy").jstree("close_all",-1);
 		$("#selectStudent").GridUnload();
 		selectStudentgridLoaded = false;
 	//}
@@ -792,6 +793,7 @@ function returnSelectedStudent() {
 	 hideSelectStudentPopup();
 	 gridReloadStu(false);
 	 $("#duplicateStudent").dialog("close");
+	 $("#stuOrgNodeHierarchy").undelegate();
  }
  
 }
