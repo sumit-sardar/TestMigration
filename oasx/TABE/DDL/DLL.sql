@@ -38,3 +38,11 @@ ALTER TABLE student_accommodation ADD extended_time VARCHAR2(2)
 /* New coloum extended_time added in test_roster for student pacing */
 ALTER TABLE test_roster ADD extended_time NUMBER(2,1)
 /
+
+/* New column addded for do not score in test_roster*/
+ALTER TABLE test_roster ADD DNS_STATUS CHAR(1)
+/
+ALTER TABLE test_roster ADD DNS_UPDATED_DATETIME DATE
+/
+ALTER TABLE test_roster ADD DNS_UPDATED_BY INTEGER
+/
