@@ -45,8 +45,15 @@ public class RosterElement extends CTBBean
   private Integer itemSetIdTC; // For CR Soring 
   private Integer scorePoint;
   private Double extendedTime; // Added for Student Pacing
+  private String dnsStatus;
   
 
+	public String getDnsStatus() {
+		return dnsStatus;
+	}
+	public void setDnsStatus(String dnsStatus) {
+		this.dnsStatus = dnsStatus;
+	}
 	/**
 	 * @return Returns the userName.
 	 */

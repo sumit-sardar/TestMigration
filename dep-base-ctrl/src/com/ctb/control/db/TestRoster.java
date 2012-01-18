@@ -1,7 +1,6 @@
 package com.ctb.control.db; 
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
@@ -210,7 +209,8 @@ public interface TestRoster extends JdbcControl
      *      stu.middle_name as middleName,
      *      stu.last_name as lastName,
      *      stu.ext_pin1 as extPin1,
-     *      stu.user_name as userName
+     *      stu.user_name as userName,
+     *      ros.dns_status as dnsStatus
      * from
      *      test_roster ros, student stu
      * where
@@ -219,7 +219,7 @@ public interface TestRoster extends JdbcControl
      *      and (stu.activation_Status = 'AC' or decode(decode(ros.test_completion_status, 'NT', 'SC', ros.test_completion_status), 'SC', 'F', 'T') = 'T')::
      *      array-max-length="all"
     */ 
-    @JdbcControl.SQL(statement = "select  ros.TEST_ROSTER_ID as testRosterId,  ros.TEST_ADMIN_ID as testAdminId,  ros.CREATED_DATE_TIME as createdDateTime,  ros.START_DATE_TIME as startDateTime,  ros.COMPLETION_DATE_TIME as completionDateTime,  ros.TEST_COMPLETION_STATUS as testCompletionStatus,  ros.VALIDATION_STATUS as validationStatus,  ros.VALIDATION_UPDATED_BY as validationUpdatedBy,  ros.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime,  ros.VALIDATION_UPDATED_NOTE as validationUpdatedNote,  ros.OVERRIDE_TEST_WINDOW as overrideTestWindow,  ros.PASSWORD as password,  ros.STUDENT_ID as studentId,  ros.CREATED_BY as createdBy,  ros.UPDATED_BY as updatedBy,  ros.ACTIVATION_STATUS as activationStatus,  ros.UPDATED_DATE_TIME as updatedDateTime,  ros.CUSTOMER_ID as customerId,  ros.TUTORIAL_TAKEN_DATE_TIME as tutorialTakenDateTime,  ros.CAPTURE_METHOD as captureMethod,  ros.SCORING_STATUS as scoringStatus,  ros.ORG_NODE_ID as orgNodeId,  ros.FORM_ASSIGNMENT as formAssignment,  decode(ros.CUSTOMER_FLAG_STATUS , null, (select cc.default_value  from customer_configuration cc  where cc.customer_id = stu.customer_id  and cc.customer_configuration_name = 'Roster_Status_Flag')  , ros.CUSTOMER_FLAG_STATUS  ) as customerFlagStatus,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName,  stu.ext_pin1 as extPin1,  stu.user_name as userName from  test_roster ros, student stu where  ros.test_admin_id = {testAdminId}  and stu.student_id = ros.student_id  and (stu.activation_Status = 'AC' or decode(decode(ros.test_completion_status, 'NT', 'SC', ros.test_completion_status), 'SC', 'F', 'T') = 'T')",
+    @JdbcControl.SQL(statement = "select  ros.TEST_ROSTER_ID as testRosterId,  ros.TEST_ADMIN_ID as testAdminId,  ros.CREATED_DATE_TIME as createdDateTime,  ros.START_DATE_TIME as startDateTime,  ros.COMPLETION_DATE_TIME as completionDateTime,  ros.TEST_COMPLETION_STATUS as testCompletionStatus,  ros.VALIDATION_STATUS as validationStatus,  ros.VALIDATION_UPDATED_BY as validationUpdatedBy,  ros.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime,  ros.VALIDATION_UPDATED_NOTE as validationUpdatedNote,  ros.OVERRIDE_TEST_WINDOW as overrideTestWindow,  ros.PASSWORD as password,  ros.STUDENT_ID as studentId,  ros.CREATED_BY as createdBy,  ros.UPDATED_BY as updatedBy,  ros.ACTIVATION_STATUS as activationStatus,  ros.UPDATED_DATE_TIME as updatedDateTime,  ros.CUSTOMER_ID as customerId,  ros.TUTORIAL_TAKEN_DATE_TIME as tutorialTakenDateTime,  ros.CAPTURE_METHOD as captureMethod,  ros.SCORING_STATUS as scoringStatus,  ros.ORG_NODE_ID as orgNodeId,  ros.FORM_ASSIGNMENT as formAssignment,  decode(ros.CUSTOMER_FLAG_STATUS , null, (select cc.default_value  from customer_configuration cc  where cc.customer_id = stu.customer_id  and cc.customer_configuration_name = 'Roster_Status_Flag')  , ros.CUSTOMER_FLAG_STATUS  ) as customerFlagStatus,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName,  stu.ext_pin1 as extPin1,  stu.user_name as userName, ros.dns_status as dnsStatus from  test_roster ros, student stu where  ros.test_admin_id = {testAdminId}  and stu.student_id = ros.student_id  and (stu.activation_Status = 'AC' or decode(decode(ros.test_completion_status, 'NT', 'SC', ros.test_completion_status), 'SC', 'F', 'T') = 'T')",
                      arrayMaxLength = 100000)
     RosterElement [] getRosterForTestSession(Integer testAdminId) throws SQLException;
 
@@ -582,6 +582,9 @@ public interface TestRoster extends JdbcControl
     // added for student pacing
     @JdbcControl.SQL(statement = "select extended_time as extendedTime from student_accommodation where student_id = {studentId}")
     String getExtendedTimeAccomForStudent(Integer studentId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "UPDATE TEST_ROSTER SET DNS_STATUS = {dnsStatus}, DNS_UPDATED_BY = {userName}, DNS_UPDATED_DATETIME = SYSDATE WHERE TEST_ROSTER_ID = {testRosterId}")
+    int updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }

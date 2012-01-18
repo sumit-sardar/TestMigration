@@ -4164,7 +4164,15 @@ public class SessionOperationController extends PageFlowController {
 		      
 		        return showButton;
 		    }
-		 
+		 private boolean isDonotScoreAllowed()  {               
+	        for (int i=0; i < this.customerConfigurations.length; i++)  {
+                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Do_Not_Score") && cc.getDefaultValue().equalsIgnoreCase("T")) {
+                    return true;
+                }
+            }     
+	        return false;
+	     }
 		 private void initGenerateReportFile() {
 		    	
 				try {
@@ -4538,4 +4546,19 @@ public class SessionOperationController extends PageFlowController {
 		}
 
 	//Added for view/monitor test status: End
+		
+		@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success",
+	                     path = "view_subtest_details.jsp")
+	     })
+		 protected Forward toggleDonotScoreStatus() {
+	        Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+	        String dnsStatus = getRequest().getParameter("dnsStatus");
+	        try {      
+	            this.testSessionStatus.updateDonotScore(testRosterId, dnsStatus, this.user.getUserId());
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return null;
+		}
 }

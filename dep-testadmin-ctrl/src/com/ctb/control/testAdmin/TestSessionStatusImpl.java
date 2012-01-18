@@ -1,11 +1,11 @@
 package com.ctb.control.testAdmin; 
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
 
@@ -52,6 +52,7 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.bean.testAdmin.UserParentProductResource;
+import com.ctb.control.jms.QueueSend;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.testAdmin.CustomerReportDataNotFoundException;
@@ -69,8 +70,6 @@ import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
 import com.ctb.util.SQLutils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
-import com.ctb.control.jms.QueueSend;
-import java.util.ResourceBundle;
 
 /**
  * Platform control provides functions related to test session
@@ -2108,5 +2107,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
              throw rde;   		 
     	 }
     	 return uri;
+     }
+     public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException {	
+     	try {
+     		this.roster.updateDonotScore(testRosterId, dnsStatus, userName);
+     	 } catch (SQLException se) {
+     		CTBBusinessException rde = new CTBBusinessException("TestSessionStatusImpl: updateDoNotScore: " + se.getMessage());
+     		rde.setStackTrace(se.getStackTrace());
+ 	        throw rde;
+ 	    }
      }
 } 

@@ -1,19 +1,13 @@
 package com.ctb.control.testAdmin; 
 
 
-import com.bea.control.annotations.TransactionAttribute;
-import com.bea.control.annotations.TransactionAttributeType;
+import org.apache.beehive.controls.api.bean.ControlInterface;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
-import com.ctb.bean.testAdmin.CustomerTestResource;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
-import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.bean.testAdmin.SessionNodeData;
-import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
-
-import org.apache.beehive.controls.api.bean.ControlInterface;
 
 /**
  * Platform control provides functions related to test session
@@ -488,4 +482,5 @@ public interface TestSessionStatus
     
     com.ctb.bean.testAdmin.TestSessionData getTestSessionsForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort, Integer userId) throws com.ctb.exception.CTBBusinessException;
     
+    public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException;  
 } 

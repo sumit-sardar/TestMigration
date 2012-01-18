@@ -42,6 +42,9 @@
 			<div id="toggleValidation" style="float:right;padding-left:5px;display:none;">
 				<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button" /></a>
 			</div>
+			<div id="doNotScore" style="float:right;padding-left:5px;display:none;">
+				<a href="#" id="doNotScoreButton" onclick="javascript:toggleDonotScoreStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.doNotScore.button" /></a>
+			</div>
 		</td>
 	</tr>
 </table>
