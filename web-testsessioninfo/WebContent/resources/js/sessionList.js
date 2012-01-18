@@ -203,30 +203,18 @@ function populateSessionListGrid(homePageLoad) {
 						
 			}
 	 });
-	 jQuery("#list2").navGrid('#pager2',{search: false}, {
+	 jQuery("#list2").navGrid('#pager2', {
 				addfunc: function() {
 					scheduleNewSession();
 		    	},
 		    	editfunc: function() {
 		    		 editTestSession();
+		    	},
+		    	delfunc: function() {
+		    		gridSelectedToDelete = "list2";
+		    		deleteSessionPopup();		    		 
 		    	}	    	
-			}).jqGrid('navButtonAdd',"#pager2",{
-			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
-			    	$("#searchUserByKeyword").dialog({  
-						title:$("#searchSessionID").val(),  
-					 	resizable:false,
-					 	autoOpen: true,
-					 	width: '300px',
-					 	modal: true,
-						closeOnEscape: false,
-					 	open: function(event, ui) {}
-					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
 			}); 
-			
-			jQuery(".ui-icon-refresh").bind("click",function(){
-				$("#searchUserByKeywordInput").val('');
-			});
 }
 
 function searchUserByKeyword(){
