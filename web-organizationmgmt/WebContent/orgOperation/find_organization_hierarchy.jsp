@@ -135,7 +135,7 @@
 	<div style="padding-bottom:20px;">
 		<center>
 			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
-			<input type="button"  value="Find" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+			<input type="button"  value="Search" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
 		</center>
 	</div>
 </div>
