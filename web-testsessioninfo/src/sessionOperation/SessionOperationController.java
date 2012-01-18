@@ -2599,6 +2599,8 @@ public class SessionOperationController extends PageFlowController {
 		
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	
+     	this.getSession().setAttribute("isDeleteSessionEnable", isDeleteSessionEnable());
+     	
      	getConfigStudentLabel(customerConfigs);
      	
      	getStudentGrades(customerConfigs);
@@ -4562,4 +4564,54 @@ public class SessionOperationController extends PageFlowController {
 	        }
 	        return null;
 		}
+		
+	    private boolean isDeleteSessionEnable() 
+	    {               
+	        String roleName = this.user.getRole().getRoleName();        
+	        return (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) ||
+	                roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR) ||
+	                roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_COORDINATOR));
+	    }
+	    
+		@Jpf.Action
+	    protected Forward deleteTest(SessionOperationForm form)
+	    {
+			String jsonData = "";
+    		OutputStream stream = null;
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+			Integer testAdminId = Integer.valueOf(getRequest().getParameter("testAdminId"));
+			boolean hasStudentLoggedIn = false;
+			OperationStatus status = new OperationStatus();
+			try {
+				ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
+				int studentsLoggedIn = scheduledSession.getStudentsLoggedIn() == null ? 0 : scheduledSession.getStudentsLoggedIn().intValue();
+				if(studentsLoggedIn > 0){
+					hasStudentLoggedIn = true;
+				}
+				if(!hasStudentLoggedIn){
+					this.scheduleTest.deleteTestSession(this.userName, testAdminId);
+	            	status.setSuccess(true);
+				}
+	            else{
+					status.setSuccess(false);
+	            }
+	        }
+	        catch (CTBBusinessException e) {
+	            e.printStackTrace();
+	            //this.getRequest().setAttribute("errorMessage",MessageResourceBundle.getMessage("SelectSettings.FailedToDeleteTestSession", e.getMessage()));               
+	        }
+			Gson gson = new Gson();
+			jsonData = gson.toJson(status);
+//			System.out.println(jsonData);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	        return null;
+	    }
 }

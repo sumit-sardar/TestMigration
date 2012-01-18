@@ -61,7 +61,10 @@
 <input type="hidden" id="tstLcnInChHdrMsg" name="tstLcnInChHdrMsg" value=<lb:label key="common.tstLcnInChHdr.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tstLcnInChBdyMsg" name="tstLcnInChBdyMsg" value=<lb:label key="common.tstLcnInChBdy.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="monitorStsValidMsg" name="monitorStsValidMsg" value=<lb:label key="monitorSts.snValid.message" prefix="'" suffix="'"/>/>
-	
+<input type="hidden" id="delSessionTitle" name="delSessionTitle" value=<lb:label key="sessionList.deleteTest.title" prefix="'" suffix="'"/>/>	
+<input type="hidden" id="deleteSuccessMsg" name="deleteSuccessMsg" value=<lb:label key="session.msg.deleteSuccess" prefix="'" suffix="'"/>/>
+<input type="hidden" id="deleteFailureMsg" name="deleteFailureMsg" value=<lb:label key="session.msg.deleteFailure" prefix="'" suffix="'"/>/>
+
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
@@ -71,7 +74,7 @@
 	 String schedulerLastName = (String) session.getAttribute("schedulerLastName");
 	 String schedulerUserId = (String) session.getAttribute("schedulerUserId");
 	 String schedulerUserName = (String) session.getAttribute("schedulerUserName");
-	
+	 Boolean isDeleteSessionEnable = (Boolean)session.getAttribute("isDeleteSessionEnable");
 	%>
 	
 	<input type="hidden" id="canRegisterStudent" name = "canRegisterStudent" value='<%=canRegisterStudent %>'/>
@@ -83,6 +86,7 @@
 	<input type="hidden" id="schedulerLastName" name = "schedulerLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
 	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
+	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/> 
 	 <div id="showSaveTestMessage" class="roundedMessage" style="float:left;display:none; " > 
 			<table>
 				<tr>
@@ -235,6 +239,28 @@
 	</tbody>
 </table>  
 </div>
+
+<div id="deleteSessionPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table border="0" width="100%">
+		<tr align="left">
+			<td>
+			<br/>
+			<p>
+				<lb:label key="session.msg.delete" />
+			</p>
+			<br/>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="deleteTestSession();" class="ui-widget-header">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteSessionPopup');" class="ui-widget-header">				
+			</td>		
+		</tr>
+	</table>
+</div>
+
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
 <jsp:include page="/sessionOperation/view_test_session.jsp" />

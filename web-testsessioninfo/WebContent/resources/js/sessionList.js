@@ -83,7 +83,7 @@ var leafParentOrgNodeId = "";
 
 var selectedTestAdminId = "";
 var selectedTestRosterId = "";
-
+var gridSelectedToDelete = "";
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -209,6 +209,10 @@ function populateSessionListGrid(homePageLoad) {
 		    	},
 		    	editfunc: function() {
 		    		 editTestSession();
+		    	},
+		    	delfunc: function() {
+		    		gridSelectedToDelete = "list2";
+		    		deleteSessionPopup();		    		 
 		    	}	    	
 			}); 
 }
@@ -312,6 +316,10 @@ function populateCompletedSessionListGrid() {
 	 jQuery("#list3").navGrid('#pager3', {			
 		    	editfunc: function() {
 		    		 editTestSession();
+		    	},
+		    	delfunc: function() {
+		    		gridSelectedToDelete = "list3";
+		    		deleteSessionPopup();
 		    	}	    	
 	}); 
 	 setupButtonPerUserPermission();
@@ -354,12 +362,19 @@ function populateCompletedSessionListGrid() {
 	
 	
 	function setupButtonPerUserPermission() {
-	var element = document.getElementById('add_list3');
-	element.style.display = 'none'; 
-	var userScheduleAndFindSessionEnable = $("#userScheduleAndFindSessionPermission").val();
+		var element = document.getElementById('add_list3');
+		element.style.display = 'none'; 
+		var userScheduleAndFindSessionEnable = $("#userScheduleAndFindSessionPermission").val();
 		if (userScheduleAndFindSessionEnable == 'false') {	
 			var element = document.getElementById('add_list2');
 			element.style.display = 'none';
+		}
+		var isDeleteSessionEnable = $("#isDeleteSessionEnable").val();
+		if(isDeleteSessionEnable == 'false'){
+			var element1 = document.getElementById('del_list2');
+			element1.style.display = 'none';
+			var element2 = document.getElementById('del_list3');
+			element2.style.display = 'none';
 		}
 	}
 	function showTreeSlider() {
@@ -3449,6 +3464,64 @@ function registerDelegate(tree){
 		 
 		 return disParam;
 
+	}
+	
+	function deleteSessionPopup(){
+		$('#showSaveTestMessage').hide();
+				
+		$("#deleteSessionPopup").dialog({  
+			title:$("#delSessionTitle").val(),  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});
+				
+	    $("#deleteSessionPopup").css('height',130);
+		var toppos = ($(window).height() - 130) /2 + 'px';
+		var leftpos = ($(window).width() - 400) /2 + 'px';
+		$("#deleteSessionPopup").parent().css("top",toppos);
+		$("#deleteSessionPopup").parent().css("left",leftpos);
+			
+	}
+	
+	function deleteTestSession(){
+		closePopUp('deleteSessionPopup');		
+		var testAdminIdToDelete = $("#"+gridSelectedToDelete).jqGrid('getGridParam', 'selrow');
+
+		$.ajax(
+			{
+				async:		false,
+				beforeSend:	function(){
+								//UIBlock();
+							},
+				url:		'deleteTest.do?&testAdminId=' + testAdminIdToDelete,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+								if(data.isSuccess){
+									var successMsg = $("#deleteSuccessMsg").val(); 
+									setSessionSaveMessage(successMsg, "", "","" );
+									$('#showSaveTestMessage').show();
+									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
+								}
+								else{
+									var failureMsg = $("#deleteFailureMsg").val();
+									setSessionSaveMessage(failureMsg, "", "","");
+									$('#showSaveTestMessage').show();
+								}								
+							    //$.unblockUI(); 																														 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								//$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								//$.unblockUI();
+							}
+			}
+		);
 	}
 	
 	function toggleDonotScoreStatus(){
