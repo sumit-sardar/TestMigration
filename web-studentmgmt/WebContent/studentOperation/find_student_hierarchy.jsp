@@ -21,6 +21,7 @@
 <input type="hidden" id="delStuSuccessID" name="delStuSuccessID" value=<lb:label key="stu.msg.stuDelSuccess" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuEditAccoID" name="stuEditAccoID" value=<lb:label key="stu.label.editAcco" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuNoAccoID" name="stuNoAccoID" value=<lb:label key="stu.msg.noAcco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="searchStudentID" name = "searchStudentID" value=<lb:label key="stu.label.searchStudentID" prefix="'" suffix="'"/>/>
 <input type="hidden" id="miID" name="miID" value=<lb:label key="stu.label.mi" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuListID" name="stuListID" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mprofileID" name="mprofileID" value=<lb:label key="stu.label.mprofile" prefix="'" suffix="'"/>/>
@@ -164,5 +165,23 @@
 		</tr>
 		
 	</table>
+</div>
+
+<div id="searchUserByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="stu.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;"> 
+		<center>
+			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Find" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
 </div>
 

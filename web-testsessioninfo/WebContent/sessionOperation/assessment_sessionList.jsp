@@ -24,6 +24,7 @@
 <input type="hidden" id="printTT" name="printTT" value=<lb:label key="sessionList.testTicket.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testStuFN" name="testStuFN" value=<lb:label key="stu.info.firstName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testStuLN" name="testStuLN" value=<lb:label key="stu.info.lastName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="searchSessionID" name = "searchSessionID" value=<lb:label key="testSession.label.searchSessID" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testStuMI" name="testStuMI" value=<lb:label key="stu.info.mi" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testStuAccom" name="testStuAccom" value=<lb:label key="stu.info.accom" prefix="'" suffix="'"/>/>
 <input type="hidden" id="testStuForm" name="testStuForm" value=<lb:label key="stu.info.form" prefix="'" suffix="'"/>/>
@@ -212,6 +213,23 @@
 		</tr>
 		
 	</table>
+</div>
+<div id="searchUserByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="sessionList.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;">
+		<center>
+			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Find" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
 </div>
 
 

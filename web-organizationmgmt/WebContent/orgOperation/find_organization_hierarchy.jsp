@@ -11,6 +11,7 @@
 <input type="hidden" id="addOrgID" name = "addOrgID" value=<lb:label key="org.msg.addOrganization" prefix="'" suffix="'"/>/>
 <input type="hidden" id="confirmID" name = "confirmID" value=<lb:label key="org.msg.alertConfirm" prefix="'" suffix="'"/>/>
 <input type="hidden" id="requiredID" name = "requiredID" value=<lb:label key="org.msg.requiredText" prefix="'" suffix="'"/>/>
+<input type="hidden" id="searchOrgID" name = "searchOrgID" value=<lb:label key="org.label.searchOrgID" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="org.msg.multiple.requiredText" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mdrNumberID" name = "mdrNumberID" value=<lb:label key="org.msg.invalidMDRNumber" prefix="'" suffix="'"/>/>
 <input type="hidden" id="dupFormatID" name = "dupFormatID" value=<lb:label key="org.msg.invalidDupFormatTitle" prefix="'" suffix="'"/>/>
@@ -119,5 +120,23 @@
 		</tr>
 		
 	</table>
+</div>
+
+<div id="searchUserByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="org.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;">
+		<center>
+			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Find" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
 </div>
 				

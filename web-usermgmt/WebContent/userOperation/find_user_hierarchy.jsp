@@ -14,6 +14,7 @@
 <input type="hidden" id="jqgOrgID" name = "jqgOrgID" value=<lb:label key="user.organization" prefix="'" suffix="'"/>/>
 <input type="hidden" id="editRecordID" name = "editRecordID" value=<lb:label key="user.label.titleEditRecord" prefix="'" suffix="'"/>/>
 <input type="hidden" id="chgPwdID" name = "chgPwdID" value=<lb:label key="user.changepassword" prefix="'" suffix=": '"/>/>
+<input type="hidden" id="searchUserID" name = "searchUserID" value=<lb:label key="user.label.searchUser" prefix="'" suffix="'"/>/>
 <input type="hidden" id="extID" name = "extID" value=<lb:label key="user.ext" prefix="' " suffix=": '"/>/>
 <input type="hidden" id="confirmID" name = "confirmID" value=<lb:label key="user.msg.alert.confirm" prefix="'" suffix="'"/>/>
 <input type="hidden" id="emailAlertID" name = "emailAlertID" value=<lb:label key="user.msg.alert.email" prefix="'" suffix="'"/>/>
@@ -168,5 +169,23 @@
 		</tr>
 		
 	</table>
+</div>
+
+<div id="searchUserByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="user.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;">
+		<center>
+			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Find" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
 </div>
 				

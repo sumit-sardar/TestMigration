@@ -679,3 +679,6 @@ input[type="button"] {
 	 padding-bottom: 5px;
 	 padding-left: 2px;
 }
+.searchInputBoxContainer {
+	padding:20px 0px;
+}

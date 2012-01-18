@@ -461,6 +461,10 @@ clear: both;
 input[type="button"] {
 	cursor: pointer;
 }
+.searchInputBoxContainer {
+	padding:20px 0px;
+}
+}
 
 .headerTag {
 	font-family: Arial, Helvetica, Sans Serif; 

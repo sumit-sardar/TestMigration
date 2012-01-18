@@ -425,7 +425,7 @@ function populateTreeSelect() {
 	var isGridEmpty = true;
 			
 function populateGrid() {
-
+		 $("#searchUserByKeywordInput").val('');
          $("#list2").jqGrid({         
          url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
@@ -492,7 +492,7 @@ function populateGrid() {
 						
 					}
 	 });
-			jQuery("#list2").jqGrid('navGrid','#pager2',{
+			jQuery("#list2").jqGrid('navGrid','#pager2', {search: false},{
 				addfunc: function() {
 					requetForOrganization = "";
 		    		AddOrganizationDetail();
@@ -501,8 +501,64 @@ function populateGrid() {
 		    		 requetForOrganization = "";
 		    		 EditOrganizationDetail();
 		    	}
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	$("#searchUserByKeyword").dialog({  
+						title:$("#searchOrgID").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {}
+					 	});
+			    }, position: "one-before-last", title:"", cursor: "pointer"
 			});  
+			
+			jQuery(".ui-icon-refresh").bind("click",function(){
+				$("#searchUserByKeywordInput").val('');
+			});
 			 
+}
+
+function searchUserByKeyword(){
+	 var searchFiler = $.trim($("#searchUserByKeywordInput").val()), f;
+	 var grid = $("#list2"); 
+	 
+	 if (searchFiler.length === 0) {
+		 grid[0].p.search = false;
+	 }else {
+	 	 f = {groupOp:"OR",rules:[]};
+		 f.rules.push({field:"orgNodeName",op:"cn",data:searchFiler});
+		 f.rules.push({field:"orgNodeCode",op:"cn",data:searchFiler});
+		 f.rules.push({field:"orgNodeCategoryName",op:"cn",data:searchFiler});
+		 f.rules.push({field:"parentOrgNodeName",op:"cn",data:searchFiler});
+		 grid[0].p.search = true;
+		 grid[0].p.ignoreCase = true;
+		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+	 }
+	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 closePopUp('searchUserByKeyword');
+}
+
+function resetSearch(){
+	var grid = $("#list2"); 
+	$("#searchUserByKeywordInput").val('');
+	 grid[0].p.search = false;
+	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 closePopUp('searchUserByKeyword');
+}
+
+function trapEnterKey(e){
+	var key;
+   if(window.event)
+        key = window.event.keyCode;     //IE
+   else
+        key = e.which;     //firefox
+        
+   if(key == 13){
+   		searchUserByKeyword();
+   }
 }
 
 function gridReload(){ 
