@@ -1830,7 +1830,6 @@ public class ScheduleTestImpl implements ScheduleTest
 			// End changes for Student Pacing
 			
 			if(testAdminId == null) {
-				
 				session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
                 ArrayList subtests = createTestAdminItemSetRecords(newSession);
                 createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
@@ -1848,6 +1847,7 @@ public class ScheduleTestImpl implements ScheduleTest
         } catch (Exception se) {
         	CTBBusinessException ctbe = null;
             String message = se.getMessage().toLowerCase();
+            System.out.println(se.getMessage());
             if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
                 ctbe.setStackTrace(se.getStackTrace());
@@ -1930,8 +1930,8 @@ public class ScheduleTestImpl implements ScheduleTest
             session.setUpdatedDateTime(now);
             // adjust window dates/times to GMT
             TestAdminStatusComputer.adjustSessionTimesToGMT(session);
-            TestAdminStatusComputer.setTestSessionStatus(session);
-            TestSession oldSession = admins.getTestAdminDetails(session.getTestAdminId());
+            TestAdminStatusComputer.setTestSessionStatus(session);          
+            TestSession oldSession = admins.getTestAdminDetails(session.getTestAdminId());          
             if(!oldSession.getItemSetId().equals(session.getItemSetId())) {
                 // existing form assignments are invalid if test has changed
             	//rosters.getConnection().setAutoCommit(false);
@@ -1943,14 +1943,18 @@ public class ScheduleTestImpl implements ScheduleTest
             if(loginStartOverride != null && session.getLoginStartDate().before(loginStartOverride)) {
                 session.setLoginStartDate(loginStartOverride);
             }
-            if(loginStartOverride != null && session.getLoginEndDate().after(loginEndOverride)) {
-                session.setLoginEndDate(loginEndOverride);
+            
+            if(loginEndOverride != null && session.getLoginEndDate().after(loginEndOverride)) {
+            	session.setLoginEndDate(loginEndOverride);
             }
+            
             String formAssignmentOverride = session.getOverrideFormAssignmentMethod();
             if(formAssignmentOverride != null && !"".equals(formAssignmentOverride)) {
                 session.setFormAssignmentMethod(formAssignmentOverride);
             }
+           
             session.setProgramId(admins.getProgramIdForCustomerAndProduct(session.getCustomerId(), session.getProductId(), session.getLoginStartDate())[0]);
+            
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
             sce.setStackTrace(se.getStackTrace());
