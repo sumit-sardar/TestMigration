@@ -64,6 +64,7 @@ public class TestSession extends CTBBean
     private String showStudentFeedback;
     private String overrideFormAssignmentMethod;
     private Date overrideLoginStartDate;
+    private Date overrideLoginEndDate;
     private Integer programId;
     private Integer testCatalogId;
     //changes for License Management LM13
@@ -648,5 +649,21 @@ public class TestSession extends CTBBean
 	 */
 	public void setProductType(String productType) {
 		this.productType = productType;
+	}
+
+	
+	/**
+	 * @return the overrideLoginEndDate
+	 */
+	public Date getOverrideLoginEndDate() {
+		return overrideLoginEndDate;
+	}
+
+	
+	/**
+	 * @param overrideLoginEndDate the overrideLoginEndDate to set
+	 */
+	public void setOverrideLoginEndDate(Date overrideLoginEndDate) {
+		this.overrideLoginEndDate = overrideLoginEndDate;
 	}
 } 

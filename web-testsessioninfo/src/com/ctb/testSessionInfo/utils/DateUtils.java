@@ -277,6 +277,24 @@ public class DateUtils
             result.add(buf.toString());        
         }
         return result;
-    }     
+    }
+
+	public static boolean isToday(Date date, String timezone) {
+
+        if (date == null)
+            return false;
+        Date today = new Date(System.currentTimeMillis());
+        today = com.ctb.util.DateUtils.getAdjustedDate(today, TimeZone.getDefault().getID(), timezone, today);
+        return com.ctb.util.DateUtils.dateEquals(date, today);  
+		
+	}
+
+	public static boolean isAfterToday(Date date,	String timezone) {
+		 if (date == null)
+	            return false;
+	        Date today = new Date(System.currentTimeMillis());
+	        today = com.ctb.util.DateUtils.getAdjustedDate(today, TimeZone.getDefault().getID(), timezone, today);
+	        return com.ctb.util.DateUtils.dateAfter(date, today); 
+	}     
     
 } 

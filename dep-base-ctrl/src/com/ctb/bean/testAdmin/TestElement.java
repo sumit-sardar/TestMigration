@@ -46,6 +46,7 @@ public class TestElement extends CTBBean
     private Date overrideLoginStartDate;
     private String itemSetGroup;
     private String sessionDefault = "T";
+    private Date overrideLoginEndDate;
     
     
     // Random Distractor 
@@ -486,5 +487,21 @@ public class TestElement extends CTBBean
 	 */
 	public void setSessionDefault(String sessionDefault) {
 		this.sessionDefault = sessionDefault;
+	}
+
+	
+	/**
+	 * @return the overrideLoginEndDate
+	 */
+	public Date getOverrideLoginEndDate() {
+		return overrideLoginEndDate;
+	}
+
+	
+	/**
+	 * @param overrideLoginEndDate the overrideLoginEndDate to set
+	 */
+	public void setOverrideLoginEndDate(Date overrideLoginEndDate) {
+		this.overrideLoginEndDate = overrideLoginEndDate;
 	}
 } 

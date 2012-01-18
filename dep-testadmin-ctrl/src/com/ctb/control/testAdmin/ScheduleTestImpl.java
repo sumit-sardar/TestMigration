@@ -1891,9 +1891,13 @@ public class ScheduleTestImpl implements ScheduleTest
             int rndDigit  = Math.abs( rnd.nextInt());
             session.setSessionNumber(String.valueOf(rndDigit % 9999999));
             Date loginStartOverride = admins.getTestCatalogLoginStartDateOverride(session.getItemSetId(), session.getCreatorOrgNodeId());
+            Date loginEndOverride = admins.getTestCatalogLoginEndDateOverride(session.getItemSetId(), session.getCreatorOrgNodeId());
             if(loginStartOverride != null && session.getLoginStartDate().before(loginStartOverride)) {
                 session.setOverrideLoginStartDate(loginStartOverride);
                 session.setLoginStartDate(loginStartOverride);
+            }
+            if(loginEndOverride != null && session.getLoginEndDate().after(loginEndOverride)){
+            	 session.setLoginEndDate(loginEndOverride);
             }
             String formAssignmentOverride = admins.getTestCatalogFormAssignmentOverride(session.getItemSetId(), session.getCreatorOrgNodeId());
             if(formAssignmentOverride != null && !"".equals(formAssignmentOverride)) {
@@ -1934,8 +1938,13 @@ public class ScheduleTestImpl implements ScheduleTest
                 rosters.clearFormAssignmentsForAdmin(session.getTestAdminId());
             }
             Date loginStartOverride = session.getOverrideLoginStartDate();
+            Date loginEndOverride = session.getOverrideLoginEndDate();
+            
             if(loginStartOverride != null && session.getLoginStartDate().before(loginStartOverride)) {
                 session.setLoginStartDate(loginStartOverride);
+            }
+            if(loginStartOverride != null && session.getLoginEndDate().after(loginEndOverride)) {
+                session.setLoginEndDate(loginEndOverride);
             }
             String formAssignmentOverride = session.getOverrideFormAssignmentMethod();
             if(formAssignmentOverride != null && !"".equals(formAssignmentOverride)) {

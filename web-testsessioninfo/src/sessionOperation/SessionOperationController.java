@@ -816,7 +816,20 @@ public class SessionOperationController extends PageFlowController {
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
     	    	Date now = new Date(System.currentTimeMillis());
     	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
-    	    	vo.setToDay(DateUtils.formatDateToDateString(today));
+    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(scheduledSession.getTestSession().getItemSetId()); 
+    	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
+    	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
+    	    	if (ovLoginStart != null && !(DateUtils.isBeforeToday(ovLoginStart , this.user.getTimeZone() ))) {
+    	    		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
+	        	} else {
+	        		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
+	        	}
+	        	
+	        	if(ovLoginEnd!= null ) {
+	        		vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+	        		
+	        	} 
+    	    	
 
     	    	if (this.user == null || topNodesMap.size() ==0 ){
     	    		initialize();
@@ -1338,6 +1351,7 @@ public class SessionOperationController extends PageFlowController {
 			 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
 			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
 			 String testName       		    = 	selectedTest.getItemSetName(); 
+			 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
 			 
 			 TimeZone defaultTimeZone = TimeZone.getDefault();
 			 Date now = new Date(System.currentTimeMillis());
@@ -1382,6 +1396,7 @@ public class SessionOperationController extends PageFlowController {
 	         
 	         testSession.setOverrideFormAssignmentMethod(overrideFormAssignment);
 	         testSession.setOverrideLoginStartDate(overrideLoginSDate);
+	         testSession.setOverrideLoginEndDate(overrideLoginEDate);
 	         
 	         testSession.setItemSetId(itemSetId);
 	         
@@ -1403,7 +1418,7 @@ public class SessionOperationController extends PageFlowController {
 	         
 	         validateTestSession(testSession, validationFailedInfo);
 	         if(!validationFailedInfo.isValidationFailed()) {
-	        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate, validationFailedInfo, isAddOperation); 
+	        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate,overrideLoginEDate, validationFailedInfo, isAddOperation); 
 	         }
 	         
 	         scheduledSession.setTestSession(testSession);
@@ -1424,7 +1439,7 @@ public class SessionOperationController extends PageFlowController {
      private void validateTestSessionDate(String dailyLoginEndDateString,
 			String dailyLoginStartDateString, String dailyLoginEndTimeString,
 			String dailyLoginStartTimeString, String timeZonep,
-			Date overrideLoginSDate, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
+			Date overrideLoginSDate,Date overrideLoginEDate, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
     	 if ((DateUtils.validateDateString(dailyLoginStartDateString) == DateUtils.DATE_INVALID) ||( DateUtils.validateDateString(dailyLoginEndDateString)== DateUtils.DATE_INVALID)){
     		 validationFailedInfo.setKey("SaveTest.InvalidDate");
  			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.InvalidDate.Header"));
@@ -1446,6 +1461,9 @@ public class SessionOperationController extends PageFlowController {
     		 if( overrideLoginSDate != null && dateStarted.compareTo(overrideLoginSDate ) < 0){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Header","" +DateUtils.formatDateToDateString(overrideLoginSDate)));
+    		 } else if( overrideLoginEDate != null && dateEnded.compareTo(overrideLoginEDate ) > 0){
+    			 validationFailedInfo.setKey("SaveTest.StartDateAfterOverrideEndDate");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateAfterOverrideEndDate.Header","" +DateUtils.formatDateToDateString(overrideLoginEDate)));
     		 } else if ( isAddOperation && DateUtils.isBeforeToday(dateStarted, timeZone) ){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Header"));

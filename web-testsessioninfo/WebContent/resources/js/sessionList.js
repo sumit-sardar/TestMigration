@@ -734,6 +734,13 @@ function registerDelegate(tree){
 					if(state != "EDIT"){
 						$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
 						$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
+						if(sessionList[i].minLoginEndDate != undefined){
+							$( "#startDate" ).datepicker( "option" , "maxDate" , sessionList[i].minLoginEndDate ) ;
+							$( "#endDate" ).datepicker( "option" , "maxDate" , sessionList[i].minLoginEndDate ) ;
+						} else {
+							$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
+							$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
+						}
 						$( "#endDate" ).datepicker( "refresh" );
 						$( "#startDate" ).datepicker( "refresh" );
 						document.getElementById("startDate").value = sessionList[i].startDate;

@@ -24,6 +24,8 @@ public class TestVO implements java.io.Serializable
     private String overrideFormAssignment = null;
     
     private Date overrideLoginStartDate = null;
+    
+    private Date overrideLoginEndDate = null;
         
     private String levelOrGrade = null;
     
@@ -40,6 +42,10 @@ public class TestVO implements java.io.Serializable
     private String startDate;
     
 	private String endDate;
+	
+	private String minLoginEndDate;
+	
+	
     
     private Boolean offGradeTestingDisabled = Boolean.FALSE;
     
@@ -278,6 +284,38 @@ public class TestVO implements java.io.Serializable
 	 */
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	
+	/**
+	 * @return the overrideLoginEndDate
+	 */
+	public Date getOverrideLoginEndDate() {
+		return overrideLoginEndDate;
+	}
+
+	
+	/**
+	 * @param overrideLoginEndDate the overrideLoginEndDate to set
+	 */
+	public void setOverrideLoginEndDate(Date overrideLoginEndDate) {
+		this.overrideLoginEndDate = overrideLoginEndDate;
+	}
+
+	
+	/**
+	 * @return the minLoginEndDate
+	 */
+	public String getMinLoginEndDate() {
+		return minLoginEndDate;
+	}
+
+	
+	/**
+	 * @param minLoginEndDate the minLoginEndDate to set
+	 */
+	public void setMinLoginEndDate(String minLoginEndDate) {
+		this.minLoginEndDate = minLoginEndDate;
 	}
     
     

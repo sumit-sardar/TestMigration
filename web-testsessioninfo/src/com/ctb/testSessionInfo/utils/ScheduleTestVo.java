@@ -160,6 +160,7 @@ public class ScheduleTestVo implements Serializable{
         
             testVO.setOverrideFormAssignment(tes[i].getOverrideFormAssignmentMethod());
             testVO.setOverrideLoginStartDate(tes[i].getOverrideLoginStartDate());
+            testVO.setOverrideLoginEndDate(tes[i].getOverrideLoginEndDate());
             testVO.setOffGradeTestingDisabled(isOffGradeTestingDisabled(tp,ted,tes[i].getItemSetId() ));
             if(tes[i].getOverrideFormAssignmentMethod() != null) {
             	testVO.setFormOperand(tes[i].getOverrideFormAssignmentMethod());
@@ -398,6 +399,15 @@ public class ScheduleTestVo implements Serializable{
 	        	} else {
 	        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
 	        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+	        	}
+	        	
+	        	if(testVO.getOverrideLoginEndDate()!= null && !(DateUtils.isAfterToday(testVO.getOverrideLoginEndDate(), timeZone )) ) {
+	        		testVO.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
+	        		testVO.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
+	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+	        		
+	        	} else if(testVO.getOverrideLoginEndDate()!= null ){
+	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
 	        	}
 	        }
         }

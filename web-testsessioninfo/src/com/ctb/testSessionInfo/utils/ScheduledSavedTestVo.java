@@ -23,7 +23,8 @@ public class ScheduledSavedTestVo implements Serializable {
 	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private OperationStatus status;
 	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
-	private String toDay = "";
+	private String minLoginStartDate = "";
+	private String minLoginEndDate = "";
 
 	private static final long serialVersionUID = 1L;
 
@@ -92,19 +93,36 @@ public class ScheduledSavedTestVo implements Serializable {
 	}
 
 	
+
 	/**
-	 * @return the toDay
+	 * @return the minLoginStartDate
 	 */
-	public String getToDay() {
-		return toDay;
+	public String getMinLoginStartDate() {
+		return minLoginStartDate;
 	}
 
 	
 	/**
-	 * @param toDay the toDay to set
+	 * @param minLoginStartDate the minLoginStartDate to set
 	 */
-	public void setToDay(String toDay) {
-		this.toDay = toDay;
+	public void setMinLoginStartDate(String minLoginStartDate) {
+		this.minLoginStartDate = minLoginStartDate;
+	}
+
+	
+	/**
+	 * @return the minLoginEndDate
+	 */
+	public String getMinLoginEndDate() {
+		return minLoginEndDate;
+	}
+
+	
+	/**
+	 * @param minLoginEndDate the minLoginEndDate to set
+	 */
+	public void setMinLoginEndDate(String minLoginEndDate) {
+		this.minLoginEndDate = minLoginEndDate;
 	}
 
 	
