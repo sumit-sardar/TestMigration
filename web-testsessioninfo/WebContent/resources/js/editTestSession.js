@@ -118,19 +118,23 @@
 								$("#displayEditInfo").show();
 								$("#titleEditInfo").html($("#fieldDisabled").val());
 								$("#messageEditInfo").html($("#noPermission").val());
+								$("#contentEditInfo").hide();
 							}
 							else if(isTestExpired) {
 								$("#displayEditInfo").show();
 								$("#titleEditInfo").html($("#fieldDisabled").val());
 								$("#messageEditInfo").html($("#sessionEnd").val());
+								$("#contentEditInfo").hide();
 							} else {
 								if(stdsLogIn) {
 									$("#displayEditInfo").show();
 									$("#titleEditInfo").html($("#fieldDisabled").val());
 									$("#messageEditInfo").html($("#stuLogged").val());
+									$("#contentEditInfo").hide();
 								} else {
 									$("#displayEditInfo").show();
 									$("#titleEditInfo").html("");
+									$("#contentEditInfo").show();
 									$("#contentEditInfo").html($("#noStudentLogged").val());
 									$("#messageEditInfo").html($("#noStudentLogged2").val());
 								}
