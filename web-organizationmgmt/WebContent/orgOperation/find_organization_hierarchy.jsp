@@ -23,6 +23,8 @@
 <input type="hidden" id="missRequiredID" name = "missRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mMissRequiredID" name = "mMissRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="s'"/>/>
 <input type="hidden" id="orgListID" name = "orgListID" value=<lb:label key="org.label.orgList" prefix="'" suffix="'"/>/>
+<input type="hidden" id="deleteOrgTitle" name = "deleteOrgTitle" value=<lb:label key="org.delete" prefix="'" suffix="'"/>/>
+<input type="hidden" id="deleteOrgTitleMsg" name = "deleteOrgTitleMsg" value=<lb:label key="org.msg.delete" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;">  
 	<tr class="transparent">
@@ -122,6 +124,30 @@
 	</table>
 </div>
 
+<div id="deleteConfirmation"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<br/>
+			<p><lb:label key="org.msg.delete" /></p>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;Ok&nbsp;" onclick="javascript:deleteOrganizationDetail(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('deleteConfirmation'); return false;" class="ui-widget-header">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
+
 <div id="searchUserByKeyword"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div>
@@ -139,4 +165,5 @@
 		</center>
 	</div>
 </div>
+
 				
