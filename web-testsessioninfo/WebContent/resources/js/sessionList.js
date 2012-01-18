@@ -3060,7 +3060,7 @@ function registerDelegate(tree){
 		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'dnsStatus',index:'dnsStatus', width:70, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'dnsStatus',index:'dnsStatus', width:74, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
