@@ -1945,6 +1945,7 @@ public class SessionOperationController extends PageFlowController {
 		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
 		String blockOffGrade = getRequest().getParameter("blockOffGradeTesting");
 		String selectedLevel = getRequest().getParameter("selectedLevel");
+		String testAdminIdString = getRequest().getParameter("testAdminId");
 		Integer selectedOrgNodeId = null;
 		Integer selectedTestId = null;
 		Integer testAdminId = null;
@@ -1952,6 +1953,12 @@ public class SessionOperationController extends PageFlowController {
 			selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
 		if(testId != null)
 			selectedTestId = Integer.parseInt(testId);
+		try{
+			if(testAdminIdString != null){
+				testAdminId = Integer.valueOf(testAdminIdString.trim());
+			}
+		} catch (Exception e){	}
+		
 		try {
 			FilterParams studentFilter = null;
 			if(blockOffGrade != null && blockOffGrade.equalsIgnoreCase("true")) { //Changes for block off grade testing

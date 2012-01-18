@@ -696,7 +696,7 @@ function registerDelegate(tree){
       function gridReloadSelectStu(){ 
       	  UIBlock();
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
-	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
+	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel+"&testAdminId=" +selectedTestAdminId;
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
      	   jQuery("#selectStudent").sortGrid('lastName',true);
@@ -1174,6 +1174,7 @@ function registerDelegate(tree){
 	$('#showSaveTestMessage').hide();
 	$("#endTest").hide();
 	state = "ADD";
+	selectedTestAdminId = null;
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
