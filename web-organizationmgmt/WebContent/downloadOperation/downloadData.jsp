@@ -31,7 +31,7 @@
 
 
 
-<netui:form action="downloadData">
+<netui:form action="manageDownload">
 
 <input type="hidden" id="userFile" name = "userFile" value='<%= userFile %>'/>
 <input type="hidden" id="studentFile" name = "studentFile" value='<%= studentFile %>'/>
@@ -41,14 +41,14 @@
 	<tr>
 		<td style="padding-left:5px;">
     		<h1><lb:label key="services.export.title" /></h1>
-			<p style="color:#000"><lb:label key="services.export.msg" /></p> 		
+			<p style="color:#000"><lb:label key="services.export.msg" /></p> 
+			<br/>		
 		</td>
 	</tr>
-	<!-- 
 	<tr>
 		<td align="right">
 			<div style="float:left; width:1070px;">
-        	<a href="#" id="exportDataButton" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="exportDataButton" onclick="return downloadData();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button" />
            	</a>
             </div>               	                                    
@@ -62,7 +62,6 @@
 			</div>								
 		</td>
 	</tr>
-	 -->
 </table>
 
 <br/><br/>

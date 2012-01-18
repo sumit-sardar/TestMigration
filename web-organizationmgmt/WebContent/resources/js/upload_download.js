@@ -106,3 +106,41 @@ function enableUpload()
     
 }
 
+
+function downloadData()
+{
+    var element = document.getElementById("downloadFile");
+    //alert(element);
+    //alert(element.value);
+    element.form.action = "downloadData.do";
+    element.form.submit();
+    
+	//document.form.action = 'downloadData.do';
+	//document.form.submit();
+	
+	return false;
+}
+
+function ajaxDownloadData()
+{
+	$.ajax({
+		async:		false,
+		beforeSend:	function(){
+					},
+		url:		'downloadData.do',
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						alert(data);
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						alert(textStatus);
+						//window.location.href="/TestSessionInfoWeb/logout.do";						
+					},
+		complete :  function(){
+						alert("ok");
+					}
+	});
+
+	return false;		
+}

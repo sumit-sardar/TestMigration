@@ -461,3 +461,13 @@ clear: both;
 input[type="button"] {
 	cursor: pointer;
 }
+
+.headerTag {
+	font-family: Arial, Helvetica, Sans Serif; 
+	font-size: 14px;  
+	font-style: normal;  
+	font-weight: bold; 	
+    border-style: none; 
+    color: #0000ff;
+    padding: 0px;    
+}
