@@ -7,14 +7,13 @@
 
 <div id="scheduleSession"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<br>
-		<div id="displayMessage" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
+	<div id="displayMessage" class="roundedMessage" style="display:none; margin-bottom: 3px;"> 
 			<table>
 				<tr>
-					<td rowspan="3" valign="top">
+					<td rowspan="3" valign="top" width="18">
                    	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
 					</td>
-					<td>
+					<td valign="top">
 						<table>
 							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
 							<tr><td><div id= "content">	</div></td></tr>
@@ -26,11 +25,11 @@
 			
 		</div>
 		
-		<div id="displayEditInfo" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
+		<div id="displayEditInfo" class="roundedMessage" style="display:none; margin-bottom: 3px;"> 
 			<table>
 				<tr>
-					<td rowspan="3" valign="top">
-                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					<td rowspan="3" valign="top" width="18">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
 					</td>
 					<td>
 						<table>
