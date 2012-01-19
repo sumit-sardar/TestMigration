@@ -1350,6 +1350,8 @@ function fillselectedOrgNode( elementId, orgList) {
 												var successFlag = data.successFlag;
 												if(successFlag) {
 													closePopUp('addEditStudentDetail');
+													$('#errorIcon').hide();
+													$('#infoIcon').show();
 													setMessageMain(data.title, data.content, data.type, "");
 													document.getElementById('displayMessageMain').style.display = "block";	
 													//For edit student save defect
@@ -1422,6 +1424,8 @@ function fillselectedOrgNode( elementId, orgList) {
         										}
         										else{
         											setMessage(data.title, data.content, data.type, "");
+        											$('#errorIcon').show();
+													$('#infoIcon').hide();
         											document.getElementById('displayMessage').style.display = "block";	
         											
         										}

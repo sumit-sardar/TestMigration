@@ -528,6 +528,8 @@ function populateBulkStudentGrid() {
 								var successFlag = data.successFlag;
 								if(successFlag) {
 									closePopUp('AssignAccommPopup');
+									$('#errorIcon').hide();
+									$('#infoIcon').show();							
 									setBulkMessageMain(data.title, data.content, data.type, "");
 									var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 						           for(var i=0; i<allRowsInGrid.length; i++) {
@@ -560,6 +562,8 @@ function populateBulkStudentGrid() {
 											setPopupMessage();
 										} else {
 											setBulkMessageMain(data.title, data.content, data.type, "");
+											$('#errorIcon').show();
+											$('#infoIcon').hide();							
 											document.getElementById('displayBulkMessageMain').style.display = "block";	
 											//document.getElementById('errorImg').style.display = "block";	
 											resetRadioAccommodation();
