@@ -1318,6 +1318,7 @@ public class SessionOperationController extends PageFlowController {
 			 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
 			 String isRandomize       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_RANDOMIZE, true, "");
 			 String timeZone          		= DateUtils.getDBTimeZone( RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TIME_ZONE, false, null));
+			 System.out.println("timeZone" + timeZone);
 			 String sessionName		  		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TEST_NAME, false, null);
 			 //String sessionName       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_SESSION_NAME, false, null);
 			 String showStdFeedbackVal   	= RequestUtil.getValueFromRequest(request, RequestUtil.SHOW_STUDENT_FEEDBACK, true, "false");
@@ -1362,9 +1363,11 @@ public class SessionOperationController extends PageFlowController {
 			 testSession.setTestAdminId(testAdminId);			 
 			 testSession.setTestAdminStatus("CU");
 			 testSession.setLoginEndDate(dailyLoginEndDate);
+			  testSession.setDailyLoginEndTime(dailyLoginEndTime);
 			 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
 				 testSession.setTestAdminStatus("PA");
 				 testSession.setLoginEndDate(now);
+				 testSession.setDailyLoginEndTime(now);
 			 }
 	         testSession.setTestAdminType("SE");
 	         testSession.setActivationStatus("AC");
@@ -1376,7 +1379,6 @@ public class SessionOperationController extends PageFlowController {
 	         testSession.setShowStudentFeedback(showStdFeedback);
 	         testSession.setProductId(productId);	    
 	         testSession.setDailyLoginStartTime(dailyLoginStartTime);
-	         testSession.setDailyLoginEndTime(dailyLoginEndTime);
 	         testSession.setLocation(location);
 	         testSession.setEnforceBreak(hasBreak);
 	         testSession.setIsRandomize(isRandomize);	         	       
