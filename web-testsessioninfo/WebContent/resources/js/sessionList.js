@@ -81,7 +81,7 @@ var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
 
-var selectedTestAdminId = "";
+
 var selectedTestRosterId = "";
 var gridSelectedToDelete = "";
 var offGradeSubtestChanged = false;
