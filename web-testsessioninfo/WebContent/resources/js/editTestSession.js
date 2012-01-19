@@ -590,14 +590,14 @@
 			subtestData +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table width="100%" class="ts" cellpadding="0" cellspacing="1">';
 							
 			th +='<tr class="subtestHeader" >';
-			th +='<th width="24" height="23" align="center"><strong>#</strong></th>';
+			th +='<th width="24" height="23" align="center"><strong>'+$("#hashDisplay").val()+'</strong></th>';
 			if(savedTestDetails.testSession.enforceBreak!= undefined && savedTestDetails.testSession.enforceBreak == "T"){
-				th +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>Subtest Name </strong></th>';				
-				th +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>Access Code </strong></div></th>';
+				th +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';				
+				th +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
 			}else{
-				th +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>Subtest Name </strong></th>';
+				th +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
 			}
-			th +='<th width="82" height="23" align="center"><strong>Duration</strong></th>';
+			th +='<th width="82" height="23" align="center"><strong>'+$("#durationDisplay").val()+'</strong></th>';
 			/*if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
 			}*/
