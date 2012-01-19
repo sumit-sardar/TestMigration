@@ -213,8 +213,23 @@ function populateSessionListGrid(homePageLoad) {
 		    	delfunc: function() {
 		    		gridSelectedToDelete = "list2";
 		    		deleteSessionPopup();		    		 
-		    	}	    	
-			}); 
+		    	},search: false     	
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	$("#searchUserByKeyword").dialog({  
+						title:$("#searchUserID").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {}
+					 	});
+			    }, position: "one-before-last", title:"", cursor: "pointer"
+			});  
+			jQuery(".ui-icon-refresh").bind("click",function(){
+				$("#searchUserByKeywordInput").val('');
+			});
 }
 
 function searchUserByKeyword(){

@@ -534,7 +534,7 @@ function populateGrid() {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',
-			{search: false},{
+			{
 				addfunc: function() {
 					requetForUser = "";
 		    		AddUserDetail();
@@ -542,7 +542,7 @@ function populateGrid() {
 		    	editfunc: function() {
 		    		 requetForUser = "";
 		    		 EditUserDetail();
-		    	}
+		    	},search: false
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  

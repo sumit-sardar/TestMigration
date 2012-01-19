@@ -591,7 +591,7 @@ function updateOrganization(element, isChecked){
 			}
 	 });
 			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			jQuery("#list2").navGrid('#pager2', {search: false}, {
+			jQuery("#list2").navGrid('#pager2',{
 				addfunc: function() {
 					requetForStudent = "";
 		    		AddStudentDetail();
@@ -603,7 +603,7 @@ function updateOrganization(element, isChecked){
 		    	delfunc: function() {
 		    		 requetForStudent = "";
 		    		 deleteStudentPopup();
-		    	}		    	
+		    	},search: false		    	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
@@ -741,7 +741,7 @@ function updateOrganization(element, isChecked){
 					}
 	 });
 			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			jQuery("#list2").navGrid('#pager2',{search: false}, {
+			jQuery("#list2").navGrid('#pager2',{
 				addfunc: function() {
 					requetForStudent = "";
 		    		AddStudentDetail();
@@ -753,7 +753,7 @@ function updateOrganization(element, isChecked){
 		    	delfunc: function() {
 		    		 requetForStudent = "";
 		    		 deleteStudentPopup();
-		    	}		    	
+		    	},search: false    	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
