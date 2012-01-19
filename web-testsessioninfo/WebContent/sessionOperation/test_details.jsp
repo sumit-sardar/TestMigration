@@ -25,7 +25,7 @@
 				<tbody>
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="testDet.label.sessionName" /> </td>
-					  <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 400px;" 
 							id="testSessionName" name="testSessionName" maxlength="64" ></td>
 					</tr>
 					<tr class="transparent">
