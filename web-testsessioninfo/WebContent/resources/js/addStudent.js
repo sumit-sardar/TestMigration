@@ -1023,7 +1023,9 @@ function getStudentListArray(studentArray) {
 		var tmpOrgNameList  =  String(studentIdVal.orgNodeName).split(",");
 		var finalTmpOrgIdList ="";
 		var finalTmpOrgNameList ="";
-		if(tmpOrgIdList.length == 1) {
+		if(studentIdVal.statusEditable =="F"){
+			return;
+		} else if(tmpOrgIdList.length == 1) {
 		   if(stuForSelectedOrg == tmpOrgIdList[0])
 			 studentTempMap.remove(selectedRowId);
 		} else {
