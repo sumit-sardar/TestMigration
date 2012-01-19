@@ -24,12 +24,11 @@
 				</tr>
 			</table>
 	</div>
-	<table>
+	<table style="width:99.5%;">
 		<tr>
 			<td>
-				<div id="viewEditDisplayId">
-					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;"><lb:label key="user.label.viewEditDisplay" />
-					</span>
+				<div id="viewEditDisplayId" class="errMsgs">
+					<span><lb:label key="user.label.viewEditDisplay" /></span>
 				</div>
 			</td>
 		</tr>

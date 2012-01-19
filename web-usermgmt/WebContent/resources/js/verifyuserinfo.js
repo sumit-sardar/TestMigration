@@ -89,7 +89,7 @@ function VerifyUserDetail(assignedOrgNodeIds){
 				}
 				else {
 					//requiredFields += ("\n" + REQUIRED_TEXT_MULTIPLE);
-					setMessage($("#mRequiredID").val(), requiredFields, "errorMessage", $("#mRequiredID").val());
+					setMessage($("#mRequiredIDs").val(), requiredFields, "errorMessage", $("#mRequiredID").val());
 				}
 				return false;
 			}

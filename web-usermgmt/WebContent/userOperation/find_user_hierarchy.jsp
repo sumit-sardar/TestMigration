@@ -21,6 +21,7 @@
 <input type="hidden" id="addUserID" name = "addUserID" value=<lb:label key="user.label.titleADD" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="user.msg.missingRequesdField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tZoneID" name = "tZoneID" value=<lb:label key="user.label.timeZone" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mRequiredIDs" name = "mRequiredIDs" value=<lb:label key="user.msg.missingRequesdFields" prefix="'" suffix="'"/>/>
 <input type="hidden" id="oAssignID" name = "oAssignID" value=<lb:label key="user.label.orgAssignment" prefix="'" suffix="'"/>/>
 <input type="hidden" id="zipID" name = "zipID" value=<lb:label key="user.zip" prefix="'" suffix="'"/>/>
 <input type="hidden" id="pPhoneID" name = "pPhoneID" value=<lb:label key="user.primaryphone" prefix="'" suffix="'"/>/>
@@ -62,7 +63,18 @@
 		      <tr>
 				<td colspan="3" class="buttonsRow">
 					<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
-						<div id="contentMain"></div>
+						<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="infoIcon"><img
+										src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id="contentMain"></div>
+								</td>
+							</tr>
+						</table>				
 					</div>
 					<div id="changePW" style="visibility:hidden;float: right;">
 						<div id="cpw">
