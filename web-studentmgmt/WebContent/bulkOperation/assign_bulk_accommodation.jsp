@@ -48,11 +48,21 @@
 	<tr class="transparent">
     	<td align="center">        
 			<table width="100%">
-    			<tr>
-					
+    			<tr>					
 					<td colspan="3" class="buttonsRow">
 						<div id="displayBulkMessageMain" class="errMsgs" style="display:none; width: 50%; float: left;"> 
-							<div id= "contentBulkMain"></div>
+							<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="infoIcon"><img
+										src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id= "contentBulkMain"></div>
+								</td>
+							</tr>
+						</table>
 						</div>
 						<div id="viewStatus" style="float:right;visibility:hidden;">
 							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.assignAcom" /></a>
@@ -86,21 +96,17 @@
 
 				
 <div id="AssignAccommPopup"
-	style="width:97%; display: none; border:8px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
+	style="width:98%; display: none; border:8px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table width="100%">
 		<tr><td>
-			<div id="displayPopupMessage" class="roundedMessage" style="display:none; border:2px solid #D4ECFF;"> 
+			<div id="displayPopupMessage" style="display:none; border:1px solid #D4ECFF; padding:2px;"> 
 				<table>
 					<tr>
-						<td rowspan="3" valign="top">
+						<td valign="top" width="18">
 	                   	<img  id="errorImgPopup"  src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
 						</td>
-						<td>
-							<table>
-								<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="titleBulkPopup"></div></font></td></tr>
-								<tr><td><font style="font-size: 12px; font-weight: bold;"><div id= "contentBulkPopup">	</div></font></td></tr>
-								<tr><td><div id= "messageBulkPopup">	</div></td></tr>
-							</table>
+						<td style="font-size: 12px; font-weight: bold;" valign="top">
+						<div id= "contentBulkPopup"></div>		
 						</td>
 					</tr>
 				</table>

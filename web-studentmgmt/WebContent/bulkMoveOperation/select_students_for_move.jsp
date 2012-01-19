@@ -40,7 +40,18 @@
 		   <tr>
 				<td colspan="3" class="buttonsRow">
 					<div id="displayBulkMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
-						<div id="contentBulkMain"></div>
+						<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="infoIcon"><img
+										src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id="contentBulkMain"></div>
+								</td>
+							</tr>
+						</table>	
 					</div>	       			
 					<div id="viewStatus" style="float:right;visibility:hidden;">
 						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.move" /></a>
@@ -74,28 +85,17 @@
 
 <div id="moveStudentPopup"
 	style="width:97%; display: none; border:8px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
+	<table width="100%">
 	<tr>
 		<td>
-			<div id="displayBMPopupMessage" class="roundedMessage" style="">
+			<div id="displayBMPopupMessage" style=" border:1px solid #D4ECFF; padding:2px;">
 				<table>
 					<tr>
-						<td rowspan="3" valign="top">
-	                   	<img  id="errorImgPopup" style="display: none;"  src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+						<td valign="top" width="18">
+	                   	<img  id="errorImgPopup" style="display: none;"  src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
 						</td>
-						<td>
-							<table>
-								<tr>
-									<td>
-										<font style="color: red; font-size:12px; font-weight:bold">
-											<div id="titleBulkMovePopup">
-											</div>
-										</font>
-									</td>
-								</tr>
-								<tr><td><font style="font-size: 12px; font-weight: bold;"><div id= "contentBulkMovePopup">	</div></font></td></tr>
-								<tr><td><div id= "messageBulkMovePopup"></div></td></tr>
-							</table>
+						<td style="font-size: 12px; font-weight: bold;" valign="top">
+							<div id= "contentBulkMovePopup"></div>
 						</td>
 					</tr>
 				</table>
