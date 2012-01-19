@@ -2162,10 +2162,12 @@ function setSelectedValue(selectObj, valueToSet) {
 				type:		'POST',
 				data:		param,
 				dataType:	'html',
-				success:	function(data, textStatus, XMLHttpRequest){			
+				success:	function(data, textStatus, XMLHttpRequest){	
 								
 							    $("#deleteStatus").val(data);
-																														 						
+								$('#errorIcon').hide();
+								$('#infoIcon').show();
+																																			 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},

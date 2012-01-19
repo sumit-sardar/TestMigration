@@ -3657,13 +3657,13 @@ function registerDelegate(tree){
 				success:	function(data, textStatus, XMLHttpRequest){	
 								if(data.isSuccess){
 									var successMsg = $("#deleteSuccessMsg").val(); 
-									setSessionSaveMessage(successMsg, "", "","" );
+									setSessionSaveMessage(successMsg, "", "infoMessage","" );
 									$('#showSaveTestMessage').show();
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
 								}
 								else{
 									var failureMsg = $("#deleteFailureMsg").val();
-									setSessionSaveMessage(failureMsg, "", "","");
+									setSessionSaveMessage(failureMsg, "", "errorMessage","");
 									$('#showSaveTestMessage').show();
 								}								
 							    //$.unblockUI(); 																														 						
