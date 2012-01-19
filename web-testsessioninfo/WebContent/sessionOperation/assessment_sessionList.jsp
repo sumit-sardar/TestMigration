@@ -214,20 +214,37 @@
 		
 	</table>
 </div>
-<div id="searchUserByKeyword"
+<div id="searchUserByKeywordList2"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div>
 		<p><lb:label key="sessionList.search.info.message"/></p>
 	</div>
-	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+	<div class="searchInputBoxContainer" id="searchInputBoxContainerList2">
 		<center>
-			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInputList2" onkeypress="trapEnterKeyList2(event);"/>
 		</center>	
 	</div>
 	<div style="padding-bottom:20px;">
 		<center>
-			<input type="button"  value="Reset" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
-			<input type="button"  value="Search" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+			<input type="button"  value="Reset" onclick="javascript:resetSearchList2(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Search" onclick="javascript:searchUserByKeywordList2(); return false;" class="ui-widget-header">
+		</center>
+	</div>
+</div>
+<div id="searchUserByKeywordList3"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="sessionList.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainerList3">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInputList3" onkeypress="trapEnterKeyList3(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;">
+		<center>
+			<input type="button"  value="Reset" onclick="javascript:resetSearchList3(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Search" onclick="javascript:searchUserByKeywordList3(); return false;" class="ui-widget-header">
 		</center>
 	</div>
 </div>

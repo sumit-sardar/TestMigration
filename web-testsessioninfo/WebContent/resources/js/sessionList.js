@@ -217,8 +217,8 @@ function populateSessionListGrid(homePageLoad) {
 		    	},search: false     	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
-			    	$("#searchUserByKeyword").dialog({  
-						title:$("#searchUserID").val(),  
+			    	$("#searchUserByKeywordList2").dialog({  
+						title:$("#searchSessionID").val(),  
 					 	resizable:false,
 					 	autoOpen: true,
 					 	width: '300px',
@@ -228,13 +228,13 @@ function populateSessionListGrid(homePageLoad) {
 					 	});
 			    }, position: "one-before-last", title:"", cursor: "pointer"
 			});  
-			jQuery(".ui-icon-refresh").bind("click",function(){
-				$("#searchUserByKeywordInput").val('');
+			jQuery("#refresh_list2").bind("click",function(){
+				$("#searchUserByKeywordInputList2").val('');
 			});
 }
 
-function searchUserByKeyword(){
-	 var searchFiler = $.trim($("#searchUserByKeywordInput").val()), f;
+function searchUserByKeywordList2(){
+	 var searchFiler = $.trim($("#searchUserByKeywordInputList2").val()), f;
 	 var grid = $("#list2"); 
 	 
 	 if (searchFiler.length === 0) {
@@ -253,18 +253,18 @@ function searchUserByKeyword(){
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
-	 closePopUp('searchUserByKeyword');
+	 closePopUp('searchUserByKeywordList2');
 }
 
-function resetSearch(){
+function resetSearchList2(){
 	var grid = $("#list2"); 
-	$("#searchUserByKeywordInput").val('');
+	$("#searchUserByKeywordInputList2").val('');
 	 grid[0].p.search = false;
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
-	 closePopUp('searchUserByKeyword');
+	 closePopUp('searchUserByKeywordList2');
 }
 
-function trapEnterKey(e){
+function trapEnterKeyList2(e){
 	var key;
    if(window.event)
         key = window.event.keyCode;     //IE
@@ -272,7 +272,50 @@ function trapEnterKey(e){
         key = e.which;     //firefox
         
    if(key == 13){
-   		searchUserByKeyword();
+   		searchUserByKeywordList2();
+   }
+}
+
+function searchUserByKeywordList3(){
+	 var searchFiler = $.trim($("#searchUserByKeywordInputList3").val()), f;
+	 var grid = $("#list3"); 
+	 
+	 if (searchFiler.length === 0) {
+		 grid[0].p.search = false;
+	 }else {
+	 	 f = {groupOp:"OR",rules:[]};
+		 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
+		 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+		 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
+		 f.rules.push({field:"creatorOrgNodeId",op:"cn",data:searchFiler});
+		 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginStartDate",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginEndDate",op:"cn",data:searchFiler});
+		 grid[0].p.search = true;
+		 grid[0].p.ignoreCase = true;
+		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+	 }
+	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 closePopUp('searchUserByKeywordList3');
+}
+
+function resetSearchList3(){
+	var grid = $("#list3"); 
+	$("#searchUserByKeywordInputList3").val('');
+	 grid[0].p.search = false;
+	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 closePopUp('searchUserByKeywordList3');
+}
+
+function trapEnterKeyList3(e){
+	var key;
+   if(window.event)
+        key = window.event.keyCode;     //IE
+   else
+        key = e.which;     //firefox
+        
+   if(key == 13){
+   		searchUserByKeywordList3();
    }
 }
 
@@ -378,8 +421,23 @@ function populateCompletedSessionListGrid() {
 		    	delfunc: function() {
 		    		gridSelectedToDelete = "list3";
 		    		deleteSessionPopup();
-		    	}	    	
-	}); 
+		    	},search: false     	
+			}).jqGrid('navButtonAdd',"#pager3",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	$("#searchUserByKeywordList3").dialog({  
+						title:$("#searchSessionID").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {}
+					 	});
+			    }, position: "one-before-last", title:"", cursor: "pointer"
+			});  
+			jQuery("#refresh_list3").bind("click",function(){
+				$("#searchUserByKeywordInputList3").val('');
+			});
 	 setupButtonPerUserPermission();
 	 
 }
