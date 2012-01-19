@@ -424,6 +424,8 @@
 		isEndTestSession = false;
 		$("#endTest").hide();
 		isSortable = true;
+		editDataCache = new Map();
+        editDataMrkStds = new Map();
   	}
   	
   	function calculateTimeInMin(val){
@@ -657,6 +659,8 @@
      	$("#testGroupList").html("");
       	$("#productType").val("");
       	stdsLogIn = false;
+      	editDataCache = new Map();
+        editDataMrkStds = new Map(); 
 	
 	}
 	function isTestExistInCurrentPage(itemSetId){
