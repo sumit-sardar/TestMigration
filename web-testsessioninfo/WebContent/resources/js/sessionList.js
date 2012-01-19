@@ -3273,6 +3273,8 @@ function registerDelegate(tree){
             		$('#sp_1_rosterPager').text("1");
             		$('#next_rosterPager').addClass('ui-state-disabled');
             	 	$('#last_rosterPager').addClass('ui-state-disabled');
+            	 	$("#displayMessageViewTestRoster").show();
+					$("#rosterMessage").html($("#noStudentValidMsg").val());
             	} else {
             		isPAGridEmpty = false;
             	}

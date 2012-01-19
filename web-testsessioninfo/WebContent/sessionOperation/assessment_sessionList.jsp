@@ -70,6 +70,7 @@
 <input type="hidden" id="subtestNameDisplay" name="subtestNameDisplay" value=<lb:label key="selectTest.label.subtestName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="acsCodeDisplay" name="acsCodeDisplay" value=<lb:label key="selectTest.label.tstAccessCode" prefix="'" suffix="'"/>/>
 <input type="hidden" id="durationDisplay" name="durationDisplay" value=<lb:label key="selectTest.label.duration" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noStudentValidMsg" name="noStudentValidMsg" value=<lb:label key="noStudents.snValid.message" prefix="'" suffix="'"/>/>
 
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
