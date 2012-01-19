@@ -2876,9 +2876,29 @@ function registerDelegate(tree){
 	}
 	
 	function setSessionSaveMessage(title, content, type, message){
+		if(title != ""){
 			$("#saveTestTitle").html(title);
-			$("#saveTestContent").html(content);
-			$("#saveTestMessage").html(message);
+			$("#saveTestTitle").show();
+		}else{
+			$("#saveTestTitle").html("");
+			$("#saveTestTitle").hide();
+		}
+		
+		if(content != ""){
+			$("#saveTestContent").html(title);
+			$("#saveTestContent").show();
+		}else{
+			$("#saveTestContent").html("");
+			$("#saveTestContent").hide();
+		}
+		
+		if(message != ""){
+			$("#saveTestMessage").html(title);
+			$("#saveTestMessage").show();
+		}else{
+			$("#saveTestMessage").html("");
+			$("#saveTestMessage").hide();
+		}
 			if(type=="errorMessage"){
 				$('#errorIcon').show();
 				$('#infoIcon').hide();

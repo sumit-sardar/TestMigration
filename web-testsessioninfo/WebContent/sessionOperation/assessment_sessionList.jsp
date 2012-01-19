@@ -103,7 +103,7 @@
 				<% } %>
 			</p>
 	</div>
-	<div id="showSaveTestMessage" style="float:left; padding-top:5px; padding-left:2px;" > 
+	<div id="showSaveTestMessage" style="float:left; padding-top:5px;" > 
 			<table>
 				<tr>
 					<td width="18" valign="top">
@@ -115,9 +115,9 @@
 					</div>					
 					</td>
 					<td class="saveMsgs" valign="top">
-					   	<div id="saveTestTitle" style="font-weight:bold;"></div>
-					   	<div id="saveTestContent"></div>
-					   	<div id="saveTestMessage"></div>
+					   	<div id="saveTestTitle" style="display:none;font-weight:bold;"></div>
+					   	<div id="saveTestContent" style="display:none;"></div>
+					   	<div id="saveTestMessage" style="display:none;"></div>
 					</td>
 				</tr>
 		</table>
