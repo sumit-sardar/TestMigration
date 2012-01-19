@@ -266,9 +266,9 @@ function setMessage(title, content, type, message){
 		}
 
 function setMessageMain(title, content, type, message){
-			$("#titleMain").text(title);
+			//$("#titleMain").text(title);
 			$("#contentMain").text(content);
-			$("#messageMain").text(message);
+			//$("#messageMain").text(message);
 		}
 
 

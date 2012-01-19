@@ -15,10 +15,10 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	<div id="displayMessage" class="roundedMessage"> 
 			<table>
 				<tr>
-					<td rowspan="3" valign="top">
-                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					<td rowspan="3" valign="top" width="18">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
 					</td>
-					<td>
+					<td valign="top">
 						<table>
 							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
 							<tr><td><div id= "content">	</div></td></tr>

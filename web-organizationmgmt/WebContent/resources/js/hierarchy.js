@@ -993,7 +993,9 @@ function openTreeNodes(orgNodeId) {
 												if(successFlag) {
 													closePopUp('addEditOrganizationDetail');
 													//setMessageMain(data.title, data.content, data.type, "");
-													$("#contentMain").text(data.content);												
+													$("#contentMain").text(data.content);
+													$('#errorIcon').hide();
+													$('#infoIcon').show();												
 													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
 													assignedElement = "";
@@ -1019,7 +1021,10 @@ function openTreeNodes(orgNodeId) {
 												}
 												else{
 													setMessage(data.title, data.content, data.type, "");     
-        											document.getElementById('displayMessage').style.display = "block";
+        											$("#contentMain").text(data.content);
+													$('#errorIcon').show();
+													$('#infoIcon').hide();
+													document.getElementById('displayMessage').style.display = "block";
 												}
 													
 												//	$("#orgNodeHierarchy").jstree("create",$("#"+parentElement.id), "inside",  {"data":data.orgNodeName,
@@ -1320,10 +1325,14 @@ function deleteOrganizationDetail(){
 							deleteTree(rowId,currentClickedId);
 							$('#list2').jqGrid('delRowData',rowId);
 							$("#contentMain").text(data.content);	
+							$('#errorIcon').hide();
+							$('#infoIcon').show();
 							document.getElementById('displayMessageMain').style.display = "block"; 
 							
 						}else{
 							$("#contentMain").text(data.content);
+							$('#errorIcon').show();
+							$('#infoIcon').hide();													
 							document.getElementById('displayMessageMain').style.display = "block"; 							 						
 						}
 						
