@@ -29,7 +29,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 			</table>
 	</div>
 
-	<table style="padding-bottom: 5px">
+	<table style="padding-bottom: 5px;width:99.5%;">
 		<tr>
 			<td width="770px">
 				<div id="editOrgDisplayId">
@@ -101,7 +101,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 											<tbody>
 											<tr>
 											<td>
-											<div style=" height:25px;width: 350px;visibility: visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.selOrg" /></div>
+											<div style="width: 347px;visibility: visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.selOrg" /></div>
 											</td>
 											</tr>
 												<tr>

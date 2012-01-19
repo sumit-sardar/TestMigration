@@ -49,7 +49,18 @@
 		      	<tr>
 					<td colspan="3" class="buttonsRow">
 			        <div id="displayMessageMain" class="errMsgs" style="display:none; width:99.5%;float:left;">
-						<div id= "contentMain"> </div>
+						<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="infoIcon"><img
+										src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id="contentMain"></div>
+								</td>
+							</tr>
+						</table>
 					</div>
 					</td>
 				</tr>
