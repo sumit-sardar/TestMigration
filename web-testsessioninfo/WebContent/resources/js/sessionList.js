@@ -84,6 +84,7 @@ var leafParentOrgNodeId = "";
 var selectedTestAdminId = "";
 var selectedTestRosterId = "";
 var gridSelectedToDelete = "";
+var offGradeSubtestChanged = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -1362,7 +1363,7 @@ function registerDelegate(tree){
 		$(ddl).html(optionHtml);
 	}
 	function changeSubtestConfirmPopup() {
-		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
+		if(state == "EDIT" || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0)) {
 			$("#subtestChangeConfirmationPopup").dialog({  
 			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
@@ -1410,6 +1411,7 @@ function registerDelegate(tree){
 		 populateSelectedStudent();
 		 previousValue = $("#testGroupList").val();
 		 selectedSubtestId = selectedTestId;
+		 offGradeSubtestChanged = true;
 	}
 	
 	function closeProductConfirmPopup() {
@@ -1682,7 +1684,7 @@ function registerDelegate(tree){
 					$('#displayMessage').hide();
 					testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
 					// Added to refresh student list grid if user changes tests
-					if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0 && blockOffGradeTesting) {
+					if((state == 'EDIT' && blockOffGradeTesting) || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0 && blockOffGradeTesting)) {
 						if(selectedSubtestId != selectedTestId)
 		 					changeSubtestConfirmPopup();
 					} else {

@@ -224,8 +224,10 @@
 													 
 								//$('#testList').GridUnload();				
 								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
-								// Start : to show the test as selected when it appears in next page 
-								var curPage = parseInt($('#testList').jqGrid('getGridParam','page')); 
+								// Start : to show the test as selected when it appears in next page
+								var curPage = parseInt($('#testList').jqGrid('getGridParam','page'));
+								selectedTestId = selectedTestSession.testSession.itemSetId;
+								selectedSubtestId = selectedTestSession.testSession.itemSetId;
 								while(!isTestExistInCurrentPage(selectedTestSession.testSession.itemSetId)){
 								   curPage = eval(curPage)+eval(1);
 								   jQuery("#testList").jqGrid('setGridParam', {page:curPage}).trigger("reloadGrid");
@@ -298,7 +300,8 @@
 	  	 	//processStudentAccordion();	   
 	  	 	wizard.accordion("activate", index);					
 	  }else{
-	   	  $.ajax({
+	  	if(!offGradeSubtestChanged) {
+	  		$.ajax({
 				async:		true,
 				beforeSend:	function(){
 								UIBlock();
@@ -338,6 +341,15 @@
 								 $.unblockUI(); 
 							}
 			}); 
+	  	} else {
+	  		offGradeSubtestChanged = false;
+	  		resetStudentSelection();
+	  		$('#stuWithAcc').text(studentWithaccommodation);
+			$('#totalStudent').text(AddStudentLocaldata.length);	
+			processStudentAccordion();
+			wizard.accordion("activate", index);					
+			$.unblockUI();
+	  	}
 	   
 	   }
     
