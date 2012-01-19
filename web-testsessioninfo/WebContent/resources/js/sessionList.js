@@ -244,7 +244,6 @@ function searchUserByKeywordList2(){
 		 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"testName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
-		 f.rules.push({field:"creatorOrgNodeId",op:"cn",data:searchFiler});
 		 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
 		 f.rules.push({field:"loginStartDate",op:"cn",data:searchFiler});
 		 f.rules.push({field:"loginEndDate",op:"cn",data:searchFiler});
@@ -287,7 +286,6 @@ function searchUserByKeywordList3(){
 		 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"testName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
-		 f.rules.push({field:"creatorOrgNodeId",op:"cn",data:searchFiler});
 		 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
 		 f.rules.push({field:"loginStartDate",op:"cn",data:searchFiler});
 		 f.rules.push({field:"loginEndDate",op:"cn",data:searchFiler});

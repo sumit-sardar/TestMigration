@@ -686,6 +686,7 @@ function updateOrganization(element, isChecked){
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"lastName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"firstName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"middleName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"grade",op:"cn",data:searchFiler});
 			 f.rules.push({field:"orgNodeNamesStr",op:"cn",data:searchFiler});
 			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
