@@ -1362,7 +1362,7 @@ public class SessionOperationController extends PageFlowController {
 			 testSession.setTestAdminId(testAdminId);			 
 			 testSession.setTestAdminStatus("CU");
 			 testSession.setLoginEndDate(dailyLoginEndDate);
-			 if(testAdminId!=null && isEndTestSession == "true"){
+			 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
 				 testSession.setTestAdminStatus("PA");
 				 testSession.setLoginEndDate(now);
 			 }
