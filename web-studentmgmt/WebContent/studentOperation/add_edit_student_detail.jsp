@@ -57,8 +57,17 @@
 					</td>
 				</tr>
 			</table>
-	</div>
-	<br>
+	</div>	
+	<table style="width:99.5%;">
+		<tr>
+			<td>
+				<div id="viewEditDisplayId" class="errMsgs">
+					<span><lb:label key="stu.label.viewEditDisplay" />
+					</span>
+				</div>
+			</td>
+		</tr>
+	</table>
 	<div id="accordion" style="width:99.5%;">
 			
 			<div>

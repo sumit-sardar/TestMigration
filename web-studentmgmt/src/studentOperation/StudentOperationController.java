@@ -359,6 +359,45 @@ public class StudentOperationController extends PageFlowController {
 		return null;
 
 	}
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="find_user_by_hierarchy.jsp")
+	})
+	protected Forward getStudentCountForOrgNode(StudentOperationForm form){
+
+		String jsonResponse = "";
+		OutputStream stream = null;
+		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		try {
+			Integer studentCount = 0;
+			studentCount = StudentSearchUtils.getStudentsCountForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
+			System.out.println("treeOrgNodeId:"+treeOrgNodeId);
+			System.out.println("studentCount:"+studentCount);
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(studentCount);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Exception while retrieving optionList.");
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
 
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 

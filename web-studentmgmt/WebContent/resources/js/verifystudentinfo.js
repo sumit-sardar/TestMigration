@@ -93,7 +93,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				}
 				else {
 					//requiredFields += ("\n" + REQUIRED_TEXT_MULTIPLE);
-					setMessage($("#missRequiredFieldsID").val(), requiredFields, "errorMessage", $("#mReqTextID").val());
+					setMessage($("#missRequiredFieldID").val(), requiredFields, "errorMessage", $("#mReqTextID").val());
 				}
 				return false;
 			}
@@ -198,9 +198,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 		}	
 		
 		function setMessageMain(title, content, type, message){
-			$("#titleMain").text(title);
 			$("#contentMain").text(content);
-			$("#messageMain").text(message);
 		}
 		
 	 function allSelected(month, day, year){

@@ -43,6 +43,7 @@
 <input type="hidden" id="middleNameID" name="middleNameID" value=<lb:label key="stu.info.middleName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuCapId" name="stuCapId" value=<lb:label key="stu.menu.studentList" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuCountId" name="stuCountId" value=<lb:label key="stu.msg.orgStuCount" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
@@ -68,9 +69,18 @@
 				<tr>
 					<td colspan="3" class="buttonsRow">
 				        <div id="displayMessageMain" style="display:none; width:99.5%;" class="errMsgs">
-							<font style="color: red;"><div id="titleMain"></div></font>
-							<div id= "contentMain">	</div>
-							<div id= "messageMain">	</div>
+							<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="infoIcon"><img
+										src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id="contentMain"></div>
+								</td>
+							</tr>
+						</table>	
 						</div>
 					</td>
 				</tr>
@@ -161,6 +171,23 @@
 			<td>
 				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
 				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
+			</td>		
+		</tr>
+		
+	</table>
+</div>
+<div id="rootNodePopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table border="0" width="100%">
+		<tr align="left">
+			<td>
+			<div id="exceedMsg" style="padding-top:5px;"></div>
+			<br/>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> class="ui-widget-header" onclick="closePopUp('rootNodePopup');">
 			</td>		
 		</tr>
 		

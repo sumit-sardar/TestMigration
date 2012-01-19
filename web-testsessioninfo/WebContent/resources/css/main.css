@@ -669,16 +669,30 @@ input[type="button"] {
 
 .errMsgs{
 	text-align: left; 
+	 font-family: Arial, Verdana, Sans Serif; 
+	 font-size: 12px; 
+	 align: left;	 
+	 color:#000;
+	 padding-top: 2px;
+	 font-weight: bold;
+}
+
+.saveMsgs{
+	text-align: left; 
 	 background-color: #FFFFFF; 
 	 font-family: Arial, Verdana, Sans Serif; 
 	 font-size: 12px; 
-	 font-style: normal; 
-	 font-weight: bold;
+	 font-style: normal;
 	 align: left;
-	 padding-top: 5px;
-	 padding-bottom: 5px;
 	 padding-left: 2px;
+	 color:#000;
 }
+
+th.ui-th-column div{
+        white-space:normal !important;
+        height:auto !important;
+}
+
 .searchInputBoxContainer {
 	padding:20px 0px;
 }

@@ -51,7 +51,9 @@ var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
 var isBulkMove = false;
-						
+var rootNodeId;
+var stuThreshold = 10000;	
+var topOrgNodeStuCount = 0;				
 
 
 $(document).bind('keydown', function(event) {
@@ -158,25 +160,73 @@ function createSingleNodeSelectedTree(jsondata) {
 	    	clearMessage();
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
- 		     UIBlock();
- 		  	if(!gridloaded) {
- 		  		gridloaded = true;
- 		  		populateTreeSelect();
- 		  		var hideAccommodation = $("#supportAccommodations").val();
- 		  		if(customerDemographicValue == "")
- 		  			customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
- 		  		if(hideAccommodation == "false")
- 		  			populateGridWithoutAccommodation();
- 		  		else
-					populateGrid();
+ 		    
+	 		if(parseInt(rootNodeId) == parseInt(SelectedOrgNodeId)){
+	 		   $.ajax({
+					async:		true,
+					beforeSend:	function(){									
+									UIBlock();
+								},
+					url:		'getStudentCountForOrgNode.do?treeOrgNodeId='+$("#treeOrgNodeId").val(), 
+					type:		'POST',
+					dataType:	'json',
+					success:	function(data, textStatus, XMLHttpRequest){	
+									$.unblockUI();
+									topOrgNodeStuCount = data;
+									if(parseInt(topOrgNodeStuCount) > stuThreshold){
+										showPopup(topOrgNodeStuCount);
+									}else{
+										showGrid();
+									}
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();  
+									window.location.href="/SessionWeb/logout.do";
+									
+								}
+				});		
+	 		 }else{
+	 		    showGrid();
+	 		} 		  		
 				
-				}
-			else
-				gridReload();
 		});
 		
 	registerDelegate("orgNodeHierarchy");		
 	   
+}
+
+function showGrid(){
+	UIBlock();
+	if(!gridloaded) {
+  		gridloaded = true;
+  		populateTreeSelect();
+  		var hideAccommodation = $("#supportAccommodations").val();
+  		if(customerDemographicValue == "")
+  			customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+  		if(hideAccommodation == "false")
+  			populateGridWithoutAccommodation();
+  		else
+		populateGrid();
+	}
+	else
+		gridReload();
+}
+
+function showPopup(stuCount){
+	var msg = $("#stuCountId").val();
+	var countMsg = msg.replace("XXXX",stuCount);
+	
+	$("#rootNodePopup").dialog({  
+			title:'Alert',  
+			resizable:false,
+			autoOpen: true,
+			modal: true,
+			closeOnEscape: false,
+			open: function(event, ui) {
+				$("#exceedMsg").text(countMsg);
+				$(".ui-dialog-titlebar-close").hide(); 
+			}
+	});
 }
 
 function registerDelegate(tree){
@@ -529,15 +579,15 @@ function updateOrganization(element, isChecked){
 		 datatype: "json",         
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
-		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'middleName',index:'middleName', width:100, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:110, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:110, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:30, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade',editable: true, width:50, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:125, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'gender',index:'gender', width:75, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:150, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
@@ -680,14 +730,14 @@ function updateOrganization(element, isChecked){
 		 datatype: "json",         
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
-		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'middleName',index:'middleName', width:100, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:120, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:120, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:30, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade',editable: true, width:50, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'userName',index:'userName',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentNumber',index:'studentNumber',editable: true, width:120, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } }
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:170, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
@@ -2323,6 +2373,9 @@ function setSelectedValue(selectObj, valueToSet) {
 		var noOfRoots = jsonData.length;
 			for (var i = 0,j = noOfRoots; i < j; i++ ){
 				rootMap[jsonData[i].attr.id] = jsonData[i].attr.cid;
+				if(jsonData[i].attr.cid == "1"){
+					rootNodeId = jsonData[i].attr.id;
+				}					
 				rootNode.push({data: jsonData[i].data,attr:{id: jsonData[i].attr.id,cid:jsonData[i].attr.cid,tcl:jsonData[i].attr.tcl},children : [{}]});
 			}
 	}

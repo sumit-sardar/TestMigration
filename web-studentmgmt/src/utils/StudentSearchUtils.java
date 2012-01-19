@@ -221,6 +221,21 @@ public class StudentSearchUtils
         }        
         return msData;
     }
+     
+     /**
+      * student count for org node
+      */
+      public static Integer getStudentsCountForOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId)
+     {    
+         Integer studentCount = 0;
+         try {    
+        	 studentCount = studentManagement.getStudentsCountForOrgNode(userName, orgNodeId);
+         }
+         catch (CTBBusinessException be) {
+             be.printStackTrace();
+         }        
+         return studentCount;
+     }
 
     /**
      * getStudentProfileInformation

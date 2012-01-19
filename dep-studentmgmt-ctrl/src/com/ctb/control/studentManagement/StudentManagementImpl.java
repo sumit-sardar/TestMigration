@@ -2829,5 +2829,20 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	
+	public Integer getStudentsCountForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
+	{
+		//validator.validateNode(userName, orgNodeId, "StudentManagementImpl.findStudentsForOrgNode");
+		try {
+			Integer studentCount = null;
+			studentCount = studentManagement.getStudentsCountForOrgNode(orgNodeId);
+			
+			return studentCount;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 
 } 
