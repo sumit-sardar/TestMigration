@@ -226,7 +226,7 @@
 								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
 								// Start : to show the test as selected when it appears in next page
 								var curPage = parseInt($('#testList').jqGrid('getGridParam','page'));
-								selectedTestId = selectedTestSession.testSession.itemSetId;
+								//selectedTestId = selectedTestSession.testSession.itemSetId;
 								selectedSubtestId = selectedTestSession.testSession.itemSetId;
 								while(!isTestExistInCurrentPage(selectedTestSession.testSession.itemSetId)){
 								   curPage = eval(curPage)+eval(1);

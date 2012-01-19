@@ -1743,6 +1743,8 @@ function registerDelegate(tree){
 					if((state == 'EDIT' && blockOffGradeTesting) || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0 && blockOffGradeTesting)) {
 						if(selectedSubtestId != selectedTestId)
 		 					changeSubtestConfirmPopup();
+		 				else
+		 					subtestChangeProcess();
 					} else {
 						subtestChangeProcess();
 					}
