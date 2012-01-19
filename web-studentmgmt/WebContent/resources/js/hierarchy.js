@@ -613,7 +613,7 @@ function updateOrganization(element, isChecked){
 					 	width: '300px',
 					 	modal: true,
 						closeOnEscape: false,
-					 	open: function(event, ui) {}
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"", cursor: "pointer"
 			}); 
@@ -763,7 +763,7 @@ function updateOrganization(element, isChecked){
 					 	width: '300px',
 					 	modal: true,
 						closeOnEscape: false,
-					 	open: function(event, ui) {}
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"", cursor: "pointer"
 			});
