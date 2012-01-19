@@ -122,7 +122,7 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:endTestSession(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('endTestSessionConfirmationPopUp');endTestSession(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('endTestSessionConfirmationPopUp'); return false;" class="ui-widget-header">
 				</center>
 		</td>
