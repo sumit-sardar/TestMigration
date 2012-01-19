@@ -508,7 +508,7 @@ function populateGrid() {
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
-						title:$("#searchUserID").val(),  
+						title:$("#searchOrgID").val(),  
 					 	resizable:false,
 					 	autoOpen: true,
 					 	width: '300px',
