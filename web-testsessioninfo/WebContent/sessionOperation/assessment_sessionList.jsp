@@ -93,25 +93,7 @@
 	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
 	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
 	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/> 
-	 <div id="showSaveTestMessage" class="roundedMessage" style="float:left;display:none; " > 
-			<table>
-				<tr>
-					<td rowspan="3" valign="top">
-					<div id="errorIcon" style="display:none;">
-                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-					</div>
-					</td>
-					<td>
-					   	<table>
-							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size:12px; font-weight:bold"><div id="saveTestTitle"></div></font></td></tr>
-							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size: 12px; font-style: normal;"><div id= "saveTestContent">	</div></font></td></tr>
-							<tr><td><font style="font-family: Arial,Verdana,Sans Serif;color: black; font-size: 12px; font-style: normal;"><div id= "saveTestMessage">	</div></font></td></tr>
-						</table>
-					</td>
-				</tr>
-		</table>
-			
-	</div>
+	 
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 			<p class="subtitle"><lb:label key="homepage.viewTestSessions.message" />
 				<%if(canRegisterStudent) { %>
@@ -120,12 +102,32 @@
 					<lb:label key="homepage.OrgSearchInfo.message" />
 				<% } %>
 			</p>
-	</div>	
+	</div>
+	<div id="showSaveTestMessage" style="float:left; padding-top:5px; padding-left:2px;" > 
+			<table>
+				<tr>
+					<td width="18" valign="top">
+					<div id="errorIcon" style="display:none;">
+                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+					</div>
+					<div id="infoIcon" style="display:none;">
+                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+					</div>					
+					</td>
+					<td class="saveMsgs" valign="top">
+					   	<div id="saveTestTitle" style="font-weight:bold;"></div>
+					   	<div id="saveTestContent"></div>
+					   	<div id="saveTestMessage"></div>
+					</td>
+				</tr>
+		</table>
+			
+	</div>
 	<jsp:include page="/sessionOperation/print_ticket.jsp" /> 
 	<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
 		   		<td style="clear: both; min-height: 25px; height: 25px;">
-		       		<div style="float:left;width:1200px;padding-top: 10px;">
+		       		<div style="float:left;width:1200px;padding-top: 5px;">
 						<div  style="float:left;width:200px;white-space: nowrap;" class="transparent">
 							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
 						</div>  
@@ -151,7 +153,7 @@
 		   	</tr>
 	</table>
 	
-	<div style="float:left;width:1200px;padding-left:3px;">
+	<div style="float:left;width:1200px;padding-left:2px;">
 	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>

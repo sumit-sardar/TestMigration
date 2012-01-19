@@ -1142,7 +1142,7 @@ function registerDelegate(tree){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				var width = jQuery("#scheduleSession").width();
-		    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
+		    	width = width - 85; // Fudge factor to prevent horizontal scrollbars
 		    
 				if(isTabeProduct) {
 					
@@ -2881,8 +2881,10 @@ function registerDelegate(tree){
 			$("#saveTestMessage").html(message);
 			if(type=="errorMessage"){
 				$('#errorIcon').show();
+				$('#infoIcon').hide();
 			} else {
 				$('#errorIcon').hide();
+				$('#infoIcon').show();
 			}
 	}
 	
@@ -3216,7 +3218,8 @@ function registerDelegate(tree){
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 162,  
+			height: 162,
+			width: 920,
 			caption:$("#stuRos").val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#rosterList').getGridParam("page"));

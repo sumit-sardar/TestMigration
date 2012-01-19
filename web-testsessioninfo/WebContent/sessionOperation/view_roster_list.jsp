@@ -6,29 +6,27 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
 <div id = "displayMessageViewTestRoster" 
-		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;padding-bottom:5px;">	
-<table>
-	<tbody>
-		<tr width='100%'>
-			<th style='padding-right: 6px; text-align: right;' rowspan='2'>
-				<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
-			</th>
-		</tr>
-		<tr width='100%'>
-			<td>
-				<span id = 'rosterMessage'></span>
-			</td>
-		</tr>
-	</tbody>
-</table>
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; border:1px solid #D4ECFF; margin-bottom:5px; padding:2px;">	
+	<table width="920">
+		<tbody>
+			<tr>
+				<td valign="middle" width="18">
+					<img height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+				</td>
+				<td valign="middle" style="font-weight: bold;">
+					<span id = 'rosterMessage'></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
-<table width="940px" style="margin-bottom: 2px;">
+<table style="margin-bottom: 2px;" width="920">
 	<tr>
 		<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 		<td width="80%"><span id = "rosterTestName"></span></td>
 	</tr>
 </table>
-<table width="940px" style="margin-bottom: 12px;">
+<table style="margin-bottom: 12px;" width="920">
 	<tr>
 		<td align="left" width="15%"><lb:label key="viewStatus.testAccessCode" /></td>
 		<td width="15%"><span id = "rosterTestAccessCode"></span></td>
@@ -60,3 +58,4 @@
 
 <table id="rosterList" class="gridTable"></table>
 <div id="rosterPager" class="gridTable"></div>
+

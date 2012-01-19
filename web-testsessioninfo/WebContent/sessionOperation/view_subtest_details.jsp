@@ -5,25 +5,23 @@
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <div id = "displayMessageViewTestSubtest" 
-		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;padding-bottom:5px;">	
-<table>
-	<tbody>
-		<tr width='100%'>
-			<th style='padding-right: 6px; text-align: right;' rowspan='2'>
-				<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
-			</th>
-		</tr>
-		<tr width='100%'>
-			<td>
-				<span id = 'subtestMessage'></span>
-			</td>
-		</tr>
-	</tbody>
-</table>
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; border:1px solid #D4ECFF; margin-bottom:5px; padding:2px;">	
+	<table width="99.5%">
+		<tbody>
+			<tr>
+				<td valign="middle" width="18">
+					<img height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+				</td>
+				<td valign="middle" style="font-weight: bold;">
+					<span id="subtestMessage"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 <table width="928px" style="margin-bottom: 10px;">
 	<tr>
-		<td><lb:label key="viewStatus.subtest.loginName"/></td>
+		<td width="135"><lb:label key="viewStatus.subtest.loginName"/></td>
 		<td><span id = "loginName"></span></td>
 	</tr>
 	<tr>
