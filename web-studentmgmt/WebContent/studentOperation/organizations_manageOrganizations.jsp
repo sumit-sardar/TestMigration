@@ -13,7 +13,7 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 	<netui-template:setAttribute name="title" value="${bundle.web['findstudent.window.title']}"/>
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}"/>
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageStudent']}"/>
 <netui-template:section name="bodySection">
  
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>

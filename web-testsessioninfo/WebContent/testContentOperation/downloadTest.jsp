@@ -14,7 +14,7 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
     <netui-template:setAttribute name="title" value="${bundle.web['loadTest.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.loadTestSelectTests']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.downLoadTest']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->

@@ -15,7 +15,7 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
     <netui-template:setAttribute name="title" value="${bundle.web['homepage.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.home']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageSessions']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->

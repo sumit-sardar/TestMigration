@@ -45,6 +45,23 @@
 			<br/>		
 		</td>
 	</tr>
+	<tr>
+		<td align="right">
+			<div style="float:left; width:1070px;">
+        	<a href="#" id="exportDataButton" onclick="return downloadData();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button" />
+           	</a>
+            </div>               	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<div id="downloadData" style="float:left; width:1275px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="list2" class="gridTable"></table>
+				<script>populateDownloadListGrid();</script>
+			</div>								
+		</td>
+	</tr>
 </table>
 
 <br/><br/>

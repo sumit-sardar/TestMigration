@@ -13,7 +13,7 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 	<netui-template:setAttribute name="title" value="${bundle.web['findorg.window.title']}"/>
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findOrganization']}"/>
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageOrganizations']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->

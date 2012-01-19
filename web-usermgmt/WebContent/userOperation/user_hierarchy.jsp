@@ -13,7 +13,7 @@
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 
 <netui-template:setAttribute name="title" value="${bundle.web['finduser.window.title']}"/>
-<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findUser']}"/>
+<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageUsers']}"/>
 <netui-template:section name="bodySection">
 
 <!-- ********************************************************************************************************************* -->
