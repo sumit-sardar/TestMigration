@@ -68,7 +68,7 @@
 }
 /*************/
 
-.button {
+.button,.buttonDisabled {
     font-family: Arial, Verdana, Sans Serif;
     font-size: 12px;
     font-style: normal;
