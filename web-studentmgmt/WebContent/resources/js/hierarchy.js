@@ -2165,9 +2165,7 @@ function setSelectedValue(selectObj, valueToSet) {
 				success:	function(data, textStatus, XMLHttpRequest){	
 								
 							    $("#deleteStatus").val(data);
-								$('#errorIcon').hide();
-								$('#infoIcon').show();
-																																			 						
+																														 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
@@ -2196,10 +2194,15 @@ function setSelectedValue(selectObj, valueToSet) {
 	        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
 	        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
 	        */
+	        $('#errorIcon').hide();
+			$('#infoIcon').show();  
 			var studentId = $("#list2").jqGrid('getGridParam', 'selrow');
 			jQuery("#list2").delRowData(studentId);
-			jQuery("#list2").trigger("reloadGrid");	        
-		}	    
+			jQuery("#list2").trigger("reloadGrid");
+		}else{
+			$('#errorIcon').show();
+			$('#infoIcon').hide();
+		}  
    	}
 
 	function setupButtonPerUserPermission() {
