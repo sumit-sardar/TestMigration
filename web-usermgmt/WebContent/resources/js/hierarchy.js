@@ -1245,6 +1245,8 @@ function fillselectedOrgNode( elementId, orgList) {
 													closePopUp('addEditUserDetail');
 													//setMessageMain(data.title, data.content, data.type, "");
 													$("#contentMain").text(data.content);
+													$('#errorIcon').hide();
+													$('#infoIcon').show();
 													document.getElementById('displayMessageMain').style.display = "block";
 													assignedOrgNodeIds = "";
 													
@@ -1280,7 +1282,10 @@ function fillselectedOrgNode( elementId, orgList) {
 													// Added new codes for Refreshing the Grid for Adding/Updating users : End
         										}
         										else{
-        											setMessage(data.title, data.content, data.type, "");     
+        											setMessage(data.title, data.content, data.type, "");    
+        											$("#contentMain").text(data.content);
+													$('#errorIcon').show();
+													$('#infoIcon').hide(); 
         											document.getElementById('displayMessage').style.display = "block";	
         											
         										}
