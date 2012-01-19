@@ -79,7 +79,12 @@
 							}
 							if(data.savedTestDetails.testSession.offGradeBlocked == 'T') {
 								blockOffGradeTesting = true;
-								selectedLevel = data.savedTestDetails.scheduledUnits[0].itemSetLevel;
+								if(data.savedTestDetails.scheduledUnits[0].itemSetLevel == undefined) {
+									selectedLevel = data.savedTestDetails.scheduledUnits[0].grade;
+								}
+								else {
+									selectedLevel = data.savedTestDetails.scheduledUnits[0].itemSetLevel;
+								}
 							} else {
 								blockOffGradeTesting = false;
 							}
