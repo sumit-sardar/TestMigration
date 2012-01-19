@@ -1468,6 +1468,10 @@ function registerDelegate(tree){
 		 previousValue = $("#testGroupList").val();
 		 selectedSubtestId = selectedTestId;
 		 offGradeSubtestChanged = true;
+		 if(state == "EDIT"){
+		  	isStdDetClicked = true;
+		 }
+		
 	}
 	
 	function closeProductConfirmPopup() {
