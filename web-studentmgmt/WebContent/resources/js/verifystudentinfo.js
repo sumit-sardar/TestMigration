@@ -93,7 +93,8 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				}
 				else {
 					//requiredFields += ("\n" + REQUIRED_TEXT_MULTIPLE);
-					setMessage($("#missRequiredFieldID").val(), requiredFields, "errorMessage", $("#mReqTextID").val());
+					var missMsg = $("#missRequiredFieldID").val()+"s";
+					setMessage(missMsg, requiredFields, "errorMessage", $("#mReqTextID").val());
 				}
 				return false;
 			}
