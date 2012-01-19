@@ -232,8 +232,12 @@ function populateSelectStudentGrid() {
  		var untimedTest= '<img src="/SessionWeb/resources/images/untimed.PNG" title="Untimed"/>';
  		var status = 'Status'+""+'<img id=statusLegend src=/SessionWeb/resources/images/questionmark.jpg onmouseover=showStatusLegend(event); onmouseout=hideStatusLegend(); />'  
  		reset();
+ 		var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
+ 		if(state == "EDIT"){
+	       	urlVal = urlVal+"&testAdminId=" +selectedTestAdminId;
+	    }
        $("#selectStudent").jqGrid({         
-          url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel+"&testAdminId=" +selectedTestAdminId, 
+          url: urlVal, 
 		  type:   'POST',
 		  datatype: "json",          
           colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip"],
