@@ -70,22 +70,33 @@ function populateUploadListGrid() {
          url: 'populateUploadListGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Name', 'Description'],
+          colNames:['Upload Date', 'File Name', 'Records Uploaded', 'Records Failed', 'Status'],
 		   	colModel:[
-		   		{name:'cid',index:'cid', width:200, align:"left", editable:false, sortable:false},
-		   		{name:'tcl',index:'tcl', width:790, align:"left", editable:false, sortable:false}
+		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'date', sortable:true},
+		   		{name:'uploadFileName',index:'uploadFileName', width:420, align:"left", editable:false, sorttype:'text', sortable:true},
+		   		{name:'uploadFileRecordCount',index:'uploadFileRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
+		   		{name:'failedRecordCount',index:'failedRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
+		   		{name:'status',index:'status', width:150, align:"left", editable:false, sorttype:'text', sortable:true}
 		   	],
 		   	loadui: "disable",
-			rowNum:2,
+			rowNum:10,
 			loadonce:true, 
 			multiselect:false,
 			viewrecords: true, 
-			height: '30px',  			
+			height: 150,			
 			caption: "Download Template",
+			sortname: 'createdDateTime', 
+			sortorder: "asc",
+			pager: '#pager3', 
+			onPaging: function() {
+			},
 			onSelectRow: function (rowId) {
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
+            	var width = jQuery("#list3").width();
+			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
+			    jQuery("#list3").setGridWidth(width);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  

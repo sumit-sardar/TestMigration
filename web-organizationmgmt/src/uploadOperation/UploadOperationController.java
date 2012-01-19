@@ -33,6 +33,8 @@ import utils.UploadDownload;
 import utils.UploadDownloadFormUtils;
 import utils.UploadHistoryUtils;
 
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.DataFileAudit;
@@ -280,9 +282,6 @@ public class UploadOperationController extends PageFlowController {
 		rows.add(row2);
 		
 		UploadDownload base = new UploadDownload();
-		//base.setPage("1");
-		//base.setRecords("2");
-		//base.setTotal("2");
 		base.setRows(rows);
 		
         Gson gson = new Gson();
@@ -314,27 +313,65 @@ public class UploadOperationController extends PageFlowController {
         HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		
-		Row row1 = new Row(1);		
-		String[] atts1 = new String[2];
-		atts1[0] = "User Template";
-		atts1[1] = "Format for user profiles to upload.";
-		row1.setCell(atts1);
-
-		Row row2 = new Row(2);		
-		String[] atts2 = new String[2];
-		atts2[0] = "Student Template";
-		atts2[1] = "Format for student profiles to upload.";
-		row2.setCell(atts2);
-		
 		ArrayList rows = new ArrayList();
-		rows.add(row1);
-		rows.add(row2);
 		
+		DataFileAuditData dataFileAuditData = findFile(); 
+        this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
+		
+		/*
+		this.fileList = new ArrayList();
+		AuditFileHistory afh2 = new AuditFileHistory();
+		afh2.setDataFileAuditId(new Integer(100));
+		afh2.setCreatedDateTime("09/01/2009 10:45:17");
+		afh2.setUploadFileName("UserTemplate-2.xls");
+		afh2.setUploadFileRecordCount("5");
+		afh2.setFailedRecordCount("4");
+		afh2.setStatus("IN");
+		this.fileList.add(afh2);
+
+		afh2 = new AuditFileHistory();
+		afh2.setDataFileAuditId(new Integer(100));
+		afh2.setCreatedDateTime("09/01/2010 10:45:17");
+		afh2.setUploadFileName("UserTemplate-3.xls");
+		afh2.setUploadFileRecordCount("6");
+		afh2.setFailedRecordCount("5");
+		afh2.setStatus("FL");
+		this.fileList.add(afh2);
+
+		afh2 = new AuditFileHistory();
+		afh2.setDataFileAuditId(new Integer(100));
+		afh2.setCreatedDateTime("09/01/2011 10:45:17");
+		afh2.setUploadFileName("UserTemplate-4.xls");
+		afh2.setUploadFileRecordCount("7");
+		afh2.setFailedRecordCount("6");
+		afh2.setStatus("SC");
+		this.fileList.add(afh2);
+		*/
+        
+		String[] atts = new String[5];
+		
+        for (int i=0 ; i<this.fileList.size() ; i++) {
+        	AuditFileHistory afh = (AuditFileHistory)this.fileList.get(i);
+        	
+        	Integer dataFileAuditId = afh.getDataFileAuditId();
+        	
+    		Row row = new Row(dataFileAuditId.intValue());
+    		
+    		atts = new String[5];
+    		atts[0] = afh.getCreatedDateTime();
+    		atts[1] = afh.getUploadFileName();
+    		atts[2] = afh.getUploadFileRecordCount();
+    		atts[3] = afh.getFailedRecordCount();
+    		atts[4] = afh.getStatus();
+    		
+    		row.setCell(atts);
+
+    		rows.add(row);
+    		
+        }
+        
 		UploadDownload base = new UploadDownload();
-		//base.setPage("1");
-		//base.setRecords("2");
-		//base.setTotal("2");
+		base.setPage("1");
 		base.setRows(rows);
 		
         Gson gson = new Gson();
@@ -359,6 +396,28 @@ public class UploadOperationController extends PageFlowController {
         return null;
     }
 
+    /**
+     * findByCustomerProfile
+     */
+    private DataFileAuditData findFile() {
+        
+        DataFileAuditData dataFileAuditData = null;
+        SortParams sort = FilterSortPageUtils.buildFileSortParams(
+        		FilterSortPageUtils.FILE_DATE_DEFAULT_SORT_COLUMN, 
+        		FilterSortPageUtils.ASCENDING);
+       
+        try {
+            dataFileAuditData = this.uploadDownloadManagement.getUploadHistory(
+                                        this.userName, null, null);   
+                                           
+            
+        } catch(CTBBusinessException be){        
+                be.printStackTrace();
+        } 
+    
+        return dataFileAuditData;
+    }
+	
     /**
      * @jpf:action
      * @jpf:forward name="success" path="manage_upload.jsp"
