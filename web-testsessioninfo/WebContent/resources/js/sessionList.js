@@ -1054,7 +1054,7 @@ function registerDelegate(tree){
 					var allRowsInGridPresent = $('#list6').jqGrid('getDataIDs');
 					for(var k = 0; k < allRowsInGridPresent.length; k++) {
 						var selectedRowData = $("#list6").getRowData(allRowsInGridPresent[k]);
-						if((selectedRowData.testCompletionStatus != "SC" && selectedRowData.testCompletionStatus != "" && selectedRowData.testCompletionStatus != "NT") || (selectedRowData.statusEditable =="F")){
+						if(selectedRowData.statusEditable =="F"){
 							$("#"+(k+1)+" td input","#list6").attr("disabled", true);
 				 			$("#"+(k+1), "#list6").addClass('ui-state-disabled');
 				 			editDataMrkStds.put(selectedRowData.studentId,selectedRowData.studentId);
@@ -1090,7 +1090,7 @@ function registerDelegate(tree){
 				if(status) {
 					selectAllForDelete = true;
 					for(var i = 0; i < AddStudentLocaldata.length; i++) {
-					    if(!((AddStudentLocaldata[i].testCompletionStatus != "SC" && AddStudentLocaldata[i].testCompletionStatus != "" && AddStudentLocaldata[i].testCompletionStatus != "NT") || (AddStudentLocaldata[i].statusEditable =="F"))){
+					    if(AddStudentLocaldata[i].statusEditable =="T"){
 							delStuIdObjArray[deleteStudentCounter] = AddStudentLocaldata[i].studentId;
 							deleteStudentCounter++;
 						}
