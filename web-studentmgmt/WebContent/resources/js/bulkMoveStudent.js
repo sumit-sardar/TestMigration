@@ -426,7 +426,7 @@ function saveBulkMoveData() {
 	if(finalSelectedNode != undefined && finalSelectedNode.length > 0) {
 		$.ajax(
 		{
-				async:		true,
+				async:		false,//asynchronous calls do not sent post data in MAC safari
 				beforeSend:	function(){
 								UIBlock();
 							},

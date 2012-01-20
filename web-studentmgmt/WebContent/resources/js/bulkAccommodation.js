@@ -514,7 +514,7 @@ function populateBulkStudentGrid() {
 	if(dataToBeAdded['isAccommodationSelected']) {
 	$.ajax(
 		{
-				async:		true,
+				async:		false,//asynchronous calls do not sent post data in MAC safari
 				beforeSend:	function(){
 								UIBlock();
 							},
