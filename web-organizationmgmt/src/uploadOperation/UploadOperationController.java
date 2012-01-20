@@ -189,29 +189,15 @@ public class UploadOperationController extends PageFlowController {
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "uploadData.jsp"), 
-        @Jpf.Forward(name = "viewUploads",
-                     path = "viewUploads.do")
+                     path = "uploadData.jsp")
     })
-    protected Forward manageUpload(ManageUploadForm form)
-    {         
-    	/*
-        String selectedTab = form.getSelectedTab();
-        selectedTab = JavaScriptSanitizer.sanitizeString(selectedTab);
+    protected Forward manageUpload()
+    {       
+    	String showViewUpload = this.getRequest().getParameter("showViewUpload");
+    	if (showViewUpload != null)
+    		this.getRequest().setAttribute("showViewUpload", "true");   
 
-        this.getRequest().setAttribute("selectedModule", selectedTab);   
-        this.uploadStatus = "uploadFile";   
-        this.getRequest().setAttribute("uploadStatus", "uploadFile");
-                
-        if (selectedTab != null && MODULE_VIEW_UPLOADS.equals(selectedTab))
-        {            
-            form.setCurrentAction(ACTION_APPLY_SEARCH);
-            return new Forward("viewUploads", form);        
-        }
-        setFormInfoOnRequest(form);
-        */
-    	
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     /**
@@ -222,11 +208,16 @@ public class UploadOperationController extends PageFlowController {
     {         
         HttpServletResponse resp = this.getResponse();     
         byte[] data = null;   
-        String fileName = "Usertemplate.xls";
+        String fileName = "UserTemplate.xls";
         String fileContent = "";
-        String bodypart = "attachment; filename=\"" +
-                          fileName +
-                          "\" ";
+
+        String downloadFile = (String)this.getRequest().getParameter("downloadFile");
+        if ((downloadFile != null) && downloadFile.equals("studentFile"))
+            fileName = "StudentTemplate.xls";
+
+        System.out.println(fileName);
+        
+        String bodypart = "attachment; filename=\"" + fileName + "\" ";
 
         prepareContentHeader(resp, bodypart);
 
@@ -249,8 +240,7 @@ public class UploadOperationController extends PageFlowController {
                 
             e.printStackTrace();
             
-        }
-                
+        }                
         return null;
     }
     
@@ -315,10 +305,11 @@ public class UploadOperationController extends PageFlowController {
 		OutputStream stream = null;
 		ArrayList rows = new ArrayList();
 		
-		//DataFileAuditData dataFileAuditData = findFile(); 
-        //this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
 		
+		DataFileAuditData dataFileAuditData = findFile(); 
+        this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
 		
+		/*
 		this.fileList = new ArrayList();
 		
 		AuditFileHistory afh2 = new AuditFileHistory();
@@ -347,7 +338,7 @@ public class UploadOperationController extends PageFlowController {
 		afh2.setFailedRecordCount("6");
 		afh2.setStatus("SC");
 		this.fileList.add(afh2);
-		
+        */
         
 		String[] atts = new String[5];
 		
@@ -409,6 +400,8 @@ public class UploadOperationController extends PageFlowController {
         		FilterSortPageUtils.ASCENDING);
        
         try {
+        	validateUser();
+        	
             dataFileAuditData = this.uploadDownloadManagement.getUploadHistory(
                                         this.userName, null, null);   
                                            
@@ -480,7 +473,79 @@ public class UploadOperationController extends PageFlowController {
         return new Forward("success", form);
     }
 	
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="manageUpload.do"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "success", path = "manageUpload.do")
+		}
+	)
+    protected Forward deleteErrorDataFile()
+    {
+        try {
+            String selectedId = (String)this.getRequest().getParameter("selectedId");
+            if (selectedId != null) {
+            	String[] strSplit = selectedId.split("_");
+            	Integer selectedAuditId = new Integer(strSplit[0]);            	
+            	this.uploadDownloadManagement.deleteErrorDataFile(selectedAuditId);
+            }
+            
+        } catch (Exception e) {            
+            e.printStackTrace();
+        }
+        
+        this.getRequest().setAttribute("showViewUpload", "true");   
+        
+        return new Forward("success");
+    }
     
+	
+	 /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward getErrorDataFile()
+    {
+        HttpServletResponse resp = this.getResponse();   
+        byte []errorFile = null;
+        Integer selectedAuditId = new Integer(0);       
+        
+        String selectedId = (String)this.getRequest().getParameter("selectedId");
+        if (selectedId != null) {
+        	String[] strSplit = selectedId.split("_");
+        	selectedAuditId = new Integer(strSplit[0]);            	
+        }
+        
+        try
+        {
+        	validateUser();
+        	
+            errorFile = this.uploadDownloadManagement.getErrorDataFile(
+                        this.userName, selectedAuditId);   
+         
+            String fileName = UploadHistoryUtils.getFileName(selectedAuditId, this.fileList);
+                                        
+            String errorFileName = getErrorFileName(fileName);
+            String bodypart = "attachment; filename=\"" + errorFileName + "\" ";
+
+            prepareContentHeader(resp, bodypart);
+            
+            resp.flushBuffer();
+            OutputStream stream = resp.getOutputStream();
+            stream.write(errorFile);
+            stream.close();
+        
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+	
     private class UploadThread extends Thread {
         private String userName;
         private String fullFilePath;
@@ -1061,6 +1126,19 @@ public class UploadOperationController extends PageFlowController {
             this.userName = principal.toString();
         }        
         getSession().setAttribute("userName", this.userName);
+    }
+    
+    private void validateUser()
+    {
+    	if (this.userName == null) {
+    		java.security.Principal principal = getRequest().getUserPrincipal();
+    		if (principal != null) {
+    			this.userName = principal.toString();
+    		}
+    		else {
+    			this.userName = (String)getSession().getAttribute("userName");
+    		}
+    	}
     }
     
     private void getUserDetails()

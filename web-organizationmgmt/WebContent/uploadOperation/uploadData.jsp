@@ -25,6 +25,9 @@
 
 <netui:form action="manageUpload">
 
+<input type="hidden" id="downloadFile" name="downloadFile" value="userFile" />
+<input type="hidden" id="selectedId" name="selectedId" value="" />
+
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>
 		<td style="padding-left:5px;">
@@ -48,7 +51,7 @@
 	<tr>
 		<td align="right" class="transparent">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
-        	<a href="#" id="exportDataButton" onclick="downloadTemplate();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="exportDataButton" onclick="return downloadTemplate();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button" />
            	</a>
             </div>               	                                    
@@ -76,7 +79,7 @@
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
         	<netui:fileUpload tagId="inputbox" dataSource="actionForm.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
             &nbsp;
-        	<a href="#" id="upload" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="upload" onclick="return uploadFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.import.button" />
            	</a>
            	</div>
@@ -103,15 +106,15 @@
 	<tr>
 		<td align="right" class="transparent">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal;">
-        	<a href="#" id="deleteFile" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="deleteFile" onclick="return deleteFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button.delete" />
            	</a>
            	&nbsp;
-        	<a href="#" id="downloadErrorFile" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="downloadErrorFile" onclick="return downloadErrorFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button.downloadErrorFile" />
            	</a>
            	&nbsp;
-        	<a href="#" id="refresh" onclick="submitPage();" class="rounded {transparent} button" style="text-decoration: none;" >
+        	<a href="#" id="refresh" onclick="return refresh();" class="rounded {transparent} button" style="text-decoration: none;" >
           		<lb:label key="services.export.button.refresh" />
            	</a>
             </div>               	                                    
@@ -143,6 +146,19 @@ $(document).ready(function(){
 	setMenuActive("services", "uploadDataLink");
 });
 </script>
+
+<%
+	String showViewUpload = (String)request.getAttribute("showViewUpload");
+%>
+<%	if (showViewUpload != null) { %>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('#accordion').accordion('activate', 1);
+			
+		});
+		</script>		
+<%	} %>
+
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->

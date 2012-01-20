@@ -53,6 +53,10 @@ function populateDownloadTemplateListGrid() {
 			height: '30px',  			
 			caption: "Download Template",
 			onSelectRow: function (rowId) {
+				if (rowId == 1)  
+					document.getElementById('downloadFile').value = "userFile";
+				else 
+					document.getElementById('downloadFile').value = "studentFile";
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
@@ -92,6 +96,7 @@ function populateUploadListGrid() {
 			},
 			onSelectRow: function (rowId) {
 				var selectedId = $("#list3").getGridParam('selrow');
+				document.getElementById('selectedId').value = selectedId;
 
 				if (selectedId.indexOf("_SC") > 0) {
 					setAnchorButtonState('deleteFile', false);
@@ -167,20 +172,38 @@ function downloadData()
 
 function downloadTemplate()
 {
-	$.ajax({
-		async:		false,
-		beforeSend:	function(){
-					},
-		url:		'downloadTemplate.do',
-		type:		'POST',
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-					},
-		complete :  function(){
-					}
-	});
-
-	return false;		
+    var element = document.getElementById("downloadFile");
+    element.form.action = "downloadTemplate.do";
+    element.form.submit();
+	return false;
 }
+
+function deleteFile()
+{
+    var element = document.getElementById("downloadFile");
+    element.form.action = "deleteErrorDataFile.do";
+    element.form.submit();
+	return false;
+}
+
+function downloadErrorFile()
+{
+    var element = document.getElementById("downloadFile");
+    element.form.action = "getErrorDataFile.do";
+    element.form.submit();
+	return false;
+}
+
+function refresh()
+{
+    var element = document.getElementById("downloadFile");
+    element.form.action = "manageUpload.do?showViewUpload=true";
+    element.form.submit();
+	return false;
+}
+
+function uploadFile()
+{
+	return false;
+}
+
