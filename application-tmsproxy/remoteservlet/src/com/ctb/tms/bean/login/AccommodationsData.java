@@ -5,6 +5,7 @@ public class AccommodationsData
     private int studentId;
 	private String screenMagnifier;
   	private String screenReader;
+  	private String speechSpeedControl;
 	private String calculator;
 	private String testPause;
 	private String untimedTest;
@@ -24,6 +25,12 @@ public class AccommodationsData
     private String maskingTool;//Added for masking Answers
     
   
+	public String getSpeechSpeedControl() {
+		return speechSpeedControl;
+	}
+	public void setSpeechSpeedControl(String speechSpeedControl) {
+		this.speechSpeedControl = speechSpeedControl;
+	}
 	/**
 	 * @return the musicFileId
 	 */
