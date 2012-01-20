@@ -1,5 +1,7 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%
@@ -118,7 +120,7 @@
 	                <h1>
 	                	<%= message %>
 	                	<br/>
-	                	Click "Log In" to log in again.
+	                	<lb:label key="logout.userLogout.msg"/>
 	                </h1>
                 <br/><br/>                
                 </td>
@@ -128,7 +130,7 @@
                 	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="0"
                 	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
                 	onkeypress="return handleEnterKey(event, this);" >
-                	Log In
+                	<lb:label key="login.logIn"/>
                 	</a>                	
                 </td>
             </tr>
@@ -146,22 +148,22 @@
         <tr>
             <td colspan="3" valign="middle"><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0">
            	<div class="roundedPrivacy">
-            	About Your Privacy
+            	<lb:label key="login.privacy"/>
             </div>
             </td>
         </tr>
         <tr>
             <td rowspan="3"><img src="<%=request.getContextPath()%>/resources/images/vertical_dotted_line.gif" width="1" height="185" border="0"></td>
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><br>Any information that you send to CTB/McGraw-Hill via email or web-form will be used only for the purpose of processing your request.<br></td>
+            <td><br><lb:label key="login.privacy.anyInfo"/><br></td>
         </tr>
         <tr>
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onclick="return openPrivacyPolicyWindow(this.href);" >Read our Privacy Policy</a></td>
+            <td><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onclick="return openPrivacyPolicyWindow(this.href);" ><lb:label key="login.privacy.readPolicy"/></a></td>
         </tr>
         <tr>  
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow(this.href);">Review COPPA Policies</a> and its requirements for parental consents to collect or use personal information concerning children. </td>
+            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow(this.href);"><lb:label key="login.privacy.copa1"/></a> <lb:label key="login.privacy.copa2"/> </td>
         </tr>
         </table>
         <!--End privacy Statement-->
@@ -180,12 +182,7 @@
  
 <tr>
     <td>
-        <span class="hierarchyTableHeader">Developed and published by CTB/McGraw-Hill LLC, a subsidiary of the McGraw-Hill
-        Companies, Inc., 20 Ryan Ranch Road, Monterey, California 93940-5703.
-        Copyright &copy; 2008 by CTB/McGraw-Hill LLC.  All rights reserved.  Only
-        authorized customers may copy, download and print portions of the document
-        located at www.ctb.com.  Any other use or reproduction of this document, in
-        whole or in part, requires written permission of the publisher. 
+        <span class="hierarchyTableHeader"><lb:label key="login.privacy.developedBy1"/> &copy; <lb:label key="login.privacy.developedBy2"/> 
         </span>
     </td>
 </tr>
@@ -220,19 +217,19 @@
 					  <tr>
 						<td class="footerLayout">
 						    <span>
-						        Copyright &copy; 2008 by CTB/McGraw-Hill LLC. All rights reserved.
+						        <lb:label key="common.footer1.message"/> &copy; <lb:label key="common.footer2.message"/>
 						    </span>
 						
 						    <span>
-						        Subject to <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
+						        <lb:label key="common.footer3.message"/> <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;"><lb:label key="common.footer4.message"/></a>.
 						    </span>
 						
 						    <span>
-						        Read our <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
+						        <lb:label key="common.footer5.message"/> <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;"><lb:label key="common.footer6.message"/></a>.
 						    </span>
 						
 						    <span>
-						        Review <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
+						        <lb:label key="common.footer7.message"/> <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;"><lb:label key="common.footer8.message"/></a>.
 						    </span>
 						</td>
 					  </tr>
