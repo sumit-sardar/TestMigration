@@ -360,6 +360,9 @@ function createMultiNodeSelectedTree(jsondata) {
 		    		} else {
 		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
 		    		}
+		    		if(profileEditable === "false") {
+		    			$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+		    		}
 				}
 			}
 		);
@@ -367,7 +370,9 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 		$("#innerID").delegate("li a","click", 
 			function(e) {
-			
+				if(profileEditable === "false") {
+					return true;
+				}
 				styleClass = $(this.parentNode).attr('class');
 				var orgcategorylevel = $(this.parentNode).attr("cid");
 				var elementId = $(this.parentNode).attr('id');
@@ -1130,6 +1135,9 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	function onCancel() {
 		isValueChanged = false;
+		if(profileEditable === "false") {
+			resetDisabledFields();
+		}
 	if(isAddStudent){
 		  if($("#studentFirstName").val()!= "" 
 			 || $("#studentMiddleName").val()!= ""
@@ -1314,6 +1322,11 @@ function fillselectedOrgNode( elementId, orgList) {
 	var createBy = "";
 	var assignedOrg = $('#selectedOrgNodesName').text();
 	var showStudentInGrid = false;
+		
+	if(profileEditable === "false") {
+		resetDisabledFields();
+	}
+	
 	if(isAddStudent){
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
@@ -1446,6 +1459,12 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	}
 	
+	function resetDisabledFields(){
+		$('#Student_Information :checkbox').attr('disabled', false); 
+		$('#Student_Information :radio').attr('disabled', false); 
+		$('#Student_Information select').attr('disabled', false);
+		$('#Student_Information :input').attr('disabled', false);
+	}
 	
 	
 	
@@ -1503,6 +1522,9 @@ function fillselectedOrgNode( elementId, orgList) {
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
+	    		  if(profileEditable === "false") {
+		    			$("a ins.jstree-checkbox", this).first().hide();
+		    		}
 	  	});
 	
 	}
@@ -1592,15 +1614,8 @@ function fillselectedOrgNode( elementId, orgList) {
 						if($("#isLasLinkCustomer").val() == "true")
 							$("#testPurposeOptions").val(data.testPurpose);
 							
-						profileEditable = data.profileEditable;
-						if(profileEditable == "false") {
-							$('#Student_Information :checkbox').attr('disabled', true); 
-							$('#Student_Information :radio').attr('disabled', true); 
-							$('#Student_Information select').attr('disabled', true);
-							$('#Student_Information :input').attr('disabled', true);
-							 
-						}
-							
+						profileEditable = String(data.optionList.profileEditable);
+						
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
 						organizationNodes = data.organizationNodes;
@@ -1622,6 +1637,15 @@ function fillselectedOrgNode( elementId, orgList) {
 						setPopupPosition(isAddStudent);
 						checkOpenNode(organizationNodes);
 						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();  
+						
+						if(profileEditable === "false") {
+							$('#Student_Information :checkbox').attr('disabled', true); 
+							$('#Student_Information :radio').attr('disabled', true); 
+							$('#Student_Information select').attr('disabled', true);
+							$('#Student_Information :input').attr('disabled', true);
+							 
+						}
+
 						
 				/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 	        	var str = idarray;
@@ -1772,6 +1796,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		}*/
 	
 				function nDataClick(popupname) {
+					if(profileEditable === "false") {
+						resetDisabledFields();
+					}
 					requetForStudent = "Next";
 					var isValueChanged = false;
 						if(popupname == 'Edit') {
@@ -1787,7 +1814,10 @@ function fillselectedOrgNode( elementId, orgList) {
                }
                
                function pDataClick(popupname) {
-               	requetForStudent = "Previous";
+               		if(profileEditable === "false") {
+						resetDisabledFields();
+					}
+               		requetForStudent = "Previous";
                		var isValueChanged = false;
 					if(popupname == 'Edit') {
 						isValueChanged = isEditStudentDataChanged();
@@ -2337,6 +2367,9 @@ function setSelectedValue(selectObj, valueToSet) {
 		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}else{
 		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		}
+		if(profileEditable === "false") {
+			liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		ulElement.appendChild(liElement);
 		fragment.appendChild(ulElement);

@@ -614,9 +614,10 @@ public class StudentOperationController extends PageFlowController {
 		int studentId = Integer.parseInt(req.getParameter("studentID"));
 		int createBy = Integer.parseInt(req.getParameter("createBy"));
 		System.out.println(studentId);
-		Boolean profileEditable = isProfileEditable(createBy);
+		//Boolean profileEditable = isProfileEditable(createBy);
 		//StudentProfileInformation studentProfileData = handleAddEdit(studentId, profileEditable, createBy);
 		StudentProfileInformation studentProfileData = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		Boolean profileEditable = isProfileEditable(studentProfileData.getCreateBy());
 		List demographics = null;
 		studentProfileData.setStuDemographic(getStudentDemographics(studentId, demographics));
 		//this.getRequest().setAttribute("demographics", this.demographics);       
