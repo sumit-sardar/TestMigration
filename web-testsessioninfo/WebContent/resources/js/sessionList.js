@@ -85,6 +85,8 @@ var leafParentOrgNodeId = "";
 var selectedTestRosterId = "";
 var gridSelectedToDelete = "";
 var offGradeSubtestChanged = false;
+var offGradeCancled = false;
+var testSessionListRequired;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -802,39 +804,35 @@ function registerDelegate(tree){
 			return isRegisterStudentEnable;
 	}
 	
-	function getDataFromTestJson(id, sessionList){
-			var sessionListArr = new Array();
-			sessionListArr = sessionList;
-			var str = new Array();
-			var indexOfId;
-			var found = false;
-			for(var i=0; i<sessionList.length ;i++){
-				if(sessionList[i].id == id){
-				    found = true;
-				    blockOffGradeTesting = sessionList[i].offGradeTestingDisabled;
-				    if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "")
-				    	blockOffGradeTesting = false;
-				    selectedLevel = sessionList[i].level;
-				    if(selectedLevel == null || selectedLevel == undefined || selectedLevel == "")
-				    	selectedLevel = "Show All"
-				    
-					document.getElementById("aCode").style.visibility = "visible";
-					if(sessionList[i].subtests.length>0)  {
-						document.getElementById("aCode").value = ProductData.accessCodeList[0];
-					} else {
-						document.getElementById("aCode").value = "";
-					}
-					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
-					if(state != "EDIT")
-						document.getElementById("testSessionName").value = sessionList[i].testName;	
-					str = sessionList[i].subtests;
-					if(sessionList[i].isRandomize == "Y" ){
+	function sessionListDataReqBeforeConfirm(sessionListData) {
+		blockOffGradeTesting = sessionListData.offGradeTestingDisabled;
+		if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "")
+			blockOffGradeTesting = false;
+		selectedLevel = sessionListData.level;
+		if(selectedLevel == null || selectedLevel == undefined || selectedLevel == "")
+			selectedLevel = "Show All"
+	}
+	
+	function sessionListRelatedData(sessionListData) {
+		var str = new Array();
+		document.getElementById("aCode").style.visibility = "visible";
+		if(sessionListData.subtests.length>0)  {
+			document.getElementById("aCode").value = ProductData.accessCodeList[0];
+		} else {
+			document.getElementById("aCode").value = "";
+		}
+		document.getElementById("testSessionName_lbl").innerHTML = sessionListData.testName;
+		if(state != "EDIT")
+			document.getElementById("testSessionName").value = sessionListData.testName;
+			
+		str = sessionListData.subtests;
+					if(sessionListData.isRandomize == "Y" ){
 						$("#randomDis").show();	
 						$("#randDisLbl").show();
 						$("#randomDis").val("Y");
 						//$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = true;
-					}else if(sessionList[i].isRandomize == "N" ){
+					}else if(sessionListData.isRandomize == "N" ){
 						$("#randomDis").show();	
 						$("#randDisLbl").show();
 						$("#randomDis").val("N");
@@ -847,25 +845,35 @@ function registerDelegate(tree){
 						$("#randomDis").val("");	
 						//$("#randomDistDiv").hide();
 					}
-					currDate = sessionList[i].startDate;
-					nextDate = sessionList[i].endDate;
+					currDate = sessionListData.startDate;
+					nextDate = sessionListData.endDate;
 					if(state != "EDIT"){
 						$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
 						$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
-						if(sessionList[i].minLoginEndDate != undefined){
-							$( "#startDate" ).datepicker( "option" , "maxDate" , sessionList[i].minLoginEndDate ) ;
-							$( "#endDate" ).datepicker( "option" , "maxDate" , sessionList[i].minLoginEndDate ) ;
+						if(sessionListData.minLoginEndDate != undefined){
+							$( "#startDate" ).datepicker( "option" , "maxDate" , sessionListData.minLoginEndDate ) ;
+							$( "#endDate" ).datepicker( "option" , "maxDate" , sessionListData.minLoginEndDate ) ;
 						} else {
 							$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
 							$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
 						}
 						$( "#endDate" ).datepicker( "refresh" );
 						$( "#startDate" ).datepicker( "refresh" );
-						document.getElementById("startDate").value = sessionList[i].startDate;
-						document.getElementById("endDate").value = sessionList[i].endDate;
+						document.getElementById("startDate").value = sessionListData.startDate;
+						document.getElementById("endDate").value = sessionListData.endDate;
 					}
 					//$("#endDate").val(nextDate);
-					break;					
+	}
+	
+	
+	function getDataFromTestJson(id, sessionList){
+	
+			var found = false;
+			for(var i=0; i<sessionList.length ;i++){
+				if(sessionList[i].id == id){
+				    found = true;
+				    return sessionList[i];
+					//break;					
 				}
 			}
 			if(!found) {
@@ -873,7 +881,8 @@ function registerDelegate(tree){
 				$("#randDisLbl").hide();
 				$("#randomDis").val("");
 			}
-			return str;
+			//return str;
+			return new Array();
 	}
  
  
@@ -1439,7 +1448,7 @@ function registerDelegate(tree){
 	}
 	
 	function changeProductConfirmed() {
-		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
+		/*if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
 			$("#productChangeConfirmationPopup").dialog({  
 			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
@@ -1453,9 +1462,9 @@ function registerDelegate(tree){
 			 var leftpos = ($(window).width() - 410) /2 + 'px';
 			 $("#productChangeConfirmationPopup").parent().css("top",toppos);
 			 $("#productChangeConfirmationPopup").parent().css("left",leftpos);
-		 } else {
+		 } else {*/
 		 	changeGradeAndLevel();
-		 }
+		 //}
 	}
 	
 	function closeSubtestConfirmPopup() {
@@ -1468,6 +1477,7 @@ function registerDelegate(tree){
 		 previousValue = $("#testGroupList").val();
 		 selectedSubtestId = selectedTestId;
 		 offGradeSubtestChanged = true;
+		 sessionListRelatedData(testSessionListRequired);
 		 if(state == "EDIT"){
 		  	isStdDetClicked = true;
 		 }
@@ -1491,10 +1501,13 @@ function registerDelegate(tree){
 	
 	function closeSubtestConfirmationPopUp() {		
 		closePopUp('subtestChangeConfirmationPopup');
+		offGradeCancled = true;
 		$("#"+selectedSubtestId).trigger('click');
 	}
 
 	function  changeGradeAndLevel(){
+		selectedSubtestId = "";
+		selectedTestId = "";
 		var e = document.getElementById("testGroupList");  
 		var selectProductId = e.options[e.selectedIndex].value;
 		var optionList = ProductData.product
@@ -1741,16 +1754,31 @@ function registerDelegate(tree){
 						return;
 					}
 					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
-					$('#displayMessage').hide();
-					testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
+					$('#displayMessage').hide();				
+					testSessionListRequired = getDataFromTestJson(selectedTestId, testSessionlist);
+					testJSONValue = testSessionListRequired.subtests;
+					//testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
+					sessionListDataReqBeforeConfirm(testSessionListRequired);
 					// Added to refresh student list grid if user changes tests
 					if((state == 'EDIT' && blockOffGradeTesting) || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0 && blockOffGradeTesting)) {
 						if(selectedSubtestId != selectedTestId)
 		 					changeSubtestConfirmPopup();
-		 				else
+		 				else {
 		 					subtestChangeProcess();
+		 					selectedSubtestId = selectedTestId;
+		 					if(offGradeSubtestChanged) {
+		 						sessionListRelatedData(testSessionListRequired);
+		 						offGradeSubtestChanged = false;
+		 					}
+		 				}
 					} else {
 						subtestChangeProcess();
+						selectedSubtestId = selectedTestId;
+						if(!offGradeCancled) {
+							sessionListRelatedData(testSessionListRequired);
+						} else {
+							offGradeCancled = false;
+						}
 					}
 			},
 			loadComplete: function () {

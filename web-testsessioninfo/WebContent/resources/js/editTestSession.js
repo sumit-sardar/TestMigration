@@ -672,8 +672,8 @@
       	$("#productType").val("");
       	stdsLogIn = false;
       	editDataCache = new Map();
-        editDataMrkStds = new Map(); 
-	
+        editDataMrkStds = new Map();
+		offGradeSubtestChanged = false;
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');
