@@ -1226,7 +1226,7 @@ public class ScheduleTestImpl implements ScheduleTest
             ond.setStudentNodes(studentNodes, pageSize);
             if(testAdminId != null) {
                 for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {
-                    studentNodes[i].setRosterCount(orgNode.getRosterCountForAncestorNode(studentNodes[i].getOrgNodeId(), testAdminId));            
+                    studentNodes[i].setRosterCount(orgNode.getTestTicketRosterCountForAncestorNode(studentNodes[i].getOrgNodeId(), testAdminId));            
                 }
                 FilterParams implicitFilter = new FilterParams();
                 FilterParam [] newFilters = new FilterParam [1];

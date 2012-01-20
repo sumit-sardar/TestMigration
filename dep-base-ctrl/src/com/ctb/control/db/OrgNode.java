@@ -395,6 +395,24 @@ public interface OrgNode extends JdbcControl
     /**
      * @jc:sql statement::
      * select 
+     *      count (distinct ros.test_roster_id) as rosterCount
+     * from
+     *      org_node_ancestor ona,
+     *      test_roster ros,
+     *      student stu
+     * where
+     *      ona.ancestor_org_node_id = {orgNodeId}
+     *      and ros.test_admin_id = {testAdminId}
+     *      and ros.org_node_id = ona.org_node_id
+     *      and stu.student_id = ros.student_id
+     *      and stu.activation_status = 'AC'::
+     */
+    @JdbcControl.SQL(statement = "select  count (distinct ros.test_roster_id) as rosterCount from  org_node_ancestor ona,  test_roster ros,  student stu where  ona.ancestor_org_node_id = {orgNodeId}  and ros.test_admin_id = {testAdminId}  and ros.org_node_id = ona.org_node_id  and stu.student_id = ros.student_id  and stu.activation_status = 'AC'")
+    Integer getTestTicketRosterCountForAncestorNode(Integer orgNodeId, Integer testAdminId) throws SQLException;  
+    
+    /**
+     * @jc:sql statement::
+     * select 
      *      count (distinct adm.test_admin_id) as sessionCount
      * from
      *      org_node_ancestor ona,
