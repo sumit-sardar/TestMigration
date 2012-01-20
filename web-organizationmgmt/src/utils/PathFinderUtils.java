@@ -24,6 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor.RED;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.struts.upload.FormFile;
 
 public class PathFinderUtils 
 { 
@@ -63,7 +64,21 @@ public class PathFinderUtils
             throw e;
 		}
     }
-      
+
+    public static Integer saveFileToDBTemp(String saveFileName, FormFile theFile, UploadDownloadManagement uploadDownloadManagement) throws Exception {
+    	Integer uploadDataFileId = new Integer(0);
+        try {
+            DataFileTemp temp = new DataFileTemp();
+           // temp.setDataFileAuditId(form.getAuditFileId());
+            temp.setDataFile(theFile.getFileData());
+            uploadDataFileId = uploadDownloadManagement.createDataFileTemp(temp);
+		} catch (Exception e) {
+			e.printStackTrace();
+            throw e;
+		}
+		return uploadDataFileId;
+    }
+    
    /**
 	 * Read the file extension (characters after last period) from the filename.
 	 * Protect against files with no extension.

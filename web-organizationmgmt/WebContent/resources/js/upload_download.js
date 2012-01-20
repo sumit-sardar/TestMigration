@@ -204,6 +204,9 @@ function refresh()
 
 function uploadFile()
 {
+    var element = document.getElementById("downloadFile");
+    element.form.action = "uploadData.do";
+    element.form.submit();
 	return false;
 }
 

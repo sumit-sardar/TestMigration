@@ -23,7 +23,7 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
-<netui:form action="manageUpload">
+<netui:form action="manageUpload" enctype="multipart/form-data" method="post">
 
 <input type="hidden" id="downloadFile" name="downloadFile" value="userFile" />
 <input type="hidden" id="selectedId" name="selectedId" value="" />
@@ -73,11 +73,10 @@
 			<lb:label key="services.import.uploadfile.msg" /><br/><br/>		
 		</td>
 	</tr>	
-	
 	<tr> 
 		<td style="padding-left:6px;">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
-        	<netui:fileUpload tagId="inputbox" dataSource="actionForm.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
+        	<netui:fileUpload tagId="inputbox" dataSource="pageFlow.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
             &nbsp;
         	<a href="#" id="upload" onclick="return uploadFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.import.button" />
