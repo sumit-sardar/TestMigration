@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import manageUpload.UploadDownloadManagementServiceControl;
-import manageUpload.ManageUploadController.ManageUploadForm;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -565,6 +564,44 @@ public class UploadOperationController extends PageFlowController {
     }
     
     private void invokeService(String userName, String fullFilePath, Integer uploadFileId, String instanceURL, int trycount) {
+    	try {
+            System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
+            String endpoint = instanceURL + "/platform-webservices/UploadDownloadManagement";
+            uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
+            System.out.println("***** Upload App: using service endpoint: " + endpoint);
+            uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
+        } catch (com.ctb.webservices.CTBBusinessException e) {
+            DataFileAudit dataFileAudit = new DataFileAudit();
+            dataFileAudit.setStatus("FL");
+            try{
+                uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
+            } catch (Exception se) {
+                se.printStackTrace();
+            }
+        } catch (Exception e) {
+            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
+            	System.out.println("***** Service invocation failed, trying again - " + trycount);
+            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
+            } else {
+            	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
+            	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
+            	System.out.println(e.getMessage());
+                if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
+                								  (e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
+                	System.out.println("Set status to error");
+	                DataFileAudit dataFileAudit = new DataFileAudit();
+	                dataFileAudit.setStatus("FL");
+	                try{
+	                    uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
+	                } catch (Exception se) {
+	                    se.printStackTrace();
+	                }
+                }                
+            	e.printStackTrace();
+            	System.out.println("****************** end EXCEPTION in invokeService ***************** ");
+            	throw new RuntimeException(e);
+            }
+        }
     }
     
     /**
