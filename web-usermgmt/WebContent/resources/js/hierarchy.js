@@ -542,6 +542,10 @@ function populateGrid() {
 		    	editfunc: function() {
 		    		 requetForUser = "";
 		    		 EditUserDetail();
+		    	},
+		    	delfunc: function() {
+		    		 requetForUser = "";
+		    		 deleteUserPopup();
 		    	},search: false
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
@@ -559,7 +563,7 @@ function populateGrid() {
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
 			});
-			 
+		setupButtonPerUserPermission();	 
 }
 
 function searchUserByKeyword(){
@@ -2207,4 +2211,73 @@ function openTreeNodes(orgNodeId) {
 		//TODO: need to work on;
 		} 
 	
+	
+	function setupButtonPerUserPermission() {
+		var deleteUserEnable = $("#deleteUserEnable").val();
+		if (deleteUserEnable == 'false') {	
+			var element = document.getElementById('del_list2');
+			element.style.display = 'none';
+		}
+	}
+	
+	function deleteUserPopup(){
+		//console.log("deleteUserPopUp");
+		$('#displayMessageMain').hide();
+				
+		$("#deleteUserPopup").dialog({  
+			title:$("#delUserTitleID").val(),  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});
+				
+	    $("#deleteUserPopup").css('height',130);
+		var toppos = ($(window).height() - 130) /2 + 'px';
+		var leftpos = ($(window).width() - 400) /2 + 'px';
+		$("#deleteUserPopup").parent().css("top",toppos);
+		$("#deleteUserPopup").parent().css("left",leftpos);
+		
+	}
+	
+	function deleteSelectedUser(){
+		closePopUp('deleteUserPopup');
+		var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
+		var selectedUserName = $('#list2').jqGrid('getCell',selectedUserId,'loginId');
+
+		$.ajax(
+			{
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'deleteUser.do?selectedUserId='+selectedUserId+'&selectedUserName='+selectedUserName,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+								var successFlag = data.successFlag;
+								if(successFlag){
+									$("#contentMain").text(data.message);
+									$('#errorIcon').hide();
+									$('#infoIcon').show();
+									$("#displayMessageMain").show();
+									jQuery("#list2").delRowData(selectedUserId);
+								}
+								else{
+									$("#contentMain").text(data.message);
+									$('#errorIcon').show();
+									$('#infoIcon').hide();
+									$("#displayMessageMain").show();
+								}
+															
+							    $.unblockUI(); 																														 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							}
+			}
+		);
+	}
 	

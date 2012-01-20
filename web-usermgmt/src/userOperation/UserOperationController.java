@@ -1275,6 +1275,8 @@ public class UserOperationController extends PageFlowController
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));
      	
      	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
+     	
+     	this.getSession().setAttribute("isDeleteUserEnable", isDeleteUserEnable());
 	}
 
 
@@ -1959,5 +1961,52 @@ public class UserOperationController extends PageFlowController
 		}
 		return user;
 	 }
-	 	 	 
+	 
+	 private boolean isDeleteUserEnable(){
+		 String roleName = this.user.getRole().getRoleName();
+		 return (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR));
+	 }
+	 
+	@Jpf.Action
+    protected Forward deleteUser(userOperationForm form) 
+    {        
+        String selectedUserName = getRequest().getParameter("selectedUserName");  
+        Integer selectedUserId = Integer.valueOf(getRequest().getParameter("selectedUserId"));
+        HttpServletRequest req = getRequest();
+        HttpServletResponse resp = getResponse();
+        OutputStream stream = null;
+        MessageInfo messageInfo = new MessageInfo();       
+        User user = null;
+		try 
+		{
+			user = userManagement.getUser(this.userName, selectedUserName);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+        
+		if(user!=null){
+		    try
+		    {                    
+		        this.userManagement.deleteUser(this.user.getUserName(), user);
+		        messageInfo.setSuccessFlag(true);
+		        messageInfo.setMessage(Message.DELETE_SUCCESSFUL);           
+		    }
+		    catch (CTBBusinessException be)
+		    {
+		        be.printStackTrace(); 
+		        String errorMsg = MessageResourceBundle.getMessage(be.getMessage());
+		        messageInfo.setMessage(errorMsg);
+		    } 
+		    catch (Exception e1)
+		    {
+		        e1.printStackTrace();
+		        messageInfo.setMessage(Message.DELETE_ERROR);
+		    }   
+		    creatGson( req, resp, stream, messageInfo );
+		}
+        return null;
+    }
+ 	 	 
 }

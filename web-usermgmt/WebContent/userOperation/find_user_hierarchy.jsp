@@ -39,6 +39,8 @@
 <input type="hidden" id="inFormatID" name = "inFormatID" value=<lb:label key="user.msg.invalid.format" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
+<input type="hidden" id="deleteUserEnable" name="deleteUserEnable" value='<%=session.getAttribute("isDeleteUserEnable") %>'/>
+<input type="hidden" id="delUserTitleID" name = "delUserTitleID" value=<lb:label key="user.label.titleDelete" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;">
  	<tr class="transparent">
@@ -202,5 +204,26 @@
 			<input type="button"  value="Search" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
 		</center>
 	</div>
+</div>
+
+<div id="deleteUserPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table border="0" width="100%">
+		<tr align="left">
+			<td>
+			<br/>
+			<p>
+				<lb:label key="user.msg.delete" />
+			</p>
+			<br/>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="deleteSelectedUser();" class="ui-widget-header">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteUserPopup');" class="ui-widget-header">				
+			</td>		
+		</tr>
+	</table>
 </div>
 				
