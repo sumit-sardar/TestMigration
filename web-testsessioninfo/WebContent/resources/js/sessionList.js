@@ -3687,32 +3687,34 @@ function registerDelegate(tree){
 	
 	function toggleDonotScoreStatus(){
 		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
-		var dnsStatus = $('#rosterList').getCell(selectedTestRosterId, 7);
-		if($.trim(dnsStatus) == "Y") {
-			dnsStatus = "N";
-		} else {
-			dnsStatus = "Y";
+		if(selectedTestRosterId != null && $.trim(selectedTestRosterId) != "") {
+			var dnsStatus = $('#rosterList').getCell(selectedTestRosterId, 7);
+			if($.trim(dnsStatus) == "Y") {
+				dnsStatus = "N";
+			} else {
+				dnsStatus = "Y";
+			}
+			$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'toggleDonotScoreStatus.do?testRosterId='+selectedTestRosterId+'&dnsStatus='+dnsStatus,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest) {	
+								$("#displayMessageViewTestRoster").show();
+								$("#rosterMessage").html($("#doNotScoreMsg").val());
+								$('#rosterList').jqGrid('setCell', selectedTestRosterId, '7', dnsStatus);
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
 		}
-		$.ajax({
-			async:		true,
-			beforeSend:	function(){
-							UIBlock();
-						},
-			url:		'toggleDonotScoreStatus.do?testRosterId='+selectedTestRosterId+'&dnsStatus='+dnsStatus,
-			type:		'POST',
-			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest) {	
-							$("#displayMessageViewTestRoster").show();
-							$("#rosterMessage").html($("#doNotScoreMsg").val());
-							$('#rosterList').jqGrid('setCell', selectedTestRosterId, '7', dnsStatus);
-							$.unblockUI(); 						
-						},
-			error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							$.unblockUI();
-							window.location.href="/SessionWeb/logout.do";
-						},
-			complete :  function(){
-							 $.unblockUI(); 
-						}
-		});
 	}
