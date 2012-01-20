@@ -72,6 +72,9 @@ public class StudentProfileInformation extends SanitizedFormField
     private String orgIdList;
     private String orgNameList;
     
+    //Added for out of school
+    private String outOfSchool;
+    
 
     /**
 	 * @return the hasAccommodations
@@ -503,6 +506,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.orgNodeName = student.getOrgNodeName();
         this.orgIdList = student.getOrgIdList();
         this.orgNameList = student.getOrgNameList();
+        this.outOfSchool = student.getOutOfSchool();
         if(orgNameList!=null && orgNameList.length()>0){
         	this.orgNodeNamesStr = orgNameList.replace('|', ',');
         }
@@ -980,5 +984,15 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setOrgNameList(String orgNameList) {
 		this.orgNameList = orgNameList;
+	}
+
+
+	public String getOutOfSchool() {
+		return outOfSchool;
+	}
+
+
+	public void setOutOfSchool(String outOfSchool) {
+		this.outOfSchool = outOfSchool;
 	}
 } 

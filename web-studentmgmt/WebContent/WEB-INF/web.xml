@@ -120,6 +120,7 @@
             <url-pattern>/studentOperation/*</url-pattern>
             <url-pattern>/bulkOperation/*</url-pattern>
             <url-pattern>/bulkMoveOperation/*</url-pattern>
+            <url-pattern>/outOfSchoolOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

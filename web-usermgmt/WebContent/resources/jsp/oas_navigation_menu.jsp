@@ -39,7 +39,9 @@
 							<c:if test="${sessionScope.isBulkMoveConfigured}">
         						<li><a href="#"  id="bulkMoveLink" onclick="gotoMenuAction('organizations.do', 'bulkMoveLink');"><lb:label key="user.menu.moveStudents" /></a></li>
         					</c:if>
-        					<li><a href="#" ><lb:label key="user.menu.outOfSchools" /></a></li>
+        					<c:if test="${sessionScope.isOOSConfigured}">
+        						<li><a href="#"  id="OOSLink" onclick="gotoMenuAction('organizations.do', 'OOSLink');"><lb:label key="user.menu.outOfSchools" /></a></li>
+        					</c:if>
         				</ul>
         			 </li>
         			 <ctb:auth roles="Administrator">	

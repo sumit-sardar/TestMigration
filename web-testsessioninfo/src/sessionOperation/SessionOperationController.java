@@ -1318,7 +1318,6 @@ public class SessionOperationController extends PageFlowController {
 			 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
 			 String isRandomize       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_RANDOMIZE, true, "");
 			 String timeZone          		= DateUtils.getDBTimeZone( RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TIME_ZONE, false, null));
-			 System.out.println("timeZone" + timeZone);
 			 String sessionName		  		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TEST_NAME, false, null);
 			 //String sessionName       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_SESSION_NAME, false, null);
 			 String showStdFeedbackVal   	= RequestUtil.getValueFromRequest(request, RequestUtil.SHOW_STUDENT_FEEDBACK, true, "false");
@@ -2287,7 +2286,8 @@ public class SessionOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
 	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
-	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do")
+	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
+	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
 	    }) 
 	protected Forward organizations()
 	{
@@ -2364,6 +2364,21 @@ public class SessionOperationController extends PageFlowController {
         try
         {
             String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
+    @Jpf.Action()
+	protected Forward organizations_manageOutOfSchool()
+	{
+        try
+        {
+            String url = "/StudentWeb/outOfSchoolOperation/organizations_manageOutOfSchool.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -2624,6 +2639,8 @@ public class SessionOperationController extends PageFlowController {
 
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
 		
+		this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
+		
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	
      	this.getSession().setAttribute("isDeleteSessionEnable", isDeleteSessionEnable());
@@ -2852,6 +2869,27 @@ public class SessionOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+
+	// Changes for Out Of School
+	/**
+	 * Out Of School
+	 */
+	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasOOSConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
+						cc.getDefaultValue().equals("T")) {
+					hasOOSConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasOOSConfigurable);           
 	}
     
     private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)

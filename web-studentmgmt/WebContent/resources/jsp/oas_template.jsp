@@ -40,6 +40,15 @@
 	clear: both;
 }
 
+#outOfSchoolOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#outOfSchoolOrgNode li {
+	clear: both;
+}
+
 #studentBulkOrgNode ul {
 	float: left;
 	clear: both;
@@ -88,6 +97,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkMoveStudent.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/outOfSchool.js"></script>
 	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/superfish.js"></script>
     

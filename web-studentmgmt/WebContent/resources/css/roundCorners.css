@@ -2,8 +2,8 @@
   a.rounded, .button {
     outline: none;
     border: none;
-    text-decoration: none;
-    cursor: pointer;
+    text-decoration: none !important;
+    cursor: pointer !important;
     white-space: nowrap;
     vertical-align: middle;
     display: -moz-inline-box;

@@ -501,6 +501,15 @@ clear: both;
 	clear: both;
 }
 
+.ie8 #outOfSchoolOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #outOfSchoolOrgNode li {
+	clear: both;
+}
+
 .feature div {
 	margin-left:0px !important;
 }

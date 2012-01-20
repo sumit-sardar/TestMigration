@@ -649,7 +649,9 @@ public class DownloadOperationController extends PageFlowController {
     	
      	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
     	
-        this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
+        this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
+        
+        this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
 	}
 
     private Boolean userHasReports() 
@@ -832,6 +834,27 @@ public class DownloadOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	// Changes for Out Of School
+	/**
+	 * Out Of School
+	 */
+	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasOOSConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
+						cc.getDefaultValue().equals("T")) {
+					hasOOSConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasOOSConfigurable);           
 	}
 
     /////////////////////////////////////////////////////////////////////////////////////////////    

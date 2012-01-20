@@ -286,4 +286,20 @@ public class StudentSearchUtils
         return msData;
     }
     
+    /**
+     * searchBulkStudentsByOrgNodeForMove Bulk Move
+     */    
+    public static ManageStudentData searchOOSStudentsByOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId,
+                                                           FilterParams filter, PageParams page, SortParams sort)
+    {    
+    	ManageStudentData msData = null;
+        try {    
+            msData = studentManagement.getOOSStudent(userName, orgNodeId, filter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
+    }
+    
 } 

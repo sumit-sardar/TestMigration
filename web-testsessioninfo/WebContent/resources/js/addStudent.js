@@ -240,7 +240,7 @@ function populateSelectStudentGrid() {
           url: urlVal, 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip"],
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip", "outOfSchool"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -261,7 +261,8 @@ function populateSelectStudentGrid() {
 		   		{name:'extendedTimeAccom',index:'extendedTimeAccom',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'statusEditable',index:'editable1',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'extPin2',index:'extPin2',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'extPin2',index:'extPin2',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'outOfSchool',index:'outOfSchool',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
 		   	records: function(obj) {
@@ -341,8 +342,8 @@ function populateSelectStudentGrid() {
 				isSortingEvent = true;
 			}, 
 			gridComplete: function() {
+				var allRowsInGridPresent = $('#selectStudent').jqGrid('getDataIDs');
 				if(state=="EDIT"){
-					var allRowsInGridPresent = $('#selectStudent').jqGrid('getDataIDs');
 					for(var k = 0; k < allRowsInGridPresent.length; k++) {
 						var selectedRowData = $("#selectStudent").getRowData(allRowsInGridPresent[k]);
 						if(editDataMrkStds.get(selectedRowData.studentId) == selectedRowData.studentId){
@@ -351,6 +352,15 @@ function populateSelectStudentGrid() {
 						}				
 					}				
 				} 
+				
+				//Added for out of school students
+				for(var kk = 0; kk < allRowsInGridPresent.length; kk++) {
+					var selectedRowData = $("#selectStudent").getRowData(allRowsInGridPresent[kk]);
+					if(selectedRowData.outOfSchool == "Yes"){
+						$("#"+selectedRowData.studentId+" td input","#selectStudent").attr("disabled", true);
+				 		$("#"+selectedRowData.studentId, "#selectStudent").addClass('ui-state-disabled');
+					}				
+				}
 			
 			// For repopulating filtered data
 			if(isNodeChanged) {
@@ -1186,11 +1196,19 @@ function getStudentListArray(studentArray) {
 	}
 	function addToStudentTempMap(studentId,studentRow){
 	  if(studentRow["statusEditable"] != undefined && studentRow["statusEditable"] =="T") {
-	  	studentTempMap.put(studentId, studentRow);
-	  		return true;
-	  } else if (studentRow.status != undefined && studentRow.statusEditable != undefined && studentRow.statusEditable =="T"){
+	  	if(studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
 	  		return true;
+	  	} else {
+	  		return false;
+	  	}
+	  } else if (studentRow.status != undefined && studentRow.statusEditable != undefined && studentRow.statusEditable =="T"){
+	  	if(studentRow.outOfSchool == 'No') { // Added for out of school students
+	  		studentTempMap.put(studentId, studentRow);
+	  		return true;
+	  	} else {
+	  		return false;
+	  	}
 	  
 	  }else {
 	   	return false;
