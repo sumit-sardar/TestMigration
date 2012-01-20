@@ -1428,7 +1428,7 @@ function registerDelegate(tree){
 		$(ddl).html(optionHtml);
 	}
 	function changeSubtestConfirmPopup() {
-		if(state == "EDIT" || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0)) {
+		if(((state == "EDIT" && !isStdDetClicked) || (state == "EDIT" && isStdDetClicked && AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0)) || (AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0)) {
 			$("#subtestChangeConfirmationPopup").dialog({  
 			title:$("#confirmAlrt").val(),  
 		 	resizable:false,
