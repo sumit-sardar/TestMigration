@@ -60,15 +60,16 @@
 </table>
 
 <table id="subtestList" class="rosterSubtestTable"></table>
-<input type="hidden" name="itemsSelectLbl" id="itemsSelectLbl" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
-<input type="hidden" name="subtestNameLbl" id="subtestNameLbl" value=<lb:label key="ViewSubtestDetails.text.subtestName" prefix="'" suffix="'"/>/>
-<input type="hidden" name="subtestLevelLbl" id="subtestLevelLbl" value=<lb:label key="ViewSubtestDetails.text.subtestLevel" prefix="'" suffix="'"/>/>
-<input type="hidden" name="subtestStatusLbl" id="subtestStatusLbl" value=<lb:label key="ViewSubtestDetails.text.subtestStatus" prefix="'" suffix="'"/>/>
-<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="ViewSubtestDetails.text.validationStatus" prefix="'" suffix="'"/>/>
-<input type="hidden" name="startDateLbl" id="startDateLbl" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
-<input type="hidden" name="completionDateLbl" id="completionDateLbl" value=<lb:label key="ViewSubtestDetails.text.completionDate" prefix="'" suffix="'"/>/>
-<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value=<lb:label key="ViewSubtestDetails.text.totalItems" prefix="'" suffix="'"/>/>
-<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value=<lb:label key="ViewSubtestDetails.text.itemCorrect" prefix="'" suffix="'"/>/>
-<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value=<lb:label key="ViewSubtestDetails.text.itemToBeScored" prefix="'" suffix="'"/>/>
-
+<div>
+	<input type="hidden" name="itemsSelectLbl" id="itemsSelectLbl" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="subtestNameLbl" id="subtestNameLbl" value=<lb:label key="ViewSubtestDetails.text.subtestName" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="subtestLevelLbl" id="subtestLevelLbl" value=<lb:label key="ViewSubtestDetails.text.subtestLevel" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="subtestStatusLbl" id="subtestStatusLbl" value=<lb:label key="ViewSubtestDetails.text.subtestStatus" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="ViewSubtestDetails.text.validationStatus" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="startDateLbl" id="startDateLbl" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="completionDateLbl" id="completionDateLbl" value=<lb:label key="ViewSubtestDetails.text.completionDate" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value=<lb:label key="ViewSubtestDetails.text.totalItems" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value=<lb:label key="ViewSubtestDetails.text.itemCorrect" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value=<lb:label key="ViewSubtestDetails.text.itemToBeScored" prefix="'" suffix="'"/>/>
+</div>
 <div id="subtestPager" class="gridTable"></div>
