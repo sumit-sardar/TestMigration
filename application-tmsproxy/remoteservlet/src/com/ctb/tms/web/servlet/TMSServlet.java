@@ -428,6 +428,12 @@ public class TMSServlet extends HttpServlet {
 						    	}
 				    		}
 				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
+				    		if(("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct()))) {
+			    				// re-calc auto-locator levels when exiting client
+			    	    		handleTabeLocator(rosterId);
+			    	    		manifest = oasSource.getManifest(rosterId, accessCode);
+			    	    		manifestData = manifest.getManifest();
+			    	    	}
 				    		manifest.setRosterEndTime(System.currentTimeMillis());
 				    		boolean inProgressSubtest = false;
 				    		for(int n=0;n<manifestData.length;n++) {

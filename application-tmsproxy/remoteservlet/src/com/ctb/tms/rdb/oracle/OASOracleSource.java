@@ -61,7 +61,7 @@ public class OASOracleSource implements OASRDBSource
 	
 	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
 	private static final String REAUTHENTICATE_STUDENT_SQL = "select distinct upper(tais.access_code) as accessCode, ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, ros.random_distractor_seed as randomDistractorSeedNumber,  ros.tts_speed_status as ttsSpeedStatus, ros.start_date_time as startTime, ros.completion_date_time as endTime, ros.correlation_id as correlationId, ros.last_mseq as lastMseq from  student stu,  test_roster ros,  test_admin adm, test_admin_item_set tais, student_item_set_status siss, item_set_parent isa where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and tais.test_admin_id = adm.test_admin_id and tais.item_set_id = isa.parent_item_set_id and isa.item_set_id = siss.item_set_id and siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = ? and upper(tais.access_code) = upper(?)";    
-	private static final String ACCOMMODATIONS_SQL = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler,accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId, accom.extended_time as extendedTime, accom.masking_tool as maskingTool from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = ?";    
+	private static final String ACCOMMODATIONS_SQL = "select  distinct accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  ccon.default_value as speechSpeedControl, accom.calculator as calculator, accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor, accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor, accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler, accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId, accom.extended_time as extendedTime, accom.masking_tool as maskingTool from  test_roster ros,  student_accommodation accom, (select * from customer_configuration where customer_configuration_name = 'Allow_Speech_Controller') ccon where ccon.customer_id (+) = ros.customer_id and accom.student_id = ros.student_id  and ros.test_roster_id = ?";    
 	private static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product,subtestForm, subtestLevel, adaptive, accessCode, raw_score, max_score, unscored, ability_score, sem_score, objective_score, start_date_time, completion_date_time, contentURI, recommended_level, blockDownload from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  decode(nvl(tr.extended_time,0),0,iset.time_limit / 60,(iset.time_limit * tr.extended_time) / 60) as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus, iset.forward_only as forwardOnly, pr.scorable as scorable, pr.product_type as product, iset.item_set_form as subtestForm, iset.item_set_level as subtestLevel, iset.adaptive as adaptive, upper(tais.access_code) as accessCode, siss.raw_score, siss.max_score, siss.unscored, siss.ability_score, siss.sem_score, siss.objective_score, siss.start_date_time, siss.completion_date_time, iset.content_repository_uri as contentURI, siss.recommended_level, tc.block_download_flag as blockDownload from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  test_catalog tc, item_set_parent  isp,  test_admin_item_set  tais, product pr where tc.test_catalog_id = ta.test_catalog_id and isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id and tais.test_admin_id = ta.test_admin_id and pr.product_id = ta.product_id group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status, tr.extended_time, iset.forward_only, scorable,pr.product_type, iset.item_set_form, iset.item_set_level, iset.adaptive, tais.access_code, siss.raw_score, siss.max_score, siss.unscored, siss.ability_score, siss.sem_score, siss.objective_score, siss.start_date_time, siss.completion_date_time, iset.content_repository_uri, siss.recommended_level, tc.block_download_flag)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product, subtestForm, subtestLevel, adaptive, accessCode, raw_score, max_score, unscored, ability_score, sem_score, objective_score, start_date_time, completion_date_time, contentURI, recommended_level, blockDownload order by scoOrder";
 	private static final String SUBTEST_ELAPSED_TIME_SQL = "select  nvl(sum(max(resp.response_elapsed_time)), 0) as totalTime from  item_response resp where  resp.test_roster_id = ?  and resp.item_set_id = ? group by  resp.test_roster_id,  resp.item_set_id,  resp.item_id";
 	private static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = ?  and siss.test_roster_id = ?  and upper(tais.access_code) != upper(?) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
@@ -312,6 +312,17 @@ public class OASOracleSource implements OASRDBSource
 	        if(accomData != null) {
 	            copyAccomodationsDataToResponse(loginResponse, accomData);
 	        }
+	        
+	        if (accomData.getScreenReader() != null && accomData.getScreenReader().equals("T")) {
+                String speechControllerFlag = accomData.getSpeechSpeedControl();
+                if (speechControllerFlag != null && "T".equals(speechControllerFlag)) {
+                    if (authData.getTtsSpeedStatus() != null) { 
+                    	loginResponse.setTtsSpeedValue(authData.getTtsSpeedStatus());
+                    } else {
+                       loginResponse.setTtsSpeedValue(Constants.SpeechController.DEFAULT_TTS_SPEED_VALUE );   
+                    }
+                }
+            }
 	
 	        boolean gotRestart = false;
 	        for(int i=0; i<manifestData.length ;i++) {
@@ -460,6 +471,8 @@ public class OASOracleSource implements OASRDBSource
     public static void setManifestDataInResponse(LoginResponse response, ManifestData [] manifestData) throws SQLException {
         Manifest manifest = response.getManifest();
         
+        ManifestData[] newManifestData = null;
+        
         if(response.getRestartNumber().intValue() > 0) {
 	        ArrayList a = new ArrayList();
 	        for(int i=0;i<manifestData.length;i++) {
@@ -471,14 +484,14 @@ public class OASOracleSource implements OASRDBSource
 	        	}
 	        }
 	        
-	        manifestData = new ManifestData[a.size()];
-	        a.toArray(manifestData);
-	       // manifestData = (ManifestData [])a.toArray();
+	        newManifestData = (ManifestData []) a.toArray(new ManifestData[0]);
+        } else {
+        	newManifestData = manifestData;
         }
         
-        for(int i=0;i<manifestData.length;i++) {
-        	ManifestData data = manifestData[i];
-        	manifest.setBlockContentDownload("T".equals(manifestData[i].getBlockDownload())?"true":"false");
+        for(int i=0;i<newManifestData.length;i++) {
+        	ManifestData data = newManifestData[i];
+        	manifest.setBlockContentDownload("T".equals(data.getBlockDownload())?"true":"false");
         	/*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
         				&& Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
         		continue;
@@ -487,7 +500,7 @@ public class OASOracleSource implements OASRDBSource
 	            manifest.addNewSco();
 	            Sco sco = manifest.getScoArray(i);
 	            if(data.getAdminForceLogout().equals("T") &&
-	                ((i >= manifestData.length - 1) || (data.getScoParentId() != manifestData[i+1].getScoParentId()))) {
+	                ((i >= manifestData.length - 1) || (data.getScoParentId() != newManifestData[i+1].getScoParentId()))) {
 	                sco.setForceLogout(true);
 	            } else {
 	                sco.setForceLogout(false);
@@ -867,6 +880,7 @@ public class OASOracleSource implements OASRDBSource
 				data.setQuestionFontSize(rs1.getFloat("questionFontSize"));
 				data.setScreenMagnifier(rs1.getString("screenMagnifier"));
 				data.setScreenReader(rs1.getString("screenReader"));
+				data.setSpeechSpeedControl(rs1.getString("speechSpeedControl"));
 				data.setStudentId(rs1.getInt("studentId"));
 				data.setTestPause(rs1.getString("testPause"));
 				data.setUntimedTest(rs1.getString("untimedTest"));

@@ -154,16 +154,24 @@ public class ManifestCacheStore implements OASCacheStore {
     		Iterator it = mapEntries.keySet().iterator();
 		    int counter = 0;
 		    while(it.hasNext()) {
+		    	boolean success = true;
     			String key = null;
 	    		Object oKey = it.next();
     			key = (String) oKey;
 	    		ManifestWrapper value = (ManifestWrapper) mapEntries.get(key);
-	    		if(value.isReplicate().booleanValue()) {
-	    			sink.putManifest(conn, key, value.getManifests());
-		    		conn.commit();
-	    		} 
-	    		it.remove();
-		    	counter++;
+	    		try {
+		    		if(value.isReplicate().booleanValue()) {
+		    			sink.putManifest(conn, key, value.getManifests());
+			    		conn.commit();
+		    		} 
+	    		} catch (Exception e) {
+    				success = false;
+    				logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for key " + key + ": " + e.getMessage());
+    			}
+    			if(success) {
+		    		it.remove();
+			    	counter++;
+    			}
     		}
             logger.info("ManifestCacheStore.storeAll processed " + counter + " records.");
     	} catch (Exception e) {
@@ -195,17 +203,25 @@ public class ManifestCacheStore implements OASCacheStore {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		    int counter = 0;
 		    while(it.hasNext()) {
+		    	boolean success = true;
     			BinaryEntry entry = it.next();
     			String key = null;
 				key = (String) entry.getKey();
 				Object value = entry.getValue();
 				ManifestWrapper wrapper = (ManifestWrapper) value;
-				if(wrapper.isReplicate().booleanValue()) {
-					sink.putManifest(conn, key, wrapper.getManifests());
-					conn.commit();
-				}
-	    		it.remove();
-		    	counter++;
+				try {
+					if(wrapper.isReplicate().booleanValue()) {
+						sink.putManifest(conn, key, wrapper.getManifests());
+						conn.commit();
+					}
+				} catch (Exception e) {
+    				success = false;
+    				logger.warn("ManifestCacheStore.storeAll (binary): Error storing manifest to DB for key " + key + ": " + e.getMessage());
+    			}
+    			if(success) {
+		    		it.remove();
+			    	counter++;
+    			}
 		    }
         	logger.info("ManifestCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {

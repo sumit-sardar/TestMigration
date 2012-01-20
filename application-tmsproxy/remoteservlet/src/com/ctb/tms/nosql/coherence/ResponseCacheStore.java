@@ -108,14 +108,22 @@ public class ResponseCacheStore implements OASCacheStore {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		    int counter = 0;
     		while(it.hasNext()) {
+    			boolean success = true;
     			BinaryEntry entry = it.next();
     			ItemResponseData ird = (ItemResponseData) entry.getValue();
-	    		if(ird.isReplicate().booleanValue()) {
-		    		sink.putItemResponse(conn, ird);
-		    		conn.commit();
-	    		}
-	    		it.remove();
-		    	counter++;
+    			try {
+		    		if(ird.isReplicate().booleanValue()) {
+		    			sink.putItemResponse(conn, ird);
+			    		conn.commit();
+		    		}
+    			} catch (Exception e) {
+    				success = false;
+    				logger.warn("ResponseCacheStore.storeAll (binary): Error storing response to DB for key " + entry.getKey() + ": " + e.getMessage());
+    			}
+    			if(success) {
+		    		it.remove();
+			    	counter++;
+    			}
     		}
     		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {
@@ -142,14 +150,22 @@ public class ResponseCacheStore implements OASCacheStore {
     		Iterator it = mapEntries.keySet().iterator();
 		    int counter = 0;
     		while(it.hasNext()) {
+    			boolean success = true;
 	    		String key = (String) it.next();
 	    		ItemResponseData ird = (ItemResponseData) mapEntries.get(key);
-	    		if(ird.isReplicate().booleanValue()) {
-	    			sink.putItemResponse(conn, ird);
-		    		conn.commit();
-	    		}
-	    		it.remove();
-		    	counter++;
+    			try {
+		    		if(ird.isReplicate().booleanValue()) {
+		    			sink.putItemResponse(conn, ird);
+			    		conn.commit();
+		    		}
+    			} catch (Exception e) {
+    				success = false;
+    				logger.warn("ResponseCacheStore.storeAll: Error storing response to DB for key " + key + ": " + e.getMessage());
+    			}
+    			if(success) {
+		    		it.remove();
+			    	counter++;
+    			}
     		}
     		logger.info("ResponseCacheStore.storeAll processed " + counter + " records.");
     	} catch (Exception e) {
