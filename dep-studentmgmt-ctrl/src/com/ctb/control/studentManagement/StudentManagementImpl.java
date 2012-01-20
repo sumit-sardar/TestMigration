@@ -2844,5 +2844,57 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	
+	/**
+	 * Retrieves a sorted, filtered, paged list of students at the specified org node.
+	 * @common:operation
+	 * @param userName - identifies the user
+	 * @param orgNodeId - identifies the org nodes
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return ManageStudentData
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	public ManageStudentData getOOSStudent(String userName, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getOOSStudent");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+			ManageStudent [] students = studentManagement.getStudentsForOOS(orgNodeId);
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+
+			students = std.getManageStudents();
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getOOSStudent: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+	
+	//Added to toggle out of school status
+	public void updateOOSOperation(Integer[] updatedOOSData) throws com.ctb.exception.CTBBusinessException {
+		try {
+			if(updatedOOSData != null) {
+				for(int i = 0; i < updatedOOSData.length; i++) {
+					studentManagement.updateOutOfSchoolStatus(updatedOOSData[i]);
+					studentManagement.removeSissDataForOOS(updatedOOSData[i]);
+					studentManagement.removeRosterDataForOOS(updatedOOSData[i]);
+				}
+			}
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateOOSOperation: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			se.printStackTrace();
+			throw tee;
+		}
+	}
 
 } 

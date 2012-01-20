@@ -780,7 +780,8 @@ public class OrgOperationController extends PageFlowController {
 			 @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
 			 @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 			 @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
-		        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do")
+		     @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
+		     @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
 	 }) 
 	 protected Forward organizations()
 	 {
@@ -859,6 +860,21 @@ public class OrgOperationController extends PageFlowController {
 		 }
 		 return null;
 	 }
+	 
+	 @Jpf.Action()
+		protected Forward organizations_manageOutOfSchool()
+		{
+	        try
+	        {
+	            String url = "/StudentWeb/outOfSchoolOperation/organizations_manageOutOfSchool.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+		}
 
 
 	 /**
@@ -1078,6 +1094,8 @@ public class OrgOperationController extends PageFlowController {
      	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));
 
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
+		
+		this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
 	}
 	
 	/**
@@ -1118,6 +1136,27 @@ public class OrgOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	// Changes for Out Of School
+	/**
+	 * Out Of School
+	 */
+	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasOOSConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
+						cc.getDefaultValue().equals("T")) {
+					hasOOSConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasOOSConfigurable);           
 	}
 
 	

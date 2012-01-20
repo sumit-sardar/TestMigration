@@ -46,3 +46,7 @@ ALTER TABLE test_roster ADD DNS_UPDATED_DATETIME DATE
 /
 ALTER TABLE test_roster ADD DNS_UPDATED_BY INTEGER
 /
+
+--Added for out of school user story
+alter table student add out_of_school varchar2(3) default 'No'
+/

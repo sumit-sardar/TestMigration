@@ -153,7 +153,8 @@ public class LicenseOperationController extends PageFlowController {
 			@Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
 			@Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 			@Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
-	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do")
+	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
+	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
 	}) 
 	protected Forward organizations()
 	{
@@ -231,6 +232,21 @@ public class LicenseOperationController extends PageFlowController {
         try
         {
             String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
+    @Jpf.Action()
+	protected Forward organizations_manageOutOfSchool()
+	{
+        try
+        {
+            String url = "/StudentWeb/outOfSchoolOperation/organizations_manageOutOfSchool.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

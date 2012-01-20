@@ -1108,4 +1108,22 @@ public interface StudentManagement extends JdbcControl
             arrayMaxLength = 100000)
      Integer getStudentsCountForOrgNode(Integer orgNodeId) throws SQLException;
     
+	
+	//Added for out of school student
+	@JdbcControl.SQL(statement = "select distinct stu.student_id as id, stu.user_name as loginId, stu.first_name as firstName, stu.middle_name as middleName, stu.last_name as lastName, stu.gender as gender, stu.grade as grade, stu.ext_pin1 as studentIdNumber, stu.ext_pin2 as studentIdNumber2, stu.created_by as createdBy, node.org_node_name as orgNodeName, node.org_node_id as orgNodeId, sac.screen_magnifier as screenMagnifier, sac.screen_reader as screenReader, sac.calculator as calculator, sac.test_pause as testPause, sac.untimed_test as untimedTest, sac.question_background_color as questionBackgroundColor, sac.question_font_color as questionFontColor, sac.question_font_size as questionFontSize, sac.answer_background_color as answerBackgroundColor, sac.answer_font_color as answerFontColor, sac.answer_font_size as answerFontSize, sac.highlighter as highlighter, sac.music_file_id as musicFile, sac.masking_ruler as maskingRuler, sac.magnifying_glass as magnifyingGlass, sac.extended_time as extendedTime, sac.masking_tool as maskingTool, stu.out_of_school as outOfSchool from org_node_student ons, student  stu, org_node node, org_node_category onc, student_accommodation sac where ons.student_id = stu.student_id and ons.activation_status = 'AC' and stu.activation_status = 'AC' and ons.org_node_id = node.org_node_id and sac.student_id(+) = ons.student_id AND ONS.ORG_NODE_ID IN (SELECT ORG_NODE_ID FROM ORG_NODE_ANCESTOR ONS WHERE ANCESTOR_ORG_NODE_ID = {orgNodeId} AND NUMBER_OF_LEVELS IN (0, 1)) and onc.org_node_category_id = node.org_node_category_id",
+            arrayMaxLength = 500000)
+    ManageStudent [] getStudentsForOOS(Integer orgNodeId) throws SQLException;
+	
+	//Added for out of school student.
+	@JdbcControl.SQL(statement = "update student set out_of_school = decode(out_of_school,'No','Yes','No') where student_id = {studentId}")
+    void updateOutOfSchoolStatus(Integer studentId) throws SQLException;
+	
+	//Added for out of school to delete data from student_item_set_status table for rosters associated with the student
+	@JdbcControl.SQL(statement = "delete from student_item_set_status where test_roster_id in (select ros.test_roster_id from test_roster ros, student stu where ros.test_completion_status in ('SC', 'NT') and ros.student_id = stu.student_id and stu.out_of_school = 'Yes' and ros.student_id = {studentId})")
+    void removeSissDataForOOS(Integer studentId) throws SQLException;
+	
+	//Added for out of school to delete data from test_roster table for rosters associated with the student
+	@JdbcControl.SQL(statement = "delete from test_roster where test_roster_id in (select ros.test_roster_id from test_roster ros, student stu where ros.test_completion_status in ('SC', 'NT') and ros.student_id = stu.student_id and stu.out_of_school = 'Yes' and ros.student_id = {studentId})")
+    void removeRosterDataForOOS(Integer studentId) throws SQLException;
+    
 }

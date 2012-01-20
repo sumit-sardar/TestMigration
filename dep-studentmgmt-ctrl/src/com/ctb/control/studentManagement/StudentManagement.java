@@ -511,6 +511,11 @@ public interface StudentManagement
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
 	java.lang.Integer getStudentsCountForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+	
+	//Out Of School
+	com.ctb.bean.studentManagement.ManageStudentData getOOSStudent(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+	
+	void updateOOSOperation(Integer[] updatedOOSData) throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

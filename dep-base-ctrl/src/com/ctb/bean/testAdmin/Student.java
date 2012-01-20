@@ -47,6 +47,7 @@ public class Student extends CTBBean
     private String udf2;
     private String testPurpose;
     private String extendedTimeAccom; // Added for Student PAcing
+    private String outOfSchool; //Added for out of school changes
     
     
     // Start changes for Student Pacing
@@ -491,5 +492,19 @@ public class Student extends CTBBean
 	 */
 	public void setTestPurpose(String testPurpose) {
 		this.testPurpose = testPurpose;
+	}
+
+	/**
+	 * @return the outOfSchool
+	 */
+	public String getOutOfSchool() {
+		return outOfSchool;
+	}
+
+	/**
+	 * @param outOfSchool the outOfSchool to set
+	 */
+	public void setOutOfSchool(String outOfSchool) {
+		this.outOfSchool = outOfSchool;
 	}
 } 

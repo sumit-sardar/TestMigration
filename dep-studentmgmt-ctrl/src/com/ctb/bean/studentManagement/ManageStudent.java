@@ -74,6 +74,8 @@ public class ManageStudent extends CTBBean
     private String orgIdList;
     private String orgNameList;
     
+    //Added for out of school
+    private String outOfSchool;
     
 	/**
 	 * @return the testPurpose
@@ -648,6 +650,12 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setOrgNameList(String orgNameList) {
 		this.orgNameList = orgNameList;
+	}
+	public String getOutOfSchool() {
+		return outOfSchool;
+	}
+	public void setOutOfSchool(String outOfSchool) {
+		this.outOfSchool = outOfSchool;
 	}
 	
     

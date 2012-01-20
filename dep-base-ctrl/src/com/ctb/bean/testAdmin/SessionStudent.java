@@ -52,6 +52,7 @@ public class SessionStudent extends SchedulingStudent
         setEthnicity(student.getEthnicity());
         setEmail(student.getEmail());
         setGrade(student.getGrade());
+        setOutOfSchool(student.getOutOfSchool());	//Added for out of school changes
         setExtElmId(student.getExtElmId());
         setExtPin1(student.getExtPin1());
         setExtPin2(student.getExtPin2());
