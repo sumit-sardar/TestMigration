@@ -32,6 +32,107 @@
 			<p style="color:#000"><lb:label key="services.import.msg" /></p> 		
 		</td>
 	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+					<div id="accordion" style="width:85%; position:relative;">							
+						<div style="position:relative;">
+						  	<h3><a href="#"><lb:label key="services.import.templates" /></a></h3>
+							<div id="templates" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;" >							
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+	  		<span class="headerTag"><lb:label key="services.export.downloadtemplate" /></span><br/>
+			<lb:label key="services.import.template.msg" /><br/> 
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="transparent">
+			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
+        	<a href="#" id="exportDataButton" onclick="downloadTemplate();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button" />
+           	</a>
+            </div>               	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<div id="uploadData" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="list2" class="gridTable"></table>
+				<script>populateDownloadTemplateListGrid();</script>
+			</div>								
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td style="padding-left:5px;">
+			<br/><br/>
+	  		<span class="headerTag"><lb:label key="services.import.uploadFile" /></span><br/>
+			<lb:label key="services.import.uploadfile.msg" /><br/><br/>		
+		</td>
+	</tr>	
+	
+	<tr> 
+		<td style="padding-left:6px;">
+			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
+        	<netui:fileUpload tagId="inputbox" dataSource="actionForm.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
+            &nbsp;
+        	<a href="#" id="upload" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.import.button" />
+           	</a>
+           	</div>
+			<br/><br/>
+       </td>
+    </tr>
+
+	<tr><td>&nbsp;</td></tr>
+	
+</table>
+							</div>
+						</div>
+						
+						
+						<div style="position:relative;">
+							<h3><a href="#"><lb:label key="services.import.viewUploads" /></a></h3>
+							<div id="viewUploads" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;" >
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+			<lb:label key="services.import.viewUploads.msg" /> 		
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="transparent">
+			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal;">
+        	<a href="#" id="deleteFile" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button.delete" />
+           	</a>
+           	&nbsp;
+        	<a href="#" id="downloadErrorFile" onclick="submitPage();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+          		<lb:label key="services.export.button.downloadErrorFile" />
+           	</a>
+           	&nbsp;
+        	<a href="#" id="refresh" onclick="submitPage();" class="rounded {transparent} button" style="text-decoration: none;" >
+          		<lb:label key="services.export.button.refresh" />
+           	</a>
+            </div>               	                                    
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;">
+			<div id="viewUploads" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="list3" class="gridTable"></table>
+				<div id="pager3" class="gridTable" ></div>
+				<script>populateUploadListGrid();</script>
+			</div>								
+		</td>
+	</tr>
+</table>
+							</div>									
+						</div>							
+					</div>
+					
+		</td>
+	</tr>
  			    
 </table>
 
@@ -48,5 +149,3 @@ $(document).ready(function(){
 <!-- ********************************************************************************************************************* -->
     </netui-template:section>
 </netui-template:template>
-
-

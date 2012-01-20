@@ -218,11 +218,11 @@ public class UploadOperationController extends PageFlowController {
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward downloadTemplate(ManageUploadForm form)
+    protected Forward downloadTemplate()
     {         
         HttpServletResponse resp = this.getResponse();     
         byte[] data = null;   
-        String fileName = form.getFileName();
+        String fileName = "Usertemplate.xls";
         String fileContent = "";
         String bodypart = "attachment; filename=\"" +
                           fileName +
@@ -265,13 +265,13 @@ public class UploadOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
-		Row row1 = new Row(1);		
+		Row row1 = new Row("1");		
 		String[] atts1 = new String[2];
 		atts1[0] = "User Template";
 		atts1[1] = "Format for user profiles to upload.";
 		row1.setCell(atts1);
 
-		Row row2 = new Row(2);		
+		Row row2 = new Row("2");		
 		String[] atts2 = new String[2];
 		atts2[0] = "Student Template";
 		atts2[1] = "Format for student profiles to upload.";
@@ -302,7 +302,7 @@ public class UploadOperationController extends PageFlowController {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-        
+		
         return null;
     }
     
@@ -315,11 +315,12 @@ public class UploadOperationController extends PageFlowController {
 		OutputStream stream = null;
 		ArrayList rows = new ArrayList();
 		
-		DataFileAuditData dataFileAuditData = findFile(); 
-        this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
+		//DataFileAuditData dataFileAuditData = findFile(); 
+        //this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
 		
-		/*
+		
 		this.fileList = new ArrayList();
+		
 		AuditFileHistory afh2 = new AuditFileHistory();
 		afh2.setDataFileAuditId(new Integer(100));
 		afh2.setCreatedDateTime("09/01/2009 10:45:17");
@@ -330,7 +331,7 @@ public class UploadOperationController extends PageFlowController {
 		this.fileList.add(afh2);
 
 		afh2 = new AuditFileHistory();
-		afh2.setDataFileAuditId(new Integer(100));
+		afh2.setDataFileAuditId(new Integer(200));
 		afh2.setCreatedDateTime("09/01/2010 10:45:17");
 		afh2.setUploadFileName("UserTemplate-3.xls");
 		afh2.setUploadFileRecordCount("6");
@@ -339,14 +340,14 @@ public class UploadOperationController extends PageFlowController {
 		this.fileList.add(afh2);
 
 		afh2 = new AuditFileHistory();
-		afh2.setDataFileAuditId(new Integer(100));
+		afh2.setDataFileAuditId(new Integer(300));
 		afh2.setCreatedDateTime("09/01/2011 10:45:17");
 		afh2.setUploadFileName("UserTemplate-4.xls");
 		afh2.setUploadFileRecordCount("7");
 		afh2.setFailedRecordCount("6");
 		afh2.setStatus("SC");
 		this.fileList.add(afh2);
-		*/
+		
         
 		String[] atts = new String[5];
 		
@@ -355,7 +356,8 @@ public class UploadOperationController extends PageFlowController {
         	
         	Integer dataFileAuditId = afh.getDataFileAuditId();
         	
-    		Row row = new Row(dataFileAuditId.intValue());
+        	String rowId = dataFileAuditId.intValue() + "_" + afh.getStatusCode();
+    		Row row = new Row(rowId);
     		
     		atts = new String[5];
     		atts[0] = afh.getCreatedDateTime();

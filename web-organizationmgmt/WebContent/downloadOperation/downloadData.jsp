@@ -23,19 +23,10 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
-<%
-    String userName = (String)request.getSession().getAttribute("userName"); 
-    String userFile = userName + "_User.xls";  
-    String studentFile = userName + "_Student.xls";
-%>
-
-
 
 <netui:form action="manageDownload">
 
-<input type="hidden" id="userFile" name = "userFile" value='<%= userFile %>'/>
-<input type="hidden" id="studentFile" name = "studentFile" value='<%= studentFile %>'/>
-<input type="hidden" id="downloadFile" name = "downloadFile" value='<%= userFile %>'/>
+<input type="hidden" id="downloadFile" name="downloadFile" value="userFile" />
  
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>

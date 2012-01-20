@@ -17,19 +17,18 @@ function populateDownloadListGrid() {
 			height: '30px',  			
 			caption: "Download Data",
 			onSelectRow: function (rowId) {
-			   	var userFile = document.getElementById('userFile').value;
-			   	var studentFile = document.getElementById('studentFile').value;
 				if (rowId == 1)  
-					document.getElementById('downloadFile').value = userFile;
+					document.getElementById('downloadFile').value = "userFile";
 				else 
-					document.getElementById('downloadFile').value = studentFile;
+					document.getElementById('downloadFile').value = "studentFile";
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
+				$.unblockUI();
+				alert("failed to load : populateDownloadListGrid");  
+				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
 }
@@ -60,7 +59,8 @@ function populateDownloadTemplateListGrid() {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
+				alert("failed to load : populateDownloadTemplateListGrid");  
+				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
 }
@@ -91,16 +91,30 @@ function populateUploadListGrid() {
 			onPaging: function() {
 			},
 			onSelectRow: function (rowId) {
-				setAnchorButtonState('exportDataButton', false);
+				var selectedId = $("#list3").getGridParam('selrow');
+
+				if (selectedId.indexOf("_SC") > 0) {
+					setAnchorButtonState('deleteFile', false);
+					setAnchorButtonState('downloadErrorFile', true);
+				}				
+				if (selectedId.indexOf("_FL") > 0) {
+					setAnchorButtonState('deleteFile', false);
+					setAnchorButtonState('downloadErrorFile', false);
+				}				
+				if (selectedId.indexOf("_IN") > 0) {
+					setAnchorButtonState('deleteFile', true);
+					setAnchorButtonState('downloadErrorFile', true);
+				}				
+				
 			},
 			loadComplete: function () {
-            	var width = jQuery("#list3").width();
-			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
+				width = 997;
 			    jQuery("#list3").setGridWidth(width);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
+				alert("failed to load : populateUploadListGrid");  
+				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
 }
@@ -121,35 +135,50 @@ function enableUpload()
 function downloadData()
 {
     var element = document.getElementById("downloadFile");
-    //alert(element);
-    //alert(element.value);
     element.form.action = "downloadData.do";
     element.form.submit();
-    
-	//document.form.action = 'downloadData.do';
-	//document.form.submit();
-	
 	return false;
 }
 
-function ajaxDownloadData()
+/*
+function downloadData()
+{
+	var downloadFile = document.getElementById('downloadFile').value;
+	
+	$.ajax({
+		async:		false,
+		beforeSend:	function(){
+					},
+		url:		'downloadData.do' + '?downloadFile=' + downloadFile,
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+					},
+		complete :  function(){
+					}
+	});
+
+	return false;		
+}
+*/
+
+
+function downloadTemplate()
 {
 	$.ajax({
 		async:		false,
 		beforeSend:	function(){
 					},
-		url:		'downloadData.do',
+		url:		'downloadTemplate.do',
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
-						alert(data);
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						alert(textStatus);
-						//window.location.href="/TestSessionInfoWeb/logout.do";						
 					},
 		complete :  function(){
-						alert("ok");
 					}
 	});
 

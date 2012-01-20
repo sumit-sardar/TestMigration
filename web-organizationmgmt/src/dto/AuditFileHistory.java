@@ -91,6 +91,9 @@ public class AuditFileHistory implements java.io.Serializable {
 			return "Success";
 		}
 	}
+	public String getStatusCode() {
+		return this.status;
+	}
 	/**
 	 * @param status The status to set.
 	 */

@@ -160,14 +160,19 @@ public class DownloadOperationController extends PageFlowController {
     {         
         byte []data = null;
         String fileContent = "";
-        String fileName = (String)this.getRequest().getParameter("downloadFile");        
+        String fileName = this.userName + "_User.xls";
+
+        String downloadFile = (String)this.getRequest().getParameter("downloadFile");
+        if ((downloadFile != null) && downloadFile.equals("studentFile"))
+            fileName = this.userName + "_Student.xls";
+
         System.out.println(fileName);
         
-        String userFileName = userName + "_User.xls"; 
-        
         try {
-            if ( fileName.equals(userFileName) ){
+            if ( fileName.indexOf("_User.xls") > 0 ){
                 
+                System.out.println("downLoadUserDataFile");
+            	
                 UserFile userFile = downLoadManagement.getUserFile(this.userName);
                 UserFileRow []userFileRow = userFile.getUserFileRows();
                 
@@ -180,7 +185,9 @@ public class DownloadOperationController extends PageFlowController {
                         (userFile, this.userName, userManagement);
                 
             } else {
-                
+
+                System.out.println("downLoadStudentDataFile");
+            	
                 StudentFile studentFile = downLoadManagement.getStudentFile(this.userName);
                 StudentFileRow []studentFileRow = studentFile.getStudentFileRows();
                 
@@ -242,13 +249,13 @@ public class DownloadOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
-		Row row1 = new Row(1);		
+		Row row1 = new Row("1");		
 		String[] atts1 = new String[2];
 		atts1[0] = "User Data";
 		atts1[1] = "Users in your organization located at or below your organizational assignment.";
 		row1.setCell(atts1);
 
-		Row row2 = new Row(2);		
+		Row row2 = new Row("2");		
 		String[] atts2 = new String[2];
 		atts2[0] = "Student Data";
 		atts2[1] = "Students in your organization associated with your user login.";
@@ -279,7 +286,7 @@ public class DownloadOperationController extends PageFlowController {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-        
+       
         return null;
     }
     
