@@ -816,7 +816,7 @@ public class SessionOperationController extends PageFlowController {
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
     	    	Date now = new Date(System.currentTimeMillis());
     	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
-    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(scheduledSession.getTestSession().getItemSetId()); 
+    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 
     	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
     	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
     	    	if (ovLoginStart != null && !(DateUtils.isBeforeToday(ovLoginStart , this.user.getTimeZone() ))) {
@@ -1338,7 +1338,7 @@ public class SessionOperationController extends PageFlowController {
 				 testAdminId = Integer.valueOf(testAdminIdString.trim());
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
-			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(itemSetId); 
+			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(this.getCustomerId(), testAdminId); 
 			 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
 				 formOperand = selectedTest.getOverrideFormAssignmentMethod();
 	           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {

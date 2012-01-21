@@ -3666,11 +3666,11 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     
-    public TestElement getTestElementMinInfoById(Integer itemsetIdTC) throws CTBBusinessException
+    public TestElement getTestElementMinInfoById(Integer customerId, Integer itemsetIdTC) throws CTBBusinessException
     {
     	 try {
 
-    		 TestElement test = itemSet.getTestElementMinInfoById(itemsetIdTC);
+    		 TestElement test = itemSet.getTestElementMinInfoById(customerId, itemsetIdTC);
     		 test.setForms(itemSet.getFormsForTest(test.getItemSetId()));
     		 return test;
     	 } catch (SQLException se){
