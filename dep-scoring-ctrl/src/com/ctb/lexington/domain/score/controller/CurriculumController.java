@@ -75,7 +75,13 @@ public class CurriculumController {
         }
         
         // handle content areas
-        IrsContentAreaDimData [] contentAreas = getIrsContentAreaBeans(data);
+        IrsContentAreaDimData [] contentAreas = null;
+        if(this.adminData.getProductId() == 8000){
+        	contentAreas = getAdaptiveIrsContentAreaBeans(data);
+        }else{
+        	contentAreas = getIrsContentAreaBeans(data);
+        }
+        
         for(int i=0;i<contentAreas.length;i++) {
             IrsContentAreaDimData newContentArea = contentAreas[i];
             // insert subject if necessary
@@ -197,7 +203,25 @@ public class CurriculumController {
         
         return cad;
     }
-    
+    private IrsContentAreaDimData [] getAdaptiveIrsContentAreaBeans(CurriculumData data) {
+        IrsContentAreaDimData [] cad = new IrsContentAreaDimData[data.getContentAreas().length];
+        for(int i=0;i<data.getContentAreas().length;i++) {
+            cad[i] = new IrsContentAreaDimData();
+            ContentArea ca = data.getContentAreas()[i];
+            cad[i].setContentAreaid(ca.getContentAreaId());
+            cad[i].setContentAreaType(ca.getContentAreaType());
+            cad[i].setName(ca.getContentAreaName());
+            cad[i].setNumItems(ca.getContentAreaNumItems());
+            cad[i].setPointsPossible(ca.getContentAreaPointsPossible());
+            cad[i].setAssessmentid(context.getAssessmentId());
+            cad[i].setContentAreaIndex(new Long("Applied Mathematics".equals(ca.getContentAreaName())?1:
+                                                "Language".equals(ca.getContentAreaName())?2:
+                                                "Mathematics Computation".equals(ca.getContentAreaName())?3:4));
+        }
+        
+        return cad;
+    }
+   
     private IrsPrimObjDimData [] getIrsPrimObjBeans(CurriculumData data) {
         IrsPrimObjDimData [] pod = new IrsPrimObjDimData[data.getPrimaryObjectives().length];
         for(int i=0;i<data.getPrimaryObjectives().length;i++) {
