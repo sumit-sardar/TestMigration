@@ -1896,9 +1896,10 @@ public class ScheduleTestImpl implements ScheduleTest
                 session.setOverrideLoginStartDate(loginStartOverride);
                 session.setLoginStartDate(loginStartOverride);
             }
-            if(loginEndOverride != null && session.getLoginEndDate().after(loginEndOverride)){
+            // commenting this out because user cannot select a date beyond the overirde loging end date from the UI
+            /* if(loginEndOverride != null && session.getLoginEndDate().after(loginEndOverride)){
             	 session.setLoginEndDate(loginEndOverride);
-            }
+            }*/ 
             String formAssignmentOverride = admins.getTestCatalogFormAssignmentOverride(session.getItemSetId(), session.getCreatorOrgNodeId());
             if(formAssignmentOverride != null && !"".equals(formAssignmentOverride)) {
                 session.setOverrideFormAssignmentMethod(formAssignmentOverride);
