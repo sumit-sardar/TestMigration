@@ -1767,7 +1767,11 @@ function registerDelegate(tree){
 						if(selectedSubtestId != selectedTestId)
 		 					changeSubtestConfirmPopup();
 		 				else {
-		 					subtestChangeProcess();
+		 					if(!offGradeCancled) {
+		 						subtestChangeProcess();
+		 					} else {
+		 						offGradeCancled = false;
+		 					}
 		 					selectedSubtestId = selectedTestId;
 		 					if(offGradeSubtestChanged) {
 		 						sessionListRelatedData(testSessionListRequired);
@@ -2962,6 +2966,8 @@ function registerDelegate(tree){
 		    $("#hasTestBreak").val("F");
 		    document.getElementById("sData").disabled=true;
 	    }
+	    offGradeCancled = false;
+	    offGradeSubtestChanged = false;
 	}
 	
 	function closePopUpForProctor(dailogId){
