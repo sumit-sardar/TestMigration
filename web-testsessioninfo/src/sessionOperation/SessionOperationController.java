@@ -1025,7 +1025,8 @@ public class SessionOperationController extends PageFlowController {
 		
 	}	
     private SessionStudentData getRestrictedStudentsForTest(ScheduledSession session) throws CTBBusinessException{
-    	SessionStudentData restrictedSSD = this.scheduleTest.getRestrictedStudentsForTest(userName, session.getStudents(),  session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId(), null, null, null);
+    	 SortParams sort = FilterSortPageUtils.buildSortParams("LastName",ColumnSortEntry.ASCENDING);
+    	SessionStudentData restrictedSSD = this.scheduleTest.getRestrictedStudentsForTest(userName, session.getStudents(),  session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId(), null, null, sort);
 		return restrictedSSD;
 	}
     private Integer saveOrUpdateTestSession(ScheduledSession session) throws CTBBusinessException {

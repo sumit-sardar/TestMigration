@@ -1285,10 +1285,10 @@ function getStudentListArray(studentArray) {
           datatype: 'local',          
           colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), $("#testDetGrade").val(), $("#resSessionName").val(), $("#resStartDate").val(), $("#resEndDate").val()],
 		   	colModel:[
-		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'middleName',index:'middleName', width:80, editable: true, align:"left",sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'grade',index:'grade', width:70, editable: true, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:80, editable: true, align:"left",sorttype:'text',search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade', width:70, editable: true, align:"left", sortable:true, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'status.priorSession.testAdminName',index:'orgNodeName',editable: false, width:248, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
 		   		{name:'status.priorSession.loginStartDateString',index:'StartDate',editable: false, width:80, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
 		   		{name:'status.priorSession.loginEndDateString',index:'EndDate',editable: false, width:80, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
