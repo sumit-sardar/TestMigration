@@ -265,12 +265,14 @@
 									} else {
 										$('#testBreak').removeAttr('checked');
 										$('#aCode').val(selectedTestSession.testSession.accessCode);
+										document.getElementById("aCode").style.visibility = "visible";
 										
 									}
 									
 								} else {
 									$('#aCode').val(selectedTestSession.testSession.accessCode);	
 									document.getElementById("testBreak").disabled=true;	
+									document.getElementById("aCode").style.visibility = "visible";
 								}
 														
 								if(stdsLogIn || isTestExpired || isProctor){					
