@@ -236,6 +236,7 @@
 								   		break;
 								   }
 								}
+								offGradeSubtestChanged = true;
 								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
 								// End : to show the test as selected when it appears in next page 
 								if(selectedTestSession.testSession.isRandomize == 'Y'){
@@ -265,14 +266,12 @@
 									} else {
 										$('#testBreak').removeAttr('checked');
 										$('#aCode').val(selectedTestSession.testSession.accessCode);
-										document.getElementById("aCode").style.visibility = "visible";
 										
 									}
 									
 								} else {
 									$('#aCode').val(selectedTestSession.testSession.accessCode);	
-									document.getElementById("testBreak").disabled=true;	
-									document.getElementById("aCode").style.visibility = "visible";
+									document.getElementById("testBreak").disabled=true;
 								}
 														
 								if(stdsLogIn || isTestExpired || isProctor){					
