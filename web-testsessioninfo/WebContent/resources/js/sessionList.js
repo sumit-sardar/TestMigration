@@ -1502,7 +1502,10 @@ function registerDelegate(tree){
 	function closeSubtestConfirmationPopUp() {		
 		closePopUp('subtestChangeConfirmationPopup');
 		offGradeCancled = true;
-		$("#"+selectedSubtestId).trigger('click');
+		if(selectedSubtestId != "")
+			$("#"+selectedSubtestId).trigger('click');
+		else
+			$("#testList").jqGrid('resetSelection');
 	}
 
 	function  changeGradeAndLevel(){
@@ -1954,11 +1957,11 @@ function registerDelegate(tree){
 		document.getElementById("testBreak").disabled=true;
 		$("#hasTestBreak").val("F");
 		document.getElementById("aCode").style.visibility = "hidden";
+		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
+		document.getElementById("subtestGrid").style.display = "none";
+		document.getElementById("noSubtest").style.display = "";
 		
 		if(state != "EDIT"){
-			document.getElementById("subtestGrid").style.display = "none";
-			document.getElementById("noSubtest").style.display = "";
-			document.getElementById("testSessionName_lbl").innerHTML = "No test selected";
 			document.getElementById("testSessionName").value = "";
 			document.getElementById("startDate").value = "";			
 			document.getElementById("endDate").value = "";			
@@ -1985,7 +1988,7 @@ function registerDelegate(tree){
 		document.getElementById("aCode").style.visibility = "hidden";		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
-		document.getElementById("testSessionName_lbl").innerHTML = "No test selected";
+		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
