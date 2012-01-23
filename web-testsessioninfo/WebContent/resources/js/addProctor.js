@@ -69,18 +69,19 @@ function hideSelectedProctor (){
 	isOnBackProctor = true;
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');	
+	$("#proctorOrgNodeHierarchy").undelegate();
 	
 }
 
 function loadInnerProctorOrgTree() {
 	
-	if(!isOnBackProctor) {
+	//if(!isOnBackProctor) {
 		createSingleNodeSelectedTreeForProctor (orgTreeHierarchy);
-	} else{
-		$("#proctorOrgNodeHierarchy").jstree("close_all");
+	//} else{
+		//$("#proctorOrgNodeHierarchy").jstree("close_all");
 		$("#selectProctor").GridUnload();
 		selectProctorGridLoaded = false;
-	}
+	//}
 	$("#innerProctorSearchheader").css("visibility","visible");	
 	$("#proctorOrgNodeHierarchy").css("visibility","visible");	
 
