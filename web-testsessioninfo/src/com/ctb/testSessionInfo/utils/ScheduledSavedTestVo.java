@@ -25,6 +25,8 @@ public class ScheduledSavedTestVo implements Serializable {
 	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
 	private String minLoginStartDate = "";
 	private String minLoginEndDate = "";
+	private SessionStudent[] restrictedStudents;
+	private Integer totalStudent ;
 
 	private static final long serialVersionUID = 1L;
 
@@ -123,6 +125,38 @@ public class ScheduledSavedTestVo implements Serializable {
 	 */
 	public void setMinLoginEndDate(String minLoginEndDate) {
 		this.minLoginEndDate = minLoginEndDate;
+	}
+
+		
+	/**
+	 * @return the restrictedStudents
+	 */
+	public SessionStudent[] getRestrictedStudents() {
+		return restrictedStudents;
+	}
+
+	
+	/**
+	 * @param restrictedStudents the restrictedStudents to set
+	 */
+	public void setRestrictedStudents(SessionStudent[] restrictedStudents) {
+		this.restrictedStudents = restrictedStudents;
+	}
+
+	
+	/**
+	 * @return the totalStudent
+	 */
+	public Integer getTotalStudent() {
+		return totalStudent;
+	}
+
+	
+	/**
+	 * @param totalStudent the totalStudent to set
+	 */
+	public void setTotalStudent(Integer totalStudent) {
+		this.totalStudent = totalStudent;
 	}
 
 	

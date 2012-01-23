@@ -549,7 +549,6 @@ public class SessionOperationController extends PageFlowController {
         protected Forward saveTest(SessionOperationForm form)
         {
     		
-    		//  form.validateValues(); NOT TO DO
     		Integer studentCountAfterSave = 0;
     		Integer testAdminId =null;
     		ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
@@ -564,8 +563,10 @@ public class SessionOperationController extends PageFlowController {
         	OutputStream stream = null;
         	String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
         	String currentAction = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.ACTION, true, "");
-        	String isStudentListUpdated = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.IS_STUDENT_LIST_UPDATED, true, "T");
-        	
+        	String removeRestrictedStd = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.REMOVE_RESTRICTED_STD_AND_SAVE, true, "false");
+        	Boolean removeRestricted = Boolean.valueOf(removeRestrictedStd.trim().toLowerCase());
+        	SessionStudent[] restStudent = null;
+        	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
         	if(currentAction.equalsIgnoreCase("EDIT")){
         		isAddOperation = false;
         	} else if (currentAction.equalsIgnoreCase("ADD")){
@@ -581,24 +582,35 @@ public class SessionOperationController extends PageFlowController {
         		}
         	}
         	
-        	if(isAddOperation || isStudentListUpdated.equalsIgnoreCase("T")){
-        		String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENTS, true, "");
-        		if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1)
-                    studentCountBeforeSave = studentsBeforeSave.trim().split(",").length;
-        	} else {
-        		//TODO
-        	}
         	
             try
             {
-                testAdminId = createSaveTest(this.getRequest(), validationFailedInfo, isAddOperation);
-                if(!validationFailedInfo.isValidationFailed()) {
-                	isValidationFailed = false;
-                	RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName,
-                    		testAdminId, null, null, null);
-                    studentCountAfterSave = red.getTotalCount().intValue(); 
-                } else {
-                	isValidationFailed = true;
+            	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation);
+            	
+            	
+            	if(!validationFailedInfo.isValidationFailed()) {
+            		isValidationFailed = false;
+            		
+            		if(removeRestricted){
+                		removeRestrictedStudentsFromTest(session);
+                	} else {
+                		restStudent = getRestrictedStudentsForTest(session).getSessionStudents();
+                	}
+            		studentCountBeforeSave = session.getStudents().length;
+            		if(restStudent == null || restStudent.length ==0) { 
+            			testAdminId = saveOrUpdateTestSession( session );
+                		RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);
+                        studentCountAfterSave = red.getTotalCount().intValue();  
+            		} else {
+            			isValidationFailed = true;
+            			vo.setRestrictedStudents(restStudent);
+            			vo.setTotalStudent(session.getStudents().length);
+            			status.setSuccess(false);
+
+            		}
+
+            	} else {
+                  	isValidationFailed = true;
                 }
                 
                                       
@@ -650,7 +662,7 @@ public class SessionOperationController extends PageFlowController {
                 }
 
             } 
-           if (!isValidationFailed && studentCountBeforeSave <= studentCountAfterSave) {
+           if (vo.getRestrictedStudents() == null && !isValidationFailed && studentCountBeforeSave <= studentCountAfterSave) {
         	   
            		String messageHeader = "";
            		if(isAddOperation) {
@@ -666,8 +678,7 @@ public class SessionOperationController extends PageFlowController {
         	   	status.setSuccessInfo(successInfo);
         	   	//idToStudentMap.clear(); // clear map
         	   	
-           } else if (!isValidationFailed)
-            {
+           } else if (vo.getRestrictedStudents() == null && !isValidationFailed) {
                 int removedCount = studentCountBeforeSave - studentCountAfterSave;
                 String messageHeader = "";
            		if(isAddOperation) {
@@ -681,21 +692,23 @@ public class SessionOperationController extends PageFlowController {
            		successInfo.updateMessage(messageBody);
                 status.setSuccess(true);
                 status.setSuccessInfo(successInfo);
-            	//idToStudentMap.clear(); // clear map
-            } else {
+             } else if(vo.getRestrictedStudents() == null ) {
             	status.setSuccess(false);
             	if("SYSTEM_EXCEPTION".equalsIgnoreCase(validationFailedInfo.getKey())){
             		status.setSystemError(true);
-            		//idToStudentMap.clear(); // clear map
             	} else {
             		status.setSystemError(false);
             	}
             	status.setValidationFailedInfo(validationFailedInfo);
             }
+           
+          // if(vo.getRestrictedStudents() == null  ){
+        	   vo.setOperationStatus(status);
+          // }
             
            Gson gson = new Gson();
-	       jsonData = gson.toJson(status);
-	     //  System.out.println(jsonData);
+	       jsonData = gson.toJson(vo);
+	  
 	       	try {
 	   			resp.setContentType(CONTENT_TYPE_JSON);
  	   			stream = resp.getOutputStream();
@@ -705,7 +718,7 @@ public class SessionOperationController extends PageFlowController {
 	   			e.printStackTrace();
    		} 
             return null;
-           // return new Forward("success", form);
+          
         }
     
     	@Jpf.Action()
@@ -1001,11 +1014,27 @@ public class SessionOperationController extends PageFlowController {
 
 		return null;
   }
-    	
-   
-    	 private Integer createSaveTest(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) throws CTBBusinessException
+    private void removeRestrictedStudentsFromTest(ScheduledSession session) throws CTBBusinessException {
+    	SessionStudent[] students = updateRestrictedStudentsForTest(session.getStudents(),session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId()  );
+    	session.setStudents(students);
+		
+	}	
+    private SessionStudentData getRestrictedStudentsForTest(ScheduledSession session) throws CTBBusinessException{
+    	SessionStudentData restrictedSSD = this.scheduleTest.getRestrictedStudentsForTest(userName, session.getStudents(),  session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId(), null, null, null);
+		return restrictedSSD;
+	}
+    private Integer saveOrUpdateTestSession(ScheduledSession session) throws CTBBusinessException {
+    	Integer  newTestAdminId =null;
+    	if(session.getTestSession().getTestAdminId()!=null){
+			 newTestAdminId = this.scheduleTest.updateTestSession(this.userName, session);  
+		 } else {
+			 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, session);  
+		 }
+		return newTestAdminId;
+	}
+    private ScheduledSession populateAndValidateSessionRecord(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) throws CTBBusinessException
     	    {  
-    		 Integer newTestAdminId = null;
+    		 //Integer newTestAdminId = null;
     		 ScheduledSession scheduledSession = new ScheduledSession();
     		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo , isAddOperation);
     		 if(!validationFailedInfo.isValidationFailed()) {
@@ -1019,15 +1048,15 @@ public class SessionOperationController extends PageFlowController {
     			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo, isAddOperation);
     		 }
     		 
-    		 if(!validationFailedInfo.isValidationFailed()) {
+    		/* if(!validationFailedInfo.isValidationFailed()) {
     			 if(scheduledSession.getTestSession().getTestAdminId()!=null){
     				 newTestAdminId = this.scheduleTest.updateTestSession(this.userName, scheduledSession);  
     			 } else {
     				 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, scheduledSession);  
     			 }
     			 
-    		 }    		 
-    	        return newTestAdminId;
+    		 } */   		 
+    	        return scheduledSession;
     }
     
      private void populateScheduledUnits(ScheduledSession scheduledSession,
@@ -1290,6 +1319,31 @@ public class SessionOperationController extends PageFlowController {
 	}
              
 	
+
+	private SessionStudent[] updateRestrictedStudentsForTest(SessionStudent[] studentList, Integer testItemSetId, Integer testAdminId) throws CTBBusinessException {
+		SessionStudentData restrictedSSD = this.scheduleTest.getRestrictedStudentsForTest(userName, studentList, testItemSetId, testAdminId, null, null, null);
+		 SessionStudent [] restStudentNodes = restrictedSSD.getSessionStudents();
+		 ArrayList<SessionStudent> sessionStudentList = new ArrayList<SessionStudent>();
+		 if (restStudentNodes.length > 0)
+         {
+			for(int i=0; i<studentList.length; i++){
+				boolean found = false;
+				for(int j= 0; j<restStudentNodes.length ; j++) {
+					if(studentList[i].getStudentId().intValue()== restStudentNodes[j].getStudentId().intValue()){
+						found = true;
+						break;
+					}
+					
+				}
+				if(!found) {
+					sessionStudentList.add(studentList[i]);
+				}
+			}
+			return  sessionStudentList.toArray( new SessionStudent [sessionStudentList.size()]);
+         } else {
+        	return studentList;
+         }
+	}
 
 	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 		

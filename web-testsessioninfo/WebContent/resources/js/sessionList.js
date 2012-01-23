@@ -2821,8 +2821,9 @@ function registerDelegate(tree){
 			type:		'POST',
 			data:		 param,
 			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest){
+			success:	function(vdata, textStatus, XMLHttpRequest){
 						   
+						   var data = vdata.status;
 						   
 						   var successMessage;
 						   var key;
@@ -2835,7 +2836,7 @@ function registerDelegate(tree){
 							key 		     = data.successInfo.key;
 							messageHeader 	 = data.successInfo.messageHeader;
 							messageArray     = data.successInfo.message;
-						  } else {
+						  } else if(vdata.restrictedStudents == undefined){
 						  	key 		    = data.validationFailedInfo.key;
 							messageHeader 	= data.validationFailedInfo.messageHeader;
 							messageArray    = data.validationFailedInfo.message;
@@ -2875,7 +2876,10 @@ function registerDelegate(tree){
 								$.unblockUI();
 								$('#showSaveTestMessage').show();
 							  	closePopUp("scheduleSession");
-					  } else {
+					  	} else if(!data.isSuccess && !data.IsSystemError && vdata.restrictedStudents != undefined) {
+					  		openRestrictedStudentPopUp(vdata.restrictedStudents);
+					  	
+					  	}else {
 								if(length==0) {
 									setMessage(messageHeader, "", "errorMessage","");
 									$('#displayMessage').show(); 
@@ -2887,7 +2891,7 @@ function registerDelegate(tree){
 									$('#displayMessage').show(); 
 								} 
 							  
-					  }
+					  	}
 		
 							 						
 						},

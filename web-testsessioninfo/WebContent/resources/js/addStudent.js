@@ -1254,3 +1254,6 @@ function getStudentListArray(studentArray) {
 	return val;
   }
  	
+	function openRestrictedStudentPopUp(restrictedStudents) {
+	
+	}

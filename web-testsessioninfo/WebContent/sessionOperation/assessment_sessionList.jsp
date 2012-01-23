@@ -308,3 +308,4 @@
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
 <jsp:include page="/sessionOperation/view_test_session.jsp" />
+<jsp:include page="/sessionOperation/restricted_student.jsp" />

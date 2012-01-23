@@ -525,13 +525,17 @@ public class ScheduleTestImpl implements ScheduleTest
                 Integer restrictedAdmin = students.isTestRestrictedForStudent(userName, sstudents[i].getStudentId(), testItemSetId);
                 if (restrictedAdmin != null && !new Integer(-1).equals(restrictedAdmin)) {
                     if (testAdminId == null || !restrictedAdmin.equals(testAdminId)) {
-                        badStudentList.add(sstudents[i]);
+                    	SessionStudent stdd = sstudents[i];
+                    	if(stdd.getFirstName() == null) {
+                    		stdd = students.getStudent(sstudents[i].getStudentId());
+                    	}
+                        badStudentList.add(stdd);
                         EditCopyStatus status = new EditCopyStatus();
                         status.setCode(EditCopyStatus.StatusCode.PREVIOUSLY_SCHEDULED);
                         TestSession ts = admins.getTestAdminDetails(restrictedAdmin);  ///
                         TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(ts);  ///
                         status.setPriorSession(ts);
-                        sstudents[i].setStatus(status);
+                        stdd.setStatus(status);
                     }
                 }
             }
