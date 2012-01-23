@@ -1,8 +1,10 @@
 package com.ctb.util;
 
+import java.io.Serializable;
 
 
-public class OperationStatus {
+public class OperationStatus implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private boolean isSuccess = false;
 	private boolean IsSystemError = false;
 	private String successMessage ;
