@@ -554,6 +554,8 @@ function populateBulkStudentGrid() {
 									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
 									document.getElementById('displayBulkMessageMain').style.display = "block";
 									selectedStudentObjArr = {};
+									//call here again to disable button now because selectedStudentObjArr might be having other org's data  
+									determineStudentSel(selectedStudentObjArr, "assignAccommButton"); 
 									totalRowSelectedOnPage = 0;
 									$.unblockUI();			
 									}
