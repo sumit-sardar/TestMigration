@@ -556,7 +556,7 @@ function populateSelectStudentGrid() {
 									 studentDataVal.orgNodeName = orgListName;
 							     
 							     } else {
-							     	$("#"+studentData.studentId+" td input").attr("checked", false);
+							     	$("#"+studentDataVal.studentId+" td input").attr("checked", false);
 							     }
 							}
 						}
