@@ -1164,7 +1164,10 @@ public class OrganizationManagementImpl implements OrganizationManagement
     			 new OrgDataDeletedException
     			 ("DeleteOrganization.Failed");
     		 throw dataNotDeletedException;                                                
-    	 } catch (Exception e) {
+    	 }
+    	 catch (CTBBusinessException e) {
+    		 throw e;
+         }catch (Exception e) {
     		 OrgDataDeletedException dataNotDeletedException = 
     			 new OrgDataDeletedException
     			 ("DeleteOrganization.Failed");
