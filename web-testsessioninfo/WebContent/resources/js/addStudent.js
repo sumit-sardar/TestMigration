@@ -1297,6 +1297,7 @@ function getStudentListArray(studentArray) {
 		   	records: function(obj) { 
 		   	 } },
 		   	loadui: "disable",
+		   	caption: $("#resGridTitle").val(),
 			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
