@@ -428,7 +428,7 @@ public class TMSServlet extends HttpServlet {
 						    	}
 				    		}
 				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-				    		if(("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct()))) {
+				    		if(manifestData.length > 0 && ("TB".equals(manifestData[0].getProduct()) || "TL".equals(manifestData[0].getProduct()))) {
 			    				// re-calc auto-locator levels when exiting client
 			    	    		handleTabeLocator(rosterId);
 			    	    		manifest = oasSource.getManifest(rosterId, accessCode);
@@ -780,7 +780,7 @@ public class TMSServlet extends HttpServlet {
 		
 		
 		if(loginResponse.getTutorial() != null) {
-			if(restartCount < 1) {
+			if(restartCount < 1 || gotRestart) {
 				if("TRUE".equals(manifest.getTutorialTaken())) {
 					loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
 				} else if(0 == loginResponse.getTutorial().getDeliverTutorial().intValue()) {
