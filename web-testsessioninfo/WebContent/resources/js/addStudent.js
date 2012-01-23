@@ -1254,6 +1254,92 @@ function getStudentListArray(studentArray) {
 	return val;
   }
  	
-	function openRestrictedStudentPopUp(restrictedStudents) {
+	function openRestrictedStudentPopUp(restrictedStudents, totalStuLen) {
+		populateRestrivtedGrig(restrictedStudents);
+		if(state != "EDIT") {
+			$("#addOperation").show();
+			$("#editOperation").hide();
+		} else {
+			$("#editOperation").show();
+			$("#addOperation").hide();
+		}
+		$("#restrictedStudent").dialog({  
+		title:$("#restrictedTitle").val(),  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '920px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});
+		var toppos = ($(window).height() - 650) /2 + 'px';
+		 var leftpos = ($(window).width() - 920) /2 + 'px';
+		 $("#scheduleSession").parent().css("top",toppos);
+		 $("#scheduleSession").parent().css("left",leftpos);
+		 $("#restrictedCount").text(restrictedStudents.length);
+		$("#totalCountStu").text(totalStuLen);
+	}
 	
+	function populateRestrivtedGrig(restrictedStudents) {
+		$("#restrictedStudentlist").jqGrid({
+      	  data: restrictedStudents,         
+          datatype: 'local',          
+          colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), $("#testDetGrade").val(), $("#resSessionName").val(), $("#resStartDate").val(), $("#resEndDate").val()],
+		   	colModel:[
+		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left",sorttype:'text',search: false, sortable:false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:80, editable: true, align:"left",sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade', width:70, editable: true, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'status.priorSession.testAdminName',index:'orgNodeName',editable: false, width:248, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   		{name:'status.priorSession.loginStartDateString',index:'StartDate',editable: false, width:80, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   		{name:'status.priorSession.loginEndDateString',index:'EndDate',editable: false, width:80, align:"left", sortable:false, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
+		   	],
+		   		jsonReader: { repeatitems : false, root:"rows",
+		   	records: function(obj) { 
+		   	 } },
+		   	loadui: "disable",
+			rowNum:20,
+			loadonce:true, 
+			multiselect:false,
+			sortname: 'lastName',
+			pager: '#restrictedStudentpager', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 370,
+			onPaging: function() {
+				var reqestedPage = parseInt($('#restrictedStudentlist').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_restrictedStudentpager').text());
+				var minPageSize = 1;
+				isPagingEvent  = true;
+				if(reqestedPage > maxPageSize){
+					$('#restrictedStudentlist').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#restrictedStudentlist').setGridParam({"page": minPageSize});
+				}
+			},
+			loadComplete: function () {
+				if ($('#dupStudentlist').getGridParam('records') === 0) {
+					
+            		$('#sp_1_restrictedStudentpager').text("1");
+            		$('#next_restrictedStudentpager').addClass('ui-state-disabled');
+            	 	$('#last_restrictedStudentpager').addClass('ui-state-disabled');
+            	} else {
+            		
+            	}
+            	$.unblockUI();  
+				var tdList = ("#restrictedStudentpager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+	 jQuery("#restrictedStudentlist").jqGrid('navGrid','#restrictedStudentpager',{edit:false,add:false,del:false,search:false,refresh:false});
+	 
+		
 	}

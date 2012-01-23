@@ -535,7 +535,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         TestSession ts = admins.getTestAdminDetails(restrictedAdmin);  ///
                         TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(ts);  ///
                         status.setPriorSession(ts);
-                        stdd.setStatus(status);
+                        sstudents[i].setStatus(status);
                     }
                 }
             }

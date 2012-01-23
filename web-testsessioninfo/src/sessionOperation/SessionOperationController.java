@@ -563,8 +563,8 @@ public class SessionOperationController extends PageFlowController {
         	OutputStream stream = null;
         	String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
         	String currentAction = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.ACTION, true, "");
-        	String removeRestrictedStd = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.REMOVE_RESTRICTED_STD_AND_SAVE, true, "false");
-        	Boolean removeRestricted = Boolean.valueOf(removeRestrictedStd.trim().toLowerCase());
+        	String checkRestrictedStr = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.REMOVE_RESTRICTED_STD_AND_SAVE, true, "true");
+        	Boolean checkRestricted = Boolean.valueOf(checkRestrictedStr.trim().toLowerCase());
         	SessionStudent[] restStudent = null;
         	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
         	if(currentAction.equalsIgnoreCase("EDIT")){
@@ -591,10 +591,15 @@ public class SessionOperationController extends PageFlowController {
             	if(!validationFailedInfo.isValidationFailed()) {
             		isValidationFailed = false;
             		
-            		if(removeRestricted){
+            		if(!checkRestricted){
                 		removeRestrictedStudentsFromTest(session);
                 	} else {
                 		restStudent = getRestrictedStudentsForTest(session).getSessionStudents();
+                		for(SessionStudent sstd :restStudent){
+                			TestSession ts = sstd.getStatus().getPriorSession();
+                			ts.setLoginStartDateString(DateUtils.formatDateToDateString(ts.getLoginStartDate() ));
+                            ts.setLoginEndDateString(DateUtils.formatDateToDateString(ts.getLoginEndDate() ));
+                		}
                 	}
             		studentCountBeforeSave = session.getStudents().length;
             		if(restStudent == null || restStudent.length ==0) { 

@@ -2771,7 +2771,7 @@ function registerDelegate(tree){
     	}
     }
     
-    function saveTest() {
+    function saveTest(checkRestricted) {
         
         $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();
@@ -2812,6 +2812,9 @@ function registerDelegate(tree){
 		    
 	    
 	 }
+	
+	 param = param+"&checkRestricted="+checkRestricted;
+	 
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -2877,7 +2880,7 @@ function registerDelegate(tree){
 								$('#showSaveTestMessage').show();
 							  	closePopUp("scheduleSession");
 					  	} else if(!data.isSuccess && !data.IsSystemError && vdata.restrictedStudents != undefined) {
-					  		openRestrictedStudentPopUp(vdata.restrictedStudents);
+					  		openRestrictedStudentPopUp(vdata.restrictedStudents, vdata.totalStudent);
 					  	
 					  	}else {
 								if(length==0) {
