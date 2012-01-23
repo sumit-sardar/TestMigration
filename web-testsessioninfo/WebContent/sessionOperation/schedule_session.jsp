@@ -117,7 +117,7 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveTest(); return false;" disabled="disabled" class="ui-widget-header">
+								<input type="button"  id="sData" value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveTest(true); return false;" disabled="disabled" class="ui-widget-header">
 								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:onCloseScheduleSessionPopUp(); return false;" class="ui-widget-header">
 								</center>
 								<br>

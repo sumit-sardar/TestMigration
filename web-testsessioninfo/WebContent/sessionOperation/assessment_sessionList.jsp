@@ -72,6 +72,11 @@
 <input type="hidden" id="durationDisplay" name="durationDisplay" value=<lb:label key="selectTest.label.duration" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noStudentValidMsg" name="noStudentValidMsg" value=<lb:label key="noStudents.snValid.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noTestSelected" name="noTestSelected" value=<lb:label key="scheduleTest.noTestSelected" prefix="'" suffix="'"/>/>
+<input type="hidden" id="restrictedTitle" name="restrictedTitle" value=<lb:label key="showrestrictedstudents.window.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="resSessionName" name="resSessionName" value=<lb:label key="restricted.testSesionName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="resStartDate" name="resStartDate" value=<lb:label key="restricted.startDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="resEndDate" name="resEndDate" value=<lb:label key="restricted.endDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="resGridTitle" name="resGridTitle" value=<lb:label key="resStu.grid.title" prefix="'" suffix="'"/>/>
 
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");

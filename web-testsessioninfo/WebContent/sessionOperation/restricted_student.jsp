@@ -8,12 +8,23 @@
 <div id="restrictedStudent"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
-		 <div style="width:965px;text-align: left;background-color: #FFFFFF; padding:5px;"> 
+		 <div style="width:890px;text-align: left;background-color: #FFFFFF; padding:5px;">
+		 	<span>
+		 	<h2><span id = "addOperation" style="display: none"><lb:label key="resStu.title.Add"/></span></h2>
+		 	<h2><span id = "editOperation" style="display: none"><lb:label key="resStu.title.Edit"/></span></h2> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
-					<lb:label key="homepage.deuplicatestudent.message"/>
+					<lb:label key="showrestrictedstudents.message1"/>
 			</p>
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
-					<lb:label key="homepage.deuplicatestudent2.message"/>
+					<span>
+						<span id = "restrictedCount"></span>
+						<lb:label key="showRestricted.of" prefix="&nbsp;" suffix="&nbsp;"/>
+						<span id="totalCountStu"></span>
+						<lb:label key="showrestrictedstudents.message2" prefix="&nbsp;"/>
+					</span>
+			</p>
+			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
+					<lb:label key="showrestrictedstudents.message3"/>
 			</p>
 	 	</div>	
 			<br>
@@ -27,8 +38,8 @@
 							
 							<td  width="100%">
 								<center>
-								<input type="button"  id="rsSaveData" value=<lb:label key="common.button.apply" prefix="'&nbsp;" suffix="&nbsp;'"/>  onclick="javascript:updateDupStudent(); return false;" class="ui-widget-header">
-								<input type="button"  id="rsCancelData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('duplicateStudent'); return false;" class="ui-widget-header">
+								<input type="button"  id="rsSaveData" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>  onclick="javascript:saveTest(false); javascript:closePopUp('restrictedStudent');return false;" class="ui-widget-header">
+								<input type="button"  id="rsCancelData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('restrictedStudent'); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>
