@@ -1942,6 +1942,7 @@ public class ScheduleTestImpl implements ScheduleTest
             	//rosters.getConnection().setAutoCommit(false);
                 rosters.clearFormAssignmentsForAdmin(session.getTestAdminId());
             }
+            session.setSessionNumber(oldSession.getSessionNumber());
             Date loginStartOverride = session.getOverrideLoginStartDate();
             Date loginEndOverride = session.getOverrideLoginEndDate();
             
