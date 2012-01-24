@@ -110,7 +110,7 @@
 											<tbody>
 											<tr>
 											<td>
-												<div class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="visibility:visible;width:140px;">&nbsp;<lb:label key="user.label.sel.org" /></div>
+												<div class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="visibility:visible;width: 347px;">&nbsp;<lb:label key="user.label.sel.org" /></div>
 											</td>
 											</tr>
 												<tr>

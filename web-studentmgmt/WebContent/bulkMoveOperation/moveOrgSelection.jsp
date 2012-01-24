@@ -3,7 +3,7 @@
 	<tbody>
 		<tr>
 			<td>
-				<div style="width: 150px;visibility:visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.moveSelectOrg"/></div>
+				<div style="width: 400px;visibility:visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.moveSelectOrg"/></div>
 			</td>
 		</tr>
 		<tr>

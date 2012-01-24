@@ -188,7 +188,7 @@
 											<tbody>
 											<tr>
 												<td>
-													<div style="width: 150px;visibility:visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.selNode" /></div>
+													<div style="width: 347px;visibility:visible;" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.selNode" /></div>
 												</td>
 											</tr>
 											<tr>
