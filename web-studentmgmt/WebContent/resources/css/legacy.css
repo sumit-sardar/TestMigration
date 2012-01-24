@@ -283,3 +283,29 @@ span.navleft-unclickable {
     color: #336 ; /* needed to color the bullets */
 }
 
+input {
+    -moz-transition: all 0.25s ease-in-out 0s;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px 3px 3px 3px;
+    outline: medium none;
+}
+.ui-widget-header {
+    background: url("images/ui-bg_gloss-wave_55_5c9ccc_500x100.png") repeat-x scroll 50% 50% #5C9CCC;
+    border: 1px solid #4297D7;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+    font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+    font-size: 1em;
+}
+input:focus {
+    border: 1px solid rgba(0, 0, 255, 0.8);
+    box-shadow: 0 0 5px #0000FF;
+}
+input {
+    -moz-transition: all 0.25s ease-in-out 0s;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px 3px 3px 3px;
+    outline: medium none;
+}

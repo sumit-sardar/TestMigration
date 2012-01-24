@@ -254,6 +254,7 @@ function enableColorSettingsLink(enabled)
         standartFont.removeAttribute("disabled");
         largeFont.removeAttribute("disabled");
         previewColor.removeAttribute("disabled");
+        previewColor.className = "ui-widget-header";
     }
     else {    
         questionBg.selectedIndex = 5;   
@@ -287,6 +288,7 @@ function enableColorSettingsLink(enabled)
         standartFont.setAttribute("disabled", "true");
         largeFont.setAttribute("disabled", "true");
         previewColor.setAttribute("disabled", "true");
+        previewColor.className = "ui-widget-header ui-state-disabled";
     }
 
    	return true;

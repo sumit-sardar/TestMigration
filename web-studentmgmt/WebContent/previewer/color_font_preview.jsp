@@ -55,7 +55,7 @@
     <h1><netui:content value="Adjust Student Color/Font Settings"/></h1>
 </td>
 <td align="right">
-    <input type="button" name="Close" value="Close" onClick="self.close();" >
+    <input type="button" class="ui-widget-header" name="Close" value="Close" onClick="self.close();" >
 </td>
 </tr>
 </table>
