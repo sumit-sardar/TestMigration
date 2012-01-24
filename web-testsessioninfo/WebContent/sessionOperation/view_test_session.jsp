@@ -11,13 +11,13 @@
 <div id="viewTestSessionAccordion" style="width:99.5%;">
 	<div id="rosterDetailsSectionId">
 		<h3><a href="#"><lb:label key="viewStatus.rosDet.title" /></a></h3>
-		<div id="View_Roster" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
+		<div id="View_Roster" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important;">
 			<jsp:include page="/sessionOperation/view_roster_list.jsp" />
 		</div>
 	</div>
 	<div id="subtestDetailsSectionId">
 		<h3><a href="#"><lb:label key="viewStatus.subDet.title" /></a></h3>
-		<div id="View_Subtest" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
+		<div id="View_Subtest" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important;">
 			<jsp:include page="/sessionOperation/view_subtest_details.jsp" />
 		</div>
 	</div>
