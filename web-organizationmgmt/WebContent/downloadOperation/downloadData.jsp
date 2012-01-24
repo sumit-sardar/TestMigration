@@ -39,7 +39,7 @@
 	<tr>
 		<td align="right">
 			<div style="float:left; width:1070px;">
-        	<a href="#" id="exportDataButton" onclick="return downloadData();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="exportDataButton" onclick="return downloadData(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button" />
            	</a>
             </div>               	                                    

@@ -27,7 +27,6 @@ function populateDownloadListGrid() {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();
-				alert("failed to load : populateDownloadListGrid");  
 				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
@@ -63,7 +62,6 @@ function populateDownloadTemplateListGrid() {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				alert("failed to load : populateDownloadTemplateListGrid");  
 				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
@@ -118,7 +116,6 @@ function populateUploadListGrid() {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				alert("failed to load : populateUploadListGrid");  
 				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
@@ -137,57 +134,45 @@ function enableUpload()
 }
 
 
-function downloadData()
+function downloadData(element)
 {
+	if (isButtonDisabled(element)) 
+		return true;
+
     var element = document.getElementById("downloadFile");
     element.form.action = "downloadData.do";
     element.form.submit();
 	return false;
 }
 
-/*
-function downloadData()
+
+function downloadTemplate(element)
 {
-	var downloadFile = document.getElementById('downloadFile').value;
-	
-	$.ajax({
-		async:		false,
-		beforeSend:	function(){
-					},
-		url:		'downloadData.do' + '?downloadFile=' + downloadFile,
-		type:		'POST',
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-					},
-		complete :  function(){
-					}
-	});
+	if (isButtonDisabled(element)) 
+		return true;
 
-	return false;		
-}
-*/
-
-
-function downloadTemplate()
-{
     var element = document.getElementById("downloadFile");
     element.form.action = "downloadTemplate.do";
     element.form.submit();
 	return false;
 }
 
-function deleteFile()
+function deleteFile(element)
 {
+	if (isButtonDisabled(element)) 
+		return true;
+
     var element = document.getElementById("downloadFile");
     element.form.action = "deleteErrorDataFile.do";
     element.form.submit();
 	return false;
 }
 
-function downloadErrorFile()
+function downloadErrorFile(element)
 {
+	if (isButtonDisabled(element)) 
+		return true;
+
     var element = document.getElementById("downloadFile");
     element.form.action = "getErrorDataFile.do";
     element.form.submit();
@@ -202,8 +187,11 @@ function refresh()
 	return false;
 }
 
-function uploadFile()
+function uploadFile(element)
 {
+	if (isButtonDisabled(element)) 
+		return true;
+
 	showLoadingProgress('<br/><b>File Uploading...</b><br/>');
     var element = document.getElementById("downloadFile");
     element.form.action = "uploadData.do";

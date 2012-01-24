@@ -51,7 +51,7 @@
 	<tr>
 		<td align="right" class="transparent">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
-        	<a href="#" id="exportDataButton" onclick="return downloadTemplate();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="exportDataButton" onclick="return downloadTemplate(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button" />
            	</a>
             </div>               	                                    
@@ -106,7 +106,7 @@
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
         	<netui:fileUpload tagId="inputbox" dataSource="pageFlow.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
             &nbsp;
-        	<a href="#" id="upload" onclick="return uploadFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="upload" onclick="return uploadFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.import.button" />
            	</a>
            	</div>
@@ -133,11 +133,11 @@
 	<tr>
 		<td align="right" class="transparent">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal;">
-        	<a href="#" id="deleteFile" onclick="return deleteFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="deleteFile" onclick="return deleteFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button.delete" />
            	</a>
            	&nbsp;
-        	<a href="#" id="downloadErrorFile" onclick="return downloadErrorFile();" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
+        	<a href="#" id="downloadErrorFile" onclick="return downloadErrorFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button.downloadErrorFile" />
            	</a>
            	&nbsp;
