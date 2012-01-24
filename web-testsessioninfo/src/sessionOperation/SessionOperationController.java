@@ -1413,20 +1413,21 @@ public class SessionOperationController extends PageFlowController {
 			 String testName       		    = 	selectedTest.getItemSetName(); 
 			 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
 			 
-			 TimeZone defaultTimeZone = TimeZone.getDefault();
-			 Date now = new Date(System.currentTimeMillis());
-	         now = com.ctb.util.DateUtils.getAdjustedDate(now, defaultTimeZone.getID(), timeZone, now);
-    		 String timeStr = DateUtils.formatDateToTimeString(now);
-		     String dateStr = DateUtils.formatDateToDateString(now);
+			 
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 
 			 testSession.setTestAdminStatus("CU");
 			 testSession.setLoginEndDate(dailyLoginEndDate);
 			  testSession.setDailyLoginEndTime(dailyLoginEndTime);
 			 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
+				 TimeZone defaultTimeZone = TimeZone.getDefault();
+				 Date now = new Date(System.currentTimeMillis());
+		         now = com.ctb.util.DateUtils.getAdjustedDate(now, defaultTimeZone.getID(), timeZone, now);
+	    		 String timeStr = DateUtils.formatDateToTimeString(now);
+			     String dateStr = DateUtils.formatDateToDateString(now);
 				 testSession.setTestAdminStatus("PA");
-				 testSession.setLoginEndDate(now);
-				 testSession.setDailyLoginEndTime(now);
+				 testSession.setLoginEndDate(DateUtils.getDateFromDateString(dateStr));
+				 testSession.setDailyLoginEndTime(DateUtils.getDateFromTimeString(timeStr));
 			 }
 	         testSession.setTestAdminType("SE");
 	         testSession.setActivationStatus("AC");
