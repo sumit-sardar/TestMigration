@@ -44,6 +44,7 @@
 <input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuCapId" name="stuCapId" value=<lb:label key="stu.menu.studentList" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuCountId" name="stuCountId" value=<lb:label key="stu.msg.orgStuCount" prefix="'" suffix="'"/>/>
+<input type="hidden" id="classReassignable" name="classReassignable" value='<%=session.getAttribute("isClassReassignable") %>'/> 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">

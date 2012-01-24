@@ -2452,6 +2452,9 @@ public class StudentOperationController extends PageFlowController {
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
 		
 		this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigurations));	// Changes for Out Of School
+		
+		this.getSession().setAttribute("isClassReassignable",isMultiOrgAssociationValid(customerConfigurations));	// CHanges for defect #67959 imported student's organization
+		
 	}
 
 

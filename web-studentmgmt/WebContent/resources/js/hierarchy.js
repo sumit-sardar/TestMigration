@@ -360,7 +360,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		    		} else {
 		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
 		    		}
-		    		if(profileEditable === "false") {
+		    		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
 		    			$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
 		    		}
 				}
@@ -370,7 +370,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 		$("#innerID").delegate("li a","click", 
 			function(e) {
-				if(profileEditable === "false") {
+				if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
 					return true;
 				}
 				styleClass = $(this.parentNode).attr('class');
@@ -1522,7 +1522,7 @@ function fillselectedOrgNode( elementId, orgList) {
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
-	    		  if(profileEditable === "false") {
+	    		  if(profileEditable === "false" && $("#classReassignable").val() === "true") {
 		    			$("a ins.jstree-checkbox", this).first().hide();
 		    		}
 	  	});
@@ -2368,7 +2368,7 @@ function setSelectedValue(selectObj, valueToSet) {
 		}else{
 		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
-		if(profileEditable === "false") {
+		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
 			liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		ulElement.appendChild(liElement);
