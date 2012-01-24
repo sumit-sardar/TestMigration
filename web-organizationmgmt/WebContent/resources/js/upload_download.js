@@ -133,7 +133,7 @@ function enableUpload()
     } else {
 		setAnchorButtonState('upload', true);
     }
-    
+	handleUploadMessages(null);
 }
 
 
@@ -204,9 +204,33 @@ function refresh()
 
 function uploadFile()
 {
+	showLoadingProgress('<br/><b>File Uploading...</b><br/>');
     var element = document.getElementById("downloadFile");
     element.form.action = "uploadData.do";
     element.form.submit();
 	return false;
 }
 
+function showLoadingProgress(msg)
+{	
+	$.blockUI({ message: msg, css: { height: '50px'} }); 		 
+}
+
+function handleUploadMessages(uploadMsg){
+	if (uploadMsg == null || uploadMsg.length == 0) {
+		document.getElementById('infoMessage').style.display = "none";
+		document.getElementById('errorMessage').style.display = "none";
+	}
+	else {	
+		if (uploadMsg.indexOf("successfully") > 0) {
+			document.getElementById('errorMessage').style.display = "none";
+			$("#infoMsg").html(uploadMsg);
+			document.getElementById('infoMessage').style.display = "block";
+		}
+		else {
+			document.getElementById('infoMessage').style.display = "none";
+			$("#errorMsg").html(uploadMsg);
+			document.getElementById('errorMessage').style.display = "block";
+		}
+	}	  			
+}

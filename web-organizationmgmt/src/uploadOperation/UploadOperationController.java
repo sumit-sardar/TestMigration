@@ -98,7 +98,6 @@ public class UploadOperationController extends PageFlowController {
     private String userName = null;
     public String strFileName = null;
     
-    public String uploadStatus = null;
     public FormFile theFile;
     private Integer uploadDataFileId = new Integer(0);
     
@@ -132,8 +131,6 @@ public class UploadOperationController extends PageFlowController {
     
     private User user = null;
 	private Integer customerId = null;
-    
-    private static final String ACTION_ELEMENT = "{actionForm.selectedTab}";
 
 
 	@Control
@@ -356,6 +353,7 @@ public class UploadOperationController extends PageFlowController {
 		this.fileList.add(afh2);
         */
         
+        
 		String[] atts = new String[5];
 		
         for (int i=0 ; i<this.fileList.size() ; i++) {
@@ -437,24 +435,22 @@ public class UploadOperationController extends PageFlowController {
         @Jpf.Forward(name = "success", path = "manageUpload.do")
     })
     protected Forward uploadData()
-    {           
+    {       
+    	
         String isSuccess = readFileContent();
-
+        
         if (!RETURN_SUCCESS.equals(isSuccess))
         {
+        	System.out.println("isSuccess=" + isSuccess);
             
             if ("1".equals(isSuccess))
             {
-                this.getRequest().setAttribute("noFileSelected", "true");   
-                this.uploadStatus = "uploadFile";   
-                this.getRequest().setAttribute("uploadStatus", "uploadFile");
+                this.getRequest().setAttribute("uploadMsg", "Please select a valid path and .xls data file to continue.");
                 return new Forward("success");
             }
             else
             {
-                this.getRequest().setAttribute("failToUpload", "true");   
-                this.uploadStatus = "uploadFile";   
-                this.getRequest().setAttribute("uploadStatus", "uploadFile");
+                this.getRequest().setAttribute("uploadMsg", "Failed to upload <b>" + this.strFileName + "</b> file. Please try again.");
                 return new Forward("success");
             }
         }
@@ -462,24 +458,14 @@ public class UploadOperationController extends PageFlowController {
         {
             
             boolean isSuccessful = writeFileContent();
-                        
-            if (isSuccessful)
-            {
-            
-                this.uploadStatus = "uploadDone";  
-                this.getRequest().setAttribute("uploadStatus", "uploadDone");
-            
-            }
+        	System.out.println("isSuccessful=" + isSuccessful);
+        	
+            if (isSuccessful) 
+            	this.getRequest().setAttribute("uploadMsg", "File <b>" + this.strFileName + "</b> was uploaded successfully.");
             else
-            {
-            
-            	this.uploadStatus = "uploadFile";
-            	this.getRequest().setAttribute("uploadStatus", "uploadFile");
-            
-            }  
-            
+                this.getRequest().setAttribute("uploadMsg", "Failed to upload <b>" + this.strFileName + "</b> file. Please try again.");
         }
-  
+    	
         System.out.println("***** Upload App: returning control to user");
         return new Forward("success");
     }

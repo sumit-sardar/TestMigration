@@ -65,7 +65,7 @@
 			</div>								
 		</td>
 	</tr>
-	<tr><td>&nbsp;</td></tr>
+	<tr><td>&nbsp;</td></tr>	
 	<tr>
 		<td style="padding-left:5px;">
 			<br/><br/>
@@ -73,6 +73,34 @@
 			<lb:label key="services.import.uploadfile.msg" /><br/><br/>		
 		</td>
 	</tr>	
+	<tr>
+		<td>
+			<div id="errorMessage" class="roundedMessage" style="display: none" > 
+					<table>
+						<tr>
+							<td valign="top">
+		                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+							</td>
+							<td>
+								<div id="errorMsg"></div>
+							</td>
+						</tr>
+					</table>
+			</div>
+			<div id="infoMessage" class="roundedMessage" style="display: none" > 
+					<table>
+						<tr>
+							<td valign="top">
+		                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+							</td>
+							<td>
+								<div id="infoMsg"></div>
+							</td>
+						</tr>
+					</table>
+			</div>
+		</td>
+	</tr>
 	<tr> 
 		<td style="padding-left:6px;">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
@@ -153,11 +181,17 @@ $(document).ready(function(){
 		<script type="text/javascript">
 		$(document).ready(function(){
 			$('#accordion').accordion('activate', 1);
-			
 		});
 		</script>		
 <%	} %>
 
+<%
+	String uploadMsg = (String)request.getAttribute("uploadMsg");
+	System.out.println(uploadMsg);
+%>
+<script type="text/javascript">
+	handleUploadMessages("<%= uploadMsg %>");
+</script>		
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
