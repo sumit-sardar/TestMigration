@@ -1473,6 +1473,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	asyncOver = 0;
 	leafParentOrgNodeId = "";
 	var par = null;
+	var correctId;
 	$('#innerID').jstree('close_all');
 		var isIdExist = $('#innerID', '#'+assignedOrgNodeIds).length;
 			if(isIdExist > 0){
@@ -1488,6 +1489,17 @@ function fillselectedOrgNode( elementId, orgList) {
 						}
 					}
 					type = "innerID";
+					
+					outerLoop: for(var key in rootMap){
+						for(var i =0; i < leafParentOrgNodeId.length; i++ ){
+							if (key == leafParentOrgNodeId[i]){
+								correctId = i;
+							break outerLoop;
+							}
+						}
+					}
+					leafParentOrgNodeId = leafParentOrgNodeId.slice(correctId,leafParentOrgNodeId.length);
+					
 					if(leafParentOrgNodeId.length > 0) {
 						for(var count = 0; count < leafParentOrgNodeId.length - 1; count++) {
 				  		 	var tmpNode = leafParentOrgNodeId[count];
