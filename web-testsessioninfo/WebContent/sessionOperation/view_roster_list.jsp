@@ -26,13 +26,13 @@
 	</div>
 </td></tr>
 <tr><td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table style="margin-top: 5px;" width="920">
+	<table id="labelTbl" style="margin-top: 5px; width: 924px;">
 		<tr>
 			<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 			<td width="80%"><span id = "rosterTestName"></span></td>
 		</tr>
 	</table>
-	<table style="" width="920">
+	<table id="buttonTbl" style="width: 924px;">
 		<tr>
 			<td align="left" width="15%"><lb:label key="viewStatus.testAccessCode" /></td>
 			<td width="15%"><span id = "rosterTestAccessCode"></span></td>

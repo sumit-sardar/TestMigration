@@ -19,7 +19,7 @@
 		</tbody>
 	</table>
 </div>
-<table width="928px" style="margin-bottom: 10px;">
+<table style="margin-bottom: 10px; width: 924px;">
 	<tr>
 		<td width="135"><lb:label key="viewStatus.subtest.loginName"/></td>
 		<td><span id = "loginName"></span></td>
@@ -49,7 +49,7 @@
 		<td><span id = "testLevel"></span></td>
 	</tr>
 </table>
-<table width="928px" style="margin-bottom: 10px;">
+<table style="margin-bottom: 10px; width: 924px;">
 	<tr>
 		<td>
 			<div id="toggleValidationSubTest" style="float:left;padding-top:5px;display:none">
