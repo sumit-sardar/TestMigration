@@ -6,7 +6,7 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <table width="100%" border="0">
 <tr><td>
-	<div style="margin-bottom: 2px;" width="920" class="subtitle">
+	<div style="margin-bottom: 2px;width:920px;" class="subtitle">
 		<lb:label key="viewStatus.rosterList.instText" />
 	</div>
 	<div id = "displayMessageViewTestRoster" 
