@@ -670,8 +670,11 @@ public class StudentOperationController extends PageFlowController {
 		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		int studentId = Integer.parseInt(req.getParameter("studentID"));
-		int createBy = Integer.parseInt(req.getParameter("createBy"));
-		System.out.println(studentId);
+		String stuCreatedBy = req.getParameter("createBy");
+		int createBy = 0;
+		if(stuCreatedBy != null && !("".equals(stuCreatedBy)))
+			createBy = Integer.parseInt(req.getParameter("createBy"));
+		//System.out.println(studentId);
 		boolean studentImported = (createBy == 1);
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
 		
