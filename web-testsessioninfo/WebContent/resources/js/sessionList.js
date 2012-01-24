@@ -3241,6 +3241,8 @@ function registerDelegate(tree){
 		$("#rosterTestAccessCode").text('');
 		$("#rosterTotalStudents").text('');
 		$('#rosterList').GridUnload();
+		$("#labelTbl").width(924);
+		$("#buttonTbl").width(924);
 		$("#viewTestSessionAccordion").accordion("destroy");	
 	}
 	
@@ -3259,7 +3261,7 @@ function registerDelegate(tree){
 		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'dnsStatus',index:'dnsStatus', width:74, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'dnsStatus',index:'dnsStatus', width:74, hidden: true, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
@@ -3270,12 +3272,15 @@ function registerDelegate(tree){
 					$("#toggleValidation").hide();
 				 }
 				 var donotScoreAllowed = JSON.stringify(obj.donotScoreAllowed);
-		   		 if(donotScoreAllowed == 'true') {
+				 if(donotScoreAllowed == 'true') {
 					$("#doNotScore").show();
-				 } else {
-					$("#doNotScore").hide();
-					//$('#rosterList').jqGrid('hideCol', $('#rosterList').getGridParam("colModel")[7].name);
-				 }
+					$('#rosterList').jqGrid('showCol', $('#rosterList').getGridParam("colModel")[7].name);
+					$("#viewTestSessionId").parent().width(1086);
+					$("#rosterDetailsSectionId").width(1058);
+					$("#subtestDetailsSectionId").width(1058);
+					$("#labelTbl").width(982);
+					$("#buttonTbl").width(982);
+		         }
 				 $("#rosterTestName").text(obj.testSession.testName);
 				 $("#rosterTestAccessCode").text(obj.testSession.accessCode);
 		   	}},
@@ -3387,7 +3392,6 @@ function registerDelegate(tree){
 					}
 				}
 				$.unblockUI();
-				//jQuery("#rosterList").setGridWidth(width);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
