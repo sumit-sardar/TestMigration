@@ -1444,6 +1444,8 @@ function registerDelegate(tree){
 			 $("#subtestChangeConfirmationPopup").parent().css("left",leftpos);
 		 } else {
 		 	subtestChangeProcess();
+		 	selectedSubtestId = selectedTestId;
+		 	sessionListRelatedData(testSessionListRequired);
 		 }
 	}
 	
@@ -2812,7 +2814,7 @@ function registerDelegate(tree){
 		    
 	    
 	 }
-	
+	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
 	 
 		$.ajax({
@@ -3170,8 +3172,7 @@ function registerDelegate(tree){
 	
 	// Added for TAS View-Montitor Student Test Status user story: Start
     function viewTestStatus() {
-    	
-    	if(selectedTestAdminId != undefined && selectedTestAdminId != "") {
+    	if(!$("#viewStatusButton").hasClass("buttonDisabled")) {
 			$('#displayMessageViewTestSession').hide();
 			$("#displayMessageViewTestRoster").hide();
 			$("#displayMessageViewTestSubtest").hide();
