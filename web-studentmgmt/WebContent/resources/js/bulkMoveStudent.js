@@ -101,7 +101,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
        jQuery("#studentBulkMoveGrid").jqGrid('setGridParam',{datatype:'json'});     
  	   var sortArrow = jQuery("#studentBulkMoveGrid");
        jQuery("#studentBulkMoveGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-       jQuery("#studentBulkMoveGrid").sortGrid('lastName',true);
+       jQuery("#studentBulkMoveGrid").sortGrid('lastName',false);
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
