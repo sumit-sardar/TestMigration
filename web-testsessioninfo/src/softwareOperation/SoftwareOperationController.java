@@ -174,7 +174,7 @@ public class SoftwareOperationController extends PageFlowController {
 	}
     
     @Jpf.Action()
-	protected Forward assessments_programStatusLink()
+	protected Forward assessments_programStatus()
 	{
         try
         {
