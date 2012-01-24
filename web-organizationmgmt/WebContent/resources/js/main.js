@@ -46,3 +46,19 @@ function openWindow(location)
     return false;
 }
 	
+$().ready(function(){
+ 	var lastWindowHeight = $(window).height();
+    var lastWindowWidth = $(window).width();
+	$(window).resize(function() {
+		if($(window).height()!=lastWindowHeight || $(window).width()!=lastWindowWidth){
+			lastWindowHeight = $(window).height();
+	        lastWindowWidth = $(window).width();
+			if($('.ui-dialog').length > 0){
+				var left = (lastWindowWidth - $('.ui-dialog').outerWidth())/2 ;
+				$('.ui-dialog').css({top:parseInt(lastWindowHeight*.1) + 'px',left:left + 'px'});
+			}
+			
+		}
+	});
+	
+});
