@@ -1294,17 +1294,10 @@ function confirmDelOrgPopUp(){
 				title:$("#deleteOrgTitle").val(),  
 			 	resizable:false,
 			 	autoOpen: true,
-			 	width: '400px',
+			 	width: '350px',
 			 	modal: true,
+			 	closeOnEscape: true,
 			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-				});	
-				$('#deleteConfirmation').bind('keydown', function(event) {
-			 	  var code = (event.keyCode ? event.keyCode : event.which);
-  				  if(code == 27){
-			  		  onCancel();
-			  		return false;
-			 		}
-			 				
 				});	
 				 $("#deleteConfirmation").css('height',120);
 				 var toppos = ($(window).height() - 290) /2 + 'px';
