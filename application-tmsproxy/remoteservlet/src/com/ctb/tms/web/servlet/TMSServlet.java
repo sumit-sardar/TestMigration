@@ -772,15 +772,8 @@ public class TMSServlet extends HttpServlet {
 			 }
 		 }
 		
-		if(manifest.getRosterStartTime() == 0) {
-			manifest.setRosterStartTime(System.currentTimeMillis());
-		}
-		manifest.setRosterCompletionStatus("IP");
-		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
-		
-		
 		if(loginResponse.getTutorial() != null) {
-			if(restartCount < 1 || gotRestart) {
+			if(restartCount < 1 || "IP".equals(manifest.getRosterCompletionStatus()) || "IN".equals(manifest.getRosterCompletionStatus())) {
 				if("TRUE".equals(manifest.getTutorialTaken())) {
 					loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
 				} else if(0 == loginResponse.getTutorial().getDeliverTutorial().intValue()) {
@@ -791,6 +784,12 @@ public class TMSServlet extends HttpServlet {
 				manifest.setTutorialTaken("TRUE");
 			}
 		}
+		
+		if(manifest.getRosterStartTime() == 0) {
+			manifest.setRosterStartTime(System.currentTimeMillis());
+		}
+		manifest.setRosterCompletionStatus("IP");
+		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		
 		XmlOptions opts = new XmlOptions();
 		opts.setCharacterEncoding("UTF-8");
