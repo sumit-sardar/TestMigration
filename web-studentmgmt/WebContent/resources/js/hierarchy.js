@@ -559,6 +559,7 @@ function updateOrganization(element, isChecked){
 
 	
 	  function gridReload(){ 
+	  	   resetSearchCrit();
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
      	   var sortArrow = jQuery("#list2");
            jQuery("#list2").jqGrid('setGridParam', {url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
@@ -570,13 +571,20 @@ function updateOrganization(element, isChecked){
 
       }
 
+	function resetSearchCrit(){
+		$("#searchUserByKeywordInput").val('');
+		var grid = $("#list2");
+	    grid.jqGrid('setGridParam',{search:false});	
+	    var postData = grid.jqGrid('getGridParam','postData');
+	    $.extend(postData,{filters:""});
 
+	}
 		
 			
 	function populateGrid() {
 	
 		//$("#searchresultheader").css("visibility","visible");	
-		$("#searchUserByKeywordInput").val('');
+		resetSearchCrit();
 		var studentIdTitle = $("#studentIdLabelName").val();
         $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
@@ -670,7 +678,7 @@ function updateOrganization(element, isChecked){
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
 			}); 
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
@@ -702,7 +710,7 @@ function updateOrganization(element, isChecked){
 			 grid[0].p.ignoreCase = true;
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 		 }
-		 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
 		 closePopUp('searchUserByKeyword');
 	}
 	
@@ -728,7 +736,7 @@ function updateOrganization(element, isChecked){
 	
 	function populateGridWithoutAccommodation() {
 	//$("#searchresultheader").css("visibility","visible");	
-	$("#searchUserByKeywordInput").val('');
+	resetSearchCrit();
 	var studentIdTitle = $("#studentIdLabelName").val();
          $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
@@ -821,7 +829,7 @@ function updateOrganization(element, isChecked){
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
 			});
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){

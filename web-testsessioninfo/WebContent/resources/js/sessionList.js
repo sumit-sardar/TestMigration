@@ -98,6 +98,7 @@ function populateSessionListGrid(homePageLoad) {
 		ishomepageload  = homePageLoad;
  		UIBlock();
  		//populateTree();
+ 		resetSearchCrit();
  		reset();
  		$("#list2").jqGrid({         
           url: 'getSessionForUserHomeGrid.do', 
@@ -228,7 +229,7 @@ function populateSessionListGrid(homePageLoad) {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
 			});  
 			jQuery("#refresh_list2").bind("click",function(){
 				$("#searchUserByKeywordInputList2").val('');
@@ -255,6 +256,22 @@ function searchUserByKeywordList2(){
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 	 closePopUp('searchUserByKeywordList2');
+}
+
+function resetSearchCrit(){
+	$("#searchUserByKeywordInputList2").val('');
+	var grid = $("#list2"); 
+	grid.jqGrid('setGridParam',{search:false});	
+    var postData = grid.jqGrid('getGridParam','postData');
+    $.extend(postData,{filters:""});
+}
+
+function resetSearchCritList3(){
+	$("#searchUserByKeywordInputList3").val('');
+	var grid = $("#list3"); 
+	grid.jqGrid('setGridParam',{search:false});	
+    var postData = grid.jqGrid('getGridParam','postData');
+    $.extend(postData,{filters:""});
 }
 
 function resetSearchList2(){
@@ -295,7 +312,7 @@ function searchUserByKeywordList3(){
 		 grid[0].p.ignoreCase = true;
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 	 }
-	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 grid.trigger("reloadGrid",[{page:1,current:true}]); 	
 	 closePopUp('searchUserByKeywordList3');
 }
 
@@ -323,6 +340,7 @@ function populateCompletedSessionListGrid() {
  		//UIBlock();
  		gridloaded = true;
  		reset();
+ 		resetSearchCritList3();
        $("#list3").jqGrid({         
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
@@ -433,7 +451,7 @@ function populateCompletedSessionListGrid() {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
 			});  
 			jQuery("#refresh_list3").bind("click",function(){
 				$("#searchUserByKeywordInputList3").val('');
@@ -736,6 +754,7 @@ function registerDelegate(tree){
 	 function gridReload(homePageLoad){ 
 	 	   ishomepageload = homePageLoad;
 	  		UIBlock();
+	  		resetSearchCrit();
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
      	    var sortArrow = jQuery("#list2");
      	   var urlVal = 'getSessionForUserHomeGrid.do';
@@ -750,6 +769,7 @@ function registerDelegate(tree){
       }
       
       function gridReloadPA(homePageLoad){ 
+      	   resetSearchCritList3();
 	  	   jQuery("#list3").jqGrid('setGridParam',{datatype:'json'});     
      	   var urlVal = 'getCompletedSessionForGrid.do';
      	   jQuery("#list3").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");

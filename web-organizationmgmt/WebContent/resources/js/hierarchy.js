@@ -425,7 +425,7 @@ function populateTreeSelect() {
 	var isGridEmpty = true;
 			
 function populateGrid() {
-		 $("#searchUserByKeywordInput").val('');
+		 resetSearchCrit();
          $("#list2").jqGrid({         
          url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
@@ -516,12 +516,20 @@ function populateGrid() {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search organization", cursor: "pointer"
 			});  
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
 			});  
 			 
+}
+
+function resetSearchCrit(){
+	$("#searchUserByKeywordInput").val('');
+	var grid = $("#list2"); 
+	grid.jqGrid('setGridParam',{search:false});	
+    var postData = grid.jqGrid('getGridParam','postData');
+    $.extend(postData,{filters:""});
 }
 
 function searchUserByKeyword(){
@@ -540,7 +548,7 @@ function searchUserByKeyword(){
 		 grid[0].p.ignoreCase = true;
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 	 }
-	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 grid.trigger("reloadGrid",[{page:1,current:true}]);
 	 closePopUp('searchUserByKeyword');
 }
 
@@ -565,14 +573,15 @@ function trapEnterKey(e){
 }
 
 function gridReload(){ 
-           jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
-           var sortArrow = jQuery("#list2");
-           jQuery("#list2").jqGrid('setGridParam', {url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-      	   jQuery("#list2").sortGrid('orgNodeName',true);  
-           var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-           $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-           $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
-      }
+      resetSearchCrit();
+      jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
+      var sortArrow = jQuery("#list2");
+      jQuery("#list2").jqGrid('setGridParam', {url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
+ 	   jQuery("#list2").sortGrid('orgNodeName',true);  
+      var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+      $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
+      $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
+ }
 	
 	
 	/* function disablenextprev(selectedPosition,maxlength) {
