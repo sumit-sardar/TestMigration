@@ -100,6 +100,7 @@ public class UploadOperationController extends PageFlowController {
     
     public FormFile theFile;
     private Integer uploadDataFileId = new Integer(0);
+    private String uploadMessage = null;
     
     private static final String ACTION_DELETE_FILE = "deleteFile";
     private static final String ACTION_EXPORT_ERROR_FILE = "exportErrorFile";
@@ -463,7 +464,7 @@ public class UploadOperationController extends PageFlowController {
             if (isSuccessful) 
             	this.getRequest().setAttribute("uploadMsg", "File <b>" + this.strFileName + "</b> was uploaded successfully.");
             else
-                this.getRequest().setAttribute("uploadMsg", "Failed to upload <b>" + this.strFileName + "</b> file. Please try again.");
+                this.getRequest().setAttribute("uploadMsg", this.uploadMessage);
         }
     	
         System.out.println("***** Upload App: returning control to user");
@@ -629,6 +630,7 @@ public class UploadOperationController extends PageFlowController {
             return true;         
         } catch(Exception be ) {
             be.printStackTrace();
+            this.uploadMessage = MessageResourceBundle.getMessage(be.getMessage());
             return false;
         }
 
