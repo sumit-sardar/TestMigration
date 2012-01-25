@@ -53,7 +53,7 @@ function populateTestTicketTree() {
 						if(data.isStudentExist == "false"){
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
-							$("#orgNodeHierarchy").css("visibility","hidden");	
+							//$("#orgNodeHierarchy").css("visibility","hidden");	
 							$("#printTestTicket").css("height",'330px');
 						}else{
 							orgTktTreeHierarchy = data;
