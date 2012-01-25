@@ -39,7 +39,7 @@
 		<td style="padding-left:6px;">
 					<div id="accordion" style="width:85%; position:relative;">							
 						<div style="position:relative;">
-						  	<h3><a href="#"><lb:label key="services.import.templates" /></a></h3>
+						  	<h3><a id="templateHeader" href="#"><lb:label key="services.import.templates" /></a></h3>
 							<div id="templates" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;" >							
 <table> 
 	<tr>
@@ -122,7 +122,7 @@
 						
 						
 						<div style="position:relative;">
-							<h3><a href="#"><lb:label key="services.import.viewUploads" /></a></h3>
+							<h3><a id="viewUploadsHeader" href="#"><lb:label key="services.import.viewUploads" /></a></h3>
 							<div id="viewUploads" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;" >
 <table> 
 	<tr>
@@ -230,6 +230,15 @@ $(document).ready(function(){
 %>
 <script type="text/javascript">
 	handleUploadMessages("<%= uploadMsg %>");
+</script>		
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+        $("#templateHeader").click(function() {
+        	handleUploadMessages(null);
+		});
+	});
 </script>		
 
 <!-- ********************************************************************************************************************* -->
