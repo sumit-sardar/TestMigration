@@ -530,7 +530,13 @@ function populateCompletedSessionListGrid() {
 		    jQuery("#list3").setGridWidth(916);
 	    } else {
 	    	UIBlock();
-	    	populateTree();
+	    	if(orgTreeHierarchy){
+	    		createSingleNodeSelectedTree(orgTreeHierarchy);
+	    		$("#searchheader").css("visibility","visible");	
+				$("#orgNodeHierarchy").css("visibility","visible");	
+	    	}else{
+	    		populateTree();
+	    	}
 	    }
 	    
 	}
