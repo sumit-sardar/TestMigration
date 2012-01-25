@@ -101,7 +101,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
        jQuery("#studentBulkMoveGrid").jqGrid('setGridParam',{datatype:'json'});     
  	   var sortArrow = jQuery("#studentBulkMoveGrid");
        jQuery("#studentBulkMoveGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-       jQuery("#studentBulkMoveGrid").sortGrid('lastName',false);
+       jQuery("#studentBulkMoveGrid").sortGrid('lastName',true,'asc');
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
@@ -439,12 +439,12 @@ function saveBulkMoveData() {
 									bulkMoveStuCounterPage = 0;
 									//$("#innerID").undelegate();
 									//$("#innerID").unbind();
+									$('#innerID').jstree('close_all', -1);
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayBulkMessageMain").show();
 									$("#contentBulkMain").text($("#stuBulkMovedID").val());
 									setAnchorButtonState('bulkMoveButton', true);
-									$('#innerID').jstree('close_all', -1);
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 									$.unblockUI();  
