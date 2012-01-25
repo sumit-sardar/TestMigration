@@ -103,8 +103,8 @@
 	</tr>
 	<tr> 
 		<td style="padding-left:6px;">
-			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal; ">
-        	<netui:fileUpload tagId="inputbox" dataSource="pageFlow.theFile" size="64" style="height:24" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
+			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal;">
+        	<netui:fileUpload tagId="inputbox" dataSource="pageFlow.theFile" size="64" style="height:22px;" onKeyPress="return constrainEnterKeyEvent();" onChange="return enableUpload();" onKeyUp="return enableUpload();"/>
             &nbsp;
         	<a href="#" id="upload" onclick="return uploadFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.import.button" />
@@ -157,6 +157,45 @@
 		</td>
 	</tr>
 </table>
+
+
+
+<div id="colorErrors" style="display: none">
+<br/>
+<p>
+<netui:content value="Errors in the downloaded error file are highlighted in different colors."/><br/>
+<netui:content value="Use this key to help decide how to correct the data."/><br/>
+</p>
+
+<table class="simpleSmall" width="40%">
+    <tr class="simple">
+        <td class="simpleHeader">Error Description</td>
+        <td class="simpleHeader">Error Color</td> 
+    </tr>
+    <tr class="simple">
+        <td class="simple">Less characters than allowed</td>
+        <td class="simpleColored" bgcolor="#FF69B4">&nbsp;&nbsp;</td>
+    </tr>
+    <tr class="simple">
+        <td class="simple">More characters than allowed</td>
+        <td class="simpleColored" bgcolor="#FBFF73">&nbsp;&nbsp;</td>
+    </tr>
+    <tr class="simple">
+        <td class="simple">Invalid characters</td>
+        <td class="simpleColored" bgcolor="#99FF99">&nbsp;&nbsp;</td>
+    </tr>
+    <tr class="simple">
+        <td class="simple">Missing required values</td>
+        <td class="simpleColored" bgcolor="#00CCFF">&nbsp;&nbsp;</td>
+    </tr>
+    <tr class="simple">
+        <td class="simple">Logical errors</td>
+        <td class="simpleColored" bgcolor="#FF9900">&nbsp;&nbsp;</td>
+    </tr>
+</table>
+</div>
+
+
 							</div>									
 						</div>							
 					</div>

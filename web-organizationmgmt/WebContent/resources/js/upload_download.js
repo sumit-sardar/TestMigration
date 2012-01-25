@@ -99,14 +99,17 @@ function populateUploadListGrid() {
 				if (selectedId.indexOf("_SC") > 0) {
 					setAnchorButtonState('deleteFile', false);
 					setAnchorButtonState('downloadErrorFile', true);
+					document.getElementById('colorErrors').style.display = "none";
 				}				
 				if (selectedId.indexOf("_FL") > 0) {
 					setAnchorButtonState('deleteFile', false);
 					setAnchorButtonState('downloadErrorFile', false);
+					document.getElementById('colorErrors').style.display = "block";
 				}				
 				if (selectedId.indexOf("_IN") > 0) {
 					setAnchorButtonState('deleteFile', true);
 					setAnchorButtonState('downloadErrorFile', true);
+					document.getElementById('colorErrors').style.display = "none";
 				}				
 				
 			},
