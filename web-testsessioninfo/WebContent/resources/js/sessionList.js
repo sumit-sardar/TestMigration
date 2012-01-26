@@ -2730,7 +2730,11 @@ function registerDelegate(tree){
 		var element = document.getElementById('refresh_listProctor');
 		element.style.display = 'none'; 
 		var element = document.getElementById('del_listProctor');
-		element.title = 'Remove Proctor'; 
+		element.title = 'Remove Proctor';
+		if(state == "EDIT" && isProctor) {
+			var element = document.getElementById('del_listProctor');
+			element.style.display = 'none'; 
+		}
 		if(isTestExpired){		    	 
           	$("#del_listProctor").addClass('ui-state-disabled');	
         }else{
