@@ -397,6 +397,7 @@ function closeBulkMovePopup() {
 }
 
 function closeUnsaveBulkConfirmationPopup() {
+	$('#innerID').jstree('close_all', -1);
 	closePopUp('unSaveBulkConfirmationPopup');
 	hideBulkMovePopup();
 }
