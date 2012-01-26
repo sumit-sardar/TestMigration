@@ -213,7 +213,7 @@ function populateBulkStudentGrid() {
 			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#studentAccommGrid').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_studentAccommGrid').text());
+				var maxPageSize = parseInt($('#sp_1_studentAccommpager').text());
 				var minPageSize = 1;
 				if(reqestedPage > maxPageSize){
 					$('#studentAccommGrid').setGridParam({"page": maxPageSize});
