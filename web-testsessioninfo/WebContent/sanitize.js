@@ -1,4 +1,16 @@
 
+function submitLogin()
+{
+	var username = document.getElementById('j_username').value.trim();
+	document.getElementById('j_username').value = username;
+	
+	var password = document.getElementById('j_password').value.trim();
+	document.getElementById('j_password').value = password;
+	
+	showLoading();
+   	document.forms[0].submit();
+}    
+
 function sanitizeLogin() 
 {
     if (! sanitize(document.getElementById('j_username').value)) {

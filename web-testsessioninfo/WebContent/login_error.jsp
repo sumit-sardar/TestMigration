@@ -150,7 +150,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>                  
-                	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="3"
+                	<a href="#" onclick="submitLogin();" class="rounded {transparent} button" tabindex="3"
                 	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
                 	onkeypress="return handleEnterKey(event, this);" >
                 	<lb:label key="login.logIn"/>
