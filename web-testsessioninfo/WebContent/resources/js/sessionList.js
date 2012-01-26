@@ -2530,8 +2530,18 @@ function registerDelegate(tree){
 	 		var val=[] ;
 			
 			val = val.concat(addProctorLocaldata);	 
-			for (var i = 0, j = val.length; i < j; i++){			 	
+			for (var i = 0, j = val.length; i < j; i++){
 			 		proctorIdObjArray[val[i].userId] = val[i];
+			 		if(proctorIdObjArray[val[i].userId].defaultScheduler == "T") {
+			 			schedulerFirstName = proctorIdObjArray[val[i].userId].firstName;
+						schedulerLastName = proctorIdObjArray[val[i].userId].lastName;
+						schedulerUserId = proctorIdObjArray[val[i].userId].userId;
+						schedulerUserName = proctorIdObjArray[val[i].userId].userName;
+						$("#schedulerFirstName").val(schedulerFirstName);
+						$("#schedulerLastName").val(schedulerLastName);
+						$("#schedulerUserId").val(schedulerUserId);
+						$("#schedulerUserName").val(schedulerUserName);
+			 		}
 			}
 			 addProctorLocaldata = val;
 		 }

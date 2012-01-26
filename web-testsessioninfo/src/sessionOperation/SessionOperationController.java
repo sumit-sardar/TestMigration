@@ -1355,6 +1355,7 @@ public class SessionOperationController extends PageFlowController {
 		
 		 try{
 			 TestSession testSession = new TestSession();
+			 TestSession existingTestSession = null;
 			 Set<Integer> keySet            = this.topNodesMap.keySet();
 			 Integer[] topnodeids= (keySet).toArray(new Integer[keySet.size()]);
 			 Integer creatorOrgNod    		= topnodeids[0];
@@ -1396,6 +1397,7 @@ public class SessionOperationController extends PageFlowController {
 			 Integer testAdminId = null;
 			 if(!isAddOperation ){
 				 testAdminId = Integer.valueOf(testAdminIdString.trim());
+				 existingTestSession = scheduleTest.getScheduledSessionDetails(userName, testAdminId).getTestSession();
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
 			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(this.getCustomerId(), itemSetId); 
@@ -1416,7 +1418,6 @@ public class SessionOperationController extends PageFlowController {
 			 
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 
-			 testSession.setTestAdminStatus("CU");
 			 testSession.setLoginEndDate(dailyLoginEndDate);
 			  testSession.setDailyLoginEndTime(dailyLoginEndTime);
 			 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
@@ -1425,18 +1426,30 @@ public class SessionOperationController extends PageFlowController {
 		         now = com.ctb.util.DateUtils.getAdjustedDate(now, defaultTimeZone.getID(), timeZone, now);
 	    		 String timeStr = DateUtils.formatDateToTimeString(now);
 			     String dateStr = DateUtils.formatDateToDateString(now);
-				 testSession.setTestAdminStatus("PA");
+				 //testSession.setTestAdminStatus("PA");
 				 testSession.setLoginEndDate(DateUtils.getDateFromDateString(dateStr));
 				 testSession.setDailyLoginEndTime(DateUtils.getDateFromTimeString(timeStr));
 			 }
-	         testSession.setTestAdminType("SE");
-	         testSession.setActivationStatus("AC");
-	         testSession.setEnforceTimeLimit("T");
-	         testSession.setCreatedBy(this.userName);
-
+	       
+	         if(isAddOperation ){
+	        	 testSession.setTestAdminType("SE");
+	        	 testSession.setActivationStatus("AC"); 
+	        	 testSession.setEnforceTimeLimit("T");
+	        	 testSession.setCreatedBy(this.userName);
+	        	 testSession.setShowStudentFeedback(showStdFeedback);
+	        	 testSession.setTestAdminStatus("CU");
+	        	 testSession.setCreatorOrgNodeId(creatorOrgNod);
+	         } else {
+	        	 testSession.setTestAdminType(existingTestSession.getTestAdminType());
+	        	 testSession.setActivationStatus(existingTestSession.getActivationStatus()); 
+	        	 testSession.setEnforceTimeLimit(existingTestSession.getEnforceTimeLimit());
+	        	 testSession.setShowStudentFeedback(existingTestSession.getShowStudentFeedback());
+	        	 testSession.setSessionNumber(existingTestSession.getSessionNumber());
+	        	 testSession.setCreatedBy(existingTestSession.getCreatedBy());
+	        	 testSession.setCreatorOrgNodeId(existingTestSession.getCreatorOrgNodeId());
+	         }
 	         
-	         testSession.setCreatorOrgNodeId(creatorOrgNod);
-	         testSession.setShowStudentFeedback(showStdFeedback);
+	         //testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         testSession.setProductId(productId);	    
 	         testSession.setDailyLoginStartTime(dailyLoginStartTime);
 	         testSession.setLocation(location);
@@ -3509,7 +3522,7 @@ public class SessionOperationController extends PageFlowController {
                     User user = users[i];
                     if (user != null && user.getUserName() != null) {
                         UserProfileInformation userDetail = new UserProfileInformation(user);
-                        if(this.user.getUserId().equals(user.getUserId())){
+                        if(user.getDefaultScheduler().equals("T")){
                         	userDetail.setDefaultScheduler("T");
                         	
                         }else {

@@ -200,6 +200,11 @@ function populateSelectProctorGrid() {
 		   	 	var i = 0;
 			   	 for(i = 0; i <obj.userProfileInformation.length; i++) {
 			   	 	allProctorIds['dataList'][obj.userProfileInformation[i].userId] = obj.userProfileInformation[i];
+			   	 	if($("#schedulerUserId") != undefined) {
+			   	 		if(allProctorIds['dataList'][obj.userProfileInformation[i].userId].userId == $("#schedulerUserId").val()) {
+			   	 			allProctorIds['dataList'][obj.userProfileInformation[i].userId].defaultScheduler = "T";
+			   	 		}
+			   	 	}
 			   	 }
 			   	 allProctorIds['dataLength'] = i;
 		   	 //}
