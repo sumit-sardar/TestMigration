@@ -89,6 +89,17 @@ var offGradeCancled = false;
 var testSessionListRequired;
 var orgSelectVar = false;
 var mySessionCliked = false;
+var isPopUp = false;
+
+$(document).bind('keydown', function(event) {		
+	      var code = (event.keyCode ? event.keyCode : event.which);
+	      if(code == 27){
+	      		if(isPopUp){				
+	      			onCloseScheduleSessionPopUp();
+	      		}
+	            return false;
+	      }
+	  });
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -972,6 +983,8 @@ function registerDelegate(tree){
 			$("#endTest").hide();
 			$("#stuOrgNodeHierarchy").undelegate();
 			$("#proctorOrgNodeHierarchy").undelegate();
+			onChangeHandler.reset();
+			isPopUp = false;
 
 		}
 		$("#"+dailogId).dialog("close");
@@ -1331,7 +1344,7 @@ function registerDelegate(tree){
 							$("#productType").val(data.product[0].productType);
 							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 						}
-						
+						isPopUp = true;	
 						$.unblockUI(); 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -2819,11 +2832,20 @@ function registerDelegate(tree){
 	}
     
     function onCloseScheduleSessionPopUp() {    	
-    	var sessionName = document.getElementById("testSessionName").value;
-    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
-    		closePopUp('scheduleSession');
-    	} else {
-    		openCloseScheduleSessionPopup();
+    	var sessionName = document.getElementById("testSessionName").value;		
+		if (state == "EDIT"){
+			if (onChangeHandler.getData() == "T"){
+				openCloseScheduleSessionPopup();
+			}else{
+				closePopUp('scheduleSession');
+			}
+		
+		}else{		
+	    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
+	    		closePopUp('scheduleSession');
+	    	} else {
+	    		openCloseScheduleSessionPopup();
+	    	}
     	}
     }
     

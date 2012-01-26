@@ -14,6 +14,11 @@
     var isEndTestSession = false;
     var isSortable = true;
   	var isProctor = false;
+	var selectTestChange = "F";
+	var testDtlChange = "F";
+	var studentDtlChange = "F";
+	var proctorDtlChange = "F";
+		
   function editTestSession(){  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
@@ -89,6 +94,8 @@
 								blockOffGradeTesting = false;
 							}
 							
+						onChangeHandler.register("testDetailId");
+							
 						} else if (data.status.IsSystemError) {
 							 var length = 0;
 							 
@@ -117,6 +124,7 @@
 							autoOpen: true,
 							width: '1024px',
 							modal: true,
+							closeOnEscape: false,
 							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); 
 							$("#displayEditInfo").show();
 							if(isProctor){
@@ -143,7 +151,8 @@
 									$("#contentEditInfo").html($("#noStudentLogged").val());
 									$("#messageEditInfo").html($("#noStudentLogged2").val());
 								}
-							}						
+							}
+							isPopUp = true;						
 							},
 							 beforeClose: function(event, ui) { resetEditTestSession();
 							 removeDisableInEdit();
@@ -199,13 +208,14 @@
     function populateSelectTestGrid(wizard,index){
     
     	var testSessionList ={};
-    	
+    	isPopUp = false;
     if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){   
     	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
     	  removeDisableInEdit();    	  
     	  }
+    	  isPopUp = true;
   		  wizard.accordion("activate", index);		
     }else{
 		 	$.ajax({
@@ -279,6 +289,8 @@
 								}else{
 								removeDisableInEdit();
 								}
+								onChangeHandler.register("Select_Test");
+								isPopUp = true;
 								wizard.accordion("activate", index);					
 								$.unblockUI(); 
 											
@@ -296,7 +308,7 @@
     }
     
     function populateStudentGrid(wizard,index){
-    
+    	isPopUp = false;
 	  if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
 	  	 	//processStudentAccordion();	   
 	  	 	wizard.accordion("activate", index);					
@@ -329,6 +341,8 @@
 									$('#totalStudent').text(AddStudentLocaldata.length);	
 									processStudentAccordion();   				
 								}
+								onChangeHandler.register("addStudentId");
+								isPopUp = true;
 								wizard.accordion("activate", index);					
 								$.unblockUI(); 
 											
@@ -348,6 +362,8 @@
 	  		$('#stuWithAcc').text(studentWithaccommodation);
 			$('#totalStudent').text(AddStudentLocaldata.length);	
 			processStudentAccordion();
+			onChangeHandler.register("addStudentId");
+			isPopUp = true;
 			wizard.accordion("activate", index);					
 			$.unblockUI();
 	  	}
@@ -359,9 +375,10 @@
     }
     
     function populateProctorGrid(wizard,index){
-        
+        isPopUp = false;
 	    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
 	    		//processProctorAccordion();
+	    		isPopUp = true;
 	    		wizard.accordion("activate", index);					
 	    }else{
 			    $.ajax({
@@ -379,7 +396,9 @@
 										addProctorLocaldata = data.savedProctorsDetails;
 										noOfProctorAdded = 	addProctorLocaldata.length;	
 										processProctorAccordion();
-									}
+									}									
+									onChangeHandler.register("addProctorId");
+									isPopUp = true;
 									wizard.accordion("activate", index);					
 									$.unblockUI(); 
 												
@@ -691,3 +710,36 @@
 	return found;
 	
 	}
+	
+	
+	var onChangeHandler = (function(){
+		var editPopUpChange = "F";
+	
+		return{
+			register: function(args){
+				$('#'+args).change(function(e){ 
+					switch(args){
+						case "Select_Test":
+											editPopUpChange = "T";
+											break;
+						case "testDetailId":
+											editPopUpChange = "T";
+											break;
+						case "addStudentId":
+											editPopUpChange = "T";
+											break;
+						case "addProctorId":
+											editPopUpChange = "T";
+											break;			
+					}				
+				});			
+			},
+			getData: function(){
+				return editPopUpChange;				
+			},
+			reset: function(){		
+				editPopUpChange = "F";	
+			}
+		}		
+	})();
+
