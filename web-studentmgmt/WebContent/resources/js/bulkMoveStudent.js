@@ -402,6 +402,7 @@ function closeUnsaveBulkConfirmationPopup() {
 }
 
 function hideBulkMovePopup() {
+	$('#innerID').jstree('close_all', -1);
 	isPopUp = false;
 	$("#moveStudentPopup").dialog("close");
 	removeBulkPopupMessage();	
