@@ -87,6 +87,8 @@ var gridSelectedToDelete = "";
 var offGradeSubtestChanged = false;
 var offGradeCancled = false;
 var testSessionListRequired;
+var orgSelectVar = false;
+var mySessionCliked = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -182,11 +184,30 @@ function populateSessionListGrid(homePageLoad) {
             	} else {
             		isGridEmpty = false;
             	}
-            	if(!gridloaded) {
-            		populateCompletedSessionListGrid();
-            	} /*else {
-            		gridReloadPA();
-            	}*/
+            	if(orgSelectVar){
+            		orgSelectVar = false;
+            		if(!gridloaded) {
+	            		populateCompletedSessionListGrid();
+	            	} else {
+	            		gridReloadPA();
+	            	}
+            	}else if(mySessionCliked){
+            		mySessionCliked = false;
+            		if(!gridloaded) {
+			       		populateCompletedSessionListGrid();
+			       	} else {
+			       		gridReloadPA();
+			       	}
+            	}else {
+            		if(!gridloaded) {
+	            		populateCompletedSessionListGrid();
+	            	} /*else {
+	            		gridReloadPA();
+	            	}*/
+            	}
+            	
+            	
+            	
             	
             	var width = jQuery("#sessionGrid").width();
 			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
@@ -624,12 +645,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	    	 	openConfirmationPopup();
 	    	} else {
 	    		reset();
+	    		orgSelectVar = true;
  		    	gridReload(false);
- 		    	if(!gridloaded) {
-            		populateCompletedSessionListGrid();
-            	} else {
-            		gridReloadPA();
-            	}
 	    	}
   			
  		   
@@ -1022,12 +1039,9 @@ function registerDelegate(tree){
 		
 		reset();
 		hideTreeSlider();
+		mySessionCliked = true;
 		gridReload(true);
-		if(!gridloaded) {
-            		populateCompletedSessionListGrid();
-            	} else {
-            		gridReloadPA();
-            	}
+		
 		$('#showSaveTestMessage').hide();
 	}	
 	
