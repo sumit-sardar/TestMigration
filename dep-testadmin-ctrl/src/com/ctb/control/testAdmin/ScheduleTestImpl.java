@@ -3494,6 +3494,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 proctors[i].setEditable(editable ? "T" : "F");
                 if(proctors[i].getUserId().intValue() == scheduler.getUserId().intValue()){
                 	proctors[i].setEditable("F");
+                	proctors[i].setDefaultScheduler("T");
                 }
             }
             session.setProctors(proctors);

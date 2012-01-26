@@ -50,6 +50,7 @@ public class User extends CTBBean
     private Role role;
     private Address address;
     private Node[] organizationNodes;
+    private String defaultScheduler = "";
     
     public User() {
     }
@@ -543,6 +544,14 @@ public class User extends CTBBean
     
     public void setOrganizationNodes(Node[] organizationNodes) {
         this.organizationNodes = organizationNodes;
-    }    
+    }
+
+	public String getDefaultScheduler() {
+		return defaultScheduler;
+	}
+
+	public void setDefaultScheduler(String defaultScheduler) {
+		this.defaultScheduler = defaultScheduler;
+	}    
 
 } 
