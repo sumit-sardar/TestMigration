@@ -273,22 +273,26 @@ function populateBulkStudentGrid() {
 			    	var screenReader = $('#gs_screenReader').val();
 			    	var untimedTest = $('#gs_untimedTest').val();
 			    	var highLighter = $('#gs_highLighter').val();
+					var allData = $("#studentAccommGrid").jqGrid('getGridParam','data');
 					
 					if(!status) {
 						UIBlock();
 						if(defaultFilterApplied()) {
 							for(var i=0; i<studentArrId.length; i++){
+								if(studentArrId[i] == "") 
+									continue;
 								delete selectedStudentObjArr[studentArrId[i]];
 							}
 						} else {
 							for(var i=0; i<studentArrId.length; i++){
-								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentArrId[i]);
+								if(studentArrId[i] == "") 
+									continue;
+								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause,
+											 screenReader, untimedTest, highLighter, studentArrId[i], allData);
 						 	 	if(!skip) {
 							 	 	delete selectedStudentObjArr[studentArrId[i]];
 							 	 }
-								  
 							}
-				
 						}	
 						totalRowSelectedOnPage = 0;
 						$.unblockUI();  
@@ -296,22 +300,25 @@ function populateBulkStudentGrid() {
 						UIBlock();
 						if(defaultFilterApplied()) {
 							for(var i=0; i<studentArrId.length; i++){
+								if(studentArrId[i] == "") 
+									continue;
 								selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
 							}
 							totalRowSelectedOnPage = studentArrId.length;
 						} else {
 							totalRowSelectedOnPage = 0;
 							for(var i=0; i<studentArrId.length; i++){
-								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentArrId[i]);
-							 	  if(!skip) {
+								if(studentArrId[i] == "") 
+									continue;
+								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, 
+											screenReader, untimedTest, highLighter, studentArrId[i], allData);
+						 	  	if(!skip) {
 								  	selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
 								  	totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
-								  } else {
-								  	delete selectedStudentObjArr[studentArrId[i]];
-								  }
-								  
+							  	} else {
+							  		delete selectedStudentObjArr[studentArrId[i]];
+							  	}
 							}
-							
 						}						
 						//setAnchorButtonState('assignAccommButton', false);
 						$.unblockUI();
@@ -324,8 +331,27 @@ function populateBulkStudentGrid() {
 								}
 							}
 						}
-						
-						
+						if(studentArrId.length == 1 && studentArrId[0] == "") {
+							var noStudents = $('.ui-state-highlight');
+							if(noStudents.length > 0) {
+								for(var k = 0; k < noStudents.length; k++) {
+									$(noStudents[k]).removeClass('ui-state-highlight');
+								}
+							}
+						}
+						var present1 = false;
+						for(var key in selectedStudentObjArr) {
+							present1 = true;
+							break;
+						}
+						if(!present1) {
+							var noStudents = $('.ui-state-highlight');
+							if(noStudents.length > 0) {
+								for(var k = 0; k < noStudents.length; k++) {
+									$(noStudents[k]).removeClass('ui-state-highlight');
+								}
+							}
+						}
 					}
 					var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 					determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
@@ -1055,10 +1081,11 @@ function populateBulkStudentGrid() {
 	  }
 	  
 	  
-	   function skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentId){
-	  	var skip = false;
-		 var objIndex = jQuery.inArray(studentId, studentArrId); 
-		 var obj = studentObjArr[objIndex];
+	   function skipStudent(grade, calculator, hasColorFontAccommodations, testPause, 
+	   						screenReader, untimedTest, highLighter, studentId, allData){
+	  	 var skip = false;
+	  	 var objIndex = jQuery.inArray(studentId, studentArrId); 
+		 var obj = allData[objIndex];
 		 if(skip == false && grade != ""){
 			 if(obj['grade'] == grade)
 			 	skip = false;
