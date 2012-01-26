@@ -1,5 +1,7 @@
 package data; 
 
+import java.util.TreeSet;
+
 import com.ctb.bean.testAdmin.RosterElement;
 
 public class TestRosterVO implements java.io.Serializable 
@@ -33,6 +35,8 @@ public class TestRosterVO implements java.io.Serializable
     private String maskingTool = null;
     private String magnifyingGlass = null;
     private String musicFileId = null;
+    private TreeSet<String>   accommodationsSet = new TreeSet<String>();
+    
     //End: For MQC defect 66844
     
     public TestRosterVO()
@@ -220,4 +224,17 @@ public class TestRosterVO implements java.io.Serializable
 	public void setMusicFileId(String musicFileId) {
 		this.musicFileId = musicFileId;
 	}
+	
+	/**
+	 * @return the accommodationsMap
+	 */
+	public TreeSet<String> getAccommodationsSet() {
+		if(accommodationsSet == null) {
+			this.accommodationsSet =  new TreeSet<String>();
+		}
+		return accommodationsSet;
+	}
+	
+	
+	
 } 
