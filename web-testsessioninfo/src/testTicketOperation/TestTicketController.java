@@ -1,32 +1,5 @@
 package testTicketOperation;
 
-import org.apache.beehive.netui.pageflow.Forward;
-import org.apache.beehive.netui.pageflow.PageFlowController;
-
-import com.ctb.bean.testAdmin.CustomerConfiguration;
-import com.ctb.bean.testAdmin.CustomerConfigurationValue;
-import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.bean.testAdmin.RosterElementData;
-import com.ctb.bean.testAdmin.ScheduledSession;
-import com.ctb.bean.testAdmin.SessionStudent;
-import com.ctb.bean.testAdmin.TestElementData;
-import com.ctb.bean.testAdmin.TestSession;
-import com.ctb.bean.testAdmin.TestSessionData;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.SessionStudentData;
-import com.ctb.bean.testAdmin.TestElement;
-import com.ctb.bean.testAdmin.TestProduct;
-import com.ctb.bean.testAdmin.TestProductData;
-import com.ctb.bean.testAdmin.User;
-import data.SubtestVO;
-import data.TestAdminVO;
-import data.TestRosterVO;
-import data.TestSummaryVO;
-import data.TestVO;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,11 +9,39 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.beehive.controls.api.bean.Control;
+import org.apache.beehive.netui.pageflow.Forward;
+import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.FilterSortPageUtils;
 import util.IndividualTestTicketsReportUtils;
 import util.SummaryTestTicketsReportUtils;
 import util.TestSessionUtils;
+import util.TestTicketConstents;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestElementData;
+import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.TestProductData;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.exception.CTBBusinessException;
+
+import data.SubtestVO;
+import data.TestAdminVO;
+import data.TestRosterVO;
+import data.TestSummaryVO;
+import data.TestVO;
 
 /**
  * @jpf:controller nested="true"
@@ -360,7 +361,102 @@ public class TestTicketController extends PageFlowController
 
         return null;
     }    
-    
+	
+	
+	 /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward summaryTestTicketInExcel() throws CTBBusinessException
+    {
+        try{
+            init();
+            
+            String testAdminId = (String)getRequest().getParameter("testAdminId");
+            String orgNodeId = (String)getRequest().getParameter("orgNodeId");
+           
+            Integer sessionId = new Integer(testAdminId); 
+            TestSessionData tsd = getTestSessionDetails(sessionId);
+            this.scheduledSession = this.getScheduledSession(sessionId);
+            TestAdminVO testAdmin = buildTestAdminVO(tsd, this.scheduledSession);
+            RosterElementData red = getRosterForTestSessionAndOrgNode(orgNodeId, sessionId);
+            TestSession testSession = this.scheduledSession.getTestSession();
+                
+                
+            this.schedulerName = testSession.getCreatedBy();
+            User user = this.scheduleTest.getUserDetails(this.userName, schedulerName);
+            Customer customer = user.getCustomer();
+            String hideAccommodations = customer.getHideAccommodations();
+            Boolean supportAccommodations = Boolean.TRUE;
+            if ((hideAccommodations != null) && hideAccommodations.equalsIgnoreCase("T")) {
+                supportAccommodations = Boolean.FALSE;
+            }
+            
+            TestElementData ted = this.getTestsForProductForUser(testAdmin.getProductId(),
+                                                                 null, 
+                                                                 null, 
+                                                                 null);
+                                                                 
+            this.testTicketTestList = buildTestList(ted, testAdmin.getProductId());
+            TestVO test = getTestTicketTestById(getTestId(tsd));
+            
+            Collection rosterList = buildRosterList(red, this.scheduledSession.getStudents());   
+            TestSummaryVO summary = this.getTestSessionSummary(rosterList);
+            summary.setSupportAccommodations(supportAccommodations);
+            
+            TestProduct testproduct = this.testSessionStatus.getProductForTestAdmin(this.userName, sessionId);
+            Boolean isTabeProduct = TestSessionUtils.isTabeProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
+            if (isTabeProduct.booleanValue()) {
+                test.setLevel(null);
+                String duration = getTestSessionDuration(testAdmin);
+                test.setDuration(duration);
+                for(Iterator it=rosterList.iterator(); it.hasNext() ; ) {
+                    TestRosterVO roster = (TestRosterVO)it.next();
+                    roster.setForm(null);
+                }
+            }
+            
+            
+            testAdmin.setTestName(this.scheduledSession.getTestSession().getTestName());
+            SummaryTestTicketsReportUtils util = new SummaryTestTicketsReportUtils();
+            String server = getRequest().getServerName();
+            int port = getRequest().getServerPort();
+            getResponse().setContentType("application/vnd.ms-excel");
+            getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketSummary.xls");
+            getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            getResponse().setHeader("Pragma", "public");
+            
+            util.generateExcelReport(new Object[]{
+                                rosterList, 
+                                testAdmin, 
+                                false,
+                                summary,
+                                test,
+                                getResponse().getOutputStream(), 
+                                server,
+                                new Integer(port),
+                                this.getRequest().getScheme(),
+                                isTabeProduct,
+                                testproduct,
+                                this.isStudentIdConfigurable,
+                                this.studentIdLabelName});
+        }
+        catch(IOException ie){
+            ie.printStackTrace();
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+
+        return null;
+    } 
+	
+	
+	
+	
+	
+	
+	
     private RosterElementData getRosterForTestSessionAndOrgNode(String orgNodeId, 
                                                       Integer testAdminId) 
     {
@@ -651,53 +747,64 @@ public class TestTicketController extends PageFlowController
         roster.setUntimedTest(student.getUntimedTest());
         roster.setHighLighter(student.getHighLighter());/* 51931 Deferred Defect For HighLighter*/
         roster.setHasAccommodations(student.getHasAccommodations());
-        List accommodationList = new ArrayList();
+        List<String> accommodationList = new ArrayList<String>();
         if(!stringToBoolean(student.getHasAccommodations())){
             accommodationList.add("--");
         }
         else{
             if(stringToBoolean(student.getCalculator())){
                 accommodationList.add("Calculator");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_CALCULATOR);
             }
             if(stringToBoolean(student.getTestPause())){
                 roster.setHasPause(true);
                 accommodationList.add("Pause");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_PAUSE);
             }
             if(stringToBoolean(student.getUntimedTest())){
                 accommodationList.add("Untimed");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_UNTIMED);
             }
             if(stringToBoolean(student.getHasColorFontAccommodations())){
                 accommodationList.add("Color/Font");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_COLOR_FONT);
             }
             if(stringToBoolean(student.getScreenReader())){
                 accommodationList.add("Screen Reader");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_SCREEN_READER);
             }
             /* 51931 Deferred Defect For HighLighter*/
             if(stringToBoolean(student.getHighLighter())){
                 accommodationList.add("Highlighter");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_HIGHLIGHTER);
             } 
             
             //Start- added for student pacing          
             if(convertStringToBoolean(student.getExtendedTimeAccom()) ){
             	roster.setExtendedTimeAccom(student.getExtendedTimeAccom());  // Start: For MQC defect 66844
                 accommodationList.add("Extended Time");
+                roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_EXTENDED_TIME);
             }  //end- added for student pacing
              // Start: For MQC defect 66844
             if (convertStringToBoolean(student.getMaskingRular())) {
             	roster.setMaskingRular(student.getMaskingRular());
             	accommodationList.add("Blocking Ruler");
+            	roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_BLOCKING_RULER);
             }
             if (convertStringToBoolean(student.getMaskingTool())) {
             	roster.setMaskingTool(student.getMaskingTool());
             	accommodationList.add("Masking Tool");
+            	roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_MASKING_TOOL);
             }
             if (convertStringToBoolean(student.getMagnifyingGlass())) {
             	roster.setMagnifyingGlass(student.getMagnifyingGlass());
             	accommodationList.add("Magnifying Glass");
+            	roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_MAGNIFYING_GLASS);
             }
             if (convertStringToBoolean(student.getMusicFileId())) {
             	roster.setMusicFileId(student.getMusicFileId());
             	accommodationList.add("Music Player");
+            	roster.getAccommodationsSet().add(TestTicketConstents.TEST_TICKET_ACCOM_MUSIC_PLAYER);
             }
              // End: For MQC defect 66844
         }

@@ -508,7 +508,7 @@ public class TableUtils
    private int getHalignForStudentTable(int colIndex){
         return (colIndex == 0 || colIndex == 2 || colIndex == 3) ? Element.ALIGN_LEFT : Element.ALIGN_CENTER;
    }
-    private String getStudentName(TestRosterVO student){
+    String getStudentName(TestRosterVO student){
         String name = student.getLastName() + ", " + student.getFirstName();
         String middleName = student.getMiddleName();
         if(middleName != null && middleName.length() > 0){
@@ -531,10 +531,10 @@ public class TableUtils
         String password = student.getPassword();
     return password == null ? " " : password;
     }
-    private String getForm(TestRosterVO student){
+    String getForm(TestRosterVO student){
         return student.getForm();
     }
-    private String getStatus(TestRosterVO student){
+    String getStatus(TestRosterVO student){
         String status = student.getTestStatus();
         return status == null ? " " : FilterSortPageUtils.testStatus_CodeToString(status);
     }

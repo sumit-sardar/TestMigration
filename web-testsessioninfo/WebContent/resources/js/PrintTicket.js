@@ -25,6 +25,12 @@ function openTestTicketSummary( anchor, testAdminId, orgNodeId ) {
 	return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
 }
 
+function openTestTicketSummaryInExcel( anchor, testAdminId, orgNodeId ) {
+    var url = "/SessionWeb/testTicketOperation/summaryTestTicketInExcel.do";
+    return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
+
+}
+
 function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
 	anchor.href  = url;
 	anchor.href += "?testAdminId=" + testAdminId;
@@ -53,6 +59,7 @@ function populateTestTicketTree() {
 						if(data.isStudentExist == "false"){
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
+							//fix for Session list tree being hidden if test ticket does not have any students 
 							//$("#orgNodeHierarchy").css("visibility","hidden");	
 							$("#printTestTicket").css("height",'330px');
 						}else{

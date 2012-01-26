@@ -1,12 +1,11 @@
 package util; 
 
 import com.ctb.bean.testAdmin.TestProduct;
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import data.TestRosterVO;
 import data.TestAdminVO;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import com.lowagie.text.Document;
@@ -33,8 +32,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
+
 import javax.servlet.ServletOutputStream;
 //import weblogic.webservice.tools.pagegen.result;
+
+import org.apache.poi.hssf.usermodel.HSSFPalette;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.Region;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public class SummaryTestTicketsReportUtils extends ReportUtils
 { 
@@ -188,6 +202,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     //START - Changed for CR GA2011CR001
     private Boolean isStudentIdConfigurable = Boolean.FALSE;
     private String studentIdLabelName = "Student ID";
+    private TreeMap<Integer,String> rosterHeaderMap ;
     //END - Changed for CR GA2011CR001 
     /**
      * initialize globals passed into method
@@ -774,7 +789,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     }
     private void addSessionInfoTable2() throws DocumentException{
         this.staticTables.add( 
-             tableUtils.getSummaryTable(getSession2Texts(),
+             tableUtils.getSummaryTable(getSession2Texts(true),
                                         SESSION_WIDTH,
                                         SESSION_WIDTHS,
                                         HALF_X,
@@ -1004,7 +1019,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         
         return result;
     }
-    private String[] getSession2Texts(){
+    private String[] getSession2Texts(boolean isForpdf){
         String[] result = new String[8];
         boolean singleSubtest = this.testAdmin.getSubtests().size() == 1;
         result[0] = TIME_LIMIT_LABEL;
@@ -1012,10 +1027,459 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         result[2] = singleSubtest ? " " : ALLOW_ENFORCE_BREAKS_LABEL;
         result[3] = singleSubtest ? " " : getAllowEnforceBreaks();
         result[4] = LOCATION_LABEL;
-        result[5] = getLocation();
+        result[5] = isForpdf? getLocation():getNonBlankString(testAdmin.getLocation());
         result[6] = " ";
         result[7] = " ";
         
         return result;
     }
+
+   /* private void appendTitleNameValueWithSameColor(Sheet summarySheet, String title, String titleText, int rowno,short textSize, Boolean isBold) {
+		Row header = PoiUtils.getRow(summarySheet, rowno);
+
+		CellStyle titleStyle = summarySheet.getWorkbook().createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldFont = PoiUtils.getFont(
+				summarySheet.getWorkbook(), true, HSSFColor.TEAL.index,
+				 textSize);
+		titleStyle.setFont(boldFont);
+		
+		PoiUtils.addCell(header, 0, title, titleStyle);
+		PoiUtils.addCell(header, 1, titleText, titleStyle);
+	}*/
+    
+    
+    
+    private void appendSupportContact(Sheet summarySheet, int rowno) {
+    	Row row = null;
+
+		CellStyle c0s = null;
+		c0s = summarySheet.getWorkbook().createCellStyle();
+		org.apache.poi.ss.usermodel.Font normalFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.TEAL.index, (short)0);
+		
+		
+		row = PoiUtils.getRow(summarySheet, rowno);
+		c0s.setFont(normalFont);
+		PoiUtils.addCell(row, 0, SUPPORT_CONTACT_LABEL + getSupportContact(), c0s);
+    	
+    }
+    
+    private void appendLevel(Sheet summarySheet, int rowno) {
+    	Row row = null;
+		CellStyle c0s = null;
+		org.apache.poi.ss.usermodel.Font normalFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.TEAL.index, (short)0);
+		org.apache.poi.ss.usermodel.Font normalBlackFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.BLACK.index, (short)0);
+		
+		row = PoiUtils.getRow(summarySheet, rowno);
+		c0s = summarySheet.getWorkbook().createCellStyle();
+		c0s.setFont(normalFont);
+		PoiUtils.addCell(row, 0, getLevelLabel(), c0s);
+		c0s = summarySheet.getWorkbook().createCellStyle();
+		c0s.setFont(normalBlackFont);
+
+		PoiUtils.addCell(row, 1, getLevel(), c0s);
+
+	}
+    
+    private int appendSessionInfo(Sheet summarySheet, int rowno) {
+		Row row = null;
+		Cell cell0 = null;
+		Cell cell1 = null;
+		Cell cell2 = null;
+		Cell cell3 = null;
+		Cell cell4 = null;
+		org.apache.poi.ss.usermodel.Font normalFont = PoiUtils.getFont(	summarySheet.getWorkbook(), true, HSSFColor.TEAL.index,	(short) 0);
+
+		CellStyle tableTopLeftCorner = summarySheet.getWorkbook().createCellStyle();
+		tableTopLeftCorner.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		tableTopLeftCorner.setBorderRight(CellStyle.BORDER_MEDIUM);
+		tableTopLeftCorner.setBorderTop(CellStyle.BORDER_MEDIUM);
+		tableTopLeftCorner.setFont(normalFont);
+
+		CellStyle tableTopRightCorner = summarySheet.getWorkbook().createCellStyle();
+		tableTopRightCorner.setBorderTop(CellStyle.BORDER_MEDIUM);
+		tableTopRightCorner.setBorderRight(CellStyle.BORDER_MEDIUM);
+
+		CellStyle tableBottomLeftCorner = summarySheet.getWorkbook().createCellStyle();
+		tableBottomLeftCorner.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		tableBottomLeftCorner.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		tableBottomLeftCorner.setBorderRight(CellStyle.BORDER_MEDIUM);
+		tableBottomLeftCorner.setFont(normalFont);
+
+		CellStyle tableBottomRightCorner = summarySheet.getWorkbook().createCellStyle();
+		tableBottomRightCorner.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		tableBottomRightCorner.setBorderRight(CellStyle.BORDER_MEDIUM);
+
+		CellStyle tableLeft = summarySheet.getWorkbook().createCellStyle();
+		tableLeft.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		tableLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
+		tableLeft.setFont(normalFont);
+
+		CellStyle tableRight = summarySheet.getWorkbook().createCellStyle();
+		tableRight.setBorderRight(CellStyle.BORDER_MEDIUM);
+		++rowno;
+
+		String[] session1Texts = getSession1Texts();
+		String[] session2Texts = getSession2Texts(false);
+		int noOfrow = session1Texts.length / 2;
+
+		for (int i = 0; i < noOfrow; i++) {
+			row = PoiUtils.getRow(summarySheet, rowno + i);
+			cell0 = row.createCell(0);
+			cell1 = row.createCell(1);
+			cell2 = row.createCell(2);
+			cell3 = row.createCell(3);
+			cell4 = row.createCell(4);
+
+			String valAtCell0 = session1Texts[i * 2];
+			String valAtCell1 = session1Texts[i * 2 + 1];
+			String valAtCell2 = " ";
+			String valAtCell3 = session2Texts[i * 2];
+			
+			String valAtCell4 = session2Texts[i * 2 + 1];
+
+			if (i == 0) {
+				cell0.setCellStyle(tableTopLeftCorner);
+				cell1.setCellStyle(tableTopRightCorner);
+
+				cell3.setCellStyle(tableTopLeftCorner);
+				cell4.setCellStyle(tableTopRightCorner);
+			} else if (noOfrow - 1 == i) {
+				cell0.setCellStyle(tableBottomLeftCorner);
+				cell1.setCellStyle(tableBottomRightCorner);
+
+				cell3.setCellStyle(tableBottomLeftCorner);
+				cell4.setCellStyle(tableBottomRightCorner);
+
+			} else {
+				cell0.setCellStyle(tableLeft);
+				cell1.setCellStyle(tableRight);
+
+				cell3.setCellStyle(tableLeft);
+				cell4.setCellStyle(tableRight);
+			}
+
+			cell0.setCellValue(valAtCell0);
+			cell1.setCellValue(valAtCell1);
+			cell2.setCellValue(valAtCell2);
+			cell3.setCellValue(valAtCell3);
+			cell4.setCellValue(valAtCell4);
+
+		}
+
+		return rowno + noOfrow;
+	}
+    
+    
+    
+    
+    protected void setupForExcel(Object[] args) {
+
+        this.rosterList = (Collection)args[0];
+        this.testAdmin = (TestAdminVO)args[1];
+        this.testSummary = (TestSummaryVO)args[3];
+        this.test = (TestVO)args[4];
+        this.isTabeProduct = (Boolean)args[9];
+        this.testProduct = (TestProduct)args[10];
+        this.isStudentIdConfigurable = (Boolean)args[11];
+        this.studentIdLabelName = (String)args[12];
+        populateRosterHeader();
+    }
+    
+    public void prepareSummarySheet(Sheet summarySheet) throws IOException {
+    	int rowno = 0;
+    	PoiUtils.appendTitleNameValueWithSameColor(summarySheet,PAGE_NAME_LABEL,getTitleText(), rowno++, (short)0, true);
+    	
+    	summarySheet.addMergedRegion(new CellRangeAddress(rowno-1,rowno-1, (short)1,(short)5));
+    	
+    	PoiUtils.addThckBoarderInaSheet(summarySheet, rowno++, 0, 5, HSSFColor.TEAL.index);
+    	rowno++;
+    	PoiUtils.appendTitleNameValueWithDiffColor(summarySheet,TEST_NAME_LABEL, getTestName(), rowno++, (short)0, true);
+    	appendSupportContact(summarySheet,rowno++ );
+    	 
+    	if (! this.isTabeProduct.booleanValue()) { 
+    		appendLevel(summarySheet, rowno++);
+        }
+    	
+    	rowno = appendSessionInfo(summarySheet,rowno );
+    	//rowno ++;
+    	
+    	rowno = createTacRecords(summarySheet, rowno);
+    	rowno ++;
+    	createStudentSummaryInformation(summarySheet, rowno);
+    	// setting column auto size
+    	for( int i =0; i<5;i++) {
+    		summarySheet.autoSizeColumn(i);
+    	}
+    	summarySheet.setColumnWidth(5, summarySheet.getColumnWidth(3));
+    	
+    }
+    
+  
+	private void createStudentSummaryInformation(Sheet summarySheet, int rowno) {
+		PoiUtils.appendTitleNameValueWithDiffColor(summarySheet,TOTAL_STUDENTS_LABEL , getTotalStudents(), ++rowno, (short)0, true); 
+		String[] accomodation = null;
+		Row row = null;
+
+		CellStyle nameStyle = summarySheet.getWorkbook().createCellStyle();
+		CellStyle valueStyle = summarySheet.getWorkbook().createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.TEAL.index,(short) 10);
+		org.apache.poi.ss.usermodel.Font boldFont1 = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.BLACK.index,(short) 10);
+		
+		nameStyle.setFont(boldFont);
+		valueStyle.setFont(boldFont1);
+		
+		 Boolean supportAccommodations = this.testSummary.getSupportAccommodations();
+        if ( supportAccommodations.booleanValue() ) {
+        	PoiUtils.appendTitleNameValueWithDiffColor(summarySheet,TOTAL_STUDENTS_WITH_ACCOMMODATIONS_LABEL , getAccommodatedStudents(), ++rowno, (short) 0, true); 
+        	if(hasAccommodatedStudents()){
+        		accomodation = getAllAccomodation();
+        		++rowno;
+        		for(int i=0, columnCount = 0; i<accomodation.length; i+=2 ){
+        			if(columnCount%6 == 0) {
+        				row = PoiUtils.getRow(summarySheet, ++rowno);
+        				 columnCount = 0;
+        			}
+        			
+        			PoiUtils.addCell(row, columnCount++ , accomodation[i], nameStyle);
+        			PoiUtils.addCell(row, columnCount++ , accomodation[i+1], valueStyle);
+        			
+        		}
+        		
+        	}
+        	
+        }
+		
+	}
+
+	private String[] getAllAccomodation() {
+		List<String> result = new ArrayList<String>();
+		result.add(CALCULATOR_LABEL);
+        result.add(getCalculator());
+        result.add(SCREEN_READER_LABEL);
+        result.add(getScreenReader());
+        result.add(COLOR_FONT_LABEL);
+        result.add(getColorFont());
+        result.add(PAUSE_LABEL);
+        result.add(getPause());
+        result.add(UNTIMED_LABEL);
+        result.add(getUntimed());
+        result.add(HIGHLIGHTER_LABEL);  /* 51931 Deferred Defect For HighLighter*/
+        result.add(getHighLighter());
+        
+        // Start: For MQC defect 66844
+        result.add(MASKING_RULAR_LABEL);
+        result.add(getMaskingRular());
+        result.add(MASKING_TOOL_LABEL);
+        result.add(getMaskingTool());
+        result.add(MAGNIFYING_GLASS_LABEL);
+        result.add(getMagniFyingGlass());
+        result.add(MUSIC_PLAYER_LABEL);
+        result.add(getMusicPlayer());
+        result.add(EXTENDED_TIME_LABEL);
+        result.add(getExtendedTime());
+        
+        
+		return result.toArray( new String[result.size()] );
+	}
+
+	@SuppressWarnings("all")
+	private int createTacRecords(Sheet summarySheet, int rowno) {
+		ArrayList subtest = (ArrayList) this.testAdmin.getSubtests();
+		int tacColumnLenth = subtest.size()>1 ? 4 : 3;
+		
+		// added TAC TITLE
+		PoiUtils.appendTitleNameValueWithSameColor(summarySheet,TAC_LABEL , "", ++rowno, (short)12, true);
+		
+		// added TAC INFO
+		Row header = PoiUtils.getRow(summarySheet, ++rowno);
+
+		CellStyle titleStyle = summarySheet.getWorkbook().createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.BLACK.index,(short) 0);
+		titleStyle.setFont(boldFont);
+
+		
+		PoiUtils.addCell(header, 0 , TAC_INFO, titleStyle);
+		
+		summarySheet.addMergedRegion(new CellRangeAddress(rowno,rowno, (short)0,(short)5));
+		++rowno;
+		
+		// added TAC Table
+	
+		String[] tacTableValues = getTacTableValues(subtest);
+
+		Row row = null;
+		Cell cell0 = null;
+
+		// Header
+		CellStyle tableHeaderStyle = summarySheet.getWorkbook()
+				.createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldTableHeaderFont = PoiUtils.getFont(summarySheet.getWorkbook(), true, HSSFColor.TEAL.index,	(short) 10);
+		tableHeaderStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setFont(boldTableHeaderFont);
+		tableHeaderStyle.setFillPattern((short) CellStyle.SOLID_FOREGROUND);
+		tableHeaderStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		
+		CellStyle cellStyle = summarySheet.getWorkbook()
+		.createCellStyle();
+		cellStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		cellStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
+		cellStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+		cellStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+
+		row = summarySheet.createRow(++rowno);
+		
+		for (int i = 0 ; i < tacColumnLenth; i++) {
+			PoiUtils.addCell(row, i , tacTableValues[i], tableHeaderStyle);
+		}
+		
+		for (int i = tacColumnLenth ;  i< tacTableValues.length;  i=i+tacColumnLenth ){
+			row = summarySheet.createRow(++rowno);
+			for (int j = 0 ; j < tacColumnLenth; j++) {
+				PoiUtils.addCell(row, j , tacTableValues[i+j], cellStyle);
+			}
+			
+		}
+		
+	return rowno;	
+	}
+
+	
+	@SuppressWarnings("all")
+	private String[] getTacTableValues(ArrayList subtests) {
+		String[] val = null;
+		if(subtests.size() == 1){
+			val = getThreeColumnTacTexts(subtests);
+        }
+        else{
+        	val = getFourColumnTacTexts(subtests);
+        }
+		return val;
+	}
+
+	public void prepareRosterSheet(Sheet rosterSheet) throws IOException {
+		int rowno = 0;
+		String[] headings = getStudentHeadings();
+		Row row = null;
+		TableUtils tableUtils = new TableUtils();
+		// Header
+		CellStyle tableHeaderStyle = rosterSheet.getWorkbook()
+				.createCellStyle();
+		org.apache.poi.ss.usermodel.Font boldTableHeaderFont = PoiUtils.getFont(rosterSheet.getWorkbook(), true, HSSFColor.TEAL.index,(short) 10);
+		tableHeaderStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		tableHeaderStyle.setFont(boldTableHeaderFont);
+		tableHeaderStyle.setFillPattern((short) CellStyle.SOLID_FOREGROUND);
+		tableHeaderStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		
+		CellStyle shededCellStyle = rosterSheet.getWorkbook()
+		.createCellStyle();
+		shededCellStyle.setFillPattern((short) CellStyle.SOLID_FOREGROUND);
+		shededCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		
+
+		row = rosterSheet.createRow(rowno++);
+		int cellCount = 0;
+		for (int i = 0; i < headings.length-1; i++) {
+			PoiUtils.addCell(row, cellCount++ , headings[i], tableHeaderStyle);
+		}
+		for(String header : rosterHeaderMap.values()){
+			PoiUtils.addCell(row, cellCount++ , header, tableHeaderStyle);
+		}
+        boolean isShaded = false;
+		for (Iterator it = this.rosterList.iterator(); it.hasNext(); isShaded=!isShaded) {
+			TestRosterVO student = (TestRosterVO) it.next();
+			String studentName = tableUtils.getStudentName(student);
+			String studentId = getStudentId(student);
+			String loginId = getLoginId(student);
+			String password = getPassword(student);
+			String form = tableUtils.getForm(student);
+			String status = tableUtils.getStatus(student);
+			
+			
+			String[] accommodation = student.getAccommodations();
+			if(accommodation.length==0){
+				accommodation = new String []{" "};
+			}
+			// added
+			int cellno = 0;
+			row = rosterSheet.createRow(rowno++);
+			PoiUtils.addCell(row,cellno++, studentName);
+			PoiUtils.addCell(row,cellno++, studentId);
+			PoiUtils.addCell(row,cellno++, loginId);
+			PoiUtils.addCell(row,cellno++, password);
+			if (!isTabeProduct){
+				PoiUtils.addCell(row,cellno++, form);
+			}
+			PoiUtils.addCell(row,cellno++, status);
+			
+			for(String header : rosterHeaderMap.values()){
+				String val = "No";
+				if(student.getAccommodationsSet().contains(header)) {
+					val = "Yes";
+				}
+				PoiUtils.addCell(row,cellno++, val);
+			}
+			// setting default column width
+			for(int i=0; i<cellno; i++){
+				rosterSheet.autoSizeColumn(i);
+
+			}
+
+		}
+
+	}
+	
+	public void generateExcelReport(Object[] args)  {
+	        try{
+	        	setupForExcel(args);
+	        	OutputStream out= (OutputStream) args[5];
+	        	HSSFWorkbook wb = new HSSFWorkbook();
+	    		Sheet summarySheet = wb.createSheet();
+	    		Sheet rosterSheet = wb.createSheet();
+	    		wb.setSheetName(0, TestTicketConstents.EXCEL_TEST_TICKET_SUMMARY_SHEET_NAME);
+	    		wb.setSheetName(1, TestTicketConstents.EXCEL_TEST_TICKET_STUDENT_DETAIL_SHEET_NAME);
+
+	    		prepareSummarySheet(summarySheet);
+
+	    		prepareRosterSheet(rosterSheet);
+
+	    		HSSFPalette palette =  wb.getCustomPalette();
+
+			    //replacing the standard red with freebsd.org red
+			    palette.setColorAtIndex(HSSFColor.TEAL.index,
+			            (byte) 70,  //RGB red (0-255)
+			            (byte) 130,    //RGB green
+			            (byte) 180     //RGB blue
+			    );
+
+	    		wb.write(out);
+	    		//out.close();
+	         }
+	        catch(Exception de){
+	            System.err.println("document: " + de.getMessage());
+	            de.printStackTrace();
+	        }
+	    }
+	
+	private void populateRosterHeader() {
+		rosterHeaderMap = new TreeMap<Integer, String>();
+		rosterHeaderMap.put(1, TestTicketConstents.TEST_TICKET_ACCOM_CALCULATOR);
+		rosterHeaderMap.put(2, TestTicketConstents.TEST_TICKET_ACCOM_PAUSE);
+		rosterHeaderMap.put(3,  TestTicketConstents.TEST_TICKET_ACCOM_UNTIMED);
+		rosterHeaderMap.put(4, TestTicketConstents.TEST_TICKET_ACCOM_COLOR_FONT);
+		rosterHeaderMap.put(5, TestTicketConstents.TEST_TICKET_ACCOM_SCREEN_READER);
+		rosterHeaderMap.put(6, TestTicketConstents.TEST_TICKET_ACCOM_HIGHLIGHTER);
+		rosterHeaderMap.put(7, TestTicketConstents.TEST_TICKET_ACCOM_EXTENDED_TIME);
+		rosterHeaderMap.put(8, TestTicketConstents.TEST_TICKET_ACCOM_BLOCKING_RULER);
+		rosterHeaderMap.put(9, TestTicketConstents.TEST_TICKET_ACCOM_MASKING_TOOL);
+		rosterHeaderMap.put(10, TestTicketConstents.TEST_TICKET_ACCOM_MAGNIFYING_GLASS);
+		rosterHeaderMap.put(11, TestTicketConstents.TEST_TICKET_ACCOM_MUSIC_PLAYER);
+			
+	}
+    
 } 

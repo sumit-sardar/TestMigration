@@ -65,11 +65,26 @@
 	<!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
 	
 	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketSummary(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionSummaryTestTicket"/></a>
-	&nbsp;<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
-	<br/>
-	<lb:label key="testTicket.sessionDocsSum.message"/>
+		
+		<span  style="color:blue;">
+			<lb:label  key="testTicket.sessionSummaryTestTicket" /> 
+		</span>
+		<br/>
+		<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketSummary(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);">
+			<lb:label key="testTicket.sessionSummaryTestTicket.pdf"/>
+		</a>
+		&nbsp;
+			<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
+		<br/>
+		<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketSummaryInExcel(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);">
+			<lb:label key="testTicket.sessionSummaryTestTicket.excel"/>
+		</a>
+		&nbsp;
+		<img src="/SessionWeb/resources/images/logo_excel.gif" border="0">
+		<br/>
+		<lb:label key="testTicket.sessionDocsSum.message"/>
 	</p>
+
 	</div>		
 </div>
 <br/>
