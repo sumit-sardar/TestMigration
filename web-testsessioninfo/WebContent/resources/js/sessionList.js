@@ -240,16 +240,7 @@ function populateSessionListGrid(homePageLoad) {
 			}
 	 });
 	 jQuery("#list2").navGrid('#pager2', {
-				addfunc: function() {
-					scheduleNewSession();
-		    	},
-		    	editfunc: function() {
-		    		 editTestSession();
-		    	},
-		    	delfunc: function() {
-		    		gridSelectedToDelete = "list2";
-		    		deleteSessionPopup();		    		 
-		    	},search: false     	
+			search: false,add:false,edit:false,del:false     	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeywordList2").dialog({  
@@ -262,6 +253,46 @@ function populateSessionListGrid(homePageLoad) {
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	if(selectedTestAdminId == ''|| selectedTestAdminId == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		gridSelectedToDelete = "list2";
+		    			deleteSessionPopup();	
+			    	}
+			    	
+			    }, position: "first", title:"Delete Session", cursor: "pointer",id:"del_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	if(selectedTestAdminId == ''|| selectedTestAdminId == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		editTestSession();
+			    	}
+			    	 
+			    }, position: "first", title:"Edit Session", cursor: "pointer",id:"edit_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
+			    	 scheduleNewSession();
+			    }, position: "first", title:"Schedule Session", cursor: "pointer",id:"add_list2"
 			});  
 			jQuery("#refresh_list2").bind("click",function(){
 				$("#searchUserByKeywordInputList2").val('');
@@ -464,14 +495,8 @@ function populateCompletedSessionListGrid() {
 						
 			}
 	 });
-	 jQuery("#list3").navGrid('#pager3', {			
-		    	editfunc: function() {
-		    		 editTestSession();
-		    	},
-		    	delfunc: function() {
-		    		gridSelectedToDelete = "list3";
-		    		deleteSessionPopup();
-		    	},search: false     	
+	 jQuery("#list3").navGrid('#pager3', {
+		    	search: false,add:false,edit:false,del:false 
 			}).jqGrid('navButtonAdd',"#pager3",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeywordList3").dialog({  
@@ -484,7 +509,44 @@ function populateCompletedSessionListGrid() {
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager3",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager3",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	if(selectedTestAdminId == ''|| selectedTestAdminId == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		gridSelectedToDelete = "list3";
+		    			deleteSessionPopup();	
+			    	}
+			    	
+			    }, position: "first", title:"Delete Session", cursor: "pointer",id:"del_list3"
+			}).jqGrid('navButtonAdd',"#pager3",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	if(selectedTestAdminId == ''|| selectedTestAdminId == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		editTestSession();
+			    	}
+			    	 
+			    }, position: "first", title:"Edit Session", cursor: "pointer",id:"edit_list3"
 			});  
+			
 			jQuery("#refresh_list3").bind("click",function(){
 				$("#searchUserByKeywordInputList3").val('');
 			});
@@ -528,8 +590,6 @@ function populateCompletedSessionListGrid() {
 	
 	
 	function setupButtonPerUserPermission() {
-		var element = document.getElementById('add_list3');
-		element.style.display = 'none'; 
 		var userScheduleAndFindSessionEnable = $("#userScheduleAndFindSessionPermission").val();
 		if (userScheduleAndFindSessionEnable == 'false') {	
 			var element = document.getElementById('add_list2');

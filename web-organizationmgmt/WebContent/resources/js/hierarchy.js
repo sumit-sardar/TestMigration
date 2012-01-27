@@ -493,18 +493,7 @@ function populateGrid() {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{
-				addfunc: function() {
-					requetForOrganization = "";
-		    		AddOrganizationDetail();
-		    	},
-		    	editfunc: function() {
-		    		 requetForOrganization = "";
-		    		 EditOrganizationDetail();
-		    	},
-		    	delfunc: function() {
-		    		 requetForOrganization = "";
-		    		 confirmDelOrgPopUp();
-		    	}, search: false 
+				search: false,add:false,edit:false,del:false 
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
@@ -516,7 +505,51 @@ function populateGrid() {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"Search organization", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Organization", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		requetForOrganization = "";
+		    		 	confirmDelOrgPopUp();
+			    	}
+			    	
+			    }, position: "first", title:"Delete Organization", cursor: "pointer",id:"del_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		 requetForOrganization = "";
+		    			 EditOrganizationDetail();
+			    	}
+			    	 
+			    }, position: "first", title:"View/Edit Organization", cursor: "pointer",id:"edit_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
+			    	 requetForOrganization = "";
+		    		 AddOrganizationDetail();
+			    }, position: "first", title:"Add Organization", cursor: "pointer",id:"add_list2"
 			});  
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');

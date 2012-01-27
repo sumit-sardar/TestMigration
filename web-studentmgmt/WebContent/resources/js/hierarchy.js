@@ -655,18 +655,7 @@ function updateOrganization(element, isChecked){
 	 });
 			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
 			jQuery("#list2").navGrid('#pager2',{
-				addfunc: function() {
-					requetForStudent = "";
-		    		AddStudentDetail();
-		    	},
-		    	editfunc: function() {
-		    		 requetForStudent = "";
-		    		 viewEditStudentPopup();
-		    	},
-		    	delfunc: function() {
-		    		 requetForStudent = "";
-		    		 deleteStudentPopup();
-		    	},search: false		    	
+				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
@@ -679,6 +668,50 @@ function updateOrganization(element, isChecked){
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		requetForStudent = "";
+		    		 	deleteStudentPopup();
+			    	}
+			    	
+			    }, position: "first", title:"Delete Student", cursor: "pointer",id:"del_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		 requetForStudent = "";
+		    		 	 viewEditStudentPopup();
+			    	}
+			    	 
+			    }, position: "first", title:"View/Edit Student", cursor: "pointer",id:"edit_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
+			    	 requetForStudent = "";
+		    		AddStudentDetail();
+			    }, position: "first", title:"Add Student", cursor: "pointer",id:"add_list2"
 			}); 
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
@@ -806,18 +839,7 @@ function updateOrganization(element, isChecked){
 	 });
 			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
 			jQuery("#list2").navGrid('#pager2',{
-				addfunc: function() {
-					requetForStudent = "";
-		    		AddStudentDetail();
-		    	},
-		    	editfunc: function() {
-		    		 requetForStudent = "";
-		    		 viewEditStudentPopup();
-		    	},
-		    	delfunc: function() {
-		    		 requetForStudent = "";
-		    		 deleteStudentPopup();
-		    	},search: false    	
+				search: false,add:false,edit:false,del:false    	
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
@@ -830,6 +852,50 @@ function updateOrganization(element, isChecked){
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		requetForStudent = "";
+		    		 	deleteStudentPopup();
+			    	}
+			    	
+			    }, position: "first", title:"Delete Student", cursor: "pointer",id:"del_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		 requetForStudent = "";
+		    		 	 viewEditStudentPopup();
+			    	}
+			    	 
+			    }, position: "first", title:"View/Edit Student", cursor: "pointer",id:"edit_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
+			    	 requetForStudent = "";
+		    		AddStudentDetail();
+			    }, position: "first", title:"Add Student", cursor: "pointer",id:"add_list2"
 			});
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){

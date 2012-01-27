@@ -535,18 +535,7 @@ function populateGrid() {
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',
 			{
-				addfunc: function() {
-					requetForUser = "";
-		    		AddUserDetail();
-		    	},
-		    	editfunc: function() {
-		    		 requetForUser = "";
-		    		 EditUserDetail();
-		    	},
-		    	delfunc: function() {
-		    		 requetForUser = "";
-		    		 deleteUserPopup();
-		    	},search: false
+				search: false,add:false,edit:false,del:false 
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 			    	$("#searchUserByKeyword").dialog({  
@@ -559,6 +548,50 @@ function populateGrid() {
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
 			    }, position: "one-before-last", title:"Search User", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		 requetForUser = "";
+		    		 	 deleteUserPopup();
+			    	}
+			    	
+			    }, position: "first", title:"Delete User", cursor: "pointer",id:"del_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
+			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+			    	if(rowid == ''|| rowid == null){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		requetForUser = "";
+		    		 	EditUserDetail();
+			    	}
+			    	 
+			    }, position: "first", title:"View/Edit User", cursor: "pointer",id:"edit_list2"
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
+			    	 requetForUser = "";
+		    		 AddUserDetail();
+			    }, position: "first", title:"Add User", cursor: "pointer",id:"add_list2"
 			});  
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');

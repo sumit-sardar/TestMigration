@@ -310,6 +310,13 @@
 	</table>
 </div>
 
+<div id="nodataSelectedPopUp"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;">
+		<lb:label key="sessionList.no.data.selected"/>
+	</div>
+</div>
+
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
 <jsp:include page="/sessionOperation/view_test_session.jsp" />
