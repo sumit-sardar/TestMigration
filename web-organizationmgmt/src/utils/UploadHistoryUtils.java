@@ -71,15 +71,22 @@ public class UploadHistoryUtils
                             }       
                             
                             if ( auditFile.getFailedRecordCount() != null ) {
-                            
-                                auditFileHistory.setFailedRecordCount(
+
+                                if ( auditFile.getStatus().equals("FL") )  {
+                                	String value = "<font color='red'>" + String.valueOf(auditFile.getFailedRecordCount()) + "</font>";
+                                	auditFileHistory.setFailedRecordCount(value);
+                                }
+                                else {
+                                	auditFileHistory.setFailedRecordCount(
                                         String.valueOf(auditFile.getFailedRecordCount()));
-                            
+                                }
+                                
                             } else {
                             
                                 auditFileHistory.setFailedRecordCount("0");
                             
                             }
+                            
                             
                         }
                         auditFileHistory.setActionPermission(auditFile.getEditable());

@@ -323,6 +323,7 @@ public class UploadOperationController extends PageFlowController {
 		DataFileAuditData dataFileAuditData = findFile(); 
         this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
 		
+		
 		/*
 		this.fileList = new ArrayList();
 		
@@ -340,7 +341,7 @@ public class UploadOperationController extends PageFlowController {
 		afh2.setCreatedDateTime("09/01/2010 10:45:17");
 		afh2.setUploadFileName("UserTemplate-3.xls");
 		afh2.setUploadFileRecordCount("6");
-		afh2.setFailedRecordCount("5");
+		afh2.setFailedRecordCount("<font color='red'>5</font>");
 		afh2.setStatus("FL");
 		this.fileList.add(afh2);
 
