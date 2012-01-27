@@ -3913,3 +3913,94 @@ function registerDelegate(tree){
 			$("#productAckUrl").hide();
 		}
 	}
+		
+function validNameString(str){
+    var characters = [];
+    characters = toCharArray(str);
+    for (var i=0 ; i<characters.length ; i++) {
+        var character = characters[i];
+        if (! validNameCharacter(character))
+            return false;
+    }
+    return !requestHasInvalidParameters(str);
+}
+
+function toCharArray(str){
+	var charArr=new Array();
+	for(var i=0;i<str.length;i++){
+		charArr[i]= str.charAt(i);
+	}
+	return charArr;      
+}
+
+function requestHasInvalidParameters(str){       
+	var invalidChars = [];
+	invalidChars [0] = "<script>";
+	invalidChars [1] = "javascript:";
+      
+	for( var i=0; i<invalidChars.length; i++ )
+	{
+	    if ( str.indexOf(invalidChars[i]) != -1 )
+	    {
+	        return true;                
+	    }
+	}
+      
+    return false;
+}
+  
+function validNameCharacter(str){
+    var ch = toascii(str);
+    var A_Z = ((ch >= 65) && (ch <= 90));
+    var a_z = ((ch >= 97) && (ch <= 122));
+    var zero_nine = ((ch >= 48) && (ch <= 57));
+    var validChar = ((str == '/') || 
+                     (str == '\'') || 
+                     (str == '-') || 
+                     (str == '\\') || 
+                     (str == '.') || 
+                     (str == '(') || 
+                     (str == ')') || 
+                     (str == '&') || 
+                     (str == '+') || 
+                     (str == ',') || 
+                     (str == ' '));
+    
+    return (zero_nine || A_Z || a_z || validChar);
+}
+
+function validAddressString(str)
+{
+    str = trim(str);
+    var characters = [];
+    characters = toCharArray(str);
+    for (var i=0 ; i<characters.length ; i++) {
+        var character = characters[i];
+        if (! validAddressCharacter(character) )
+            return false;
+    }
+    return !requestHasInvalidParameters(str);
+}
+
+function validAddressCharacter(ch)
+{
+    var valid = validNameCharacter(ch);
+	if (ch == '#')
+       valid = true; 
+
+    return valid;
+}
+
+function validNumber(str){
+	str = trim(str);
+	var characters = [];
+	characters = toCharArray(str);
+
+	for (var i=0 ; i<str.length ; i++) {
+	var charCode = str.charCodeAt(i);
+		if (!((charCode >= 48) && (charCode <= 57))) {
+			return false;
+		}
+	} 
+	return true;
+}    
