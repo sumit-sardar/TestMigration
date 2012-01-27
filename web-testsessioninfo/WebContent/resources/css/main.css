@@ -696,3 +696,7 @@ th.ui-th-column div{
 .searchInputBoxContainer {
 	padding:20px 0px;
 }
+
+#sessionGrid .ui-accordion-header a {
+	text-align: left;
+}
