@@ -476,6 +476,7 @@ public class StudentManagementImpl implements StudentManagement
 				for (int i = 0; i < customerDemographics.length; i++) {
 					studentDemographics[i] = new StudentDemographic(customerDemographics[i]);
 					studentDemographics[i].setStudentId(studentId);
+					studentDemographics[i].setImportEditable(customerDemographics[i].getImportEditable());
 					StudentDemographicValue [] studentDemographicValues;
 					if (returnInvisible) 
 						studentDemographicValues = studentManagement.getStudentDemographicValues(studentDemographics[i].getId().intValue(), studentId == null? -1: studentId.intValue());

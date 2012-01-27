@@ -13,6 +13,8 @@ public class StudentDemographic extends CustomerDemographic
     private Integer studentId;
     private StudentDemographicValue [] studentDemographicValues;
     private Integer orgNodeId;//bulk accommodation
+    private String importEditable;
+    
      public StudentDemographic() {
         super();
      }
@@ -67,6 +69,20 @@ public class StudentDemographic extends CustomerDemographic
 	 */
 	public void setOrgNodeId(Integer orgNodeId) {
 		this.orgNodeId = orgNodeId;
+	}
+
+	/**
+	 * @return the importEditable
+	 */
+	public String getImportEditable() {
+		return importEditable;
+	}
+
+	/**
+	 * @param importEditable the importEditable to set
+	 */
+	public void setImportEditable(String importEditable) {
+		this.importEditable = importEditable;
 	}
     
     

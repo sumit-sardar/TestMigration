@@ -1209,9 +1209,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	function onCancel() {
 		isValueChanged = false;
-		if(profileEditable === "false") {
-			resetDisabledFields();
-		}
+
 	if(isAddStudent){
 		  if($("#studentFirstName").val()!= "" 
 			 || $("#studentMiddleName").val()!= ""
@@ -1538,6 +1536,10 @@ function fillselectedOrgNode( elementId, orgList) {
 		$('#Student_Information :radio').attr('disabled', false); 
 		$('#Student_Information select').attr('disabled', false);
 		$('#Student_Information :input').attr('disabled', false);
+		$('#Student_Additional_Information :checkbox').attr('disabled', false); 
+		$('#Student_Additional_Information :radio').attr('disabled', false); 
+		$('#Student_Additional_Information select').attr('disabled', false);
+		$('#Student_Additional_Information :input').attr('disabled', false);
 	}
 	
 	
@@ -1708,6 +1710,14 @@ function fillselectedOrgNode( elementId, orgList) {
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						prepareCheckedList();
 						setEditStudentDetail(rowid);
+						if(profileEditable === "false") {
+							$('#Student_Information :checkbox').attr('disabled', true); 
+							$('#Student_Information :radio').attr('disabled', true); 
+							$('#Student_Information select').attr('disabled', true);
+							$('#Student_Information :input').attr('disabled', true);
+						} else {
+							resetDisabledFields();
+						}
 						$.unblockUI();  
 						$("#addEditStudentDetail").dialog({  
 													title:$("#editStuID").val(),  
@@ -1722,15 +1732,7 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	 
 						setPopupPosition(isAddStudent);
 						checkOpenNode(organizationNodes);
-						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();  
-						
-						if(profileEditable === "false") {
-							$('#Student_Information :checkbox').attr('disabled', true); 
-							$('#Student_Information :radio').attr('disabled', true); 
-							$('#Student_Information select').attr('disabled', true);
-							$('#Student_Information :input').attr('disabled', true);
-							 
-						}
+						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();
 
 						
 				/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -1882,9 +1884,6 @@ function fillselectedOrgNode( elementId, orgList) {
 		}*/
 	
 				function nDataClick(popupname) {
-					if(profileEditable === "false") {
-						resetDisabledFields();
-					}
 					requetForStudent = "Next";
 					var isValueChanged = false;
 						if(popupname == 'Edit') {
@@ -1900,9 +1899,6 @@ function fillselectedOrgNode( elementId, orgList) {
                }
                
                function pDataClick(popupname) {
-               		if(profileEditable === "false") {
-						resetDisabledFields();
-					}
                		requetForStudent = "Previous";
                		var isValueChanged = false;
 					if(popupname == 'Edit') {
@@ -2192,6 +2188,11 @@ function fillselectedOrgNode( elementId, orgList) {
 			     }else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
 			     }
+			     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false") {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     } else {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     }
 		     }else {
 				var valueCardinality = stuDemographic[count]['valueCardinality'];
 				if(valueCardinality == 'SINGLE'){
@@ -2201,7 +2202,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
 				     			
 				     		    if(selectElement!=null && String(selectElement.options) !="undefined"){
-			     			     setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
+			     			     	setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 			     			     }else {
 			     			     	$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 			     			    	noRadioData = false;
@@ -2215,7 +2216,23 @@ function fillselectedOrgNode( elementId, orgList) {
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     		}
 				     	}
-				
+						if(profileEditable === "false" && stuDemographic[count].importEditable == 'F') {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
+			     			var radioArray = $("#Student_Additional_Information :radio")
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     		} else {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', false);
+			     			var radioArray = $("#Student_Additional_Information :radio")
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     		}
 				}
 				if(valueCardinality == 'MULTIPLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
@@ -2224,6 +2241,11 @@ function fillselectedOrgNode( elementId, orgList) {
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
 					     }else {
 					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+					     }
+					     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false"){
+			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+					     }else {
+					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
 					     }
 			     	}
 			    }
