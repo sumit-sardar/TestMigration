@@ -982,7 +982,7 @@ public class UserOperationController extends PageFlowController
 					messageInfo.setUserProfile(userProfile);
 				}
 				else  {
-					messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+					messageInfo = createMessageInfo(messageInfo, Message.PROFILE_EDIT_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
 	
 				}
 			}
