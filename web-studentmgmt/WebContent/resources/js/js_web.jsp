@@ -795,3 +795,20 @@ function setAnswerColorOptionsInView()
     setColor(answerBox, colorValue);    
 }
 
+function constrainNumericChar(e) 
+{
+    var keyId = (window.event) ? event.keyCode : e.which;
+    var keyValue = String.fromCharCode( keyId );
+    var regExp = /\d/;    
+    var results = false;
+   
+    if ( keyId == null || keyId == 0 || keyId == 8 || keyId == 9 || keyId == 13 || keyId == 27 ) {        
+        results = true; // allow control characters
+    } 
+    else 
+    if ( regExp.test(keyValue) ) {
+        results = true;    
+    }
+    
+    return results;
+}

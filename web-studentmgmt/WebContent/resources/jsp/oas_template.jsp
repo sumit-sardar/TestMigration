@@ -93,6 +93,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
@@ -119,7 +120,14 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#viewaccordion").accordion({ header: "h3" });
-				
+				$("#profileAccordion").accordion({ header: "h3"});
+				$( "#profileAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   		$("#User_Info").css("height",'250px');
+						$("#Contact_Info").css("height",'250px');
+						$("#Change_Pwd").css("height",'250px'); 
+					}
+				});
 			});
 		
 		

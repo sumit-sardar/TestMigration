@@ -539,3 +539,26 @@ function verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, stu
 	}
 	return i;
 }
+
+function validAddressString(str)
+{
+    str = trim(str);
+    var characters = [];
+    characters = toCharArray(str);
+    for (var i=0 ; i<characters.length ; i++) {
+        var character = characters[i];
+        if (! validAddressCharacter(character) )
+            return false;
+    }
+    return !requestHasInvalidParameters(str);
+}
+    
+function validAddressCharacter(ch)
+{
+    var valid = validNameCharacter(ch);
+	if (ch == '#')
+       valid = true; 
+
+    return valid;
+}
+
