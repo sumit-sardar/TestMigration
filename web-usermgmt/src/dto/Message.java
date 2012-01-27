@@ -53,7 +53,8 @@ public class Message implements java.io.Serializable
     public static final String INVALID_FAX = "Please enter a valid fax number"; 
     public static final String INVALID_ZIP = "Please enter a valid zip code"; 
     public static final String INVALID_LOGIN = "Please enter a valid Login ID";
-
+    public static final String INVALID_DATA_TITLE = "One or more fields contain invalid data:"; 
+    
     // find user
     public static final String FIND_TITLE      = "Find User";
     public static final String FIND_NO_RESULT  = "There is no user to match your search criteria.";

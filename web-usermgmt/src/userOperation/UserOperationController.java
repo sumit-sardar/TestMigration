@@ -970,7 +970,7 @@ public class UserOperationController extends PageFlowController
 	
 				if (userName != null) {
 					userProfile.setUserName(userName);
-					messageInfo = createMessageInfo(messageInfo, Message.PROFILE_EDIT_TITLE, Message.PROFILE_EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
 					try {
 						user = userManagement.getUser(userName, userName);
 						if(user != null){
@@ -982,7 +982,7 @@ public class UserOperationController extends PageFlowController
 					messageInfo.setUserProfile(userProfile);
 				}
 				else  {
-					messageInfo = createMessageInfo(messageInfo, Message.PROFILE_EDIT_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
 	
 				}
 			}
