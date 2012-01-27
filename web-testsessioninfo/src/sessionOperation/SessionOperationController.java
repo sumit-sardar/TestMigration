@@ -468,6 +468,7 @@ public class SessionOperationController extends PageFlowController {
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
             	 if( tps!=null ) {
+            		vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
             	 }
@@ -853,6 +854,8 @@ public class SessionOperationController extends PageFlowController {
     	    		initialize();
     	    	}
     	    	vo.setUserRole(this.user.getRole().getRoleName());
+    	    	vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+    	    	//System.out.println("User time zone " + this.user.getTimeZone());
     	    	TestSession testSession = scheduledSession.getTestSession();
     	    	//String schedulerName = testSession.getCreatedBy();
                 //User scheduler = this.scheduleTest.getUserDetails(this.userName, schedulerName);
@@ -1358,7 +1361,7 @@ public class SessionOperationController extends PageFlowController {
 			 TestSession existingTestSession = null;
 			 Set<Integer> keySet            = this.topNodesMap.keySet();
 			 Integer[] topnodeids= (keySet).toArray(new Integer[keySet.size()]);
-			 Integer creatorOrgNod    		= topnodeids[0];
+			 Integer creatorOrgNod    		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_CREATOR_ORG_NODE, false, null));			
 			 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
 			 
 			 //TestVO selectedTest = idToTestMap.get(itemSetId);
@@ -1446,7 +1449,7 @@ public class SessionOperationController extends PageFlowController {
 	        	 testSession.setShowStudentFeedback(existingTestSession.getShowStudentFeedback());
 	        	 testSession.setSessionNumber(existingTestSession.getSessionNumber());
 	        	 testSession.setCreatedBy(existingTestSession.getCreatedBy());
-	        	 testSession.setCreatorOrgNodeId(existingTestSession.getCreatorOrgNodeId());
+	        	 testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         }
 	         
 	         //testSession.setCreatorOrgNodeId(creatorOrgNod);
@@ -1984,7 +1987,7 @@ public class SessionOperationController extends PageFlowController {
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			json = gson.toJson(base);
-			System.out.println ("Json process time End:"+new Date() +".."+json);
+			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
@@ -2053,9 +2056,9 @@ public class SessionOperationController extends PageFlowController {
 			base.setGradeList(this.studentGradesForCustomer);
 			
 			Gson gson = new Gson();
-			System.out.println ("Json process time Start:"+new Date());
+			//System.out.println ("Json process time Start:"+new Date());
 			json = gson.toJson(base);
-			System.out.println ("Json process time End:"+new Date() +".."+json);
+			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
@@ -3479,7 +3482,7 @@ public class SessionOperationController extends PageFlowController {
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			json = gson.toJson(base);
-			System.out.println ("Json process time End:"+new Date() +".."+json);
+			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();

@@ -27,6 +27,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private String minLoginEndDate = "";
 	private SessionStudent[] restrictedStudents;
 	private Integer totalStudent ;
+	private String userTimeZone = "";
 
 	private static final long serialVersionUID = 1L;
 
@@ -48,34 +49,37 @@ public class ScheduledSavedTestVo implements Serializable {
 		this.status= status;
 		
 	}
-
 	public void setSavedStudentsDetails(List<SessionStudent> savedStudentsDetails) {
 		this.savedStudentsDetails = savedStudentsDetails;
 		
 	}
-
 	public void setSavedProctorsDetails(List<UserProfileInformation> savedProctorsDetails) {
 		this.savedProctorsDetails =savedProctorsDetails;
 		
 	}
-
 	public void setUserProductsDetails(ScheduleTestVo productsDetails) {
 		this.productsDetails = productsDetails;
 		
 	}
 	public void populateTimeZone() {
 		List<String> timeZoneList = DateUtils.getTimeZoneList(); 
+		ObjectIdName userTimeZoneObj = new ObjectIdName(this.userTimeZone,this.userTimeZone);
+		Boolean contains = false;
 		for(String val : timeZoneList){
-			testZoneDropDownList.add(new ObjectIdName(val,val));
+			testZoneDropDownList.add(new ObjectIdName(val,val));	
+			if(val == userTimeZoneObj.getName()){
+				contains = true;
+			}
 		}
-		
-		
+		if(!contains){
+			testZoneDropDownList.add(userTimeZoneObj);	
+		}
 	}
+	
 	public void populateTopOrgnode(Map<Integer, String> topNodesMap) {
 		for(Map.Entry<Integer, String> entry : topNodesMap.entrySet()) {
 			topNodeDropDownList.add(new ObjectIdName(entry.getKey().toString(), entry.getValue()));
-		}
-		
+		}		
 	}
 
 	
@@ -157,6 +161,20 @@ public class ScheduledSavedTestVo implements Serializable {
 	 */
 	public void setTotalStudent(Integer totalStudent) {
 		this.totalStudent = totalStudent;
+	}
+
+	/**
+	 * @return the userTimeZone
+	 */
+	public String getUserTimeZone() {
+		return userTimeZone;
+	}
+
+	/**
+	 * @param userTimeZone the userTimeZone to set
+	 */
+	public void setUserTimeZone(String userTimeZone) {
+		this.userTimeZone = userTimeZone;
 	}
 
 	

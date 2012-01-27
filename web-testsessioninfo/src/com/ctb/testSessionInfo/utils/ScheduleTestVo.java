@@ -299,9 +299,19 @@ public class ScheduleTestVo implements Serializable{
 	@SuppressWarnings("unchecked")
 	private void populateTimeZone() {
 		List<String> timeZoneList = DateUtils.getTimeZoneList(); 
+		Boolean contains = false;
+		ObjectIdName userTimeZoneObj = new ObjectIdName(this.userTimeZone,this.userTimeZone);
 		for(String val : timeZoneList){
-			testZoneDropDownList.add(new ObjectIdName(val,val));
+			testZoneDropDownList.add(new ObjectIdName(val,val));	
+			if(val == userTimeZoneObj.getName()){
+				contains = true;
+			}
 		}
+		if(!contains){
+			testZoneDropDownList.add(userTimeZoneObj);	
+		}
+		
+		
 		
 		
 	}
@@ -629,4 +639,19 @@ class ObjectIdName implements Serializable{
 		this.name =name;
 		
 	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
 }
