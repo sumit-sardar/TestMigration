@@ -1,6 +1,8 @@
 /**
  * js_web.js
  */
+
+var acknowledgmentsWindow = null;
  
 function getSafeElement( elementId ) {
 	var element = document.getElementById(elementId);
@@ -468,3 +470,13 @@ function enableValidationButtons() {
     getSafeElement("toggleSubtestValidation").removeAttribute("disabled");      
     getSafeElement("toggleSubtestCustom").removeAttribute("disabled");      
 }    
+
+function openAcknowledgmentsWindow(url) {
+    if( !acknowledgmentsWindow || acknowledgmentsWindow.closed ) {
+        acknowledgmentsWindow = window.open(url, 'Acknowledgments', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
+    } else {
+        acknowledgmentsWindow.location = url;
+    }
+    acknowledgmentsWindow.focus();
+    return false;
+}

@@ -1340,6 +1340,7 @@ function registerDelegate(tree){
 							processProctorAccordion();
 							$("#productType").val(data.product[0].productType);
 							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
+							displayProductAcknowledgement(ProductData.product[0].acknowledgmentsURL); //Added for view product Acknowledgement link
 						}
 						isPopUp = true;	
 						$.unblockUI(); 						
@@ -1613,7 +1614,7 @@ function registerDelegate(tree){
 				var tList = optionList[i].testSessionList;
 				var noOfRows = tList.length;
 				reloadGrids(tList,optionList[i].showLevelOrGrade );
-				
+				displayProductAcknowledgement(optionList[i].acknowledgmentsURL); //Added for view product Acknowledgement link
 				break;
 			} 
 			isTestSelected = false;		
@@ -3838,5 +3839,17 @@ function registerDelegate(tree){
 								 $.unblockUI(); 
 							}
 			});
+		}
+	}
+	
+	//Added for view product Acknowledgement link
+	function displayProductAcknowledgement(AckValue) {
+	
+		if(AckValue != undefined && AckValue != null && AckValue != '') {
+			$("#productAckUrl").show();
+			$("#productAckUrl").attr('href',AckValue);
+			$("#productAckUrl").attr('style', "color: #0000FF !important");
+		} else {
+			$("#productAckUrl").hide();
 		}
 	}

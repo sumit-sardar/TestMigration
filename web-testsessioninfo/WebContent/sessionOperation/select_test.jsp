@@ -19,8 +19,10 @@
 				<td height="20" colspan="3" class="blueSubHeading"><lb:label key="sessionList.testSelect.title" /></td>
 				</tr>
 				<tr>
-							<td height="10" colspan="3"></td>
-						</tr>
+					<td height="15" colspan="3" align="right">
+    					<a id="productAckUrl" href="#" onClick="openAcknowledgmentsWindow(this.href);return false;"><lb:label key="selectTest.viewProductAcknowledgements"/></a>
+					</td>
+				</tr>
 				<tr>
 					<td style="vertical-align: top;">
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
