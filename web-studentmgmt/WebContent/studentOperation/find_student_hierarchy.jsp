@@ -215,4 +215,10 @@
 		</center>
 	</div>
 </div>
+<div id="nodataSelectedPopUp"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;">
+		<lb:label key="studentList.no.data.selected"/>
+	</div>
+</div>
 

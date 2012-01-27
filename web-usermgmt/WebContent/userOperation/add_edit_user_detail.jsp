@@ -28,7 +28,7 @@
 		<tr>
 			<td>
 				<div id="viewEditDisplayId" class="errMsgs">
-					<span><lb:label key="user.label.viewEditDisplay" /></span>
+					<span style="line-height:17px;"><lb:label key="user.label.viewEditDisplay" /></span>
 				</div>
 			</td>
 		</tr>
