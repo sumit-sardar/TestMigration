@@ -994,13 +994,10 @@ function registerDelegate(tree){
 	function fetchDataOnConfirmation() {
 		closePopUp('confirmationPopup');
 		reset();
+		orgSelectVar = true;
 		//if(loadSessionGrid) {
- 			gridReload(false);
- 			if(!gridloaded) {
-            		populateCompletedSessionListGrid();
-            	} else {
-            		gridReloadPA();
-            	}
+ 		gridReload(false);
+ 			
  		//} else {
  		//	gridReloadSelectStu();
  		//}
