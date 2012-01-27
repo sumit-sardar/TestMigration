@@ -133,16 +133,8 @@
 	<tr>
 		<td align="right" class="transparent">
 			<div style="float:left; width:1000px; font-family: Arial, Helvetica, Sans Serif; font-size:11px; font-weight:normal;">
-        	<a href="#" id="deleteFile" onclick="return deleteFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
-          		<lb:label key="services.export.button.delete" />
-           	</a>
-           	&nbsp;
         	<a href="#" id="downloadErrorFile" onclick="return downloadErrorFile(this);" class="rounded {transparent} buttonDisabled" style="text-decoration: none;" >
           		<lb:label key="services.export.button.downloadErrorFile" />
-           	</a>
-           	&nbsp;
-        	<a href="#" id="refresh" onclick="return refresh();" class="rounded {transparent} button" style="text-decoration: none;" >
-          		<lb:label key="services.export.button.refresh" />
            	</a>
             </div>               	                                    
 		</td>

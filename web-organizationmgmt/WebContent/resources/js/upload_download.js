@@ -86,28 +86,31 @@ function populateUploadListGrid() {
 			multiselect:false,
 			viewrecords: true, 
 			height: 150,			
-			caption: "Download Template",
+			caption: "Files Uploaded",
 			sortname: 'createdDateTime', 
 			sortorder: "asc",
 			pager: '#pager3', 
 			onPaging: function() {
+				$('#del_list3').addClass('ui-state-disabled');					
+				setAnchorButtonState('downloadErrorFile', true);
+				document.getElementById('colorErrors').style.display = "none";
 			},
 			onSelectRow: function (rowId) {
 				var selectedId = $("#list3").getGridParam('selrow');
 				document.getElementById('selectedId').value = selectedId;
 
 				if (selectedId.indexOf("_SC") > 0) {
-					setAnchorButtonState('deleteFile', false);
+					$('#del_list3').removeClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', true);
 					document.getElementById('colorErrors').style.display = "none";
 				}				
 				if (selectedId.indexOf("_FL") > 0) {
-					setAnchorButtonState('deleteFile', false);
+					$('#del_list3').removeClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', false);
 					document.getElementById('colorErrors').style.display = "block";
 				}				
 				if (selectedId.indexOf("_IN") > 0) {
-					setAnchorButtonState('deleteFile', true);
+					$('#del_list3').addClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', true);
 					document.getElementById('colorErrors').style.display = "none";
 				}				
@@ -116,12 +119,35 @@ function populateUploadListGrid() {
 			loadComplete: function () {
 				width = 997;
 			    jQuery("#list3").setGridWidth(width);
+				$('#del_list3').addClass('ui-state-disabled');					
+				document.getElementById('del_list3').title = "Delete File";					
+				setAnchorButtonState('downloadErrorFile', true);
+				document.getElementById('colorErrors').style.display = "none";			    
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
 				//window.location.href="/SessionWeb/logout.do";
 			}
 	 });
+	 
+	 jQuery("#list3").navGrid('#pager3', {			
+		    	editfunc: function() {
+		    	},
+		    	delfunc: function() {
+		    		deleteFile();
+		    	},
+		    	search: false     	
+			})
+
+			jQuery("#refresh_list3").bind("click",function(){
+				refresh();
+			});
+
+	 		var addButton = document.getElementById('add_list3');
+			addButton.style.display = 'none';
+	 		var editButton = document.getElementById('edit_list3');
+			editButton.style.display = 'none';
+	 
 }
 
 function enableUpload()
@@ -160,14 +186,10 @@ function downloadTemplate(element)
 	return false;
 }
 
-function deleteFile(element)
+function deleteFile()
 {
-	if (isButtonDisabled(element)) 
-		return true;
-
-    var element = document.getElementById("downloadFile");
-    element.form.action = "deleteErrorDataFile.do";
-    element.form.submit();
+   	document.forms[0].action = "deleteErrorDataFile.do";
+    document.forms[0].submit();
 	return false;
 }
 
