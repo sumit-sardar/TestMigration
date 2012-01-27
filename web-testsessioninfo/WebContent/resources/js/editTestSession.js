@@ -234,6 +234,7 @@
 													 
 								//$('#testList').GridUnload();				
 								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
+								displayProductAcknowledgement(ProductData.product[selectedProdIndex].acknowledgmentsURL);
 								// Start : to show the test as selected when it appears in next page
 								var curPage = parseInt($('#testList').jqGrid('getGridParam','page'));
 								//selectedTestId = selectedTestSession.testSession.itemSetId;
