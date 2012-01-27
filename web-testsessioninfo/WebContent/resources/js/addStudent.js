@@ -1196,14 +1196,15 @@ function getStudentListArray(studentArray) {
 	}
 	function addToStudentTempMap(studentId,studentRow){
 	  if(studentRow["statusEditable"] != undefined && studentRow["statusEditable"] =="T") {
-	  	if(studentRow.outOfSchool == 'No') { // Added for out of school students
+	  
+	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
 	  		return true;
 	  	} else {
 	  		return false;
 	  	}
 	  } else if (studentRow.status != undefined && studentRow.statusEditable != undefined && studentRow.statusEditable =="T"){
-	  	if(studentRow.outOfSchool == 'No') { // Added for out of school students
+	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
 	  		return true;
 	  	} else {
