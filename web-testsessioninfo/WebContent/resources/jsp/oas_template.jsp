@@ -1,11 +1,10 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="java.io.*, java.util.*"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html>
 <!--[if lt IE 8]>
@@ -64,6 +63,7 @@ clear: both;
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionConstants.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
@@ -74,7 +74,8 @@ clear: both;
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>   
-    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/printTicket.js"></script>   
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/printTicket.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>    
   	
 	<script type="text/javascript">
 	var SelectedUserId;
@@ -89,6 +90,15 @@ clear: both;
 		
 			$(function(){
 				// Accordion
+				$("#profileAccordion").accordion({ header: "h3"});
+				$( "#profileAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   		$("#User_Info").css("height",'250px');
+						$("#Contact_Info").css("height",'250px');
+						$("#Change_Pwd").css("height",'250px'); 
+					}
+				});
+
 				var wizardAcc = $("#accordion").accordion({ header: "h3" });
 				//var wizardAcc = $("#accordion").accordion({ header: "h3",event:false});				
 			

@@ -52,6 +52,7 @@ import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.userManagement.UserManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.SQLutils;
 import com.ctb.util.userManagement.CTBConstants;
@@ -803,6 +804,196 @@ public class UserOperationController extends PageFlowController
 			return null;
 			
 		}
+	 
+	@Jpf.Action()
+	protected Forward saveUserProfile(userOperationForm form)
+	{   
+		String jsonResponse = "";
+		OutputStream stream = null;
+		boolean validateAgain = true;
+		boolean validInfo = false;
+		String message = "";
+		String requiredFields = null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		MessageInfo messageInfo = new MessageInfo();
+		String userName = null;
+		UserProfileInformation userProfile = null;
+		userProfile = new UserProfileInformation();
+		userProfile.setFirstName(getRequest().getParameter("profileFirstName"));
+		userProfile.setMiddleName(getRequest().getParameter("profileMiddleName"));
+		userProfile.setLastName(getRequest().getParameter("profileLastName"));
+		userProfile.setEmail(getRequest().getParameter("profileEmail"));
+		userProfile.setTimeZone(getRequest().getParameter("profileTimeZoneOptions"));
+		userProfile.setRoleId(getRequest().getParameter("profileRoleOptions"));
+		userProfile.setRole(getRequest().getParameter("profileRoleName"));
+		userProfile.setExtPin1(getRequest().getParameter("profileExternalId"));
+		userProfile.getUserContact().setAddressLine1(getRequest().getParameter("profileAddressLine1"));
+		userProfile.getUserContact().setAddressLine2(getRequest().getParameter("profileAddressLine2"));
+		userProfile.getUserContact().setCity(getRequest().getParameter("profileCity"));
+		userProfile.getUserContact().setState(getRequest().getParameter("profileStateOptions"));
+		userProfile.getUserContact().setZipCode1(getRequest().getParameter("profileZipCode1"));
+		userProfile.getUserContact().setZipCode2(getRequest().getParameter("profileZipCode2"));
+		userProfile.getUserContact().setPrimaryPhone1(getRequest().getParameter("profilePrimaryPhone1").trim());
+		userProfile.getUserContact().setPrimaryPhone2(getRequest().getParameter("profilePrimaryPhone2").trim());
+		userProfile.getUserContact().setPrimaryPhone3(getRequest().getParameter("profilePrimaryPhone3").trim());
+		userProfile.getUserContact().setPrimaryPhone4(getRequest().getParameter("profilePrimaryPhone4").trim());
+		userProfile.getUserContact().setSecondaryPhone1(getRequest().getParameter("profileSecondaryPhone1").trim());
+		userProfile.getUserContact().setSecondaryPhone2(getRequest().getParameter("profileSecondaryPhone2").trim());
+		userProfile.getUserContact().setSecondaryPhone3(getRequest().getParameter("profileSecondaryPhone3").trim());
+		userProfile.getUserContact().setSecondaryPhone4(getRequest().getParameter("profileSecondaryPhone4").trim());
+		userProfile.getUserContact().setFaxNumber1(getRequest().getParameter("profileFaxNumber1"));
+		userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("profileFaxNumber2"));
+		userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("profileFaxNumber3"));	
+		userName = getRequest().getParameter("loginUserName");
+		String newPassword = getRequest().getParameter("profileNewPassword");
+		String confirmPassword = getRequest().getParameter("profileConfirmPassword");		
+		
+		int userId = 0;		
+		String addressId = null;
+		if(getRequest().getParameter("userId")!=null){
+			userId = Integer.valueOf(getRequest().getParameter("userId"));
+			userProfile.setUserId(userId);
+		}
+		/*if(this.user.getUserId()!=null){
+			userId = this.user.getUserId();
+			userProfile.setUserId(userId);
+		}*/
+		if (userId != 0){
+			addressId = this.userManagement.getAddressIdFromUserId(userId);
+		}
+		System.out.println("addressId::"+userId+"::"+this.userName+"::"+addressId);
+		if(addressId != null) {
+			userProfile.setAddressId(Integer.valueOf(addressId));
+		}
+		
+		String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
+		String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
+		ArrayList<OrganizationNode> selectedOrgNodes = new ArrayList<OrganizationNode>();
+		
+		try {
+			
+			for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
+				 String [] values = assignedOrgNodeId[i].split("\\|");
+				 OrganizationNode orgNode = new OrganizationNode();
+				 orgNode.setOrgNodeId(Integer.parseInt(values[0].trim()));
+				 orgNode.setCustomerId((Integer)getSession().getAttribute("customerId"));
+				 selectedOrgNodes.add(orgNode);
+				
+			}
+		} catch (NumberFormatException ne ) {
+			ne.printStackTrace();
+			validateAgain = false;
+			requiredFields = "Organization Assignment";
+			message = requiredFields + (Message.REQUIRED_TEXT);
+			messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+		}
+		
+		/*System.out.println(getSession().getAttribute("userRole"));
+		userProfile.setRole(this.user.getRole().getRoleName());*/
+		
+		boolean isLoginUser = true;		
+		requiredFields = requiredfieldMissing(userProfile, selectedOrgNodes, isLoginUser, this.userName );
+		
+		if( requiredFields != null){
+			validateAgain = false;
+			if ( requiredFields.indexOf(",") > 0){
+				message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT_MULTIPLE);
+				messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+			}
+			else {
+				message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT);
+				messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELD, message, Message.ERROR, true, false );
+
+			}
+		}
+		
+		if (validateAgain){
+			String isInvalidUserInfo = isInvalidUserInfo(userProfile);
+			if( isInvalidUserInfo != null ) {
+				validateAgain = false;
+				message = isInvalidUserInfo ;
+				messageInfo = createMessageInfo(messageInfo, Message.INVALID_FORMAT_TITLE, message, Message.ERROR, true, false );
+			}
+		}
+		//userName = this.userName;		
+		User loginUser = this.getLoginUserDetails(this.userManagement, userName);
+		String oldPassword = loginUser.getPassword();
+		PasswordInformation passwordinfo = new PasswordInformation();
+		passwordinfo.setOldPassword(oldPassword);
+		passwordinfo.setNewPassword(newPassword);
+		passwordinfo.setConfirmPassword(confirmPassword);
+		 
+		//requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
+		if(!passwordinfo.getNewPassword().trim().equals("") || !passwordinfo.getConfirmPassword().trim().equals("")){
+			if (validateAgain) {
+				 String invalidCharFields = UserPasswordUtils.verifyPasswordInfo(passwordinfo);
+				 String invalidString = "";
+
+				 if (invalidCharFields != null && invalidCharFields.length() > 0) {					 
+					 if ( invalidCharFields.indexOf(",") > 0){						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD);						 
+					 } else {						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD_SINGLE_LINE);						 
+					 }						
+				 }
+
+				 if (invalidString != null && invalidString.length() > 0) {
+					 validateAgain = false;
+					 //validationPassed = false;
+				 	 //message = invalidString + (" <br/> " + Message.PASSWORD_MISMATCH);
+					 messageInfo = createMessageInfo(messageInfo, Message.INVALID_CHARS_TITLE, invalidString, Message.ERROR, true, false );
+				 }
+				 
+				if (validateAgain) {
+					 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
+					 if(isNewAndConfirmPasswordDifferent) {
+						 validateAgain = false;
+					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
+					 }
+				 }
+			}
+			
+			if(validateAgain){				
+				userProfile.setUserPassword(passwordinfo);
+			}
+		}
+		
+		
+		boolean result = true;
+		User user = null;
+		//try {
+			if(validateAgain){
+				//CustomerConfiguration[]  customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
+				
+				userName = saveUserProfileInformation(false, userProfile, userName, selectedOrgNodes);
+	
+				if (userName != null) {
+					userProfile.setUserName(userName);
+					messageInfo = createMessageInfo(messageInfo, Message.PROFILE_EDIT_TITLE, Message.PROFILE_EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+					try {
+						user = userManagement.getUser(userName, userName);
+						if(user != null){
+							userProfile.setRole((user.getRole().getRoleName()));
+						}
+					} catch (CTBBusinessException e) {
+						e.printStackTrace();
+					}
+					messageInfo.setUserProfile(userProfile);
+				}
+				else  {
+					messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+	
+				}
+			}
+		/*}
+		catch (SQLException be) {
+			be.printStackTrace();
+		}*/
+		
+		creatGson( req, resp, stream, messageInfo );
+		return null;
+	}
 		
 	 /**
 	     * findByHierarchy
@@ -1223,7 +1414,50 @@ public class UserOperationController extends PageFlowController
 	@Jpf.Action()
 	protected Forward myProfile()
 	{
-	    return null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		UserProfileInformation loginUserDetails = null;
+		
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			this.userName = (String)getSession().getAttribute("userName");
+		}
+		
+		try{
+			loginUserDetails = UserSearchUtils.getUserProfileInformation(this.userManagement, this.userName, this.userName);
+			
+		}catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		try {
+			
+			OptionList optionList = new OptionList();
+			optionList.setTimeZoneOptions(getTimeZoneOptions(ACTION_ADD_USER));
+			optionList.setStateOptions(getStateOptions(ACTION_ADD_USER));
+			
+			loginUserDetails.setOptionList(optionList);
+			//loginUserDetails.setTimeZoneDesc(loginUserDetails.covertTimeCodeToTimeDesc(loginUserDetails.getTimeZone()));
+			
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(loginUserDetails);
+				System.out.println(json);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        return null;
 	}
 
 
@@ -1956,6 +2190,16 @@ public class UserOperationController extends PageFlowController
 		 User user = null;
 		try {
 			user = this.userManagement.getUser(this.user.getUserName(), selectedUserName);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return user;
+	 }
+	 
+	 public User getLoginUserDetails(UserManagement userManagement, String selectedUserName){
+		 User user = null;
+		try {
+			user = userManagement.getUser(selectedUserName, selectedUserName);
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}

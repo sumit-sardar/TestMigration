@@ -5,7 +5,7 @@
 <div id="changeUserPassword"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
-	<div id="displayMessageChangePassword" style="display:none; width:99.5%;background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; border: 1px solid #A6C9E2;">
+	<div id="displayMessageChangePassword" class="roundedMessage" style="display:none; width:99.5%;background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; border: 1px solid #A6C9E2;">
 			<table>
 				<tr>
 					<td rowspan="3" valign="top">

@@ -52,7 +52,6 @@ function closeBroadcastMessage() {
 
 
 function viewMyProfile() {
-	showLoading();
 	var param = "param";
 	var isHidden = true; // $('#myProfileDialogId').is(':hidden');  
 	resetErrorMessages();

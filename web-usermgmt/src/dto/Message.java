@@ -74,9 +74,11 @@ public class Message implements java.io.Serializable
     // edit user
     public static final String EDIT_TITLE      = "Edit User";
     public static final String EDIT_SUCCESSFUL = "User information has been updated successfully.";
+    public static final String PROFILE_EDIT_SUCCESSFUL = "Your profile has been updated successfully.";
     public static final String EDIT_ERROR = "Failed to update this user.";
+    public static final String PROFILE_EDIT_ERROR = "Failed to update profile.";
     public static final String EDIT_TITLE_WEB      = "CTB/McGraw-Hill OAS - Edit User";
-
+    public static final String PROFILE_EDIT_TITLE	= "My Profile";
     // delete user
     public static final String DELETE_TITLE    = "Delete User";
     public static final String DELETE_SUCCESSFUL = "User has been deleted successfully.";

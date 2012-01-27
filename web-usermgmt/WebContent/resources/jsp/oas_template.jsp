@@ -6,6 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 
+<html>
 <!--[if IE]><![endif]-->
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6">    <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8">    <![endif]-->
@@ -62,6 +63,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyuserinfo.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>	
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
@@ -85,6 +87,14 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#userAccordion").accordion({ header: "h3", autoHeight : true });
+				$("#profileAccordion").accordion({ header: "h3"});
+				$( "#profileAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   		$("#User_Info").css("height",'250px');
+						$("#Contact_Info").css("height",'250px');
+						$("#Change_Pwd").css("height",'250px'); 
+					}
+				});
 			});
 		
 		
