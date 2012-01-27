@@ -3773,12 +3773,11 @@ function registerDelegate(tree){
 	function deleteTestSession(){
 		closePopUp('deleteSessionPopup');		
 		var testAdminIdToDelete = $("#"+gridSelectedToDelete).jqGrid('getGridParam', 'selrow');
-
 		$.ajax(
 			{
-				async:		false,
+				async:		true,
 				beforeSend:	function(){
-								//UIBlock();
+								UIBlock();
 							},
 				url:		'deleteTest.do?&testAdminId=' + testAdminIdToDelete,
 				type:		'POST',
@@ -3789,20 +3788,21 @@ function registerDelegate(tree){
 									setSessionSaveMessage(successMsg, "", "infoMessage","" );
 									$('#showSaveTestMessage').show();
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
-								}
-								else{
+									setAnchorButtonState('viewStatusButton', true);
+									setAnchorButtonState('printTicketButton', true);
+								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
 									$('#showSaveTestMessage').show();
 								}								
-							    //$.unblockUI(); 																														 						
+							    $.unblockUI(); 																														 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								//$.unblockUI();
+								$.unblockUI();
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
-								//$.unblockUI();
+								$.unblockUI();
 							}
 			}
 		);
