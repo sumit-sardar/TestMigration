@@ -1,10 +1,13 @@
 
 function submitLogin()
 {
-	var username = document.getElementById('j_username').value.trim();
+
+	//var username = document.getElementById('j_username').value.trim();//trim() does not work in IE
+	var username = $.trim(document.getElementById('j_username').value);
 	document.getElementById('j_username').value = username;
 	
-	var password = document.getElementById('j_password').value.trim();
+	//var password = document.getElementById('j_password').value.trim();//trim() does not work in IE
+	var password = $.trim(document.getElementById('j_password').value);
 	document.getElementById('j_password').value = password;
 	
 	showLoading();

@@ -65,7 +65,8 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>    
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script> 
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/sanitize.js"></script>   
 
 </head>
 
