@@ -174,12 +174,15 @@ function populateBulkStudentGrid() {
  		var screenReader= '<img src="/StudentWeb/resources/images/screenreader.PNG" title="Reader"/>';
  		var untimedTest= '<img src="/StudentWeb/resources/images/untimed.PNG" title="Untimed"/>';
  		var highlighter= '<img src="/StudentWeb/resources/images/highlighter.PNG" title="Highlighter" />';
- 		
+ 		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.stuForOrgNodeId = $("#selectedBulkTreeOrgNodeId").val();
  		//reset();
        $("#studentAccommGrid").jqGrid({         
-          url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(), 
-		  type:   'POST',
-		  datatype: "json",          
+          url: 'getStudentForSelectedNode.do', 
+		  mtype:   'POST',
+		  datatype: "json",
+		  postData: postDataObject,
           colNames:[ $("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(), calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:152, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -484,9 +487,16 @@ function populateBulkStudentGrid() {
 		 	demo3 = $.trim(d1a[0])+"_"+$.trim(globalSubDemo3);
 		 	//	demo3 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
 		 }
-       jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json'});     
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.stuForOrgNodeId = $("#selectedBulkTreeOrgNodeId").val();
+ 		postDataObject.demoFilter1 = demo1;
+ 		postDataObject.demoFilter2 = demo2;
+ 		postDataObject.demoFilter3 = demo3;
+ 		//reset();
+       jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
  	   var sortArrow = jQuery("#studentAccommGrid");
-       jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val()+'&demoFilter1='+demo1+'&demoFilter2='+demo2+'&demoFilter3='+demo3,page:1}).trigger("reloadGrid");
+       jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
        jQuery("#studentAccommGrid").sortGrid('lastName',true);
      	//For MQC Defect - 67122
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
