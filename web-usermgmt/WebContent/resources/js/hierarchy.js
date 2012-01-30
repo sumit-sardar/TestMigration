@@ -457,12 +457,15 @@ function populateGrid() {
 		// $("#changePWDBtn").attr('disabled', true); 
 		setAnchorButtonState('changePWButton', true);
 		resetSearchCrit();
-			
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 		
          $("#list2").jqGrid({         
-         url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
-		 type:   'POST',
+         url:'userOrgNodeHierarchyGrid.do', 
+		 mtype:   'POST',
 		 datatype: "json",         
-                
+          postData: postDataObject,      
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(),$("#jqgLoginID").val(), $("#jqgRoleID").val(), $("#jqgEmailID").val(),$("#jqgOrgID").val()],
 		   	colModel:[
 		   	
@@ -719,9 +722,12 @@ function changePwdForUser(element){
 
 function gridReload(){ 
   		resetSearchCrit();
-        jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
+  		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+        jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
         var sortArrow = jQuery("#list2");
-        jQuery("#list2").jqGrid('setGridParam', {url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
+        jQuery("#list2").jqGrid('setGridParam', {url:'userOrgNodeHierarchyGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
    	    jQuery("#list2").sortGrid('lastName',true);  
    	   //For MQC Defect - 67122
         var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
@@ -782,16 +788,20 @@ function userDetailEdit(){
 	}
 	//var userName =  getColValueJson(rowid,'userName');
 	var userName = $('#list2').jqGrid('getCell',rowid,'loginId');
-	
+	var postDataObject = {};
+ 	postDataObject.isLasLinkCustomer = $("#isLasLinkCustomer").val();
+ 	postDataObject.selectedUserName = userName;
+ 	
 		$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						
 						UIBlock();
 					},
-		url:		'getUserDetailsForEdit.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val()+'&selectedUserName='+userName, 
+		url:		'getUserDetailsForEdit.do', 
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
 		
 						//alert('data.viewMode::'+data.viewMode);
@@ -1122,15 +1132,20 @@ function fillselectedOrgNode( elementId, orgList) {
 	if(!(roleOptions.length > 0 
 		&& timeZoneOptions.length > 0
 			&& stateOptions.length > 0)){
+			
+	var postDataObject = {};
+ 	postDataObject.isLasLinkCustomer = $("#isLasLinkCustomer").val();		
+	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						
 						UIBlock();
 					},
-		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
+		url:		'getOptionList.do', 
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
 						$.unblockUI();
@@ -2287,6 +2302,9 @@ function openTreeNodes(orgNodeId) {
 		closePopUp('deleteUserPopup');
 		var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
 		var selectedUserName = $('#list2').jqGrid('getCell',selectedUserId,'loginId');
+		var postDataObject = {};
+ 		postDataObject.selectedUserId = selectedUserId;
+ 		postDataObject.selectedUserName = selectedUserName;
 
 		$.ajax(
 			{
@@ -2294,9 +2312,10 @@ function openTreeNodes(orgNodeId) {
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'deleteUser.do?selectedUserId='+selectedUserId+'&selectedUserName='+selectedUserName,
+				url:		'deleteUser.do',
 				type:		'POST',
 				dataType:	'json',
+				data:		postDataObject,
 				success:	function(data, textStatus, XMLHttpRequest){
 								var successFlag = data.successFlag;
 								if(successFlag){
