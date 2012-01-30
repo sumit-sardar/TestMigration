@@ -164,7 +164,7 @@ function populateProgramStatusDetails(){
 										testNameOptions[i] = data.testList[i].itemSetName;
 										testIds[i] = data.testList[i].itemSetId;
 									}
-									fillDropDown('testNameOptions',testNameOptions);
+									fillTestNameOptions('testNameOptions',testNameOptions);
 									$("#testNameOptions").show();
 								}
 								
@@ -267,7 +267,8 @@ function populateProgramStatusDetails(){
 		);
 }
 
-function fillDropDown(elementId, optionList) {
+//function fillDropDown(elementId, optionList) {
+function fillTestNameOptions(elementId, optionList) {
 	var selectElement = document.getElementById(elementId);
 	var optionHtml = "" ;
 	for(var i = 0; i < optionList.length; i++ ) {		     
