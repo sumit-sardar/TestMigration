@@ -1914,7 +1914,7 @@ public class UserManagementImpl implements UserManagement
         try {
             encodeOldPassword = FormatUtils.encodePassword(oldPassword);
             String password = users.getPasswordForUser(selectedUserName);
-            if (encodeOldPassword.equals(password)) {
+            if (encodeOldPassword.equals(password) ||oldPassword.equals(password) ) {
                 return true;
             } else {
                 return false;   
