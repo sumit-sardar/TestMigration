@@ -1368,10 +1368,16 @@ public class SessionOperationController extends PageFlowController {
 			 TestSession existingTestSession = null;
 			 Set<Integer> keySet            = this.topNodesMap.keySet();
 			 Integer[] topnodeids= (keySet).toArray(new Integer[keySet.size()]);
-			 Integer creatorOrgNod    		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_CREATOR_ORG_NODE, false, null));			
+			 String creatorOrgNodString	    = RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_CREATOR_ORG_NODE, false, null);			
 			 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
 			 
 			 //TestVO selectedTest = idToTestMap.get(itemSetId);
+			 Integer creatorOrgNod = topnodeids[0];
+			 if(creatorOrgNodString !=null && creatorOrgNodString.trim().length()>0 ){
+				 try{
+					 creatorOrgNod = Integer.valueOf(creatorOrgNodString.trim());
+				 } catch (Exception e){	 }
+			 }
 			 
 			 Integer productId        			= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
 			 String dailyLoginEndTimeString		=RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null);
@@ -1448,7 +1454,6 @@ public class SessionOperationController extends PageFlowController {
 	        	 testSession.setCreatedBy(this.userName);
 	        	 testSession.setShowStudentFeedback(showStdFeedback);
 	        	 testSession.setTestAdminStatus("CU");
-	        	 testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         } else {
 	        	 testSession.setTestAdminType(existingTestSession.getTestAdminType());
 	        	 testSession.setActivationStatus(existingTestSession.getActivationStatus()); 
@@ -1456,10 +1461,9 @@ public class SessionOperationController extends PageFlowController {
 	        	 testSession.setShowStudentFeedback(existingTestSession.getShowStudentFeedback());
 	        	 testSession.setSessionNumber(existingTestSession.getSessionNumber());
 	        	 testSession.setCreatedBy(existingTestSession.getCreatedBy());
-	        	 testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         }
 	         
-	         //testSession.setCreatorOrgNodeId(creatorOrgNod);
+	         testSession.setCreatorOrgNodeId(creatorOrgNod);
 	         testSession.setProductId(productId);	    
 	         testSession.setDailyLoginStartTime(dailyLoginStartTime);
 	         testSession.setLocation(location);
