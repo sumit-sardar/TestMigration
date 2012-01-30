@@ -3404,7 +3404,7 @@ function registerDelegate(tree){
        	  url:	  'getRosterDetails.do',   
           mtype:   "POST",
 		  datatype: "json",
-		  data:		postDataObject,
+		  postData:	postDataObject,
           colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
