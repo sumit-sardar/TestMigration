@@ -279,7 +279,7 @@
 								}
 								var subtest = getSubtestTestSession(ProductData.product[selectedProdIndex].testSessionList,selectedTestSession.testSession.itemSetId);
 								if(subtest.length>1){
-									document.getElementById("testBreak").disabled=false;
+									$("#testBreak").removeAttr('disabled');	
 									if( selectedTestSession.testSession.enforceBreak == 'T'){
 										//$('#testBreak').attr('checked','checked');
 										$("#testBreak").attr("checked", true);
@@ -293,14 +293,17 @@
 									}
 									
 								} else {
-									$('#aCode').val(selectedTestSession.testSession.accessCode);	
-									document.getElementById("testBreak").disabled=true;
+									$('#aCode').val(selectedTestSession.testSession.accessCode);
+									$("#testBreak").attr('disabled', true);	
 								}
 														
 								if(stdsLogIn || isTestExpired || isProctor){					
-								disableSelectTest();
+									disableSelectTest();
 								}else{
-								removeDisableInEdit();
+									removeDisableInEdit();
+									if(subtest.length <= 1) {
+										$("#testBreak").attr('disabled', true);
+									}
 								}
 								onChangeHandler.register("Select_Test");
 								isPopUp = true;
@@ -527,6 +530,13 @@
   		if($('#aCode') != undefined && $('#aCode') != null) {
   			$('#aCode').attr("disabled",true);
   		}
+  		var isChecked = $("#testBreak").attr('checked');
+  		if(isChecked != undefined && (isChecked == "checked" || isChecked == true)) {
+  			var allAccessCodes = $("input[name = aCodeB]");
+  			for(var k = 0; k < allAccessCodes.length; k++) {
+  				$(allAccessCodes[k]).attr('disabled', true);
+  			}
+  		}
   		if($('#randomDis') != undefined && $('#randomDis') != null) {
   			$('#randomDis').attr("disabled",true);
   		}
@@ -584,6 +594,13 @@
   		}
   		if($('#testBreak') != undefined && $('#testBreak') != null) {
   			$('#testBreak').removeAttr("disabled");
+  		}
+  		var isChecked = $("#testBreak").attr('checked');
+  		if(isChecked != undefined && (isChecked == "checked" || isChecked == true)) {
+  			var allAccessCodes = $("input[name = aCodeB]");
+  			for(var k = 0; k < allAccessCodes.length; k++) {
+  				$(allAccessCodes[k]).removeAttr('disabled');
+  			}
   		}
   		var allRows = $('#testList').jqGrid('getDataIDs');
   		for(var i = 0; i < allRows.length; i++) {
