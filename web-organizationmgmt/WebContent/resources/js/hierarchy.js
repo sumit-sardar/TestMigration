@@ -426,11 +426,14 @@ function populateTreeSelect() {
 			
 function populateGrid() {
 		 resetSearchCrit();
+		 var postDataObject = {};
+ 		 postDataObject.q = 2;
+ 		 postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
          $("#list2").jqGrid({         
-         url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
-		 type:   'POST',
+         url:'orgNodeHierarchyGrid.do', 
+		 mtype:   'POST',
 		 datatype: "json",         
-                
+         postData: postDataObject,       
           colNames:[$("#orgNameID").val(),$("#orgCodeID").val(),$("#orgLayerID").val(), $("#orgParentID").val()],
 		   	colModel:[
 		   	
@@ -607,10 +610,13 @@ function trapEnterKey(e){
 
 function gridReload(){ 
       resetSearchCrit();
-      jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
+      var postDataObject = {};
+ 	  postDataObject.q = 2;
+ 	  postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+      jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
       var sortArrow = jQuery("#list2");
-      jQuery("#list2").jqGrid('setGridParam', {url:'orgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
- 	   jQuery("#list2").sortGrid('orgNodeName',true);  
+      jQuery("#list2").jqGrid('setGridParam', {url:'orgNodeHierarchyGrid.do',postData: postDataObject,page:1}).trigger("reloadGrid");
+ 	  jQuery("#list2").sortGrid('orgNodeName',true);  
       var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
       $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
       $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
@@ -664,16 +670,20 @@ function EditOrganizationDetail(selectedOrgId){
 	else{
 		rowId = selectedOrgId;
 	}
-	
+		var postDataObject = {};
+ 		postDataObject.isLasLinkCustomer = $("#isLasLinkCustomer").val();
+ 		postDataObject.selectedOrgId = rowId;
+ 		
 		$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						
 						UIBlock();
 					},
-		url:		'getOrgDetailsForEdit.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val()+'&selectedOrgId='+rowId, 
+		url:		'getOrgDetailsForEdit.do', 
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
 						
 						$.unblockUI();
@@ -1341,7 +1351,9 @@ function confirmDelOrgPopUp(){
 function deleteOrganizationDetail(){
 	closePopUp('deleteConfirmation');
 	var rowId = $("#list2").jqGrid('getGridParam', 'selrow');
-
+	var postDataObject = {};
+ 	postDataObject.isLasLinkCustomer = $("#isLasLinkCustomer").val();
+ 	postDataObject.selectedOrgId = rowId;
 	
 	$.ajax({
 		async:		true,
@@ -1349,9 +1361,10 @@ function deleteOrganizationDetail(){
 						
 						UIBlock();
 					},
-		url:		'deleteOrg.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val()+'&selectedOrgId='+rowId, 
+		url:		'deleteOrg.do', 
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
 						
 						$.unblockUI();
