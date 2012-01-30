@@ -103,11 +103,15 @@ function populateOOSStudentGrid() {
  		UIBlock();
  		oosStudentGridLoaded = true;
  		var studentIdTitle = $("#studentIdLabelName").val();
+ 		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.stuForOrgNodeId = $("#outOfSchoolOrgNode").val();
 
        $("#outOfSchoolGrid").jqGrid({         
-          url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#outOfSchoolOrgNode").val(),
-		  type:   'POST',
-		  datatype: "json",          
+          url: 'getStudentForSelectedNode.do',
+		  mtype:   'POST',
+		  datatype: "json",
+		  postData: postDataObject, 
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle, 'orgId', $("#oosID").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -266,9 +270,12 @@ function populateOOSStudentGrid() {
 
 function gridReloadForOOSStudent(){
 		UIBlock();
-       jQuery("#outOfSchoolGrid").jqGrid('setGridParam',{datatype:'json'});     
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.stuForOrgNodeId = $("#selectedBulkTreeOrgNodeId").val();
+       jQuery("#outOfSchoolGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
  	   var sortArrow = jQuery("#outOfSchoolGrid");
-       jQuery("#outOfSchoolGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#outOfSchoolOrgNode").val(),page:1}).trigger("reloadGrid");
+       jQuery("#outOfSchoolGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
        jQuery("#outOfSchoolGrid").sortGrid('lastName',true);
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
