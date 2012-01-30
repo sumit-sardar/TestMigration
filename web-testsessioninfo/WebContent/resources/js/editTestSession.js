@@ -194,6 +194,11 @@
 		document.getElementById("startDate").value = data.savedTestDetails.testSession.loginStartDateString;
 		document.getElementById("endDate").value = data.savedTestDetails.testSession.loginEndDateString;
 		fillDropDownWithDefaultValue("topOrgNode",data.topNodeDropDownList,data.savedTestDetails.testSession.creatorOrgNodeId);
+		if(data.topNodeDropDownList == undefined || data.topNodeDropDownList.length<2 || stdsLogIn || isTestExpired || isProctor){
+			$("#topOrgNode").attr("disabled",true);
+		} else {
+			$("#topOrgNode").removeAttr("disabled");
+		}
 		if(data.savedTestDetails.testSession.location != undefined){
 			$("#testLocation").val(data.savedTestDetails.testSession.location);
 		}

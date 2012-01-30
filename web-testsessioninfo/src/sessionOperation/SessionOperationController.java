@@ -866,7 +866,14 @@ public class SessionOperationController extends PageFlowController {
                 } else {
                 	vo.setTestSessionExpired(Boolean.FALSE);
                 }
-                vo.populateTopOrgnode(topNodesMap);
+                if(topNodesMap.containsKey(scheduledSession.getTestSession().getCreatorOrgNodeId())){
+                	 vo.populateTopOrgnode(topNodesMap);
+                } else {
+                	Map<Integer, String> tmpNodesMap = new LinkedHashMap<Integer, String>();
+                	tmpNodesMap.put(scheduledSession.getTestSession().getCreatorOrgNodeId(), scheduledSession.getTestSession().getCreatorOrgNodeName());
+                	 vo.populateTopOrgnode(tmpNodesMap);
+                }
+               
                 vo.populateTimeZone();
                 
                 status.setSuccess(true);
