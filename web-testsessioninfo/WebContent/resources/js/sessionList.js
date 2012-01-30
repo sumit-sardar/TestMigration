@@ -3402,7 +3402,7 @@ function registerDelegate(tree){
  		postDataObject.testAdminId = selectedTestAdminId;
        $("#rosterList").jqGrid({   
        	  url:	  'getRosterDetails.do',   
-          type:   "POST",
+          mtype:   "POST",
 		  datatype: "json",
 		  data:		postDataObject,
           colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val()],
