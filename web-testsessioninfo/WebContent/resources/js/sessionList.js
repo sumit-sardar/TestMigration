@@ -117,7 +117,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 mtype:   'POST',
 		 datatype: "json",         
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -125,12 +125,16 @@ function populateSessionListGrid(homePageLoad) {
 		   		{name:'creatorOrgNodeId',index:'creatorOrgNodeId', width:0, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'AssignedRole',index:'AssignedRole',editable: true, width:100, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'loginStartDateString',index:'loginStartDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'loginEndDateString',index:'loginEndDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 			   	records: function(obj) { 
 			   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
 			   	 $("#list2").jqGrid("hideCol","creatorOrgNodeId");
+			   	 $("#list2").jqGrid("hideCol","loginStartDateString");
+			   	 $("#list2").jqGrid("hideCol","loginEndDateString");
 				   	 if(ishomepageload && obj.orgNodeCategory != undefined){
 				   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
 				   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
@@ -311,8 +315,8 @@ function searchUserByKeywordList2(){
 		 f.rules.push({field:"testName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
-		 f.rules.push({field:"loginStartDate",op:"cn",data:searchFiler});
-		 f.rules.push({field:"loginEndDate",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler});
 		 grid[0].p.search = true;
 		 grid[0].p.ignoreCase = true;
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
@@ -369,8 +373,8 @@ function searchUserByKeywordList3(){
 		 f.rules.push({field:"testName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
 		 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
-		 f.rules.push({field:"loginStartDate",op:"cn",data:searchFiler});
-		 f.rules.push({field:"loginEndDate",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
+		 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler});
 		 grid[0].p.search = true;
 		 grid[0].p.ignoreCase = true;
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
@@ -408,7 +412,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  mtype:   'POST',
 		  datatype: "json",          
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'loginStartDateString','loginEndDateString'],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -416,11 +420,15 @@ function populateCompletedSessionListGrid() {
 		   		{name:'creatorOrgNodeId',index:'creatorOrgNodeId', width:0, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'AssignedRole',index:'AssignedRole',editable: true, width:100, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'loginStartDateString',index:'loginStartDateString', width:0},
+		   		{name:'loginEndDateString',index:'loginEndDateString', width:0}
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
 		   	records: function(obj) { 
 		   	 $("#list3").jqGrid("hideCol","creatorOrgNodeId");
+		   	 $("#list3").jqGrid("hideCol","loginStartDateString");
+			 $("#list3").jqGrid("hideCol","loginEndDateString");
 		   	 sessionListPA = JSON.stringify(obj.testSessionPA);
 		   	 } },
 		   	loadui: "disable",

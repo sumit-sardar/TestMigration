@@ -34,8 +34,22 @@ public class TestSessionVO implements java.io.Serializable
     private Integer creatorOrgNodeId;
     //For completed Tests
     private String isTestSessionDataExported ;
+    private String loginStartDateString;
+    private String loginEndDateString;
     
-    /**
+    public String getLoginStartDateString() {
+		return loginStartDateString;
+	}
+	public void setLoginStartDateString(String loginStartDateString) {
+		this.loginStartDateString = loginStartDateString;
+	}
+	public String getLoginEndDateString() {
+		return loginEndDateString;
+	}
+	public void setLoginEndDateString(String loginEndDateString) {
+		this.loginEndDateString = loginEndDateString;
+	}
+	/**
 	 * @return the assignedRole
 	 */
 	public String getAssignedRole() {
@@ -75,6 +89,8 @@ public class TestSessionVO implements java.io.Serializable
          this.licenseEnabled = ts.getLicenseEnabled();
          this.isStudentInTestSession = ts.getIsStudentInTestSession();   //START - form recommendation
          this.AssignedRole = ts.getAssignedRole();
+         this.loginEndDateString = ts.getLoginEndDateString();
+         this.loginStartDateString = ts.getLoginStartDateString();
     }     
     public String getAccessCode() {
         return this.accessCode;
