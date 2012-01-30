@@ -115,7 +115,7 @@ function populateSessionListGrid(homePageLoad) {
  		reset();
  		$("#list2").jqGrid({         
           url: 'getSessionForUserHomeGrid.do', 
-		 type:   'POST',
+		 mtype:   'POST',
 		 datatype: "json",         
           colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
 		   	colModel:[
@@ -406,7 +406,7 @@ function populateCompletedSessionListGrid() {
  		resetSearchCritList3();
        $("#list3").jqGrid({         
           url: 'getCompletedSessionForGrid.do', 
-		  type:   'POST',
+		  mtype:   'POST',
 		  datatype: "json",          
           colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val()],
 		   	colModel:[
@@ -849,13 +849,16 @@ function registerDelegate(tree){
 	 	   ishomepageload = homePageLoad;
 	  		UIBlock();
 	  		resetSearchCrit();
-           jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
+	  		var postDataObject = {};
+           jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
      	    var sortArrow = jQuery("#list2");
      	   var urlVal = 'getSessionForUserHomeGrid.do';
      	   if(!homePageLoad) {
- 				urlVal = 'getSessionForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val();
+     	   		postDataObject.q = 2;
+ 				postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 				urlVal = 'getSessionForSelectedOrgNodeGrid.do';
 	 		}
-     	   jQuery("#list2").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
+     	   jQuery("#list2").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
 			jQuery("#list2").sortGrid('loginEndDate',false);
            var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
@@ -864,7 +867,7 @@ function registerDelegate(tree){
       
       function gridReloadPA(homePageLoad){ 
       	   resetSearchCritList3();
-	  	   jQuery("#list3").jqGrid('setGridParam',{datatype:'json'});     
+	  	   jQuery("#list3").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
      	   var urlVal = 'getCompletedSessionForGrid.do';
      	   jQuery("#list3").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
      	   
@@ -883,13 +886,20 @@ function registerDelegate(tree){
       
       function gridReloadSelectStu(){ 
       	  UIBlock();
-	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
-	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
-	       if(state == "EDIT"){ 
-	       		urlVal = urlVal+"&testAdminId=" +selectedTestAdminId;
+      	  var postDataObject = {};
+ 		  postDataObject.q = 2;
+ 		  postDataObject.stuForOrgNodeId = $("#stuForOrgNodeId").val();
+ 		  postDataObject.selectedTestId = $("#selectedTestId").val();
+ 		  postDataObject.blockOffGradeTesting = blockOffGradeTesting;
+ 		  postDataObject.selectedLevel = selectedLevel;
+ 		  
+	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
+	       var urlVal = 'getStudentForList.do';
+	       if(state == "EDIT"){
+	       		postDataObject.testAdminId = selectedTestAdminId;
 	       }
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
-     	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
+     	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, postData:postDataObject, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
      	   jQuery("#selectStudent").sortGrid('lastName',true);
            var sortArrowPA = jQuery("#selectStudent");
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
@@ -1368,14 +1378,17 @@ function registerDelegate(tree){
 	$('#showSaveTestMessage').hide();
 	$("#endTest").hide();
 	state = "ADD";
+	var postDataObject = {};
+ 	postDataObject.currentAction = 'init';
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'selectTest.do?currentAction=init',
+		url:		'selectTest.do',
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		contentType: 'application/json; charset=UTF-8', 
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
@@ -2552,10 +2565,13 @@ function registerDelegate(tree){
 	}
 	     
     function gridReloadSelectProctor(){ 
-	      
-	      jQuery("#selectProctor").jqGrid('setGridParam',{datatype:'json'});    
-	      var urlVal = 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(); 
-     	  jQuery("#selectProctor").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
+	      var postDataObject = {};
+ 		  postDataObject.q = 2;
+ 		  postDataObject.proctorOrgNodeId = $("#proctorOrgNodeId").val();
+ 		  
+	      jQuery("#selectProctor").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
+	      var urlVal = 'getProctorList.do'; 
+     	  jQuery("#selectProctor").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
           var sortArrowPA = jQuery("#selectProctor");
           jQuery("#selectProctor").sortGrid('lastName',true);
           var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
@@ -3382,10 +3398,13 @@ function registerDelegate(tree){
 	
 	function populateRosterList() {
  	   UIBlock();
+ 	  	var postDataObject = {};
+ 		postDataObject.testAdminId = selectedTestAdminId;
        $("#rosterList").jqGrid({   
-       	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
+       	  url:	  'getRosterDetails.do',   
           type:   "POST",
-		  datatype: "json",          
+		  datatype: "json",
+		  data:		postDataObject,
           colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -3536,15 +3555,18 @@ function registerDelegate(tree){
 	}
 	
 	function viewSubtestDetails() {
-		
+		var postDataObject = {};
+ 		postDataObject.testRosterId = selectedTestRosterId;
+ 		
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
 							UIBlock();
 						},
-			url:		'getSubtestDetails.do?testRosterId='+selectedTestRosterId,
+			url:		'getSubtestDetails.do',
 			type:		'POST',
 			dataType:	'json',
+			data:		postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){
 							$("#loginName").text(data.loginName);
 							$("#password").text(data.password);
@@ -3687,6 +3709,8 @@ function registerDelegate(tree){
 	 	selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
 	 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
 	 	if($.trim($(cellData).text()) != 'Partially Invalid') {
+	 		var postDataObject = {};
+ 			postDataObject.testRosterId = selectedTestRosterId;
 	 		$.ajax({
 				async:		true,
 				beforeSend:	function(){
@@ -3695,6 +3719,7 @@ function registerDelegate(tree){
 				url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
 				type:		'POST',
 				dataType:	'json',
+				data:		postDataObject,
 				success:	function(data, textStatus, XMLHttpRequest) {	
 								var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
 								if($.trim(validationStatus) == 'Valid'){
@@ -3730,14 +3755,19 @@ function registerDelegate(tree){
         });
 		if(itemSetIds.length > 1) {
 			itemSetIds = itemSetIds.substr(0, itemSetIds.length - 1);
+			var postDataObject = {};
+ 			postDataObject.testRosterId = selectedTestRosterId;
+ 			postDataObject.itemSetIds = itemSetIds;
+ 			
 			$.ajax({
 				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'toggleSubtestValidationStatus.do?testRosterId='+selectedTestRosterId+'&itemSetIds='+itemSetIds,
+				url:		'toggleSubtestValidationStatus.do',
 				type:		'POST',
 				dataType:	'json',
+				data:		postDataObject,
 				success:	function(data, textStatus, XMLHttpRequest){	
 								var itemSetIds = "";
 								$("input[name=toggleSubtest]").each(function(idx) {
@@ -3833,6 +3863,8 @@ function registerDelegate(tree){
 	function deleteTestSession(){
 		closePopUp('deleteSessionPopup');		
 		var testAdminIdToDelete = $("#"+gridSelectedToDelete).jqGrid('getGridParam', 'selrow');
+		var postDataObject = {};
+ 		postDataObject.testAdminId = testAdminIdToDelete;
 		$.ajax(
 			{
 				async:		true,
@@ -3842,6 +3874,7 @@ function registerDelegate(tree){
 				url:		'deleteTest.do?&testAdminId=' + testAdminIdToDelete,
 				type:		'POST',
 				dataType:	'json',
+				data:		postDataObject,
 				success:	function(data, textStatus, XMLHttpRequest){	
 								if(data.isSuccess){
 									var successMsg = $("#deleteSuccessMsg").val(); 
@@ -3877,14 +3910,18 @@ function registerDelegate(tree){
 			} else {
 				dnsStatus = "Y";
 			}
+			var postDataObject = {};
+ 			postDataObject.testRosterId = selectedTestRosterId;
+ 			postDataObject.dnsStatus = dnsStatus;
 			$.ajax({
 				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'toggleDonotScoreStatus.do?testRosterId='+selectedTestRosterId+'&dnsStatus='+dnsStatus,
+				url:		'toggleDonotScoreStatus.do',
 				type:		'POST',
 				dataType:	'json',
+				data:		postDataObject,
 				success:	function(data, textStatus, XMLHttpRequest) {	
 								$("#displayMessageViewTestRoster").show();
 								$("#rosterMessage").html($("#doNotScoreMsg").val());

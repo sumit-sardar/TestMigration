@@ -43,15 +43,19 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
 }
 	
 function populateTestTicketTree() {
-	
+	var postDataObject = {};
+ 	postDataObject.testAdminId = document.getElementById('selectedTestSessionId').value;
+ 	postDataObject.orgNodeId = document.getElementById('scheduleUserOrgNode').value;
+ 	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'userTreeOrgNodeHierarchyList.do?testAdminId='+document.getElementById('selectedTestSessionId').value+'&orgNodeId='+document.getElementById('scheduleUserOrgNode').value,
+		url:		'userTreeOrgNodeHierarchyList.do',
 		type:		'POST',
 		dataType:	'json',
+		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
 						//$.unblockUI();  

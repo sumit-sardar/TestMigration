@@ -232,14 +232,21 @@ function populateSelectStudentGrid() {
  		var untimedTest= '<img src="/SessionWeb/resources/images/untimed.PNG" title="Untimed"/>';
  		var status = 'Status'+""+'<img id=statusLegend src=/SessionWeb/resources/images/questionmark.jpg onmouseover=showStatusLegend(event); onmouseout=hideStatusLegend(); />'  
  		reset();
- 		var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
+ 		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.stuForOrgNodeId = $("#stuForOrgNodeId").val();
+ 		postDataObject.selectedTestId = $("#selectedTestId").val();
+ 		postDataObject.blockOffGradeTesting = blockOffGradeTesting;
+ 		postDataObject.selectedLevel = selectedLevel;
+ 		
  		if(state == "EDIT"){
-	       	urlVal = urlVal+"&testAdminId=" +selectedTestAdminId;
+	       	postDataObject.testAdminId = selectedTestAdminId;
 	    }
        $("#selectStudent").jqGrid({         
-          url: urlVal, 
-		  type:   'POST',
-		  datatype: "json",          
+          url: 'getStudentForList.do', 
+		  mtype:   'POST',
+		  datatype: "json",
+		  postData: postDataObject, 
           colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(), studentIdTitle, 'Organization','orgName','Accommodation', $("#testDetGrade").val(), status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip", "outOfSchool"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },

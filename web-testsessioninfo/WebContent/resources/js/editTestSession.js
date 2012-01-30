@@ -23,14 +23,18 @@
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
      $("#endTest").hide(); 
+     var param = {};
+     param.testAdminId = selectedTestAdminId;
+ 	
  	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'getTestDetails.do?testAdminId=' +selectedTestAdminId ,
+		url:		'getTestDetails.do',
 		type:		'POST',
 		dataType:	'json',
+		data:		param,
 		success:	function(data, textStatus, XMLHttpRequest){
 						
 						if (data.status.isSuccess){			
@@ -223,14 +227,17 @@
     	  isPopUp = true;
   		  wizard.accordion("activate", index);		
     }else{
+    		var param = {};
+    		param.testAdminId = selectedTestAdminId;
 		 	$.ajax({
 				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'getUserProductsDetails.do?testAdminId=' +selectedTestAdminId ,
+				url:		'getUserProductsDetails.do',
 				type:		'POST',
 				dataType:	'json',
+				data:		param,
 				success:	function(data, textStatus, XMLHttpRequest){
 								editDataCache.put(index,"selectTestGrid");
 								ProductData = data.productsDetails;
@@ -320,14 +327,17 @@
 	  	 	wizard.accordion("activate", index);					
 	  }else{
 	  	if(!offGradeSubtestChanged) {
+	  		var param = {};
+	  		param.testAdminId = selectedTestAdminId;
 	  		$.ajax({
 				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'getScheduledStudents.do?testAdminId=' +selectedTestAdminId ,
+				url:		'getScheduledStudents.do',
 				type:		'POST',
 				dataType:	'json',
+				data:		param,
 				success:	function(data, textStatus, XMLHttpRequest){
 								var stAccom = 0;
 								if (data.status.isSuccess){
@@ -387,14 +397,17 @@
 	    		isPopUp = true;
 	    		wizard.accordion("activate", index);					
 	    }else{
+	    		var param = {};
+	    		param.testAdminId = selectedTestAdminId;
 			    $.ajax({
 					async:		true,
 					beforeSend:	function(){
 									UIBlock();
 								},
-					url:		'getScheduleProctor.do?testAdminId=' +selectedTestAdminId ,
+					url:		'getScheduleProctor.do',
 					type:		'POST',
 					dataType:	'json',
+					data:		param,
 					success:	function(data, textStatus, XMLHttpRequest){
 									
 									if (data.status.isSuccess){	

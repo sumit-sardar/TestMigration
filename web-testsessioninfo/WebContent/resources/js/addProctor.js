@@ -177,11 +177,15 @@ function populateSelectProctorGrid() {
  		UIBlock();
  		
  		selectProctorGridLoaded = true;
+ 		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.proctorOrgNodeId = $("#proctorOrgNodeId").val();
  		//reset();
        $("#selectProctor").jqGrid({         
-          url: 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(), 
-		  type:   'POST',
-		  datatype: "json",          
+          url: 'getProctorList.do', 
+		  mtype:   'POST',
+		  datatype: "json",
+		  postData: postDataObject, 
           colNames:[ $("#testStuLN").val(),$("#testStuFN").val(),'Default Scheduler','User Id',"User Name","Copyable","Editable"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
