@@ -33,7 +33,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 		<tr>
 			<td width="770px">
 				<div id="editOrgDisplayId">
-					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;line-height:17px;">
+					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;">
 						<b><lb:label key="org.label.AddEdit" /></b>
 					</span>
 				</div>
