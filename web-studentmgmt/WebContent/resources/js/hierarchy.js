@@ -162,13 +162,16 @@ function createSingleNodeSelectedTree(jsondata) {
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    
 	 		if(parseInt(rootNodeId) == parseInt(SelectedOrgNodeId)){
+	 			var postDataObject = {};
+	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
 	 		   $.ajax({
 					async:		true,
 					beforeSend:	function(){									
 									UIBlock();
 								},
-					url:		'getStudentCountForOrgNode.do?treeOrgNodeId='+$("#treeOrgNodeId").val(), 
+					url:		'getStudentCountForOrgNode.do', 
 					type:		'POST',
+					data:		 postDataObject,
 					dataType:	'json',
 					success:	function(data, textStatus, XMLHttpRequest){	
 									$.unblockUI();
@@ -560,9 +563,12 @@ function updateOrganization(element, isChecked){
 	
 	  function gridReload(){ 
 	  	   resetSearchCrit();
-           jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
+	  	   var postDataObject = {};
+ 			postDataObject.q = 2;
+ 			postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+           jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
      	   var sortArrow = jQuery("#list2");
-           jQuery("#list2").jqGrid('setGridParam', {url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
+           jQuery("#list2").jqGrid('setGridParam', {url:'getStudentForSelectedOrgNodeGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
            jQuery("#list2").sortGrid('lastName',true);
          	//For MQC Defect - 67122
            var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
@@ -586,9 +592,13 @@ function updateOrganization(element, isChecked){
 		//$("#searchresultheader").css("visibility","visible");	
 		resetSearchCrit();
 		var studentIdTitle = $("#studentIdLabelName").val();
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
         $("#list2").jqGrid({         
-          url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
-		 type:   'POST',
+          url:'getStudentForSelectedOrgNodeGrid.do', 
+		 mtype:   'POST',
+		 postData: postDataObject,
 		 datatype: "json",         
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
@@ -771,10 +781,14 @@ function updateOrganization(element, isChecked){
 	//$("#searchresultheader").css("visibility","visible");	
 	resetSearchCrit();
 	var studentIdTitle = $("#studentIdLabelName").val();
+	var postDataObject = {};
+ 	postDataObject.q = 2;
+ 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
          $("#list2").jqGrid({         
-          url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
-		 type:   'POST',
-		 datatype: "json",         
+          url:'getStudentForSelectedOrgNodeGrid.do', 
+		 mtype:   'POST',
+		 datatype: "json",
+		 postData:	postDataObject,
           colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:120, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -915,6 +929,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 			&& dayOptions.length > 0
 				&& monthOptions.length > 0 
 					&& yearOptions.length > 0)){
+					
+ 		var postDataObject = {};
+ 		postDataObject.isLasLinkCustomer = $("#isLasLinkCustomer").val();
 	
 	$.ajax({
 		async:		true,
@@ -922,8 +939,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 						
 						UIBlock();
 					},
-		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
+		url:		'getOptionList.do', 
 		type:		'POST',
+		data:		postDataObject,
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
@@ -1664,13 +1682,19 @@ function fillselectedOrgNode( elementId, orgList) {
     if(createBy == null || createBy == '') {
 		createBy = $("#stuCreatedBy").val();
 	}
+
+ 	var postDataObject = {};
+ 	postDataObject.studentID = rowid;
+ 	postDataObject.createBy = createBy;
+ 		
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'getStudentDataForSelectedStudent.do?&studentID='+rowid +'&createBy='+createBy , 
+		url:		'getStudentDataForSelectedStudent.do', 
 		type:		'POST',
+		data:		postDataObject,
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI();
@@ -1800,14 +1824,19 @@ function fillselectedOrgNode( elementId, orgList) {
 		rowid = SelectedStudentId;
 	}
 	var createBy =  getDataFromJson(rowid);
+	
+	var postDataObject = {};
+ 	postDataObject.studentID = rowid;
+ 	postDataObject.createBy = createBy;
     
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'getViewStudentData.do?&studentID='+rowid +'&createBy='+createBy , 
+		url:		'getViewStudentData.do', 
 		type:		'POST',
+		data:		postDataObject,
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI();
@@ -2290,13 +2319,14 @@ function setSelectedValue(selectObj, valueToSet) {
 
 		var studentId = $("#list2").jqGrid('getGridParam', 'selrow');
 		
-		var param = "param";
+		var param = {};
+		param.studentID = studentId;
 		$.ajax(
 		{
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'deleteStudent.do?&studentID=' + studentId,
+				url:		'deleteStudent.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',
