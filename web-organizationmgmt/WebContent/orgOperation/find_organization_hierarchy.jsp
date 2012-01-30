@@ -94,72 +94,47 @@
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<p><lb:label key="org.msg.notSave" /></p>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="org.msg.notSave" />
+		</center>
+	</div>		
+	<div style="padding:10px 0px;">
+		<center>
+			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
+			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 
 <div id="confirmationPopupNavigation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="org.msg.notSave" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="org.msg.notSave" />
+		</center>
+	</div>		
+	<div style="padding:10px 0px;">
+		<center>
+			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 
 <div id="deleteConfirmation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="org.msg.delete" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value="&nbsp;Ok&nbsp;" onclick="javascript:deleteOrganizationDetail(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('deleteConfirmation'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="org.msg.delete" />
+		</center>	
+	</div>
+	<div style="padding:10px 0px;">
+		<center>
+			<input type="button"  value="&nbsp;Ok&nbsp;" onclick="javascript:deleteOrganizationDetail(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('deleteConfirmation'); return false;" class="ui-widget-header">
+		</center>	
+	</div>			
 </div>
 
 <div id="searchUserByKeyword"
@@ -182,7 +157,9 @@
 <div id="nodataSelectedPopUp"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;">
-		<lb:label key="orgList.no.data.selected"/>
+		<center>
+			<lb:label key="orgList.no.data.selected"/>
+		</center>	
 	</div>
 </div>
 
