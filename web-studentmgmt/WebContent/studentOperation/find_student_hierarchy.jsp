@@ -113,77 +113,53 @@
 <jsp:include page="/studentOperation/view_student_detail.jsp" />
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="stu.msg.notsave" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td>
-				<center>
-					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="stu.msg.notsave" />
+		</center>
+	</div>		
+	<div style="padding:10px 0px;">
+		<center>
+			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 <div id="confirmationPopupNavigation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="stu.msg.notsave" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="stu.msg.notsave" />
+		</center>
+	</div>
+	<div style="padding:10px 0px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 <div>
 	<input type="hidden" id="deleteStatus" name="deleteStatus" value=""/>
 </div>
 <div id="deleteStudentPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table border="0" width="100%">
-		<tr align="left">
-			<td>
-			<br/>
-			<p>
-				<lb:label key="stu.msg.delete" />
-			</p>
-			<br/>
-			</td>
-		</tr>
-		<tr align="center">
-			<td>
-				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
-				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
-			</td>		
-		</tr>
-		
-	</table>
+	<div style="padding:10px 0px;">
+		<center>
+			<lb:label key="stu.msg.delete" />
+		</center>
+	</div>		
+	<div style="padding:10px 0px;">
+		<center>	
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
+		</center>
+	</div>		
 </div>
 <div id="rootNodePopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table border="0" width="100%">
-		<tr align="left">
+		<tr align="center">
 			<td>
 			<div id="exceedMsg" style="padding-top:5px;"></div>
 			<br/>
@@ -218,7 +194,9 @@
 <div id="nodataSelectedPopUp"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;">
-		<lb:label key="studentList.no.data.selected"/>
+		<center>
+			<lb:label key="studentList.no.data.selected"/>
+		</center>	
 	</div>
 </div>
 

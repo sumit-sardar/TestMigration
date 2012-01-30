@@ -113,7 +113,7 @@
 <div id="endTestSessionConfirmationPopUp"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 			<p><lb:label key="editTest.endTestSession1.message" /></p>
 			<p><lb:label key="editTest.endTestSession2.message" /></p>

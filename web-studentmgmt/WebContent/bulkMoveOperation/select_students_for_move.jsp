@@ -124,7 +124,7 @@
 <div id="unSaveBulkConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 			<br/>
 			<p><lb:label key="stu.msg.moveCancelConfirm" /></p>

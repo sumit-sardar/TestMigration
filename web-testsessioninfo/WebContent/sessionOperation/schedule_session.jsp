@@ -135,7 +135,7 @@
 
 <div id="closeScheduleSessionPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 				<p><lb:label key="scheduleTest.cancelConfirmation.message" /></p>
 				<p></p>
@@ -155,7 +155,7 @@
 
 <div id="productChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
 				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
@@ -174,7 +174,7 @@
 
 <div id="subtestChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
 				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>

@@ -68,7 +68,7 @@
 	
 	<div id="removeProctorConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 				<p><lb:label key="homepage.delProctorConfirmation1.message"/></p>
 				<p><lb:label key="homepage.delProctorConfirmation2.message"/></p>

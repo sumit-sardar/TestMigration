@@ -60,7 +60,7 @@
 <div id="removeStuConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 			<p><lb:label key="scheduleTest.delStuConfirmation.message" /></p>
 			<p id= "scheduleRemove" ><lb:label key="scheduleTest.delStuConfirmation2.message" /></p>

@@ -207,7 +207,7 @@
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
-		<tr>
+		<tr align="center">
 			<td colspan="2">
 			<br/>
 			<p><lb:label key="common.topNodeSelection.message" /></p>
@@ -266,22 +266,22 @@
 <div id="statusLegend" style="display:none;" class="statusLegendDiv">
 <table width="360" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
 	<tbody>
-		<tr>
+		<tr align="center">
 			<td colspan="2" align="left"><lb:label key="selectstudentpage.Msg.statusKey" /></td>
 		</tr>
-		<tr>
+		<tr align="center">
 			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.completed" /></td>
 			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.completedMsg" /></td>
 		</tr>
-		<tr>
+		<tr align="center">
 			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.inprogress" /></td>
 			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.inprogressMsg" /></td>
 		</tr>
-		<tr>
+		<tr align="center">
 			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.schedule" /></td>
 			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.scheduleMsg" /></td>
 		</tr>
-		<tr>
+		<tr align="center">
 			<td align="left" width="30"><lb:label key="selectstudentpage.Msg.Preschedule" /></td>
 			<td align="left" width="320"><lb:label key="selectstudentpage.Msg.PrescheduleMsg" /></td>
 		</tr>
@@ -292,7 +292,7 @@
 <div id="deleteSessionPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table border="0" width="100%">
-		<tr align="left">
+		<tr align="center">
 			<td>
 			<br/>
 			<p>
@@ -313,7 +313,9 @@
 <div id="nodataSelectedPopUp"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;">
-		<lb:label key="sessionList.no.data.selected"/>
+		<center>
+			<lb:label key="sessionList.no.data.selected"/>
+		</center>	
 	</div>
 </div>
 
