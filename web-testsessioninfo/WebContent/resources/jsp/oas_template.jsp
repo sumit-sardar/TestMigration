@@ -75,7 +75,8 @@ clear: both;
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>   
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/printTicket.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>    
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>  
+        <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/programStatus.js"></script>  
   	
 	<script type="text/javascript">
 	var SelectedUserId;

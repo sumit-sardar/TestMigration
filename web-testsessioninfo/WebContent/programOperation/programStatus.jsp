@@ -23,19 +23,9 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="manageProgram">
+<input type="hidden" id="selectedPSNodeId" />
 
-<table width="97%" style="margin:15px auto;" border="0"> 
-	<tr>
-		<td style="padding-left:5px;">
-    		<h1><lb:label key="assessments.programStatus.title" /></h1>
-		</td>
-	</tr>
-	<tr height="400" align="center"> 
-		<td>
-			 <p align="center"><netui:content value="Content goes here"/></p>
-		</td>	
-	</tr>
-</table>
+	<jsp:include page="/programOperation/programStatus_hierarchy.jsp" />
 </netui:form>
 
 <script type="text/javascript">

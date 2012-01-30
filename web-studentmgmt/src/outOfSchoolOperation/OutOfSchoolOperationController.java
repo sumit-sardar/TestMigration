@@ -625,7 +625,7 @@ public class OutOfSchoolOperationController extends PageFlowController {
 			for (int i=0; i < customerConfigurations.length; i++) {
 
 				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Program_Status") && 
 						cc.getDefaultValue().equals("T")) {
 					hasProgramStatusConfig = true; 
 					break;
