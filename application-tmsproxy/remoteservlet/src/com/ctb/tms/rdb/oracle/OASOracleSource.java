@@ -475,11 +475,14 @@ public class OASOracleSource implements OASRDBSource
         
         if(response.getRestartNumber().intValue() > 0) {
 	        ArrayList a = new ArrayList();
+	        boolean timed = !response.getTestingSessionData().getLmsStudentAccommodations().getUntimed() && !response.getTestingSessionData().getLmsStudentAccommodations().getExtendedTime();
 	        for(int i=0;i<manifestData.length;i++) {
 	        	ManifestData data = manifestData[i];
 	        	if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
 	        		continue;
-	        	}else{
+	        	} else if (timed && data.getScoDurationMinutes() > 0 && (data.getTotalTime() > (data.getScoDurationMinutes() * 60))) {
+	        		continue;
+	        	} else{
 	        		a.add(data);
 	        	}
 	        }

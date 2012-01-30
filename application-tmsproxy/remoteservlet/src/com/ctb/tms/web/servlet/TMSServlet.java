@@ -303,12 +303,16 @@ public class TMSServlet extends HttpServlet {
 		String accessCode = null;
 		Manifest manifest = null;
 
+		boolean locatorComplete = false;
+		
 		XmlOptions xmlOptions = new XmlOptions(); 
         xmlOptions = xmlOptions.setUnsynchronized();
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+        
+    	int nextScoIndex = 0;
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -326,7 +330,6 @@ public class TMSServlet extends HttpServlet {
 			    
 	    		manifest = oasSource.getManifest(rosterId, accessCode);
 		    	ManifestData[] manifestData = manifest.getManifest();	
-		    	int nextScoIndex = 0;
 		    	int j;
 		    	String thisScid = tsd.getScid();
 		    	if(!"0".equals(thisScid) && !"null".equals(thisScid) && !"".equals(thisScid.trim())) {
@@ -402,38 +405,21 @@ public class TMSServlet extends HttpServlet {
 				    			thisSco.setCompletionStatus("IS");
 				    			manifest.setRosterCompletionStatus("IS");
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
+				    			if("TABE Locator Language".equals(thisSco.getTitle())) {
+				    				locatorComplete = true;
+				    				logger.info("Roster " + rosterId + " completed locator");
+				    			}
 				    			thisSco.setCompletionStatus("CO");
 				    			thisSco.setEndTime(System.currentTimeMillis());
-				    			if(("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct())) && "L".equals(thisSco.getLevel())) {
-				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
-				    	    		handleTabeLocator(rosterId);
-				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
-				    	    		manifestData = manifest.getManifest();
-				    	    		for(j=0;j<manifestData.length;j++) {
-							    		if(!"TERMINATOR".equals(tsd.getScid()) && (manifestData[j].getId() == Integer.parseInt(tsd.getScid()))) {
-							    			nextScoIndex = j+1;
-							    			// TODO (complete): fix next subtest selection for TABE auto-locator
-							    			thisSco = manifestData[j];
-							    			thisSco.setCompletionStatus("CO");
-							    			break;
-							    		}
-							    	}
-				    	    	}
 						    	if(nextScoIndex < manifestData.length) {
 						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
-				                	logger.debug("Selected next sco: " + manifestData[nextScoIndex].getId());
+				                	logger.debug("Selected next sco: " + nextSco.getId());
 						    	} else {
 						    		logger.debug("Selected next sco index " + nextScoIndex + " is greater than manifest length: " + manifestData.length);
 						    	}
 				    		}
 				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-				    		if(manifestData.length > 0 && ("TB".equals(manifestData[0].getProduct()) || "TL".equals(manifestData[0].getProduct()))) {
-			    				// re-calc auto-locator levels when exiting client
-			    	    		handleTabeLocator(rosterId);
-			    	    		manifest = oasSource.getManifest(rosterId, accessCode);
-			    	    		manifestData = manifest.getManifest();
-			    	    	}
 				    		manifest.setRosterEndTime(System.currentTimeMillis());
 				    		boolean inProgressSubtest = false;
 				    		for(int n=0;n<manifestData.length;n++) {
@@ -541,6 +527,20 @@ public class TMSServlet extends HttpServlet {
 			oasSink.putManifest(rosterId, accessCode, manifest, true);
     		logger.debug("TMSServlet: save: updated manifest for roster " + rosterId);
 		}
+		
+		// handle TABE auto-locator last, to make sure everything is up-to-date in the manifest first
+		if(locatorComplete) {
+			// we just completed the auto-locator
+    		handleTabeLocator(rosterId);
+    		manifest = oasSource.getManifest(rosterId, accessCode);
+    		ManifestData[] manifestData = manifest.getManifest();
+    		if(nextScoIndex < manifestData.length) {
+	    		NextSco nextSco = saveResponse.getTsdArray(0).getNextSco();
+	        	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+	        	logger.debug("Re-selected next sco due to auto-locator: " + nextSco.getId());
+    		}
+    	}
+		
 		return responseDocument.xmlText();
 	}
 	
@@ -702,19 +702,21 @@ public class TMSServlet extends HttpServlet {
 	        }
 	    	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
 	    	if(crda != null && crda.length > 0) {
-	        	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-	        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-	        	if (responsesInRD) {
-	        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
-	        		for(int m=0;m<rdtsda.length;m++) {
-	        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
-	            		for(int j=0;j<rdirt.length;j++) {
-	            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
-	            			//oasSink.putItemResponse(rdirt[j], true);
-	            			netirt.add(rdirt[j]);
-	                    }
-	        		}
-	        	}
+	    		for(int f=0;f<crda.length;f++) {
+		        	restartData = loginResponse.getConsolidatedRestartDataArray(f);
+		        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+		        	if (responsesInRD) {
+		        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
+		        		for(int m=0;m<rdtsda.length;m++) {
+		        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
+		            		for(int j=0;j<rdirt.length;j++) {
+		            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
+		            			//oasSink.putItemResponse(rdirt[j], true);
+		            			netirt.add(rdirt[j]);
+		                    }
+		        		}
+		        	}
+	    		}
 	    	}
 	    	
 	    	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {

@@ -133,6 +133,46 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void putAllManifests(String testRosterId, ManifestWrapper wrapper, boolean replicate) throws IOException {
 		String key = testRosterId;
 		if(wrapper != null && wrapper.getManifests() != null && wrapper.getManifests().length > 0) {
+			Manifest[] manifests = wrapper.getManifests();
+			int latestMseq = -1;
+			int restartCount = -1;
+			int cid = 0;
+			int randomSeed = 0;
+			String rosterStatus = "";
+			String tutorialTaken = null;
+			boolean allcoManifest = true;
+			for(int i=0;i<manifests.length;i++) {
+				logger.debug("comparing " + manifests[i].getRosterLastMseq() + " to " + latestMseq);
+				if(manifests[i].getRosterLastMseq() > latestMseq) {
+					rosterStatus = manifests[i].getRosterCompletionStatus();
+					latestMseq = manifests[i].getRosterLastMseq();
+					if(!"CO".equals(rosterStatus)) {
+						allcoManifest = false;
+					} else if(!allcoManifest) {
+						rosterStatus = "IS";
+					}
+				}
+				if(manifests[i].getRosterRestartNumber() > restartCount) {
+					restartCount = manifests[i].getRosterRestartNumber();
+					cid = manifests[i].getRosterCorrelationId();
+					logger.debug("found higher restart number " + restartCount + " on manifest " + manifests[i].getAccessCode());
+				}
+				if("TRUE".equals(manifests[i].getTutorialTaken())) {
+					tutorialTaken = "TRUE";
+				}
+				if(manifests[i].getRandomDistractorSeed() != 0) {
+					randomSeed = manifests[i].getRandomDistractorSeed();
+				}
+			}
+			for(int i=0;i<manifests.length;i++) {
+				manifests[i].setTutorialTaken(tutorialTaken);
+				manifests[i].setRosterCompletionStatus(rosterStatus);
+				manifests[i].setRosterRestartNumber(restartCount);
+				manifests[i].setRosterLastMseq(latestMseq);
+				manifests[i].setRosterCorrelationId(cid);
+				manifests[i].setRandomDistractorSeed(randomSeed);
+			}
+			wrapper.setManifests(manifests);
 			wrapper.setReplicate(replicate);
 			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
