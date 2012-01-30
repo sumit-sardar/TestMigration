@@ -99,6 +99,8 @@ public class TestAdminStatusComputer
         testSession.setDailyLoginEndTime(adjustedEndTime);
         testSession.setLoginStartDate(adjustedStartDate);
         testSession.setLoginEndDate(adjustedEndDate);
+        testSession.setLoginStartDateString(DateUtils.formatDateToDateString(testSession.getLoginStartDate()));
+        testSession.setLoginEndDateString(DateUtils.formatDateToDateString(testSession.getLoginEndDate()));
     }
     
     //Change for defect #66657

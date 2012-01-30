@@ -1,11 +1,14 @@
 package com.ctb.util; 
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class DateUtils 
 { 
     static final long serialVersionUID = 1L;
+    
+    private final static String DATE_FORMAT="MM/dd/yy";
 	/**
 	 * Converts a date in the input timezone to a date in the output timezone.
 	 * @param date
@@ -84,4 +87,20 @@ public class DateUtils
         OASLogger.getLogger("TestAdmin").debug("DateUtils: timeEquals: " + date1.toString() + " equals " + date2.toString() + "? " + result);
         return result;
     }
+    
+    public static String formatDateToDateString(Date date){
+        String result = null;
+        if (date == null)
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(DATE_FORMAT);
+        try{
+            result = sdf.format(date);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }  
 } 

@@ -3,11 +3,6 @@ package com.ctb.bean.testAdmin;
 import java.util.Date;
 
 import com.ctb.bean.CTBBean;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
 
 /**
  * TestSession.java
@@ -680,5 +675,13 @@ public class TestSession extends CTBBean
 	 */
 	public void setOffGradeBlocked(String offGradeBlocked) {
 		this.offGradeBlocked = offGradeBlocked;
+	}
+
+	public String getLoginStartDateString() {
+		return loginStartDateString;
+	}
+
+	public String getLoginEndDateString() {
+		return loginEndDateString;
 	}
 } 
