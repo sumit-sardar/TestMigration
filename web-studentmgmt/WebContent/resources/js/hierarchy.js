@@ -2247,7 +2247,13 @@ function fillselectedOrgNode( elementId, orgList) {
 				     	}
 						if(profileEditable === "false" && stuDemographic[count].importEditable == 'F') {
 			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
-			     			var radioArray = $("#Student_Additional_Information :radio")
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
 			     			for(var k = 0; k < radioArray.length; k++) {
 			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
 			     					$(radioArray).eq(k).attr("disabled", true);
@@ -2255,7 +2261,13 @@ function fillselectedOrgNode( elementId, orgList) {
 			     			}
 			     		} else {
 			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', false);
-			     			var radioArray = $("#Student_Additional_Information :radio")
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
 			     			for(var k = 0; k < radioArray.length; k++) {
 			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
 			     					$(radioArray).eq(k).attr("disabled", false);
