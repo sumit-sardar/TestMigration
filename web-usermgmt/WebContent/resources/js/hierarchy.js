@@ -44,6 +44,7 @@ var checkedListObject = {};
 var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
+var optionHtml="";
 
 
 $(document).bind('keydown', function(event) {
@@ -888,14 +889,14 @@ function userDetailEdit(){
 								closeOnEscape: false,
 							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
 							 	});	
-						$('#addEditUserDetail').bind('keydown', function(event) {
+						/*$('#addEditUserDetail').bind('keydown', function(event) {
 			 				  var code = (event.keyCode ? event.keyCode : event.which);
   							  if(code == 27){
 			  				  onCancel();
 			  				  return false;
 			 				 }
 			 				
-							});
+							});*/
 						 	
 						 	if (data.viewMode) {
 								$("#viewEditDisplayId").css("display","none");
@@ -1168,14 +1169,14 @@ function fillselectedOrgNode( elementId, orgList) {
 								closeOnEscape: false,
 							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 							 	});	
-						$('#addEditUserDetail').bind('keydown', function(event) {
+						/*$('#addEditUserDetail').bind('keydown', function(event) {
 			 				  var code = (event.keyCode ? event.keyCode : event.which);
   							  if(code == 27){
 			  				  onCancel();
 			  				  return false;
 			 				 }
 			 				
-							});
+							});*/
 						 	 
 							setPopupPosition(isAddUser);	
 					},
@@ -1198,7 +1199,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		 	closeOnEscape: false,
 		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 	});	
-		 	$('#addEditUserDetail').bind('keydown', function(event) {
+		 	/*$('#addEditUserDetail').bind('keydown', function(event) {
 		 						  //alert("key up 2");
  							var code = (event.keyCode ? event.keyCode : event.which);
  							if(code == 27){
@@ -1206,7 +1207,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		  				 	return false;
 		 				 }
 		 				
-						});
+						});*/
 		setPopupPosition(isAddUser);	
 	}	
 							 	
