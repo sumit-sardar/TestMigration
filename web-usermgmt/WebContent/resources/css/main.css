@@ -481,3 +481,13 @@ th.ui-th-column div{
 .searchInputBoxContainer {
 	padding:20px 0px;
 }
+
+.tableHeader{
+	background: url(../images/tableHeader3.png);
+    color: #FFF;
+    font-family: Arial, Verdana, Sans Serif; 
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    height: 23px; 
+}

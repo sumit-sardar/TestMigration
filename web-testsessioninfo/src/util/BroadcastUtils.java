@@ -48,7 +48,7 @@ public class BroadcastUtils
 		
         if (broadcastMessages.size() > 0)
         {
-            html += "<tr class='subtestHeader'>";
+            html += "<tr class='tableHeader'>";
             html += "<th align='left'>&nbsp;&nbsp;Message</th><th >Date</th></tr>";
             html += "</tr>";
             messages = "";

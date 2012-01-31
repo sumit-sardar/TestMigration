@@ -41,7 +41,7 @@
 				<table class="simpletable">
 				<netui-data:repeater dataSource="requestScope.fileInfoList">
 				    <netui-data:repeaterHeader>
-						<tr class="subtestHeader" >
+						<tr class="tableHeader" >
 	     					<th width="80%" style="padding-left:5px;"><lb:label key="downloadtest.header.productype" /></th>
 	     					<th width="20%" style="padding-left:5px;"><lb:label key="downloadtest.header.size" /></th>
 	    				</tr>
