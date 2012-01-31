@@ -1,6 +1,7 @@
 var orgNodeIds="";
 var profileTimeZoneOptions=[];
 var profileStateOptions=[];
+var profileHintQuesOptions=[];
 var dbProfileDetails;
 var isProfileChanged = false;
 
@@ -77,7 +78,7 @@ function viewMyProfile() {
 									autoOpen: true,
 									title:$("#mpDialogID").val(), 
 									modal: true,
-									width: 800,
+									width: 840,
 									open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 								});
 								$('#myProfileDialog').bind('keydown', function(event) {
@@ -119,15 +120,20 @@ function setUserDetails(data){
 	
 	profileTimeZoneOptions=data.optionList.timeZoneOptions;
 	profileStateOptions=data.optionList.stateOptions;
+	profileHintQuesOptions = data.optionList.hintQuesOptions;
+	
 	fillProfileDropDown("profileTimeZoneOptions", profileTimeZoneOptions);
 	fillProfileDropDown("profileStateOptions", profileStateOptions);
+	fillProfileDropDown("profileHintQues", profileHintQuesOptions);
 	
 	// user details
 	$("#loginUserId").val(data.userId);
 	$("#loginUserName").val(data.userName);
 	$("#profileFirstName").val(data.firstName);
 	$("#profileMiddleName").val(data.middleName);
-	$("#profileLastName").val(data.lastName);
+	$("#profileLoginId").text(data.loginId);
+	$("#profileLoginId").text(data.loginId);
+	
 	getOrgNodes("orgNodesName", data.organizationNodes);
 	$("#profileEmail").val(data.email);
 	$("#profileTimeZoneOptions").val(data.timeZone);							
@@ -155,6 +161,9 @@ function setUserDetails(data){
 	$("#profileFaxNumber1").val(data.userContact.faxNumber1);
 	$("#profileFaxNumber2").val(data.userContact.faxNumber2);
 	$("#profileFaxNumber3").val(data.userContact.faxNumber3);
+	
+	$("#profileHintQues").val(data.userPassword.hintQuestionId);
+	$("#profileHintAns").val(data.userPassword.hintAnswer);
 }
 
 
@@ -306,10 +315,13 @@ function resetErrorMessages(){
 		$("#profileFaxNumber1").val("");	
 		$("#profileFaxNumber2").val("");	
 		$("#profileFaxNumber3").val("");
+		$("#profileLoginId").text("");	
 		$("#role").text("");
 		$("#externalId").text("");
+		$("#profileOldPassword").val("");
 		$("#profileNewPassword").val("");
-		$("#profileConfirmPassword").val("");
+		$("#profileConfirmPassword").val("");		
+		$("#profileHintAns").val("");
 		
 		var allSelects = $("#myProfileDialog select");
 		for(var count = 0; count < allSelects.length ; count++) {

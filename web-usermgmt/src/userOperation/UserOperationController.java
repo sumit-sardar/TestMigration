@@ -46,6 +46,7 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrganizationNode;
+import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.TimeZones;
 import com.ctb.bean.testAdmin.USState;
@@ -54,6 +55,7 @@ import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.control.userManagement.UserManagement;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.userManagement.UserPasswordUpdateException;
 import com.ctb.util.SQLutils;
 import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -846,8 +848,11 @@ public class UserOperationController extends PageFlowController
 		userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("profileFaxNumber2"));
 		userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("profileFaxNumber3"));	
 		userName = getRequest().getParameter("loginUserName");
+		String oldPassword = getRequest().getParameter("profileOldPassword");
 		String newPassword = getRequest().getParameter("profileNewPassword");
-		String confirmPassword = getRequest().getParameter("profileConfirmPassword");		
+		String confirmPassword = getRequest().getParameter("profileConfirmPassword");	
+		String hintQues = getRequest().getParameter("profileHintQues");
+		String hintAns = getRequest().getParameter("profileHintAns");
 		
 		int userId = 0;		
 		String addressId = null;
@@ -918,14 +923,15 @@ public class UserOperationController extends PageFlowController
 		}
 		//userName = this.userName;		
 		User loginUser = this.getLoginUserDetails(this.userManagement, userName);
-		String oldPassword = loginUser.getPassword();
 		PasswordInformation passwordinfo = new PasswordInformation();
 		passwordinfo.setOldPassword(oldPassword);
 		passwordinfo.setNewPassword(newPassword);
 		passwordinfo.setConfirmPassword(confirmPassword);
+		passwordinfo.setHintQuestionId(hintQues);
+		passwordinfo.setHintAnswer(hintAns);
 		 
 		//requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
-		if(!passwordinfo.getNewPassword().trim().equals("") || !passwordinfo.getConfirmPassword().trim().equals("")){
+		if(!passwordinfo.getOldPassword().trim().equals("") ||!passwordinfo.getNewPassword().trim().equals("") || !passwordinfo.getConfirmPassword().trim().equals("")){
 			if (validateAgain) {
 				 String invalidCharFields = UserPasswordUtils.verifyPasswordInfo(passwordinfo);
 				 String invalidString = "";
@@ -949,7 +955,7 @@ public class UserOperationController extends PageFlowController
 					 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
 					 if(isNewAndConfirmPasswordDifferent) {
 						 validateAgain = false;
-					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
+					 	 messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
 					 }
 				 }
 			}
@@ -962,34 +968,46 @@ public class UserOperationController extends PageFlowController
 		
 		boolean result = true;
 		User user = null;
-		//try {
-			if(validateAgain){
-				//CustomerConfiguration[]  customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
-				
-				userName = saveUserProfileInformation(false, userProfile, userName, selectedOrgNodes);
-	
-				if (userName != null) {
-					userProfile.setUserName(userName);
-					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
-					try {
-						user = userManagement.getUser(userName, userName);
-						if(user != null){
-							userProfile.setRole((user.getRole().getRoleName()));
-						}
-					} catch (CTBBusinessException e) {
-						e.printStackTrace();
-					}
-					messageInfo.setUserProfile(userProfile);
-				}
-				else  {
-					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
-	
-				}
+		if(validateAgain){
+			try{
+				userName = saveUserProfileDetails(userProfile, userName, selectedOrgNodes, messageInfo);
 			}
-		/*}
-		catch (SQLException be) {
-			be.printStackTrace();
-		}*/
+			catch (CTBBusinessException be) {
+				userName = null;
+				if(be.getMessage() == "ChangePassword.InvalidOldPassword"){
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.WRONG_PASSWORD, Message.INFORMATION, true, false );
+				}else if(be.getMessage() == "ChangePassword.PasswordRepeated"){
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.REPEATED_PASSWORD, Message.INFORMATION, true, false );
+				}else{	    			
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+				}
+			}            
+			catch (Exception e) {
+				e.printStackTrace();
+				userName = null;
+				messageInfo = createMessageInfo(messageInfo, Message.PROFILE_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+			}
+
+			if (userName != null) {
+				userProfile.setUserName(userName);
+				messageInfo = createMessageInfo(messageInfo, Message.PROFILE_TITLE, Message.PROFILE_EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+				try {
+					user = userManagement.getUser(userName, userName);
+					if(user != null){
+						userProfile.setRole((user.getRole().getRoleName()));
+					}
+				} catch (CTBBusinessException e) {
+					e.printStackTrace();
+				}
+				messageInfo.setUserProfile(userProfile);
+			}
+			else  {
+				//messageInfo = createMessageInfo(messageInfo, Message.INVALID_DATA_TITLE, Message.PROFILE_EDIT_ERROR, Message.INFORMATION, true, false );
+
+
+			}
+		}
+
 		
 		creatGson( req, resp, stream, messageInfo );
 		return null;
@@ -1030,8 +1048,7 @@ public class UserOperationController extends PageFlowController
 	    {       
 	    	User user = null;
         	user = userProfile.makeCopy(userName, selectedOrgNodes);
-	        
-	        String title = null;
+        	String title = null;
 	        String username = user.getUserName();
 	        System.out.println("username>>"+username);
 	        try {                    
@@ -1043,16 +1060,44 @@ public class UserOperationController extends PageFlowController
 	        } 
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();
+	            
 	            username = null;
 	        }            
 	        catch (Exception e) {
 	            e.printStackTrace();
 	            username = null;
 	        }
-	                
+	            
 	        return username;
 	    }
 	    
+	    private String saveUserProfileDetails(
+				UserProfileInformation userProfile, 
+                String userName, 
+                List selectedOrgNodes,
+                MessageInfo messageInfo) throws CTBBusinessException
+	    {       
+	    	User user = null;
+	    	user = userProfile.makeCopy(userName, selectedOrgNodes);
+	    	String title = null;
+	    	String username = user.getUserName();
+	    	System.out.println("username>>"+username);
+	    	try { 
+	    		this.userManagement.updateUser(this.userName, user);
+	    	} 
+	    	catch (CTBBusinessException be) {
+	    		be.printStackTrace();
+	    		username = null;
+	    		throw be;
+	    	}            
+	    	catch (Exception e) {
+	    		e.printStackTrace();
+	    		username = null;
+	    	}
+
+	    	return username;
+	    }
+
 
 		private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
 			messageInfo.setTitle(messageTitle);
@@ -1435,6 +1480,7 @@ public class UserOperationController extends PageFlowController
 			OptionList optionList = new OptionList();
 			optionList.setTimeZoneOptions(getTimeZoneOptions(ACTION_ADD_USER));
 			optionList.setStateOptions(getStateOptions(ACTION_ADD_USER));
+			optionList.setHintQuesOptions(getHintQuesOptions(ACTION_ADD_USER));
 			
 			loginUserDetails.setOptionList(optionList);
 			//loginUserDetails.setTimeZoneDesc(loginUserDetails.covertTimeCodeToTimeDesc(loginUserDetails.getTimeZone()));
@@ -1900,6 +1946,36 @@ public class UserOperationController extends PageFlowController
             e.printStackTrace();
         }
         return timeZoneOptions.toArray( new String[timeZoneOptions.size()]);
+    }
+	
+	private String [] getHintQuesOptions(String action)
+    {        
+		PasswordHintQuestion[] hintQuestions = null;
+		
+		try {
+			hintQuestions =  this.userManagement.getHintQuestions();
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		
+		
+		List<String> hintQuesOptions = new ArrayList<String>();
+       /*if (action.equals(ACTION_ADD_USER)) {	
+        	hintQuesOptions.add(-1 + "|"+Message.SELECT_HINE_QUES);
+        }
+        */
+        try {
+            if (hintQuestions != null) {
+                for (int i = 0; i < hintQuestions.length ; i++) {
+                	hintQuesOptions.add(hintQuestions[i].getPasswordHintQuestionId()+"|"+hintQuestions[i].getPasswordHintQuestion());
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hintQuesOptions.toArray( new String[hintQuesOptions.size()]);
     }
 	
 	private String [] getStateOptions(String action)

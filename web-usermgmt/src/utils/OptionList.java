@@ -7,6 +7,8 @@ public class OptionList {
 	public String[] roleOptions = null;
 	public String[] stateOptions = null;
 	public String[] timeZoneOptions = null;
+	public String[] hintQuesOptions = null;
+	
 	/**
 	 * @return the roleOptions
 	 */
@@ -42,6 +44,18 @@ public class OptionList {
 	 */
 	public void setTimeZoneOptions(String[] timeZoneOptions) {
 		this.timeZoneOptions = timeZoneOptions;
+	}
+	/**
+	 * @return the hintQuesOptions
+	 */
+	public String[] getHintQuesOptions() {
+		return hintQuesOptions;
+	}
+	/**
+	 * @param hintQuesOptions the hintQuesOptions to set
+	 */
+	public void setHintQuesOptions(String[] hintQuesOptions) {
+		this.hintQuesOptions = hintQuesOptions;
 	}
 	
 	

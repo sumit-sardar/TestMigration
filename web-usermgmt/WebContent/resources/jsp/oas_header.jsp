@@ -64,7 +64,7 @@
 <!-- My profile Dialog -->
 <div id="myProfileDialog"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="displayMessageMyProfile" class="roundedMessage">
+	<div id="displayMessageMyProfile" class="roundedMessage" style="width:99.5%; margin-bottom:2px;">
 			<table>
 				<tr>
 					<td rowspan="3" valign="top">
@@ -103,22 +103,70 @@
 					<div>
 						<table class="transparent">
 							<tr class="transparent">
-								<td class="transparent" colspan="2">
-								<lb:label key="dialog.myProfile.msg.newpassword" />
+								<td class="subtitle" colspan="3" style="padding-bottom:5px;">
+								<lb:label key="dialog.myProfile.msg.changepassword" />
 								</td>
 							</tr>
-							<tr class="transparent">
-								<td class="transparent alignRight" style="padding: 10px"><lb:label
-									key="dialog.myProfile.newpassword" suffix=":" /></td>
-								<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64"
-									id="profileNewPassword" name="profileNewPassword"></td>
-							</tr>
-							<tr class="transparent">
-								<td class="transparent alignRight" style="padding: 10px"><lb:label
-									key="dialog.myProfile.confirmpassword" suffix=":" /></td>
-								<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64"
-									id="profileConfirmPassword" name="profileConfirmPassword"></td>
-							</tr>
+							<tr>
+								<td style="vertical-align: top; width:58%">
+								<table>
+									<tr class="transparent">
+										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.oldpassword"
+											suffix=":" /></td>
+										<td><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="32"
+											id="profileOldPassword" name="profileOldPassword"></td>
+									</tr>
+									<tr class="transparent">
+										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.newpassword"
+											suffix=":" /></td>
+										<td><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="32"
+											id="profileNewPassword" name="profileNewPassword"></td>
+									</tr>
+									<tr class="transparent">
+										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.confirmpassword"
+											suffix=":" /></td>
+										<td><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="32"
+											id="profileConfirmPassword" name="profileConfirmPassword"></td>
+									</tr>
+									<tr class="transparent">
+										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.hintQues" suffix=":" /></td>
+										<td><select style="width: 300px; font-family: sans-serif;" id="profileHintQues"
+											name="profileHintQues"></select></td>
+									</tr>
+									<tr class="transparent">
+										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.hintAns" suffix=":" /></td>
+										<td><input type="text" style="width: 200px; font-family: sans-serif;" maxlength="255"
+											id="profileHintAns" name="profileHintAns"></td>
+									</tr>
+								</table>
+								</td>
+								<td width="5"></td>
+								<td style ="vertical-align: top;" >
+								<table>
+									<tr>
+										<td class="transparent">
+										<lb:label key="dialog.myProfile.msg.oldPassword" suffix="" />
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+									</tr>						
+									<tr>
+										<td class="transparent">
+										<lb:label key="dialog.myProfile.msg.confPassword" suffix="" />
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+									</tr>						
+									<tr>
+										<td class="transparent">
+										<lb:label key="dialog.myProfile.msg.hint" suffix="" />
+										</td>
+									</tr>
+								</table>
+								</td>
+							</tr>							
 						</table>
 					</div>
 				</div>
@@ -131,8 +179,8 @@
 						<tr id="Act_Buttons" align="center">
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value=<lb:label key="common.button.save" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:verifyUserDetails(); return false;" class="ui-widget-header">
-								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:onCancelProfile(); return false;" class="ui-widget-header">
+								<input type="button" value=<lb:label key="common.button.save" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:verifyUserDetails(); return false;" class="ui-widget-header">
+								<input type="button" value=<lb:label key="common.button.cancel" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:onCancelProfile(); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>

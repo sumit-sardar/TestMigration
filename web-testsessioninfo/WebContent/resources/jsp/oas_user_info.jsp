@@ -11,6 +11,8 @@
 <input type="hidden" id="loginUserName" name="loginUserName"/>
 <input type="hidden" id="profileRoleName" name="profileRoleName"/>
 <input type="hidden" id="mpDialogID" name = "mpDialogID" value=<lb:label key="dialog.myProfile.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mpOldPwd" name = "mpOldPwd" value=<lb:label key="dialog.myProfile.oldpassword" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mpHintAns" name = "mpHintAns" value=<lb:label key="dialog.myProfile.hintAns" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpFirstNameID" name = "mpFirstNameID" value=<lb:label key="dialog.myProfile.firstName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpLastNameID" name = "mpLastNameID" value=<lb:label key="dialog.myProfile.lastName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpConfirmID" name = "mpConfirmID" value=<lb:label key="myProfile.alert.confirm" prefix="'" suffix="'"/>/>
@@ -52,19 +54,22 @@
 					<td width="110" class="transparent alignRight"><lb:label key="dialog.myProfile.lastName" suffix=":" prefix="* "/></td>
 					<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="profileLastName" name="profileLastName"></td>
 				</tr>			
-
+				<tr class="transparent">
+					<td width="110" class="transparent alignRight"><lb:label key="dialog.myProfile.loginId" suffix=":" prefix=""/></td>
+					<td class="transparent"><div id="profileLoginId"></div></td>
+				</tr>
 				<tr style="display: table-row;" id="message" class="transparent">
 					<td width="110" class="transparent alignRight" style="vertical-align: top;"><lb:label key="dialog.myProfile.org" suffix=":" /></td>
-					<td class="transparent-small" style="padding: 5px 5px 0 0">					
-					<div id="profileNoOrgNode" style="width:200px; display:inline; padding-left: 4px"><font color="gray"><lb:label key="dialog.myProfile.msg.notSelectedOrgNodes" /></font></div>
-					<div id="orgNodesName" style="width: 200px, padding-left: 4px"></div>
+					<td class="transparent-small">					
+					<div id="profileNoOrgNode" style="padding-left: 4px"><font color="gray"><lb:label key="dialog.myProfile.msg.notSelectedOrgNodes" /></font></div>
+					<div id="orgNodesName" style="padding-left: 4px"></div>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		</td>
-		<td>
-			<table class="transparent" width="350">
+		<td style ="vertical-align: top;" width="350">
+			<table class="transparent">
 			<tbody>
 				<tr class="transparent">
 					<td width="110" class="transparent alignRight"><lb:label key="dialog.myProfile.emailId" suffix=":" /></td>
@@ -86,8 +91,12 @@
 					<td nowrap="" width="110" class="transparent alignRight"><lb:label key="dialog.myProfile.extId" suffix=":" /></td>
 					<td class="transparent"><div id="externalId"></div></td>
 				</tr>
-
 				<!--ext_pin1 is added for DEX CR-->
+				<tr class="transparent">
+					<td width="110" class="transparent alignRight"></td>
+					<td class="transparent"></td>
+				</tr>
+				
 			</tbody>
 		</table>
 		</td>

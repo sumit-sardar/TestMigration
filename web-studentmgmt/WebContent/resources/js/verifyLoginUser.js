@@ -34,7 +34,7 @@ function VerifyLoginUserDetail(orgNodeIds){
 	dfaxNumber1 = $("#profileFaxNumber1").val();	
 	dfaxNumber2 = $("#profileFaxNumber2").val();	
 	dfaxNumber3 = $("#profileFaxNumber3").val();
-	  
+	dhintAns = $("#profileHintAns").val();  
 	  
 	if ( dfirstName.length == 0 ) {
 		requiredFieldCount += 1;            
@@ -49,7 +49,35 @@ function VerifyLoginUserDetail(orgNodeIds){
 		requiredFieldCount += 1;            
 		requiredFields = buildErrorString($("#mptZoneID").val(), requiredFieldCount, requiredFields);       
 	}
-						
+	if($("#profileOldPassword").val().length > 0 || $("#profileNewPassword").val().length > 0 || $("#profileConfirmPassword").val().length > 0 ){
+		if( dhintAns.length == 0 ){
+			requiredFieldCount += 1;            
+			requiredFields = buildErrorString($("#mpHintAns").val(), requiredFieldCount, requiredFields); 
+		}
+	}
+	
+	for(var i = 0; i <dbProfileDetails.length ; i++) {
+		if(dbProfileDetails[i].name == "profileHintAns"){
+			if(trim($("#profileHintAns").val()) != trim(dbProfileDetails[i].value)){
+				if($("#profileOldPassword").val().length == 0  && $("#profileNewPassword").val().length == 0 && $("#profileConfirmPassword").val().length == 0){
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString($("#mpOldPwd").val(), requiredFieldCount, requiredFields);
+					break;
+				}
+			}	
+		}
+		
+		if(dbProfileDetails[i].name == "profileHintQues"){
+			if(trim($("#profileHintQues").val()) != trim(dbProfileDetails[i].value)){
+				if($("#profileOldPassword").val().length == 0  && $("#profileNewPassword").val().length == 0 && $("#profileConfirmPassword").val().length == 0){
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString($("#mpOldPwd").val(), requiredFieldCount, requiredFields);
+					break;
+				}
+			}	
+		}
+			 
+	}					
 	if (requiredFieldCount > 0) {
 		if (requiredFieldCount == 1) {
 			setMessageProfile($("#mpRequiredID").val(), requiredFields, "errorMessage", $("#mpSRequiredID").val());
