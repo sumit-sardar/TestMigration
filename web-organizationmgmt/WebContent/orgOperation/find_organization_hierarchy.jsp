@@ -94,12 +94,12 @@
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="org.msg.notSave" />
-		</center>
+		</div>
 	</div>		
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
@@ -109,12 +109,12 @@
 
 <div id="confirmationPopupNavigation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="org.msg.notSave" />
-		</center>
+		</div>
 	</div>		
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
@@ -124,12 +124,12 @@
 
 <div id="deleteConfirmation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="org.msg.delete" />
-		</center>	
+		</div>	
 	</div>
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value="&nbsp;Ok&nbsp;" onclick="javascript:deleteOrganizationDetail(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('deleteConfirmation'); return false;" class="ui-widget-header">
