@@ -167,3 +167,9 @@ function testTicketPopupValues(rowId,listId){
 	setAnchorButtonState('viewStatusButton', false);
 	setAnchorButtonState('printTicketButton', false);
 }
+
+function closeTTPopup() {
+	$("#orgTktTreeDiv").undelegate();
+ 	$("#orgTktTreeDiv").unbind();
+	closePopUp('printTestTicket');
+}

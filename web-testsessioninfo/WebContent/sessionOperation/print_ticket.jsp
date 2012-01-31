@@ -108,7 +108,7 @@
 						<tr id="Act_Buttons" align="center">
 							<td  width="100%">
 								<center>
-								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('printTestTicket'); return false;" class="ui-widget-header">
+								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeTTPopup(); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>
