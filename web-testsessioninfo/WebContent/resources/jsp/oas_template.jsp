@@ -34,6 +34,19 @@ clear: both;
 #proctorOrgNodeHierarchy li {
 	clear: both;
 }
+
+
+#programStatusOrgNode li {
+ 	display:block !important;
+ }
+ 
+#programStatusOrgNode  a {
+ 	display:inline-block !important;
+ }
+ #programStatusOrgNode ul {
+ 	float:left;
+ }
+ 
 </style>
 <![endif]-->
   <head>
