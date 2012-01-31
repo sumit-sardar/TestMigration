@@ -139,24 +139,15 @@
 
 <div id="unSaveConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="stu.msg.assignAccomConfirm" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeUnsaveConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('unSaveConfirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="stu.msg.assignAccomConfirm" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeUnsaveConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('unSaveConfirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>

@@ -115,12 +115,12 @@
 <jsp:include page="/studentOperation/view_student_detail.jsp" />
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="stu.msg.notsave" />
-		</center>
+		</div>
 	</div>		
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
@@ -129,12 +129,12 @@
 </div>
 <div id="confirmationPopupNavigation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="stu.msg.notsave" />
-		</center>
+		</div>
 	</div>
-	<div style="padding:10px 0px;">		
+	<div style="padding:10px;">		
 		<center>
 			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
@@ -146,12 +146,12 @@
 </div>
 <div id="deleteStudentPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="stu.msg.delete" />
-		</center>
+		</div>
 	</div>		
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>	
 			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
@@ -160,20 +160,15 @@
 </div>
 <div id="rootNodePopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table border="0" width="100%">
-		<tr align="center">
-			<td>
-			<div id="exceedMsg" style="padding-top:5px;"></div>
-			<br/>
-			</td>
-		</tr>
-		<tr align="center">
-			<td>
-				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> class="ui-widget-header" onclick="closePopUp('rootNodePopup');">
-			</td>		
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;" id="exceedMsg">
+		</div>
+	</div>
+	<div style="padding:10px;">
+		<center>		
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> class="ui-widget-header" onclick="closePopUp('rootNodePopup');">
+		</center>
+	</div>
 </div>
 
 <div id="searchUserByKeyword"
