@@ -73,7 +73,7 @@
 		   	</tr>
 	    	<tr class="transparent">
 		        <td style="vertical-align:top; width:16%;" align="left">
-			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="programStatus.label.search" /></div>
+			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="homepage.hierarchy.title" /></div>
 			    	<script>populateProgramStatusTree();</script>
 			
 			    	<div id="outertreebcgdiv" class="treeCtrl" style="height:512px !important">
