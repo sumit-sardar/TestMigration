@@ -41,6 +41,7 @@
 
 <!-- start form -->
 <netui:form action="beginOutOfSchoolStudent">
+<input type="hidden" id="menuId" name="menuId" value="OOSLink" />
 <input type="hidden" id="selectedOOSNodeId" />
 
         <jsp:include page="/outOfSchoolOperation/out_of_school_select.jsp" />

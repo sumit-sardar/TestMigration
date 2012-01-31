@@ -32,6 +32,7 @@
 
 
 <netui:form action="organizations_manageStudents">
+<input type="hidden" id="menuId" name="menuId" value="usersLink" />
 <input type="hidden" id="treeOrgNodeId" />
 
 	<table class="simple">

@@ -26,6 +26,7 @@
 
 <!-- start form -->
 <netui:form action="beginAddBulkStudent">
+<input type="hidden" id="menuId" name="menuId" value="bulkAccomLink" />
 <input type="hidden" id="selectedBulkTreeOrgNodeId" />
 
         <jsp:include page="/bulkOperation/assign_bulk_accommodation.jsp" />

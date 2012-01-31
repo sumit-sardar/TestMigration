@@ -24,6 +24,7 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="services_installSoftware">
+<input type="hidden" id="menuId" name="menuId" value="installSoftwareLink" />
 <table width="97%" style="margin:15px auto;" border="0"> 
 	<tr>
 		<td style="padding-left:5px;" colspan="2">

@@ -21,6 +21,7 @@
 <!-- ********************************************************************************************************************* -->
   
 <netui:form action="begin">
+<input type="hidden" id="menuId" name="menuId" value="organizationsLink" />
 
 <table width="100%" border="0">
 <tr>

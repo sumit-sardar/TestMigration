@@ -26,6 +26,7 @@
 
 <!-- start form -->
 <netui:form action="findStudentHierarchy">
+<input type="hidden" id="menuId" name="menuId" value="studentsLink" />
 <input type="hidden" id="treeOrgNodeId" />
 
         <jsp:include page="/studentOperation/find_student_hierarchy.jsp" />

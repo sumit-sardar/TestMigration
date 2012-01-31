@@ -24,6 +24,7 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="manageUpload" enctype="multipart/form-data" method="post">
+<input type="hidden" id="menuId" name="menuId" value="uploadDataLink" />
 
 <input type="hidden" id="downloadFile" name="downloadFile" value="userFile" />
 <input type="hidden" id="selectedId" name="selectedId" value="" />

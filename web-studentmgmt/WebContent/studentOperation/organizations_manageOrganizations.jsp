@@ -29,6 +29,7 @@
 
 
 <netui:form action="organizations_manageOrganizations">
+<input type="hidden" id="menuId" name="menuId" value="organizationsLink" />
 <input type="hidden" id="treeOrgNodeId" />
 
 

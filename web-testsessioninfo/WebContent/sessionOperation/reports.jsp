@@ -22,6 +22,7 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <netui:form action="reports">
+<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
 
 <table width="100%" border="0"> 

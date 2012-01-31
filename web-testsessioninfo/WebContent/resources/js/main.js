@@ -17,14 +17,15 @@ function gotoAction(action)
 
 function gotoMenuAction(action, menuId)
 {	
+	var element = document.getElementById("menuId");
 	if (action != null) {
     	if (menuId != null) {
-    		action = action + "?menuId=" + menuId;
+    		element.value = menuId;
     	}
-    	document.forms[0].action = action;
+    	element.form.action = action;
     }
 	showLoading();
-   	document.forms[0].submit();
+    element.form.submit();   	
 }    
  
 function showLoading()

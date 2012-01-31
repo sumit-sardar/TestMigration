@@ -22,6 +22,7 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="services_downloadTest">
+<input type="hidden" id="menuId" name="menuId" value="downloadTestLink" />
 	<table width="97%" style="margin:15px auto;" border="0"> 
 		<tr>
 			<td style="padding-left:5px;">

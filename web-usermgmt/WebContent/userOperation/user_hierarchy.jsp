@@ -26,6 +26,7 @@
 
 <!-- start form -->
 <netui:form action="findUserHierarchy">
+<input type="hidden" id="menuId" name="menuId" value="usersLink" />
 <input type="hidden" id="treeOrgNodeId" />
 
         <jsp:include page="/userOperation/find_user_hierarchy.jsp" />

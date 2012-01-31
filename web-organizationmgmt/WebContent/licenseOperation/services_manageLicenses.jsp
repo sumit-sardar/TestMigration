@@ -24,6 +24,7 @@
 
 
 <netui:form action="services_manageLicenses">
+<input type="hidden" id="menuId" name="menuId" value="manageLicensesLink" />
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
 		<td>

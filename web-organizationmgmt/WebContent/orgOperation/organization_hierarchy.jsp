@@ -26,6 +26,7 @@
 
 <!-- start form -->
 <netui:form action="findOrganizationHierarchy">
+<input type="hidden" id="menuId" name="menuId" value="organizationsLink" />
 <input type="hidden" id="treeOrgNodeId" />
 
         <jsp:include page="/orgOperation/find_organization_hierarchy.jsp" />

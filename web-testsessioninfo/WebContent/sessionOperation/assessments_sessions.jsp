@@ -23,6 +23,8 @@
 <!-- ********************************************************************************************************************* -->
  
 <netui:form action="assessments_sessions">
+<input type="hidden" id="menuId" name="menuId" value="sessionsLink" />
+
 <jsp:include page="/sessionOperation/oas_message.jsp" />
 <input type="hidden" id="treeOrgNodeId" />
 <input type="hidden" id="stuForOrgNodeId" />

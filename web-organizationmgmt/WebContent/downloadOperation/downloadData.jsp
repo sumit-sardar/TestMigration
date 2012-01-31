@@ -25,6 +25,7 @@
 
 
 <netui:form action="manageDownload">
+<input type="hidden" id="menuId" name="menuId" value="downloadDataLink" />
 
 <input type="hidden" id="downloadFile" name="downloadFile" value="userFile" />
  

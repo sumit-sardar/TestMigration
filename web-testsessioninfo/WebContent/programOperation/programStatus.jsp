@@ -23,6 +23,7 @@
 <!-- ********************************************************************************************************************* -->
 
 <netui:form action="manageProgram">
+<input type="hidden" id="menuId" name="menuId" value="programStatusLink" />
 <input type="hidden" id="selectedPSNodeId" />
 
 	<jsp:include page="/programOperation/programStatus_hierarchy.jsp" />
