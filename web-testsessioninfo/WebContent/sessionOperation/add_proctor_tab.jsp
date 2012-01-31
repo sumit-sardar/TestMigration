@@ -67,23 +67,18 @@
 	
 	
 	<div id="removeProctorConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
+		<div style="padding:10px;text-align:center;">
+			<div style="text-align: left;">
 				<p><lb:label key="homepage.delProctorConfirmation1.message"/></p>
 				<p><lb:label key="homepage.delProctorConfirmation2.message"/></p>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUpForProctor('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
-				</center>
-			</td>
-		</tr>
-		
-	</table>
+			</div>
+		</div>
+		<div style="padding:10px;">		
+			<center>
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUpForProctor('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
+			</center>
+		</div>	
 </div>
 	
 

@@ -134,59 +134,45 @@
 
 
 <div id="closeScheduleSessionPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
-				<p><lb:label key="scheduleTest.cancelConfirmation.message" /></p>
-				<p></p>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeScheduleSessionPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('closeScheduleSessionPopup'); return false;" class="ui-widget-header" style="width:60px">
-				</center>
-			</td>
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="scheduleTest.cancelConfirmation.message" />
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeScheduleSessionPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('closeScheduleSessionPopup'); return false;" class="ui-widget-header" style="width:60px">
+		</center>
+	</div>	
 </div>
 
 <div id="productChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
-				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
-				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeProductConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeProductConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
-				</center>
-			</td>
-		</tr>		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<p><lb:label key="scheduleTest.changeProduct.message" /></p>
+			<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeProductConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeProductConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+		</center>
+	</div>	
 </div>
 
 <div id="subtestChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
-				<p><lb:label key="scheduleTest.changeProduct.message" /></p>
-				<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeSubtestConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
-				</center>
-			</td>
-		</tr>		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<p><lb:label key="scheduleTest.changeProduct.message" /></p>
+			<p><lb:label key="scheduleTest.changeProdRemoveStudent.message" /></p>
+		</div>
+	</div>		
+	<div style="padding:10px;">	
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick=" javascript:closeSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeSubtestConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+		</center>
+	</div>	
 </div>

@@ -59,23 +59,17 @@
 				
 <div id="removeStuConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<p><lb:label key="scheduleTest.delStuConfirmation.message" /></p>
 			<p id= "scheduleRemove" ><lb:label key="scheduleTest.delStuConfirmation2.message" /></p>
 			<p id= "editRemove" ><lb:label key="scheduleTest.delStuConfirmation2.editMessage" /></p>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedStudent(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('removeStuConfirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-		</td>
-		
-		</tr>
-		
-	</table>
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeSelectedStudent(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('removeStuConfirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>

@@ -147,46 +147,30 @@
 
 <div id="profileConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="dialog.myProfile.msg.notsave" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeProfileConfirmation(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeProfilePopup('profileConfirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="dialog.myProfile.msg.notsave" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeProfileConfirmation(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeProfilePopup('profileConfirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 
 <div id="profileEmailWarning"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr>
-			<td colspan="2">
-			<p><lb:label key="dialog.myProfile.msg.emailprovide" /></p>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeProfilePopup('profileEmailWarning'); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeProfileEmailWarning(); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="dialog.myProfile.msg.emailprovide" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeProfilePopup('profileEmailWarning'); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeProfileEmailWarning(); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>

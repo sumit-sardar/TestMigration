@@ -206,26 +206,17 @@
 				
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table>
-		<tr align="center">
-			<td colspan="2">
-			<br/>
-			<p><lb:label key="common.topNodeSelection.message" /></p>
-			<br/>
-			</td>
-		</tr>
-		<tr>
-		<td >
-				<center>
-					<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
-				</center>
-			<br>
-		</td>
-		
-		</tr>
-		
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="common.topNodeSelection.message" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
 </div>
 <div id="searchUserByKeywordList2"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
@@ -291,23 +282,17 @@
 
 <div id="deleteSessionPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<table border="0" width="100%">
-		<tr align="center">
-			<td>
-			<br/>
-			<p>
-				<lb:label key="session.msg.delete" />
-			</p>
-			<br/>
-			</td>
-		</tr>
-		<tr align="center">
-			<td>
-				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="deleteTestSession();" class="ui-widget-header">&nbsp;
-				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteSessionPopup');" class="ui-widget-header">				
-			</td>		
-		</tr>
-	</table>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="session.msg.delete" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="deleteTestSession();" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteSessionPopup');" class="ui-widget-header">				
+		</center>
+	</div>		
 </div>
 
 <div id="nodataSelectedPopUp"
