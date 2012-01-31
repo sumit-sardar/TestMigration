@@ -119,12 +119,12 @@
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="user.msg.notsave" />
-		</center>
+		</div>
 	</div>
-	<div style="padding:10px 0px;">	
+	<div style="padding:10px;">	
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
@@ -134,12 +134,12 @@
 
 <div id="confirmationPopupNavigation"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="user.msg.notsave" />
-		</center>
+		</div>
 	</div>	
-	<div style="padding:10px 0px;">	
+	<div style="padding:10px;">	
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
@@ -150,12 +150,12 @@
 
 <div id="EmailWarning"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="user.msg.emailprovide" />
-		</center>	
+		</div>	
 	</div>
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeEmailWarningPopup(); return false;" class="ui-widget-header">
@@ -183,12 +183,12 @@
 
 <div id="deleteUserPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px 0px;">
-		<center>
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="user.msg.delete" />
-		</center>	
+		</div>	
 	</div>
-	<div style="padding:10px 0px;">
+	<div style="padding:10px;">
 		<center>
 			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="deleteSelectedUser();" class="ui-widget-header">&nbsp;
 			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="closePopUp('deleteUserPopup');" class="ui-widget-header">				
