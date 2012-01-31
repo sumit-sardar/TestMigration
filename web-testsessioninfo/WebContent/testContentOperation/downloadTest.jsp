@@ -41,28 +41,24 @@
 				<table class="simpletable">
 				<netui-data:repeater dataSource="requestScope.fileInfoList">
 				    <netui-data:repeaterHeader>
-				       <tr class="simpletable">
-				                <th class="simpletable alignLeft" nowrap>
-				                    <span>Product Type</span>
-				                </th>
-				                <th class="simpletable alignRight" nowrap>
-				                    <span>Size</span>
-				                </th>
-				        </tr>
+						<tr class="subtestHeader" >
+	     					<th width="80%" style="padding-left:5px;"><lb:label key="downloadtest.header.productype" /></th>
+	     					<th width="20%" style="padding-left:5px;"><lb:label key="downloadtest.header.size" /></th>
+	    				</tr>
 				    </netui-data:repeaterHeader>
 				    <netui-data:repeaterItem>
-				        <tr class="simpletable">
-				            <td class="simpletable">
+						<tr class="simpletable">
+				            <td width="80%" class="simpletable">
 				        		<netui-data:getData resultId="fileName" value="${container.item.fileName}"/>    
 				        		<% String fileName = (String)pageContext.getAttribute("fileName"); %>         		          
 				            	<a href="<%= fileName %>">
 				               		<netui:span value="${container.item.displayName}" defaultValue="&nbsp;"/>
 				            	</a>
 				            </td>
-				            <td class="simpletable alignRight">
-				               <netui:span value="${container.item.size}" defaultValue="&nbsp;"/>
-				            </td>
-				        </tr>
+							<td width="20%" class="simpletable">
+	               				<netui:span value="${container.item.size}" defaultValue="&nbsp;"/>
+							</td>
+						</tr>
 				    </netui-data:repeaterItem>
 				</netui-data:repeater>
 				
