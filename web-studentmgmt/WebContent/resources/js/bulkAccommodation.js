@@ -509,7 +509,7 @@ function populateBulkStudentGrid() {
   function resetBulk (){
   	
   	document.getElementById('displayPopupMessage').style.display = "none";	
-	document.getElementById('displayBulkMessageMain').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";	
 	//document.getElementById('errorImg').style.display = "none";	
   }
   
@@ -588,7 +588,7 @@ function populateBulkStudentGrid() {
 										
 									}									
 									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
-									document.getElementById('displayBulkMessageMain').style.display = "block";
+									document.getElementById('displayMessageMain').style.display = "block";
 									selectedStudentObjArr = {};
 									//call here again to disable button now because selectedStudentObjArr might be having other org's data  
 									determineStudentSel(selectedStudentObjArr, "assignAccommButton"); 
@@ -602,7 +602,7 @@ function populateBulkStudentGrid() {
 											setBulkMessageMain(data.title, data.content, data.type, "");
 											$('#errorIcon').show();
 											$('#infoIcon').hide();							
-											document.getElementById('displayBulkMessageMain').style.display = "block";	
+											document.getElementById('displayMessageMain').style.display = "block";	
 											//document.getElementById('errorImg').style.display = "block";	
 											resetRadioAccommodation();
 											closePopUp('AssignAccommPopup');
@@ -631,7 +631,7 @@ function populateBulkStudentGrid() {
   
   function setBulkMessageMain(title, content, type, message){
 			//$("#titleBulkMain").text(title);
-			$("#contentBulkMain").text(content);
+			$("#contentMain").text(content);
 			//$("#messageBulkMain").text(message);
 		}
 		function setPopupMessage(){

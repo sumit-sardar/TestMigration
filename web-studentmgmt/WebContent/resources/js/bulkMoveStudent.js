@@ -70,7 +70,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
 	    
 	    $("#bulkStudentMoveOrgNode").delegate("a","click", function(e) {
 	    	submittedSuccesfully = "";
-	    	$("#displayBulkMessageMain").hide();
+	    	$("#displayMessageMain").hide();
 	    	determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 			SelectedOrgNodeId = $(this).parent().attr("id");
 			var topNodeSelected = $(this).parent().attr("cid");
@@ -155,7 +155,7 @@ function populateBulkMoveStudentGrid() {
 			width: $("#jqGrid-content-section").width(), 
 			caption:$("#moveStuGrid").val(),
 			onPaging: function() {
-				$("#displayBulkMessageMain").hide();
+				$("#displayMessageMain").hide();
 				var reqestedPage = parseInt($('#studentBulkMoveGrid').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_studentBulkMovePager').text());
 				var minPageSize = 1;
@@ -205,7 +205,7 @@ function populateBulkMoveStudentGrid() {
 					$('#cb_studentBulkMoveGrid').attr('checked', false);
 			},
 			onSelectAll: function (rowIds, status) {
-					$("#displayBulkMessageMain").hide();
+					$("#displayMessageMain").hide();
 					if(!status) {
 						UIBlock();
 						for(var i=0; i<allStudentInGrid.length; i++){
@@ -233,7 +233,7 @@ function populateBulkMoveStudentGrid() {
 					determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
 			},
 			onSelectRow: function (rowid, status) {
-				$("#displayBulkMessageMain").hide();
+				$("#displayMessageMain").hide();
 				var selectedRowId = rowid;
 				var isRowSelected = $("#studentBulkMoveGrid").jqGrid('getGridParam', 'selrow');
 				if(status) {
@@ -304,7 +304,7 @@ function openBulkMovePopup(element) {
 		 var leftpos = ($(window).width() - 550) /2 + 'px';
 		 $("#moveStudentPopup").parent().css("top",toppos);
 		 $("#moveStudentPopup").parent().css("left",leftpos);
-		 $("#displayBulkMessageMain").hide();	
+		 $("#displayMessageMain").hide();	
   }
 
 
@@ -451,8 +451,8 @@ function saveBulkMoveData() {
 									$('#innerID').jstree('close_all', -1);
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
-									$("#displayBulkMessageMain").show();
-									$("#contentBulkMain").text($("#stuBulkMovedID").val());
+									$("#displayMessageMain").show();
+									$("#contentMain").text($("#stuBulkMovedID").val());
 									setAnchorButtonState('bulkMoveButton', true);
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){

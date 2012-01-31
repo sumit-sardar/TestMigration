@@ -39,7 +39,7 @@
 		<table width="100%">
 		   <tr>
 				<td colspan="3" class="buttonsRow">
-					<div id="displayBulkMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
+					<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
 						<table>
 							<tr>
 								<td width="18" valign="middle">
@@ -48,7 +48,7 @@
 									</div>
 								</td>
 								<td class="saveMsgs" valign="middle">
-									<div id="contentBulkMain"></div>
+									<div id="contentMain"></div>
 								</td>
 							</tr>
 						</table>	

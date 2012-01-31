@@ -72,7 +72,7 @@ function createSingleNodeOOSTree(jsondata) {
 	    
 	    $("#outOfSchoolOrgNode").delegate("a","click", function(e) {
 	    	submittedSuccesfully = "";
-	    	$("#displayOOSMessageMain").hide();
+	    	$("#displayMessageMain").hide();
 	    	determineStudentSel(selectedStudentForOOSIds, 'OOSButton');
 			SelectedOrgNodeId = $(this).parent().attr("id");
 			var topNodeSelected = $(this).parent().attr("cid");
@@ -143,7 +143,7 @@ function populateOOSStudentGrid() {
 			width: $("#jqGrid-content-section").width(), 
 			caption:$("#moveStuGrid").val(),
 			onPaging: function() {
-				$("#displayOOSMessageMain").hide();
+				$("#displayMessageMain").hide();
 				var reqestedPage = parseInt($('#outOfSchoolGrid').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_outOfSchoolPager').text());
 				var minPageSize = 1;
@@ -193,7 +193,7 @@ function populateOOSStudentGrid() {
 					$('#cb_outOfSchoolGrid').attr('checked', false);
 			},
 			onSelectAll: function (rowIds, status) {
-					$("#displayOOSMessageMain").hide();
+					$("#displayMessageMain").hide();
 					if(!status) {
 						UIBlock();
 						for(var i=0; i<allStudentInGrid.length; i++){
@@ -221,7 +221,7 @@ function populateOOSStudentGrid() {
 					determineStudentSel(selectedStudentForOOSIds, 'OOSButton');
 			},
 			onSelectRow: function (rowid, status) {
-				$("#displayOOSMessageMain").hide();
+				$("#displayMessageMain").hide();
 				var selectedRowId = rowid;
 				var isRowSelected = $("#outOfSchoolGrid").jqGrid('getGridParam', 'selrow');
 				if(status) {
@@ -308,16 +308,16 @@ function outOfSchoolOperation(element) {
 										selectedStudentForOOSIds = [];
 										oosStuCounterPage = 0;
 										gridReloadForOOSStudent();
-										$("#displayOOSMessageMain").show();
+										$("#displayMessageMain").show();
 										$("#infoIcon").show();
 										$("#errorIcon").hide();
-										$("#contentOOSMain").text($("#oosToggleSuccess").val());
+										$("#contentMain").text($("#oosToggleSuccess").val());
 										setAnchorButtonState('OOSButton', true);
 									} else {
-										$("#displayOOSMessageMain").show();
+										$("#displayMessageMain").show();
 										$("#errorIcon").show();
 										$("#infoIcon").hide();
-										$("#contentOOSMain").text($("#oosFailed").val());
+										$("#contentMain").text($("#oosFailed").val());
 									}
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
