@@ -31,7 +31,7 @@
 		</tr>
 		<tr>
 		<td class="buttonsRow">
-			<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
+			<div id="showSaveTestMessage" class="errMsgs" style="display: none; width: 50%; float: left;">
 				<table>
 					<tr>
 						<td width="18" valign="middle">
@@ -43,7 +43,7 @@
 							</div>
 						</td>
 						<td class="saveMsgs" valign="middle">
-							<div id="contentMain"></div>
+							<div id="saveTestTitle"></div>
 						</td>
 					</tr>
 				</table>				
