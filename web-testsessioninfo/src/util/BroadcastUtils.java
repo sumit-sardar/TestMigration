@@ -48,8 +48,8 @@ public class BroadcastUtils
 		
         if (broadcastMessages.size() > 0)
         {
-            html += "<tr class='simpletable'>";
-            html += "<th class='simpletable alignLeft'>Message</th><th class='simpletable alignLeft'>Date</th></tr>";
+            html += "<tr class='subtestHeader'>";
+            html += "<th align='left'>&nbsp;&nbsp;Message</th><th >Date</th></tr>";
             html += "</tr>";
             messages = "";
             for (int i=0; i<broadcastMessages.size(); i++) {
