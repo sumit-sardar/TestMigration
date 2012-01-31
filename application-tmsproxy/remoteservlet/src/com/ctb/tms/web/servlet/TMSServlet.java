@@ -61,6 +61,7 @@ import com.ctb.tms.nosql.OASNoSQLSink;
 import com.ctb.tms.nosql.OASNoSQLSource;
 import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
+import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.rdb.oracle.OASOracleSource;
 import com.ctb.tms.util.Constants;
@@ -717,6 +718,50 @@ public class TMSServlet extends HttpServlet {
 		        		}
 		        	}
 	    		}
+	    	}
+	    	
+	    	if(("IP".equals(manifest.getRosterCompletionStatus()) || "IN".equals(manifest.getRosterCompletionStatus())) && netirt.size() == 0 && (manifest.getRosterLastMseq() % 1000000) >= 4) {
+	    		// we should have responses, but none are in cache - must fetch from DB
+	    		logger.warn("Retrieving restart responses from DB for roster " + testRosterId);
+	    		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
+	    		Connection conn = null;
+	    		try {
+		    		OASRDBSource source = RDBStorageFactory.getOASSource();
+		    		conn = source.getOASConnection();
+					RosterData dbrd = source.getRosterData(conn, key);
+					ConsolidatedRestartData[] dbcrda = dbrd.getLoginDocument().getTmssvcResponse().getLoginResponse().getConsolidatedRestartDataArray();
+					if(dbcrda != null && dbcrda.length > 0) {
+			    		for(int f=0;f<dbcrda.length;f++) {
+				        	restartData = loginResponse.getConsolidatedRestartDataArray(f);
+				        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+				        	if (responsesInRD) {
+				        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
+				        		for(int m=0;m<rdtsda.length;m++) {
+				        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
+				            		for(int j=0;j<rdirt.length;j++) {
+				            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
+				            			//oasSink.putItemResponse(rdirt[j], true);
+				            			netirt.add(rdirt[j]);
+				                    }
+				        		}
+				        	}
+			    		}
+			    	}
+	    		} catch (Exception e) {
+					logger.error("Error retrieving restart responses from DB: " + e.getMessage());
+					response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+		            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+		            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
+		            return response.xmlText();
+				} finally {
+					try {
+						if(conn != null) {
+							conn.close();
+						}
+					}catch (Exception e) {
+						// do nothing
+					}
+				}
 	    	}
 	    	
 	    	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {

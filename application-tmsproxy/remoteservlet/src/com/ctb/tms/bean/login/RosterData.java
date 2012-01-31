@@ -242,7 +242,11 @@ public class RosterData extends ReplicationObject {
 		manifestData.setTotalTime(totalDur);
 		Ast ast = tsd.addNewAst();
 		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();
-		ast.setRemSec((float) remSec);
+		if(remSec > 0) {
+			ast.setRemSec((float) remSec);
+		} else {
+			ast.setRemSec((float) 0);
+		}
 		ast.setCurEid(String.valueOf(curEid));
 	}
 	

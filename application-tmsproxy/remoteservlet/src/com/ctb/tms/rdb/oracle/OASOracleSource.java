@@ -480,9 +480,9 @@ public class OASOracleSource implements OASRDBSource
 	        	ManifestData data = manifestData[i];
 	        	if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
 	        		continue;
-	        	} else if (timed && data.getScoDurationMinutes() > 0 && (data.getTotalTime() > (data.getScoDurationMinutes() * 60))) {
+	        	} /*else if (timed && data.getScoDurationMinutes() > 0 && (data.getTotalTime() > (data.getScoDurationMinutes() * 60))) {
 	        		continue;
-	        	} else{
+	        	} */ else{
 	        		a.add(data);
 	        	}
 	        }
