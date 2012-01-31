@@ -36,13 +36,34 @@
 			<p style="color:#000"><lb:label key="services.import.msg" /></p> 		
 		</td>
 	</tr>
+	<tr>
+		<td class="buttonsRow">
+			<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
+				<table>
+					<tr>
+						<td width="18" valign="middle">
+							<div id="errorIcon" style="display:none;">
+		                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+							</div>
+							<div id="infoIcon" style="display:none;">
+								<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+							</div>
+						</td>
+						<td class="saveMsgs" valign="middle">
+							<div id="contentMain"></div>
+						</td>
+					</tr>
+				</table>				
+			</div>
+		</td>
+	</tr>
 	<tr> 
 		<td style="padding-left:6px;">
 					<div id="accordion" style="width:85%; position:relative;">							
 						<div style="position:relative;">
 						  	<h3><a id="templateHeader" href="#"><lb:label key="services.import.templates" /></a></h3>
 							<div id="templates" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;" >							
-<table> 
+	<table> 
 	<tr>
 		<td style="padding-left:5px;">
 	  		<span class="headerTag"><lb:label key="services.export.downloadtemplate" /></span><br/>
