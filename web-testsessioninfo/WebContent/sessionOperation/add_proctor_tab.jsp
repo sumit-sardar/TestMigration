@@ -36,7 +36,7 @@
 </div>
 
 	
-	<table width="928px" style="margin-bottom: 5px;">
+	<table width="920px" style="margin-bottom: 5px;">
 		<tr>
 			<td>
 				<div style="float:left;"> 

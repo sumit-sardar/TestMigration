@@ -85,10 +85,10 @@
 			<div id="addStudentId">
 				<h3><a href="#" ><lb:label key="session.accordion.addStudent" /></a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-x: auto !important; overflow-y: scroll !important;">
-					<div id="Student_Tab" style ="display:block;">
+					<div id="Student_Tab" style ="display:block;width:98%;">
 						<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 					</div>
-					<div id="Select_Student_Tab" style ="display:none;">
+					<div id="Select_Student_Tab" style ="display:none;width:98%;">
 						<jsp:include page="/sessionOperation/select_student.jsp" />	
 					</div>
 				</div>
@@ -96,10 +96,10 @@
 			<div id="addProctorId">
 				<h3><a href="#" ><lb:label key="session.accordion.addProctor" /></a></h3>
 				<div id="Add_Proctor" style="background-color: #FFFFFF; overflow-x: auto !important; overflow-y: scroll !important;">
-					<div id="Proctor_Tab" style ="display:block;">
+					<div id="Proctor_Tab" style ="display:block;width:98%;">
 						<jsp:include page="/sessionOperation/add_proctor_tab.jsp" />
 					</div>
-					<div id="Select_Proctor_Tab" style ="display:none;">
+					<div id="Select_Proctor_Tab" style ="display:none;width:98%;">
 						<jsp:include page="/sessionOperation/select_proctor.jsp" />	
 					</div>
 				</div>

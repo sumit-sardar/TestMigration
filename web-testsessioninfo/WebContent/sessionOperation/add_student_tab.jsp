@@ -41,7 +41,7 @@
 	<table>
 			<tr>
 				<td>
-					<div style="clear:both;float:left;width:925px;padding: 0 5px 5px 0;">
+					<div style="clear:both;float:left;width:915px;padding: 0 5px 5px 0;">
 						<div id="addStudent" style="float:right;padding-left:5px;">
 							<a href="#" id="addStudentButton" onclick="showSelectStudent();" class="rounded {transparent} button"><lb:label key="session.accordion.addStudent" /></a>
 						</div> 
