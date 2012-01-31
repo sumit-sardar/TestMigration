@@ -272,7 +272,7 @@ function gridReloadForOOSStudent(){
 		UIBlock();
 		var postDataObject = {};
  		postDataObject.q = 2;
- 		postDataObject.stuForOrgNodeId = $("#selectedBulkTreeOrgNodeId").val();
+ 		postDataObject.stuForOrgNodeId = $("#outOfSchoolOrgNode").val();
        jQuery("#outOfSchoolGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
  	   var sortArrow = jQuery("#outOfSchoolGrid");
        jQuery("#outOfSchoolGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
