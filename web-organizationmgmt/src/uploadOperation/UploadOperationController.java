@@ -413,13 +413,13 @@ public class UploadOperationController extends PageFlowController {
         DataFileAuditData dataFileAuditData = null;
         SortParams sort = FilterSortPageUtils.buildFileSortParams(
         		FilterSortPageUtils.FILE_DATE_DEFAULT_SORT_COLUMN, 
-        		FilterSortPageUtils.ASCENDING);
+        		FilterSortPageUtils.DESCENDING);
        
         try {
         	validateUser();
         	
             dataFileAuditData = this.uploadDownloadManagement.getUploadHistory(
-                                        this.userName, null, null);   
+                                        this.userName, null, sort);   
                                            
             
         } catch(CTBBusinessException be){        

@@ -74,7 +74,7 @@ function populateUploadListGrid() {
 		 datatype: "json",         
           colNames:['Upload Date', 'File Name', 'Records Uploaded', 'Records Failed', 'Status'],
 		   	colModel:[
-		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'date', sortable:true},
+		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'datetime', sortable:true},
 		   		{name:'uploadFileName',index:'uploadFileName', width:420, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'uploadFileRecordCount',index:'uploadFileRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'failedRecordCount',index:'failedRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
@@ -88,7 +88,7 @@ function populateUploadListGrid() {
 			height: 150,			
 			caption: "Files Uploaded",
 			sortname: 'createdDateTime', 
-			sortorder: "asc",
+			sortorder: "desc",
 			pager: '#pager3', 
 			onPaging: function() {
 				$('#del_list3').addClass('ui-state-disabled');					
