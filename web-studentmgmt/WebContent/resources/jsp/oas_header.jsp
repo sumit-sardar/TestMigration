@@ -108,7 +108,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="vertical-align: top; width:58%">
+								<td style="vertical-align: top; width:57%">
 								<table>
 									<tr class="transparent">
 										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.oldpassword"
@@ -130,7 +130,7 @@
 									</tr>
 									<tr class="transparent">
 										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.hintQues" suffix=":" /></td>
-										<td><select style="width: 300px; font-family: sans-serif;" id="profileHintQues"
+										<td><select style="width: 290px; font-family: sans-serif;" id="profileHintQues"
 											name="profileHintQues"></select></td>
 									</tr>
 									<tr class="transparent">
@@ -140,27 +140,36 @@
 									</tr>
 								</table>
 								</td>
-								<td width="5"></td>
+								<td width="2"></td>
 								<td style ="vertical-align: top;" >
 								<table>
 									<tr>
-										<td class="transparent">
+										<td class="profileBullet">
+										&raquo;
+										</td>
+										<td class="profileTransparent">
 										<lb:label key="dialog.myProfile.msg.oldPassword" suffix="" />
 										</td>
 									</tr>
 									<tr>
-										<td>&nbsp;</td>
+										<td colspan="2" class="profileTransparent">&nbsp;</td>
 									</tr>						
 									<tr>
-										<td class="transparent">
+										<td class="profileBullet">										
+										&raquo;
+										</td>
+										<td class="profileTransparent">
 										<lb:label key="dialog.myProfile.msg.confPassword" suffix="" />
 										</td>
 									</tr>
 									<tr>
-										<td>&nbsp;</td>
+										<td colspan="2" class="profileTransparent">&nbsp;</td>
 									</tr>						
 									<tr>
-										<td class="transparent">
+										<td class="profileBullet">
+										&raquo;
+										</td>
+										<td class="profileTransparent">										
 										<lb:label key="dialog.myProfile.msg.hint" suffix="" />
 										</td>
 									</tr>

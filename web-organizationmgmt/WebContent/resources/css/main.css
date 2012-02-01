@@ -498,4 +498,23 @@ th.ui-th-column div{
     font-weight: bold;
     height: 23px; 
 }
+
+.profileBullet{
+	width:5px;
+	vertical-align: top;
+	color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    
+}
+
+.profileTransparent {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 2px;
+    vertical-align: top;
+}
     
