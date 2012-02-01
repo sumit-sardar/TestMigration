@@ -287,7 +287,7 @@
 						<tbody>
 						 <tr class="transparent">
 							 <td style ="vertical-align: top;">
-							 	<table>
+							 	<table width="350">
 							 		<tbody>
 							 			<tr class="transparent">
 											<td nowrap="" width="110" class="transparent alignRight"><lb:label key="user.addressLine1" suffix=":"/></td>
@@ -314,7 +314,7 @@
 							 </td>
 							 
 							  <td style ="vertical-align: top;">
-							  	<table>
+							  	<table width="350">
 							  	<tbody>
 							  		<tr class="transparent">
 										<td width="110" class="transparent alignRight"><lb:label key="user.primaryphone" suffix=":"/></td>
