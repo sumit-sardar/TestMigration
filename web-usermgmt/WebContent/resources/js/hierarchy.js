@@ -599,6 +599,7 @@ function populateGrid() {
 			});  
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
+				setAnchorButtonState('changePWButton', true);
 			});
 		setupButtonPerUserPermission();	 
 }
@@ -2325,6 +2326,7 @@ function openTreeNodes(orgNodeId) {
 									$('#infoIcon').show();
 									$("#displayMessageMain").show();
 									jQuery("#list2").delRowData(selectedUserId);
+									setAnchorButtonState('changePWButton', true);
 								}
 								else{
 									$("#contentMain").text(data.message);
