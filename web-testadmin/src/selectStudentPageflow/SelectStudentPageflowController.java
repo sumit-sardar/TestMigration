@@ -1537,21 +1537,30 @@ public class SelectStudentPageflowController extends PageFlowController
     private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId) {
     	
         OrgNodeLicenseInfo onli = null;    
-        Integer productId = this.customerLicenses[0].getProductId();
-        String subtestModel = this.customerLicenses[0].getSubtestModel();
-        
-        try {
-        	
-            onli = this.license.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
-										                    orgNodeId, 
-										                    productId, 
-										                    subtestModel);
-										                    
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
+        if (this.customerLicenses.length > 0) {
+	        Integer productId = this.customerLicenses[0].getProductId();
+	        String subtestModel = this.customerLicenses[0].getSubtestModel();
+	        
+	        try {
+	        	
+	            onli = this.license.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+											                    orgNodeId, 
+											                    productId, 
+											                    subtestModel);
+											                    
+	        }    
+	        catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	        }
         }
-        
+        else {
+            onli = new OrgNodeLicenseInfo();    
+            onli.setOrgNodeId(orgNodeId);
+            onli.setLicPurchased(new Integer(0));
+            onli.setLicReserved(new Integer(0));
+            onli.setLicUsed(new Integer(0));
+            onli.setOrgNodeLevel(new Integer(0));
+        }
         return onli;
     }
     
@@ -1650,7 +1659,12 @@ public class SelectStudentPageflowController extends PageFlowController
         }
         
         form.setLicenseAvailable(availableLicense);
-        form.setLicenseModel(this.customerLicenses[0].getSubtestModel());
+        if (this.customerLicenses.length > 0) {        
+        	form.setLicenseModel(this.customerLicenses[0].getSubtestModel());
+        }
+        else {
+        	form.setLicenseModel("Session");        
+        }
         form.setLicensePercentage(availableLicensePercent);
          
     }
@@ -1710,8 +1724,11 @@ public class SelectStudentPageflowController extends PageFlowController
     	List existingStudents = getExistingStudentsInSessionForOrgNode(orgNodeId);
     	
     	int licensePerSubtest = 1;
-        String subtestModel = this.customerLicenses[0].getSubtestModel();
-    	
+        String subtestModel = "F";
+        if (this.customerLicenses.length > 0) {
+        	this.customerLicenses[0].getSubtestModel();
+        }
+        
     	if (subtestModel.equals("T")) {
             licensePerSubtest = getNumberOfSubtests();
     	}
