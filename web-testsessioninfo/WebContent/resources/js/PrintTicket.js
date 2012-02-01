@@ -1,4 +1,6 @@
 var orgTktTreeHierarchy;
+var selectedListId;
+var selectedRowInListId;
 
 function printTTicket(element){
 	if (isButtonDisabled(element))
@@ -166,10 +168,14 @@ function testTicketPopupValues(rowId,listId){
 	$("#scheduleUserOrgNode").val(selectedRowData.creatorOrgNodeId); 				
 	setAnchorButtonState('viewStatusButton', false);
 	setAnchorButtonState('printTicketButton', false);
+	selectedListId = listId;
+	selectedRowInListId = rowId;
 }
 
 function closeTTPopup() {
 	$("#orgTktTreeDiv").undelegate();
  	$("#orgTktTreeDiv").unbind();
+ 	var selectedRowData = $("#"+selectedListId).getRowData(selectedRowInListId);				
+	$("#scheduleUserOrgNode").val(selectedRowData.creatorOrgNodeId); 
 	closePopUp('printTestTicket');
 }
