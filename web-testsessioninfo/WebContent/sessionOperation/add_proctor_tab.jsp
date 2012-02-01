@@ -11,8 +11,8 @@
 			<td>
 				<div id="proctorInformationText">
 					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">
-						<lb:label key="scheduleTest.addProc.message1"/>
-						<lb:label key="scheduleTest.addProc.message2"/>
+						<span id = "addProcMsg1"><lb:label key="scheduleTest.addProc.message1"/></span>
+						<span id = "addProcMsg2"><lb:label key="scheduleTest.addProc.message2"/></span>
 					</span>
 				</div>
 			</td>

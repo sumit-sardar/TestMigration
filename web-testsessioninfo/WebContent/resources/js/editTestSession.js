@@ -395,6 +395,13 @@
     
     function populateProctorGrid(wizard,index){
         isPopUp = false;
+        if(isProctor) {
+        	$("#addProctorButton").hide();
+        	$("#addProcMsg2").hide();
+        } else {
+        	$("#addProctorButton").show();
+        	$("#addProcMsg2").show();
+        }
 	    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
 	    		//processProctorAccordion();
 	    		isPopUp = true;
