@@ -1232,6 +1232,8 @@ function fetchNextData(popupname){
 		      			//else
 		      				//viewUserDetail(nextOrgId);
 		      			disablenextprev(indexOfId+1,str.length-1);
+		      			$('#innerID').jstree('close_all');
+		      			checkedListObject = {};
 		      			populateTreeSelect();
 		      			$("#list2").setSelection(nextOrgId, true); 
 	      		}
@@ -1271,6 +1273,8 @@ function fetchPreviousData(popupname){
        		//else
        			//viewUserDetail(preOrgId);
        		disablenextprev(indexOfId-1,str.length-1);
+       		$('#innerID').jstree('close_all');
+		    checkedListObject = {};
        		populateTreeSelect();
        		$("#list2").setSelection(preOrgId, true); 
     }	

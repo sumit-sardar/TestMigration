@@ -1720,6 +1720,8 @@ function fetchNextData(popupname){
 		      			//else
 		      				//viewUserDetail(nextUserId);
 		      			disablenextprev(indexOfId+1,str.length-1);
+		      			$('#innerID').jstree('close_all');
+		      			checkedListObject = {};
 		      			populateTreeSelect();
 		      			$("#list2").setSelection(nextUserId, true); 
 	      		}
@@ -1754,6 +1756,8 @@ function fetchPreviousData(popupname){
        		//else
        			//viewUserDetail(preUserId);
        		disablenextprev(indexOfId-1,str.length-1);
+   			$('#innerID').jstree('close_all');
+   		    checkedListObject = {};
        		populateTreeSelect();
        		$("#list2").setSelection(preUserId, true); 
     }	
