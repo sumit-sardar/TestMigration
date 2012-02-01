@@ -300,6 +300,8 @@ function populateSessionListGrid(homePageLoad) {
 			});  
 			jQuery("#refresh_list2").bind("click",function(){
 				$("#searchUserByKeywordInputList2").val('');
+				setAnchorButtonState('viewStatusButton', true);
+				setAnchorButtonState('printTicketButton', true);
 			});
 }
 
@@ -557,6 +559,8 @@ function populateCompletedSessionListGrid() {
 			
 			jQuery("#refresh_list3").bind("click",function(){
 				$("#searchUserByKeywordInputList3").val('');
+				setAnchorButtonState('viewStatusButton', true);
+				setAnchorButtonState('printTicketButton', true);
 			});
 	 setupButtonPerUserPermission();
 	 
