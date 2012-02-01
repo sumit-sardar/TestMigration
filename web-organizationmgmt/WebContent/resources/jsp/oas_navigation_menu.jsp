@@ -37,10 +37,14 @@
         						</ctb:auth>
 							</c:if>
 							<c:if test="${sessionScope.isBulkMoveConfigured}">
-        						<li><a href="#"  id="bulkMoveLink" onclick="gotoMenuAction('organizations.do', 'bulkMoveLink');"><lb:label key="org.menu.moveStudents" /></a></li>
+								<ctb:auth roles="Administrator, Administrative Coordinator">
+        							<li><a href="#"  id="bulkMoveLink" onclick="gotoMenuAction('organizations.do', 'bulkMoveLink');"><lb:label key="org.menu.moveStudents" /></a></li>
+        						</ctb:auth>
         					</c:if>
         					<c:if test="${sessionScope.isOOSConfigured}">
-        						<li><a href="#"  id="OOSLink" onclick="gotoMenuAction('organizations.do', 'OOSLink');"><lb:label key="org.menu.outOfSchools" /></a></li>
+        						<ctb:auth roles="Administrator, Administrative Coordinator">
+        							<li><a href="#"  id="OOSLink" onclick="gotoMenuAction('organizations.do', 'OOSLink');"><lb:label key="org.menu.outOfSchools" /></a></li>
+        						</ctb:auth>
         					</c:if>
         				</ul>
         			 </li>
