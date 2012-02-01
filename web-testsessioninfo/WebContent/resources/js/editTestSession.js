@@ -555,10 +555,12 @@
   			$('#'+allRows[i]).addClass("ui-state-disabled");
   		}
   		$($("#testPager input")[0]).attr("disabled",true);
-  		if($("#subtestGrid") != undefined)
-  			$("#subtestGrid").addClass("ui-state-disabled");
-  		if($("#noSubtest") != undefined)
-  			$("#noSubtest").addClass("ui-state-disabled");
+  		
+  		//Not needed
+  		//if($("#subtestGrid") != undefined)
+  		//	$("#subtestGrid").addClass("ui-state-disabled");
+  		//if($("#noSubtest") != undefined)
+  		//	$("#noSubtest").addClass("ui-state-disabled");
   	}
   	
   	function disableTestDetails() {
@@ -614,10 +616,12 @@
   			$('#'+allRows[i]).removeClass("ui-state-disabled");
   		}
   		$($("#testPager input")[0]).removeAttr("disabled");
-  		if($("#subtestGrid") != undefined)
-  			$("#subtestGrid").removeClass("ui-state-disabled");
-  		if($("#noSubtest") != undefined)
-  			$("#noSubtest").removeClass("ui-state-disabled");
+  		
+  		//Not needed
+  		//if($("#subtestGrid") != undefined)
+  		//	$("#subtestGrid").removeClass("ui-state-disabled");
+  		//if($("#noSubtest") != undefined)
+  		//	$("#noSubtest").removeClass("ui-state-disabled");
   		$("#del_list6").removeClass('ui-state-disabled');
    	   	$("#addStudent").show();	
   		$("#del_listProctor").removeClass('ui-state-disabled');	
