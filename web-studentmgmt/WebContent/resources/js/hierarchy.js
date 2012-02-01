@@ -18,7 +18,6 @@ var SelectedOrgNodeId;
 var SelectedOrgNode;
 var SelectedOrgNodes = [];
 var optionList = [];
-var studentList;
 var isAddStudent = true;
 var stuDemographic ;
 var stuAccommodation;
@@ -615,7 +614,7 @@ function updateOrganization(element, isChecked){
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
-		   	studentList = JSON.stringify(obj.studentProfileInformation);
+		   //	studentList = obj.studentProfileInformation;
 		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	
@@ -803,7 +802,7 @@ function updateOrganization(element, isChecked){
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
-		   	studentList = JSON.stringify(obj.studentProfileInformation);
+		   	//studentList = JSON.stringify(obj.studentProfileInformation);
 		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	 
@@ -1423,7 +1422,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		 "&isAddStudent=" + isAddStudent +"&createBy="+createBy ;
 	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-		createBy = getDataFromJson(selectedStudentId);
+		createBy = getCreatedBy();
 		if(createBy == null || createBy == 'undefined') {
 			createBy = $("#stuCreatedBy").val();
 		}
@@ -1678,11 +1677,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		rowid = SelectedStudentId;
 	}
 	
-    var createBy =  getDataFromJson(rowid);
-    if(createBy == null || createBy == '') {
-		createBy = $("#stuCreatedBy").val();
-	}
-
+    var createBy =  getCreatedBy();
  	var postDataObject = {};
  	postDataObject.studentID = rowid;
  	postDataObject.createBy = createBy;
@@ -1823,7 +1818,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	} else {
 		rowid = SelectedStudentId;
 	}
-	var createBy =  getDataFromJson(rowid);
+	var createBy =  getCreatedBy();
 	
 	var postDataObject = {};
  	postDataObject.studentID = rowid;
@@ -1971,6 +1966,8 @@ function fillselectedOrgNode( elementId, orgList) {
 		      			else
 		      				viewStuDetail(nextStudentId);
 		      			disablenextprev(indexOfId+1,str.length-1);
+		      			$('#innerID').jstree('close_all');
+		      			checkedListObject = {};
 		      			populateTreeSelect();
 		      			$("#list2").setSelection(nextStudentId, true); 
 	      		}
@@ -2004,6 +2001,8 @@ function fillselectedOrgNode( elementId, orgList) {
 		       		else
 		       			viewStuDetail(preStudentId);
 		       		disablenextprev(indexOfId-1,str.length-1);
+		       		$('#innerID').jstree('close_all');
+		      		checkedListObject = {};
 		       		populateTreeSelect();
 		       		$("#list2").setSelection(preStudentId, true); 
 		    }	
@@ -2049,30 +2048,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		
 		
 		
-		function getDataFromJson(id){
-			var str = studentList;
-			var createBy = "";
-			var indexOfId = str.indexOf(id);
-			var indexOfCreatedBy = -1;
-			var indexOfComma = -1;
-			if(indexOfId > 0){
-				str = str.substring(parseInt(indexOfId), str.length);
-				//createBy
-				indexOfCreatedBy = str.indexOf("createBy");
-				if(indexOfCreatedBy == -1) {//if no createBy, return ""
-					return createBy;
-				}
-				indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
-				indexOfCreatedBy += 10;
-				createBy = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
-				createBy = trim(createBy);
-			}else{
-				
-			}
-			return createBy;
+	function getCreatedBy(){			
+		return $("#stuCreatedBy").val();
 	}
-	
-	
 	
 	function setViewStudentDetail(SelectedStudentId) {
 	
