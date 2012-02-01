@@ -96,7 +96,7 @@ function createSingleNodePSTree(jsondata) {
 	    	//selectedOrgNodeNamePS = this.childNodes[1].textContent; 
 	    	selectedOrgNodeNamePS = this.lastChild.data; 
 	    	
-	    	$("#displayMessageMain").hide();
+	    	$("#showSaveTestMessage").hide();
 	    	$("#subtestStatusInfo").hide();
 	    	$("#testStatusInfo").hide();
 	    	$("#programInfo").hide();
