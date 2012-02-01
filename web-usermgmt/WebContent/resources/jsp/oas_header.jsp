@@ -64,7 +64,7 @@
 <!-- My profile Dialog -->
 <div id="myProfileDialog"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="displayMessageMyProfile" class="roundedMessage" style="width:99.5%; margin-bottom:2px;">
+	<div id="displayMessageMyProfile" class="roundedMessage" style="width:802px;margin-bottom:2px;">
 			<table>
 				<tr>
 					<td rowspan="3" valign="top">
@@ -108,7 +108,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="vertical-align: top; width:58%">
+								<td style="vertical-align: top; width:57%">
 								<table>
 									<tr class="transparent">
 										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.oldpassword"
@@ -130,7 +130,7 @@
 									</tr>
 									<tr class="transparent">
 										<td class="transparent alignRight" style="padding: 10px"><lb:label key="dialog.myProfile.hintQues" suffix=":" /></td>
-										<td><select style="width: 300px; font-family: sans-serif;" id="profileHintQues"
+										<td><select style="width: 285px; font-family: sans-serif;" id="profileHintQues"
 											name="profileHintQues"></select></td>
 									</tr>
 									<tr class="transparent">

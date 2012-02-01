@@ -131,7 +131,7 @@ function setUserDetails(data){
 	$("#loginUserName").val(data.userName);
 	$("#profileFirstName").val(data.firstName);
 	$("#profileMiddleName").val(data.middleName);
-	$("#profileLoginId").text(data.loginId);
+	$("#profileLastName").val(data.lastName);
 	$("#profileLoginId").text(data.loginId);
 	
 	getOrgNodes("orgNodesName", data.organizationNodes);
