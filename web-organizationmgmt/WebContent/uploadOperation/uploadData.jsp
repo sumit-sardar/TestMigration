@@ -182,9 +182,9 @@
 </p>
 
 <table class="simpleSmall" width="40%">
-    <tr class="simple">
-        <td class="simpleHeader">Error Description</td>
-        <td class="simpleHeader">Error Color</td> 
+    <tr class="tableHeader">
+        <th style="padding-left:6px;">Error Description</td>
+        <th style="padding-left:6px;">Error Color</td> 
     </tr>
     <tr class="simple">
         <td class="simple">Less characters than allowed</td>

@@ -323,39 +323,6 @@ public class UploadOperationController extends PageFlowController {
 		DataFileAuditData dataFileAuditData = findFile(); 
         this.fileList = UploadHistoryUtils.buildAuditFileList(dataFileAuditData);
 		
-		
-		/*
-		this.fileList = new ArrayList();
-		
-		AuditFileHistory afh2 = new AuditFileHistory();
-		afh2.setDataFileAuditId(new Integer(100));
-		afh2.setCreatedDateTime("09/01/2009 10:45:17");
-		afh2.setUploadFileName("UserTemplate-2.xls");
-		afh2.setUploadFileRecordCount("5");
-		afh2.setFailedRecordCount("4");
-		afh2.setStatus("IN");
-		this.fileList.add(afh2);
-
-		afh2 = new AuditFileHistory();
-		afh2.setDataFileAuditId(new Integer(200));
-		afh2.setCreatedDateTime("09/01/2010 10:45:17");
-		afh2.setUploadFileName("UserTemplate-3.xls");
-		afh2.setUploadFileRecordCount("6");
-		afh2.setFailedRecordCount("<font color='red'>5</font>");
-		afh2.setStatus("FL");
-		this.fileList.add(afh2);
-
-		afh2 = new AuditFileHistory();
-		afh2.setDataFileAuditId(new Integer(300));
-		afh2.setCreatedDateTime("09/01/2011 10:45:17");
-		afh2.setUploadFileName("UserTemplate-4.xls");
-		afh2.setUploadFileRecordCount("7");
-		afh2.setFailedRecordCount("6");
-		afh2.setStatus("SC");
-		this.fileList.add(afh2);
-        */
-        
-        
 		String[] atts = new String[5];
 		
         for (int i=0 ; i<this.fileList.size() ; i++) {
@@ -376,7 +343,6 @@ public class UploadOperationController extends PageFlowController {
     		row.setCell(atts);
 
     		rows.add(row);
-    		
         }
         
 		UploadDownload base = new UploadDownload();
