@@ -156,10 +156,10 @@
 </div>
 <div id="nodataSelectedPopUp"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div style="padding:10px;">
-		<center>
+	<div style="padding-top:10px;text-align:center;">
+		<div style="text-align: left;">
 			<lb:label key="orgList.no.data.selected"/>
-		</center>	
+		</div>
 	</div>
 </div>
 
