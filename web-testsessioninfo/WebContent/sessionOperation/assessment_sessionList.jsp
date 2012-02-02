@@ -28,109 +28,119 @@
 	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
 	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/> 
 	 
-	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
-			<p class="subtitle"><lb:label key="homepage.viewTestSessions.message" />
-				<%if(canRegisterStudent) { %>
-					<lb:label key="homepage.rapidRegister.message" />
-				<%} if (userScheduleAndFindSessionPermission) {%>
-					<lb:label key="homepage.OrgSearchInfo.message" />
-				<% } %>
-			</p>
-	</div>
-	<div id="showSaveTestMessage" style="float:left; padding-top:5px;" > 
-			<table>
-				<tr>
-					<td width="18" valign="top">
-					<div id="errorIcon" style="display:none;">
-                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
-					</div>
-					<div id="infoIcon" style="display:none;">
-                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
-					</div>					
-					</td>
-					<td class="saveMsgs" valign="top">
-					   	<div id="saveTestTitle" style="display:none;font-weight:bold;"></div>
-					   	<div id="saveTestContent" style="display:none;"></div>
-					   	<div id="saveTestMessage" style="display:none;"></div>
-					</td>
-				</tr>
-		</table>
-			
-	</div>
-	<jsp:include page="/sessionOperation/print_ticket.jsp" /> 
-	<table style="clear:both;float:left" width= "100%"> 
-		   	<tr >
-		   		<td style="clear: both; min-height: 25px; height: 25px;">
-		       		<div style="float:left;width:1200px;padding-top: 5px;">
-						<div  style="float:left;width:200px;white-space: nowrap;" class="transparent">
-							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
-						</div>  
-						<div id="ShowButtons" style="width:1000px; display:none; float:left;">
-							<div id="viewStatus" style="float:right;padding-left:5px;">
-								<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
-							</div> 
-						    <%if(canRegisterStudent) { %>
-							    <div id="registerStudent" style="float:right;padding-left:5px;">
-								<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
-							    </div>
-						    <%} if (userScheduleAndFindSessionPermission) {%>
-							    <div id="scSession" style="float:right;padding-left:5px;">
-								<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.scheduleSession" /></a>
-							    </div> 
-						    <%} %>	
-						    <div id="printTicket" style="float:right;padding-left:5px;">
-								<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
-							</div> 		
-						</div>  
-					</div>
-	     	   </td>
-		   	</tr>
-	</table>
-	
-	<div style="float:left;width:1200px;padding-left:2px;">
-	<%if(userScheduleAndFindSessionPermission) { %>
-		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
-   			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
-   		</div>
-   	<%} %>
-		<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
-			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
-				<div style="float:left;" >&nbsp;<lb:label key="homepage.hierarchy.title" /></div> 
-				<div style="float:right;" title="${bundle.web['homepage.icon.hideOrganization']}"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
-				<div style="clear:both;"></div>     
-			</div>
-	    	<div id="outertreebgdiv" class="treeCtrl" style="text-align: left !important;">
-			    <div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
+	<table width="100%" cellspacing="0" cellpadding="0"> 
+		<tr>
+			<td>			
+				 <div style="clear:both;float:left;width:100%;text-align: left;"> 
+						<p class="subtitle"><lb:label key="homepage.viewTestSessions.message" />
+							<%if(canRegisterStudent) { %>
+								<lb:label key="homepage.rapidRegister.message" />
+							<%} if (userScheduleAndFindSessionPermission) {%>
+								<lb:label key="homepage.OrgSearchInfo.message" />
+							<% } %>
+						</p>
 				</div>
-			</div> 
-		</div>	  
-	<%if(userScheduleAndFindSessionPermission) { %>		     
-		<div id="sessionGrid" style="float:right;width:1150px;position:relative;z-index:100;vertical-align:top;"> 
-	<%} else {%>
-		<div id="sessionGrid" style="float:right;width:1200px;position:relative;z-index:100;vertical-align:top;"> 	
-	<% } %>		      		    				
-					<div id="accordion" style="width:100%;position:relative;">							
-						<div style="position:relative;">
-						  	<h3><a href="#"><lb:label key="homepage.tab.currentAndFuture" /></a></h3>
-							<div id="CurrentFuture" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
-								<table id="list2" class="gridTable"></table>
-								<div id="pager2" class="gridTable"></div>		
-							</div>								
+			</td>
+		</tr>
+		<tr>
+			<td class="sessionMsgRow">
+				<div id="showSaveTestMessage" style="float:left;"> 
+						<table>
+							<tr>
+								<td width="18" valign="top">
+								<div id="errorIcon" style="display:none;">
+			                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+								</div>
+								<div id="infoIcon" style="display:none;">
+			                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+								</div>					
+								</td>
+								<td class="saveMsgs" valign="top">
+								   	<div id="saveTestTitle" style="display:none;font-weight:bold;"></div>
+								   	<div id="saveTestContent" style="display:none;"></div>
+								   	<div id="saveTestMessage" style="display:none;"></div>
+								</td>
+							</tr>
+					</table>						
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<jsp:include page="/sessionOperation/print_ticket.jsp" /> 
+				<table style="clear:both;float:left" width= "100%"> 
+					   	<tr >
+					   		<td style="clear: both; min-height: 25px; height: 25px;">
+					       		<div style="float:left;width:1200px;">
+									<div  style="float:left;width:200px;white-space: nowrap;" class="transparent">
+										<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
+									</div>  
+									<div id="ShowButtons" style="width:1000px; display:none; float:left;">
+										<div id="viewStatus" style="float:right;padding-left:5px;">
+											<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
+										</div> 
+									    <%if(canRegisterStudent) { %>
+										    <div id="registerStudent" style="float:right;padding-left:5px;">
+											<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
+										    </div>
+									    <%} if (userScheduleAndFindSessionPermission) {%>
+										    <div id="scSession" style="float:right;padding-left:5px;">
+											<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.scheduleSession" /></a>
+										    </div> 
+									    <%} %>	
+									    <div id="printTicket" style="float:right;padding-left:5px;">
+											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
+										</div> 		
+									</div>  
+								</div>
+				     	   </td>
+					   	</tr>
+				</table>
+				
+				<div style="float:left;width:1200px;padding-left:2px;">
+				<%if(userScheduleAndFindSessionPermission) { %>
+					<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
+			   			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
+			   		</div>
+			   	<%} %>
+					<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
+						<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
+							<div style="float:left;" >&nbsp;<lb:label key="homepage.hierarchy.title" /></div> 
+							<div style="float:right;" title="${bundle.web['homepage.icon.hideOrganization']}"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
+							<div style="clear:both;"></div>     
 						</div>
-						<div style="position:relative;">
-							<h3><a href="#"><lb:label key="homepage.tab.completed" /></a></h3>
-							<div id="Completed" style="background-color: #FFFFFF;overflow-y: hidden !important; overflow-x: hidden !important;">
-								<table id="list3" class="gridTable"></table>
-								<div id="pager3" class="gridTable"></div>	
-							</div>									
-						</div>							
+				    	<div id="outertreebgdiv" class="treeCtrl" style="text-align: left !important;">
+						    <div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
+							</div>
+						</div> 
+					</div>	  
+				<%if(userScheduleAndFindSessionPermission) { %>		     
+					<div id="sessionGrid" style="float:right;width:1150px;position:relative;z-index:100;vertical-align:top;"> 
+				<%} else {%>
+					<div id="sessionGrid" style="float:right;width:1200px;position:relative;z-index:100;vertical-align:top;"> 	
+				<% } %>		      		    				
+								<div id="accordion" style="width:100%;position:relative;">							
+									<div style="position:relative;">
+									  	<h3><a href="#"><lb:label key="homepage.tab.currentAndFuture" /></a></h3>
+										<div id="CurrentFuture" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+											<table id="list2" class="gridTable"></table>
+											<div id="pager2" class="gridTable"></div>		
+										</div>								
+									</div>
+									<div style="position:relative;">
+										<h3><a href="#"><lb:label key="homepage.tab.completed" /></a></h3>
+										<div id="Completed" style="background-color: #FFFFFF;overflow-y: hidden !important; overflow-x: hidden !important;">
+											<table id="list3" class="gridTable"></table>
+											<div id="pager3" class="gridTable"></div>	
+										</div>									
+									</div>							
+								</div>
+							
 					</div>
-				
-		</div>
-	</div>
-	
-	
-				
+				</div>
+			</td>
+		</tr>
+	</table>				
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;text-align:center;">

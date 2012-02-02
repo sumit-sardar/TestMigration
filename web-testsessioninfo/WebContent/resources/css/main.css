@@ -728,3 +728,9 @@ th.ui-th-column div{
     padding: 2px;
     vertical-align: top;
 }
+
+.sessionMsgRow{
+	clear: both; 
+	min-height: 34px; 
+	height: 34px;
+}
