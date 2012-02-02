@@ -3330,15 +3330,15 @@ function registerDelegate(tree){
 			}
 		}, 25);    
 	}
-	
+	var statusWizard;
 	// Added for TAS View-Montitor Student Test Status user story: Start
     function viewTestStatus() {
     	if(!$("#viewStatusButton").hasClass("buttonDisabled")) {
 			$('#displayMessageViewTestSession').hide();
 			$("#displayMessageViewTestRoster").hide();
 			$("#displayMessageViewTestSubtest").hide();
-			var wizard = $("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, event:false });
-			$("h3", wizard).each(function(index) {
+			statusWizard = $("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, event:false });
+			$("h3", statusWizard).each(function(index) {
 				$(this).click(function(e) {
 				  if($(this).parent().attr("id") == 'subtestDetailsSectionId') {
 					$("#loginName").text("");
@@ -3353,11 +3353,10 @@ function registerDelegate(tree){
 					$("#toggleValidationSubTest").hide();
 					$("#subtestList").html("");
 					if($.trim(selectedTestRosterId) != "") {
-						wizard.accordion("activate", index);
-						viewSubtestDetails();
+						viewSubtestDetails(index);
 					}
 				  } else {
-					wizard.accordion("activate", index);
+					statusWizard.accordion("activate", index);
 				  }
 				  $("#displayMessageViewTestRoster").hide();
 				  $("#displayMessageViewTestSubtest").hide();
@@ -3565,7 +3564,7 @@ function registerDelegate(tree){
 	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	}
 	
-	function viewSubtestDetails() {
+	function viewSubtestDetails(index) {
 		var postDataObject = {};
  		postDataObject.testRosterId = selectedTestRosterId;
  		
@@ -3702,6 +3701,7 @@ function registerDelegate(tree){
 							} else {
 								$("#toggleValidationSubTest").hide();
 							}
+							statusWizard.accordion("activate", index);
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
