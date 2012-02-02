@@ -1314,7 +1314,9 @@ function registerDelegate(tree){
 	 jQuery("#list6").navGrid('#pager6',{del:false,add:false,edit:false,view:false,search:false,refresh:false})
 	 		.jqGrid('navButtonAdd',"#pager6",{
 			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
-			    	if(delStuIdObjArray.length == 0){
+			    	if(delStuIdObjArray && delStuIdObjArray.length > 0){
+			    		removeStuConfirmationPopup();
+			    	}else {			    		
 			    		$("#nodataSelectedPopUp").dialog({  
 							title:"Warning",  
 						 	resizable:false,
@@ -1324,8 +1326,6 @@ function registerDelegate(tree){
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 						 	});
-			    	}else {
-			    		removeStuConfirmationPopup();
 			    	}
 			    	
 			    }, position: "first", title:"Remove Student", cursor: "pointer",id:"del_list6"
