@@ -1726,7 +1726,16 @@ public class SelectStudentPageflowController extends PageFlowController
     	int licensePerSubtest = 1;
         String subtestModel = "F";
         if (this.customerLicenses.length > 0) {
-        	this.customerLicenses[0].getSubtestModel();
+        	subtestModel = this.customerLicenses[0].getSubtestModel();
+        }
+        else {
+    		Integer customerId = this.user.getCustomer().getCustomerId();
+        	try {
+				CustomerLicense cl = this.license.getCustomerLicenses(customerId);
+				subtestModel = cl.getSubtestModel();
+			} catch (CTBBusinessException e) {
+				e.printStackTrace();
+			}   
         }
         
     	if (subtestModel.equals("T")) {
