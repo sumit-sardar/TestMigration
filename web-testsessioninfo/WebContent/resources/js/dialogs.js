@@ -22,19 +22,23 @@ function viewBroadcastMessage() {
 				dataType:	'html',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
-								//alert(data);
-    							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    							broadcastMsgBody.innerHTML = data;
-									 	
-								// Broadcast Dialog			
-								$('#broadcastMsgDialogId').dialog({
-									autoOpen: true,
-									modal: true,
-								    title:"Broadcast Message", 
-									width: "800px",
-									resizable: false,
-									open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-								});
+								if (data.indexOf("BroadcastMessageIdentifier") > 0) {
+	    							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
+	    							broadcastMsgBody.innerHTML = data;
+										 	
+									// Broadcast Dialog			
+									$('#broadcastMsgDialogId').dialog({
+										autoOpen: true,
+										modal: true,
+									    title:"Broadcast Message", 
+										width: "800px",
+										resizable: false,
+										open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+									});
+								}
+								else {
+									window.location.href="/SessionWeb/logout.do";
+								}
 								
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){

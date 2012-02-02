@@ -43,7 +43,8 @@ public class BroadcastUtils
     
     public static String buildBroadcastMessages(List broadcastMessages)
     {        
-        String html = "<table class='simpletable'>";        
+        String bcmIdentifier = "<div style='display: none'>BroadcastMessageIdentifier</div>";    	
+        String html = bcmIdentifier + "<table class='simpletable'>";        
 		String messages = "You have no messages at this time. The Messages link will display a numbered red square <span class='messageheader'>&nbsp;</span> when you have active messages.";
 		
         if (broadcastMessages.size() > 0)

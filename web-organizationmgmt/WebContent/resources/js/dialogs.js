@@ -22,7 +22,7 @@ function viewBroadcastMessage() {
 				dataType:	'html',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
-								//alert(data);
+							if (data.indexOf("BroadcastMessageIdentifier") > 0) {
     							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
     							broadcastMsgBody.innerHTML = data;
 									 	
@@ -35,6 +35,10 @@ function viewBroadcastMessage() {
 									resizable: false,
 									open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 								});
+							}
+							else {
+								window.location.href="/SessionWeb/logout.do";
+							}
 								
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
