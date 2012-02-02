@@ -230,7 +230,7 @@
 	</div>
 	<div style="padding-bottom:20px;">
 		<center>
-			<input type="button"  value="Reset" onclick="javascript:resetSearchList2(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Clear" onclick="javascript:resetSearchList2(); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="Search" onclick="javascript:searchUserByKeywordList2(); return false;" class="ui-widget-header">
 		</center>
 	</div>

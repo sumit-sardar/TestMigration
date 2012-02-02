@@ -69,7 +69,7 @@ $.jgrid = {
 		searchtext: "",
 		searchtitle: "Find records",
 		refreshtext: "",
-		refreshtitle: "Reload Grid",
+		refreshtitle: "Reload List",
 		alertcap: "Warning",
 		alerttext: "Please, select row",
 		viewtext: "",
