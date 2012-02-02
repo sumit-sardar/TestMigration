@@ -278,6 +278,17 @@ function populateBulkStudentGrid() {
 			    	var highLighter = $('#gs_highLighter').val();
 					var allData = $("#studentAccommGrid").jqGrid('getGridParam','data');
 					
+					var args = {
+						"grade" : grade,
+						"calculator" : calculator,
+						"hasColorFontAccommodations" : hasColorFontAccommodations,
+						"testPause" : testPause,
+						"screenReader" : screenReader,
+						"untimedTest" : untimedTest,
+						"highLighter" : highLighter,						
+						"allData" : allData						 					
+					};
+					
 					if(!status) {
 						UIBlock();
 						if(defaultFilterApplied()) {
@@ -286,19 +297,16 @@ function populateBulkStudentGrid() {
 									continue;
 								delete selectedStudentObjArr[studentArrId[i]];
 							}
+						$.unblockUI();  
 						} else {
-							for(var i=0; i<studentArrId.length; i++){
-								if(studentArrId[i] == "") 
-									continue;
-								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause,
-											 screenReader, untimedTest, highLighter, studentArrId[i], allData);
-						 	 	if(!skip) {
-							 	 	delete selectedStudentObjArr[studentArrId[i]];
-							 	 }
-							}
+							var worker1 = new CustomWorker(studentArrId,args,ba_runnable,
+							function(){
+								runnableOnComplete();
+								$.unblockUI(); 
+							});
+							worker1.start();
 						}	
 						totalRowSelectedOnPage = 0;
-						$.unblockUI();  
 					} else {
 						UIBlock();
 						if(defaultFilterApplied()) {
@@ -308,53 +316,19 @@ function populateBulkStudentGrid() {
 								selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
 							}
 							totalRowSelectedOnPage = studentArrId.length;
+							stopSelectAll(studentArrId);
+							$.unblockUI();
 						} else {
 							totalRowSelectedOnPage = 0;
-							for(var i=0; i<studentArrId.length; i++){
-								if(studentArrId[i] == "") 
-									continue;
-								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, 
-											screenReader, untimedTest, highLighter, studentArrId[i], allData);
-						 	  	if(!skip) {
-								  	selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
-								  	totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
-							  	} else {
-							  		delete selectedStudentObjArr[studentArrId[i]];
-							  	}
-							}
+							var worker2 = new CustomWorker(studentArrId,args,ba_runnable1,
+							function(){
+								stopSelectAll(studentArrId);
+								runnableOnComplete();
+								$.unblockUI(); 
+							});
+							worker2.start();							
 						}						
 						//setAnchorButtonState('assignAccommButton', false);
-						$.unblockUI();
-						//The below condition is used to stop select all in grid if the grid is empty
-						if(studentArrId == undefined || studentArrId.length <=0) {
-							var noStudents = $('.ui-state-highlight');
-							if(noStudents.length > 0) {
-								for(var k = 0; k < noStudents.length; k++) {
-									$(noStudents[k]).removeClass('ui-state-highlight');
-								}
-							}
-						}
-						if(studentArrId.length == 1 && studentArrId[0] == "") {
-							var noStudents = $('.ui-state-highlight');
-							if(noStudents.length > 0) {
-								for(var k = 0; k < noStudents.length; k++) {
-									$(noStudents[k]).removeClass('ui-state-highlight');
-								}
-							}
-						}
-						var present1 = false;
-						for(var key in selectedStudentObjArr) {
-							present1 = true;
-							break;
-						}
-						if(!present1) {
-							var noStudents = $('.ui-state-highlight');
-							if(noStudents.length > 0) {
-								for(var k = 0; k < noStudents.length; k++) {
-									$(noStudents[k]).removeClass('ui-state-highlight');
-								}
-							}
-						}
 					}
 					var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 					determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
@@ -362,6 +336,7 @@ function populateBulkStudentGrid() {
 					if(submittedSuccesfully != ""){
 			           	resetBulk();
 			        }
+
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -1072,7 +1047,7 @@ function populateBulkStudentGrid() {
 			closePopUp('AssignAccommPopup');
 		}
 	 }
-	 
+	 //Fix for 68188
 	  function clearFilterDropDown (){
 	  		$("option:contains('Any')",'#gs_grade' ).attr("selected", "selected");
 	    	$("option:contains('Any')",'#gs_calculator').attr("selected", "selected");
@@ -1081,13 +1056,6 @@ function populateBulkStudentGrid() {
 	    	$("option:contains('Any')",'#gs_screenReader').attr("selected", "selected");
 	    	$("option:contains('Any')",'#gs_untimedTest').attr("selected", "selected");
 	    	$("option:contains('Any')",'#gs_highLighter').attr("selected", "selected");
-	    	$('#gs_grade').trigger('change');
-	    	$('#gs_calculator').trigger('change');
-	    	$('#gs_hasColorFontAccommodations').trigger('change');
-	    	$('#gs_testPause').trigger('change');
-	    	$('#gs_screenReader').trigger('change');
-	    	$('#gs_untimedTest').trigger('change');
-	    	$('#gs_highLighter').trigger('change');
 	  }
 	  
 	  
@@ -1146,3 +1114,66 @@ function populateBulkStudentGrid() {
 		resetRadioAccommodation();
 	}
 	
+	//Implementation of the two runnables or the process
+	function ba_runnable(studentArr,args){
+		if(studentArr !=""){
+		var skip = skipStudent(args.grade, args.calculator, args.hasColorFontAccommodations, args.testPause,
+											 args.screenReader, args.untimedTest, args.highLighter, studentArr, args.allData);
+		if(!skip) {
+			delete selectedStudentObjArr[studentArr];
+			}		
+		}								
+	}
+	
+	
+	function ba_runnable1(studentArr,args){
+		if(studentArr !="") {
+		var skip = skipStudent(args.grade, args.calculator, args.hasColorFontAccommodations, args.testPause,
+											 args.screenReader, args.untimedTest, args.highLighter, studentArr, args.allData);
+		 	if(!skip) {
+			  	selectedStudentObjArr[parseInt(studentArr)]= parseInt(studentArr);
+			  	totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
+		  	} else {
+		  		delete selectedStudentObjArr[studentArr];
+		  	}	
+		}							
+	}
+	
+	function runnableOnComplete(){	
+		determineStudentSel(selectedStudentObjArr, 'assignAccommButton');
+		if(submittedSuccesfully != ""){
+		   	resetBulk();
+		  }
+	}
+	function stopSelectAll(){		
+						//The below condition is used to stop select all in grid if the grid is empty
+			if(studentArrId == undefined || studentArrId.length <=0) {
+				var noStudents = $('.ui-state-highlight');
+					if(noStudents.length > 0) {
+						for(var k = 0; k < noStudents.length; k++) {
+							$(noStudents[k]).removeClass('ui-state-highlight');
+							}
+						}
+					}
+			if(studentArrId.length == 1 && studentArrId[0] == "") {
+				var noStudents = $('.ui-state-highlight');
+					if(noStudents.length > 0) {
+						for(var k = 0; k < noStudents.length; k++) {
+							$(noStudents[k]).removeClass('ui-state-highlight');
+						}
+					}
+				}
+			var present1 = false;
+			for(var key in selectedStudentObjArr) {
+				present1 = true;
+				break;
+			}
+			if(!present1) {
+				var noStudents = $('.ui-state-highlight');
+				if(noStudents.length > 0) {
+					for(var k = 0; k < noStudents.length; k++) {
+						$(noStudents[k]).removeClass('ui-state-highlight');
+					}
+				}
+			}	
+	}
