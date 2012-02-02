@@ -597,7 +597,7 @@ function populateGrid() {
 		    		 AddUserDetail();
 			    }, position: "first", title:"Add User", cursor: "pointer",id:"add_list2"
 			});  
-			jQuery(".ui-icon-refresh").bind("click",function(){
+			jQuery("#refresh_list2").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
 				setAnchorButtonState('changePWButton', true);
 			});
