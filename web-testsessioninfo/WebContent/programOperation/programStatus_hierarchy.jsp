@@ -113,7 +113,7 @@
 															<td width="110" class="transparent"><lb:label key="programStatus.label.testLbl" prefix="" suffix="&nbsp;:" /></td>
 															<td class="transparent">
 																<label style="width: 200px;" id="testNameId"></label>
-																<select id="testNameOptions"  name="testNameOptions" style="width: 200px; display:none; font-size: 12px;" onchange="javascript: getSubtestDetailsForSelectedTest();"></select>
+																<select id="testNameOptions"  name="testNameOptions" style="display:none; font-size: 12px;" onchange="javascript: getSubtestDetailsForSelectedTest();"></select>
 															</td>
 														</tr>
 											 		</tbody>
