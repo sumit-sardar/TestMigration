@@ -1108,7 +1108,6 @@ function registerDelegate(tree){
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
-	 	height: '160px',
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
@@ -1312,29 +1311,26 @@ function registerDelegate(tree){
 						
 			}
 	 });
-	 jQuery("#list6").navGrid('#pager6', {
-				delfunc: function() {
-				if(delStuIdObjArray.length > 0 ) {
-					removeStuConfirmationPopup();
-					
-				}
-		    	}	    	
+	 jQuery("#list6").navGrid('#pager6',{del:false,add:false,edit:false,view:false,search:false,refresh:false})
+	 		.jqGrid('navButtonAdd',"#pager6",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	if(delStuIdObjArray.length == 0){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		removeStuConfirmationPopup();
+			    	}
+			    	
+			    }, position: "first", title:"Remove Student", cursor: "pointer",id:"del_list6"
 			});
-	var element = document.getElementById('add_list6');
-	element.style.display = 'none'; 
-	var element = document.getElementById('edit_list6');
-	element.style.display = 'none'; 
-	var element = document.getElementById('search_list6');
-	element.style.display = 'none';  
-	var element = document.getElementById('del_list6');
-	element.title = 'Remove Student';
-	var element = document.getElementById('refresh_list6'); // Added to remove refresh button from grid also
-	element.style.display = 'none';
-	//if(isTestExpired){
-    //   	$("#del_list6").addClass('ui-state-disabled');      
-    // }else{
-    // 	$("#del_list6").removeClass('ui-state-disabled');      
-    // }
+	
 	}
 	
 	function checkPresenceInDelStuIdObjArray(deleteId) {
@@ -2813,23 +2809,26 @@ function registerDelegate(tree){
 						
 			}
 	 });
-	 jQuery("#listProctor").navGrid('#pagerProctor', {
-			delfunc: function() {
-				if(!isEmpty(delProctorIdObjArray)) {
-					removeProctorConfirmationPopup();
-				}
-		    }	    	
-	 });
-		var element = document.getElementById('add_listProctor');
-		element.style.display = 'none'; 
-		var element = document.getElementById('edit_listProctor');
-		element.style.display = 'none'; 
-		var element = document.getElementById('search_listProctor');
-		element.style.display = 'none';  
-		var element = document.getElementById('refresh_listProctor');
-		element.style.display = 'none'; 
-		var element = document.getElementById('del_listProctor');
-		element.title = 'Remove Proctor';
+	 jQuery("#listProctor").navGrid('#pagerProctor',{del:false,add:false,edit:false,view:false,search:false,refresh:false}
+	 ).jqGrid('navButtonAdd',"#pagerProctor",{
+			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
+			    	if(isEmpty(delProctorIdObjArray)){
+			    		$("#nodataSelectedPopUp").dialog({  
+							title:"Warning",  
+						 	resizable:false,
+						 	autoOpen: true,
+						 	width: 200,
+						 	height: 80,
+						 	modal: true,
+						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+						 	});
+			    	}else {
+			    		removeProctorConfirmationPopup();	
+			    	}
+			    	
+			    }, position: "first", title:"Remove Proctor", cursor: "pointer",id:"del_listProctor"
+			});
+		
 		if(state == "EDIT" && isProctor) {
 			var element = document.getElementById('del_listProctor');
 			element.style.display = 'none'; 
