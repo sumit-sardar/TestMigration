@@ -95,6 +95,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/customWorker.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkMoveStudent.js"></script>
