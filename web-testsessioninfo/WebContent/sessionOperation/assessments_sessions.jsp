@@ -21,11 +21,12 @@
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
+
+<jsp:include page="/sessionOperation/oas_message.jsp" />
  
 <netui:form action="assessments_sessions">
 <input type="hidden" id="menuId" name="menuId" value="sessionsLink" />
-
-<jsp:include page="/sessionOperation/oas_message.jsp" />
+</netui:form>
 <input type="hidden" id="treeOrgNodeId" />
 <input type="hidden" id="stuForOrgNodeId" />
 <input type="hidden" id="selectedTestId" />
@@ -47,7 +48,7 @@
     
 
 
-</netui:form>
+
 
 <script type="text/javascript">
 $(document).ready(function(){
