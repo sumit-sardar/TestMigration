@@ -1459,8 +1459,8 @@ function fillselectedOrgNode( elementId, orgList) {
 													//For edit student save defect
 													if(String(assignedOrgNodeIds).indexOf(",") > 0) { 
 														orgs = assignedOrgNodeIds.split(",");
-														}
-														else {
+													}
+													else {
 														orgs = [assignedOrgNodeIds];
 													}
 													
@@ -1496,7 +1496,6 @@ function fillselectedOrgNode( elementId, orgList) {
 														}
 													} 
 													
-													assignedOrgNodeIds = "";
 													if(showStudentInGrid) {
 														var dataToBeAdded = {lastName:$("#studentLastName").val(),
 																			firstName:$("#studentFirstName").val(),
@@ -1519,9 +1518,16 @@ function fillselectedOrgNode( elementId, orgList) {
 															jQuery("#list2").sortGrid(sortCol,true);
 													} else {
 														if(!isAddStudent) {
-															jQuery("#list2").delRowData(data.studentId);
+															var oldOrganizationList = "";
+															for(var i = 0; i < organizationNodes.length; i++) {
+																oldOrganizationList = organizationNodes[i].orgNodeId+",";
+															}
+															oldOrganizationList = oldOrganizationList.substring(0,oldOrganizationList.length - 1);
+															if(oldOrganizationList != assignedOrgNodeIds)
+																jQuery("#list2").delRowData(data.studentId);
 														}
 													}
+													assignedOrgNodeIds = "";
 													$.unblockUI();			
         										}
         										else{
