@@ -83,6 +83,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		String rosterStatus = "";
 		String tutorialTaken = null;
 		boolean allcoManifest = true;
+		long startTime = 0;
+		long endTime = 0;
 		for(int i=0;i<manifests.length;i++) {
 			logger.debug("comparing " + manifests[i].getRosterLastMseq() + " to " + latestMseq);
 			if(manifests[i].getRosterLastMseq() > latestMseq) {
@@ -113,6 +115,14 @@ public class OASCoherenceSink implements OASNoSQLSink {
 					}
 				}
 			}
+			if(startTime == 0 && manifests[i].getRosterStartTime() != 0) {
+				startTime = manifests[i].getRosterStartTime();
+			} else if (manifests[i].getRosterStartTime() != 0 && manifests[i].getRosterStartTime() < startTime) {
+				startTime = manifests[i].getRosterStartTime();
+			}
+			if(manifests[i].getRosterEndTime() > endTime) {
+				endTime = manifests[i].getRosterEndTime();
+			}
 		}
 		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setTutorialTaken(tutorialTaken);
@@ -121,6 +131,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRosterLastMseq(latestMseq);
 			manifests[i].setRosterCorrelationId(cid);
 			manifests[i].setRandomDistractorSeed(randomSeed);
+			manifests[i].setRosterStartTime(startTime);
+			manifests[i].setRosterEndTime(endTime);
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
@@ -138,6 +150,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			int restartCount = -1;
 			int cid = 0;
 			int randomSeed = 0;
+			long startTime = 0;
+			long endTime = 0;
 			String rosterStatus = "";
 			String tutorialTaken = null;
 			boolean allcoManifest = true;
@@ -163,6 +177,14 @@ public class OASCoherenceSink implements OASNoSQLSink {
 				if(manifests[i].getRandomDistractorSeed() != 0) {
 					randomSeed = manifests[i].getRandomDistractorSeed();
 				}
+				if(startTime == 0 && manifests[i].getRosterStartTime() != 0) {
+					startTime = manifests[i].getRosterStartTime();
+				} else if (manifests[i].getRosterStartTime() != 0 && manifests[i].getRosterStartTime() < startTime) {
+					startTime = manifests[i].getRosterStartTime();
+				}
+				if(manifests[i].getRosterEndTime() > endTime) {
+					endTime = manifests[i].getRosterEndTime();
+				}
 			}
 			for(int i=0;i<manifests.length;i++) {
 				manifests[i].setTutorialTaken(tutorialTaken);
@@ -171,6 +193,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 				manifests[i].setRosterLastMseq(latestMseq);
 				manifests[i].setRosterCorrelationId(cid);
 				manifests[i].setRandomDistractorSeed(randomSeed);
+				manifests[i].setRosterStartTime(startTime);
+				manifests[i].setRosterEndTime(endTime);
 			}
 			wrapper.setManifests(manifests);
 			wrapper.setReplicate(replicate);
