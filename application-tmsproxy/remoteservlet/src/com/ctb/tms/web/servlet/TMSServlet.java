@@ -532,12 +532,20 @@ public class TMSServlet extends HttpServlet {
 		// handle TABE auto-locator last, to make sure everything is up-to-date in the manifest first
 		if(locatorComplete) {
 			// we just completed the auto-locator
-    		handleTabeLocator(rosterId);
+			try {
+				// ugly hack - sleep before/after doing the auto-locator calcs to prevent 
+				// the client from sending additional conflicting lifecycle events
+				Thread.sleep(1000);
+				handleTabeLocator(rosterId);
+	    		Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
     		manifest = oasSource.getManifest(rosterId, accessCode);
     		ManifestData[] manifestData = manifest.getManifest();
     		if(nextScoIndex < manifestData.length) {
 	    		NextSco nextSco = saveResponse.getTsdArray(0).getNextSco();
 	        	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+	        	saveResponse.getTsdArray(0).setNextSco(nextSco);
 	        	logger.debug("Re-selected next sco due to auto-locator: " + nextSco.getId());
     		}
     	}
