@@ -2073,8 +2073,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		disablenextprev(indexOfId,str.length-1);
 		
       for(var key in stuAccommodation) {
-             $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + key+ "']").attr('checked', stuAccommodation[key]);
-		     $("#view_Student_Accommodation_Information select[name='" + "view" + key+ "']").val(stuAccommodation[key]);
+      		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
+             $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
+		     $("#view_Student_Accommodation_Information select[name='" + "view" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
 			setQuestionColorOptionsInView();
 			setAnswerColorOptionsInView();
@@ -2174,8 +2175,9 @@ function fillselectedOrgNode( elementId, orgList) {
     		if(key == 'colorFont'){
     			isColorFontChecked = stuAccommodation[key];
     		}
-		     $("#Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
-		     $("#Student_Accommodation_Information select[name='" + key+ "']").val(stuAccommodation[key]);
+    		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
+		     $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
+		     $("#Student_Accommodation_Information select[name='" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
 		if(isColorFontChecked){
 			enableColorSettingsLink("true");
@@ -2695,8 +2697,20 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		function openTree(){
 		//TODO: need to work on;
 		} 
-
-	
+	// Added as field name and object key has different value
+	function getRealValue(keyVal) {
+		if(keyVal == 'extendedTime')
+			return 'ExtendedTime';
+		if(keyVal == 'maskingRuler')
+			return 'MaskingRuler';
+		if(keyVal == 'magnifyingGlass')
+			return 'MagnifyingGlass';
+		if(keyVal == 'auditoryCalming')
+			return 'AuditoryCalming';
+		if(keyVal == 'maskingTool')
+			return 'MaskingTool';
+		return keyVal;
+	}
 			 
 
 			
