@@ -50,6 +50,19 @@ $().ready(function(){
 		if($(window).height()!=lastWindowHeight || $(window).width()!=lastWindowWidth){
 			lastWindowHeight = $(window).height();
 	        lastWindowWidth = $(window).width();
+	        if( $("#list2").length > 0){
+	         	$("#list2").setGridWidth($("#jqGrid-content-section").width());
+	         }
+	         if($("#studentBulkMoveGrid").length >0){
+	         	$("#studentBulkMoveGrid").setGridWidth($("#jqGrid-content-section").width());
+	         }
+	         if($("#studentAccommGrid").length >0){
+	         	$("#studentAccommGrid").setGridWidth($("#jqGrid-content-section").width());
+	         }
+	         if($("#outOfSchoolGrid").length >0){
+	         	$("#outOfSchoolGrid").setGridWidth($("#jqGrid-content-section").width());
+	         }
+	       
 			if($('.ui-dialog').length > 0){
 				var left = (lastWindowWidth - $('.ui-dialog').outerWidth())/2 ;
 				$('.ui-dialog').css({top:parseInt(lastWindowHeight*.1) + 'px',left:left + 'px'});
