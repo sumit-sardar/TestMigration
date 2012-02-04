@@ -41,8 +41,8 @@ function populateDownloadTemplateListGrid() {
 		 datatype: "json",         
           colNames:['Name', 'Description'],
 		   	colModel:[
-		   		{name:'cid',index:'cid', width:200, align:"left", editable:false, sortable:false},
-		   		{name:'tcl',index:'tcl', width:790, align:"left", editable:false, sortable:false}
+		   		{name:'templateName',index:'templateName', width:200, align:"left", editable:false, sortable:false},
+		   		{name:'templateDesc',index:'templateDesc', width:790, align:"left", editable:false, sortable:false}
 		   	],
 		   	loadui: "disable",
 			rowNum:2,
@@ -75,7 +75,7 @@ function populateUploadListGrid() {
           colNames:['Upload Date', 'File Name', 'Records Uploaded', 'Records Failed', 'Status'],
 		   	colModel:[
 		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'datetime', sortable:true},
-		   		{name:'uploadFileName',index:'uploadFileName', width:420, align:"left", editable:false, sorttype:'text', sortable:true},
+		   		{name:'uploadFileName',index:'uploadFileName', width:340, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'uploadFileRecordCount',index:'uploadFileRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'failedRecordCount',index:'failedRecordCount', width:150, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'status',index:'status', width:150, align:"left", editable:false, sorttype:'text', sortable:true}
@@ -117,8 +117,6 @@ function populateUploadListGrid() {
 				
 			},
 			loadComplete: function () {
-				width = 997;
-			    jQuery("#list3").setGridWidth(width);
 				$('#del_list3').addClass('ui-state-disabled');					
 				document.getElementById('del_list3').title = "Delete File";					
 				setAnchorButtonState('downloadErrorFile', true);
@@ -131,8 +129,6 @@ function populateUploadListGrid() {
 	 });
 	 
 	 jQuery("#list3").navGrid('#pager3', {			
-		    	editfunc: function() {
-		    	},
 		    	delfunc: function() {
 		    		deleteFile();
 		    	},
@@ -230,11 +226,16 @@ function showLoadingProgress(msg)
 }
 
 function handleUploadMessages(uploadMsg){
-	if (uploadMsg == null || uploadMsg.length == 0) {
+	if (uploadMsg == null) {
 		document.getElementById('infoMessage').style.display = "none";
 		document.getElementById('errorMessage').style.display = "none";
 	}
 	else {	
+		if (uploadMsg.length == 0) {
+			document.getElementById('infoMessage').style.display = "none";
+			document.getElementById('errorMessage').style.display = "none";
+		}
+		else
 		if (uploadMsg.indexOf("successfully") > 0) {
 			document.getElementById('errorMessage').style.display = "none";
 			$("#infoMsg").html(uploadMsg);
