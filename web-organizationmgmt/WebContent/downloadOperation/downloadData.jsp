@@ -70,7 +70,7 @@
 	<tr> 
 		<td style="padding-left:6px;">
 			<div id="downloadData" style="float:left; width:1275px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
-				<table id="list2" class="gridTable"></table>
+				<table id="downloadDataListId" class="gridTable"></table>
 				<script>populateDownloadListGrid();</script>
 			</div>								
 		</td>

@@ -1,6 +1,6 @@
 
 function populateDownloadListGrid() {
- 		$("#list2").jqGrid({         
+ 		$("#downloadDataListId").jqGrid({         
          url: 'populateDownloadListGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
@@ -32,17 +32,17 @@ function populateDownloadListGrid() {
 	 });
 }
 
-
+ 
 
 function populateDownloadTemplateListGrid() {
- 		$("#list2").jqGrid({         
+ 		$("#uploadDataListId").jqGrid({         
          url: 'populateDownloadTemplateListGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
           colNames:['Name', 'Description'],
 		   	colModel:[
-		   		{name:'templateName',index:'templateName', width:200, align:"left", editable:false, sortable:false},
-		   		{name:'templateDesc',index:'templateDesc', width:790, align:"left", editable:false, sortable:false}
+		   		{name:'templateName', index:'templateName', width:200, align:"left", editable:false, sortable:false},
+		   		{name:'templateDesc', index:'templateDesc', width:790, align:"left", editable:false, sortable:false}
 		   	],
 		   	loadui: "disable",
 			rowNum:2,
@@ -68,7 +68,7 @@ function populateDownloadTemplateListGrid() {
 }
 
 function populateUploadListGrid() {
- 		$("#list3").jqGrid({         
+ 		$("#viewUploadsListId").jqGrid({         
          url: 'populateUploadListGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
@@ -89,36 +89,36 @@ function populateUploadListGrid() {
 			caption: "Files Uploaded",
 			sortname: 'createdDateTime', 
 			sortorder: "desc",
-			pager: '#pager3', 
+			pager: '#viewUploadsListPager', 
 			onPaging: function() {
-				$('#del_list3').addClass('ui-state-disabled');					
+				$('#del_viewUploadsListId').addClass('ui-state-disabled');					
 				setAnchorButtonState('downloadErrorFile', true);
 				document.getElementById('colorErrors').style.display = "none";
 			},
 			onSelectRow: function (rowId) {
-				var selectedId = $("#list3").getGridParam('selrow');
+				var selectedId = $("#viewUploadsListId").getGridParam('selrow');
 				document.getElementById('selectedId').value = selectedId;
 
 				if (selectedId.indexOf("_SC") > 0) {
-					$('#del_list3').removeClass('ui-state-disabled');					
+					$('#del_viewUploadsListId').removeClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', true);
 					document.getElementById('colorErrors').style.display = "none";
 				}				
 				if (selectedId.indexOf("_FL") > 0) {
-					$('#del_list3').removeClass('ui-state-disabled');					
+					$('#del_viewUploadsListId').removeClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', false);
 					document.getElementById('colorErrors').style.display = "block";
 				}				
 				if (selectedId.indexOf("_IN") > 0) {
-					$('#del_list3').addClass('ui-state-disabled');					
+					$('#del_viewUploadsListId').addClass('ui-state-disabled');					
 					setAnchorButtonState('downloadErrorFile', true);
 					document.getElementById('colorErrors').style.display = "none";
 				}				
 				
 			},
 			loadComplete: function () {
-				$('#del_list3').addClass('ui-state-disabled');					
-				document.getElementById('del_list3').title = "Delete File";					
+				$('#del_viewUploadsListId').addClass('ui-state-disabled');					
+				document.getElementById('del_viewUploadsListId').title = "Delete File";					
 				setAnchorButtonState('downloadErrorFile', true);
 				document.getElementById('colorErrors').style.display = "none";			    
 			},
@@ -128,20 +128,20 @@ function populateUploadListGrid() {
 			}
 	 });
 	 
-	 jQuery("#list3").navGrid('#pager3', {			
+	 jQuery("#viewUploadsListId").navGrid('#viewUploadsListPager', {			
 		    	delfunc: function() {
 		    		deleteFile();
 		    	},
 		    	search: false     	
 			})
 
-			jQuery("#refresh_list3").bind("click",function(){
+			jQuery("#refresh_viewUploadsListId").bind("click",function(){
 				refresh();
 			});
 
-	 		var addButton = document.getElementById('add_list3');
+	 		var addButton = document.getElementById('add_viewUploadsListId');
 			addButton.style.display = 'none';
-	 		var editButton = document.getElementById('edit_list3');
+	 		var editButton = document.getElementById('edit_viewUploadsListId');
 			editButton.style.display = 'none';
 	 
 }

@@ -79,10 +79,10 @@
             </div>               	                                    
 		</td>
 	</tr>
-	<tr> 
+	<tr>  
 		<td style="padding-left:6px;">
-			<div id="uploadData" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
-				<table id="list2" class="gridTable"></table>
+			<div id="uploadData" style="float:left; width:1275px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+				<table id="uploadDataListId" class="gridTable"></table>
 				<script>populateDownloadTemplateListGrid();</script>
 			</div>								
 		</td>
@@ -164,8 +164,8 @@
 	<tr> 
 		<td style="padding-left:6px;">
 			<div id="viewUploads" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
-				<table id="list3" class="gridTable"></table>
-				<div id="pager3" class="gridTable" ></div>
+				<table id="viewUploadsListId" class="gridTable"></table>
+				<div id="viewUploadsListPager" class="gridTable" ></div>
 				<script>populateUploadListGrid();</script>
 			</div>								
 		</td>
@@ -243,14 +243,14 @@ $(document).ready(function(){
 	System.out.println(uploadMsg);
 %>
 <script type="text/javascript">
-	handleUploadMessages("<%= uploadMsg %>");
+	handleUploadMessages("<%= uploadMsg %>"); 
 </script>		
 
 
 <script type="text/javascript">
 	$(document).ready(function(){
         $("#templateHeader").click(function() {
-        	handleUploadMessages(null);
+        	handleUploadMessages(null); 
 		});
 	});
 </script>		
