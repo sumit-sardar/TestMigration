@@ -269,6 +269,7 @@ function populateBulkStudentGrid() {
 				}
 				if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length) {
 					$('#AssignAccommPopup').dialog('close');
+					$(".blockUI").hide();
 				}
 			},
 			onSelectAll: function (rowIds, status) {
@@ -534,7 +535,7 @@ function populateBulkStudentGrid() {
 		{
 				async:		false,//asynchronous calls do not sent post data in MAC safari
 				beforeSend:	function(){
-								UIBlock();
+								$(".blockUI").show();
 							},
 				url:		'saveBulkStudentData.do',
 				type:		'POST',

@@ -151,3 +151,7 @@
 		</center>
 	</div>	
 </div>
+
+<DIV style="Z-INDEX: 1051; BORDER-BOTTOM: medium none; POSITION: fixed; opacity:0.5;FILTER:  alpha(opacity=50); BORDER-LEFT: medium none; PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #aaaaaa; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 100%; PADDING-RIGHT: 0px; ZOOM: 1; HEIGHT: 100%; BORDER-TOP: medium none; TOP: 0px; CURSOR: wait; BORDER-RIGHT: medium none; PADDING-TOP: 0px; LEFT: 0px; display:none;" class="blockUI blockOverlay"></DIV>
+
+<DIV style="Z-INDEX: 1062; BORDER-BOTTOM: 0px; POSITION: fixed; TEXT-ALIGN: center; FILTER:  alpha(opacity=50); BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #aaaaaa; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 0px; PADDING-RIGHT: 0px; ZOOM: 1; COLOR: #000; BORDER-TOP: 0px; TOP: 202px; BORDER-RIGHT: 0px; PADDING-TOP: 0px; LEFT: 607px;display:none;" class="blockUI blockMsg blockPage"><IMG src="/SessionWeb/resources/images/loading.gif"/></DIV>
