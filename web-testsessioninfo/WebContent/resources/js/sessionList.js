@@ -862,19 +862,15 @@ function registerDelegate(tree){
 	  		UIBlock();
 	  		resetSearchCrit();
 	  		var postDataObject = {};
-           jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
-     	    var sortArrow = jQuery("#list2");
+           jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
      	   var urlVal = 'getSessionForUserHomeGrid.do';
      	   if(!homePageLoad) {
      	   		postDataObject.q = 2;
  				postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
  				urlVal = 'getSessionForSelectedOrgNodeGrid.do';
 	 		}
-     	   jQuery("#list2").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
+     	   	jQuery("#list2").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
 			jQuery("#list2").sortGrid('loginEndDate',true,'asc');
-           var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-           $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-           $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
       }
       
       function gridReloadPA(homePageLoad){ 
@@ -882,13 +878,7 @@ function registerDelegate(tree){
 	  	   jQuery("#list3").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
      	   var urlVal = 'getCompletedSessionForGrid.do';
      	   jQuery("#list3").jqGrid('setGridParam', {url:urlVal,page:1}).trigger("reloadGrid");
-     	   
-           var sortArrowPA = jQuery("#list3");
            jQuery("#list3").sortGrid('loginEndDate',true,'asc');
-           var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
-           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
-           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
-
       }
       
       function gridReloadStu(addStudent){ 
@@ -912,7 +902,7 @@ function registerDelegate(tree){
 	       }
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, postData:postDataObject, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
-     	   jQuery("#selectStudent").sortGrid('lastName',true);
+     	   jQuery("#selectStudent").sortGrid('lastName',true,'asc');
            var sortArrowPA = jQuery("#selectStudent");
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
