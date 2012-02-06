@@ -329,14 +329,28 @@ public class BulkOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String studentIds = getRequest().getParameter("studentIds");
 		String[] selectedStudents = null;
-		if(studentIds != null)
+		Integer[] studentId = null;
+		
+		if(studentIds != null) {
+			studentIds = studentIds.substring(studentIds.indexOf("{") + 1,studentIds.lastIndexOf("}"));
 			selectedStudents = studentIds.split(",");
+			if(selectedStudents != null && selectedStudents.length > 0 ) {
+				studentId = new Integer[selectedStudents.length];
+				for(int i=0;i<selectedStudents.length; i++){
+					String[] tempSelectedStudent = selectedStudents[i].split(":");
+					selectedStudents[i] = tempSelectedStudent[1];
+					studentId[i] = Integer.parseInt(selectedStudents[i]);
+				}
+			}
+			
+		}
+			
 		
 		 MessageInfo messageInfo = new MessageInfo();
 		
 			boolean successFlag=true;
 			if(selectedStudents != null && selectedStudents.length > 0 ) {
-				Integer[] studentId = new Integer[selectedStudents.length];
+				/*Integer[] studentId = new Integer[selectedStudents.length];
 				//studentId = Arrays.copyOf(selectedStudents, selectedStudents.length, Integer[].class);
 				
 				for(int i=0;i< selectedStudents.length;i++)
@@ -344,7 +358,7 @@ public class BulkOperationController extends PageFlowController {
 					studentId[i] = Integer.parseInt(selectedStudents[i]);
 					
 
-				}
+				}*/
 				if(studentId != null && studentId.length > 0) {
 					StudentAccommodations sa = saveAccommodationsSelected();
 					if (sa != null) {

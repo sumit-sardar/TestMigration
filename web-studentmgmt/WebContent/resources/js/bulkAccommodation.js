@@ -267,6 +267,9 @@ function populateBulkStudentGrid() {
 					//setAnchorButtonState('assignAccommButton', true);
 					$('#cb_studentAccommGrid').attr('checked', false);
 				}
+				if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length) {
+					$('#AssignAccommPopup').dialog('close');
+				}
 			},
 			onSelectAll: function (rowIds, status) {
 					var grade = $('#gs_grade').val();
@@ -480,6 +483,7 @@ function populateBulkStudentGrid() {
       
 
   }
+ 
       
   function resetBulk (){
   	
@@ -515,10 +519,13 @@ function populateBulkStudentGrid() {
 	var showStudentInGrid = false;
 	var studentIds = "";
 	
+	studentIds = JSON.stringify(selectedStudentObjArr);
+	/*
 	for(var key in selectedStudentObjArr){
 		studentIds =  selectedStudentObjArr[key] + "," + studentIds;
 	}
-	studentIds = studentIds.substring(0,studentIds.length-1)
+	studentIds = studentIds.substring(0,studentIds.length-1) */
+	
 	param = $("#AssignAccommPopup *").serialize();
 	var dataToBeAdded  = getDataToBeAdded(param);
 	param = param + "&studentIds="+studentIds;
@@ -538,37 +545,19 @@ function populateBulkStudentGrid() {
 								var errorFlag = data.errorFlag;
 								var successFlag = data.successFlag;
 								if(successFlag) {
-									closePopUp('AssignAccommPopup');
 									$('#errorIcon').hide();
 									$('#infoIcon').show();							
 									setBulkMessageMain(data.title, data.content, data.type, "");
-									var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
-						           for(var i=0; i<allRowsInGrid.length; i++) {
-								 	 	jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
-								 	 	 $("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
-								 	 	 submittedSuccesfully = dataToBeAdded;
-									}
 									
 									previousDataForpaging = selectedStudentObjArr;									
-									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
-									if(alldata){
-										for(var key in selectedStudentObjArr){
-											var index = jQuery.inArray(key, studentArrId);
-											if(alldata[index] != null && alldata[index] != undefined) {
-												for(var prop in dataToBeAdded){
-													alldata[index][prop] = dataToBeAdded[prop];
-												}
-											}
-										}
-										
-									}									
-									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
+									
 									document.getElementById('displayMessageMain').style.display = "block";
 									selectedStudentObjArr = {};
 									//call here again to disable button now because selectedStudentObjArr might be having other org's data  
 									determineStudentSel(selectedStudentObjArr, "assignAccommButton"); 
 									totalRowSelectedOnPage = 0;
-									$.unblockUI();			
+									gridReloadForBulkStudent();
+									//$.unblockUI();			
 									}
 									else{
 										if(data.type == 'alertMessage') {
