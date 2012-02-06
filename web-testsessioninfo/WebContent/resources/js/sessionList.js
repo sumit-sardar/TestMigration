@@ -302,6 +302,7 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				selectedTestAdminId = null;
 			});
 }
 
@@ -561,6 +562,7 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
 	 
@@ -1118,11 +1120,11 @@ function registerDelegate(tree){
 	
 	function reloadHomePage(){
 		
+		selectedTestAdminId = null;
 		reset();
 		hideTreeSlider();
 		mySessionCliked = true;
 		gridReload(true);
-		
 		$('#showSaveTestMessage').hide();
 	}	
 	
