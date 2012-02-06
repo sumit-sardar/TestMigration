@@ -292,11 +292,11 @@ function viewSubtestStatusDetails(subtestId,status,subtestName){
 		  datatype: "json", 
 		  colNames:[ $("#jqgSessionName").val(),$("#jqgSessionID").val(),$("#jqgLoginID").val(),$("#jqgPassword").val(),$("#jqgAccessCode").val()],
 		   	colModel:[
-		   		{name:'sessionName',index:'sessionName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'sessionName',index:'sessionName', width:210, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'sessionNumber',index:'sessionNumber', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'loginId',index:'loginId', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'accessCode',index:'accessCode', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'loginId',index:'loginId', width:90, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'password',index:'password', width:90, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'accessCode',index:'accessCode', width:90, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"statusList",id:"loginId", records: function(obj) {
