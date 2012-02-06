@@ -518,7 +518,7 @@ function populateGrid() {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -537,7 +537,7 @@ function populateGrid() {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}

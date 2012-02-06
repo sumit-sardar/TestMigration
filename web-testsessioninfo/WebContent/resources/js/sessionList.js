@@ -265,7 +265,7 @@ function populateSessionListGrid(homePageLoad) {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -283,7 +283,7 @@ function populateSessionListGrid(homePageLoad) {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -527,7 +527,7 @@ function populateCompletedSessionListGrid() {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -545,7 +545,7 @@ function populateCompletedSessionListGrid() {
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -1321,7 +1321,7 @@ function registerDelegate(tree){
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
@@ -2817,7 +2817,7 @@ function registerDelegate(tree){
 							title:"Warning",  
 						 	resizable:false,
 						 	autoOpen: true,
-						 	width: 200,
+						 	width: 220,
 						 	height: 80,
 						 	modal: true,
 						 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
