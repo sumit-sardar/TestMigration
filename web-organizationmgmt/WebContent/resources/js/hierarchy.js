@@ -614,12 +614,8 @@ function gridReload(){
  	  postDataObject.q = 2;
  	  postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
       jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-      var sortArrow = jQuery("#list2");
       jQuery("#list2").jqGrid('setGridParam', {url:'orgNodeHierarchyGrid.do',postData: postDataObject,page:1}).trigger("reloadGrid");
- 	  jQuery("#list2").sortGrid('orgNodeName',true);  
-      var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-      $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-      $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
+ 	  jQuery("#list2").sortGrid('orgNodeName',true,'asc');
  }
 	
 	

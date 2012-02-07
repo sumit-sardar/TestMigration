@@ -273,13 +273,9 @@ function gridReloadForOOSStudent(){
 		var postDataObject = {};
  		postDataObject.q = 2;
  		postDataObject.stuForOrgNodeId = $("#outOfSchoolOrgNode").val();
-       jQuery("#outOfSchoolGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
- 	   var sortArrow = jQuery("#outOfSchoolGrid");
+       jQuery("#outOfSchoolGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
        jQuery("#outOfSchoolGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
        jQuery("#outOfSchoolGrid").sortGrid('lastName',true,'asc');
-       var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-       $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-       $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
       
   	}
 

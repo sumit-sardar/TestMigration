@@ -474,13 +474,13 @@ function populateBulkStudentGrid() {
  		postDataObject.demoFilter3 = demo3;
  		//reset();
        jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
- 	   var sortArrow = jQuery("#studentAccommGrid");
+ 	  // var sortArrow = jQuery("#studentAccommGrid");
        jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
-       jQuery("#studentAccommGrid").sortGrid('lastName',true);
+       jQuery("#studentAccommGrid").sortGrid('lastName',true,'asc');
      	//For MQC Defect - 67122
-       var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-       $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-       $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
+      // var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+      // $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
+       //$(arrowElements.childNodes[1]).addClass('ui-state-disabled');
       
 
   }
