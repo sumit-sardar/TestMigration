@@ -272,11 +272,7 @@ function populateBulkStudentGrid() {
 					//setAnchorButtonState('assignAccommButton', true);
 					$('#cb_studentAccommGrid').attr('checked', false);
 				}
-				if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length) {
-					resetRadioAccommodation();
-					$('#AssignAccommPopup').dialog('close');
-					$(".blockUI").hide();
-				}
+				
 			},
 			onSelectAll: function (rowIds, status) {
 					var grade = $('#gs_grade').val();
@@ -392,6 +388,15 @@ function populateBulkStudentGrid() {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				filterLoadFlag = true;
+				if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length && dataSubmited) {
+					dataSubmited = false;
+					var gridDOM = this;
+					setTimeout(function () {
+			            gridDOM.triggerToolbar();
+			            editAccommodationClose();
+			        }, 200);
+					
+				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -429,6 +434,11 @@ function populateBulkStudentGrid() {
 	 
 	 
 	 
+}
+function editAccommodationClose(){
+	resetRadioAccommodation();
+	$('#AssignAccommPopup').dialog('close');
+	$(".blockUI").hide();
 }
 	
 	 function setEmptyListMessage(requestedTab, isSAGridEmpty){
@@ -481,6 +491,7 @@ function populateBulkStudentGrid() {
  		//reset();
        jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
  	  // var sortArrow = jQuery("#studentAccommGrid");
+ 	   
        jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do',postData: postDataObject,page:1}).trigger("reloadGrid");
        jQuery("#studentAccommGrid").sortGrid('lastName',true,'asc');
      	//For MQC Defect - 67122
@@ -519,6 +530,7 @@ function populateBulkStudentGrid() {
 		 resetBulk();	
   }
   
+  var dataSubmited = false;
   
   function saveBulkStudentData(){
  
@@ -550,8 +562,12 @@ function populateBulkStudentGrid() {
 									$('#errorIcon').hide();
 									$('#infoIcon').show();							
 									var selectedStudentCount = data.additionalInfoMap.selectedStudentCount;
-									if(parseInt(selectedStudentCount) > 1000){
-										gridReloadForBulkStudent();
+									dataSubmited = true;
+									if(parseInt(selectedStudentCount) > 1000){	
+										 submittedSuccesfully = dataToBeAdded;		
+										 previousDataForpaging = selectedStudentObjArr;											 
+										 filterLoadFlag = false;							
+										 gridReloadForBulkStudent();
 									}else {
 									   var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 							           for(var i=0; i<allRowsInGrid.length; i++) {
