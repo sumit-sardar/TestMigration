@@ -3329,7 +3329,7 @@ function registerDelegate(tree){
 			$("#displayMessageViewTestSubtest").hide();
 			statusWizard = $("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, event:false });
 			$("h3", statusWizard).each(function(index) {
-				$(this).click(function(e) {
+				$(this).bind("click", function(e) {
 				  if($(this).parent().attr("id") == 'subtestDetailsSectionId') {
 					$("#loginName").text("");
 					$("#password").text("");
@@ -3393,6 +3393,7 @@ function registerDelegate(tree){
 		$('#rosterList').GridUnload();
 		$("#labelTbl").width(924);
 		$("#buttonTbl").width(924);
+		$("#subtestSectionHeader").unbind("click");
 		$("#viewTestSessionAccordion").accordion("destroy");	
 	}
 	

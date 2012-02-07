@@ -16,7 +16,7 @@
 		</div>
 	</div>
 	<div id="subtestDetailsSectionId">
-		<h3><a href="#"><lb:label key="viewStatus.subDet.title" /></a></h3>
+		<h3 id="subtestSectionHeader"><a href="#"><lb:label key="viewStatus.subDet.title" /></a></h3>
 		<div id="View_Subtest" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important;">
 			<jsp:include page="/sessionOperation/view_subtest_details.jsp" />
 		</div>
