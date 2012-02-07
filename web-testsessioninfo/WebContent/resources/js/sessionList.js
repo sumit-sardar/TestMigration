@@ -326,6 +326,8 @@ function searchUserByKeywordList2(){
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 	 closePopUp('searchUserByKeywordList2');
+	 selectedTestAdminId = null;
+	 $("#list2").jqGrid('resetSelection');	//Removing grid selection after search
 }
 
 function resetSearchCrit(){
@@ -384,6 +386,8 @@ function searchUserByKeywordList3(){
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 	
 	 closePopUp('searchUserByKeywordList3');
+	 selectedTestAdminId = null;
+	 $("#list3").jqGrid('resetSelection');	//Removing grid selection after search
 }
 
 function resetSearchList3(){
@@ -729,6 +733,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    	if(topNodeSelected == '1'){
 	    	 	openConfirmationPopup();
 	    	} else {
+	    		selectedTestAdminId = null;
 	    		reset();
 	    		orgSelectVar = true;
  		    	gridReload(false);
@@ -1064,6 +1069,7 @@ function registerDelegate(tree){
 	function fetchDataOnConfirmation() {
 		closePopUp('confirmationPopup');
 		reset();
+		selectedTestAdminId = null;
 		orgSelectVar = true;
 		//if(loadSessionGrid) {
  		gridReload(false);
