@@ -2610,6 +2610,37 @@ public class UserManagementImpl implements UserManagement
 		}
 	}
     
+    public UserNodeData OrgNodehierarchyForValidUser(String userName, Integer associatedNodeId) throws CTBBusinessException {                                                         
+
+
+		
+		
+		try {
+			UserNodeData usnd = new UserNodeData();
+			Integer pageSize = null;
+		
+			UserNode[] usernodes = orgNode.OrgNodehierarchy(associatedNodeId);
+			usnd.setUserNodes(usernodes,pageSize);
+		 
+		
+		 return usnd;
+		} catch (SQLException se) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(se.getStackTrace());
+		 throw dataNotFound;
+		} catch (Exception e) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(e.getStackTrace());
+		 throw dataNotFound;
+		}
+	}
+    
     public UserNodeData OrgNodehierarchyForParent(String userName) 
     throws CTBBusinessException {                                                         
 

@@ -88,7 +88,15 @@ public class UserOrgHierarchyUtils {
         return und;
     }
     
-    
+    public static UserNodeData OrgNodehierarchyForValidUser(String userName,
+			UserManagement userManagement, Integer associatedNodeId)
+			throws CTBBusinessException {
+		UserNodeData und = null;
+
+		und = userManagement.OrgNodehierarchyForValidUser(userName, associatedNodeId);
+
+		return und;
+	} 
     /**
      * buildOrgNodeList
      */    

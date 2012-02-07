@@ -233,11 +233,20 @@ public class SessionOperationController extends PageFlowController {
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
+		//System.out.println("getCustomerConfigurations start..."+new Date());
+
     	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
-		if (accessNewUI(customerConfigs)) {
+    	
+    	//System.out.println("getCustomerConfigurations end..."+new Date());
+    	//System.out.println("accessNewUI start..."+new Date());
+		
+    	if (accessNewUI(customerConfigs)) {
+			//System.out.println("accessNewUI end if..."+new Date());
+			//System.out.println("setupUserPermission start..."+new Date());
 			// direct to revised UI
 			setupUserPermission(customerConfigs);
-	        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+			//System.out.println("setupUserPermission end..."+new Date());
+			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
 	        	forwardName = "resetPassword";
 	        }
 	        else if (this.user.getTimeZone() == null) {
@@ -246,6 +255,7 @@ public class SessionOperationController extends PageFlowController {
 	        
 		}
 		else {
+			//System.out.println("accessNewUI end else..."+new Date());
 			forwardName = "legacyUI";	
 		}
 		
@@ -257,6 +267,7 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward gotoCurrentUI()
     {
+    	//System.out.println("gotoCurrentUI......");
 		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
         this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 		    	
@@ -464,11 +475,6 @@ public class SessionOperationController extends PageFlowController {
         
           try
         {
-        	this.user =  userManagement.getUser(this.userName, this.userName);
-            if(isPopulatedSuccessfully){
-            	vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
-             	vo.populateTimeZone();
-             }
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
@@ -835,7 +841,6 @@ public class SessionOperationController extends PageFlowController {
     	    vo.setOperationStatus(status) ;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
-    	    	this.user =  userManagement.getUser(this.userName, this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setSavedTestDetails(scheduledSession);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
@@ -1902,7 +1907,7 @@ public class SessionOperationController extends PageFlowController {
 					path ="assessments_sessions.jsp")
 	})
     protected Forward getSessionForUserHomeGrid(SessionOperationForm form){
-
+    	//System.out.println("getSessionForUserHomeGrid START....."+new Date());
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -1939,9 +1944,9 @@ public class SessionOperationController extends PageFlowController {
 			base.setTotal("2");
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0))
 			{
-				System.out.println ("List process time Start:"+new Date());
+				//System.out.println ("List process time Start:"+new Date());
 				base = buildTestSessionList(customerLicenses, tsd, base); 
-				System.out.println ("List process time End:"+new Date());
+				//System.out.println ("List process time End:"+new Date());
 			} else {
 				this.setSessionListCUFU(new ArrayList<TestSessionVO>());
 		        this.setSessionListPA(new ArrayList<TestSessionVO>());
@@ -1956,7 +1961,7 @@ public class SessionOperationController extends PageFlowController {
 			//System.out.println ("Json process time Start:"+new Date());
 			
 			json = gson.toJson(base);
-			//System.out.println ("Json process time End:"+new Date() +".."+json);
+			//System.out.println ("Json process time End:"+new Date());
 
 
 			
@@ -1980,7 +1985,7 @@ public class SessionOperationController extends PageFlowController {
 			System.err.println("Exception while processing CR response.");
 			e.printStackTrace();
 		}
-
+		//System.out.println("getSessionForUserHomeGrid END....."+new Date());
 		return null;
 
 	}
@@ -2002,7 +2007,7 @@ public class SessionOperationController extends PageFlowController {
 			base.setTestSessionCUFU(this.sessionListCUFU);
 			base.setTestSessionPA(this.sessionListPA);
 			Gson gson = new Gson();
-			System.out.println ("Json process time Start:"+new Date());
+			System.out.println ("completed Tab Json process time Start:"+new Date());
 			json = gson.toJson(base);
 			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
@@ -2140,7 +2145,7 @@ public class SessionOperationController extends PageFlowController {
 					} else {
 
 						orgIDList = new ArrayList <Integer>();
-						UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchy(this.userName, 
+						UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchyForValidUser(this.userName, 
 								this.userManagement,nodeId);   
 						ArrayList<Organization> orgNodesListloop = UserOrgHierarchyUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
 						preTreeProcess (data,orgNodesListloop,selectedList);
@@ -2659,7 +2664,10 @@ public class SessionOperationController extends PageFlowController {
              	
         try
         {
-            this.user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+        	if(this.user == null){
+        		this.user = userManagement.getUser(this.userName, this.userName);
+        	}
+           // this.user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
             Customer customer = this.user.getCustomer();
             this.customerId = customer.getCustomerId();
             getSession().setAttribute("customerId", customerId);
@@ -2668,8 +2676,8 @@ public class SessionOperationController extends PageFlowController {
 	        {
 	            supportAccommodations = Boolean.FALSE;
 	        }
-	        UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
-	        ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
+	        //UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
+	        //ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
 	        getSession().setAttribute("supportAccommodations", supportAccommodations); 
 	        getSession().setAttribute("schedulerFirstName", this.user.getFirstName());
 	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
@@ -2703,38 +2711,80 @@ public class SessionOperationController extends PageFlowController {
         return cls;
     }
     
+    private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurations) {
+    	
+    	boolean hasBulkStudentConfigurable = false;
+    	boolean hasBulkStudentMoveConfigurable = false;
+    	boolean hasOOSConfigurable = false;
+    	boolean laslinkCustomer = false;
+    	boolean adminUser = isAdminUser();
+    	boolean hasUploadDownloadConfig = false;
+    	boolean hasProgramStatusConfig = false;
+    	boolean hasScoringConfigurable = false;
+    	
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				// For Bulk Accommodation
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true;
+				}
+				// For Bulk Student Move
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentMoveConfigurable = true; 
+				}
+				// For Out Of School Student
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
+						cc.getDefaultValue().equals("T")) {
+					hasOOSConfigurable = true;
+				}
+				// For LasLink Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	laslinkCustomer = true;
+	            }
+				// For Upload Download
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
+						&& cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true;
+	            }
+				// For Program Status
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Program_Status") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true;
+				}
+				// For Hand Scoring
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasScoringConfigurable = true;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					this.hasLicenseConfig = true;
+	            }
+			}
+			
+		}
+		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
+		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
+		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
+		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
+		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable && adminUser));
+		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
+		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
+    }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
 	{
-        boolean adminUser = isAdminUser();
         //boolean TABECustomer = isTABECustomer(customerConfigs);
-        boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
-        
-        this.getSession().setAttribute("showReportTab", 
-        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
-
-        this.getSession().setAttribute("hasUploadDownloadConfigured", 
-        		new Boolean( hasUploadDownloadConfig().booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("hasProgramStatusConfigured", 
-        		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("hasScoringConfigured", 
-        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));
-    	
-        //this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
+         setUpAllUserPermission(customerConfigs);
         this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
-        this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs).booleanValue();
-     	this.getSession().setAttribute("hasLicenseConfigured", this.hasLicenseConfig && adminUser);
-     	
-     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
-
-		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
-		
-		this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
-		
+       
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	
      	this.getSession().setAttribute("isDeleteSessionEnable", isDeleteSessionEnable());
@@ -2861,7 +2911,7 @@ public class SessionOperationController extends PageFlowController {
         return new Boolean(validCustomer && validUser);
     }
     
-    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
+    /*private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
     {               
     	 boolean hasLicenseConfiguration = false;
 
@@ -2892,7 +2942,7 @@ public class SessionOperationController extends PageFlowController {
             } 
         }
         return new Boolean(hasScoringConfigurable);
-    }
+    }*/
 
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
@@ -2927,7 +2977,7 @@ public class SessionOperationController extends PageFlowController {
     /**
 	 * Bulk Accommodation
 	 */
-	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
+	/*private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
 	{
 		boolean hasBulkStudentConfigurable = false;
 		if( customerConfigurations != null ) {
@@ -2942,13 +2992,13 @@ public class SessionOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
-	}
+	}*/
 	
 
 	/**
 	 * Bulk Move
 	 */
-	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
+	/*private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
 	{
 		boolean hasBulkStudentConfigurable = false;
 		if( customerConfigurations != null ) {
@@ -2963,13 +3013,13 @@ public class SessionOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
-	}
+	}*/
 
 	// Changes for Out Of School
 	/**
 	 * Out Of School
 	 */
-	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
+	/*private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
 	{
 		boolean hasOOSConfigurable = false;
 		if( customerConfigurations != null ) {
@@ -2984,7 +3034,7 @@ public class SessionOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasOOSConfigurable);           
-	}
+	}*/
     
     private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
     {               
@@ -3017,7 +3067,7 @@ public class SessionOperationController extends PageFlowController {
 		return customerConfigurationsValue;
 	}
     
-    private Boolean hasUploadDownloadConfig()
+    /*private Boolean hasUploadDownloadConfig()
     {
         Boolean hasUploadDownloadConfig = Boolean.FALSE;
         try {   
@@ -3044,7 +3094,7 @@ public class SessionOperationController extends PageFlowController {
 			}
 		}
 		return new Boolean(hasProgramStatusConfig);   
-    }
+    }*/
     
     @SuppressWarnings("unused")
 	private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
@@ -4038,8 +4088,8 @@ public class SessionOperationController extends PageFlowController {
 					try {
 						Gson gson = new Gson();
 						String json = gson.toJson(base);
-						System.out.println("*********************************************************************");
-						System.out.println(json);
+						//System.out.println("*********************************************************************");
+						//System.out.println(json);
 						resp.setContentType("application/json");
 						resp.flushBuffer();
 						stream = resp.getOutputStream();
@@ -4199,7 +4249,13 @@ public class SessionOperationController extends PageFlowController {
 		private void getCustomerConfigurations()
 		{
 			try {
-					User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+					User user = null;
+				    if(this.user == null) {
+				    	user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+				    } else {
+				    	user = this.user;
+				    }
+					 
 					Customer customer = user.getCustomer();
 					Integer customerId = customer.getCustomerId();
 					this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
