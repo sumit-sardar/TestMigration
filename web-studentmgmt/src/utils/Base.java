@@ -1,6 +1,8 @@
 package utils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dto.StudentProfileInformation;
 
@@ -15,6 +17,7 @@ public class Base {
 	private List<StudentProfileInformation> studentProfileInformation;
 	private String studentIdArray;
 	private List studentNode;
+	Map<Integer,Integer> studentIdIndexer = new HashMap<Integer,Integer>();
 	
 	
 	public String getPage() {
@@ -77,6 +80,12 @@ public class Base {
 	 */
 	public void setStudentNode(List studentNode) {
 		this.studentNode = studentNode;
+	}
+	public Map<Integer, Integer> getStudentIdIndexer() {
+		return studentIdIndexer;
+	}
+	public void setStudentIdIndexer(Map<Integer, Integer> studentIdIndexer) {
+		this.studentIdIndexer = studentIdIndexer;
 	}
 	
 	

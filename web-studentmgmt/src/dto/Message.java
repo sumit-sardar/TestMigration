@@ -10,6 +10,7 @@ public class Message implements java.io.Serializable
 
     public static final String ERROR          = "errorMessage";
     public static final String INFORMATION    = "informationMessage";
+    public static final String ADDITIONAL_INFORMATION    = "additionalInformationMessage";
     public static final String ALERT          = "alertMessage";
 
     public static final String REQUIRED_TEXT            = "Please enter/select this value to continue.";
@@ -51,6 +52,7 @@ public class Message implements java.io.Serializable
 	public static final String DEFAULT_STUDENT_ID_LABEL = "Student ID";
 	public static final String VALIDATE_STUDENT_ID_TITLE      = "<#studentId#>:";
 	public static final String STUDENT_ID_UNUNIQUE_ERROR = "Please re-enter your <#studentId#> information with an unique value.";
+	public static final String SELECTED_STUDENT_COUNT = "selectedStudentCount";
 	//END- TABE-BAUM 060: Unique Student ID
 	
     public Message()

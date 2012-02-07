@@ -3,6 +3,7 @@ var gradeOptions = ":Any;JV:JV;AD:AD";
 var AccommOption = ":Any;T:Yes;F:No";
 var allRowSelected = false;
 var studentArrId = [];
+var studentIdIndexer = {};
 var studentObjArr = [];
 var totalRowSelectedOnPage = 0;
 var customerDemographicList ;
@@ -201,6 +202,7 @@ function populateBulkStudentGrid() {
 		   	records: function(obj) { 
 		   	 	studentArrId = obj.studentIdArray.split(",");
 		   	 	studentObjArr = obj.studentNode;
+		   	 	studentIdIndexer = obj.studentIdIndexer;
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -241,7 +243,10 @@ function populateBulkStudentGrid() {
 		           }
 		           if(!isEmpty(previousDataForpaging)){
 		           	 jQuery("#studentAccommGrid").setRowData(previousDataForpaging[allRowsInGrid[i]], submittedSuccesfully, "first");
-		           	 resetBulk();
+		           	 if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length == 0) {		           	 	
+		           	 	resetBulk();
+		           	 }
+		           	 
 		           }
 		        }
 				totalRowSelectedOnPage = gridreloadRowCount;
@@ -268,6 +273,7 @@ function populateBulkStudentGrid() {
 					$('#cb_studentAccommGrid').attr('checked', false);
 				}
 				if ($('#AssignAccommPopup').parents('.ui-dialog:visible').length) {
+					resetRadioAccommodation();
 					$('#AssignAccommPopup').dialog('close');
 					$(".blockUI").hide();
 				}
@@ -347,7 +353,7 @@ function populateBulkStudentGrid() {
 				var isRowSelected = $("#studentAccommGrid").jqGrid('getGridParam', 'selrow');
 				if(status) {
 					totalRowSelectedOnPage = totalRowSelectedOnPage+1;
-					selectedStudentObjArr[selectedRowId]= selectedRowId;
+					selectedStudentObjArr[selectedRowId]= parseInt(selectedRowId);
 				} else {
 					totalRowSelectedOnPage = totalRowSelectedOnPage-1;
 					 delete selectedStudentObjArr[selectedRowId]; 
@@ -521,12 +527,6 @@ function populateBulkStudentGrid() {
 	var studentIds = "";
 	
 	studentIds = JSON.stringify(selectedStudentObjArr);
-	/*
-	for(var key in selectedStudentObjArr){
-		studentIds =  selectedStudentObjArr[key] + "," + studentIds;
-	}
-	studentIds = studentIds.substring(0,studentIds.length-1) */
-	
 	param = $("#AssignAccommPopup *").serialize();
 	var dataToBeAdded  = getDataToBeAdded(param);
 	param = param + "&studentIds="+studentIds;
@@ -544,10 +544,37 @@ function populateBulkStudentGrid() {
 				success:	function(data, textStatus, XMLHttpRequest){	
 								  
 								var errorFlag = data.errorFlag;
-								var successFlag = data.successFlag;
+								var successFlag = data.successFlag;								
+								
 								if(successFlag) {
 									$('#errorIcon').hide();
 									$('#infoIcon').show();							
+									var selectedStudentCount = data.additionalInfoMap.selectedStudentCount;
+									if(parseInt(selectedStudentCount) > 1000){
+										gridReloadForBulkStudent();
+									}else {
+									   var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
+							           for(var i=0; i<allRowsInGrid.length; i++) {
+									 	 	jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
+									 	 	 $("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
+									 	 	 submittedSuccesfully = dataToBeAdded;
+										}
+										
+										previousDataForpaging = selectedStudentObjArr;									
+										var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
+										if(alldata){
+											for(var key in selectedStudentObjArr){
+												var index = studentIdIndexer[key];
+												if(alldata[index] != null && alldata[index] != undefined) {
+													for(var prop in dataToBeAdded){
+														alldata[index][prop] = dataToBeAdded[prop];
+													}
+												}
+											}
+											
+										}									
+										jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
+									}
 									setBulkMessageMain(data.title, data.content, data.type, "");
 									
 									previousDataForpaging = selectedStudentObjArr;									
@@ -557,7 +584,7 @@ function populateBulkStudentGrid() {
 									//call here again to disable button now because selectedStudentObjArr might be having other org's data  
 									determineStudentSel(selectedStudentObjArr, "assignAccommButton"); 
 									totalRowSelectedOnPage = 0;
-									gridReloadForBulkStudent();
+								
 									//$.unblockUI();			
 									}
 									else{

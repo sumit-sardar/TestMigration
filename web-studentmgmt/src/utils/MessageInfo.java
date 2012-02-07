@@ -1,7 +1,6 @@
 package utils; 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class MessageInfo {
 	private boolean errorFlag = false;
@@ -13,6 +12,7 @@ public class MessageInfo {
 	private Integer studentId ;
 	private String studentLoginId ;
 	private String hasAccommodation = "No";
+	private Map additionalInfoMap;
 
 	/**
 	 * @return the title
@@ -121,6 +121,12 @@ public class MessageInfo {
 	 */
 	public void setHasAccommodation(String hasAccommodation) {
 		this.hasAccommodation = hasAccommodation;
+	}
+	public Map getAdditionalInfoMap() {
+		return additionalInfoMap;
+	}
+	public void setAdditionalInfoMap(Map additionalInfoMap) {
+		this.additionalInfoMap = additionalInfoMap;
 	}
 	
 }

@@ -185,7 +185,10 @@ public class BulkOperationController extends PageFlowController {
 	        // get students - getSessionStudents
 	        ManageBulkStudentData msData = StudentSearchUtils.searchBulkStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, null, demoFilter, studentPage, studentSort);
 
-	        List studentNodes = buildStudentList(msData);
+	        Map studentMap = buildStudentList(msData);
+	        List studentNodes = (List)studentMap.get("studentList");
+	        Map<Integer,Integer> studentIdIndexer = (Map<Integer,Integer>)studentMap.get("studentIdIndexer");
+	        
 	        studentArray = StudentSearchUtils.buildStudentListString(msData);
 			Base base = new Base();
 			base.setPage("1");
@@ -194,6 +197,7 @@ public class BulkOperationController extends PageFlowController {
 			List <Row> rows = new ArrayList<Row>();
 			base.setStudentNode(studentNodes);
 			base.setStudentIdArray(studentArray);
+			base.setStudentIdIndexer(studentIdIndexer);
 			
 			Gson gson = new Gson();
 			//System.out.println ("Json process time Start:"+new Date());
@@ -373,7 +377,7 @@ public class BulkOperationController extends PageFlowController {
 
 						if(successFlag) {
 							messageInfo = createMessageInfo(messageInfo, Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION, false, true );
-							
+							messageInfo = createMessageInfo(messageInfo, Message.SELECTED_STUDENT_COUNT, String.valueOf(studentId.length), Message.ADDITIONAL_INFORMATION, false, true );
 						}
 						else {
 							messageInfo = createMessageInfo(messageInfo, Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION, true, false );
@@ -499,15 +503,21 @@ public class BulkOperationController extends PageFlowController {
 
 
 	private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
-		messageInfo.setTitle(messageTitle);
-		messageInfo.setContent(content);
 		messageInfo.setType(type);
 		messageInfo.setErrorFlag(errorflag);
 		messageInfo.setSuccessFlag(successFlag);
+		if(Message.ADDITIONAL_INFORMATION.equals(type)){
+			Map additionalInfo = new HashMap();
+			additionalInfo.put(messageTitle, content);
+			messageInfo.setAdditionalInfoMap(additionalInfo);
+		}else {
+			messageInfo.setContent(content);
+			messageInfo.setTitle(messageTitle);		
+		}
 		return messageInfo;
 	}
 
-	private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
+	private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo){
 		
 		try {
 			try {
@@ -530,8 +540,10 @@ public class BulkOperationController extends PageFlowController {
 			e.printStackTrace();
 		}
 	} 
-	private List buildStudentList(ManageBulkStudentData ssd) 
+	private Map buildStudentList(ManageBulkStudentData ssd) 
 	{
+		Map studentMap = new HashMap();
+		Map<Integer,Integer> studentIdIndexer = new HashMap<Integer,Integer>();
 		List studentList = new ArrayList();
 		SessionStudent [] sessionStudents = ssd.getManageStudents();    
 
@@ -547,13 +559,13 @@ public class BulkOperationController extends PageFlowController {
 					ss.setMiddleName(String.valueOf(middleName.charAt(0)));
 				}
 				studentList.add(ss);
-				
-
+				studentIdIndexer.put(sessionStudents[i].getStudentId(), i);
 
 			}
 		}
-
-		return studentList;
+		studentMap.put("studentList", studentList);
+		studentMap.put("studentIdIndexer", studentIdIndexer);
+		return studentMap;
 	}
 	
 	
