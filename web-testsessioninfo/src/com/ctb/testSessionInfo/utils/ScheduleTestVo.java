@@ -297,10 +297,11 @@ public class ScheduleTestVo implements Serializable{
 	}
 
 	@SuppressWarnings("unchecked")
-	private void populateTimeZone() {
+	public void populateTimeZone() {
 		List<String> timeZoneList = DateUtils.getTimeZoneList(); 
 		Boolean contains = false;
 		ObjectIdName userTimeZoneObj = new ObjectIdName(this.userTimeZone,this.userTimeZone);
+		testZoneDropDownList = new ArrayList<ObjectIdName>();
 		for(String val : timeZoneList){
 			testZoneDropDownList.add(new ObjectIdName(val,val));	
 			if(val == userTimeZoneObj.getName()){
@@ -309,11 +310,7 @@ public class ScheduleTestVo implements Serializable{
 		}
 		if(!contains){
 			testZoneDropDownList.add(userTimeZoneObj);	
-		}
-		
-		
-		
-		
+		}		
 	}
 
 

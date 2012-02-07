@@ -465,6 +465,10 @@ public class SessionOperationController extends PageFlowController {
           try
         {
         	this.user =  userManagement.getUser(this.userName, this.userName);
+            if(isPopulatedSuccessfully){
+            	vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+             	vo.populateTimeZone();
+             }
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
