@@ -644,6 +644,9 @@ function updateOrganization(element, isChecked){
 				}
 				
 			},
+			onSelectRow: function () {
+				clearMessage();
+			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
             	$('#sp_1_pager2').text("1");
@@ -2323,6 +2326,7 @@ function setSelectedValue(selectObj, valueToSet) {
 		{
 				async:		false,
 				beforeSend:	function(){
+								UIBlock();
 							},
 				url:		'deleteStudent.do',
 				type:		'POST',
@@ -2349,17 +2353,6 @@ function setSelectedValue(selectObj, valueToSet) {
 		document.getElementById('displayMessageMain').style.display = "block";	
 		var delStuSuccess=$("#delStuSuccessID").val();
 		if (deleteStatus == delStuSuccess) {
-			/*
-	     	UIBlock();
-	        jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
-	  	   	var sortArrow = jQuery("#list2");
-	        jQuery("#list2").jqGrid('setGridParam', 
-	        	{url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-	        jQuery("#list2").sortGrid('lastName',true);
-	        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
-	        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-	        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
-	        */
 	        $('#errorIcon').hide();
 			$('#infoIcon').show();  
 			var studentId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -2368,7 +2361,8 @@ function setSelectedValue(selectObj, valueToSet) {
 		}else{
 			$('#errorIcon').show();
 			$('#infoIcon').hide();
-		}  
+		}
+		$.unblockUI();
    	}
 
 	function setupButtonPerUserPermission() {
