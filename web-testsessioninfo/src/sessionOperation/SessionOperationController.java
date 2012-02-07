@@ -464,6 +464,7 @@ public class SessionOperationController extends PageFlowController {
         
           try
         {
+        	this.user =  userManagement.getUser(this.userName, this.userName);
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
@@ -830,6 +831,7 @@ public class SessionOperationController extends PageFlowController {
     	    vo.setOperationStatus(status) ;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+    	    	this.user =  userManagement.getUser(this.userName, this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setSavedTestDetails(scheduledSession);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
