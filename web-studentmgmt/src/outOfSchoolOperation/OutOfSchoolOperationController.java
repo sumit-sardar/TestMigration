@@ -22,6 +22,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Base;
 import utils.BaseTree;
+import utils.BroadcastUtils;
 import utils.FilterSortPageUtils;
 import utils.MessageInfo;
 import utils.Organization;
@@ -53,6 +54,9 @@ public class OutOfSchoolOperationController extends PageFlowController {
 	
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
+	
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.BroadcastMessageLog message;
 	
 	
 	private String userName = null;
@@ -332,6 +336,9 @@ public class OutOfSchoolOperationController extends PageFlowController {
 		getLoggedInUserPrincipal();
 		getUserDetails();
 		setupUserPermission();
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));		
 	}
 	
 	private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
