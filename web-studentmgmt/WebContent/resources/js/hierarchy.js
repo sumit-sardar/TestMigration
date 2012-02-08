@@ -1537,8 +1537,13 @@ function fillselectedOrgNode( elementId, orgList) {
         											setMessage(data.title, data.content, data.type, "");
         											$('#errorIcon').show();
 													$('#infoIcon').hide();
-        											document.getElementById('displayMessage').style.display = "block";	
-        											
+        											document.getElementById('displayMessage').style.display = "block";
+        											if(profileEditable === "false") {
+														disableAllNonEdFlds();
+													} else {
+														resetDisabledFields();
+													}
+        											$.unblockUI();
         										}
 																								
 											},
@@ -1554,6 +1559,11 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	} else {
 			document.getElementById('displayMessage').style.display = "block";
+			if(profileEditable === "false") {
+				disableAllNonEdFlds();
+			} else {
+				resetDisabledFields();
+			}
 	}
 	}
 	
@@ -2712,7 +2722,68 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		return keyVal;
 	}
 			 
-
+	function disableAllNonEdFlds() {
+		
+		$('#Student_Information :checkbox').attr('disabled', true); 
+		$('#Student_Information :radio').attr('disabled', true); 
+		$('#Student_Information select').attr('disabled', true);
+		$('#Student_Information :input').attr('disabled', true);
+		var noRadioData = true;
+		for(var count=0; count< stuDemographic.length; count++) {
+		
+		if(stuDemographic[count]['studentDemographicValues'].length == 1){
+		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
+			     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false") {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     } else {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     }
+		     }else {
+				var valueCardinality = stuDemographic[count]['valueCardinality'];
+				if(valueCardinality == 'SINGLE'){
+						if(profileEditable === "false" && stuDemographic[count].importEditable == 'F') {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     		} else {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', false);
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     		}
+				}
+				if(valueCardinality == 'MULTIPLE'){
+					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
+					     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false"){
+			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+					     }else {
+					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     }
+			     	}
+			    }
+		   }
+		}
+	}
 			
 		
 
