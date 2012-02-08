@@ -510,9 +510,7 @@ function populateGrid() {
 				setAnchorButtonState('changePWButton', true);
 			},
 			onSelectRow: function () {
-				//alert($("#roleNameID").val());
 				if ($("#roleNameID").val() == 'Administrator') {
-				//alert('Administrator....');
 					// $("#changePWDBtn").removeAttr('disabled');
 					setAnchorButtonState('changePWButton', false);
 				}
@@ -520,7 +518,11 @@ function populateGrid() {
 			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
-            	$('#sp_1_pager2').text("1");
+            		$('#sp_1_pager2').text("1");
+            		$('#next_pager2').addClass('ui-state-disabled');
+            		$('#last_pager2').addClass('ui-state-disabled');
+            		$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#list2').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/UserWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noUsertTitleGrd").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noUserMsgGrd").val()+"</td></tr></tbody></table></td></tr>");
             	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});

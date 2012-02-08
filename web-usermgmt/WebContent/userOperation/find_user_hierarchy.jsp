@@ -41,6 +41,8 @@
 <input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
 <input type="hidden" id="deleteUserEnable" name="deleteUserEnable" value='<%=session.getAttribute("isDeleteUserEnable") %>'/>
 <input type="hidden" id="delUserTitleID" name = "delUserTitleID" value=<lb:label key="user.label.titleDelete" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noUsertTitleGrd" name = "noUsertTitleGrd" value=<lb:label key="user.noUserSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noUserMsgGrd" name = "noUserMsgGrd" value=<lb:label key="user.noUserSelected.message" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;">
  	<tr class="transparent">
