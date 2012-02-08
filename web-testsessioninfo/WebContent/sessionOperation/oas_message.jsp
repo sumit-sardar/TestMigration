@@ -88,3 +88,7 @@
 <input type="hidden" id="resStartDate" name="resStartDate" value=<lb:label key="restricted.startDate" prefix="'" suffix="'"/>/>
 <input type="hidden" id="resEndDate" name="resEndDate" value=<lb:label key="restricted.endDate" prefix="'" suffix="'"/>/>
 <input type="hidden" id="resGridTitle" name="resGridTitle" value=<lb:label key="resStu.grid.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noStudentTitleGrd" name = "noStudentTitleGrd" value=<lb:label key="session.noStuSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noStudentMsgGrd" name = "noStudentMsgGrd" value=<lb:label key="session.noStuSelected.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noProctorTitleGrd" name = "noProctorTitleGrd" value=<lb:label key="session.noProcSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noProctorMsgGrd" name = "noProctorMsgGrd" value=<lb:label key="session.noProcSelected.message" prefix="'" suffix="'"/>/>

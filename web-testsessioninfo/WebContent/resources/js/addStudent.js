@@ -586,6 +586,8 @@ function populateSelectStudentGrid() {
             		$('#sp_1_selectStudentPager').text("1");
             		$('#next_selectStudentPager').addClass('ui-state-disabled');
             	 	$('#last_selectStudentPager').addClass('ui-state-disabled');
+            	 	$('#selectStudent').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+		 			$('#selectStudent').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitleGrd").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsgGrd").val()+"</td></tr></tbody></table></td></tr>");
             	} else {
             		var allRowsInGridHere = $('#selectStudent').jqGrid('getDataIDs');
 			 		for(var ii = 0; ii < allRowsInGridHere.length; ii++) {
