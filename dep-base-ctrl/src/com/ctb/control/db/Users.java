@@ -923,5 +923,7 @@ public interface Users extends JdbcControl
             arrayMaxLength = 0, fetchSize=500)
     User [] getUsersMinimalInfoForOrgNode(Integer orgNodeId) throws SQLException;
 
+    @JdbcControl.SQL(statement = "SELECT u.time_zone FROM users u WHERE u.user_name = {userName}")
+    String getUserTimeZoneDetails(String userName) throws SQLException;
 
 }

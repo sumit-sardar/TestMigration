@@ -468,6 +468,7 @@ public class SessionOperationController extends PageFlowController {
     	OutputStream stream = null;
         String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  this.getRequest().getParameter("productId");
+        String userTimeZone = null;
         if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
@@ -475,11 +476,12 @@ public class SessionOperationController extends PageFlowController {
         
           try
         {
+        	  userTimeZone =  userManagement.getUserTimeZone(this.userName);
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
             	 if( tps!=null ) {
-            		vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+            		vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
             	 }
@@ -492,7 +494,10 @@ public class SessionOperationController extends PageFlowController {
                 {
                      selectedProductId = tps[0].getProductId().toString();
                      vo.populateAccessCode(scheduleTest);
-                     vo.populateDefaultDateAndTime(this.user.getTimeZone());
+                     vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
+                     vo.populateTimeZone();
+                     vo.populateDefaultDateAndTime(userTimeZone);
+    
                 }
            } 
             if(tps.length<=0) {
@@ -501,7 +506,7 @@ public class SessionOperationController extends PageFlowController {
             }else {
             	 vo.setNoTestExists(false);
             	 vo.setSelectedProductId(selectedProductId);
-                 vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+                 vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
                  
                  int selectedProductIndex = getProductIndexByID(selectedProductId);
            
@@ -839,8 +844,10 @@ public class SessionOperationController extends PageFlowController {
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
+    	    String userTimeZone = null;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+    	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setSavedTestDetails(scheduledSession);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
@@ -865,7 +872,8 @@ public class SessionOperationController extends PageFlowController {
     	    		initialize();
     	    	}
     	    	vo.setUserRole(this.user.getRole().getRoleName());
-    	    	vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+    	    	vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
+    	    	
     	    	//System.out.println("User time zone " + this.user.getTimeZone());
     	    	TestSession testSession = scheduledSession.getTestSession();
     	    	//String schedulerName = testSession.getCreatedBy();
