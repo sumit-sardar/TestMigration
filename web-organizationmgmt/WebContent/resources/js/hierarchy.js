@@ -476,7 +476,12 @@ function populateGrid() {
 			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
-            	$('#sp_1_pager2').text("1");
+					isGridEmpty = true;
+            		$('#sp_1_pager2').text("1");
+            		$('#next_pager2').addClass('ui-state-disabled');
+            		$('#last_pager2').addClass('ui-state-disabled');
+            		$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#list2').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noOrgTitleGrd").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noOrgMsgGrd").val()+"</td></tr></tbody></table></td></tr>");
             	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
@@ -485,9 +490,6 @@ function populateGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				 if(isGridEmpty) {
-				 	$('#list2').append("<tr width = '100%'><td colspan = '4'><br><br><center><div><table><tr><td><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></td><td>&nbsp;</td><td style='padding-top: 5px'><span>There are no records associated with the selected organization</span></td></tr></table></div></center></td></tr>");
-				 }
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
