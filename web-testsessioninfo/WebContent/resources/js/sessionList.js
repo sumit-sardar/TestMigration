@@ -1911,6 +1911,7 @@ function registerDelegate(tree){
 						selectedSubtestId = selectedTestId;
 						if(!offGradeCancled) {
 							sessionListRelatedData(testSessionListRequired);
+							offGradeSubtestChanged = false;
 						} else {
 							offGradeCancled = false;
 						}
