@@ -45,7 +45,7 @@
 	<lb:label key="testTicket.sessionDocs.message"/><br>
 	</p>
 	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionIndividualTestTicket"/></a>
+	<a href="#" style="text-decoration:underline;color:blue;" onclick="openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionIndividualTestTicket"/></a>
 	&nbsp;
 	<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
 	<br/>
@@ -120,3 +120,9 @@
 			</table>
 </div>		
 </div>
+<!--[if IE]>
+	<iframe style="display: none;" id="downloadIframe" onload="hideBlockUI()"></iframe>
+<![endif]-->
+<!--[if !IE]> -->
+<iframe style="display: none;" id="downloadIframe" onload="hideBlockUI()" src="about:blank;"></iframe>
+<!-- <![endif]-->

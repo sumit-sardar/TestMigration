@@ -33,16 +33,45 @@ function openTestTicketSummaryInExcel( anchor, testAdminId, orgNodeId ) {
 
 }
 
+
 function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
-	anchor.href  = url;
-	anchor.href += "?testAdminId=" + testAdminId;
-	anchor.href += "&orgNodeId=" + orgNodeId;
-	anchor.href += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
-	anchor.href += "&displayAccess=false";// + displayAccessCode;
+	UIBlock();
+	url += "?testAdminId=" + testAdminId;
+	url += "&orgNodeId=" + orgNodeId;
+	url += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	url += "&displayAccess=false";// + displayAccessCode;
 	//    var targetWindowName = ticketType + orgNodeId;
 	//    anchor.target = targetWindowName;
-	return true;
+	if (navigator.userAgent.indexOf("MSIE") > -1 && !window.opera){
+		var iframeDoc = (document.getElementById("downloadIframe").contentWindow)? document.getElementById("downloadIframe").contentWindow.document: document.getElementById("downloadIframe").contentDocument;
+	
+		iframeDoc.onreadystatechange = function(){
+			if(document.getElementById("downloadIframe").readyState == 'interactive'){
+				$.unblockUI();
+			}
+		}; 
+	}
+	setIFrameSource("downloadIframe",url);
+    
 }
+
+function hideBlockUI(){
+	$.unblockUI();	
+}
+function setIFrameSource(cid, url) {
+	var myframe = document.getElementById(cid);
+	if(myframe !== null)
+	{
+	    if(myframe.src){
+	        myframe.src = url; 
+	    } else if(myframe.contentWindow !== null && myframe.contentWindow.location !== null){
+	        myframe.contentWindow.location = url; 
+	    } else { 
+	    	myframe.setAttribute('src', url); 
+	    }
+	}
+}
+
 	
 function populateTestTicketTree() {
 	var postDataObject = {};
