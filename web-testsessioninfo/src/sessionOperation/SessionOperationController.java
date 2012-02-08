@@ -402,7 +402,7 @@ public class SessionOperationController extends PageFlowController {
 		 
 		 if (validationPassed) {
 			 this.user.setResetPassword("F");
-			 this.user.setPasswordHintQuestion(hintQuestionId);
+			 this.user.setPasswordHintQuestionId(new Integer(hintQuestionId));
 			 this.user.setPasswordHintAnswer(hintAnswer);
 			 this.user.setPassword(oldPassword);
 			 this.user.setNewPassword(newPassword);
