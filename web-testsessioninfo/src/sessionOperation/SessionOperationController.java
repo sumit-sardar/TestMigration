@@ -466,13 +466,13 @@ public class SessionOperationController extends PageFlowController {
     	HttpServletResponse resp = getResponse();
     	resp.setCharacterEncoding("UTF-8"); 
     	OutputStream stream = null;
-        String currentAction = this.getRequest().getParameter("currentAction");
-        String selectedProductId =  this.getRequest().getParameter("productId");
+        //String currentAction = this.getRequest().getParameter("currentAction");
+        String selectedProductId =  null;
         String userTimeZone = null;
-        if(currentAction==null)
+        /*if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
-        } 
+        } */
         
           try
         {
@@ -481,15 +481,15 @@ public class SessionOperationController extends PageFlowController {
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
             	 if( tps!=null ) {
-            		vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
+            		//vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
             	 }
             	 isPopulatedSuccessfully = true;
             }
         	           
-            if(selectedProductId== null || selectedProductId.trim().length()==0)
-            {
+           /* if(selectedProductId== null || selectedProductId.trim().length()==0)
+            {*/
                 if (tps.length > 0 && tps[0] != null)
                 {
                      selectedProductId = tps[0].getProductId().toString();
@@ -499,14 +499,14 @@ public class SessionOperationController extends PageFlowController {
                      vo.populateDefaultDateAndTime(userTimeZone);
     
                 }
-           } 
+          /* } */
             if(tps.length<=0) {
             	
             	vo.setNoTestExists(true);
             }else {
             	 vo.setNoTestExists(false);
             	 vo.setSelectedProductId(selectedProductId);
-                 vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
+                 //vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
                  
                  int selectedProductIndex = getProductIndexByID(selectedProductId);
            
