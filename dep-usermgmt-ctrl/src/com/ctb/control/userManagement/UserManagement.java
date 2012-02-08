@@ -340,5 +340,6 @@ public interface UserManagement
     public String getAddressIdFromUserId(int userId);
     
     com.ctb.bean.testAdmin.OrgNodeCategory getCustomerLeafNodeDetail(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
-
+    
+    public String getUserTimeZone(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 } 

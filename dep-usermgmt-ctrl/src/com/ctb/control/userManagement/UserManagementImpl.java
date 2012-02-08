@@ -2725,6 +2725,16 @@ public class UserManagementImpl implements UserManagement
 		}
 		return addressId;
     }
+    
+    public String getUserTimeZone(String userName){
+    	String timeZoneInfo = null;
+    	try{
+    		timeZoneInfo = users.getUserTimeZoneDetails(userName);
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    	}
+    	return timeZoneInfo;
+    }
 
 
 
