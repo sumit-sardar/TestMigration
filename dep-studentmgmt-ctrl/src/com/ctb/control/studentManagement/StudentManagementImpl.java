@@ -2496,6 +2496,7 @@ public class StudentManagementImpl implements StudentManagement
 							}
 							searchbyStudentIds = SQLutils.generateSQLCriteria("student_id in  ",newStudentid);
 							accommodation.updateBulkStudentAccommodations(searchbyStudentIds,sqlUpdateStr);
+							studentManagement.setRosterUpdateFlagInClause(searchbyStudentIds);
 						}
 						//END -Inclause changes
 				}

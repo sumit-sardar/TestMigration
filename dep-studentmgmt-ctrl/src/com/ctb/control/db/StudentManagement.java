@@ -1126,4 +1126,7 @@ public interface StudentManagement extends JdbcControl
 	@JdbcControl.SQL(statement = "delete from test_roster where test_roster_id in (select ros.test_roster_id from test_roster ros, student stu where ros.test_completion_status in ('SC', 'NT') and ros.student_id = stu.student_id and stu.out_of_school = 'Yes' and ros.student_id = {studentId})")
     void removeRosterDataForOOS(Integer studentId) throws SQLException;
     
+	//For bulk Accommodation test roster data
+    @JdbcControl.SQL(statement = "update test_roster set updated_date_time = updated_date_time where test_completion_status not in ('CO','NT') and {sql: updateByStudetnId}")
+    void setRosterUpdateFlagInClause(String updateByStudetnId) throws SQLException;
 }
