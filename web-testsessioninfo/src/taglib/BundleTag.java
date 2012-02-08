@@ -33,14 +33,31 @@ public class BundleTag extends TagSupport{
 	public int doStartTag() {
 		try {
 			
-
+			boolean requiredToLoadResource = false;
 			ServletRequest req = pageContext.getRequest();
 			HashMap<String,Properties> map = null;
 			//HashMap<String,Properties> map = (HashMap<String,Properties>)session.getAttribute("localeMap");
-			req.removeAttribute("localeMap");
-			map = new HashMap<String,Properties> ();
-			map.put(getCountryCode(), getProperties ());
-			req.setAttribute("localeMap", map);
+			if(req.getAttribute("localeMap")== null ) {
+				requiredToLoadResource = true;
+			} else if (  req.getAttribute("bunble") == null  ||  ! req.getAttribute("bunble").equals(this.getBaseName())){
+				requiredToLoadResource = true;
+			} else {
+				HashMap<String,Properties> mval = (HashMap<String,Properties>)req.getAttribute("localeMap");
+				if(mval.get(getCountryCode()) == null) {
+					requiredToLoadResource = true;
+				}
+			}
+			
+			if(requiredToLoadResource){
+				req.removeAttribute("localeMap");
+				req.removeAttribute("bunble");
+				map = new HashMap<String,Properties> ();
+				map.put(getCountryCode(), getProperties ());
+				req.setAttribute("localeMap", map);
+				req.setAttribute("bunble", this.getBaseName());
+			} else {
+				//System.out.println("Resource ["+baseName+"] Already Loaded...");
+			}
 
 		} catch (Exception ex) {
 			throw new Error("Key not found...");
@@ -74,7 +91,7 @@ public class BundleTag extends TagSupport{
 		String propName = this.getBaseName();
 		Properties prop = new Properties ();
 		InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propName); 
-		//System.out.println("inStream::"+inStream);		
+		System.out.println("inStream::"+inStream);		
 		prop.load(inStream);
 		return prop;
 	}
