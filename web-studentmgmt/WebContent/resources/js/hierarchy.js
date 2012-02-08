@@ -649,7 +649,11 @@ function updateOrganization(element, isChecked){
 			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
-            	$('#sp_1_pager2').text("1");
+            		$('#sp_1_pager2').text("1");
+            		$('#next_pager2').addClass('ui-state-disabled');
+            		$('#last_pager2').addClass('ui-state-disabled');
+            		$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#list2').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/StudentWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
             	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
