@@ -78,3 +78,20 @@ BEGIN
      WHEN OTHERS THEN RAISE;
 END TMS_PRIM_TO_SEC_PREPOP;
 /
+
+CREATE OR REPLACE TRIGGER SET_TMS_ADMIN_UPDATE
+AFTER  UPDATE ON TEST_ADMIN REFERENCING
+ NEW AS NEW
+ OLD AS OLD
+FOR EACH ROW
+DECLARE
+BEGIN
+
+   IF :OLD.test_admin_status != 'CU' and :NEW.test_admin_status = 'CU' THEN 
+    insert into tms_prim_cache_prepop select test_roster_id, null as node_id from test_roster ros where ros.test_admin_id = :NEW.test_admin_id;
+   END IF; 
+
+   EXCEPTION
+     WHEN OTHERS THEN RAISE;
+END SET_TMS_ADMIN_UPDATE;
+/

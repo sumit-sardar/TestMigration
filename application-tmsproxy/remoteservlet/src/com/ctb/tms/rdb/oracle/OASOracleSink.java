@@ -141,8 +141,10 @@ public class OASOracleSink implements OASRDBSink {
 	    			} else {
 	    				subtestList = subtestList + "," + subtest.getId();
 	    			}
+	    			if("TB".equals(subtest.getProduct()) || "TL".equals(subtest.getProduct())) {
+	    				isTABE = true;
+	    			}
 	    			if(!"SC".equals(subtest.getCompletionStatus())) {
-		    			if("TB".equals(subtest.getProduct()) || "TL".equals(subtest.getProduct())) isTABE = true;
 		    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
 		    			stmt1.setString(1, subtest.getCompletionStatus());
 		    			if(subtest.getMaxScore() > 0) {

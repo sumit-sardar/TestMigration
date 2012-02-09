@@ -586,7 +586,7 @@ public class TMSServlet extends HttpServlet {
         	ArrayList newmanifest = new ArrayList();
         	for(int j=0;j<mda.length;j++) {
         		ManifestData md = mda[j];
-        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
+        		String subtestName = md.getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
         		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
         		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) recommendedMap.get(subtestName.trim());
         		if(rsl != null) {
@@ -594,11 +594,11 @@ public class TMSServlet extends HttpServlet {
 	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
 	        			newmanifest.add(md);
 	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
-	        		} else {
-	        			if (rsl.getRecommendedLevel().equals(md.getLevel())) {
+	        		} else if (rsl.getRecommendedLevel().equals(md.getLevel())) {
 	        				newmanifest.add(md);
 	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
-	        			}
+	        		} else {
+	        			logger.debug("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
 	        		}
         		} else {
         			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);

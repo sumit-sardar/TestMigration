@@ -107,6 +107,7 @@ public class ManifestData implements Serializable
 	}
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
+		this.completionStatus = "CO";
 	}
 	
 	/**
