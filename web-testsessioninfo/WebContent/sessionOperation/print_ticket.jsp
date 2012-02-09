@@ -120,9 +120,3 @@
 			</table>
 </div>		
 </div>
-<!--[if IE]>
-	<iframe style="display: none;" id="downloadIframe" onload="hideBlockUI()"></iframe>
-<![endif]-->
-<!--[if !IE]> -->
-<iframe style="display: none;" id="downloadIframe" onload="hideBlockUI()" src="about:blank;"></iframe>
-<!-- <![endif]-->
