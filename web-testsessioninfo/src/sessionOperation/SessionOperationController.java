@@ -2744,36 +2744,43 @@ public class SessionOperationController extends PageFlowController {
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
 						cc.getDefaultValue().equals("T")) {
 					hasBulkStudentConfigurable = true;
+					continue;
 				}
 				// For Bulk Student Move
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
 						cc.getDefaultValue().equals("T")) {
-					hasBulkStudentMoveConfigurable = true; 
+					hasBulkStudentMoveConfigurable = true;
+					continue;
 				}
 				// For Out Of School Student
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
 						cc.getDefaultValue().equals("T")) {
 					hasOOSConfigurable = true;
+					continue;
 				}
 				// For LasLink Customer
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
 						&& cc.getDefaultValue().equals("T")) {
 	            	laslinkCustomer = true;
+	            	continue;
 	            }
 				// For Upload Download
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
 						&& cc.getDefaultValue().equals("T")) {
 					hasUploadDownloadConfig = true;
+					continue;
 	            }
 				// For Program Status
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Program_Status") && 
 						cc.getDefaultValue().equals("T")) {
 					hasProgramStatusConfig = true;
+					continue;
 				}
 				// For Hand Scoring
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					hasScoringConfigurable = true;
+					continue;
 	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
 	            		cc.getDefaultValue().equals("T")	) {
@@ -3296,6 +3303,7 @@ public class SessionOperationController extends PageFlowController {
         	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("TAS_Revised_UI")) {
             	accessNewUI = true;
+            	break;
             }
         }
         return accessNewUI;

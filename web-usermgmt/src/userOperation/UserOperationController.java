@@ -190,69 +190,7 @@ public class UserOperationController extends PageFlowController
         
     }
 
-    /**
-	 * Bulk Accommodation
-	 */
-	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
-	{
-		boolean hasBulkStudentConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
-						cc.getDefaultValue().equals("T")) {
-					hasBulkStudentConfigurable = true; 
-					break;
-				}
-			}
-		}
-		return new Boolean(hasBulkStudentConfigurable);           
-	}
-
-
-	/**
-	 * Bulk Move
-	 */
-	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
-	{
-		boolean hasBulkStudentConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
-						cc.getDefaultValue().equals("T")) {
-					hasBulkStudentConfigurable = true; 
-					break;
-				}
-			}
-		}
-		return new Boolean(hasBulkStudentConfigurable);           
-	}
-	
-	// Changes for Out Of School
-	/**
-	 * Out Of School
-	 */
-	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
-	{
-		boolean hasOOSConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
-						cc.getDefaultValue().equals("T")) {
-					hasOOSConfigurable = true; 
-					break;
-				}
-			}
-		}
-		return new Boolean(hasOOSConfigurable);           
-	}
-	
-	private boolean isLasLinkCustomer(CustomerConfiguration[] customerConfigurations)
+    private boolean isLasLinkCustomer(CustomerConfiguration[] customerConfigurations)
 	{               
 		boolean isLasLinkCustomer = false;
 		if( customerConfigurations != null ) {
@@ -1519,42 +1457,102 @@ public class UserOperationController extends PageFlowController
         getSession().setAttribute("userName", this.userName);
     }
     
+private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurations) {
+    	
+    	boolean hasBulkStudentConfigurable = false;
+    	boolean hasBulkStudentMoveConfigurable = false;
+    	boolean hasOOSConfigurable = false;
+    	boolean adminUser = isAdminUser();
+    	boolean hasUploadDownloadConfig = false;
+    	boolean hasProgramStatusConfig = false;
+    	boolean hasScoringConfigurable = false;
+    	boolean hasLicenseConfiguration= false;
+    	boolean TABECustomer = false;
+    	String roleName = this.user.getRole().getRoleName();
+    	
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				// For Bulk Accommodation
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true;
+					continue;
+				}
+				// For Bulk Student Move
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentMoveConfigurable = true;
+					continue;
+				}
+				// For Out Of School Student
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
+						cc.getDefaultValue().equals("T")) {
+					hasOOSConfigurable = true;
+					continue;
+				}
+				// For Upload Download
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
+						&& cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true;
+					continue;
+	            }
+				// For Program Status
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Program_Status") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true;
+					continue;
+				}
+				// For Hand Scoring
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasScoringConfigurable = true;
+					continue;
+	            }
+				//For License
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasLicenseConfiguration = true;
+					continue;
+	            }
+				// For TABE Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
+	            	TABECustomer = true;
+	            	continue;
+	            }
+			}
+			
+		}
+		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
+		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
+		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
+		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
+		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable && adminUser));
+		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(hasLicenseConfiguration && adminUser));
+		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
+		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
+        		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
+		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
+    }
+    
 	private void setupUserPermission()
 	{
         CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
-        boolean adminUser = isAdminUser();
-        boolean TABECustomer = isTABECustomer(customerConfigs);
+
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         
+        setUpAllUserPermission(customerConfigs);
+        
         this.getSession().setAttribute("showReportTab", 
-        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
-
-        this.getSession().setAttribute("hasScoringConfigured", 
-        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
-        
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
-     	
-     	this.getSession().setAttribute("hasProgramStatusConfigured", 
-        		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("hasUploadDownloadConfigured", 
-        		new Boolean( hasUploadDownloadConfig(customerConfigs).booleanValue() && adminUser));
-        
-        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
+        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));   	
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
     	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(laslinkCustomer));
     	
-    	this.getRequest().setAttribute("customerConfigurations", customerConfigs);    
-
-		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
-		
-     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));
-     	
-     	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
+    	this.getRequest().setAttribute("customerConfigurations", customerConfigs);
      	
      	this.getSession().setAttribute("isDeleteUserEnable", isDeleteUserEnable());
 	}
@@ -1581,94 +1579,6 @@ public class UserOperationController extends PageFlowController
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
-    
-    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
-    {               
-        String roleName = this.user.getRole().getRoleName();        
-        boolean validCustomer = false; 
-
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-            CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
-            {
-                validCustomer = true; 
-            }               
-        }
-        
-        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
-        		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
-        
-        return new Boolean(validCustomer && validUser);
-    }
-    
-    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
-    {               
-    	 boolean hasLicenseConfiguration = false;
-
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
-            		cc.getDefaultValue().equals("T")	) {
-            	hasLicenseConfiguration = true;
-                break;
-            } 
-        }
-       
-        return new Boolean(hasLicenseConfiguration);
-    }
-    
-    private Boolean hasUploadDownloadConfig(CustomerConfiguration[] customerConfigurations)
-    {
-        Boolean hasUploadDownloadConfig = Boolean.FALSE;
-        if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download") && 
-						cc.getDefaultValue().equals("T")) {
-					hasUploadDownloadConfig = true; 
-					break;
-				}
-			}
-		}
-        return new Boolean(hasUploadDownloadConfig);
-    }
-    
-    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
-    {	
-        Boolean hasProgramStatusConfig = Boolean.FALSE;
-        if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Program_Status") && 
-						cc.getDefaultValue().equals("T")) {
-					hasProgramStatusConfig = true; 
-					break;
-				}
-			}
-		}
-        return new Boolean(hasProgramStatusConfig);
-    }
-    
-    
-    private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
-    {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
-        boolean hasScoringConfigurable = false;
-        
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
-            		cc.getDefaultValue().equals("T")	) {
-            	hasScoringConfigurable = true;
-            } 
-        }
-        return new Boolean(hasScoringConfigurable);
-    }
 
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
@@ -1683,20 +1593,6 @@ public class UserOperationController extends PageFlowController
             }
         }
         return laslinkCustomer;
-    }
-
-    private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
-    {               
-        boolean TABECustomer = false;
-        
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
-            	TABECustomer = true;
-            }
-        }
-        return TABECustomer;
     }
     
     private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
