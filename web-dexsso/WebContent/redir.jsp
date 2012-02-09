@@ -1,4 +1,4 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%
-response.sendRedirect("/TestSessionInfoWeb/homepage/begin.do");
+response.sendRedirect("/SessionWeb/sessionOperation/begin.do");
 %>
