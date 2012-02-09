@@ -166,7 +166,10 @@
 			<div id="viewUploads" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 				<table id="viewUploadsListId" class="gridTable"></table>
 				<div id="viewUploadsListPager" class="gridTable" ></div>
-				<script>populateUploadListGrid();</script>
+				<script>
+					showLoading();
+					populateUploadListGrid();
+				</script>
 			</div>								
 		</td>
 	</tr>

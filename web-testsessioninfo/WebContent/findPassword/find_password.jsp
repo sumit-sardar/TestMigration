@@ -169,7 +169,7 @@ function ignoreEnterKey( e ) {
 					  <tr>
 						<td class="footerLayout">
 						    <span>
-						        Copyright &copy; 2008 by CTB/McGraw-Hill LLC. All rights reserved.
+						        Copyright &copy; 2012 by CTB/McGraw-Hill LLC. All rights reserved.
 						    </span>
 						
 						    <span>
