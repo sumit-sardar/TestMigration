@@ -1506,9 +1506,9 @@ function fillselectedOrgNode( elementId, orgList) {
 													} 
 													
 													if(showStudentInGrid) {
-														var dataToBeAdded = {lastName:$("#studentLastName").val(),
-																			firstName:$("#studentFirstName").val(),
-																			middleInitial:$("#studentMiddleName").val().substring(0,1).toUpperCase(),
+														var dataToBeAdded = {lastName:initCap($("#studentLastName").val()),
+																			firstName:initCap($("#studentFirstName").val()),
+																			middleInitial:$.trim($("#studentMiddleName").val()).substring(0,1).toUpperCase(),
 																			grade:$("#gradeOptions").val(),
 																			orgNodeNamesStr:$.trim(assignedOrg),
 																			gender:$("#genderOptions").val(),
@@ -1572,6 +1572,15 @@ function fillselectedOrgNode( elementId, orgList) {
 			}
 	}
 	}
+	
+	function initCap(str) {
+	 /* First letter as uppercase, rest lower */
+	 var returnStr = $.trim(str);
+	 if(str != null && str != ""){
+	 	returnStr = returnStr.substring(0,1).toUpperCase() + returnStr.substring(1,returnStr.length);
+	 }
+	 return returnStr;
+	} 
 	
 	function resetDisabledFields(){
 		$('#Student_Information :checkbox').attr('disabled', false); 
