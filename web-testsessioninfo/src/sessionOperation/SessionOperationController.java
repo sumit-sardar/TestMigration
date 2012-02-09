@@ -176,6 +176,8 @@ public class SessionOperationController extends PageFlowController {
     private User user = null;
     private List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
     private List<TestSessionVO> sessionListPA = new ArrayList<TestSessionVO>(); 
+    Map<Integer,Map> sessionListCUFUMap = null;
+    Map<Integer,Map> sessionListPAMap = null;
     private boolean hasLicenseConfig = false; 
     public static final String CONTENT_TYPE_JSON = "application/json";
     public LinkedHashMap<String, String> hintQuestionOptions = null;
@@ -1958,8 +1960,12 @@ public class SessionOperationController extends PageFlowController {
 			} else {
 				this.setSessionListCUFU(new ArrayList<TestSessionVO>());
 		        this.setSessionListPA(new ArrayList<TestSessionVO>());
+		        this.setSessionListCUFUMap(new HashMap<Integer, Map>());
+		        this.setSessionListPAMap(new HashMap<Integer, Map>());
 		        base.setTestSessionCUFU(sessionListCUFU);
 		        base.setTestSessionPA(sessionListPA);
+		        base.setSessionListCUFUMap(sessionListCUFUMap);
+		        base.setSessionListPAMap(sessionListPAMap);
 			}
 			base.setOrgNodeCategory(orgNodeCategory);
 			
@@ -3149,7 +3155,12 @@ public class SessionOperationController extends PageFlowController {
     {
         List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
         List<TestSessionVO> sessionListPA = new ArrayList<TestSessionVO>();        
-        TestSession[] testsessions = tsd.getTestSessions();            
+        TestSession[] testsessions = tsd.getTestSessions(); 
+        Map<Integer,Map> sessionListCUFUMap = new HashMap<Integer, Map>();
+        Map<Integer,Map> sessionListPAMap = new HashMap<Integer, Map>();
+        Map infoMapCUFU = new HashMap();
+        Map infoMapPA = new HashMap();
+        
         for (int i=0; i < testsessions.length; i++)
         {
             TestSession ts = testsessions[i];
@@ -3158,10 +3169,14 @@ public class SessionOperationController extends PageFlowController {
             		TestSessionVO vo = new TestSessionVO(ts);
             		registerStudentEnable(customerLicenses, vo);
             		sessionListCUFU.add(vo);
+            		infoMapCUFU.put("isRegisterStudentEnable", vo.getIsRegisterStudentEnable());
+            		sessionListCUFUMap.put(vo.getTestAdminId(), infoMapCUFU);
             	} else {
             		TestSessionVO vo = new TestSessionVO(ts);
             		registerStudentEnable(customerLicenses, vo);
             		sessionListPA.add(vo);
+            		infoMapPA.put("isRegisterStudentEnable", vo.getIsRegisterStudentEnable());
+            		sessionListPAMap.put(vo.getTestAdminId(),infoMapPA);
             	}
          
                 
@@ -3171,6 +3186,8 @@ public class SessionOperationController extends PageFlowController {
         this.setSessionListPA(sessionListPA);
         base.setTestSessionCUFU(sessionListCUFU);
         base.setTestSessionPA(sessionListPA);
+        base.setSessionListCUFUMap(sessionListCUFUMap);
+        base.setSessionListPAMap(sessionListPAMap);
         return base;
     }
     
@@ -4837,4 +4854,20 @@ public class SessionOperationController extends PageFlowController {
 			}
 	        return null;
 	    }
+
+		public Map<Integer, Map> getSessionListCUFUMap() {
+			return sessionListCUFUMap;
+		}
+
+		public void setSessionListCUFUMap(Map<Integer, Map> sessionListCUFUMap) {
+			this.sessionListCUFUMap = sessionListCUFUMap;
+		}
+
+		public Map<Integer, Map> getSessionListPAMap() {
+			return sessionListPAMap;
+		}
+
+		public void setSessionListPAMap(Map<Integer, Map> sessionListPAMap) {
+			this.sessionListPAMap = sessionListPAMap;
+		}
 }

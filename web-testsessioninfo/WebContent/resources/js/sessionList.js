@@ -131,7 +131,7 @@ function populateSessionListGrid(homePageLoad) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 			   	records: function(obj) { 
-			   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
+			   	 sessionListCUFU = obj.sessionListCUFUMap;
 			   	 $("#list2").jqGrid("hideCol","creatorOrgNodeId");
 			   	 $("#list2").jqGrid("hideCol","loginStartDateString");
 			   	 $("#list2").jqGrid("hideCol","loginEndDateString");
@@ -436,7 +436,7 @@ function populateCompletedSessionListGrid() {
 		   	 $("#list3").jqGrid("hideCol","creatorOrgNodeId");
 		   	 $("#list3").jqGrid("hideCol","loginStartDateString");
 			 $("#list3").jqGrid("hideCol","loginEndDateString");
-		   	 sessionListPA = JSON.stringify(obj.testSessionPA);
+		   	 sessionListPA = obj.sessionListPAMap;
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -914,21 +914,11 @@ function registerDelegate(tree){
       }
 		
 		
-		function getDataFromJson(id, sessionList){
-			var str = sessionList;
+		function getDataFromJson(id, sessionListMap){
+			
 			var isRegisterStudentEnable = "";
-			var indexOfId = str.indexOf(id);
-			var indexOfisRegisterStudentEnable = -1;
-			var indexOfComma = -1;
-			if(indexOfId > 0){
-				str = str.substring(parseInt(indexOfId), str.length);
-				indexOfisRegisterStudentEnable = str.indexOf("isRegisterStudentEnable");
-				indexOfComma = str.indexOf(',', parseInt(indexOfisRegisterStudentEnable));
-				indexOfisRegisterStudentEnable += 25;
-				isRegisterStudentEnable = str.substring(parseInt(indexOfisRegisterStudentEnable), parseInt(indexOfComma));
-				isRegisterStudentEnable = $.trim(isRegisterStudentEnable);
-			}else{
-				
+			if(sessionListMap[id]){
+				isRegisterStudentEnable = sessionListMap[id].isRegisterStudentEnable;
 			}
 			return isRegisterStudentEnable;
 	}

@@ -1,6 +1,7 @@
 package com.ctb.testSessionInfo.utils; 
 
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
@@ -39,6 +40,8 @@ public class Base {
 	private boolean subtestValidationAllowed;
 	private boolean isLaslinkSession;
 	private boolean donotScoreAllowed;
+	Map<Integer,Map> sessionListPAMap;
+	Map<Integer,Map> sessionListCUFUMap;
 	
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
@@ -250,6 +253,18 @@ public class Base {
 	 */
 	public List getGradeList() {
 		return gradeList;
+	}
+	public Map<Integer, Map> getSessionListPAMap() {
+		return sessionListPAMap;
+	}
+	public void setSessionListPAMap(Map<Integer, Map> sessionListPAMap) {
+		this.sessionListPAMap = sessionListPAMap;
+	}
+	public Map<Integer, Map> getSessionListCUFUMap() {
+		return sessionListCUFUMap;
+	}
+	public void setSessionListCUFUMap(Map<Integer, Map> sessionListCUFUMap) {
+		this.sessionListCUFUMap = sessionListCUFUMap;
 	}
 
 }
