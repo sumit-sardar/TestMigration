@@ -21,6 +21,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String userName;
     private String firstName;
     private String middleName;
+    private String middleInitial;
     private String lastName;
     private String gender;
     private String grade;
@@ -417,6 +418,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.userName = "";
         this.firstName = "";
         this.middleName = "";
+        this.middleInitial = "";
         this.lastName = "";
         this.displayName = "";
         this.gender = "";
@@ -445,6 +447,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.userName = student.getLoginId();
         this.firstName = student.getFirstName();
         this.middleName = student.getMiddleName();
+        if(student.getMiddleName() != null && !student.getMiddleName().equals(""))
+        	this.middleInitial = student.getMiddleName().substring(0,1);
         this.lastName = student.getLastName();
         this.displayName = student.getStudentName();
         this.createBy = student.getCreatedBy();
@@ -994,5 +998,15 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setOutOfSchool(String outOfSchool) {
 		this.outOfSchool = outOfSchool;
+	}
+
+
+	public String getMiddleInitial() {
+		return middleInitial;
+	}
+
+
+	public void setMiddleInitial(String middleInitial) {
+		this.middleInitial = middleInitial;
 	}
 } 
