@@ -216,6 +216,7 @@ function showGrid(){
 
 function showPopup(stuCount){
 	var msg = $("#stuCountId").val();
+	stuCount = addCommas(stuCount);//to add commas at 1000th places
 	var countMsg = msg.replace("XXXX",stuCount);
 	
 	$("#rootNodePopup").dialog({  
@@ -928,6 +929,7 @@ function updateOrganization(element, isChecked){
 function AddStudentDetail(){
 isAddStudent = true;
 isPopUp = true;
+profileEditable = "true";//to see fields enabled if a new student is added after editing a imported student.
 document.getElementById('displayMessage').style.display = "none";	
 document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
