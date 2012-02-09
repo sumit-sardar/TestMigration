@@ -1508,7 +1508,7 @@ function fillselectedOrgNode( elementId, orgList) {
 													if(showStudentInGrid) {
 														var dataToBeAdded = {lastName:$("#studentLastName").val(),
 																			firstName:$("#studentFirstName").val(),
-																			middleInitial:$("#studentMiddleName").val().substring(0,1),
+																			middleInitial:$("#studentMiddleName").val().substring(0,1).toUpperCase(),
 																			grade:$("#gradeOptions").val(),
 																			orgNodeNamesStr:$.trim(assignedOrg),
 																			gender:$("#genderOptions").val(),
