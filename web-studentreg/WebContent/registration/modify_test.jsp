@@ -68,7 +68,12 @@
     <netui:content value="Register Student: Modify Test"/>
     </h1>
     <p>
+<c:if test="${! isTabeAdaptiveProduct}">     
     <netui:content value="You may change the order in which subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list. For tests that do not include the Locator Test, you may also select the difficulty level for each subtest."/><br/>
+</c:if>    
+<c:if test="${isTabeAdaptiveProduct}">     
+    <netui:content value="You may change the order in which subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list."/><br/>
+</c:if>    
     </p>
 </c:if>
 
@@ -179,7 +184,13 @@
 <c:if test="${multipleSubtest != null}">     
 <p>
 <h4><netui:span value="Subtest Details"/></h4>
+
+<c:if test="${! isTabeAdaptiveProduct}">     
 <p>Select a subtest and use the controls in the table to change the subtest order, remove the subtest from the test, or add the subtest back into the test. If the Locator test is not scheduled, you may also select the level of difficulty for each subtest.</p>
+</c:if>
+<c:if test="${isTabeAdaptiveProduct}">     
+<p>Select a subtest and use the controls in the table to change the subtest order, remove the subtest from the test, or add the subtest back into the test.</p>
+</c:if>
 
 <ctbweb:subtestOrderList allSubtests = "<%= allSubtests %>" 
                          availableSubtests = "<%= availableSubtests %>"

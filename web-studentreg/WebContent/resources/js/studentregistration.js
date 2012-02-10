@@ -74,7 +74,7 @@ function viewStudentDetail () {
 										
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								window.location.href="/SessionWeb/logout.do";
+								window.location.href="/TestSessionInfoWeb/logout.do";
 							}
 				
 				}

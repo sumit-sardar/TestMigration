@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>web-rapidregistration</name>
+	<name>web-studentreg</name>
 	<comment></comment>
 	<projects>
 		<project>dep-weblib-webutils</project>

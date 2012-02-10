@@ -95,6 +95,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		
 		DataExportForm form = initialize(ACTION_FIND_STUDENT);
 		customerHasBulkAccommodation(); //added for defect #66784
+		customerHasResetTestSessions();
 		customerHasScoring();
 		isTopLevelLaslinkUser();
 		return new Forward("success", form);
@@ -312,6 +313,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		retrieveInfoFromSession();
 		DataExportForm form = initialize(ACTION_FIND_STUDENT);
 		customerHasBulkAccommodation(); //added for defect #66784
+		customerHasResetTestSessions();
 		customerHasScoring();
 		isTopLevelLaslinkUser();
 		return new Forward("success",form);
@@ -472,6 +474,29 @@ public class DataExportPageFlowController extends PageFlowController {
 	            
 	 	
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
 	}
 	
 

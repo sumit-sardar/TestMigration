@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-project guid="web-rapidregistration_1249ee2d1ad_ddd10a46be6fe073" version="5">
-	<web-app guid="web-rapidregistration_1249ee2d1ad_1bde05e18cde2e43">
+<web-project guid="web-studentreg_1249ee2d1ad_ddd10a46be6fe073" version="5">
+	<web-app guid="web-studentreg_1249ee2d1ad_1bde05e18cde2e43">
 		<web-app-type>com.m7.webapp.java</web-app-type>
-		<folder-mapping project-name="web-rapidregistration" project-uri="./" web-app-uri="/"/>
+		<folder-mapping project-name="web-studentreg" project-uri="./" web-app-uri="/"/>
 	</web-app>
 	<properties>
 		<property name="validation.compile" value="true"/>

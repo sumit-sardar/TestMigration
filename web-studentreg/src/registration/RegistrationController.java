@@ -42,6 +42,7 @@ import com.ctb.bean.testAdmin.StudentManifest;
 import com.ctb.bean.testAdmin.StudentManifestData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
@@ -167,7 +168,8 @@ public class RegistrationController extends PageFlowController
 	 // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
-    
+	private boolean isTabeAdaptiveProduct = false;
+	
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -189,8 +191,6 @@ public class RegistrationController extends PageFlowController
         this.monthOptions = DateUtils.getMonthOptions();
         this.dayOptions = DateUtils.getDayOptions();
         this.yearOptions = DateUtils.getYearOptions();        
-                
-   //     this.testAdminId = new Integer(221223); // temporary to run locally for now for tai_tabe user - TABE Dedault For RR
         
         String testAdminStr = (String)this.getRequest().getParameter("testAdminId");
         if (testAdminStr != null)
@@ -200,6 +200,16 @@ public class RegistrationController extends PageFlowController
                 
         this.scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, this.testAdminId);
         
+    	this.isTabeAdaptiveProduct = isTabeAdaptiveProduct(this.userName, this.testAdminId);
+        
+        try {
+        	TestProduct tp = this.scheduleTest.getProductForTestAdmin(this.userName, this.testAdminId);
+        	String pt = tp.getProductType();
+        	String aaa = pt;
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+                
         TestSession testSession = this.scheduledSession.getTestSession();
         this.itemSetId = testSession.getItemSetId();
         ///START- FORM RECOMMENDATION
@@ -217,6 +227,7 @@ public class RegistrationController extends PageFlowController
         getCustomerConfigurations();
         //Bulk Accommodation
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		customerHasScoring();//For hand scoring changes
 		//START- Form Recommendation
 		isTopLevelUser();
@@ -382,8 +393,9 @@ public class RegistrationController extends PageFlowController
         }
 
         this.getRequest().setAttribute("selectedTab", selectedTab);
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", new Boolean(this.isTabeAdaptiveProduct));        
+        this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());         
         
-        this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());                        
         isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         setFormInfoOnRequest(form);                
         return new Forward("success", form);
@@ -522,7 +534,7 @@ public class RegistrationController extends PageFlowController
 
         TestSessionUtils.setRecommendedLevelForSession(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, this.defaultSubtests);
         
-        TestSessionUtils.setDefaultLevelsIfNull(this.defaultSubtests, this.selectedSubtests);
+        TestSessionUtils.setDefaultLevelsIfNull(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);
         
         this.savedForm.setMessage(null, null, null);       
         this.savedForm.setActionElement(ACTION_DEFAULT);
@@ -590,9 +602,9 @@ public class RegistrationController extends PageFlowController
                 
         if (! TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, this.selectedSubtests))
         {
-            TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests);                                                                                
+            TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);                                                                                
         }
-        TestSessionUtils.setDefaultLevelsIfNull(this.defaultSubtests, this.selectedSubtests);                                                                                
+        TestSessionUtils.setDefaultLevelsIfNull(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);                                                                                
         
         return new Forward("success", this.savedForm);
     }
@@ -667,7 +679,7 @@ public class RegistrationController extends PageFlowController
         
         this.savedForm = form.createClone();     
         
-        TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests);                                                                                
+        TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);                                                                                
         
         return new Forward("success", this.savedForm);
     }
@@ -1020,13 +1032,13 @@ public class RegistrationController extends PageFlowController
                 {
                     if (! this.returnFromCongratulation)
                     {
-                        TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests);                                                                                
+                        TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);                                                                                
                     }
                 }
             }
             else
             {
-                TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests);                                                                                
+                TestSessionUtils.setDefaultLevels(this.defaultSubtests, this.selectedSubtests, this.isTabeAdaptiveProduct);                                                                                
             }            
         }
                     
@@ -1071,6 +1083,7 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("hideBackButton", new Boolean(this.returnFromCongratulation));
        
         this.getRequest().setAttribute("isLocatorTest", new Boolean(this.isLocatorTest));
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", new Boolean(this.isTabeAdaptiveProduct));
         
         setFormInfoOnRequest(form);
         return new Forward("success", form);
@@ -1205,7 +1218,8 @@ public class RegistrationController extends PageFlowController
             {      
                         
                 boolean validateLevels = !autoLocatorChecked;    
-                boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels);
+                
+                boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, this.isTabeAdaptiveProduct);
                 String message = TABESubtestValidation.currentMessage;
                         
                 if (! valid)
@@ -1255,13 +1269,14 @@ public class RegistrationController extends PageFlowController
             else
             {
                 if (this.isLocatorTest)
-                    TestSessionUtils.setDefaultLevels(studentSubtests, "1");  // make sure set level = '1' for test locator
+                    TestSessionUtils.setDefaultLevels(studentSubtests, "1", this.isTabeAdaptiveProduct);  // make sure set level = '1' for test locator
                 else if (this.scheduledSession.getTestSession().getProductId() != null && this.scheduledSession.getTestSession().getProductId().intValue() == 4013)
                 {
-                    TestSessionUtils.setDefaultLevels(studentSubtests, "1");  // make sure set level = '1' for tutorial test
+                    TestSessionUtils.setDefaultLevels(studentSubtests, "1", this.isTabeAdaptiveProduct);  // make sure set level = '1' for tutorial test
                 }
-                else
-                    TestSessionUtils.setDefaultLevels(studentSubtests, "E");  // make sure set level = 'E' if null
+                else {
+               		TestSessionUtils.setDefaultLevels(studentSubtests, "E", this.isTabeAdaptiveProduct);  // make sure set level = 'E' if null
+                }
             }
     
               
@@ -2419,6 +2434,17 @@ public class RegistrationController extends PageFlowController
 	public List getOrgNodeNames() {
 		return orgNodeNames;
 	}
+
+	private boolean isTabeAdaptiveProduct(String userName, Integer testAdminId) {
+		boolean tabeAdaptive = false;
+	    try {
+	    	TestProduct tp = this.scheduleTest.getProductForTestAdmin(userName, testAdminId);
+	    	tabeAdaptive = "TA".equals(tp.getProductType());
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return tabeAdaptive;
+	}
 	
 	/**
 	 * Bulk Accommodation
@@ -2443,7 +2469,28 @@ public class RegistrationController extends PageFlowController
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
 	
-	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
+	}
 
 	//changes for scoring
 		
