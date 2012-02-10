@@ -90,6 +90,7 @@ var testSessionListRequired;
 var orgSelectVar = false;
 var mySessionCliked = false;
 var isPopUp = false;
+var isPrintTicket = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -3166,7 +3167,11 @@ function registerDelegate(tree){
    /******Jstree Methods*****/
 	//method triggered from library
 	  function customLoad(){
-	    pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray);
+	  if(!isPrintTicket){
+	    	pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray);
+	    }else{
+	    	pushInsideElement(currentNodeIdPrint,currentCategoryLevelPrint,dataObj2Print,currentTreeArrayPrint);
+	    }
 	  }
   
     function pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray){
@@ -3191,12 +3196,18 @@ function registerDelegate(tree){
 				break;
 		}
 		
-		updateTree(objArray);	
+		
+		updateTree(objArray,currentNodeId);	
 	  }
-	  function updateTree(objArray){
-
+	  function updateTree(objArray,currentNodeId){
+		
+	
 	  	var currentElement;	
-		currentElement = $('#'+currentNodeId, '#'+type);
+	  	if (isPrintTicket){
+			currentElement = $('#'+currentNodeId, '#'+typePrint);
+		}else{
+			currentElement = $('#'+currentNodeId, '#'+type);
+		}		
 		currentElement = currentElement[0];
 		currentElement.className = "jstree-open jstree-unchecked";
 		var fragment = document.createDocumentFragment();
