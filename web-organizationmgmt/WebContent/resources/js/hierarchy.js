@@ -1049,23 +1049,27 @@ function openTreeNodes(orgNodeId) {
 													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
 													assignedElement = "";
-													
-													var dataToBeAdded = {orgNodeName:data.organizationDetail.orgNodeName,
-																		 orgNodeCode:data.organizationDetail.orgNodeCode,
-																		 orgNodeCategoryName:data.organizationDetail.orgNodeCategoryName,
-																		 parentOrgNodeName:data.organizationDetail.parentOrgNodeName};
-													
-													var sortOrd = jQuery("#list2").getGridParam("sortorder");
-													var sortCol = jQuery("#list2").getGridParam("sortname");	
-													
-													if(data.isEdit) {
-														jQuery("#list2").setRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
+
+													//This means if user has added a node under the same parent node that
+													//he clicked in the outer tree (similar to edit case)													
+													if(data.organizationDetail.parentOrgNodeId == SelectedOrgNodeId) {													
+														var dataToBeAdded = {orgNodeName:data.organizationDetail.orgNodeName,
+																			 orgNodeCode:data.organizationDetail.orgNodeCode,
+																			 orgNodeCategoryName:data.organizationDetail.orgNodeCategoryName,
+																			 parentOrgNodeName:data.organizationDetail.parentOrgNodeName};
+														
+														var sortOrd = jQuery("#list2").getGridParam("sortorder");
+														var sortCol = jQuery("#list2").getGridParam("sortname");	
+														
+														if(data.isEdit) {
+															jQuery("#list2").setRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
+														}
+														else {
+															jQuery("#list2").addRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
+														}
+												
+														jQuery("#list2").sortGrid(sortCol,true);
 													}
-													else {
-														jQuery("#list2").addRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
-													}
-											
-													jQuery("#list2").sortGrid(sortCol,true);
 													checkedListObject = {}; // Added to clear checkedListObject if organization saved successfully.
 
 												}
