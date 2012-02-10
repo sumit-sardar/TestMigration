@@ -1370,6 +1370,7 @@ function registerDelegate(tree){
 	$('#showSaveTestMessage').hide();
 	$("#endTest").hide();
 	state = "ADD";
+	isFirstAccordSelected = true; // As initially the first accordion will be displayed
 	var postDataObject = {};
  	postDataObject.currentAction = 'init';
 	$.ajax({
