@@ -1371,6 +1371,9 @@ function registerDelegate(tree){
 	$("#endTest").hide();
 	state = "ADD";
 	isFirstAccordSelected = true; // As initially the first accordion will be displayed
+	isSecondAccordSelected = false;
+	isThirdAccordSelected = false;
+	isFourthAccordSelected = false;
 	var postDataObject = {};
  	postDataObject.currentAction = 'init';
 	$.ajax({
