@@ -948,7 +948,8 @@ public class ScheduleTestController extends PageFlowController
         
         this.getRequest().setAttribute("disableNextButton", new Boolean(disableNextButton));
         
-        if ((isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue()) && (! isTabeLocatorProduct.booleanValue()))
+        if ((isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue() || isLasLinksProduct.booleanValue()) && 
+        	(! isTabeLocatorProduct.booleanValue()))
         {
             hasMultipleSubtests = true;
         }

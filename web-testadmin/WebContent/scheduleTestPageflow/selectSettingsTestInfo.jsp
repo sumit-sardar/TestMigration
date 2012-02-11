@@ -177,7 +177,7 @@
           
         
 <c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                     
-    <c:if test="${hasMultipleSubtests}">  
+    <c:if test="${hasMultipleSubtests || isLasLinksProduct}">  
         <tr class="transparent">                    
             <td class="transparent" colspan="2">
                 <netui:span value="${bundle.web['selectsettings.subtestDetails.title']}"/>

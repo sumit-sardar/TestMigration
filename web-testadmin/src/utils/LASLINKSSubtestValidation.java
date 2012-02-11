@@ -41,12 +41,10 @@ public class LASLINKSSubtestValidation
                 
         if (! comprehensionDependency(subtests)) {
             currentMessage = COMPREHENSION_DEPENDENCY_MSG;
-            return false;
         }
 
         if (! oralDependency(subtests)) {
             currentMessage = ORAL_DEPENDENCY_MSG;
-            return false;
         }
         
         return true;    	
