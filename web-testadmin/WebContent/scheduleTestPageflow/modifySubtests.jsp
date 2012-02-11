@@ -66,10 +66,10 @@
     <h1><netui:span value="Schedule a Test Session: Modify Test"/></h1>
 </c:if>
 <p>
-<c:if test="${! isTabeAdaptiveProduct}">     
+<c:if test="${!isTabeAdaptiveProduct && !isLasLinksProduct}">     
     <netui:content value="You may change the order in which the subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list. <br/>For tests that do not include the Locator Test, you may also select the difficulty level for each subtest."/><br/>
 </c:if>    
-<c:if test="${isTabeAdaptiveProduct}">     
+<c:if test="${isTabeAdaptiveProduct || isLasLinksProduct}">     
     <netui:content value="You may change the order in which the subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list."/><br/>
 </c:if>    
 </p>

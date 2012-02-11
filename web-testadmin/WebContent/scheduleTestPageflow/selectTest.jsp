@@ -50,6 +50,7 @@
 <netui-data:getData resultId="acknowledgmentsURL" value="${requestScope.acknowledgmentsURL}"/>
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
+<netui-data:getData resultId="isLasLinksProduct" value="${requestScope.isLasLinksProduct}"/>
 
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 
@@ -538,7 +539,7 @@
 <br/><p>        
 <h4><netui:span value="${bundle.web['selecttest.subtestDetails.title']}"/></h4>
 
-<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">             
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct}">             
     <p>Click the Modify Test button below to select subtests, difficulty level, or subtest order.</p>
 </c:if>
     
@@ -557,7 +558,7 @@
         
 
 <!-- TABE -->
-<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">             
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct}">             
         <tr class="sortable">
             <td class="sortableControls" colspan="4">
                 &nbsp;<netui:button type="submit" value="Modify Test" action="toModifySubtests"/>

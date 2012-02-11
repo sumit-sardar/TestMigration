@@ -27,6 +27,7 @@ import org.apache.struts.action.ActionMapping;
 
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
+import utils.LASLINKSSubtestValidation;
 import utils.MessageResourceBundle;
 import utils.PathListUtils;
 import utils.TABESubtestValidation;
@@ -463,6 +464,8 @@ public class ScheduleTestController extends PageFlowController
         String autoLocator = form.getAutoLocator();
         boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
         boolean validateLevels = !autoLocatorChecked;                                          
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);     
+        Boolean isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType);     
                 
         if (currentAction.equals("doneEditSubtests") && this.getRequest().getParameter("index_1") != null)
         {
@@ -470,10 +473,18 @@ public class ScheduleTestController extends PageFlowController
             
             this.selectedSubtests = TestSessionUtils.retrieveSelectedSubtestsFromRequest(this.getRequest(), this.allSubtests);      
                     
-            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);            
-            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
+            boolean valid = false;
+            String message = "";
             
-            String message = TABESubtestValidation.currentMessage;                
+            if (isLasLinksProduct.booleanValue()) {
+            	valid = LASLINKSSubtestValidation.validation(this.selectedSubtests);
+            	message = LASLINKSSubtestValidation.currentMessage;                
+            }
+            else {
+            	valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
+            	message = TABESubtestValidation.currentMessage;                
+            }
+            
             form.setSubtestValidationMessage(null);
             
             if (! valid)
@@ -503,10 +514,10 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("selectedSubtests", this.selectedSubtests);
         this.getRequest().setAttribute("levelOptions", this.levelOptions);
 
-        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);  
         this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);        
+        this.getRequest().setAttribute("isLasLinksProduct", isLasLinksProduct);        
         
-        if (isTabeAdaptiveProduct.booleanValue()) {
+        if (isTabeAdaptiveProduct.booleanValue() || isLasLinksProduct.booleanValue()) {
             this.getRequest().setAttribute("showLevel", new Boolean(false));        	
         }
         else {
@@ -921,6 +932,9 @@ public class ScheduleTestController extends PageFlowController
         Boolean isTabeProduct = TestSessionUtils.isTabeProduct(this.productType);
         Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
         Boolean isTabeLocatorProduct = TestSessionUtils.isTabeLocatorProduct(this.productType);
+        Boolean isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType);
+        
+        this.getRequest().setAttribute("isLasLinksProduct", isLasLinksProduct);
         
         this.getRequest().setAttribute("productType", this.productType);
 
@@ -2059,11 +2073,13 @@ public class ScheduleTestController extends PageFlowController
         Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
         Boolean isTabeBatterySurveyProduct = TestSessionUtils.isTabeBatterySurveyProduct(this.productType);
         Boolean isTabeLocatorProduct = TestSessionUtils.isTabeLocatorProduct(this.productType);
+        Boolean isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType);
         
         this.getRequest().setAttribute("isTabeProduct", isTabeProduct);            
         this.getRequest().setAttribute("isTabeBatterySurveyProduct", isTabeBatterySurveyProduct);                    
         this.getRequest().setAttribute("isTabeLocatorProduct", isTabeLocatorProduct);                    
         this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);
+        this.getRequest().setAttribute("isLasLinksProduct", isLasLinksProduct);
         
         if (isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue())
         {

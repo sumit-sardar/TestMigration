@@ -24,6 +24,7 @@
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
 <netui-data:getData resultId="isTabeBatterySurveyProduct" value="${requestScope.isTabeBatterySurveyProduct}"/>
+<netui-data:getData resultId="isLasLinksProduct" value="${requestScope.isLasLinksProduct}"/>
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 <!--<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  --><!-- Changes for defect 60455 -->
 <a name="studentTableAnchor"><!-- studentTableAnchor --></a>    

@@ -31,6 +31,7 @@
 <netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
 <netui-data:getData resultId="isTabeBatterySurveyProduct" value="${requestScope.isTabeBatterySurveyProduct}"/>
 <netui-data:getData resultId="isTabeLocatorProduct" value="${requestScope.isTabeLocatorProduct}"/>
+<netui-data:getData resultId="isLasLinksProduct" value="${requestScope.isLasLinksProduct}"/>
 <netui-data:getData resultId="showLocatorSubtest" value="${requestScope.showLocatorSubtest}"/>
 <netui-data:getData resultId="tabeWithSingleSubtest" value="${requestScope.tabeWithSingleSubtest}"/>
 <netui-data:getData resultId="overrideStartDate" value="${requestScope.overrideStartDate}"/>
