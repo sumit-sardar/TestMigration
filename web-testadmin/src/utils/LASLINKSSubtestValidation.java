@@ -17,12 +17,11 @@ public class LASLINKSSubtestValidation
     
     public static final String NO_ERROR_MSG = "No Error";
     
-    public static final String COMPREHENSION_DEPENDENCY_MSG = "Reading and Listening both need to be selected.";
+    public static final String COMPREHENSION_DEPENDENCY_MSG = "If you select Reading, you must also select Listening. If you select Listening, you must also select Reading.";
 
-    public static final String ORAL_DEPENDENCY_MSG = "Speaking and Listening both need to be selected.";
+    public static final String ORAL_DEPENDENCY_MSG = "If you select Speaking, you must also select Listening. If you select Listening, you must also select Speaking.";
     
     public static String currentMessage = "";
-    
     
     
     public static boolean validation(List subtests)

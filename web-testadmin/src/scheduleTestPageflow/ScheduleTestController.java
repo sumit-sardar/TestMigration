@@ -2196,8 +2196,10 @@ public class ScheduleTestController extends PageFlowController
         
         Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);        
         this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);        
+        Boolean isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType);        
+        this.getRequest().setAttribute("isLasLinksProduct", isLasLinksProduct);        
 
-        if (isTabeAdaptiveProduct.booleanValue()) {
+        if (isTabeAdaptiveProduct.booleanValue() || isLasLinksProduct.booleanValue()) {
         	showLevel = Boolean.FALSE;
         }        
         this.getRequest().setAttribute("showLevel", showLevel);
@@ -2262,10 +2264,21 @@ public class ScheduleTestController extends PageFlowController
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
             boolean validateLevels = !autoLocatorChecked;          
                  
-            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);            
-            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
-                                                   
-            String message = TABESubtestValidation.currentMessage;        
+            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);       
+            Boolean isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType);       
+            
+            boolean valid = false;
+            String message = "";
+            
+            if (isLasLinksProduct.booleanValue()) {
+            	valid = LASLINKSSubtestValidation.validation(this.selectedSubtests);
+            	message = LASLINKSSubtestValidation.currentMessage;                
+            }
+            else {
+                valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
+            	message = TABESubtestValidation.currentMessage;                
+            }
+            
             form.setSubtestValidationMessage(null);
             
             if (! valid)
@@ -2676,6 +2689,7 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("productType", this.productType);
         this.getRequest().setAttribute("isTabeProduct", TestSessionUtils.isTabeProduct(this.productType));    
         this.getRequest().setAttribute("isTabeAdaptiveProduct", TestSessionUtils.isTabeAdaptiveProduct(this.productType));
+        this.getRequest().setAttribute("isLasLinksProduct", TestSessionUtils.isLasLinksProduct(this.productType));
         
         String actionElement = form.getActionElement();
         if (actionElement != null)

@@ -47,6 +47,7 @@
 
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
+<netui-data:getData resultId="isLasLinksProduct" value="${requestScope.isLasLinksProduct}"/>
 <netui-data:getData resultId="hasStudentSelected" value="${requestScope.hasStudentSelected}"/>
 
 <netui-data:getData resultId="showAccessCode" value="${requestScope.showAccessCode}"/>
@@ -188,8 +189,8 @@
 
 <!-- TABE -->
 <!-- ***************** Modify Student's Test *********** -->
-<c:if test="${hasStudentSelected}"> 
-<c:if test="${isTabeProduct || isTabeAdaptiveProduct}"> 
+<c:if test="${hasStudentSelected}">
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct}">
 <h3><netui:span value="Modify Student's Test"/></h3>
 <p><netui:content value="Select a student and click Modify Test to change the subtests, difficulty level, or subtest order for an individual student."/></p>
 <p>
