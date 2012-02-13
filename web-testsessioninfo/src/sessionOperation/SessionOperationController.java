@@ -2227,7 +2227,7 @@ public class SessionOperationController extends PageFlowController {
 				ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 				ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 				
-				StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, orgNodeId, testAdminId, null, null, null);
+				StudentNodeData snd = this.scheduleTest.getTestTicketNodesHaveStudentForParent(this.userName, orgNodeId, testAdminId, null, null, null);
 				ArrayList<Organization> selectedList = new ArrayList<Organization>();
 
 				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	

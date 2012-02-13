@@ -287,6 +287,9 @@ public interface ScheduleTest
      */
     
     com.ctb.bean.testAdmin.StudentNodeData getTestTicketNodesForParent(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+   
+    
+    com.ctb.bean.testAdmin.StudentNodeData getTestTicketNodesHaveStudentForParent(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * Retrieves a sorted, filtered, paged list of org nodes at which the

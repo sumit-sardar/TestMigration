@@ -1253,6 +1253,30 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    
+    public StudentNodeData getTestTicketNodesHaveStudentForParent(String userName, Integer orgNodeId, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getTestTicketNodesForParent");
+        try {
+            StudentNodeData ond = new StudentNodeData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            StudentNode [] studentNodes = orgNode.getOrgNodesHaveStudentByParentAncestor(orgNodeId, testAdminId);
+            ond.setStudentNodes(studentNodes, pageSize);
+
+            if(filter != null) ond.applyFiltering(filter);
+            if(sort != null) ond.applySorting(sort);
+            if(page != null) ond.applyPaging(page);
+            return ond;
+        } catch (SQLException se) {
+            OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("ScheduleTestImpl: getRosterNodesForParentAndAdmin: " + se.getMessage());
+            one.setStackTrace(se.getStackTrace());
+            throw one;
+        }
+    }
+    
     /**
      * Retrieves a sorted, filtered, paged list of org nodes at which the specified user has a role defined.
      * <br/><br/>Each node contains a count of the number of students rostered
