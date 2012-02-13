@@ -50,3 +50,14 @@ ALTER TABLE test_roster ADD DNS_UPDATED_BY INTEGER
 --Added for out of school user story
 alter table student add out_of_school varchar2(3) default 'No'
 /
+
+-- Table added for pre scheduling
+create table INCLUDE_TEST_SCHE_NODE
+(
+  CUSTOMER_ID     NUMBER not null,
+  CORPORATE_ID    VARCHAR2(32) not null,
+  SCHOOL_ID       VARCHAR2(32) not null,
+  GRADE           VARCHAR2(4) not null,
+  FORM_ASSIGNMENT VARCHAR2(10)
+)
+/
