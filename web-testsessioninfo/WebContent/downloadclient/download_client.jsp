@@ -139,7 +139,7 @@
                         <netui:content value="${bundle.web['installClient.windows.size']}"/>
                     </td>
                     <td class="transparent-top">
-                            <% String href_PC = (String)request.getAttribute("downloadURI_PC"); %>                    
+                            <% String href_PC = (String)session.getAttribute("downloadURI_PC"); %>                    
                             <netui:button styleClass="button" tagId="installPCClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_PC %>" />        
                     </td>
                 </tr>         
@@ -160,7 +160,7 @@
 		                <netui:content value="${bundle.web['installClient.mac.size']}"/>
 		            </td>
 		            <td class="transparent-top">
-                        <% String href_MAC = (String)request.getAttribute("downloadURI_MAC"); %>                    
+                        <% String href_MAC = (String)session.getAttribute("downloadURI_MAC"); %>                    
 		                <netui:button styleClass="button" tagId="installMacClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_MAC %>" />        
 		            </td>
 		        </tr>     
@@ -185,7 +185,7 @@
 		            </td>
 		            <td class="transparent-top">
 <div id="allowDownload" style="display:none">		            
-                        <% String href_LINUX = (String)request.getAttribute("downloadURI_LINUX"); %>
+                        <% String href_LINUX = (String)session.getAttribute("downloadURI_LINUX"); %>
                         <netui:button styleClass="button" tagId="installLinuxClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_LINUX %>" />        
 </div>		     
 <div id="notAllowDownload" style="display:none">		            

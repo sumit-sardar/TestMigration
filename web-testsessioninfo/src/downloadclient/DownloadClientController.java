@@ -57,9 +57,9 @@ public class DownloadClientController extends PageFlowController
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
         String LINUX_URI = "'" + getdownloadURI("TDCINSTLIN") + "'";
         
-        this.getRequest().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
-        this.getRequest().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
-        this.getRequest().setAttribute("downloadURI_LINUX", "location.href=" + LINUX_URI);
+        this.getSession().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
+        this.getSession().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
+        this.getSession().setAttribute("downloadURI_LINUX", "location.href=" + LINUX_URI);
 
         return new Forward("success");
     }
