@@ -190,7 +190,7 @@
 <!-- TABE -->
 <!-- ***************** Modify Student's Test *********** -->
 <c:if test="${hasStudentSelected}">
-<c:if test="${isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct}">
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">
 <h3><netui:span value="Modify Student's Test"/></h3>
 <p><netui:content value="Select a student and click Modify Test to change the subtests, difficulty level, or subtest order for an individual student."/></p>
 <p>

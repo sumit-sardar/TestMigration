@@ -37,7 +37,8 @@ public class LASLINKSSubtestValidation
             currentMessage = NO_SUBTEST_MSG;
             return false;
         }
-                
+        
+        /*
         if (! comprehensionDependency(subtests)) {
             currentMessage = COMPREHENSION_DEPENDENCY_MSG;
         }
@@ -45,6 +46,7 @@ public class LASLINKSSubtestValidation
         if (! oralDependency(subtests)) {
             currentMessage = ORAL_DEPENDENCY_MSG;
         }
+        */
         
         return true;    	
     }
