@@ -1122,6 +1122,49 @@ function registerDelegate(tree){
 	}	
 	
 	
+	function showAccoToolTip(rowId,event){
+		if(AddStudentLocaldata[rowId]){
+			var obj = AddStudentLocaldata[rowId];
+			for(var key in obj){
+				if(obj[key] == "T"){
+					$("#"+key+"Status").show();
+				}else {
+					$("#"+key+"Status").hide();
+				}
+			}
+			showAccoToolTipPopUp(event);
+		}
+		
+	}	
+	var htimer;
+	
+	function showAccoToolTipPopUp(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("accommodationToolTip");
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		htimer = setTimeout("hideAccoToolTipPopUp()", 50000);
+	}
+	
+	function hideAccoToolTipPopUp() {
+		clearTimeout(htimer);
+		document.getElementById("accommodationToolTip").style.display = "none";
+	}
+	
 	
 	function populateSelectedStudent() {
  		UIBlock();
@@ -1136,8 +1179,17 @@ function registerDelegate(tree){
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'middleName',index:'middleName', width:120, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'extPin1',index:'extPin1', width:275, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' }, formatter: 'link' },
+		   		{name:'extPin1',index:'extPin1', width:275, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;'} },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, title:false,
+		   			cellattr: function (rowId, tv, rawObject, cm, rdata) { 
+		   				var returnStr = '';
+						if(rawObject.hasAccommodations == 'Yes'){
+							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showAccoToolTip('+parseInt(rowId-1)+',event);" onmouseout="hideAccoToolTipPopUp();"' ;
+						}else {
+							returnStr = 'style="white-space: normal;cursor:pointer;"' ;
+						}	
+						return returnStr;				
+		   		}, formatter: 'link' },
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },

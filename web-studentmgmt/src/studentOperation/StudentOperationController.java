@@ -294,6 +294,8 @@ public class StudentOperationController extends PageFlowController {
 		String studentArray = "";
 		StringBuffer  buffer= new StringBuffer("");
 		String json = "";
+		Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+		
 		try {
 			System.out.println ("db process time Start:"+new Date());
 			ManageStudentData msData = findStudentByHierarchy();
@@ -302,7 +304,7 @@ public class StudentOperationController extends PageFlowController {
 			if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
-				studentList = StudentSearchUtils.buildStudentList(msData, buffer);
+				studentList = StudentSearchUtils.buildStudentList(msData, buffer,accomodationMap);
 				studentArray = buffer.toString();
 				System.out.println ("List process time End:"+new Date());
 			}
@@ -316,6 +318,7 @@ public class StudentOperationController extends PageFlowController {
 			
 			base.setStudentProfileInformation(studentList);
 			base.setStudentIdArray(studentArray);
+			base.setAccomodationMap(accomodationMap);
 			json = gson.toJson(base);
 			
 

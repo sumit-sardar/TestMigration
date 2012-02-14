@@ -216,6 +216,30 @@
 	</tbody>
 </table>  
 </div>
+<div id="accommodationToolTip" style="display:none;" class="statusLegendDiv">
+<table width="180" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
+	<tbody>
+		<tr align="center" id="screenReaderStatus">
+			<td colspan="2" align="left"><lb:label key="student.accommodationToolTip.screenReader" /></td>
+		</tr>
+		<tr align="center" id="calculatorStatus">
+			<td align="left" width="30"><lb:label key="student.accommodationToolTip.calculator" /></td>
+		</tr>
+		<tr align="center" id="testPauseStatus">
+			<td align="left" width="30"><lb:label key="student.accommodationToolTip.testPause" /></td>
+		</tr>
+		<tr align="center" id="untimedTestStatus">
+			<td align="left" width="30"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
+		</tr>
+		<tr align="center" id="highlighterStatus">
+			<td align="left" width="30"><lb:label key="student.accommodationToolTip.highlighter" /></td>
+		</tr>
+		<tr align="center" id="hasColorFontAccommodationsStatus">
+			<td align="left" width="30"><lb:label key="student.accommodationToolTip.colorNFont" /></td>
+		</tr>
+	</tbody>
+</table>  
+</div>
 
 <div id="deleteSessionPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

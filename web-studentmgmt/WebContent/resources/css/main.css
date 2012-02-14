@@ -596,3 +596,19 @@ th.ui-th-column div{
     padding: 2px;
     vertical-align: top;
 }
+.statusLegendTable {
+	background-color: #FFFFCC;
+	border-color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	color: #000000;
+	font-family: Arial,Helvetica,Sans Serif;
+	font-size: 12px;
+	font-weight: normal;
+	padding: 3px;
+}
+
+.statusLegendDiv {
+	position: absolute;
+	z-index: 1100;
+}

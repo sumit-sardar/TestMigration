@@ -1,14 +1,18 @@
 package dto; 
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+
 import utils.DateUtils;
+import utils.OptionList;
+import utils.StringUtils;
+
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
-import utils.OptionList;
 
 /**
  * 
@@ -518,7 +522,108 @@ public class StudentProfileInformation extends SanitizedFormField
     }
     
 
-    public StudentProfileInformation createClone() {
+    public StudentProfileInformation(ManageStudent student,
+			Map<Integer, Map> accomodationMap) {
+    	Map innerMap = new HashMap();
+    	this.studentId = student.getId();
+        this.userName = student.getLoginId();
+        this.firstName = student.getFirstName();
+        this.middleName = student.getMiddleName();
+        if(student.getMiddleName() != null && !student.getMiddleName().equals(""))
+        	this.middleInitial = student.getMiddleName().substring(0,1);
+        this.lastName = student.getLastName();
+        this.displayName = student.getStudentName();
+        this.createBy = student.getCreatedBy();
+        
+        this.gender = student.getGender();
+        if (this.gender == null) this.gender = "Unknown";
+        else
+        if (this.gender.equals("M")) this.gender = "Male";
+        else
+        if (this.gender.equals("F")) this.gender = "Female";
+        else
+        if (this.gender.equals("U")) this.gender = "Unknown";
+        
+        this.grade = student.getGrade();
+        if (this.grade == null) this.grade = "";
+        //GACR005  For Defect # 65786
+        this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : "";
+        this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : "";
+        //GACR005   For Defect # 65786
+        this.birthdate = student.getBirthDate(); 
+        if (this.birthdate != null) {
+            this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_CHAR);     
+            StringTokenizer tokenizer = new StringTokenizer(this.birthdateString, "/");
+            this.month = tokenizer.nextToken();
+            this.day = tokenizer.nextToken();
+            this.year = tokenizer.nextToken();
+            this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_DISPLAY);     
+        }
+        
+        this.organizationNodes = student.getOrganizationNodes();
+        this.orgNodeNamesStr = getOrgNodeNamesString();
+        //START- (LLO82) StudentManagement Changes For LasLink product
+        if(student.getTestPurpose() != null) {
+        	this.testPurpose = student.getTestPurpose();
+        	if (this.testPurpose.equals("1")) this.testPurpose = "Initial Placement";
+            else
+            if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+        }
+       //END- (LLO82) StudentManagement Changes For LasLink product
+        this.screenMagnifier = student.getScreenMagnifier();
+        this.screenReader = student.getScreenReader();
+        this.calculator= student.getCalculator();
+        this.testPause = student.getTestPause();
+        this.untimedTest = student.getUntimedTest();
+        this.questionBackgroundColor = student.getQuestionBackgroundColor();
+        this.questionFontColor = student.getQuestionFontColor();
+        this.questionFontSize = student.getQuestionFontSize();
+        this.answerBackgroundColor = student.getAnswerBackgroundColor();
+        this.answerFontColor = student.getAnswerFontColor();
+        this.answerFontSize = student.getAnswerFontSize();
+        this.highlighter = student.getHighlighter();
+        this.maskingRuler = student.getMaskingRuler();
+        this.auditoryCalming = student.getAuditoryCalming();
+        this.magnifyingGlass = student.getMagnifyingGlass();
+        this.extendedTime = student.getExtendedTime();
+        this.maskingTool = student.getMaskingTool();
+        this.hasAccommodations = studentHasAccommodation();
+        this.orgNodeId = student.getOrgNodeId();
+        this.orgNodeName = student.getOrgNodeName();
+        this.orgIdList = student.getOrgIdList();
+        this.orgNameList = student.getOrgNameList();
+        this.outOfSchool = student.getOutOfSchool();
+        innerMap.put("screenMagnifier", this.screenMagnifier);
+        innerMap.put("screenReader", this.screenReader);
+        innerMap.put("calculator", this.calculator);
+        innerMap.put("testPause", this.testPause);
+        innerMap.put("untimedTest", this.untimedTest);
+        innerMap.put("maskingRuler", this.maskingRuler);
+        innerMap.put("magnifyingGlass", this.magnifyingGlass);
+        innerMap.put("maskingTool", this.maskingTool);
+        innerMap.put("extendedTime", this.extendedTime);
+        innerMap.put("highlighter", this.highlighter);
+	    if(StringUtils.isNullEmpty(this.questionBackgroundColor) 
+	    			&& StringUtils.isNullEmpty(this.questionFontColor)
+	    			&& StringUtils.isNullEmpty(this.questionFontSize)
+	    			&& StringUtils.isNullEmpty(this.answerBackgroundColor)
+	    			&& StringUtils.isNullEmpty(this.answerFontColor)
+	    			&& StringUtils.isNullEmpty(this.answerFontSize)){
+    	  innerMap.put("colorFont","F");
+        }else {
+    	  innerMap.put("colorFont","T");
+        }
+       
+        
+        accomodationMap.put(studentId, innerMap);
+        
+        if(orgNameList!=null && orgNameList.length()>0){
+        	this.orgNodeNamesStr = orgNameList.replace('|', ',');
+        }
+	}
+
+
+	public StudentProfileInformation createClone() {
         StudentProfileInformation copied = new StudentProfileInformation();
         
         copied.setStudentId(this.studentId);
@@ -832,10 +937,10 @@ public class StudentProfileInformation extends SanitizedFormField
 	            this.questionFontSize != null ||
 	            this.answerBackgroundColor != null ||
 	            this.answerFontColor != null ||
-	            this.answerFontSize != null)
+	            this.answerFontSize != null) {
 	        	hasAccommodations = "Yes";
 	       
-	       
+	   }
 	   return hasAccommodations;
 	}
 	/**

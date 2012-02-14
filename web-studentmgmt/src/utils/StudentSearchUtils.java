@@ -14,6 +14,7 @@ import dto.StudentProfileInformation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class StudentSearchUtils 
 { 
@@ -65,8 +66,9 @@ public class StudentSearchUtils
     
     /**
      * buildStudentList
+     * @param accomodationMap 
      */    
-    public static List<StudentProfileInformation> buildStudentList(ManageStudentData msData, StringBuffer buffer) 
+    public static List<StudentProfileInformation> buildStudentList(ManageStudentData msData, StringBuffer buffer, Map<Integer, Map> accomodationMap) 
     {
         ArrayList<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
         if (msData != null) {
@@ -74,7 +76,7 @@ public class StudentSearchUtils
             for (int i=0 ; i<students.length ; i++) {
                 ManageStudent student = (ManageStudent)students[i];
                 if (student != null) {
-                    StudentProfileInformation studentDetail = new StudentProfileInformation(student);
+                    StudentProfileInformation studentDetail = new StudentProfileInformation(student,accomodationMap);
                     studentList.add(studentDetail);
                     if(i == 0)
                     	 buffer.append( student.getId());

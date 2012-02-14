@@ -52,7 +52,8 @@ var leafParentOrgNodeId = "";
 var isBulkMove = false;
 var rootNodeId;
 var stuThreshold = 10000;	
-var topOrgNodeStuCount = 0;				
+var topOrgNodeStuCount = 0;	
+var accomodationMap = {};			
 
 
 $(document).bind('keydown', function(event) {
@@ -585,7 +586,48 @@ function updateOrganization(element, isChecked){
 	    $.extend(postData,{filters:""});
 
 	}
+	
+	function showAccoToolTip(rowId,event){
+		if(accomodationMap[rowId]){
+			var obj = accomodationMap[rowId];
+			for(var key in obj){
+				if(obj[key] == "T"){
+					$("#"+key+"Status").show();
+				}else {
+					$("#"+key+"Status").hide();
+				}
+			}
+			showAccoToolTipPopUp(event);
+		}
 		
+	}	
+	var htimer;
+	function showAccoToolTipPopUp(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("accommodationToolTip");
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		htimer = setTimeout("hideAccoToolTipPopUp()", 50000);
+	}
+	
+	function hideAccoToolTipPopUp() {
+		clearTimeout(htimer);
+		document.getElementById("accommodationToolTip").style.display = "none";
+	}
 			
 	function populateGrid() {
 	
@@ -608,7 +650,14 @@ function updateOrganization(element, isChecked){
 		   		{name:'grade',index:'grade',editable: true, width:50, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:75, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, title:false,
+		   							cellattr: function (rowId, tv, rawObject, cm, rdata) {
+		   									var returnStr = '';
+		   									if(rawObject.hasAccommodations == 'Yes'){
+		   										returnStr = 'style="white-space: normal;" onmouseover="showAccoToolTip('+rowId+',event);" onmouseout="hideAccoToolTipPopUp();"' ; 
+		   									} else { returnStr = 'style="white-space: normal;"' ;}  
+		   									return returnStr;
+		   							}},
 		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:150, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
@@ -617,6 +666,7 @@ function updateOrganization(element, isChecked){
 		   	records: function(obj) { 
 		   //	studentList = obj.studentProfileInformation;
 		   	idarray = obj.studentIdArray.split(",");
+		   	accomodationMap = obj.accomodationMap;
 		   	return obj.studentProfileInformation.length; } },
 		   	
 		   	loadui: "disable",

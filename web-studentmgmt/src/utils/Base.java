@@ -17,6 +17,7 @@ public class Base {
 	private List<StudentProfileInformation> studentProfileInformation;
 	private String studentIdArray;
 	private List studentNode;
+	Map<Integer,Map> accomodationMap;
 	Map<Integer,Integer> studentIdIndexer = new HashMap<Integer,Integer>();
 	
 	
@@ -86,6 +87,12 @@ public class Base {
 	}
 	public void setStudentIdIndexer(Map<Integer, Integer> studentIdIndexer) {
 		this.studentIdIndexer = studentIdIndexer;
+	}
+	public Map<Integer, Map> getAccomodationMap() {
+		return accomodationMap;
+	}
+	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
+		this.accomodationMap = accomodationMap;
 	}
 	
 	
