@@ -1,3 +1,0 @@
-java -cp build/ccs.jar com.ctb.common.tools.itemxml.ProcessItems $*
-
-

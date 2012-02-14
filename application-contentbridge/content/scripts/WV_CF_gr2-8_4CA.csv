@@ -1,1190 +1,0 @@
-"","West Virginia CF Root","WV","0","1",""
-"3","Grade 3","3","WV","2",""
-"3","Number and Operations ","3.MA.S.1","3","3","WV Mathematics"
-"3","Read, write, order, and compare numbers to 10,000","MA.3.1.1","3.MA.S.1","4","WV Mathematics"
-"3","Read, write, order, and compare decimals to hundredths with models","MA.3.1.2","3.MA.S.1","4","WV Mathematics"
-"3","Identify place value of each digit utilizing standard and expanded form to 10,000","MA.3.1.3","3.MA.S.1","4","WV Mathematics"
-"3","Estimate to nearer 10,000 and 1,000 using rounding, benchmarks, and compatible numbers to determine reasonableness of an answer","MA.3.1.4","3.MA.S.1","4","WV Mathematics"
-"3","Identify fractions as part of a whole/one and as part of a group using models and pictorial representations","MA.3.1.5","3.MA.S.1","4","WV Mathematics"
-"3","Compare and order fractions with like and unlike denominators using concrete models","MA.3.1.6","3.MA.S.1","4","WV Mathematics"
-"3","Add and subtract fractions with like denominators using concrete models and pictorial representations","MA.3.1.7","3.MA.S.1","4","WV Mathematics"
-"3","Recognize and model equivalent fractions using concrete materials","MA.3.1.8","3.MA.S.1","4","WV Mathematics"
-"3","Recognize and model proper and improper fractions and mixed numbers","MA.3.1.9","3.MA.S.1","4","WV Mathematics"
-"3","Add and subtract 2- and 3-digit whole numbers and money without and with regrouping                                          ","MA.3.1.10","3.MA.S.1","4","WV Mathematics"
-"3","Understand multiplication as repeated addition and division as repeated subtraction","MA.3.1.11","3.MA.S.1","4","WV Mathematics"
-"3","Understand meanings of operations and the relationship between multiplication and division (eg, identity element of multiplication, commutative property, property of zero, fact families, associative property)","MA.3.1.12","3.MA.S.1","4","WV Mathematics"
-"3","Memorize basic multiplication facts 0-5 and the corresponding division facts","MA.3.1.13","3.MA.S.1","4","WV Mathematics"
-"3","Model multiplication of 2- and 3-digit numbers by a 1-digit number","MA.3.1.14","3.MA.S.1","4","WV Mathematics"
-"3","Model division of 2- and 3-digit numbers by a 1-digit number","MA.3.1.15","3.MA.S.1","4","WV Mathematics"
-"3","Solve grade level appropriate story problems using multiple strategies","MA.3.1.16","3.MA.S.1","4","WV Mathematics"
-"3","Algebra","3.MA.S.2","3","3","WV Mathematics"
-"3","Analyze and complete a geometric pattern","MA.3.2.1","3.MA.S.2","4","WV Mathematics"
-"3","Use input/output model with grade appropriate functions","MA.3.2.2","3.MA.S.2","4","WV Mathematics"
-"3","Identify and write number patterns of 3’s and 4’s","MA.3.2.3","3.MA.S.2","4","WV Mathematics"
-"3","Identify and write the rule of a given pattern","MA.3.2.4","3.MA.S.2","4","WV Mathematics"
-"3","Write equivalent numerical expressions","MA.3.2.5","3.MA.S.2","4","WV Mathematics"
-"3","Represent the idea of a variable as an unknown quantity using a symbol","MA.3.2.6","3.MA.S.2","4","WV Mathematics"
-"3","Geometry","3.MA.S.3","3","3","WV Mathematics"
-"3","Identify basic polygons and their components through decagon","MA.3.3.1","3.MA.S.3","4","WV Mathematics"
-"3","Identify and describe a cube, rectangular solid, cylinder, cone and pyramid according to the number of faces, edges and vertices","MA.3.3.2","3.MA.S.3","4","WV Mathematics"
-"3","From a plane drawing, construct and identify the solid figure","MA.3.3.3","3.MA.S.3","4","WV Mathematics"
-"3","Identify, determine and draw lines of symmetry","MA.3.3.4","3.MA.S.3","4","WV Mathematics"
-"3","Model and describe lines and rays","MA.3.3.5","3.MA.S.3","4","WV Mathematics"
-"3","Identify and draw right, obtuse and acute angles","MA.3.3.6","3.MA.S.3","4","WV Mathematics"
-"3","Given a model, draw an example of a flip, slide and turn (reflection, translation, and rotation)","MA.3.3.7","3.MA.S.3","4","WV Mathematics"
-"3","Name the location of a point on a one-quadrant grid","MA.3.3.8","3.MA.S.3","4","WV Mathematics"
-"3","Measurement","3.MA.S.4","3","3","WV Mathematics"
-"3","Estimate, measure, compare, order and draw lengths using inches (to the nearest ½ inch), feet, yards, centimeters and meters","MA.3.4.1","3.MA.S.4","4","WV Mathematics"
-"3","Estimate and count the number of cubes in a rectangular solid to determine volume","MA.3.4.2","3.MA.S.4","4","WV Mathematics"
-"3","Discover through modeling the formula for determining the area of a rectangle","MA.3.4.3","3.MA.S.4","4","WV Mathematics"
-"3","Understand appropriate grade level conversions within a system of measure","MA.3.4.4","3.MA.S.4","4","WV Mathematics"
-"3","Estimate and measure results of mass/weight in ounces, pounds, grams, and kilograms","MA.3.4.5","3.MA.S.4","4","WV Mathematics"
-"3","Read time to 5-minute intervals using analog and digital clocks","MA.3.4.6","3.MA.S.4","4","WV Mathematics"
-"3","Calculate elapsed time to quarter-hour","MA.3.4.7","3.MA.S.4","4","WV Mathematics"
-"3","Read and write amounts of money to $10000","MA.3.4.8","3.MA.S.4","4","WV Mathematics"
-"3","Role-play making change up to $1000","MA.3.4.9","3.MA.S.4","4","WV Mathematics"
-"3","Estimate, read, and recognize common temperatures of celsius and fahrenheit","MA.3.4.10","3.MA.S.4","4","WV Mathematics"
-"3","Data Analysis and Probability ","3.MA.S.5","3","3","WV Mathematics"
-"3","Collect data from observation, surveys, and experiments, and construct and label a graph","MA.3.5.1","3.MA.S.5","4","WV Mathematics"
-"3","Use a timeline to determine a sequence of events","MA.3.5.2","3.MA.S.5","4","WV Mathematics"
-"3","Experiment and describe concepts of probability and chance and list possible outcomes from a sampling","MA.3.5.3","3.MA.S.5","4","WV Mathematics"
-"3","Analyze data represented on a graph using grade level appropriate questions","MA.3.5.4","3.MA.S.5","4","WV Mathematics"
-"4","Grade 4","4","WV","2",""
-"4","Number and Operations ","4.MA.S.1","4","3","WV Mathematics"
-"4","Read, write, order, and compare numbers to the millions place","MA.4.1.1","4.MA.S.1","4","WV Mathematics"
-"4","Read, write, order, and compare decimals to thousandths with and without models and pictorial representations","MA.4.1.2","4.MA.S.1","4","WV Mathematics"
-"4","Identify place value of each digit utilizing standard and expanded form through 1,000,000","MA.4.1.3","4.MA.S.1","4","WV Mathematics"
-"4","Estimate to nearer 10,000 using rounding, benchmarks, and compatible numbers and identify over and under estimates to determine reasonableness of an answer","MA.4.1.4","4.MA.S.1","4","WV Mathematics"
-"4","Compare and order fractions with like and unlike denominators using pictorial representations","MA.4.1.5","4.MA.S.1","4","WV Mathematics"
-"4","Add and subtract fractions with like and unlike denominators using pictorial representations","MA.4.1.6","4.MA.S.1","4","WV Mathematics"
-"4","Recognize and model equivalent fractions using pictorial representations","MA.4.1.7","4.MA.S.1","4","WV Mathematics"
-"4","Model addition and subtraction of mixed numbers without and with regrouping","MA.4.1.8","4.MA.S.1","4","WV Mathematics"
-"4","Understand the relationship of fractions to decimals using concrete objects and pictorial representations","MA.4.1.9","4.MA.S.1","4","WV Mathematics"
-"4","Round decimals to the nearest whole, 10th, or 100th","MA.4.1.10","4.MA.S.1","4","WV Mathematics"
-"4","Add and subtract decimals to the 1000th place","MA.4.1.11","4.MA.S.1","4","WV Mathematics"
-"4","Apply the distributive property of multiplication over addition","MA.4.1.12","4.MA.S.1","4","WV Mathematics"
-"4","Memorize basic multiplication facts and corresponding division facts","MA.4.1.13","4.MA.S.1","4","WV Mathematics"
-"4","Multiply 2-and 3-digit numbers by 1- and 2-digit numbers","MA.4.1.14","4.MA.S.1","4","WV Mathematics"
-"4","Divide 2-and 3-digit numbers by 1-and 2-digit numbers","MA.4.1.15","4.MA.S.1","4","WV Mathematics"
-"4","Apply the order of operations in solving problems","MA.4.1.16","4.MA.S.1","4","WV Mathematics"
-"4","Solve grade level appropriate story problems using multiple strategies","MA.4.1.17","4.MA.S.1","4","WV Mathematics"
-"4","Develop fluency in addition and subtraction of all whole numbers","MA.4.1.18","4.MA.S.1","4","WV Mathematics"
-"4","Algebra","4.MA.S.2","4","3","WV Mathematics"
-"4","Solve problems involving patterns","MA.4.2.1","4.MA.S.2","4","WV Mathematics"
-"4","Use input/output model with grade appropriate functions","MA.4.2.2","4.MA.S.2","4","WV Mathematics"
-"4","Understand the relationship between number patterns and multiples","MA.4.2.3","4.MA.S.2","4","WV Mathematics"
-"4","Use patterns to predict the nth term","MA.4.2.4","4.MA.S.2","4","WV Mathematics"
-"4","Represent the idea of a variable as an unknown quantity using a letter","MA.4.2.5","4.MA.S.2","4","WV Mathematics"
-"4","Geometry","4.MA.S.3","4","3","WV Mathematics"
-"4","Identify plane figures and their components","MA.4.3.1","4.MA.S.3","4","WV Mathematics"
-"4","Compare and contrast quadrilateral shapes","MA.4.3.2","4.MA.S.3","4","WV Mathematics"
-"4","Describe three-dimensional objects from different perspectives","MA.4.3.3","4.MA.S.3","4","WV Mathematics"
-"4","Identify and draw intersecting, parallel, and perpendicular lines","MA.4.3.4","4.MA.S.3","4","WV Mathematics"
-"4","Draw, label, compare, and classify acute, right, and obtuse angles","MA.4.3.5","4.MA.S.3","4","WV Mathematics"
-"4","Draw a design with one line of symmetry","MA.4.3.6","4.MA.S.3","4","WV Mathematics"
-"4","Graph/plot ordered pairs on a one-quadrant grid","MA.4.3.7","4.MA.S.3","4","WV Mathematics"
-"4","Draw and identify parts of a circle: center point, diameter, and radius","MA.4.3.8","4.MA.S.3","4","WV Mathematics"
-"4","Measurement","4.MA.S.4","4","3","WV Mathematics"
-"4","Estimate, measure, compare, order and draw lengths using customary and metric units","MA.4.4.1","4.MA.S.4","4","WV Mathematics"
-"4","Determine and compare areas of rectangles and squares by multiplying length and width","MA.4.4.2","4.MA.S.4","4","WV Mathematics"
-"4","Discover through modeling the formula for volume of a rectangular prism","MA.4.4.3","4.MA.S.4","4","WV Mathematics"
-"4","Understand appropriate grade level conversions within a system of measure","MA.4.4.4","4.MA.S.4","4","WV Mathematics"
-"4","Read scales of weight, capacity, and temperature and select appropriate unit","MA.4.4.5","4.MA.S.4","4","WV Mathematics"
-"4","Read time to the minute","MA.4.4.6","4.MA.S.4","4","WV Mathematics"
-"4","Determine elapsed time in hours/ minutes within a 24-hour period","MA.4.4.7","4.MA.S.4","4","WV Mathematics"
-"4","Count coins and bills and determine correct change","MA.4.4.8","4.MA.S.4","4","WV Mathematics"
-"4","Data Analysis and Probability","4.MA.S.5","4","3","WV Mathematics"
-"4","Understand and reason about the use and misuse of statistics in our society","MA.4.5.1","4.MA.S.5","4","WV Mathematics"
-"4","Read and interpret information represented on a circle graph","MA.4.5.2","4.MA.S.5","4","WV Mathematics"
-"4","Collect, organize, display, read and interpret data from a problem solving situation in line graphs, bar graphs, tally charts and tables with scale increments greater than one","MA.4.5.3","4.MA.S.5","4","WV Mathematics"
-"4","List all possible outcomes for an experiment using a tree diagram","MA.4.5.4","4.MA.S.5","4","WV Mathematics"
-"4","Determine mean, median, mode and range from collected data","MA.4.5.5","4.MA.S.5","4","WV Mathematics"
-"5","Grade 5","5","WV","2",""
-"5","Number and Operations ","5.MA.S.1","5","3","WV Mathematics"
-"5","Read, write, order and compare all whole numbers ","MA.5.1.1","5.MA.S.1","4","WV Mathematics"
-"5","Read, write, order and compare all decimals","MA.5.1.2","5.MA.S.1","4","WV Mathematics"
-"5","Identify place value of each digit utilizing standard and expanded form in any whole number","MA.5.1.3","5.MA.S.1","4","WV Mathematics"
-"5","Estimate with whole numbers and decimals, including money, to determine reasonableness of an answer","MA.5.1.4","5.MA.S.1","4","WV Mathematics"
-"5","Identify and use the divisibility rules of 2, 3, 5, 9 and 10","MA.5.1.5","5.MA.S.1","4","WV Mathematics"
-"5","Compare and order fractions, improper fractions and mixed numbers with like and unlike denominators (eg, greatest common factor, lowest common multiple)","MA.5.1.6","5.MA.S.1","4","WV Mathematics"
-"5","Model and write equivalencies of fractions, decimals, percents, and ratios","MA.5.1.7","5.MA.S.1","4","WV Mathematics"
-"5","Add and subtract fractions and mixed numbers","MA.5.1.8","5.MA.S.1","4","WV Mathematics"
-"5","Model multiplication and division of fractions to solve the algorithm","MA.5.1.9","5.MA.S.1","4","WV Mathematics"
-"5","Model multiplication of decimals and division of decimals by a whole number divisor","MA.5.1.10","5.MA.S.1","4","WV Mathematics"
-"5","Develop fluency in addition, subtraction, multiplication and division of whole numbers","MA.5.1.11","5.MA.S.1","4","WV Mathematics"
-"5","Solve grade level appropriate story problems using multiple strategies","MA.5.1.12","5.MA.S.1","4","WV Mathematics"
-"5","Algebra","5.MA.S.2","5","3","WV Mathematics"
-"5","Explore a variety of patterns with missing elements (eg, square numbers, powers, triangular numbers, arithmetic sequences)","MA.5.2.1","5.MA.S.2","4","WV Mathematics"
-"5","Use input/output model with grade appropriate functions","MA.5.2.2","5.MA.S.2","4","WV Mathematics"
-"5","Write an equation using a variable to solve problems","MA.5.2.3","5.MA.S.2","4","WV Mathematics"
-"5","Evaluate an expression given a value for the variable","MA.5.2.4","5.MA.S.2","4","WV Mathematics"
-"5","Geometry","5.MA.S.3","5","3","WV Mathematics"
-"5","Classify and compare polygons","MA.5.3.1","5.MA.S.3","4","WV Mathematics"
-"5","Construct a 3-dimensional figure from different views (orthogonal drawings)","MA.5.3.2","5.MA.S.3","4","WV Mathematics"
-"5","Measure angles using a protractor","MA.5.3.3","5.MA.S.3","4","WV Mathematics"
-"5","Draw a design with more than one line of symmetry","MA.5.3.4","5.MA.S.3","4","WV Mathematics"
-"5","Recognize the images of figures after reflections, translations and rotations","MA.5.3.5","5.MA.S.3","4","WV Mathematics"
-"5","Draw a similar figure using a scale","MA.5.3.6","5.MA.S.3","4","WV Mathematics"
-"5","Measurement","5.MA.S.4","5","3","WV Mathematics"
-"5","Estimate, measure, compare, order and draw lengths of real objects in parts of an inch up to 1/8 of an inch and millimeters","MA.5.4.1","5.MA.S.4","4","WV Mathematics"
-"5","Determine and compare area of triangles and parallelograms using appropriate formula","MA.5.4.2","5.MA.S.4","4","WV Mathematics"
-"5","Solve problems using the formulas for determining volume of a rectangular prism","MA.5.4.3","5.MA.S.4","4","WV Mathematics"
-"5","Understand the relationship between area and perimeter of a plane figure","MA.5.4.4","5.MA.S.4","4","WV Mathematics"
-"5","Understand appropriate grade level conversions within a system of measure and apply to problem solving situations","MA.5.4.5","5.MA.S.4","4","WV Mathematics"
-"5","Evaluate and/or measure the weight/mass of real objects in ounces, pounds, tons, grams, and kilograms","MA.5.4.6","5.MA.S.4","4","WV Mathematics"
-"5","Calculate elapsed time","MA.5.4.7","5.MA.S.4","4","WV Mathematics"
-"5","Select appropriate customary and metric units and the tools for measuring to desired degree of precision","MA.5.4.8","5.MA.S.4","4","WV Mathematics"
-"5","Determine actual measurement from scale drawings","MA.5.4.9","5.MA.S.4","4","WV Mathematics"
-"5","Data Analysis and Probability","5.MA.S.5","5","3","WV Mathematics"
-"5","Collect, organize, display, read and interpret data from a problem-solving situation in a stem and leaf plot","MA.5.5.1","5.MA.S.5","4","WV Mathematics"
-"5","Identify probabilities and solve problems involving the probability of an event by using tree diagrams or by construction of a sample space representing all possible results","MA.5.5.2","5.MA.S.5","4","WV Mathematics"
-"5","Construct, read, and interpret tables, charts, and graphs to draw reasonable inferences or verify predictions","MA.5.5.3","5.MA.S.5","4","WV Mathematics"
-"5","Carry out experiments to determine probability","MA.5.5.4","5.MA.S.5","4","WV Mathematics"
-"5","Construct a circle graph","MA.5.5.5","5.MA.S.5","4","WV Mathematics"
-"6","Grade 6","6","WV","2",""
-"6","Number and Operations ","6.MA.S.1","6","3","WV Mathematics"
-"6","Read, write, order, and compare numbers using scientific notation","MA.6.1.1","6.MA.S.1","4","WV Mathematics"
-"6","Identify prime and composite numbers up to 100","MA.6.1.2","6.MA.S.1","4","WV Mathematics"
-"6","Use prime factorization to determine the greatest common factor and least common multiple","MA.6.1.3","6.MA.S.1","4","WV Mathematics"
-"6","Identify and represent integers on a number line","MA.6.1.4","6.MA.S.1","4","WV Mathematics"
-"6","Use estimation to solve problems with whole numbers, fractions and decimals","MA.6.1.5","6.MA.S.1","4","WV Mathematics"
-"6","Solve problems in context involving addition, subtraction, multiplication, and division of whole numbers, fractions, mixed numbers and decimals","MA.6.1.6","6.MA.S.1","4","WV Mathematics"
-"6","Identify, demonstrate, and apply the distributive, commutative, associative and identity properties","MA.6.1.7","6.MA.S.1","4","WV Mathematics"
-"6","Convert between fractions, mixed numbers, decimals and percents","MA.6.1.8","6.MA.S.1","4","WV Mathematics"
-"6","Find the percent of a number","MA.6.1.9","6.MA.S.1","4","WV Mathematics"
-"6","Algebra","6.MA.S.2","6","3","WV Mathematics"
-"6","Simplify numerical expressions using order of operations","MA.6.2.1","6.MA.S.2","4","WV Mathematics"
-"6","Identify missing elements in arithmetic and geometric patterns","MA.6.2.2","6.MA.S.2","4","WV Mathematics"
-"6","Explore a variety of patterns, including perfect squares, square roots and exponents","MA.6.2.3","6.MA.S.2","4","WV Mathematics"
-"6","Use input/output models and spreadsheets to evaluate functions","MA.6.2.4","6.MA.S.2","4","WV Mathematics"
-"6","Solve a proportion using cross multiplication","MA.6.2.5","6.MA.S.2","4","WV Mathematics"
-"6","Identify like terms and monomials","MA.6.2.6","6.MA.S.2","4","WV Mathematics"
-"6","Model addition, subtraction, multiplication and division of integers","MA.6.2.7","6.MA.S.2","4","WV Mathematics"
-"6","Locate and plot points within the four quadrants","MA.6.2.8","6.MA.S.2","4","WV Mathematics"
-"6","Use variables to represent and solve real world problems appropriate for the 6th grade using multiple strategies","MA.6.2.9","6.MA.S.2","4","WV Mathematics"
-"6","Geometry","6.MA.S.3","6","3","WV Mathematics"
-"6","Classify lines as parallel, intersecting, perpendicular or skew","MA.6.3.1","6.MA.S.3","4","WV Mathematics"
-"6","Determine the sum of measures of angles in polygons","MA.6.3.2","6.MA.S.3","4","WV Mathematics"
-"6","Bisect a line segment using a compass and straightedge","MA.6.3.3","6.MA.S.3","4","WV Mathematics"
-"6","Draw an angle of a given measure","MA.6.3.4","6.MA.S.3","4","WV Mathematics"
-"6","Identify line symmetry and rotational symmetry in plane figures","MA.6.3.5","6.MA.S.3","4","WV Mathematics"
-"6","Define and sketch similar and congruent plane geometric figures","MA.6.3.6","6.MA.S.3","4","WV Mathematics"
-"6","Measurement","6.MA.S.4","6","3","WV Mathematics"
-"6","Derive approximation for pi using actual measurements","MA.6.4.1","6.MA.S.4","4","WV Mathematics"
-"6","Apply formulas to determine perimeter, circumference and/or area of plane figures including compound figures ","MA.6.4.2","6.MA.S.4","4","WV Mathematics"
-"6","Understand the appropriate grade level conversions","MA.6.4.3","6.MA.S.4","4","WV Mathematics"
-"6","Investigate and model volume and surface area","MA.6.4.4","6.MA.S.4","4","WV Mathematics"
-"6","Select appropriate units and determine length, weight/mass and capacity/volume using metric and customary systems","MA.6.4.5","6.MA.S.4","4","WV Mathematics"
-"6","Construct scale drawings","MA.6.4.6","6.MA.S.4","4","WV Mathematics"
-"6","Data Analysis and Probability","6.MA.S.5","6","3","WV Mathematics"
-"6","Collect, organize, display, and read data using appropriate graphs and tables","MA.6.5.1","6.MA.S.5","4","WV Mathematics"
-"6","Interpret data using mean, median, mode, and range","MA.6.5.2","6.MA.S.5","4","WV Mathematics"
-"6","Determine the probability of a given event and express that probability as a ratio, decimal or percent","MA.6.5.3","6.MA.S.5","4","WV Mathematics"
-"6","Determine combinations, permutations and probability using sample spaces (by listing and tree diagrams)","MA.6.5.4","6.MA.S.5","4","WV Mathematics"
-"7","Grade 7","7","WV","2",""
-"7","Number and Operations ","7.MA.S.1","7","3","WV Mathematics"
-"7","Compare and order integers, decimals, and fractions using symbols (<,>,=) manipulatives and graphing on a number line","MA.7.1.1","7.MA.S.1","4","WV Mathematics"
-"7","Find powers, squares, and square roots using manipulatives, models, calculators, tables and mental math","MA.7.1.2","7.MA.S.1","4","WV Mathematics"
-"7","Define absolute value and determine its effect on a number or expression","MA.7.1.3","7.MA.S.1","4","WV Mathematics"
-"7","Recognize and write rational numbers in the form a/b","MA.7.1.4","7.MA.S.1","4","WV Mathematics"
-"7","Perform operations with integers (eg, addition, subtraction, multiplication, division)","MA.7.1.5","7.MA.S.1","4","WV Mathematics"
-"7","Apply the commutative, associative, distributive, identity and inverse properties","MA.7.1.6","7.MA.S.1","4","WV Mathematics"
-"7","Solve application problems with whole numbers, decimals, fractions and percents","MA.7.1.7","7.MA.S.1","4","WV Mathematics"
-"7","Use appropriate estimation strategies in problem situations including evaluating the reasonableness of a solution","MA.7.1.8","7.MA.S.1","4","WV Mathematics"
-"7","Algebra","7.MA.S.2","7","3","WV Mathematics"
-"7","Find missing elements in a variety of arithmetic and geometric patterns including algebraic sequences and series","MA.7.2.1","7.MA.S.2","4","WV Mathematics"
-"7","Simplify and evaluate numerical and algebraic expressions with whole numbers, integers, absolute value and exponents using the order of operations and exponential rules","MA.7.2.2","7.MA.S.2","4","WV Mathematics"
-"7","Add, subtract, multiply and divide monomials with no more than two variables and no exponent greater than two","MA.7.2.3","7.MA.S.2","4","WV Mathematics"
-"7","Find and use the greatest common factor (gcf) and least common multiple (lcm) of a set of monomials or algebraic fractions using prime factorization and exponent rules","MA.7.2.4","7.MA.S.2","4","WV Mathematics"
-"7","Input data into a spreadsheet to create input/output function tables","MA.7.2.5","7.MA.S.2","4","WV Mathematics"
-"7","Use ratios and proportions to represent and solve application problems","MA.7.2.6","7.MA.S.2","4","WV Mathematics"
-"7","Write and evaluate complex algebraic expressions for word phrases","MA.7.2.7","7.MA.S.2","4","WV Mathematics"
-"7","Use and apply scientific notation containing positive and negative exponents","MA.7.2.8","7.MA.S.2","4","WV Mathematics"
-"7","Solve one-step linear equations containing whole numbers, fractions, decimals and integers with integer solutions","MA.7.2.9","7.MA.S.2","4","WV Mathematics"
-"7","Solve basic inequalities using inverse operations and graph solutions","MA.7.2.10","7.MA.S.2","4","WV Mathematics"
-"7","Plot lines within the cartesian coordinate plane from a table of values","MA.7.2.11","7.MA.S.2","4","WV Mathematics"
-"7","Determine the slope of a line from its graphical representation","MA.7.2.12","7.MA.S.2","4","WV Mathematics"
-"7","Represent and solve real world problems appropriate for 7th grade using multiple strategies","MA.7.2.13","7.MA.S.2","4","WV Mathematics"
-"7","Geometry","7.MA.S.3","7","3","WV Mathematics"
-"7","Identify and construct angle-pairs (eg, adjacent, complementary, supplementary, vertical)","MA.7.3.1","7.MA.S.3","4","WV Mathematics"
-"7","Use a formula to determine the sum of the measures of the interior angles of a polygon","MA.7.3.2","7.MA.S.3","4","WV Mathematics"
-"7","Use 2-dimensional representations of 3-dimensional objects to visualize and solve problems","MA.7.3.3","7.MA.S.3","4","WV Mathematics"
-"7","Identify and construct congruent segments and angles, perpendicular bisectors of segments and angle-bisectors","MA.7.3.4","7.MA.S.3","4","WV Mathematics"
-"7","Apply and demonstrate line symmetry","MA.7.3.5","7.MA.S.3","4","WV Mathematics"
-"7","Apply transformations (rotations, reflections, translations) to plane figures using graph paper","MA.7.3.6","7.MA.S.3","4","WV Mathematics"
-"7","Solve ratio and proportion problems including scale drawings and similar polygons","MA.7.3.7","7.MA.S.3","4","WV Mathematics"
-"7","Measurement","7.MA.S.4","7","3","WV Mathematics"
-"7","Use and apply formulas in problem solving situations involving perimeter, circumference, area, surface area, distance and temperature (celsius, fahrenheit)","MA.7.4.1","7.MA.S.4","4","WV Mathematics"
-"7","Use the concept of volume for prisms, pyramids, and cylinders as the relationship between the area of the base and height","MA.7.4.2","7.MA.S.4","4","WV Mathematics"
-"7","Use the pythagorean theorem to find the length of any side of a right triangle","MA.7.4.3","7.MA.S.4","4","WV Mathematics"
-"7","Convert units of measurement within and between customary and metric systems","MA.7.4.4","7.MA.S.4","4","WV Mathematics"
-"7","Data Analysis and Probability","7.MA.S.5","7","3","WV Mathematics"
-"7","Determine experimental and theoretical probability of an event using appropriate technology","MA.7.5.1","7.MA.S.5","4","WV Mathematics"
-"7","Construct sample spaces by listing, tree diagrams, and frequency distribution tables to determine combinations and permutations","MA.7.5.2","7.MA.S.5","4","WV Mathematics"
-"7","Collect, organize, graphically represent, and interpret data displays including:  frequency distributions, line-plots, scatter plots, box and whiskers, and multiple-line graphs","MA.7.5.3","7.MA.S.5","4","WV Mathematics"
-"7","Solve application problems involving measures of central tendency (mean, median, mode) and dispersion (range) from data, graphs, tables, and experiments using appropriate technology","MA.7.5.4","7.MA.S.5","4","WV Mathematics"
-"8","Grade 8","8","WV","2",""
-"8","Number and Operations ","8.MA.S.1","8","3","WV Mathematics"
-"8","Compare and order rational and irrational numbers ","MA.8.1.1","8.MA.S.1","4","WV Mathematics"
-"8","Utilize the properties of terminating, repeating, and non-repeating decimals, and conversions between fractions, mixed numbers, and decimals","MA.8.1.2","8.MA.S.1","4","WV Mathematics"
-"8","Extend scientific notation to numbers with a wide range of values using a calculator when appropriate","MA.8.1.3","8.MA.S.1","4","WV Mathematics"
-"8","Use powers, squares, and square roots to solve problems","MA.8.1.4","8.MA.S.1","4","WV Mathematics"
-"8","Use estimation techniques with whole numbers, decimals, percent, fractions and mixed numbers to solve and verify solutions in application problems","MA.8.1.5","8.MA.S.1","4","WV Mathematics"
-"8","Solve application problems with whole numbers, decimals, fractions, percents and integers including, but not limited to, rates, tips, discounts, sales tax and interest","MA.8.1.6","8.MA.S.1","4","WV Mathematics"
-"8","Develop computational strategies based on the commutative, associative, and identity properties with emphasis on the inverse and distributive properties","MA.8.1.7","8.MA.S.1","4","WV Mathematics"
-"8","Algebra","8.MA.S.2","8","3","WV Mathematics"
-"8","Use order-of-operations and exponents rules to solve problems with numerical and algebraic expressions containing whole numbers, integers, absolute value, fractions and exponents","MA.8.2.1","8.MA.S.2","4","WV Mathematics"
-"8","Solve one and two step linear equations and inequalities with integers, fractions, and decimal    solutions","MA.8.2.2","8.MA.S.2","4","WV Mathematics"
-"8","Use ratio and proportion to create and solve equations","MA.8.2.3","8.MA.S.2","4","WV Mathematics"
-"8","Add and subtract polynomials limited to two variables and positive exponents","MA.8.2.4","8.MA.S.2","4","WV Mathematics"
-"8","Apply algebraic equations and expressions to solve application problems","MA.8.2.5","8.MA.S.2","4","WV Mathematics"
-"8","Apply inductive and deductive reasoning to write a rule from data in a function table","MA.8.2.6","8.MA.S.2","4","WV Mathematics"
-"8","Graph linear equations and inequalities within the cartesian coordinate plane using ordered pairs table of values and appropriate technology","MA.8.2.7","8.MA.S.2","4","WV Mathematics"
-"8","Formulate and apply a rule to generate an arithmetic, geometric and algebraic pattern","MA.8.2.8","8.MA.S.2","4","WV Mathematics"
-"8","Determine the slope of a line given two-points or slope/y?intercept equation (y=mx+b)","MA.8.2.9","8.MA.S.2","4","WV Mathematics"
-"8","Represent and solve real world problems appropriate for 8th grade using multiple strategies","MA.8.2.10","8.MA.S.2","4","WV Mathematics"
-"8","Geometry","8.MA.S.3","8","3","WV Mathematics"
-"8","Investigate the relationship between corresponding, alternate interior, and alternate exterior angles when parallel lines are cut by a transversal using models, pencil/paper and graphing calculator","MA.8.3.1","8.MA.S.3","4","WV Mathematics"
-"8","Classify polyhedrons according to the number and shape of faces; determine the relationship between vertices, faces and edges","MA.8.3.2","8.MA.S.3","4","WV Mathematics"
-"8","Identify, apply, and construct perpendicular and angle bisectors","MA.8.3.3","8.MA.S.3","4","WV Mathematics"
-"8","Create geometric patterns including tiling, art design, tessellations and scaling using transformations (rotations, reflections, translations)","MA.8.3.4","8.MA.S.3","4","WV Mathematics"
-"8","Use coordinate geometry to represent and examine properties of similar and congruent figures and graph transformations","MA.8.3.5","8.MA.S.3","4","WV Mathematics"
-"8","Create scale models including ratio, proportion and similar figures using pencil/paper and dynamic geometry software","MA.8.3.6","8.MA.S.3","4","WV Mathematics"
-"8","Measurement","8.MA.S.4","8","3","WV Mathematics"
-"8","Estimate and solve application problems involving perimeter, area, surface area and volume of plane and solid geometric figures","MA.8.4.1","8.MA.S.4","4","WV Mathematics"
-"8","Use the concept of volume for cone and pyramids as one-third the product of the area of the base and the height","MA.8.4.2","8.MA.S.4","4","WV Mathematics"
-"8","Solve problems involving missing measurements in plane and solid geometric figures using formulas and drawings including irregular figures, models or definitions","MA.8.4.3","8.MA.S.4","4","WV Mathematics"
-"8","Solve right triangle problems using the pythagorean theorem, indirect measurement and definitions","MA.8.4.4","8.MA.S.4","4","WV Mathematics"
-"8","Data Analysis and Probability","8.MA.S.5","8","3","WV Mathematics"
-"8","Use appropriate technology to solve application problems involving combinations and permutations","MA.8.5.1","8.MA.S.5","4","WV Mathematics"
-"8","Investigate the experimental and theoretical probability, including compound probability of an event","MA.8.5.2","8.MA.S.5","4","WV Mathematics"
-"8","Create and extrapolate information from multiple-bar graphs, box and whisker plots, and other data displays using appropriate technology","MA.8.5.3","8.MA.S.5","4","WV Mathematics"
-"8","Analyze problem situations, games of chance, and consumer applications using statistical samplings to determine probability and make predictions","MA.8.5.4","8.MA.S.5","4","WV Mathematics"
-"8","Draw inferences and construct convincing arguments, including misuses of statistical or numeric information, based on data analysis","MA.8.5.5","8.MA.S.5","4","WV Mathematics"
-"3","Citizenship","3.SS.S.1","3","3","WV Social Studies"
-"3","Identify and practice principles of honesty, fairness and justice in experiences at home, school and in the community","SS.3.1.1 ","3.SS.S.1","4","WV Social Studies"
-"3","Identify and model the personal and civic responsibilities of good citizenship in the classroom, school and community","SS.3.1.2 ","3.SS.S.1","4","WV Social Studies"
-"3","Explain the significance of patriotic symbols, holidays, celebrations and famous people","SS.3.1.3 ","3.SS.S.1","4","WV Social Studies"
-"3","Explain the importance of respect and protection of minorities","SS.3.1.4 ","3.SS.S.1","4","WV Social Studies"
-"3","Give examples of how people working together can accomplish goals that individuals working alone cannot","SS.3.1.5 ","3.SS.S.1","4","WV Social Studies"
-"3","Explain and cite examples of how groups can make a difference in the community","SS.3.1.6 ","3.SS.S.1","4","WV Social Studies"
-"3","Introduce the concept of the common good","SS.3.1.7 ","3.SS.S.1","4","WV Social Studies"
-"3","Civics / Government","3.SS.S.2","3","3","WV Social Studies"
-"3","Explain the importance of government in the classroom, school, community and state","SS.3.2.1 ","3.SS.S.2","4","WV Social Studies"
-"3","Explain that citizens are united by commonly held principles and beliefs","SS.3.2.2 ","3.SS.S.2","4","WV Social Studies"
-"3","Identify the three levels (local, state, federal) of government and the responsibilities of each level","SS.3.2.3 ","3.SS.S.2","4","WV Social Studies"
-"3","Review majority rule and give examples of that concept in a democracy","SS.3.2.4 ","3.SS.S.2","4","WV Social Studies"
-"3","Apply criteria in evaluating rules and laws (strengths and weaknesses, design and purpose, enforcement, bias)","SS.3.2.5 ","3.SS.S.2","4","WV Social Studies"
-"3","Economics","3.SS.S.3","3","3","WV Social Studies"
-"3","Explain the concept of scarcity by citing examples of limited supplies and scarce resources","SS.3.3.1 ","3.SS.S.3","4","WV Social Studies"
-"3","Explain why budgeting is a critical skill","SS.3.3.2 ","3.SS.S.3","4","WV Social Studies"
-"3","Explain supply and demand with appropriate examples","SS.3.3.3 ","3.SS.S.3","4","WV Social Studies"
-"3","Examine the economic impact of various occupations","SS.3.3.4 ","3.SS.S.3","4","WV Social Studies"
-"3","Summarize how banks serve as intermediaries between savers and borrowers","SS.3.3.5 ","3.SS.S.3","4","WV Social Studies"
-"3","Explain the relationship between government taxation and the provision of public services","SS.3.3.6 ","3.SS.S.3","4","WV Social Studies"
-"3","Illustrate the path of a product from the raw material to the consumer","SS.3.3.7 ","3.SS.S.3","4","WV Social Studies"
-"3","Show how competition for products increases with advertising","SS.3.3.8 ","3.SS.S.3","4","WV Social Studies"
-"3","Create and use graphs, charts, maps and other data sources to illustrate the use of resources, the demand for products and the supply of goods and services","SS.3.3.9 ","3.SS.S.3","4","WV Social Studies"
-"3","Geography","3.SS.S.4","3","3","WV Social Studies"
-"3","Describe and use the basic elements of maps and globes (eg, title, legend, cardinal directions, scale, grid, parallels, meridians)","SS.3.4.1 ","3.SS.S.4","4","WV Social Studies"
-"3","Identify north, south, east, west, borders, lines of longitude and latitude, equator, north and south poles and time zones using a map","SS.3.4.2 ","3.SS.S.4","4","WV Social Studies"
-"3","Identify world geographic features (eg, peninsulas, islands, continents, straits, mountains, rivers, deserts, oceans, seas, harbors, gulfs, forests, oases)","SS.3.4.3 ","3.SS.S.4","4","WV Social Studies"
-"3","Locate states and capitals on a united states map","SS.3.4.4 ","3.SS.S.4","4","WV Social Studies"
-"3","Compare and contrast climate, weather and location with regard to people’s clothing, food, shelter and jobs","SS.3.4.5 ","3.SS.S.4","4","WV Social Studies"
-"3","Describe the various elements of the environment (water, soil, weather, climate, topography), and explain how people affect and are affected by them","SS.3.4.6 ","3.SS.S.4","4","WV Social Studies"
-"3","Describe how people in the community make their living from the environment and identify activities that individuals can do to keep the environment clean","SS.3.4.7 ","3.SS.S.4","4","WV Social Studies"
-"3","Construct, read and interpret data from various types of maps, globes, charts, graphs and timelines (eg, population, products, climate)","SS.3.4.8 ","3.SS.S.4","4","WV Social Studies"
-"3","History","3.SS.S.5","3","3","WV Social Studies"
-"3","Explain the historical significance of major events, people and their contributions to the united states","SS.3.5.1 ","3.SS.S.5","4","WV Social Studies"
-"3","Construct a timeline representing the settlement of a community/region ","SS.3.5.2 ","3.SS.S.5","4","WV Social Studies"
-"3","Compare and contrast present cultures to the cultures of people of other historical time periods (eg, source of food, clothing, shelter, products used)","SS.3.5.3 ","3.SS.S.5","4","WV Social Studies"
-"3","Make historical inferences by analyzing artifacts and pictures","SS.3.5.4 ","3.SS.S.5","4","WV Social Studies"
-"3","Discuss and draw conclusions about current events","SS.3.5.5 ","3.SS.S.5","4","WV Social Studies"
-"3","Explore american heroes, customs and traditions using various forms of literature","SS.3.5.6 ","3.SS.S.5","4","WV Social Studies"
-"3","Explain the importance of respect for diversity in the heritage, culture, ideas and opinions of others","SS.3.5.7 ","3.SS.S.5","4","WV Social Studies"
-"3","Compare and contrast different stories or accounts about past events, people, places or situations, and identify how they contribute to our understanding of the past","SS.3.5.8 ","3.SS.S.5","4","WV Social Studies"
-"3","Sequence and discuss a series of pictures that reflect historic change (eg, transportation, technology, agriculture, events in history)","SS.3.5.9 ","3.SS.S.5","4","WV Social Studies"
-"3","Organize information from various reference sources to prepare short reports and presentations","SS.3.5.10 ","3.SS.S.5","4","WV Social Studies"
-"4","Citizenship","4.SS.S.1","4","3","WV Social Studies"
-"4","Identify public agencies in the community that provide services and investigate opportunities for volunteerism","SS.4.1.1 ","4.SS.S.1","4","WV Social Studies"
-"4","Work independently and cooperatively to accomplish goals","SS.4.1.2 ","4.SS.S.1","4","WV Social Studies"
-"4","Identify commonly held democratic values, principles and beliefs expressed in the declaration of independence and the significance of patriotic symbols, holidays, celebrations and famous people","SS.4.1.3 ","4.SS.S.1","4","WV Social Studies"
-"4","Describe forms of diversity in early american society, giving examples of the strengths/contributions of each","SS.4.1.4 ","4.SS.S.1","4","WV Social Studies"
-"4","Evaluate the qualities of responsible leadership by individuals and in groups","SS.4.1.5 ","4.SS.S.1","4","WV Social Studies"
-"4","Explain the responsibilities, privileges and rights of united states citizenship and the importance of civic life","SS.4.1.6 ","4.SS.S.1","4","WV Social Studies"
-"4","Describe ways in which groups of people in schools/communities can manage conflict peacefully","SS.4.1.7 ","4.SS.S.1","4","WV Social Studies"
-"4","Civics / Government","4.SS.S.2","4","3","WV Social Studies"
-"4","Explain how the rule of law and limited government protect individual rights and the common good","SS.4.2.1 ","4.SS.S.2","4","WV Social Studies"
-"4","Explain the rights of minorities in the democratic process and the right to dissent responsibly","SS.4.2.2 ","4.SS.S.2","4","WV Social Studies"
-"4","Identify historical conflicts concerning individual rights and how those conflicts were resolved","SS.4.2.3 ","4.SS.S.2","4","WV Social Studies"
-"4","Economics","4.SS.S.3","4","3","WV Social Studies"
-"4","Explain the concept of trade-offs (eg, developing hypothetical budgets in simulated situations)","SS.4.3.1 ","4.SS.S.3","4","WV Social Studies"
-"4","Using print and media sources, analyze advertisements and their impact upon consumer choices","SS.4.3.2 ","4.SS.S.3","4","WV Social Studies"
-"4","Analyze the factors that shaped the economy in the colonies and the americas","SS.4.3.3 ","4.SS.S.3","4","WV Social Studies"
-"4","Give examples of people as consumers and producers of goods","SS.4.3.4 ","4.SS.S.3","4","WV Social Studies"
-"4","Explain the concept of taxation and its relationship to public services","SS.4.3.5 ","4.SS.S.3","4","WV Social Studies"
-"4","Describe how slavery and indentured servitude influenced the early economy of the united states","SS.4.3.6 ","4.SS.S.3","4","WV Social Studies"
-"4","Predict how competition in the market place affects prices","SS.4.3.7 ","4.SS.S.3","4","WV Social Studies"
-"4","Analyze a product chart for price comparison","SS.4.3.8 ","4.SS.S.3","4","WV Social Studies"
-"4","Construct and use charts, graphs, tables and grids to display data","SS.4.3.9","4.SS.S.3","4","WV Social Studies"
-"4","Geography","4.SS.S.4","4","3","WV Social Studies"
-"4","Identify and locate north, south and central american countries and bodies of water","SS.4.4.1 ","4.SS.S.4","4","WV Social Studies"
-"4","Use geographic terms to describe the physical features of the americas (eg, mountains, rivers, grasslands, oases)","SS.4.4.2 ","4.SS.S.4","4","WV Social Studies"
-"4","Analyze the effect of geographic factors in the development of transportation routes and settlement patterns in the americas","SS.4.4.3 ","4.SS.S.4","4","WV Social Studies"
-"4","Identify physical barriers to transportation in the americas and how people adapted to the barriers (eg, appalachian and rocky mountains, great plains, rain forest, isthmus of panama)","SS.4.4.4 ","4.SS.S.4","4","WV Social Studies"
-"4","Compare and contrast the physical, economic and political changes caused by geographic conditions and human intervention","SS.4.4.5 ","4.SS.S.4","4","WV Social Studies"
-"4","Analyze and compare the effects of geographic factors upon people’s jobs, food, clothing, shelter, services and interaction with the outside world","SS.4.4.6 ","4.SS.S.4","4","WV Social Studies"
-"4","Identify geographic factors that affect population density and other patterns on the earth","SS.4.4.7 ","4.SS.S.4","4","WV Social Studies"
-"4","Describe different climate types","SS.4.4.8 ","4.SS.S.4","4","WV Social Studies"
-"4","Locate on a map the sites of the american indian nations before the arrival of the europeans","SS.4.4.9 ","4.SS.S.4","4","WV Social Studies"
-"4","Utilize map skills to locate places and to construct maps (eg, symbols in a legend/key; lines of demarcation [equator, prime meridian, latitude and longitude, time zones, borders, coast lines] scales; directions [cardinal and intermediate]; and geographic barriers)","SS.4.4.10 ","4.SS.S.4","4","WV Social Studies"
-"4","History","4.SS.S.5","4","3","WV Social Studies"
-"4","Interpret data presented in timelines","SS.4.5.1 ","4.SS.S.5","4","WV Social Studies"
-"4","Order chronologically selected historical figures and episodes, and explain their importance in the stories of native americans, explorers, settlers and colonists in north america","SS.4.5.2 ","4.SS.S.5","4","WV Social Studies"
-"4","Identify major leaders and events from america’s colonization through the revolutionary war","SS.4.5.3 ","4.SS.S.5","4","WV Social Studies"
-"4","Identify the influence of various factors on the founding of the original colonies","SS.4.5.4 ","4.SS.S.5","4","WV Social Studies"
-"4","Identify areas and patterns of early american settlement and depict territorial expansion and population distribution in the united states through maps, charts, pictures and research projects","SS.4.5.5 ","4.SS.S.5","4","WV Social Studies"
-"4","Explore ways in which early explorers and settlers adapted to, used and changed the environment of the state or region","SS.4.5.6 ","4.SS.S.5","4","WV Social Studies"
-"4","Identify and describe european explorers of the15th and16th centuries, their reasons for exploring, the information gained from their journeys and what happened as a result of their travels","SS.4.5.7 ","4.SS.S.5","4","WV Social Studies"
-"4","Explore how and why family and community life differed in various regions of colonial north america","SS.4.5.8 ","4.SS.S.5","4","WV Social Studies"
-"4","Compare the family lives of different groups and strata in colonial times including the roles and responsibilities of men, women, children and the elderly","SS.4.5.9 ","4.SS.S.5","4","WV Social Studies"
-"4","Explain how african americans came to america and how slavery developed","SS.4.5.10 ","4.SS.S.5","4","WV Social Studies"
-"4","Describe factors that led to the colonists’ break with great britain and research major events of the revolutionary war (eg stamp act, boston tea party, bunker hill, yorktown)","SS.4.5.11 ","4.SS.S.5","4","WV Social Studies"
-"4","Describe ways in which language, stories, music, folk tales and artistic creations serve as expressions of culture and influence the behavior of people living in a particular culture","SS.4.5.12 ","4.SS.S.5","4","WV Social Studies"
-"4","Compare and contrast the cultures of the colonists and native americans and describe the changes that occurred when they came into contact with one another","SS.4.5.13 ","4.SS.S.5","4","WV Social Studies"
-"4","Explain the similarities and differences in backgrounds, motivations and occupational skills between people in the english settlements and those in the french and spanish settlements","SS.4.5.14 ","4.SS.S.5","4","WV Social Studies"
-"4","Evaluate the choices made and roles undertaken in the american revolution by different classes and groups and what they hoped or feared from revolution","SS.4.5.15 ","4.SS.S.5","4","WV Social Studies"
-"4","Analyze various sources for reconstructing the past such as documents, letters, diaries, maps, photos and others","SS.4.5.16 ","4.SS.S.5","4","WV Social Studies"
-"4","Explain why americans and those who led them (eg, george washington, benjamin franklin, thomas jefferson) went to war to win independence from england","SS.4.5.17 ","4.SS.S.5","4","WV Social Studies"
-"4","Analyze and interpret information from pictures and news sources related to historical events and people","SS.4.5.18 ","4.SS.S.5","4","WV Social Studies"
-"4","Suggest appropriate reference sources to answer specific questions, collect information and prepare short reports","SS.4.5.19 ","4.SS.S.5","4","WV Social Studies"
-"4","Sequence major historical events in united states history on a timeline (eg, discovery of america, boston tea party, revolutionary war)","SS.4.5.20 ","4.SS.S.5","4","WV Social Studies"
-"5","Citizenship","5.SS.S.1","5","3","WV Social Studies"
-"5","Describe how groups and institutions work to meet the individual needs and promote the common good","SS.5.1.1 ","5.SS.S.1","4","WV Social Studies"
-"5","Explain the political process and describe its importance in decision-making","SS.5.1.2 ","5.SS.S.1","4","WV Social Studies"
-"5","Explain the consent of the governed as the source of authority of government","SS.5.1.3 ","5.SS.S.1","4","WV Social Studies"
-"5","Explain the importance of citizens’ having and supporting common democratic values and principles expressed in the nation’s core documents","SS.5.1.4 ","5.SS.S.1","4","WV Social Studies"
-"5","Identify and analyze differences between individual responsibilities, privileges and rights of american citizenship","SS.5.1.5 ","5.SS.S.1","4","WV Social Studies"
-"5","Civics / Government","5.SS.S.2","5","3","WV Social Studies"
-"5","Give examples of how government does or does not provide for the needs and wants of people, establish order and manage conflict","SS.5.2.1 ","5.SS.S.2","4","WV Social Studies"
-"5","Participate in exercises that demonstrate knowledge of trial by jury","SS.5.2.2 ","5.SS.S.2","4","WV Social Studies"
-"5","List and explain the weaknesses of the articles of confederation","SS.5.2.3 ","5.SS.S.2","4","WV Social Studies"
-"5","List the individual rights and responsibilities in the bill of rights","SS.5.2.4 ","5.SS.S.2","4","WV Social Studies"
-"5","Identify the first three articles of the constitution and outline the basic functions of the three branches of government","SS.5.2.5 ","5.SS.S.2","4","WV Social Studies"
-"5","Explain and illustrate how a bill becomes a law","SS.5.2.6 ","5.SS.S.2","4","WV Social Studies"
-"5","Analyze the importance of government in the classroom, school, community, state and nation","SS.5.2.7 ","5.SS.S.2","4","WV Social Studies"
-"5","Economics","5.SS.S.3","5","3","WV Social Studies"
-"5","Identify the roles of consumers in the united states economy","SS.5.3.1 ","5.SS.S.3","4","WV Social Studies"
-"5","Apply the concept of supply and demand to a specific united states situation","SS.5.3.2 ","5.SS.S.3","4","WV Social Studies"
-"5","Explain the economic impact of slavery upon the development of the united states","SS.5.3.3 ","5.SS.S.3","4","WV Social Studies"
-"5","List geographic factors that can enhance or limit economic activities in various united states regions","SS.5.3.4 ","5.SS.S.3","4","WV Social Studies"
-"5","Describe the impact of industrialization on the economy of the united states","SS.5.3.5 ","5.SS.S.3","4","WV Social Studies"
-"5","Explain the function of agriculture in the economic development of the united states","SS.5.3.6 ","5.SS.S.3","4","WV Social Studies"
-"5","Apply the concepts of sales, expenses and profits to a real life event (eg, schoolrelated situation such as sports events, concession stand, snack machines)","SS.5.3.7 ","5.SS.S.3","4","WV Social Studies"
-"5","Geography","5.SS.S.4","5","3","WV Social Studies"
-"5","Read, interpret and draw conclusions from united states maps (eg, special purpose maps, graphs, charts, tables, timelines)","SS.5.4.1 ","5.SS.S.4","4","WV Social Studies"
-"5","Measure distances using a scale, and apply the concept of cardinal and intermediate directions","SS.5.4.2 ","5.SS.S.4","4","WV Social Studies"
-"5","Use a map to locate a country by hemisphere and its proximity to the equator ","SS.5.4.3 ","5.SS.S.4","4","WV Social Studies"
-"5","Locate, identify and contrast the major rivers, landforms, natural resources, climate regions, major soil regions and deserts of the united states","SS.5.4.4 ","5.SS.S.4","4","WV Social Studies"
-"5","Describe the development of the united states’ urban areas","SS.5.4.5 ","5.SS.S.4","4","WV Social Studies"
-"5","Discuss and define the various regions of the united states","SS.5.4.6 ","5.SS.S.4","4","WV Social Studies"
-"5","Identify and locate each of the fifty united states within their regions","SS.5.4.7 ","5.SS.S.4","4","WV Social Studies"
-"5","Explain the relationship of the environment to cultures in the united states","SS.5.4.8 ","5.SS.S.4","4","WV Social Studies"
-"5","Relate the united states’ westward expansion to natural resources and physical geography","SS.5.4.9 ","5.SS.S.4","4","WV Social Studies"
-"5","Use geography to describe historical events","SS.5.4.10 ","5.SS.S.4","4","WV Social Studies"
-"5","Describe how people have changed the environment of the united states","SS.5.4.11 ","5.SS.S.4","4","WV Social Studies"
-"5","History","5.SS.S.5","5","3","WV Social Studies"
-"5","Describe and analyze the events and the historic figures responsible for such documents as the united states constitution, the bill of rights and the emancipation proclamation","SS.5.5.1 ","5.SS.S.5","4","WV Social Studies"
-"5","Create a timeline showing the arrival of major immigrant groups and describe their experiences and the influence of each culture upon american society","SS.5.5.2 ","5.SS.S.5","4","WV Social Studies"
-"5","Describe the development of transportation in the united states and explain its impact on settlement, industry and residential patterns","SS.5.5.3 ","5.SS.S.5","4","WV Social Studies"
-"5","Explain why maintaining historical records and landmarks is important to the united states","SS.5.5.4 ","5.SS.S.5","4","WV Social Studies"
-"5","Interpret quotes of famous americans from various periods of history","SS.5.5.5 ","5.SS.S.5","4","WV Social Studies"
-"5","Explain how important figures reacted to their times and why they were significant to the history of our democracy (eg, george washington, thomas jefferson, abraham lincoln, sojourner truth, susan b anthony, eleanor roosevelt and martin luther king, jr)","SS.5.5.6 ","5.SS.S.5","4","WV Social Studies"
-"5","Describe how regional folk heroes and other popular figures have contributed to the cultural history of the united states (eg, frontiersmen such as daniel boone, cowboys, mountain men such as jedediah smith, american indian chiefs including geronimo and outlaws such as billy the kid)","SS.5.5.7 ","5.SS.S.5","4","WV Social Studies"
-"5","Explain how songs, symbols and slogans demonstrate freedom of expression and the role of protest in democracy (eg, the abolition of slavery, women’s suffrage, labor movements, the civil rights movement)","SS.5.5.8 ","5.SS.S.5","4","WV Social Studies"
-"5","Assess the significance of the new constitution of1787, including the struggles over its ratification and the reasons for the addition of the bill of rights","SS.5.5.9 ","5.SS.S.5","4","WV Social Studies"
-"5","Describe issues faced by washington when he became the first united states president","SS.5.5.10 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify and explain social and technological changes that took place during the industrial revolution in the united states","SS.5.5.11 ","5.SS.S.5","4","WV Social Studies"
-"5","List the reasons for westward expansion and explain how it affected the inhabitants of the american west (eg, native americans)","SS.5.5.12 ","5.SS.S.5","4","WV Social Studies"
-"5","Explain the effects of government policies on native american nations and their land holdings","SS.5.5.13 ","5.SS.S.5","4","WV Social Studies"
-"5","Analyze the impact of slavery and the abolitionist movement upon the development of the united states","SS.5.5.14 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify causes, major events and important people of the civil war","SS.5.5.15 ","5.SS.S.5","4","WV Social Studies"
-"5","Explain how various reconstruction plans succeeded or failed","SS.5.5.16 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify events which led to the united states becoming a world power","SS.5.5.17 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify the opposing sides in world war i and explain why the united states entered the war","SS.5.5.18 ","5.SS.S.5","4","WV Social Studies"
-"5","Describe the effects of the great depression on the people of the united states","SS.5.5.19 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify the causes and effects of world war ii","SS.5.5.20 ","5.SS.S.5","4","WV Social Studies"
-"5","Identify significant leaders in the civil rights movement (eg, john fitzgerald kennedy, martin luther king jr, rosa parks, lyndon johnson)","SS.5.5.21","5.SS.S.5","4","WV Social Studies"
-"6","Citizenship","6.SS.S.1","6","3","WV Social Studies"
-"6","Describe ways in which nations interact with one another and try to resolve problems","SS.6.1.1 ","6.SS.S.1","4","WV Social Studies"
-"6","Evaluate, take and defend positions on the purposes that government should serve","SS.6.1.2 ","6.SS.S.1","4","WV Social Studies"
-"6","Explain how nations benefit when they resolve conflicts peacefully","SS.6.1.3 ","6.SS.S.1","4","WV Social Studies"
-"6","Compare and contrast the role of american citizens and citizens in selected regions","SS.6.1.4 ","6.SS.S.1","4","WV Social Studies"
-"6","Analyze and evaluate the influence of various forms of citizen action on public policy","SS.6.1.5 ","6.SS.S.1","4","WV Social Studies"
-"6","Evaluate the effectiveness of public opinion in influencing and shaping public policy development and decision making","SS.6.1.6 ","6.SS.S.1","4","WV Social Studies"
-"6","Compare and contrast responsibilities, privileges and rights of united states citizenship in selected regions","SS.6.1.7 ","6.SS.S.1","4","WV Social Studies"
-"6","Civics / Government","6.SS.S.2","6","3","WV Social Studies"
-"6","Evaluate competing ideas about the purposes of government","SS.6.2.1 ","6.SS.S.2","4","WV Social Studies"
-"6","Analyze and explain how various types of government meet needs and wants of citizens, manage conflict and establish security","SS.6.2.2 ","6.SS.S.2","4","WV Social Studies"
-"6","Explain the impact of strong leadership on historic world events","SS.6.2.3 ","6.SS.S.2","4","WV Social Studies"
-"6","Explain the purpose of political parties and special interest groups and their influence on the political process","SS.6.2.4 ","6.SS.S.2","4","WV Social Studies"
-"6","Illustrate the political divisions of nations","SS.6.2.5 ","6.SS.S.2","4","WV Social Studies"
-"6","Identify and give examples of different forms of government, and classify them as either limited or unlimited","SS.6.2.6 ","6.SS.S.2","4","WV Social Studies"
-"6","Distinguish between governmental and nongovernmental international organizations and describe their functions","SS.6.2.7 ","6.SS.S.2","4","WV Social Studies"
-"6","Economics","6.SS.S.3","6","3","WV Social Studies"
-"6","Explain the economic reasons for immigration and migration","SS.6.3.1 ","6.SS.S.3","4","WV Social Studies"
-"6","Demonstrate an understanding that competition among sellers results in lower prices","SS.6.3.2 ","6.SS.S.3","4","WV Social Studies"
-"6","Compare the basic characteristics of communism, socialism and capitalism","SS.6.3.3 ","6.SS.S.3","4","WV Social Studies"
-"6","Explain and outline the steps in producing and marketing goods","SS.6.3.4 ","6.SS.S.3","4","WV Social Studies"
-"6","Assess the economic impact of technology on regions","SS.6.3.5 ","6.SS.S.3","4","WV Social Studies"
-"6","Explain how trade cartels affect the world economy (eg, organization of petroleum exporting countries)","SS.6.3.6 ","6.SS.S.3","4","WV Social Studies"
-"6","Trace the development of treaties and organizations related to trade","SS.6.3.7 ","6.SS.S.3","4","WV Social Studies"
-"6","Compare production and consumption of goods and services in different countries","SS.6.3.8 ","6.SS.S.3","4","WV Social Studies"
-"6","Geography","6.SS.S.4","6","3","WV Social Studies"
-"6","Determine the time at one location when informed of the time at another location using a world time zone map","SS.6.4.1 ","6.SS.S.4","4","WV Social Studies"
-"6","Use map tools (legends, keys, scales) to interpret information (eg, climate, landforms, resources)","SS.6.4.2 ","6.SS.S.4","4","WV Social Studies"
-"6","Identify changes in population due to shifts from agricultural to industrial/urban development","SS.6.4.3 ","6.SS.S.4","4","WV Social Studies"
-"6","Locate and identify the continents, major climates, major bodies of water and natural resources (eg, knowledge of landforms such as peninsulas, mountain ranges, plateaus, river valleys, lakes), and compare and analyze the relationship of people and the environment with regard to population, settlement and trade","SS.6.4.4 ","6.SS.S.4","4","WV Social Studies"
-"6","Locate the major waterways of north america, south america, western europe and the middle east, and explain their impact on exploration, settlement and trade (eg, discuss how the opening of the erie canal contributed to the rise of new york city)","SS.6.4.5 ","6.SS.S.4","4","WV Social Studies"
-"6","Draw conclusions about the effects of geography on transportation, culture, economic activities, population density and distribution using maps","SS.6.4.6 ","6.SS.S.4","4","WV Social Studies"
-"6","Explain the changing nature of the earth’s surface (eg, earthquakes, volcanoes)","SS.6.4.7 ","6.SS.S.4","4","WV Social Studies"
-"6","Compare and contrast general characteristics of the population of selected regions with regard to economics, religion, language and movement","SS.6.4.8 ","6.SS.S.4","4","WV Social Studies"
-"6","Interpret information from a population growth graph and a population pyramid (eg, discuss the age of the population, growth potential, life expectancy)","SS.6.4.9 ","6.SS.S.4","4","WV Social Studies"
-"6","Examine changes in the commercial form and function (eg, agriculture center to trade center to industrial center) of urban areas in different regions of the world","SS.6.4.10 ","6.SS.S.4","4","WV Social Studies"
-"6","History","6.SS.S.5","6","3","WV Social Studies"
-"6","Identify and evaluate contributions of classical civilizations and cite reasons for their rise and fall","SS.6.5.1 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain the basic tenets of major monotheistic religions and their impact on western civilizations","SS.6.5.2 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify the contributions and characteristics of arab/islamic society and judea- christian societies","SS.6.5.3 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify the causes and consequences of the protestant reformation","SS.6.5.4 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify how europeans benefited by expansion in the new world","SS.6.5.5 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain the competition of the english and french on the american frontier","SS.6.5.6 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain the systems of slavery developed in north america, latin america, iberia and africa","SS.6.5.7 ","6.SS.S.5","4","WV Social Studies"
-"6","Describe the impact of the slave trade on the political, economic and social systems in north america, latin america, iberia and africa","SS.6.5.8 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify agricultural products exchanged between the new and old worlds during the age of exploration","SS.6.5.9 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify major historical events in the development of transportation systems (water, rail, motor vehicles, aviation)","SS.6.5.10 ","6.SS.S.5","4","WV Social Studies"
-"6","Outline or build a timeline showing the influx of ethnic groups into north america","SS.6.5.11 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain how the industrial revolution affected the lives of people in western europe and the americas","SS.6.5.12 ","6.SS.S.5","4","WV Social Studies"
-"6","Analyze and trace the evolution of democracy during the nineteenth century in western nations","SS.6.5.13 ","6.SS.S.5","4","WV Social Studies"
-"6","Compare and contrast the worth of the individual in different societies over time","SS.6.5.14 ","6.SS.S.5","4","WV Social Studies"
-"6","Develop a timeline of the major events of western migration in the united states and identify key land acquisitions on a map","SS.6.5.15 ","6.SS.S.5","4","WV Social Studies"
-"6","Outline events in the abolition movement and the results of the emancipation proclamation and amendments13,14,15","SS.6.5.16 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain the causes and effects of the great depression and the political responses of governments to this crisis (rise of hitler, fascism, militarism in japan, new deal in the united states)","SS.6.5.17 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify global tensions which led to the outbreak of ww i and ww ii","SS.6.5.18 ","6.SS.S.5","4","WV Social Studies"
-"6","Identify key figures, philosophies and events in the minority rights movements including civil rights and rights of women","SS.6.5.19 ","6.SS.S.5","4","WV Social Studies"
-"6","Explain the impact of the use of atomic weapons","SS.6.5.20 ","6.SS.S.5","4","WV Social Studies"
-"7","Citizenship","7.SS.S.1","7","3","WV Social Studies"
-"7","Compare and contrast individual rights of citizens in a variety of world regions","SS.7.1.1 ","7.SS.S.1","4","WV Social Studies"
-"7","Explain how actions citizens take can influence public policy decisions","SS.7.1.2 ","7.SS.S.1","4","WV Social Studies"
-"7","Compare and contrast nations’ laws that may or may not provide order, predictability and security","SS.7.1.3 ","7.SS.S.1","4","WV Social Studies"
-"7","Locate, access and organize information about an issue of public concern from multiple points of view","SS.7.1.4 ","7.SS.S.1","4","WV Social Studies"
-"7","Identify and practice selective forms of civic discussion and participation consistent with the ideas of citizens in a democratic republic","SS.7.1.5 ","7.SS.S.1","4","WV Social Studies"
-"7","Recognize and explain the difference between power and authority","SS.7.1.6 ","7.SS.S.1","4","WV Social Studies"
-"7","Civics / Government","7.SS.S.2","7","3","WV Social Studies"
-"7","Identify and explain the different forms of government in various world regions","SS.7.2.1 ","7.SS.S.2","4","WV Social Studies"
-"7","Compare and contrast the lawmaking processes of world governments","SS.7.2.2 ","7.SS.S.2","4","WV Social Studies"
-"7","Analyze the different ways nations provide order and protect justice","SS.7.2.3 ","7.SS.S.2","4","WV Social Studies"
-"7","Debate the importance of limited government and the rules of law","SS.7.2.4 ","7.SS.S.2","4","WV Social Studies"
-"7","Differentiate various methods that nations use to interact with one another to resolve problems and conflicts","SS.7.2.5 ","7.SS.S.2","4","WV Social Studies"
-"7","Recognize the influence of the united states on other nations and the influence of other nations on the american political process and society","SS.7.2.6 ","7.SS.S.2","4","WV Social Studies"
-"7","Economics","7.SS.S.3","7","3","WV Social Studies"
-"7","Demonstrate an understanding of how competition among buyers of a product results in higher prices of that product","SS.7.3.1 ","7.SS.S.3","4","WV Social Studies"
-"7","Analyze how geography influences the economy of a region","SS.7.3.2 ","7.SS.S.3","4","WV Social Studies"
-"7","Describe the relationship between supply, demand and the price of a product","SS.7.3.3 ","7.SS.S.3","4","WV Social Studies"
-"7","Compare and contrast various social services provided by world governments","SS.7.3.4 ","7.SS.S.3","4","WV Social Studies"
-"7","Identify and compare different types of economic systems","SS.7.3.5 ","7.SS.S.3","4","WV Social Studies"
-"7","Describe the impact of technology on agriculture and industry throughout the world","SS.7.3.6 ","7.SS.S.3","4","WV Social Studies"
-"7","Identify and classify the different types of world trade organizations","SS.7.3.7 ","7.SS.S.3","4","WV Social Studies"
-"7","Identify the impact and global effects of a strike on an industry","SS.7.3.8 ","7.SS.S.3","4","WV Social Studies"
-"7","Explain how countries are economically interdependent","SS.7.3.9 ","7.SS.S.3","4","WV Social Studies"
-"7","Define basic economic terminology and apply it to economic development of world regions","SS.7.3.10 ","7.SS.S.3","4","WV Social Studies"
-"7","Geography","7.SS.S.4","7","3","WV Social Studies"
-"7","Use correct geographic terminology","SS.7.4.1 ","7.SS.S.4","4","WV Social Studies"
-"7","Draw conclusions about information presented on special purpose maps and be able to differentiate among map types","SS.7.4.2 ","7.SS.S.4","4","WV Social Studies"
-"7","Understand the use of directions (eg, cardinal directions, subordinate directions, latitude and longitude)","SS.7.4.3 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify and locate the seven continents of the world and their associated oceans, seas, rivers and landforms","SS.7.4.4 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify countries, cities and transportation networks on maps","SS.7.4.5 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify and explain the advantages and disadvantages of different map projections and their uses (eg, aerial photos, globes, charts, graphs, polar projection)","SS.7.4.6 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify how mental maps (perceptions) affect our judgments about people and places","SS.7.4.7 ","7.SS.S.4","4","WV Social Studies"
-"7","Locate and identify major world rivers, climate areas and rain forests","SS.7.4.8 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify and describe the patterns of immigration and effects on the distribution of cultural patterns in a region (eg, disease, language, religion, customs, diversity)","SS.7.4.9 ","7.SS.S.4","4","WV Social Studies"
-"7","Compare and contrast geographic regions (eg, physical, cultural, perceptual, economic)","SS.7.4.10 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify geographic factors and cultural factors that block the movement of ideas and innovations","SS.7.4.11 ","7.SS.S.4","4","WV Social Studies"
-"7","Analyze the growth of tourism and its impact on regional environments and culture","SS.7.4.12 ","7.SS.S.4","4","WV Social Studies"
-"7","Analyze interconnections between regions (eg, goods and services, music, language, religion)","SS.7.4.13 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify how human processes impact the world’s physical environment (eg, pollution, clear-cutting, strip mining)","SS.7.4.14 ","7.SS.S.4","4","WV Social Studies"
-"7","Identify the world’s climatic regions and the ways in which they influence lifestyle","SS.7.4.15 ","7.SS.S.4","4","WV Social Studies"
-"7","Analyze renewable and nonrenewable resources (eg, hydroelectric power and fossil fuels), and explain how technology affects the ways in which culture groups perceive and use their resources","SS.7.4.16 ","7.SS.S.4","4","WV Social Studies"
-"7","Analyze the technological improvements in transportation and communication that have helped create a global society","SS.7.4.17 ","7.SS.S.4","4","WV Social Studies"
-"7","Explain the common geographic factors associated with the development of world urban centers","SS.7.4.18 ","7.SS.S.4","4","WV Social Studies"
-"7","Explain cooperation and conflict over control of the world’s resources","SS.7.4.19 ","7.SS.S.4","4","WV Social Studies"
-"7","Compare and contrast the characteristics of demographic structure through population pyramids (eg, total size, birth rates, age, distribution, doubling time)","SS.7.4.20 ","7.SS.S.4","4","WV Social Studies"
-"7","Define the term culture and use the term in a geographic context (eg, isolation, core area, movement)","SS.7.4.21 ","7.SS.S.4","4","WV Social Studies"
-"7","Investigate and describe new geographic frontiers such as the oceans, antarctica and airspace","SS.7.4.22 ","7.SS.S.4","4","WV Social Studies"
-"7","History","7.SS.S.5","7","3","WV Social Studies"
-"7","Describe the development of early civilizations (eg, mesopotamia, egypt, greece, china, india)","SS.7.5.1 ","7.SS.S.5","4","WV Social Studies"
-"7","Draw world history conclusions from maps, globes, charts, posters, graphs and timelines","SS.7.5.2 ","7.SS.S.5","4","WV Social Studies"
-"7","Identify conditions that have influenced or altered the movement of people throughout the world","SS.7.5.3 ","7.SS.S.5","4","WV Social Studies"
-"7","Identify religious and secular celebrations observed around the world","SS.7.5.4 ","7.SS.S.5","4","WV Social Studies"
-"7","Explain the role of racial and ethnic minorities and women in the advancement of civil rights","SS.7.5.5 ","7.SS.S.5","4","WV Social Studies"
-"7","Compare and contrast the beliefs, religion and mythology of native cultures throughout the world","SS.7.5.6 ","7.SS.S.5","4","WV Social Studies"
-"7","Explain what occurs when people from different regions interact","SS.7.5.7 ","7.SS.S.5","4","WV Social Studies"
-"7","Draw conclusions about the effect of the environment on native cultures (eg, native americans, australian aborigines, african berbers)","SS.7.5.8 ","7.SS.S.5","4","WV Social Studies"
-"7","Identify and use processes important to reconstruction and reinterpreting the past such as using a variety of sources, providing, validating and weighing evidence and checking creditability of sources","SS.7.5.9 ","7.SS.S.5","4","WV Social Studies"
-"7","Describe the role geo-politics played in historic events of the twentieth century (eg, cold war, vietnam, persian gulf war)","SS.7.5.10 ","7.SS.S.5","4","WV Social Studies"
-"8","Citizenship","8.SS.S.1","8","3","WV Social Studies"
-"8","Evaluate how citizens can participate in government at the local, state and national levels (eg, voting, community service, letter writing)  ","SS.8.1.1 ","8.SS.S.1","4","WV Social Studies"
-"8","Identify and practice forms of civic discussion and participation consistent with the ideals of citizens in a democratic republic ","SS.8.1.2","8.SS.S.1","4","WV Social Studies"
-"8","Analyze the effectiveness of selected public policies and citizen behaviors in recognizing the stated ideas of a democratic republic","SS.8.1.3 ","8.SS.S.1","4","WV Social Studies"
-"8","Explain the relationship between policy statements and action plans used to address issues of public concern","SS.8.1.4 ","8.SS.S.1","4","WV Social Studies"
-"8","Explain the political process and the opportunities for citizens to influence government","SS.8.1.5 ","8.SS.S.1","4","WV Social Studies"
-"8","Locate, access, analyze, organize and apply information about selected public issues, recognizing and explaining multiple points of view","SS.8.1.6 ","8.SS.S.1","4","WV Social Studies"
-"8","Explain and analyze various forms of citizen action that influence public policy (eg, how groups can work with governmental agencies to impact the development of tourism)","SS.8.1.7 ","8.SS.S.1","4","WV Social Studies"
-"8","Analyze the influence of diverse forms of public opinion on the development of public policy and decision making","SS.8.1.8 ","8.SS.S.1","4","WV Social Studies"
-"8","Examine the strategies designed to strengthen the common good, which consider a range of options for citizen action","SS.8.1.9 ","8.SS.S.1","4","WV Social Studies"
-"8","Identify, analyze, evaluate and interpret sources and examples of the responsibilities, privileges and rights of citizens","SS.8.1.10 ","8.SS.S.1","4","WV Social Studies"
-"8","Explain the role and importance of voting in the democratic process and practice the voting process by participating in a class/school/state mock election","SS.8.1.11 ","8.SS.S.1","4","WV Social Studies"
-"8","Identify voting as a responsibility and right of citizens, and identify the legal voting age","SS.8.1.12 ","8.SS.S.1","4","WV Social Studies"
-"8","Identify ways students can participate in the governance of their school and community","SS.8.1.13 ","8.SS.S.1","4","WV Social Studies"
-"8","Develop and utilize a process to express opinion, resolve problems and/or seek assistance","SS.8.1.14 ","8.SS.S.1","4","WV Social Studies"
-"8","Examine and analyze a local community and propose ways in which tourism can be developed","SS.8.1.15 ","8.SS.S.1","4","WV Social Studies"
-"8","Develop a mock bill to promote tourism in west virginia","SS.8.1.16 ","8.SS.S.1","4","WV Social Studies"
-"8","Civics / Government","8.SS.S.2","8","3","WV Social Studies"
-"8","Analyze the division of powers and responsibilities of the executive, legislative and judicial branches of united states and west virginia state government","SS.8.2.1 ","8.SS.S.2","4","WV Social Studies"
-"8","Identify the duties and requirements of elected officials at the national, state and local levels (eg, president, governors, senators, representatives/delegates, members of board of public works, county commissioners)","SS.8.2.2 ","8.SS.S.2","4","WV Social Studies"
-"8","Examine the amendment process of the west virginia constitution","SS.8.2.3 ","8.SS.S.2","4","WV Social Studies"
-"8","Identify and chart the process of how a bill becomes law in west virginia (eg, a bill to promote tourism)","SS.8.2.4 ","8.SS.S.2","4","WV Social Studies"
-"8","Analyze the functions and jurisdictions of the federal, state, local and special courts (eg, united states supreme court, state supreme court, circuit courts, magistrate courts, family courts)","SS.8.2.5 ","8.SS.S.2","4","WV Social Studies"
-"8","Identify various types of elections in west virginia (eg, primary/general, state/local, partisan/non-partisan) ","SS.8.2.6 ","8.SS.S.2","4","WV Social Studies"
-"8","Research and describe how special interest groups influence government and the lawmaking process in west virginia (eg, west virginia education association, united mine workers, division of tourism)","SS.8.2.7 ","8.SS.S.2","4","WV Social Studies"
-"8","Identify major sources and uses of revenue for state and local governments (eg, property tax, income tax, fees and licenses, excise tax, levies)","SS.8.2.8 ","8.SS.S.2","4","WV Social Studies"
-"8","Identify and analyze individual rights and privileges protected by the united states and west virginia constitutions and laws","SS.8.2.9 ","8.SS.S.2","4","WV Social Studies"
-"8","Explain major principles of american constitutional government, (eg, federalism, separation of powers, the elastic clause, checks and balances, government by consent of the governed, individual rights) and compare to the west virginia constitution","SS.8.2.10 ","8.SS.S.2","4","WV Social Studies"
-"8","Analyze conditions under which constitutional government flourishes","SS.8.2.11 ","8.SS.S.2","4","WV Social Studies"
-"8","Compare and contrast rights and privileges of the individual citizen","SS.8.2.12 ","8.SS.S.2","4","WV Social Studies"
-"8","Examine laws passed in a legislative session and list those that impact the development of tourism","SS.8.2.13 ","8.SS.S.2","4","WV Social Studies"
-"8","Economics","8.SS.S.3","8","3","WV Social Studies"
-"8","Describe how west virginia’s economic condition affects social conditions (eg, employment, in/out migration)","SS.8.3.1 ","8.SS.S.3","4","WV Social Studies"
-"8","Define and explain the importance of west virginia’s renewable and non-renewable resources and how absentee ownership of these resources impacts the state’s economy","SS.8.3.2 ","8.SS.S.3","4","WV Social Studies"
-"8","Explain the benefits of trade to west virginia’s economy","SS.8.3.3 ","8.SS.S.3","4","WV Social Studies"
-"8","Examine economic reasons for the deterioration of some downtown areas in twentieth century west virginia and the renaissance of others","SS.8.3.4 ","8.SS.S.3","4","WV Social Studies"
-"8","Determine the factors that caused west virginia to become a leader in the production of salt, coal and electricity","SS.8.3.5 ","8.SS.S.3","4","WV Social Studies"
-"8","Identify industries and products (eg, tourism, coal, glass, recreation, agriculture) that are important to the economy of the four regions of west virginia and how they relate to occupations","SS.8.3.6 ","8.SS.S.3","4","WV Social Studies"
-"8","Describe and analyze the effects of national and state governmental actions on west virginia’s economy","SS.8.3.7 ","8.SS.S.3","4","WV Social Studies"
-"8","Describe and analyze the importance of banking in west virginia’s economy (eg, savings, interest, loans)","SS.8.3.8 ","8.SS.S.3","4","WV Social Studies"
-"8","Analyze and predict the changes in west virginia’s economy and people due to industrial development, and debate the issue of industrialization vs preserving history","SS.8.3.9 ","8.SS.S.3","4","WV Social Studies"
-"8","Examine the effect of technological changes on west virginia’s economy (eg, in employment, agriculture, tourism, education, industry)","SS.8.3.10 ","8.SS.S.3","4","WV Social Studies"
-"8","Identify the labor/management strategies that have affected west virginia’s economy (eg, strikes, boycotts, yellow-dog contracts)","SS.8.3.11 ","8.SS.S.3","4","WV Social Studies"
-"8","List some of the major industries in west virginia and identify representative jobs under each (eg, manufacturing, mining, tourism, health care)","SS.8.3.12 ","8.SS.S.3","4","WV Social Studies"
-"8","Describe the economic benefit of changing tourist attractions from seasonal to year round (eg, snowshoe)","SS.8.3.13 ","8.SS.S.3","4","WV Social Studies"
-"8","Geography","8.SS.S.4","8","3","WV Social Studies"
-"8","Describe west virginia’s location in relationship to the prime meridian, equator, tropic of cancer, tropic of capricorn, arctic and antarctic circles","SS.8.4.1 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify west virginia’s location by latitude and longitude including degrees, minutes and seconds","SS.8.4.2 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify west virginia’s man-made and natural borders","SS.8.4.3 ","8.SS.S.4","4","WV Social Studies"
-"8","Use a map to identify the four major geographic regions, major rivers, landforms and points of interest in west virginia","SS.8.4.4 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify, analyze and discuss west virginia’s geographic regions through reading descriptive literature","SS.8.4.5 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify the location of west virginia in relationship to neighboring states and the eastern united states","SS.8.4.6 ","8.SS.S.4","4","WV Social Studies"
-"8","Use a map to identify the counties and major cities in west virginia","SS.8.4.7 ","8.SS.S.4","4","WV Social Studies"
-"8","Cite reasons for the development of the west virginia transportation system","SS.8.4.8 ","8.SS.S.4","4","WV Social Studies"
-"8","Draw conclusions about climate, landforms and resources in west virginia’s four geographic regions using special purpose maps","SS.8.4.9 ","8.SS.S.4","4","WV Social Studies"
-"8","Explain how the cultural and economic isolation of different areas of the united states and west virginia have been changed through technological advances (eg, tv, radio, telephone, computers, highways)","SS.8.4.10 ","8.SS.S.4","4","WV Social Studies"
-"8","Describe west virginia’s climate, its effect on people’s lives","SS.8.4.11 ","8.SS.S.4","4","WV Social Studies"
-"8","Use a map to explain the settlement, exploration and population patterns of west virginia in relation to geographic features","SS.8.4.12 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify the geographic factors which lead to development of agriculture, coal, glass, chemical, metallurgical and tourism industries in west virginia","SS.8.4.13 ","8.SS.S.4","4","WV Social Studies"
-"8","Define region and list various regions found in west virginia (eg, geographic, tourist)","SS.8.4.14 ","8.SS.S.4","4","WV Social Studies"
-"8","Identify and locate counties in the 8 tourist regions of west virginia","SS.8.4.15 ","8.SS.S.4","4","WV Social Studies"
-"8","Explain how west virginia’s environment affects tourism","SS.8.4.16 ","8.SS.S.4","4","WV Social Studies"
-"8","History","8.SS.S.5","8","3","WV Social Studies"
-"8","List reasons for exploration, major explorers, their routes and discoveries on the western virginia frontier","SS.8.5.1 ","8.SS.S.5","4","WV Social Studies"
-"8","Sequence the events and incentives for virginia’s expansion west to the ohio river","SS.8.5.2 ","8.SS.S.5","4","WV Social Studies"
-"8","Compare and contrast french and english explorers, settlers and settlements on the western frontier","SS.8.5.3 ","8.SS.S.5","4","WV Social Studies"
-"8","Sequence the events that led to the formation of the state of west virginia","SS.8.5.4 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify characteristics of various native american cultures in west virginia from the pre-columbian period to the arrival of europeans","SS.8.5.5 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify the types of transportation which facilitated the growth of west virginia and western expansion","SS.8.5.6 ","8.SS.S.5","4","WV Social Studies"
-"8","Sequence and analyze the impact of contemporary social, economic and technological developments on people and culture in west virginia and the united states","SS.8.5.7 ","8.SS.S.5","4","WV Social Studies"
-"8","Describe and analyze the evolution of the labor movement in west virginia and the united states","SS.8.5.8 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify the role of ethnic and racial minorities and women in west virginia’s history","SS.8.5.9 ","8.SS.S.5","4","WV Social Studies"
-"8","Explain reasons for and resulting consequences of conflicts and wars as they pertain to the development of west virginia (eg, french and indian war, american revolution, civil war)","SS.8.5.10 ","8.SS.S.5","4","WV Social Studies"
-"8","Draw conclusions about west virginia and other areas from various types of charts, graphs, maps, pictures, models and timelines","SS.8.5.11 ","8.SS.S.5","4","WV Social Studies"
-"8","Describe the cultural conflict between the europeans and native americans as it relates to west virginia","SS.8.5.12 ","8.SS.S.5","4","WV Social Studies"
-"8","Explain the effect of immigration on the culture of west virginia from european settlement through the early twentieth century","SS.8.5.13 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify men and women in west virginia who have made significant contributions to our history in the public and/or private sectors (eg, statehood movement, abolition movement, education, industry, literature)","SS.8.5.14 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify and explain the significance of historical experience and of geographical, social and economic factors that have helped to shape both west virginian and american society","SS.8.5.15 ","8.SS.S.5","4","WV Social Studies"
-"8","Describe the moral, ethical and legal tensions that led to the creation of the new state of west virginia and how those tensions were resolved","SS.8.5.16 ","8.SS.S.5","4","WV Social Studies"
-"8","Identify and locate places of historical importance in west virginia that can be visited by tourists","SS.8.5.17 ","8.SS.S.5","4","WV Social Studies"
-"8","List fairs and festivals in west virginia that can be attributed to the influence of various cultural groups who have settled in the state","SS.8.5.18 ","8.SS.S.5","4","WV Social Studies"
-"3","Reading","3.RLA.S.1","3","3","WV Reading Language Arts"
-"3","Recognize level appropriate sight words and content vocabulary","RLA.3.1.1","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Recognize level appropriate reading vocabulary (eg, synonyms, antonyms, homonyms, multi-meaning words)","RLA.3.1.2","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Use reading skills and strategies to comprehend a variety of literary passages and texts (eg, fairy tales, folk-tales; fiction; nonfiction; myths; poems; fables; fantasies; historical fiction; biographies; autobiographies; chapter books)","RLA.3.1.3","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Use comprehension skills to understand a story (eg, story elements; sequence; expository works; drawing conclusions; compare/contrast; predict; summarize; infer; paraphrase; main idea; story topic)","RLA.3.1.4","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Recognize the ways in which language is used in literary text (eg, simile; metaphor; idioms)","RLA.3.1.5","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Use graphic organizers and visualization techniques to interpret information (eg, charts; graphs; diagrams)","RLA.3.1.6","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Use meaning clues to aid comprehension and make predictions about content across the curriculum (eg, action; events; story topic; behaviors)","RLA.3.1.7","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Read with accuracy and comprehension instructional level texts designed for third grade and use self-correction strategies (eg, search for cues; identify miscues; reread)","RLA.3.1.8","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Read familiar stories, poems and passages with fluency and expression (eg, rhythm; flow; meter; tempo; pitch; tone; intonation) and self-select a variety of literary works","RLA.3.1.9","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Explain a purpose for reading (eg, for information; for pleasure; to understand a specific viewpoint)","RLA.3.1.10","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Recognize author’s purpose (eg, to persuade; to inform)","RLA.3.1.11","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Compare connections between characters or simple events in a literary work in own life and other cultures (eg, events; characters; conflicts; themes)","RLA.3.1.12","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Use reading skills and strategies to identify a variety of informational resources to support literacy learning (eg, environmental print; written directions; signs; captions; labels; informational books)","RLA.3.1.13","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Increase amount of independent reading","RLA.3.1.14","3.RLA.S.1","4","WV Reading Language Arts"
-"3","Writing","3.RLA.S.2","3","3","WV Reading Language Arts"
-"3","Demonstrate proper manuscript and full transition to cursive writing techniques (eg, posture; paper placement; pencil grip; letter formation; slant; letter size; spacing; rhythm; alignment)","RLA.3.2.1","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use the five step writing process (eg, graphic organizers for prewriting; descriptive words and details for drafting and revising; use of simple dictionaries for editing and publishing; conferencing to edit; punctuation; capitalization; and spelling at developmentally appropriate level)","RLA.3.2.2","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use paragraph format to write compositions (eg, beginning - middle - end; main ideas with relevant details; sentence variety - declarative, interrogative; descriptive and transitional words; indentations)","RLA.3.2.3","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use a variety of strategies to plan simple research (eg, identify possible topic by brainstorming; list questions; use idea webs; organize prior knowledge about a topic; develop a course of action for writing; determine how to locate necessary information)","RLA.3.2.4","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use a variety of sources to gather information (eg, use dictionaries; encyclopedias; newspapers)","RLA.3.2.5","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Alphabetize to the third letter and use simple dictionary skills (eg, guide words, pronunciation)","RLA.3.2.6","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use conventions of spelling in written composition (eg, spell high frequency words form appropriate grade level list; use letter/sound relationships to spell independently; make structural changes to spell words correctly: spell irregular verbs and irregular plural nouns)","RLA.3.2.7","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use conventions of capitalization in written composition (eg, greeting - heading - closing of a letter; first word of a direct quotation)","RLA.3.2.8","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use conventions of punctuation in written composition (eg, commas in dates and addresses; greeting/closing of a letter; quotation marks around titles and direct quotations; apostrophes for contractions and possessive nouns)","RLA.3.2.9","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Write a grammatically correct sentence (eg, correct subject/verb agreement with singular and plural nouns and verbs; correct use of regular and irregular verbs)","RLA.3.2.10","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Use specific mechanics of grammar in written composition (eg, substitute pronouns for nouns; use pronoun agreements; adjectives; adverbs)","RLA.3.2.11","3.RLA.S.2","4","WV Reading Language Arts"
-"3","Write correctly formed sentences avoiding run-on sentences","RLA.3.2.12","3.RLA.S.2","4","WV Reading Language Arts"
-"3",""Listening, Speaking and Viewing "","3.RLA.S.3","3","3","WV Reading Language Arts"
-"3","Listen and respond to familiar stories and poems (eg, summarize and paraphrase to confirm comprehension; recount personal experiences; imagine beyond the literary form)","RLA.3.3.1","3.RLA.S.3","4","WV Reading Language Arts"
-"3","Define different messages conveyed through visual media (eg, main ideas and supporting details; facts and opinions; main characters; setting; sequence of events)","RLA.3.3.2","3.RLA.S.3","4","WV Reading Language Arts"
-"4","Reading","4.RLA.S.1","4","3","WV Reading Language Arts"
-"4","Identify level appropriate vocabulary (eg, multiple meaning words; synonyms; antonyms; homonyms; content area vocabulary; context clues)","RLA.4.1.1","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Apply structural analysis and context clues to decode and encode words","RLA.4.1.2","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Recognize the defining characteristics of a variety of literary forms and genres  (eg, fairy tales; folk-tales; fiction; nonfiction; myths; poems; fables; fantasies; biographies; autobiographies; chapter books)","RLA.4.1.3","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Use comprehension skills to understand literary works (eg, summarize; story elements; skim and scan; define expository text; compare/contrast; imagery; paraphrase; compose personal response; infer; fact and opinion; sequence)","RLA.4.1.4","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Recognize the ways in which language is used in literary texts (eg, simile; metaphor; idioms; analogies; and puns)","RLA.4.1.5","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Use graphic organizers and visualization techniques to interpret information (eg, charts; graphs; diagrams; non-verbal symbols)","RLA.4.1.6","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Use meaning clues to aid comprehension and make predictions about content across the curriculum (eg, pictures; picture captions; titles; headings; story structure; story topic; action - events - character behaviors)","RLA.4.1.7","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Read with accuracy and comprehension instructional level texts designed for the fourth grade and use self-correction strategies (eg, search for cues; identify miscues; reread)","RLA.4.1.8","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Read orally with fluent expression and silently literary texts across the curriculum ","RLA.4.1.9","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Determine a purpose for reading across the curriculum","RLA.4.1.10","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Summarize the author’s purpose (eg, to persuade; to inform; to determine a specific viewpoint)","RLA.4.1.11","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Compare self to text in making connections between characters or simple events in a literary work with people and events in one’s own and other cultures","RLA.4.1.12","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Increase amount of independent reading","RLA.4.1.13","4.RLA.S.1","4","WV Reading Language Arts"
-"4","Writing","4.RLA.S.2","4","3","WV Reading Language Arts"
-"4","Use conventions of print (eg, legibility; uniformity in all written work)","RLA.4.2.1","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use the five step writing process (eg, focused composition; coherent and logical progression of ideas; correct page format - title - paragraphs - margins - indentations)","RLA.4.2.2","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use proper paragraph form in written composition (eg, indent the first word of a paragraph; use topic sentence; recognize a paragraph as a group of sentences about one main idea; use an introductory and concluding paragraph; write at least two related paragraphs)","RLA.4.2.3","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use strategies to gather and record information for research topics (eg, notes- maps - charts - graphs - tables; summarize - paraphrase - describe in narrative form; gather direct quotes)","RLA.4.2.4","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use reference skills to identify words (eg, alphabetical order, guide words, pronunciation, glossary)","RLA.4.2.5","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use strategies to compile information into written reports or summaries (eg, incorporate notes into a finished product; include simple facts - details - explanations - examples; draw conclusions from relationships and patterns that emerge from data of different sources; use appropriate visual aids and media)","RLA.4.2.6","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use conventions of spelling in written composition (eg, spell high frequency words; spell commonly misspelled words from appropriate grade level list; use dictionary and other resources to spell words; use syllable constructions to spell words; use vowel combinations for correct spelling; use contractions - compound words - roots - suffixes - prefixes in spelling)","RLA.4.2.7","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use conventions of capitalization in written composition (eg, titles of people; proper nouns such as towns - cities - counties - countries - names of streets - holidays; first word of a direct quote; heading - salutation - closing of a letter)","RLA.4.2.8","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use conventions of punctuation in written composition (eg, use colons in business letter salutations; use quotation marks in the title of poems - songs - chapters; underline book titles)","RLA.4.2.9","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use a variety of sentence structure correctly in writing (eg, simple - compound - complex sentences; avoid sentence run-ons and fragments) ","RLA.4.2.10","4.RLA.S.2","4","WV Reading Language Arts"
-"4","Use the mechanics of grammar in written composition (eg, avoid double negatives; correct verb tenses; use conjunctions - interjections - prepositions; correct subject verb agreement with regular and irregular verbs)","RLA.4.2.11","4.RLA.S.2","4","WV Reading Language Arts"
-"4",""Listening, Speaking and Viewing "","4.RLA.S.3","4","3","WV Reading Language Arts"
-"4","Listen and respond to different literary forms (eg, summarize and paraphrase to confirm understanding; recount personal experiences; listen to information and exhibit comprehension; provide reasons in support of opinions; respond to others’ ideas)","RLA.4.3.1","4.RLA.S.3","4","WV Reading Language Arts"
-"4","Define a variety of messages conveyed through visual media (eg, provide information by observing main concept - details - themes or lessons - viewpoints; recognize intended audience)","RLA.4.3.2","4.RLA.S.3","4","WV Reading Language Arts"
-"5","Reading","5.RLA.S.1","5","3","WV Reading Language Arts"
-"5","Identify defining characteristics, build background knowledge and develop reading skills to understand a variety of literary passages and texts by west virginia, national and international authors (eg, fiction; nonfiction; myth; poems; fantasies; biographies; autobiographies; science fiction; tall tales; supernatural tales)","RLA.5.1.1","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Increase amount of independent reading","RLA.5.1.2","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Determine main idea and locate supporting details in a literary passage and across the curriculum","RLA.5.1.3","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Analyze text to determine time and sequence","RLA.5.1.4","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Use comprehension skills (eg, draw conclusions; predict; use context clues; summarize)","RLA.5.1.5","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Determine the elements of literature (eg, characterization; conflict; plot) to construct meaning and recognize author’s and/or reader’s purpose","RLA.5.1.6","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Identify figurative language in text (eg, hyperbole; alliteration)","RLA.5.1.7","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Make text connections to self, to other text and to the world","RLA.5.1.8","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Identify literary techniques used to interpret literature (eg, compare/contrast; cause/effect)","RLA.5.1.9","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Read types of poetry that use inversion, rhyme and rhythm (eg, diamante; shape; haiku; limerick; name poems; bio poems; cinquain; and quatrain)","RLA.5.1.10","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Use resource materials (eg, dictionary; glossary) to determine the meaning of unknown words or  multiple meaning words","RLA.5.1.11","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Use denotation to understand meaning","RLA.5.1.12","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Use root words, prefixes and suffixes to spell words, change word meanings and generate new words appropriate to grade level","RLA.5.1.13","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Spell correctly commonly misspelled and easily confused words from appropriate grade level list","RLA.5.1.14","5.RLA.S.1","4","WV Reading Language Arts"
-"5","Writing","5.RLA.S.2","5","3","WV Reading Language Arts"
-"5","Use pre-writing and drafting strategies to generate topics and plan approaches to writing tasks","RLA.5.2.1","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use the writing process to develop a composition that contains specific, relevant details","RLA.5.2.2","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use editing strategies to correct errors in organization, content, usage, capitalization, punctuation and spelling","RLA.5.2.3","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use strategies to write for a specific purpose (eg, creative; narrative; informative; persuasive)","RLA.5.2.4","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use strategies to address specific types of writing (eg, journal; friendly letter; business letter)","RLA.5.2.5","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Develop a 3-5 paragraph composition with an introductory paragraph, supporting details paragraph(s) and concluding paragraph","RLA.5.2.6","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use a variety of sentence types (eg, simple; compound; declarative; exclamatory; imperative; interrogative) avoiding run-on sentences and sentence fragments","RLA.5.2.7","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Apply capitalization rules (eg, abbreviations; titles of people; initials)","RLA.5.2.8","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Apply punctuation rules (eg, commas; apostrophes; colons; semicolons; quotation marks)","RLA.5.2.9","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Write and punctuate simple and compound sentences using conjunctions, interjections and prepositions correctly","RLA.5.2.10","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify correct pronoun case and pronoun/antecedent agreement","RLA.5.2.11","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify action, helping and linking verbs while using correct verb tense and subject/verb agreement","RLA.5.2.12","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify adjectives and adverbs in their comparative and superlative forms","RLA.5.2.13","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Organize information by correctly combining subjects, predicates, modifiers and phrases in sentences","RLA.5.2.14","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify the parts of a book, know their purposes and locate information (eg, table of contents; index; glossary)","RLA.5.2.15","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify and use traditional reference sources for different types of information (eg, dictionary; thesaurus; newspaper; telephone directory; recipes; menus; schedules; advertisements; order forms)","RLA.5.2.16","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Use card catalog, either hard copy or computer database, to locate sources for research/report topics by title, author and/or subject","RLA.5.2.17","5.RLA.S.2","4","WV Reading Language Arts"
-"5","Identify and interpret graphic aids (eg, maps; charts; graphs; tables; timelines)","RLA.5.2.18","5.RLA.S.2","4","WV Reading Language Arts"
-"5",""Listening, Speaking and Viewing "","5.RLA.S.3","5","3","WV Reading Language Arts"
-"5","Recognize and exhibit oral communication skills (eg, rate, audience etiquette)","RLA.5.3.1","5.RLA.S.3","4","WV Reading Language Arts"
-"5","Identify and correct usage errors in oral communication (eg, word choice; grammar - i have seen, not i have saw)","RLA.5.3.2","5.RLA.S.3","4","WV Reading Language Arts"
-"5","Deliver recitations","RLA.5.3.3","5.RLA.S.3","4","WV Reading Language Arts"
-"5","Relate personal experiences to oral/visual information","RLA.5.3.4","5.RLA.S.3","4","WV Reading Language Arts"
-"5","Listen to understand a topic (eg, of a guest speaker; informational video; televised interview; radio news program)","RLA.5.3.5","5.RLA.S.3","4","WV Reading Language Arts"
-"5","Contribute to group discussions by exhibiting active listening skills","RLA.5.3.6","5.RLA.S.3","4","WV Reading Language Arts"
-"6","Reading","6.RLA.S.1","6","3","WV Reading Language Arts"
-"6","Know the defining characteristics, build background knowledge and use reading skills to understand a variety of west virginia, national and international authors (eg, fiction; nonfiction; myths; poems; fantasies; biographies; autobiographies; science fiction; tall tales; supernatural tales)","RLA.6.1.1","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Increase amount of independent reading","RLA.6.1.2","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Determine theme and locate supporting details in a literary passage and across the curriculum","RLA.6.1.3","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Analyze text to determine transitional words/language","RLA.6.1.4","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Use comprehension skills (eg, draw conclusions; interpret meaning)","RLA.6.1.5","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Determine the elements of literature (eg, external conflict; mood) to construct meaning and recognize author’s and/or reader’s purpose","RLA.6.1.6","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Identify figurative language in text (eg, simile; metaphor; personification)","RLA.6.1.7","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Explain text connections to self, to other text and to the world for understanding a literary passage","RLA.6.1.8","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Identify and classify types of poetry that use inversion, rhyme and rhythm (eg, diamante; shape; haiku; limerick; name poems; bio poems; cinquain; and quantrain)","RLA.6.1.9","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Use resource materials (eg, dictionary; glossary; thesaurus) to determine the meaning of unknown words or multiple meaning words","RLA.6.1.10","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Use connotation and denotation to understand meaning","RLA.6.1.11","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Use root words, prefixes and suffixes to spell words, change word meanings and generate new words appropriate to grade level","RLA.6.1.12","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Spell correctly commonly misspelled words, easily confused words and words with irregular endings across the curriculum","RLA.6.1.13","6.RLA.S.1","4","WV Reading Language Arts"
-"6","Writing","6.RLA.S.2","6","3","WV Reading Language Arts"
-"6","Use pre-writing and drafting strategies (eg, drawing; clustering; brainstorming; discussion) to generate topics and plan approaches to writing tasks","RLA.6.2.1","6.RLA.S.2","4","WV Reading Language Arts"
-"6","From a prompt, use the writing process to develop a composition that contains specific, relevant details and transitions","RLA.6.2.2","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Use writing strategies to address specific writing purposes (eg, creative; journalistic; essay; narrative; informative; persuasive) and address various audiences (eg, peers; teachers; employers)","RLA.6.2.3","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Edit own writing as well as the writing of others to correct errors in organization, content, usage, mechanics and spelling","RLA.6.2.4","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Demonstrate mastery of a 3-5 paragraph composition","RLA.6.2.5","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Apply capitalization rules (eg, proper adjectives; names of written works; family relationships; nationalities; religions/religious terms)","RLA.6.2.6","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Apply punctuation rules (eg, commas; apostrophes in contractions and possessives both singular and plural; colons; semicolons; quotation marks; hyphens)","RLA.6.2.7","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Write and punctuate simple and compound sentences with conjunctions, interjections and prepositions","RLA.6.2.8","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify and use correct pronoun case","RLA.6.2.9","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify action, helping and linking verbs while correctly using verb tense and subject/verb agreement in simple and compound sentences","RLA.6.2.10","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Use adjectives and adverbs in comparative and superlative forms","RLA.6.2.11","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Compose sentences that contain compound subjects and compound verbs","RLA.6.2.12","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Organize information by combining predicates, modifiers, phrases and/or clauses and sentences","RLA.6.2.13","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify and correct run-on sentences, sentence fragments and redundant words/sentences","RLA.6.2.14","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Use the parts of a book, know their purposes and locate information (eg, table of contents; index; glossary)","RLA.6.2.15","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify and use traditional reference sources for different types of information (eg, dictionary; thesaurus; atlas; almanac, encyclopedia; newspaper; telephone directory; recipes; menus; schedules; advertisements; order forms; audiovisual resources)","RLA.6.2.16","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Begin to demonstrate the ability to identify the source, location, media type, relevancy and content validity of available resource information","RLA.6.2.17","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify title, author, subject, call number, publisher and copyright of resources using the card catalog, either hard copy or computer database","RLA.6.2.18","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Use traditional organizers to create, read, interpret and organize information in the form of tables, graphs, diagrams and charts","RLA.6.2.19","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Organize information into an outline by being able to categorize information into topic, subtopic and detail","RLA.6.2.20","6.RLA.S.2","4","WV Reading Language Arts"
-"6","Identify and use correct note taking skills","RLA.6.2.21","6.RLA.S.2","4","WV Reading Language Arts"
-"6",""Listening, Speaking and Viewing "","6.RLA.S.3","6","3","WV Reading Language Arts"
-"6","Recognize and exhibit oral communication skills (eg, volume; rate; audience etiquette)","RLA.6.3.1","6.RLA.S.3","4","WV Reading Language Arts"
-"6","Retell simple and detailed stories sequentially","RLA.6.3.2","6.RLA.S.3","4","WV Reading Language Arts"
-"6","Listen in order to comprehend topic and purpose (eg, of a guest speaker; informational video; televised interview; radio news program)","RLA.6.3.3","6.RLA.S.3","4","WV Reading Language Arts"
-"6","Reach consensus in group discussions or settings","RLA.6.3.4","6.RLA.S.3","4","WV Reading Language Arts"
-"7","Reading","7.RLA.S.1","7","3","WV Reading Language Arts"
-"7","Classify the defining characteristics, build background knowledge and apply reading skills to understand a variety of literary passages and texts by west virginia, national and international authors (eg, fiction; nonfiction; myths; poems; fantasies; biographies; autobiographies; science fiction; tall tales; supernatural tales)","RLA.7.1.1","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Increase amount of independent reading","RLA.7.1.2","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Relate common themes across a variety of literature","RLA.7.1.3","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Use comprehension strategies (eg, generalize; evaluate; infer; paraphrase)","RLA.7.1.4","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Determine the elements of literature (eg, internal conflict; point of view) to construct meaning and recognize author’s and/or reader’s purpose","RLA.7.1.5","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Identify figurative language in text (eg, jargon; idioms)","RLA.7.1.6","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Make text connections to self, to other text and to the real world","RLA.7.1.7","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Identify literary techniques used to interpret literature (eg, flashback; stereotype; foreshadowing; propaganda)","RLA.7.1.8","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Read types of poetry and the use of inversion, rhyme and rhythm in narrative poems, ballads and lyrics","RLA.7.1.9","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Recognize and understand clipped or shortened words and their meaning (eg, bio for biography; auto for automobile)","RLA.7.1.10","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Compare/contrast connotation and denotation to understand and enhance meaning of words, sentences and passages","RLA.7.1.11","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Use resource materials (eg, dictionary; glossary; thesaurus) to determine the meaning of unknown words or multiple meaning words","RLA.7.1.12","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Use root words, prefixes and suffixes to spell words, change word meanings and generate new words appropriate to grade level","RLA.7.1.13","7.RLA.S.1","4","WV Reading Language Arts"
-"7","Writing","7.RLA.S.2","7","3","WV Reading Language Arts"
-"7","From a prompt, use the writing process to develop a focused composition that contains specific, relevant details and transition","RLA.7.2.1","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use editing and revision techniques to vary sentence length, change sentence order, use vivid and concise words and eliminate organizational errors","RLA.7.2.2","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use the writing process to compose various types of writing (eg, creative; informative; expository; persuasive; articles; essays; journals; letters; poetry; research/reports)","RLA.7.2.3","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Apply capitalization rules (eg, languages; school subjects; regions of the us; dialogue; lines of poetry)","RLA.7.2.4","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Apply punctuation rules (eg, commas; apostrophes in possessives and contractions; colons; semicolons; hyphens; dashes; parentheses)","RLA.7.2.5","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use pronouns, pronoun cases and antecedents in correct form","RLA.7.2.6","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use and apply correct forms of adjectives and adverbs and/or complex sentence","RLA.7.2.7","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Recognize and avoid use of double negatives","RLA.7.2.8","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Compose and punctuate simple, compound and complex sentences with and without conjunctions","RLA.7.2.9","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Organize information by combining subjects, predicates, modifiers and appositives in a sentence","RLA.7.2.10","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use correct verb tense and subject verb agreement (eg, irregular verbs; compound subjects; indefinite pronouns; intervening phrases)","RLA.7.2.11","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Edit to eliminate run-on sentences, sentence fragments, redundant words/sentences and misplaced modifiers","RLA.7.2.12","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Use title page, copyright page, table of contents, appendix, bibliography, glossary and index to locate specified information","RLA.7.2.13","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Identify and use traditional reference sources for different types of information (eg, reader’s guide; books in print; newspapers; schedules; advertisements; audiovisual resources)","RLA.7.2.14","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Recognize copyright laws/issues, ethical acquisition and use of digital information in citing sources for research/report","RLA.7.2.15","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Identify the source, location, media type, relevancy and content validity of available information","RLA.7.2.16","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Demonstrate the ability to use the card catalog in hard copy or database to identify title, author, subject, call number, publisher and copyright resources","RLA.7.2.17","7.RLA.S.2","4","WV Reading Language Arts"
-"7","Develop an outline using prepared notes to write a paragraph","RLA.7.2.18","7.RLA.S.2","4","WV Reading Language Arts"
-"7",""Listening, Speaking and Viewing "","7.RLA.S.3","7","3","WV Reading Language Arts"
-"7","Recognize and exhibit oral communication skills (eg, tone; volume; rate; audience etiquette)","RLA.7.3.1","7.RLA.S.3","4","WV Reading Language Arts"
-"7","Perform dramatizations","RLA.7.3.2","7.RLA.S.3","4","WV Reading Language Arts"
-"7","Use oral/visual information to foster exploration, questioning and imagining of a topic","RLA.7.3.3","7.RLA.S.3","4","WV Reading Language Arts"
-"7","Listen in order to comprehend topic, purpose and perspective in spoken texts (eg, of a guest speaker; informational video; televised interview; radio news program)","RLA.7.3.4","7.RLA.S.3","4","WV Reading Language Arts"
-"7","Play a variety of roles in group discussions including active listener and discussion leader","RLA.7.3.5","7.RLA.S.3","4","WV Reading Language Arts"
-"7","Distinguish between private and public information in research and reporting","RLA.7.3.6","7.RLA.S.3","4","WV Reading Language Arts"
-"8","Reading","8.RLA.S.1","8","3","WV Reading Language Arts"
-"8","Analyze the defining characteristics, build background knowledge and apply reading skills to understand a variety of literary passages and texts by west virginia, national and international authors (eg, fiction; nonfiction; myths; poems; fantasies; biographies; autobiographies; science fiction; tall tales; supernatural tales)","RLA.8.1.1","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Relate literary theme to global situations","RLA.8.1.2","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Use comprehension strategies (eg, make judgments; hypothesize; critique; analyze)","RLA.8.1.3","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Determine the elements of literature (eg, internal/external conflict; point of view) to construct meaning and recognize author’s and/or reader’s purpose","RLA.8.1.4","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Identify figurative language in text (eg, onomatopoeia; pun)","RLA.8.1.5","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Make text connections to self, to other text and to the real world","RLA.8.1.6","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Identify literary technique used to interpret literature (eg, irony; satire; persuasive language; analogies)","RLA.8.1.7","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Read and identify types of poetry and the use of inversion, rhyme and rhythm (eg, narrative poem; ballad; lyric; epic)","RLA.8.1.8","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Recognize and understand acronyms","RLA.8.1.9","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Use resource materials (eg, dictionary; glossary; thesaurus) to determine the meaning of unknown words or multiple meaning words","RLA.8.1.10","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Use root words, prefixes and suffixes to spell words, change word meanings and generate new words appropriate to grade level","RLA.8.1.11","8.RLA.S.1","4","WV Reading Language Arts"
-"8","Writing","8.RLA.S.2","8","3","WV Reading Language Arts"
-"8","Increase amount of independent reading","RLA.8.1.12","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Use the writing process to demonstrate the ability to compose a variety of written work (eg, creative; informative; expository; persuasive; chronological explanatory; compare/contrast; cause/effect; article; essay; journal; letters; reports; poetry)","RLA.8.2.1","8.RLA.S.2","4","WV Reading Language Arts"
-"8","From a prompt, develop a focused composition that contains specific, relevant details, smooth transition and vivid, precise words","RLA.8.2.2","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Use revision and editing strategies to correct errors in organization, content, usage, capitalization, punctuation and spelling","RLA.8.2.3","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Recognize and write a simple thesis statement","RLA.8.2.4","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Apply all capitalization rules in writing","RLA.8.2.5","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Apply punctuation rules in writing (eg, appositives; phrases; clauses)","RLA.8.2.6","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Compose and punctuate grammatically correct simple, compound and complex sentences","RLA.8.2.7","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Identify and correct faulty parallel sentence structure such as phrases and clauses","RLA.8.2.8","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Edit and revise to eliminate run-on sentences, sentence fragments, redundant words/sentences and misplaced modifiers","RLA.8.2.9","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Conduct research using parts of a book to gather, evaluate and synthesize data from a variety of  sources (eg, print; non-print; people)","RLA.8.2.10","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Identify and use traditional reference sources for different types of information","RLA.8.2.11","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Independently resolve information conflicts and validate information through assessing, researching and comparing data","RLA.8.2.12","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Demonstrate the ability to identify the source, location, media type, relevancy and content validity of available information","RLA.8.2.13","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Apply use of card catalog and/or computer databases to identify title, author, subject, call number, publisher and copyright resources to gather information for a presentation","RLA.8.2.14","8.RLA.S.2","4","WV Reading Language Arts"
-"8","Use an outline to develop a written and/or oral presentation using graphic representation","RLA.8.2.15","8.RLA.S.2","4","WV Reading Language Arts"
-"8",""Listening, Speaking and Viewing "","8.RLA.S.3","8","3","WV Reading Language Arts"
-"8","Recognize and exhibit oral communication skills (eg, tone; volume; rate; speaking etiquette; audience etiquette)","RLA.8.3.1","8.RLA.S.3","4","WV Reading Language Arts"
-"8","Present an oral report with graphic aids (eg, tables; graphs; diagrams; charts)","RLA.8.3.2","8.RLA.S.3","4","WV Reading Language Arts"
-"8","Think critically about oral/visual information presented; relate personal experiences and apply the information to global situations","RLA.8.3.3","8.RLA.S.3","4","WV Reading Language Arts"
-"8","Listen in order to analyze and critique information received in spoken texts (eg, of a guest speaker; informational video; televised interview; radio news program)","RLA.8.3.4","8.RLA.S.3","4","WV Reading Language Arts"
-"8","Play a variety of roles in group discussions including active listener, discussion leader and/or facilitator","RLA.8.3.5","8.RLA.S.3","4","WV Reading Language Arts"
-"8","Properly use private and public information","RLA.8.3.6","8.RLA.S.3","4","WV Reading Language Arts"
-"3","History and the Nature of Science ","3.SC.S.1","3","3","WV Science"
-"3","Recognize that scientific explanations may lead to new discoveries (eg, new knowledge leads to new questions)","SC.3.1.1","3.SC.S.1","4","WV Science"
-"3","Study the lives and discoveries of scientists of different cultures and backgrounds","SC.3.1.2","3.SC.S.1","4","WV Science"
-"3","Explore science careers in the community","SC.3.1.3","3.SC.S.1","4","WV Science"
-"3","Science as Inquiry ","3.SC.S.2","3","3","WV Science"
-"3","Demonstrate curiosity, initiative and creativity by planning and conducting simple investigations","SC.3.2.1","3.SC.S.2","4","WV Science"
-"3","Recognize that developing solutions to problems takes time, patience and persistence through individual and cooperative ventures","SC.3.2.2","3.SC.S.2","4","WV Science"
-"3","Support statements with facts found through research in reference books, science-related magazines and the internet","SC.3.2.3","3.SC.S.2","4","WV Science"
-"3","Use scientific instruments and everyday materials to investigate the natural world (eg, graduated cylinder, hand lens, metric ruler, magnets, weather instruments, thermometer, calculators)","SC.3.2.4","3.SC.S.2","4","WV Science"
-"3","Use safe and proper techniques for handling, manipulating and caring for science materials (eg, follow safety rules, maintain a clean work area, treat living organisms humanely)","SC.3.2.5","3.SC.S.2","4","WV Science"
-"3","Apply mathematical skills and use metric units in measurements","SC.3.2.6","3.SC.S.2","4","WV Science"
-"3","Interpret data presented in a table, graph, map or diagram and use it to answer questions and make predictions and inferences based on patterns of evidence","SC.3.2.7","3.SC.S.2","4","WV Science"
-"3","Test variables (eg, those that affect plant growth; speed; action of water on soil; shadow formation)","SC.3.2.8","3.SC.S.2","4","WV Science"
-"3","Unifying Themes ","3.SC.S.3","3","3","WV Science"
-"3","Identify that systems are made of parts that interact with one another","SC.3.3.1","3.SC.S.3","4","WV Science"
-"3","Use models as representations of real things","SC.3.3.2","3.SC.S.3","4","WV Science"
-"3","Observe that changes occur gradually, repetitively, or randomly within the environment and question causes of changes","SC.3.3.3","3.SC.S.3","4","WV Science"
-"3","Given a set of objects, group or order the objects according to an established scheme (eg, celestial objects, patterns of motion, constellations)","SC.3.3.4","3.SC.S.3","4","WV Science"
-"3","Given a set of events, objects, shapes, designs, or numbers, find patterns of constancy or regularity","SC.3.3.5","3.SC.S.3","4","WV Science"
-"3","Science Subject Matter/Concepts ","3.SC.S.4","3","3","WV Science"
-"3","Characteristics of organisms - identify the structures of living things, including their systems and explain their functions (eg, roots absorb water, circulatory system to move materials)","SC.3.4.1","3.SC.S.4","4","WV Science"
-"3","Life cycles of organisms - observe, measure and record changes in living things (eg, growth and development, variations within species)","SC.3.4.2","3.SC.S.4","4","WV Science"
-"3","Organisms and environments - compare physical characteristics and behaviors of living organisms and explain how they are adapted to a specific environment (eg, beaks and feet in birds, seed dispersal, camouflage, different types of flowers)","SC.3.4.3","3.SC.S.4","4","WV Science"
-"3","Organisms and environments - observe and describe relationships among organisms in an ecosystem (eg, sequencing food chains, behavior, adaptations, factors that effect populations, predator-prey relationships)","SC.3.4.4","3.SC.S.4","4","WV Science"
-"3","Properties of objects and materials - relate the buoyancy of an object to its density","SC.3.4.5","3.SC.S.4","4","WV Science"
-"3","Properties of objects and materials - identify physical and chemical properties ","SC.3.4.6","3.SC.S.4","4","WV Science"
-"3","Properties of objects and materials - relate changes in states of matter to changes in temperature","SC.3.4.7","3.SC.S.4","4","WV Science"
-"3","Properties of objects and materials - investigate the dissolving of solids in liquids","SC.3.4.8","3.SC.S.4","4","WV Science"
-"3","Light, heat, electricity and magnetism - investigate the absorption, reflection and refraction of light by objects","SC.3.4.9","3.SC.S.4","4","WV Science"
-"3","Light, heat, electricity and magnetism - relate how the color of an object is based upon the absorption or reflection of light","SC.3.1.10","3.SC.S.4","4","WV Science"
-"3","Position and motion of objects - recognize that it takes work to move objects over a distance","SC.3.4.11","3.SC.S.4","4","WV Science"
-"3","Position and motion of objects - recognize that speed, distance, and time are interrelated","SC.3.4.12","3.SC.S.4","4","WV Science"
-"3","Position and motion of objects - recognize that the greater a force is exerted on an object, the greater the change of its motion will be","SC.3.4.13","3.SC.S.4","4","WV Science"
-"3","Position and motion of objects - identify examples of potential and kinetic energy","SC.3.4.14","3.SC.S.4","4","WV Science"
-"3","Changes in earth and sky - identify fossils as a record of time (eg, what organisms once lived on earth, where they lived)","SC.3.4.15","3.SC.S.4","4","WV Science"
-"3","Changes in earth and sky - explore the eroding of different materials by water and wind (eg, sand, mud pile and rocks)","SC.3.4.16","3.SC.S.4","4","WV Science"
-"3","Changes in earth and sky - describe how volcanoes and earthquakes change the earth","SC.3.4.17","3.SC.S.4","4","WV Science"
-"3","Objects in the sky - recognize the relative movement of the sun and moon in relationship to the earth’s position","SC.3.4.18","3.SC.S.4","4","WV Science"
-"3","Objects in the sky - describe the similarities and differences among the planets","SC.3.4.19","3.SC.S.4","4","WV Science"
-"3","Properties of earth materials - identify properties of minerals and recognize that rocks are composed of different minerals","SC.3.4.20","3.SC.S.4","4","WV Science"
-"3","Properties of earth materials - explain how igneous, sedimentary and metamorphic rocks are formed","SC.3.4.21","3.SC.S.4","4","WV Science"
-"3","Properties of earth materials - identify geographical features using a model or map (eg, mountains, rivers, valleys, lakes, glaciers, volcanoes)","SC.3.4.22","3.SC.S.4","4","WV Science"
-"3","Properties of earth materials - describe the layers of the earth and their various features","SC.3.4.23","3.SC.S.4","4","WV Science"
-"3","Scientific Design and Application ","3.SC.S.5","3","3","WV Science"
-"3","Cite examples of the uses of science and technology in common daily events and in the community","SC.3.5.1","3.SC.S.5","4","WV Science"
-"3","Explain a simple problem and identify a specific solution describing the use of tools and/or materials to solve the problem or to complete the task","SC.3.5.2","3.SC.S.5","4","WV Science"
-"3","Science in Personal and Social Perspectives ","3.SC.S.6","3","3","WV Science"
-"3","Recognize that a solution to one scientific problem often creates new problems  (eg, recycling, pollution, conservation, waste disposal)","SC.3.6.1","3.SC.S.6","4","WV Science"
-"3","Listen to and be tolerant of different viewpoints by engaging in collaborative activities and be willing to modify ideas when new and valid information is presented","SC.3.6.2","3.SC.S.6","4","WV Science"
-"3","Develop respect and responsibility for the environment by engaging in conservation practices","SC.3.6.3","3.SC.S.6","4","WV Science"
-"3","Describe how modern tools and appliances have positively and/or negatively impacted their daily lives","SC.3.6.4","3.SC.S.6","4","WV Science"
-"4","History and the Nature of Science ","4.SC.S.1","4","3","WV Science"
-"4","Contrast changes in scientific knowledge resulting from new discoveries (eg, new knowledge leads to new questions)","SC.4.1.1","4.SC.S.1","4","WV Science"
-"4","Study the lives and discoveries of scientists of different cultures and backgrounds","SC.4.1.2","4.SC.S.1","4","WV Science"
-"4","Explore science careers in west virginia","SC.4.1.3","4.SC.S.1","4","WV Science"
-"4","Science as Inquiry ","4.SC.S.2","4","3","WV Science"
-"4","Demonstrate curiosity, initiative and creativity by developing questions that lead to investigations; designing simple experiments; and trusting observations of discoveries when trying new tasks and skills","SC.4.2.1","4.SC.S.2","4","WV Science"
-"4","Recognize that developing solutions to problems requires persistence, flexibility, open-mindedness, and alertness for the unexpected","SC.4.2.2","4.SC.S.2","4","WV Science"
-"4","Support statements with facts found through research in reference books, science-related magazines, multimedia and the internet","SC.4.2.3","4.SC.S.2","4","WV Science"
-"4","Use scientific instruments and everyday materials to investigate the natural world (eg, hand lens, telescope, thermometer, balances, magnets, tuning forks, bulbs and batteries, graduated cylinders, calculators, computers)","SC.4.2.4","4.SC.S.2","4","WV Science"
-"4","Demonstrate safe and proper techniques for handling, manipulating and caring for science materials","SC.4.2.5","4.SC.S.2","4","WV Science"
-"4","Construct a hypothesis when provided a problem","SC.4.2.6","4.SC.S.2","4","WV Science"
-"4","Establish variables and controls in an experiment; test variables through experimentation","SC.4.2.7","4.SC.S.2","4","WV Science"
-"4","Interpret data presented in a table, graph, or diagram and use it to answer questions and make decisions","SC.4.2.8","4.SC.S.2","4","WV Science"
-"4","Draw and support conclusions, make predictions and inferences based on patterns of evidence (eg, weather maps, change of speed in a given amount of time, change in wave motions with changes in energy, variation of plants)","SC.4.2.9","4.SC.S.2","4","WV Science"
-"4","Apply mathematical skills and use metric units in measurements and calculations","SC.4.2.10","4.SC.S.2","4","WV Science"
-"4","Unifying Themes ","4.SC.S.3","4","3","WV Science"
-"4","Identify that systems are made of parts that interact with one another","SC.4.3.1","4.SC.S.3","4","WV Science"
-"4","Use models as representations of real things","SC.4.3.2","4.SC.S.3","4","WV Science"
-"4","Observe that changes occur gradually, repetitively, or randomly within the environment and question causes of changes","SC.4.3.3","4.SC.S.3","4","WV Science"
-"4","Given a set of objects, group or order the objects according to an established scheme","SC.4.3.4","4.SC.S.3","4","WV Science"
-"4","Given a set of events, objects, shapes, designs, or numbers, find patterns of constancy or regularity","SC.4.3.5","4.SC.S.3","4","WV Science"
-"4","Science Subject Matter/Concepts ","4.SC.S.4","4","3","WV Science"
-"4","Characteristics of organisms - describe the different characteristics of plants and animals which help them to survive in different niches and environments","SC.4.4.1","4.SC.S.4","4","WV Science"
-"4","Characteristics of organisms - associate the behaviors of living organisms to external and internal influences (eg, hunger, climate, seasons)","SC.4.4.2","4.SC.S.4","4","WV Science"
-"4","Characteristics of organisms - identify and classify variations in structures of living things including their systems and explain their functions (eg, skeletons, teeth, plant needles, leaves)","SC.4.4.3","4.SC.S.4","4","WV Science"
-"4","Life cycles of organisms - compare and sequence changes in plant and animal life cycles","SC.4.4.4","4.SC.S.4","4","WV Science"
-"4","Life cycles of organisms - understand that plants and animals closely resemble their parents and that some characteristics are inherited from the parents and others result from interaction with the environment","SC.4.4.5","4.SC.S.4","4","WV Science"
-"4","Organisms and environments - identify human uses of plants and animals (eg, food sources, medicines)","SC.4.4.6","4.SC.S.4","4","WV Science"
-"4","Organisms and environments - describe environmental barriers to the migration of animals","SC.4.4.7","4.SC.S.4","4","WV Science"
-"4","Organisms and environments - construct and explain models of habitats, food chains, and food webs","SC.4.4.8","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - investigate how properties can be used to identify substances","SC.4.4.9","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - investigate and compare the dissolving of different solids in a given liquid","SC.4.4.10","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - examine simple chemical changes (eg, tarnishing, rusting, burning)","SC.4.4.11","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - understand that materials including air mass, take up space and are made of parts that are too small to be seen without magnification","SC.4.4.12","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - identify various changes in states of matter to heat loss or gain","SC.4.4.13","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - investigate variables that affect the rate of evaporation of a liquid","SC.4.4.14","4.SC.S.4","4","WV Science"
-"4","Properties of objects and materials - investigate the density of liquids","SC.4.4.15","4.SC.S.4","4","WV Science"
-"4","Light, heat, electricity and magnetism - identify different forms of energy and describe energy transformations that occur between them (eg, electrical to heat, light to mechanical)","SC.4.4.16","4.SC.S.4","4","WV Science"
-"4","Light, heat, electricity and magnetism - examine types and properties of waves (eg, transverse, longitudinal, frequency, wavelengths)","SC.4.4.17","4.SC.S.4","4","WV Science"
-"4","Light, heat, electricity and magnetism - investigate static electricity and conductors/nonconductors of electricity","SC.4.4.18","4.SC.S.4","4","WV Science"
-"4","Light, heat, electricity and magnetism - construct simple electrical circuits","SC.4.4.19","4.SC.S.4","4","WV Science"
-"4","Light, heat, electricity and magnetism - understand the relationship between a compass and a magnetic field","SC.4.4.20","4.SC.S.4","4","WV Science"
-"4","Position and motion of objects - relate motion of an object to its frame of reference","SC.4.4.21","4.SC.S.4","4","WV Science"
-"4","Position and motion of objects - predict and investigate the motion of an object if the applied force is changed","SC.4.4.22","4.SC.S.4","4","WV Science"
-"4","Position and motion of objects - explore that sounds are produced by vibrating objects and columns of air and explore the relationship between frequency and pitch of sound","SC.4.4.23","4.SC.S.4","4","WV Science"
-"4","Position and motion of objects - investigate the change in the length, tension, or thickness of the vibrating object on the frequency of vibration (eg, string, wire, rubber band)","SC.4.4.24","4.SC.S.4","4","WV Science"
-"4","Changes in earth and sky - become familiar with the geologic time scale","SC.4.4.25","4.SC.S.4","4","WV Science"
-"4","Changes in earth and sky - locate and identify patterns of stars and their seasonal changes","SC.4.4.26","4.SC.S.4","4","WV Science"
-"4","Changes in earth and sky - compare and explain the relative time differences to erode materials (eg, a sand pile, mud pile, rock pile)","SC.4.4.27","4.SC.S.4","4","WV Science"
-"4","Changes in earth and sky - investigate the cause and effects of volcanoes, earthquakes and landslides","SC.4.4.28","4.SC.S.4","4","WV Science"
-"4","Changes in earth and sky - interpret a weather chart or map","SC.4.4.29","4.SC.S.4","4","WV Science"
-"4","Objects in the sky - identify the sun as a star","SC.4.4.30","4.SC.S.4","4","WV Science"
-"4","Objects in the sky - describe the orbits of the sun and moon","SC.4.4.31","4.SC.S.4","4","WV Science"
-"4","Objects in the sky - describe and explain the planets orbital paths","SC.4.4.32","4.SC.S.4","4","WV Science"
-"4","Properties of earth materials - describe the rock cycle","SC.4.4.33","4.SC.S.4","4","WV Science"
-"4","Properties of earth materials - explain the relationship between the rate of cooling and crystal size of igneous rocks","SC.4.4.34","4.SC.S.4","4","WV Science"
-"4","Properties of earth materials - compare ocean water and fresh water","SC.4.4.35","4.SC.S.4","4","WV Science"
-"4","Scientific Design and Application ","4.SC.S.5","4","3","WV Science"
-"4","Identify and explain a simple problem or task to be completed; identify a specific solution; and list task requirements","SC.4.5.1","4.SC.S.5","4","WV Science"
-"4","Use an appropriate engineering design to solve a problem or complete a task","SC.4.5.2","4.SC.S.5","4","WV Science"
-"4","Science in Personal and Social Perspectives ","4.SC.S.6","4","3","WV Science"
-"4","Recognize that a solution to one scientific problem often creates new problems  (eg, recycling, pollution, conservation, waste disposal, need for technology)","SC.4.6.1","4.SC.S.6","4","WV Science"
-"4","Listen to and be tolerant of different viewpoints by engaging in collaborative activities and modifying ideas when new and valid information is presented from a variety of resources","SC.4.6.2","4.SC.S.6","4","WV Science"
-"4","Describe the positive and negative consequences of the application of technology on personal health and the environment","SC.4.6.3","4.SC.S.6","4","WV Science"
-"4","Develop respect and responsibility for the environment by engaging in conservation practices","SC.4.6.4","4.SC.S.6","4","WV Science"
-"5","History and the Nature of Science ","5.SC.S.1","5","3","WV Science"
-"5","Realize that scientists formulate and test their explanations of nature using observation and experiments","SC.5.1.1","5.SC.S.1","4","WV Science"
-"5","Recognize scientific knowledge is subject to modification as new scientific information challenges current explanations","SC.5.1.2","5.SC.S.1","4","WV Science"
-"5","Examine the careers and contributions of men and women of diverse cultures to the development of science","SC.5.1.3","5.SC.S.1","4","WV Science"
-"5","Articulate the historical significance of scientific discoveries","SC.5.1.4","5.SC.S.1","4","WV Science"
-"5","Science as Inquiry ","5.SC.S.2","5","3","WV Science"
-"5","Cooperate and collaborate to ask questions, find answers, solve problems, conduct investigations to further an appreciation of scientific discovery","SC.5.2.1","5.SC.S.2","4","WV Science"
-"5","Formulate conclusions through close observations, logical reasoning, objectivity, perseverance and integrity in data collection","SC.5.2.2","5.SC.S.2","4","WV Science"
-"5","Apply skepticism, careful methods, logical reasoning and creativity in investigating the observable universe","SC.5.2.3","5.SC.S.2","4","WV Science"
-"5","Use a variety of materials and scientific instruments to conduct explorations, investigations and experiments of the natural world (eg, barometer, anemometer, microscope, computer)","SC.5.2.4","5.SC.S.2","4","WV Science"
-"5","Demonstrate safe techniques for handling, manipulating and caring for science materials, equipment, natural specimens and living organisms","SC.5.2.5","5.SC.S.2","4","WV Science"
-"5","Utilize experimentation to demonstrate scientific processes and thinking skills (eg, formulating questions, predicting, forming hypotheses, quantifying, identifying dependent and independent variables)","SC.5.2.6","5.SC.S.2","4","WV Science"
-"5","Construct and use charts, graphs and tables to organize, display, interpret, analyze and explain data","SC.5.2.7","5.SC.S.2","4","WV Science"
-"5","Use inferential reasoning to make logical conclusions from collected data","SC.5.2.8","5.SC.S.2","4","WV Science"
-"5","Unifying Themes ","5.SC.S.3","5","3","WV Science"
-"5","Compare and contrast the relationship between the parts of a system to the whole system (eg, take a part or build mechanical, electrical, or biological systems)   ","SC.5.3.1","5.SC.S.3","4","WV Science"
-"5","Construct a variety of useful models of an object, event, or process","SC.5.3.2","5.SC.S.3","4","WV Science"
-"5","Compare and contrast changes that occur in an object or a system to its original state","SC.5.3.3","5.SC.S.3","4","WV Science"
-"5","Identify the influence that a variation in scale will have on the way an object or system works  (eg, cooling rates of different-sized containers of water, strength of different-sized constructions from the same material, flight characteristics of different-sized model airplanes)     ","SC.5.3.4","5.SC.S.3","4","WV Science"
-"5","Science Subject Matter/Concepts ","5.SC.S.4","5","3","WV Science"
-"5","Demonstrate an understanding of the interconnections of biological, earth and space, and physical science concepts","SC.5.4.1","5.SC.S.4","4","WV Science"
-"5","Structure and function in living systems - identify and explain common energy conversions in cycles of matter including photosynthesis and carbon dioxide cycle","SC.5.4.2","5.SC.S.4","4","WV Science"
-"5","Structure and function in living systems - identify the structures of living organisms and explain their function","SC.5.4.3","5.SC.S.4","4","WV Science"
-"5","Structure and function in living systems - observe and identify cells of organisms using a microscope","SC.5.4.4","5.SC.S.4","4","WV Science"
-"5","Life cycles of organisms: reproduction and heredity - compare variations of plant growth and reproduction","SC.5.4.5","5.SC.S.4","4","WV Science"
-"5","Populations and ecosystems - explain how the different characteristics of plants and animals help them to survive in different niches and environments including adaptations, natural selection, extinction","SC.5.4.6","5.SC.S.4","4","WV Science"
-"5","Populations and ecosystems - explore the extinction of a species due to environmental conditions","SC.5.4.7","5.SC.S.4","4","WV Science"
-"5","Populations and ecosystems - trace and describe the pathways of the sun’s energy through producers, consumers and decomposers using food webs and pyramids","SC.5.4.8","5.SC.S.4","4","WV Science"
-"5","Properties of objects and materials - explain that the mass of a material is conserved whether it is together, in parts, or in a different state","SC.5.4.9","5.SC.S.4","4","WV Science"
-"5","Properties of objects and materials - recognize that elements are composed of only one type of matter","SC.5.4.10","5.SC.S.4","4","WV Science"
-"5","Properties of objects and materials - using the periodic table, identify common elements according to their symbols","SC.5.4.11","5.SC.S.4","4","WV Science"
-"5","Properties of objects and materials - identify substances by their relative densities (eg, floating; sinking)","SC.5.4.12","5.SC.S.4","4","WV Science"
-"5","Light, heat, electricity and magnetism - analyze diagrams of electrical circuits","SC.5.4.13","5.SC.S.4","4","WV Science"
-"5","Light, heat, electricity and magnetism - use si (metric) measurement units of volts, amps and watts as they apply to electricity ","SC.5.4.14","5.SC.S.4","4","WV Science"
-"5","Light, heat, electricity and magnetism - investigate the properties of an electromagnet","SC.5.4.15","5.SC.S.4","4","WV Science"
-"5","Position and motion of objects - describe how the variables of gravity and friction affect the motion of objects","SC.5.4.16","5.SC.S.4","4","WV Science"
-"5","Position and motion of objects - compare and contrast the change in length, tension, or thickness of a vibrating object on the frequency of vibration","SC.5.4.17","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - describe the layers of the earth and their various features","SC.5.4.18","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - identify and describe natural landforms, how they change and impact weather and climate","SC.5.4.19","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - use a variety of instruments and sources to collect and display weather data to describe weather patterns (eg, temperatures, wind direction, wind speed, precipitation)","SC.5.4.20","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - compare and explain the different rates of weathering, erosion and deposition in certain materials","SC.5.4.21","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - identify land features and elevations on a  topographical map","SC.5.4.22","5.SC.S.4","4","WV Science"
-"5","Structure of the earth system - identify resources as being renewable or non-renewable","SC.5.4.23","5.SC.S.4","4","WV Science"
-"5","Earth’s history - explore and explain how fossils and geologic features can be used to determine the relative age of rocks and rock layers","SC.5.4.24","5.SC.S.4","4","WV Science"
-"5","Earth’s history - identify that the earth is made of plates (plate tectonics)","SC.5.4.25","5.SC.S.4","4","WV Science"
-"5","Scientific Design and Application ","5.SC.S.5","5","3","WV Science"
-"5","Research everyday applications and interactions of science and technology ","SC.5.5.1","5.SC.S.5","4","WV Science"
-"5","Implement engineering solutions for given tasks and measure their effectiveness","SC.5.5.2","5.SC.S.5","4","WV Science"
-"5","Science in Personal and Social Perspectives ","5.SC.S.6","5","3","WV Science"
-"5","Use scientific reasoning and the knowledge of science and technology to make informed personal decisions at the local and global levels","SC.5.6.1","5.SC.S.6","4","WV Science"
-"5","Evaluate and critically analyze mass media reports of scientific developments and events","SC.5.6.2","5.SC.S.6","4","WV Science"
-"5","Critically analyze the effects and impacts of science and technology on global and local problems (eg, mining, manufacturing, recycling, farming, water quality)","SC.5.6.3","5.SC.S.6","4","WV Science"
-"5","Explore the connections between science, technology, society and career opportunities","SC.5.6.4","5.SC.S.6","4","WV Science"
-"5","Analyze the positive and negative effects of technology on society and the influence of societal pressures on the direction of technological advances","SC.5.6.5","5.SC.S.6","4","WV Science"
-"6","History and the Nature of Science ","6.SC.S.1","6","3","WV Science"
-"6","Explain that scientists formulate and test their explanations of nature using observation and experiments","SC.6.1.1","6.SC.S.1","4","WV Science"
-"6","Recognize that scientific knowledge is subject to modification as new scientific information challenges current theories","SC.6.1.2","6.SC.S.1","4","WV Science"
-"6","Examine the careers and contributions of men and women of diverse cultures to the development of science","SC.6.1.3","6.SC.S.1","4","WV Science"
-"6","Articulate the historical significance of scientific discoveries as influenced by technological demands, competition, controversy, world events, personalities and societal issues","SC.6.1.4","6.SC.S.1","4","WV Science"
-"6","Science as Inquiry ","6.SC.S.2","6","3","WV Science"
-"6","Cooperate and collaborate to ask questions, find answers, solve problems, conduct investigations to further an appreciation of scientific discovery","SC.6.2.1","6.SC.S.2","4","WV Science"
-"6","Formulate conclusions through close observations, logical reasoning, objectivity, perseverance and integrity in data collection","SC.6.2.2","6.SC.S.2","4","WV Science"
-"6","Apply skepticism, careful methods, logical reasoning and creativity in investigating the observable universe","SC.6.2.3","6.SC.S.2","4","WV Science"
-"6","Use a variety of materials and scientific instruments to conduct explorations, investigations and experiments of the natural world (eg, barometer, anemometer, microscope, computer)","SC.6.2.4","6.SC.S.2","4","WV Science"
-"6","Demonstrate safe techniques for handling, manipulating and caring for science materials, equipment, natural specimens and living organisms","SC.6.2.5","6.SC.S.2","4","WV Science"
-"6","Utilize experimentation to demonstrate scientific processes and thinking skills (eg, formulating questions, predicting, forming hypotheses, quantifying, identifying dependent and independent variables)","SC.6.2.6","6.SC.S.2","4","WV Science"
-"6","Construct and use charts, graphs and tables to organize, display, interpret, analyze and explain data","SC.6.2.7","6.SC.S.2","4","WV Science"
-"6","Use inferential reasoning to make logical conclusions from collected data","SC.6.2.8","6.SC.S.2","4","WV Science"
-"6","Use appropriate technology solutions to gather data; graph data; interpret data; and analyze information","SC.6.2.9","6.SC.S.2","4","WV Science"
-"6","Unifying Themes ","6.SC.S.3","6","3","WV Science"
-"6","Compare and contrast the relationship between the parts of a system to the whole system (eg, take apart or build mechanical, electrical, or biological systems)   ","SC.6.3.1","6.SC.S.3","4","WV Science"
-"6","Construct a variety of useful models of an object, event, or process ","SC.6.3.2","6.SC.S.3","4","WV Science"
-"6","Compare and contrast changes that occur in an object or a system to its original state","SC.6.3.3","6.SC.S.3","4","WV Science"
-"6","Identify the influence that a variation in scale will have on the way an object or system works  (eg, cooling rates of different-sized containers of water, strength of different-sized constructions from the same material, flight characteristics of different-sized model airplanes)     ","SC.6.3.4","6.SC.S.3","4","WV Science"
-"6","Science Subject Matter/Concepts ","6.SC.S.4","6","3","WV Science"
-"6","Demonstrate an understanding of the interconnections of biological, earth and space and physical science concepts","SC.6.4.1","6.SC.S.4","4","WV Science"
-"6","Structure and function in living systems - describe the interactions of various cycles that provide energy through decomposition, photosynthesis, respiration, transpiration in the food web; nitrogen cycle","SC.6.4.2","6.SC.S.4","4","WV Science"
-"6","Structure and function in living systems - classify living organisms according to their structure and functions","SC.6.4.3","6.SC.S.4","4","WV Science"
-"6","Structure and function in living systems - compare the similarities of internal features of organisms which can be used to infer relatedness","SC.6.4.4","6.SC.S.4","4","WV Science"
-"6","Structure and function in living systems - explain how abiotic and biotic factors affect the interdependence among organisms","SC.6.4.5","6.SC.S.4","4","WV Science"
-"6","Structure and function in living systems - construct models of plant and animal cells which show the basic parts (eg, cytoplasm, cell wall, cell membrane, nucleus, chloroplasts)","SC.6.4.6","6.SC.S.4","4","WV Science"
-"6","Life cycles of organisms: reproduction and heredity - compare growth patterns in different plants (eg, mosses, ferns, perennials, biennials, woody plants, herbaceous plants)","SC.6.4.7","6.SC.S.4","4","WV Science"
-"6","Populations and ecosystems - demonstrate changes in populations of organisms due to limiting environmental factors (eg, food supply, predators, disease, habitat)","SC.6.4.8","6.SC.S.4","4","WV Science"
-"6","Populations and ecosystems - analyze the ecological consequences of human interactions with the environment (eg, renewable and non-renewable resources)","SC.6.4.9","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - classify and investigate properties and processes (changes) as either physical or chemical","SC.6.4.10","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - investigate the composition of matter concluding that matter is composed of tiny particles and that the particles are the same for the same type of matter","SC.6.4.11","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - investigate the formation and separation of simple mixtures","SC.6.4.12","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - use indicators to identify substances as acidic, basic or neutral","SC.6.4.13","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - identify the symbols of elements","SC.6.4.14","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - use the periodic table to identify elements as solids, liquids and gases, metals or nonmetals","SC.6.4.15","6.SC.S.4","4","WV Science"
-"6","Structure and properties of matter - describe properties of matter (eg, inertia, specific heat, malleability, melting point, density)","SC.6.4.16","6.SC.S.4","4","WV Science"
-"6","Energy - investigate the properties electromagnetic spectrum (eg, wavelengths, frequencies, visible light); relate wave lengths and/or frequency to position on electromagnetic spectrum (eg, colors, x-ray)","SC.6.4.17","6.SC.S.4","4","WV Science"
-"6","Energy - identify factors affecting reflection and refraction (eg, nature of surfaces, color, density of medium)","SC.6.4.18","6.SC.S.4","4","WV Science"
-"6","Energy - explain absorption and reflection of light by different objects of various colors and textures (eg, transparent, translucent, opaque, different colors)","SC.6.4.19","6.SC.S.4","4","WV Science"
-"6","Energy - describe the flow of heat between objects (eg, hot air rises, absorption and release of heat by metals)","SC.6.4.20","6.SC.S.4","4","WV Science"
-"6","Energy - diagram simple parallel and series circuits (eg, bulbs, battery, wires, switch)","SC.6.4.21","6.SC.S.4","4","WV Science"
-"6","Motion and forces - interpret the relationship of mass to gravitational force (eg, larger the mass the larger the gravitational force, the closer the objects the stronger the force)","SC.6.4.22","6.SC.S.4","4","WV Science"
-"6","Motion and forces - examine simple machines and the forces involved; apply the effects of balanced and unbalanced forces on motion of objects","SC.6.4.23","6.SC.S.4","4","WV Science"
-"6","Motion and forces - explain motion in terms of frames of reference and analyze graphs depicting motion and predicted future motion","SC.6.4.24","6.SC.S.4","4","WV Science"
-"6","Structure of the earth system - track major atmospheric events","SC.6.4.25","6.SC.S.4","4","WV Science"
-"6","Structure of the earth system - describe and demonstrate the forces and results of plate tectonics","SC.6.4.26","6.SC.S.4","4","WV Science"
-"6","Earth’s history - describe changes in the rock record due to geologic and physical events over time (eg, rock cycle as it relates to plate tectonics)","SC.6.4.27","6.SC.S.4","4","WV Science"
-"6","Earth and the solar system - recognize the phases of the moon","SC.6.4.28","6.SC.S.4","4","WV Science"
-"6","Earth and the solar system - investigate models of earth-moon-sun relationships (eg, gravity, time, tides)","SC.6.4.29","6.SC.S.4","4","WV Science"
-"6","Earth and the solar system - compare the earth’s tilt and revolution to the seasonal changes","SC.6.4.30","6.SC.S.4","4","WV Science"
-"6","Scientific Design and Application ","6.SC.S.5","6","3","WV Science"
-"6","Given a set of attributes, produce a product or process and cite how design priorities (eg, space, safety) and available materials impact the outcome","SC.6.5.1","6.SC.S.5","4","WV Science"
-"6","Evaluate the appropriateness of the materials and procedures in given engineering solutions  ","SC.6.5.2","6.SC.S.5","4","WV Science"
-"6","Science in Personal and Social Perspectives ","6.SC.S.6","6","3","WV Science"
-"6","Use scientific reasoning and the knowledge of science and technology to make informed personal decisions at the local and global levels","SC.6.6.1","6.SC.S.6","4","WV Science"
-"6","Evaluate and critically analyze mass media reports of scientific developments and events","SC.6.6.2","6.SC.S.6","4","WV Science"
-"6","Critically analyze the effects and impacts of science and technology on global and local problems (eg, mining, manufacturing, recycling, farming, water quality)","SC.6.6.3","6.SC.S.6","4","WV Science"
-"6","Explore the connections between science, technology, society and career opportunities","SC.6.6.4","6.SC.S.6","4","WV Science"
-"6","Analyze the positive and negative effects of technology on society and the influence of societal pressures on the direction of technological advances","SC.6.6.5","6.SC.S.6","4","WV Science"
-"7","History and the Nature of Science ","7.SC.S.1","7","3","WV Science"
-"7","Realize that scientists formulate and test their explanations of nature using observation, experiments and theoretical models","SC.7.1.1","7.SC.S.1","4","WV Science"
-"7","Recognize and appreciate that scientific knowledge is subject to modification as new scientific information challenges current theories","SC.7.1.2","7.SC.S.1","4","WV Science"
-"7","Examine the careers and contributions of men and women of diverse cultures to the development of science","SC.7.1.3","7.SC.S.1","4","WV Science"
-"7","Articulate the historical significance of scientific discoveries as influenced by technological demands, competition, controversy, world events, personalities and societal issues","SC.7.1.4","7.SC.S.1","4","WV Science"
-"7","Science as Inquiry ","7.SC.S.2","7","3","WV Science"
-"7","Cooperate and collaborate to ask questions, find answers, solve problems, conduct investigations to further an appreciation of scientific discovery","SC.7.2.1","7.SC.S.2","4","WV Science"
-"7","Formulate conclusions through close observations, logical reasoning, objectivity, perseverance and integrity in data collection","SC.7.2.2","7.SC.S.2","4","WV Science"
-"7","Examine the role of skepticism, careful methods, logical reasoning and creativity in investigating the observable universe","SC.7.2.3","7.SC.S.2","4","WV Science"
-"7","Use a variety of materials and scientific instruments to conduct explorations, investigations and experiments of the natural world (eg, barometer, anemometer, microscope, computer)","SC.7.2.4","7.SC.S.2","4","WV Science"
-"7","Demonstrate safe techniques for handling, manipulating and caring for science materials, equipment, natural specimens and living organisms","SC.7.2.5","7.SC.S.2","4","WV Science"
-"7","Utilize experimentation to demonstrate scientific processes and thinking skills (eg, formulating questions, predicting, forming hypotheses, quantifying, identifying dependent and independent variables)","SC.7.2.6","7.SC.S.2","4","WV Science"
-"7","Construct and use charts, graphs and tables to organize, display, interpret, analyze and explain data","SC.7.2.7","7.SC.S.2","4","WV Science"
-"7","Use appropriate technology solutions to gather data; graph data; interpret data; and analyze information","SC.7.2.8","7.SC.S.2","4","WV Science"
-"7","Use inferential reasoning to make logical conclusions from collected data","SC.7.2.9","7.SC.S.2","4","WV Science"
-"7","Unifying Themes ","7.SC.S.3","7","3","WV Science"
-"7","Compare and contrast the relationship between the parts of a system to the whole system (eg, take apart or build mechanical, electrical or biological systems) ","SC.7.3.1","7.SC.S.3","4","WV Science"
-"7","Construct a variety of useful models of an object, event or process","SC.7.3.2","7.SC.S.3","4","WV Science"
-"7","Compare and contrast changes that occur in an object or a system to its original state","SC.7.3.3","7.SC.S.3","4","WV Science"
-"7","Identify the influence that a variation in scale will have on the way an object or system works  (eg, cooling rates of different-sized containers of water, strength of different-sized constructions from the same material, flight characteristics of different-sized model airplanes)     ","SC.7.3.4","7.SC.S.3","4","WV Science"
-"7","Science Subject Matter/Concepts ","7.SC.S.4","7","3","WV Science"
-"7","Demonstrate an understanding of the interconnections of biological, earth and space and physical science concepts","SC.7.4.1","7.SC.S.4","4","WV Science"
-"7","Structure and function in living systems - identify and describe disease causing organisms (such as bacteria, viruses, protozoa, fungi) and the diseases they cause","SC.7.4.2","7.SC.S.4","4","WV Science"
-"7","Structure and function in living systems - explain how the skeletal, muscular and integumentary systems work together in the human body","SC.7.4.3","7.SC.S.4","4","WV Science"
-"7","Structure and function in living systems - compare the level of organization of cells, tissues and organs in living things","SC.7.4.4","7.SC.S.4","4","WV Science"
-"7","Structure and function in living systems - construct simple keys to differentiate among living things with similar characteristics","SC.7.4.5","7.SC.S.4","4","WV Science"
-"7","Structure and function in living systems - use pictures to show cyclical processes in nature (eg, water cycle, nitrogen cycle, and carbon cycle)","SC.7.4.6","7.SC.S.4","4","WV Science"
-"7","Life cycles of organisms: reproduction and heredity - evaluate how the different adaptations and life cycles of plants and animals help them to survive in different niches and environments (eg, inherited and acquired adaptations)","SC.7.4.7","7.SC.S.4","4","WV Science"
-"7","Life cycles of organisms: reproduction and heredity - analyze how changes in the environment have led to reproductive adaptations through natural selection","SC.7.4.8","7.SC.S.4","4","WV Science"
-"7","Life cycles of organisms: reproduction and heredity - relate how an organism’s behavior response is a combination of heredity and environment ","SC.7.4.9","7.SC.S.4","4","WV Science"
-"7","Life cycles of organisms: reproduction and heredity - analyze the differences in the growth, development and reproduction of flowering and non-flowering plants","SC.7.4.10","7.SC.S.4","4","WV Science"
-"7","Populations and ecosystems - predict the trends of interdependent populations if one of the limiting factors is changed","SC.7.4.11","7.SC.S.4","4","WV Science"
-"7","Populations and ecosystems - evaluate the consequences of the introduction of chemicals into the ecosystem (eg, environmental consequences, human health risks, mutations)","SC.7.4.12","7.SC.S.4","4","WV Science"
-"7","Structure and properties of matter - differentiate among elements, compounds, homogeneous and heterogeneous mixtures","SC.7.4.13","7.SC.S.4","4","WV Science"
-"7","Structure and properties of matter - evaluate types of solutions (eg, solutes and solvents relative concentrations, conductivity, ph)","SC.7.4.14","7.SC.S.4","4","WV Science"
-"7","Chemical reactions - study chemical reactions involving acids and bases by monitoring color changes of indicator(s) and identifying the salt formed in the neutralization reaction","SC.7.4.15","7.SC.S.4","4","WV Science"
-"7","Chemical reactions - write word equations to describe chemical reactions","SC.7.4.16","7.SC.S.4","4","WV Science"
-"7","Energy - describe the behavior of individual particles and verify the conservation of matter (eg, melting and freezing of pure substances)","SC.7.4.17","7.SC.S.4","4","WV Science"
-"7","Energy - trace the energy flow during phase changes","SC.7.4.18","7.SC.S.4","4","WV Science"
-"7","Energy - define characteristics of light and sound waves and describe how sound is perceived by the ear and light is perceived by the eye","SC.7.4.19","7.SC.S.4","4","WV Science"
-"7","Energy - investigate application of lenses to science (eg, microscopes, telescopes, magnifying glass, periscopes)","SC.7.4.20","7.SC.S.4","4","WV Science"
-"7","Energy - identify characteristics of ac and dc circuits","SC.7.4.21","7.SC.S.4","4","WV Science"
-"7","Energy - explain conservation of matter and energy qualitatively and recognize that energy can be changed from one form to another","SC.7.4.22","7.SC.S.4","4","WV Science"
-"7","Motion and forces - perform experiments with simple machines to demonstrate the relationship between forces and distance; use vectors to represent motion","SC.7.4.23","7.SC.S.4","4","WV Science"
-"7","Motion and forces - explain the effect of gravity on falling objects (eg, g= 98m/s2, object dropped on earth and on moon)","SC.7.4.24","7.SC.S.4","4","WV Science"
-"7","Motion and forces - analyze motion graphically and use vectors to represent direction of motion","SC.7.4.25","7.SC.S.4","4","WV Science"
-"7","Structure of the earth system - depict and relate causes of tides, surfs and currents","SC.7.4.26","7.SC.S.4","4","WV Science"
-"7","Structure of the earth system - examine the relationships among air masses, oceans, weather, convection currents and the sun’s energy","SC.7.4.27","7.SC.S.4","4","WV Science"
-"7","Structure of the earth system - interpret and create topographical maps","SC.7.4.28","7.SC.S.4","4","WV Science"
-"7","Earth’s history - compare and contrast periods of geologic time using rocks and rock layers","SC.7.4.29","7.SC.S.4","4","WV Science"
-"7","Earth and the solar system - explain and model using manipulatives how the earth’s tilt and revolution determine the seasonal changes and weather patterns","SC.7.4.30","7.SC.S.4","4","WV Science"
-"7","Earth and the solar system - recognize the changes involved in the life cycle of a star","SC.7.4.31","7.SC.S.4","4","WV Science"
-"7","Earth and the solar system - describe and compare the physical characteristics of celestial objects","SC.7.4.32","7.SC.S.4","4","WV Science"
-"7","Earth and the solar system - compare the characteristics of the members of our solar system","SC.7.4.33","7.SC.S.4","4","WV Science"
-"7","Scientific Design and Application ","7.SC.S.5","7","3","WV Science"
-"7","Make and compare different proposed solutions to an identified problem in light of specified criteria","SC.7.5.1","7.SC.S.5","4","WV Science"
-"7","Test and evaluate different types of materials and/or design approaches in building objects or completing tasks","SC.7.5.2","7.SC.S.5","4","WV Science"
-"7","Science in Personal and Social Perspectives ","7.SC.S.6","7","3","WV Science"
-"7","Use scientific reasoning and the knowledge of science and technology to make informed personal decisions at the local and global levels","SC.7.6.1","7.SC.S.6","4","WV Science"
-"7","Evaluate and critically analyze mass media reports of scientific developments and events","SC.7.6.2","7.SC.S.6","4","WV Science"
-"7","Critically analyze the effects and impacts of science and technology on global and local problems (eg, mining, manufacturing, recycling, farming, water quality)","SC.7.6.3","7.SC.S.6","4","WV Science"
-"7","Explore the connections between science, technology, society and career opportunities","SC.7.6.4","7.SC.S.6","4","WV Science"
-"7","Analyze the positive and negative effects of technology on society and the influence of societal pressures on the direction of technological advances","SC.7.6.5","7.SC.S.6","4","WV Science"
-"8","History and the Nature of Science ","8.SC.S.1","8","3","WV Science"
-"8","Realize that scientists formulate and test their explanations of nature using observation, experiments and theoretical models","SC.8.1.1","8.SC.S.1","4","WV Science"
-"8","Recognize and appreciate that scientific knowledge is subject to modification as new scientific information challenges current theories","SC.8.1.2","8.SC.S.1","4","WV Science"
-"8","Examine the careers and contributions of men and women of diverse cultures to the development of science","SC.8.1.3","8.SC.S.1","4","WV Science"
-"8","Articulate the historical significance of scientific discoveries as influenced by technological demands, competition, controversy, world events, personalities and societal issues","SC.8.1.4","8.SC.S.1","4","WV Science"
-"8","Science as Inquiry ","8.SC.S.2","8","3","WV Science"
-"8","Cooperate and collaborate to ask questions, find answers, solve problems, conduct investigations to further an appreciation of scientific discovery","SC.8.2.1","8.SC.S.2","4","WV Science"
-"8","Formulate conclusions through close observations, logical reasoning, objectivity, perseverance and integrity in data collection","SC.8.2.2","8.SC.S.2","4","WV Science"
-"8","Apply skepticism, careful methods, logical reasoning and creativity in investigating the observable universe","SC.8.2.3","8.SC.S.2","4","WV Science"
-"8","Use a variety of materials and scientific instruments to conduct explorations, investigations and experiments of the natural world (eg, barometer, anemometer, microscope, computer)","SC.8.2.4","8.SC.S.2","4","WV Science"
-"8","Demonstrate safe techniques for handling, manipulating and caring for science materials, equipment, natural specimens and living organisms","SC.8.2.5","8.SC.S.2","4","WV Science"
-"8","Utilize experimentation to demonstrate scientific processes and thinking skills (eg, formulating questions, predicting, forming hypotheses, quantifying, identifying dependent and independent variables)","SC.8.2.6","8.SC.S.2","4","WV Science"
-"8","Construct and use charts, graphs and tables to organize, display, interpret, analyze and explain data","SC.8.2.7","8.SC.S.2","4","WV Science"
-"8","Use appropriate technology solutions to gather, graph and interpret data and analyze information","SC.8.2.8","8.SC.S.2","4","WV Science"
-"8","Use inferential reasoning to make logical conclusions from collected data","SC.8.2.9","8.SC.S.2","4","WV Science"
-"8","Unifying Themes ","8.SC.S.3","8","3","WV Science"
-"8","Compare and contrast the relationship between the parts of a system to the whole system (eg, take apart or build mechanical, electrical, or biological systems)  ","SC.8.3.1","8.SC.S.3","4","WV Science"
-"8","Construct a variety of useful models of an object, event, or process","SC.8.3.2","8.SC.S.3","4","WV Science"
-"8","Compare and contrast changes that occur in an object or a system to its original state","SC.8.3.3","8.SC.S.3","4","WV Science"
-"8","Identify the influence that a variation in scale will have on the way an object or system works  (eg, cooling rates of different-sized containers of water, strength of different-sized constructions from the same material, flight characteristics of different-sized model airplanes)     ","SC.8.3.4","8.SC.S.3","4","WV Science"
-"8","Science Subject Matter/Concepts ","8.SC.S.4","8","3","WV Science"
-"8","Demonstrate an understanding of the interconnections of biological, earth and space, and physical science concepts","SC.8.4.1","8.SC.S.4","4","WV Science"
-"8","Structure and function in living systems - identify and explain the structures and functions of cell organelles","SC.8.4.2","8.SC.S.4","4","WV Science"
-"8","Structure and function in living systems - explain how the circulatory, respiratory and reproductive systems work together in the human body","SC.8.4.3","8.SC.S.4","4","WV Science"
-"8","Structure and function in living systems - compare the variations in cells, tissues and organs of the circulatory, respiratory and reproductive systems of different organisms","SC.8.4.4","8.SC.S.4","4","WV Science"
-"8","Structure and function in living systems - demonstrate how living cells obtain the essentials of life through chemical reactions of transpiration, respiration and photosynthesis","SC.8.4.5","8.SC.S.4","4","WV Science"
-"8","Life cycles of organisms: reproduction and heredity  - analyze how behaviors of organisms lead to species continuity (eg, reproductive/mating behaviors, seed dispersal)","SC.8.4.6","8.SC.S.4","4","WV Science"
-"8","Life cycles of organisms: reproduction and heredity  - demonstrate the basic principles of genetics to include mendel’s laws, dna, monohybrid crosses, production of sperm and egg, production of body cells, genes, chromosomes, inherited traits","SC.8.4.7","8.SC.S.4","4","WV Science"
-"8","Life cycles of organisms: reproduction and heredity  - examine how patterns of human development are similar to other vertebrates","SC.8.4.8","8.SC.S.4","4","WV Science"
-"8","Populations and ecosystems - group unknown organisms based on observable characteristics (eg, use dichotomous keys)","SC.8.4.9","8.SC.S.4","4","WV Science"
-"8","Populations and ecosystems - trace matter and energy flow in a food web as it goes from sunlight to producers to consumers, design an environment in which the chemical and energy needs for the growth, reproduction and development of plants are met (eg, food pyramids, decomposition)","SC.8.4.10","8.SC.S.4","4","WV Science"
-"8","Structure and properties of matter - use the periodic table to locate and classify elements as metallic, non-metallic or metalloid","SC.8.4.11","8.SC.S.4","4","WV Science"
-"8","Structure and properties of matter - trace the development of the model of the atom (eg, crookes, thompson, becquerel, rutherford, bohr)","SC.8.4.12","8.SC.S.4","4","WV Science"
-"8","Structure and properties of matter - determine the number of protons, neutrons and electrons and use information to draw a bohr model of the atom","SC.8.4.13","8.SC.S.4","4","WV Science"
-"8","Structure and properties of matter - assign an element to its chemical family on the periodic table and note similarities in outer energy level electrons within each family","SC.8.4.14","8.SC.S.4","4","WV Science"
-"8","Structure and properties of matter - evaluate gaseous systems noting the variation in diffusion rates and examine the expansion of gases at elevated temperatures","SC.8.4.15","8.SC.S.4","4","WV Science"
-"8","Chemical reactions - conduct and classify chemical reactions by reaction type (synthesis, decomposition, single replacement or double replacement); energy type (endothermic and exothermic); and write word equations for the chemical reactions","SC.8.4.16","8.SC.S.4","4","WV Science"
-"8","Chemical reactions - identify chemical reaction factors that might affect the reaction rates including catalysts, temperature changes, light energies and particle size","SC.8.4.17","8.SC.S.4","4","WV Science"
-"8","Energy - identify types of energy and their sources (eg, petroleum refinement, windmills, geothermal)","SC.8.4.18","8.SC.S.4","4","WV Science"
-"8","Energy - interpret and illustrate changes in waves as they pass through various mediums (eg, sound through water and metal, light through thicknesses of glass)","SC.8.4.19","8.SC.S.4","4","WV Science"
-"8","Energy - apply the conservation of energy theory to energy transformations (eg, electrical/heat, heat/mechanical)","SC.8.4.20","8.SC.S.4","4","WV Science"
-"8","Energy - quantitatively represent work, power, pressure (eg, w=fd, p=w/t, pressure =force/area)","SC.8.4.21","8.SC.S.4","4","WV Science"
-"8","Motion and forces - graph and interpret the relationships (eg, distance versus time, speed versus time, acceleration versus time)","SC.8.4.22","8.SC.S.4","4","WV Science"
-"8","Motion and forces - describe newton’s laws of motion; identify examples; illustrate qualitatively and quantitatively drawing vector quantities","SC.8.4.23","8.SC.S.4","4","WV Science"
-"8","Motion and forces - illustrate quantitatively mechanical advantage of simple machines","SC.8.4.24","8.SC.S.4","4","WV Science"
-"8","Structure of the earth system - summarize problems related to water on earth as a life sustaining substance (eg, quality and quantity of surface and ground water)","SC.8.4.25","8.SC.S.4","4","WV Science"
-"8","Structure of the earth system - identify the principle forces of plate tectonics and related geological events","SC.8.4.26","8.SC.S.4","4","WV Science"
-"8","Structure of the earth system - relate global patterns of atmospheric movement on local weather and the impact of oceans on weather and climate","SC.8.4.27","8.SC.S.4","4","WV Science"
-"8","Earth’s history - relate rock formations to the types of fossil fuels","SC.8.4.28","8.SC.S.4","4","WV Science"
-"8","Earth’s history - describe the factors involved in mining resources","SC.8.4.29","8.SC.S.4","4","WV Science"
-"8","Earth’s history - construct and interpret rock layer models through stratigraphic interpretation","SC.8.4.30","8.SC.S.4","4","WV Science"
-"8","Earth and the solar system - recognize societal concerns with exploration and colonization of space","SC.8.4.31","8.SC.S.4","4","WV Science"
-"8","Earth and the solar system - diagram the motions of the sun, moon and earth and explain the phenomena associated with these motions (eg, glacial periods, eclipses, tides, meteor showers) ","SC.8.4.32","8.SC.S.4","4","WV Science"
-"8","Earth and the solar system - compare and contrast the orbits of planets and comets","SC.8.4.33","8.SC.S.4","4","WV Science"
-"8","Earth and the solar system - compare and contrast the different types of galaxies (eg, shape, size, components)","SC.8.4.34","8.SC.S.4","4","WV Science"
-"8","Scientific Design and Application ","8.SC.S.5","8","3","WV Science"
-"8","Research applications of space technology in everyday life (eg, velcro, teflon, weather satellites)","SC.8.5.1","8.SC.S.5","4","WV Science"
-"8","Compare scientific inquiry and technological design processes","SC.8.5.2","8.SC.S.5","4","WV Science"
-"8","Explain why no technological design is perfect (eg, constraints lead to tradeoffs)","SC.8.5.3","8.SC.S.5","4","WV Science"
-"8","Design and construct engineering solutions to problems according to specified constraints","SC.8.5.4","8.SC.S.5","4","WV Science"
-"8","Science in Personal and Social Perspectives ","8.SC.S.6","8","3","WV Science"
-"8","Use scientific reasoning and the knowledge of science and technology to make informed personal decisions at the local and global levels","SC.8.6.1","8.SC.S.6","4","WV Science"
-"8","Evaluate and critically analyze mass media reports of scientific developments and events","SC.8.6.2","8.SC.S.6","4","WV Science"
-"8","Critically analyze the effects and impacts of science and technology on global and local problems (eg, mining, manufacturing, recycling, farming, water quality)","SC.8.6.3","8.SC.S.6","4","WV Science"
-"8","Explore the connections between science, technology, society and career opportunities","SC.8.6.4","8.SC.S.6","4","WV Science"
