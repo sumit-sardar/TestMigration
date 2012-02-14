@@ -74,7 +74,7 @@ function populateUploadListGrid() {
 		 datatype: "json",         
           colNames:['Upload Date', 'File Name', 'Records Uploaded', 'Records Failed', 'Status'],
 		   	colModel:[
-		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'date', sortable:true},
+		   		{name:'createdDateTime',index:'createdDateTime', width:200, align:"left", editable:false, sorttype:'date', formatter:'date', formatoptions: {srcformat:'m/d/Y h:i:s', newformat:'m/d/Y h:i:s'}, sortable:true},
 		   		{name:'uploadFileName',index:'uploadFileName', width:340, align:"left", editable:false, sorttype:'text', sortable:true},
 		   		{name:'uploadFileRecordCount',index:'uploadFileRecordCount', width:150, align:"left", editable:false, sorttype:'number', sortable:true},
 		   		{name:'failedRecordCount',index:'failedRecordCount', width:150, align:"left", editable:false, sorttype:'number', sortable:true},
