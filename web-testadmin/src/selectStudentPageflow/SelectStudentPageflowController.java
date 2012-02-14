@@ -560,6 +560,9 @@ public class SelectStudentPageflowController extends PageFlowController
         	OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
         	licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
         }
+        else {
+        	this.licenseBarColor = "";
+        }
          
         this.getSession().setAttribute("displayLicenseBar", new Boolean(licenseflag));
         
@@ -652,11 +655,14 @@ public class SelectStudentPageflowController extends PageFlowController
         for (int i=0; i < sessionStudents.length; i++)
         {
             SessionStudent ss = (SessionStudent)sessionStudents[i];
+            
             if (ss != null)
             {
                 String middleName = ss.getMiddleName();
                 if ((middleName != null) && (middleName.length() > 0))
                     ss.setMiddleName(String.valueOf(middleName.charAt(0)));
+                else 
+                    ss.setMiddleName("");
                 String key = encodeStudentOrgIds(ss);
                 ss.setExtElmId(key);
                 

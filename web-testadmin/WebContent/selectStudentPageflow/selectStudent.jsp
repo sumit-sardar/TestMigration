@@ -11,7 +11,9 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
 <netui-data:declareBundle bundlePath="helpResources" name="help" />
 
-<%String templatePage = "/resources/jsp/template.jsp";%>
+<% String templatePage = "/resources/jsp/template.jsp";%>
+<% String color = "red"; %>
+
 <ctb:switch dataSource="${pageFlow.action}">
 	<ctb:case value="edit">
 		<% templatePage="/resources/jsp/editTemplate.jsp";%>
@@ -87,15 +89,14 @@
 			<ctb:switch dataSource="${actionForm.action}">
 
 				<!-- license colors -->
-				<%!String color = "red";%>
 				<c:if test="${licensebarColor =='RED'}">
-					<% color = "red";%>
+					<% color = "red"; %>
 				</c:if>
 				<c:if test="${licensebarColor =='YELLOW'}">
-					<% color = "yellow";%>
+					<% color = "yellow"; %>
 				</c:if>
 				<c:if test="${licensebarColor =='GREEN'}">
-					<% color = "green";%>
+					<% color = "green"; %>
 				</c:if>
 
 				<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
@@ -140,17 +141,17 @@
 								</tr>
 
 								<tr>
-									<td height="100%" align="center" nowrap="" class="transparent" bgcolor="<%=color%>"><c:if
-										test="${licensebarColor =='RED'}">
-
+									<td height="100%" align="center" nowrap="" class="transparent" bgcolor="<%=color%>">
+									<c:if test="${licensebarColor =='RED'}">
 										<netui:span value="${actionForm.licensePercentage}" style="background-color:#ff0000;color:#ffffff;width:30px" />
-									</c:if> <c:if test="${licensebarColor =='YELLOW'}">
-
+									</c:if> 
+									<c:if test="${licensebarColor =='YELLOW'}">
 										<netui:span value="${actionForm.licensePercentage}" style="background-color:#ffff00" />
-									</c:if> <c:if test="${licensebarColor =='GREEN'}">
-
+									</c:if> 
+									<c:if test="${licensebarColor =='GREEN'}">
 										<netui:span value="${actionForm.licensePercentage}" style="background-color:#347C17;color:#ffffff" />
-									</c:if></td>
+									</c:if>
+									</td>
 								</tr>
 							</table>
 						</c:if>
@@ -191,8 +192,8 @@
 						<table class="transparent" width="75%">
 
 							<tr class="transparent">
-								<td class="transparent"><netui:span
-									value="${bundle.web['selectstudents.selectStudents.fieldNoEdit.testName']}" /></td>
+								<td class="transparent"><netui:span	value="${bundle.web['selectstudents.selectStudents.fieldNoEdit.testName']}" />
+								</td>
 								<td class="transparent">
 								<div class="formValueLarge"><netui:span value="${actionForm.testAdmin.testName}"
 									styleClass="formValueLarge" /></div>
