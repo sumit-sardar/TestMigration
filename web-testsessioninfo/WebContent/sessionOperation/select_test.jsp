@@ -79,7 +79,7 @@
 							<td height="20" colspan="4"><lb:label key="selectTest.label.selectedTest" /><span id="testSessionName_lbl" class="lblDisabled"><lb:label key="selectTest.label.noTestSelected" /></span></td>
 						</tr>
 						<tr>
-							<td height="8" colspan="4"></td>
+							<td height="5" colspan="4"></td>
 						</tr>
 						<tr>
 							<td width="0" height="20" align="left" valign="middle">
@@ -93,10 +93,23 @@
                           </table></td>
 					  </tr>
 						<tr>
+							<td height="5" colspan="2">
+								<div id="locatorSubtestGridHeading" style="display:none; font-weight: bold; color: #2E6E9E;"> 
+									<lb:label key="session.locatorTest.heading" />
+									<img  onmouseout="hideLocatorMessage();" onmouseover="showLocatorMessage(event);" src="/SessionWeb/resources/images/questionmark.jpg" /> 
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td height="5" colspan="2">
+							<div id="locatorSubtestGrid" style="display:none;"></div>
+							</td>
+						</tr>
+						<tr>
 							<td height="5" colspan="2"></td>
 						</tr>
 						<tr>
-							<td height="10" colspan="2" valign="top">
+							<td  colspan="2" valign="top">
 							<div id="noSubtest">
 							
 								<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2">
@@ -128,10 +141,27 @@
 								</tr>
 								</table>							
 							</div>
+							<div id="modifyTestDiv" style="display: none;">
+							<table width="100%" class="ts" cellpadding="0" cellspacing="1" height="24">
+								<tr align="right" height="24">
+									<td align="left" style="font-weight: bold; color: #2E6E9E;">
+										<lb:label key="session.subTest.heading"/>
+									</td>
+									<td align="right" height="24">
+										<div id="modifyTest">
+											<a class="rounded {transparent} smallButton" onclick="javascript:openModifyTestPopup();" ><lb:label key="session.modifySubtest.button"/></a>
+										</div>
+									</td>
+								</tr>
+
+
+							</table>
+							</div>
+
 							<div id="subtestGrid" style="display:none;"></div>							</td>
 						</tr>
 						<tr>
-							<td height="10" colspan="2"></td>
+							<td height="5" colspan="2"></td>
 						</tr>
 					</table>
 					</td>

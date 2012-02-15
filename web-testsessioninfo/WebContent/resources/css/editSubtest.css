@@ -1,0 +1,177 @@
+table.layout 
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+}
+
+tr.layout               
+{ 
+    background-color: #D4ECFF; 
+    vertical-align: top; 
+}
+
+tr.layout td            
+{ 
+    padding: 10px;
+}
+
+tr.layoutButtom               
+{ 
+    background-color: #D4ECFF; 
+    vertical-align: top; 
+}
+
+tr.layoutButtom td            
+{ 
+    padding: 0px 5px 5px 0px; 
+}
+
+
+table.columnLayout            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+    height: 204px; 
+}
+
+tr.columnLayout               
+{ 
+    background-color: #fff; 
+    vertical-align: top; 
+}
+
+tr.columnLayout td            { 
+    color: #000; 
+    cursor: default; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    padding: 0px; 
+}
+
+table.columnButtonLayout            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+    height: 204px;
+}
+
+tr.columnButtonLayout               
+{ 
+    background-color: #D4ECFF; 
+    vertical-align: middle; 
+}
+
+tr.columnButtonLayout td            { 
+    padding: 2px; 
+    text-align: center; 
+}
+
+
+tr.columnLayout th      { 
+    background-color: #ffc; 
+    border-color: #D4ECFF; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: left; 
+    height: 25px;
+    padding: 0px; 
+}
+
+
+
+table.dynamic            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+}
+
+tr.dynamic 
+{ 
+    border-color: #D4ECFF; 
+    border-style: solid; 
+    border-width: 1px; 
+    height: 22px;
+}
+
+tr.dynamic td            
+{ 
+    background-color: #fff; 
+    color: #000; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    height: 22px;
+    padding: 2px 5px 2px 5px; 
+}
+ 
+
+tr.dynamicHeader 
+{
+    border-style: solid; 
+    border-width: 1px; 
+    height: 23px;
+}        
+
+tr.dynamicHeader th      
+{ 
+    background-color: #ffc; 
+    border-color: #D4ECFF; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #FFFFFF;
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: left; 
+    height: 23px;
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicHilight        { 
+    background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png) ;
+    font-style: bold;
+    color: #1d5987; 
+    border-color: #79b7e7; 
+    border-style: solid; 
+    border-width: 1px; 
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicHilight td     { 
+    background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png) ;
+    color: #1d5987; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: bold;
+    height: 22px;
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicChosen         { 
+    background-image: url(images/ui-bg_flat_55_fbec88_40x100.png) ;
+    border-style: solid; 
+    border-width: 1px; 
+    border-color: #FAD42E; 
+    padding: 2px 5px 2px 5px; 
+    color: #363636; 
+}
+
+tr.dynamicChosen td      { 
+    background-image: url(images/ui-bg_flat_55_fbec88_40x100.png);
+    color: #363636; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    height: 22px;
+    padding: 2px 5px 2px 5px; 
+}
+ 

@@ -40,5 +40,11 @@ public interface RequestParam {
 	String TEST_ITEM_IS_SESSION_DEFAULT	= "sessionDefault";
 	String TEST_ADMIN_STATUS 		= "isEndTestSession";
 	String REMOVE_RESTRICTED_STD_AND_SAVE	= "checkRestricted";
+	String HAS_AUTOLOCATOR				= "hasAutolocator";
+	
+	String LOCATOR_TEST_ITEM_SET_ID_TD		= "itemSetIdTD_l";
+	String LOCATOR_TEST_ITEM_IND_ACCESS_CODE= "aCodeB_l";
+	String LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT	= "sessionDefault_l";
+	String LOCATOR_TEST_ITEM_SET_FORM		= "itemSetForm_l";
 	
 }

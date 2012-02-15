@@ -938,7 +938,9 @@ function registerDelegate(tree){
 		document.getElementById("aCode").style.visibility = "visible";
 		if(sessionListData.subtests.length>0)  {
 			document.getElementById("aCode").value = ProductData.accessCodeList[0];
-		} else {
+		} else if( locatorSubtest!=undefined && locatorSubtest != null && locatorSubtest.id != undefined){
+			document.getElementById("aCode").value = ProductData.accessCodeList[0];
+		}else {
 			document.getElementById("aCode").value = "";
 		}
 		document.getElementById("testSessionName_lbl").innerHTML = sessionListData.testName;
@@ -1044,6 +1046,8 @@ function registerDelegate(tree){
 			noOfProctorAdded = 0;
 			resetEditSessionPopulatedData();
 			$("#displayEditInfo").hide();
+			hideSubtestWarningMessage();
+			document.getElementById("modifyTestDiv").style.display = "none";
 			$("#titleEditInfo").html("");
 			$("#messageEditInfo").html("");
 			$("#endTest").hide();
@@ -1423,6 +1427,8 @@ function registerDelegate(tree){
 	
 	function scheduleNewSession() {
 	$('#showSaveTestMessage').hide();
+	hideSubtestWarningMessage();
+	document.getElementById("modifyTestDiv").style.display = "none";
 	$("#endTest").hide();
 	state = "ADD";
 	isFirstAccordSelected = true; // As initially the first accordion will be displayed
@@ -1465,6 +1471,7 @@ function registerDelegate(tree){
 							$("#productType").val(data.product[0].productType);
 							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 							displayProductAcknowledgement(ProductData.product[0].acknowledgmentsURL); //Added for view product Acknowledgement link
+							$('.rounded').corners();
 						}
 						isPopUp = true;	
 						$.unblockUI(); 						
@@ -1642,6 +1649,8 @@ function registerDelegate(tree){
 		 } else {*/
 		 	changeGradeAndLevel();
 		 //}
+		 hideSubtestWarningMessage();
+		 document.getElementById("modifyTestDiv").style.display = "none";
 	}
 	
 	function closeSubtestConfirmPopup() {
@@ -1933,10 +1942,19 @@ function registerDelegate(tree){
 						$('#displayMessage').hide();
 						return;
 					}
+					hideSubtestWarningMessage();
+					document.getElementById("modifyTestDiv").style.display = "none";
 					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
 					$('#displayMessage').hide();				
 					testSessionListRequired = getDataFromTestJson(selectedTestId, testSessionlist);
 					testJSONValue = testSessionListRequired.subtests;
+					if(testSessionListRequired.autoLocator){
+						hasAutolocator = true;
+						locatorSubtest = testSessionListRequired.locatorSubtest;
+					} else {
+						hasAutolocator = false;
+						locatorSubtest = {};
+					}
 					//testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
 					sessionListDataReqBeforeConfirm(testSessionListRequired);
 					// Added to refresh student list grid if user changes tests
@@ -2008,17 +2026,122 @@ function registerDelegate(tree){
 	
 	
 	function createSubtestGrid(){
-		var subtestArr = new Array();
-		subtestArr = subtestDataArr;
+		//var subtestArr = new Array();
+		//subtestArr = subtestDataArr;
+		var subtestArr = selectedSubtests;
 		var subtestData = '';
+		var locatorSubtestTableHtml = '';
 		//alert(subtestGridLoaded);
+		var indexFactor = 0;
+		if(locatorSubtest!=undefined && locatorSubtest.id !=undefined ) {
+			indexFactor = 1;
+			locatorSubtestTableHtml += '<td height="5" colspan="2">';
+			locatorSubtestTableHtml +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table width="100%" class="ts" cellpadding="0" cellspacing="1">';
+	    	locatorSubtestTableHtml +='<tr class="subtestHeader" >';
+	    	locatorSubtestTableHtml +='<th width="24" height="23" align="center"><strong>'+'Select'+'</strong></th>';
+	    	//locatorSubtestTableHtml +='<th width="24" height="23" align="center"><strong>'+$("#hashDisplay").val()+'</strong></th>';
+	    	/*if(isTestBreak){
+	    		locatorSubtestTableHtml +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
+	    		locatorSubtestTableHtml +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
+	    	
+	    	} else {
+	    		locatorSubtestTableHtml +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
+	    	}*/
+	    	
+	    	if(isTestBreak){
+	    		locatorSubtestTableHtml +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
+	    		locatorSubtestTableHtml +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
+	    	
+	    	} else {
+	    		locatorSubtestTableHtml +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
+	    		//locatorSubtestTableHtml +='<th id ="locatorAccessCodeHeader" width="130" height="23" style="display:none"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
+	    	}
+	    	
+	    	locatorSubtestTableHtml +='<th width="82" height="23" align="center"><strong>'+$("#durationDisplay").val()+'</strong></th>';
+			locatorSubtestTableHtml +='</tr>';
+			
+			locatorSubtestTableHtml +='<tr id ="' +locatorSubtest.id+ '">';
+			locatorSubtestTableHtml +='<td height="23" width="24" bgcolor="#FFFFFF" style="padding-left:10px;" >';
+			var disabled = "";
+			if(allSubtests!=null && allSubtests!= undefined && allSubtests.length<1){
+				disabled = 'disabled ="disabled"';
+			}
+			if(hasAutolocator) {
+				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onblur="javascript:updateLocatorValue(); return false;" />';
+			} else {
+				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onblur="javascript:updateLocatorValue(); return false;"/>';
+			}
+			
+			
+			//locatorSubtestTableHtml +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
+			locatorSubtestTableHtml +='<input type = "hidden" id ="itemSetIdTD" name ="itemSetIdTD_l" value ="'+locatorSubtest.id+'" />';
+			if(locatorSubtest.level != undefined){
+				locatorSubtestTableHtml +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm_l" value ="'+locatorSubtest.level+'" />';
+			} else {
+				locatorSubtestTableHtml +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm_l" value ="" />';
+			}
+				
+			if(locatorSubtest.sessionDefault != undefined){
+				locatorSubtestTableHtml +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault_l" value ="'+locatorSubtest.sessionDefault+'" />';
+			} else {
+				locatorSubtestTableHtml +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault_l" value ="" />';
+			}
+			locatorSubtestTableHtml +='</td>';
+			
+			if(isTestBreak ){
+					locatorSubtestTableHtml +='<td height="23" width="289" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					locatorSubtestTableHtml +='<div align="left" id="sName">'+locatorSubtest.subtestName+'</div>';
+					locatorSubtestTableHtml +='</td>';
+					locatorSubtestTableHtml +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
+					locatorSubtestTableHtml +='<div align="center" id="'+locatorSubtest.id+'_l">';
+					if(hasAutolocator){
+						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					} else {
+						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					}
+					
+					locatorSubtestTableHtml +='</td>';
+				}else{
+					locatorSubtestTableHtml +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					locatorSubtestTableHtml +='<div align="left" id="sName">'+locatorSubtest.subtestName+'</div>';
+					locatorSubtestTableHtml +='</td>';
+					
+					//locatorSubtestTableHtml +='<td id ="locatorAccessCodeBody" height="23" width="130" align="center" bgcolor="#FFFFFF" style="display:none">';
+					//locatorSubtestTableHtml +='<div align="center" id="'+locatorSubtest.id+'">';
+					//locatorSubtestTableHtml +='<input name="aCodeB" type="text" size="13" id="aCodeB_l" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					//locatorSubtestTableHtml +='</td>';
+				}
+				locatorSubtestTableHtml +='<td height="23" width="82" align="center" bgcolor="#FFFFFF">';
+				locatorSubtestTableHtml +='<div align="center" id="duration">'+locatorSubtest.duration+'</div>';
+				locatorSubtestTableHtml +='</td>';
+				
+				locatorSubtestTableHtml +='</tr>';	
+				locatorSubtestTableHtml +='</table></td></tr></table>';
+				document.getElementById("locatorSubtestGrid").innerHTML = locatorSubtestTableHtml;
+				document.getElementById("locatorSubtestGrid").style.display = "";
+				document.getElementById("locatorSubtestGridHeading").style.display = "";
+				
+		
+		} else {
+			document.getElementById("locatorSubtestGrid").innerHTML = "";
+			document.getElementById("locatorSubtestGrid").style.display = "none";
+			document.getElementById("locatorSubtestGridHeading").style.display = "none";
+			
+			
+		}
+		
+		if(allSubtests.length > 1 && isTabeProduct){
+		   document.getElementById("modifyTestDiv").style.display = "";
+		} else {
+		 	document.getElementById("modifyTestDiv").style.display = "none";
+		}
 		if(!subtestGridLoaded && subtestArr.length > 0){
 			subtestLength = subtestArr.length;
 			document.getElementById("subtestGrid").style.display = "";
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
-			subtestData +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table width="100%" class="ts" cellpadding="0" cellspacing="1">';
+			subtestData +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table id ="subtestTable" width="100%" class="ts" cellpadding="0" cellspacing="1">';
 							
 			th +='<tr class="subtestHeader" >';
 			th +='<th width="24" height="23" align="center"><strong>'+$("#hashDisplay").val()+'</strong></th>';
@@ -2027,62 +2150,74 @@ function registerDelegate(tree){
 				th +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
 			}else{
 				th +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';
+				//th +='<th width="130" id ="subtestAccessCodeHeader" height="23" style="display:none"><div align="center" id="aCodeHead"><strong>'+ $("#acsCodeDisplay").val() +' </strong></div></th>';
 			}
 			th +='<th width="82" height="23" align="center"><strong>'+$("#durationDisplay").val()+'</strong></th>';
-			if(isTabeProduct && !isTabeLocatorProduct ){
+			/*if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
-			}
+			}*/
 			th +='</tr>';
 			subtestData += th;
+			
 			for(var i=0;i<subtestArr.length; i++){	
+			    
 				tr = ''			
-				tr +='<tr>';
-				tr +='<td height="23" width="24" bgcolor="#FFFFFF">';
+				tr +='<tr id ="' +subtestArr[i].id+ '" bgcolor="#FFFFFF" >';
+				tr +='<td height="23" width="24" >';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
-				tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
+				tr +='<input type = "hidden" id ="itemSetIdTD" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
 				if(subtestArr[i].level != undefined){
-					tr +='<input type = "hidden" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
+					tr +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
 				} else {
-					tr +='<input type = "hidden" name ="itemSetForm" value ="" />';
+					tr +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm" value ="" />';
 				}
 				
 				if(subtestArr[i].sessionDefault != undefined){
-					tr +='<input type = "hidden" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
+					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
 				} else {
-					tr +='<input type = "hidden" name ="sessionDefault" value ="" />';
+					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="" />';
 				}
 				
 				tr +='</td>';
 				if(isTestBreak){
-					tr +='<td height="23" width="289" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					tr +='<td height="23" width="289"  style="padding-left:5px;">';
 					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 					tr +='</td>';
-					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
+					tr +='<td height="23" width="130" align="center" >';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i+indexFactor]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
-					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					tr +='<td height="23" width="419"  style="padding-left:5px;">';
 					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 					tr +='</td>';
+					
+					//tr +='<td id ="subtestAccessCodeBody" height="23" width="130" align="center" style="display:none">';
+					//tr +='<div align="center" id="'+subtestArr[i].id+'">';
+					//tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i+indexFactor]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					//tr +='</td>';
 				}
-				tr +='<td height="23" width="82" align="center" bgcolor="#FFFFFF">';
+				tr +='<td height="23" width="82" align="center" >';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
 				tr +='</td>';
-				if(isTabeProduct && !isTabeLocatorProduct){
-					tr +='<td height="23" align="center" width="34" bgcolor="#FFFFFF">';
+				/*if(isTabeProduct && !isTabeLocatorProduct){
+					tr +='<td height="23" align="center" width="34" >';
 					tr +='<div align="center">';
 					tr +='<img id="imgMin'+i+'" src="/SessionWeb/resources/images/minus.gif" width="14" title="Remove Subtest" onclick="javascript:removeSubtestOption(0,'+i+');" />';
 					tr +='<img id="imgPlus'+i+'" src="/SessionWeb/resources/images/icone_plus.gif" width="14" title="Add Subtest" onclick="javascript:removeSubtestOption(1,'+i+');" style="display: none;" />';
 					tr +='</div>';
 					tr +='</td>';
-				}
+				}*/
 				tr +='</tr>';				
 				subtestData += tr;		
 			}
 			subtestData +='</table></td></tr></table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
 			subtestGridLoaded = true;
+		}else if (subtestArr.length == 0  ){
+			document.getElementById("noSubtest").style.display = "none";
+			document.getElementById("subtestGrid").style.display = "none";
+
 		}/*else{
 			subtestLength = 0;
 			subtestGridLoaded = false;
@@ -2142,6 +2277,11 @@ function registerDelegate(tree){
 		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
+		document.getElementById("locatorSubtestGrid").innerHTML = "";
+		document.getElementById("locatorSubtestGrid").style.display = "none";
+		document.getElementById("locatorSubtestGridHeading").style.display = "none";
+		locatorSubtest={};
+		hasAutolocator =false;
 		
 		if(state != "EDIT"){
 			document.getElementById("testSessionName").value = "";
@@ -2170,6 +2310,11 @@ function registerDelegate(tree){
 		document.getElementById("aCode").style.visibility = "hidden";		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
+		document.getElementById("locatorSubtestGrid").innerHTML = "";
+		document.getElementById("locatorSubtestGrid").style.display = "none";
+		locatorSubtest = {};
+		hasAutolocator = false;
+		document.getElementById("modifyTestDiv").style.display = "none";
 		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
@@ -2180,6 +2325,7 @@ function registerDelegate(tree){
 		$("#randDisLbl").hide();
 		$("#randomDis").val("");
 		//$("#randomDistDiv").hide();
+		document.getElementById("locatorSubtestGridHeading").style.display = "none";
  		
  		
 	}
@@ -2388,7 +2534,8 @@ function registerDelegate(tree){
 		var ep = document.getElementById("testGroupList");  
 		var selectProductId = ep.options[ep.selectedIndex].value;
 		var optionList = ProductData.product
-		
+		hideSubtestWarningMessage();
+		document.getElementById("modifyTestDiv").style.display = "none";
 		for(var i = 0; i < optionList.length; i++ ) {
 			if(selectProductId==optionList[i].productId) { 	     
 				var tList = optionList[i].testSessionList;
@@ -3207,6 +3354,14 @@ function registerDelegate(tree){
 		//document.getElementById("aCode").style.display = "none";
 		//populateDates();
 		subtestDataArr = testJSONValue;
+		allSubtests    = getCopy(testJSONValue);
+		selectedSubtests = testJSONValue;
+		
+		allSubtestMap = new Map();
+		selectedSubtestsMap = new Map();
+		populateAllSubtestMap( testJSONValue);
+		populateSelectedSubtestsMap (testJSONValue);
+		
 		if(subtestDataArr!= undefined && subtestDataArr.length>1){
 			document.getElementById("testBreak").disabled=false;
 		} else {
@@ -4103,3 +4258,32 @@ function validNumber(str){
 	} 
 	return true;
 }    
+
+	function updateLocatorValue(){
+		var locator = document.getElementById("hasAutolocator");
+		if(!locator.checked){	
+				locator.value = "false";	
+				hasAutolocator = false;
+				if(isTestBreak){
+						//var val = '<input name="aCodeB_l" type="text" size="13" id="aCodeB" value="" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" />';
+						$("#"+locatorSubtest.id+"_l input").val("");
+						//$("#"+locatorSubtest.id+"_l").html(val);
+						//$("#"+locatorSubtest.id+"_l").change();
+						//document.getElementById ("aCodeB_l").value = "";
+						
+				}
+				
+		} else {
+			locator.value = "true";	
+			hasAutolocator = true;
+			if(isTestBreak){
+			     //var val = '<input name="aCodeB_l" type="text" size="13" id="aCodeB" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" />';
+				//$("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
+				//	$("#"+locatorSubtest.id+"_l").html(val);
+				//	$("#"+locatorSubtest.id+"_l").change();
+				//document.getElementById ("aCodeB_l").value = ProductData.accessCodeList[0];
+				$("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
+			}
+		}
+	
+	}

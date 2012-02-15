@@ -98,6 +98,7 @@ public class ScheduleTestVo implements Serializable{
             Integer itemSetId = tes[i].getItemSetId();
             TestElementData suTed = scheduleTest.getSchedulableUnitsForTestWithBlankAccessCode(userName, itemSetId, new Boolean(true), null, null, null);
             TestElement [] usTes = suTed.getTestElements();
+            SubtestVO locatorSubtest = null;
             for (int j=0; j<usTes.length; j++)
             {
                 int durationMinutes = usTes[j].getTimeLimit().intValue()/60;
@@ -110,7 +111,11 @@ public class ScheduleTestVo implements Serializable{
                                                     usTes[j].getSessionDefault(),
                                                     usTes[j].getItemSetForm(),
                                                     false);
-                subtestList.add(subtestVO);
+                if(locatorSubtest == null && usTes[j].getItemSetName().indexOf("Locator") > 0){
+                	locatorSubtest = subtestVO;
+                } else {
+                	subtestList.add(subtestVO);
+                }
             }
     
             int durationMinutes = tes[i].getTimeLimit().intValue()/60;
@@ -127,9 +132,16 @@ public class ScheduleTestVo implements Serializable{
             if(level== null) {
             	level = "";
             }
+            if(TestSessionUtils.isTabeBatterySurveyProduct(tp.getProductType())){
+            	subtestList = getDefaultSubtestsWithoutLocator(subtestList);
+            }
             
             TestVO testVO = new TestVO(tes[i].getItemSetId(), tes[i].getItemSetName(), 
                     level, duration, subtestList);
+            if(locatorSubtest != null) {
+            	testVO.setLocatorSubtest(locatorSubtest);
+            	testVO.setAutoLocator(true);
+            }
                     
             if(accessCode!=null){
             	testVO.setAccessCode(accessCode);
@@ -175,6 +187,28 @@ public class ScheduleTestVo implements Serializable{
         return result;
         
     }
+	 private List<SubtestVO> getDefaultSubtestsWithoutLocator(
+			List<SubtestVO> srcList) {
+		
+		 if (srcList == null)
+	            return srcList;
+
+	        List resultList = new ArrayList();
+	        for (int i=0 ; i<srcList.size() ; i++) {
+	            SubtestVO subtest = (SubtestVO)srcList.get(i);
+	            //if (subtest.getSessionDefault().equals("T") && (! isLocatorSubtest(subtest))) {
+	            if (subtest.getSessionDefault().equals("T") ) {
+	                SubtestVO copied = new SubtestVO(subtest);
+	                resultList.add(copied);
+	            }
+	        }
+
+	        //resetSubtestOrder(resultList);
+
+	        return resultList;
+	}
+
+
 	 private List<TestVO> getTestsForProductForUser(TestProduct tp, String userName, Integer productId, ScheduleTest scheduleTest, String showLevelOrGrade)
      throws CTBBusinessException
      {

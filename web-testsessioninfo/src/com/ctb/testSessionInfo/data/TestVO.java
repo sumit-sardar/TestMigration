@@ -45,7 +45,9 @@ public class TestVO implements java.io.Serializable
 	
 	private String minLoginEndDate;
 	
+	private SubtestVO locatorSubtest;
 	
+	private boolean autoLocator = false;
     
     private Boolean offGradeTestingDisabled = Boolean.FALSE;
     
@@ -103,11 +105,16 @@ public class TestVO implements java.io.Serializable
    	
    	
    	public int getSubtestCount() {
+   		int count = 0;
    		if(subtests==null ) {
-			return 0;
+   			count = 0;
 		} else {
-			return subtests.size();
+			count =  subtests.size();
 		}
+   		if(isAutoLocator()){
+   			count +=1;
+   		}
+   		return count;
 	}
    	
     private boolean getSubtestExistStatus() {
@@ -316,6 +323,38 @@ public class TestVO implements java.io.Serializable
 	 */
 	public void setMinLoginEndDate(String minLoginEndDate) {
 		this.minLoginEndDate = minLoginEndDate;
+	}
+
+	
+	/**
+	 * @return the locatorSubtest
+	 */
+	public SubtestVO getLocatorSubtest() {
+		return locatorSubtest;
+	}
+
+	
+	/**
+	 * @param locatorSubtest the locatorSubtest to set
+	 */
+	public void setLocatorSubtest(SubtestVO locatorSubtest) {
+		this.locatorSubtest = locatorSubtest;
+	}
+
+	
+	/**
+	 * @return the autoLocator
+	 */
+	public boolean isAutoLocator() {
+		return autoLocator;
+	}
+
+	
+	/**
+	 * @param autoLocator the autoLocator to set
+	 */
+	public void setAutoLocator(boolean autoLocator) {
+		this.autoLocator = autoLocator;
 	}
     
     

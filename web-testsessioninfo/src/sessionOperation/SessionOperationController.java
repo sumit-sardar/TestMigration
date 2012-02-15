@@ -1110,6 +1110,7 @@ public class SessionOperationController extends PageFlowController {
         	 String[] accesscodes           = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
         	 String[] itemSetForms          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
         	 String[] itemSetisDefault      = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
+        	 String autoLocator				=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
         	 
         	 
         	 //List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
@@ -1128,29 +1129,34 @@ public class SessionOperationController extends PageFlowController {
         	                     
     	        if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
     	        {
-    	            // for tabe test
-    	        	/*   if (TestSessionUtils.isTabeBatterySurveyProduct(this.productType).booleanValue())
+
+    	        	  if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue())
     	            {
-    	                
-    	                subtestList = TestSessionUtils.setupSessionSubtests(this.sessionSubtests, this.defaultSubtests); 
-    	                
-    	                String autoLocator = form.getAutoLocator();
-    	                if ((autoLocator != null) && autoLocator.equals("true"))
-    	                {            
-    	                    TestSessionUtils.restoreLocatorSubtest(subtestList, this.locatorSubtest);
-    	                    sessionHasLocator = true;
-    	                }
-    	                else
-    	                {
-    	                    TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
-    	                }
+
+    	        		  if ((autoLocator != null) && autoLocator.equals("true"))
+      	                {   
+    	        			  Integer lItemSetId   = Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+    	        			  String lAccesscodes  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IND_ACCESS_CODE, true, "");
+    	        			  String lItemSetisDefault  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT, false, null);
+    	        			  String lItemSetForms      = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_FORM, false, null);
+    	        			  SubtestVO locatorSubtest = new SubtestVO();
+    	        			  locatorSubtest.setId(lItemSetId);
+    	        			  locatorSubtest.setTestAccessCode(lAccesscodes);
+    	        			  locatorSubtest.setSessionDefault(lItemSetisDefault);
+    	        			  if(lItemSetForms!=null && lItemSetForms.length() >0 ){
+    	        				  locatorSubtest.setLevel(lItemSetForms);
+    	        			  }
+    	        			  subtestList.add(0, locatorSubtest);
+      	                } else {
+      	                	 TestSessionUtils.setDefaultLevels(subtestList, "E");
+      	                	
+      	                }
     	            } 
     	            else
     	            {
     	                // tabe locator test
-    	                subtestList = TestSessionUtils.cloneSubtests(this.defaultSubtests);
-    	                TestSessionUtils.setDefaultLevels(subtestList, "1");  // make sure set level = '1' for test locator
-    	            }    */   
+    	            	TestSessionUtils.setDefaultLevels(subtestList, "1");
+    	            }   
     	            
     	        }
     	        else

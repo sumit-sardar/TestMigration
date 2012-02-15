@@ -2377,11 +2377,12 @@ public class ScheduleTestImpl implements ScheduleTest
                     newAssignment.setForm(form);
                     newAssignment.setTestAdminId(testAdminId);
                     newAssignment.setStudentId(student.getStudentId());
-                    if (overrideUsingStudentManifest) {
+                    /*if (overrideUsingStudentManifest) { // commented as of now students modify subtest is not implemented
                         newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests()));
                     } else {
                         newAssignment.setSubtests(subtests);   
-                    }
+                    }*/
+                    newAssignment.setSubtests(subtests); 
                     subtestAssignments.add(newAssignment);
                 }
             }

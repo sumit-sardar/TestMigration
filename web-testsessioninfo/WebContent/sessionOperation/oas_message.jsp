@@ -92,3 +92,18 @@
 <input type="hidden" id="noStudentMsgGrd" name = "noStudentMsgGrd" value=<lb:label key="session.noStuSelected.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noProctorTitleGrd" name = "noProctorTitleGrd" value=<lb:label key="session.noProcSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noProctorMsgGrd" name = "noProctorMsgGrd" value=<lb:label key="session.noProcSelected.message" prefix="'" suffix="'"/>/>
+
+
+
+
+<input type="hidden" id="noSubtestMsg" name = "noSubtestMsg" value=<lb:label key="session.noSubtest.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="languageDependencyMsg" name = "languageDependencyMsg" value=<lb:label key="session.languageDependency.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="languageLevelMsg" name = "languageLevelMsg" value=<lb:label key="session.languageLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="readingDependencyMsg" name = "readingDependencyMsg" value=<lb:label key="session.readingDependency.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="readingLevelMsg" name = "readingLevelMsg" value=<lb:label key="session.readingLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mathSubtestsMsg" name = "mathSubtestsMsg" value=<lb:label key="session.mathSubtests.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="scoreCalulatableMsg" name = "scoreCalulatableMsg" value=<lb:label key="session.scoreCalulatable.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mathLevelMsg" name = "mathLevelMsg" value=<lb:label key="session.mathLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="subtestValidationFailedMsg" name = "subtestValidationFailedMsg" value=<lb:label key="session.subtestValidationFailed.message" prefix="'" suffix="'"/>/>
+
+

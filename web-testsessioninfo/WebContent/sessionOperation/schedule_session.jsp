@@ -43,6 +43,24 @@
 			
 		</div>
 		
+		
+		<div id="displayEditSubtestInfo" class="roundedMessage" style="display:none; margin-bottom: 3px;"> 
+			<table>
+				<tr>
+					<td rowspan="3" valign="top" width="18">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+					</td>
+					<td>
+						<table>
+							
+							<tr><td><div id= "contentEditSubtest">	</div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+		
 		<div id="ssAccordion" style="width:99.5%;">
 			<div id="selectTestId">
 				<h3><a href="#" ><lb:label key="session.accordion.selectTest" /></a></h3>

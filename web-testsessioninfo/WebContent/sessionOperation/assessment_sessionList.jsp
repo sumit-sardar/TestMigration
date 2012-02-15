@@ -265,7 +265,18 @@
 	</div>
 </div>
 
+<div id="statusLocatorLegend" style="display:none;" class="statusLegendDiv">
+<table width="360" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
+	<tbody>
+		<tr align="center">
+			<td colspan="2" align="left"><lb:label key="session.locatorSubtest.message" /></td>
+		</tr>
+	</tbody>
+</table>  
+</div>
+
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
 <jsp:include page="/sessionOperation/view_test_session.jsp" />
 <jsp:include page="/sessionOperation/restricted_student.jsp" />
+<jsp:include page="/sessionOperation/editSubtest.jsp" />

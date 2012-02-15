@@ -64,5 +64,26 @@
   .buttonDisabled:hover {
     cursor: default;
   }
+  
+  
+  
+.smallButton {
+     background-color: #dfeffc; 
+    border-color: #c5dbec; 
+    color: #00f !important; 
+    padding: 3px 10px;
+	font-weight: bold; 
+	
+  }
+
+  .smallButton:hover {
+	background-color: #d0e5f5; 
+    border-color: #79b7e7; 
+    color: #00f ; 
+    padding: 3px 10px;
+	font-weight: bold; 
+    text-decoration: none;
+  }
+
 
   
