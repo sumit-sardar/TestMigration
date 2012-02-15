@@ -580,13 +580,17 @@ table.ts{
 	font-family: Arial,Helvetica,Sans Serif;
 	font-size: 12px;
 	font-weight: normal;
-	padding: 3px;
 }
 
 .statusLegendDiv {
 	position: absolute;
 	z-index: 1100;
 }
+
+.statusLegendTable td {
+	padding: 0px 10px 2px 5px;
+}
+
 /*
 #stuOrgNodeHierarchy ul {
 float: left;

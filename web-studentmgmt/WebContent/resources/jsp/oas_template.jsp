@@ -197,25 +197,25 @@
 
 </table>
 <div id="accommodationToolTip" style="display:none;" class="statusLegendDiv">
-<table width="180" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
+<table border="0" class="statusLegendTable">
 	<tbody>
 		<tr align="center" id="screenReaderStatus">
-			<td colspan="2" align="left"><lb:label key="student.accommodationToolTip.screenReader" /></td>
+			<td align="left" style="padding-top:5px;"><lb:label key="student.accommodationToolTip.screenReader" /></td>
 		</tr>
 		<tr align="center" id="calculatorStatus">
-			<td align="left" width="30"><lb:label key="student.accommodationToolTip.calculator" /></td>
+			<td align="left"><lb:label key="student.accommodationToolTip.calculator" /></td>
 		</tr>
 		<tr align="center" id="testPauseStatus">
-			<td align="left" width="30"><lb:label key="student.accommodationToolTip.testPause" /></td>
+			<td align="left"><lb:label key="student.accommodationToolTip.testPause" /></td>
 		</tr>
 		<tr align="center" id="untimedTestStatus">
-			<td align="left" width="30"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
+			<td align="left"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
 		</tr>
 		<tr align="center" id="highlighterStatus">
-			<td align="left" width="30"><lb:label key="student.accommodationToolTip.highlighter" /></td>
+			<td align="left"><lb:label key="student.accommodationToolTip.highlighter" /></td>
 		</tr>
 		<tr align="center" id="colorFontStatus">
-			<td align="left" width="30"><lb:label key="student.accommodationToolTip.colorNFont" /></td>
+			<td align="left"><lb:label key="student.accommodationToolTip.colorNFont" /></td>
 		</tr>
 	</tbody>
 </table>  
