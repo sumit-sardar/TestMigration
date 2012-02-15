@@ -2670,6 +2670,17 @@ function registerDelegate(tree){
 		        if(!validStatus)
 		        	break;
 			}
+			 
+			if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
+				var locator = document.getElementById("hasAutolocator");
+				if(locator.checked != null && locator.checked !=undefined && locator.checked){	
+					var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+					validStatus = validAccessCodeNameString(trim(lAccessCode));	
+					
+				}
+			}
+			
+			
 	    }
     	return validStatus;
     }
@@ -2699,6 +2710,18 @@ function registerDelegate(tree){
     	for(var i=0;i<subtestLength;i++){
 			accessCodes[i]= document.getElementById("aCodeB"+i).value;
 		}
+		
+		if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
+			var locator = document.getElementById("hasAutolocator");
+			if(locator.checked != null && locator.checked !=undefined && locator.checked){	
+				var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+				var arraylength = accessCodes.length + 1;
+				accessCodes[arraylength]=  lAccessCode;
+				
+			}
+		}
+		
+		
 		var sorted_arr = accessCodes.sort(); 
 		for (var i = 0; i < accessCodes.length - 1; i++) {
 			if (sorted_arr[i + 1] == sorted_arr[i]) {
@@ -2726,6 +2749,17 @@ function registerDelegate(tree){
 				break;
 			} 
 		}
+		
+		if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
+			var locator = document.getElementById("hasAutolocator");
+			if(locator.checked != null && locator.checked !=undefined && locator.checked){	
+				var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+				if(trim(lAccessCode) == "" ){
+					validStatus = false;
+			} 	
+				
+			}
+		}
 		return validStatus;
     }
     
@@ -2742,6 +2776,18 @@ function registerDelegate(tree){
 					validStatus = false;
 					break;
 				} 
+			}
+			
+			if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
+				var locator = document.getElementById("hasAutolocator");
+				if(locator.checked != null && locator.checked !=undefined && locator.checked){	
+					var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+					if(trim(lAccessCode).length<6 ){
+						validStatus = false;
+				} 	
+					
+				}
+			
 			}
     	}
     	
@@ -4287,3 +4333,5 @@ function validNumber(str){
 		}
 	
 	}
+	
+	
