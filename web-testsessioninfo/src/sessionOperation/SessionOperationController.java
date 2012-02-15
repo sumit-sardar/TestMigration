@@ -2740,6 +2740,9 @@ public class SessionOperationController extends PageFlowController {
 			for (int i=0; i < customerConfigurations.length; i++) {
 
 				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName() == null) cc.setCustomerConfigurationName("");
+				if (cc.getDefaultValue() == null) cc.setDefaultValue("");
+				
 				// For Bulk Accommodation
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
 						cc.getDefaultValue().equals("T")) {
