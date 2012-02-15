@@ -97,9 +97,11 @@ public class OutOfSchoolOperationController extends PageFlowController {
 			String studentArray = "";
 			String json = "";
 			ObjectOutput output = null;
+			Map<Integer, Map> accomodationMap = new HashMap<Integer, Map>();
+			
 			try {
 				ManageStudentData msData = findStudentByHierarchy();
-				List studentNodes = StudentSearchUtils.buildStudentList(msData);
+				List studentNodes = StudentSearchUtils.buildStudentList(msData,accomodationMap);
 				
 				Base base = new Base();
 				base.setPage("1");
@@ -109,6 +111,8 @@ public class OutOfSchoolOperationController extends PageFlowController {
 				Gson gson = new Gson();
 				base.setStudentProfileInformation(studentNodes);
 				base.setStudentIdArray(studentArray);
+				base.setAccomodationMap(accomodationMap);
+				
 				json = gson.toJson(base);
 				try{
 					resp.setContentType("application/json");

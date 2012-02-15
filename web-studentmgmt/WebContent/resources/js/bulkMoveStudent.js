@@ -129,7 +129,14 @@ function populateBulkMoveStudentGrid() {
 		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeName',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:75, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, title:false,
+		   							cellattr: function (rowId, tv, rawObject, cm, rdata) {
+		   									var returnStr = '';
+		   									if(rawObject.hasAccommodations == 'Yes'){
+		   										returnStr = 'style="white-space: normal;" onmouseover="showAccoToolTip('+rowId+',event);" onmouseout="hideAccoToolTipPopUp();"' ; 
+		   									} else { returnStr = 'style="white-space: normal;"' ;}  
+		   									return returnStr;
+		   							}},
 		   		{name:'userName',index:'userName',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:140, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeId',index:'orgNodeId', width:0, hidden: true, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
@@ -138,6 +145,7 @@ function populateBulkMoveStudentGrid() {
 		   		jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
 		   	 	allStudentInGrid = obj.studentProfileInformation;
+		   	 	accomodationMap = obj.accomodationMap;
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,

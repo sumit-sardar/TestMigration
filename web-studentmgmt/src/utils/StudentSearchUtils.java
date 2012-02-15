@@ -89,6 +89,26 @@ public class StudentSearchUtils
         return studentList;
     }
     
+    /**
+     * buildStudentList
+     * @param accomodationMap 
+     */    
+    public static List<StudentProfileInformation> buildStudentList(ManageStudentData msData,Map<Integer, Map> accomodationMap) 
+    {
+        ArrayList<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
+        if (msData != null) {
+            ManageStudent[] students = msData.getManageStudents();
+            for (int i=0 ; i<students.length ; i++) {
+                ManageStudent student = (ManageStudent)students[i];
+                if (student != null) {
+                    StudentProfileInformation studentDetail = new StudentProfileInformation(student,accomodationMap);
+                    studentList.add(studentDetail);
+                }
+            }
+        }
+        return studentList;
+    }
+    
     public static List buildStudentList(ManageStudentData msData) 
     {
         ArrayList studentList = new ArrayList();
