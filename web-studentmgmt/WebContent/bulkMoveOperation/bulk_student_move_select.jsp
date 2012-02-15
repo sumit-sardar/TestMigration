@@ -43,8 +43,7 @@
 <netui:form action="beginBulkMoveStudent">
 <input type="hidden" id="menuId" name="menuId" value="bulkMoveLink" />
 <input type="hidden" id="selectedBulkTreeOrgNodeId" />
-
-        <jsp:include page="/bulkMoveOperation/select_students_for_move.jsp" />
+		<%@include file="/bulkMoveOperation/select_students_for_move.jsp"%>
 
 </netui:form>
 

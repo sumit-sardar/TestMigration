@@ -4,7 +4,9 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
- 
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
+
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
@@ -28,9 +30,7 @@
 <netui:form action="beginAddBulkStudent">
 <input type="hidden" id="menuId" name="menuId" value="bulkAccomLink" />
 <input type="hidden" id="selectedBulkTreeOrgNodeId" />
-
-        <jsp:include page="/bulkOperation/assign_bulk_accommodation.jsp" />
-
+		<%@include file="/bulkOperation/assign_bulk_accommodation.jsp"%>
 </netui:form>
 
 <script type="text/javascript">

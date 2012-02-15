@@ -1,17 +1,15 @@
 <%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="studentApplicationResource" />
 <%
-    Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
-	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
-	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
+    Boolean isLasLinkCustomer1 = (Boolean) request.getAttribute("isLasLinkCustomer");
+	Boolean isStudentIdConfigurable1 = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
+	String []studentIdArrValue1 = (String[])request.getAttribute("studentIdArrValue");
 	
 	
 
 %>
 <div>
-<input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
-<input type="hidden" id="isStudentIdConfigurable" value = '<%=isStudentIdConfigurable %>' />
+<input type="hidden" id="isLasLinkCustomer"  value = '<%= isLasLinkCustomer1 %>' />
+<input type="hidden" id="isStudentIdConfigurable" value = '<%=isStudentIdConfigurable1 %>' />
 </div>
 
 <div id="viewStudentDetail"
@@ -74,15 +72,15 @@
 									    <tr class="transparent">
 									        <td width="110"  class="transparent alignRight">
 									        
-									         <%if(isStudentIdConfigurable) {%> 
-												 <%=studentIdArrValue[0] %>	:
+									         <%if(isStudentIdConfigurable1) {%> 
+												 <%=studentIdArrValue1[0] %>	:
 											 <%} else {%> 
 												<lb:label key="stu.info.studentID" suffix=":"/>		
 											 <%} %>
 									        <td class="transparent"><label style="width: 200px;" maxlength="32" id="studentNumberView" name="studentNumberView"></td>
 									    </tr>
 									    
-									    <%if(isLasLinkCustomer) { %>
+									    <%if(isLasLinkCustomer1) { %>
 									    <tr class="transparent">
 									    	<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.purposeTest" suffix=":"/></td>
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studenttestPurposeView" name="studenttestPurposeView"></td>
@@ -110,13 +108,13 @@
 			<div>
 				<h3><a href="#"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="view_Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<jsp:include page="/studentOperation/view_student_by_demographic.jsp" />				
+					<%@include file="/studentOperation/view_student_by_demographic.jsp"%>			
 				</div>
 			</div>
 			<div>
 				<h3><a href="#"><lb:label key="stu.label.specificAccoInfo" /></a></h3>
 				<div id="view_Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<jsp:include page="/studentOperation/view_student_by_accommodation.jsp" />
+					<%@include file="/studentOperation/view_student_by_accommodation.jsp"%>
 				</div>
 			</div>
 			

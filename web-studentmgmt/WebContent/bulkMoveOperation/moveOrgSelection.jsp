@@ -1,4 +1,3 @@
-<%@ taglib uri="label.tld" prefix="lb" %>
 <table cellspacing="0">
 	<tbody>
 		<tr>

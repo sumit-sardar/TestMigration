@@ -1,10 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="studentApplicationResource" />
 
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<netui-data:declareBundle bundlePath="webResources" name="web" />
 
 <%
     String studentIdLabelName = (String)request.getAttribute("studentIdLabelName");
@@ -118,7 +115,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-				<jsp:include page="/bulkOperation/bulkAccommodationSelection.jsp" />
+				<%@include file="/bulkOperation/bulkAccommodationSelection.jsp"%>
 			<br/>
 			</td>
 		</tr>

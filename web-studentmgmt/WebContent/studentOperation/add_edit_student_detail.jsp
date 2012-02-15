@@ -1,6 +1,5 @@
-<%@ page import="java.io.*, java.util.*,com.ctb.bean.studentManagement.CustomerConfiguration"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="studentApplicationResource" />
+<%@ page import="com.ctb.bean.studentManagement.CustomerConfiguration"%>
+<%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
@@ -220,13 +219,13 @@
 			<div>
 				<h3><a href="#"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />				
+					<%@include file="/studentOperation/add_edit_student_by_demographic.jsp" %>				
 				</div>
 			</div>
 			<div>
 				<h3><a href="#"><lb:label key="stu.label.specificAccoInfo" /></a></h3>
 				<div id="Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
+					<%@include file="/studentOperation/add_edit_student_by_accommodation.jsp" %>
 				</div>
 			</div>
 			

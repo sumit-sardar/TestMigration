@@ -1,9 +1,3 @@
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="studentApplicationResource" />
-<netui-data:declareBundle bundlePath="webResources" name="web" />
 <div>
 <input type="hidden" id="profileExternalId" name="profileExternalId"/>
 <input type="hidden" id="profileRoleOptions" name="profileRoleOptions"/>
