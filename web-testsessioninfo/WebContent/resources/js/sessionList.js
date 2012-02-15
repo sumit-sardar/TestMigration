@@ -1153,10 +1153,12 @@ function registerDelegate(tree){
 			tempX = event.pageX;
 			tempY = event.pageY;
 		}  
-		legendDiv = document.getElementById("accommodationToolTip");
+		legendDiv = document.getElementById("accommodationToolTip");		
 		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
 		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
 		legendDiv.style.display = "block";
+		$("td","#accommodationToolTip").css('padding-top','0px');
+		$("td:visible","#accommodationToolTip").eq(0).css('padding-top','5px');
 		htimer = setTimeout("hideAccoToolTipPopUp()", 50000);
 	}
 	

@@ -217,7 +217,7 @@
 </table>  
 </div>
 <div id="accommodationToolTip" style="display:none;" class="statusLegendDiv">
-<table border="0" class="statusLegendTable">
+<table border="0" class="statusLegendTable"  cellspacing="0">
 	<tbody>
 		<tr align="center" id="screenReaderStatus">
 			<td align="left" style="padding-top:5px;"><lb:label key="student.accommodationToolTip.screenReader" /></td>
