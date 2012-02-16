@@ -278,7 +278,7 @@
 	        var displayFlag = "none";
 	        var value = String(ii + 1);
 	        if ( ! isExists(selectedSubtests, allSubtests[ii])) {
-	            displayFlag = "block";
+	            displayFlag = "table-row";
 	        } else {
 	            value = "0";
 	        }
@@ -287,11 +287,15 @@
 	        destHtmlText += displaySourceCell(allSubtests[ii].subtestName);
 	    }
 	    
-	    $("#availableSubtestsTable").html(destHtmlText);
-	    
+	    $("#availableSubtestsTable").html(destHtmlText);  
+	    setTimeout("adjustHeightTables()",100);
 	}
 	
-	
+	function adjustHeightTables(){
+		var sourceTableHeight = $("table.dynamicHeader","#rightTableContainer").outerHeight() + $("table.dynamic","#rightTableContainer").outerHeight();
+		$("#rightTableContainer").height(sourceTableHeight);
+		$("#leftTableContainer").height(sourceTableHeight);
+	}
 	
 	function displaySourceRowStart(index, displayFlag) {
 	    var id = "src_row_" + String(index);
@@ -316,7 +320,7 @@
 	        var displayFlag = "none";
 	        var value = String(ii + 1);
 	        if (isExists(selectedSubtests, allSubtests[ii])) {
-	            displayFlag = "block";
+	            displayFlag = "table-row";
 	        } else {
 	            value = "0";
 	        }

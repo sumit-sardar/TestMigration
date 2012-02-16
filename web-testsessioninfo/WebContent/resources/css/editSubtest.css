@@ -34,13 +34,13 @@ table.columnLayout
     height: 204px; 
 }
 
-tr.columnLayout               
+tr.columnLayoutRow               
 { 
     background-color: #fff; 
     vertical-align: top; 
 }
 
-tr.columnLayout td            { 
+tr.columnLayoutRow td            { 
     color: #000; 
     cursor: default; 
     font-family: Arial, Verdana, Sans Serif;
@@ -68,7 +68,7 @@ tr.columnButtonLayout td            {
 }
 
 
-tr.columnLayout th      { 
+tr.columnLayoutRow th      { 
     background-color: #ffc; 
     border-color: #D4ECFF; 
     border-style: solid; 
@@ -90,25 +90,31 @@ table.dynamic
     width: 100%;
 }
 
+table.dynamicHeader            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+}
+
 tr.dynamic 
 { 
-    border-color: #D4ECFF; 
-    border-style: solid; 
-    border-width: 1px; 
-    height: 22px;
+   	background: url("images/ui-bg_inset-hard_100_fcfdfd_1x100.png") repeat-x scroll 50% bottom #FCFDFD;
 }
 
 tr.dynamic td            
 { 
-    background-color: #fff; 
-    color: #000; 
     vertical-align: middle; 
     font-family: Arial, Verdana, Sans Serif;
     font-size: 12px;
     font-style: normal;
-    height: 22px;
-    padding: 2px 5px 2px 5px; 
+    padding: 2px 5px;
+    line-height: 20px;
+    border: 1px solid #A6C9E2;
+    border-top:0px;
 }
+tr.dynamic td:first-child {
+	border: 1px solid #A6C9E2;
+} 
  
 
 tr.dynamicHeader 
@@ -131,47 +137,46 @@ tr.dynamicHeader th
     font-style: normal;
     text-align: left; 
     height: 23px;
-    padding: 2px 5px 2px 5px; 
+    padding: 2px 5px; 
 }
 
 tr.dynamicHilight        { 
-    background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png) ;
-    font-style: bold;
-    color: #1d5987; 
-    border-color: #79b7e7; 
-    border-style: solid; 
-    border-width: 1px; 
-    padding: 2px 5px 2px 5px; 
+    background: url("images/ui-bg_glass_75_d0e5f5_1x400.png") repeat-x scroll 50% 50% #D0E5F5;
 }
 
 tr.dynamicHilight td     { 
-    background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png) ;
-    color: #1d5987; 
-    vertical-align: middle; 
-    font-family: Arial, Verdana, Sans Serif;
-    font-size: 12px;
-    font-style: bold;
-    height: 22px;
-    padding: 2px 5px 2px 5px; 
+   vertical-align: middle; 
+   font-family: Arial, Verdana, Sans Serif;
+   font-size: 12px;
+   padding: 2px 5px; 
+   line-height: 20px;   
+   border: 1px solid #79B7E7;
+   border-top: 0px;
+}
+
+tr.dynamicHilight td:first-child {
+  border: 1px solid #79B7E7; 
 }
 
 tr.dynamicChosen         { 
     background-image: url(images/ui-bg_flat_55_fbec88_40x100.png) ;
     border-style: solid; 
     border-width: 1px; 
-    border-color: #FAD42E; 
-    padding: 2px 5px 2px 5px; 
-    color: #363636; 
+    border-color: #FAD42E;
 }
 
-tr.dynamicChosen td      { 
-    background-image: url(images/ui-bg_flat_55_fbec88_40x100.png);
-    color: #363636; 
+tr.dynamicChosen td      {
     vertical-align: middle; 
     font-family: Arial, Verdana, Sans Serif;
     font-size: 12px;
     font-style: normal;
-    height: 22px;
-    padding: 2px 5px 2px 5px; 
+    padding: 2px 5px ; 
+    line-height: 20px;
+    border: 1px solid #FAD42E;
+    border-top: 0px;
+}
+
+tr.dynamicChosen td:first-child {
+	border: 1px solid #FAD42E;
 }
  

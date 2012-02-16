@@ -35,11 +35,11 @@
 	<tbody>
 		<tr class="layout">
 			<td width="48%" valign="top" class="layout">
-			<table class="columnLayout">
+			<table class="columnLayout" id=leftTableContainer>
 				<tbody>
-					<tr class="columnLayout">
-						<td class="columnLayout">
-						<table class="dynamic">
+					<tr class="columnLayoutRow">
+						<td class="">
+						<table class="dynamicHeader">
 							<tbody>
 								<tr class="dynamicHeader">
 									<th height="25" class="subtestHeader">
@@ -96,11 +96,11 @@
 			</table>
 			</td>
 			<td width="48%" valign="top" class="layout">
-			<table class="columnLayout">
+			<table class="columnLayout" id="rightTableContainer">
 				<tbody>
-					<tr class="columnLayout">
-						<td class="columnLayout">
-						<table class="dynamic">
+					<tr class="columnLayoutRow">
+						<td class="">
+						<table class="dynamicHeader">
 							<tbody>
 								<tr class="dynamicHeader">
 									<th height="25" class="subtestHeader"><lb:label key="session.modifySubtest.header.selectedSubtest" /> </th>
