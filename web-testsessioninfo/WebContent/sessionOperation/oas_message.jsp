@@ -106,4 +106,7 @@
 <input type="hidden" id="mathLevelMsg" name = "mathLevelMsg" value=<lb:label key="session.mathLevel.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="subtestValidationFailedMsg" name = "subtestValidationFailedMsg" value=<lb:label key="session.subtestValidationFailed.message" prefix="'" suffix="'"/>/>
 
+<input type="hidden" id="tabeModifySubtestMsg" name = "tabeModifySubtestMsg" value=<lb:label key="session.modifySubtest.tabe.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tabeAdaptiveModifySubtestMsg" name = "tabeAdaptiveModifySubtestMsg" value=<lb:label key="session.modifySubtest.tabeadaptive.message" prefix="'" suffix="'"/>/>
+
 

@@ -15,6 +15,13 @@
 	var LANGUAGE_MECHANICS = "TABE Language Mechanics";
 	var SPELLING = "TABE Spelling";
 	
+	var TABE_ADAPTIVE_READING = "TABE Adaptive Reading";
+	var TABE_ADAPTIVE_MATH_COMPUTATION = "TABE Adaptive Mathematics Computation";
+	var TABE_ADAPTIVE_APPLIED_MATH = "TABE Adaptive Applied Mathematics";
+	var TABE_ADAPTIVE_LANGUAGE = "TABE Adaptive Language";
+	
+	
+	
 	
 	function getCopy(array) {
 	    var tmpArray = new Array();
@@ -28,7 +35,13 @@
 	    var isValidated = true;
 	    var tmpSelectedSubtests = new Array();
 	    prepareSelectedSubtests(tmpSelectedSubtests);
-	    isValidated = validateTABESubtest(tmpSelectedSubtests);
+	    
+	    if(isTabeProduct){
+	    	isValidated = validateTABESubtest(tmpSelectedSubtests);
+	    } else if(isTabeAdaptiveProduct ) {
+	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests);
+	    }
+	    
 	    if (isValidated) {
 	        subtestGridLoaded = false;
 	        selectedSubtests = tmpSelectedSubtests;
@@ -60,17 +73,65 @@
 	    return - 1;
 	}
 	
+	
+	function validationTABE_ADAPTIVE (subtests) { 
+		var isValid = true;
+		if (subtests == undefined || subtests == null || subtests.length == 0) {
+	        isValid = false;
+	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	    } else {
+	    	var currentMessage = "";
+	   		if ( ! mathSubtests_TABE_ADAPTIVE(subtests)) {
+	            currentMessage = $("#mathSubtestsMsg").val();
+	        }
+	    	if ( ! scoreCalculatable_TABE_ADAPTIVE(subtests)) {
+	            if (currentMessage == "")
+	                currentMessage = $("#scoreCalulatableMsg").val();  // just warning, not error
+	            else {
+	                currentMessage += "<br/>";
+	                currentMessage += $("#scoreCalulatableMsg").val();  // just warning, not error
+	                
+	            }
+	        }
+	        if (currentMessage != "") {
+	            setSubtestWarningMessage(currentMessage);
+	        } else {
+	            hideSubtestWarningMessage(currentMessage);
+	        }
+	    }
+	
+	 return isValid;
+	}
+	
+
+	
 	function validateTABESubtest(subtests) {
 	    var isValid = true;
+	    var validateLevels = false; 
+	    // subhendu
+	    if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
+	    	validateLevels = true;
+	    }
+	    
+	    
 	    if (subtests == undefined || subtests == null || subtests.length == 0) {
 	        isValid = false;
 	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
 	    } else if ( ! languageDependency(subtests)) {
 	        isValid = false;
 	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageDependencyMsg").val());
+	    } else if(validateLevels && ! languageLevel(subtests)){
+	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageLevelMsg").val());
+	    	isValid = false;
 	    } else if ( ! readingDependency(subtests)) {
 	        isValid = false;
 	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingDependencyMsg").val());
+	    } else if(validateLevels && ! readingLevel(subtests)){
+	    	isValid = false;
+	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingLevelMsg").val());
+	    } else if(validateLevels && ! mathLevel(subtests)){
+	    	isValid = false;
+	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#mathLevelMsg").val());
 	    }
 	    // test for level
 	    else {
@@ -99,8 +160,76 @@
 	    return isValid;
 	}
 	
+	 function mathLevel( subtests)    {
+        if (presented(MATH_COMPUTATION, subtests) && presented(APPLIED_MATH, subtests)) {
+            if (! samelevel(MATH_COMPUTATION, APPLIED_MATH, subtests)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+	function languageLevel( subtests)    {
+        if (presented(LANGUAGE, subtests) && presented(LANGUAGE_MECHANICS, subtests)) {
+            if (! samelevel(LANGUAGE, LANGUAGE_MECHANICS, subtests)) {
+                return false;
+            }
+        }
+        if (presented(LANGUAGE, subtests) && presented(SPELLING, subtests)) {
+            if (! samelevel(LANGUAGE, SPELLING, subtests)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+	function readingLevel( subtests)   {
+        if (presented(READING, subtests) && presented(VOCABULARY, subtests)) {
+            if (! samelevel(READING, VOCABULARY, subtests)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+    
+    function samelevel( subtestName1,  subtestName2,  subtests)
+    {
+        var level1 = getlevel(subtestName1, subtests);
+        var level2 = getlevel(subtestName2, subtests);
+        
+        if (level1 == null || level1 == undefined || level1 == "") level1 = "E";
+        if (level2 == null || level2 == undefined || level2 == "" ) level2 = "E";
+        
+        if (level1==level2)
+            return true;
+        
+        return false;
+    }
+    
+    function getlevel( subtestName,  subtests)
+    {
+        for (var i=0 ; i<subtests.length ; i++) {
+            var subtest = subtests[i];
+            if (subtestName == subtest.subtestName) 
+                return subtest.level;
+        }
+        return null;
+    }
+    
 	function scoreCalculatable(subtests) {
 	    if (presented(READING, subtests) && presented(LANGUAGE, subtests) && presented(MATH_COMPUTATION, subtests) && presented(APPLIED_MATH, subtests)) {
+	        return true;
+	    }
+	    return false;
+	}
+	
+	
+	function scoreCalculatable_TABE_ADAPTIVE(subtests) {
+	    if (presented(TABE_ADAPTIVE_READING, subtests) && presented(TABE_ADAPTIVE_LANGUAGE, subtests) && presented(TABE_ADAPTIVE_MATH_COMPUTATION, subtests) && presented(TABE_ADAPTIVE_APPLIED_MATH, subtests)) {
 	        return true;
 	    }
 	    return false;
@@ -138,6 +267,15 @@
 	    
 	    return isValid;
 	}
+	
+	function mathSubtests_TABE_ADAPTIVE(subtests) {
+	    var isValid = false;
+	    if (presented(TABE_ADAPTIVE_MATH_COMPUTATION, subtests) && presented(TABE_ADAPTIVE_APPLIED_MATH, subtests)) {
+	        isValid = true;
+	    }
+	    return isValid;
+	}
+
 	function presented(subtestName, subtests) {
 	    for (var i = 0; i < subtests.length; i ++ ) {
 	        var subtest = subtests[i];
@@ -147,11 +285,22 @@
 	    return false;
 	}
 	function prepareSelectedSubtests(tmpSelectedSubtests) {
+	     var setLevels = false;
+	     if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
+	    	setLevels = true;
+	    }
 	    var selectetedTestRowCount = $("#selectedSubtestsTable input").length;
 	    for (var ii = 1; ii <= selectetedTestRowCount; ii ++ ) {
 	        var val = $("#index_" + ii).val();
 	        if (val > 0) {
 	            tmpSelectedSubtests[val - 1] = allSubtestMap.get(ii - 1);
+	            if(setLevels) {
+	            	//subhendu
+	            	var level = $("#level_"+ii).val();
+	            	tmpSelectedSubtests[val - 1].level = level;
+	            } else {
+	            	
+	            }
 	        }
 	        
 	    }
@@ -174,8 +323,6 @@
 	        if (index != null && index != undefined) {
 	            selectedSubtestsMap.put(order ++, index);
 	        }
-	        
-	        
 	    }
 	    
 	}
@@ -187,16 +334,10 @@
 	        if (String(allSubtestMap.get(keys[i]).id) == String(val.id)) {
 	            index = keys[i];
 	            break;
-	            
 	        }
-	        
 	    }
 	    return index;
 	}
-	
-	
-	
-	
 	
 	function openModifyTestPopup() {
 	    hideSubtestValidationMessage();
@@ -251,6 +392,16 @@
 	        $("#moveDown").removeClass("ui-widget-header");
 	    }
 	    
+	    if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { //subhendu
+	         $("#modifyTestLevel").show();
+	   } else {
+	          $("#modifyTestLevel").hide();
+	   }
+	   if(isTabeProduct){ // subhendu
+	   		$("#modifySubtestMsg").html($("#tabeModifySubtestMsg").val())
+	   } else {
+	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
+	   }
 	    displaySourceTable();
 	    displayDestinationTable();
 	    
@@ -322,17 +473,63 @@
 	        var found = false;
 	        var displayFlag = "none";
 	        var value = String(ii + 1);
+	        var level ="";
+	        if(allSubtests[ii].level!=undefined && allSubtests[ii].level!=null){
+	        	level = allSubtests[ii].level;
+	        }
 	        if (isExists(selectedSubtests, allSubtests[ii])) {
 	            displayFlag = "table-row";
+	            level = getItemLevel(selectedSubtests, allSubtests[ii]);
 	        } else {
 	            value = "0";
 	        }
+	        
 	        var index = ii + 1;
 	        destHtmlText += displayDestinationRowStart(index, displayFlag);
 	        destHtmlText += displayDestinationNameCell(allSubtests[ii].subtestName, index, value);
+	        if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { //subhendu
+	        	 destHtmlText += displayDestinationLevelDropdown(index, level, ProductData.levelOptions);
+	         $("#modifyTestLevel").show();
+	        } else {
+	          $("#modifyTestLevel").hide();
+	        }
+	        
 	    }
 	    $("#selectedSubtestsTable").html(destHtmlText);
 	}
+	
+	function getItemLevel( srcList, item)  {
+        var level = "";
+        for (var i=0 ; i<srcList.length ; i++) {        
+            if (String(srcList[i].id)== String(item.id)) {
+                level = srcList[i].level;
+                if(level== undefined){
+                	level = "";
+                }
+            }
+        }
+        return level;
+    }
+	
+	function displayDestinationLevelDropdown( index, level , levelOptions)   {
+        var strIndex = String(index);
+        var strLevel = "level_" + strIndex;
+		var retVal = "";
+        retVal+= '<td class="dynamic" width="40" align="center" >';
+        retVal+='<select name="' + strLevel + '" id= "' + strLevel + '" size="1" style="font-family: Arial, Verdana, Sans Serif; font-size: 11px;">';
+        
+        for (var i=0 ; i<levelOptions.length ; i++) {
+            var option = levelOptions[i];         
+            if (option==level)           
+                retVal+='<option value="' + option + '" selected>' + option + '</option>';
+            else
+                 retVal+='<option value="' + option + '" >' + option + '</option>';
+        }
+        retVal+='"</select>';
+        retVal+='</td>';
+		 return  retVal;
+    }
+	
 	
 	function isExists(srcList, val) {
 	    var found = false;

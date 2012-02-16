@@ -25,6 +25,8 @@ public class TestSessionUtils
     public static final String GENERIC_PRODUCT_TYPE = "genericProductType";
     public static final String TABE_BATTERY_SURVEY_PRODUCT_TYPE = "tabeBatterySurveyProductType";
     public static final String TABE_LOCATOR_PRODUCT_TYPE = "tabeLocatorProductType";
+    public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
+    public static final String LASLINKS_PRODUCT_TYPE = "lasLinksProductType";
 	
 
     /**
@@ -1063,9 +1065,12 @@ public class TestSessionUtils
     {
         if (productType.equals("TB"))
             return TABE_BATTERY_SURVEY_PRODUCT_TYPE;
-        else
-        if (productType.equals("TL"))
+        else if (productType.equals("TL"))
             return TABE_LOCATOR_PRODUCT_TYPE;
+        else if (productType.equals("TA"))
+        	return TABE_ADAPTIVE_PRODUCT_TYPE;
+        /*else if (productType.equals("LL")) // commented to remove laslink support
+        	return LASLINKS_PRODUCT_TYPE;*/
         else
             return GENERIC_PRODUCT_TYPE;
     }
@@ -1075,9 +1080,29 @@ public class TestSessionUtils
      */
     public static Boolean isTabeProduct(String productType)
     {
-        return new Boolean(! productType.equals(GENERIC_PRODUCT_TYPE));
+        return new Boolean(	(! productType.equals(GENERIC_PRODUCT_TYPE)) && 
+        					(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
+							(! productType.equals(LASLINKS_PRODUCT_TYPE)));
     }
-
+    
+    /**
+     * isTabeAdaptiveProduct
+     */
+    public static Boolean isTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+    
+    /**
+     * isTabeOrTabeAdaptiveProduct
+     */
+    public static Boolean isTabeOrTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(	productType.equals(TABE_BATTERY_SURVEY_PRODUCT_TYPE) ||
+        					productType.equals(TABE_LOCATOR_PRODUCT_TYPE) ||
+        					productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+    
     /**
      * isTabeBatterySurveyProduct
      */
@@ -1094,6 +1119,12 @@ public class TestSessionUtils
         return new Boolean(productType.equals(TABE_LOCATOR_PRODUCT_TYPE));
     }
 
-
+    /**
+     * isLasLinksProduct
+     */
+    public static Boolean isLasLinksProduct(String productType)
+    {
+        return new Boolean(productType.equals(LASLINKS_PRODUCT_TYPE));
+    }
 
 }

@@ -486,6 +486,7 @@ public class SessionOperationController extends PageFlowController {
             		//vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
+                 	vo.populateLevelOptions();
             	 }
             	 isPopulatedSuccessfully = true;
             }
@@ -1130,7 +1131,7 @@ public class SessionOperationController extends PageFlowController {
     	        if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
     	        {
 
-    	        	  if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue())
+    	        	  if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue())
     	            {
 
     	        		  if ((autoLocator != null) && autoLocator.equals("true"))
@@ -1175,7 +1176,7 @@ public class SessionOperationController extends PageFlowController {
     	        
     	            te.setItemSetId(subVO.getId());
     	            
-    	            if (TestSessionUtils.isTabeProduct(productType).booleanValue())
+    	            if (TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue())
     	            {                
     	                String level = subVO.getLevel();
     	                te.setItemSetForm(level);
@@ -1292,6 +1293,7 @@ public class SessionOperationController extends PageFlowController {
 		try {
 			
 			boolean isStudentListUpdated = true;
+			 String productType				= RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.PRODUCT_TYPE, true, "");
 			if(!isAddOperation){
 				String isStudentUpdated = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
 				if(isStudentUpdated.equalsIgnoreCase("false"))
@@ -1349,6 +1351,69 @@ public class SessionOperationController extends PageFlowController {
 	    	scheduledSession.setStudents(schSession.getStudents());
 		}
 			
+	  if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0) {
+		  SessionStudent [] sessionStudents = scheduledSession.getStudents();
+		  TestElement [] newTEs = scheduledSession.getScheduledUnits();
+		  boolean sessionHasLocator = false;
+		  if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+			  String autoLocator =  RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.HAS_AUTOLOCATOR, true, "false");;
+              if ((autoLocator != null) && autoLocator.equals("true")) {            
+                  sessionHasLocator = true;
+              }
+	      }
+		  if (TestSessionUtils.isTabeProduct(productType).booleanValue() ||	TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+			  
+			  SubtestVO locSubtest = null ;
+			  
+			  for(int i=0; i < sessionStudents.length; i++){
+				  SessionStudent sessionStudent = sessionStudents[i];
+			 
+
+                  // replicate student's manifest if this student has no individual manifest
+                  StudentManifest [] studentManifests = sessionStudent.getStudentManifests();
+                  if ((studentManifests == null) || (studentManifests.length == 0))
+                  {
+                      
+                      List studentSubtestList = TestSessionUtils.getDefaultSubtests(newTEs);
+                      
+                      studentManifests = new StudentManifest[studentSubtestList.size()];
+                      
+                      for (int j=0; j < studentSubtestList.size(); j++)
+                      {
+                          
+                          SubtestVO subtestVO = (SubtestVO)studentSubtestList.get(j);
+                          
+                          studentManifests[j] = new StudentManifest();
+                          
+                          studentManifests[j].setItemSetId(subtestVO.getId());
+                          studentManifests[j].setItemSetName(subtestVO.getSubtestName());                            
+                          studentManifests[j].setItemSetForm(subtestVO.getLevel());
+                          studentManifests[j].setItemSetOrder(new Integer(j + 1));                            
+                      }   
+                      
+                      // set recommended level for this student if there is no locator for this session
+                      if (! sessionHasLocator && TestSessionUtils.isTabeProduct(productType).booleanValue())
+                      {
+                          Integer studentId = sessionStudent.getStudentId();
+                          Integer itemSetId = scheduledSession.getTestSession().getItemSetId() /*testSession.getItemSetId()*/;
+                         // SubtestVO locSubtest = this.locatorSubtest;
+                          if (locSubtest == null) {
+                              locSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetId); 
+                          }
+                          if (locSubtest != null) {
+                          	Integer locatorItemSetId = locSubtest.getId();
+                          	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
+                          }
+                      }
+                                   
+                      sessionStudent.setStudentManifests(studentManifests);
+                  }  
+
+	           }
+		  }
+		  
+	  }
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1516,7 +1581,7 @@ public class SessionOperationController extends PageFlowController {
 	         
 	         testSession.setItemSetId(itemSetId);
 	         
-	         if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
+	         if (productType!=null && (TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()))
 	         {
 	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
 	         }

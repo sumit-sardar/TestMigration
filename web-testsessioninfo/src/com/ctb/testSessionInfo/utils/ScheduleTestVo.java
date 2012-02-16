@@ -36,6 +36,8 @@ public class ScheduleTestVo implements Serializable{
 	private String userTimeZone = "";
 	private List<String> accessCodeList = new ArrayList<String>();
 	private boolean noTestExists = false;
+	private List<String> levelOptions = new ArrayList<String>();// level for subtest
+	
 	
 	
 	public List<ObjectIdName> getLevelDropList(String[] levels) {
@@ -246,6 +248,7 @@ public class ScheduleTestVo implements Serializable{
 				
 				prod.setTabeProduct(TestSessionUtils.isTabeProduct(prod.getProductType()));
 				prod.setTabeLocatorProduct(TestSessionUtils.isTabeLocatorProduct(prod.getProductType()));
+				prod.setTabeAdaptiveProduct(TestSessionUtils.isTabeAdaptiveProduct(prod.getProductType()));
 				
 				
 				if (prod.getLevelDropDownList().size() > 0 ) {
@@ -454,6 +457,24 @@ public class ScheduleTestVo implements Serializable{
         }
 		
 	}
+	public void populateLevelOptions() {
+		levelOptions = new ArrayList<String>();
+		levelOptions.add("E");
+		levelOptions.add("M");
+		levelOptions.add("D");
+		levelOptions.add("A");
+       
+		
+	}
+
+	public List<String> getLevelOptions() {
+		return levelOptions;
+	}
+
+
+	public void setLevelOptions(List<String> levelOptions) {
+		this.levelOptions = levelOptions;
+	}
 	
 	
 }
@@ -484,6 +505,8 @@ class ProductBean implements Serializable{
 	private boolean isTabeProduct = false;
 	
 	private boolean isTabeLocatorProduct = false;
+	
+	private boolean isTabeAdaptiveProduct = false;
 	
 	private Boolean showStudentFeedback = false;
 	
@@ -651,6 +674,16 @@ class ProductBean implements Serializable{
 	 */
 	public List<TestVO> getTestSessionList() {
 		return testSessionList;
+	}
+
+
+	public boolean isTabeAdaptiveProduct() {
+		return isTabeAdaptiveProduct;
+	}
+
+
+	public void setTabeAdaptiveProduct(boolean isTabeAdaptiveProduct) {
+		this.isTabeAdaptiveProduct = isTabeAdaptiveProduct;
 	}
 
 

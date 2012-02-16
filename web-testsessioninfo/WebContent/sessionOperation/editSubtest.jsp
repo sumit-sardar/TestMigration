@@ -26,8 +26,8 @@
 		</div>
 <div class="roundedMessage ui-corner-all">
 	<div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
-		<p style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 5pt; padding: 5">
-		<lb:label key="session.modifySubtest.message" />
+		<p id="modifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 5pt; padding: 5">
+		<lb:label key="session.modifySubtest.tabe.message" />
 		</p>
 	</div>
 
@@ -104,6 +104,7 @@
 							<tbody>
 								<tr class="dynamicHeader">
 									<th height="25" class="subtestHeader"><lb:label key="session.modifySubtest.header.selectedSubtest" /> </th>
+									<th height="25" id = "modifyTestLevel" class="subtestHeader" style="display: none;"><lb:label key="session.modifySubtest.header.selectedSubtestlevel" /> </th>
 								</tr>
 							</tbody>
 						</table>

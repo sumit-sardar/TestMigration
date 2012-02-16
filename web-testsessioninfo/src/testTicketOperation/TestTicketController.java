@@ -317,6 +317,7 @@ public class TestTicketController extends PageFlowController
             
             TestProduct testproduct = this.testSessionStatus.getProductForTestAdmin(this.userName, sessionId);
             Boolean isTabeProduct = TestSessionUtils.isTabeProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
+            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
             if (isTabeProduct.booleanValue()) {
                 test.setLevel(null);
                 String duration = getTestSessionDuration(testAdmin);
@@ -347,7 +348,7 @@ public class TestTicketController extends PageFlowController
                                 server,
                                 new Integer(port),
                                 this.getRequest().getScheme(),
-                                isTabeProduct,
+                                isTabeProduct | isTabeAdaptiveProduct,
                                 testproduct,
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName});
@@ -406,6 +407,7 @@ public class TestTicketController extends PageFlowController
             
             TestProduct testproduct = this.testSessionStatus.getProductForTestAdmin(this.userName, sessionId);
             Boolean isTabeProduct = TestSessionUtils.isTabeProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
+            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
             if (isTabeProduct.booleanValue()) {
                 test.setLevel(null);
                 String duration = getTestSessionDuration(testAdmin);
@@ -436,7 +438,7 @@ public class TestTicketController extends PageFlowController
                                 server,
                                 new Integer(port),
                                 this.getRequest().getScheme(),
-                                isTabeProduct,
+                                isTabeProduct | isTabeAdaptiveProduct,
                                 testproduct,
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName});

@@ -1326,7 +1326,7 @@ function registerDelegate(tree){
 				var width = jQuery("#scheduleSession").width();
 		    	width = width - 85; // Fudge factor to prevent horizontal scrollbars
 		    
-				if(isTabeProduct) {
+				if(isTabeProduct || isTabeAdaptiveProduct) {
 					
 					$("#list6").jqGrid("hideCol","itemSetForm"); 
 				} else {
@@ -1522,9 +1522,10 @@ function registerDelegate(tree){
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
-					if(!(optionList[i].isTabeProduct)) {
+					if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 						isTabeProduct = false;
 						isTabeLocatorProduct=false;
+						isTabeAdaptiveProduct = false;
 						if(!(optionList[i].hideLevelDropDown)) {
 							if(optionList[i].showLevelOrGrade=='level') {
 								document.getElementById("levelDiv").style.display ="inline";
@@ -1556,7 +1557,15 @@ function registerDelegate(tree){
 					    } else {
 					    	isTabeLocatorProduct = false;
 					    }
-						isTabeProduct = true;
+
+						if( optionList[i].isTabeAdaptiveProduct) {
+							isTabeAdaptiveProduct = true;
+							isTabeProduct = false;
+						} else {
+							isTabeAdaptiveProduct = false;
+							isTabeProduct = true;
+						}
+						
 						document.getElementById("gradeDiv").style.display ="none";
 						document.getElementById("levelDiv").style.display ="none";
 						document.getElementById("level").style.visibility ="hidden";
@@ -1705,9 +1714,10 @@ function registerDelegate(tree){
 			if(selectProductId==optionList[i].productId) { 	     
 				$("#productType").val(optionList[i].productType);
 				$("#showStudentFeedback").val(optionList[i].showStudentFeedback); 	     
-				if(!(optionList[i].isTabeProduct)) {
+				if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 					isTabeProduct = false;
 					isTabeLocatorProduct=false;
+					isTabeAdaptiveProduct = false;
 					if(!(optionList[i].hideLevelDropDown)) {
 						if(optionList[i].showLevelOrGrade=="level") {
 							document.getElementById("levelDiv").style.display ="inline";
@@ -1735,11 +1745,20 @@ function registerDelegate(tree){
 					}
 						
 				} else {
-					isTabeProduct = true;
+					
 					if(optionList[i].isTabeLocatorProduct){ 
 					   isTabeLocatorProduct = true;
 					 } else {
 					    isTabeLocatorProduct = false;
+					 }
+
+					 if( optionList[i].isTabeAdaptiveProduct) {
+						isTabeProduct = false;
+						isTabeAdaptiveProduct = true;
+					 } else {
+						isTabeProduct = true;
+						isTabeAdaptiveProduct = false;
+					 
 					 }
 					document.getElementById("gradeDiv").style.display ="none";
 					document.getElementById("levelDiv").style.display ="none";
@@ -1881,12 +1900,22 @@ function registerDelegate(tree){
  		UIBlock();
  		var levelOrGradeTitle = "None";
  		var istabe = false;
+		var istabeadaptive = false;
+
  		if(isTabeProduct == undefined || isTabeProduct =='undefined') {
  			istabe = false;
  		} else {
  			istabe = isTabeProduct;
  		}
- 		if (!istabe) {
+
+		if(isTabeAdaptiveProduct == undefined || isTabeAdaptiveProduct =='undefined') {
+ 			istabeadaptive = false;
+ 		} else {
+ 			istabeadaptive = isTabeAdaptiveProduct;
+ 		}
+
+
+ 		if (!istabe && !istabeadaptive) {
 	 		if(showLevelOrGrade== undefined || showLevelOrGrade=='undefined'){
 	 			levelOrGradeTitle = 'None';
 	 		} else if (showLevelOrGrade=='level') {
@@ -2019,7 +2048,7 @@ function registerDelegate(tree){
 	 var colPos = 1;
 	 var myGrid = $('#testList'); 
 	 var columnName = myGrid.getGridParam("colModel")[colPos].name;
-	 if(istabe || columnName=="None") {
+	 if(istabe || istabeadaptive || columnName=="None") {
 	 	myGrid.jqGrid('hideCol', myGrid.getGridParam("colModel")[colPos].name);  
 	 }
 	 		
@@ -2131,7 +2160,7 @@ function registerDelegate(tree){
 			
 		}
 		
-		if(allSubtests.length > 1 && isTabeProduct){
+		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct )){
 		   document.getElementById("modifyTestDiv").style.display = "";
 		} else {
 		 	document.getElementById("modifyTestDiv").style.display = "none";

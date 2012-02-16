@@ -25,6 +25,8 @@ public class TestSessionUtils
     public static final String GENERIC_PRODUCT_TYPE = "genericProductType";
     public static final String TABE_BATTERY_SURVEY_PRODUCT_TYPE = "tabeBatterySurveyProductType";
     public static final String TABE_LOCATOR_PRODUCT_TYPE = "tabeLocatorProductType";
+    public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
+    public static final String LASLINKS_PRODUCT_TYPE = "lasLinksProductType";
 	
 
     /**
@@ -116,9 +118,9 @@ public class TestSessionUtils
     /**
      * getStudentSubtests
      */
-    public static List getStudentSubtests(ScheduleTest scheduleTest, String userName, Integer studentId, Integer testAdminId)
+    public static List<SubtestVO> getStudentSubtests(ScheduleTest scheduleTest, String userName, Integer studentId, Integer testAdminId)
     {
-        List subtestList = new ArrayList();
+        List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
 
         StudentManifestData smd = getManifestForRoster(scheduleTest, userName, studentId, testAdminId);
 
@@ -143,9 +145,9 @@ public class TestSessionUtils
     /**
      * getAllSubtestsForTest
      */
-    public static List getAllSubtestsForTest(ScheduleTest scheduleTest, String userName, Integer itemSetId)
+    public static List<SubtestVO> getAllSubtestsForTest(ScheduleTest scheduleTest, String userName, Integer itemSetId)
     {
-        List subtestList = new ArrayList();
+        List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
         try {
             TestElementData suTed = scheduleTest.getSchedulableUnitsForTest(userName, itemSetId, new Boolean(true), null, null, null);
             TestElement [] testElements = suTed.getTestElements();
@@ -165,9 +167,9 @@ public class TestSessionUtils
     /**
      * getAllSubtestsForTestAdmin
      */
-    public static List getAllSubtestsForTestAdmin(ScheduleTest scheduleTest, String userName, Integer testAdminId)
+    public static List<SubtestVO> getAllSubtestsForTestAdmin(ScheduleTest scheduleTest, String userName, Integer testAdminId)
     {
-        List subtestList = new ArrayList();
+        List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
 
         ScheduledSession scheduledSession = getTestSessionDataWithoutRoster(scheduleTest, userName, testAdminId);
         TestElement[] testElements = scheduledSession.getScheduledUnits();
@@ -185,9 +187,9 @@ public class TestSessionUtils
     /**
      * retrieveSubtests
      */
-    public static List retrieveSubtests(ScheduledSession scheduledSession)
+    public static List<SubtestVO> retrieveSubtests(ScheduledSession scheduledSession)
     {
-        List subtestList = new ArrayList();
+        List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
         TestElement[] testElements = scheduledSession.getScheduledUnits();
         for (int i=0; i<testElements.length; i++)
         {
@@ -201,9 +203,9 @@ public class TestSessionUtils
     /**
      * setupSessionSubtests
      */
-    public static List setupSessionSubtests(List sessionSubtests, List selectedSubtests)
+    public static List<SubtestVO> setupSessionSubtests(List<SubtestVO> sessionSubtests, List<SubtestVO> selectedSubtests)
     {
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
 
         // copy back non-default locator subtest from session subtest list into selected subtest list
         // the order of locator subtest will be set at the top of the list
@@ -240,9 +242,9 @@ public class TestSessionUtils
     /**
      * getAvailableSubtests
      */
-    public static List getAvailableSubtests(List subtests, List selectedSubtests)
+    public static List<SubtestVO> getAvailableSubtests(List<SubtestVO> subtests, List<SubtestVO> selectedSubtests)
     {
-        List availableSubtests = new ArrayList();
+        List<SubtestVO> availableSubtests = new ArrayList<SubtestVO>();
         for (int i=0 ; i<subtests.size() ; i++) {
             SubtestVO s1  = (SubtestVO)subtests.get(i);
             boolean found = false;
@@ -315,7 +317,7 @@ public class TestSessionUtils
      * getLocatorSessionInfo
      */
      public static String getLocatorSessionInfo(ScheduleTest scheduleTest, String userName, Integer studentId,
-                                                Integer itemSetId, Integer locatorItemSetId, List subtests)
+                                                Integer itemSetId, Integer locatorItemSetId, List<SubtestVO> subtests)
     {
         String locatorSessionInfo = "";
         SubtestVO subtest = null;
@@ -327,7 +329,7 @@ public class TestSessionUtils
                 return locatorSessionInfo;
             }
 
-            HashMap trlHash = new HashMap();
+            HashMap<Integer,Integer> trlHash = new HashMap<Integer,Integer>();
             for (int i=0 ; i<subtests.size() ; i++) {
                 subtest = (SubtestVO)subtests.get(i);
                 for (int j=0 ; j<trls.length ; j++) {
@@ -355,7 +357,7 @@ public class TestSessionUtils
      * isRecommendedlevels
      * this method implemented differently than Rapid Registration
      */
-    public static boolean isRecommendedlevels(TABERecommendedLevel[] trls, List subtests)
+    public static boolean isRecommendedlevels(TABERecommendedLevel[] trls, List<SubtestVO> subtests)
     {
         if (trls.length == 0) {
             return false;
@@ -382,7 +384,7 @@ public class TestSessionUtils
      * checkRecommendedlevels
      * this method implemented differently than Rapid Registration
      */
-    public static boolean checkRecommendedlevels(TABERecommendedLevel[] trls, List subtests)
+    public static boolean checkRecommendedlevels(TABERecommendedLevel[] trls, List<SubtestVO> subtests)
     {
         if (trls.length == 0) {
             return false;
@@ -416,7 +418,7 @@ public class TestSessionUtils
     /**
      * setDefaultLevels
      */
-     public static void setDefaultLevels(List defaultSubtests, List subtests)
+     public static void setDefaultLevels(List<SubtestVO> defaultSubtests, List<SubtestVO> subtests)
      {
         for (int i=0 ; i<defaultSubtests.size() ; i++) {
             SubtestVO defSubtest = (SubtestVO)defaultSubtests.get(i);
@@ -462,7 +464,7 @@ public class TestSessionUtils
      * setRecommendedLevelForStudent
      */
      public static boolean setRecommendedLevelForStudent(ScheduleTest scheduleTest, String userName, Integer studentId,
-                                                Integer itemSetId, Integer locatorItemSetId, List subtests)
+                                                Integer itemSetId, Integer locatorItemSetId, List<SubtestVO> subtests)
     {
         boolean hasRecommendedLevels = false;
         SubtestVO subtest = null;
@@ -502,7 +504,7 @@ public class TestSessionUtils
      * setRecommendedLevelForSession
      */
      public static void setRecommendedLevelForSession(ScheduleTest scheduleTest, String userName, Integer studentId,
-                                                Integer itemSetId, Integer locatorItemSetId, List subtests)
+                                                Integer itemSetId, Integer locatorItemSetId, List<SubtestVO> subtests)
     {
         SubtestVO subtest = null;
         try {
@@ -530,9 +532,9 @@ public class TestSessionUtils
     /**
      * getLevelOptions
      */
-    public static List getLevelOptions(String[] forms)
+    public static List<String> getLevelOptions(String[] forms)
     {
-        List options = new ArrayList();
+        List<String> options = new ArrayList<String>();
         for (int i=0 ; i<forms.length ; i++) {
             options.add(forms[i]);
         }
@@ -542,9 +544,9 @@ public class TestSessionUtils
     /**
      * getLevelOptions
      */
-    public static List getLevelOptions()
+    public static List<String> getLevelOptions()
     {
-        List options = new ArrayList();
+        List<String> options = new ArrayList<String>();
         options.add("E");
         options.add("M");
         options.add("D");
@@ -555,7 +557,7 @@ public class TestSessionUtils
     /**
      * resetSubtestOrder
      */
-    public static void resetSubtestOrder(List srcList)
+    public static void resetSubtestOrder(List<SubtestVO> srcList)
     {
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO subtest = (SubtestVO)srcList.get(i);
@@ -566,9 +568,9 @@ public class TestSessionUtils
     /**
      * getDefaultSubtests
      */
-    public static List getDefaultSubtests(TestElement[] testElements)
+    public static List<SubtestVO> getDefaultSubtests(TestElement[] testElements)
     {
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0; i<testElements.length; i++)
         {
             TestElement te = testElements[i];
@@ -587,12 +589,12 @@ public class TestSessionUtils
     /**
      * getDefaultSubtests
      */
-    public static List getDefaultSubtests(List srcList)
+    public static List<SubtestVO> getDefaultSubtests(List<SubtestVO> srcList)
     {
         if (srcList == null)
             return srcList;
 
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO subtest = (SubtestVO)srcList.get(i);
             if (subtest.getSessionDefault().equals("T")) {
@@ -609,12 +611,12 @@ public class TestSessionUtils
     /**
      * getDefaultSubtestsWithoutLocator
      */
-    public static List getDefaultSubtestsWithoutLocator(List srcList)
+    public static List<SubtestVO> getDefaultSubtestsWithoutLocator(List<SubtestVO> srcList)
     {
         if (srcList == null)
             return srcList;
 
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO subtest = (SubtestVO)srcList.get(i);
             if (subtest.getSessionDefault().equals("T") && (! isLocatorSubtest(subtest))) {
@@ -631,9 +633,9 @@ public class TestSessionUtils
     /**
      * getNonLocatorSubtests
      */
-    public static List getNonLocatorSubtests(List subtests)
+    public static List<SubtestVO> getNonLocatorSubtests(List<SubtestVO> subtests)
     {
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<subtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)subtests.get(i);
             if (! isLocatorSubtest(subtest)) {
@@ -677,7 +679,7 @@ public class TestSessionUtils
     /**
      * getLocatorSubtest
      */
-    public static SubtestVO getLocatorSubtest(List subtests)
+    public static SubtestVO getLocatorSubtest(List<SubtestVO> subtests)
     {
         SubtestVO locatorSubtest = null;
         if ((subtests != null) && (subtests.size() > 0)) {
@@ -696,7 +698,7 @@ public class TestSessionUtils
     /**
      * locatorSubtestPresent
      */
-    public static boolean locatorSubtestPresent(List subtests)
+    public static boolean locatorSubtestPresent(List<SubtestVO> subtests)
     {
         boolean present = false;
         if ((subtests != null) && (subtests.size() > 0)) {
@@ -713,7 +715,7 @@ public class TestSessionUtils
     /**
      * isLocatorTest
      */
-    public static boolean isLocatorTest(List subtests)
+    public static boolean isLocatorTest(List<SubtestVO> subtests)
     {
         boolean locatorTest = false;
         if ((subtests != null) && (subtests.size() == 1)) {
@@ -736,7 +738,7 @@ public class TestSessionUtils
     /**
      * sessionHasDefaultLocatorSubtest
      */
-    public static boolean sessionHasDefaultLocatorSubtest(List subtests)
+    public static boolean sessionHasDefaultLocatorSubtest(List<SubtestVO> subtests)
     {
         if (subtests != null) {
             for (int i=0 ; i<subtests.size() ; i++) {
@@ -755,7 +757,7 @@ public class TestSessionUtils
     /**
      * extractLocatorSubtest
      */
-    public static boolean extractLocatorSubtest(List subtests)
+    public static boolean extractLocatorSubtest(List<SubtestVO> subtests)
     {
         if (subtests != null) {
             for (int i=0 ; i<subtests.size() ; i++) {
@@ -776,7 +778,7 @@ public class TestSessionUtils
     /**
      * restoreLocatorSubtest
      */
-    public static void restoreLocatorSubtest(List subtests, SubtestVO locatorSubtest)
+    public static void restoreLocatorSubtest(List<SubtestVO> subtests, SubtestVO locatorSubtest)
     {
         if (locatorSubtest != null) {
             locatorSubtest.setSessionDefault("T");
@@ -804,7 +806,7 @@ public class TestSessionUtils
     /**
      * getSubtestById
      */
-    public static SubtestVO getSubtestById(List subtests, Integer subtestId)
+    public static SubtestVO getSubtestById(List<SubtestVO> subtests, Integer subtestId)
     {
         for (int i=0 ; i<subtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)subtests.get(i);
@@ -819,7 +821,7 @@ public class TestSessionUtils
     /**
      * isSubtestPresent
      */
-    public static boolean isSubtestPresent(List subtests, SubtestVO srcSubtest)
+    public static boolean isSubtestPresent(List<SubtestVO> subtests, SubtestVO srcSubtest)
     {
         for (int i=0 ; i<subtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)subtests.get(i);
@@ -856,9 +858,9 @@ public class TestSessionUtils
     /**
      * retrieveSelectedSubtestsFromRequest
      */
-    public static List retrieveSelectedSubtestsFromRequest(HttpServletRequest request, List allSubtests)
+    public static List<SubtestVO> retrieveSelectedSubtestsFromRequest(HttpServletRequest request, List<SubtestVO> allSubtests)
     {
-        List selectedSubtests = new ArrayList();
+        List<SubtestVO> selectedSubtests = new ArrayList<SubtestVO>();
         int index = 1;
 
         for (int i=0 ; i<allSubtests.size() ; i++) {
@@ -889,7 +891,7 @@ public class TestSessionUtils
     /**
      * copySessionDefault
      */
-    public static void copySessionDefault(List allSubtests, List selectedSubtests)
+    public static void copySessionDefault(List<SubtestVO> allSubtests, List<SubtestVO> selectedSubtests)
     {
         for (int i=0 ; i<allSubtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)allSubtests.get(i);
@@ -906,7 +908,7 @@ public class TestSessionUtils
     /**
      * copyTestAccessCode
      */
-    public static void copyTestAccessCode(List allSubtests, List selectedSubtests)
+    public static void copyTestAccessCode(List<SubtestVO> allSubtests, List<SubtestVO> selectedSubtests)
     {
         for (int i=0 ; i<allSubtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)allSubtests.get(i);
@@ -923,7 +925,7 @@ public class TestSessionUtils
     /**
      * copySubtestLevel
      */
-    public static void copySubtestLevel(List allSubtests, List selectedSubtests)
+    public static void copySubtestLevel(List<SubtestVO> allSubtests, List<SubtestVO> selectedSubtests)
     {
         for (int i=0 ; i<allSubtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)allSubtests.get(i);
@@ -940,7 +942,7 @@ public class TestSessionUtils
     /**
      * copySubtestLevelIfNull
      */
-    public static void copySubtestLevelIfNull(List allSubtests, List selectedSubtests)
+    public static void copySubtestLevelIfNull(List<SubtestVO> allSubtests, List<SubtestVO> selectedSubtests)
     {
         for (int i=0 ; i<allSubtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)allSubtests.get(i);
@@ -959,9 +961,9 @@ public class TestSessionUtils
     /**
      * sortSubtestList
      */
-    public static List sortSubtestList(List allSubtests, List selectedSubtests)
+    public static List<SubtestVO> sortSubtestList(List<SubtestVO> allSubtests, List<SubtestVO> selectedSubtests)
     {
-        List desList = new ArrayList();
+        List<SubtestVO> desList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<selectedSubtests.size() ; i++) {
             SubtestVO src = (SubtestVO)selectedSubtests.get(i);
             SubtestVO des = new SubtestVO(src);
@@ -989,9 +991,9 @@ public class TestSessionUtils
     /**
      * setDefaultLevels
      */
-    public static void setDefaultLevels(List srcList, String level)
+    public static void setDefaultLevels(List<SubtestVO> srcList, String level)
     {
-        List resultList = new ArrayList();
+        //List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO src = (SubtestVO)srcList.get(i);
             if (level.equals("1"))
@@ -1006,12 +1008,12 @@ public class TestSessionUtils
     /**
      * cloneSubtests
      */
-    public static List cloneSubtests(List srcList)
+    public static List<SubtestVO> cloneSubtests(List<SubtestVO> srcList)
     {
         if (srcList == null)
             return srcList;
 
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO src = (SubtestVO)srcList.get(i);
             SubtestVO copied = new SubtestVO(src);
@@ -1023,12 +1025,12 @@ public class TestSessionUtils
     /**
      * cloneSubtestsForRegistration
      */
-    public static List cloneSubtestsForRegistration(List srcList)
+    public static List<SubtestVO> cloneSubtestsForRegistration(List<SubtestVO> srcList)
     {
         if (srcList == null)
             return srcList;
 
-        List resultList = new ArrayList();
+        List<SubtestVO> resultList = new ArrayList<SubtestVO>();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO src = (SubtestVO)srcList.get(i);
             SubtestVO copied = new SubtestVO(src);
@@ -1041,7 +1043,7 @@ public class TestSessionUtils
     /**
      * getStudentDisplayName
      */
-    public static String getStudentDisplayName(List students, Integer studentId)
+    public static String getStudentDisplayName(List<SessionStudent> students, Integer studentId)
     {
         String studentName = "";
         for (int i=0 ; i<students.size() ; i++) {
@@ -1063,9 +1065,12 @@ public class TestSessionUtils
     {
         if (productType.equals("TB"))
             return TABE_BATTERY_SURVEY_PRODUCT_TYPE;
-        else
-        if (productType.equals("TL"))
+        else if (productType.equals("TL"))
             return TABE_LOCATOR_PRODUCT_TYPE;
+        else if (productType.equals("TA"))
+        	return TABE_ADAPTIVE_PRODUCT_TYPE;
+        /*else if (productType.equals("LL")) // commented to remove laslink support
+        	return LASLINKS_PRODUCT_TYPE;*/
         else
             return GENERIC_PRODUCT_TYPE;
     }
@@ -1075,9 +1080,29 @@ public class TestSessionUtils
      */
     public static Boolean isTabeProduct(String productType)
     {
-        return new Boolean(! productType.equals(GENERIC_PRODUCT_TYPE));
+        return new Boolean(	(! productType.equals(GENERIC_PRODUCT_TYPE)) && 
+        					(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
+							(! productType.equals(LASLINKS_PRODUCT_TYPE)));
     }
-
+    
+    /**
+     * isTabeAdaptiveProduct
+     */
+    public static Boolean isTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+    
+    /**
+     * isTabeOrTabeAdaptiveProduct
+     */
+    public static Boolean isTabeOrTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(	productType.equals(TABE_BATTERY_SURVEY_PRODUCT_TYPE) ||
+        					productType.equals(TABE_LOCATOR_PRODUCT_TYPE) ||
+        					productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+    
     /**
      * isTabeBatterySurveyProduct
      */
@@ -1094,6 +1119,13 @@ public class TestSessionUtils
         return new Boolean(productType.equals(TABE_LOCATOR_PRODUCT_TYPE));
     }
 
+    /**
+     * isLasLinksProduct
+     */
+    public static Boolean isLasLinksProduct(String productType)
+    {
+        return new Boolean(productType.equals(LASLINKS_PRODUCT_TYPE));
+    }
 
 
 }
