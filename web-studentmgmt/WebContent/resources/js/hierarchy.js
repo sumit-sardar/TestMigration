@@ -1465,7 +1465,25 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 		return false;
 	}
+	var updateAccomodationMap ;
 	
+	function formAccomationMap(studentId){
+		updateAccomodationMap[studentId] = {};
+		$(":checkbox","#Student_Accommodation_Information").each(
+			function(){
+				var key ="";
+				if($(this).attr('name') != null && $(this).attr('name') != ""){
+					key = $(this).attr('name').substring(0,1).toLowerCase() + $(this).attr('name').substring(1);
+				}				
+				if($(this).attr('checked')){
+					updateAccomodationMap[studentId][key] = 'T';
+				}else {
+					updateAccomodationMap[studentId][key] = 'F';
+				}
+			}
+		);
+		
+	}
 	
 	function studentDetailSubmit(){
 	
@@ -1473,6 +1491,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	var createBy = "";
 	var assignedOrg = $('#selectedOrgNodesName').text();
 	var showStudentInGrid = false;
+	updateAccomodationMap = {};
 		
 	if(profileEditable === "false") {
 		resetDisabledFields();
@@ -1488,6 +1507,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		if(createBy == null || createBy == 'undefined') {
 			createBy = $("#stuCreatedBy").val();
 		}
+		
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
 			  "&selectedStudentId=" + selectedStudentId + "&isAddStudent=" + isAddStudent + "&createBy="+createBy + "&loginId=" + loginId ;
@@ -1513,6 +1533,15 @@ function fillselectedOrgNode( elementId, orgList) {
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
+													if(selectedStudentId && selectedStudentId != '' && selectedStudentId != null){
+														modifyStudentId = selectedStudentId;
+														formAccomationMap(selectedStudentId);
+													}else {
+														modifyStudentId = data.studentId;
+														formAccomationMap(data.studentId);
+														
+													}
+													
 													closePopUp('addEditStudentDetail');
 													$('#errorIcon').hide();
 													$('#infoIcon').show();
@@ -1556,8 +1585,9 @@ function fillselectedOrgNode( elementId, orgList) {
 																showStudentInGrid = false;
 															}
 														}
-													} 
-													
+													}
+													accomodationMap[modifyStudentId] = updateAccomodationMap[modifyStudentId];
+																										
 													if(showStudentInGrid) {
 														var dataToBeAdded = {lastName:initCap($("#studentLastName").val()),
 																			firstName:initCap($("#studentFirstName").val()),
@@ -1578,6 +1608,7 @@ function fillselectedOrgNode( elementId, orgList) {
 															jQuery("#list2").addRowData(data.studentId, dataToBeAdded, "first");
 														}
 															jQuery("#list2").sortGrid(sortCol,true);
+														
 													} else {
 														if(!isAddStudent) {
 															var oldOrganizationList = "";

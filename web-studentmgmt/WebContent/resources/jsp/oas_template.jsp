@@ -199,23 +199,38 @@
 <div id="accommodationToolTip" style="display:none;" class="statusLegendDiv">
 <table border="0" class="statusLegendTable" cellspacing="0">
 	<tbody>
-		<tr align="center" id="screenReaderStatus">
+		<tr align="center" id="screenReaderStatus" style="display: none;">
 			<td align="left" style="padding-top:5px;"><lb:label key="student.accommodationToolTip.screenReader" /></td>
 		</tr>
-		<tr align="center" id="calculatorStatus">
+		<tr align="center" id="calculatorStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.calculator" /></td>
 		</tr>
-		<tr align="center" id="testPauseStatus">
+		<tr align="center" id="testPauseStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.testPause" /></td>
 		</tr>
-		<tr align="center" id="untimedTestStatus">
+		<tr align="center" id="untimedTestStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
 		</tr>
-		<tr align="center" id="highlighterStatus">
+		<tr align="center" id="highlighterStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.highlighter" /></td>
 		</tr>
-		<tr align="center" id="colorFontStatus">
+		<tr align="center" id="maskingRulerStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.maskingRuler" /></td>
+		</tr>
+		<tr align="center" id="magnifyingGlassStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.magnifyingGlass" /></td>
+		</tr>
+		<tr align="center" id="colorFontStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.colorNFont" /></td>
+		</tr>
+		<tr align="center" id="auditoryCalmingStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.auditoryCalming" /></td>
+		</tr>
+		<tr align="center" id="extendedTimeStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.extendedTime" /></td>
+		</tr>
+		<tr align="center" id="maskingToolStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.maskingTool" /></td>
 		</tr>
 	</tbody>
 </table>  
