@@ -798,5 +798,5 @@
 	    legendDiv.style.left = (tempX - $(legendDiv).width() / 3) + "px";
 	    legendDiv.style.top = (tempY - $(legendDiv).height() - padding) + "px";
 	    legendDiv.style.display = "block";
-	    htimer = setTimeout("hideLocatorMessage()", 5000);
+	    htimer = setTimeout("hideLocatorMessage()", 10000);
 	}
