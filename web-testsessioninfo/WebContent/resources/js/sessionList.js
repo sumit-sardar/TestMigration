@@ -1471,7 +1471,7 @@ function registerDelegate(tree){
 							$("#productType").val(data.product[0].productType);
 							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 							displayProductAcknowledgement(ProductData.product[0].acknowledgmentsURL); //Added for view product Acknowledgement link
-							$('.rounded').corners();
+							
 						}
 						isPopUp = true;	
 						$.unblockUI(); 						
