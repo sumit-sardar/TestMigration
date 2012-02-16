@@ -293,6 +293,9 @@
 	
 	function adjustHeightTables(){
 		var sourceTableHeight = $("table.dynamicHeader","#rightTableContainer").outerHeight() + $("table.dynamic","#rightTableContainer").outerHeight();
+		if(sourceTableHeight <200){
+			sourceTableHeight = 200;
+		}
 		$("#rightTableContainer").height(sourceTableHeight);
 		$("#leftTableContainer").height(sourceTableHeight);
 	}
