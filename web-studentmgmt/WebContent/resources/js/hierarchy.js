@@ -982,6 +982,7 @@ function AddStudentDetail(){
 isAddStudent = true;
 isPopUp = true;
 profileEditable = "true";//to see fields enabled if a new student is added after editing a imported student.
+resetDisabledFields();
 document.getElementById('displayMessage').style.display = "none";	
 document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
