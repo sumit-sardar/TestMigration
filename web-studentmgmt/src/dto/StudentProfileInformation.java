@@ -583,7 +583,13 @@ public class StudentProfileInformation extends SanitizedFormField
         this.answerFontSize = student.getAnswerFontSize();
         this.highlighter = student.getHighlighter();
         this.maskingRuler = student.getMaskingRuler();
-        this.auditoryCalming = student.getAuditoryCalming();
+        //this.auditoryCalming = student.getAuditoryCalming();
+        this.musicFile = student.getMusicFile();
+        if(StringUtils.isNullEmpty(this.musicFile)){
+        	this.auditoryCalming = "F";
+        }else {
+        	this.auditoryCalming = "T";
+        }
         this.magnifyingGlass = student.getMagnifyingGlass();
         this.extendedTime = student.getExtendedTime();
         this.maskingTool = student.getMaskingTool();
@@ -603,6 +609,7 @@ public class StudentProfileInformation extends SanitizedFormField
         innerMap.put("maskingTool", this.maskingTool);
         innerMap.put("extendedTime", this.extendedTime);
         innerMap.put("highlighter", this.highlighter);
+        innerMap.put("auditoryCalming", this.auditoryCalming);
 	    if(StringUtils.isNullEmpty(this.questionBackgroundColor) 
 	    			&& StringUtils.isNullEmpty(this.questionFontColor)
 	    			&& StringUtils.isNullEmpty(this.questionFontSize)
