@@ -25,7 +25,7 @@
 			
 		</div>
 <div class="roundedMessage ui-corner-all">
-	<div style="clear: both; float: left; width: 99.99%; text-align: left;" class= "blueSubHeading">
+	<div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
 		<p style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 5pt; padding: 5">
 		<lb:label key="session.modifySubtest.message" />
 		</p>
