@@ -515,15 +515,15 @@
         var strIndex = String(index);
         var strLevel = "level_" + strIndex;
 		var retVal = "";
-        retVal+= '<td class="dynamic" width="40" align="center" >';
+        retVal+= '<td class="dynamic"  align="center" >';
         retVal+='<select name="' + strLevel + '" id= "' + strLevel + '" size="1" style="font-family: Arial, Verdana, Sans Serif; font-size: 11px;">';
         
         for (var i=0 ; i<levelOptions.length ; i++) {
             var option = levelOptions[i];         
             if (option==level)           
-                retVal+='<option value="' + option + '" selected>' + option + '</option>';
+                retVal+='<option value="' + option + '" selected>' + " &nbsp;&nbsp;"+option + " &nbsp;&nbsp;&nbsp;"+'</option>';
             else
-                 retVal+='<option value="' + option + '" >' + option + '</option>';
+                 retVal+='<option value="' + option + '" >' + "&nbsp;&nbsp;"+ option + " &nbsp;&nbsp;&nbsp;"+ '</option>';
         }
         retVal+='"</select>';
         retVal+='</td>';
@@ -615,7 +615,7 @@
 	        return true;
 	    
 	    var table = row.parentNode;
-	    var targetIndex = row.rowIndex + delta;
+	    var targetIndex = parseInt(row.rowIndex - 1) + delta;
 	    
 	    if (delta > 0)
 	        targetIndex = targetIndex + 1;

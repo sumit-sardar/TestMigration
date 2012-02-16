@@ -99,16 +99,14 @@
 			<table class="columnLayout" id="rightTableContainer">
 				<tbody>
 					<tr class="columnLayoutRow">
-						<td class="">
-						<table class="dynamicHeader">
-							<tbody>
+						<td class="">						
+						<table onselectstart="return false;" class="dynamic">
+							<thead>
 								<tr class="dynamicHeader">
 									<th height="25" class="subtestHeader"><lb:label key="session.modifySubtest.header.selectedSubtest" /> </th>
-									<th height="25" id = "modifyTestLevel" class="subtestHeader" style="display: none;"><lb:label key="session.modifySubtest.header.selectedSubtestlevel" /> </th>
+									<th height="25" id = "modifyTestLevel" class="subtestHeader" style="display: none;" width = "10px"><lb:label key="session.modifySubtest.header.selectedSubtestlevel" /> </th>
 								</tr>
-							</tbody>
-						</table>
-						<table onselectstart="return false;" class="dynamic">
+							</thead>
 							<tbody id="selectedSubtestsTable">
 							
 							
