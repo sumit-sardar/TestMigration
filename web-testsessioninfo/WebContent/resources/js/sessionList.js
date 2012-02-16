@@ -35,6 +35,7 @@ var hours0 = 0;
 var minutes1 = 0;
 var hours1 = 0;
 var isTabeLocatorProduct = false;
+var isTabeAdaptiveProduct = false;
 var noTestExist = false;
 var isFirstAccordSelected = true;
 var isSecondAccordSelected = false;
@@ -2067,9 +2068,9 @@ function registerDelegate(tree){
 				disabled = 'disabled ="disabled"';
 			}
 			if(hasAutolocator) {
-				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onblur="javascript:updateLocatorValue(); return false;" />';
+				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onChange="javascript:updateLocatorValue(); return false;" />';
 			} else {
-				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onblur="javascript:updateLocatorValue(); return false;"/>';
+				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onChange="javascript:updateLocatorValue(); return false;"/>';
 			}
 			
 			
@@ -4311,24 +4312,14 @@ function validNumber(str){
 				locator.value = "false";	
 				hasAutolocator = false;
 				if(isTestBreak){
-						//var val = '<input name="aCodeB_l" type="text" size="13" id="aCodeB" value="" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" />';
 						$("#"+locatorSubtest.id+"_l input").val("");
-						//$("#"+locatorSubtest.id+"_l").html(val);
-						//$("#"+locatorSubtest.id+"_l").change();
-						//document.getElementById ("aCodeB_l").value = "";
-						
 				}
 				
 		} else {
 			locator.value = "true";	
 			hasAutolocator = true;
 			if(isTestBreak){
-			     //var val = '<input name="aCodeB_l" type="text" size="13" id="aCodeB" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" />';
-				//$("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
-				//	$("#"+locatorSubtest.id+"_l").html(val);
-				//	$("#"+locatorSubtest.id+"_l").change();
-				//document.getElementById ("aCodeB_l").value = ProductData.accessCodeList[0];
-				$("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
+			    $("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
 			}
 		}
 	
