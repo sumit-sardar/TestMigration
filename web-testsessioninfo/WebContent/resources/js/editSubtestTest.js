@@ -47,6 +47,7 @@
 	        selectedSubtests = tmpSelectedSubtests;
 	        createSubtestGrid();
 	        updateAllSubtests(selectedSubtests);
+	        populateAllSubtestMap(allSubtests)
 	        closePopUp('modifyTestPopup');
 	    }
 	    
