@@ -108,7 +108,6 @@
 	function validateTABESubtest(subtests) {
 	    var isValid = true;
 	    var validateLevels = false; 
-	    // subhendu
 	    if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
 	    	validateLevels = true;
 	    }
@@ -295,7 +294,6 @@
 	        if (val > 0) {
 	            tmpSelectedSubtests[val - 1] = allSubtestMap.get(ii - 1);
 	            if(setLevels) {
-	            	//subhendu
 	            	var level = $("#level_"+ii).val();
 	            	tmpSelectedSubtests[val - 1].level = level;
 	            } else {
@@ -392,12 +390,12 @@
 	        $("#moveDown").removeClass("ui-widget-header");
 	    }
 	    
-	    if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { //subhendu
+	    if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { 
 	         $("#modifyTestLevel").show();
 	   } else {
 	          $("#modifyTestLevel").hide();
 	   }
-	   if(isTabeProduct){ // subhendu
+	   if(isTabeProduct){ 
 	   		$("#modifySubtestMsg").html($("#tabeModifySubtestMsg").val())
 	   } else {
 	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
@@ -487,7 +485,7 @@
 	        var index = ii + 1;
 	        destHtmlText += displayDestinationRowStart(index, displayFlag);
 	        destHtmlText += displayDestinationNameCell(allSubtests[ii].subtestName, index, value);
-	        if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { //subhendu
+	        if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { 
 	        	 destHtmlText += displayDestinationLevelDropdown(index, level, ProductData.levelOptions);
 	         $("#modifyTestLevel").show();
 	        } else {
