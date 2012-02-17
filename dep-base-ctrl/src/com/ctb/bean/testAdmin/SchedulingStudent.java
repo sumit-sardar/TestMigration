@@ -41,6 +41,7 @@ public class SchedulingStudent extends Student
     private String  musicFileId;
     private String statusEditable;
     private String statusCopyable;
+    private String auditoryCalming;
     
    	public Integer getPriorAdmin() {
         return this.priorAdmin;
@@ -417,5 +418,13 @@ public class SchedulingStudent extends Student
 	 */
 	public void setStatusCopyable(String statusCopyable) {
 		this.statusCopyable = statusCopyable;
+	}
+
+	public String getAuditoryCalming() {
+		return auditoryCalming;
+	}
+
+	public void setAuditoryCalming(String auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
 	}
 } 
