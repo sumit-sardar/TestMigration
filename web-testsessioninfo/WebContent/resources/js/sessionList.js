@@ -4351,6 +4351,11 @@ function validNumber(str){
 			if(isTestBreak){
 			    $("#"+locatorSubtest.id+" input").val(ProductData.accessCodeList[0]);
 			}
+			var allForm = $("[name=itemSetForm]");
+			for(var ii=0; ii<allForm.length; ii++){
+				allForm[ii].value = "";
+			}
+			$("#itemSetForm")[0].value = "";//locator
 		}
 	
 	}
