@@ -2382,7 +2382,6 @@ public class ScheduleTestImpl implements ScheduleTest
                     } else {
                         newAssignment.setSubtests(subtests);   
                     }
-                    newAssignment.setSubtests(subtests); 
                     subtestAssignments.add(newAssignment);
                 }
             }
