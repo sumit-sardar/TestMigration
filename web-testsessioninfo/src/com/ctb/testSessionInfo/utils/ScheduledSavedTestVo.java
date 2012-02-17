@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.util.OperationStatus;
 
@@ -28,6 +29,9 @@ public class ScheduledSavedTestVo implements Serializable {
 	private SessionStudent[] restrictedStudents;
 	private Integer totalStudent ;
 	private String userTimeZone = "";
+	private boolean hasLocator = false;
+	private Integer locatorId = null;
+	
 
 	private static final long serialVersionUID = 1L;
 
@@ -175,6 +179,30 @@ public class ScheduledSavedTestVo implements Serializable {
 	 */
 	public void setUserTimeZone(String userTimeZone) {
 		this.userTimeZone = userTimeZone;
+	}
+
+	public void setHasLocator(boolean hasLocator) {
+		this.hasLocator = hasLocator;
+	}
+
+	public void setLocatorId(Integer locatorId) {
+		this.locatorId = locatorId;
+	}
+
+	public void populateLocatorInformation() {
+		
+		if(this.savedTestDetails != null && this.savedTestDetails.getScheduledUnits()!=null ) {
+			for( TestElement elem : this.savedTestDetails.getScheduledUnits()) {
+				if(elem.getItemSetName().indexOf("Locator") > 0){
+					setHasLocator(true);
+					setLocatorId(elem.getItemSetId());
+				}
+				
+			}
+			
+			
+		}
+		
 	}
 
 	

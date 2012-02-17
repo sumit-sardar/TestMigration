@@ -2090,7 +2090,7 @@ function registerDelegate(tree){
 	    	locatorSubtestTableHtml +='<th width="82" height="23" align="center"><strong>'+$("#durationDisplay").val()+'</strong></th>';
 			locatorSubtestTableHtml +='</tr>';
 			
-			locatorSubtestTableHtml +='<tr id ="' +locatorSubtest.id+ '">';
+			locatorSubtestTableHtml +='<tr >';
 			locatorSubtestTableHtml +='<td height="23" width="24" bgcolor="#FFFFFF" style="padding-left:10px;" >';
 			var disabled = "";
 			if(allSubtests!=null && allSubtests!= undefined && allSubtests.length<1){
@@ -2123,7 +2123,7 @@ function registerDelegate(tree){
 					locatorSubtestTableHtml +='<div align="left" id="sName">'+locatorSubtest.subtestName+'</div>';
 					locatorSubtestTableHtml +='</td>';
 					locatorSubtestTableHtml +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
-					locatorSubtestTableHtml +='<div align="center" id="'+locatorSubtest.id+'_l">';
+					locatorSubtestTableHtml +='<div align="center" id="'+locatorSubtest.id+'">';
 					if(hasAutolocator){
 						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					} else {
@@ -2192,7 +2192,7 @@ function registerDelegate(tree){
 			for(var i=0;i<subtestArr.length; i++){	
 			    
 				tr = ''			
-				tr +='<tr id ="' +subtestArr[i].id+ '" bgcolor="#FFFFFF" >';
+				tr +='<tr bgcolor="#FFFFFF" >';
 				tr +='<td height="23" width="24" >';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
 				tr +='<input type = "hidden" id ="itemSetIdTD" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
@@ -4343,12 +4343,13 @@ function validNumber(str){
 				if(isTestBreak){
 						$("#"+locatorSubtest.id+"_l input").val("");
 				}
+
 				
 		} else {
 			locator.value = "true";	
 			hasAutolocator = true;
 			if(isTestBreak){
-			    $("#"+locatorSubtest.id+"_l input").val(ProductData.accessCodeList[0]);
+			    $("#"+locatorSubtest.id+" input").val(ProductData.accessCodeList[0]);
 			}
 		}
 	

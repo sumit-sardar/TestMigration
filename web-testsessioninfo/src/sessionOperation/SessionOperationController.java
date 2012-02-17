@@ -28,6 +28,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.BroadcastUtils;
 import util.MessageResourceBundle;
 import util.RequestUtil;
+import util.TABESubtestValidation;
 import viewmonitorstatus.ViewMonitorStatusController.ViewMonitorStatusForm;
 
 import com.ctb.bean.request.FilterParams;
@@ -764,6 +765,7 @@ public class SessionOperationController extends PageFlowController {
                 	 if( tps!=null ) {
                 		 this.vo.populate(userName, tps, itemSet, scheduleTest);
                 		 this.vo.populateTopOrgnode(this.topNodesMap);
+                		 this.vo.populateLevelOptions();
                 	 }
                 	 isPopulatedSuccessfully = true;
                 }
@@ -866,7 +868,7 @@ public class SessionOperationController extends PageFlowController {
 	        		vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
 	        		
 	        	} 
-    	    	
+    	    	vo.populateLocatorInformation();
 
     	    	if (this.user == null || topNodesMap.size() ==0 ){
     	    		initialize();
@@ -1197,6 +1199,10 @@ public class SessionOperationController extends PageFlowController {
     	        
     	        scheduledSession.setScheduledUnits(newTEs);
     	        validateScheduledUnits(scheduledSession, hasBreakBoolean, validationFailedInfo, isAddOperation);
+    	        if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+    	        	//TABESubtestValidation.validation(A, validateLevels, TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue());
+    	        	
+    	        }
             
     	       
     	 } catch (Exception e) {
