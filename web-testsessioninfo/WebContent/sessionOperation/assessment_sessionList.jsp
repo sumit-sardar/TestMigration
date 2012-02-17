@@ -246,7 +246,7 @@
 		<tr align="center" id="auditoryCalmingStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.auditoryCalming" /></td>
 		</tr>
-		<tr align="center" id="extendedTimeStatus" style="display: none;">
+		<tr align="center" id="extendedTimeAccomStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.extendedTime" /></td>
 		</tr>
 		<tr align="center" id="maskingToolStatus" style="display: none;">

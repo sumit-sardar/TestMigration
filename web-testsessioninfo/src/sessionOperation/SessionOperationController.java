@@ -35,8 +35,6 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
-import com.ctb.bean.testAdmin.BroadcastMessage;
-import com.ctb.bean.testAdmin.BroadcastMessageData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -69,7 +67,6 @@ import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.testSessionInfo.data.SubtestVO;
-import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
@@ -3435,6 +3432,12 @@ public class SessionOperationController extends PageFlowController {
                     else
                         buf.append("Calculator");
                 }
+                if(ss.getMusicFileId() == null || "".equals(ss.getMusicFileId().trim())){
+                	ss.setAuditoryCalming("F");
+                }else {
+                	ss.setAuditoryCalming("T");
+                }
+                
                 if ("true".equals(ss.getHasColorFontAccommodations())) {
                     if ("T".equals(ss.getScreenReader()) ||
                         "T".equals(ss.getTestPause()) ||
