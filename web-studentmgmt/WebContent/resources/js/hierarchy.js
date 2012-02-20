@@ -53,7 +53,9 @@ var isBulkMove = false;
 var rootNodeId;
 var stuThreshold = 10000;	
 var topOrgNodeStuCount = 0;	
-var accomodationMap = {};			
+var accomodationMap = {};
+var leafNodePathMap = {};	
+var leafNodeTextMap = {};		
 
 
 $(document).bind('keydown', function(event) {
@@ -393,6 +395,17 @@ function createMultiNodeSelectedTree(jsondata) {
 						checkedListObject[element.id] = "checked" ;
 						}
 				var isChecked = $(element).hasClass("jstree-checked");
+				if(isChecked){
+					var completePath = $("#innerID").jstree("get_path",$("#"+elementId),true);
+					if(completePath){
+						leafNodePathMap[elementId] = completePath.toString();
+						leafNodeTextMap[elementId] = trim($("#"+elementId).text());
+					}
+				}else {					
+					delete leafNodePathMap[elementId];
+					delete leafNodeTextMap[elementId];			
+				}
+				
     			updateOrganization(this.parentNode,isChecked);
     			}
 			}
@@ -413,6 +426,16 @@ function createMultiNodeSelectedTree(jsondata) {
 					checkedListObject[elementId] = "unchecked" ;
 					}
 					if(orgcategorylevel == leafNodeCategoryId) {
+						if(isChecked){
+							var completePath = $("#innerID").jstree("get_path",$("#"+elementId),true);
+							if(completePath){
+								leafNodePathMap[elementId] = completePath.toString();
+								leafNodeTextMap[elementId] = trim($("#"+elementId).text());
+							}
+						}else {					
+							delete leafNodePathMap[elementId];
+							delete leafNodeTextMap[elementId];
+						}
 						updateOrganization(d.rslt[0],isChecked);
 					}
     			}
@@ -1181,6 +1204,8 @@ function fillselectedOrgNode( elementId, orgList) {
 	optionHtml = "";
 	assignedOrgNodeIds = "";
 	for(var i = 0; i < orgList.length; i++) {
+		leafNodePathMap[orgList[i].orgNodeId] = orgList[i].leafNodePath;
+		leafNodeTextMap[orgList[i].orgNodeId] = orgList[i].orgNodeName;
 		if(assignedOrgNodeIds == "") {
 			assignedOrgNodeIds = orgList[i].orgNodeId;
 		} else {
@@ -1541,8 +1566,6 @@ function fillselectedOrgNode( elementId, orgList) {
 														formAccomationMap(data.studentId);
 														
 													}
-													
-													closePopUp('addEditStudentDetail');
 													$('#errorIcon').hide();
 													$('#infoIcon').show();
 													setMessageMain(data.title, data.content, data.type, "");
@@ -1563,29 +1586,29 @@ function fillselectedOrgNode( elementId, orgList) {
 														if ($("#" +SelectedOrgNodeId).attr("cid") < leafNodeCategoryId) {
 														var tempAssignedOrg = "";
 																for(var i=0; i<orgs.length; i++){
-																	var parentOrgNodeId = $("#" + orgs[i]).parent("ul");
-																	var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
-																	for(var count = ancestorNodes.length - 1; count >= 0; --count) {
-															  		 		var tmpNode = ancestorNodes[count].id;
-																			if($.trim(tmpNode) == $.trim(SelectedOrgNodeId)){
-																			 if(tempAssignedOrg == ""){
-																			 	tempAssignedOrg =  tempAssignedOrg + $("#" +orgs[i]).text() ;
-																			 } else {
-																			 	tempAssignedOrg =  tempAssignedOrg + "," + $("#" +orgs[i]).text() ;
-																			 }
-																				
-																				showStudentInGrid = true;
-																				break;
-																			}
-																	 }
-																	
+																	if(leafNodePathMap[orgs[i]]){
+																		var ancestorNodes = leafNodePathMap[orgs[i]].split(",");
+																		for(var count = 0; count < ancestorNodes.length-1; count++) {
+																  		 		var tmpNode = ancestorNodes[count];
+																				if($.trim(tmpNode) == $.trim(SelectedOrgNodeId)){
+																				 if(tempAssignedOrg == ""){
+																				 	tempAssignedOrg =  tempAssignedOrg + leafNodeTextMap[orgs[i]] ;
+																				 } else {
+																				 	tempAssignedOrg =  tempAssignedOrg + "," + leafNodeTextMap[orgs[i]] ;
+																				 }
+																					
+																					showStudentInGrid = true;
+																					break;
+																				}
+																		 }	
+																	}
 																}
 															assignedOrg	= tempAssignedOrg;
 															} else {
 																showStudentInGrid = false;
 															}
 														}
-													}
+													}													
 													accomodationMap[modifyStudentId] = updateAccomodationMap[modifyStudentId];
 																										
 													if(showStudentInGrid) {
@@ -1621,6 +1644,7 @@ function fillselectedOrgNode( elementId, orgList) {
 														}
 													}
 													assignedOrgNodeIds = "";
+													closePopUp('addEditStudentDetail');
 													$.unblockUI();			
         										}
         										else{
