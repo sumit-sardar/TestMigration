@@ -231,13 +231,13 @@
 		<tr align="center" id="untimedTestStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
 		</tr>
-		<tr align="center" id="highlighterStatus" style="display: none;">
+		<tr align="center" id="highLighterStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.highlighter" /></td>
 		</tr>
 		<tr align="center" id="maskingRulerStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.maskingRuler" /></td>
 		</tr>
-		<tr align="center" id="magnifyingGlassStatus" style="display: none;">
+		<tr align="center" id="screenMagnifierStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.magnifyingGlass" /></td>
 		</tr>
 		<tr align="center" id="hasColorFontAccommodationsStatus" style="display: none;">
