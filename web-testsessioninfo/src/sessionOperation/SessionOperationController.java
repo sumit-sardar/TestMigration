@@ -851,8 +851,12 @@ public class SessionOperationController extends PageFlowController {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
-    	    	vo.setSavedTestDetails(scheduledSession);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
+    	    	if(TestSessionUtils.isTabeBatterySurveyProduct(vo.getProductType()) || TestSessionUtils.isTabeAdaptiveProduct(vo.getProductType())){
+    	    		vo.setSavedTestDetailsWithDefaultValue(scheduledSession);
+    	    	} else {
+    	    		vo.setSavedTestDetails(scheduledSession);
+    	    	}
     	    	Date now = new Date(System.currentTimeMillis());
     	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
     	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 

@@ -205,6 +205,21 @@ public class ScheduledSavedTestVo implements Serializable {
 		
 	}
 
+	public void setSavedTestDetailsWithDefaultValue( ScheduledSession savedTestDetails) {
+		TestElement[] tes = savedTestDetails.getScheduledUnits();
+		List<TestElement> list = new ArrayList<TestElement>(tes.length);
+		for (TestElement te : tes ) {
+			if(te.getSessionDefault().equalsIgnoreCase("T")){
+				list.add(te);
+			}
+		}
+		 
+		tes = list.toArray(new TestElement[list.size()]);
+		savedTestDetails.setScheduledUnits(tes);
+		this.savedTestDetails = savedTestDetails;
+		
+	}
+
 	
 
 }
