@@ -14,6 +14,7 @@
 	var VOCABULARY = "TABE Vocabulary";
 	var LANGUAGE_MECHANICS = "TABE Language Mechanics";
 	var SPELLING = "TABE Spelling";
+	var selectedAccessCodeMap = new Map();
 	
 	var TABE_ADAPTIVE_READING = "TABE Adaptive Reading";
 	var TABE_ADAPTIVE_MATH_COMPUTATION = "TABE Adaptive Mathematics Computation";
@@ -47,12 +48,51 @@
 	        selectedSubtests = tmpSelectedSubtests;
 	        createSubtestGrid();
 	        updateAllSubtests(selectedSubtests);
-	        populateAllSubtestMap(allSubtests)
+	        populateAllSubtestMap(allSubtests) 
+	        updateOldAccessCodes(selectedSubtests);
 	        closePopUp('modifyTestPopup');
 	    }
 	    
 	    
 	}
+	
+	function updateOldAccessCodes(subtests) {
+		 if(isTestBreak) {
+		    for(var i=0; i<subtests.length; i++){	
+				if(selectedAccessCodeMap.get(subtests[i].id)!=null){
+					  ($("#"+subtests[i].id).children() [0]).value = selectedAccessCodeMap.get(subtests[i].id);
+				} else {
+					var newAccessCode = getSelectUniqueAccessCode();
+					if(newAccessCode!=undefined) {
+						selectedAccessCodeMap.put(subtests[i].id, newAccessCode);
+						($("#"+subtests[i].id).children() [0]).value = newAccessCode;
+					}
+						
+				}
+			}
+			if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && hasAutolocator) {
+				 ($("#"+locatorSubtest.id).children() [0]).value = selectedAccessCodeMap.get(locatorSubtest.id);
+			}
+	    } else {
+	    	$("#aCode").val(selectedAccessCodeMap.get("AccessCode"));
+	    }
+	}
+	
+	function getSelectUniqueAccessCode() {
+		for(var i=0; i<ProductData.accessCodeList.length; i++) {
+			var found = false;
+			var keys = selectedAccessCodeMap.getKeys();
+			for(var j=0; j<keys.length; j++) {
+				if(String(selectedAccessCodeMap.get(keys[j])).toLowerCase() ==  ProductData.accessCodeList[i].toLowerCase() ){
+					found = true;
+					break;
+				}
+			}
+			if( !found )
+				return  ProductData.accessCodeList[i];
+		}
+	}
+	
 	
 	function updateAllSubtests(subtests) {
 	    for (var ii = 0; ii < subtests.length; ii ++ ) {
@@ -358,6 +398,24 @@
 	    $("#modifyTestPopup").parent().css("left", leftpos);
 	    
 	    updateEditSubtestTable();
+	    selectedAccessCodeMap = new Map();
+	    if(isTestBreak) {
+		    for(var i=0;i<subtestLength;i++){	
+		   			var itemSetIdTd = document.getElementById("itemSetIdTD"+i).value;
+			      	var selectedAccessCode = document.getElementById("aCodeB"+i).value;
+			      	selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
+			}
+			if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && hasAutolocator) {
+				var itemSetIdTd = document.getElementById("itemSetIdTD").value;
+			    var selectedAccessCode = document.getElementById("aCodeB_l").value;
+				selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
+			}
+	    	
+	    } else {
+				var selectedAccessCode = document.getElementById("aCode").value;
+				selectedAccessCodeMap.put('AccessCode', selectedAccessCode);
+	    
+	    }
 	    
 	    $.unblockUI();
 	}

@@ -2200,7 +2200,7 @@ function registerDelegate(tree){
 				tr +='<tr bgcolor="#FFFFFF" >';
 				tr +='<td height="23" width="24" >';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
-				tr +='<input type = "hidden" id ="itemSetIdTD" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
+				tr +='<input type = "hidden" id ="itemSetIdTD'+i+'" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
 				if(subtestArr[i].level != undefined){
 					tr +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
 				} else {
@@ -4354,7 +4354,18 @@ function validNumber(str){
 			locator.value = "true";	
 			hasAutolocator = true;
 			if(isTestBreak){
-			    $("#"+locatorSubtest.id+" input").val(ProductData.accessCodeList[0]);
+				var accesscode = ProductData.accessCodeList[0];
+				for(var i=0; i<ProductData.accessCodeList.length; i++) {
+					var found = false;
+					for(var j=0; j<selectedSubtests.length; j++) {
+						if(($("#"+selectedSubtests[j].id).children() [0]).value.toLowerCase() == ProductData.accessCodeList[i].toLowerCase()){
+						 	found = true;
+						 	break;
+						}
+					}
+					if(!found ) {accesscode = ProductData.accessCodeList[i]; break;}
+				}
+			    $("#"+locatorSubtest.id+" input").val(accesscode);
 			}
 			var allForm = $("[name=itemSetForm]");
 			for(var ii=0; ii<allForm.length; ii++){
