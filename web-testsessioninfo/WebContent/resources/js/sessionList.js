@@ -2704,7 +2704,7 @@ function registerDelegate(tree){
 			if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
 				var locator = document.getElementById("hasAutolocator");
 				if(locator.checked != null && locator.checked !=undefined && locator.checked){	
-					var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+					var lAccessCode = $("#"+locatorSubtest.id+" input").val();
 					validStatus = validAccessCodeNameString(trim(lAccessCode));	
 					
 				}
@@ -2744,7 +2744,7 @@ function registerDelegate(tree){
 		if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
 			var locator = document.getElementById("hasAutolocator");
 			if(locator.checked != null && locator.checked !=undefined && locator.checked){	
-				var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+				var lAccessCode = $("#"+locatorSubtest.id+" input").val();
 				var arraylength = accessCodes.length + 1;
 				accessCodes[arraylength]=  lAccessCode;
 				
@@ -2783,7 +2783,7 @@ function registerDelegate(tree){
 		if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
 			var locator = document.getElementById("hasAutolocator");
 			if(locator.checked != null && locator.checked !=undefined && locator.checked){	
-				var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+				var lAccessCode = $("#"+locatorSubtest.id+" input").val();
 				if(trim(lAccessCode) == "" ){
 					validStatus = false;
 			} 	
@@ -2811,7 +2811,7 @@ function registerDelegate(tree){
 			if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
 				var locator = document.getElementById("hasAutolocator");
 				if(locator.checked != null && locator.checked !=undefined && locator.checked){	
-					var lAccessCode = $("#"+locatorSubtest.id+"_l input").val();
+					var lAccessCode = $("#"+locatorSubtest.id+" input").val();
 					if(trim(lAccessCode).length<6 ){
 						validStatus = false;
 				} 	
@@ -4341,7 +4341,7 @@ function validNumber(str){
 				locator.value = "false";	
 				hasAutolocator = false;
 				if(isTestBreak){
-						$("#"+locatorSubtest.id+"_l input").val("");
+						$("#"+locatorSubtest.id+" input").val("");
 				}
 
 				
