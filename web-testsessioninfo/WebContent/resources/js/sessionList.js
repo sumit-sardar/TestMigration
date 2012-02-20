@@ -2150,6 +2150,11 @@ function registerDelegate(tree){
 				document.getElementById("locatorSubtestGrid").innerHTML = locatorSubtestTableHtml;
 				document.getElementById("locatorSubtestGrid").style.display = "";
 				document.getElementById("locatorSubtestGridHeading").style.display = "";
+				if(allSubtests.length==0){
+					document.getElementById("locatorSubtestGridToolTip").style.display = "none";
+				} else {
+					document.getElementById("locatorSubtestGridToolTip").style.display = "";
+				}
 				
 		
 		} else {

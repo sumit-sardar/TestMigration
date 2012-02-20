@@ -96,7 +96,7 @@
 							<td height="5" colspan="2">
 								<div id="locatorSubtestGridHeading" style="display:none; font-weight: bold; color: #2E6E9E;"> 
 									<lb:label key="session.locatorTest.heading" />
-									<img  onmouseout="hideLocatorMessage();" onmouseover="showLocatorMessage(event);" src="/SessionWeb/resources/images/questionmark.jpg" /> 
+									<img  id="locatorSubtestGridToolTip" onmouseout="hideLocatorMessage();" onmouseover="showLocatorMessage(event);" src="/SessionWeb/resources/images/questionmark.jpg" /> 
 								</div>
 							</td>
 						</tr>
