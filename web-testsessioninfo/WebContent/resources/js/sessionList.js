@@ -2068,7 +2068,7 @@ function registerDelegate(tree){
 			locatorSubtestTableHtml += '<td height="5" colspan="2">';
 			locatorSubtestTableHtml +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table width="100%" class="ts" cellpadding="0" cellspacing="1">';
 	    	locatorSubtestTableHtml +='<tr class="subtestHeader" >';
-	    	locatorSubtestTableHtml +='<th width="24" height="23" align="center"><strong>'+'Select'+'</strong></th>';
+	    	locatorSubtestTableHtml +='<th width="24" height="23" align="center"><strong>'+$("#textSelectMsg").val()+'</strong></th>';
 	    	//locatorSubtestTableHtml +='<th width="24" height="23" align="center"><strong>'+$("#hashDisplay").val()+'</strong></th>';
 	    	/*if(isTestBreak){
 	    		locatorSubtestTableHtml +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>'+$("#subtestNameDisplay").val() +'</strong></th>';

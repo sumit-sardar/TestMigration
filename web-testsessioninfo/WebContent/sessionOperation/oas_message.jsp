@@ -108,5 +108,6 @@
 
 <input type="hidden" id="tabeModifySubtestMsg" name = "tabeModifySubtestMsg" value=<lb:label key="session.modifySubtest.tabe.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="tabeAdaptiveModifySubtestMsg" name = "tabeAdaptiveModifySubtestMsg" value=<lb:label key="session.modifySubtest.tabeadaptive.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="textSelectMsg" name = "textSelectMsg" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
 
 
