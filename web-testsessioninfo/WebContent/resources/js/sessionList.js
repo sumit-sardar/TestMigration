@@ -1196,7 +1196,7 @@ function registerDelegate(tree){
 							returnStr = 'style="white-space: normal;cursor:pointer;"' ;
 						}	
 						return returnStr;				
-		   		}, formatter: 'link' },
+		   		}},
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
