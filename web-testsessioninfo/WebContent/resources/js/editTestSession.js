@@ -54,7 +54,7 @@
 								isTestDataExported == true;
 								}						
 							}
-							if(data.userRoleName == "PROCTOR"){
+							if(data.userRoleName.toUpperCase() == "PROCTOR"){
 								isProctor = true;
 							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
