@@ -3,6 +3,7 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1207,6 +1208,21 @@ public class SessionOperationController extends PageFlowController {
     	        	//TABESubtestValidation.validation(A, validateLevels, TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue());
     	        	
     	        }
+    	        
+    	        if(scheduledSession.getTestSession().getTestAdminId()!=null && scheduledSession.getTestSession().getTestAdminId()!=-1){
+    	        	if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+        	        	//subhendu
+    	        		ScheduledSession existingTestSession = scheduleTest.getScheduledSessionDetails(userName, scheduledSession.getTestSession().getTestAdminId());
+    	        		if(existingTestSession.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
+    	        			
+    	        			TestElement[] te = TestSessionUtils.setupSessionSubtests( existingTestSession.getScheduledUnits(), scheduledSession.getScheduledUnits());
+    	        			scheduledSession.setScheduledUnits(te);
+    	        			
+    	        		}
+    	        		
+        	        }
+    	        }
+    	        
             
     	       
     	 } catch (Exception e) {

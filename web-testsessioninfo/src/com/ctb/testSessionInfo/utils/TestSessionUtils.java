@@ -734,6 +734,11 @@ public class TestSessionUtils
     {
         return (subtest.getSubtestName().indexOf("Locator") > 0);
     }
+    
+    public static boolean isLocatorSubtest(TestElement subtest)
+    {
+        return (subtest.getItemSetName().indexOf("Locator") > 0);
+    }
 
     /**
      * sessionHasDefaultLocatorSubtest
@@ -826,6 +831,17 @@ public class TestSessionUtils
         for (int i=0 ; i<subtests.size() ; i++) {
             SubtestVO subtest = (SubtestVO)subtests.get(i);
             if (subtest.getId().intValue() == srcSubtest.getId().intValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isSubtestPresent(List<TestElement> subtests, TestElement srcSubtest)
+    {
+        for (int i=0 ; i<subtests.size() ; i++) {
+        	TestElement subtest = (TestElement)subtests.get(i);
+            if (subtest.getItemSetId().intValue() == srcSubtest.getItemSetId().intValue()) {
                 return true;
             }
         }
@@ -1126,5 +1142,65 @@ public class TestSessionUtils
     {
         return new Boolean(productType.equals(LASLINKS_PRODUCT_TYPE));
     }
+
+	public static TestElement[] setupSessionSubtests(TestElement[] sessionSubtests,	TestElement[] selectedSubtests) {
+
+        List<TestElement> resultList = new ArrayList<TestElement>();
+
+        // copy back non-default locator subtest from session subtest list into selected subtest list
+        // the order of locator subtest will be set at the top of the list
+        boolean isLocatorPresent = true;
+        if (sessionSubtests.length > 0) {
+        	TestElement locatorSubtest  = sessionSubtests[0];
+            if (isLocatorSubtest(locatorSubtest) && !(selectedSubtests.length>0 && locatorSubtest.getItemSetId().intValue()==selectedSubtests[0].getItemSetId().intValue()) && locatorSubtest.getSessionDefault().equals("F")) {
+                resultList.add(locatorSubtest);
+               
+            }
+        }
+
+        if(  !(sessionSubtests.length > 0 && selectedSubtests.length>0 && sessionSubtests[0].getItemSetId().intValue()==selectedSubtests[0].getItemSetId().intValue()) ){
+        	isLocatorPresent = false;
+        }
+        // set selected subtest to default subtest and copy to new list
+        for (int i=0 ; i<selectedSubtests.length ; i++) {
+        	TestElement subtest  = selectedSubtests[i];
+        	subtest.setSessionDefault("T");
+            resultList.add(subtest);
+        }
+
+        // copy back non-default subtests from session subtest list into selected subtest list
+        // the order of these subtests will be set at the end of the list
+        for (int i=0 ; i<sessionSubtests.length ; i++) {
+        	TestElement subtest  = sessionSubtests[i];
+            if (subtest.getSessionDefault().equals("F")) {
+                if (! isSubtestPresent(resultList, subtest)) {
+                	if(isLocatorPresent)
+                		subtest.setItemSetForm(null);
+                    resultList.add(subtest);
+                }
+            }
+        }
+        if( !isLocatorPresent )
+        	 TestSessionUtils.setDefaultLevel(resultList, "E");
+
+        return resultList.toArray(new TestElement[resultList.size()]);
+    
+		
+	}
+
+	private static void setDefaultLevel(List<TestElement> srcList,	String level) {
+
+        //List<SubtestVO> resultList = new ArrayList<SubtestVO>();
+        for (int i=0 ; i<srcList.size() ; i++) {
+        	TestElement src = srcList.get(i);
+            if (level.equals("1"))
+                src.setItemSetForm(level);
+            else
+            if (src.getItemSetForm() == null)
+                src.setItemSetForm(level);
+        }
+    
+		
+	}
 
 }
