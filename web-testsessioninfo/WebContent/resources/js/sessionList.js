@@ -2743,7 +2743,7 @@ function registerDelegate(tree){
     	var accessCodes=new Array();
     	var validStatus = true;
     	for(var i=0;i<subtestLength;i++){
-			accessCodes[i]= document.getElementById("aCodeB"+i).value;
+			accessCodes[i]= document.getElementById("aCodeB"+i).value.toLowerCase();
 		}
 		
 		if(validStatus && locatorSubtest!=null && locatorSubtest!=undefined && locatorSubtest.id != undefined ){
@@ -2751,7 +2751,7 @@ function registerDelegate(tree){
 			if(locator.checked != null && locator.checked !=undefined && locator.checked){	
 				var lAccessCode = $("#"+locatorSubtest.id+" input").val();
 				var arraylength = accessCodes.length + 1;
-				accessCodes[arraylength]=  lAccessCode;
+				accessCodes[arraylength]=  lAccessCode.toLowerCase();
 				
 			}
 		}
