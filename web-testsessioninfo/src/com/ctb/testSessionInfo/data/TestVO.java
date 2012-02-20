@@ -53,7 +53,7 @@ public class TestVO implements java.io.Serializable
     
     private String formOperand = TestSession.FormAssignment.ROUND_ROBIN;
     
-    public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests) {
+    public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests, SubtestVO locatorSubtest) {
         this.id = id;
         this.testName = testName;
         this.level = level;
@@ -63,6 +63,10 @@ public class TestVO implements java.io.Serializable
         //this.accessCode = getFirstAccessCode();
         this.hasMultipleSubtests = hasMultipleSubtests();
         this.isSubtestExists = getSubtestExistStatus();
+        if(locatorSubtest!= null) {
+        	this.locatorSubtest = locatorSubtest;
+        	this.autoLocator = true;
+        }
         this.subtestCount = getSubtestCount();
     }
 

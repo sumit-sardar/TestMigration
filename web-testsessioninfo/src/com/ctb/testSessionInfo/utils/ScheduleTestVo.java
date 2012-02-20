@@ -139,11 +139,7 @@ public class ScheduleTestVo implements Serializable{
             }
             
             TestVO testVO = new TestVO(tes[i].getItemSetId(), tes[i].getItemSetName(), 
-                    level, duration, subtestList);
-            if(locatorSubtest != null) {
-            	testVO.setLocatorSubtest(locatorSubtest);
-            	testVO.setAutoLocator(true);
-            }
+                    level, duration, subtestList, locatorSubtest);
                     
             if(accessCode!=null){
             	testVO.setAccessCode(accessCode);
