@@ -1213,9 +1213,6 @@ public class SessionOperationController extends PageFlowController {
     	        
     	        if(scheduledSession.getTestSession().getTestAdminId()!=null && scheduledSession.getTestSession().getTestAdminId()!=-1){
     	        	if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
-        	        	if(savedSessionMinData == null) {
-        	        		savedSessionMinData = scheduleTest.getScheduledSessionDetails(userName, scheduledSession.getTestSession().getTestAdminId());
-        	        	}
         	        	if(savedSessionMinData.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
     	        			TestElement[] te = TestSessionUtils.setupSessionSubtests( savedSessionMinData.getScheduledUnits(), scheduledSession.getScheduledUnits());
     	        			scheduledSession.setScheduledUnits(te);
