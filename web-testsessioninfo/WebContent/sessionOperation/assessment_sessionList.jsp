@@ -26,7 +26,8 @@
 	<input type="hidden" id="schedulerLastName" name = "schedulerLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
 	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
-	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/> 
+	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/>
+	<input type="hidden" id="loggedInUserId" name = "loggedInUserId" value='<%=schedulerUserId %>'/> 
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>
