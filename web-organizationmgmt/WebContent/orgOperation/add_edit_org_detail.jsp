@@ -1,6 +1,3 @@
-<%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="organizationApplicationResource" />
 <%
 Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 %>

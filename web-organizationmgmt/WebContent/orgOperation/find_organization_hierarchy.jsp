@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="organizationApplicationResource" />
 
 <input type="hidden" id="orgNameID" name = "orgNameID" value=<lb:label key="org.name" prefix="'" suffix="'"/>/>
 <input type="hidden" id="orgCodeID" name = "orgCodeID" value=<lb:label key="org.Code" prefix="'" suffix="'"/>/>
@@ -92,7 +89,7 @@
     </tr>
 </table>
 
-<jsp:include page="/orgOperation/add_edit_org_detail.jsp" />
+<%@include file="/orgOperation/add_edit_org_detail.jsp" %>
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

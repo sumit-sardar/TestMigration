@@ -1,9 +1,3 @@
-<%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
-<lb:bundle baseName="userApplicationResource" />
-
 	<div id="page-wrap">
         <ul class="dropdown">
         	<li id="assessments" class="simpleMenu"><a class="tab" href="#"><lb:label key="user.menu.assessments" /></a>

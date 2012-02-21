@@ -1,10 +1,3 @@
-<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
-<%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="organizationApplicationResource" />
-
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
 	if (broadcastMessages == null) broadcastMessages = new Integer(0);		
@@ -87,7 +80,7 @@
 				<h3><a href="#" ><lb:label key="dialog.myProfile.userInfo" /></a></h3>
 				<div id="User_Info" style="background-color: #FFFFFF;">					
 					<div id="infoDiv" style="display:inline;">
-						<jsp:include page="oas_user_info.jsp" />
+						<%@include file="oas_user_info.jsp" %>
 					</div>
 				</div>
 			</div>
@@ -95,7 +88,7 @@
 				<h3><a href="#" ><lb:label key="dialog.myProfile.contactInfo" /></a></h3>
 				<div id="Contact_Info" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div>
-						<jsp:include page="oas_contact_info.jsp" />
+						<%@include file="oas_contact_info.jsp" %>
 					</div>
 				</div>
 			</div>

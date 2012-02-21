@@ -1,7 +1,3 @@
-<%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="userApplicationResource" />
-
 <div id="changeUserPassword"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	

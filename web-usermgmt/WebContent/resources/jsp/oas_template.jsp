@@ -5,6 +5,16 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="userApplicationResource" />
+
+<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
+<netui-data:declareBundle bundlePath="webResources" name="web"/>
+<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<netui-data:declareBundle bundlePath="helpResources" name="help"/>
+
+<netui-template:setAttribute name="title" value="${bundle.web['finduser.window.title']}"/>
+<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageUsers']}"/>
 
 <html>
 <!--[if IE]><![endif]-->
@@ -120,7 +130,7 @@
 				<!-- HEADER SECTION -->
 				<tr class="bodyLayout">
 					<td>
-    					<jsp:include page="/resources/jsp/oas_header.jsp" />  					 
+    					<%@include file="/resources/jsp/oas_header.jsp" %>				 
 					</td>
 				</tr>
 
@@ -130,7 +140,7 @@
 				  	<td align="left" valign="top">
 
 					  <!-- TABS HEADERS -->
-					<jsp:include page="/resources/jsp/oas_navigation_menu.jsp" />
+					<%@include file="/resources/jsp/oas_navigation_menu.jsp" %>
 						<div class="feature" id="bodySection">
 							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" >
 							<tr>
@@ -146,7 +156,7 @@
 				<!-- FOOTER SECTION -->
 				<tr>
 				  	<td align="left" valign="top">
-    					<jsp:include page="/resources/jsp/oas_footer.jsp" />  
+				  		<%@include file="/resources/jsp/oas_footer.jsp" %> 
 				  	</td>
 				</tr>
 

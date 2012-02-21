@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="userApplicationResource" />
 
 <input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
 <input type="hidden" id="userEditTitleID" name = "userEditTitleID" value=<lb:label key="user.label.titleEdit" prefix="'" suffix="'"/>/>
@@ -115,9 +112,8 @@
         </td>
     </tr>
 </table>
-
-<jsp:include page="/userOperation/add_edit_user_detail.jsp" />
-<jsp:include page="/userOperation/change_password.jsp" />
+<%@include file="/userOperation/add_edit_user_detail.jsp" %>
+<%@include file="/userOperation/change_password.jsp" %>
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
