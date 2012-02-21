@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1078,12 +1079,13 @@ public class SessionOperationController extends PageFlowController {
     	    {  
     		 //Integer newTestAdminId = null;
     		 ScheduledSession scheduledSession = new ScheduledSession();
-    		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo , isAddOperation);
+    		 ScheduledSession savedSessionMinData = new ScheduledSession();
+    		 populateTestSession(scheduledSession,savedSessionMinData, httpServletRequest, validationFailedInfo , isAddOperation);
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo, isAddOperation ); 
+    			 populateScheduledUnits(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation ); 
     		 }
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo, isAddOperation );
+    			 populateSessionStudent(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation );
     		 }
     		 
     		 if(!validationFailedInfo.isValidationFailed()) {
@@ -1101,7 +1103,7 @@ public class SessionOperationController extends PageFlowController {
     	        return scheduledSession;
     }
     
-     private void populateScheduledUnits(ScheduledSession scheduledSession,
+     private void populateScheduledUnits(ScheduledSession scheduledSession, ScheduledSession savedSessionMinData,
 				HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
     	/* List subtestList = null;*/
 	     //boolean sessionHasLocator = false;
@@ -1211,11 +1213,11 @@ public class SessionOperationController extends PageFlowController {
     	        
     	        if(scheduledSession.getTestSession().getTestAdminId()!=null && scheduledSession.getTestSession().getTestAdminId()!=-1){
     	        	if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
-        	        	//subhendu
-    	        		ScheduledSession existingTestSession = scheduleTest.getScheduledSessionDetails(userName, scheduledSession.getTestSession().getTestAdminId());
-    	        		if(existingTestSession.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
-    	        			
-    	        			TestElement[] te = TestSessionUtils.setupSessionSubtests( existingTestSession.getScheduledUnits(), scheduledSession.getScheduledUnits());
+        	        	if(savedSessionMinData == null) {
+        	        		savedSessionMinData = scheduleTest.getScheduledSessionDetails(userName, scheduledSession.getTestSession().getTestAdminId());
+        	        	}
+        	        	if(savedSessionMinData.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
+    	        			TestElement[] te = TestSessionUtils.setupSessionSubtests( savedSessionMinData.getScheduledUnits(), scheduledSession.getScheduledUnits());
     	        			scheduledSession.setScheduledUnits(te);
     	        			
     	        		}
@@ -1309,13 +1311,14 @@ public class SessionOperationController extends PageFlowController {
 
 	}
 
-	private void populateSessionStudent(ScheduledSession scheduledSession,
+	private void populateSessionStudent(ScheduledSession scheduledSession,ScheduledSession savedSessionMinData,
 				HttpServletRequest httpServletRequest,
 			ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 
 		try {
 			
 			boolean isStudentListUpdated = true;
+			boolean isStudentManifestsExists = false;
 			 String productType				= RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.PRODUCT_TYPE, true, "");
 			if(!isAddOperation){
 				String isStudentUpdated = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
@@ -1372,8 +1375,16 @@ public class SessionOperationController extends PageFlowController {
 		} else {
 			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
 	    	scheduledSession.setStudents(schSession.getStudents());
+	    	isStudentManifestsExists = true;
 		}
 			
+		if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0 && !isAddOperation){
+			if(TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
+				updateStudentstudentManifests(scheduledSession, savedSessionMinData, isStudentManifestsExists );
+			}
+				
+		}
+		
 	  if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0) {
 		  SessionStudent [] sessionStudents = scheduledSession.getStudents();
 		  TestElement [] newTEs = scheduledSession.getScheduledUnits();
@@ -1451,6 +1462,37 @@ public class SessionOperationController extends PageFlowController {
              
 	
 
+	private void updateStudentstudentManifests(	ScheduledSession scheduledSession,	ScheduledSession savedSessionMinData, boolean isStudentManifestsExists) throws CTBBusinessException {
+		
+		if(scheduledSession.getTestSession().getItemSetId().intValue() == savedSessionMinData.getTestSession().getItemSetId().intValue()) {
+			if(isStudentManifestsExists){
+				return;
+			}
+			
+			ScheduledSession savedSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
+			SessionStudent[] savedStds = savedSession.getStudents();
+			SessionStudent[] scheduledStds = savedSession.getStudents();
+			Map<Integer, StudentManifest []> stdIdManifestsMap = new TreeMap<Integer, StudentManifest []>();
+			for( SessionStudent std: savedStds) {
+				stdIdManifestsMap.put(std.getStudentId(), std.getStudentManifests());
+			}
+			for(SessionStudent std: scheduledStds){
+				std.setStudentManifests(stdIdManifestsMap.get(std.getStudentId()) );
+			}
+			
+			
+		} else {
+			SessionStudent[] scheduledStds = scheduledSession.getStudents();
+			for( SessionStudent std: scheduledStds) {
+				std.setStudentManifests(null);
+			}
+			
+			
+			
+		}
+		
+	}
+
 	private SessionStudent[] updateRestrictedStudentsForTest(SessionStudent[] studentList, Integer testItemSetId, Integer testAdminId) throws CTBBusinessException {
 		SessionStudentData restrictedSSD = this.scheduleTest.getRestrictedStudentsForTest(userName, studentList, testItemSetId, testAdminId, null, null, null);
 		 SessionStudent [] restStudentNodes = restrictedSSD.getSessionStudents();
@@ -1476,7 +1518,7 @@ public class SessionOperationController extends PageFlowController {
          }
 	}
 
-	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
+	private void populateTestSession(ScheduledSession scheduledSession, ScheduledSession savedSessionMinData, HttpServletRequest request, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
 		
 		 try{
 			 TestSession testSession = new TestSession();
@@ -1528,7 +1570,14 @@ public class SessionOperationController extends PageFlowController {
 			 Integer testAdminId = null;
 			 if(!isAddOperation ){
 				 testAdminId = Integer.valueOf(testAdminIdString.trim());
-				 existingTestSession = scheduleTest.getScheduledSessionDetails(userName, testAdminId).getTestSession();
+				 ScheduledSession dbsavedSessionMinData = scheduleTest.getScheduledSessionDetails(userName, testAdminId);
+				 savedSessionMinData.setTestSession(dbsavedSessionMinData.getTestSession());
+				 savedSessionMinData.setScheduledUnits(dbsavedSessionMinData.getScheduledUnits());
+				 savedSessionMinData.setStudents(dbsavedSessionMinData.getStudents());
+				 savedSessionMinData.setCopyable(dbsavedSessionMinData.getCopyable());
+				 savedSessionMinData.setStudentsLoggedIn(dbsavedSessionMinData.getStudentsLoggedIn());
+				
+				 existingTestSession = savedSessionMinData.getTestSession();
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
 			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(this.getCustomerId(), itemSetId); 
