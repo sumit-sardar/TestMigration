@@ -2163,6 +2163,7 @@ public class SessionOperationController extends PageFlowController {
 			base.setTotal("2");
 			base.setTestSessionCUFU(this.sessionListCUFU);
 			base.setTestSessionPA(this.sessionListPA);
+			base.setSessionListPAMap(this.sessionListPAMap);
 			Gson gson = new Gson();
 			System.out.println ("completed Tab Json process time Start:"+new Date());
 			json = gson.toJson(base);
@@ -2458,8 +2459,12 @@ public class SessionOperationController extends PageFlowController {
 			} else {
 				this.setSessionListCUFU(new ArrayList<TestSessionVO>());
 		        this.setSessionListPA(new ArrayList<TestSessionVO>());
+		        this.setSessionListCUFUMap(new HashMap<Integer, Map>());
+		        this.setSessionListPAMap(new HashMap<Integer, Map>());
 		        base.setTestSessionCUFU(sessionListCUFU);
 		        base.setTestSessionPA(sessionListPA);
+		        base.setSessionListCUFUMap(sessionListCUFUMap);
+		        base.setSessionListPAMap(sessionListPAMap);
 			}
 			
 			
@@ -3334,10 +3339,13 @@ public class SessionOperationController extends PageFlowController {
         }
         this.setSessionListCUFU(sessionListCUFU);
         this.setSessionListPA(sessionListPA);
+        this.setSessionListCUFUMap(sessionListCUFUMap);
+        this.setSessionListPAMap(sessionListPAMap);
         base.setTestSessionCUFU(sessionListCUFU);
         base.setTestSessionPA(sessionListPA);
         base.setSessionListCUFUMap(sessionListCUFUMap);
         base.setSessionListPAMap(sessionListPAMap);
+        
         return base;
     }
     
