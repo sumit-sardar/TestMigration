@@ -1653,6 +1653,10 @@ public class SessionOperationController extends PageFlowController {
 	         if (productType!=null && (TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()))
 	         {
 	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
+	             if(overrideFormAssignment!=null)
+	            	 testSession.setOverrideFormAssignmentMethod(TestSession.FormAssignment.MANUAL); 
+	             
+	             testSession.setPreferredForm(null);  
 	         }
 
 	         if (hasBreakBoolean)
