@@ -2258,6 +2258,7 @@ function registerDelegate(tree){
 		}else if (subtestArr.length == 0  ){
 			document.getElementById("noSubtest").style.display = "none";
 			document.getElementById("subtestGrid").style.display = "none";
+			document.getElementById("subtestGrid").innerHTML = "";
 
 		}/*else{
 			subtestLength = 0;
