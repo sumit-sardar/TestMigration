@@ -1898,6 +1898,9 @@ public interface OrgNode extends JdbcControl
 	@JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUEMDRNUMBER  FROM ORG_NODE ORG WHERE ORG.ORG_NODE_MDR_NUMBER = {selectedMdrNumber} AND ORG.ACTIVATION_STATUS = 'AC'") // change for defect - 66238
     String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber) throws SQLException;
 	
+	@JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUEMDRNUMBER  FROM ORG_NODE ORG WHERE ORG.ORG_NODE_MDR_NUMBER = {selectedMdrNumber} AND ORG.ACTIVATION_STATUS = 'AC' AND ORG.ORG_NODE_ID != {orgNodeId}") // change for defect - 66238
+    String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber,int orgNodeId) throws SQLException;
+	
 	//END - Changes for LASLINK Customer
 	
 	//START - changes for TABE BAUM to delete organization node and assign remaining license to top node

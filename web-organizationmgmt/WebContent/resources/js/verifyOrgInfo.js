@@ -97,31 +97,33 @@ var isLasLinkCustomer = false;
   		var mdrField = "";
   		var invalidMDRCount = 0;
   		var invalidString = "";
-  		
+  		var selectedOrgId="";
   		if(isLasLinkCustomer == 'true') {
-  		
-  		$.ajax({
-		async:		false,
-		beforeSend:	function(){
-					UIBlock();
-					},
-		url:		'uniqueMDRNumber.do?mdrNumber='+mDRNumber,
-		type:		'POST',
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
-						$.unblockUI();
-					if(data.length > 0 && data == 'F')
-							invalidMDRCount += 1;
-						
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
-						window.location.href="/TestSessionInfoWeb/logout.do";
-						
-					},
-		complete :  function(){
-					}
-		});
+  			if(!isAddOrganization){
+ 				selectedOrgId = $("#list2").jqGrid('getGridParam', 'selrow');
+ 			} 		
+	  		$.ajax({
+			async:		false,
+			beforeSend:	function(){
+						UIBlock();
+						},
+			url:		'uniqueMDRNumber.do?mdrNumber='+mDRNumber+"&selectedOrgId="+selectedOrgId,
+			type:		'POST',
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI();
+						if(data.length > 0 && data == 'F')
+								invalidMDRCount += 1;
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/TestSessionInfoWeb/logout.do";
+							
+						},
+			complete :  function(){
+						}
+			});
 	  		if(invalidMDRCount > 0) {
 	  		
 	  			 setMessage($("#dupFormatID").val(), $("#mdrID").val(), "errorMessage", $("#mdrNumberID").val());

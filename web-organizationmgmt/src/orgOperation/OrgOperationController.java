@@ -603,9 +603,12 @@ public class OrgOperationController extends PageFlowController {
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
 			String MDRNumber = getRequest().getParameter("mdrNumber");
+			String selectedOrgId = getRequest().getParameter("selectedOrgId");
+			String validMDRNumber=null;
 
 			try {
-				String validMDRNumber = validMDRNumber(MDRNumber);
+				validMDRNumber = validMDRNumber(MDRNumber,selectedOrgId);
+				
 			Gson gson = new Gson();
 			json = gson.toJson(validMDRNumber);
 			
@@ -1255,15 +1258,20 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	}
     
     
- private String validMDRNumber(String mdrNumber) {
+ private String validMDRNumber(String mdrNumber, String selectedOrgId) {
         
     	mdrNumber = mdrNumber.trim();
         String mdrNumberFound ="F";
+        int orgNodeId;
+        
         try {
 	        if ( mdrNumber != null && mdrNumber.length()>0 &&  !(mdrNumber.length()< 8)) {
-	            
-	        	mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber);
-	           
+	        	if(selectedOrgId != null && !"".equals(selectedOrgId.trim())){
+	        		orgNodeId = Integer.parseInt(selectedOrgId); 
+		        	mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber,orgNodeId);
+	        	}else {
+	        		mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber);
+	        	}
 	        }         
         }
         catch (Exception e) {
