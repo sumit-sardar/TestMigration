@@ -1946,7 +1946,7 @@ function registerDelegate(tree){
 			multiselect:false,
 			//shrinkToFit: true,
 			pager: '#testPager', 
-			sortname: 'testName', 
+			sortname: 'level', 
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 150,
