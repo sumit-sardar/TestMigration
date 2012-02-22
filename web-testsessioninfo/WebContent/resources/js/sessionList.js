@@ -93,6 +93,7 @@ var mySessionCliked = false;
 var isPopUp = false;
 var isPrintTicket = false;
 var accomodationMap={};
+var accomodationMapExisting={};
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1139,9 +1140,21 @@ function registerDelegate(tree){
 				}
 			}
 			showAccoToolTipPopUp(event);
+		}else {
+			if(accomodationMapExisting[rowId]){
+				var obj = accomodationMapExisting[rowId];
+				for(var key in obj){
+					if(obj[key] == "T"){
+						$("#"+key+"Status").show();
+					}else {
+						$("#"+key+"Status").hide();
+					}
+				}
+				showAccoToolTipPopUp(event);
+			}
 		}
+	}
 		
-	}	
 	var htimer;
 	
 	function showAccoToolTipPopUp(event) {
