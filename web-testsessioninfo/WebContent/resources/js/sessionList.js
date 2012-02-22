@@ -1666,6 +1666,7 @@ function registerDelegate(tree){
 	function closeSubtestConfirmPopup() {
 		 closePopUp('subtestChangeConfirmationPopup');
 		 subtestChangeProcess();
+		 $('#studentAddDeleteInfo').hide();
 		 resetStudentSelection();
 		 hideSelectStudent();
 		 $('#list6').GridUnload();
