@@ -1976,7 +1976,8 @@ function registerDelegate(tree){
 					hideSubtestWarningMessage();
 					document.getElementById("modifyTestDiv").style.display = "none";
 					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
-					$('#displayMessage').hide();				
+					$('#displayMessage').hide();
+					var previousOffGrade = blockOffGradeTesting;
 					testSessionListRequired = getDataFromTestJson(selectedTestId, testSessionlist);
 					testJSONValue = testSessionListRequired.subtests;
 					if(testSessionListRequired.autoLocator){
@@ -2006,6 +2007,10 @@ function registerDelegate(tree){
 		 				}
 					} else {
 						subtestChangeProcess();
+						if(state != 'EDIT' && (AddStudentLocaldata == undefined || AddStudentLocaldata.length == undefined || AddStudentLocaldata.length <= 0) 
+							&& (previousOffGrade || blockOffGradeTesting)) {
+								hideSelectStudent();
+						}
 						selectedSubtestId = selectedTestId;
 						if(!offGradeCancled) {
 							sessionListRelatedData(testSessionListRequired);
