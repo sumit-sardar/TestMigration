@@ -1467,7 +1467,7 @@ public class SessionOperationController extends PageFlowController {
 			
 			ScheduledSession savedSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, scheduledSession.getTestSession().getTestAdminId());
 			SessionStudent[] savedStds = savedSession.getStudents();
-			SessionStudent[] scheduledStds = savedSession.getStudents();
+			SessionStudent[] scheduledStds = scheduledSession.getStudents();
 			Map<Integer, StudentManifest []> stdIdManifestsMap = new TreeMap<Integer, StudentManifest []>();
 			for( SessionStudent std: savedStds) {
 				stdIdManifestsMap.put(std.getStudentId(), std.getStudentManifests());
