@@ -351,6 +351,7 @@
 									//editDataCache.put(index,data.savedStudentsDetails);
 									cacheObjVal.indexValue = "studentDetails";
 									editDataCache.put(index,cacheObjVal);
+									accomodationMap = data.accomodationMap;
 									AddStudentLocaldata = data.savedStudentsDetails;
 									studentMap = new Map();
 									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									

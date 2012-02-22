@@ -42,6 +42,7 @@ public class Base {
 	private boolean donotScoreAllowed;
 	Map<Integer,Map> sessionListPAMap;
 	Map<Integer,Map> sessionListCUFUMap;
+	Map<Integer,Map> accomodationMap;
 	
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
@@ -265,6 +266,12 @@ public class Base {
 	}
 	public void setSessionListCUFUMap(Map<Integer, Map> sessionListCUFUMap) {
 		this.sessionListCUFUMap = sessionListCUFUMap;
+	}
+	public Map<Integer, Map> getAccomodationMap() {
+		return accomodationMap;
+	}
+	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
+		this.accomodationMap = accomodationMap;
 	}
 
 }

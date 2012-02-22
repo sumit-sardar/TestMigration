@@ -279,7 +279,7 @@ function populateSelectStudentGrid() {
 		   	$('#gs_screenReader').val("");
 		   	$('#gs_untimedTest').val("");
 
-		   	
+		   	accomodationMap = obj.accomodationMap;
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);

@@ -3,7 +3,6 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -30,7 +29,6 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.BroadcastUtils;
 import util.MessageResourceBundle;
 import util.RequestUtil;
-import util.TABESubtestValidation;
 import viewmonitorstatus.ViewMonitorStatusController.ViewMonitorStatusForm;
 
 import com.ctb.bean.request.FilterParams;
@@ -957,13 +955,14 @@ public class SessionOperationController extends PageFlowController {
     	    resp.setCharacterEncoding("UTF-8"); 
     	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+    	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
     	    	SessionStudent[] students =  scheduledSession.getStudents();
-    	    	List<SessionStudent> studentsList = buildStudentList(students);
+    	    	List<SessionStudent> studentsList = buildStudentList(students, accomodationMap);
     	    	vo.setSavedStudentsDetails(studentsList);
                 status.setSuccess(true);
                
@@ -987,7 +986,7 @@ public class SessionOperationController extends PageFlowController {
     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
     			 status.setValidationFailedInfo(validationFailedInfo);
     	    }
-    		
+    	    vo.setAccomodationMap(accomodationMap);
 			Gson gson = new Gson();
 			jsonData = gson.toJson(vo);
 			//System.out.println(jsonData);
@@ -2199,6 +2198,7 @@ public class SessionOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
+		Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
 		
 		String testId = getRequest().getParameter("selectedTestId");
 		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
@@ -2228,13 +2228,14 @@ public class SessionOperationController extends PageFlowController {
 	        //studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
-	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents());
+	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents(),accomodationMap);
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
 			base.setStudentNode(studentNodes);
 			base.setGradeList(this.studentGradesForCustomer);
+			base.setAccomodationMap(accomodationMap);
 			
 			Gson gson = new Gson();
 			//System.out.println ("Json process time Start:"+new Date());
@@ -3489,10 +3490,12 @@ public class SessionOperationController extends PageFlowController {
         }
     }
     
-    private List<SessionStudent> buildStudentList(SessionStudent [] sessionStudents) 
+    private List<SessionStudent> buildStudentList(SessionStudent [] sessionStudents, Map<Integer, Map> accomodationMap) 
     {
         List<SessionStudent> studentList = new ArrayList<SessionStudent>();
+        Map innerMap;
         for (int i=0 ; i<sessionStudents.length; i++) {
+        	innerMap = new HashMap();
             SessionStudent ss = (SessionStudent)sessionStudents[i];
             if(ss.getStatus()!=null) {
             	ss.setStatusEditable(ss.getStatus().getEditable());
@@ -3574,7 +3577,19 @@ public class SessionOperationController extends PageFlowController {
                      ss.setExtPin2(buf1.toString());
                  }
                  
-                 
+                 innerMap.put("screenMagnifier", ss.getScreenMagnifier());
+                 innerMap.put("screenReader", ss.getScreenReader());
+                 innerMap.put("calculator", ss.getCalculator());
+                 innerMap.put("testPause", ss.getTestPause());
+                 innerMap.put("untimedTest", ss.getUntimedTest());
+                 innerMap.put("highLighter", ss.getHighLighter());
+                 if("T".equals(ss.getExtendedTimeAccom()) || (ss.getExtendedTimeAccom() != null && !ss.getExtendedTimeAccom().equals("") && !ss.getExtendedTimeAccom().equals("F"))){
+                	 innerMap.put("extendedTimeAccom","T");
+            	 }else {
+            		 innerMap.put("extendedTimeAccom","F");
+            	 }
+                 innerMap.put("hasColorFontAccommodations",getHasColorFontAccommodations(ss));
+                 accomodationMap.put(ss.getStudentId(), innerMap);
                 studentList.add(ss);
                 //idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
 

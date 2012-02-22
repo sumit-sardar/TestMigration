@@ -92,6 +92,7 @@ var orgSelectVar = false;
 var mySessionCliked = false;
 var isPopUp = false;
 var isPrintTicket = false;
+var accomodationMap={};
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1128,8 +1129,8 @@ function registerDelegate(tree){
 	
 	
 	function showAccoToolTip(rowId,event){
-		if(AddStudentLocaldata[rowId]){
-			var obj = AddStudentLocaldata[rowId];
+		if(accomodationMap[rowId]){
+			var obj = accomodationMap[rowId];
 			for(var key in obj){
 				if(obj[key] == "T"){
 					$("#"+key+"Status").show();
@@ -1169,6 +1170,7 @@ function registerDelegate(tree){
 	
 	function hideAccoToolTipPopUp() {
 		clearTimeout(htimer);
+		$("tr[id$='Status']","#accommodationToolTip").hide();
 		document.getElementById("accommodationToolTip").style.display = "none";
 	}
 	
@@ -1191,7 +1193,7 @@ function registerDelegate(tree){
 		   			cellattr: function (rowId, tv, rawObject, cm, rdata) { 
 		   				var returnStr = '';
 						if(rawObject.hasAccommodations == 'Yes'){
-							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showAccoToolTip('+parseInt(rowId-1)+',event);" onmouseout="hideAccoToolTipPopUp();"' ;
+							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showAccoToolTip('+rawObject.studentId+',event);" onmouseout="hideAccoToolTipPopUp();"' ;
 						}else {
 							returnStr = 'style="white-space: normal;cursor:pointer;"' ;
 						}	

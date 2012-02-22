@@ -31,6 +31,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private String userTimeZone = "";
 	private boolean hasLocator = false;
 	private Integer locatorId = null;
+	Map<Integer,Map> accomodationMap;
 	
 
 	private static final long serialVersionUID = 1L;
@@ -218,6 +219,14 @@ public class ScheduledSavedTestVo implements Serializable {
 		savedTestDetails.setScheduledUnits(tes);
 		this.savedTestDetails = savedTestDetails;
 		
+	}
+
+	public Map<Integer, Map> getAccomodationMap() {
+		return accomodationMap;
+	}
+
+	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
+		this.accomodationMap = accomodationMap;
 	}
 
 	
