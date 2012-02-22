@@ -116,7 +116,7 @@ function populateStuTree() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						//$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 		
