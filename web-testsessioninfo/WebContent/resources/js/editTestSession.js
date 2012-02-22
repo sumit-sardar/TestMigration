@@ -18,11 +18,13 @@
 	var testDtlChange = "F";
 	var studentDtlChange = "F";
 	var proctorDtlChange = "F";
+	var cacheObjVal = {};
 		
   function editTestSession(){  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
-     $("#endTest").hide(); 
+     $("#endTest").hide();
+     cacheObjVal = {};
      var param = {};
      param.testAdminId = selectedTestAdminId;
  	
@@ -218,7 +220,7 @@
     
     	var testSessionList ={};
     	isPopUp = false;
-    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){   
+    if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){   
     	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
@@ -239,7 +241,8 @@
 				dataType:	'json',
 				data:		param,
 				success:	function(data, textStatus, XMLHttpRequest){
-								editDataCache.put(index,"selectTestGrid");
+								cacheObjVal.indexValue = "selectTestGrid";
+								editDataCache.put(index,cacheObjVal);
 								ProductData = data.productsDetails;
 								
 								 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
@@ -326,7 +329,7 @@
     
     function populateStudentGrid(wizard,index){
     	isPopUp = false;
-	  if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	  if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){
 	  	 	//processStudentAccordion();	   
 	  	 	wizard.accordion("activate", index);					
 	  }else{
@@ -345,7 +348,9 @@
 				success:	function(data, textStatus, XMLHttpRequest){
 								var stAccom = 0;
 								if (data.status.isSuccess){
-									editDataCache.put(index,data.savedStudentsDetails);	
+									//editDataCache.put(index,data.savedStudentsDetails);
+									cacheObjVal.indexValue = "studentDetails";
+									editDataCache.put(index,cacheObjVal);
 									AddStudentLocaldata = data.savedStudentsDetails;
 									studentMap = new Map();
 									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									
@@ -386,6 +391,8 @@
 			isPopUp = true;
 			wizard.accordion("activate", index);					
 			$.unblockUI();
+			cacheObjVal.indexValue = "studentDetails";
+			editDataCache.put(index,cacheObjVal);
 	  	}
 	   
 	   }
@@ -403,7 +410,7 @@
         	$("#addProctorButton").show();
         	$("#addProcMsg2").show();
         }
-	    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	    if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){
 	    		//processProctorAccordion();
 	    		isPopUp = true;
 	    		wizard.accordion("activate", index);					
@@ -422,7 +429,9 @@
 					success:	function(data, textStatus, XMLHttpRequest){
 									
 									if (data.status.isSuccess){	
-										editDataCache.put(index,data.savedProctorsDetails);	
+										//editDataCache.put(index,data.savedProctorsDetails);
+										cacheObjVal.indexValue = "proctorDetails";
+										editDataCache.put(index,cacheObjVal);	
 										addProctorLocaldata = data.savedProctorsDetails;
 										noOfProctorAdded = 	addProctorLocaldata.length;	
 										processProctorAccordion();
@@ -488,6 +497,7 @@
 		isSortable = true;
 		editDataCache = new Map();
         editDataMrkStds = new Map();
+        cacheObjVal = {};
   	}
   	
   	function calculateTimeInMin(val){
@@ -736,6 +746,7 @@
       	editDataCache = new Map();
         editDataMrkStds = new Map();
 		offGradeSubtestChanged = false;
+		cacheObjVal = {};
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');
