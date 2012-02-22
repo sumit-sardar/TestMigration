@@ -2097,9 +2097,9 @@ function registerDelegate(tree){
 				disabled = 'disabled ="disabled"';
 			}
 			if(hasAutolocator) {
-				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onChange="javascript:updateLocatorValue(); return false;" />';
+				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onClick="javascript:updateLocatorValue(); " />';
 			} else {
-				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onChange="javascript:updateLocatorValue(); return false;"/>';
+				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onClick="javascript:updateLocatorValue(); "/>';
 			}
 			
 			
