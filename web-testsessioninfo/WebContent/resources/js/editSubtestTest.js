@@ -378,8 +378,8 @@
 	    return index;
 	}
 	
-	function openModifyTestPopup() {
-		if(isButtonDisabled($("#modifyTestButton")))
+	function openModifyTestPopup(element) {
+		if(isButtonDisabled(element))
 			return true;
 			
 		hideSubtestValidationMessage();

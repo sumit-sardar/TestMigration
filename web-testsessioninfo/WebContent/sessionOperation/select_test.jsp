@@ -149,7 +149,7 @@
 									</td>
 									<td align="right" height="24">
 										<div id="modifyTest">
-											<a id="modifyTestButton" class="rounded {transparent} smallButton" onclick="javascript:openModifyTestPopup();" ><lb:label key="session.modifySubtest.button"/></a>
+											<a id="modifyTestButton" class="rounded {transparent} smallButton" onclick="javascript:openModifyTestPopup(this);" ><lb:label key="session.modifySubtest.button"/></a>
 										</div>
 									</td>
 								</tr>
