@@ -3583,6 +3583,11 @@ public class SessionOperationController extends PageFlowController {
                  innerMap.put("testPause", ss.getTestPause());
                  innerMap.put("untimedTest", ss.getUntimedTest());
                  innerMap.put("highLighter", ss.getHighLighter());
+                 innerMap.put("maskingRular", ss.getMaskingRular());
+                 innerMap.put("maskingTool", ss.getMaskingTool());
+                 innerMap.put("auditoryCalming", ss.getAuditoryCalming());
+                 innerMap.put("magnifyingGlass", ss.getMagnifyingGlass());
+                 
                  if("T".equals(ss.getExtendedTimeAccom()) || (ss.getExtendedTimeAccom() != null && !ss.getExtendedTimeAccom().equals("") && !ss.getExtendedTimeAccom().equals("F"))){
                 	 innerMap.put("extendedTimeAccom","T");
             	 }else {
@@ -3621,11 +3626,11 @@ public class SessionOperationController extends PageFlowController {
 	            "T".equals(sa.getUntimedTest()) ||
 	            "T".equals(sa.getHighLighter()) ||
 	            "T".equals(sa.getExtendedTimeAccom()) ||
-	           // (sa.getMaskingRuler() != null && !sa.getMaskingRuler().equals("") && !sa.getMaskingRuler().equals("F"))||
+	            (sa.getMaskingRular() != null && !sa.getMaskingRular().equals("") && !sa.getMaskingRular().equals("F"))||
 	            (sa.getExtendedTimeAccom() != null && !sa.getExtendedTimeAccom().equals("") && !sa.getExtendedTimeAccom().equals("F")) || 
-	           // (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
-	            //(sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
-	           // (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
+	            (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
+	            (sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
+	           (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
 	            sa.getQuestionBackgroundColor() != null ||
 	            sa.getQuestionFontColor() != null ||
 	            sa.getQuestionFontSize() != null ||

@@ -43,6 +43,7 @@ var isPagingEvent  = false;
 var isSortingEvent = false;
 var filterAppliedOrgMap = new Map();
 var studentEditStatusMap = new Map(); //changes for ie issue
+var accomodationMapForAll = {};
 
 /// FOR FILTER
 
@@ -279,7 +280,7 @@ function populateSelectStudentGrid() {
 		   	$('#gs_screenReader').val("");
 		   	$('#gs_untimedTest').val("");
 
-		   	accomodationMap = obj.accomodationMap;
+		   	accomodationMapForAll = obj.accomodationMap;
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
@@ -739,6 +740,9 @@ function returnSelectedStudent() {
 			var hasAccom = objstr.hasAccommodations;
 			if(hasAccom == 'Yes') {
 	 	 		studentWithaccommodation = studentWithaccommodation + 1;
+	 	 		if(!accomodationMap[objstr.studentId]){
+	 	 			accomodationMap[objstr.studentId] = accomodationMapForAll[objstr.studentId];
+	 	 		}
 	 	 	}
 	 	 	var orgArray = String(objstr.orgNodeId).split(",");
 	 	 	var mm= 0;

@@ -1420,6 +1420,7 @@ function registerDelegate(tree){
 						}
 					}
 				}
+				delete accomodationMap[delStuIdObjArray[i]];
 				studentTempMap.remove(delStuIdObjArray[i]);
 			}
 		}
