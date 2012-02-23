@@ -379,7 +379,10 @@
 	}
 	
 	function openModifyTestPopup() {
-	    hideSubtestValidationMessage();
+		if(isButtonDisabled($("#modifyTestButton")))
+			return true;
+			
+		hideSubtestValidationMessage();
 	    UIBlock();
 	    $("#modifyTestPopup").dialog( {
 	        title: "Modify Test",
