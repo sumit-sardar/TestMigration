@@ -249,7 +249,7 @@ function populateSelectProctorGrid() {
 				 	$("#"+ defaultUserId).addClass('ui-state-disabled');
 				 	
 				 	var loggedInUserId = $("#loggedInUserId").val();
-			 		if(loggedInUserId != defaultUserId){
+			 		if(loggedInUserId != defaultUserId && state == 'EDIT'){
 				 		var currentProctorRowData;
 						for(var i = 0; i < previousSavedProctorData.length; i++) {						
 							currentProctorRowData = previousSavedProctorData[i];
@@ -267,7 +267,7 @@ function populateSelectProctorGrid() {
 			 	$("#"+ defaultUserId).addClass('ui-state-disabled');
 			 	
 			 	var loggedInUserId = $("#loggedInUserId").val();
-			 	if(loggedInUserId != defaultUserId){
+			 	if(loggedInUserId != defaultUserId && state == 'EDIT'){
 			 		var currentProctorRowData;
 					for(var i = 0; i < previousSavedProctorData.length; i++) {						
 						currentProctorRowData = previousSavedProctorData[i];

@@ -435,6 +435,7 @@
 										cacheObjVal.indexValue = "proctorDetails";
 										editDataCache.put(index,cacheObjVal);	
 										addProctorLocaldata = data.savedProctorsDetails;
+										previousSavedProctorData = addProctorLocaldata;
 										noOfProctorAdded = 	addProctorLocaldata.length;	
 										processProctorAccordion();
 									}									

@@ -2985,9 +2985,10 @@ function registerDelegate(tree){
 					onloadProctorListGrid = true;
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 					var selectedRowData;
+					var loggedInUserId = $("#loggedInUserId").val();
 					for(var i = 0; i < allRowsInGrid.length; i++) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
-						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F")) {
+						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F") || (selectedRowData.userId == loggedInUserId)) {
 							$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
