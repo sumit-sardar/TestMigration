@@ -263,6 +263,7 @@
 								   }
 								}
 								offGradeSubtestChanged = true;
+								firstTimeOpen = true;
 								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
 								resetSubtestDetails();
 								// End : to show the test as selected when it appears in next page 

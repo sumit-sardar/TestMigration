@@ -94,6 +94,7 @@ var isPopUp = false;
 var isPrintTicket = false;
 var accomodationMap={};
 var accomodationMapExisting={};
+var firstTimeOpen = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -2034,6 +2035,12 @@ function registerDelegate(tree){
 							offGradeCancled = false;
 						}
 					}
+					if(state == 'EDIT' && isStdDetClicked && (AddStudentLocaldata == undefined || AddStudentLocaldata.length == undefined || AddStudentLocaldata.length <= 0) 
+						&& (previousOffGrade || blockOffGradeTesting) && !firstTimeOpen) {
+							hideSelectStudent();
+					}
+					if(firstTimeOpen)
+						firstTimeOpen = false;
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
