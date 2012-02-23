@@ -903,16 +903,16 @@ public class CurriculumCollector {
                 String level = rs.getString("subtestLevel");
                 System.out.println("*** OAS ROSTER ID: " + oasRosterId.toString());
                 if(null != level && level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
-                	System.out.println("*** Obj ID: " + primaryObjective.getPrimaryObjectiveId().toString());
-                	System.out.println("*** level: " + level);
+                	//System.out.println("*** Obj ID: " + primaryObjective.getPrimaryObjectiveId().toString());
+                	//System.out.println("*** level: " + level);
                 	 String[] objectiveScores = level.split("\\|");
                      for (int i = 0; i < objectiveScores.length; i++) {
                      	String[] individualObj = objectiveScores[i].split(",");
                      	long objId = Long.parseLong(individualObj[0]);
-                     	System.out.println("*** objId: " + objId);
+                     	//System.out.println("*** objId: " + objId);
                      	if(primaryObjective.getPrimaryObjectiveId() == objId) {
                      		primaryObjective.setSubtestLevel(individualObj[5]);
-                     		System.out.println("*** Obj Level: " + individualObj[5]);
+                     		//System.out.println("*** Obj Level: " + individualObj[5]);
                      	}
                      }
                 } else {
