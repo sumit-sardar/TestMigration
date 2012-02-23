@@ -4370,6 +4370,7 @@ function validNumber(str){
 }    
 
 	function updateLocatorValue(){
+		UIBlock();
 		var locator = document.getElementById("hasAutolocator");
 		if(!locator.checked){	
 				locator.value = "false";	
@@ -4384,16 +4385,21 @@ function validNumber(str){
 			hasAutolocator = true;
 			if(isTestBreak){
 				var accesscode = ProductData.accessCodeList[0];
+				var localAccesCodeMap = new Map();
+				for(var j=0; j<selectedSubtests.length; j++) {
+					var id = ($("#"+selectedSubtests[j].id).children() [0]).value.toLowerCase(); 
+					var val = ($("#"+selectedSubtests[j].id).children() [0]); 
+					localAccesCodeMap.put(id, val);
+				} 
 				for(var i=0; i<ProductData.accessCodeList.length; i++) {
-					var found = false;
-					for(var j=0; j<selectedSubtests.length; j++) {
-						if(($("#"+selectedSubtests[j].id).children() [0]).value.toLowerCase() == ProductData.accessCodeList[i].toLowerCase()){
-						 	found = true;
-						 	break;
-						}
+					var code = localAccesCodeMap.get(ProductData.accessCodeList[i].toLowerCase());
+					if( code == null )  {
+						accesscode = ProductData.accessCodeList[i];
+						break;
 					}
-					if(!found ) {accesscode = ProductData.accessCodeList[i]; break;}
+				
 				}
+				
 			    $("#"+locatorSubtest.id+" input").val(accesscode);
 			}
 			var allForm = $("[name=itemSetForm]");
@@ -4402,6 +4408,8 @@ function validNumber(str){
 			}
 			$("#itemSetForm")[0].value = "";//locator
 		}
+		
+		$.unblockUI();  
 	
 	}
 	
