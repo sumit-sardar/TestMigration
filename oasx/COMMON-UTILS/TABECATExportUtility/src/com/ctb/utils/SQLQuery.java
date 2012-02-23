@@ -37,10 +37,12 @@ public class SQLQuery {
 			+ " and careafct.studentid = :studentId "
 			+ " and careafct.sessionid = :sessionId ";
 	
-	public static String getSemScores = " select ist.item_set_name, siss.sem_score "
-			+ " from student_item_set_status siss, item_set ist " 
-			+ " where ist.sample = 'F' and siss.item_set_id = ist.item_set_id " 
-		    + " and siss.test_roster_id = :testRosterId";
+	public static String getSemScores = "select ist.item_set_name, siss.sem_score," 
+			+ " to_Char((maxdate.mdate),'MMDDYY HH24:MI:SS') as maxDate from" 
+			+ " student_item_set_status siss, item_set ist, " 
+			+ " (select max(completion_date_time) mdate from student_item_set_status" 
+			+ " where test_roster_id = ?) maxdate where ist.sample = 'F' and"
+			+ " siss.item_set_id = ist.item_set_id and siss.test_roster_id = ?";
 
 	public static String scoreSkilAreaOverAllSQL = "select compdim.name as name, compfact.scale_score as scaleScore, "
 			+ "compfact.grade_equivalent as gradeEquivalent, compfact.nrs_levelid as levelId"
@@ -89,7 +91,8 @@ public class SQLQuery {
            + " to_Char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
            + " ta.time_zone as timeZone,"
            + " tr.restart_number as restartNumber,"
-           + " tr.last_mseq as lastMSEQ"
+           + " tr.last_mseq as lastMSEQ,"
+           + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate" 
            + " from test_roster tr, test_admin ta"
            + " where tr.customer_id = ?"
            + " and tr.activation_status = 'AC'"

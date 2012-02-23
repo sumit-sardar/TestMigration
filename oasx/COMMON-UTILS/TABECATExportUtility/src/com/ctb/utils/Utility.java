@@ -238,17 +238,21 @@ public class Utility {
 
 	}
 	//For TimeZone Conversion
-	public static String getTimeZone(String Val, String Timezon,
+	public static String getTimeZone(String val, String timeZon,
 			boolean dateType) {
 
 		String newDate = null;
+		if (timeZon == null){
+			timeZon = "GMT";
+		}
+		
 		try {
-			String str_date = Val + " " + "GMT";
+			String str_date = val + " " + "GMT";
 			DateFormat formatter;
 			Date date;
 			formatter = new SimpleDateFormat("MMddyyyy HH:mm:ss zzz");
 			date = (Date) formatter.parse(str_date);
-			TimeZone tz = TimeZone.getTimeZone(Timezon);
+			TimeZone tz = TimeZone.getTimeZone(timeZon);
 			formatter.setTimeZone(tz);
 			System.out.println(formatter.format(date));
 			Date tempDate = (Date) formatter.parse(formatter.format(date));
@@ -260,7 +264,6 @@ public class Utility {
 				formatter.setTimeZone(tz);
 			}
 			newDate = formatter.format(tempDate);
-
 		} catch (ParseException e) {
 			System.out.println("Exception :" + e);
 

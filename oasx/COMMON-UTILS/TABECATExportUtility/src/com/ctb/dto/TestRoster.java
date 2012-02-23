@@ -21,6 +21,8 @@ public class TestRoster implements Serializable{
 	private String dateTestingCompleted;
 	private Integer lastMseq;
 	private Integer restartNumber;
+	private String timeZone;
+	private String startDate;
 	//private Integer orgNodeId;
 
 	/**
@@ -143,6 +145,30 @@ public class TestRoster implements Serializable{
 	 */
 	public void setRestartNumber(Integer restartNumber) {
 		this.restartNumber = restartNumber;
+	}
+	/**
+	 * @return the timeZone
+	 */
+	public String getTimeZone() {
+		return timeZone;
+	}
+	/**
+	 * @param timeZone the timeZone to set
+	 */
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+	/**
+	 * @return the startDate
+	 */
+	public String getStartDate() {
+		return startDate;
+	}
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
 	}
 	
 	

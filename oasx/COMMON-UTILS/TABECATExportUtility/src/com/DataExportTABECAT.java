@@ -127,8 +127,8 @@ public class DataExportTABECAT {
 				
 				Student studentInfo = roster.getStudent();
 				fillStudent(catData, studentInfo);
-				catData.setCustomerID(customerId.toString());
-				catData.setDateTestingCompleted(roster.getDateTestingCompleted());
+				catData.setCustomerID(customerId.toString());				
+			//	catData.setDateTestingCompleted(roster.getDateTestingCompleted());
 				if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
 					catData.setInterrupted("1");
 				}else{
@@ -233,10 +233,12 @@ public class DataExportTABECAT {
 				ros.setCustomerId(customerId);
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
-				ros.setDateTestingCompleted(Utility.getTimeZone(rs.getString(7).toString(),rs.getString(8).toString(),false));
+				//ros.setDateTestingCompleted(Utility.getTimeZone(rs.getString(7).toString(),rs.getString(8).toString(),true));
 				ros.setRestartNumber(rs.getInt(9));
 				ros.setLastMseq(rs.getInt(10));
+				ros.setStartDate(rs.getString(11));
 				ros.setStudent(getStudent(con,rs.getInt(5))); 
+				ros.setTimeZone(rs.getString(8));
 				rosterList.add(ros);
 			}
 			
@@ -451,6 +453,7 @@ public class DataExportTABECAT {
 		}
 	}
 	
+	//Fix for Defect 68453
 	private void setEthnicity(Set<StudentDemographic> sd, TABEFile tfil) {		
 		for (StudentDemographic studentDemo : sd) {
 			if(studentDemo.getValueName() == null){
@@ -465,7 +468,9 @@ public class DataExportTABECAT {
 				tfil.setEthnicity("4");
 			} else if (studentDemo.getValueName().startsWith("Hispanic")) {
 				tfil.setEthnicity("5");
-			} else if (studentDemo.getValueName().startsWith("Multiethnic")) {
+			} else if (studentDemo.getValueName().startsWith("Multi-")
+					|| studentDemo.getValueName().startsWith("Multiethnic")
+					|| studentDemo.getValueName().startsWith("Multi et")) {
 				tfil.setEthnicity("6");
 			} 
 		}
@@ -482,7 +487,7 @@ public class DataExportTABECAT {
 			} else if (studentDemo.getValueName().startsWith("Unemployed")) {
 				tfil.setLaborForceStatus("3");
 			}
-		}
+		}	
 	}
 	
 	
@@ -605,15 +610,15 @@ public class DataExportTABECAT {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+		String testCompleted = "";
 		try {
 			ps = con.prepareStatement(SQLQuery.getSemScores);
 			ps.setInt(1, roster.getTestRosterId());
+			ps.setInt(2, roster.getTestRosterId());
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				if (rs.getString(1).toString().equalsIgnoreCase("Mathematics Computation")){
-					abilityScore.setMathCompSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );
-			
+					abilityScore.setMathCompSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );			
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Reading")) {
 					abilityScore.setReadingSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")) {
@@ -621,12 +626,15 @@ public class DataExportTABECAT {
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Language")) {
 					abilityScore.setLanguageSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}
+				testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
+				
 			} 
 
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
 		
+		tfil.setDateTestingCompleted(Utility.getTimeZone(testCompleted, roster.getTimeZone(), true));
 		tfil.setAbilityScores(abilityScore);	
 	}
 	
@@ -640,8 +648,6 @@ public class DataExportTABECAT {
 		Method[] objectiveLevelMethods = ObjectiveLevel.class.getMethods();
 		Method[] objectiveMasteryMethods = ObjectiveMastery.class.getMethods();
 		ObjectiveObj objectiveObject = new ObjectiveObj();
-
-
 		
 		try{
 			ps = con.prepareStatement(SQLQuery.getObjectiveScores);
@@ -723,7 +729,6 @@ public class DataExportTABECAT {
 				while (rs.next()){
 					itemMap.put(rs.getString(1), rs.getString(2));
 				}				
-				//System.out.println("populateCustomer");
 			}finally {
 				SqlUtil.close(ps, rs);
 			}

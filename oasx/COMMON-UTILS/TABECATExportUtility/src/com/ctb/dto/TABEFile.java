@@ -27,16 +27,16 @@ public class TABEFile {
 	private String studentBirthDate;
 	private String studentGender;
 	private String studentId2;
-	private String ell;
-	private String ethnicity;
-	private String freeLunch;
-	private String iep;
-	private String lep;
-	private String laborForceStatus;
-	private String migrant;
-	private String section504;
+	private String ell = new String("0");
+	private String ethnicity = new String("0");
+	private String freeLunch = new String("0");
+	private String iep = new String("0");
+	private String lep = new String("0");
+	private String laborForceStatus = new String("0");
+	private String migrant = new String("0");
+	private String section504 = new String("0");
 	private String dateTestingCompleted;
-	private String interrupted;
+	private String interrupted = new String("0");
 
 	private AbilityScore abilityScores;
 	private GradeEquivalent gradeEquivalent;
