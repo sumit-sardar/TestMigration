@@ -25,6 +25,7 @@ var tempOrgDataInform = {};
 var tempProctorData = {};
 var tempAllSelectOrgProctor= {};
 var onloadGrid = false;
+var previousSavedProctorData =[];
 
 function showSelectProctor(){
 	$("#proctorAddDeleteInfo").hide();
@@ -248,10 +249,16 @@ function populateSelectProctorGrid() {
 				 	$("#"+ defaultUserId).addClass('ui-state-disabled');
 				 	
 				 	var loggedInUserId = $("#loggedInUserId").val();
-				 	if(loggedInUserId != defaultUserId){
-					 	$("#"+loggedInUserId+" td input").attr("disabled", true);
-					 	$("#"+ loggedInUserId).addClass('ui-state-disabled');
-			 		}
+			 		if(loggedInUserId != defaultUserId){
+				 		var currentProctorRowData;
+						for(var i = 0; i < previousSavedProctorData.length; i++) {						
+							currentProctorRowData = previousSavedProctorData[i];
+							if(currentProctorRowData.userId == loggedInUserId){
+								$("#"+loggedInUserId+" td input").attr("disabled", true);
+							 	$("#"+ loggedInUserId).addClass('ui-state-disabled');
+							}
+						}
+					}
 			 } 		 
 			 else {
 			 	var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
@@ -261,9 +268,15 @@ function populateSelectProctorGrid() {
 			 	
 			 	var loggedInUserId = $("#loggedInUserId").val();
 			 	if(loggedInUserId != defaultUserId){
-				 	$("#"+loggedInUserId+" td input").attr("disabled", true);
-				 	$("#"+ loggedInUserId).addClass('ui-state-disabled');
-			 	}
+			 		var currentProctorRowData;
+					for(var i = 0; i < previousSavedProctorData.length; i++) {						
+						currentProctorRowData = previousSavedProctorData[i];
+						if(currentProctorRowData.userId == loggedInUserId){
+							$("#"+loggedInUserId+" td input").attr("disabled", true);
+						 	$("#"+ loggedInUserId).addClass('ui-state-disabled');
+						}
+					}
+				}
 			 	
 				for(var i = 0; i < allRowsInGrid.length; i++) {
 			 		if(proctorIdObjArray[allRowsInGrid[i]]){
