@@ -2299,6 +2299,7 @@ function fillselectedOrgNode( elementId, orgList) {
    function setEditStudentDetail(SelectedStudentId) {
    		var str = idarray;
    		var isColorFontChecked; 
+   		var isAudioCalmEnabled;
 		//var indexOfId = str.indexOf(SelectedStudentId);
 		var indexOfId = -1;
 		
@@ -2317,10 +2318,22 @@ function fillselectedOrgNode( elementId, orgList) {
     		if(key == 'colorFont'){
     			isColorFontChecked = stuAccommodation[key];
     		}
+    		if(key == 'auditoryCalming'){
+    			isAudioCalmEnabled = stuAccommodation[key];
+    		}
+    		
     		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
 		     $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
 		     $("#Student_Accommodation_Information select[name='" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
+		
+		if(isAudioCalmEnabled){
+			$("#Student_Accommodation_Information #music_files").attr('disabled',false);
+		}else{
+			$("#Student_Accommodation_Information #music_files").attr('disabled',true);
+		}
+		
+		
 		if(isColorFontChecked){
 			enableColorSettingsLink("true");
 			setQuestionColorOptions();
