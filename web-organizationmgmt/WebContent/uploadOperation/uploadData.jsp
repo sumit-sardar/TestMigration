@@ -16,9 +16,8 @@
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 <netui-template:setAttribute name="title" value="${bundle.web['upload.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.uploadData']}"/>
-<netui-template:setAttribute name="templateHelpLink" value="${bundle.help['help.topic.howToUseTemplate']}"/>
 <netui-template:section name="bodySection">
- 
+  
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
