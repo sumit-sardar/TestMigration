@@ -15,7 +15,7 @@
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 
 <netui-template:setAttribute name="title" value="${bundle.web['findstudent.window.title']}"/>
-<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}"/>
+<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.outOfSchoolStudent']}"/>
 <netui-template:section name="bodySection">
 
 <!-- ********************************************************************************************************************* -->
@@ -43,7 +43,8 @@
 <netui:form action="beginOutOfSchoolStudent">
 <input type="hidden" id="menuId" name="menuId" value="OOSLink" />
 <input type="hidden" id="selectedOOSNodeId" />
-		<%@include file="/outOfSchoolOperation/out_of_school_select.jsp"%>
+
+        <jsp:include page="/outOfSchoolOperation/out_of_school_select.jsp" />
 
 </netui:form>
 

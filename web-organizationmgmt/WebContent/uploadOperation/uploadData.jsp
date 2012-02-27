@@ -16,9 +16,8 @@
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 <netui-template:setAttribute name="title" value="${bundle.web['upload.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.uploadData']}"/>
-<netui-template:setAttribute name="templateHelpLink" value="${bundle.help['help.topic.howToUseTemplate']}"/>
 <netui-template:section name="bodySection">
- 
+  
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
@@ -166,10 +165,6 @@
 			<div id="viewUploads" style="float:left; width:1210px; background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 				<table id="viewUploadsListId" class="gridTable"></table>
 				<div id="viewUploadsListPager" class="gridTable" ></div>
-				<script>
-					showLoading();
-					populateUploadListGrid();
-				</script>
 			</div>								
 		</td>
 	</tr>
@@ -252,9 +247,14 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	$(document).ready(function(){
+	
         $("#templateHeader").click(function() {
         	handleUploadMessages(null); 
 		});
+		
+		showLoading();
+		populateUploadListGrid();
+		
 	});
 </script>		
 

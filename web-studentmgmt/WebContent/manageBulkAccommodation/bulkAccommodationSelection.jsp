@@ -7,10 +7,13 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <% 
     StudentAccommodationsDetail accommodations = (StudentAccommodationsDetail)request.getAttribute("accommodations");
@@ -25,34 +28,16 @@
 	    	<tr>
 	        
 	        	<td nowrap=""> 
-	   				<h3><span>Select Accommodations</span></h3>
-					<p>Accommodations you add or delete apply to ALL the selected students when you click <b>Submit</b>. Clicking <b>Reset</b> clears selections in the section below. </p>
+	   				<span><b><lb:label key="stu.msg.accomPopupTitleText" /></b></span>
+					<p style="margin: 0 0 4px !important;"><lb:label key="stu.msg.accomPopupSubmitText" /></p>
+					<p style="margin: 0 0 4px !important;"><lb:label key="stu.msg.accomPopupResetText" /></p>
 				</td>
 				
 			</tr>
 		</tbody>
 	</table>
 	
-			<div style="display: block;" id="moduleStudentAccommodation_show">
-				<table class="Collapsible">
-					<tbody><tr class="Collapsible">
-						<td class="Collapsible">
-							<table class="Collapsible">
-								<tbody>
-									<tr class="Collapsible">
-										<td class="CollapsibleHeader" style="padding-top:2px">
-											 
-											<!--<input type="reset" value="  Reset  "/>-->
-											<input type="button" value="Reset" onclick="resetRadioAccommodation()"/>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</td>
-					</tr>
-					</tbody>
-					</table>
-					</div>
+			
 					
 
 <ctbweb:studentBulkAccommodations accommodations="<%=accommodations%>" customerConfigurations="<%=customerConfigurations%>" viewOnly="<%=viewOnly%>"/>
