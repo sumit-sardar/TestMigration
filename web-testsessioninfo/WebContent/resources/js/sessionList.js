@@ -91,6 +91,7 @@ var orgSelectVar = false;
 var mySessionCliked = false;
 var isPopUp = false;
 var isPrintTicket = false;
+var firstTimeOpen = false;//68415
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1880,7 +1881,8 @@ function registerDelegate(tree){
 						return;
 					}
 					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
-					$('#displayMessage').hide();				
+					$('#displayMessage').hide();
+					var previousOffGrade = blockOffGradeTesting;//68415
 					testSessionListRequired = getDataFromTestJson(selectedTestId, testSessionlist);
 					testJSONValue = testSessionListRequired.subtests;
 					//testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
@@ -1903,6 +1905,10 @@ function registerDelegate(tree){
 		 				}
 					} else {
 						subtestChangeProcess();
+						if(state != 'EDIT' && (AddStudentLocaldata == undefined || AddStudentLocaldata.length == undefined || AddStudentLocaldata.length <= 0) 
+							&& (previousOffGrade || blockOffGradeTesting)) {//68415
+								hideSelectStudent();
+						}//68415
 						selectedSubtestId = selectedTestId;
 						if(!offGradeCancled) {
 							sessionListRelatedData(testSessionListRequired);
@@ -1911,6 +1917,12 @@ function registerDelegate(tree){
 							offGradeCancled = false;
 						}
 					}
+					if(state == 'EDIT' && isStdDetClicked && (AddStudentLocaldata == undefined || AddStudentLocaldata.length == undefined || AddStudentLocaldata.length <= 0) 
+						&& (previousOffGrade || blockOffGradeTesting) && !firstTimeOpen) {//68415
+							hideSelectStudent();
+					}
+					if(firstTimeOpen)
+						firstTimeOpen = false;//68415
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
@@ -2673,9 +2685,10 @@ function registerDelegate(tree){
 					onloadProctorListGrid = true;
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 					var selectedRowData;
+					var loggedInUserId = $("#loggedInUserId").val();
 					for(var i = 0; i < allRowsInGrid.length; i++) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
-						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F")) {
+						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F") || (selectedRowData.userId == loggedInUserId)) {
 							$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
