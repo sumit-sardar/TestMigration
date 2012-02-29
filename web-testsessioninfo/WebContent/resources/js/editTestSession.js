@@ -18,11 +18,13 @@
 	var testDtlChange = "F";
 	var studentDtlChange = "F";
 	var proctorDtlChange = "F";
+	var cacheObjVal = {};//68415
 		
   function editTestSession(){  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
-     $("#endTest").hide(); 
+     $("#endTest").hide();
+     cacheObjVal = {};//68415
      var param = {};
      param.testAdminId = selectedTestAdminId;
  	
@@ -54,7 +56,7 @@
 								isTestDataExported == true;
 								}						
 							}
-							if(data.userRoleName == "PROCTOR"){
+							if(data.userRoleName.toUpperCase() == "PROCTOR"){ //Changes for defect #68399
 								isProctor = true;
 							}
 							if(data.savedTestDetails.studentsLoggedIn > 0){
@@ -218,7 +220,7 @@
     
     	var testSessionList ={};
     	isPopUp = false;
-    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){   
+    if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){   //68415
     	  if(stdsLogIn || isTestExpired || isProctor){
     	  	disableSelectTest(); 
     	  }else{
@@ -239,7 +241,8 @@
 				dataType:	'json',
 				data:		param,
 				success:	function(data, textStatus, XMLHttpRequest){
-								editDataCache.put(index,"selectTestGrid");
+								cacheObjVal.indexValue = "selectTestGrid";//68415
+								editDataCache.put(index,cacheObjVal);//68415
 								ProductData = data.productsDetails;
 								
 								 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
@@ -260,6 +263,7 @@
 								   }
 								}
 								offGradeSubtestChanged = true;
+								firstTimeOpen = true;//68415
 								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
 								// End : to show the test as selected when it appears in next page 
 								if(selectedTestSession.testSession.isRandomize == 'Y'){
@@ -325,7 +329,7 @@
     
     function populateStudentGrid(wizard,index){
     	isPopUp = false;
-	  if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	  if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){//68415
 	  	 	//processStudentAccordion();	   
 	  	 	wizard.accordion("activate", index);					
 	  }else{
@@ -344,7 +348,9 @@
 				success:	function(data, textStatus, XMLHttpRequest){
 								var stAccom = 0;
 								if (data.status.isSuccess){
-									editDataCache.put(index,data.savedStudentsDetails);	
+									//editDataCache.put(index,data.savedStudentsDetails);
+									cacheObjVal.indexValue = "studentDetails";//68415
+									editDataCache.put(index,cacheObjVal);//68415
 									AddStudentLocaldata = data.savedStudentsDetails;
 									studentMap = new Map();
 									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									
@@ -385,6 +391,8 @@
 			isPopUp = true;
 			wizard.accordion("activate", index);					
 			$.unblockUI();
+			cacheObjVal.indexValue = "studentDetails";//68415
+			editDataCache.put(index,cacheObjVal);//68415
 	  	}
 	   
 	   }
@@ -402,7 +410,7 @@
         	$("#addProctorButton").show();
         	$("#addProcMsg2").show();
         }
-	    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	    if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){//68415
 	    		//processProctorAccordion();
 	    		isPopUp = true;
 	    		wizard.accordion("activate", index);					
@@ -421,8 +429,11 @@
 					success:	function(data, textStatus, XMLHttpRequest){
 									
 									if (data.status.isSuccess){	
-										editDataCache.put(index,data.savedProctorsDetails);	
+										//editDataCache.put(index,data.savedProctorsDetails);
+										cacheObjVal.indexValue = "proctorDetails";//68415
+										editDataCache.put(index,cacheObjVal);	//68415
 										addProctorLocaldata = data.savedProctorsDetails;
+										previousSavedProctorData = addProctorLocaldata; // changes for defect #68400
 										noOfProctorAdded = 	addProctorLocaldata.length;	
 										processProctorAccordion();
 									}									
@@ -487,6 +498,7 @@
 		isSortable = true;
 		editDataCache = new Map();
         editDataMrkStds = new Map();
+        cacheObjVal = {};//68415
   	}
   	
   	function calculateTimeInMin(val){
@@ -741,6 +753,7 @@
       	editDataCache = new Map();
         editDataMrkStds = new Map();
 		offGradeSubtestChanged = false;
+		cacheObjVal = {};//68415
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');
