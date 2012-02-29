@@ -21,6 +21,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import util.BroadcastUtils;
 
+import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.Program;
@@ -39,6 +40,7 @@ import com.ctb.testSessionInfo.dto.ProgramStatusReportVO;
 import com.ctb.testSessionInfo.dto.SubtestStatus;
 import com.ctb.testSessionInfo.dto.TestStatusVO;
 import com.ctb.testSessionInfo.utils.BaseTree;
+import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
@@ -382,8 +384,9 @@ public class ProgramOperationController extends PageFlowController {
     private ProgramStatusInfo buildTestList(Integer programId, Integer selectedTestId, ProgramStatusInfo programStatusInfo) throws CTBBusinessException{
     	String testName = null;
     	this.testList = new LinkedHashMap();
+    	SortParams sort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.TEST_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 
-        TestElementData tests = this.programStatus.getTestsForProgram(this.userName, programId, null, null, null);
+        TestElementData tests = this.programStatus.getTestsForProgram(this.userName, programId, null, null, sort);
         TestElement[] testElements = tests.getTestElements();
         for(int i=0; i<testElements.length; i++){
         	this.testList.put(testElements[i].getItemSetId(), testElements[i].getItemSetName());
