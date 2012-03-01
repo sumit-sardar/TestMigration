@@ -1695,6 +1695,7 @@ function registerDelegate(tree){
 		 if(state == "EDIT"){
 		  	isStdDetClicked = true;
 		 }
+		 selectedAccessCodeMap = new Map();
 		
 	}
 	
@@ -1812,11 +1813,11 @@ function registerDelegate(tree){
 		if(subtestLength > 0){
 			subtestGridLoaded = false;
 			
-			document.getElementById("aCode").value = ProductData.accessCodeList[0];
 			
 			var testBreak = document.getElementById("testBreak");
 			if(!testBreak.checked){		
 				isTestBreak = false;
+				populateAccessCodeMap(isTestBreak);
 				createSubtestGrid();
 				//document.getElementById("aCodeHead").style.visibility = "hidden";
 				document.getElementById("aCode").style.visibility = "visible";			
@@ -1828,6 +1829,7 @@ function registerDelegate(tree){
 				$("#hasTestBreak").val("F"); 
 			}else{
 				isTestBreak = true;
+				populateAccessCodeMap(isTestBreak);
 				createSubtestGrid();
 				//document.getElementById("aCodeHead").style.visibility = "visible";
 				document.getElementById("aCode").style.visibility = "hidden";
@@ -1843,7 +1845,12 @@ function registerDelegate(tree){
 					}
 				}*/
 			}
-			
+			 var accessCode = selectedAccessCodeMap.get("AccessCode");
+			 if(accessCode==null){
+			 	accessCode = ProductData.accessCodeList[0];
+			 }
+			document.getElementById("aCode").value = accessCode; 
+
 		}
 	}
 	
@@ -2154,7 +2161,15 @@ function registerDelegate(tree){
 					locatorSubtestTableHtml +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					locatorSubtestTableHtml +='<div align="center" id="'+locatorSubtest.id+'">';
 					if(hasAutolocator){
-						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="'+ProductData.accessCodeList[0]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					    var accessCode = selectedAccessCodeMap.get(locatorSubtest.id);
+					    if(accessCode == null){
+					    	accessCode = getSelectUniqueAccessCode();
+					    	if(accessCode == undefined){
+					    		accessCode = selectedAccessCodeMap.get("AccessCode");
+					    	}
+					    	selectedAccessCodeMap.put(locatorSubtest.id, accessCode);
+					    }
+						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="'+accessCode+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					} else {
 						locatorSubtestTableHtml +='<input name="aCodeB_l" type="text" size="13" id="aCodeB_l" value="" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					}
@@ -2244,12 +2259,20 @@ function registerDelegate(tree){
 				
 				tr +='</td>';
 				if(isTestBreak){
+					var accessCode = selectedAccessCodeMap.get(subtestArr[i].id);
+					if(accessCode == null){
+						accessCode = getSelectUniqueAccessCode();
+						if(accessCode == undefined){
+					    	accessCode = selectedAccessCodeMap.get("AccessCode");
+					    }
+						selectedAccessCodeMap.put(subtestArr[i].id, accessCode);
+					}
 					tr +='<td height="23" width="289"  style="padding-left:5px;">';
 					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" >';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i+indexFactor]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+accessCode+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419"  style="padding-left:5px;">';
@@ -3465,6 +3488,7 @@ function registerDelegate(tree){
 		$("#hasTestBreak").val("F");
 		//document.getElementById("aCode").style.display = "none";
 		//populateDates();
+		 selectedAccessCodeMap = new Map();
 		subtestDataArr = testJSONValue;
 		allSubtests    = getCopy(testJSONValue);
 		selectedSubtests = testJSONValue;
@@ -4414,5 +4438,28 @@ function validNumber(str){
 		$.unblockUI();  
 	
 	}
+
+	function populateAccessCodeMap(isTestBreak){
+	  	var subtestLength = selectedSubtests.length;
+	  	
+	  	if(!isTestBreak ){
+	  		for(var i=0;i<subtestLength;i++){	
+		   			var itemSetIdTd = document.getElementById("itemSetIdTD"+i).value;
+			      	var selectedAccessCode = document.getElementById("aCodeB"+i).value;
+			      	selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
+			}
+			if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && hasAutolocator) {
+				var itemSetIdTd = document.getElementById("itemSetIdTD").value;
+			    var selectedAccessCode = document.getElementById("aCodeB_l").value;
+				selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
+			}
+	  	} else {
+	  		var selectedAccessCode = document.getElementById("aCode").value;
+			selectedAccessCodeMap.put('AccessCode', selectedAccessCode);
+
+	  	}
+
+	}
+	
 	
 	
