@@ -1712,6 +1712,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		if (addedOrgCategoryId == null || addedOrgCategoryId == undefined ){
 		addedOrgCategoryId = parseInt(parentElementBeforeAdd.getAttribute("cid")) + 1;
 		}
+		//Changes for defect 68432
+		if(!jsonData[0].hasOwnProperty("children") && parentElementBeforeAdd.getAttribute("cid") ==1){
+			if(jsonData[0].children == undefined){
+	     		jsonData[0].children = [];
+	     	}
+			jsonData[0].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+			//$(parentElementBeforeAdd).removeClass("jstree-closed").addClass("jstree-open");//explicitly opening node
+		}//68432
 		prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
 		var obj = map.get(currentSelectedId);
 		var addedObject = map.get(addedOrgId);
