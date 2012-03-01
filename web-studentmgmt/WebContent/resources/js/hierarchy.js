@@ -2477,13 +2477,15 @@ function setSelectedValue(selectObj, valueToSet) {
 				url:		'deleteStudent.do',
 				type:		'POST',
 				data:		param,
-				dataType:	'html',
+				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){	
 								
 							    $("#deleteStatus").val(data);
 																														 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 							}
