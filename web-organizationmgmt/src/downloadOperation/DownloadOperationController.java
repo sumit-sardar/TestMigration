@@ -252,13 +252,13 @@ public class DownloadOperationController extends PageFlowController {
 		Row row1 = new Row("1");		
 		String[] atts1 = new String[2];
 		atts1[0] = "User Data";
-		atts1[1] = "Users in your organization located at or below your organizational assignment.";
+		atts1[1] = "Users in your group located at or below your group assignment.";
 		row1.setCell(atts1);
 
 		Row row2 = new Row("2");		
 		String[] atts2 = new String[2];
 		atts2[0] = "Student Data";
-		atts2[1] = "Students in your organization associated with your user login.";
+		atts2[1] = "Students in your group associated with your user login.";
 		row2.setCell(atts2);
 		
 		ArrayList rows = new ArrayList();
