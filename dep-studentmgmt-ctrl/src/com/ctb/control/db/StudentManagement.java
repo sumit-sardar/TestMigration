@@ -17,6 +17,7 @@ import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -1071,4 +1072,8 @@ public interface StudentManagement extends JdbcControl
      //Added for TABE-BAUM 060: Unique Student ID
      @JdbcControl.SQL(statement = "  select count(1) as total from student where activation_status = 'AC' and customer_id = {customerId} and  trim(ext_Pin1) = {studentNumber} {sql: searchCriteria} " )
 	 Integer validateUniqueStudentId(Integer customerId, String studentNumber, String searchCriteria)throws SQLException;
+     
+     @JdbcControl.SQL(statement = "select distinct iset.item_set_id as itemId, iset.item_set_name as itemSetName from item_Set iset, test_catalog tc, item_set_ancestor isa where tc.test_catalog_id = {catalogId} and tc.item_set_id = isa.ancestor_item_set_id and isa.item_set_type = 'TD' and isa.item_Set_id = iset.item_set_id and iset.activation_status = 'AC'" )
+	 ScorableItem[] getContentAreasForCatalog(Integer catalogId)throws SQLException;
+     
 }

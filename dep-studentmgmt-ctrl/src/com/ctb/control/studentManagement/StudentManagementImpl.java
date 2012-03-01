@@ -32,6 +32,7 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -45,6 +46,7 @@ import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.CustomerConfigurationDataNotFoundException;
+import com.ctb.exception.studentManagement.CustomerContentAreasNotFoundException;
 import com.ctb.exception.studentManagement.CustomerDemographicDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerReportDataNotFoundException;
 import com.ctb.exception.studentManagement.OrgNodeDataNotFoundException;
@@ -2605,5 +2607,29 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 		return isIDUnique;
+	}
+	
+	/**
+	 * Get grades for the specified customer.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param customerId - identifies the customer whose information is desired
+	 * @return String []
+	 * @throws CTBBusinessException
+	 */
+	public ScorableItem [] getContentAreaForCatalog(String userName, Integer customerId, Integer catalogId) throws CTBBusinessException
+	{
+		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getContentAreaForCatalog");
+		try {
+			ScorableItem [] contentAreas = null;
+			contentAreas = studentManagement.getContentAreasForCatalog(catalogId.intValue());
+			
+			return contentAreas;
+		} catch (SQLException se) {
+			CustomerContentAreasNotFoundException tee = new CustomerContentAreasNotFoundException("StudentManagementImpl: getContentAreaForCustomer: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+
 	}
 } 

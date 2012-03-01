@@ -7,6 +7,7 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
@@ -493,6 +494,16 @@ public interface StudentManagement
    
    //Added for TABE-BAUM 060: Unique Student ID
 	boolean validateUniqueStudentId(Boolean isCreateNew, Integer customerId , Integer studentId, String studentIDNumber)throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+     * Get grades for the specified customer.
+     * @param userName - identifies the calling user
+     * @param customerId - identifies the customer whose information is desired
+     * @return String []
+     * @throws CTBBusinessException
+     */
+   
+	ScorableItem[] getContentAreaForCatalog(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer catalogId) throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8" import="java.util.*"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
@@ -65,10 +65,7 @@
         </td>
         <td class="tableFilter" width="100" align="right">Completed ContentArea:</td>
         <td class="tableFilter" width="*">
-           <!--   <netui:select optionsDataSource="${pageFlow.contentAreaNames}" dataSource="actionForm.studentProfile.completedContentArea" size="1" style="width:320px" tabindex="10" disabled="true"/>-->
-        	<select id= "contentAreas" style="width:320px" tabindex="10" name="wlw-select_key:{actionForm.studentProfile.completedContentArea}">
-        		<option value="Any content area">Any content area</option>
-        	</select>
+             <netui:select tagid= "contentAreas" optionsDataSource="${requestScope.contentAreaList}" dataSource="actionForm.studentProfile.completedContentArea" size="1" style="width:320px" tabindex="10"/>
         </td>
     </tr>
     <tr class="tableFilter" width = "100%" >

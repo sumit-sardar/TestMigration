@@ -158,7 +158,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setAccessCode(this.accessCode);
         copied.setTestAdminId(this.testAdminId);
         copied.setItemCountCRAI(this.itemCountCRAI);
-        
+        copied.setCompletedContentArea(this.completedContentArea);
         
         
         return copied;       

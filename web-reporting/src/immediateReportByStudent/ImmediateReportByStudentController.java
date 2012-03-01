@@ -2,8 +2,11 @@ package immediateReportByStudent;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -179,6 +182,14 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			 
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
+			//this.getRequest().setAttribute("contentAreaList", this.contentAreaNames);
+			HashMap valMap = new LinkedHashMap();
+			valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
+			for(ScorableItem si : this.contentAreaNames){
+				valMap.put(si.getItemId().toString(), si.getItemSetName());
+			}
+			
+			this.getRequest().setAttribute("contentAreaList", valMap);
 		}
 		
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
@@ -541,6 +552,10 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			form.getStudentProfile().setScoringStatus(this.scoringStatusOptions[0]);
 		
 		//this.contentAreaNames = getContentAreaOptions( action );
+		HashMap valMap = new LinkedHashMap();
+		valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
+		this.getRequest().setAttribute("contentAreaList", valMap);
+				
 		if (comContentArea != null)
 			form.getStudentProfile().setCompletedContentArea(comContentArea);
 		else

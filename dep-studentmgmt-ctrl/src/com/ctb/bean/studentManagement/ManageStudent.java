@@ -48,6 +48,8 @@ public class ManageStudent extends CTBBean
     private String testPurpose;
     //END- (LLO82) StudentManagement Changes For LasLink product
     
+    private String completedContentArea;
+    
 	/**
 	 * @return the testPurpose
 	 */
@@ -341,6 +343,12 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setCompletionStatus(String completionStatus) {
 		this.completionStatus = completionStatus;
+	}
+	public String getCompletedContentArea() {
+		return completedContentArea;
+	}
+	public void setCompletedContentArea(String completedContentArea) {
+		this.completedContentArea = completedContentArea;
 	}
     
 } 
