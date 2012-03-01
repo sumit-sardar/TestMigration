@@ -1,0 +1,195 @@
+/**
+ * orderlist.css
+ */
+
+
+/** ORDER LIST *****************************************************************/
+
+table.layout 
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+}
+
+tr.layout               
+{ 
+    background-color: #cc9; 
+    vertical-align: top; 
+}
+
+tr.layout td            
+{ 
+    padding: 10px;
+}
+
+tr.layoutButtom               
+{ 
+    background-color: #cc9; 
+    vertical-align: top; 
+}
+
+tr.layoutButtom td            
+{ 
+    padding: 0px 5px 5px 0px; 
+}
+
+
+table.columnLayout            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+    height: 204px; 
+    border-style: solid; 
+    border-width: 1px; 
+}
+
+tr.columnLayout               
+{ 
+    background-color: #fff; 
+    border-style: solid; 
+    border-width: 1px; 
+    vertical-align: top; 
+}
+
+tr.columnLayout td            { 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000; 
+    cursor: default; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    padding: 0px; 
+}
+
+table.columnButtonLayout            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+    height: 204px;
+}
+
+tr.columnButtonLayout               
+{ 
+    background-color: #cc9; 
+    vertical-align: middle; 
+}
+
+tr.columnButtonLayout td            { 
+    padding: 2px; 
+    text-align: center; 
+}
+
+
+tr.columnLayout th      { 
+    background-color: #ffc; 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: left; 
+    height: 25px;
+    padding: 0px; 
+}
+
+
+
+table.dynamic            
+{ 
+    border-collapse: collapse; 
+    width: 100%;
+}
+
+tr.dynamic 
+{ 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    height: 25px;
+}
+
+tr.dynamic td            
+{ 
+    background-color: #fff; 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    height: 25px;
+    padding: 2px 5px 2px 5px; 
+}
+ 
+
+tr.dynamicHeader 
+{
+    border-style: solid; 
+    border-width: 1px; 
+    height: 25px;
+}        
+
+tr.dynamicHeader th      
+{ 
+    background-color: #ffc; 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: left; 
+    height: 25px;
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicHilight        { 
+    background-color: #ccc; 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicHilight td     { 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    height: 25px;
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicChosen         { 
+    background-color: #369; 
+    border-color: #369; 
+    border-style: solid; 
+    border-width: 1px; 
+    padding: 2px 5px 2px 5px; 
+}
+
+tr.dynamicChosen td      { 
+    border-color: #cc9; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #fff; 
+    vertical-align: middle; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    height: 25px;
+    padding: 2px 5px 2px 5px; 
+}
+ 
