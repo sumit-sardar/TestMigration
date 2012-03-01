@@ -92,6 +92,8 @@ var mySessionCliked = false;
 var isPopUp = false;
 var isPrintTicket = false;
 var firstTimeOpen = false;//68415
+var selectedAccessCodeMap = new Map();
+var selectedSubtests = new Array();
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1605,6 +1607,7 @@ function registerDelegate(tree){
 		 if(state == "EDIT"){
 		  	isStdDetClicked = true;
 		 }
+		selectedAccessCodeMap = new Map();
 		
 	}
 	
@@ -1712,11 +1715,11 @@ function registerDelegate(tree){
 		if(subtestLength > 0){
 			subtestGridLoaded = false;
 			
-			document.getElementById("aCode").value = ProductData.accessCodeList[0];
-			
+		
 			var testBreak = document.getElementById("testBreak");
 			if(!testBreak.checked){		
 				isTestBreak = false;
+				populateAccessCodeMap(isTestBreak);
 				createSubtestGrid();
 				//document.getElementById("aCodeHead").style.visibility = "hidden";
 				document.getElementById("aCode").style.visibility = "visible";			
@@ -1728,6 +1731,7 @@ function registerDelegate(tree){
 				$("#hasTestBreak").val("F"); 
 			}else{
 				isTestBreak = true;
+				populateAccessCodeMap(isTestBreak);
 				createSubtestGrid();
 				//document.getElementById("aCodeHead").style.visibility = "visible";
 				document.getElementById("aCode").style.visibility = "hidden";
@@ -1743,7 +1747,11 @@ function registerDelegate(tree){
 					}
 				}*/
 			}
-			
+	var accessCode = selectedAccessCodeMap.get("AccessCode");
+			 if(accessCode==null){
+			 	accessCode = ProductData.accessCodeList[0];
+			 }
+			document.getElementById("aCode").value = accessCode; 
 		}
 	}
 	
@@ -1997,27 +2005,35 @@ function registerDelegate(tree){
 				tr +='<tr>';
 				tr +='<td height="23" width="24" bgcolor="#FFFFFF">';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
-				tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
+				tr +='<input type = "hidden" id ="itemSetIdTD'+i+'" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
 				if(subtestArr[i].level != undefined){
-					tr +='<input type = "hidden" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
+					tr +='<input type = "hidden" name ="itemSetForm" id ="itemSetForm" value ="'+subtestArr[i].level+'" />';
 				} else {
-					tr +='<input type = "hidden" name ="itemSetForm" value ="" />';
+					tr +='<input type = "hidden" name ="itemSetForm" id ="itemSetForm" value ="" />';
 				}
 				
 				if(subtestArr[i].sessionDefault != undefined){
-					tr +='<input type = "hidden" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
+					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
 				} else {
-					tr +='<input type = "hidden" name ="sessionDefault" value ="" />';
+					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="" />';
 				}
 				
 				tr +='</td>';
 				if(isTestBreak){
+					var accessCode = selectedAccessCodeMap.get(subtestArr[i].id);
+					if(accessCode == null){
+						accessCode = getSelectUniqueAccessCode();
+						if(accessCode == undefined){
+					    	accessCode = selectedAccessCodeMap.get("AccessCode");
+					    }
+						selectedAccessCodeMap.put(subtestArr[i].id, accessCode);
+					}
 					tr +='<td height="23" width="289" bgcolor="#FFFFFF" style="padding-left:5px;">';
 					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+accessCode+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -3165,7 +3181,9 @@ function registerDelegate(tree){
 		$("#hasTestBreak").val("F");
 		//document.getElementById("aCode").style.display = "none";
 		//populateDates();
+	selectedAccessCodeMap = new Map();
 		subtestDataArr = testJSONValue;
+		selectedSubtests = testJSONValue;
 		if(subtestDataArr!= undefined && subtestDataArr.length>1){
 			document.getElementById("testBreak").disabled=false;
 		} else {
@@ -4061,4 +4079,37 @@ function validNumber(str){
 		}
 	} 
 	return true;
-}    
+}  
+
+	function populateAccessCodeMap(isTestBreak){
+	  	var subtestLength = selectedSubtests.length;
+	  	
+	  	if(!isTestBreak ){
+	  		for(var i=0;i<subtestLength;i++){	
+		   			var itemSetIdTd = document.getElementById("itemSetIdTD"+i).value;
+			      	var selectedAccessCode = document.getElementById("aCodeB"+i).value;
+			      	selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
+			}
+			
+	  	} else {
+	  		var selectedAccessCode = document.getElementById("aCode").value;
+			selectedAccessCodeMap.put('AccessCode', selectedAccessCode);
+
+	  	}
+
+	}
+	
+	function getSelectUniqueAccessCode() {
+		for(var i=0; i<ProductData.accessCodeList.length; i++) {
+			var found = false;
+			var keys = selectedAccessCodeMap.getKeys();
+			for(var j=0; j<keys.length; j++) {
+				if(String(selectedAccessCodeMap.get(keys[j])).toLowerCase() ==  ProductData.accessCodeList[i].toLowerCase() ){
+					found = true;
+					break;
+				}
+			}
+			if( !found )
+				return  ProductData.accessCodeList[i];
+		}
+	}
