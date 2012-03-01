@@ -175,7 +175,9 @@ function registerDelegate(tree){
 			if (currentCategoryLevel == 1) {	
 				dataObj2 = [];	
 				var indexOfRoot = getIndexOfRoot(currentNodeId);
-				populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
+				if(jsonData[0].hasOwnProperty("children")){
+					populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
+				}
 			}
 	
 			var cacheData = map.get(currentNodeId);
@@ -1405,7 +1407,11 @@ function deleteOrganizationDetail(){
 	//method triggered from library
 	  function customLoad(){
 	  	//console.log("Custom Load called");
-	    pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray);
+	  	if(jsonData[0].hasOwnProperty("children")){
+	  		if(jsonData[0].children.length > 0){
+	    		pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray);
+	    	}
+	    }
 	  }
   
     function pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray){
@@ -1706,6 +1712,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		if (addedOrgCategoryId == null || addedOrgCategoryId == undefined ){
 		addedOrgCategoryId = parseInt(parentElementBeforeAdd.getAttribute("cid")) + 1;
 		}
+		//Changes for defect 68432
+		if(!jsonData[0].hasOwnProperty("children") && parentElementBeforeAdd.getAttribute("cid") ==1){
+			if(jsonData[0].children == undefined){
+	     		jsonData[0].children = [];
+	     	}
+			jsonData[0].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+			//$(parentElementBeforeAdd).removeClass("jstree-closed").addClass("jstree-open");//explicitly opening node
+		}//68432
 		prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
 		var obj = map.get(currentSelectedId);
 		var addedObject = map.get(addedOrgId);
@@ -1726,7 +1740,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				obj = [];
 	     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
 	     	obj.children = [];
-			jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+	     	if(!jsonData[index].hasOwnProperty("children")){//68432
+				jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+			}
 		}
 		
 		//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
