@@ -15,7 +15,7 @@ function populateDownloadListGrid() {
 			multiselect:false,
 			viewrecords: true, 
 			height: '30px',  			
-			caption: "Download Data",
+			caption: "Export Data",
 			onSelectRow: function (rowId) {
 				if (rowId == 1)  
 					document.getElementById('downloadFile').value = "userFile";
