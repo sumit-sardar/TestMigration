@@ -382,7 +382,7 @@ public class ScheduleTestVo implements Serializable{
 		}
 		
 		if(maxSubtestCount>0){
-			this.accessCodeList = scheduleTest.getFixedNoAccessCode(maxSubtestCount);
+			this.accessCodeList = scheduleTest.getFixedNoAccessCode(maxSubtestCount+2);
 		}
 		
 	}
