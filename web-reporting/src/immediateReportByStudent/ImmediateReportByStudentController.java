@@ -214,7 +214,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				contentAreas =  this.studentManagement.getContentAreaForCatalog(this.userName, this.customerId, catalogId);
 			
 			List options = new ArrayList();
-			options.add(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
+			//options.add(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 			if(contentAreas != null) {
 				for (int i=0 ; i<contentAreas.length ; i++) {        
 					options.add(contentAreas[i]);
