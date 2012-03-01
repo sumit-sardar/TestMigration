@@ -44,7 +44,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	<div id="accordion" style="width:99.5%;">
 			
 			<div>
-				<h3><a href="#">Organization Information</a></h3>
+				<h3><a href="#">Group Information</a></h3>
 				
 					<div id="Organization_Information" style="background-color: #FFFFFF;">
 	

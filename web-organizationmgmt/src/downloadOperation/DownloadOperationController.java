@@ -8,17 +8,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-import utils.Attribute;
-import utils.Base;
 import utils.BroadcastUtils;
-import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
 import utils.Row;
 import utils.UploadDownload;
@@ -33,10 +29,7 @@ import com.ctb.bean.testAdmin.UserFile;
 import com.ctb.bean.testAdmin.UserFileRow;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.CTBConstants;
-import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
-
-import dto.Message;
 
 @Jpf.Controller()
 public class DownloadOperationController extends PageFlowController {

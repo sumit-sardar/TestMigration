@@ -33,7 +33,7 @@
         <td class="transparent"><netui:label value="${userProfileData.loginId}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent-top" width="100"><netui:content value="Organization:"/></td>
+        <td class="transparent-top" width="100"><netui:content value="Group:"/></td>
         <td class="transparent-top">
             <table class="transparent">
             <netui-data:repeater dataSource="actionForm.userProfile.organizationNodes">
