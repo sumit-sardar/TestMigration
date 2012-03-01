@@ -43,6 +43,9 @@ var isPagingEvent  = false;
 var isSortingEvent = false;
 var filterAppliedOrgMap = new Map();
 var studentEditStatusMap = new Map(); //changes for ie issue
+var filterLoadFlag = false;
+var filterTimer = null;
+
 
 /// FOR FILTER
 
@@ -150,10 +153,13 @@ function createinnSingleNodeSelectedTree(jsondata) {
 	 		    $("#stuForOrgNodeId").val(stuForSelectedOrg);
 		    	var topNodeSelected = $(this).parent().attr("cid");
 		    	if(topNodeSelected == leafNodeCategoryId) {
-	    		if(!selectStudentgridLoaded) {
-		    		populateSelectStudentGrid();
-		    	} else  
-		    		gridReloadSelectStu();
+		    		if(!selectStudentgridLoaded) {
+			    		populateSelectStudentGrid();
+			    	} else  {
+			    		filterLoadFlag = false;
+			    		gridReloadSelectStu1();
+			    		filterTimer = setTimeout("applyFilter()", 200);
+			    	}
 		    	}
 		    	 if(selectStudentgridLoaded) {
 			    	var width = jQuery("#scheduleSession").width();
@@ -182,8 +188,38 @@ function createinnSingleNodeSelectedTree(jsondata) {
 				}
 			}
 		);
-	  
-	  	  
+}
+
+function gridReloadSelectStu1(){ 
+  UIBlock();
+  var postDataObject = {};
+  postDataObject.q = 2;
+  postDataObject.stuForOrgNodeId = $("#stuForOrgNodeId").val();
+  postDataObject.selectedTestId = $("#selectedTestId").val();
+  postDataObject.blockOffGradeTesting = blockOffGradeTesting;
+  postDataObject.selectedLevel = selectedLevel;
+  
+  jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
+  var urlVal = 'getStudentForList.do';
+  if(state == "EDIT"){
+  		postDataObject.testAdminId = selectedTestAdminId;
+  }
+  delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
+  jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, postData:postDataObject, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
+  jQuery("#selectStudent").sortGrid('lastName',true,'asc');
+}
+
+function applyFilter() {
+	if(filterLoadFlag) {
+		$('#gs_grade').trigger('change');
+		$('#gs_calculator').trigger('change');
+		$('#gs_hasColorFontAccommodations').trigger('change');
+		$('#gs_testPause').trigger('change');
+		$('#gs_screenReader').trigger('change');
+		$('#gs_untimedTest').trigger('change');
+	} else {
+		filterTimer = setTimeout("applyFilter()", 200);
+	}
 }
 
 function imageFormat( cellvalue, options, rowObject ){
@@ -618,7 +654,7 @@ function populateSelectStudentGrid() {
 			 		}
             		isPAGridEmpty = false;
             	}
-            	
+            	filterLoadFlag = true;
             	$.unblockUI();  
 				//$("#selectStudent").setGridParam({datatype:'local'});
 				var tdList = ("#selectStudentPager_left table.ui-pg-table  td");
