@@ -2064,9 +2064,11 @@ public class StudentOperationController extends PageFlowController {
 	 * @jpf:action
 	 */
 	@Jpf.Action()
-	protected Forward deleteStudent()
+	protected Forward deleteStudent() throws Exception
 	{
 		String studentIdStr = (String)this.getRequest().getParameter("studentID");
+		if(this.userName == null)
+			throw new Exception();
 		
 		if (studentIdStr != null) {
 			Integer studentId = new Integer(studentIdStr);
@@ -2090,11 +2092,17 @@ public class StudentOperationController extends PageFlowController {
 			OutputStream stream = null;
 
 			try {
-
-				resp.setContentType(CONTENT_TYPE_JSON);
+				Gson gson = new Gson();
+				String json = gson.toJson(deleteStatus);
+				resp.setContentType("application/json");
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
-				stream.write(deleteStatus.getBytes());
+				stream.write(json.getBytes());
+
+				/*resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(deleteStatus.getBytes());*/
 				if (stream != null) {
 					stream.close();
 				}
