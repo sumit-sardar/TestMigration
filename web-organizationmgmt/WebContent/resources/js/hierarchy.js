@@ -510,7 +510,7 @@ function populateGrid() {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"Search Organization", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Group", cursor: "pointer"
 			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-trash", onClickButton:function(){
@@ -530,7 +530,7 @@ function populateGrid() {
 		    		 	confirmDelOrgPopUp();
 			    	}
 			    	
-			    }, position: "first", title:"Delete Organization", cursor: "pointer",id:"del_list2"
+			    }, position: "first", title:"Delete Group", cursor: "pointer",id:"del_list2"
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-pencil", onClickButton:function(){
 			    	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -549,12 +549,12 @@ function populateGrid() {
 		    			 EditOrganizationDetail();
 			    	}
 			    	 
-			    }, position: "first", title:"View/Edit Organization", cursor: "pointer",id:"edit_list2"
+			    }, position: "first", title:"View/Edit Group", cursor: "pointer",id:"edit_list2"
 			}).jqGrid('navButtonAdd',"#pager2",{
 			    caption:"", buttonicon:"ui-icon-plus", onClickButton:function(){
 			    	 requetForOrganization = "";
 		    		 AddOrganizationDetail();
-			    }, position: "first", title:"Add Organization", cursor: "pointer",id:"add_list2"
+			    }, position: "first", title:"Add Group", cursor: "pointer",id:"add_list2"
 			});  
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchUserByKeywordInput").val('');
