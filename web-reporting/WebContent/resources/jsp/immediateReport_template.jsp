@@ -16,6 +16,9 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/orderlist.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/immediateReporting.js"></script>
     <noscript>
         <meta HTTP-EQUIV="refresh" CONTENT="1; URL=<%=request.getContextPath()%>/JS-Disabled.html">
     </noscript>    

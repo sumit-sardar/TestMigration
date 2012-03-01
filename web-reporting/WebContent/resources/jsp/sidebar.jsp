@@ -87,15 +87,6 @@
 </ul>
 </ctb:auth>
 </c:if>
-  
-<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
-	<h1>Report</h1>
-	<ul>
-     
-        <li><span class="navleft-unclickable">Immediate Scores</span></li>
-    
-	</ul>
-</ctb:auth>
 
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">

@@ -54,7 +54,7 @@
         <td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4" style="width:320px"/></td>
         <td class="tableFilter" width="100" align="right"> *Test Name:</td>
         <td class="tableFilter" width="*">
-             <netui:select optionsDataSource="${pageFlow.testNameOptions}" dataSource="actionForm.studentProfile.productNameList" size="1" style="width:320px" tabindex="9"/>
+             <netui:select tagId="testNameId" optionsDataSource="${pageFlow.testNameOptions}" dataSource="actionForm.studentProfile.productNameList" size="1" style="width:320px" tabindex="9" onChange="javascript: populateContentArea(this)"/>
            
         </td>
     </tr>
@@ -65,16 +65,18 @@
         </td>
         <td class="tableFilter" width="100" align="right">Completed ContentArea:</td>
         <td class="tableFilter" width="*">
-             <netui:select optionsDataSource="${pageFlow.contentAreaNames}" dataSource="actionForm.studentProfile.completedContentArea" size="1" style="width:320px" tabindex="8"/>
-           
+           <!--   <netui:select optionsDataSource="${pageFlow.contentAreaNames}" dataSource="actionForm.studentProfile.completedContentArea" size="1" style="width:320px" tabindex="10" disabled="true"/>-->
+        	<select id= "contentAreas" style="width:320px" tabindex="10" name="wlw-select_key:{actionForm.studentProfile.completedContentArea}">
+        		<option value="Any content area">Any content area</option>
+        	</select>
         </td>
     </tr>
     <tr class="tableFilter" width = "100%" >
     	<td class="tableFilter" colspan="4" align="center">
     		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    		<netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="10"/>
+    		<netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="11"/>
     		&nbsp;&nbsp;&nbsp;&nbsp;
-    		<netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="11"/>
+    		<netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="12"/>
     	</td>
     </tr>
 </table>    

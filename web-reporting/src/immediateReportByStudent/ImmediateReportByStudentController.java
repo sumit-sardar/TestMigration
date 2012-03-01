@@ -1,9 +1,12 @@
 package immediateReportByStudent;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
@@ -25,6 +28,7 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.User;
@@ -33,6 +37,7 @@ import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.ctb.widgets.bean.PagerSummary;
+import com.google.gson.Gson;
 
 @Jpf.Controller
 public class ImmediateReportByStudentController extends PageFlowController {
@@ -73,7 +78,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	public String pageMessage = null;
 	public String[] scoringStatusOptions = null;
 	public String[] testNameOptions = null;
-	public String[] contentAreaNames = null;
+	public ScorableItem[] contentAreaNames = null;
 	
 
 	/**
@@ -189,6 +194,63 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		return new Forward("success",form);
 	}
 	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward getContentAreasForCatalog(StudentImmediateReportForm form){
+					
+	 HttpServletRequest req = getRequest();
+	 HttpServletResponse resp = getResponse();
+	 OutputStream stream = null;
+	 String contentType = "application/json";
+	 String json = "";
+	 String catalogName = getRequest().getParameter("catalogName");
+	 Integer catalogId = (Integer)this.productIdToProductName.get(catalogName);
+	 ScorableItem[] contentAreas = null;
+		
+		try {
+			if(catalogId != null)
+				contentAreas =  this.studentManagement.getContentAreaForCatalog(this.userName, this.customerId, catalogId);
+			
+			List options = new ArrayList();
+			options.add(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
+			if(contentAreas != null) {
+				for (int i=0 ; i<contentAreas.length ; i++) {        
+					options.add(contentAreas[i]);
+				}
+			}
+			this.contentAreaNames = (ScorableItem [])options.toArray( new ScorableItem [options.size()]);
+
+			Gson gson = new Gson();
+			json = gson.toJson(contentAreas);
+			System.out.println("json -> " + json);
+				try{
+					resp.setContentType("application/json");
+		    		stream = resp.getOutputStream();
+		    		resp.flushBuffer();
+		    		stream.write(json.getBytes());
+		    		
+		    		//stream.write(json.getBytes());
+			
+		    		}
+			
+		    		 finally{
+		 				if (stream!=null){
+		 					stream.close();
+		 				}
+		 			}
+				
+				
+			
+		} catch (Exception e) {
+			System.err.println("Exception while processing getContentAreasForCatalog");
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 	
 	/**
 	 * findByStudentProfile
@@ -207,7 +269,11 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		String gender = form.getStudentProfile().getGender().trim();
 		String scoringStatus = form.getStudentProfile().getScoringStatus().trim();
         String productName = form.getStudentProfile().getProductNameList().trim();
+        System.out.println("productName -> " + productName);
         Integer productId = (Integer)this.productIdToProductName.get(productName);
+        System.out.println("productId -> " + productId);
+        String contentAreaName = form.getStudentProfile().getCompletedContentArea().trim();
+        System.out.println("contentAreaName -> " + contentAreaName);
 		if (! gender.equals(FilterSortPageUtils.FILTERTYPE_ANY_GENDER))
 		{
 			if (gender.equals("Male"))
@@ -251,7 +317,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 	 	 
 	    
-		FilterParams filter = FilterSortPageUtils.buildFilterParams(firstName, middleName, lastName, loginId, studentNumber, grade, gender,scoringStatus);
+		FilterParams filter = FilterSortPageUtils.buildFilterParams(firstName, middleName, lastName, loginId, studentNumber, grade, gender,scoringStatus,contentAreaName);
 
 		ManageStudentData msData = null;
         
@@ -474,17 +540,17 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		else
 			form.getStudentProfile().setScoringStatus(this.scoringStatusOptions[0]);
 		
-		this.contentAreaNames = getContentAreaOptions( action );
+		//this.contentAreaNames = getContentAreaOptions( action );
 		if (comContentArea != null)
 			form.getStudentProfile().setCompletedContentArea(comContentArea);
 		else
-			form.getStudentProfile().setCompletedContentArea(this.contentAreaNames[0]);
+			form.getStudentProfile().setCompletedContentArea(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 	}
 	
 	/**
 	 * getContentAreaOptions
 	 */
-	private String [] getContentAreaOptions(String action)
+	/*private String [] getContentAreaOptions(String action)
 	{
 		String[] contentAreas = null;
 		try {
@@ -504,7 +570,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		}
 
 		return (String [])options.toArray(new String[0]);        
-	}
+	}*/
 	
 	/**
 	 * getGradeOptions
@@ -1017,11 +1083,11 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		this.customerId = customerId;
 	}
 
-	public String[] getContentAreaNames() {
+	public ScorableItem[] getContentAreaNames() {
 		return contentAreaNames;
 	}
 
-	public void setContentAreaNames(String[] contentAreaNames) {
+	public void setContentAreaNames(ScorableItem[] contentAreaNames) {
 		this.contentAreaNames = contentAreaNames;
 	}
 }

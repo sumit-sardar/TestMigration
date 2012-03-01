@@ -350,7 +350,8 @@ public class FilterSortPageUtils
     }
     
     public static FilterParams buildFilterParams(String firstName, String middleName, String lastName,
-            String loginId, String studentNumber, String grade, String gender, String scoringStatus)
+            String loginId, String studentNumber, String grade, String gender, String scoringStatus,
+            String contentAreaName)
 	{
 	ArrayList filters = new ArrayList();
 	FilterParam fp;
