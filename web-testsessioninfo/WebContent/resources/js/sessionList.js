@@ -4058,40 +4058,42 @@ function registerDelegate(tree){
 	}
 	
 	function toggleValidationStatus(){
-		$("#displayMessageViewTestRoster").hide();
-	 	selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
-	 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
-	 	if($.trim($(cellData).text()) != 'Partially Invalid') {
-	 		var postDataObject = {};
- 			postDataObject.testRosterId = selectedTestRosterId;
-	 		$.ajax({
-				async:		true,
-				beforeSend:	function(){
-								UIBlock();
-							},
-				url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
-				type:		'POST',
-				dataType:	'json',
-				data:		postDataObject,
-				success:	function(data, textStatus, XMLHttpRequest) {	
-								var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
-								if($.trim(validationStatus) == 'Valid'){
-									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','<font color="red">Invalid</font>');
-								} else {
-									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		if(selectedTestRosterId != null && $.trim(selectedTestRosterId) != "") {
+			$("#displayMessageViewTestRoster").hide();
+		 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
+		 	if($.trim($(cellData).text()) != 'Partially Invalid') {
+		 		var postDataObject = {};
+	 			postDataObject.testRosterId = selectedTestRosterId;
+		 		$.ajax({
+					async:		true,
+					beforeSend:	function(){
+									UIBlock();
+								},
+					url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
+					type:		'POST',
+					dataType:	'json',
+					data:		postDataObject,
+					success:	function(data, textStatus, XMLHttpRequest) {	
+									var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
+									if($.trim(validationStatus) == 'Valid'){
+										$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','<font color="red">Invalid</font>');
+									} else {
+										$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
+									}
+									$("#displayMessageViewTestRoster").show();
+									$("#rosterMessage").html($("#monitorStsValidMsg").val());
+									$.unblockUI(); 						
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();
+									window.location.href="/SessionWeb/logout.do";
+								},
+					complete :  function(){
+									 $.unblockUI(); 
 								}
-								$("#displayMessageViewTestRoster").show();
-								$("#rosterMessage").html($("#monitorStsValidMsg").val());
-								$.unblockUI(); 						
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								$.unblockUI();
-								window.location.href="/SessionWeb/logout.do";
-							},
-				complete :  function(){
-								 $.unblockUI(); 
-							}
-			});
+				});
+			}
 		}
 	}
 	
