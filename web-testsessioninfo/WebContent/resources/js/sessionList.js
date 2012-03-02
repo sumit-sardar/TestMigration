@@ -3246,8 +3246,9 @@ function registerDelegate(tree){
 			}else{
 				closePopUp('scheduleSession');
 			}
-		
-		}else{		
+		  	setAnchorButtonState('viewStatusButton', false);
+			setAnchorButtonState('printTicketButton', false);
+    	}else{		
 	    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
 	    		closePopUp('scheduleSession');
 	    	} else {
@@ -3380,8 +3381,10 @@ function registerDelegate(tree){
 								} 
 							  
 					  	}
-		
-							 						
+					  	if(state == "EDIT"){
+							setAnchorButtonState('viewStatusButton', false);
+							setAnchorButtonState('printTicketButton', false);
+						}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
