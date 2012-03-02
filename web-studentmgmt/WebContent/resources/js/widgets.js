@@ -184,14 +184,10 @@ function constrainEnterKeyEvent( e ) {
 var termsWindow  = null;
 var coppaWindow  = null;
 var policyWindow = null;
-var helpWindow = null;
 
 function showHelpWindow(location_)
 {
-    if( helpWindow != null ){
-        helpWindow.close();
-    }
-    helpWindow = window.open(location_,"help",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
+    var helpWindow = window.open(location_,"help",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
     helpWindow.focus();
     return false;
 }
