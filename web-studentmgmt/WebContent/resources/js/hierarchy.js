@@ -2300,6 +2300,7 @@ function fillselectedOrgNode( elementId, orgList) {
    		var str = idarray;
    		var isColorFontChecked; 
    		var isAudioCalmEnabled;
+   		var colorFontSize;
 		//var indexOfId = str.indexOf(SelectedStudentId);
 		var indexOfId = -1;
 		
@@ -2322,6 +2323,10 @@ function fillselectedOrgNode( elementId, orgList) {
     			isAudioCalmEnabled = stuAccommodation[key];
     		}
     		
+    		if(key == 'fontSize'){
+    			colorFontSize = stuAccommodation[key];
+    		}
+    		
     		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
 		     $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
 		     $("#Student_Accommodation_Information select[name='" + keyInUI+ "']").val(stuAccommodation[key]);
@@ -2338,6 +2343,16 @@ function fillselectedOrgNode( elementId, orgList) {
 			enableColorSettingsLink("true");
 			setQuestionColorOptions();
 			setAnswerColorOptions();
+			if(colorFontSize == '1.5'){
+				var largeFont = document.getElementById("largeFont");
+        		largeFont.checked = true;
+				setFontSize('18px');
+			}
+			else if(colorFontSize == '1'){
+				var standartFont = document.getElementById("standartFont");
+        		standartFont.checked = true;
+				setFontSize('12px');
+			}
 		}else{
 			enableColorSettingsLink("false");
 		}
