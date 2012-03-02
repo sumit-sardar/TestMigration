@@ -2939,7 +2939,8 @@ function registerDelegate(tree){
 			}else{
 				closePopUp('scheduleSession');
 			}
-		
+			setAnchorButtonState('viewStatusButton', false);
+			setAnchorButtonState('printTicketButton', false);
 		}else{		
 	    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
 	    		closePopUp('scheduleSession');
@@ -2950,7 +2951,6 @@ function registerDelegate(tree){
     }
     
     function saveTest(checkRestricted) {
-        
         $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();
 	    var param;
@@ -2987,8 +2987,8 @@ function registerDelegate(tree){
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;
 		   	param = param+"&isEndTestSession="+isEndTestSession;
-		    
-	    
+		    setAnchorButtonState('viewStatusButton', false);
+			setAnchorButtonState('printTicketButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -3073,8 +3073,6 @@ function registerDelegate(tree){
 								} 
 							  
 					  	}
-		
-							 						
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
@@ -3744,40 +3742,42 @@ function registerDelegate(tree){
 	}
 	
 	function toggleValidationStatus(){
-		$("#displayMessageViewTestRoster").hide();
-	 	selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
-	 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
-	 	if($.trim($(cellData).text()) != 'Partially Invalid') {
-	 		var postDataObject = {};
- 			postDataObject.testRosterId = selectedTestRosterId;
-	 		$.ajax({
-				async:		true,
-				beforeSend:	function(){
-								UIBlock();
-							},
-				url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
-				type:		'POST',
-				dataType:	'json',
-				data:		postDataObject,
-				success:	function(data, textStatus, XMLHttpRequest) {	
-								var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
-								if($.trim(validationStatus) == 'Valid'){
-									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','<font color="red">Invalid</font>');
-								} else {
-									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+	 	if(selectedTestRosterId != null && $.trim(selectedTestRosterId) != "") {
+		 	$("#displayMessageViewTestRoster").hide();
+		 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
+		 	if($.trim($(cellData).text()) != 'Partially Invalid') {
+		 		var postDataObject = {};
+	 			postDataObject.testRosterId = selectedTestRosterId;
+		 		$.ajax({
+					async:		true,
+					beforeSend:	function(){
+									UIBlock();
+								},
+					url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
+					type:		'POST',
+					dataType:	'json',
+					data:		postDataObject,
+					success:	function(data, textStatus, XMLHttpRequest) {	
+									var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
+									if($.trim(validationStatus) == 'Valid'){
+										$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','<font color="red">Invalid</font>');
+									} else {
+										$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
+									}
+									$("#displayMessageViewTestRoster").show();
+									$("#rosterMessage").html($("#monitorStsValidMsg").val());
+									$.unblockUI(); 						
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();
+									window.location.href="/SessionWeb/logout.do";
+								},
+					complete :  function(){
+									 $.unblockUI(); 
 								}
-								$("#displayMessageViewTestRoster").show();
-								$("#rosterMessage").html($("#monitorStsValidMsg").val());
-								$.unblockUI(); 						
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								$.unblockUI();
-								window.location.href="/SessionWeb/logout.do";
-							},
-				complete :  function(){
-								 $.unblockUI(); 
-							}
-			});
+				});
+			}
 		}
 	}
 	
