@@ -437,7 +437,10 @@ function getSubtestDetailsForSelectedTest(){
 	var chosenOption = selectElement.options[selectElement.selectedIndex];
 	selectedTestIdPS = chosenOption.value;
 	$("#testStatusTitleID").hide();
+	$("#clickableSubtestMsg").hide();
 	$("#testStatusInfo").hide();
+	$("#subtestStatusInfo").hide();
+	$('#subtestStatusInfoList').GridUnload();
 	
 	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS;
 			$.ajax(
