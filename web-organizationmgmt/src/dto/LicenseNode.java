@@ -9,6 +9,7 @@ public class LicenseNode implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     private Integer id = null;
+    private Integer parentId = null;
     private Integer productId = null;
     private String productName = null;
     private String name = null;
@@ -25,6 +26,7 @@ public class LicenseNode implements java.io.Serializable
     
     public LicenseNode() {
     	this.id = new Integer(0);
+    	this.parentId = new Integer(0);
     	this.name = "Top";
     	this.reserved = "0";
     	this.consumed = "0";
@@ -36,6 +38,7 @@ public class LicenseNode implements java.io.Serializable
 
     public LicenseNode(LicenseNode node) {
     	this.id = node.getId();
+    	this.parentId = node.getParentId();
     	this.name = node.getName();
     	this.subtestModel = node.getSubtestModel();
     	this.productId = node.getProductId();
@@ -67,6 +70,12 @@ public class LicenseNode implements java.io.Serializable
     }
     public void setId(Integer id) {
         this.id = id;
+    }
+    public Integer getParentId() {
+        return this.parentId;
+    }
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
     
     public Integer getProductId() {

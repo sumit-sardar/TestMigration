@@ -17,6 +17,18 @@
 <netui-template:section name="bodySection">
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="organizationApplicationResource" />
+
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/licenses.js"></script>
+
+<input type="hidden" id="orgNodeName" name = "orgNodeName" value=<lb:label key="license.orgNodeName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="scheduled" name = "scheduled" value=<lb:label key="license.scheduled" prefix="'" suffix="'"/>/>
+<input type="hidden" id="consumed" name = "consumed" value=<lb:label key="license.consumed" prefix="'" suffix="'"/>/>
+<input type="hidden" id="available" name = "available" value=<lb:label key="license.available" prefix="'" suffix="'"/>/>
+
+<input type="hidden" id="noOrgTitleGrd" name = "noOrgTitleGrd" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noOrgMsgGrd" name = "noOrgMsgGrd" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
+
+
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
@@ -24,57 +36,100 @@
 
 
 <netui:form action="services_manageLicenses">
+
 <input type="hidden" id="menuId" name="menuId" value="manageLicensesLink" />
-<table class="transparent" width="97%" style="margin:15px auto;"> 
+<input type="hidden" id="treeOrgNodeId" />
+
+
+<table class="transparent" width="97%" style="margin:15px auto;">  
 	<tr class="transparent">
-		<td>
-    		<table class="transparent">
-				<tr class="transparent">
-					<td>
-			    		<h1><lb:label key="services.license.title" /></h1>
-					</td>
-				</tr>				
-			</table>		
+        <td>
+		<table class="transparent">
+			<tr class="transparent">
+				<td>
+				<h1><lb:label key="services.license.title" /></h1>
+				</td>
+			</tr>
+			<tr>
+				<td class="subtitle">
+				<lb:label key="services.license.message" />
+			</tr>
+		</table>
 		</td>
-	</tr>
-	<tr>
-		<td class="buttonsRow">
-			<div id="displayMessageMain" class="errMsgs" style="display: none; width: 50%; float: left;">
-				<table>
-					<tr>
-						<td width="18" valign="middle">
-							<div id="errorIcon" style="display:none;">
-		                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
-							</div>
-							<div id="infoIcon" style="display:none;">
-								<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
-							</div>
-						</td>
-						<td class="saveMsgs" valign="middle">
-							<div id="contentMain"></div>
-						</td>
-					</tr>
-				</table>				
-			</div>
-		</td>
-	</tr>
+    </tr>
+	
 	<tr class="transparent">
         <td align="center">        
-			<table width="100%">
-				<tr> 
-					<td height="400" align="center">  
-						<p align="center"><netui:content value="Content goes here"/></p>
-					</td>	
-				</tr>			
+			<table width="100%"> 
+		      	<tr>
+					<td colspan="3" class="buttonsRow">
+			        <div id="displayMessageMain" class="errMsgs" style="display:none; width:99.5%;float:left;">
+						<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="errorIcon" style="display:none;">
+				                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+									</div>
+									<div id="infoIcon" style="display:none;">
+										<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id="contentMain"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					</td>
+				</tr>
+				<tr class="transparent">
+			        <td style="vertical-align:top; width:16%;" align="left">
+				      	<div id="searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
+				    	<div id="outertreebgdiv" class="treeCtrl">
+					    	<div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
+							</div>
+						</div>
+				    </td>
+					    
+					<td class="transparent" width="5px">&nbsp;</td>
+					 	 
+					<td style="vertical-align:top;" id="jqGrid-content-section">
+						<div id="outerInfo">
+						   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
+						</div>
+						<br/><br/>
+						<div id="instructionDiv" style="display: none">
+							<table class="subtitle" border="0" width="100%"><tr>
+							<td width="90%" align="left">
+							Click on the cell under "Available" column to edit the license quatity. Click "Save" button to save your changes.
+							</td>
+							<td width="10%" align="right">
+							<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
+          						<lb:label key="license.save.button" />
+           					</a>
+							</td>
+							</tr></table>
+						</div>
+						<br/>
+						<div id="outerGrid"> 
+					    	<table id="orgNodeGrid" class="gridTable"></table>
+							<div id="orgNodePager" class="gridTable" ></div>
+						</div>
+					</td>
+						
+				</tr>
 			</table>
-		</td>	
-	</tr>
+        </td>
+    </tr>
 </table>
+
+
 </netui:form>
 
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("services", "manageLicensesLink");
+	loadOrgNodeTree();
 });
 </script>
 
