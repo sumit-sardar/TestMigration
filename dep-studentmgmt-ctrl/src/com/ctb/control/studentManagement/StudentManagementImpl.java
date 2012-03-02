@@ -132,6 +132,12 @@ public class StudentManagementImpl implements StudentManagement
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.StudentManagement studentManagement;
+	
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	com.ctb.control.db.ImmediateReportingIrs immediateReportingIrs;
 
 	static final long serialVersionUID = 1L;
 
@@ -2631,5 +2637,102 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 
+	}
+	
+	
+	/**
+	 * Retrieves a sorted, filtered, paged list of students at and below user's top org node(s).
+	 * The SQL's where clause is dynamically generated on based on filter passed in.
+	 * @common:operation
+	 * @param userName - identifies the user
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return ManageStudentData
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+
+	public ManageStudentData findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(String userName, Integer catalogId, FilterParams filter, PageParams page, SortParams sort ) throws CTBBusinessException
+	{
+		try {
+			ManageStudentData std = new ManageStudentData();
+
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+			FilterParams statusFilter = new FilterParams();
+			statusFilter.setFilterParams(new FilterParam[0]);
+			
+			if (filter != null) {
+				FilterParam [] filterParams = filter.getFilterParams();
+				for (int i = 0; i < filterParams.length; i++) {
+			            FilterParam filterParam = filterParams[i];
+			            if (filterParam != null) {
+			                String fieldName = filterParam.getField();
+			                if(fieldName.equals("ScoringStatus")) {
+			                	statusFilter.setFilterParams(filterParams);
+			                	break;
+			                }
+			            }
+				}
+			}
+			Integer totalCount = null;
+			String searchCriteria = "";
+			if (filter != null) {
+				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
+				filter.setFilterParams(new FilterParam[0]);
+				//totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
+				ManageStudent [] studentTotalCount = null;
+				studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
+				totalCount = studentTotalCount.length;
+			}
+			String orderByClause = "";
+			/*if (sort != null) {
+				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
+				sort = null;
+			}*/
+			
+			//searchCriteria = searchCriteria + orderByClause;
+			ManageStudent [] students = null;
+            
+           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId,searchCriteria);
+           for(ManageStudent student : students) {
+        	   //student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
+        	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
+        	   if(plValue == null || "".equals(plValue))
+        		   plValue = "N/A";
+        	   student.setProficiencyLevel(plValue);
+           }
+			
+			std.setManageStudents(students, pageSize);
+			if(filter != null) std.applyFiltering(filter);
+			if(statusFilter != null) std.applyFiltering(statusFilter);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+
+			students = std.getManageStudents();
+			/*for (int i=0; i <students.length; i++) {
+				if (students[i] != null) {
+					OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForStudentAtAndBelowUserTopNodes(students[i].getId().intValue(), userName);
+					students[i].setOrganizationNodes(orgNodes);
+				}
+			}*/
+
+
+			if (totalCount != null) {
+				std.setTotalCount(totalCount);
+				if (page == null)
+					std.setTotalPages(new Integer(1));
+				else 
+					std.setTotalPages(MathUtils.intDiv(totalCount, new Integer(page.getPageSize())));
+			}
+
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsAtAndBelowTopOrgNodesWithDynamicSQL: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
 	}
 } 

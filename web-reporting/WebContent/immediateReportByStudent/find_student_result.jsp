@@ -26,15 +26,13 @@
         <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Organization</th>
-            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestSessionName">Test Session Name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="Grade">Grade</ctb:tableSortColumn></th>
-           <c:if test="${isStudentIdConfigurable}">   
-          <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentIdNumber">${studentIdArrValue[0]}</ctb:tableSortColumn></th>
-          </c:if>
-          <c:if test="${!isStudentIdConfigurable}">   
-        <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
-         </c:if>
+            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Content Area(s) &nbsp;&nbsp;</th>
+            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestStartDate">Administration date</ctb:tableSortColumn></th>
+          	<th class="sortable alignLeft" width="20%" nowrap>Teacher name</th>
+        	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
+        
            
         </ctb:tableSortColumnGroup>
     </tr>
@@ -45,11 +43,9 @@
     <tr class="sortable">
     
            <td class="sortable">
-            <netui-data:getData resultId="itemCount" value="${container.item.itemCountCRAI}"/> 
-             <c:if test="${itemCount > 0}">  
-             <netui-data:getData resultId="rosterId" value="${container.item.rosterId}"/>  
              
-             <netui-data:getData resultId="accessCode" value="${container.item.accessCode}"/> 
+             <netui-data:getData resultId="rosterId" value="${container.item.rosterId}"/>  
+              
              <netui-data:getData resultId="userName" value="${container.item.userName}"/> 
              <netui-data:getData resultId="itemSetIdTC" value="${container.item.itemSetIdTC}"/> 
              <netui-data:getData resultId="testAdminId" value="${container.item.testAdminId}"/> 
@@ -65,10 +61,7 @@
                     <netui:anchor href="<%= href %>" formSubmit="true">
                         <netui:span  value="${container.item.userName}" defaultValue="&nbsp;"/>
                     </netui:anchor>
-        	 </c:if>
-        	  <c:if test="${itemCount <= 0}">  
-        	  <netui:content value="${container.item.userName}"/>
-        	  </c:if>
+        	  
            </td>
         <td class="sortable">
 			<netui:content value="${container.item.displayName}"/>
@@ -76,15 +69,21 @@
         <td class="sortable">
             <netui:span value="${container.item.orgNodeNamesString}"/>
         </td>
+        <td class="sortable">
+            <netui:span value="${container.item.proficiencyLevel}"/>
+        </td>
          <td class="sortable">
             <netui:span value="${container.item.testSessionName}"/>
         </td>
        
         <td class="sortable">
-            <netui:span value="${container.item.grade}"/>
+            <netui:span value="${container.item.testWindowOpenDateString}"/>
         </td>
         <td class="sortable">
-            <netui:span value="${container.item.studentNumber}"/>
+            <netui:span value="${container.item.organizationNames}"/>
+        </td>
+        <td class="sortable">
+            <netui:span value="${container.item.form}"/>
         </td>
     </tr>
     
@@ -92,7 +91,7 @@
     <netui-data:repeaterFooter>
     
         <tr class="sortable">
-            <td class="sortableControls" colspan="7">
+            <td class="sortableControls" colspan="8">
                 <ctb:tablePager dataSource="actionForm.studentPageRequested" summary="request.studentPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found" id="studentSearchResult" anchorName="studentSearchResult"/>
             </td>
         </tr>         

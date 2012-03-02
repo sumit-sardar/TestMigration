@@ -79,7 +79,7 @@ public class FilterSortPageUtils
     public static final int PAGESIZE_10 = 10;
     public static final int PAGESIZE_15 = 15;
     public static final int PAGESIZE_20 = 20;
-    public static final int MAX_RECORDS = 10000;//50
+    public static final int MAX_RECORDS = 10000;
   
     
     public static FilterParams buildFilterParams(String fieldName, String fieldValue)
@@ -405,6 +405,12 @@ public class FilterSortPageUtils
 		if (fp != null)
 		filters.add(fp);
 		}
+	
+	if ((contentAreaName!= null) && (contentAreaName.length() > 0) && (!contentAreaName.equalsIgnoreCase(FILTERTYPE_ANY_CONTENT_AREA))) {
+		fp = buildFilterParamSingleValue("completedContentAreaId", contentAreaName, FilterType.EQUALS);
+		if (fp != null)
+		filters.add(fp);
+	}
 	
 	FilterParams filter = null;
 	if (filters.size() > 0) {

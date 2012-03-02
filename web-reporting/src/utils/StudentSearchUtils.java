@@ -60,7 +60,7 @@ public class StudentSearchUtils {
     {   
         ManageStudentData msData = null;
         try {    
-            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForScoring(userName,productId, null, page, sort);
+            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(userName,productId, null, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();
@@ -76,7 +76,7 @@ public class StudentSearchUtils {
         ManageStudentData msData = null;
         
         try {    
-            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForScoring(userName, productId ,filter, page, sort);
+            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(userName, productId ,filter, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

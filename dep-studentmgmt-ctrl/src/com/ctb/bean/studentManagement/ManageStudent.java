@@ -2,7 +2,6 @@ package com.ctb.bean.studentManagement;
 
 import com.ctb.bean.CTBBean;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Data bean representing the partial contents of the OAS.STUDENT table 
@@ -48,7 +47,12 @@ public class ManageStudent extends CTBBean
     private String testPurpose;
     //END- (LLO82) StudentManagement Changes For LasLink product
     
+    //For immediate reporting
     private String completedContentArea;
+    private Date testWindowOpenDate;
+    private String form;
+    private String proficiencyLevel;
+    private String organizationNames;
     
 	/**
 	 * @return the testPurpose
@@ -349,6 +353,36 @@ public class ManageStudent extends CTBBean
 	}
 	public void setCompletedContentArea(String completedContentArea) {
 		this.completedContentArea = completedContentArea;
+	}
+	public Date getTestWindowOpenDate() {
+		return testWindowOpenDate;
+	}
+	public void setTestWindowOpenDate(Date testWindowOpenDate) {
+		this.testWindowOpenDate = testWindowOpenDate;
+	}
+	public String getForm() {
+		return form;
+	}
+	public void setForm(String form) {
+		this.form = form;
+	}
+	public String getProficiencyLevel() {
+		return proficiencyLevel;
+	}
+	public void setProficiencyLevel(String proficiencyLevel) {
+		this.proficiencyLevel = proficiencyLevel;
+	}
+	/**
+	 * @return the organizationNames
+	 */
+	public String getOrganizationNames() {
+		return organizationNames;
+	}
+	/**
+	 * @param organizationNames the organizationNames to set
+	 */
+	public void setOrganizationNames(String organizationNames) {
+		this.organizationNames = organizationNames;
 	}
     
 } 

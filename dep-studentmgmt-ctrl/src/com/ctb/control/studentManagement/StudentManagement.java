@@ -504,6 +504,20 @@ public interface StudentManagement
      */
    
 	ScorableItem[] getContentAreaForCatalog(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer catalogId) throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+     * Retrieves a sorted, filtered, paged list of students at and below user's for scoring
+     * top org node(s). The SQL's where clause is dynamically generated on based
+     * on filter passed in.
+     * @param userName - identifies the user
+     * @param filter - filtering params
+     * @param page - paging params
+     * @param sort - sorting params
+     * @return ManageStudentData
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    
+    com.ctb.bean.studentManagement.ManageStudentData findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(java.lang.String userName, java.lang.Integer productId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

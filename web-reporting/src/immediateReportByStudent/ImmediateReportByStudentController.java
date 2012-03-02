@@ -1,5 +1,6 @@
 package immediateReportByStudent;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	private static final String ACTION_FIND_STUDENT      = "findStudent";
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
+	private static final String ACTION_GOTO_REPORTS   = "gotoReports";
 	private boolean searchApplied = false;
 	private User user = null;
 	private String userName = null;
@@ -153,7 +155,20 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
-		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
+		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT);
+		System.out.println("currentAction -> " + currentAction);
+		System.out.println("actionElement -> " + actionElement);
+		if(currentAction.equalsIgnoreCase("gotoReports")) {
+			try
+	        {
+	            String url = "/TestSessionInfoWeb/homepage/viewReports.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+		}
 		
 		if(actionElement.equals(ACTION_DEFAULT)){
 			initFindStudent(form);    
@@ -194,7 +209,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
 		
-		this.pageTitle  = "Scoring: Find Student";
+		this.pageTitle  = "Immediate Reporting: Find Student";
 		
 		//customerHasBulkAccommodation();
 		//customerHasResetTestSessions();
@@ -280,11 +295,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		String gender = form.getStudentProfile().getGender().trim();
 		String scoringStatus = form.getStudentProfile().getScoringStatus().trim();
         String productName = form.getStudentProfile().getProductNameList().trim();
-        System.out.println("productName -> " + productName);
         Integer productId = (Integer)this.productIdToProductName.get(productName);
-        System.out.println("productId -> " + productId);
         String contentAreaName = form.getStudentProfile().getCompletedContentArea().trim();
-        System.out.println("contentAreaName -> " + contentAreaName);
 		if (! gender.equals(FilterSortPageUtils.FILTERTYPE_ANY_GENDER))
 		{
 			if (gender.equals("Male"))

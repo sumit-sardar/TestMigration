@@ -50,6 +50,11 @@ public class StudentProfileInformation extends SanitizedFormField
     private String day;
     private String year;
     private String completedContentArea;
+    private Date testWindowOpenDate;
+    private String testWindowOpenDateString;
+    private String form;
+    private String proficiencyLevel;
+    private String organizationNames;
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -81,6 +86,11 @@ public class StudentProfileInformation extends SanitizedFormField
         this.testAdminId = "";
         this.itemCountCRAI = new Integer(0);
         this.completedContentArea = "";
+        this.testWindowOpenDate = null;
+        this.testWindowOpenDateString = "";
+        this.form = "";
+        this.proficiencyLevel = "";
+        this.organizationNames = "";
     }
         
         
@@ -135,6 +145,15 @@ public class StudentProfileInformation extends SanitizedFormField
         this.testAdminId  = student.getTestAdminId();
         this.itemCountCRAI = student.getItemCountCRAI();
         this.completedContentArea = student.getCompletedContentArea();
+        this.testWindowOpenDate = student.getTestWindowOpenDate(); 
+        if (this.testWindowOpenDate != null) {
+            this.testWindowOpenDateString = DateUtils.formatDateToDateString(this.testWindowOpenDate, DateUtils.DATE_FORMAT_CHAR);     
+            //StringTokenizer tokenizer = new StringTokenizer(this.testWindowOpenDateString, "/");
+            this.testWindowOpenDateString = DateUtils.formatDateToDateString(this.testWindowOpenDate, DateUtils.DATE_FORMAT_DISPLAY);     
+        }
+        this.form = student.getForm();
+        this.proficiencyLevel = student.getProficiencyLevel();
+        this.organizationNames = student.getOrganizationNames();
     }
     
 
@@ -159,8 +178,10 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setTestAdminId(this.testAdminId);
         copied.setItemCountCRAI(this.itemCountCRAI);
         copied.setCompletedContentArea(this.completedContentArea);
-        
-        
+        copied.setTestWindowOpenDate(this.testWindowOpenDate);
+        copied.setForm(this.form);
+        copied.setProficiencyLevel(this.proficiencyLevel);
+        copied.setOrganizationNames(this.organizationNames);
         return copied;       
     }
   
@@ -197,8 +218,12 @@ public class StudentProfileInformation extends SanitizedFormField
             orgNode.setOrgNodeId(node.getId());
             orgNodes[i] = orgNode;
         }
-        copied.setOrganizationNodes(orgNodes);    
-            
+        copied.setOrganizationNodes(orgNodes);
+        
+        copied.setTestWindowOpenDate(this.testWindowOpenDate);
+        copied.setForm(this.form);
+        copied.setProficiencyLevel(this.proficiencyLevel);
+        copied.setOrganizationNames(this.organizationNames);
         return copied;       
     }
     
@@ -457,12 +482,12 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public String getOrgNodeNamesString() {
         String str = "";
-        for (int i=0 ; i<this.organizationNodes.length ; i++) {
+        /*for (int i=0 ; i<this.organizationNodes.length ; i++) {
             OrganizationNode node = this.organizationNodes[i];
             str = str + node.getOrgNodeName();
             if (i < (this.organizationNodes.length - 1))
                 str = str + ", ";
-        }
+        }*/
         return str;
 	}    
 	/**
@@ -606,5 +631,71 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setCompletedContentArea(String completedContentArea) {
 		this.completedContentArea = completedContentArea;
+	}
+
+
+	public String getTestName() {
+		return testName;
+	}
+
+
+	public void setTestName(String testName) {
+		this.testName = testName;
+	}
+
+
+	public Date getTestWindowOpenDate() {
+		return testWindowOpenDate;
+	}
+
+
+	public void setTestWindowOpenDate(Date testWindowOpenDate) {
+		this.testWindowOpenDate = testWindowOpenDate;
+	}
+
+
+	public String getForm() {
+		return form;
+	}
+
+
+	public void setForm(String form) {
+		this.form = form;
+	}
+
+
+	public String getTestWindowOpenDateString() {
+		return testWindowOpenDateString;
+	}
+
+
+	public void setTestWindowOpenDateString(String testWindowOpenDateString) {
+		this.testWindowOpenDateString = testWindowOpenDateString;
+	}
+
+
+	public String getProficiencyLevel() {
+		return proficiencyLevel;
+	}
+
+
+	public void setProficiencyLevel(String proficiencyLevel) {
+		this.proficiencyLevel = proficiencyLevel;
+	}
+
+
+	/**
+	 * @return the organizationNames
+	 */
+	public String getOrganizationNames() {
+		return organizationNames;
+	}
+
+
+	/**
+	 * @param organizationNames the organizationNames to set
+	 */
+	public void setOrganizationNames(String organizationNames) {
+		this.organizationNames = organizationNames;
 	}
 } 

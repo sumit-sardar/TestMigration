@@ -24,6 +24,9 @@
     </noscript>    
   </head>
   <body>
+    <jsp:include page="/resources/jsp/header.jsp" />
+    
+    <jsp:include page="/resources/jsp/report_navigation.jsp" />
     
     <table class="legacyBodyLayout">
     <tr>
@@ -37,6 +40,6 @@
         </td>
     </tr>
     </table> 
-  
+  <jsp:include page="/resources/jsp/footer.jsp" />  
   </body>
 </netui:html>
