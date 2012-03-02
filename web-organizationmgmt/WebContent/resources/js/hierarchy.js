@@ -1708,42 +1708,52 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	function addTree(currentSelectedId,addedOrgName,addedOrgId,addedOrgCategoryId){										
 		var parentElementBeforeAdd = $('#'+currentSelectedId,'#innerID'); 
 		parentElementBeforeAdd = parentElementBeforeAdd[0];
+		
+		var parentElementOuterTree = $('#'+currentSelectedId,'#orgNodeHierarchy'); 
+		parentElementOuterTree = parentElementOuterTree[0];
+		
 		var tclIndex  = parseInt(parentElementBeforeAdd.getAttribute("tcl"));
 		if (addedOrgCategoryId == null || addedOrgCategoryId == undefined ){
 		addedOrgCategoryId = parseInt(parentElementBeforeAdd.getAttribute("cid")) + 1;
 		}
-		//Changes for defect 68432
-		if(!jsonData[0].hasOwnProperty("children") && parentElementBeforeAdd.getAttribute("cid") ==1){
-			if(jsonData[0].children == undefined){
-	     		jsonData[0].children = [];
+
+		var index = getIndexOfRoot(currentSelectedId);
+		//Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
+		if (parentElementBeforeAdd.getAttribute("cid") ==1){
+			//console.log("AddObject" + obj);		
+			/*if(obj == null || obj == undefined)
+				obj = [];
+	     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+	     	obj.children = [];*/
+			if(jsonData[index].children == undefined){
+	     		jsonData[index].children = [];
 	     	}
-			jsonData[0].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
-			//$(parentElementBeforeAdd).removeClass("jstree-closed").addClass("jstree-open");//explicitly opening node
-		}//68432
+			jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+
+		}
 		prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
 		var obj = map.get(currentSelectedId);
 		var addedObject = map.get(addedOrgId);
 
-		var index = getIndexOfRoot(currentSelectedId);
+		//var index = getIndexOfRoot(currentSelectedId);
 		var isLeaf = $(parentElementBeforeAdd).hasClass("jstree-leaf");	
-		var isTreeOpen =  $(parentElementBeforeAdd).hasClass("jstree-open");	
+		var isTreeOpen =  $(parentElementOuterTree).hasClass("jstree-open");	
 			 if (isLeaf){
-			 $(parentElementBeforeAdd).removeClass("jstree-leaf").addClass("jstree-closed");	
+			 $(parentElementOuterTree).removeClass("jstree-leaf").addClass("jstree-closed");	
 			 }
 			 else{
 			 //Nothing
 			 }
-		 //Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
+		 /*//Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
 		if (parentElementBeforeAdd.getAttribute("cid") ==1){
 			//console.log("AddObject" + obj);		
 			if(obj == null || obj == undefined)
 				obj = [];
 	     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
 	     	obj.children = [];
-	     	if(!jsonData[index].hasOwnProperty("children")){//68432
-				jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
-			}
-		}
+			
+			jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+		}*/
 		
 		//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
 		//For levels 3 to n we have to consider two things before adding the elements to cache first whether the element has children or not.
