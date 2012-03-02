@@ -1739,7 +1739,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		var isLeaf = $(parentElementBeforeAdd).hasClass("jstree-leaf");	
 		var isTreeOpen =  $(parentElementOuterTree).hasClass("jstree-open");	
 			 if (isLeaf){
-			 $(parentElementOuterTree).removeClass("jstree-leaf").addClass("jstree-closed");	
+			 $(parentElementBeforeAdd).removeClass("jstree-leaf").addClass("jstree-closed");	
 			 }
 			 else{
 			 //Nothing
