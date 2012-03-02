@@ -58,7 +58,7 @@
 					<td width="110" class="transparent alignRight"><lb:label key="dialog.myProfile.loginId" suffix=":" prefix=""/></td>
 					<td class="transparent"><div id="profileLoginId"></div></td>
 				</tr>
-				<tr style="display: table-row;" id="message" class="transparent">
+				<tr class="transparent">
 					<td width="110" class="transparent alignRight" style="vertical-align: top;"><lb:label key="dialog.myProfile.org" suffix=":" /></td>
 					<td class="transparent-small">					
 					<div id="profileNoOrgNode" style="padding-left: 4px"><font color="gray"><lb:label key="dialog.myProfile.msg.notSelectedOrgNodes" /></font></div>
