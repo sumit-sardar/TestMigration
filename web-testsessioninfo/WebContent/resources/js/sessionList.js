@@ -3295,8 +3295,8 @@ function registerDelegate(tree){
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;
 		   	param = param+"&isEndTestSession="+isEndTestSession;
-		    
-	    
+		    setAnchorButtonState('viewStatusButton', false);
+			setAnchorButtonState('printTicketButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -3381,11 +3381,7 @@ function registerDelegate(tree){
 								} 
 							  
 					  	}
-					  	if(state == "EDIT"){
-							setAnchorButtonState('viewStatusButton', false);
-							setAnchorButtonState('printTicketButton', false);
-						}
-						},
+					  	},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
 							window.location.href="/SessionWeb/logout.do";
