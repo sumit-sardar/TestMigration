@@ -255,7 +255,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 
 			Gson gson = new Gson();
 			json = gson.toJson(contentAreas);
-			System.out.println("json -> " + json);
 				try{
 					resp.setContentType("application/json");
 		    		stream = resp.getOutputStream();

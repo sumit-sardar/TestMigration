@@ -400,11 +400,11 @@ public class FilterSortPageUtils
 	filters.add(fp);
 	}
 	
-	if ((scoringStatus!= null) && (scoringStatus.length() > 0) && (!scoringStatus.equalsIgnoreCase(FILTERTYPE_ANY_SCORING_STATUS))) {
+	/*if ((scoringStatus!= null) && (scoringStatus.length() > 0) && (!scoringStatus.equalsIgnoreCase(FILTERTYPE_ANY_SCORING_STATUS))) {
 		fp = buildFilterParamSingleValue("ScoringStatus", scoringStatus, FilterType.EQUALS);
 		if (fp != null)
 		filters.add(fp);
-		}
+		}*/
 	
 	if ((contentAreaName!= null) && (contentAreaName.length() > 0) && (!contentAreaName.equalsIgnoreCase(FILTERTYPE_ANY_CONTENT_AREA))) {
 		fp = buildFilterParamSingleValue("completedContentAreaId", contentAreaName, FilterType.EQUALS);

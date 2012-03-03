@@ -67,7 +67,7 @@
 			<netui:content value="${container.item.displayName}"/>
         </td>
         <td class="sortable">
-            <netui:span value="${container.item.orgNodeNamesString}"/>
+            <netui:span value="${container.item.contentAreaString}"/>
         </td>
         <td class="sortable">
             <netui:span value="${container.item.proficiencyLevel}"/>

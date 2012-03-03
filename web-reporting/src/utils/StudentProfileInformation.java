@@ -55,6 +55,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String form;
     private String proficiencyLevel;
     private String organizationNames;
+    private String contentAreaString;
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -91,6 +92,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.form = "";
         this.proficiencyLevel = "";
         this.organizationNames = "";
+        this.contentAreaString = "";
     }
         
         
@@ -154,6 +156,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.form = student.getForm();
         this.proficiencyLevel = student.getProficiencyLevel();
         this.organizationNames = student.getOrganizationNames();
+        this.contentAreaString = student.getContentAreaString();
     }
     
 
@@ -182,6 +185,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setForm(this.form);
         copied.setProficiencyLevel(this.proficiencyLevel);
         copied.setOrganizationNames(this.organizationNames);
+        copied.setContentAreaString(this.contentAreaString);
         return copied;       
     }
   
@@ -224,6 +228,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setForm(this.form);
         copied.setProficiencyLevel(this.proficiencyLevel);
         copied.setOrganizationNames(this.organizationNames);
+        copied.setContentAreaString(this.contentAreaString);
         return copied;       
     }
     
@@ -697,5 +702,21 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setOrganizationNames(String organizationNames) {
 		this.organizationNames = organizationNames;
+	}
+
+
+	/**
+	 * @return the contentAreaString
+	 */
+	public String getContentAreaString() {
+		return contentAreaString;
+	}
+
+
+	/**
+	 * @param contentAreaString the contentAreaString to set
+	 */
+	public void setContentAreaString(String contentAreaString) {
+		this.contentAreaString = contentAreaString;
 	}
 } 
