@@ -53,6 +53,7 @@ public class ManageStudent extends CTBBean
     private String form;
     private String proficiencyLevel;
     private String organizationNames;
+    private String contentAreaString;
     
 	/**
 	 * @return the testPurpose
@@ -383,6 +384,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setOrganizationNames(String organizationNames) {
 		this.organizationNames = organizationNames;
+	}
+	/**
+	 * @return the contentAreaString
+	 */
+	public String getContentAreaString() {
+		return contentAreaString;
+	}
+	/**
+	 * @param contentAreaString the contentAreaString to set
+	 */
+	public void setContentAreaString(String contentAreaString) {
+		this.contentAreaString = contentAreaString;
 	}
     
 } 

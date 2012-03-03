@@ -2,6 +2,7 @@ package immediateReportByStudent;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -53,6 +54,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	@Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
 	
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+	
 	
 	
 	private static final String ACTION_DEFAULT           = "defaultAction";
@@ -72,6 +76,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
     private TestProduct [] tps;
     private Hashtable productNameToIndexHash = null;
     private Hashtable productIdToProductName = null;
+    private boolean islaslinkCustomer = false;
 	
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
@@ -131,7 +136,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		StudentImmediateReportForm form = initialize(ACTION_FIND_STUDENT);
 		//this.searchApplied = false;
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, form, null, null ,null, null, null);
-		//isTopLevelUser(); //For defect #66662
+		isTopLevelUser(); //For defect #66662
 		setupUserPermissions();
 		this.pageTitle  = "Immediate Reporting: Find Student";
 		return new Forward("success", form);
@@ -423,6 +428,36 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
+	}
+	
+	private void isTopLevelUser(){
+		 
+	    boolean isLaslinkCustomer = false;
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		try {
+		for (CustomerConfiguration cc : customerConfigurations) {
+			 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+					isLaslinkCustomer = true;
+	            }
+		}
+		    this.setIslaslinkCustomer(isLaslinkCustomer);
+		     isLaslinkUser = this.islaslinkCustomer;
+		
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 	}
 	
 	/**
@@ -1116,5 +1151,19 @@ public class ImmediateReportByStudentController extends PageFlowController {
 
 	public void setContentAreaNames(ScorableItem[] contentAreaNames) {
 		this.contentAreaNames = contentAreaNames;
+	}
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
 	}
 }

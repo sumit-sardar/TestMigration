@@ -2661,17 +2661,19 @@ public class StudentManagementImpl implements StudentManagement
 			if(page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
-			FilterParams statusFilter = new FilterParams();
-			statusFilter.setFilterParams(new FilterParam[0]);
-			
+			/*FilterParams statusFilter = new FilterParams();
+			statusFilter.setFilterParams(new FilterParam[0]);*/
+			Integer contentAreaFiltered = 0;
 			if (filter != null) {
 				FilterParam [] filterParams = filter.getFilterParams();
 				for (int i = 0; i < filterParams.length; i++) {
 			            FilterParam filterParam = filterParams[i];
 			            if (filterParam != null) {
 			                String fieldName = filterParam.getField();
-			                if(fieldName.equals("ScoringStatus")) {
-			                	statusFilter.setFilterParams(filterParams);
+			                if(fieldName.equals("completedContentAreaId")) {
+			                	String [] tempVal = (String [])filterParam.getArgument();
+			                	contentAreaFiltered = Integer.parseInt(tempVal[0]);
+			                	/*statusFilter.setFilterParams(filterParams);*/
 			                	break;
 			                }
 			            }
@@ -2684,7 +2686,10 @@ public class StudentManagementImpl implements StudentManagement
 				filter.setFilterParams(new FilterParam[0]);
 				//totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
 				ManageStudent [] studentTotalCount = null;
-				studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
+				if(contentAreaFiltered == 0)
+					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
+				else
+					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId, "", contentAreaFiltered);
 				totalCount = studentTotalCount.length;
 			}
 			String orderByClause = "";
@@ -2695,19 +2700,29 @@ public class StudentManagementImpl implements StudentManagement
 			
 			//searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
-            
-           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId,searchCriteria);
+			String contentAreaNameFilDisp = "";
+			if(contentAreaFiltered == 0)
+				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId,searchCriteria);
+			else {
+				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId,searchCriteria, contentAreaFiltered);
+				contentAreaNameFilDisp = studentManagement.getContentAreaNameFromId(contentAreaFiltered);
+			}
            for(ManageStudent student : students) {
         	   //student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
         	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
         	   if(plValue == null || "".equals(plValue))
         		   plValue = "N/A";
         	   student.setProficiencyLevel(plValue);
+        	   if(contentAreaFiltered == 0) {
+        		   
+        	   } else {
+        		   student.setContentAreaString(contentAreaNameFilDisp);
+        	   }
            }
 			
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
-			if(statusFilter != null) std.applyFiltering(statusFilter);
+			/*if(statusFilter != null) std.applyFiltering(statusFilter);*/
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
 

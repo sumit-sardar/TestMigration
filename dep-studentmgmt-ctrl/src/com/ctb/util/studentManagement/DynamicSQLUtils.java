@@ -56,7 +56,7 @@ public class DynamicSQLUtils
                 else if (fieldName.equals("Gender")) 
                     result.append(" and stu.gender = '").append(filterValue).append("'");
                 else
-                	if (!fieldName.equals("ScoringStatus"))  {
+                	if (!fieldName.equals("completedContentAreaId"))  {
                 		throw new InvalidFilterFieldException("Field name '"+fieldName+"' is not supported");
                 	}
             }
