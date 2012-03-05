@@ -308,16 +308,23 @@ function populateSelectProctorGrid() {
 						// Added to handle multiple organization select All	
 						allSelectOrgProctor[proctorForSelectedOrg] = true; 	
 					} else {
+						var loggedInUserId = $("#loggedInUserId").val();
 						//orgDataInform[proctorForSelectedOrg] = 1 ;
 						orgDataInform[proctorForSelectedOrg] = 0;
 						allSelectOrgProctor[proctorForSelectedOrg] = false;
 						for(var key in allProctorIds['dataList']) {
 							if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
-								delete proctorIdObjArray[key];
+								if(allProctorIds['dataList'][key].userId != loggedInUserId){
+									delete proctorIdObjArray[key];
+								}
+								else if (allProctorIds['dataList'][key].userId == loggedInUserId){
+									orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+								}	
 							}
 							else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
-								orgDataInform[proctorForSelectedOrg] = 1 ;
-							}	
+								//orgDataInform[proctorForSelectedOrg] = 1 ;
+								orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+							}
 						}							
 					}		
 				}
