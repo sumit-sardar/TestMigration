@@ -15,9 +15,22 @@ var previousDataForpaging = {};
 var applyChange = false;
 var filterLoadFlag = false;
 var filterTimer = null;
-
-
 var selectedStudentObjArr = {};
+var isPopUp = false;
+
+$(document).bind('keydown', function(event) {
+	var code = (event.keyCode ? event.keyCode : event.which);
+    if(code == 27){
+   		if(isPopUp){
+	   		if(document.getElementById("bulkMoveButton") != null) {
+	   			closeBulkMovePopup();
+	   		} else {
+				cancelAssignAccom();
+			}
+   		}
+        return false;
+    }
+});
 	
 function populateBulkAccommTree() {
 	
@@ -514,12 +527,14 @@ function editAccommodationClose(){
  	if (isButtonDisabled(element))
 		return true;
 		
+	isPopUp = true;
 	 $("#AssignAccommPopup").dialog({  
 		title:$("#selectAccomPopup").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '560px',
 	 	modal: true,
+	 	closeOnEscape: false,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
 		 //$("#AssignAccommPopup").css('height',120);
