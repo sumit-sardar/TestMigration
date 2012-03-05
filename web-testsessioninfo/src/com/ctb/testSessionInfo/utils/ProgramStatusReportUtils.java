@@ -34,7 +34,7 @@ public class ProgramStatusReportUtils {
     private static final String PROGRAM_STATUS = "Program Status";
     private static final String CUSTOMER = "Customer";
     private static final String PROGRAM = "Program";
-    private static final String ORGANIZATION = "Organization";
+    private static final String ORGANIZATION = "Group";
     private static final String TEST = "Test";
     private static final String SUBTEST = "Subtest";
     private static final String SUBTEST_STATUS = "Subtest Status";
