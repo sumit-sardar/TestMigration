@@ -2223,6 +2223,16 @@ function fillselectedOrgNode( elementId, orgList) {
 			enableColorSettingsLink("true");
 			setQuestionColorOptions();
 			setAnswerColorOptions();
+			var quesFontColorElement = document.getElementById("question_fontColor");
+			var questionBox = document.getElementById("questionBox");
+			var quesFontColor = stuAccommodation['question_fontColor'];
+			var ansFontColorElement = document.getElementById("answer_fontColor");
+			var answerBox = document.getElementById("answerBox");
+			var ansFontColor = stuAccommodation['answer_fontColor'];	
+			setSelectedFontColor(quesFontColorElement,quesFontColor);
+			setColor(questionBox, quesFontColor);
+			setSelectedFontColor(ansFontColorElement,ansFontColor);
+			setColor(answerBox, ansFontColor);
 			if(colorFontSize == '1.5'){
 				var largeFont = document.getElementById("largeFont");
         		largeFont.checked = true;
@@ -2421,6 +2431,17 @@ function setSelectedValue(selectObj, valueToSet) {
 			element.style.display = 'none';
 		}
 	}
+	
+	function setSelectedFontColor(selectElement, fontColor){
+
+		for(i=0; i<selectElement.options.length; i++){
+			if(selectElement.options[i].value == fontColor){
+				selectElement.options[i].selected = 'true';
+				//setColor(boxToSet, selectElement.options[i].value);	
+			}
+		}
+	}
+	
 	/******Jstree Methods*****/
 	//method triggered from library
 	  function customLoad(){
