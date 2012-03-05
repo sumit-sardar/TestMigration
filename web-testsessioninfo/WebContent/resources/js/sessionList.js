@@ -2932,15 +2932,18 @@ function registerDelegate(tree){
 	}
     
     function onCloseScheduleSessionPopUp() {    	
-    	var sessionName = document.getElementById("testSessionName").value;		
+    	var sessionName = document.getElementById("testSessionName").value;	
+    	var selectedId1 = $("#list2").jqGrid('getGridParam', 'selrow');
+		if(selectedId1 != null && $.trim(selectedId1) != '') {
+			setAnchorButtonState('viewStatusButton', false);
+			setAnchorButtonState('printTicketButton', false);
+		}		
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
 				openCloseScheduleSessionPopup();
 			}else{
 				closePopUp('scheduleSession');
 			}
-			setAnchorButtonState('viewStatusButton', false);
-			setAnchorButtonState('printTicketButton', false);
 		}else{		
 	    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
 	    		closePopUp('scheduleSession');
@@ -2987,7 +2990,10 @@ function registerDelegate(tree){
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;
 		   	param = param+"&isEndTestSession="+isEndTestSession;
-		    setAnchorButtonState('viewStatusButton', false);
+	 }
+	 var selectedId1 = $("#list2").jqGrid('getGridParam', 'selrow');
+	 if(selectedId1 != null && $.trim(selectedId1) != '') {
+	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
