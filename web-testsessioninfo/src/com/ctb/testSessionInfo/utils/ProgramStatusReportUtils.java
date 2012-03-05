@@ -1,18 +1,9 @@
 package com.ctb.testSessionInfo.utils; 
 
-import com.ctb.testSessionInfo.dto.ProgramStatusReportVO;
-import com.ctb.testSessionInfo.dto.TestStatusVO;
 import java.io.OutputStream;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
-import org.apache.struts.action.ActionError;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -21,6 +12,9 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+
+import com.ctb.testSessionInfo.dto.ProgramStatusReportVO;
+import com.ctb.testSessionInfo.dto.TestStatusVO;
 
 public class ProgramStatusReportUtils {
 	private OutputStream out;
@@ -34,7 +28,7 @@ public class ProgramStatusReportUtils {
     private static final String PROGRAM_STATUS = "Program Status";
     private static final String CUSTOMER = "Customer";
     private static final String PROGRAM = "Program";
-    private static final String ORGANIZATION = "Organization";
+    private static final String ORGANIZATION = "Group";
     private static final String TEST = "Test";
     private static final String SUBTEST = "Subtest";
     private static final String SUBTEST_STATUS = "Subtest Status";
