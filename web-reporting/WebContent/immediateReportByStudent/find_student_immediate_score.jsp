@@ -37,7 +37,8 @@
  <!-- Added tagId to resolve javascript isssue  for webLogic 10.3-->       
 
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/> 
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.studentMaxPage"/> 
 
 
 

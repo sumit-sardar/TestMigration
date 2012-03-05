@@ -79,6 +79,7 @@ public class FilterSortPageUtils
     public static final int PAGESIZE_10 = 10;
     public static final int PAGESIZE_15 = 15;
     public static final int PAGESIZE_20 = 20;
+    public static final int PAGESIZE_50 = 50;
     public static final int MAX_RECORDS = 10000;
   
     
