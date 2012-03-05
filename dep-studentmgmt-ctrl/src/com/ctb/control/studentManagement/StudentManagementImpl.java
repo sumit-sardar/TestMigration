@@ -2682,7 +2682,7 @@ public class StudentManagementImpl implements StudentManagement
 			Integer totalCount = null;
 			String searchCriteria = "";
 			if (filter != null) {
-				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
+				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilterReporting(filter);
 				filter.setFilterParams(new FilterParam[0]);
 				//totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
 				ManageStudent [] studentTotalCount = null;
@@ -2713,9 +2713,7 @@ public class StudentManagementImpl implements StudentManagement
         	   if(plValue == null || "".equals(plValue))
         		   plValue = "N/A";
         	   student.setProficiencyLevel(plValue);
-        	   if(contentAreaFiltered == 0) {
-        		   
-        	   } else {
+        	   if(contentAreaFiltered > 0) {
         		   student.setContentAreaString(contentAreaNameFilDisp);
         	   }
            }

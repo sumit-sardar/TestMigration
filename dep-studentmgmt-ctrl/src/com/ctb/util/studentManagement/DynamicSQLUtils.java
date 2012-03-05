@@ -56,6 +56,49 @@ public class DynamicSQLUtils
                 else if (fieldName.equals("Gender")) 
                     result.append(" and stu.gender = '").append(filterValue).append("'");
                 else
+                	if (!fieldName.equals("ScoringStatus"))  {
+                		throw new InvalidFilterFieldException("Field name '"+fieldName+"' is not supported");
+                	}
+            }
+        }
+        
+        return result.toString();
+    }
+    
+    /**
+	 * Generates a where clause for SQL based on filter params
+	 * @param filter
+	 * @return String
+	 */
+    public static String generateWhereClauseForFilterReporting(FilterParams filter) 
+        throws InvalidFilterFieldException
+    {
+        StringBuffer result = new StringBuffer();
+        
+        FilterParam [] filterParams = filter.getFilterParams();
+        for (int i = 0; i < filterParams.length; i++) {
+            FilterParam filterParam = filterParams[i];
+            if (filterParam != null) {
+                String fieldName = filterParam.getField();
+                FilterType fieldType = filterParam.getType();
+                if (!FilterType.EQUALS.equals(fieldType))
+                    throw new InvalidFilterFieldException("Field type '"+fieldType+"' is not supported");
+                String filterValue = (String) filterParam.getArgument()[0];
+                if (fieldName.equals("FirstName")) 
+                    result.append(" and upper(std.first_name) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("MiddleName")) 
+                    result.append(" and upper(std.middle_name) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("LastName")) 
+                    result.append(" and upper(std.last_name) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("LoginId")) 
+                    result.append(" and upper(std.user_name) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("StudentIdNumber")) 
+                    result.append(" and upper(std.ext_pin1) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("Grade")) 
+                    result.append(" and std.grade = '").append(filterValue).append("'");
+                else if (fieldName.equals("Gender")) 
+                    result.append(" and std.gender = '").append(filterValue).append("'");
+                else
                 	if (!fieldName.equals("completedContentAreaId"))  {
                 		throw new InvalidFilterFieldException("Field name '"+fieldName+"' is not supported");
                 	}
