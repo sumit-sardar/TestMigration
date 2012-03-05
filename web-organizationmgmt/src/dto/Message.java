@@ -35,29 +35,29 @@ public class Message implements java.io.Serializable
     
     public static final String INVALID_NAME_CHARS_STUDENT  = "Please re-enter your information with these characters: A-Z, a-z, 0-9, /, \\, -, _, ', (, ), &, +, comma, period, space"; 
     
-    public static final String ADD_TITLE      = "Add Organization";
+    public static final String ADD_TITLE      = "Add Group";
 //    public static final String ADD_SUCCESSFUL = "New organization has been successfully added.";
-    public static final String ADD_SUCCESSFUL = "Organization was added successfully.";
-    public static final String ADD_ERROR = "Failed to create this organization.";
-    public static final String ADD_TITLE_WEB      = "CTB/McGraw-Hill OAS - Add Organization";
+    public static final String ADD_SUCCESSFUL = "Group was added successfully.";
+    public static final String ADD_ERROR = "Failed to create this group.";
+    public static final String ADD_TITLE_WEB      = "CTB/McGraw-Hill OAS - Add Group";
 
-    public static final String EDIT_TITLE      = "Edit Organization: ";
+    public static final String EDIT_TITLE      = "Edit Group: ";
 //    public static final String EDIT_SUCCESSFUL    = "Organization information has been updated successfully.";
-    public static final String EDIT_SUCCESSFUL    = "Organization has been updated successfully.";
-    public static final String EDIT_ERROR = "Failed to update this organization.";
-    public static final String INVALID_PARENT = "An organization must belong to an organization above it. Select a valid parent organization.";
-    public static final String EDIT_TITLE_WEB      = "CTB/McGraw-Hill OAS - Edit Organization";
+    public static final String EDIT_SUCCESSFUL    = "Group has been updated successfully.";
+    public static final String EDIT_ERROR = "Failed to update this group.";
+    public static final String INVALID_PARENT = "An group must belong to an group above it. Select a valid parent group.";
+    public static final String EDIT_TITLE_WEB      = "CTB/McGraw-Hill OAS - Edit Group";
     
-    public static final String DELETE_TITLE      = "Delete Organization";
+    public static final String DELETE_TITLE      = "Delete Group";
     public static final String DELETE_FILE_TITLE      = "Delete File";
-    public static final String DELETE_SUCCESSFUL = "Organization has been deleted successfully.";
+    public static final String DELETE_SUCCESSFUL = "Group has been deleted successfully.";
     public static final String DELETE_FILE_SUCCESSFUL = "File has been deleted successfully.";
-    public static final String DELETE_ERROR_TAS = "You cannot delete this organization.";
-    public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this organization.";
+    public static final String DELETE_ERROR_TAS = "You cannot delete this group.";
+    public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this group.";
     
-    public static final String VIEW_ORG_TITLE = "View Organization: ";
+    public static final String VIEW_ORG_TITLE = "View Group: ";
     
-    public static final String FIND_ORG_TITLE  = "Find Organization";
+    public static final String FIND_ORG_TITLE  = "Find Group";
     
      // Information on Customer
     public static final String ADD_CUSTOMER_TITLE      = "Add Customer ";
@@ -88,7 +88,7 @@ public class Message implements java.io.Serializable
     public static final String CREATE_ADMIN_SUCCESSFUL    = "Administrator has been created successfully.";
     public static final String CREATE_ADMIN_ERROR = "Failed to create this Administrator.";
     
-    public static final String MANAGE_ORG_ERROR = "Failed to manage this organization.";
+    public static final String MANAGE_ORG_ERROR = "Failed to manage this group.";
     public static final String MANAGE_CUSTOMER_ERROR = "Failed to manage this customer.";
     public static final String FIND_CUSTOMER_ERROR = "Failed to find this customer.";
     
