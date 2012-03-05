@@ -3,6 +3,8 @@ var bulkMoveStuCounterPage = 0;
 var allStudentInGrid = [];
 var selectedStudentForMove = [];
 var finalSelectedNode;
+var isPopUp = false;
+
 
 function populateBulkMoveTree() {
 	isBulkMove = true;
@@ -290,17 +292,18 @@ function openBulkMovePopup(element) {
 		return true;
 		
 	removeBulkPopupMessage();
-	isPopUp = true;
 	if($("#innerID ul li") == undefined || $("#innerID ul li").length <= 0) {
 		createMultiNodeBulkMoveTree(orgTreeHierarchy);
 	}
 	finalSelectedNode = undefined;
+	isPopUp = true;
 	$("#moveStudentPopup").dialog({  
 		title:$("#moveStuDialogTitle").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '480px',
 	 	modal: true,
+	 	closeOnEscape: false,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
 		 $("#moveStudentPopup").css('height',390);
