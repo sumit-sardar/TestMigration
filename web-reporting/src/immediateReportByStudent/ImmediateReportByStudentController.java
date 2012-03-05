@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.Message;
 import utils.MessageResourceBundle;
@@ -32,8 +35,10 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.ScorableItem;
+import com.ctb.bean.testAdmin.StudentReportIrsScore;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.User;
@@ -77,6 +82,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
     private Hashtable productNameToIndexHash = null;
     private Hashtable productIdToProductName = null;
     private boolean islaslinkCustomer = false;
+    
+    private Integer rosterId = null;
+    private Integer testAdminId = null;
 	
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
@@ -161,8 +169,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT);
-		System.out.println("currentAction -> " + currentAction);
-		System.out.println("actionElement -> " + actionElement);
 		if(currentAction.equalsIgnoreCase("gotoReports")) {
 			try
 	        {
@@ -280,6 +286,84 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
 		return null;
 		
+	}
+	
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="listOfItem.jsp"
+	 * @jpf:validation-error-forward name="failure" path="logout.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path ="find_student_reporting.jsp")}, 
+	validationErrorForward = @Jpf.Forward(name = "failure",
+			path = "logout.do"))
+			protected Forward beginDisplayStudScoringReport(StudentImmediateReportForm form)
+	{ 
+			form.validateValues();
+			this.pageTitle  = "Immediate Reporting: View Report";
+			String currentAction = form.getCurrentAction();
+			String actionElement = form.getActionElement();
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			try {
+				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+				form.setStudentNameRe(stuReport.getStudentName());
+				form.setStudentExtPin1(stuReport.getStudentExtPin1());
+				form.setTestAdminStartDate(stuReport.getTestAdminStartDate());
+				form.setForm(stuReport.getForm());
+				form.setGrade(stuReport.getGrade());
+				form.setDistrict(stuReport.getDistrict());
+				form.setSchool(stuReport.getSchool());
+				form.setStudentReportIrsScoreVal(stuReport.getStudentReportIrsScore());
+				this.getRequest().setAttribute("studentName", stuReport.getStudentName());
+				this.getRequest().setAttribute("studentExtPin", stuReport.getStudentExtPin1());
+				this.getRequest().setAttribute("startDate", form.getTestAdminStartDateStr());
+				this.getRequest().setAttribute("formRe", stuReport.getForm());
+				this.getRequest().setAttribute("grade", stuReport.getGrade());
+				this.getRequest().setAttribute("district", stuReport.getDistrict());
+				this.getRequest().setAttribute("school", stuReport.getSchool());
+				this.getRequest().setAttribute("irsScores", stuReport.getStudentReportIrsScore());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			/* if(actionElement.equals(ACTION_DEFAULT))
+			 {
+				 form.setRosterId(Integer.valueOf(this.getRequest().getParameter("rosterId")));
+				 form.setItemSetIdTC(Integer.valueOf(this.getRequest().getParameter("itemSetIdTC")));
+				 form.setAccessCode(this.getRequest().getParameter("accessCode"));
+				 form.setUserName(this.getRequest().getParameter("userName"));
+				 form.setTestAdminId(Integer.valueOf(this.getRequest().getParameter("testAdminId")));
+			 }
+			if(form.getActionElement().equals(ACTION_DEFAULT)) {
+				form.setActionElement(ACTION_DISPLAY_ITEMLIST);
+				form.setCurrentAction(ACTION_DISPLAY_ITEMLIST);
+			}
+			
+			currentAction = form.getCurrentAction();
+			actionElement = form.getActionElement();
+			form.resetValuesForAction(actionElement, ACTION_DISPLAY_ITEMLIST);
+		
+		 PageParams page =  FilterSortPageUtils.buildPageParams(form.getItemPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		 SortParams sort = FilterSortPageUtils.buildItemSortParams(form.getItemSortColumn(), form.getItemSortOrderBy());
+		 ScorableItemData sid = getTestItemForStudent(form.getRosterId(), form.getItemSetIdTC(), page, sort);//add productId
+		 //ScorableItemData sid = getTestItemForStudent(1829973, 27775, page, sort);//add productId
+         List itemList = buildItemList(sid); 
+         PagerSummary itemPagerSummary = buildItemPagerSummary(sid, form.getItemPageRequested()); 
+         form.setItemMaxPage(sid.getFilteredPages());
+         try{
+    		 TestSession testSession = scoring.getTestAdminDetails(form.getTestAdminId());
+    		
+         this.getRequest().setAttribute("itemList", itemList);
+         this.getRequest().setAttribute("itemPagerSummary", itemPagerSummary);
+         this.getRequest().setAttribute("accessCode", form.getAccessCode());
+         this.getRequest().setAttribute("userName", form.getUserName());
+         if(itemList.isEmpty())
+         {	
+        	 this.getRequest().setAttribute("itemSearchResultEmpty", MessageResourceBundle.getMessage("itemSearchResultEmpty"));        
+        	 return new Forward("success");
+         }*/
+       return new Forward("success",form);
 	}
 	
 	/**
@@ -850,6 +934,19 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		private Integer studentPageRequested;
 		private Integer studentMaxPage;
 		
+		private Integer testAdminId = null;
+		private Integer rosterId = null;
+		private String studentNameRe = null;
+		private Integer studentIdRe = null;
+		private String studentExtPin1 = null;
+		private Date testAdminStartDate = null;
+		private String testAdminStartDateStr = null;
+		private String form = null;
+		private String district = null;
+		private String school = null;
+		private String grade = null;
+		private StudentReportIrsScore[] studentReportIrsScoreVal;
+		
 		public StudentImmediateReportForm() {
 			
 		}
@@ -1061,6 +1158,180 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		{
 			this.message = new Message(title, content, type);
 		}
+
+		/**
+		 * @return the testAdminId
+		 */
+		public Integer getTestAdminId() {
+			return testAdminId;
+		}
+
+		/**
+		 * @param testAdminId the testAdminId to set
+		 */
+		public void setTestAdminId(Integer testAdminId) {
+			this.testAdminId = testAdminId;
+		}
+
+		/**
+		 * @return the rosterId
+		 */
+		public Integer getRosterId() {
+			return rosterId;
+		}
+
+		/**
+		 * @param rosterId the rosterId to set
+		 */
+		public void setRosterId(Integer rosterId) {
+			this.rosterId = rosterId;
+		}
+
+		/**
+		 * @return the studentNameRe
+		 */
+		public String getStudentNameRe() {
+			return studentNameRe;
+		}
+
+		/**
+		 * @param studentNameRe the studentNameRe to set
+		 */
+		public void setStudentNameRe(String studentNameRe) {
+			this.studentNameRe = studentNameRe;
+		}
+
+		/**
+		 * @return the studentIdRe
+		 */
+		public Integer getStudentIdRe() {
+			return studentIdRe;
+		}
+
+		/**
+		 * @param studentIdRe the studentIdRe to set
+		 */
+		public void setStudentIdRe(Integer studentIdRe) {
+			this.studentIdRe = studentIdRe;
+		}
+
+		/**
+		 * @return the studentExtPin1
+		 */
+		public String getStudentExtPin1() {
+			return studentExtPin1;
+		}
+
+		/**
+		 * @param studentExtPin1 the studentExtPin1 to set
+		 */
+		public void setStudentExtPin1(String studentExtPin1) {
+			this.studentExtPin1 = studentExtPin1;
+		}
+
+		/**
+		 * @return the testAdminStartDate
+		 */
+		public Date getTestAdminStartDate() {
+			return testAdminStartDate;
+		}
+
+		/**
+		 * @param testAdminStartDate the testAdminStartDate to set
+		 */
+		public void setTestAdminStartDate(Date testAdminStartDate) {
+			this.testAdminStartDate = testAdminStartDate;
+		}
+
+		/**
+		 * @return the form
+		 */
+		public String getForm() {
+			return form;
+		}
+
+		/**
+		 * @param form the form to set
+		 */
+		public void setForm(String form) {
+			this.form = form;
+		}
+
+		/**
+		 * @return the district
+		 */
+		public String getDistrict() {
+			return district;
+		}
+
+		/**
+		 * @param district the district to set
+		 */
+		public void setDistrict(String district) {
+			this.district = district;
+		}
+
+		/**
+		 * @return the school
+		 */
+		public String getSchool() {
+			return school;
+		}
+
+		/**
+		 * @param school the school to set
+		 */
+		public void setSchool(String school) {
+			this.school = school;
+		}
+
+		/**
+		 * @return the grade
+		 */
+		public String getGrade() {
+			return grade;
+		}
+
+		/**
+		 * @param grade the grade to set
+		 */
+		public void setGrade(String grade) {
+			this.grade = grade;
+		}
+
+		/**
+		 * @return the testAdminStartDateStr
+		 */
+		public String getTestAdminStartDateStr() {
+			if (this.testAdminStartDate != null) {
+	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_CHAR);     
+	            StringTokenizer tokenizer = new StringTokenizer(this.testAdminStartDateStr, "/");
+	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_DISPLAY);     
+	        }
+			return testAdminStartDateStr;
+		}
+
+		/**
+		 * @param testAdminStartDateStr the testAdminStartDateStr to set
+		 */
+		public void setTestAdminStartDateStr(String testAdminStartDateStr) {
+			this.testAdminStartDateStr = testAdminStartDateStr;
+		}
+
+		/**
+		 * @return the studentReportIrsScoreVal
+		 */
+		public StudentReportIrsScore[] getStudentReportIrsScoreVal() {
+			return studentReportIrsScoreVal;
+		}
+
+		/**
+		 * @param studentReportIrsScoreVal the studentReportIrsScoreVal to set
+		 */
+		public void setStudentReportIrsScoreVal(
+				StudentReportIrsScore[] studentReportIrsScoreVal) {
+			this.studentReportIrsScoreVal = studentReportIrsScoreVal;
+		}
 		
 	}
 	
@@ -1164,5 +1435,33 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 */
 	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
 		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	/**
+	 * @return the rosterId
+	 */
+	public Integer getRosterId() {
+		return rosterId;
+	}
+
+	/**
+	 * @param rosterId the rosterId to set
+	 */
+	public void setRosterId(Integer rosterId) {
+		this.rosterId = rosterId;
+	}
+
+	/**
+	 * @return the testAdminId
+	 */
+	public Integer getTestAdminId() {
+		return testAdminId;
+	}
+
+	/**
+	 * @param testAdminId the testAdminId to set
+	 */
+	public void setTestAdminId(Integer testAdminId) {
+		this.testAdminId = testAdminId;
 	}
 }

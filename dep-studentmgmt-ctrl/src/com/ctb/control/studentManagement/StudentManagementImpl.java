@@ -18,15 +18,18 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
+import com.ctb.bean.studentManagement.ItemResponseData;
 import com.ctb.bean.studentManagement.ManageBulkStudentData;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
-import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
+import com.ctb.bean.testAdmin.StudentReportIrsScore;
+import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -63,7 +66,6 @@ import com.ctb.util.SimpleCache;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.studentManagement.DynamicSQLUtils;
 import com.ctb.util.studentManagement.StudentUtils;
-import com.ctb.bean.studentManagement.ItemResponseData;
 
 /**
  * @author John_Wang
@@ -2747,5 +2749,24 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
+	}
+	
+	public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
+		
+		try {
+			StudentScoreReport stuScrReport = new StudentScoreReport();
+			StudentReportIrsScore[] stuScoreData = null;
+			stuScrReport = studentManagement.getStudentDataForReport(testRosterId);
+			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
+			stuScrReport.setStudentReportIrsScore(stuScoreData);
+			
+			return stuScrReport;
+			
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentReport: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		
 	}
 } 

@@ -12,10 +12,11 @@ import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
 import com.ctb.bean.studentManagement.ItemResponseData;
 import com.ctb.bean.studentManagement.ManageStudent;
+import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
-import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
+import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.SessionStudent;
@@ -1090,6 +1091,9 @@ public interface StudentManagement extends JdbcControl
 
      @JdbcControl.SQL(statement = "select item_set_name from item_set where item_set_id = {itemSetTdId}")
  	String getContentAreaNameFromId(Integer itemSetTdId) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "SELECT CONCAT(CONCAT(STU.LAST_NAME, ', '), CONCAT(STU.FIRST_NAME, CONCAT('', STU.MIDDLE_NAME))) AS STUDENTNAME, STU.STUDENT_ID AS STUDENTID, STU.EXT_PIN1 AS STUDENTEXTPIN1, ADM.LOGIN_START_DATE AS TESTADMINSTARTDATE, ROS.FORM_ASSIGNMENT AS FORM, STU.GRADE AS GRADE, ORGSCH.ORG_NODE_NAME AS SCHOOL, ORGDIS.ORG_NODE_NAME AS DISTRICT FROM STUDENT STU, TEST_ROSTER ROS, ORG_NODE_STUDENT ONS, ORG_NODE ORG, ORG_NODE ORGSCH, ORG_NODE_ANCESTOR ONA, ORG_NODE_ANCESTOR ONADIST, TEST_ADMIN ADM, ORG_NODE ORGDIS WHERE STU.STUDENT_ID = ROS.STUDENT_ID AND ROS.TEST_ROSTER_ID = {testRosterId} AND ROS.TEST_ADMIN_ID = ADM.TEST_ADMIN_ID AND ONS.STUDENT_ID = STU.STUDENT_ID AND ONS.ORG_NODE_ID = ORG.ORG_NODE_ID AND ORG.ORG_NODE_ID = ONA.ORG_NODE_ID AND ONA.NUMBER_OF_LEVELS = 1 AND ONA.ANCESTOR_ORG_NODE_ID = ORGSCH.ORG_NODE_ID AND ONA.ORG_NODE_ID = ONADIST.ORG_NODE_ID AND ONADIST.NUMBER_OF_LEVELS = 2 AND ONADIST.ANCESTOR_ORG_NODE_ID = ORGDIS.ORG_NODE_ID")
+  	StudentScoreReport getStudentDataForReport(Integer testRosterId) throws SQLException;
 
      
 }

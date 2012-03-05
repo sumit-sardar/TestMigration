@@ -26,7 +26,7 @@
         <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Content Area(s) &nbsp;&nbsp;</th>
+            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Content Area(s) </th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestStartDate">Administration date</ctb:tableSortColumn></th>
@@ -44,18 +44,12 @@
     
            <td class="sortable">
              
-             <netui-data:getData resultId="rosterId" value="${container.item.rosterId}"/>  
-              
-             <netui-data:getData resultId="userName" value="${container.item.userName}"/> 
-             <netui-data:getData resultId="itemSetIdTC" value="${container.item.itemSetIdTC}"/> 
+             <netui-data:getData resultId="rosterId" value="${container.item.rosterId}"/> 
              <netui-data:getData resultId="testAdminId" value="${container.item.testAdminId}"/> 
                     <% 
                     String testSessionName = (String)pageContext.getAttribute("testSessionName");
-                    String href = "beginDisplayStudItemList.do?rosterId=" + pageContext.getAttribute("rosterId")
-                    		+ "&accessCode="+ pageContext.getAttribute("accessCode")
-                    		+ "&itemSetIdTC="+ pageContext.getAttribute("itemSetIdTC")
-                    		+ "&testAdminId="+ pageContext.getAttribute("testAdminId")
-                    		+ "&userName="+ pageContext.getAttribute("userName");
+                    String href = "beginDisplayStudScoringReport.do?rosterId=" + pageContext.getAttribute("rosterId")
+                    		+ "&testAdminId="+ pageContext.getAttribute("testAdminId");
                    %>
                 
                     <netui:anchor href="<%= href %>" formSubmit="true">
