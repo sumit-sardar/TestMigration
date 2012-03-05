@@ -944,7 +944,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			/*if (actionElement.equals("{actionForm.itemSortOrderBy}")) {
 				this.itemPageRequested = new Integer(1);
 			}*/
-		/*	if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
+			if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
 					actionElement.equals("EnterKeyInvoked_studentSearchResult")) {
 			    	this.selectedStudentId = null;
 			}
@@ -954,7 +954,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				if (fromAction.equals(ACTION_FIND_STUDENT)){
 					this.selectedStudentId = null;
 				}
-			}*/
+			}
 		}
 		
 		public void clearSearch()

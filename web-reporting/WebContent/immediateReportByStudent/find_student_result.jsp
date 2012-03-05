@@ -30,7 +30,7 @@
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestStartDate">Administration date</ctb:tableSortColumn></th>
-          	<th class="sortable alignLeft" width="20%" nowrap>Teacher name</th>
+          	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Teacher name</th>
         	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
         
            
