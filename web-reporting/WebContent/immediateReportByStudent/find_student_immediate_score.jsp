@@ -27,7 +27,7 @@
 <!-- title -->
     
     <p>
-        <netui:content value="To see a list of all students, click Search. To find specific students, enter the known information on which to search."/><br/>
+        <netui:content value="${bundle.web['Immediate.Score.By.Student.title.message']}"/><br/>
         
     </p>
 
