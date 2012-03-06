@@ -26,13 +26,13 @@
         <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Content Area(s) </th>
-            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="20%" nowrap>&nbsp;Content Area(s) </th>
+            <th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestStartDate">Administration date</ctb:tableSortColumn></th>
-          	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;&nbsp;Teacher name</th>
+          	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Teacher name</th>
         	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
-        
+        	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Download</th>
            
         </ctb:tableSortColumnGroup>
     </tr>
@@ -79,13 +79,18 @@
         <td class="sortable">
             <netui:span value="${container.item.form}"/>
         </td>
+        <td class="sortable">
+            <a>PDF</a>
+            <br>
+            <a>CSV</a>
+        </td>
     </tr>
     
     </netui-data:repeaterItem>
     <netui-data:repeaterFooter>
     
         <tr class="sortable">
-            <td class="sortableControls" colspan="8">
+            <td class="sortableControls" colspan="9">
                 <ctb:tablePager dataSource="actionForm.studentPageRequested" summary="request.studentPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found" id="studentSearchResult" anchorName="studentSearchResult"/>
             </td>
         </tr>         

@@ -102,9 +102,9 @@ template_find_student.jsp
 					<td width="50px">
 					</td>
 					<td>
-						<table border="1px">
+						<table>
 							<tr>
-								<th width="150px">&nbsp;</th>
+								<th width="150px" style="border-style: none !important;">&nbsp;</th>
             					<th class="sortable alignCenter" width="120px">Raw Score</th>
             					<th class="sortable alignCenter" width="120px">Scale Score </th>
             					<th class="sortable alignCenter" width="150px">Proficiency Level</th>
@@ -120,13 +120,13 @@ template_find_student.jsp
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Overall")) { %>
 									bgcolor="#C3D599"
 									<% }%>>
-								<td align="left"><%=stuScoreVal[i].getContentAreaName()%>
+								<td align="left" class="transparent" style="border-style: solid !important; border-width: thin !important;"><%=stuScoreVal[i].getContentAreaName()%>
 								</td>
-								<td align="center"><%=stuScoreVal[i].getRawScore()%>
+								<td align="center" class="transparent" style="border-style: solid !important; border-width: thin !important;"><%=stuScoreVal[i].getRawScore()%>
 								</td>
-								<td align="center"><%=stuScoreVal[i].getScaleScore()%>
+								<td align="center" class="transparent" style="border-style: solid !important; border-width: thin !important;"><%=stuScoreVal[i].getScaleScore()%>
 								</td>
-								<td align="center"><%=stuScoreVal[i].getProficiencyLevel()%>
+								<td align="center" class="transparent" style="border-style: solid !important; border-width: thin !important;"><%=stuScoreVal[i].getProficiencyLevel()%>
 								</td>
 							</tr>
 							<%
