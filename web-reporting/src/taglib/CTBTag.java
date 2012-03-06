@@ -5,7 +5,6 @@
 package taglib;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -16,6 +15,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
  
 public class CTBTag extends TagSupport {
+	private static final long serialVersionUID = 1L;
 	protected static final int NO_ROWSPAN = -1;
 	protected static final int NO_COLSPAN = -1;
 	protected static final int NO_HEIGHT = -1;

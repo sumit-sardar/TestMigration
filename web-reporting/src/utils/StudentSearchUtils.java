@@ -34,17 +34,15 @@ public class StudentSearchUtils {
     /**
      * buildStudentList
      */    
-    public static List buildStudentList(ManageStudentData msData) 
+    public static List<StudentProfileInformation> buildStudentList(ManageStudentData msData) 
     {
-        ArrayList studentList = new ArrayList();
+        ArrayList<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
         if (msData != null) {
             ManageStudent[] students = msData.getManageStudents();
             for (int i=0 ; i<students.length ; i++) {
                 ManageStudent student = (ManageStudent)students[i];
                 if (student != null) {
-                	//System.out.println("==>1"+student.getTestSessionName());
                     StudentProfileInformation studentDetail = new StudentProfileInformation(student);
-                   // System.out.println("==>2"+studentDetail.getTestSessionName());
                     studentList.add(studentDetail);
                 }
             }

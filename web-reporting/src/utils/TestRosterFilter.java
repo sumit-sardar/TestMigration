@@ -2,7 +2,9 @@ package utils;
 
 public class TestRosterFilter implements java.io.Serializable  
 { 
-    private String lastName = null;
+
+	private static final long serialVersionUID = 1L;
+	private String lastName = null;
     private String lastNameFilterType = null;
     private String firstName = null;
     private String firstNameFilterType = null;
@@ -12,7 +14,8 @@ public class TestRosterFilter implements java.io.Serializable
     private String organizationFilterType = null;
     private String formFilterType = null;
     
-    private Boolean showAccommodations=Boolean.FALSE;        
+    @SuppressWarnings("unused")
+	private Boolean showAccommodations=Boolean.FALSE;        
 
     
     public TestRosterFilter() 

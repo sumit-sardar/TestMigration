@@ -97,12 +97,12 @@ public class FilterSortPageUtils
         return filter;
     }
     
-    public static FilterParams buildFilterParams(Hashtable fieldHashtable, FilterType filterType)
+    public static FilterParams buildFilterParams(Hashtable<String,String> fieldHashtable, FilterType filterType)
     {
         FilterParams filter = new FilterParams();
         FilterParam[] filterParams = new FilterParam[fieldHashtable.size()];
         
-        Enumeration enu = fieldHashtable.keys();
+        Enumeration<String> enu = fieldHashtable.keys();
         int i=0;
         while (enu.hasMoreElements()) {
             String fieldName = (String) enu.nextElement();
@@ -187,7 +187,7 @@ public class FilterSortPageUtils
     
     public static FilterParams buildTestRosterFilterParams(TestRosterFilter trf)
     {
-        ArrayList commonFilters = new ArrayList();
+        ArrayList<FilterParam> commonFilters = new ArrayList<FilterParam>();
         String value;
         FilterType type;
         FilterParam fp;
@@ -220,7 +220,7 @@ public class FilterSortPageUtils
             commonFilters.add(fp);
         
         String [] selectedAccommodations = trf.getSelectedAccommodations();
-        List accommodationsFilters = new ArrayList();
+        List<FilterParam> accommodationsFilters = new ArrayList<FilterParam>();
         
         if (trf.getAccommodationFilterType().equals(STUDENTS_WITH_ACCOMMODATIONS)) {
             for (int i=0; i<selectedAccommodations.length; i++) {
@@ -254,7 +254,7 @@ public class FilterSortPageUtils
         }
         
         int index = 0;
-        Iterator it = null;
+        Iterator<FilterParam> it = null;
         int totalCount = commonFilters.size() + accommodationsFilters.size();        
         FilterParams filter = null;
         if (totalCount > 0) {
@@ -354,7 +354,7 @@ public class FilterSortPageUtils
             String loginId, String studentNumber, String grade, String gender, String scoringStatus,
             String contentAreaName)
 	{
-	ArrayList filters = new ArrayList();
+	ArrayList<FilterParam> filters = new ArrayList<FilterParam>();
 	FilterParam fp;
 	
 	if ((firstName != null) && (firstName.length() > 0)) {

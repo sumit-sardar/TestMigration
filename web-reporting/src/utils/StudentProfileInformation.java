@@ -189,7 +189,7 @@ public class StudentProfileInformation extends SanitizedFormField
         return copied;       
     }
   
-    public ManageStudent makeCopy(Integer studentId, List selectedOrgNodes) {
+    public ManageStudent makeCopy(Integer studentId, List<PathNode> selectedOrgNodes) {
         ManageStudent copied = new ManageStudent();
         
         copied.setId(studentId);
