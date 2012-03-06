@@ -347,7 +347,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			this.getRequest().setAttribute("searchResultEmpty", MessageResourceBundle.getMessage("Immediate.Score.By.Session.ResultEmpty"));        
 		}
 		if (msData != null) {
-			List studentList = StudentSearchUtils.buildStudentList(msData);
+			List<StudentProfileInformation> studentList = StudentSearchUtils.buildStudentList(msData);
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
 			form.setStudentMaxPage(msData.getFilteredPages());
 			this.getRequest().setAttribute("studentList", studentList);        
@@ -369,7 +369,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	
 	private ManageStudentData findAllScoredStudentBySession(StudentImmediateReportForm form) {
 		
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_50);
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 		FilterParams filter = null;
 		ManageStudentData msData = null;
