@@ -83,4 +83,18 @@ public class StudentSearchUtils {
         }        
         return msData;
     }
+
+
+	public static ManageStudentData findAllScoredStudentBySession(	String userName, StudentManagement studentManagement, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) {
+		
+		 ManageStudentData msData = null;
+	        
+	        try {    
+	            msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId ,filter, page, sort);
+	        }
+	        catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	        }        
+	        return msData;
+	}
 }

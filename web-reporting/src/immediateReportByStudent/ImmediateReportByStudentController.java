@@ -287,7 +287,71 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		return null;
 		
 	}
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", action = "findStudentBySession") })
+	public Forward beginImmediateStudentScoreByTestAdmin() {
+		StudentImmediateReportForm form = initialize(ACTION_FIND_STUDENT);
+		String reqTestAdminId = getRequest().getParameter("testAdminId");;
+		if (reqTestAdminId != null) {
+			form.setTestAdminId(Integer.valueOf(reqTestAdminId));
+		}
+		
+		isTopLevelUser(); 
+		setupUserPermissions();
+		Forward forward = new Forward("success", form);
+		return forward;
+	}
 	
+
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "students_immediate_score_by_session.jsp")}, 
+			validationErrorForward = @Jpf.Forward(name = "failure",	path = "logout.do"))
+	public Forward findStudentBySession(StudentImmediateReportForm form) {
+		isGeorgiaCustomer(form);
+		form.validateValues();
+		String currentAction = form.getCurrentAction();
+		if(currentAction!=null && currentAction.equalsIgnoreCase("gotoHome")){
+			try {
+	            String url = "/TestSessionInfoWeb/homepage/HomePageController.jpf";
+	            getResponse().sendRedirect(url);
+	        } catch (IOException ioe) {
+	            System.err.print(ioe.getStackTrace());
+	        }
+		}
+		//form.setTestAdminId(234852); 
+		setupSearchCriteria(form);
+		ManageStudentData msData = findAllScoredStudentBySession(form); 
+		if (msData != null) {
+			List studentList = StudentSearchUtils.buildStudentList(msData);
+			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
+			form.setStudentMaxPage(msData.getFilteredPages());
+			this.getRequest().setAttribute("studentList", studentList);        
+			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
+		}
+		
+		this.pageTitle  = "Immediate Reporting: Find Student";
+		
+		/*customerHasBulkAccommodation();
+		customerHasResetTestSessions();*/
+		this.savedForm = form.createClone();    
+		/*form.setCurrentAction(ACTION_DEFAULT);     
+		this.studentSearch = form.getStudentProfile().createClone();    
+		setFormInfoOnRequest(form);*/
+		return new Forward("success",form);
+	}
+	
+	
+	
+	private ManageStudentData findAllScoredStudentBySession(StudentImmediateReportForm form) {
+		
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+		FilterParams filter = null;
+		ManageStudentData msData = null;
+		msData = StudentSearchUtils.findAllScoredStudentBySession(this.userName,this.studentManagement,form.getTestAdminId(), filter, page, sort);   
+		this.pageMessage = MessageResourceBundle.getMessage("searchProfileFound");
+		return msData;
+	}
+
 	/**
 	 * @jpf:action
 	 * @jpf:forward name="success" path="listOfItem.jsp"
@@ -858,6 +922,26 @@ public class ImmediateReportByStudentController extends PageFlowController {
 
 		return applySearch;
 	}
+	
+	private void setupSearchCriteria(StudentImmediateReportForm form)
+	{
+		
+		
+		if(form.getStudentSortColumn()==null || form.getStudentSortColumn().trim().length()==0 ) {
+			form.setStudentSortColumn(FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN);
+		}
+		if(form.getStudentSortOrderBy()==null || form.getStudentSortOrderBy().trim().length()==0 ){
+			form.setStudentSortOrderBy(FilterSortPageUtils.ASCENDING);      
+		}
+		if(form.getStudentPageRequested()==null || form.getStudentPageRequested()<1 ){
+			form.setStudentPageRequested(new Integer(1));      
+		}
+		if(form.getStudentMaxPage()==null || form.getStudentMaxPage()<1 ){
+			form.setStudentMaxPage(new Integer(1));      
+		}
+
+	}
+	
 	
 	/**
 	 * getTestCatalogDataForUser

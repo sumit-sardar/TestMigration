@@ -2769,4 +2769,56 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		
 	}
+	
+	@Override
+	public ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes( String userName, Integer testAdminId, FilterParams filter,	PageParams page, SortParams sort) throws CTBBusinessException {
+
+		try {
+			ManageStudentData std = new ManageStudentData();
+
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+			/*Integer contentAreaFiltered = 0;
+			Integer totalCount = null;*/
+			String orderByClause = "";
+			
+			/*if (sort != null) {
+				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
+				sort = null;
+			}*/
+			
+			ManageStudent [] students = null;
+			students = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId,orderByClause);
+			
+           for(ManageStudent student : students) {
+        	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
+        	   if(plValue == null || "".equals(plValue))
+        		   plValue = "N/A";
+        	   student.setProficiencyLevel(plValue);
+           }
+			
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+
+			students = std.getManageStudents();
+
+			/*if (totalCount != null) {
+				std.setTotalCount(totalCount);
+				if (page == null)
+					std.setTotalPages(new Integer(1));
+				else 
+					std.setTotalPages(MathUtils.intDiv(totalCount, new Integer(page.getPageSize())));
+			}*/
+
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findAllScoredStudentBySessionAtAndBelowTopOrgNodes: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	
+	}
 } 

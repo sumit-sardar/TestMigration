@@ -105,6 +105,7 @@ public class ViewTestSessionsController extends PageFlowController
         }
      // change for handscoring
         customerHasScoring();
+        customerHasImmediateScoreReport();
         isTopLevelUser();
         this.hasLicenseConfig = hasLicenseConfiguration(customerConfigurations); 
         this.getSession().setAttribute("orgNodePath", this.orgNodePath);
@@ -135,7 +136,9 @@ public class ViewTestSessionsController extends PageFlowController
         @Jpf.Forward(name = "scoringByItem",
                      path = "goto_score_by_item.do"),
         @Jpf.Forward(name = "scoringByStudent",
-                     path = "goto_score_by_student.do")
+                     path = "goto_score_by_student.do"),
+        @Jpf.Forward(name = "viewImmediateScore",
+                             action = "goto_immediate_score")
     })
     protected Forward view_test_sessions(ViewTestSessionsForm form)
     {
@@ -148,7 +151,8 @@ public class ViewTestSessionsController extends PageFlowController
             currentAction.equals("registerStudent") ||
             currentAction.equals("generateReportFile") ||
             currentAction.equals("scoringByItem") || 
-            currentAction.equals("scoringByStudent")){
+            currentAction.equals("scoringByStudent") || 
+            currentAction.equals("viewImmediateScore") ){
             return new Forward(currentAction, form);        	
         }
 
@@ -246,6 +250,7 @@ public class ViewTestSessionsController extends PageFlowController
         String sessionFilterTab = form.getSessionFilterTab();
         Boolean isScoringConfigured =  (Boolean) getSession().getAttribute("isScoringConfigured");
         Boolean canRegisterStudent =  (Boolean) getSession().getAttribute("canRegisterStudent");
+        Boolean isImmediateScoreReportConfigured =  (Boolean) getSession().getAttribute("isImmediateScoreReportConfigured");
         
         if( (canRegisterStudent) && !(sessionFilterTab.equalsIgnoreCase("PA")))
         {
@@ -264,6 +269,14 @@ public class ViewTestSessionsController extends PageFlowController
         	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.FALSE);
         }
 
+        if( ((Boolean)isImmediateScoreReportConfigured) && !(sessionFilterTab.equalsIgnoreCase("FU")))
+        {
+        	this.getRequest().setAttribute("visiableImmediateScoreReport", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visiableImmediateScoreReport", Boolean.FALSE);
+        }
+        
         saveFormToSession(form);
         
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
@@ -331,6 +344,7 @@ public class ViewTestSessionsController extends PageFlowController
           	this.orgNodePath = new ArrayList();
           	// change for handscoring
            customerHasScoring();
+           customerHasImmediateScoreReport();
            isTopLevelUser();
            this.hasLicenseConfig = hasLicenseConfiguration(customerConfigurations); 
            this.getSession().setAttribute("orgNodePath", this.orgNodePath);
@@ -452,6 +466,8 @@ public class ViewTestSessionsController extends PageFlowController
         Boolean isScoringConfigured =  (Boolean) getSession().getAttribute("isScoringConfigured");
         Boolean canRegisterStudent =  (Boolean) getSession().getAttribute("canRegisterStudent");
         
+        Boolean isImmediateScoreReportConfigured =  (Boolean) getSession().getAttribute("isImmediateScoreReportConfigured");
+        
         if( (canRegisterStudent) && !(sessionFilterTab.equalsIgnoreCase("PA")))
         {
         	this.getRequest().setAttribute("visibleRegisterStudent", Boolean.TRUE);
@@ -468,6 +484,15 @@ public class ViewTestSessionsController extends PageFlowController
         else {
         	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.FALSE);
         }
+        
+        if( ((Boolean)isImmediateScoreReportConfigured) && !(sessionFilterTab.equalsIgnoreCase("FU")))
+        {
+        	this.getRequest().setAttribute("visiableImmediateScoreReport", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visiableImmediateScoreReport", Boolean.FALSE);
+        }
+        
 
         saveFormToSession(form);
         
@@ -647,6 +672,26 @@ public class ViewTestSessionsController extends PageFlowController
     }
 	
      //END - form recommendation
+	@Jpf.Action()
+    protected Forward goto_immediate_score(ViewTestSessionsForm form)
+    {
+        saveFormToSession(form);
+
+        String contextPath = "/ImmediateReportWeb/immediateReportByStudent/beginImmediateStudentScoreByTestAdmin.do";
+        String sessionId = form.getSessionId().toString();
+        String testAdminId = "testAdminId=" +  sessionId;            
+        String url = contextPath + "?" + testAdminId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
     private void saveFormToSession(ViewTestSessionsForm form)
     {
         /*
@@ -1274,6 +1319,24 @@ public class ViewTestSessionsController extends PageFlowController
        
         return new Boolean(hasLicenseConfiguration);
     }	
+
+    private Boolean customerHasImmediateScoreReport() {
+    	//getCustomerConfigurations();
+		boolean isImmediateScoreReportConfigured = false;
+		//boolean isLaslinkCustomer = false;
+		for (CustomerConfiguration cc : customerConfigurations) {
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+					"Immediate_Score_Report")
+					&& cc.getDefaultValue().equals("T")) {
+				isImmediateScoreReportConfigured = true;
+				break;
+			}
+			
+        }
+        getSession().setAttribute("isImmediateScoreReportConfigured", isImmediateScoreReportConfigured);
+        return new Boolean(isImmediateScoreReportConfigured);
+    }
+    
     /**
      * Changes For cr hand scoring score by student
 	 * getCustomerConfigurations
