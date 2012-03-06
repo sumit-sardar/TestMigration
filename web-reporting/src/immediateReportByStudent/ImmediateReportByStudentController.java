@@ -370,24 +370,27 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			String actionElement = form.getActionElement();
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			Boolean isLaslinkCust = Boolean.valueOf(this.getRequest().getParameter("rosterId"));
 			try {
-				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
-				form.setStudentNameRe(stuReport.getStudentName());
-				form.setStudentExtPin1(stuReport.getStudentExtPin1());
-				form.setTestAdminStartDate(stuReport.getTestAdminStartDate());
-				form.setForm(stuReport.getForm());
-				form.setGrade(stuReport.getGrade());
-				form.setDistrict(stuReport.getDistrict());
-				form.setSchool(stuReport.getSchool());
-				form.setStudentReportIrsScoreVal(stuReport.getStudentReportIrsScore());
-				this.getRequest().setAttribute("studentName", stuReport.getStudentName());
-				this.getRequest().setAttribute("studentExtPin", stuReport.getStudentExtPin1());
-				this.getRequest().setAttribute("startDate", form.getTestAdminStartDateStr());
-				this.getRequest().setAttribute("formRe", stuReport.getForm());
-				this.getRequest().setAttribute("grade", stuReport.getGrade());
-				this.getRequest().setAttribute("district", stuReport.getDistrict());
-				this.getRequest().setAttribute("school", stuReport.getSchool());
-				this.getRequest().setAttribute("irsScores", stuReport.getStudentReportIrsScore());
+				if(this.islaslinkCustomer) {
+					StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+					form.setStudentNameRe(stuReport.getStudentName());
+					form.setStudentExtPin1(stuReport.getStudentExtPin1());
+					form.setTestAdminStartDate(stuReport.getTestAdminStartDate());
+					form.setForm(stuReport.getForm());
+					form.setGrade(stuReport.getGrade());
+					form.setDistrict(stuReport.getDistrict());
+					form.setSchool(stuReport.getSchool());
+					form.setStudentReportIrsScoreVal(stuReport.getStudentReportIrsScore());
+					this.getRequest().setAttribute("studentName", stuReport.getStudentName());
+					this.getRequest().setAttribute("studentExtPin", stuReport.getStudentExtPin1());
+					this.getRequest().setAttribute("startDate", form.getTestAdminStartDateStr());
+					this.getRequest().setAttribute("formRe", stuReport.getForm());
+					this.getRequest().setAttribute("grade", stuReport.getGrade());
+					this.getRequest().setAttribute("district", stuReport.getDistrict());
+					this.getRequest().setAttribute("school", stuReport.getSchool());
+					this.getRequest().setAttribute("irsScores", stuReport.getStudentReportIrsScore());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

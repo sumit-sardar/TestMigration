@@ -14,8 +14,8 @@ public class StudentReportIrsScore extends CTBBean{
 	static final long serialVersionUID = 1L;
 	
 	private String contentAreaName;
-	private Double rawScore;
-	private Double scaleScore;
+	private Integer rawScore;
+	private Integer scaleScore;
 	private Integer proficiencyLevel;
 	
 	
@@ -34,25 +34,25 @@ public class StudentReportIrsScore extends CTBBean{
 	/**
 	 * @return the rawScore
 	 */
-	public Double getRawScore() {
+	public Integer getRawScore() {
 		return rawScore;
 	}
 	/**
 	 * @param rawScore the rawScore to set
 	 */
-	public void setRawScore(Double rawScore) {
+	public void setRawScore(Integer rawScore) {
 		this.rawScore = rawScore;
 	}
 	/**
 	 * @return the scaleScore
 	 */
-	public Double getScaleScore() {
+	public Integer getScaleScore() {
 		return scaleScore;
 	}
 	/**
 	 * @param scaleScore the scaleScore to set
 	 */
-	public void setScaleScore(Double scaleScore) {
+	public void setScaleScore(Integer scaleScore) {
 		this.scaleScore = scaleScore;
 	}
 	/**

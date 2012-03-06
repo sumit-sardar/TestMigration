@@ -2756,9 +2756,31 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 			StudentScoreReport stuScrReport = new StudentScoreReport();
 			StudentReportIrsScore[] stuScoreData = null;
+			StudentReportIrsScore stuScoreDataComp = null;
+			StudentReportIrsScore[] stuFinalScoreData = null;
 			stuScrReport = studentManagement.getStudentDataForReport(testRosterId);
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
-			stuScrReport.setStudentReportIrsScore(stuScoreData);
+			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
+			stuFinalScoreData = new StudentReportIrsScore[stuScoreData.length + 1];
+			for(int i = 0; i < stuScoreData.length; i++) {
+				if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0);
+				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1);
+				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2);
+				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3);
+				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4);
+				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
+					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5);
+				}
+			}
+			if(stuScoreDataComp != null)
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6);
+			
+			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
 			
 			return stuScrReport;
 			
@@ -2767,6 +2789,15 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
+		
+	}
+	
+	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData, StudentReportIrsScore stuScoreDataTemp, Integer stuFinalScoreDataValue) {
+		stuFinalScoreData[stuFinalScoreDataValue] = new StudentReportIrsScore();
+		stuFinalScoreData[stuFinalScoreDataValue].setContentAreaName(stuScoreDataTemp.getContentAreaName());
+		stuFinalScoreData[stuFinalScoreDataValue].setRawScore(stuScoreDataTemp.getRawScore());
+		stuFinalScoreData[stuFinalScoreDataValue].setScaleScore(stuScoreDataTemp.getScaleScore());
+		stuFinalScoreData[stuFinalScoreDataValue].setProficiencyLevel(stuScoreDataTemp.getProficiencyLevel());
 		
 	}
 	

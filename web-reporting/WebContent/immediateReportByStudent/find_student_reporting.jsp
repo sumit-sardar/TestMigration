@@ -94,33 +94,46 @@ template_find_student.jsp
 
 					</td>
 				</tr>
+				
 			</table>
-			
-			<table border="1px">
+			<br/>
+			<table>
 				<tr>
-					<th>&nbsp;</th>
-            		<th class="sortable alignLeft">Raw Score</th>
-            		<th class="sortable alignLeft">Scale Score </th>
-            		<th class="sortable alignLeft">Proficiency Level</th>
+					<td width="50px">
+					</td>
+					<td>
+						<table border="1px">
+							<tr>
+								<th width="150px">&nbsp;</th>
+            					<th class="sortable alignCenter" width="120px">Raw Score</th>
+            					<th class="sortable alignCenter" width="120px">Scale Score </th>
+            					<th class="sortable alignCenter" width="150px">Proficiency Level</th>
+							</tr>
+							<%
+								StudentReportIrsScore[] stuScoreVal = (StudentReportIrsScore[])request.getAttribute("irsScores");
+								for(int i = 0; i < stuScoreVal.length; i++) {
+									System.out.println(stuScoreVal[i].getContentAreaName());
+							%>
+							<tr <%if(stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprehension") ||
+									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Oral") ||
+									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Overall")) { %>
+									bgcolor="#C3D599"
+									<% }%>>
+								<td align="left"><%=stuScoreVal[i].getContentAreaName()%>
+								</td>
+								<td align="center"><%=stuScoreVal[i].getRawScore()%>
+								</td>
+								<td align="center"><%=stuScoreVal[i].getScaleScore()%>
+								</td>
+								<td align="center"><%=stuScoreVal[i].getProficiencyLevel()%>
+								</td>
+							</tr>
+							<%
+							}
+						%>
+						</table>
+					</td>
 				</tr>
-				<%
-				StudentReportIrsScore[] stuScoreVal = (StudentReportIrsScore[])request.getAttribute("irsScores");
-				for(int i = 0; i < stuScoreVal.length; i++) {
-					System.out.println(stuScoreVal[i].getContentAreaName());
-					%>
-					<tr>
-						<td align="center"><%=stuScoreVal[i].getContentAreaName()%>
-						</td>
-						<td>0
-						</td>
-						<td><%=stuScoreVal[i].getScaleScore()%>
-						</td>
-						<td><%=stuScoreVal[i].getProficiencyLevel()%>
-						</td>
-					</tr>
-					<%
-				}
-				%>
 			</table>
 </netui:form>
 
