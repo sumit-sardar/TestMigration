@@ -29,7 +29,7 @@ public class Message implements java.io.Serializable
     public static final String FIELD_TIME_ZONE = "Time Zone";
     public static final String FIELD_ROLE = "Role";
     public static final String FIELD_EXTERNAL_USER_ID = "External User Id";//ext_pin1 is added for DEX CR
-    public static final String FIELD_ORG_ASSIGNMENT = "Organization Assignment";
+    public static final String FIELD_ORG_ASSIGNMENT = "Group Assignment";
     public static final String FIELD_ZIP = "Zip";
     public static final String FIELD_PRIMARY_PHONE = "Primary Phone";
     public static final String FIELD_SECONDARY_PHONE = "Secondary Phone";
@@ -57,13 +57,13 @@ public class Message implements java.io.Serializable
     // find user
     public static final String FIND_TITLE      = "Find User";
     public static final String FIND_NO_RESULT  = "There is no user to match your search criteria.";
-    public static final String FIND_FOUND_AT_AND_BELOW = "The following users are at and below your organization.";
+    public static final String FIND_FOUND_AT_AND_BELOW = "The following users are at and below your group.";
     public static final String FIND_FOUND_WITH_CRITERIA = "The following users match your search criteria.";
 
     // add user
     public static final String ADD_TITLE      = "Add User";
-    public static final String ADD_SUCCESSFUL = "The new user has been successfully added to your organization.";
-    public static final String ADD_SUCCESSFUL_NO_EMAIL = "The new user has been successfully added to your organization.<br/>"
+    public static final String ADD_SUCCESSFUL = "The new user has been successfully added to your group.";
+    public static final String ADD_SUCCESSFUL_NO_EMAIL = "The new user has been successfully added to your group.<br/>"
             +"An email address was not provided for this new user. Therefore, the welcome email message with login information"
             +" cannot be sent directly to the user. Please ensure the new user knows he or she has an account set up and give the user his or her username and password.";
     public static final String ADD_ERROR = "Failed to create this user.";
@@ -101,7 +101,7 @@ public class Message implements java.io.Serializable
     //admin creation
      public static final String ADMIN_CREATION_TITLE = "Administrator Creation Error";
      public static final String ADMIN_CREATION_ERROR = "You cannot add another administrator to your own layer in " 
-            + "the organization, only to a lower layer. A higher-layer administrator must add other administrators to your layer.";
+            + "the group, only to a lower layer. A higher-layer administrator must add other administrators to your layer.";
     // dropdown selection
     public static final String SELECT_TIME_ZONE = "Select a time zone";
     public static final String SELECT_STATE = "Select a state";

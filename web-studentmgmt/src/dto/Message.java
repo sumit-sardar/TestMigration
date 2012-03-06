@@ -23,7 +23,7 @@ public class Message implements java.io.Serializable
     public static final String INVALID_DATE  = "Please re-select valid month, day, and year.";
 
     public static final String ADD_TITLE      = "Add Student";
-    public static final String ADD_SUCCESSFUL = "Student has been successfully added into your organization.";
+    public static final String ADD_SUCCESSFUL = "Student has been successfully added into your group.";
     public static final String ADD_ERROR = "Failed to create this student.";
 
     public static final String EDIT_TITLE      = "Edit Student";
@@ -42,7 +42,7 @@ public class Message implements java.io.Serializable
     public static final String BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated";
     
     //Added for CR  ISTEP2011CR023
-    public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
+    public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one group (class) for testing. Please choose only one.";     
 	//START- GACR005 
 	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please enter ID of minimum length:";
 	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
