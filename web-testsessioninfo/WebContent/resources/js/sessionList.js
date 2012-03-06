@@ -3030,6 +3030,7 @@ function registerDelegate(tree){
 			onSelectAll: function (rowids, status) {
 				$("#proctorAddDeleteInfo").hide();
 				if(!onloadProctorListGrid){
+					var loggedInUserId = $("#loggedInUserId").val();
 					if(status) {
 						var tmpselectedRowId = "";
 						selectAllForDeleteProctor = true;
@@ -3039,12 +3040,13 @@ function registerDelegate(tree){
 						for(var i = 0; i < addProctorLocaldata.length; i++) {						
 							selectedRowData = addProctorLocaldata[i];
 							if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
-							
-								selectedRowData = addProctorLocaldata[i];
-								$("#"+selectedRowData.userId+" td input").attr("checked", true); 
-								
-								tmpselectedRowId = selectedRowData.userId;
-					 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
+								if(selectedRowData.userId != loggedInUserId){
+									selectedRowData = addProctorLocaldata[i];
+									$("#"+selectedRowData.userId+" td input").attr("checked", true); 
+									
+									tmpselectedRowId = selectedRowData.userId;
+						 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
+					 			}
 					 			
 					 		}
 						}
@@ -3058,12 +3060,13 @@ function registerDelegate(tree){
 							
 							selectedRowData = addProctorLocaldata[i];
 							if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
-							
-								selectedRowData = addProctorLocaldata[i];
-								$("#"+selectedRowData.userId+" td input").attr("checked", false); 
-								
-								tmpselectedRowId = selectedRowData.userId;
-								delete delProctorIdObjArray[selectedRowData.userId];
+								if(selectedRowData.userId != loggedInUserId){
+									selectedRowData = addProctorLocaldata[i];
+									$("#"+selectedRowData.userId+" td input").attr("checked", false); 
+									
+									tmpselectedRowId = selectedRowData.userId;
+									delete delProctorIdObjArray[selectedRowData.userId];
+								}
 					 		}
 						}
 						proctorSelectedLength = 1;

@@ -309,21 +309,57 @@ function populateSelectProctorGrid() {
 						allSelectOrgProctor[proctorForSelectedOrg] = true; 	
 					} else {
 						var loggedInUserId = $("#loggedInUserId").val();
-						//orgDataInform[proctorForSelectedOrg] = 1 ;
-						orgDataInform[proctorForSelectedOrg] = 0;
-						allSelectOrgProctor[proctorForSelectedOrg] = false;
-						for(var key in allProctorIds['dataList']) {
-							if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
-								if(allProctorIds['dataList'][key].userId != loggedInUserId){
-									delete proctorIdObjArray[key];
+						
+						if(state == 'EDIT'){
+							var isPrevSavedProctor = false;
+					 		var currentProctorRowData;
+							for(var i = 0; i < previousSavedProctorData.length; i++){						
+								currentProctorRowData = previousSavedProctorData[i];
+								if(currentProctorRowData.userId == loggedInUserId){
+									isPrevSavedProctor =true;
 								}
-								else if (allProctorIds['dataList'][key].userId == loggedInUserId){
-									orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
-								}	
 							}
-							else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
-								//orgDataInform[proctorForSelectedOrg] = 1 ;
-								orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+							
+							//orgDataInform[proctorForSelectedOrg] = 1 ;
+							orgDataInform[proctorForSelectedOrg] = 0;
+							allSelectOrgProctor[proctorForSelectedOrg] = false;
+							for(var key in allProctorIds['dataList']) {
+								if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
+									if(allProctorIds['dataList'][key].userId != loggedInUserId){
+										delete proctorIdObjArray[key];
+									}
+									else if (allProctorIds['dataList'][key].userId == loggedInUserId){
+										if(isPrevSavedProctor){
+											orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+										}
+										else{
+											delete proctorIdObjArray[key];
+										}										
+									}	
+								}
+								else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
+									//orgDataInform[proctorForSelectedOrg] = 1 ;
+									orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+								}
+							}
+						}
+						else if (state != 'EDIT'){
+							//orgDataInform[proctorForSelectedOrg] = 1 ;
+							orgDataInform[proctorForSelectedOrg] = 0;
+							allSelectOrgProctor[proctorForSelectedOrg] = false;
+							for(var key in allProctorIds['dataList']) {
+								if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
+									if(allProctorIds['dataList'][key].userId != loggedInUserId){
+										delete proctorIdObjArray[key];
+									}
+									else if (allProctorIds['dataList'][key].userId == loggedInUserId){
+										orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+									}	
+								}
+								else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
+									//orgDataInform[proctorForSelectedOrg] = 1 ;
+									orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+								}
 							}
 						}							
 					}		
