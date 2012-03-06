@@ -86,8 +86,8 @@ public class WebUtils
 		{
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
-		int requiredFieldCount = 0;
-		String requiredFields = "";
+		//int requiredFieldCount = 0;
+		//String requiredFields = "";
 		
 		if (! validNameString(firstName) ) {
 		invalidCharFieldCount += 1;            
