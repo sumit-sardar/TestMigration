@@ -1011,6 +1011,17 @@ public class HomePageController extends PageFlowController
         }
         
         String selectedReport = (String)this.getRequest().getParameter("report");
+        if(selectedReport != null && selectedReport.equalsIgnoreCase("ImmediateScores")) {
+	        try
+	        {
+	            String url = "/ImmediateReportWeb/immediateReportByStudent/beginIndivStudentScoring.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+        }
         
         Integer programId = this.reportManager.getSelectedProgramId();
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
