@@ -10,7 +10,6 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -343,6 +342,10 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		//form.setTestAdminId(234852); 
 		setupSearchCriteria(form);
 		ManageStudentData msData = findAllScoredStudentBySession(form); 
+		if ((msData != null) && (msData.getFilteredCount().intValue() == 0))
+		{
+			this.getRequest().setAttribute("searchResultEmpty", MessageResourceBundle.getMessage("Immediate.Score.By.Session.ResultEmpty"));        
+		}
 		if (msData != null) {
 			List studentList = StudentSearchUtils.buildStudentList(msData);
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
@@ -371,7 +374,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		FilterParams filter = null;
 		ManageStudentData msData = null;
 		msData = StudentSearchUtils.findAllScoredStudentBySession(this.userName,this.studentManagement,form.getTestAdminId(), filter, page, sort);   
-		this.pageMessage = MessageResourceBundle.getMessage("searchProfileFound");
+		this.pageMessage = MessageResourceBundle.getMessage("Immediate.Score.By.Session.SearchProfileFound");
 		return msData;
 	}
 

@@ -26,10 +26,8 @@
 
 <!-- title -->
     
-    <p>
-        <netui:content value="To see a list of all students, click Search. To find specific students, enter the known information on which to search."/><br/>
-        
-    </p>
+    <p><netui:content value="${bundle.web['Immediate.Score.By.Session.title.message']}" /></p>
+
 
     <netui:form action="findStudentBySession">
 
@@ -49,8 +47,8 @@
 <!--  student search result -->
 <a name="studentSearchResult"><!-- studentSearchResult --></a>    
 <c:if test="${studentList != null}">     
-    <p><netui:content value="${pageFlow.pageMessage}"/></p>
-    <p><jsp:include page="/immediateReportByStudent/find_student_result.jsp" /></p>
+    <!--<p><netui:content value="${pageFlow.pageMessage}"/></p>
+    --><p><jsp:include page="/immediateReportByStudent/find_student_result.jsp" /></p>
 </c:if>
 
 <c:if test="${searchResultEmpty != null}">     
@@ -58,7 +56,7 @@
           <netui:content value="${requestScope.searchResultEmpty}"/>
     </ctb:message>
 </c:if>
-
+<br/>
 <netui:button styleClass="button" value="Home" type="submit" onClick="setElementValue('currentAction', 'gotoHome');"/>
 
 </netui:form>
