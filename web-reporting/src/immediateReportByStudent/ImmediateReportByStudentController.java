@@ -220,6 +220,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		this.savedForm = form.createClone();    
 		form.setCurrentAction(ACTION_DEFAULT);     
 		this.studentSearch = form.getStudentProfile().createClone();
+		this.getSession().setAttribute("isFromFindSession", false);
 		return new Forward("success",form);
 	}
 	
@@ -243,6 +244,18 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, this.savedForm, grade, gender,scoringStatus,testName,contentAreaName);
 
 		return new Forward("success", this.savedForm);
+	}
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "findStudentBySession.do")
+	})
+	protected Forward returnToFindSessionStudent(StudentImmediateReportForm form)
+	{  
+        if(form.getTestAdminId()==null){
+        	form.setTestAdminId(this.testAdminId);
+        }
+		return new Forward("success", form);
 	}
 	
 	@Jpf.Action(forwards={
@@ -344,6 +357,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		/*form.setCurrentAction(ACTION_DEFAULT);     
 		this.studentSearch = form.getStudentProfile().createClone();    
 		setFormInfoOnRequest(form);*/
+		this.getSession().setAttribute("isFromFindSession", true);
+		this.testAdminId = 	form.getTestAdminId();
 		return new Forward("success",form);
 	}
 	

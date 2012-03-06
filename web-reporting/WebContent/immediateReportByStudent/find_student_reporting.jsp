@@ -35,6 +35,7 @@ template_find_student.jsp
 	<netui:hidden tagId="district" dataSource="actionForm.district" />
 	<netui:hidden tagId="school" dataSource="actionForm.school" />
 	<netui:hidden tagId="grade" dataSource="actionForm.grade" />
+	<netui:hidden dataSource="actionForm.testAdminId"/>
 
 	<table class="transparent" width="100%">
 
@@ -139,7 +140,13 @@ template_find_student.jsp
 				</tr>
 			</table>
 			<br/>
-			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
+			<c:if test="${sessionScope.isFromFindSession}">
+				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
+			</c:if>
+			<c:if test="${! sessionScope.isFromFindSession}">
+				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
+			</c:if>
+			
 			&nbsp;&nbsp;
 			<netui:button styleClass="button" value="Generate PDF" disabled="true" />
 			&nbsp;&nbsp;
