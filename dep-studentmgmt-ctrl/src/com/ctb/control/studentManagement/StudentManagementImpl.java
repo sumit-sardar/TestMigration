@@ -2762,23 +2762,25 @@ public class StudentManagementImpl implements StudentManagement
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
 			stuFinalScoreData = new StudentReportIrsScore[stuScoreData.length + 1];
-			for(int i = 0; i < stuScoreData.length; i++) {
-				if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0);
-				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1);
-				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2);
-				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3);
-				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4);
-				} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
-					setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5);
+			if(stuScoreData != null) {
+				for(int i = 0; i < stuScoreData.length; i++) {
+					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5);
+					}
 				}
 			}
 			if(stuScoreDataComp != null)
-				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6);
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, stuScoreData.length);
 			
 			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
 			

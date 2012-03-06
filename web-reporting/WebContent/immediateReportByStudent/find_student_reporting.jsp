@@ -111,8 +111,9 @@ template_find_student.jsp
 							</tr>
 							<%
 								StudentReportIrsScore[] stuScoreVal = (StudentReportIrsScore[])request.getAttribute("irsScores");
-								for(int i = 0; i < stuScoreVal.length; i++) {
-									System.out.println(stuScoreVal[i].getContentAreaName());
+								if(stuScoreVal != null) {
+									for(int i = 0; i < stuScoreVal.length; i++) {
+										if(stuScoreVal[i] != null && stuScoreVal[i].getContentAreaName() != null) {
 							%>
 							<tr <%if(stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprehension") ||
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Oral") ||
@@ -129,12 +130,20 @@ template_find_student.jsp
 								</td>
 							</tr>
 							<%
+									}
+								}
 							}
 						%>
 						</table>
 					</td>
 				</tr>
 			</table>
+			<br/>
+			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate PDF" />
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate CSV" />
 </netui:form>
 
 

@@ -202,7 +202,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			this.searchApplied = true;
 			
 			List studentList = StudentSearchUtils.buildStudentList(msData);
-			//System.out.println("form.getStudentPageRequested()==>"+form.getStudentPageRequested());
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
 			form.setStudentMaxPage(msData.getFilteredPages());
 			 
@@ -229,6 +228,30 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		this.studentSearch = form.getStudentProfile().createClone();    
 		//setFormInfoOnRequest(form);
 		return new Forward("success",form);
+	}
+	
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="findStudent.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "findStudent.do")
+	})
+	protected Forward returnToFindStudent(StudentImmediateReportForm form)
+	{   
+		
+		String grade = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getGrade() : null;
+		String gender = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getGender() : null;
+		String scoringStatus = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getScoringStatus() : null;
+		String testName = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getProductNameList() : null;
+		String contentAreaName = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getCompletedContentArea() : null;
+
+		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, this.savedForm, grade, gender,scoringStatus,testName,contentAreaName);
+
+		
+		//setFormInfoOnRequest(this.savedForm);
+		return new Forward("success", this.savedForm);
 	}
 	
 	@Jpf.Action(forwards={
