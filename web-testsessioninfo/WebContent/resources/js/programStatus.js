@@ -124,6 +124,7 @@ function populateProgramStatusDetails(){
 
 	selectedProgramIdPS=$('#programIdPS').val();
 	selectedTestIdPS=$('#selectedTestIdPS').val();
+	var selectedTestCatalogId = $("#testNameOptions").val();
 
 	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS+"&subtestStatusAction="+subtestStatusAction;
 			$.ajax(
@@ -165,6 +166,7 @@ function populateProgramStatusDetails(){
 										testIds[i] = data.testList[i].itemSetId;
 									}
 									fillTestNameOptions('testNameOptions',testNameOptions);
+									$("#testNameOptions").val(selectedTestCatalogId);
 									$("#testNameOptions").show();
 								}
 								
