@@ -373,7 +373,13 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 		FilterParams filter = null;
 		ManageStudentData msData = null;
-		msData = StudentSearchUtils.findAllScoredStudentBySession(this.userName,this.studentManagement,form.getTestAdminId(), filter, page, sort);   
+		try {
+			msData = StudentSearchUtils.findAllScoredStudentBySession(this.userName,this.studentManagement,form.getTestAdminId(), filter, page, sort);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+			String msg = MessageResourceBundle.getMessage(be.getMessage());
+			form.setMessage(Message.FIND_TEST_SESSION_TITLE, msg, Message.INFORMATION);
+		}   
 		this.pageMessage = MessageResourceBundle.getMessage("Immediate.Score.By.Session.SearchProfileFound");
 		return msData;
 	}

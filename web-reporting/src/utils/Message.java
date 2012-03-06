@@ -17,7 +17,7 @@ public class Message implements java.io.Serializable
     // get License
     public static final String TEST_SESSION_TITLE  = "No Test Sessions";
     public static final String INVALID_CHARS  = "Please re-enter your string without these characters: !, @, #, $, %, ^";
-    
+    public static final String FIND_TEST_SESSION_TITLE      = "Find Test Session";
    
     public static final String REQUIRED_TEXT            = "Please enter/select this value to continue.";
     

@@ -2839,15 +2839,11 @@ public class StudentManagementImpl implements StudentManagement
 
 			students = std.getManageStudents();
 
-			/*if (totalCount != null) {
-				std.setTotalCount(totalCount);
-				if (page == null)
-					std.setTotalPages(new Integer(1));
-				else 
-					std.setTotalPages(MathUtils.intDiv(totalCount, new Integer(page.getPageSize())));
-			}*/
 
 			return std;
+		}catch (ValidationException ve){
+			ve.printStackTrace();
+			throw	new StudentDataNotFoundException("SessionAccess.Validation.Failed");
 		} catch (SQLException se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findAllScoredStudentBySessionAtAndBelowTopOrgNodes: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());
