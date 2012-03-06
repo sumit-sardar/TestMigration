@@ -2807,6 +2807,7 @@ public class StudentManagementImpl implements StudentManagement
 	public ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes( String userName, Integer testAdminId, FilterParams filter,	PageParams page, SortParams sort) throws CTBBusinessException {
 
 		try {
+			validator.validateAdmin(userName, testAdminId, "StudentManagementImpl.findAllScoredStudentBySessionAtAndBelowTopOrgNodes");
 			ManageStudentData std = new ManageStudentData();
 
 			Integer pageSize = null;
