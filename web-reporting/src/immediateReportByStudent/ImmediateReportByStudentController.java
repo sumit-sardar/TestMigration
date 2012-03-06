@@ -141,9 +141,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	{
 		
 		StudentImmediateReportForm form = initialize(ACTION_FIND_STUDENT);
-		//this.searchApplied = false;
+		this.searchApplied = false;
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, form, null, null ,null, null, null);
-		isTopLevelUser(); //For defect #66662
+		isTopLevelUser();
 		setupUserPermissions();
 		this.pageTitle  = "Immediate Reporting: Find Student";
 		return new Forward("success", form);
@@ -151,7 +151,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	
 	/**
 	 * @jpf:action
-	 * @jpf:forward name="success" path="find_student_Scoring.jsp"
+	 * @jpf:forward name="success" path="find_student_immediate_score.jsp"
 	 * @jpf:validation-error-forward name="failure" path="logout.do"
 	 */
 	@Jpf.Action(forwards = { 
@@ -206,26 +206,20 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			 
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
-			//this.getRequest().setAttribute("contentAreaList", this.contentAreaNames);
 			HashMap valMap = new LinkedHashMap();
 			valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 			for(ScorableItem si : this.contentAreaNames){
 				valMap.put(si.getItemId().toString(), si.getItemSetName());
 			}
-			
 			this.getRequest().setAttribute("contentAreaList", valMap);
 		}
 		
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
-		
 		this.pageTitle  = "Immediate Reporting: Find Student";
 		
-		//customerHasBulkAccommodation();
-		//customerHasResetTestSessions();
 		this.savedForm = form.createClone();    
 		form.setCurrentAction(ACTION_DEFAULT);     
-		this.studentSearch = form.getStudentProfile().createClone();    
-		//setFormInfoOnRequest(form);
+		this.studentSearch = form.getStudentProfile().createClone();
 		return new Forward("success",form);
 	}
 	
@@ -248,8 +242,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, this.savedForm, grade, gender,scoringStatus,testName,contentAreaName);
 
-		
-		//setFormInfoOnRequest(this.savedForm);
 		return new Forward("success", this.savedForm);
 	}
 	
@@ -262,7 +254,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 HttpServletRequest req = getRequest();
 	 HttpServletResponse resp = getResponse();
 	 OutputStream stream = null;
-	 String contentType = "application/json";
 	 String json = "";
 	 String catalogName = getRequest().getParameter("catalogName");
 	 Integer catalogId = (Integer)this.productIdToProductName.get(catalogName);
@@ -273,7 +264,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				contentAreas =  this.studentManagement.getContentAreaForCatalog(this.userName, this.customerId, catalogId);
 			
 			List options = new ArrayList();
-			//options.add(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 			if(contentAreas != null) {
 				for (int i=0 ; i<contentAreas.length ; i++) {        
 					options.add(contentAreas[i]);
@@ -283,24 +273,16 @@ public class ImmediateReportByStudentController extends PageFlowController {
 
 			Gson gson = new Gson();
 			json = gson.toJson(contentAreas);
-				try{
-					resp.setContentType("application/json");
-		    		stream = resp.getOutputStream();
-		    		resp.flushBuffer();
-		    		stream.write(json.getBytes());
-		    		
-		    		//stream.write(json.getBytes());
-			
-		    		}
-			
-		    		 finally{
-		 				if (stream!=null){
-		 					stream.close();
-		 				}
-		 			}
-				
-				
-			
+			try {
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes());
+			} finally {
+				if (stream != null) {
+					stream.close();
+				}
+			}
 		} catch (Exception e) {
 			System.err.println("Exception while processing getContentAreasForCatalog");
 			e.printStackTrace();
@@ -426,42 +408,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			/* if(actionElement.equals(ACTION_DEFAULT))
-			 {
-				 form.setRosterId(Integer.valueOf(this.getRequest().getParameter("rosterId")));
-				 form.setItemSetIdTC(Integer.valueOf(this.getRequest().getParameter("itemSetIdTC")));
-				 form.setAccessCode(this.getRequest().getParameter("accessCode"));
-				 form.setUserName(this.getRequest().getParameter("userName"));
-				 form.setTestAdminId(Integer.valueOf(this.getRequest().getParameter("testAdminId")));
-			 }
-			if(form.getActionElement().equals(ACTION_DEFAULT)) {
-				form.setActionElement(ACTION_DISPLAY_ITEMLIST);
-				form.setCurrentAction(ACTION_DISPLAY_ITEMLIST);
-			}
-			
-			currentAction = form.getCurrentAction();
-			actionElement = form.getActionElement();
-			form.resetValuesForAction(actionElement, ACTION_DISPLAY_ITEMLIST);
-		
-		 PageParams page =  FilterSortPageUtils.buildPageParams(form.getItemPageRequested(), FilterSortPageUtils.PAGESIZE_10);
-		 SortParams sort = FilterSortPageUtils.buildItemSortParams(form.getItemSortColumn(), form.getItemSortOrderBy());
-		 ScorableItemData sid = getTestItemForStudent(form.getRosterId(), form.getItemSetIdTC(), page, sort);//add productId
-		 //ScorableItemData sid = getTestItemForStudent(1829973, 27775, page, sort);//add productId
-         List itemList = buildItemList(sid); 
-         PagerSummary itemPagerSummary = buildItemPagerSummary(sid, form.getItemPageRequested()); 
-         form.setItemMaxPage(sid.getFilteredPages());
-         try{
-    		 TestSession testSession = scoring.getTestAdminDetails(form.getTestAdminId());
-    		
-         this.getRequest().setAttribute("itemList", itemList);
-         this.getRequest().setAttribute("itemPagerSummary", itemPagerSummary);
-         this.getRequest().setAttribute("accessCode", form.getAccessCode());
-         this.getRequest().setAttribute("userName", form.getUserName());
-         if(itemList.isEmpty())
-         {	
-        	 this.getRequest().setAttribute("itemSearchResultEmpty", MessageResourceBundle.getMessage("itemSearchResultEmpty"));        
-        	 return new Forward("success");
-         }*/
        return new Forward("success",form);
 	}
 	
@@ -792,31 +738,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	}
 	
 	/**
-	 * getContentAreaOptions
-	 */
-	/*private String [] getContentAreaOptions(String action)
-	{
-		String[] contentAreas = null;
-		try {
-			contentAreas =  this.studentManagement.getContentAreaForCustomer(this.userName, this.customerId);
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-
-		List options = new ArrayList();
-		if ( action.equals(ACTION_FIND_STUDENT) )
-			options.add(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
-		
-
-		for (int i=0 ; i<contentAreas.length ; i++) {        
-			options.add(contentAreas[i]);
-		}
-
-		return (String [])options.toArray(new String[0]);        
-	}*/
-	
-	/**
 	 * getGradeOptions
 	 */
 	private String [] getGradeOptions(String action)
@@ -869,16 +790,12 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		            if (this.testProductData == null)
 		            { // first time here 
 		                this.testProductData = this.getTestCatalogDataForUser();
-		                
-		                
 		            }
 		            tps = this.testProductData.getTestProducts();
 		            
 		            if (testNameOption == null)
 	                    testNameOption = createProductNameList(action,tps); 
-	    
-				
-		}
+	    }
 			 
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -915,10 +832,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		{
 			form.setSelectedStudentId(null);
 		}
-		/*if ((actionElement.indexOf("itemPageRequested") > 0) || (actionElement.indexOf("itemSortOrderBy") > 0))
-		{
-			form.setSelectedStudentId(null);
-		}*/
 	}
 	
 	/**
@@ -1081,11 +994,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			this.studentPageRequested = new Integer(1);       
 			this.studentMaxPage = new Integer(1);
 			
-			/*this.itemSortColumn = FilterSortPageUtils.TESTITEM_DEFAULT_SORT_COLUMN;
-			this.itemSortOrderBy = FilterSortPageUtils.ASCENDING;      
-			this.itemPageRequested = new Integer(1);    
-            this.itemMaxPage = new Integer(1);      */
-			
 			this.studentProfile = new StudentProfileInformation();
 		}
 		
@@ -1110,26 +1018,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				this.studentPageRequested = new Integer(this.studentMaxPage.intValue());                
 				
 			}
-			
-			
-			/*if (this.itemSortColumn == null)
-				this.itemSortColumn = FilterSortPageUtils.TESTITEM_DEFAULT_SORT_COLUMN;
-
-			if (this.itemSortOrderBy == null)
-				this.itemSortOrderBy = FilterSortPageUtils.ASCENDING;
-
-			if (this.itemPageRequested == null)
-                this.itemPageRequested = new Integer(1);
-
-			if (this.itemPageRequested.intValue() <= 0)
-                this.itemPageRequested = new Integer(1);
-
-			if (this.itemMaxPage == null)
-				this.itemMaxPage = new Integer(1);
-			if (this.itemPageRequested.intValue() > this.itemMaxPage.intValue()) {
-				this.itemPageRequested = new Integer(this.itemMaxPage.intValue());                
-				
-			}*/
 			
 		}
 		
@@ -1157,9 +1045,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
 				this.studentPageRequested = new Integer(1);
 			}
-			/*if (actionElement.equals("{actionForm.itemSortOrderBy}")) {
-				this.itemPageRequested = new Integer(1);
-			}*/
 			if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
 					actionElement.equals("EnterKeyInvoked_studentSearchResult")) {
 			    	this.selectedStudentId = null;

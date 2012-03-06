@@ -141,9 +141,9 @@ template_find_student.jsp
 			<br/>
 			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
 			&nbsp;&nbsp;
-			<netui:button styleClass="button" value="Generate PDF" />
+			<netui:button styleClass="button" value="Generate PDF" disabled="true" />
 			&nbsp;&nbsp;
-			<netui:button styleClass="button" value="Generate CSV" />
+			<netui:button styleClass="button" value="Generate CSV" disabled="true" />
 </netui:form>
 
 
