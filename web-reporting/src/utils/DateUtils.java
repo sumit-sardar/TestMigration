@@ -1,15 +1,13 @@
 package utils; 
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
-import org.apache.struts.action.ActionError;
 
 public class DateUtils 
 { 
@@ -27,10 +25,10 @@ public class DateUtils
     public final static String DATE_FORMAT_DISPLAY = "MMM dd, yyyy";
     
     
-    private static Hashtable timeZoneHashtable;
+    private static Hashtable<String, String> timeZoneHashtable;
     
     static {
-        timeZoneHashtable = new Hashtable();
+        timeZoneHashtable = new Hashtable<String, String>();
         timeZoneHashtable.put("(GMT-10:00) Hawaii", "Pacific/Honolulu");
         timeZoneHashtable.put("(GMT-10:00) Aleutian Islands", "America/Adak");
         timeZoneHashtable.put("(GMT-09:00) Alaska", "America/Anchorage");
@@ -159,7 +157,7 @@ public class DateUtils
         return result;
     }    
 
-
+    @SuppressWarnings("unused")
     public static int validateDateString(String dateStr)
     {
         if (dateStr == null)
@@ -255,9 +253,9 @@ public class DateUtils
     }   
 
 
-    public static List getTimeZoneList() 
+    public static List<String> getTimeZoneList() 
     {
-        List result = new ArrayList(); 
+        List<String> result = new ArrayList<String>(); 
         result.add("(GMT-10:00) Hawaii");
         result.add("(GMT-10:00) Aleutian Islands");
         result.add("(GMT-09:00) Alaska");
@@ -280,7 +278,7 @@ public class DateUtils
     public static String getUITimeZone(String DBTimeZone) {
         String result=null;
         
-        Enumeration enu = timeZoneHashtable.keys();
+        Enumeration<String> enu = timeZoneHashtable.keys();
         boolean found = false;
         while (enu.hasMoreElements() && !found) {
             String key = (String) enu.nextElement();    
@@ -293,9 +291,9 @@ public class DateUtils
         return result;
     }
     
-    public static List getTimeList() {
+    public static List<String> getTimeList() {
         
-        List result = new ArrayList(); 
+        List<String> result = new ArrayList<String>(); 
         for (int i = 0; i < 96; i++ ) {
             StringBuffer buf = new StringBuffer();
             String hourStr = ""+((i/4%12==0)?12:(i/4%12));
@@ -328,7 +326,8 @@ public class DateUtils
             return true;    
     }
     
-    public static Date createDate(String year, String month, String day)
+    @SuppressWarnings("deprecation")
+	public static Date createDate(String year, String month, String day)
     {
         int y = Integer.parseInt(year) - 1900;
         int m = Integer.parseInt(monthStringToNumber(month)) - 1;
