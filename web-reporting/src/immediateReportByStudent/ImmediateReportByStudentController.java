@@ -385,7 +385,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path ="find_student_reporting.jsp")}, 
+					path ="find_student_reporting.jsp"),
+			@Jpf.Forward(name = "success1",
+							path ="student_reporting.jsp")}, 
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "logout.do"))
 			protected Forward beginDisplayStudScoringReport(StudentImmediateReportForm form)
@@ -420,7 +422,18 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-       return new Forward("success",form);
+			Object isFromFindSessionObject = getSession().getAttribute("isFromFindSession");
+			Boolean isFromFindSession = false;
+			if(isFromFindSessionObject !=null){
+				isFromFindSession = Boolean.valueOf(isFromFindSessionObject.toString());
+			}
+			
+			if(isFromFindSession){
+				 return new Forward("success1",form);
+			} else {
+				 return new Forward("success",form);
+			}
+      
 	}
 	
 	/**

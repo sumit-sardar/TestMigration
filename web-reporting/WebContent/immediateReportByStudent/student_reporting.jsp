@@ -10,10 +10,8 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<netui-template:template templatePage="/resources/jsp/immediateReport_template.jsp">
-<!-- 
-template_find_student.jsp
--->
+<netui-template:template templatePage="/resources/jsp/template.jsp">
+
 
 <netui-template:setAttribute name="title" value="${bundle.web['findstudentscoring.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.handScoring']}"/>
@@ -140,9 +138,7 @@ template_find_student.jsp
 				</tr>
 			</table>
 			<br/>
-			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
-
-			
+			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
 			&nbsp;&nbsp;
 			<netui:button styleClass="button" value="Generate PDF" disabled="true" />
 			&nbsp;&nbsp;
