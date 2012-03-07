@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -67,7 +65,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	private static final String ACTION_FIND_STUDENT      = "findStudent";
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
-	private static final String ACTION_GOTO_REPORTS   = "gotoReports";
 	private boolean searchApplied = false;
 	private User user = null;
 	private String userName = null;
@@ -78,8 +75,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	private boolean studentIdConfigurable = false;
 	private TestProductData testProductData = null;
     private TestProduct [] tps;
-    private Hashtable productNameToIndexHash = null;
-    private Hashtable productIdToProductName = null;
+    private Hashtable<String, Integer> productNameToIndexHash = null;
+    private Hashtable<String, Integer> productIdToProductName = null;
     private boolean islaslinkCustomer = false;
     
     private Integer rosterId = null;
@@ -200,13 +197,13 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		{
 			this.searchApplied = true;
 			
-			List studentList = StudentSearchUtils.buildStudentList(msData);
+			List<StudentProfileInformation> studentList = StudentSearchUtils.buildStudentList(msData);
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
 			form.setStudentMaxPage(msData.getFilteredPages());
 			 
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
-			HashMap valMap = new LinkedHashMap();
+			HashMap<String, String> valMap = new LinkedHashMap<String, String>();
 			valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 			for(ScorableItem si : this.contentAreaNames){
 				valMap.put(si.getItemId().toString(), si.getItemSetName());
@@ -264,7 +261,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	})
 	protected Forward getContentAreasForCatalog(StudentImmediateReportForm form){
 					
-	 HttpServletRequest req = getRequest();
+	 //HttpServletRequest req = getRequest();
 	 HttpServletResponse resp = getResponse();
 	 OutputStream stream = null;
 	 String json = "";
@@ -276,7 +273,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			if(catalogId != null)
 				contentAreas =  this.studentManagement.getContentAreaForCatalog(this.userName, this.customerId, catalogId);
 			
-			List options = new ArrayList();
+			List<ScorableItem> options = new ArrayList<ScorableItem>();
 			if(contentAreas != null) {
 				for (int i=0 ; i<contentAreas.length ; i++) {        
 					options.add(contentAreas[i]);
@@ -395,11 +392,11 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	{ 
 			form.validateValues();
 			this.pageTitle  = "Immediate Reporting: View Report";
-			String currentAction = form.getCurrentAction();
-			String actionElement = form.getActionElement();
+			//String currentAction = form.getCurrentAction();
+			//String actionElement = form.getActionElement();
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			Boolean isLaslinkCust = Boolean.valueOf(this.getRequest().getParameter("rosterId"));
+			//Boolean isLaslinkCust = Boolean.valueOf(this.getRequest().getParameter("rosterId"));
 			try {
 				if(this.islaslinkCustomer) {
 					StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
@@ -742,7 +739,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			form.getStudentProfile().setScoringStatus(this.scoringStatusOptions[0]);
 		
 		//this.contentAreaNames = getContentAreaOptions( action );
-		HashMap valMap = new LinkedHashMap();
+		HashMap<String, String> valMap = new LinkedHashMap<String, String>();
 		valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 		this.getRequest().setAttribute("contentAreaList", valMap);
 				
@@ -765,7 +762,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			be.printStackTrace();
 		}
 
-		List options = new ArrayList();
+		List<String> options = new ArrayList<String>();
 		if ( action.equals(ACTION_FIND_STUDENT) )
 			options.add(FilterSortPageUtils.FILTERTYPE_ANY_GRADE);
 		
@@ -782,7 +779,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 */
 	private String [] getGenderOptions(String action)
 	{
-		List options = new ArrayList();
+		List<String> options = new ArrayList<String>();
 		if ( action.equals(ACTION_FIND_STUDENT) )
 			options.add(FilterSortPageUtils.FILTERTYPE_ANY_GENDER);
 		
@@ -799,7 +796,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 */
 	private String [] getTestNameOptions(String action)
 	{
-		List testNameOption = null;
+		List<String> testNameOption = null;
 			 try
 		        {
 		            if (this.testProductData == null)
@@ -826,7 +823,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	 */
 	private String [] getScoringStatusOptions(String action)
 	{
-		List options = new ArrayList();
+		List<String> options = new ArrayList<String>();
 		if ( action.equals(ACTION_FIND_STUDENT) )
 			options.add(FilterSortPageUtils.FILTERTYPE_ANY_SCORING_STATUS);
 	    options.add("Complete");
@@ -923,11 +920,11 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		 /**
 			 * createProductNameList
 			 */
-				 private List createProductNameList(String action,TestProduct [] tps)
+				 private List<String> createProductNameList(String action,TestProduct [] tps)
 				    {
-				        List result = new ArrayList();   
-				        this.productNameToIndexHash = new Hashtable();
-				        this.productIdToProductName = new Hashtable();
+				        List<String> result = new ArrayList<String>();   
+				        this.productNameToIndexHash = new Hashtable<String, Integer>();
+				        this.productIdToProductName = new Hashtable<String, Integer>();
 				    	if ( action.equals(ACTION_FIND_STUDENT) )
 				        result.add(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME);
 				        for (int i=0; i< tps.length; i++) {
@@ -964,6 +961,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	
 	//---------------------------FORM---------------------------------------
 	public static class StudentImmediateReportForm extends SanitizedFormData {
+
+		private static final long serialVersionUID = 1L;
 		
 		private Integer selectedStudentId;
 		private Message message;
@@ -1324,7 +1323,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		public String getTestAdminStartDateStr() {
 			if (this.testAdminStartDate != null) {
 	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_CHAR);     
-	            StringTokenizer tokenizer = new StringTokenizer(this.testAdminStartDateStr, "/");
+	            //StringTokenizer tokenizer = new StringTokenizer(this.testAdminStartDateStr, "/");
 	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_DISPLAY);     
 	        }
 			return testAdminStartDateStr;
