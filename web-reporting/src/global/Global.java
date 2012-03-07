@@ -13,6 +13,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
  *
  * @jpf:catch type="Exception" method="handleException"
  */
+@SuppressWarnings("deprecation")
 @Jpf.Controller(catches = { 
     @Jpf.Catch(type = Exception.class,
                method = "handleException")
@@ -88,7 +89,7 @@ public class Global extends GlobalApp
 		}
 	)
     protected Forward handleException( Exception ex, String actionName,
-                                       String message, FormData form )
+                                       String message, Object form )
     {
         String userName = (String)getSession().getAttribute("userName");
         if (userName == null) {
