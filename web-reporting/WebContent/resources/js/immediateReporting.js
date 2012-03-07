@@ -8,7 +8,7 @@ function populateContentArea(element) {
 		$.ajax({
 		async:		true,
 		beforeSend:	function(){
-						
+						blockUI();
 					},
 		url:		'getContentAreasForCatalog.do', 
 		type:		'POST',
@@ -23,16 +23,33 @@ function populateContentArea(element) {
 							}
 						}
 						$("#contentAreas").html(optionValues);
-						
+						unblockUI();
 											
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
 						window.location.href="/TestSessionInfoWeb/logout.do";
 						
-					}
+					},
+					
+		complete :  function(){
+					unblockUI();
+											}
 		
 	});
 	
 	
 }
+
+function blockUI()
+		{	
+			$("body").append('<div id="blockDiv" style="background:url(/ReportingWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
+			$("#blockDiv").css("cursor","wait");
+			
+		}
+			
+		function unblockUI()
+		{
+			$("#blockDiv").css("cursor","normal");
+			$("#blockDiv").remove();
+		}
