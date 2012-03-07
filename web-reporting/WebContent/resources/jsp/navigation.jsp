@@ -11,13 +11,13 @@
         <td>
             <table class="legacyNavLinks floatLeft">
             <tr>
-                <td><netui:anchor action="homepage" onClick="return verifyExitScoringStudent();">home</netui:anchor></td>
+                <td><netui:anchor action="homepage">home</netui:anchor></td>
                 <c:if test="${ sessionScope.userHasReports}">                
-                <td>| <a href="/TestSessionInfoWeb/homepage/viewReports.do" onclick="return verifyExitScoringStudent();">reports</a></td>
+                <td>| <a href="/TestSessionInfoWeb/homepage/viewReports.do">reports</a></td>
                 </c:if>
-                <td>| <a href="/UserManagementWeb/manageUser/beginMyProfile.do" onclick="return verifyExitScoringStudent();">my profile</a></td>
+                <td>| <a href="/UserManagementWeb/manageUser/beginMyProfile.do">my profile</a></td>
                 <ctb:auth roles="Administrator">
-                    <td>| <a href="/OrganizationManagementWeb/administration/begin.do" onclick="return verifyExitScoringStudent();">system administration</a></td>
+                    <td>| <a href="/OrganizationManagementWeb/administration/begin.do">system administration</a></td>
                 </ctb:auth>
             </tr>
             </table>
@@ -31,7 +31,7 @@
                 <c:if test="${ requestScope.helpLink != null }">            
                 <td><a href="<%= request.getAttribute("helpLink") %>" onClick="showHelpWindow(this.href); return false;">help</a></td>
                 </c:if>
-                <td>| <netui:anchor action="logout" onClick="return verifyExitScoringStudent();">logout</netui:anchor></td>
+                <td>| <netui:anchor action="logout">logout</netui:anchor></td>
             </tr>
             </table>
         </td>

@@ -64,7 +64,7 @@
     </ctb:message>
 </c:if>
 
-<netui:button styleClass="button" value="Reports" type="submit" onClick="setElementValue('currentAction', 'gotoReports');"/>
+<netui:button styleClass="button" value="Back" type="submit" onClick="setElementValue('currentAction', 'gotoReports');"/>
 
 </netui:form>
 
