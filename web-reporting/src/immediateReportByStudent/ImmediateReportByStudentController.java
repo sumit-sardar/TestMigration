@@ -203,13 +203,14 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			 
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
-			HashMap<String, String> valMap = new LinkedHashMap<String, String>();
-			valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
-			for(ScorableItem si : this.contentAreaNames){
-				valMap.put(si.getItemId().toString(), si.getItemSetName());
-			}
-			this.getRequest().setAttribute("contentAreaList", valMap);
 		}
+		
+		HashMap<String, String> valMap = new LinkedHashMap<String, String>();
+		valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
+		for(ScorableItem si : this.contentAreaNames){
+			valMap.put(si.getItemId().toString(), si.getItemSetName());
+		}
+		this.getRequest().setAttribute("contentAreaList", valMap);
 		
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
 		this.pageTitle  = "Immediate Reporting: Find Student";
