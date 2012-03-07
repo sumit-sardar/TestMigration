@@ -28,7 +28,6 @@
 	<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
 	<netui:hidden tagId="studentNameRe" dataSource="actionForm.studentNameRe" />
 	<netui:hidden tagId="studentExtPin1" dataSource="actionForm.studentExtPin1" />
-	<netui:hidden tagId="testAdminStartDate" dataSource="actionForm.testAdminStartDate" />
 	<netui:hidden tagId="form" dataSource="actionForm.form" />
 	<netui:hidden tagId="district" dataSource="actionForm.district" />
 	<netui:hidden tagId="school" dataSource="actionForm.school" />
