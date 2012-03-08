@@ -207,7 +207,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
 		HashMap<String, String> valMap = new LinkedHashMap<String, String>();
 		valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
-		if(!actionElement.equals(ACTION_DEFAULT)) {
+		if(!actionElement.equals(ACTION_DEFAULT) && this.contentAreaNames != null) {
 			for(ScorableItem si : this.contentAreaNames){
 				valMap.put(si.getItemId().toString(), si.getItemSetName());
 			}
