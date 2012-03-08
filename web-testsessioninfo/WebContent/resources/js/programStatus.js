@@ -125,7 +125,7 @@ function populateProgramStatusDetails(){
 	selectedProgramIdPS=$('#programIdPS').val();
 	selectedTestIdPS=$('#selectedTestIdPS').val();
 	var selectedTestCatalogId = $("#testNameOptions").val();
-
+	selectedTestIdPS = selectedTestCatalogId;//to display correct results as per selected value in test name drop down
 	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS+"&subtestStatusAction="+subtestStatusAction;
 			$.ajax(
 			{
