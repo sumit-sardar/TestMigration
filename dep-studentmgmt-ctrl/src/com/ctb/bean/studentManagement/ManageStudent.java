@@ -54,6 +54,7 @@ public class ManageStudent extends CTBBean
     private String proficiencyLevel;
     private String organizationNames;
     private String contentAreaString;
+    private String defaultScheduler;
     
 	/**
 	 * @return the testPurpose
@@ -396,6 +397,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setContentAreaString(String contentAreaString) {
 		this.contentAreaString = contentAreaString;
+	}
+	/**
+	 * @return the defaultScheduler
+	 */
+	public String getDefaultScheduler() {
+		return defaultScheduler;
+	}
+	/**
+	 * @param defaultScheduler the defaultScheduler to set
+	 */
+	public void setDefaultScheduler(String defaultScheduler) {
+		this.defaultScheduler = defaultScheduler;
 	}
     
 } 
