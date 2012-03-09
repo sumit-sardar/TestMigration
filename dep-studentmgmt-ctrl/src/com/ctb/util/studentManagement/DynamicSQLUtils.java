@@ -108,6 +108,19 @@ public class DynamicSQLUtils
         return result.toString();
     }
     
+    /**
+	 * Generates a where clause for SQL based on filter params
+	 * @param filter
+	 * @return String
+	 */
+    public static String generateWhereClauseForFilterContentArea(String contentAreaName) 
+        throws InvalidFilterFieldException
+    {
+        StringBuffer result = new StringBuffer();
+        result.append(" AND DERIVED.CONTENTAREASTRING LIKE '%").append(contentAreaName).append("%'");
+        return result.toString();
+    }
+    
     private static String escapeString(String input) {
         if (input == null || "".equals(input.trim()))
             return input;

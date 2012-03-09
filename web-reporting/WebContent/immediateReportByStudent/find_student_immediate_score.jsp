@@ -63,7 +63,7 @@
           <netui:content value="${requestScope.searchResultEmpty}"/>
     </ctb:message>
 </c:if>
-
+<br/>
 <netui:button styleClass="button" value="Back" type="submit" onClick="setElementValue('currentAction', 'gotoReports');"/>
 
 </netui:form>

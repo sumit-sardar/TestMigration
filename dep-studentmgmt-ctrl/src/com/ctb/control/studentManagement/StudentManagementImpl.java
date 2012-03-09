@@ -2675,7 +2675,6 @@ public class StudentManagementImpl implements StudentManagement
 			                if(fieldName.equals("completedContentAreaId")) {
 			                	String [] tempVal = (String [])filterParam.getArgument();
 			                	contentAreaFiltered = Integer.parseInt(tempVal[0]);
-			                	/*statusFilter.setFilterParams(filterParams);*/
 			                	break;
 			                }
 			            }
@@ -2683,6 +2682,8 @@ public class StudentManagementImpl implements StudentManagement
 			}
 			Integer totalCount = null;
 			String searchCriteria = "";
+			String contentAreaNameFilDisp = "";
+			String contentAreaSearch = "";
 			if (filter != null) {
 				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilterReporting(filter);
 				filter.setFilterParams(new FilterParam[0]);
@@ -2690,8 +2691,11 @@ public class StudentManagementImpl implements StudentManagement
 				ManageStudent [] studentTotalCount = null;
 				if(contentAreaFiltered == 0)
 					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
-				else
-					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId, "", contentAreaFiltered);
+				else {
+					contentAreaNameFilDisp = studentManagement.getContentAreaNameFromId(contentAreaFiltered);
+					contentAreaSearch = DynamicSQLUtils.generateWhereClauseForFilterContentArea(contentAreaNameFilDisp);
+					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId, "", contentAreaSearch);
+				}
 				totalCount = studentTotalCount.length;
 			}
 			String orderByClause = "";
@@ -2702,39 +2706,28 @@ public class StudentManagementImpl implements StudentManagement
 			
 			//searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
-			String contentAreaNameFilDisp = "";
+			
 			if(contentAreaFiltered == 0)
 				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId,searchCriteria);
 			else {
-				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId,searchCriteria, contentAreaFiltered);
 				contentAreaNameFilDisp = studentManagement.getContentAreaNameFromId(contentAreaFiltered);
+				contentAreaSearch = DynamicSQLUtils.generateWhereClauseForFilterContentArea(contentAreaNameFilDisp);
+				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId,searchCriteria, contentAreaSearch);
 			}
            for(ManageStudent student : students) {
-        	   //student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
         	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
         	   if(plValue == null || "".equals(plValue))
         		   plValue = "N/A";
         	   student.setProficiencyLevel(plValue);
-        	   if(contentAreaFiltered > 0) {
-        		   student.setContentAreaString(contentAreaNameFilDisp);
-        	   }
+        	   
            }
 			
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
-			/*if(statusFilter != null) std.applyFiltering(statusFilter);*/
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
 
 			students = std.getManageStudents();
-			/*for (int i=0; i <students.length; i++) {
-				if (students[i] != null) {
-					OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForStudentAtAndBelowUserTopNodes(students[i].getId().intValue(), userName);
-					students[i].setOrganizationNodes(orgNodes);
-				}
-			}*/
-
-
 			if (totalCount != null) {
 				std.setTotalCount(totalCount);
 				if (page == null)

@@ -56,6 +56,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String proficiencyLevel;
     private String organizationNames;
     private String contentAreaString;
+    private String defaultScheduler;
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -93,6 +94,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.proficiencyLevel = "";
         this.organizationNames = "";
         this.contentAreaString = "";
+        this.defaultScheduler = "";
     }
         
         
@@ -157,6 +159,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.proficiencyLevel = student.getProficiencyLevel();
         this.organizationNames = student.getOrganizationNames();
         this.contentAreaString = student.getContentAreaString();
+        this.defaultScheduler = student.getDefaultScheduler();
     }
     
 
@@ -186,6 +189,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setProficiencyLevel(this.proficiencyLevel);
         copied.setOrganizationNames(this.organizationNames);
         copied.setContentAreaString(this.contentAreaString);
+        copied.setDefaultScheduler(this.defaultScheduler);
         return copied;       
     }
   
@@ -229,6 +233,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setProficiencyLevel(this.proficiencyLevel);
         copied.setOrganizationNames(this.organizationNames);
         copied.setContentAreaString(this.contentAreaString);
+        copied.setDefaultScheduler(this.defaultScheduler);
         return copied;       
     }
     
@@ -718,5 +723,21 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setContentAreaString(String contentAreaString) {
 		this.contentAreaString = contentAreaString;
+	}
+
+
+	/**
+	 * @return the defaultScheduler
+	 */
+	public String getDefaultScheduler() {
+		return defaultScheduler;
+	}
+
+
+	/**
+	 * @param defaultScheduler the defaultScheduler to set
+	 */
+	public void setDefaultScheduler(String defaultScheduler) {
+		this.defaultScheduler = defaultScheduler;
 	}
 } 
