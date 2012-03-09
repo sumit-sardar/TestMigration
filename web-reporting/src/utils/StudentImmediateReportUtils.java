@@ -50,6 +50,10 @@ public abstract class StudentImmediateReportUtils {
 	 * @return the studentExtPin
 	 */
 	public String getStudentExtPin() {
+			//return '--' if there is no data, to maintain report layout. 
+			if("".equalsIgnoreCase(studentExtPin) || studentExtPin == null) {
+				return "--";
+			}
 		return studentExtPin;
 	}
 
