@@ -8,6 +8,24 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
+<script type="text/javascript"> 
+
+	function openImmediateStudentScorePdfReport( anchor, rosterId, testAdminId, sessionName ) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInPDF.do";
+	    anchor.href  = url;
+	    anchor.href += "?testAdminId=" + testAdminId;
+	    anchor.href += "&rosterId=" + rosterId;
+	    anchor.href += "&sessionName=" + sessionName;
+	    return true;
+	};
+
+
+</script>
+
+<!--
+
+//-->
+</script>
 
 <%
     Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Start Change For CR - GA2011CR001
@@ -32,6 +50,7 @@
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestStartDate">Administration date</ctb:tableSortColumn></th>
           	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Teacher name</th>
         	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
+        	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="CreatedBy">Created By</ctb:tableSortColumn></th>
         	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Download</th>
            
         </ctb:tableSortColumnGroup>
@@ -80,7 +99,14 @@
             <netui:span value="${container.item.form}"/>
         </td>
         <td class="sortable">
-            <a>PDF</a>
+            <netui:span value="${container.item.defaultScheduler}"/>
+        </td>
+        <td class="sortable">
+        			<% 
+                    String sessionName = (String)pageContext.getAttribute("testSessionName");
+                    String method = "return openImmediateStudentScorePdfReport(this,"+  pageContext.getAttribute("rosterId")+ " ,"+ pageContext.getAttribute("testAdminId")+" , "+sessionName+" );";
+                   %>
+            <netui:anchor href="#" onClick="<%= method %>" ;>PDF</netui:anchor>
             <br>
             <a>CSV</a>
         </td>
@@ -90,7 +116,7 @@
     <netui-data:repeaterFooter>
     
         <tr class="sortable">
-            <td class="sortableControls" colspan="9">
+            <td class="sortableControls" colspan="10">
                 <ctb:tablePager dataSource="actionForm.studentPageRequested" summary="request.studentPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found" id="studentSearchResult" anchorName="studentSearchResult"/>
             </td>
         </tr>         

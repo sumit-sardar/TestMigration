@@ -22,6 +22,7 @@ import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.Message;
 import utils.MessageResourceBundle;
+import utils.StudentImmediatePdfReportUtils;
 import utils.StudentProfileInformation;
 import utils.StudentSearchUtils;
 import utils.WebUtils;
@@ -438,6 +439,43 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			}
       
 	}
+	
+	/**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward studentsImmediateScoreReportInPDF()
+    {
+		
+		try{
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			if(this.islaslinkCustomer) {
+				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+				StudentImmediatePdfReportUtils utils = new StudentImmediatePdfReportUtils();
+				String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
+				getResponse().setContentType("application/pdf");
+		        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".pdf");
+		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+		        getResponse().setHeader("Pragma", "public"); 
+				utils.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+				utils.generateReport();
+				
+				
+			}
+		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+    	
+		  return null;
+    }
 	
 	/**
 	 * findByStudentProfile
@@ -1338,7 +1376,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		 */
 		public String getTestAdminStartDateStr() {
 			if (this.testAdminStartDate != null) {
-	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_CHAR);     
+	            //this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_CHAR);     
 	            //StringTokenizer tokenizer = new StringTokenizer(this.testAdminStartDateStr, "/");
 	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_DISPLAY);     
 	        }
