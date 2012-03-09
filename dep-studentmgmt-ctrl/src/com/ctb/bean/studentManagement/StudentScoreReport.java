@@ -17,6 +17,8 @@ public class StudentScoreReport extends CTBBean{
 	
 	static final long serialVersionUID = 1L;
 	
+	private String studentFirstName;
+	private String studentLastName;
 	private String studentName;
 	private Integer studentId;
 	private String studentExtPin1;
@@ -25,6 +27,7 @@ public class StudentScoreReport extends CTBBean{
 	private String district;
 	private String school;
 	private String grade;
+	private String testAdminName;
 	private StudentReportIrsScore[] studentReportIrsScore;
 	
 	
@@ -136,6 +139,42 @@ public class StudentScoreReport extends CTBBean{
 	public void setStudentReportIrsScore(
 			StudentReportIrsScore[] studentReportIrsScore) {
 		this.studentReportIrsScore = studentReportIrsScore;
+	}
+	/**
+	 * @return the studentFirstName
+	 */
+	public String getStudentFirstName() {
+		return studentFirstName;
+	}
+	/**
+	 * @param studentFirstName the studentFirstName to set
+	 */
+	public void setStudentFirstName(String studentFirstName) {
+		this.studentFirstName = studentFirstName;
+	}
+	/**
+	 * @return the studentLastName
+	 */
+	public String getStudentLastName() {
+		return studentLastName;
+	}
+	/**
+	 * @param studentLastName the studentLastName to set
+	 */
+	public void setStudentLastName(String studentLastName) {
+		this.studentLastName = studentLastName;
+	}
+	/**
+	 * @return the testAdminName
+	 */
+	public String getTestAdminName() {
+		return testAdminName;
+	}
+	/**
+	 * @param testAdminName the testAdminName to set
+	 */
+	public void setTestAdminName(String testAdminName) {
+		this.testAdminName = testAdminName;
 	}
 
 }
