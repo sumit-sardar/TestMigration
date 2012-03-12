@@ -1,12 +1,9 @@
 package utils;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.StudentReportIrsScore;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -31,7 +28,7 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 
 	@Override
 	public void setup(OutputStream outputStream, StudentScoreReport stuReport, String testAdminStartDateString) {
-		super.setup(outputStream, stuReport, testAdminStartDateString);		
+		super.setup(outputStream, stuReport, testAdminStartDateString);
 	}
 	
 	@Override
@@ -59,7 +56,6 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 		close();
 		
 	}
-
 	
 
 	private void createScroreReportTable() throws Exception{
@@ -128,14 +124,11 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 	 }
 
 	private void addTitleText() throws DocumentException {
-		//PDFUtils.getLineTable(LINE_WIDTH,  LEFT_X,  lineY);
 		PDFTableVO table = PDFUtils.getTitleTable(getTitleText(),TITLE_VALUE_WIDTH,TITLE_VALUE_X, TITLE_Y);
 		PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
-		
 	}
 	
 	 private void addTitleLine() throws DocumentException{
-		 //PDFUtils.getLineTable(LINE_WIDTH,  LEFT_X,  lineY);
 		 float titleHeight = PDFUtils.getTitleHeight(getTitleText(), TITLE_VALUE_WIDTH);
 		 lineY = TITLE_Y - titleHeight - TITLE_LINE_SPACING;
 		 PDFTableVO table = PDFUtils.getLineTable(LINE_WIDTH, LEFT_X, lineY);
@@ -143,7 +136,6 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 	 }
 
 	 private void addFooter() throws DocumentException {
-		 //PDFUtils.getLineTable(LINE_WIDTH,  LEFT_X,  lineY);
 		 PDFTableVO table = PDFUtils.getFooterTable(COPYWRITE, FOOTER_WIDTH, LEFT_X, FOOTER_Y);
 		 PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
 	 }
@@ -212,7 +204,7 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 	private void addSchoolValue() throws DocumentException {
 		PDFTableVO table = PDFUtils.getInfoTable(getSchool(), INFO_VALUE_WIDTH, INFO_VALUE_X, schoolY);
 		PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
-		}
+	}
 						 
 	private void addGradeLabel() throws DocumentException {
 		gradeY = schoolY - PDFUtils.getInfoHeight(getSchool(), INFO_VALUE_WIDTH) - LINE_ROSTER_DATA_SPACING;
@@ -258,10 +250,12 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
         result[index++] = PROFICIENCY_LEVEL;
         for(int i = 0; i < numContentAreas; i++) {
         	StudentReportIrsScore contentAreaScores = irsScores[i];
-        	result[index++] = contentAreaScores.getContentAreaName();
-        	result[index++] = contentAreaScores.getRawScore().toString();
-        	result[index++] = contentAreaScores.getScaleScore().toString();
-        	result[index++] = contentAreaScores.getProficiencyLevel().toString();
+        	if(contentAreaScores != null) {
+	        	result[index++] = contentAreaScores.getContentAreaName();
+	        	result[index++] = contentAreaScores.getRawScore().toString();
+	        	result[index++] = contentAreaScores.getScaleScore().toString();
+	        	result[index++] = contentAreaScores.getProficiencyLevel().toString();
+        	}
         }
         
         return result;
