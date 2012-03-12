@@ -13,6 +13,8 @@
 <netui-template:template templatePage="/resources/jsp/template.jsp">
 
 
+
+
 <netui-template:setAttribute name="title" value="${bundle.web['findstudentscoring.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.handScoring']}"/>
 <netui-template:section name="bodySection">
@@ -26,12 +28,6 @@
 
 	<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 	<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
-	<netui:hidden tagId="studentNameRe" dataSource="actionForm.studentNameRe" />
-	<netui:hidden tagId="studentExtPin1" dataSource="actionForm.studentExtPin1" />
-	<netui:hidden tagId="form" dataSource="actionForm.form" />
-	<netui:hidden tagId="district" dataSource="actionForm.district" />
-	<netui:hidden tagId="school" dataSource="actionForm.school" />
-	<netui:hidden tagId="grade" dataSource="actionForm.grade" />
 	<netui:hidden dataSource="actionForm.testAdminId"/>
 
 	<table class="transparent" width="100%">
@@ -138,10 +134,7 @@
 			</table>
 			<br/>
 			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
-			&nbsp;&nbsp;
-			<netui:button styleClass="button" value="Generate PDF" disabled="true" />
-			&nbsp;&nbsp;
-			<netui:button styleClass="button" value="Generate CSV" disabled="true" />
+			
 </netui:form>
 
 
