@@ -33,4 +33,16 @@ public interface ImmediateReport {
 	public static final String RAW_SCORE = "Raw Score ";
 	public static final String SCALE_SCORE = "Scale Score ";
 	public static final String PROFICIENCY_LEVEL = "Proficiency Level ";
+	
+	public static final String STUDENT_NAME_LABEL_CSV = "Student";
+	public static final String STUDENT_Id_LABEL_CSV = "ID";
+	public static final String TEST_DATE_LABEL_CSV = "Test Date";
+	public static final String FORM_LABEL_CSV = "Form";
+	public static final String DISTRICT_LABEL_CSV = "District";
+	public static final String SCHOOL_LABEL_CSV = "School";
+	public static final String GRADE_LABEL_CSV = "Grade";
+	public static final String TEST_NAME_LABEL_CSV = "Test Name";
+	public static final String RAW_SCORE_CSV= "Raw Score";
+	public static final String SCALE_SCORE_CSV = "Scale Score";
+	public static final String PROFICIENCY_LEVEL_CSV = "Proficiency Level";
 }

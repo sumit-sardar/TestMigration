@@ -22,6 +22,7 @@ import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.Message;
 import utils.MessageResourceBundle;
+import utils.StudentImmediateCSVReportUtils;
 import utils.StudentImmediatePdfReportUtils;
 import utils.StudentProfileInformation;
 import utils.StudentSearchUtils;
@@ -475,6 +476,37 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
     	
 		  return null;
+    }
+	
+	/**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward studentsImmediateScoreReportInCSV()
+    {
+		
+		try{
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			if(this.islaslinkCustomer) {
+				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+				StudentImmediateCSVReportUtils utilsCSV = new StudentImmediateCSVReportUtils();
+				String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
+				getResponse().setContentType("text/csv");
+		        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
+		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+		        getResponse().setHeader("Pragma", "public"); 
+		        utilsCSV.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+		        utilsCSV.generateReport();
+			}
+		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
     }
 	
 	/**
