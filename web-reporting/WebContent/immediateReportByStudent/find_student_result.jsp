@@ -18,6 +18,14 @@
 	    anchor.href += "&sessionName=" + sessionName;
 	    return true;
 	};
+	
+	function openImmediateStudentScoreCSVReport( anchor, rosterId, testAdminId) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInCSV.do";
+	    anchor.href  = url;
+	    anchor.href += "?testAdminId=" + testAdminId;
+	    anchor.href += "&rosterId=" + rosterId;
+	    return true;
+	};
 
 
 </script>
@@ -108,7 +116,10 @@
                    %>
             <netui:anchor href="#" onClick="<%= method %>" ;>PDF</netui:anchor>
             <br>
-            <a>CSV</a>
+            <%
+            	method = "return openImmediateStudentScoreCSVReport(this,"+  pageContext.getAttribute("rosterId")+ " ,"+ pageContext.getAttribute("testAdminId")+");";
+            %>
+            <netui:anchor href="#" onClick="<%= method %>" ;>CSV</netui:anchor>
         </td>
     </tr>
     
