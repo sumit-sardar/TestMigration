@@ -87,7 +87,7 @@ FOR EACH ROW
 DECLARE
 BEGIN
 
-   IF :OLD.test_admin_status != 'CU' and :NEW.test_admin_status = 'CU' THEN 
+   IF :NEW.test_admin_status = 'CU' THEN 
     insert into tms_prim_cache_prepop select test_roster_id, null as node_id from test_roster ros where ros.test_admin_id = :NEW.test_admin_id;
    END IF; 
 
