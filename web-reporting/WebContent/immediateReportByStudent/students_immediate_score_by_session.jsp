@@ -37,6 +37,7 @@
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
 <netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/> 
 <netui:hidden  dataSource="actionForm.studentMaxPage"/> 
+<netui:hidden  dataSource="actionForm.testAdminId"/> 
 
 
 <!-- message -->
