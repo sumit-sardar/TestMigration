@@ -140,40 +140,6 @@ public class FilterSortPageUtils
         return sort;
     }
 
-    public static SortParams buildOrgNameLastNameFirstNameSortParams(String sortName, String sortOrderBy)
-    {
-        SortParams sort = new SortParams();
-        SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
-        SortParam[] sortParams = new SortParam[3];
-                
-        if(sortName.equals(ORGNODE_NAME_SORT)) {
-            sortParams[0] = new SortParam(ORGNODE_NAME_SORT, sortType);
-            sortParams[1] = new SortParam(LAST_NAME_SORT, sortType);
-            sortParams[2] = new SortParam(FIRST_NAME_SORT, sortType);
-        } 
-        else
-        if(sortName.equals(LAST_NAME_SORT)) {
-            sortParams[0] = new SortParam(LAST_NAME_SORT, sortType);
-            sortParams[1] = new SortParam(ORGNODE_NAME_SORT, sortType);
-            sortParams[2] = new SortParam(FIRST_NAME_SORT, sortType);
-        } 
-        else
-        if(sortName.equals(FIRST_NAME_SORT)) {
-            sortParams[0] = new SortParam(FIRST_NAME_SORT, sortType);
-            sortParams[1] = new SortParam(ORGNODE_NAME_SORT, sortType);
-            sortParams[2] = new SortParam(LAST_NAME_SORT, sortType);
-        } 
-        else {
-            sortParams = new SortParam[4];
-            sortParams[0] = new SortParam(sortName, sortType);
-            sortParams[1] = new SortParam(ORGNODE_NAME_SORT, sortType);
-            sortParams[2] = new SortParam(LAST_NAME_SORT, sortType);
-            sortParams[3] = new SortParam(FIRST_NAME_SORT, sortType);
-        }
-        sort.setSortParams(sortParams);
-        return sort;
-    }
-
     public static PageParams buildPageParams(Integer pageRequested, int pageSize)
     {
         if (pageRequested.intValue() <= 0)
@@ -317,34 +283,9 @@ public class FilterSortPageUtils
         SortParams sort = new SortParams();
                 
         SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
-        SortParam[] sortParams = new SortParam[2];
+        SortParam[] sortParams = new SortParam[1];
         
         sortParams[0] = new SortParam(sortName, sortType);
-        
-        String secondarySortName = STUDENT_DEFAULT_SORT_COLUMN;
-        if (sortName.equals(STUDENT_DEFAULT_SORT_COLUMN))
-             secondarySortName = LOGIN_NAME_SORT;
-             
-        sortParams[1] = new SortParam(secondarySortName, sortType);
-        sort.setSortParams(sortParams);
-        
-        return sort;
-    }
-    
-    public static SortParams buildItemSortParams(String sortName, String sortOrderBy)
-    {
-        SortParams sort = new SortParams();
-                
-        SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
-        SortParam[] sortParams = new SortParam[2];
-        
-        sortParams[0] = new SortParam(sortName, sortType);
-        
-        String secondarySortName = TESTITEM_DEFAULT_SORT_COLUMN;
-        if (sortName.equals(TESTITEM_DEFAULT_SORT_COLUMN))
-             secondarySortName = TESTITEM_NUMBER_SORT;
-             
-        sortParams[1] = new SortParam(secondarySortName, sortType);
         sort.setSortParams(sortParams);
         
         return sort;
