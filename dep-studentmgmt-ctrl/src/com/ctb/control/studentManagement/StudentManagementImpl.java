@@ -2751,29 +2751,31 @@ public class StudentManagementImpl implements StudentManagement
 			StudentReportIrsScore[] stuScoreData = null;
 			StudentReportIrsScore stuScoreDataComp = null;
 			StudentReportIrsScore[] stuFinalScoreData = null;
+			String contentAreas = null;
 			stuScrReport = studentManagement.getStudentDataForReport(testRosterId);
+			contentAreas = stuScrReport.getContentAreaNameString();
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
 			stuFinalScoreData = new StudentReportIrsScore[stuScoreData.length + 1];
-			if(stuScoreData != null) {
+			if(stuScoreData != null && contentAreas != null) {
 				for(int i = 0; i < stuScoreData.length; i++) {
 					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
-						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5);
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5, contentAreas);
 					}
 				}
 			}
 			if(stuScoreDataComp != null)
-				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, stuScoreData.length);
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, stuScoreData.length, contentAreas);
 			
 			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
 			
@@ -2787,13 +2789,42 @@ public class StudentManagementImpl implements StudentManagement
 		
 	}
 	
-	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData, StudentReportIrsScore stuScoreDataTemp, Integer stuFinalScoreDataValue) {
+	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData, StudentReportIrsScore stuScoreDataTemp, Integer stuFinalScoreDataValue, String contentAreas) {
 		stuFinalScoreData[stuFinalScoreDataValue] = new StudentReportIrsScore();
 		stuFinalScoreData[stuFinalScoreDataValue].setContentAreaName(stuScoreDataTemp.getContentAreaName());
-		stuFinalScoreData[stuFinalScoreDataValue].setRawScore(stuScoreDataTemp.getRawScore());
-		stuFinalScoreData[stuFinalScoreDataValue].setScaleScore(stuScoreDataTemp.getScaleScore());
-		stuFinalScoreData[stuFinalScoreDataValue].setProficiencyLevel(stuScoreDataTemp.getProficiencyLevel());
+		if(checkAvailability(stuFinalScoreDataValue, contentAreas)) {
+			stuFinalScoreData[stuFinalScoreDataValue].setRawScore(stuScoreDataTemp.getRawScore());
+			stuFinalScoreData[stuFinalScoreDataValue].setScaleScore(stuScoreDataTemp.getScaleScore());
+			stuFinalScoreData[stuFinalScoreDataValue].setProficiencyLevel(stuScoreDataTemp.getProficiencyLevel());
+		} else {
+			stuFinalScoreData[stuFinalScoreDataValue].setRawScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue].setScaleScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue].setProficiencyLevel("N/A");
+		}
 		
+	}
+	
+	private boolean checkAvailability(Integer stuFinalScoreDataValue, String contentAreas) {
+		if(stuFinalScoreDataValue == 0 && contentAreas.contains("Listening"))
+			return true;
+		if(stuFinalScoreDataValue == 1 && contentAreas.contains("Speaking"))
+			return true;
+		if(stuFinalScoreDataValue == 2 && contentAreas.contains("Listening") 
+				&& contentAreas.contains("Speaking"))
+			return true;
+		if(stuFinalScoreDataValue == 3 && contentAreas.contains("Reading"))
+			return true;
+		if(stuFinalScoreDataValue == 4 && contentAreas.contains("Writing"))
+			return true;
+		if(stuFinalScoreDataValue == 5 && contentAreas.contains("Reading") 
+				&& contentAreas.contains("Writing"))
+			return true;
+		if(stuFinalScoreDataValue == 6 && contentAreas.contains("Listening") 
+				&& contentAreas.contains("Speaking") 
+				&& contentAreas.contains("Reading") 
+				&& contentAreas.contains("Writing"))
+			return true;
+		return false;
 	}
 	
 	@Override
