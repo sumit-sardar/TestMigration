@@ -442,7 +442,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	}
 	
 	/**
-     * @jpf:action
+     * @jpf:action For generating the report in pdf format.
      */
 	@Jpf.Action()
     protected Forward studentsImmediateScoreReportInPDF()
@@ -479,7 +479,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
     }
 	
 	/**
-     * @jpf:action
+     * @jpf:action For generating the report in csv format.
      */
 	@Jpf.Action()
     protected Forward studentsImmediateScoreReportInCSV()
@@ -578,7 +578,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		if (filter == null)
 		{
 			msData = StudentSearchUtils.searchAllStudentsAtAndBelow(this.userName, this.studentManagement,productId,page, sort);   
-			this.pageMessage = MessageResourceBundle.getMessage("searchResultFound");
+			this.pageMessage = MessageResourceBundle.getMessage("searchProfileFound");
 		}
 		else
 		{
