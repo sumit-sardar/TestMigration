@@ -2756,7 +2756,8 @@ public class StudentManagementImpl implements StudentManagement
 			contentAreas = stuScrReport.getContentAreaNameString();
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
-			stuFinalScoreData = new StudentReportIrsScore[stuScoreData.length + 1];
+			stuFinalScoreData = new StudentReportIrsScore[7];
+			setContentAreaValues(stuFinalScoreData);
 			if(stuScoreData != null && contentAreas != null) {
 				for(int i = 0; i < stuScoreData.length; i++) {
 					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
@@ -2775,7 +2776,7 @@ public class StudentManagementImpl implements StudentManagement
 				}
 			}
 			if(stuScoreDataComp != null)
-				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, stuScoreData.length, contentAreas);
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
 			
 			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
 			
@@ -2789,9 +2790,20 @@ public class StudentManagementImpl implements StudentManagement
 		
 	}
 	
+	private void setContentAreaValues(StudentReportIrsScore[] stuFinalScoreData) {
+		for(int i = 0; i < 7; i++) {
+			stuFinalScoreData[i] = new StudentReportIrsScore();
+		}
+		stuFinalScoreData[0].setContentAreaName("Listening");
+		stuFinalScoreData[1].setContentAreaName("Speaking");
+		stuFinalScoreData[2].setContentAreaName("Oral");
+		stuFinalScoreData[3].setContentAreaName("Reading");
+		stuFinalScoreData[4].setContentAreaName("Writing");
+		stuFinalScoreData[5].setContentAreaName("Comprehension");
+		stuFinalScoreData[6].setContentAreaName("Overall");
+	}
+	
 	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData, StudentReportIrsScore stuScoreDataTemp, Integer stuFinalScoreDataValue, String contentAreas) {
-		stuFinalScoreData[stuFinalScoreDataValue] = new StudentReportIrsScore();
-		stuFinalScoreData[stuFinalScoreDataValue].setContentAreaName(stuScoreDataTemp.getContentAreaName());
 		if(checkAvailability(stuFinalScoreDataValue, contentAreas)) {
 			stuFinalScoreData[stuFinalScoreDataValue].setRawScore(stuScoreDataTemp.getRawScore());
 			stuFinalScoreData[stuFinalScoreDataValue].setScaleScore(stuScoreDataTemp.getScaleScore());

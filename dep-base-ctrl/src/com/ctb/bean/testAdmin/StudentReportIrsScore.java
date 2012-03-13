@@ -14,9 +14,9 @@ public class StudentReportIrsScore extends CTBBean{
 	static final long serialVersionUID = 1L;
 	
 	private String contentAreaName;
-	private String rawScore;
-	private String scaleScore;
-	private String proficiencyLevel;
+	private String rawScore = "N/A";
+	private String scaleScore = "N/A";
+	private String proficiencyLevel = "N/A";
 	
 	
 	/**
