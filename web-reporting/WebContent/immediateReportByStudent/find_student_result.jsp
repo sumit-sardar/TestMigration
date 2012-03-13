@@ -50,16 +50,16 @@
     <tr class="sortable">
         
         <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
-            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap>Content area(s) completed and scored</th>
-            <th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width=5%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="TestWindowOpenDate">Administration date</ctb:tableSortColumn></th>
-          	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Teacher name</th>
-        	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
-        	<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="CreatedBy">Created By</ctb:tableSortColumn></th>
-        	<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Download</th>
+            <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="10%" nowrap>Content area(s) completed and scored</th>
+            <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ProficiencyLevel">Proficiency Level</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width=10%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="TestWindowOpenDate">Administration date</ctb:tableSortColumn></th>
+          	<th class="sortable alignLeft" width="10%" nowrap>&nbsp;Teacher name</th>
+        	<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="Form">Form</ctb:tableSortColumn></th>
+        	<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="CreatedBy">Created By</ctb:tableSortColumn></th>
+        	<th class="sortable alignLeft" width="10%" nowrap>&nbsp;Download</th>
            
         </ctb:tableSortColumnGroup>
     </tr>
