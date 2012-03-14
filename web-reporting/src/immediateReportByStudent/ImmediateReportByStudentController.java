@@ -398,7 +398,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			protected Forward beginDisplayStudScoringReport(StudentImmediateReportForm form)
 	{ 
 			form.validateValues();
-			this.pageTitle  = "LAS Links Online Student Report";
+			this.pageTitle  = "Immediate Reporting: View Report";
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 			try {
