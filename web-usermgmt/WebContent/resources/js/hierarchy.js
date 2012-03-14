@@ -509,10 +509,22 @@ function populateGrid() {
 			onSortCol:function(){
 				setAnchorButtonState('changePWButton', true);
 			},
-			onSelectRow: function () {
-				if ($("#roleNameID").val() == 'Administrator') {
-					// $("#changePWDBtn").removeAttr('disabled');
-					setAnchorButtonState('changePWButton', false);
+			onSelectRow: function (rowid) {
+				var actionPermission = getColValueJson(rowid,'actionPermission');
+				if(actionPermission != "" && actionPermission != undefined){
+					var changePwdFlag = actionPermission.substr(3, 1);
+					if(changePwdFlag == 'T'){
+						setAnchorButtonState('changePWButton', false);
+					}
+					else{
+						setAnchorButtonState('changePWButton', true);
+					}
+				}
+				else{
+					if ($("#roleNameID").val() == 'Administrator') {
+						// $("#changePWDBtn").removeAttr('disabled');
+						setAnchorButtonState('changePWButton', false);
+					}				
 				}
 				document.getElementById('displayMessageMain').style.display = "none";	
 			},
