@@ -1,4 +1,5 @@
 package studentScoringPageFlow;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -184,6 +185,7 @@ public class StudentScoringController extends PageFlowController {
 		this.searchApplied = false;
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, form, null, null ,null, null);
 		isTopLevelUser(); //For defect #66662
+		customerHasImmediateScoreReport();
 		return new Forward("success", form);
 	}
 	
@@ -599,6 +601,24 @@ public class StudentScoringController extends PageFlowController {
 	            
 	 	
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	 private Boolean customerHasImmediateScoreReport() {
+		// getCustomerConfigurations();
+		boolean isImmediateScoreReportConfigured = false;
+
+		for (CustomerConfiguration cc : customerConfigurations) {
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+					"Immediate_Score_Report")
+					&& cc.getDefaultValue().equals("T")) {
+				isImmediateScoreReportConfigured = true;
+				break;
+			}
+
+		}
+		getSession().setAttribute("isImmediateScoreReportConfigured",
+				isImmediateScoreReportConfigured);
+		return new Boolean(isImmediateScoreReportConfigured);
 	}
 	
 	/**
@@ -1121,6 +1141,24 @@ public class StudentScoringController extends PageFlowController {
 	            e.printStackTrace();
 	        }                
 	        return new Forward("success");
+	}
+
+	@Jpf.Action()
+	public Forward goToImmediateScoreReport(StudentScoringForm form) {
+		String contextPath = "/ImmediateReportWeb/immediateReportByStudent/beginImmediateStudentScoreByAdmin.do";
+        String sessionId = form.getTestAdminId().toString();
+        String testAdminId = "testAdminId=" +  sessionId;            
+        String url = contextPath + "?" + testAdminId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
 	// end- added for  Process Scores  button changes
 	public static class StudentScoringForm extends SanitizedFormData
