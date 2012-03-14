@@ -53,7 +53,7 @@
     <tr class="tableFilter">
         <td class="tableFilter" width="100" align="right">Last Name:</td>
         <td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4" style="width:320px"/></td>
-        <td class="tableFilter" width="100" align="right">Completed ContentArea:</td>
+        <td class="tableFilter" width="100" align="right">Completed Content Area:</td>
         <td class="tableFilter" width="*">
              <netui:select tagid= "contentAreas" optionsDataSource="${requestScope.contentAreaList}" dataSource="actionForm.studentProfile.completedContentArea" size="1" style="width:320px" tabindex="10"/>
         </td>
