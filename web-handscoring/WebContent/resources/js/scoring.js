@@ -400,11 +400,12 @@ if(isHidden){
 													
 													var completionStatus = null;
 													var processScores;
+													var immediateScoreReport == null;
 													if(data.SaveStatus.completionStatus!=null && data.SaveStatus.completionStatus != "FromItem" )
 													{
 													 completionStatus = data.SaveStatus.completionStatus;
 													 processScores = document.getElementById("rescoreStudent");
-													
+													 immediateScoreReport = document.getElementById("ImmediateScoreReportBN");
 													}
 													var spanElement = document.getElementById("messageSpan");
 													var scorePointsElement = document.getElementById("scorePoints"+rowno);
@@ -419,8 +420,13 @@ if(isHidden){
 														spanElement.innerHTML = "<b> Item scored successfully. </b>";
 												        if(completionStatus !=null && completionStatus=="CO" && processScores != null)    // END- Change for  #66660 enhancement
 												        {
-												        
-												          processScores.removeAttribute("disabled"); 
+												         if(processScores != null && processScores != undefined) {
+												         	processScores.removeAttribute("disabled"); 
+												         }
+												         if(immediateScoreReport != null && immediateScoreReport != undefined ) {
+												         	immediateScoreReport.removeAttribute("disabled"); 
+												         }
+												          
 												        }
 													}
 													else{				

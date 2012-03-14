@@ -185,7 +185,6 @@ public class StudentScoringController extends PageFlowController {
 		this.searchApplied = false;
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, form, null, null ,null, null);
 		isTopLevelUser(); //For defect #66662
-		customerHasImmediateScoreReport();
 		return new Forward("success", form);
 	}
 	
@@ -205,7 +204,10 @@ public class StudentScoringController extends PageFlowController {
 		isGeorgiaCustomer(form);
 		//END -changes for defect # 65980
 		form.validateValues();
-
+		if(getSession().getAttribute("isImmediateScoreReportConfigured") == null){
+			customerHasImmediateScoreReport();
+		}
+			
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
@@ -606,7 +608,9 @@ public class StudentScoringController extends PageFlowController {
 	 private Boolean customerHasImmediateScoreReport() {
 		// getCustomerConfigurations();
 		boolean isImmediateScoreReportConfigured = false;
-
+		if(customerConfigurations == null){
+			getCustomerConfigurations();
+		}
 		for (CustomerConfiguration cc : customerConfigurations) {
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"Immediate_Score_Report")

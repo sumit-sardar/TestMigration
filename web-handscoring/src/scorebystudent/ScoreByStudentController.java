@@ -149,6 +149,9 @@ public class ScoreByStudentController extends PageFlowController {
 		String actionElement = form.getActionElement();
 		Integer testAdminId = 0;
 		TestSession ts = null;
+		if(getSession().getAttribute("isImmediateScoreReportConfigured") == null){
+			customerHasImmediateScoreReport();
+		}
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT);
 
 		if (currentAction.equals(ACTION_DEFAULT)) {
@@ -325,6 +328,24 @@ public class ScoreByStudentController extends PageFlowController {
         return null;
     } 
 
+	@Jpf.Action()
+	public Forward goToImmediateScoreReport(ScoreByStudentForm form) {
+		String contextPath = "/ImmediateReportWeb/immediateReportByStudent/beginImmediateStudentScoreByAdmin.do";
+        String sessionId = form.getTestAdminId().toString();
+        String testAdminId = "testAdminId=" +  sessionId;            
+        String url = contextPath + "?" + testAdminId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+
 	/**
 	 * findStudentForTestSession
 	 */
@@ -494,6 +515,26 @@ public class ScoreByStudentController extends PageFlowController {
 			e.printStackTrace();
 		}
 		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+    
+    private Boolean customerHasImmediateScoreReport() {
+		// getCustomerConfigurations();
+		boolean isImmediateScoreReportConfigured = false;
+		if(customerConfigurations == null){
+			getCustomerConfigurations();
+		}
+		for (CustomerConfiguration cc : customerConfigurations) {
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+					"Immediate_Score_Report")
+					&& cc.getDefaultValue().equals("T")) {
+				isImmediateScoreReportConfigured = true;
+				break;
+			}
+
+		}
+		getSession().setAttribute("isImmediateScoreReportConfigured",
+				isImmediateScoreReportConfigured);
+		return new Boolean(isImmediateScoreReportConfigured);
 	}
 
 	/**
