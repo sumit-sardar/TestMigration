@@ -388,13 +388,18 @@ function populateSelectStudentGrid() {
 			gridComplete: function() {
 				var allRowsInGridPresent = $('#selectStudent').jqGrid('getDataIDs');
 				if(state=="EDIT"){
-					for(var k = 0; k < allRowsInGridPresent.length; k++) {
+					/*for(var k = 0; k < allRowsInGridPresent.length; k++) {
 						var selectedRowData = $("#selectStudent").getRowData(allRowsInGridPresent[k]);
 						if(editDataMrkStds.get(selectedRowData.studentId) == selectedRowData.studentId){
-							$("#"+selectedRowData.studentId+" td input","#selectStudent").attr("disabled", true);
-				 			$("#"+selectedRowData.studentId, "#selectStudent").addClass('ui-state-disabled');
+							var originalStudentOrg = getOriginalStudentOrg(selectedRowData.studentId);
+							if(!(originalStudentOrg != selectedRowData.orgNodeId && (selectedRowData['status.code'] == undefined || selectedRowData['status.code'] == ""))) {
+								$("#"+selectedRowData.studentId+" td input","#selectStudent").attr("disabled", true);
+					 			$("#"+selectedRowData.studentId, "#selectStudent").addClass('ui-state-disabled');
+				 			} else {
+				 				selectedRowData["statusEditable"] = "T";
+				 			}
 						}				
-					}				
+					}*/				
 				} 
 				
 				//Added for out of school students
@@ -1244,7 +1249,7 @@ function getStudentListArray(studentArray) {
 		document.getElementById("statusLegend").style.display = "none";
 	}
 	function addToStudentTempMap(studentId,studentRow){
-	  if(studentRow["statusEditable"] != undefined && studentRow["statusEditable"] =="T") {
+	  if(studentRow["statusEditable"] != undefined) {
 	  
 	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
