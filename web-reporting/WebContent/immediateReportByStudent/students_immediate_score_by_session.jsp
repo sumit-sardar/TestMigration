@@ -58,7 +58,7 @@
     </ctb:message>
 </c:if>
 <br/>
-<netui:button styleClass="button" value="Home" type="submit" onClick="setElementValue('currentAction', 'gotoHome');"/>
+<netui:button styleClass="button" value="${bundle.web['common.button.home']}" type="submit" onClick="setElementValue('currentAction', 'gotoHome');"/>
 
 </netui:form>
 

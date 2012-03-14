@@ -133,8 +133,12 @@
 				</tr>
 			</table>
 			<br/>
-			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
-			
+			<c:if test="${ sessionScope.isFromFindSession}">
+				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
+			</c:if>
+			<c:if test="${ !sessionScope.isFromFindSession}">
+				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.home']}"  action="returnToHome" />
+			</c:if>
 </netui:form>
 
 

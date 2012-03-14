@@ -223,6 +223,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		form.setCurrentAction(ACTION_DEFAULT);     
 		this.studentSearch = form.getStudentProfile().createClone();
 		this.getSession().setAttribute("isFromFindSession", false);
+		this.getSession().setAttribute("isFromReport", true);
+		
 		return new Forward("success",form);
 	}
 	
@@ -258,6 +260,18 @@ public class ImmediateReportByStudentController extends PageFlowController {
         	form.setTestAdminId(this.testAdminId);
         }
 		return new Forward("success", form);
+	}
+	
+	@Jpf.Action()
+	protected Forward returnToHome(StudentImmediateReportForm form)
+	{
+		try {
+			 String url = "/TestSessionInfoWeb/homepage/HomePageController.jpf";
+			getResponse().sendRedirect(url);
+		} catch (IOException ioe) {
+			System.err.print(ioe.getStackTrace());
+		}
+		return null;
 	}
 	
 	@Jpf.Action(forwards={
@@ -360,11 +374,57 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		this.studentSearch = form.getStudentProfile().createClone();    
 		setFormInfoOnRequest(form);*/
 		this.getSession().setAttribute("isFromFindSession", true);
+		this.getSession().setAttribute("isFromReport", false);
 		this.testAdminId = 	form.getTestAdminId();
 		return new Forward("success",form);
 	}
 	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", action = "findStudentByTestSession") })
+	public Forward beginImmediateStudentScoreByAdmin() {
+		StudentImmediateReportForm form = initialize(ACTION_FIND_STUDENT);
+		String reqTestAdminId = getRequest().getParameter("testAdminId");;
+		if (reqTestAdminId != null) {
+			form.setTestAdminId(Integer.valueOf(reqTestAdminId));
+		}
+		
+		isTopLevelUser(); 
+		setupUserPermissions();
+		Forward forward = new Forward("success", form);
+		return forward;
+	}
 	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "students_immediate_score_by_session.jsp")}, 
+			validationErrorForward = @Jpf.Forward(name = "failure",	path = "logout.do"))
+	public Forward findStudentByTestSession(StudentImmediateReportForm form) {
+		isGeorgiaCustomer(form);
+		form.validateValues();
+		setupSearchCriteria(form);
+		ManageStudentData msData = findAllScoredStudentBySession(form); 
+		if ((msData != null) && (msData.getFilteredCount().intValue() == 0))
+		{
+			this.getRequest().setAttribute("searchResultEmpty", MessageResourceBundle.getMessage("Immediate.Score.By.Session.ResultEmpty"));        
+		}
+		if (msData != null) {
+			List<StudentProfileInformation> studentList = StudentSearchUtils.buildStudentList(msData);
+			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
+			form.setStudentMaxPage(msData.getFilteredPages());
+			this.getRequest().setAttribute("studentList", studentList);        
+			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
+		}
+		
+		this.pageTitle  = "Immediate Reporting: Find Student";
+		
+		/*customerHasBulkAccommodation();
+		customerHasResetTestSessions();*/
+		this.savedForm = form.createClone();    
+		/*form.setCurrentAction(ACTION_DEFAULT);     
+		this.studentSearch = form.getStudentProfile().createClone();    
+		setFormInfoOnRequest(form);*/
+		this.getSession().setAttribute("isFromFindSession", false);
+		this.getSession().setAttribute("isFromReport", false);
+		this.testAdminId = 	form.getTestAdminId();
+		return new Forward("success",form);
+	}
 	
 	private ManageStudentData findAllScoredStudentBySession(StudentImmediateReportForm form) {
 		
@@ -425,12 +485,17 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				e.printStackTrace();
 			}
 			Object isFromFindSessionObject = getSession().getAttribute("isFromFindSession");
+			Object isFromReportObject = getSession().getAttribute("isFromReport");
 			Boolean isFromFindSession = false;
+			Boolean isFromReport = false;
 			if(isFromFindSessionObject !=null){
 				isFromFindSession = Boolean.valueOf(isFromFindSessionObject.toString());
 			}
+			if(isFromReportObject !=null){
+				isFromReport = Boolean.valueOf(isFromReportObject.toString());
+			}
 			
-			if(isFromFindSession){
+			if(isFromFindSession || (!isFromReport && !isFromFindSession) ){
 				 return new Forward("success1",form);
 			} else {
 				 return new Forward("success",form);
