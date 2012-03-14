@@ -268,7 +268,7 @@ public class BulkMoveOperationController extends PageFlowController {
 				}
 				if(studentId != null && studentId.length > 0) {
 					try {
-						this.studentManagement.updateBulkMoveOperation(organizationId,studentId);
+						this.studentManagement.updateBulkMoveOperation(this.userName, organizationId,studentId);
 					} catch (CTBBusinessException e) {
 						// TODO Auto-generated catch block
 						successFlag=false;
