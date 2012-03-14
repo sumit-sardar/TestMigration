@@ -398,12 +398,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			protected Forward beginDisplayStudScoringReport(StudentImmediateReportForm form)
 	{ 
 			form.validateValues();
-			this.pageTitle  = "Immediate Reporting: View Report";
-			//String currentAction = form.getCurrentAction();
-			//String actionElement = form.getActionElement();
+			this.pageTitle  = "LAS Links Online Student Report";
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			//Boolean isLaslinkCust = Boolean.valueOf(this.getRequest().getParameter("rosterId"));
 			try {
 				if(this.islaslinkCustomer) {
 					StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
@@ -804,11 +801,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		
 		this.testNameOptions = getTestNameOptions(action);
 		if (testName != null){
-			//System.out.println(testName+"..."+action);
 			form.getStudentProfile().setProductNameList(testName);
 		}
 		else {
-			//System.out.println(action+"..."+this.testNameOptions[0]);
 			form.getStudentProfile().setProductNameList(this.testNameOptions[0]);
 		}
 
@@ -824,7 +819,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		else
 			form.getStudentProfile().setScoringStatus(this.scoringStatusOptions[0]);
 		
-		//this.contentAreaNames = getContentAreaOptions( action );
 		HashMap<String, String> valMap = new LinkedHashMap<String, String>();
 		valMap.put(FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA,FilterSortPageUtils.FILTERTYPE_ANY_CONTENT_AREA);
 		this.getRequest().setAttribute("contentAreaList", valMap);
@@ -995,8 +989,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		 private TestProductData getTestCatalogDataForUser() throws CTBBusinessException
 		    {
 		        TestProductData tpd = null;                
-		        SortParams sortParams = FilterSortPageUtils.buildSortParams("TestCatalogName", ColumnSortEntry.ASCENDING, null, null);            
-		       // tpd = this.scheduleTest.getTestProductsForUser(this.userName,null,null,sortParams);
+		        SortParams sortParams = FilterSortPageUtils.buildSortParams("TestCatalogName", ColumnSortEntry.ASCENDING, null, null);
 		        tpd = this.scheduleTest.getTestCatalogForUser(this.userName,null,null,sortParams);
 		        
 		        return tpd;
@@ -1408,8 +1401,6 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		 */
 		public String getTestAdminStartDateStr() {
 			if (this.testAdminStartDate != null) {
-	            //this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_CHAR);     
-	            //StringTokenizer tokenizer = new StringTokenizer(this.testAdminStartDateStr, "/");
 	            this.testAdminStartDateStr = DateUtils.formatDateToDateString(this.testAdminStartDate, DateUtils.DATE_FORMAT_DISPLAY);     
 	        }
 			return testAdminStartDateStr;
