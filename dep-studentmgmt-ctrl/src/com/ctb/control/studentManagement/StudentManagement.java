@@ -506,7 +506,7 @@ public interface StudentManagement
 	//Bulk Move
 	com.ctb.bean.studentManagement.ManageStudentData getBulkMoveStudent(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
-	void updateBulkMoveOperation(Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException;
+	void updateBulkMoveOperation(String userName, Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException;
 	
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
