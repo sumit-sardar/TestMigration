@@ -400,7 +400,7 @@ if(isHidden){
 													
 													var completionStatus = null;
 													var processScores;
-													var immediateScoreReport == null;
+													var immediateScoreReport = null;
 													if(data.SaveStatus.completionStatus!=null && data.SaveStatus.completionStatus != "FromItem" )
 													{
 													 completionStatus = data.SaveStatus.completionStatus;
