@@ -816,6 +816,11 @@ public class ScoreByStudentController extends PageFlowController {
 		     //  Change for  #66660 enhancement to invoke scoring after completion of handscoring
 			 if (completionStatus.equals("CO")) {
 				 this.testSessionStatus.rescoreStudent(testRosterId);
+			 } else { // Change for immediate reporting requirements
+				 String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
+				 if (completionStatusRosterAndTD.equals("CO")) {
+					 this.testSessionStatus.rescoreStudent(testRosterId);
+				 }
 			 }
 			 ManageStudent ms = new ManageStudent();
 			 ms.setIsSuccess(isSuccess);
