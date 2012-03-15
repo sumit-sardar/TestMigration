@@ -2817,24 +2817,24 @@ public class StudentManagementImpl implements StudentManagement
 	}
 	
 	private boolean checkAvailability(Integer stuFinalScoreDataValue, String contentAreas) {
-		if(stuFinalScoreDataValue == 0 && contentAreas.contains("Listening"))
+		if(stuFinalScoreDataValue == 0 && (contentAreas.contains("Listening") || contentAreas.contains("Escuchando")))
 			return true;
-		if(stuFinalScoreDataValue == 1 && contentAreas.contains("Speaking"))
+		if(stuFinalScoreDataValue == 1 && (contentAreas.contains("Speaking") || contentAreas.contains("Hablando")))
 			return true;
-		if(stuFinalScoreDataValue == 2 && contentAreas.contains("Listening") 
-				&& contentAreas.contains("Speaking"))
+		if(stuFinalScoreDataValue == 2 && (contentAreas.contains("Listening") || contentAreas.contains("Escuchando")) 
+				&& (contentAreas.contains("Speaking") || contentAreas.contains("Hablando")))
 			return true;
-		if(stuFinalScoreDataValue == 3 && contentAreas.contains("Reading"))
+		if(stuFinalScoreDataValue == 3 && (contentAreas.contains("Reading") || contentAreas.contains("Lectura")))
 			return true;
-		if(stuFinalScoreDataValue == 4 && contentAreas.contains("Writing"))
+		if(stuFinalScoreDataValue == 4 && (contentAreas.contains("Writing") || contentAreas.contains("Escritura")))
 			return true;
-		if(stuFinalScoreDataValue == 5 && contentAreas.contains("Reading") 
-				&& contentAreas.contains("Writing"))
+		if(stuFinalScoreDataValue == 5 && (contentAreas.contains("Reading") || contentAreas.contains("Lectura")) 
+				&& (contentAreas.contains("Writing") || contentAreas.contains("Escritura")))
 			return true;
-		if(stuFinalScoreDataValue == 6 && contentAreas.contains("Listening") 
-				&& contentAreas.contains("Speaking") 
-				&& contentAreas.contains("Reading") 
-				&& contentAreas.contains("Writing"))
+		if(stuFinalScoreDataValue == 6 && (contentAreas.contains("Listening") || contentAreas.contains("Escuchando")) 
+				&& (contentAreas.contains("Speaking") || contentAreas.contains("Hablando")) 
+				&& (contentAreas.contains("Reading") || contentAreas.contains("Lectura")) 
+				&& (contentAreas.contains("Writing") || contentAreas.contains("Escritura")))
 			return true;
 		return false;
 	}
