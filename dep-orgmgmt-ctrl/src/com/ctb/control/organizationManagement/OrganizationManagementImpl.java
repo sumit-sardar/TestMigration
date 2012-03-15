@@ -93,6 +93,12 @@ public class OrganizationManagementImpl implements OrganizationManagement
      */
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.CustomerReportBridge reportBridge;
+    
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.TestRoster testRoster;
 
 
    
@@ -1129,6 +1135,15 @@ public class OrganizationManagementImpl implements OrganizationManagement
                            new CTBBusinessException("DeleteOrganization.TestsCreated");
                    throw be;
                } 
+               
+             //cannot delete an organization if it has any active test roster.
+               Integer rosterData = testRoster.rosterCountAssociatedWithOrg(
+                                                                   selectedOrgNodeId );               
+                 if (rosterData != null && rosterData > 0) {
+                     CTBBusinessException be = 
+                             new CTBBusinessException("DeleteOrganization.RosterCreated");
+                     throw be;
+                 }
                
     		 User loginUser = users.getUserDetails(userName);
     		 Integer loginUserId = loginUser.getUserId(); 

@@ -585,6 +585,9 @@ public interface TestRoster extends JdbcControl
     
     @JdbcControl.SQL(statement = "UPDATE TEST_ROSTER SET DNS_STATUS = {dnsStatus}, DNS_UPDATED_BY = {userName}, DNS_UPDATED_DATETIME = SYSDATE WHERE TEST_ROSTER_ID = {testRosterId}")
     int updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select count(*) from test_roster where org_node_id = {selectedOrgNodeId} and activation_status = 'AC'")
+    int rosterCountAssociatedWithOrg(Integer selectedOrgNodeId) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }
