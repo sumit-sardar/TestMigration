@@ -12,7 +12,7 @@
 
 <netui-template:template templatePage="/resources/jsp/immediateReport_template.jsp">
 
-<netui-template:setAttribute name="title" value="${bundle.web['findstudentscoring.window.title']}"/>
+<netui-template:setAttribute name="title" value="${bundle.web['immediatescoringreport.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.handScoring']}"/>
 <netui-template:section name="bodySection">
 
