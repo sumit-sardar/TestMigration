@@ -502,10 +502,9 @@ public class UserOperationController extends PageFlowController
 				userProfileData.setOptionList(optionList);
 				System.out.println("check2");
 				if (userProfileData.getViewMode()) {
-					if(userProfileData.getTimeZone() != null){
-						userProfileData.setTimeZoneDesc(userProfileData.covertTimeCodeToTimeDesc
-								(userProfileData.getTimeZone()));
-					}
+					
+					userProfileData.setTimeZoneDesc(userProfileData.covertTimeCodeToTimeDesc
+							(userProfileData.getTimeZone()));
 				}
 				
 				try {
