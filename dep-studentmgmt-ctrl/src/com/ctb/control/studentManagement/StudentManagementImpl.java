@@ -2751,11 +2751,12 @@ public class StudentManagementImpl implements StudentManagement
 			StudentReportIrsScore[] stuFinalScoreData = null;
 			String contentAreas = null;
 			stuScrReport = studentManagement.getStudentDataForReport(testRosterId);
+			Integer productId = studentManagement.getProductIdFromRoster(testRosterId);
 			contentAreas = stuScrReport.getContentAreaNameString();
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
 			stuFinalScoreData = new StudentReportIrsScore[7];
-			setContentAreaValues(stuFinalScoreData);
+			setContentAreaValues(stuFinalScoreData, productId);
 			if(stuScoreData != null && contentAreas != null) {
 				for(int i = 0; i < stuScoreData.length; i++) {
 					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
@@ -2788,17 +2789,27 @@ public class StudentManagementImpl implements StudentManagement
 		
 	}
 	
-	private void setContentAreaValues(StudentReportIrsScore[] stuFinalScoreData) {
+	private void setContentAreaValues(StudentReportIrsScore[] stuFinalScoreData, Integer productId) {
 		for(int i = 0; i < 7; i++) {
 			stuFinalScoreData[i] = new StudentReportIrsScore();
 		}
-		stuFinalScoreData[0].setContentAreaName("Listening");
-		stuFinalScoreData[1].setContentAreaName("Speaking");
-		stuFinalScoreData[2].setContentAreaName("Oral");
-		stuFinalScoreData[3].setContentAreaName("Reading");
-		stuFinalScoreData[4].setContentAreaName("Writing");
-		stuFinalScoreData[5].setContentAreaName("Comprehension");
-		stuFinalScoreData[6].setContentAreaName("Overall");
+		if(productId == 7003) {
+			stuFinalScoreData[0].setContentAreaName("Escuchando");
+			stuFinalScoreData[1].setContentAreaName("Hablando");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Lectura");
+			stuFinalScoreData[4].setContentAreaName("Escritura");
+			stuFinalScoreData[5].setContentAreaName("Comprensión");
+			stuFinalScoreData[6].setContentAreaName("Overall");
+		} else {
+			stuFinalScoreData[0].setContentAreaName("Listening");
+			stuFinalScoreData[1].setContentAreaName("Speaking");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Reading");
+			stuFinalScoreData[4].setContentAreaName("Writing");
+			stuFinalScoreData[5].setContentAreaName("Comprehension");
+			stuFinalScoreData[6].setContentAreaName("Overall");
+		}
 	}
 	
 	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData, StudentReportIrsScore stuScoreDataTemp, Integer stuFinalScoreDataValue, String contentAreas) {

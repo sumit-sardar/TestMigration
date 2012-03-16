@@ -1100,5 +1100,9 @@ public interface StudentManagement extends JdbcControl
     		 arrayMaxLength = 0, fetchSize= 1000)
       ManageStudent [] findAllScoredStudentBySessionAtAndBelowTopOrgNodes(String userName,Integer testAdminId, String orderCriteria) throws SQLException;
 
+    @JdbcControl.SQL(statement = "SELECT ADM.PRODUCT_ID FROM TEST_ROSTER ROS, TEST_ADMIN ADM WHERE ROS.TEST_ROSTER_ID = {testRosterId} AND ROS.TEST_ADMIN_ID = ADM.TEST_ADMIN_ID",
+   		 arrayMaxLength = 0, fetchSize= 1000)
+     Integer getProductIdFromRoster(Integer testRosterId) throws SQLException;
+
      
 }
