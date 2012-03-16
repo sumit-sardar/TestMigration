@@ -981,7 +981,11 @@ function userDetailEdit(){
 		$("#userMiddleNameView").text(data.middleName);
 		$("#userLastNameView").text(data.lastName);
 		$("#userEmailView").text(data.email);
-		$("#timeZoneOptionsView").text(data.timeZoneDesc);
+		if(data.timeZoneDesc == undefined){
+			$("#timeZoneOptionsView").text('');
+		}else{
+			$("#timeZoneOptionsView").text(data.timeZoneDesc);
+		}
 		$("#roleOptionsView").text(data.role);
 		$("#userExternalIdView").text(data.extPin1);
 		$("#selectedOrgNodesNameView").text(data.organizationNodes);
