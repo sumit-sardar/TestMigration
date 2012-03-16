@@ -1251,7 +1251,7 @@ function getStudentListArray(studentArray) {
 	function addToStudentTempMap(studentId,studentRow){
 	  if(studentRow["statusEditable"] != undefined) {
 	  
-	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
+	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No' && studentRow["statusEditable"] =="T") { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
 	  		return true;
 	  	} else {
