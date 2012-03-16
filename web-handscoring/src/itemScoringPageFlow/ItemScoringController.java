@@ -167,6 +167,7 @@ public class ItemScoringController extends PageFlowController {
 		customerHasResetTestSessions();
 		customerHasScoring();
 		isTopLevelUser();
+		userHasReports();
 		return new Forward("success", form);
 	}
 
@@ -229,6 +230,7 @@ public class ItemScoringController extends PageFlowController {
 		this.pageTitle  = "List Of Items";
 		customerHasBulkAccommodation();
 		customerHasResetTestSessions();
+		userHasReports();
 		if(itemList.isEmpty())
 		{	
 			this.getRequest().setAttribute("itemSearchEmpty", MessageResourceBundle.getMessage("itemSearchEmpty"));        
@@ -366,7 +368,8 @@ public class ItemScoringController extends PageFlowController {
 		catch (CTBBusinessException be)
 		{
 			be.printStackTrace();
-		}        
+		}
+		getSession().setAttribute("userHasReports", hasReports);
 		return new Boolean(hasReports);           
 	}
 
