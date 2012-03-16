@@ -1253,7 +1253,7 @@ function getStudentListArray(studentArray) {
 		document.getElementById("statusLegend").style.display = "none";
 	}
 	function addToStudentTempMap(studentId,studentRow){
-	  if(studentRow["statusEditable"] != undefined) {
+	  if(studentRow["statusEditable"] != undefined && studentRow["statusEditable"] =="T") {
 	  
 	  	if(studentRow.outOfSchool == undefined || studentRow.outOfSchool == 'No') { // Added for out of school students
 	  		studentTempMap.put(studentId, studentRow);
