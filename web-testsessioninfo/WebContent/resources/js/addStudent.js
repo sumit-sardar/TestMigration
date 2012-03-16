@@ -516,11 +516,11 @@ function populateSelectStudentGrid() {
 								var orgListAll = String(allFilteredStudentRow[i].orgNodeId);
 								var orgListAllName = String(allFilteredStudentRow[i].orgNodeName);
 								if(orgList.indexOf(orgListAll) == -1) {
-								    if(addToStudentTempMap(studentData.studentId, studentData)) {
+								    if(addToStudentTempMap(studentData.studentId, allFilteredStudentRow[i])) {
 									    orgList = orgList + "," + orgListAll;
 										orgListName = orgListName + "," + orgListAllName;
-										studentData.orgNodeId = orgList;
-										studentData.orgNodeName = orgListName;
+										allFilteredStudentRow[i].orgNodeId = orgList;
+										allFilteredStudentRow[i].orgNodeName = orgListName;
 								    
 								    } else {
 								    	$("#"+studentData.studentId+" td input").attr("checked", false);
@@ -598,11 +598,11 @@ function populateSelectStudentGrid() {
 							var orgListAll = String(selectedRowData.orgNodeId);
 							var orgListAllName = String(selectedRowData.orgNodeName);
 							if(orgList.indexOf(orgListAll) == -1) {
-							     if(addToStudentTempMap(studentDataVal.studentId, studentDataVal)) {
+							     if(addToStudentTempMap(studentDataVal.studentId, selectedRowData)) {
 								     orgList = orgList + "," + orgListAll;
 									 orgListName = orgListName + "," + orgListAllName;
-									 studentDataVal.orgNodeId = orgList;
-									 studentDataVal.orgNodeName = orgListName;
+									 selectedRowData.orgNodeId = orgList;
+									 selectedRowData.orgNodeName = orgListName;
 							     
 							     } else {
 							     	$("#"+studentDataVal.studentId+" td input").attr("checked", false);
@@ -1075,9 +1075,13 @@ function getStudentListArray(studentArray) {
 	
 	function cloneStudentMapToTemp() {
 		studentTempMap = new Map();
+		studentMap =  new Map();
 		var keys = studentMap.getKeys();
-		for(var i =0 ; i<keys.length; i++ ) {
-			studentTempMap.put(keys[i], studentMap.get(keys[i]));
+		if(AddStudentLocaldata != null && AddStudentLocaldata != undefined && AddStudentLocaldata.length >0){
+			for(var kk = 0 ; kk<AddStudentLocaldata.length ; kk++  ){
+				studentMap.put(AddStudentLocaldata[kk].studentId, AddStudentLocaldata[kk]);
+				studentTempMap.put(AddStudentLocaldata[kk].studentId, AddStudentLocaldata[kk]);
+			}
 		}
 
 	}
