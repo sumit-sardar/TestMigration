@@ -249,9 +249,9 @@ public class SessionOperationController extends PageFlowController {
 			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
 	        	forwardName = "resetPassword";
 	        }
-	        else if (this.user.getTimeZone() == null) {
+	        /*else if (this.user.getTimeZone() == null) {
 	        	forwardName = "editTimeZone";
-	        }
+	        }*/
 	        
 		}
 		else {
