@@ -2663,8 +2663,6 @@ public class StudentManagementImpl implements StudentManagement
 			if(page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
-			/*FilterParams statusFilter = new FilterParams();
-			statusFilter.setFilterParams(new FilterParam[0]);*/
 			Integer contentAreaFiltered = 0;
 			if (filter != null) {
 				FilterParam [] filterParams = filter.getFilterParams();
@@ -2714,13 +2712,13 @@ public class StudentManagementImpl implements StudentManagement
 				contentAreaSearch = DynamicSQLUtils.generateWhereClauseForFilterContentArea(contentAreaNameFilDisp);
 				students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId,searchCriteria, contentAreaSearch);
 			}
-           for(ManageStudent student : students) {
+           /*for(ManageStudent student : students) {
         	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
         	   if(plValue == null || "".equals(plValue))
         		   plValue = "N/A";
         	   student.setProficiencyLevel(plValue);
         	   
-           }
+           }*/
 			
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
