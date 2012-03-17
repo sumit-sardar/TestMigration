@@ -504,20 +504,30 @@ function populateGrid() {
 					$('#list2').setGridParam({"page": minPageSize});
 				}
 				setAnchorButtonState('changePWButton', true);
-				
+				setupButtonPerUserPermission();//if disabled, set to default permission
 			},
 			onSortCol:function(){
 				setAnchorButtonState('changePWButton', true);
+				setupButtonPerUserPermission();//if disabled, set to default permission
 			},
 			onSelectRow: function (rowid) {
 				var actionPermission = getColValueJson(rowid,'actionPermission');
 				if(actionPermission != "" && actionPermission != undefined){
 					var changePwdFlag = actionPermission.substr(3, 1);
+					var deleteUsrFlag = actionPermission.substr(2, 1);//get the delete flag
 					if(changePwdFlag == 'T'){
 						setAnchorButtonState('changePWButton', false);
+						//if delete flag is true, show delete button
+						if(deleteUsrFlag == 'T') {
+							setupButtonPerUserPermission();//if disabled set to default permission
+						}
+						else {//hide delete button  
+							setupButtonPerUserPermission(false);//set disabled
+						}
 					}
 					else{
 						setAnchorButtonState('changePWButton', true);
+						setupButtonPerUserPermission(false);//set disabled 
 					}
 				}
 				else{
@@ -2293,11 +2303,15 @@ function openTreeNodes(orgNodeId) {
 		} 
 	
 	
-	function setupButtonPerUserPermission() {
+	function setupButtonPerUserPermission(isDeleteEnabled) {
 		var deleteUserEnable = $("#deleteUserEnable").val();
-		if (deleteUserEnable == 'false') {	
-			var element = document.getElementById('del_list2');
+		var element = document.getElementById('del_list2');
+
+		if (deleteUserEnable == 'false' || (isDeleteEnabled != null && !isDeleteEnabled)) {	
 			element.style.display = 'none';
+		}
+		else {
+			element.style.display = '';
 		}
 	}
 	
@@ -2349,6 +2363,7 @@ function openTreeNodes(orgNodeId) {
 									$("#displayMessageMain").show();
 									jQuery("#list2").delRowData(selectedUserId);
 									setAnchorButtonState('changePWButton', true);
+									setupButtonPerUserPermission();
 								}
 								else{
 									$("#contentMain").text(data.message);
