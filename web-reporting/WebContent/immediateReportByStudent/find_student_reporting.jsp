@@ -10,6 +10,27 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
+<script type="text/javascript">
+
+	function openImmediateStudentScorePdfReport(  rosterId, testAdminId ) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInPDF.do";
+	    url = url +"?testAdminId=" + testAdminId;
+	    url = url +"&rosterId=" + rosterId;
+	    document.forms[0].action=url;
+	    return false;
+	};
+	
+	function openImmediateStudentScoreCSVReport( rosterId, testAdminId) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInCSV.do";
+	    url = url +"?testAdminId=" + testAdminId;
+	    url = url +"&rosterId=" + rosterId;
+	    document.forms[0].action=url;
+	    return false;
+	};
+
+
+</script>
+
 <netui-template:template templatePage="/resources/jsp/immediateReport_template.jsp">
 <!-- 
 template_find_student.jsp
@@ -110,6 +131,7 @@ template_find_student.jsp
 										if(stuScoreVal[i] != null && stuScoreVal[i].getContentAreaName() != null) {
 							%>
 							<tr <%if(stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprehension") ||
+									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprensión") ||
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Oral") ||
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Overall")) { %>
 									bgcolor="#C3D599"
@@ -133,8 +155,16 @@ template_find_student.jsp
 				</tr>
 			</table>
 			<br/>
+			<% 
+              	String sessionName = (String)pageContext.getAttribute("testSessionName");
+          		String pdfReportAction = " openImmediateStudentScorePdfReport("+  request.getAttribute("rosterId")+ " ,"+ request.getAttribute("testAdminId")+"); ";
+          		String csvReportAction = " openImmediateStudentScoreCSVReport("+  request.getAttribute("rosterId")+ " ,"+ request.getAttribute("testAdminId")+");";
+              %>
 			<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" />
-
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate PDF"  action="studentsImmediateScoreReportInPDF" onClick="<%= pdfReportAction %>"; />
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate CSV"  action="studentsImmediateScoreReportInCSV" onClick="<%= csvReportAction %>"; />
 </netui:form>
 
 

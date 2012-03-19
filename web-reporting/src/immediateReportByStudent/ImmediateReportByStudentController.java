@@ -461,6 +461,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			this.pageTitle  = "Immediate Reporting: View Report";
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			this.getRequest().setAttribute("rosterId", testRosterId );
+			this.getRequest().setAttribute("testAdminId", testAdminId);
+			
 			try {
 				if(this.islaslinkCustomer) {
 					StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
@@ -507,7 +510,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
      * @jpf:action For generating the report in pdf format.
      */
 	@Jpf.Action()
-    protected Forward studentsImmediateScoreReportInPDF()
+    protected Forward studentsImmediateScoreReportInPDF(StudentImmediateReportForm form)
     {
 		
 		try{
@@ -544,7 +547,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
      * @jpf:action For generating the report in csv format.
      */
 	@Jpf.Action()
-    protected Forward studentsImmediateScoreReportInCSV()
+    protected Forward studentsImmediateScoreReportInCSV(StudentImmediateReportForm form)
     {
 		
 		try{

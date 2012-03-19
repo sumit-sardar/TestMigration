@@ -13,6 +13,23 @@
 <netui-template:template templatePage="/resources/jsp/template.jsp">
 
 
+<script type="text/javascript"> 
+	function openImmediateStudentScorePdfReport(  rosterId, testAdminId ) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInPDF.do";
+	    url = url +"?testAdminId=" + testAdminId;
+	    url = url +"&rosterId=" + rosterId;
+	    document.forms[0].action=url;
+	    return false;
+	};
+	
+	function openImmediateStudentScoreCSVReport( rosterId, testAdminId) {
+	    var url = "/ImmediateReportWeb/immediateReportByStudent/studentsImmediateScoreReportInCSV.do";
+	    url = url +"?testAdminId=" + testAdminId;
+	    url = url +"&rosterId=" + rosterId;
+	    document.forms[0].action=url;
+	    return false;
+	};
+</script>
 
 
 <netui-template:setAttribute name="title" value="${bundle.web['immediatescoringreport.window.title']}"/>
@@ -110,6 +127,7 @@
 										if(stuScoreVal[i] != null && stuScoreVal[i].getContentAreaName() != null) {
 							%>
 							<tr <%if(stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprehension") ||
+									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Comprensión") ||
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Oral") ||
 									stuScoreVal[i].getContentAreaName().equalsIgnoreCase("Overall")) { %>
 									bgcolor="#C3D599"
@@ -133,12 +151,21 @@
 				</tr>
 			</table>
 			<br/>
+			<% 
+              	String sessionName = (String)pageContext.getAttribute("testSessionName");
+          		String pdfReportAction = " openImmediateStudentScorePdfReport("+  request.getAttribute("rosterId")+ " ,"+ request.getAttribute("testAdminId")+"); ";
+          		String csvReportAction = " openImmediateStudentScoreCSVReport("+  request.getAttribute("rosterId")+ " ,"+ request.getAttribute("testAdminId")+");";
+            %>
 			<c:if test="${ sessionScope.isFromFindSession}">
 				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.back']}" action="returnToFindSessionStudent" />
 			</c:if>
 			<c:if test="${ !sessionScope.isFromFindSession}">
 				<netui:button styleClass="button" type="submit" value="${bundle.web['common.button.home']}"  action="returnToHome" />
 			</c:if>
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate PDF"  action="studentsImmediateScoreReportInPDF" onClick="<%= pdfReportAction %>"; />
+			&nbsp;&nbsp;
+			<netui:button styleClass="button" value="Generate CSV"  action="studentsImmediateScoreReportInCSV" onClick="<%= csvReportAction %>"; />
 </netui:form>
 
 
