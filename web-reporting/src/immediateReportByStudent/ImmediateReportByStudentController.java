@@ -465,7 +465,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 			this.getRequest().setAttribute("testAdminId", testAdminId);
 			
 			try {
-				if(this.islaslinkCustomer) {
+				//if(this.islaslinkCustomer) {
 					StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 					form.setStudentNameRe(stuReport.getStudentName());
 					form.setStudentExtPin1(stuReport.getStudentExtPin1());
@@ -483,7 +483,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 					this.getRequest().setAttribute("district", stuReport.getDistrict());
 					this.getRequest().setAttribute("school", stuReport.getSchool());
 					this.getRequest().setAttribute("irsScores", stuReport.getStudentReportIrsScore());
-				}
+				//}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -516,7 +516,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		try{
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			if(this.islaslinkCustomer) {
+			//if(this.islaslinkCustomer) {
 				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 				StudentImmediatePdfReportUtils utils = new StudentImmediatePdfReportUtils();
 				String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
@@ -528,7 +528,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				utils.generateReport();
 				
 				
-			}
+			//}
 		} catch (CTBBusinessException ce){
 			ce.printStackTrace();
 			
@@ -553,7 +553,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		try{
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			if(this.islaslinkCustomer) {
+			//if(this.islaslinkCustomer) {
 				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 				StudentImmediateCSVReportUtils utilsCSV = new StudentImmediateCSVReportUtils();
 				String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
@@ -563,7 +563,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		        getResponse().setHeader("Pragma", "public"); 
 		        utilsCSV.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
 		        utilsCSV.generateReport();
-			}
+			//}
 		} catch (CTBBusinessException ce){
 			ce.printStackTrace();
 		} catch (IOException e) {
