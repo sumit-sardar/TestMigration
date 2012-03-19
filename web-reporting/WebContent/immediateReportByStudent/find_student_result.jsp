@@ -52,6 +52,7 @@
         <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
             <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="Grade">Grade</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="10%" nowrap>&nbsp;Content area(s) completed and scored&nbsp;</th>
             <th class="sortable alignLeft" width=10%" nowrap><ctb:tableSortColumn value="TestSessionName">Administration name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="TestWindowOpenDate">Administration date</ctb:tableSortColumn></th>
@@ -85,6 +86,9 @@
            </td>
         <td class="sortable">
 			<netui:content value="${container.item.displayName}"/>
+        </td>
+        <td class="sortable">
+            <netui:span value="${container.item.grade}"/>
         </td>
         <td class="sortable">
             <netui:span value="${container.item.contentAreaString}"/>
