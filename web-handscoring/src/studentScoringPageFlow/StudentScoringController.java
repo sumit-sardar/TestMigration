@@ -1154,10 +1154,11 @@ public class StudentScoringController extends PageFlowController {
 
 	@Jpf.Action()
 	public Forward goToImmediateScoreReport(StudentScoringForm form) {
-		String contextPath = "/ImmediateReportWeb/immediateReportByStudent/beginImmediateStudentScoreByAdmin.do";
+		String contextPath = "/ImmediateReportWeb/immediateReportByStudent/beginImmediateStudentScoreByAdminAndRoster.do";
         String sessionId = form.getTestAdminId().toString();
         String testAdminId = "testAdminId=" +  sessionId;            
-        String url = contextPath + "?" + testAdminId;            
+        String rosterId = "&rosterId=" +  form.getRosterId().toString();
+        String url = contextPath + "?" + testAdminId + rosterId;            
             
         try
         {
