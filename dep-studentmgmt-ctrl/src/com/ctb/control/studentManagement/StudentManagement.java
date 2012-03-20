@@ -521,7 +521,7 @@ public interface StudentManagement
     
     com.ctb.bean.studentManagement.StudentScoreReport getStudentReport(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 
-    com.ctb.bean.studentManagement.ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.studentManagement.ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes(java.lang.String userName, java.lang.Integer testAdminId, java.lang.Integer rosterId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

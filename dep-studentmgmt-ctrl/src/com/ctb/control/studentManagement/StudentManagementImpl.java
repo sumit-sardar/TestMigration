@@ -2849,7 +2849,7 @@ public class StudentManagementImpl implements StudentManagement
 	}
 	
 	@Override
-	public ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes( String userName, Integer testAdminId, FilterParams filter,	PageParams page, SortParams sort) throws CTBBusinessException {
+	public ManageStudentData findAllScoredStudentBySessionAtAndBelowTopOrgNodes( String userName, Integer testAdminId, Integer rosterId, FilterParams filter,	PageParams page, SortParams sort) throws CTBBusinessException {
 
 		try {
 			validator.validateAdmin(userName, testAdminId, "StudentManagementImpl.findAllScoredStudentBySessionAtAndBelowTopOrgNodes");
@@ -2859,17 +2859,13 @@ public class StudentManagementImpl implements StudentManagement
 			if(page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
-			/*Integer contentAreaFiltered = 0;
-			Integer totalCount = null;*/
-			String orderByClause = "";
-			
-			/*if (sort != null) {
-				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
-				sort = null;
-			}*/
+			String searchCriteria = "";
+			if (rosterId != null){
+				searchCriteria = "AND ROSTER.TEST_ROSTER_ID = "+rosterId;
+			}
 			
 			ManageStudent [] students = null;
-			students = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId,orderByClause);
+			students = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId,searchCriteria);
 			
            for(ManageStudent student : students) {
         	   String plValue = immediateReportingIrs.getProficiencyLevel(student.getId(), Integer.parseInt(student.getTestAdminId()));
@@ -2896,4 +2892,6 @@ public class StudentManagementImpl implements StudentManagement
 		}
 	
 	}
+	
+	
 } 

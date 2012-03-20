@@ -379,18 +379,52 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		return new Forward("success",form);
 	}
 	
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", action = "findStudentByTestSession") })
-	public Forward beginImmediateStudentScoreByAdmin() {
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", action = "findStudentByTestSessionAndRoster") })
+	public Forward beginImmediateStudentScoreByAdminAndRoster() {
 		StudentImmediateReportForm form = initialize(ACTION_FIND_STUDENT);
-		String reqTestAdminId = getRequest().getParameter("testAdminId");;
+		String reqTestAdminId = getRequest().getParameter("testAdminId");
+		String reqRosterId = getRequest().getParameter("rosterId");
 		if (reqTestAdminId != null) {
 			form.setTestAdminId(Integer.valueOf(reqTestAdminId));
+		}
+		if(reqRosterId!=null) {
+			form.setRosterId(Integer.valueOf(reqRosterId));
 		}
 		
 		isTopLevelUser(); 
 		setupUserPermissions();
 		Forward forward = new Forward("success", form);
 		return forward;
+	}
+	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "students_immediate_score_by_session.jsp")}, 
+			validationErrorForward = @Jpf.Forward(name = "failure",	path = "logout.do"))
+	public Forward findStudentByTestSessionAndRoster(StudentImmediateReportForm form) {
+		isGeorgiaCustomer(form);
+		form.validateValues();
+		setupSearchCriteria(form);
+		ManageStudentData msData = findScoredStudentBySessionAndRoster(form); 
+		if ((msData != null) && (msData.getFilteredCount().intValue() == 0))
+		{
+			this.getRequest().setAttribute("searchResultEmpty", MessageResourceBundle.getMessage("Immediate.Score.By.Session.ResultEmpty"));        
+		}
+		if (msData != null) {
+			List<StudentProfileInformation> studentList = StudentSearchUtils.buildStudentList(msData);
+			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
+			form.setStudentMaxPage(msData.getFilteredPages());
+			this.getRequest().setAttribute("studentList", studentList);        
+			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
+		}
+		
+		this.pageTitle  = "Immediate Reporting: Find Student";
+		
+		/*customerHasBulkAccommodation();
+		customerHasResetTestSessions();*/
+		this.savedForm = form.createClone();    
+		this.getSession().setAttribute("isFromFindSession", false);
+		this.getSession().setAttribute("isFromReport", false);
+		this.testAdminId = 	form.getTestAdminId();
+		return new Forward("success",form);
 	}
 	
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "students_immediate_score_by_session.jsp")}, 
@@ -434,6 +468,22 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		ManageStudentData msData = null;
 		try {
 			msData = StudentSearchUtils.findAllScoredStudentBySession(this.userName,this.studentManagement,form.getTestAdminId(), filter, page, sort);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+			String msg = MessageResourceBundle.getMessage(be.getMessage());
+			form.setMessage(Message.FIND_TEST_SESSION_TITLE, msg, Message.INFORMATION);
+		}   
+		this.pageMessage = MessageResourceBundle.getMessage("Immediate.Score.By.Session.SearchProfileFound");
+		return msData;
+	}
+	private ManageStudentData findScoredStudentBySessionAndRoster(StudentImmediateReportForm form) {
+		
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_50);
+		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+		FilterParams filter = null;
+		ManageStudentData msData = null;
+		try {
+			msData = StudentSearchUtils.findScoredStudentBySessionAndRoster(this.userName,this.studentManagement,form.rosterId,form.getTestAdminId(), filter, page, sort);
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 			String msg = MessageResourceBundle.getMessage(be.getMessage());

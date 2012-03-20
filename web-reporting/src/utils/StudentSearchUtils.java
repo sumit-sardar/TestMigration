@@ -86,7 +86,15 @@ public class StudentSearchUtils {
 	public static ManageStudentData findAllScoredStudentBySession(	String userName, StudentManagement studentManagement, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
 		
 		 ManageStudentData msData = null;
-         msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId ,filter, page, sort);
+         msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId, null ,filter, page, sort);
+        return msData;
+	}
+
+
+	public static ManageStudentData findScoredStudentBySessionAndRoster(String userName, StudentManagement studentManagement,Integer rosterId, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException{
+		
+		 ManageStudentData msData = null;
+         msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId ,rosterId, filter, page, sort);
         return msData;
 	}
 }
