@@ -98,10 +98,10 @@
 						   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
 						</div>
 						<br/><br/>
-						<div id="instructionDiv" style="display: none">
+						<div id="orgNodeGridSection" style="display: none">
 							<table class="subtitle" border="0" width="100%"><tr>
 							<td width="90%" align="left">
-							Click on the cell under "Available" column to edit the license quatity. Click "Save" button to save your changes.
+							Click on the cell under <b>Available</b> column to edit the license quatity. Hit <b>Enter</b> to commit the value. Click <b>Save</b> button to save your changes.
 							</td>
 							<td width="10%" align="right">
 							<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
@@ -109,11 +109,11 @@
            					</a>
 							</td>
 							</tr></table>
-						</div>
-						<br/>
-						<div id="outerGrid"> 
-					    	<table id="orgNodeGrid" class="gridTable"></table>
-							<div id="orgNodePager" class="gridTable" ></div>
+							<br/>
+							<div id="outerGrid"> 
+					    		<table id="orgNodeGrid" class="gridTable"></table>
+								<div id="orgNodePager" class="gridTable" ></div>
+							</div>
 						</div>
 					</td>
 						
@@ -129,8 +129,8 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("services", "manageLicensesLink");
-	/*loadOrgNodeTree();*/
-});
+	loadOrgNodeTree();
+}); 
 </script>
 
 <!-- ********************************************************************************************************************* -->

@@ -12,6 +12,10 @@ var orgNodeId ;
 var errorMsg;
 
 var reloadChildren;
+var editingId = null;
+var editingRow = null;
+var editingCol = null;
+var requestedPage = 1;
 
 function loadOrgNodeTree() {
 	
@@ -86,6 +90,12 @@ function createOrgNodeTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	document.getElementById('displayMessageMain').style.display = "none";
+	    	
+			if (isEditing()) {
+				jQuery('#orgNodeGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+				return true;
+			}
+	    	
 			currentClickedId = this.parentNode.id;
 			currentClickedTcl = this.parentNode.getAttribute("tcl");	 
   			SelectedOrgNodeId = $(this).parent().attr("id");
@@ -224,7 +234,7 @@ function loadOrgNodeLicense() {
 			sortorder: "asc",
 			height: '50px',
 			width: $("#jqGrid-content-section").width(), 
-			caption:'Selected Organization',
+			caption:'Parent Group',
 		   	
 			loadComplete: function () {
 			
@@ -284,21 +294,35 @@ function loadChildrenOrgNodeLicense() {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"orgNodeLicenses", id:"id",records: function(obj) { if(obj.orgNodeLicenses.length > 0) isGridEmpty = false; else isGridEmpty = true;  return obj.orgNodeLicenses.length; } },
 		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#orgNodePager', 
+			sortname: 'name', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 150,
+			width: $("#jqGrid-content-section").width(), 
+			caption:'Group List',
+					   	
             cellEdit: true,
 		   	cellurl: 'updateCellValue.do',
             cellsubmit: "remote",
 		   	 
           	beforeEditCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeEditCell: ' + rowid + " - " + value);
+              	setEditingInfo(iRow, iCol);
           	},
           	beforeSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeSaveCell: ' + rowid + " - " + value);
+              	setEditingInfo(null, null);
+				
               	errorMsg = "";
               	if (! validNumber(value)) {
               		errorMsg = "Enter a number that is 0 or greater.";
 					return 'ERROR';
 				}
-				//value = trimZero(value);
 				var intValue = str2num(value);
 				value = intValue.toString();
 				
@@ -306,12 +330,16 @@ function loadChildrenOrgNodeLicense() {
           	},
           	beforeSubmitCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeSubmitCell: ' + rowid + " - " + value);
+              	setEditingInfo(null, null);
+
               	if (errorMsg.length > 0) {
               		alert(errorMsg);
-              	}
+              	}              	
           	},
           	afterSubmitCell : function(serverresponse,rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSubmitCell: ' + serverresponse.responseText );
+              	setEditingInfo(null, null);
+
               	if (serverresponse.responseText == 'OK') {
               	
               		reloadChildren = false;
@@ -327,37 +355,37 @@ function loadChildrenOrgNodeLicense() {
           	},
           	afterSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSaveCell: ' + rowid + " - " + value);
+              	setEditingInfo(null, null);
           	},
 		   	 
-		   	loadui: "disable",
-			rowNum:10,
-			loadonce:true, 
-			multiselect:false,
-			pager: '#orgNodePager', 
-			sortname: 'name', 
-			viewrecords: true, 
-			sortorder: "asc",
-			height: 150,
-			width: $("#jqGrid-content-section").width(), 
-			caption:'Lower Organizations',
 			onPaging: function() {
-				var reqestedPage = parseInt($('#orgNodeGrid').getGridParam("page"));
+
+				if (isEditing()) {
+					jQuery('#orgNodeGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+					$('#orgNodeGrid').setGridParam({"page": requestedPage});
+					return 'stop';
+				}
+						
+				requestedPage = parseInt($('#orgNodeGrid').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_orgNodePager').text());
 				var minPageSize = 1;
-				if(reqestedPage > maxPageSize){
+				if(requestedPage > maxPageSize){
+					requestedPage = maxPageSize;
 					$('#orgNodeGrid').setGridParam({"page": maxPageSize});
 				}
-				if(reqestedPage <= minPageSize){
+				if(requestedPage <= minPageSize){
+					requestedPage = minPageSize;
 					$('#orgNodeGrid').setGridParam({"page": minPageSize});
 				}
 				
 			},
-			onSelectRow: function () {
-				document.getElementById('displayMessageMain').style.display = "none";	
+			onSelectRow: function (rowid) {
+				//alert("onSelectRow");
+				// never get here since edit cell mode
 			},
 			loadComplete: function () {
 				if ($('#orgNodeGrid').getGridParam('records') === 0) {
-					document.getElementById('instructionDiv').style.display = "none";	
+					document.getElementById('orgNodeGridSection').style.display = "none";	
 					isGridEmpty = true;
             		$('#sp_1_orgNodePager').text("1");
             		$('#next_orgNodePager').addClass('ui-state-disabled');
@@ -365,7 +393,7 @@ function loadChildrenOrgNodeLicense() {
 			 		$('#orgNodeGrid').append("<tr><td style='width: 100%; padding-left: 35%;' colspan='4'><table><tbody><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th>"+$("#noOrgTitleGrd").val()+"</th></tr><tr><td>"+$("#noOrgMsgGrd").val()+"</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></tbody></table></td></tr>");
             	}
 				else {
-	    			document.getElementById('instructionDiv').style.display = "block";
+	    			document.getElementById('orgNodeGridSection').style.display = "block";
 				}
 				
 				highLightNoAvailable();
@@ -390,6 +418,26 @@ function childrenOrgNodeLicenseReload(){
 	jQuery("#orgNodeGrid").sortGrid('name',true,'asc');
 }
 
+function isEditing() {
+   	if (editingId != null) {
+   		var r = confirm("Do you want to discard your change?");
+   		return !r;
+   	}  		
+   	return false;
+}
+
+function setEditingId(id) {
+	editingId = id;
+}
+
+function setEditingInfo(iRow, iCol) {
+	if (iRow != null)
+		editingId = iRow + "_available";
+	else 
+		editingId = null;
+   	editingRow = iRow;
+   	editingCol = iCol;
+}
 
 function highLightNoAvailable() {
 	$("table tr").each(function(){   
@@ -431,6 +479,7 @@ function str2num(sText) {
 	sText = $.trim(sText);
    	return parseInt(sText, 10);
 }
+
 
 function saveLicenses() {
 	$.ajax({

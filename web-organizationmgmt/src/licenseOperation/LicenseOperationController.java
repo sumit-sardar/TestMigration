@@ -454,7 +454,11 @@ public class LicenseOperationController extends PageFlowController {
 
  		HttpServletRequest req = getRequest();
  		String orgNodeId = req.getParameter("id");
+		if (orgNodeId == null) 
+			orgNodeId = "0";
  		String available = req.getParameter("available");
+		if (available == null) 
+			available = "0";
 		String result = "ERROR";
  		
 		HttpServletResponse resp = getResponse();
