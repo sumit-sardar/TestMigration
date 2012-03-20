@@ -50,6 +50,7 @@ import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
 import com.ctb.bean.testAdmin.StudentManifestData;
+import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
@@ -2361,7 +2362,7 @@ public class SessionOperationController extends PageFlowController {
 		//String contentType = CONTENT_TYPE_JSON;
 		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 		Integer orgNodeId = Integer.valueOf(this.getRequest().getParameter("orgNodeId"));
-		
+		Integer orgNodeIdTemp;
 		int studentCount = getRosterForTestSession(testAdminId);
 		
 		try {
@@ -2373,14 +2374,35 @@ public class SessionOperationController extends PageFlowController {
 				ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 				ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 				
-				StudentNodeData snd = this.scheduleTest.getTestTicketNodesHaveStudentForParent(this.userName, orgNodeId, testAdminId, null, null, null);
-				ArrayList<Organization> selectedList = new ArrayList<Organization>();
+				StudentNodeData snd = this.scheduleTest.getTopTestTicketNodesForPrintTT(this.userName, testAdminId, null, null, null);
+				if (snd != null) {
+					StudentNode[] nodes = snd.getStudentNodes(); 
+			        if(nodes.length > 0){
+			            for (int i = 0 ; i < nodes.length ; i++) {
+			            	StudentNode node = (StudentNode)nodes[i];
+			                if (node != null) {
+			                	orgNodeIdTemp = node.getOrgNodeId();
+			                	StudentNodeData sndTemp = this.scheduleTest.getTestTicketNodesHaveStudentForParent(this.userName, orgNodeIdTemp, testAdminId, null, null, null);
+			                	
+			                	ArrayList<Organization> selectedList = new ArrayList<Organization>();
+			    				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(sndTemp, orgIDList,completeOrgNodeList);	
 
-				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
+			    				preTreeProcessPTT (data,orgNodesList,selectedList, i);
+			                }
+			            }
+				 	}else{
+						baseTree.setIsStudentExist("false");
+					}
+			     }
+				//StudentNodeData snd = this.scheduleTest.getTestTicketNodesHaveStudentForParent(this.userName, orgNodeId, testAdminId, null, null, null);
+				//ArrayList<Organization> selectedList = new ArrayList<Organization>();
+
+				//ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
 	
-				
-				preTreeProcess (data,orgNodesList,selectedList);
 	
+	
+				//preTreeProcess (data,orgNodesList,selectedList);
+			
 				
 			}else{
 				baseTree.setIsStudentExist("false");
@@ -3381,6 +3403,26 @@ public class SessionOperationController extends PageFlowController {
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
+		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
+		rootCategoryLevel = org.getOrgCategoryLevel();
+		td.getAttr().setTcl("1");
+		org.setTreeLevel(1);
+		Map<Integer, Organization> orgMap = new HashMap<Integer, Organization>();
+		orgMap.put(org.getOrgNodeId(), org);
+		treeProcess (org, orgList, td, selectedList, rootCategoryLevel, orgMap);
+		data.add(td);
+	}
+    
+    private static void preTreeProcessPTT (ArrayList<TreeData> data,
+    		ArrayList<Organization> orgList,
+    		ArrayList<Organization> selectedList,
+    		int count) {
+
+    	Organization org = orgList.get(0);
+		Integer rootCategoryLevel = 0;
+		TreeData td = new TreeData ();
+		td.setData(org.getOrgName());
+		td.getAttr().setId(org.getOrgNodeId().toString() + "_" + count);
 		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
 		rootCategoryLevel = org.getOrgCategoryLevel();
 		td.getAttr().setTcl("1");

@@ -3713,5 +3713,45 @@ public class ScheduleTestImpl implements ScheduleTest
     	
     }
     
+    public StudentNodeData getTopTestTicketNodesForPrintTT(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getTopTestTicketNodes");
+        try {
+            StudentNodeData ond = new StudentNodeData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            Node [] nodes = orgNode.getTopNodesForUserAndAdminForPrintTT(userName, testAdminId);
+            StudentNode [] studentNodes = new StudentNode [nodes.length];
+            for(int i=0;i<nodes.length;i++) {
+                studentNodes[i] = new StudentNode(nodes[i]);                     
+            }
+            ond.setStudentNodes(studentNodes, pageSize);
+            if(testAdminId != null) {
+                for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {
+                    studentNodes[i].setRosterCount(orgNode.getRosterCountForAncestorNode(studentNodes[i].getOrgNodeId(), testAdminId));            
+                }
+                FilterParams implicitFilter = new FilterParams();
+                FilterParam [] newFilters = new FilterParam [1];
+                Integer [] args = new Integer[1];
+                args[0] = new Integer(0);
+                FilterParam countFilter = new FilterParam("RosterCount", args, FilterType.GREATERTHAN);
+                newFilters[0] = countFilter;
+                implicitFilter.setFilterParams(newFilters);
+                ond.applyFiltering(implicitFilter);
+            }
+            ond.setStudentNodes(ond.getStudentNodes(), pageSize);
+            if(filter != null) ond.applyFiltering(filter);
+            if(sort != null) ond.applySorting(sort);
+            if(page != null) ond.applyPaging(page);
+            return ond;
+        } catch (SQLException se) {
+            OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("ScheduleTestImpl: getTopTestTicketNodes: " + se.getMessage());
+            one.setStackTrace(se.getStackTrace());
+            throw one;
+        }
+    }
+    
     
 } 

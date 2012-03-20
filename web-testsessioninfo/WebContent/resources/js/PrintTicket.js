@@ -30,23 +30,31 @@ function printTTicket(element){
 }
 	
 function openTestTicketIndividual( anchor, testAdminId, orgNodeId ) {
+	if(orgNodeId.indexOf("_") != -1)
+		orgNodeId = orgNodeId.substring(0, orgNodeId.indexOf("_"));
 	var url = "/SessionWeb/testTicketOperation/individualTestTicket.do";
 	return openTestTicket( "individual", anchor, url, testAdminId, orgNodeId );
 }
 //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 function openTestTicketMultiple( anchor, testAdminId, orgNodeId ) {
+	if(orgNodeId.indexOf("_") != -1)
+		orgNodeId = orgNodeId.substring(0, orgNodeId.indexOf("_"));
 	var url = "/SessionWeb/testTicketOperation/individualTestTicket.do";
 	return openTestTicket( "multiple", anchor, url, testAdminId, orgNodeId );
 }
 //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 
 function openTestTicketSummary( anchor, testAdminId, orgNodeId ) {
+	if(orgNodeId.indexOf("_") != -1)
+		orgNodeId = orgNodeId.substring(0, orgNodeId.indexOf("_"));
 	//alert("openTestTicketSummary orgNodeId:"+orgNodeId);
 	var url = "/SessionWeb/testTicketOperation/summaryTestTicket.do";
 	return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
 }
 
 function openTestTicketSummaryInExcel( anchor, testAdminId, orgNodeId ) {
+	if(orgNodeId.indexOf("_") != -1)
+		orgNodeId = orgNodeId.substring(0, orgNodeId.indexOf("_"));
     var url = "/SessionWeb/testTicketOperation/summaryTestTicketInExcel.do";
     return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
 
