@@ -2685,24 +2685,10 @@ public class StudentManagementImpl implements StudentManagement
 			if (filter != null) {
 				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilterReporting(filter);
 				filter.setFilterParams(new FilterParam[0]);
-				//totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
 				ManageStudent [] studentTotalCount = null;
-				if(contentAreaFiltered == 0)
-					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
-				else {
-					contentAreaNameFilDisp = studentManagement.getContentAreaNameFromId(contentAreaFiltered);
-					contentAreaSearch = DynamicSQLUtils.generateWhereClauseForFilterContentArea(contentAreaNameFilDisp);
-					studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaReWithCA(userName, catalogId, "", contentAreaSearch);
-				}
+				studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForReporting(userName, catalogId, "");
 				totalCount = studentTotalCount.length;
 			}
-			String orderByClause = "";
-			/*if (sort != null) {
-				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
-				sort = null;
-			}*/
-			
-			//searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
 			
 			if(contentAreaFiltered == 0)
