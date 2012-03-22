@@ -30,6 +30,7 @@ public class StudentScoreReport extends CTBBean{
 	private String testAdminName;
 	private StudentReportIrsScore[] studentReportIrsScore;
 	private String contentAreaNameString;
+	private String testName;
 	
 	
 	/**
@@ -188,6 +189,18 @@ public class StudentScoreReport extends CTBBean{
 	 */
 	public void setContentAreaNameString(String contentAreaNameString) {
 		this.contentAreaNameString = contentAreaNameString;
+	}
+	/**
+	 * @return the testName
+	 */
+	public String getTestName() {
+		return testName;
+	}
+	/**
+	 * @param testName the testName to set
+	 */
+	public void setTestName(String testName) {
+		this.testName = testName;
 	}
 
 }
