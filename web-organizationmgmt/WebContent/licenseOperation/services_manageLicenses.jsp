@@ -95,6 +95,9 @@
 					 	 
 					<td style="vertical-align:top;" id="jqGrid-content-section">
 						<div id="outerInfo">
+							<p id="licenseModelDiv" class="subtitle" style="display: none">
+								License model: <b>Session</b>
+							</p> 
 						   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
 						</div>
 						<br/><br/>

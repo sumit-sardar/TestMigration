@@ -238,6 +238,8 @@ function loadOrgNodeLicense() {
 		   	
 			loadComplete: function () {
 			
+				document.getElementById('licenseModelDiv').style.display = "block";	
+			
 		    	if(!gridloaded) {            	
 					loadChildrenOrgNodeLicense();
 		  			gridloaded = true;
