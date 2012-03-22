@@ -809,6 +809,7 @@ public class ScoreByStudentController extends PageFlowController {
 		Integer score = Integer.valueOf(getRequest().getParameter("score"));
 		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
 		try {
+			String completeTD = null;
 			Boolean isSuccess = this.testScoring.saveOrUpdateScore(user
 					.getUserId(), itemId, itemSetId, testRosterId, score);
 			// start- added for  Process Scores   button changes
@@ -821,11 +822,15 @@ public class ScoreByStudentController extends PageFlowController {
 				 String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
 				 if (completionStatusRosterAndTD.equals("CO")) {
 					 this.testSessionStatus.rescoreStudent(testRosterId);
+					 completeTD = "CO";
+				 } else {
+					 completeTD = "IN";
 				 }
 			 }
 			 ManageStudent ms = new ManageStudent();
 			 ms.setIsSuccess(isSuccess);
 			 ms.setCompletionStatus(completionStatus);
+			 ms.setCompletionStatusTD(completeTD);
 			 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
           // end - added for  Process Scores   button changes
 			

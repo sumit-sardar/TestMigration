@@ -399,6 +399,7 @@ if(isHidden){
 													var isSuccess = data.SaveStatus.isSuccess;	
 													
 													var completionStatus = null;
+													var completionStatusTD = null;
 													var processScores;
 													var immediateScoreReport = null;
 													if(data.SaveStatus.completionStatus!=null && data.SaveStatus.completionStatus != "FromItem" )
@@ -406,6 +407,12 @@ if(isHidden){
 													 completionStatus = data.SaveStatus.completionStatus;
 													 processScores = document.getElementById("rescoreStudent");
 													 immediateScoreReport = document.getElementById("ImmediateScoreReportBN");
+													}
+													if(data.SaveStatus.completionStatusTD!=null && data.SaveStatus.completionStatusTD=="CO" 
+														&& data.SaveStatus.completionStatus != "FromItem" )
+													{
+														completionStatusTD = data.SaveStatus.completionStatusTD;
+														immediateScoreReport = document.getElementById("ImmediateScoreReportBN");
 													}
 													var spanElement = document.getElementById("messageSpan");
 													var scorePointsElement = document.getElementById("scorePoints"+rowno);
@@ -425,6 +432,13 @@ if(isHidden){
 												         }
 												         if(immediateScoreReport != null && immediateScoreReport != undefined ) {
 												         	immediateScoreReport.removeAttribute("disabled"); 
+												         }
+												          
+												        }
+												        if(completionStatusTD !=null && completionStatusTD=="CO" && immediateScoreReport != null)
+												        {
+												        	if(immediateScoreReport != undefined ) {
+												         		immediateScoreReport.removeAttribute("disabled"); 
 												         }
 												          
 												        }

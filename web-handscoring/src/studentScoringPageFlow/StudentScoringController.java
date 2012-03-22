@@ -437,6 +437,7 @@ public class StudentScoringController extends PageFlowController {
 		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
 		//System.out.println("user.getUserId(), itemId, itemSetId, testRosterId, score :: "+user.getUserId() + itemId +  itemSetId +  testRosterId +  score);
 	try {
+		 String completeTD = null;
 		 Boolean isSuccess = this.testScoring.saveOrUpdateScore(user.getUserId(), itemId, itemSetId, testRosterId, score);
 		 String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
 		 //  Change for  #66660 enhancement to invoke scoring after completion of handscoring
@@ -446,11 +447,15 @@ public class StudentScoringController extends PageFlowController {
 			 String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
 			 if (completionStatusRosterAndTD.equals("CO")) {
 				 this.testSessionStatus.rescoreStudent(testRosterId);
+				 completeTD = "CO";
+			 } else {
+				 completeTD = "IN";
 			 }
 		 }
 		 ManageStudent ms = new ManageStudent();
 		 ms.setIsSuccess(isSuccess);
 		 ms.setCompletionStatus(completionStatus);
+		 ms.setCompletionStatusTD(completeTD);
 		 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
 		// end - added for  Process Scores   button changes
 			
