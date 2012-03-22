@@ -608,7 +608,8 @@
 		$('#testSessionName').removeAttr("disabled");
 		$('#startDate').removeAttr("disabled");
 		$('#endDate').removeAttr("disabled"); 
-		$('#hasAutolocator').removeAttr("disabled");
+		if(allSubtests.length != 0)
+			$('#hasAutolocator').removeAttr("disabled");
   		$('#aCodeB_l').removeAttr("disabled");
 		setAnchorButtonState('modifyTestButton', false);
 		if(isTestExpired){

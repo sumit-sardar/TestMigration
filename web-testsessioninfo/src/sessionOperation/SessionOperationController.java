@@ -1166,7 +1166,20 @@ public class SessionOperationController extends PageFlowController {
     	            else
     	            {
     	                // tabe locator test
-    	            	TestSessionUtils.setDefaultLevels(subtestList, "1");
+		            	  Integer lItemSetId   = Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+	        			  String lAccesscodes  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IND_ACCESS_CODE, true, "");
+	        			  String lItemSetisDefault  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT, false, null);
+	        			  String lItemSetForms      = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_FORM, false, null);
+	        			  SubtestVO locatorSubtest = new SubtestVO();
+	        			  locatorSubtest.setId(lItemSetId);
+	        			  locatorSubtest.setTestAccessCode(lAccesscodes);
+	        			  locatorSubtest.setSessionDefault(lItemSetisDefault);
+	        			  if(lItemSetForms!=null && lItemSetForms.length() >0 ){
+	        				  locatorSubtest.setLevel(lItemSetForms);
+	        			  }
+	        			  subtestList.add(0, locatorSubtest);
+    	            	
+    	            	  TestSessionUtils.setDefaultLevels(subtestList, "1");
     	            }   
     	            
     	        }
