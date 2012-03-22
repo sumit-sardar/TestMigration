@@ -55,6 +55,7 @@ public class ManageStudent extends CTBBean
     private String organizationNames;
     private String contentAreaString;
     private String defaultScheduler;
+    private String completionStatusTD;
     
 	/**
 	 * @return the testPurpose
@@ -409,6 +410,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setDefaultScheduler(String defaultScheduler) {
 		this.defaultScheduler = defaultScheduler;
+	}
+	/**
+	 * @return the completionStatusTD
+	 */
+	public String getCompletionStatusTD() {
+		return completionStatusTD;
+	}
+	/**
+	 * @param completionStatusTD the completionStatusTD to set
+	 */
+	public void setCompletionStatusTD(String completionStatusTD) {
+		this.completionStatusTD = completionStatusTD;
 	}
     
 } 
