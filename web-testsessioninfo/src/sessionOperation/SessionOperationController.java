@@ -2,6 +2,7 @@ package sessionOperation;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -128,6 +129,9 @@ public class SessionOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.db.BroadcastMessageLog message;
+        
+    @Control()
+    private com.ctb.control.db.Users users;
     
     //Added for view/monitor test status
    
@@ -2417,6 +2421,7 @@ public class SessionOperationController extends PageFlowController {
 				}
 					
 			});
+			baseTree.setShowAccessCode(customerHasAccessCode(testAdminId));
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
@@ -2830,6 +2835,50 @@ public class SessionOperationController extends PageFlowController {
     {
         return null;
     }
+    
+    
+    /**
+	 * This method checks whether customer is configured to display access code in individual 
+	 * and multiple testTicket or not.
+	 * @return Return Boolean 
+	 */
+	
+	
+	private Boolean customerHasAccessCode(Integer testAdminId)
+    {               
+		Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasAccessCodeConfigurable = false;
+        String hasBreak = "T";
+        try
+        {  
+        	hasBreak = users.hasMultipleAccessCode(testAdminId);
+        	
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+        
+
+        for (int i=0; i < customerConfigurations.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasAccessCodeConfigurable = true;
+                break;
+            } 
+        }
+       }
+        
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+       if(hasBreak.equals("F") && hasAccessCodeConfigurable)
+    	   return true;
+       else
+    	   return false;
+    }
+    
     
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////

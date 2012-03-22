@@ -20,6 +20,7 @@ var rootNodePrint = [];
 var typePrint;
 var asyncOverPrint = 0;
 var leafParentOrgNodeIdPrint = "";
+var displayAccessCodeOnTicket = false;	//Changes for access code display in test ticket
 
 function printTTicket(element){
 	if (isButtonDisabled(element))
@@ -65,7 +66,7 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
 	url += "?testAdminId=" + testAdminId;
 	url += "&orgNodeId=" + orgNodeId;
 	url += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
-	url += "&displayAccess=false";// + displayAccessCode;
+	url += "&displayAccess=" + displayAccessCodeOnTicket;
 	anchor.href = url;
 	return anchor;
 }
@@ -104,7 +105,12 @@ function populateTestTicketTree() {
 							$("#studentExists").css('display', 'block');
 							$("#orgNodeHierarchy").css("visibility","visible");	
 							$("#printTestTicket").css("height",'430px');
-						
+							displayAccessCode = data.showAccessCode;
+							if(displayAccessCode != undefined && (displayAccessCode || displayAccessCode == 'true')) {
+								$("#displayAccessCodes").show();
+							} else {
+								$("#displayAccessCodes").hide();
+							}
 						}
 						$("#ticktSearchheader").css("visibility","visible");	
 						$("#printTestTicket").dialog({
@@ -365,4 +371,8 @@ function createSingleNodeSelectedTktTree(jsondata) {
 		 leafParentOrgNodeIdPrint = "";		
 		}
 	
-
+function accessCode() {
+	
+	var checkAccess = document.getElementsByName("individualAccess");
+	displayAccessCodeOnTicket = checkAccess[0].checked;
+}

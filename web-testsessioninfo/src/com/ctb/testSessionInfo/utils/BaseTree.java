@@ -8,6 +8,7 @@ public class BaseTree {
 	private List<TreeData> data = new ArrayList<TreeData> ();
 	private Integer leafNodeCategoryId;
 	private String isStudentExist;
+	private boolean showAccessCode;
 	
 
 	public String getIsStudentExist() {
@@ -38,6 +39,14 @@ public class BaseTree {
 
 	public void setData(List<TreeData> data) {
 		this.data = data;
+	}
+
+	public boolean isShowAccessCode() {
+		return showAccessCode;
+	}
+
+	public void setShowAccessCode(boolean showAccessCode) {
+		this.showAccessCode = showAccessCode;
 	}
 
 	

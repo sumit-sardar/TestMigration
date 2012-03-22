@@ -41,6 +41,13 @@
 	
 	<div style="width:48%;float:right;">
 	<h3 style="border-width: 0px; margin-bottom:15px;"><lb:label key="testTicket.testSessionDocs"/></h3>
+	<div id = "displayAccessCodes">
+		<lb:label key="testTicket.message.displayAccessCode"/>
+		<input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
+		<input type="radio" id="deny" name="individualAccess" value="No" onclick="accessCode()" checked="checked">No</input>
+		<br>
+		<br>
+	</div>
 	<p>	
 	<lb:label key="testTicket.sessionDocs.message"/><br>
 	</p>
