@@ -224,7 +224,7 @@ public class StudentImmediatePdfReportUtils extends StudentImmediateReportUtils 
 	}
 							    
 	private void addTestNameValue() throws DocumentException {
-		PDFTableVO table = PDFUtils.getInfoTable(getTestAdminName(), INFO_VALUE_WIDTH, INFO_VALUE_X, testNameY);
+		PDFTableVO table = PDFUtils.getInfoTable(getTestName(), INFO_VALUE_WIDTH, INFO_VALUE_X, testNameY);
 		PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
 	}
 	

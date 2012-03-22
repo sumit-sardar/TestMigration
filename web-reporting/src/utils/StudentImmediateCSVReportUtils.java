@@ -78,7 +78,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		studentData.append(",");
 		studentData.append(getGrade());
 		studentData.append(",");
-		studentData.append(getTestAdminName());
+		studentData.append(getTestName());
 		studentData.append(",");
 		studentData.append("\n");
 		cvsOutStream.write(studentData.toString().getBytes());

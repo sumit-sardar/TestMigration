@@ -20,6 +20,7 @@ public abstract class StudentImmediateReportUtils {
 	private String testAdminStartDateString;
 	private OutputStream out;
 	private String titleText = "LAS Links Online Student Report";
+	private String testName;
 	
 
 	abstract void generateReport() throws Exception ;
@@ -36,6 +37,7 @@ public abstract class StudentImmediateReportUtils {
 		this.irsScores=stuReport.getStudentReportIrsScore();
 		this.testAdminStartDateString = testAdminStartDateString;
 		this.testAdminName = stuReport.getTestAdminName();
+		this.testName = stuReport.getTestName();
 		this.out = outputStream;
 	}
 
@@ -120,6 +122,18 @@ public abstract class StudentImmediateReportUtils {
 	 */
 	public void setTestAdminName(String testAdminName) {
 		this.testAdminName = testAdminName;
+	}
+	/**
+	 * @return the testName
+	 */
+	public String getTestName() {
+		return testName;
+	}
+	/**
+	 * @param testName the testName to set
+	 */
+	public void setTestName(String testName) {
+		this.testName = testName;
 	}
 
 	
