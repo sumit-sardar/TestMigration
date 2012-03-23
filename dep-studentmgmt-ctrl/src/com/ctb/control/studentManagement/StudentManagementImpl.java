@@ -2824,7 +2824,7 @@ public class StudentManagementImpl implements StudentManagement
 		if(stuFinalScoreDataValue == 4 && (contentAreas.contains("Writing") || contentAreas.contains("Escritura")))
 			return true;
 		if(stuFinalScoreDataValue == 5 && (contentAreas.contains("Reading") || contentAreas.contains("Lectura")) 
-				&& (contentAreas.contains("Writing") || contentAreas.contains("Escritura")))
+				&& (contentAreas.contains("Listening") || contentAreas.contains("Escuchando")))
 			return true;
 		if(stuFinalScoreDataValue == 6 && (contentAreas.contains("Listening") || contentAreas.contains("Escuchando")) 
 				&& (contentAreas.contains("Speaking") || contentAreas.contains("Hablando")) 
