@@ -759,5 +759,10 @@ public interface ItemSet extends JdbcControl
        
     @JdbcControl.SQL(statement = "select iset.ITEM_SET_ID  as itemSetId, iset.ITEM_SET_NAME as itemSetName, max(ontc.RANDOM_DISTRACTOR_ALLOWABLE) as isRandomize, max(ontc.override_form_assignment) as overrideFormAssignmentMethod,  max(ontc.override_login_start_date) as overrideLoginStartDate,  min(ontc.OVERRIDE_LOGIN_END_DATE) as overrideLoginEndDate  from item_set iset , org_node_test_catalog ontc  where  ontc.item_set_id = iset.item_set_id  and ontc.activation_status = 'AC'  and iset.activation_status = 'AC'  and iset.item_set_id = {itemSetId} and ontc.customer_id = {customerId} group by iset.ITEM_SET_ID , iset.ITEM_SET_NAME")
     TestElement getTestElementMinInfoById(Integer customerId, Integer itemSetId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT ISET.ITEM_SET_ID  AS ITEMSETID,  ISET.ITEM_SET_NAME   AS ITEMSETNAME, ISET.ITEM_SET_LEVEL  AS ITEMSETLEVEL,  ISET.ITEM_SET_FORM AS ITEMSETFORM, ISET.ITEM_SET_DISPLAY_NAME AS ITEMSETDISPLAYNAME, ISET.GRADE   AS GRADE,  ISET.TIME_LIMIT as timeLimit FROM TEST_ADMIN    ADMIN,  TEST_CATALOG    CATALOG,  ITEM_SET_PARENT ISP,  ITEM_SET  ISET  WHERE CATALOG.TEST_CATALOG_ID = ADMIN.TEST_CATALOG_ID  AND CATALOG.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID AND ISP.ITEM_SET_ID = ISET.ITEM_SET_ID    AND ISET.ITEM_SET_TYPE = 'TS'    AND ISET.ACTIVATION_STATUS = 'AC'    AND ADMIN.TEST_ADMIN_ID = {testAdminId}  ORDER BY ISP.ITEM_SET_SORT_ORDER")
+    TestElement[] getTestElementByTestAdmin(Integer testAdminId) throws SQLException;
+    
+    
     static final long serialVersionUID = 1L;
 }

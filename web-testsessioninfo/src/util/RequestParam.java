@@ -46,5 +46,6 @@ public interface RequestParam {
 	String LOCATOR_TEST_ITEM_IND_ACCESS_CODE= "aCodeB_l";
 	String LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT	= "sessionDefault_l";
 	String LOCATOR_TEST_ITEM_SET_FORM		= "itemSetForm_l";
+	String STUDENT_ID		= "studentId";
 	
 }

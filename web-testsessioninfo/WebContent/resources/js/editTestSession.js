@@ -811,7 +811,7 @@
 		 }
 		selectedSubtests  = new Array();
 		prepareSelectedSubtestsFromSavedDetails(allSubtests, selectedTestSession.scheduledUnits );
-		updateAllSubtests(selectedSubtests);
+		updateAllSubtests(allSubtests, selectedSubtests);
 		populateAllSubtestMap(allSubtests)
 		createSubtestGrid();
 	

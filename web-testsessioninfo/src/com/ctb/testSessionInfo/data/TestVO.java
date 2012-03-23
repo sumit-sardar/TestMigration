@@ -108,6 +108,15 @@ public class TestVO implements java.io.Serializable
     }
    	
    	
+   	public TestVO(List<SubtestVO> subtests, SubtestVO locatorSubtest) {
+   		this.subtests = subtests;
+   		if(locatorSubtest!= null) {
+        	this.locatorSubtest = locatorSubtest;
+        	this.autoLocator = true;
+        }
+   	   this.subtestCount = getSubtestCount();
+	}
+
    	public int getSubtestCount() {
    		int count = 0;
    		if(subtests==null ) {

@@ -87,6 +87,7 @@ import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.testSessionInfo.utils.Row;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
+import com.ctb.testSessionInfo.utils.ScheduledSavedStudentDetailsVo;
 import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
 import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
@@ -1006,6 +1007,66 @@ public class SessionOperationController extends PageFlowController {
 	
 			return null;
 	  }
+
+
+
+    	@Jpf.Action()
+        protected Forward getScheduledStudentsWithTest(SessionOperationForm form) {
+    		
+    		String jsonData = "";
+    		OutputStream stream = null;
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+    	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+    	    ScheduledSavedStudentDetailsVo vo = new ScheduledSavedStudentDetailsVo();
+    	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+    	    OperationStatus status = new OperationStatus();
+    	    vo.setOperationStatus(status) ;
+    	    try {
+    	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+    	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
+    	    	TestElement[] testSession = this.itemSet.getTestElementByTestAdmin(testAdminId);
+    	    	
+    	    	SessionStudent[] students =  scheduledSession.getStudents();
+    	    	List<SessionStudent> studentsList = buildStudentList(students, accomodationMap);
+    	    	vo.setSavedStudentsDetails(studentsList);
+    	    	vo.populateTestSession(testSession);
+    	    	vo.populateLevelOptions();
+                status.setSuccess(true);
+    	    	
+    	    } catch(CTBBusinessException e){
+    	    	 e.printStackTrace(); 
+    	    	 status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+    	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+    	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+    	    	 }
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    	
+    	    } catch(Exception e) {
+    	    	e.printStackTrace(); 
+    	    	status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+    			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    }
+    	    //vo.setAccomodationMap(accomodationMap);
+			Gson gson = new Gson();
+			jsonData = gson.toJson(vo);
+			//System.out.println(jsonData);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			return null;
+	  }
     	
     @Jpf.Action()
     protected Forward getScheduleProctor(SessionOperationForm form) {
@@ -1060,6 +1121,63 @@ public class SessionOperationController extends PageFlowController {
 
 		return null;
   }
+
+
+    @Jpf.Action()
+    protected Forward getScheduleStudentsManifestDetails(SessionOperationForm form) {
+		
+		String jsonData = "";
+		OutputStream stream = null;
+		HttpServletResponse resp = getResponse();
+	    resp.setCharacterEncoding("UTF-8"); 
+	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+	    String studentIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ID, false, null);
+	    
+	    ScheduledSavedStudentDetailsVo vo = new ScheduledSavedStudentDetailsVo();
+	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+	    OperationStatus status = new OperationStatus();
+	    vo.setOperationStatus(status) ;
+	    try {
+	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+	    	Integer studentId = Integer.valueOf(studentIdString);
+	    	StudentManifest[] studentManifests = this.scheduleTest.getScheduledStudentsManifestDetails(this.userName, studentId, testAdminId);
+	    	vo.populateManifests(studentManifests);
+            status.setSuccess(true);
+	    	
+	    } catch(CTBBusinessException e){
+	    	 e.printStackTrace(); 
+	    	 status.setSystemError(true);
+	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+	    	 }
+			 status.setValidationFailedInfo(validationFailedInfo);
+	    	
+	    } catch(Exception e) {
+	    	e.printStackTrace(); 
+	    	status.setSystemError(true);
+	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+			 status.setValidationFailedInfo(validationFailedInfo);
+	    }
+	    //vo.setAccomodationMap(accomodationMap);
+		Gson gson = new Gson();
+		jsonData = gson.toJson(vo);
+		//System.out.println(jsonData);
+		try {
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(jsonData.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+  }
+    
     private void removeRestrictedStudentsFromTest(ScheduledSession session) throws CTBBusinessException {
     	SessionStudent[] students = updateRestrictedStudentsForTest(session.getStudents(),session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId()  );
     	session.setStudents(students);

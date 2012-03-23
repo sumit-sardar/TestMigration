@@ -38,16 +38,20 @@
 	    prepareSelectedSubtests(tmpSelectedSubtests);
 	    
 	    if(isTabeProduct){
-	    	isValidated = validateTABESubtest(tmpSelectedSubtests);
+	    	var validateLevels = false; 
+	    	if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
+	    		validateLevels = true;
+	    	}
+	    	isValidated = validateTABESubtest(tmpSelectedSubtests, validateLevels, false);
 	    } else if(isTabeAdaptiveProduct ) {
-	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests);
+	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests, false);
 	    }
 	    
 	    if (isValidated) {
 	        subtestGridLoaded = false;
 	        selectedSubtests = tmpSelectedSubtests;
 	        createSubtestGrid();
-	        updateAllSubtests(selectedSubtests);
+	        updateAllSubtests(allSubtests, selectedSubtests);
 	        populateAllSubtestMap(allSubtests) 
 	        updateOldAccessCodes(selectedSubtests);
 	        closePopUp('modifyTestPopup');
@@ -94,19 +98,19 @@
 	}
 	
 	
-	function updateAllSubtests(subtests) {
+	function updateAllSubtests(allSubtestsSrc , subtests) {
 	    for (var ii = 0; ii < subtests.length; ii ++ ) {
-	        var indx = getCurrentIndex(subtests[ii].id);
-	        var tmp = allSubtests[indx];
-	        allSubtests[indx] = allSubtests[ii];
-	        allSubtests[ii] = tmp;
+	        var indx = getCurrentIndex(allSubtestsSrc , subtests[ii].id);
+	        var tmp = allSubtestsSrc[indx];
+	        allSubtestsSrc[indx] = allSubtestsSrc[ii];
+	        allSubtestsSrc[ii] = tmp;
 	    }
 	    
 	}
 	
-	function getCurrentIndex(id) {
-	    for (var ii = 0; ii < allSubtests.length; ii ++ ) {
-	        if (allSubtests[ii].id == id) {
+	function getCurrentIndex(allSubtestsSrc ,id) {
+	    for (var ii = 0; ii < allSubtestsSrc.length; ii ++ ) {
+	        if (allSubtestsSrc[ii].id == id) {
 	            return ii;
 	        }
 	        
@@ -115,12 +119,17 @@
 	}
 	
 	
-	function validationTABE_ADAPTIVE (subtests) { 
+	function validationTABE_ADAPTIVE (subtests , isForStudentMsm) { 
 		var isValid = true;
 		if (subtests == undefined || subtests == null || subtests.length == 0) {
 	        isValid = false;
-	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
-	    } else {
+	        if(isForStudentMsm){
+	         	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	        } else {
+	        	 setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	        }
+	       
+	    } else if ( !isForStudentMsm ) {
 	    	var currentMessage = "";
 	   		if ( ! mathSubtests_TABE_ADAPTIVE(subtests)) {
 	            currentMessage = $("#mathSubtestsMsg").val();
@@ -146,35 +155,56 @@
 	
 
 	
-	function validateTABESubtest(subtests) {
+	function validateTABESubtest(subtests, validateLevels , isForStudentMsm) {
 	    var isValid = true;
-	    var validateLevels = false; 
-	    if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
-	    	validateLevels = true;
-	    }
-	    
-	    
+	   
 	    if (subtests == undefined || subtests == null || subtests.length == 0) {
 	        isValid = false;
-	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	        if(isForStudentMsm) {
+	        	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	        } else {
+	         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	        }
+	       
 	    } else if ( ! languageDependency(subtests)) {
 	        isValid = false;
-	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageDependencyMsg").val());
+	         if(isForStudentMsm) {
+	        	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#languageDependencyMsg").val());
+	        } else {
+	         	 setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageDependencyMsg").val());
+	        }
+       
 	    } else if(validateLevels && ! languageLevel(subtests)){
-	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageLevelMsg").val());
-	    	isValid = false;
+	     	isValid = false;
+	     	if(isForStudentMsm) {
+	        	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#languageLevelMsg").val());
+	        } else {
+	         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#languageLevelMsg").val());
+	        }
 	    } else if ( ! readingDependency(subtests)) {
 	        isValid = false;
-	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingDependencyMsg").val());
+	       if(isForStudentMsm) {
+	        	 setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#readingDependencyMsg").val());
+	        } else {
+	         	 setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingDependencyMsg").val());
+	        }
 	    } else if(validateLevels && ! readingLevel(subtests)){
 	    	isValid = false;
-	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingLevelMsg").val());
+	    	if(isForStudentMsm) {
+	        	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#readingLevelMsg").val());
+	        } else {
+	         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingLevelMsg").val());
+	        }
 	    } else if(validateLevels && ! mathLevel(subtests)){
 	    	isValid = false;
-	    	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#mathLevelMsg").val());
+	    	if(isForStudentMsm) {
+	        	setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#mathLevelMsg").val());
+	        } else {
+	         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#mathLevelMsg").val());
+	        }
 	    }
 	    // test for level
-	    else {
+	    else if (!isForStudentMsm) {
 	        var currentMessage = "";
 	        if ( ! mathSubtests(subtests)) {
 	            currentMessage = $("#mathSubtestsMsg").val();
@@ -190,7 +220,6 @@
 	                
 	            }
 	        }
-	        
 	        if (currentMessage != "") {
 	            setSubtestWarningMessage(currentMessage);
 	        } else {
@@ -381,7 +410,11 @@
 	function openModifyTestPopup(element) {
 		if(isButtonDisabled(element))
 			return true;
-			
+		isForStudentSubtestModification = false;//used for subtest modification false for testadmin	
+		$("#selectedSubtestsTableMsm").html("");
+        $("#availableSubtestsTableMsm").html("");
+        $("#selectedSubtestsTable").html("");
+        $("#availableSubtestsTable").html("");
 		hideSubtestValidationMessage();
 	    UIBlock();
 	    $("#modifyTestPopup").dialog( {
@@ -462,8 +495,9 @@
 	   } else {
 	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
 	   }
-	    displaySourceTable();
-	    displayDestinationTable();
+	    displaySourceTable(allSubtests, selectedSubtests,'availableSubtestsTable');
+	    var haslocator= (locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && hasAutolocator);
+	    displayDestinationTable(allSubtests, selectedSubtests, ProductData.levelOptions, false, haslocator);
 	    
 	    if (selectedSubtests != undefined && selectedSubtests.length > 0) {
 	        $("#removeAllRows").attr("disabled", false);
@@ -482,23 +516,24 @@
 	    
 	}
 	
-	function displaySourceTable() {
+	function displaySourceTable(allSubtestsSrc, selectedSubtestsSrc, srcDivId) {
 	    var destHtmlText = "";
-	    for (var ii = 0, jj = allSubtests.length; ii < jj; ii ++ ) {
+	    for (var ii = 0, jj = allSubtestsSrc.length; ii < jj; ii ++ ) {
 	        var found = false;
 	        var displayFlag = "none";
 	        var value = String(ii + 1);
-	        if ( ! isExists(selectedSubtests, allSubtests[ii])) {
+	        if ( ! isExists(selectedSubtestsSrc, allSubtestsSrc[ii])) {
 	            displayFlag = "table-row";
 	        } else {
 	            value = "0";
 	        }
 	        var index = ii + 1;
 	        destHtmlText += displaySourceRowStart(index, displayFlag);;
-	        destHtmlText += displaySourceCell(allSubtests[ii].subtestName);
+	        destHtmlText += displaySourceCell(allSubtestsSrc[ii].subtestName);
 	    }
 	    
-	    $("#availableSubtestsTable").html(destHtmlText);  
+	     //$("#availableSubtestsTable").html(destHtmlText);  
+	     $("#"+srcDivId).html(destHtmlText); 
 	    setTimeout("adjustHeightTables()",100);
 	}
 	
@@ -523,39 +558,48 @@
 	    return "<td class='dynamic' >" + name + "</td>";
 	}
 	
-	function displayDestinationTable() {
+	function displayDestinationTable(allSubtestsSrc, selectedSubtestsSrc, levelOptionsSrc, isFromModifyStdManifest, isLocatorPresent ) {
 	    var destHtmlText = "";
-	    if (allSubtests == null) {
-	        allSubtests = new Array();
+	    if (allSubtestsSrc == null) {
+	        allSubtestsSrc = new Array();
 	    }
 	    
-	    for (var ii = 0, jj = allSubtests.length; ii < jj; ii ++ ) {
+	    for (var ii = 0, jj = allSubtestsSrc.length; ii < jj; ii ++ ) {
 	        var found = false;
 	        var displayFlag = "none";
 	        var value = String(ii + 1);
 	        var level ="";
-	        if(allSubtests[ii].level!=undefined && allSubtests[ii].level!=null){
-	        	level = allSubtests[ii].level;
+	        if(allSubtestsSrc[ii].level!=undefined && allSubtestsSrc[ii].level!=null){
+	        	level = allSubtestsSrc[ii].level;
 	        }
-	        if (isExists(selectedSubtests, allSubtests[ii])) {
+	        if (isExists(selectedSubtestsSrc, allSubtestsSrc[ii])) {
 	            displayFlag = "table-row";
-	            level = getItemLevel(selectedSubtests, allSubtests[ii]);
+	            level = getItemLevel(selectedSubtestsSrc, allSubtestsSrc[ii]);
 	        } else {
 	            value = "0";
 	        }
 	        
 	        var index = ii + 1;
 	        destHtmlText += displayDestinationRowStart(index, displayFlag);
-	        destHtmlText += displayDestinationNameCell(allSubtests[ii].subtestName, index, value);
-	        if(locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && !hasAutolocator) { 
-	        	 destHtmlText += displayDestinationLevelDropdown(index, level, ProductData.levelOptions);
-	         $("#modifyTestLevel").show();
+	        destHtmlText += displayDestinationNameCell(allSubtestsSrc[ii].subtestName, index, value);
+	        if(!isFromModifyStdManifest){
+	        	if(!isLocatorPresent) { 
+	        	 	destHtmlText += displayDestinationLevelDropdown(index, level, levelOptionsSrc, true, ii);
+	         		$("#modifyTestLevel").show();
+	        	} else {
+	          		$("#modifyTestLevel").hide();
+	        	}
 	        } else {
-	          $("#modifyTestLevel").hide();
-	        }
+	        	destHtmlText += displayDestinationLevelDropdown(index, level, levelOptionsSrc, !isLocatorPresent, ii);
 	        
+	        }
+
 	    }
-	    $("#selectedSubtestsTable").html(destHtmlText);
+	    if(!isFromModifyStdManifest){
+	    	$("#selectedSubtestsTable").html(destHtmlText);
+	    } else {
+	   		 $("#selectedSubtestsTableMsm").html(destHtmlText);
+	    }
 	}
 	
 	function getItemLevel( srcList, item)  {
@@ -571,11 +615,12 @@
         return level;
     }
 	
-	function displayDestinationLevelDropdown( index, level , levelOptions)   {
+	function displayDestinationLevelDropdown( index, level , levelOptions, displayLevel, lindex)   {
         var strIndex = String(index);
         var strLevel = "level_" + strIndex;
 		var retVal = "";
-        retVal+= '<td class="dynamic"  align="center" >';
+		var disabled = (displayLevel==true) ? "" : " style = 'display:none' "
+        retVal+= '<td class="dynamic" id = "subtestLevel_'+lindex+'" align="center" ' + disabled + ' >';
         retVal+='<select name="' + strLevel + '" id= "' + strLevel + '" size="1" style="font-family: Arial, Verdana, Sans Serif; font-size: 11px;">';
         
         for (var i=0 ; i<levelOptions.length ; i++) {
@@ -699,21 +744,33 @@
 	
 	
 	function enableSubtestDestinationTableButtons() {
-	    var removeRow = document.getElementById("removeRow");
+	    var removeRow = undefined;
+	    var removeAllRows = undefined;
+	    var moveUp = undefined;
+	    var moveDown = undefined;
+	    if(isForStudentSubtestModification){
+	    	removeRow = document.getElementById("removeRowMsm");
+	    	removeAllRows = document.getElementById("removeAllRowsMsm");
+	    	moveUp = document.getElementById("moveUpMsm");
+	    	moveDown = document.getElementById("moveDownMsm");
+	    } else {
+	    	removeRow = document.getElementById("removeRow");
+	    	removeAllRows = document.getElementById("removeRow");
+	    	moveUp = document.getElementById("moveUp");
+	    	moveDown = document.getElementById("moveDown");
+	    }
+	    
+	    
+
 	    removeRow.removeAttribute("disabled");
 	    $(removeRow).addClass("ui-widget-header");
 	    
-	    var removeAllRows = document.getElementById("removeAllRows");
 	    removeAllRows.removeAttribute("disabled");
 	    $(removeAllRows).addClass("ui-widget-header");
 	    
-	    
-	    
-	    var moveUp = document.getElementById("moveUp");
 	    moveUp.removeAttribute("disabled");
 	    $(moveUp).addClass("ui-widget-header");
 	    
-	    var moveDown = document.getElementById("moveDown");
 	    moveDown.removeAttribute("disabled");
 	    $(moveDown).addClass("ui-widget-header");
 	    
@@ -751,12 +808,31 @@
 	}
 	
 	function disableSubtestDestinationTableButtons() {
-	    var removeRow = document.getElementById("removeRow");
+	   
+	    
+	    var removeRow = undefined;
+	    var removeAllRows = undefined;
+	    var moveUp = undefined;
+	    var moveDown = undefined;
+	    
+	    if(isForStudentSubtestModification){
+	    	removeRow = document.getElementById("removeRowMsm");
+	    	removeAllRows = document.getElementById("removeAllRowsMsm");
+	    	moveUp = document.getElementById("moveUpMsm");
+	    	moveDown = document.getElementById("moveDownMsm");
+	    } else {
+	    	removeRow = document.getElementById("removeRow");
+	    	removeAllRows = document.getElementById("removeRow");
+	    	moveUp = document.getElementById("moveUp");
+	    	moveDown = document.getElementById("moveDown");
+	    }
+	    
+	    
 	    removeRow.setAttribute("disabled", "true");
 	    if ($(removeRow).hasClass("ui-widget-header")) {
 	        $(removeRow).removeClass("ui-widget-header");
 	    }
-	    var removeAllRows = document.getElementById("removeAllRows");
+
 	    removeAllRows.setAttribute("disabled", "true");
 	    
 	    if ($(removeAllRows).hasClass("ui-widget-header")) {
@@ -770,13 +846,13 @@
 	        
 	    }
 	    
-	    var moveUp = document.getElementById("moveUp");
+
 	    moveUp.setAttribute("disabled", "true");
 	    if ($(moveUp).hasClass("ui-widget-header")) {
 	        $(moveUp).removeClass("ui-widget-header");
 	    }
 	    
-	    var moveDown = document.getElementById("moveDown");
+
 	    moveDown.setAttribute("disabled", "true");
 	    if ($(moveDown).hasClass("ui-widget-header")) {
 	        $(moveDown).removeClass("ui-widget-header");
@@ -784,23 +860,42 @@
 	}
 	
 	function enableSubtestSourceTableButtons() {
-	    var addRow = document.getElementById("addRow");
+		var addRow = undefined;
+		var addAllRows = undefined;
+
+	    if(isForStudentSubtestModification){
+	    	addRow = document.getElementById("addRowMsm");
+	    	addAllRows = document.getElementById("addAllRowsMsm");
+	    } else {
+	    	addRow = document.getElementById("addRow");
+	    	addAllRows = document.getElementById("addAllRows");
+	    }
+
 	    addRow.removeAttribute("disabled");
 	    $(addRow).addClass("ui-widget-header");
 	    
-	    var addAllRows = document.getElementById("addAllRows");
 	    addAllRows.removeAttribute("disabled");
 	    $(addAllRows).addClass("ui-widget-header");
 	}
 	
 	function disableSubtestSourceTableButtons() {
-	    var addRow = document.getElementById("addRow");
+		var addRow = undefined;
+		var addAllRows = undefined;
+
+	    if(isForStudentSubtestModification){
+	    	addRow = document.getElementById("addRowMsm");
+	    	addAllRows = document.getElementById("addAllRowsMsm");
+	    } else {
+	    	addRow = document.getElementById("addRow");
+	    	addAllRows = document.getElementById("addAllRows");
+	    }
+	
 	    addRow.setAttribute("disabled", "true");
 	    if ($(addRow).hasClass("ui-widget-header")) {
 	        $(addRow).removeClass("ui-widget-header");
 	    }
 	    
-	    var addAllRows = document.getElementById("addAllRows");
+
 	    addAllRows.setAttribute("disabled", "true");
 	    
 	    if ($(addAllRows).hasClass("ui-widget-header")) {
@@ -820,7 +915,12 @@
 	    if (row == null)
 	        return false;
 	    
-	    var numberOfRows = document.getElementById("numberOfRows").value;
+	    var numberOfRows = 0;
+	    if(isForStudentSubtestModification){
+	    	numberOfRows =document.getElementById("numberOfRowsMsm").value;
+	    }else {
+	    	numberOfRows =document.getElementById("numberOfRows").value;
+	    }
 	    
 	    // get Ids
 	    var srcId = row.id;
@@ -852,7 +952,12 @@
 	}
 	
 	function addSubtestAllSelectedRows() {
-	    var numberOfRows = document.getElementById("numberOfRows").value;
+	    var numberOfRows = 0;
+	    if(isForStudentSubtestModification){
+	    	numberOfRows =document.getElementById("numberOfRowsMsm").value;
+	    }else {
+	    	numberOfRows =document.getElementById("numberOfRows").value;
+	    }
 	    
 	    for (var i = 1; i <= numberOfRows; i ++ ) {
 	        var srcId = "src_row_" + i;
@@ -896,7 +1001,12 @@
 	}
 	
 	function removeSubtestAllSelectedRows() {
-	    var numberOfRows = document.getElementById("numberOfRows").value;
+	    var numberOfRows = 0;
+	    if(isForStudentSubtestModification){
+	    	numberOfRows =document.getElementById("numberOfRowsMsm").value;
+	    }else {
+	    	numberOfRows =document.getElementById("numberOfRows").value;
+	    }
 	    
 	    for (var i = 1; i <= numberOfRows; i ++ ) {
 	        var desId = "des_row_" + i;
@@ -912,7 +1022,12 @@
 	}
 	
 	function getVisibleRows(rowPrefix) {
-	    var numberOfRows = document.getElementById("numberOfRows").value;
+	    var numberOfRows = 0;
+	    if(isForStudentSubtestModification){
+	    	numberOfRows =document.getElementById("numberOfRowsMsm").value;
+	    }else {
+	    	numberOfRows =document.getElementById("numberOfRows").value;
+	    }
 	    var visibleRows = 0;
 	    
 	    for (var i = 1; i <= numberOfRows; i ++ ) {

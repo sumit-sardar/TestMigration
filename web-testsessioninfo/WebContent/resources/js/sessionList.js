@@ -122,7 +122,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 mtype:   'POST',
 		 datatype: "json",         
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'',''],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'','','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -132,7 +132,10 @@ function populateSessionListGrid(homePageLoad) {
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginStartDateString',index:'loginStartDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'loginEndDateString',index:'loginEndDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'loginEndDateString',index:'loginEndDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeAdaptiveProduct',index:'isSTabeAdaptiveProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'productType',index:'productType', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 			   	records: function(obj) { 
@@ -140,6 +143,9 @@ function populateSessionListGrid(homePageLoad) {
 			   	 $("#list2").jqGrid("hideCol","creatorOrgNodeId");
 			   	 $("#list2").jqGrid("hideCol","loginStartDateString");
 			   	 $("#list2").jqGrid("hideCol","loginEndDateString");
+			   	 $("#list2").jqGrid("hideCol","isSTabeProduct");
+			   	 $("#list2").jqGrid("hideCol","isSTabeAdaptiveProduct");
+			   	  $("#list2").jqGrid("hideCol","productType");
 				   	 if(ishomepageload && obj.orgNodeCategory != undefined){
 				   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
 				   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
@@ -173,14 +179,18 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
-					testTicketPopupValues(rowId,'list2');	
+					testTicketPopupValues(rowId,'list2');
+					var selectedRData = $("#list2").getRowData(rowId);
+					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType);	
 					selectedTestAdminId = rowId;						
 					$('#showSaveTestMessage').hide();
 					if($("#canRegisterStudent").val() == 'true'){
@@ -307,6 +317,7 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -466,10 +477,12 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -571,6 +584,7 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('modifyStdManifestButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -861,6 +875,7 @@ function registerDelegate(tree){
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		setAnchorButtonState('printTicketButton', true);
+ 		setAnchorButtonState('modifyStdManifestButton', true);
  		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
@@ -3247,6 +3262,7 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('modifyStdManifestButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3306,6 +3322,7 @@ function registerDelegate(tree){
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('modifyStdManifestButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -4246,6 +4263,7 @@ function registerDelegate(tree){
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
+									setAnchorButtonState('modifyStdManifestButton', true);
 								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");

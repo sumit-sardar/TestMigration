@@ -80,6 +80,13 @@
 										<div id="viewStatus" style="float:right;padding-left:5px;">
 											<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
 										</div> 
+										<% if (userScheduleAndFindSessionPermission) {%>
+										    <div id="mStdManifest" style="float:right;padding-left:5px; ">
+											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" title=<lb:label key="homepage.button.modifyTest.tooltip" prefix="'&nbsp;" suffix="&nbsp;'"/> >
+											   		<lb:label key="homepage.button.modifyTest" />
+											    </a>
+											</div> 
+									    <%} %>
 									    <%if(canRegisterStudent) { %>
 										    <div id="registerStudent" style="float:right;padding-left:5px;">
 											<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
@@ -296,3 +303,5 @@
 <jsp:include page="/sessionOperation/view_test_session.jsp" />
 <jsp:include page="/sessionOperation/restricted_student.jsp" />
 <jsp:include page="/sessionOperation/editSubtest.jsp" />
+
+<jsp:include page="/sessionOperation/edit_student_manifest_main.jsp" />

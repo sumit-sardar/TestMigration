@@ -91,6 +91,7 @@ clear: both;
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>  
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/programStatus.js"></script>  
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/editSubtestTest.js"></script>  
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/modifyStudentManifest.js"></script>  
   	
 	<script type="text/javascript">
 	var SelectedUserId;

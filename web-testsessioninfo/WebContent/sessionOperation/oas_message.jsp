@@ -110,4 +110,6 @@
 <input type="hidden" id="tabeAdaptiveModifySubtestMsg" name = "tabeAdaptiveModifySubtestMsg" value=<lb:label key="session.modifySubtest.tabeadaptive.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="textSelectMsg" name = "textSelectMsg" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
 
+<input type="hidden" id="msmNoStudentTitle" name = "msmNoStudentTitle" value="${bundle.web['modify.student.manifest.noStuSelected.title']}"/>
+<input type="hidden" id="msmSelectStudentValidationTitle" name = "msmSelectStudentValidationTitle" value="${bundle.web['modify.student.manifest.selectStd.validation.title']}"/>
 

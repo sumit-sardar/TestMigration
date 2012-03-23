@@ -3754,4 +3754,21 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     
+    @Override
+    public StudentManifest [] getScheduledStudentsManifestDetails(String userName, Integer studentId,  Integer testAdminId) throws CTBBusinessException {
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledStudentsManifestDetails");
+        try {
+        		StudentManifest [] studentManifests = studentItemSetStatus.getStudentManifestsForRoster(studentId,testAdminId);
+                ArrayList<StudentManifest> smAr = getFilteredStudentManifestForRoster(studentManifests);
+                 studentManifests =   smAr.toArray(new StudentManifest[smAr.size()]);
+                 
+                return studentManifests;
+        } catch (SQLException se) {
+            CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledStudentsManifestDetails: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;
+        }  
+    }
+    
+    
 } 

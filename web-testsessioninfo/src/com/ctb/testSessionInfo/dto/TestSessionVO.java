@@ -2,6 +2,8 @@ package com.ctb.testSessionInfo.dto;
 
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.testSessionInfo.utils.TestSessionUtils;
+
 import java.util.Date;
 
 public class TestSessionVO implements java.io.Serializable
@@ -36,6 +38,10 @@ public class TestSessionVO implements java.io.Serializable
     private String isTestSessionDataExported ;
     private String loginStartDateString;
     private String loginEndDateString;
+    
+    private String productType ;
+    private boolean isSTabeProduct = false;
+    private boolean isSTabeAdaptiveProduct = false;
     
     public String getLoginStartDateString() {
 		return loginStartDateString;
@@ -91,6 +97,11 @@ public class TestSessionVO implements java.io.Serializable
          this.AssignedRole = ts.getAssignedRole();
          this.loginEndDateString = ts.getLoginEndDateString();
          this.loginStartDateString = ts.getLoginStartDateString();
+         if(ts.getProductType()!=null){
+        	 this.productType = TestSessionUtils.getProductType(ts.getProductType());
+             this.isSTabeProduct         = TestSessionUtils.isTabeProduct(this.productType);
+             this.isSTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
+         }
     }     
     public String getAccessCode() {
         return this.accessCode;
