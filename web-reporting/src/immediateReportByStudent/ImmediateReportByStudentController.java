@@ -342,6 +342,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		isGeorgiaCustomer(form);
 		form.validateValues();
 		String currentAction = form.getCurrentAction();
+		String actionElement = form.getActionElement();
 		if(currentAction!=null && currentAction.equalsIgnoreCase("gotoHome")){
 			try {
 	            String url = "/TestSessionInfoWeb/homepage/HomePageController.jpf";
@@ -349,6 +350,9 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	        } catch (IOException ioe) {
 	            System.err.print(ioe.getStackTrace());
 	        }
+		}
+		if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
+			form.setStudentPageRequested(new Integer(1));
 		}
 		//form.setTestAdminId(234852); 
 		setupSearchCriteria(form);
@@ -402,6 +406,10 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	public Forward findStudentByTestSessionAndRoster(StudentImmediateReportForm form) {
 		isGeorgiaCustomer(form);
 		form.validateValues();
+		String actionElement = form.getActionElement();
+		if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
+			form.setStudentPageRequested(new Integer(1));
+		}
 		setupSearchCriteria(form);
 		ManageStudentData msData = findScoredStudentBySessionAndRoster(form); 
 		if ((msData != null) && (msData.getFilteredCount().intValue() == 0))
@@ -432,6 +440,10 @@ public class ImmediateReportByStudentController extends PageFlowController {
 	public Forward findStudentByTestSession(StudentImmediateReportForm form) {
 		isGeorgiaCustomer(form);
 		form.validateValues();
+		String actionElement = form.getActionElement();
+		if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
+			form.setStudentPageRequested(new Integer(1));
+		}
 		setupSearchCriteria(form);
 		ManageStudentData msData = findAllScoredStudentBySession(form); 
 		if ((msData != null) && (msData.getFilteredCount().intValue() == 0))
