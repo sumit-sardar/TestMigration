@@ -105,6 +105,14 @@
 
 					</td>
 				</tr>
+				<tr class="transparent">
+					<td class="transparent"><netui:content
+						value="${bundle.web['individualStudentScoring.StudentDetails.TestName']}" /></td>
+					<td class="transparent">
+					<div class="formValueLarge"><netui:span value="${requestScope.testName}" styleClass="formValueLarge" /></div>
+
+					</td>
+				</tr>
 				
 			</table>
 			<br/>

@@ -533,6 +533,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 					this.getRequest().setAttribute("district", stuReport.getDistrict());
 					this.getRequest().setAttribute("school", stuReport.getSchool());
 					this.getRequest().setAttribute("irsScores", stuReport.getStudentReportIrsScore());
+					this.getRequest().setAttribute("testName", stuReport.getTestName());
 				//}
 			} catch (Exception e) {
 				e.printStackTrace();
