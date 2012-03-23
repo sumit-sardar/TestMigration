@@ -829,6 +829,49 @@ public class TestScoringImpl implements TestScoring {
 		}
 		return map;
 	}
+	
+	@Override
+	public String getStatusForRosterAndCRTDs(Integer testRosterId, Integer itemSetIdTC) throws CTBBusinessException {
+		
+		String status = "IN";
+		try {
+			Integer[] itemSetWithCRs = scoring.getItemSetWithCRItems(testRosterId, itemSetIdTC);
+			if(itemSetWithCRs != null && itemSetWithCRs.length > 0) {
+				for(int i = 0; i < itemSetWithCRs.length; i++) {
+					status = scoring.getStatusForRosterAndTD(testRosterId, itemSetWithCRs[i]);
+					if(status != null && status.equalsIgnoreCase("CO"))
+						break;
+				}
+			}
+			if(status == null) {
+				status = "IN";
+			}
 
+		} catch (SQLException se) {
+			OASLogger
+					.getLogger("TestAdmin")
+					.error(
+							"Exception occurred while getting TDs containing scorable CR Items response.",
+							se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getCRItemResponseForScoring: "
+							+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
 
+		} catch (Exception se) {
+			OASLogger
+					.getLogger("TestAdmin")
+					.error(
+							"Exception occurred while getting TDs containing scorable CR Items response.",
+							se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getStatusForRosterAndCRTDs: "
+							+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+
+		}
+		return status;
+	}
 }
