@@ -96,4 +96,7 @@ public interface CRScoring extends JdbcControl {
 	 //Get scoring status for the roster for the item set
 	 @JdbcControl.SQL(statement = "select OAS_UTILS.GET_STD_CAREA_SCORING_STATUS({rosterId}, {itemSetIdTD}) from dual")
 	 String getStatusForRosterAndTD(Integer rosterId, Integer itemSetIdTD);
+	 
+	 @JdbcControl.SQL(statement = "select distinct iset.item_set_id from item_set iset, item_set_ancestor isa, item_set_item isi, item, student_item_set_status siss where isa.ancestor_item_set_id = {itemSetIdTC} and isa.item_set_type = 'TD' and isa.item_set_id = iset.item_set_id and iset.item_set_id = isi.item_set_id and isi.item_id = item.item_id and item.item_type = 'CR' and iset.item_set_id = siss.item_set_id and siss.completion_status in ('CO', 'IS', 'IC') and siss.test_roster_id = {rosterId}")
+	 Integer[] getItemSetWithCRItems(Integer rosterId, Integer itemSetIdTC) throws SQLException;
 }

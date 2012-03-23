@@ -161,5 +161,7 @@ public interface TestScoring {
 	
 	public TestSession getTestAdminDetails(Integer testAdminId) throws CTBBusinessException;
 	
+	public String getStatusForRosterAndCRTDs(Integer testRestorId, Integer itemSetIdTC) throws CTBBusinessException;
+	
 
 }
