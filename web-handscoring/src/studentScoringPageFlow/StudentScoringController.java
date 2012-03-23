@@ -304,12 +304,21 @@ public class StudentScoringController extends PageFlowController {
     		 // start- added for  Process Scores  button changes
     		 String completionStatus = scoring.getScoringStatus(form.getRosterId(),form.getItemSetIdTC());
     		 Boolean scoringButton = false;
+    		 Boolean immediateReportingButton = false;
  			 if(completionStatus.equals("CO")){
  				 scoringButton = false;
+ 				 immediateReportingButton = false;
  			 }else{
  				 scoringButton = true;
+ 				 String completionStatusRosterAndTD = testScoring.getStatusForRosterAndCRTDs(form.getRosterId(),form.getItemSetIdTC());
+ 				 if(completionStatusRosterAndTD != null && completionStatusRosterAndTD.equals("CO")){
+ 	 				 immediateReportingButton = false;
+ 				  } else {
+ 					  immediateReportingButton = true;
+ 				  }
  			 }
-    		 this.getRequest().setAttribute("scoringButton", scoringButton);
+ 			 this.getRequest().setAttribute("scoringButton", scoringButton);
+    		 this.getRequest().setAttribute("immediateReportingButton", immediateReportingButton);
     		 this.getRequest().setAttribute("testSessionName", testSession.getTestAdminName());
     		 
     	}catch(Exception e){
