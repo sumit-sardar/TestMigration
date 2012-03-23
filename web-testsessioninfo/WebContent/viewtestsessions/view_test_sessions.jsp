@@ -205,9 +205,11 @@
                     	</c:if>	
              <c:if test="${tabType !='FU'}">
              	<c:if test="${sessionScope.isImmediateScoreReportConfigured}">
-					<netui:button styleClass="button" tagId="immediateScore" value="${bundle.widgets['button.immediateScoreReport']}"
+             		<ctb:auth roles="Administrator, Administrative Coordinator">
+						<netui:button styleClass="button" tagId="immediateScore" value="${bundle.widgets['button.immediateScoreReport']}"
 							type="button" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'viewImmediateScore', this);"
 										disabled="true" />
+					</ctb:auth>
 				</c:if>
 			</c:if>
 			</td>
