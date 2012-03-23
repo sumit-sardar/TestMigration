@@ -688,7 +688,7 @@
 				if( hasLocator && locatorId!=undefined &&  subtestArr[i].itemSetId == locatorId) {
 					tr +='<input type = "hidden" name ="hasAutolocator" value ="true" />';
 					tr +='<input type = "hidden" name ="itemSetIdTD_l" value ="'+subtestArr[i].itemSetId+'" />';
-					if(subtestArr[i].level != undefined){
+					if(subtestArr[i].itemSetForm != undefined){
 						tr +='<input type = "hidden" name ="itemSetForm_l" value ="'+subtestArr[i].itemSetForm+'" />';
 					} else {
 						tr +='<input type = "hidden" name ="itemSetForm_l" value ="" />';
@@ -704,7 +704,7 @@
 					}
 				} else {
 					tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].itemSetId+'" />';
-					if(subtestArr[i].level != undefined){
+					if(subtestArr[i].itemSetForm != undefined){
 						tr +='<input type = "hidden" name ="itemSetForm" value ="'+subtestArr[i].itemSetForm+'" />';
 					} else {
 						tr +='<input type = "hidden" name ="itemSetForm" value ="" />';
