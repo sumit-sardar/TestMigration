@@ -3491,7 +3491,7 @@ public class SessionOperationController extends PageFlowController {
 		org.setTreeLevel(1);
 		Map<Integer, Organization> orgMap = new HashMap<Integer, Organization>();
 		orgMap.put(org.getOrgNodeId(), org);
-		treeProcess (org, orgList, td, selectedList, rootCategoryLevel, orgMap);
+		treeProcessPTT (org, orgList, td, selectedList, rootCategoryLevel, orgMap, count);
 		data.add(td);
 	}
 	
@@ -3525,6 +3525,41 @@ public class SessionOperationController extends PageFlowController {
 				td.getChildren().add(tempData);
 				orgMap.put(tempOrg.getOrgNodeId(), tempOrg);
 				treeProcess (tempOrg, list, tempData, selectedList, rootCategoryLevel, orgMap);
+			}
+		}
+	}
+    
+    private static void treeProcessPTT (Organization org,List<Organization> list,TreeData td, 
+    		ArrayList<Organization> selectedList, Integer rootCategoryLevel, 
+    		Map<Integer, Organization> orgMap,
+    		int count) {
+
+		Integer treeLevel = 0;
+		Organization parentOrg = null;
+		for (Organization tempOrg : list) {
+			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
+				
+				if (selectedList.contains(tempOrg)) {
+					
+					int index = selectedList.indexOf(tempOrg);
+					if (index != -1) {
+						
+						Organization selectedOrg = selectedList.get(index);
+						selectedOrg.setIsAssociate(false);
+					}
+					
+				}
+				TreeData tempData = new TreeData ();
+				tempData.setData(tempOrg.getOrgName());
+				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString() + "_" + count);
+				tempData.getAttr().setCid(tempOrg.getOrgCategoryLevel().toString());
+				parentOrg = orgMap.get(tempOrg.getOrgParentNodeId());
+				treeLevel = parentOrg.getTreeLevel() + 1;
+				tempOrg.setTreeLevel(treeLevel);
+				tempData.getAttr().setTcl(treeLevel.toString());
+				td.getChildren().add(tempData);
+				orgMap.put(tempOrg.getOrgNodeId(), tempOrg);
+				treeProcessPTT (tempOrg, list, tempData, selectedList, rootCategoryLevel, orgMap, count);
 			}
 		}
 	}
