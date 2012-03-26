@@ -623,7 +623,8 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				getResponse().setContentType("text/csv");
 		        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
 		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-		        getResponse().setHeader("Pragma", "public"); 
+		        getResponse().setHeader("Pragma", "public");
+		        getResponse().setCharacterEncoding("UTF-8");
 		        utilsCSV.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
 		        utilsCSV.generateReport();
 			//}
