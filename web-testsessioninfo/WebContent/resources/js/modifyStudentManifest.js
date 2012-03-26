@@ -1,6 +1,7 @@
 
 	var subTestDetails = {};
 	var modifyManifestStudentId = -1;
+	var modifyManifestStudentOrgId = -1;
 	var oldModifyManifestStudentId = -1;
 	var studentManifestdetails =[];
 	var isForStudentSubtestModification = false;
@@ -8,8 +9,8 @@
 	var selectedSubtestsMsm = new Array();
 	var levelOptions = new Array();
 	var allSubtestMapMsm = new Map();
-	var isSelectedTestTabePr = false;
-	var isSelectedTabeAdaptivePr = false;
+	var isSelectedTestTabePr = "false";
+	var isSelectedTabeAdaptivePr = "false";
 	 
 
 	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType){
@@ -31,9 +32,14 @@
 			return true;
 		}
 		
-			
+		$('#displayMessage').hide();	
 		document.getElementById('modifyStdManifestButton').style.display = "block";	
 		populateModifyStdManifestPopup();
+		 if(isSelectedTestTabePr == "true" ){ 
+	   		$("#mmsModifySubtestMsg").html($("#tabeModifySubtestMsg").val())
+	   } else {
+	   		$("#mmsModifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
+	   }
 		
 	}
 	
@@ -85,7 +91,7 @@
 		 	mtype:   'POST',
 		 	datatype: "json",
 		 	postData:	param,
-            colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(),  $("#testStuAccom").val(), leafNodeCategoryName ,  'studentId',  'Editable'],
+            colNames:[ $("#testStuLN").val(),$("#testStuFN").val(), $("#testStuMI").val(),  $("#testStuAccom").val(), leafNodeCategoryName ,  'studentId',  'Editable', '' ],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:135, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'firstName',index:'firstName', width:135, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -102,7 +108,8 @@
 		   		}},
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'studentId',index:'studentId',editable: false, hidden:true,width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'statusEditable',index:'statusEditable',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } }
+		   		{name:'statusEditable',index:'statusEditable',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } },
+		   		{name:'orgNodeId',index:'orgNodeId',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"savedStudentsDetails", id:"studentId",
 		   		records: function(obj) {	
@@ -142,12 +149,15 @@
 				resetOnSelectStudentValues();
 				modifyManifestStudentId = -1;
         		oldModifyManifestStudentId = -1;
+        		modifyManifestStudentOrgId = -1;
+        		
 				studentManifestdetails = [];
 			},
 			onSortCol:function(){
 				resetOnSelectStudentValues();
 				modifyManifestStudentId = -1;
        			oldModifyManifestStudentId = -1;
+       			modifyManifestStudentOrgId = -1;
        			studentManifestdetails = [];
 			},
 			gridComplete: function() {
@@ -162,6 +172,8 @@
 			},
 			onSelectRow: function (rowid, status) {
 				modifyManifestStudentId = rowid;
+				var rowData = $("#mmStdList").getRowData(rowid);
+				modifyManifestStudentOrgId = rowData.orgNodeId ;
 				if(modifyManifestStudentId != oldModifyManifestStudentId){
 					resetOnSelectStudentValues();
 					oldModifyManifestStudentId = -1;
@@ -211,7 +223,7 @@
 		var postDataObject = {};
  		postDataObject.studentId = modifyManifestStudentId;
  		postDataObject.testAdminId  = selectedTestAdminId;
-		$.ajax({
+ 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
 							UIBlock();
@@ -420,14 +432,12 @@
 	function closemodifyStudentManifestPopup(){
 	 resetMsmOldValues();
 	 closePopUp('modifyStudentManifestPopup');
-	
+      isSelectedTestTabePr = "false";
+	  isSelectedTabeAdaptivePr = "false";
 	}
 
 	function resetMsmOldValues(){
 	   $("#mStdMStudentDetailHeader").unbind("click");
-	   isSelectedTestTabePr = false;
-	   isSelectedTabeAdaptivePr = false;
-			
 		subTestDetails = {};
 		studentManifestdetails = [];
 		$("#mStdMlocatorContentDiv").html("");
@@ -437,6 +447,7 @@
         allSubtestMapMsm = new Map();
         modifyManifestStudentId = -1;
         oldModifyManifestStudentId = -1;
+        modifyManifestStudentOrgId = -1;
         studentManifestdetails = [];
 		resetOnSelectStudentValues();
 		hideMessage();
@@ -464,14 +475,18 @@
 		$("#msmSubContent").html(messageContent);
 	}
 	
-	
-	function validateAndUpdateStudentSubtest(){
-	   /*
-		$("#displayMsmMsg").show();
+	function setMsmInfoMessage( messageHeader, messageContent){
+        $("#displayMsmMsg").show();
 		$("#displayMsmMsgErrorIcon").hide();
 		$("#displayMsmMsgInfoIcon").show();
-		$("#msmSubTitle").html("Student's manifest record has been updated successfully.");
-		$("#msmSubContent").hide();*/
+		$("#msmSubTitle").html(messageHeader);
+		$("#msmSubContent").html(messageContent);
+	}
+	
+	
+	function validateAndUpdateStudentSubtest(){
+
+		hideMessage();
 		var isValidated = true;
 		var validateLevels = true;
 	    var tmpSelectedSubtestsMsm = new Array();
@@ -479,14 +494,97 @@
 		  	validateLevels = !(document.getElementById("msmHasAutolocator").checked);
 		 }
 	    prepareMsmSelectedSubtests(tmpSelectedSubtestsMsm, validateLevels);
-	    if(isSelectedTestTabePr){
+	    if(isSelectedTestTabePr=="true"){
 	    	isValidated = validateTABESubtest(tmpSelectedSubtestsMsm, validateLevels, true);
 	    } else {
 	    	isValidated = validationTABE_ADAPTIVE (tmpSelectedSubtestsMsm, true);
 	    }
+	    if(isValidated) {
+			updateManifestForRoster(tmpSelectedSubtestsMsm);
+	    }
 	    
-
-	    
+	}
+	
+	
+	function updateManifestForRoster(selectedSubtestsMsm){
+		
+		   var param = "";
+		   var msmParam ="";
+		   var locElement = document.getElementById("msmHasAutolocator");
+		   var msmHasLocator = false;
+		   if( subTestDetails.locatorSubtest != undefined  && locElement !=null && locElement.checked){
+		  	 msmHasLocator = true;
+		   } 
+		   msmParam += "&hasAutolocator="+msmHasLocator;
+		   if(msmHasLocator){
+		   		msmParam += "&itemSetIdTD_l=" + subTestDetails.locatorSubtest.id;
+		   		msmParam += "&subtestName_l=" +subTestDetails.locatorSubtest.subtestName;
+		   }
+		   
+		   for(var ii=0; ii<selectedSubtestsMsm.length; ii++){
+		   		msmParam += "&itemSetIdTD=" + selectedSubtestsMsm[ii].id;
+		   		if(selectedSubtestsMsm[ii].level != undefined){
+		   			msmParam += "&itemSetForm=" + selectedSubtestsMsm[ii].level;
+		   		}
+		   		msmParam += "&subtestName=" +selectedSubtestsMsm[ii].subtestName;
+		   }
+		   
+		param += "testAdminId="+ selectedTestAdminId;
+		param += "&studentId=" + modifyManifestStudentId;
+		param += "&studentOrgNodeId=" + modifyManifestStudentOrgId;
+		param += msmParam;
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'updateManifestForRoster.do',
+			type:		'POST',
+			data:		 param ,
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest){
+						   
+						   var successMessage;
+						   var key;
+						   var messageHeader;
+						   var messageArray;
+						   var length = 0;
+						   
+						  if(data.isSuccess){
+						  	successMessage   = data.successMessage;
+							key 		     = data.successInfo.key;
+							messageHeader 	 = data.successInfo.messageHeader;
+							messageArray     = data.successInfo.message;
+						  } 
+						  
+						  if(messageArray!=undefined){
+							length= messageArray.length;
+						  }
+						   
+						  if(data.isSuccess){
+						  	if(length==0) {
+						  		setMsmInfoMessage(messageHeader,"");
+							} else if (length==1) {
+								setSessionSaveMessage(messageHeader, messageArray[0]);
+							}  
+							$.unblockUI();
+						  } else if (data.IsSystemError) {
+						         messageHeader 	 = data.validationFailedInfo.messageHeader;
+								setMsmErrorMessage(messageHeader, "");
+								$.unblockUI();
+					  	}
+					  
+					},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";
+							
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+	
 	}
 	
 	function prepareMsmSelectedSubtests(tmpSelectedSubtests , setLevels){

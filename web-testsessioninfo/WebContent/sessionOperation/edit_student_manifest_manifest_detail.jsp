@@ -11,8 +11,7 @@
 
 	<div class="roundedMessage ui-corner-all" style="padding-top: 0px !important; margin-bottom: 0px !important;">
 	<div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
-		<p id="modifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 0pt;">
-		<lb:label key="session.modifySubtest.tabe.message" />
+		<p id="mmsModifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 0pt;">
 		</p>
 	</div>
  </div>

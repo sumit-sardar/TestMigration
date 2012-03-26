@@ -5297,6 +5297,126 @@ public class SessionOperationController extends PageFlowController {
 			}
 	        return null;
 	    }
+		
+		@Jpf.Action
+	    protected Forward updateManifestForRoster(SessionOperationForm form)
+	    {
+			
+			String jsonData = "";
+    		OutputStream stream = null;
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+			boolean hasStudentLoggedIn = false;
+			OperationStatus status = new OperationStatus();
+			SuccessInfo successInfo = new SuccessInfo();
+			StudentManifestData manifestData = new StudentManifestData(); 
+			ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+			try {
+				String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, true, "-1");
+				String studentIdString   = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ID, true, "-1");
+				String studentOrgNodeIdString   = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ORG_NODE_ID, true, "-1");
+				Integer testAdminId      = Integer.valueOf(testAdminIdString);
+				Integer studentId        = Integer.valueOf(studentIdString);	
+				Integer studentOrgNodeId = Integer.valueOf(studentOrgNodeIdString);
+				
+				String[] itemSetIds   = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_ID_TD, true, new String[0]);
+				String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
+				String[] subtestNames = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.SUB_TEST_NAME, true, new String[itemSetIds.length]);
+				String autoLocator	  =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.HAS_AUTOLOCATOR, true, "false");
+				int subtestSize       = itemSetIds.length;
+				int order             = 0;
+				boolean hasAutoLocator = false;
+				StudentManifest locatorManifest = null;
+				TestProduct tp = scheduleTest.getProductForTestAdmin(this.userName, testAdminId);
+				String productType = TestSessionUtils.getProductType(tp.getProductType());
+				if(autoLocator.equalsIgnoreCase("true") ){
+					Integer locatorItemSetId = Integer.valueOf(RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+					String locatorItemSetName = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.LOCATOR_SUB_TEST_NAME, false, null);
+					locatorManifest = new StudentManifest(); 
+					locatorManifest.setItemSetId(locatorItemSetId);
+					locatorManifest.setItemSetOrder(0);
+					locatorManifest.setItemSetName(locatorItemSetName);
+					subtestSize = subtestSize+1;
+					order = order+1;
+					hasAutoLocator = true;
+				}
+				
+				 StudentManifest [] manifestArray = new StudentManifest[subtestSize];
+				 if(hasAutoLocator){
+					 manifestArray[0] = locatorManifest;
+				 }
+				 for(int ii=0; ii<itemSetIds.length; ii++ ,order++){
+					 StudentManifest manifest = new StudentManifest(); 
+					 manifest.setItemSetId(Integer.valueOf(itemSetIds[ii]));
+					 if(!hasAutoLocator && TestSessionUtils.isTabeProduct(productType)){
+						 manifest.setItemSetForm(levels[ii]); 
+					 }
+					 manifest.setItemSetOrder(order);
+					 manifest.setItemSetName(subtestNames[ii]);
+					 manifestArray[order]=manifest;
+				 }
+				 manifestData.setStudentManifests(manifestArray , new Integer(manifestArray.length));
+				 try {
+					 validateStudentManifest(studentId, testAdminId, manifestData, tp, validationFailedInfo);
+					 if(!validationFailedInfo.isValidationFailed()){
+						 scheduleTest.updateManifestForRoster(this.userName, studentId, null, testAdminId, manifestData);
+						 String messageHeader = MessageResourceBundle.getMessage("Modify.Student.Manifest.SaveMessage.Header");
+						 successInfo.setKey("MODIFY_STUDENT_MANIFEST_SAVED");
+			           	 successInfo.setMessageHeader(messageHeader);
+			           	 status.setSuccess(true); 
+		        	   	 status.setSuccessInfo(successInfo);
+					 }
+					
+				 } catch(Exception e){
+					 e.printStackTrace();
+					 String errorMessageHeader = MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+		             validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+		             validationFailedInfo.setMessageHeader(errorMessageHeader);
+				 }
+				
+			}catch ( Exception e){
+				e.printStackTrace();
+			}
+			
+			if(validationFailedInfo.isValidationFailed()){
+				status.setValidationFailedInfo(validationFailedInfo);
+				if(validationFailedInfo.getKey().equalsIgnoreCase("SYSTEM_EXCEPTION")){
+					status.setSystemError(true);
+				}
+			}
+			
+			Gson gson = new Gson();
+			jsonData = gson.toJson(status);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+	    }
+		
+
+		private void validateStudentManifest(Integer studentId,
+				Integer testAdminId, StudentManifestData manifestData, TestProduct tp, ValidationFailedInfo validationFailedInfo) {
+			if(testAdminId == -1 || studentId == -1 ) {
+				String errorMessageHeader = MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+                validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+                validationFailedInfo.setMessageHeader(errorMessageHeader);
+			} else {
+				String productType = TestSessionUtils.getProductType(tp.getProductType());
+				if(!TestSessionUtils.isTabeOrTabeAdaptiveProduct(productType) ){
+					String errorMessageHeader = MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+	                validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+	                validationFailedInfo.setMessageHeader(errorMessageHeader);
+				}
+					
+				
+			}
+		}
 
 		public Map<Integer, Map> getSessionListCUFUMap() {
 			return sessionListCUFUMap;
