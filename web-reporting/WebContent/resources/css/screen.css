@@ -1,0 +1,396 @@
+/*
+ * vim:et sts=4 sw=4:
+ */
+
+body, td, th, div, p {
+    font: 11px/16px Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #222;
+    margin: 0 0 0 0;
+}
+
+ul {
+    margin: 0 0 10px 22px;
+    padding: 0;
+    list-style: square outside;
+}
+
+li.spaced { margin-top: 1em; }
+
+p { margin: 0 0 1em 0; }
+
+div { font: inherit; }
+
+/* for mozilla */
+td > img { display: block; }
+img.inline { display: inline !important; }
+
+input, select, textarea { font: 11px/14px Arial, Helvetica, sans-serif; }
+input, select, img { vertical-align: middle; }
+
+select { margin-left: 8px; }
+
+#container {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 46px solid #222;
+    margin-bottom: 46px;
+}
+
+h1 {
+    color: #fff;
+    font: bold 20px/24px Helvetica, Arial, sans-serif;
+    line-height: 24px;
+    margin: 0;
+}
+
+#logged-in {
+    margin: -24px 0 16px 0;
+    text-align: right;
+    color: #cc9;
+}
+
+#nav-main .spacer{
+    height: 4px;
+    background-color: #666;
+}
+
+#nav-main .spacer img { vertical-align: baseline; }
+
+#nav-main td{
+	color: #fff !important;
+	background-color: black;
+	font-weight: bold;
+}
+
+#nav-main .on {
+	color: #fc0 !important;
+    background-color: #666;
+	font-weight: bold;
+}
+
+#nav-main a:link,
+#nav-main a:active,
+#nav-main a:visited,
+#nav-main a:hover {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;  
+}
+
+#nav-main a:hover {
+    text-decoration: underline;  
+}
+
+#body {
+    margin: 0;
+}
+
+#nav-left {
+    vertical-align: top;
+    width: 164px;
+    background-color: #ffc; /* yellow background of side menu */
+    line-height: 16px;
+    color: #cc9 ; /* needed to color the bullets */
+    font: bold;
+}
+
+#nav-left h4 {
+    font: bold 11px/16px Arial, Helvetica, sans-serif;
+    color: #369; 
+    background-color: #cc9;  /* back stripe behind section title */
+    padding: 2px 0 2px 22px;
+    margin: 0 0 2px 0;
+}
+
+#nav-left a {
+    text-decoration: none;  /* no underline until mouseOver */
+    font: normal;
+}
+#nav-left a:hover span { text-decoration: underline; color: #060; }
+#nav-left a span{ color: #369; } /* color of link */
+#nav-left span{ color: #336; }   /* color of non-link */
+
+/*#nav-left h4.active {
+    color: #336;
+}*/
+
+#content {
+    width: 596px;
+    padding: 0 20px !important;
+    position: relative;
+}
+
+#content-popup {
+    padding: 0 20px !important;
+    position: relative;
+}
+
+#footer {
+    background-color: #cc9;
+    color: #666;
+    padding: 5px;
+    font-size: 10px;
+}
+
+#footer a:link,
+#footer a:active,
+#footer a:visited,
+#footer a:hover {
+    color: #663;
+}
+
+#group-content p{
+    font: 11px/12px Arial, Helvetica, sans-serif;
+    margin: 0px 0px;
+}
+
+h2 {
+    color: #369;
+    font: bold 18px/22px Helvetica, Arial, sans-serif;
+    margin: 10px 0;
+}
+
+h3 {
+    color: #663;
+    font: bold 13px/16px Arial, Helvetica, sans-serif;
+    margin-bottom: 0px;
+}
+
+h3.black { margin-top: -10px; }
+.black { color: #000 !important; }
+
+span.label {
+    padding-right: 32px;
+}
+
+span.subtitle {
+    padding-left: 10px;
+    color: #996;
+}
+
+span.hilight{
+    padding-left: 10px;
+    color: #369;
+    font-weight: bold;
+}
+
+p.more {
+    margin: -8px 0 1em 0;
+    text-align: right;
+}
+
+.align-left { text-align: left !important; }
+.align-right { text-align: right !important; }
+.align-center { text-align: center !important; }
+
+li a.active {
+    font-weight: bold;
+    color: #336 !important;
+}
+
+/* error messages */
+div.error {
+    width: 100%; /* workaround for IE5 to show relative pos IMG */
+    position: relative;
+    margin: 3px 0 25px 12px;
+}
+
+div.error img {
+    display: block; 
+    position: absolute;
+    left: -12px;
+    top: -3px;
+}
+
+div.error p {
+    display: block; /* declared as inline in base.css */
+    line-height: 16px;
+    padding: 0 0 0 16px;
+    color: #f00;
+    background-color: #ffc;
+    border: 1px solid #cc9;
+}
+
+div.success p {
+    width: 100%; /* workaround for IE5 to show relative pos IMG */
+    position: relative;
+    margin: 3px 0 25px 12px;
+    display: block; /* declared as inline in base.css */
+    line-height: 16px;
+    padding: 0 0 0 16px;
+    color: #009900;
+    background-color: #ffc;
+    border: 1px solid #cc9;
+}
+
+/* steps div */
+.steps {
+    color: #996;
+    background-color: #ffc;
+    border: 1px solid  #996;
+    padding: 5px;
+    text-align: right;
+    margin-bottom: 1em;
+}
+
+.steps img {
+    margin-left: 3px;
+    text-decoration: none;
+    display: inline;
+}
+
+.steps .active {
+    color: #330 !important;
+    font-weight: bold;
+}
+
+.steps .next { margin-left: 8px; }
+
+.steps-scoring {
+	color: #996;
+	background-color: #ffc;
+	border: 1px solid #996;
+	padding: 5px;
+	text-align: center;
+	margin-bottom: 1em;
+}
+
+.steps-scoring .active {
+	color: #330 !important;
+	font-weight: bold;
+}
+
+.table-title {
+    color: #663;
+    position: relative;
+}
+p.count {
+    margin: -18px 10px 12px 0;
+    text-align: right;
+    font-weight: normal;
+    font-size: 11px;
+}
+
+/* subtitles below <input type="radio" /> */
+.choose .subtitle { padding-left: 23px; }
+
+.choose input {
+    margin-top: 2px;
+    margin-bottom: 4px;
+}
+.choose select { margin-right: 5px; }
+
+.required {
+	color: #33f;
+	font-weight: bold;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+p.monitor-info {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+p.indent
+{
+    margin: 0 0 0 14px;
+}
+
+input.submit {
+    text-align: center !important;
+    font-weight: bold;
+    color: white;
+    background-color: #99c;
+    border: 2px outset #669;
+    padding: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.small { font-size: 9px; }
+
+.grey 
+{
+    color: #666666
+}
+
+.red
+{
+    color: #ff0000
+}
+
+.smallGrey 
+{
+    font-size: 9px;
+    color: #666666
+}
+
+.white
+{
+    color: #ffffff
+}
+
+.smallWhite
+{
+    font-size: 9px;
+    color: #ffffff
+}
+
+
+.worksheet input.order
+{
+    font-weight: bold; 
+    text-align: center;
+}
+
+.worksheet p{
+    margin: 0 0 0 14px;
+}
+
+.preview
+{
+    font-size: 10px;
+}
+
+.warning
+{
+    color: red;
+    font-weight: bold;
+}
+
+.whatsthis {
+    font-size: 11px;
+    font-weight: normal;
+}
+
+span.scoringdetail 
+{
+    padding-left: 34px;
+    color: #996;
+}
+
+.link {
+	padding: 3px;
+	vertical-align: middle
+	font-size: 12px;
+	font-weight: normal;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+	color: #333;
+	background: #E8E8FF
+}
+
+a.link-title:link { color: #369; text-decoration: none; }
+a.link-title:hover { color: #369; text-decoration: none; }
+a.link-title:visited { color: #369; text-decoration: none; }
+
+select.no_margin {
+	margin-left: 0px;
+}  
