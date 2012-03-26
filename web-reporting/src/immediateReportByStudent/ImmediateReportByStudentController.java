@@ -401,7 +401,7 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		return forward;
 	}
 	
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "students_immediate_score_by_session.jsp")}, 
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success",	path = "find_student_result_from_scoring.jsp")}, 
 			validationErrorForward = @Jpf.Forward(name = "failure",	path = "logout.do"))
 	public Forward findStudentByTestSessionAndRoster(StudentImmediateReportForm form) {
 		isGeorgiaCustomer(form);
