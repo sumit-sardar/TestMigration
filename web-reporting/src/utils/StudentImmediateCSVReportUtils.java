@@ -1,17 +1,17 @@
 package utils;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import com.ctb.bean.studentManagement.StudentScoreReport;
 
 public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils implements ImmediateReport {
 	
-	OutputStream cvsOutStream;
+	PrintWriter cvsOutStream;
 		
 	@Override
-	public void setup(OutputStream outputStream, StudentScoreReport stuReport, String testAdminStartDateString) {
-		super.setup(outputStream, stuReport, testAdminStartDateString);		
+	public void setupCSV(PrintWriter writer, StudentScoreReport stuReport, String testAdminStartDateString) {
+		super.setupCSV(writer, stuReport, testAdminStartDateString);		
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 	
 	@Override
 	void initialize(){
-		cvsOutStream = getOut();
+		cvsOutStream = getOutWriter();
 	}
 	
 	
@@ -55,7 +55,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		headerRow.append(",");
 		headerRow.append(TEST_NAME_LABEL_CSV);
 		headerRow.append('\n');
-		cvsOutStream.write(headerRow.toString().getBytes());
+		cvsOutStream.write(headerRow.toString());
 	}
 	
 	private void writeStudentTestData() throws IOException {
@@ -81,7 +81,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		studentData.append(getTestName());
 		studentData.append(",");
 		studentData.append("\n");
-		cvsOutStream.write(studentData.toString().getBytes());
+		cvsOutStream.write(studentData.toString());
 		
 	}
 	
@@ -114,7 +114,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 			}
 		}
 		if(studentScores != null) {
-			cvsOutStream.write(studentScores.toString().getBytes());
+			cvsOutStream.write(studentScores.toString());
 		}
 	}
 

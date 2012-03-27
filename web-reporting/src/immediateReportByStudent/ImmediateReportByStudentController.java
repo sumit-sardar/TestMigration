@@ -2,6 +2,8 @@ package immediateReportByStudent;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -620,14 +622,20 @@ public class ImmediateReportByStudentController extends PageFlowController {
 				StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 				StudentImmediateCSVReportUtils utilsCSV = new StudentImmediateCSVReportUtils();
 				String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
-				getResponse().setContentType("text/csv; charset=Windows-1252");
+				getResponse().setContentType("text/csv");
 		        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
 		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 		        getResponse().setHeader("Pragma", "public");
 		        getResponse().setCharacterEncoding("UTF-8");
 				OutputStream os = getResponse().getOutputStream();
-				utilsCSV.setup(os, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+				os.write(239);     
+				os.write(187);     
+				os.write(191);    
+				PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
+				utilsCSV.setupCSV(writer, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
 		        utilsCSV.generateReport();
+				writer.flush();
+				writer.close();
 			//}
 		} catch (CTBBusinessException ce){
 			ce.printStackTrace();

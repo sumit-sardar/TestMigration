@@ -1,7 +1,7 @@
 package utils;
 
 import java.io.OutputStream;
-
+import java.io.PrintWriter;
 import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.StudentReportIrsScore;
 import com.itextpdf.text.DocumentException;
@@ -21,6 +21,7 @@ public abstract class StudentImmediateReportUtils {
 	private OutputStream out;
 	private String titleText = "LAS Links Online Student Report";
 	private String testName;
+	private PrintWriter outWriter;
 	
 
 	abstract void generateReport() throws Exception ;
@@ -39,6 +40,20 @@ public abstract class StudentImmediateReportUtils {
 		this.testAdminName = stuReport.getTestAdminName();
 		this.testName = stuReport.getTestName();
 		this.out = outputStream;
+	}
+	
+	public void setupCSV(PrintWriter outputStream, StudentScoreReport stuReport, String testAdminStartDateString) {
+		this.studentName=  stuReport.getStudentName();
+		this.studentExtPin =stuReport.getStudentExtPin1();
+		this.formRe= stuReport.getForm();
+		this.grade= stuReport.getGrade();
+		this.district= stuReport.getDistrict();
+		this.school= stuReport.getSchool();
+		this.irsScores=stuReport.getStudentReportIrsScore();
+		this.testAdminStartDateString = testAdminStartDateString;
+		this.testAdminName = stuReport.getTestAdminName();
+		this.testName = stuReport.getTestName();
+		this.outWriter = outputStream;
 	}
 
 	/**
@@ -134,6 +149,18 @@ public abstract class StudentImmediateReportUtils {
 	 */
 	public void setTestName(String testName) {
 		this.testName = testName;
+	}
+	/**
+	 * @return the outWriter
+	 */
+	public PrintWriter getOutWriter() {
+		return outWriter;
+	}
+	/**
+	 * @param outWriter the outWriter to set
+	 */
+	public void setOutWriter(PrintWriter outWriter) {
+		this.outWriter = outWriter;
 	}
 
 	
