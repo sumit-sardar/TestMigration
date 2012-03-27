@@ -11,6 +11,7 @@
 	var allSubtestMapMsm = new Map();
 	var isSelectedTestTabePr = "false";
 	var isSelectedTabeAdaptivePr = "false";
+	var warningMessage = "";
 	 
 
 	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType){
@@ -451,6 +452,7 @@
         studentManifestdetails = [];
 		resetOnSelectStudentValues();
 		hideMessage();
+		warningMessage = "";
 	}
 	function resetOnSelectStudentValues(){
 		$("#selectedSubtestsTableMsm").html("");
@@ -500,6 +502,7 @@
 	    	isValidated = validationTABE_ADAPTIVE (tmpSelectedSubtestsMsm, true);
 	    }
 	    if(isValidated) {
+	         warningMessage = getMsmWarningMessage(tmpSelectedSubtestsMsm);
 			updateManifestForRoster(tmpSelectedSubtestsMsm);
 	    }
 	    
@@ -544,10 +547,10 @@
 			dataType:	'json',
 			success:	function(data, textStatus, XMLHttpRequest){
 						   
-						   var successMessage;
-						   var key;
-						   var messageHeader;
-						   var messageArray;
+						   var successMessage = "";
+						   var key = "";
+						   var messageHeader = "";
+						   var messageArray = [];
 						   var length = 0;
 						   
 						  if(data.isSuccess){
@@ -565,11 +568,7 @@
 						  }
 						   
 						  if(data.isSuccess){
-						  	if(length==0) {
-						  		setMsmInfoMessage(messageHeader,"");
-							} else if (length==1) {
-								setSessionSaveMessage(messageHeader, messageArray[0]);
-							}  
+							setMsmInfoMessage(messageHeader, warningMessage);
 						  } else if (data.IsSystemError) {
 						  		if(length==0){
 						         	setMsmErrorMessage(messageHeader, "");
@@ -606,7 +605,39 @@
 	        }
 	        
 	    }
+	}
 	
+	function getMsmWarningMessage (tmpSelectedSubtestsMsm){
+		var currentMessage = "";
+		
+		if(isSelectedTestTabePr=="true"){// for TABE product
+			if ( ! mathSubtests(tmpSelectedSubtestsMsm)) {
+	            currentMessage = $("#mathSubtestsMsg").val();
+	        }
+	        if ( ! scoreCalculatable(tmpSelectedSubtestsMsm)) {
+	            if (currentMessage == "")
+	                currentMessage = $("#scoreCalulatableMsg").val();
+	            else {
+	                currentMessage += "<br/>";
+	                currentMessage += $("#scoreCalulatableMsg").val();
+	            }
+	        }
+		} else{
+			if ( ! mathSubtests_TABE_ADAPTIVE(tmpSelectedSubtestsMsm)) {
+	            currentMessage = $("#mathSubtestsMsg").val();
+	        }
+	    	if ( ! scoreCalculatable_TABE_ADAPTIVE(tmpSelectedSubtestsMsm)) {
+	            if (currentMessage == "")
+	                currentMessage = $("#scoreCalulatableMsg").val();  // just warning, not error
+	            else {
+	                currentMessage += "<br/>";
+	                currentMessage += $("#scoreCalulatableMsg").val();  // just warning, not error
+	                
+	            }
+	        }
+		}
+		
+		return currentMessage;
 	}
 	
 	
