@@ -61,6 +61,7 @@
 				        	getAndPopulateManifestDetail(statusWizard, index);
 				        }
 				    } else {
+				        hideMessage();
 				    	statusWizard.accordion("activate", index);
 				    }
 					
