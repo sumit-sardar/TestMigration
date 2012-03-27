@@ -896,13 +896,13 @@ public class CurriculumCollector {
                 primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
                 primaryObjective.setPrimaryObjectivePointsPossible(new Long(0));
                 primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
-              //  primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                primaryObjective.setSubtestLevel("CAT"); // Default value to be entered for changes in cat adaptive engine
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
                 
                 String level = rs.getString("subtestLevel");
                 System.out.println("*** OAS ROSTER ID: " + oasRosterId.toString());
-                if(null != level && level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
+                /*if(null != level && level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
                 	//System.out.println("*** Obj ID: " + primaryObjective.getPrimaryObjectiveId().toString());
                 	//System.out.println("*** level: " + level);
                 	 String[] objectiveScores = level.split("\\|");
@@ -917,7 +917,7 @@ public class CurriculumCollector {
                      }
                 } else {
                 	primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
-                }
+                }*/
                
                 
                 String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();

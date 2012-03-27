@@ -79,7 +79,8 @@ public class StudentObjectiveScoresController {
                         "E".equals(prim.getSubtestLevel())?26:
                         "M".equals(prim.getSubtestLevel())?27:
                         "D".equals(prim.getSubtestLevel())?28:
-                        "A".equals(prim.getSubtestLevel())?29:24));
+                        "A".equals(prim.getSubtestLevel())?29:
+                        "CAT".equals(prim.getSubtestLevel())?23:24));
                 primObjFact.setOrgNodeid(contextData.getOrgNodeId());
                 primObjFact.setProgramid(contextData.getProgramId());
                 primObjFact.setSessionid(contextData.getSessionId());

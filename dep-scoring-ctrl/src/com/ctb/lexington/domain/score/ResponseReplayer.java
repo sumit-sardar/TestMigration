@@ -278,10 +278,10 @@ public class ResponseReplayer {
 	        //System.out.println("objectiveValues[3] -> " + objectiveValues[3]);
 	        event.setObjectiveSSsem(Double.parseDouble(objectiveValues[4]));
 	        //System.out.println("objectiveValues[4] -> " + objectiveValues[4]);
-	        event.setObjectiveLevel(objectiveValues[5]);
+	       /* event.setObjectiveLevel(objectiveValues[5]);*/
 	        //System.out.println("objectiveValues[5] -> " + objectiveValues[5]);
-	        event.setObjectiveMasteryLevel(Integer.parseInt(objectiveValues[6]));
-	        //System.out.println("objectiveValues[6] -> " + objectiveValues[6]);
+	        event.setObjectiveMasteryLevel(Integer.parseInt(objectiveValues[5]));
+	       // System.out.println("objectiveValues[5] -> " + objectiveValues[5]);
         }
         event.setAbilityScore(abilityScore);
         event.setContentAreaName(itemSetName);
