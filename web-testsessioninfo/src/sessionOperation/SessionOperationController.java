@@ -67,6 +67,7 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
+import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.testSessionInfo.data.SubtestVO;
@@ -5367,7 +5368,19 @@ public class SessionOperationController extends PageFlowController {
 		        	   	 status.setSuccessInfo(successInfo);
 					 }
 					
-				 } catch(Exception e){
+				 } catch(InsufficientLicenseQuantityException e){
+					 e.printStackTrace();
+					 String errorMessageHeader =  MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+		             String errorMessageBody =  MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity.E001.Body");
+		             validationFailedInfo.setMessageHeader(errorMessageHeader);
+		             validationFailedInfo.updateMessage(errorMessageBody);
+		             validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+				}catch(ManifestUpdateFailException e){
+					 e.printStackTrace();
+					 String errorMessageHeader =  MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+		             validationFailedInfo.setMessageHeader(errorMessageHeader);
+		             validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+				}catch(Exception e){
 					 e.printStackTrace();
 					 String errorMessageHeader = MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
 		             validationFailedInfo.setKey("SYSTEM_EXCEPTION");
@@ -5376,6 +5389,9 @@ public class SessionOperationController extends PageFlowController {
 				
 			}catch ( Exception e){
 				e.printStackTrace();
+				String errorMessageHeader = MessageResourceBundle.getMessage("FailedToSaveStudentManifest");
+	            validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+	            validationFailedInfo.setMessageHeader(errorMessageHeader);
 			}
 			
 			if(validationFailedInfo.isValidationFailed()){
