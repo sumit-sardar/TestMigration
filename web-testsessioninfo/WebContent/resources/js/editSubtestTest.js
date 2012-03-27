@@ -496,8 +496,9 @@
 	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
 	   }
 	    displaySourceTable(allSubtests, selectedSubtests,'availableSubtestsTable');
+	    var isProductHasLocator = ( locatorSubtest != null && locatorSubtest != undefined && locatorSubtest.id != undefined) ? true : false ;
 	    var haslocator= (locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && hasAutolocator);
-	    displayDestinationTable(allSubtests, selectedSubtests, ProductData.levelOptions, false, haslocator);
+	    displayDestinationTable(allSubtests, selectedSubtests, ProductData.levelOptions, false, isProductHasLocator, haslocator);
 	    
 	    if (selectedSubtests != undefined && selectedSubtests.length > 0) {
 	        $("#removeAllRows").attr("disabled", false);
@@ -558,7 +559,7 @@
 	    return "<td class='dynamic' >" + name + "</td>";
 	}
 	
-	function displayDestinationTable(allSubtestsSrc, selectedSubtestsSrc, levelOptionsSrc, isFromModifyStdManifest, isLocatorPresent ) {
+	function displayDestinationTable(allSubtestsSrc, selectedSubtestsSrc, levelOptionsSrc, isFromModifyStdManifest, isProductHasLocator, isLocatorPresent ) {
 	    var destHtmlText = "";
 	    if (allSubtestsSrc == null) {
 	        allSubtestsSrc = new Array();
@@ -583,14 +584,16 @@
 	        destHtmlText += displayDestinationRowStart(index, displayFlag);
 	        destHtmlText += displayDestinationNameCell(allSubtestsSrc[ii].subtestName, index, value);
 	        if(!isFromModifyStdManifest){
-	        	if(!isLocatorPresent) { 
+	        	if(isProductHasLocator && !isLocatorPresent ) {
 	        	 	destHtmlText += displayDestinationLevelDropdown(index, level, levelOptionsSrc, true, ii);
 	         		$("#modifyTestLevel").show();
 	        	} else {
 	          		$("#modifyTestLevel").hide();
 	        	}
 	        } else {
-	        	destHtmlText += displayDestinationLevelDropdown(index, level, levelOptionsSrc, !isLocatorPresent, ii);
+	            if(isProductHasLocator){
+	        		destHtmlText += displayDestinationLevelDropdown(index, level, levelOptionsSrc, !isLocatorPresent, ii);
+	        	}
 	        
 	        }
 

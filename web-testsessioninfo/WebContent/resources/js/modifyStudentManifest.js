@@ -318,16 +318,16 @@
 	    if(studentManifestdetails.studentManifests.length>0){
 	    	isLocatorPresent = (subTestDetails.locatorSubtest != undefined && subTestDetails.locatorSubtest.id == studentManifestdetails.studentManifests[0].id) ? true : false;
 	    }
-	    if(locatorSubtest!=null && locatorSubtest != undefined && !isLocatorPresent) { 
+	    var isProductHasLocator = (subTestDetails.locatorSubtest != null && subTestDetails.locatorSubtest != undefined) ? true : false;
+	    if(isProductHasLocator && !isLocatorPresent) { 
 	         $("#modifyTestLevelMsm").show();
 	   } else {
 	          $("#modifyTestLevelMsm").hide();
 	   }
 	     updateAllSubtests(allSubtestsMsm, selectedSubtestsMsm);
 	     displaySourceTable(allSubtestsMsm, selectedSubtestsMsm,'availableSubtestsTableMsm');
-	     displayDestinationTable(allSubtestsMsm, selectedSubtestsMsm, levelOptions, true , isLocatorPresent);
-	     //displaySourceTableMsm();
-	     //displayDestinationTableMsm();
+	     displayDestinationTable(allSubtestsMsm, selectedSubtestsMsm, levelOptions, true ,isProductHasLocator, isLocatorPresent);
+
 	     if (selectedSubtestsMsm != undefined && selectedSubtestsMsm.length > 0) {
 	        $("#removeAllRowsMsm").attr("disabled", false);
 	        $("#removeAllRowsMsm").addClass("ui-widget-header");
@@ -555,7 +555,10 @@
 							key 		     = data.successInfo.key;
 							messageHeader 	 = data.successInfo.messageHeader;
 							messageArray     = data.successInfo.message;
-						  } 
+						  } else if(data.IsSystemError) {
+						  		messageHeader 	 = data.validationFailedInfo.messageHeader;
+						        messageArray     = data.validationFailedInfo.message;
+						  }
 						  
 						  if(messageArray!=undefined){
 							length= messageArray.length;
@@ -567,12 +570,14 @@
 							} else if (length==1) {
 								setSessionSaveMessage(messageHeader, messageArray[0]);
 							}  
-							$.unblockUI();
 						  } else if (data.IsSystemError) {
-						         messageHeader 	 = data.validationFailedInfo.messageHeader;
-								setMsmErrorMessage(messageHeader, "");
-								$.unblockUI();
+						  		if(length==0){
+						         	setMsmErrorMessage(messageHeader, "");
+						         }else {
+						         	setMsmErrorMessage(messageHeader, messageArray[0]);
+						         }					         
 					  	}
+					  	$.unblockUI();
 					  
 					},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
