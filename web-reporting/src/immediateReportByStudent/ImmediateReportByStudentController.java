@@ -625,7 +625,10 @@ public class ImmediateReportByStudentController extends PageFlowController {
 		        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 		        getResponse().setHeader("Pragma", "public");
 		        getResponse().setCharacterEncoding("UTF-8");
-		        utilsCSV.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+		        //utilsCSV.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+		        OutputStream os = getResponse().getOutputStream();
+				os.write('\ufeff');
+		        utilsCSV.setup(os, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
 		        utilsCSV.generateReport();
 			//}
 		} catch (CTBBusinessException ce){
