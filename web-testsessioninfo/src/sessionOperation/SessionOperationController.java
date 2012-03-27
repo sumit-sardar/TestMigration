@@ -1053,7 +1053,7 @@ public class SessionOperationController extends PageFlowController {
     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
     			 status.setValidationFailedInfo(validationFailedInfo);
     	    }
-    	    //vo.setAccomodationMap(accomodationMap);
+    	    vo.setAccomodationMap(accomodationMap);
 			Gson gson = new Gson();
 			jsonData = gson.toJson(vo);
 			//System.out.println(jsonData);

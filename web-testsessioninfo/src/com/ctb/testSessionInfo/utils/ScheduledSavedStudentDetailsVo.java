@@ -3,6 +3,7 @@ package com.ctb.testSessionInfo.utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -22,6 +23,7 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
 	private List<SubtestVO> studentManifests;
 	private ArrayList<String> levelOptions = null;
 	private int page = 1;
+	Map<Integer,Map> accomodationMap;
 	
 	
 	
@@ -99,6 +101,12 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
 		levelOptions.add("M");
 		levelOptions.add("D");
 		levelOptions.add("A");
+	}
+	public Map<Integer, Map> getAccomodationMap() {
+		return accomodationMap;
+	}
+	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
+		this.accomodationMap = accomodationMap;
 	}
 	
 	

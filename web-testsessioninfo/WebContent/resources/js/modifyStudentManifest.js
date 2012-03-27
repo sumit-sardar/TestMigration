@@ -12,6 +12,8 @@
 	var isSelectedTestTabePr = "false";
 	var isSelectedTabeAdaptivePr = "false";
 	var warningMessage = "";
+	var msmAccomMap ={};
+	var msmHtimer;
 	 
 
 	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType){
@@ -102,7 +104,7 @@
 		   			cellattr: function (rowId, tv, rawObject, cm, rdata) { 
 		   				var returnStr = '';
 						if(rawObject.hasAccommodations == 'Yes'){
-							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showAccoToolTip('+rawObject.studentId+',event);" onmouseout="hideAccoToolTipPopUp();"' ;
+							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showMsmAccoToolTip('+rawObject.studentId+',event);" onmouseout="hideMsmAccoToolTipPopUp();"' ;
 						}else {
 							returnStr = 'style="white-space: normal;cursor:pointer;"' ;
 						}	
@@ -123,6 +125,10 @@
 				        noOfRows = subTestDetails.subtests.length;
 				    }
 				    $("#numberOfRowsMsm").val(noOfRows);
+				    msmAccomMap = {};
+				    if(obj.accomodationMap !=null && obj.accomodationMap != undefined){
+				    	msmAccomMap = obj.accomodationMap;
+				    }
 
 			   	} 
 		   	
@@ -436,6 +442,7 @@
 	 closePopUp('modifyStudentManifestPopup');
       isSelectedTestTabePr = "false";
 	  isSelectedTabeAdaptivePr = "false";
+	  msmAccomMap ={};
 	}
 
 	function resetMsmOldValues(){
@@ -639,6 +646,52 @@
 		}
 		
 		return currentMessage;
+	}
+	
+	function showMsmAccoToolTip(rowId,event){
+		if(msmAccomMap[rowId]){
+			var obj = msmAccomMap[rowId];
+			for(var key in obj){
+				if(obj[key] == "T"){
+					$("#"+key+"Status").show();
+				}else {
+					$("#"+key+"Status").hide();
+				}
+			}
+			showMsmAccoToolTipPopUp(event);
+		}
+	}
+		
+
+	
+	function showMsmAccoToolTipPopUp(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("accommodationToolTip");		
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		$("td","#accommodationToolTip").css('padding-top','0px');
+		$("td:visible","#accommodationToolTip").eq(0).css('padding-top','5px');
+		msmHtimer = setTimeout("hideAccoToolTipPopUp()", 50000);
+	}
+	
+	function hideMsmAccoToolTipPopUp() {
+		clearTimeout(msmHtimer);
+		$("tr[id$='Status']","#accommodationToolTip").hide();
+		document.getElementById("accommodationToolTip").style.display = "none";
 	}
 	
 	
