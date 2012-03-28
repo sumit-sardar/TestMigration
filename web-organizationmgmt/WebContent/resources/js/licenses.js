@@ -484,24 +484,28 @@ function str2num(sText) {
 
 
 function saveLicenses() {
-	$.ajax({
-		async:		false,
-		beforeSend:	function(){
-						UIBlock();
-					},
-		url:		'saveLicenses.do',
-		type:		'POST',
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
-						$.unblockUI(); 
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
-						window.location.href="/SessionWeb/logout.do";						
-					},
-		complete :  function(){
-						 $.unblockUI(); 
-					}
-	});
+
+	var result = confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
+	if (result) { 
+		$.ajax({
+			async:		false,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'saveLicenses.do',
+			type:		'POST',
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";						
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+	}
 }
                 
