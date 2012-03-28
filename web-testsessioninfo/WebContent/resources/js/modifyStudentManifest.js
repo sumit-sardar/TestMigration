@@ -31,7 +31,7 @@
 	function openModifyStdManifestPopup(element) {
 	    isForStudentSubtestModification = true; //used for subtest modification true for student	
 	    resetMsmOldValues();
-		if (isButtonDisabled(element)) {
+		if (isButtonDisabled(element) || (isSelectedTestTabePr == "false" && isSelectedTabeAdaptivePr == "false")) {
 			return true;
 		}
 		
@@ -352,7 +352,7 @@
 		$("#mStdMStudentListContent").css("height",'380px');
 		$("#mStdMStudentDetailContent").css("height",'380px');
 		var toppos = ($(window).height() - 650) /2 + 'px';
-		var leftpos = ($(window).width() - 1024) /2 + 'px';
+		var leftpos = ($(window).width() - 880) /2 + 'px';
 		$("#modifyStudentManifestPopup").parent().css("top",toppos);
 		$("#modifyStudentManifestPopup").parent().css("left",leftpos);	
 	}
@@ -410,30 +410,13 @@
 			removeSubtestLevel = false;
 			$("#modifyTestLevelMsm").show();
 		}
-		/*for( var ii=0, jj=tds.length; ii<jj; ii++ ){
+		for( var ii=0, jj=allSubtestsMsm.length; ii<jj; ii++ ){
 			if(removeSubtestLevel) {
-				$(tds[ii]).hide();
+				$("#subtestLevel_"+ii).hide();
 			} else {
-				$(tds[ii]).show();
+				$("#subtestLevel_"+ii).show();
 			}
-		}*/
-		/*$('#selectedSubtestsTableMsm #subtestLevel').each(function (i) { 
-				if(removeSubtestLevel) {
-					$(this).hide();
-				} else {
-					$(this).show();
-				}      
-			}); */
-		
-			for( var ii=0, jj=allSubtestsMsm.length; ii<jj; ii++ ){
-				if(removeSubtestLevel) {
-					$("#subtestLevel_"+ii).hide();
-				} else {
-					$("#subtestLevel_"+ii).show();
-				}
-			}
-		
-	
+		}
 	}
 	
 
