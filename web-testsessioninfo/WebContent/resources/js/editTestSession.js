@@ -19,6 +19,7 @@
 	var studentDtlChange = "F";
 	var proctorDtlChange = "F";
 	var cacheObjVal = {};
+	var savedStudentMap = new Map();//used to track student is old or new
 		
   function editTestSession(){  
      resetEditSessionPopulatedData();
@@ -348,6 +349,7 @@
 				data:		param,
 				success:	function(data, textStatus, XMLHttpRequest){
 								var stAccom = 0;
+								savedStudentMap = new Map();
 								if (data.status.isSuccess){
 									//editDataCache.put(index,data.savedStudentsDetails);
 									cacheObjVal.indexValue = "studentDetails";
@@ -357,6 +359,7 @@
 									studentMap = new Map();
 									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									
 										studentMap.put(AddStudentLocaldata[i].studentId, AddStudentLocaldata[i]);
+										savedStudentMap.put(AddStudentLocaldata[i].studentId, AddStudentLocaldata[i]);
 										var hasAccom = AddStudentLocaldata[i].hasAccommodations;
 										if(hasAccom == 'Yes') {										
 								 	 		stAccom++;
@@ -751,6 +754,7 @@
         editDataMrkStds = new Map();
 		offGradeSubtestChanged = false;
 		cacheObjVal = {};
+		savedStudentMap = new Map();
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');

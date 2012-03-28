@@ -875,8 +875,19 @@ function updateAddStudentLocaldata() {
 		    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
 			AddStudentLocaldata[i].studentId = keys[i];
 		}
+	}
 	
-	
+	keys = savedStudentMap.getKeys();
+	var counter = 0;
+	var delStudentTempMap = new Array();
+	for(var i =0 ; i<keys.length; i++ ) {
+		var finalObject = studentTempMap.get(keys[i]);
+		if(finalObject ==null || finalObject == undefined || String((savedStudentMap.get(keys[i])).orgNodeId) != String(finalObject.orgNodeId) ){//subhendu
+			delStudentTempMap[counter++] = keys[i];
+		}
+	}
+	for(var i =0 ; i<delStudentTempMap.length; i++ ) {
+		savedStudentMap.remove(delStudentTempMap[i]);
 	}
 }
 
@@ -1018,7 +1029,8 @@ function getStudentListArray(studentArray) {
 	  var l = 0;
 	  for (var i=0; i<studentArray.length; i++) {
 	    if(studentArray[i]!= undefined && studentArray[i] != null) {
-	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["statusCopyable"],  studentArray[i].itemSetForm );
+	       var isNew = (savedStudentMap.get(studentArray[i].studentId)==null) ? true : false;
+	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["statusCopyable"],  studentArray[i].itemSetForm , isNew);
 	        resultStdArray[l]= val.toString();
 	        ++l;
 	    }
@@ -1053,24 +1065,21 @@ function getStudentListArray(studentArray) {
     	return validStatus;
     }
 
-    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm) {
+    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm, isNew) {
 	   this.studentId = studentId;
 	   this.orgNodeId = orgNodeId;
 	   this.extendedTimeAccom = "";
-	   if(extendedTimeAccom != undefined)
-	   		this.extendedTimeAccom = extendedTimeAccom;
-	   
+	   this.isNewStd = false;
+	   if(extendedTimeAccom != undefined)  		this.extendedTimeAccom = extendedTimeAccom;
 	   this.statusCopyable = "";
-	   if(statusCopyable != undefined)
-	   		this.statusCopyable = statusCopyable;
-
+	   if(statusCopyable != undefined)	this.statusCopyable = statusCopyable;
 	   this.itemSetForm ="";
-	   if(itemSetForm != undefined)
-	   		this.itemSetForm = itemSetForm;
+	   if(itemSetForm != undefined) this.itemSetForm = itemSetForm;
+	   	if(isNew) this.isNewStd = true;
 	}
 	
 	SessionStudent.prototype.toString = function () {
-  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":");
+  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":isNewStd="+this.isNewStd+":");
 	};
 	
 	function cloneStudentMapToTemp() {

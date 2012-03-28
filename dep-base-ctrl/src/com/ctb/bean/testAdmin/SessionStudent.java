@@ -32,6 +32,7 @@ public class SessionStudent extends SchedulingStudent
     private StudentManifest [] studentManifests;
     private String[] valueMap;
     private List valueHashMap;
+    private boolean isNewStudent = false;
     
     public SessionStudent() {
         super();
@@ -181,5 +182,13 @@ public class SessionStudent extends SchedulingStudent
 	 */
 	public void setValueHashMap(List valueHashMap) {
 		this.valueHashMap = valueHashMap;
+	}
+
+	public boolean isNewStudent() {
+		return isNewStudent;
+	}
+
+	public void setNewStudent(boolean isNewStudent) {
+		this.isNewStudent = isNewStudent;
 	}
 } 

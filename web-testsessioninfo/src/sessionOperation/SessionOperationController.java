@@ -1494,6 +1494,8 @@ public class SessionOperationController extends PageFlowController {
 								ss.setStatus(status);
 							} else if (key.equalsIgnoreCase("itemSetForm")) {
 								ss.setItemSetForm(val);
+							} else if (key.equalsIgnoreCase("isNewStd") && val !=null && val.equalsIgnoreCase("true") ) {
+								ss.setNewStudent(true);
 							}
 						}
 	
@@ -1511,12 +1513,12 @@ public class SessionOperationController extends PageFlowController {
 	    	isStudentManifestsExists = true;
 		}
 			
-		/*if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0 && !isAddOperation){
+		if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0 && !isAddOperation){
 			if(TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
 				updateStudentstudentManifests(scheduledSession, savedSessionMinData, isStudentManifestsExists );
 			}
 				
-		}*/
+		}
 		
 	  if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0) {
 		  SessionStudent [] sessionStudents = scheduledSession.getStudents();
@@ -1538,8 +1540,8 @@ public class SessionOperationController extends PageFlowController {
 
                   // replicate student's manifest if this student has no individual manifest
                   StudentManifest [] studentManifests = sessionStudent.getStudentManifests();
-//                  if ((studentManifests == null) || (studentManifests.length == 0))
-//                  {
+                 if ((studentManifests == null) || (studentManifests.length == 0))
+                  {
                       
                       List studentSubtestList = TestSessionUtils.getDefaultSubtests(newTEs);
                       
@@ -1574,7 +1576,7 @@ public class SessionOperationController extends PageFlowController {
                       }
                                    
                       sessionStudent.setStudentManifests(studentManifests);
-//                  }  
+                  }  
 
 	           }
 		  }
@@ -1610,7 +1612,8 @@ public class SessionOperationController extends PageFlowController {
 				stdIdManifestsMap.put(std.getStudentId(), std.getStudentManifests());
 			}
 			for(SessionStudent std: scheduledStds){
-				std.setStudentManifests(stdIdManifestsMap.get(std.getStudentId()) );
+				if(!std.isNewStudent())
+					std.setStudentManifests(stdIdManifestsMap.get(std.getStudentId()) );
 			}
 			
 			

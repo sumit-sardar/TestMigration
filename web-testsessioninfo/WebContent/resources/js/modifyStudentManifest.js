@@ -423,8 +423,6 @@
 	function closemodifyStudentManifestPopup(){
 	 resetMsmOldValues();
 	 closePopUp('modifyStudentManifestPopup');
-      isSelectedTestTabePr = "false";
-	  isSelectedTabeAdaptivePr = "false";
 	  msmAccomMap ={};
 	}
 

@@ -1437,6 +1437,7 @@ function registerDelegate(tree){
 				}
 				delete accomodationMap[delStuIdObjArray[i]];
 				studentTempMap.remove(delStuIdObjArray[i]);
+				savedStudentMap.remove(delStuIdObjArray[i]);
 			}
 		}
 		closePopUp('removeStuConfirmationPopup');
@@ -1470,6 +1471,7 @@ function registerDelegate(tree){
 	isFourthAccordSelected = false;
 	var postDataObject = {};
  	postDataObject.currentAction = 'init';
+ 	savedStudentMap = new Map();
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
