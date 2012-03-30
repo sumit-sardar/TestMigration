@@ -17,9 +17,9 @@
  </div>
  
  <div id="mStdMlocatorDiv" class="roundedMessage ui-corner-all" style="display: block; padding-top: 0px !important;">
-	<div style="font-weight: bold; color: rgb(46, 110, 158);" id="locatorSubtestGridHeading"> 
+	<div style="font-weight: bold; color: rgb(46, 110, 158);" id="mStdMlocatorSubtestGridHeading"> 
 		Locator Test
-		<img src="/SessionWeb/resources/images/questionmark.jpg" onmouseover="showLocatorMessage(event);" onmouseout="hideLocatorMessage();" id="locatorSubtestGridToolTip"> 
+		<img src="/SessionWeb/resources/images/questionmark.jpg" onmouseover="showLocatorMessage(event);" onmouseout="hideLocatorMessage();" id="mStdMlocatorSubtestGridToolTip"> 
 	</div>
 	<div id="mStdMlocatorContentDiv" style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
 		
