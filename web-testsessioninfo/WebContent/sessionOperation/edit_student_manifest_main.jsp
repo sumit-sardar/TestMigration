@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div id="mStdMStudentDetailId">
-		<h3 id="mStdMStudentDetailHeader"><a href="#"><lb:label key="viewStatus.subDet.title" /></a></h3>
+		<h3 id="mStdMStudentDetailHeader"><a href="#"><lb:label key="session.modifySubtest.button" /></a></h3>
 		<div id="mStdMStudentDetailContent" style="background-color: #FFFFFF; overflow-x: hidden !important; overflow-y: scroll !important; padding-top: 0px !important;">
 			<jsp:include page="/sessionOperation/edit_student_manifest_manifest_detail.jsp" />
 		</div>
