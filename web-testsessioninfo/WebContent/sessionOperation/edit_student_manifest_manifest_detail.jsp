@@ -16,6 +16,23 @@
 	</div>
  </div>
  
+ <div style="padding-bottom: 5px !important;" class="roundedMessage ui-corner-all">
+		 <table id="msmLabelTb" style="margin-top: 5px; width: 808px;">
+			<tr>
+				<td align="left" width="16%"  style="padding: 2px !important;"><lb:label key="viewStatus.subtest.testSessionName" /></td>
+				<td width="80%"><span id = "msmTestSessionName1"></span></td>
+			</tr>
+			<tr>
+				<td align="left" width="16%" style="padding: 2px !important;"><lb:label key="common.lebel.name.student.name" /></td>
+				<td width="80%"><span id = "msmStudentName"></span></td>
+			</tr>
+			<tr id="msmLocatorInfo"   style="display: none;">
+					<td align="left" width="16%" style="padding: 2px !important;"><lb:label key="common.lebel.name.locator.session" /></td>
+					<td width="80%"><span id = "msmLocatorDetail"></span></td>
+			</tr>
+		</table>
+	</div>
+ 
  <div id="mStdMlocatorDiv" class="roundedMessage ui-corner-all" style="display: block; padding-top: 0px !important;">
 	<div style="font-weight: bold; color: rgb(46, 110, 158);" id="mStdMlocatorSubtestGridHeading"> 
 		Locator Test

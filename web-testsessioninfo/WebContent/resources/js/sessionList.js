@@ -190,7 +190,7 @@ function populateSessionListGrid(homePageLoad) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');
 					var selectedRData = $("#list2").getRowData(rowId);
-					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType);	
+					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType, selectedRData.testName, selectedRData.testAdminName);	
 					selectedTestAdminId = rowId;						
 					$('#showSaveTestMessage').hide();
 					if($("#canRegisterStudent").val() == 'true'){

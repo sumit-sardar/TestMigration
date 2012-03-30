@@ -14,12 +14,17 @@
 	var warningMessage = "";
 	var msmAccomMap ={};
 	var msmHtimer;
+	var msmSelectedTestName = "";
+	var msmTestAdminName = "";
+	var msmSelectedStudentName = "";
 	 
 
-	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType){
+	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType, selectedTestName, testAdminName){
 
 		isSelectedTestTabePr      = isTabeProduct;
 		isSelectedTabeAdaptivePr = isTabeAdaptiveProduct;
+		msmSelectedTestName = selectedTestName;
+		msmTestAdminName = testAdminName;
 		if((isTabeProduct == "true" || isTabeAdaptiveProduct =="true" ) && (productType!='tabeLocatorProductType') && ($("#modifyStdManifestButton").length > 0)){
 			setAnchorButtonState('modifyStdManifestButton', false);
 		} else if ($("#modifyStdManifestButton").length > 0) {
@@ -38,6 +43,10 @@
 		$('#displayMessage').hide();	
 		document.getElementById('modifyStdManifestButton').style.display = "block";	
 		populateModifyStdManifestPopup();
+		$('#msmTestName').text(msmSelectedTestName);
+		$('#msmTestSessionName').text(msmTestAdminName);
+		$('#msmTestSessionName1').text(msmTestAdminName);
+		
 		 if(isSelectedTestTabePr == "true" ){ 
 	   		$("#mmsModifySubtestMsg").html($("#tabeModifySubtestMsg").val())
 	   } else {
@@ -60,6 +69,7 @@
 				        if(oldModifyManifestStudentId != -1 && oldModifyManifestStudentId == modifyManifestStudentId){// if already populated no need to populate again
 				        	statusWizard.accordion("activate", index);
 				        } else {
+				             $('#msmStudentName').text(msmSelectedStudentName);
 				        	getAndPopulateManifestDetail(statusWizard, index);
 				        }
 				    } else {
@@ -182,6 +192,11 @@
 				modifyManifestStudentId = rowid;
 				var rowData = $("#mmStdList").getRowData(rowid);
 				modifyManifestStudentOrgId = rowData.orgNodeId ;
+				msmSelectedStudentName = rowData.lastName+", " + rowData.firstName;
+				if( rowData.middleName !=null && rowData.middleName != undefined && rowData.middleName != "" ) {
+					msmSelectedStudentName = msmSelectedStudentName+" " + rowData.middleName; 
+				}
+				
 				if(modifyManifestStudentId != oldModifyManifestStudentId){
 					resetOnSelectStudentValues();
 					oldModifyManifestStudentId = -1;
@@ -349,8 +364,8 @@
 	 
 	
 	function setPopupPositionModifyStudent(){
-		$("#mStdMStudentListContent").css("height",'380px');
-		$("#mStdMStudentDetailContent").css("height",'380px');
+		$("#mStdMStudentListContent").css("height",'445px');
+		$("#mStdMStudentDetailContent").css("height",'445px');
 		var toppos = ($(window).height() - 650) /2 + 'px';
 		var leftpos = ($(window).width() - 880) /2 + 'px';
 		$("#modifyStudentManifestPopup").parent().css("top",toppos);
@@ -434,6 +449,10 @@
   		$("#modifyStudentManifestAccordion").accordion("destroy");
         $("#selectedSubtestsTable").html("");
         $("#availableSubtestsTable").html("");
+        $('#msmTestName').text("");
+	    $('#msmTestSessionName').text("");
+	    $('#msmSTestName').text("");
+	    $('#msmSTestSessionName').text("");
         allSubtestMapMsm = new Map();
         modifyManifestStudentId = -1;
         oldModifyManifestStudentId = -1;
