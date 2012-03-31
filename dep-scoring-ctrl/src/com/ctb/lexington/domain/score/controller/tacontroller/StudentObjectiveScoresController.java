@@ -55,7 +55,7 @@ public class StudentObjectiveScoresController {
                 primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
                 primObjFact.setPointsObtained(details.getPointsObtained());
                 primObjFact.setPointsPossible(details.getPointsPossible());
-                primObjFact.setMasteryLevelid( new Long( 
+/*                primObjFact.setMasteryLevelid( new Long( 
                                                     "NM".equals(details.getMasteryLevel())?1:
                                                     "PM".equals(details.getMasteryLevel())?2:
                                                     "M".equals(details.getMasteryLevel())?3:
@@ -65,6 +65,14 @@ public class StudentObjectiveScoresController {
                                                     "Not Mastered".equals(details.getMasteryLevel())?1:
                                                     "Partially Mastered".equals(details.getMasteryLevel())?2:
                                                     "Mastered".equals(details.getMasteryLevel())?3:4 ));
+*/
+                primObjFact.setMasteryLevelid( new Long(
+                		"Not Mastered".equalsIgnoreCase(details.getMasteryLevel())?1:
+                        "Beginner".equalsIgnoreCase(details.getMasteryLevel())?2:
+                        "Partially Mastered".equalsIgnoreCase(details.getMasteryLevel())?3:
+                        "Mastered".equalsIgnoreCase(details.getMasteryLevel())?4:
+                        "Advanced".equalsIgnoreCase(details.getMasteryLevel())?5:6));
+                
                 primObjFact.setPercentObtained(details.getPercentObtained());
                 primObjFact.setPointsAttempted(details.getPointsAttempted());
                     
