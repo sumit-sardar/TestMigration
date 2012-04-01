@@ -55,24 +55,18 @@ public class StudentObjectiveScoresController {
                 primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
                 primObjFact.setPointsObtained(details.getPointsObtained());
                 primObjFact.setPointsPossible(details.getPointsPossible());
-/*                primObjFact.setMasteryLevelid( new Long( 
-                                                    "NM".equals(details.getMasteryLevel())?1:
-                                                    "PM".equals(details.getMasteryLevel())?2:
-                                                    "M".equals(details.getMasteryLevel())?3:
-                                                    "NON-MASTERY".equals(details.getMasteryLevel())?1:
-                                                    "PARTIAL MASTERY".equals(details.getMasteryLevel())?2:
-                                                    "MASTERY".equals(details.getMasteryLevel())?3:
-                                                    "Not Mastered".equals(details.getMasteryLevel())?1:
-                                                    "Partially Mastered".equals(details.getMasteryLevel())?2:
-                                                    "Mastered".equals(details.getMasteryLevel())?3:4 ));
-*/
-                primObjFact.setMasteryLevelid( new Long(
-                		"Not Mastered".equalsIgnoreCase(details.getMasteryLevel())?1:
-                        "Beginner".equalsIgnoreCase(details.getMasteryLevel())?2:
-                        "Partially Mastered".equalsIgnoreCase(details.getMasteryLevel())?3:
-                        "Mastered".equalsIgnoreCase(details.getMasteryLevel())?4:
-                        "Advanced".equalsIgnoreCase(details.getMasteryLevel())?5:6));
-                
+                primObjFact.setMasteryLevelid( new Long( 
+                                                    "NM".equals(details.getMasteryLevel())?5:
+                                                    "BG".equals(details.getMasteryLevel())?6:
+                                                    "PM".equals(details.getMasteryLevel())?7:
+                                                    "M".equals(details.getMasteryLevel())?8:
+                                                    "AV".equals(details.getMasteryLevel())?9:
+                                                    "NON-MASTERY".equals(details.getMasteryLevel())?5:
+                                                    "BEGINNER".equals(details.getMasteryLevel())?6:
+                                                    "PARTIAL MASTERY".equals(details.getMasteryLevel())?7:
+                                                    "MASTERY".equals(details.getMasteryLevel())?8:
+                                                    "ADVANCED".equals(details.getMasteryLevel())?9:10 ));
+                                                                    
                 primObjFact.setPercentObtained(details.getPercentObtained());
                 primObjFact.setPointsAttempted(details.getPointsAttempted());
                     

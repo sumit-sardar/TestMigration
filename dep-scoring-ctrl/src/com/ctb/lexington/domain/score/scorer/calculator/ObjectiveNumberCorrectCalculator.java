@@ -307,12 +307,7 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
 	            if(objectiveId > 0) {
 		            int masteryValue = entry.getValue();
 		            MasteryLevel masteryLevel;
-		            if(masteryValue == 0)
-			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(10);
-			    	else if (masteryValue == 1)
-			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(60);
-			    	else
-			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(80);
+		            masteryLevel = MasteryLevel.masteryLevelForAdaptive(masteryValue);
 			    //	System.out.println("******objectiveMasteryLevel -> masteryLevel.getCode() -> " + masteryLevel.getCode());
 			    //	System.out.println("event.getItemSetId().longValue() -> " + event.getItemSetId().longValue());
 	

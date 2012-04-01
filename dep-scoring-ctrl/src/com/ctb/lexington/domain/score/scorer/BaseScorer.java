@@ -315,16 +315,14 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
        // System.out.println("computed NC score for objective " + event.getObjectiveId() + ": " + details.getNumCorrect() + "/" + details.getNumOfItems());
        // System.out.println(getResultHolder().getAdminData().getProductId());
         if(getResultHolder().getAdminData().getProductId() != 8000) { 
-        	//System.out.println("getResultHolder().getAdminData().getProductId() != 8001");
 	        mastery = ObjectiveNumberCorrectCalculator.calculateMasteryLevel(details.getNumCorrect().intValue(), details.getNumAttempted().intValue() + details.getNumUnattempted().intValue());
 	        details.setMasteryLevel(mastery.getCode());
 	        details.setMastered( (mastery.isMastered() ? CTBConstants.TRUE
 	                : CTBConstants.FALSE));	        
-        } else {
-        	//System.out.println("getResultHolder().getAdminData().getProductId() == 8001");
+        } else { // Process to be followed for tabe adaptive product
         	mastery = event.getMastery();
         	details.setMasteryLevel(mastery.getCode());
-	        details.setMastered( (mastery.isMastered() ? CTBConstants.TRUE
+        	details.setMastered( (mastery.isMasteredForTabeAdaptive() ? CTBConstants.TRUE
 	                : CTBConstants.FALSE));
         }
         details.setSubtestId(event.getSubtestId());

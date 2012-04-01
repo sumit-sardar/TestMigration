@@ -44,8 +44,14 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
     public void onEvent(ObjectivePrimaryNumberCorrectEvent opncEvent) {
     	//if(scorer.getResultHolder().getAdminData().getProductId() != 8000) {
 	        ContentAreaInfo contentArea = getContentAreaScores(opncEvent.getObjectiveId());
-	        if (opncEvent.getMastery().isMastered()) {
-	            contentArea.primaryObjectivesMastered.add(opncEvent.getObjectiveId());
+	        if(scorer.getResultHolder().getAdminData().getProductId() != 8000) {
+		        if (opncEvent.getMastery().isMastered()) {
+		            contentArea.primaryObjectivesMastered.add(opncEvent.getObjectiveId());
+		        }
+	        } else {
+	        	if (opncEvent.getMastery().isMasteredForTabeAdaptive()) {
+		            contentArea.primaryObjectivesMastered.add(opncEvent.getObjectiveId());
+		        }
 	        }
 	        contentArea.primaryObjectiveCount++;
     	//}
