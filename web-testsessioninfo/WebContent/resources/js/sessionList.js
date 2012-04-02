@@ -3380,14 +3380,7 @@ function registerDelegate(tree){
 									var updatedSessionName = $("#testSessionName").val();
 									var oplist = $("#testGroupList option");
 									var oplistval = $("#testGroupList").val();
-									var updatedTestName = "";
-									for(var ii=0; ii<oplist.length; ii++){
-									    if(oplist[ii].value == oplistval){
-									    	updatedTestName = $(oplist[ii]).text();
-									    	break;
-									    }
-										
-									}
+									var updatedTestName = $($('#testGroupList option[value='+oplistval+']')).text()
 									reInitializeModifyTestPopup(updatedPrType, updatedSessionName, updatedTestName);
 								 }
 							  	productType = $("#productType").val();
