@@ -3375,7 +3375,22 @@ function registerDelegate(tree){
 								   	setSessionSaveMessage(messageHeader,  messageArray[0], "infoMessage", messageArray[1]);
 								   	$('#displayMessage').show(); 
 								 } 
-							  	
+								 if(state == "EDIT"){
+									var updatedPrType = $("#productType").val(); // subhendu
+									var updatedSessionName = $("#testSessionName").val();
+									var oplist = $("#testGroupList option");
+									var oplistval = $("#testGroupList").val();
+									var updatedTestName = "";
+									for(var ii=0; ii<oplist.length; ii++){
+									    if(oplist[ii].value == oplistval){
+									    	updatedTestName = $(oplist[ii]).text();
+									    	break;
+									    }
+										
+									}
+									reInitializeModifyTestPopup(updatedPrType, updatedSessionName, updatedTestName);
+								 }
+							  	productType = $("#productType").val();
 							  	$('#showSaveTestMessage').show();
 							  	$.unblockUI();
 							  	closePopUp("scheduleSession");

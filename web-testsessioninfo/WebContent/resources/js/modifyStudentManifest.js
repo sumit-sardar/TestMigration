@@ -32,6 +32,25 @@
 		}
 	}
 	
+	function reInitializeModifyTestPopup(productType, selectedTestName, testAdminName){
+		msmSelectedTestName = selectedTestName;
+		msmTestAdminName = testAdminName;
+		if(productType!= undefined && productType!= null && (productType =='tabeBatterySurveyProductType' || productType =='tabeAdaptiveProductType') && ($("#modifyStdManifestButton").length > 0)){
+			setAnchorButtonState('modifyStdManifestButton', false);
+			if(productType =='tabeBatterySurveyProductType'){
+				isSelectedTestTabePr = "true";
+				isSelectedTabeAdaptivePr = "false";
+			} else if (productType =='tabeAdaptiveProductType') {
+				isSelectedTestTabePr = "false";
+				isSelectedTabeAdaptivePr = "true";
+			}
+		} else if ($("#modifyStdManifestButton").length > 0) {
+			setAnchorButtonState('modifyStdManifestButton', true);
+			isSelectedTestTabePr = "false";
+			isSelectedTabeAdaptivePr = "false";
+		}
+	}
+	
 	
 	function openModifyStdManifestPopup(element) {
 	    isForStudentSubtestModification = true; //used for subtest modification true for student	

@@ -83,7 +83,7 @@
 							    createSubtestGridInEdit(data.savedTestDetails, data.hasLocator , data.locatorId);
 							    $("#selectedNewTestId").val(data.savedTestDetails.testSession.itemSetId);
 							    $("#showStudentFeedback").val(data.savedTestDetails.testSession.showStudentFeedback);
-							    var optionHtml = "<option  value='"+data.savedTestDetails.testSession.productId+"'>"+data.savedTestDetails.testSession.productId+"</option>";
+							    var optionHtml = "<option  value='"+data.savedTestDetails.testSession.productId+"'>"+data.savedTestDetails.testSession.testName+"</option>";
      						    $("#testGroupList").html(optionHtml);
 							    $("#sData").removeClass("ui-state-disabled");
 							    $("#productType").val(data.productType);
