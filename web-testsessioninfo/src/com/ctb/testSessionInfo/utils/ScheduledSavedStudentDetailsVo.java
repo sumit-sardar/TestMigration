@@ -23,8 +23,9 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
 	private List<SubtestVO> studentManifests;
 	private ArrayList<String> levelOptions = null;
 	private int page = 1;
-	Map<Integer,Map> accomodationMap;
-	
+	private Map<Integer,Map> accomodationMap;
+	private Map<Integer,String> recomendedLevelMap;
+	private String locatorSessionInfo;
 	
 	
 	public void setSavedStudentsDetails(List<SessionStudent> savedStudentsDetails) {
@@ -107,6 +108,18 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
 	}
 	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
 		this.accomodationMap = accomodationMap;
+	}
+	public Map<Integer, String> getRecomendedLevelMap() {
+		return recomendedLevelMap;
+	}
+	public void setRecomendedLevelMap(Map<Integer, String> recomendedLevelMap) {
+		this.recomendedLevelMap = recomendedLevelMap;
+	}
+	public String getLocatorSessionInfo() {
+		return locatorSessionInfo;
+	}
+	public void setLocatorSessionInfo(String locatorSessionInfo) {
+		this.locatorSessionInfo = locatorSessionInfo;
 	}
 	
 	

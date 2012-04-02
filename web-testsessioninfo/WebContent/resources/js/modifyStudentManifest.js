@@ -265,6 +265,10 @@
 		var postDataObject = {};
  		postDataObject.studentId = modifyManifestStudentId;
  		postDataObject.testAdminId  = selectedTestAdminId;
+ 		$("#msmLocatorInfo").hide();
+		$("#msmLocatorInfo1").hide();
+		$("#msmLocatorDetail").text("");
+		
  		$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -279,9 +283,11 @@
 							studentManifestdetails = data;
 							prepareSelectedSubtestsMsm();
 							PopulateManifestDetail();
+							populateRecomendedLevel(studentManifestdetails);
 							statusWizard.accordion("activate", index);
 							enableButton('msmSaveButton');
 							oldModifyManifestStudentId = modifyManifestStudentId;
+							
 							
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -440,9 +446,21 @@
 		if(msmlocator.checked){
 			removeSubtestLevel = true;
 			$("#modifyTestLevelMsm").hide();
+			$("#msmLocatorInfo").hide();
+			$("#msmLocatorInfo1").hide();
+			$("#msmLocatorDetail").text("");
+			
+			
 		} else {
 			removeSubtestLevel = false;
 			$("#modifyTestLevelMsm").show();
+			if( studentManifestdetails.locatorSessionInfo != undefined){
+				$("#msmLocatorDetail").text(studentManifestdetails.locatorSessionInfo);
+				$("#msmLocatorInfo").show();
+				$("#msmLocatorInfo1").show();
+				
+			}
+			
 		}
 		for( var ii=0, jj=allSubtestsMsm.length; ii<jj; ii++ ){
 			if(removeSubtestLevel) {
@@ -711,6 +729,30 @@
 		clearTimeout(msmHtimer);
 		$("tr[id$='Status']","#accommodationToolTip").hide();
 		document.getElementById("accommodationToolTip").style.display = "none";
+	}
+	
+	function populateRecomendedLevel(studentManifestdetails){
+		if(subTestDetails.locatorSubtest == undefined || studentManifestdetails.recomendedLevelMap.length==0){
+			return;
+		}
+		var isLocatorPresentForStd = (subTestDetails.locatorSubtest.id == studentManifestdetails.studentManifests[0].id) ? true : false;
+		if(isLocatorPresentForStd ){
+		    for (var ii=0; ii<allSubtestsMsm.length; ii++ ) {
+		         var recLevel= studentManifestdetails.recomendedLevelMap[allSubtestsMsm[ii].id];
+		    	if(recLevel != undefined){
+		    	 	$("#level_"+(ii+1)).val(recLevel);
+		    	}
+		    }
+		
+		} else {
+			for (var ii=0; ii<allSubtestsMsm.length; ii++ ) {
+		         var recLevel= studentManifestdetails.recomendedLevelMap[allSubtestsMsm[ii].id];
+		          if (recLevel != undefined && !isExists(selectedSubtestsMsm, allSubtestsMsm[ii])) {
+					$("#level_"+(ii+1)).val(recLevel);
+		          }
+		    }
+			//
+		}
 	}
 	
 	

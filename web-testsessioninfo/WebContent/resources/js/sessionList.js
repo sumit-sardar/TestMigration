@@ -3376,7 +3376,7 @@ function registerDelegate(tree){
 								   	$('#displayMessage').show(); 
 								 } 
 								 if(state == "EDIT"){
-									var updatedPrType = $("#productType").val(); // subhendu
+									var updatedPrType = $("#productType").val(); 
 									var updatedSessionName = $("#testSessionName").val();
 									var oplist = $("#testGroupList option");
 									var oplistval = $("#testGroupList").val();

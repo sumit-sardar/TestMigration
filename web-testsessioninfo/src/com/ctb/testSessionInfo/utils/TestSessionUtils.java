@@ -18,6 +18,8 @@ import com.ctb.testSessionInfo.data.SubtestVO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class TestSessionUtils
@@ -1202,5 +1204,122 @@ public class TestSessionUtils
     
 		
 	}
+
+	public static TestElement getLocatorSubtest(TestElement[] usTes) {
+		TestElement locatorSubtest = null;
+		
+		for (int i=0 ; i<usTes.length ; i++) {
+            TestElement te = usTes[i];
+            if (te != null) {
+                if (te.getItemSetName().indexOf("Locator") > 0) {
+                    locatorSubtest = te;
+                    break;
+                }
+            }
+        }
+		return locatorSubtest;
+	}
+	 public static void setRecommendedLevelForSession( TestElement[] allSubTests, TABERecommendedLevel[] trls) {
+		 TestElement subtest = null;
+		for (int i = 0; i < allSubTests.length; i++) {
+			subtest = allSubTests[i];
+			for (int j = 0; j < trls.length; j++) {
+				TABERecommendedLevel trl = trls[j];
+				Integer id = trl.getItemSetId();
+				if (id.intValue() == subtest.getItemSetId().intValue()) {
+					if (trl.getTestAdminName() != null
+								&& !"".equals(trl.getTestAdminName())) {
+						if (trl.getRecommendedLevel() != null) {
+							subtest.setItemSetForm(trl.getRecommendedLevel());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static String getLocatorSessionInfo(StudentManifest[] subtests,
+			TABERecommendedLevel[] trls) {
+
+		String locatorSessionInfo = "";
+		StudentManifest subtest = null;
+
+		if (!checkRecommendedlevels(trls, subtests)) {
+			return locatorSessionInfo;
+		}
+
+		HashMap<Integer, Integer> trlHash = new HashMap<Integer, Integer>();
+		for (int i = 0; i < subtests.length; i++) {
+			subtest = subtests[i];
+			for (int j = 0; j < trls.length; j++) {
+				TABERecommendedLevel trl = trls[j];
+				Integer id = trl.getItemSetId();
+				if (id.intValue() == subtest.getItemSetId().intValue()) {
+					if (trl.getTestAdminName() != null
+							&& !"".equals(trl.getTestAdminName())) {
+						if (!trlHash.containsKey(trl.getTestAdminId())) {
+							String dateStr = DateUtils.formatDateToDateString(trl.getCompletedDate());
+							locatorSessionInfo += (trl.getTestAdminName()+ ", " + dateStr + "\n");
+							trlHash.put(trl.getTestAdminId(), trl.getTestAdminId());
+						}
+					}
+				}
+			}
+		}
+
+		return locatorSessionInfo;
+
+	}
+	
+	public static boolean checkRecommendedlevels(TABERecommendedLevel[] trls, StudentManifest[] subtests)
+    {
+        if (trls.length == 0) {
+            return false;
+        }
+
+        for (int i=0 ; i<subtests.length ; i++) {
+        	StudentManifest subtest = subtests[i];
+            for (int j=0 ; j<trls.length ; j++) {
+                TABERecommendedLevel trl = trls[j];
+                Integer id = trl.getItemSetId();
+                if (id.intValue() == subtest.getItemSetId().intValue()) {
+                    boolean same = false;
+                    String srcLevel = subtest.getItemSetForm();
+                    String desLevel = trl.getRecommendedLevel();
+                    if ((srcLevel == null) && (desLevel == null))
+                        same = true;
+                    else {
+                        if (srcLevel == null) srcLevel = "E";
+                        if (desLevel == null) desLevel = srcLevel;
+                    	same = desLevel.equals(srcLevel);
+                    }
+                    if (! same) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+	public static void copySubtestLevelIfNull(
+			Map<Integer, String> allSubtests, StudentManifest[] selectedSubtests) {
+		
+	for (Map.Entry<Integer, String> entry : allSubtests.entrySet()){
+			Integer id = entry.getKey();
+			String level = entry.getValue();
+			 for (int j=0 ; j<selectedSubtests.length ; j++) {
+				 if(selectedSubtests[j].getItemSetId().intValue() == id.intValue()){
+					 if(selectedSubtests[j].getItemSetForm()==null){
+						 selectedSubtests[j].setItemSetForm(level);
+					 }
+					 break;
+				 }
+			 }
+			
+		}
+		
+	}
+	
 
 }

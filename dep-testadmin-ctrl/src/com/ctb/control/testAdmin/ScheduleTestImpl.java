@@ -30,6 +30,7 @@ import com.ctb.bean.testAdmin.ProctorAssignment;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.ScheduledStudentDetailsWithManifest;
 import com.ctb.bean.testAdmin.SchedulingStudent;
 import com.ctb.bean.testAdmin.SchedulingStudentData;
 import com.ctb.bean.testAdmin.SessionStudent;
@@ -3755,14 +3756,25 @@ public class ScheduleTestImpl implements ScheduleTest
     
     
     @Override
-    public StudentManifest [] getScheduledStudentsManifestDetails(String userName, Integer studentId,  Integer testAdminId) throws CTBBusinessException {
+    public ScheduledStudentDetailsWithManifest getScheduledStudentsManifestDetails(String userName, Integer studentId,  Integer testAdminId) throws CTBBusinessException {
         validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledStudentsManifestDetails");
+        ScheduledStudentDetailsWithManifest details = new ScheduledStudentDetailsWithManifest(); 
         try {
         		StudentManifest [] studentManifests = studentItemSetStatus.getStudentManifestsForRoster(studentId,testAdminId);
                 ArrayList<StudentManifest> smAr = getFilteredStudentManifestForRoster(studentManifests);
-                 studentManifests =   smAr.toArray(new StudentManifest[smAr.size()]);
-                 
-                return studentManifests;
+                studentManifests =   smAr.toArray(new StudentManifest[smAr.size()]);
+                details.setStudentManifests(studentManifests);
+                
+                TestElement[] allSubtest = this.itemSet.getTestElementByTestAdmin(testAdminId);
+                details.setAllSchedulableUnit(allSubtest);
+                
+                TestSession testSession = this.admins.getTestAdminDetails(testAdminId);
+                details.setTestSession(testSession);
+                TestProduct tp =  this.product.getProductForTestAdmin(testAdminId);
+                testSession.setProductType(tp.getProductType());
+
+                
+                return details;
         } catch (SQLException se) {
             CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledStudentsManifestDetails: " + se.getMessage());
             cbe.setStackTrace(se.getStackTrace());

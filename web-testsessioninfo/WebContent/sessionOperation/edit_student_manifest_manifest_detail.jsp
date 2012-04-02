@@ -26,10 +26,11 @@
 				<td align="left" width="16%" style="padding: 2px !important;"><lb:label key="common.lebel.name.student.name" /></td>
 				<td width="80%"><span id = "msmStudentName"></span></td>
 			</tr>
-			<tr id="msmLocatorInfo"   style="display: none;">
-					<td align="left" width="16%" style="padding: 2px !important;"><lb:label key="common.lebel.name.locator.session" /></td>
-					<td width="80%"><span id = "msmLocatorDetail"></span></td>
-			</tr>
+			<tr >
+					<td id="msmLocatorInfo"   style="display: none;" align="left" width="16%" style="padding: 2px !important;"><lb:label key="common.lebel.name.locator.session" /></td>
+					<td id="msmLocatorInfo1" width="80%"><span id = "msmLocatorDetail"></span></td>
+			</tr >
+
 		</table>
 	</div>
  

@@ -47,6 +47,7 @@ import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.ScheduledStudentDetailsWithManifest;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -55,6 +56,7 @@ import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.TABERecommendedLevel;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
@@ -1131,18 +1133,43 @@ public class SessionOperationController extends PageFlowController {
 		OutputStream stream = null;
 		HttpServletResponse resp = getResponse();
 	    resp.setCharacterEncoding("UTF-8"); 
+	    Map<Integer, String> allRecomendedLevel =  new HashMap<Integer, String>();
+	    String locatorSessionInfo = "";
 	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
 	    String studentIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ID, false, null);
 	    
 	    ScheduledSavedStudentDetailsVo vo = new ScheduledSavedStudentDetailsVo();
-	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+	    //Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
 	    OperationStatus status = new OperationStatus();
 	    vo.setOperationStatus(status) ;
 	    try {
 	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
 	    	Integer studentId = Integer.valueOf(studentIdString);
-	    	StudentManifest[] studentManifests = this.scheduleTest.getScheduledStudentsManifestDetails(this.userName, studentId, testAdminId);
-	    	vo.populateManifests(studentManifests);
+
+	    	ScheduledStudentDetailsWithManifest studentDetailsWithManifest =  this.scheduleTest.getScheduledStudentsManifestDetails(this.userName, studentId, testAdminId);
+	    	TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(studentDetailsWithManifest.getAllSchedulableUnit());
+	    	TestSession session = studentDetailsWithManifest.getTestSession();
+	    	TestElement[] allSubTests = studentDetailsWithManifest.getAllSchedulableUnit();
+	    	TABERecommendedLevel[] trls = null;
+	    	if(locatorSubtest!=null){
+	    		trls = scheduleTest.getTABERecommendedLevelForStudent(userName, studentId, session.getItemSetId(), locatorSubtest.getItemSetId());
+	    		TestSessionUtils.setRecommendedLevelForSession(allSubTests, trls);
+	    		for(int ii =0; ii<allSubTests.length; ii++){
+	    			allRecomendedLevel.put(allSubTests[ii].getItemSetId(), allSubTests[ii].getItemSetForm());
+	    		}
+	    		String productType = TestSessionUtils.getProductType(session.getProductType());
+	    		if(!TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
+	    			TestSessionUtils.copySubtestLevelIfNull(allRecomendedLevel, studentDetailsWithManifest.getStudentManifests());
+	    		}
+	    		locatorSessionInfo = TestSessionUtils.getLocatorSessionInfo(studentDetailsWithManifest.getStudentManifests(), trls);
+	    		if(locatorSessionInfo!=null && locatorSessionInfo.trim().length()>0){
+	    			vo.setLocatorSessionInfo(locatorSessionInfo);
+	    		}
+	    	}
+	    	
+	    	
+	    	vo.populateManifests(studentDetailsWithManifest.getStudentManifests());
+	    	vo.setRecomendedLevelMap(allRecomendedLevel);
             status.setSuccess(true);
 	    	
 	    } catch(CTBBusinessException e){
@@ -3754,9 +3781,9 @@ public class SessionOperationController extends PageFlowController {
     private List<SessionStudent> buildStudentList(SessionStudent [] sessionStudents, Map<Integer, Map> accomodationMap) 
     {
         List<SessionStudent> studentList = new ArrayList<SessionStudent>();
-        Map innerMap;
+        Map<String,String> innerMap;
         for (int i=0 ; i<sessionStudents.length; i++) {
-        	innerMap = new HashMap();
+        	innerMap = new HashMap<String,String>();
             SessionStudent ss = (SessionStudent)sessionStudents[i];
             if(ss.getStatus()!=null) {
             	ss.setStatusEditable(ss.getStatus().getEditable());
