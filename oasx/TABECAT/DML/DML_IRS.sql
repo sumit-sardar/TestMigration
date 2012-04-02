@@ -143,15 +143,7 @@ insert into attr16_dim values (8,'No','Adjusted Font Size',5)
 /
 
 --mastery_level_dim
-insert into mastery_level_dim values (5,'Not Mastered',5)
+insert into mastery_level_dim values (5,'Beginner')
 /
-insert into mastery_level_dim values (6,'Beginner',5)
-/
-insert into mastery_level_dim values (7,'Partially Mastered',5)
-/
-insert into mastery_level_dim values (8,'Mastered',5)
-/
-insert into mastery_level_dim values (9,'Advanced',5)
-/
-insert into mastery_level_dim values (10,'N/A',5)
+insert into mastery_level_dim values (6,'Advanced')
 /
