@@ -198,11 +198,9 @@ function stopAudio(){
                     <td class="tableFilter">  
                            
                         <netui:button type="submit" tagId="rescoreStudent" value="${bundle.widgets['button.rescoreStudent']}" action="rescoreStudent" disabled="${requestScope.scoringButton}"/>
-                         <ctb:auth roles="Administrator, Administrative Coordinator">
 	                        <c:if test="${sessionScope.isImmediateScoreReportConfigured}">
 	                         	<netui:button type="submit" tagId="ImmediateScoreReportBN" value="${bundle.widgets['button.ImmediateScoreReport']}" action="goToImmediateScoreReport" disabled="${requestScope.immediateReportingButton}"/>
-	                        </c:if>  
-                         </ctb:auth>                           
+	                        </c:if>                           
                     </td>
                 </tr>
                 </table>
