@@ -566,7 +566,7 @@
 		   msmParam += "&hasAutolocator="+msmHasLocator;
 		   if(msmHasLocator){
 		   		msmParam += "&itemSetIdTD_l=" + subTestDetails.locatorSubtest.id;
-		   		msmParam += "&subtestName_l=" +subTestDetails.locatorSubtest.subtestName;
+		   		msmParam += "&subtestName_l=" +formatString(subTestDetails.locatorSubtest.subtestName);
 		   }
 		   
 		   for(var ii=0; ii<selectedSubtestsMsm.length; ii++){
@@ -574,7 +574,7 @@
 		   		if(selectedSubtestsMsm[ii].level != undefined){
 		   			msmParam += "&itemSetForm=" + selectedSubtestsMsm[ii].level;
 		   		}
-		   		msmParam += "&subtestName=" +selectedSubtestsMsm[ii].subtestName;
+		   		msmParam += "&subtestName=" +formatString(selectedSubtestsMsm[ii].subtestName);
 		   }
 		   
 		param += "testAdminId="+ selectedTestAdminId;
@@ -757,6 +757,11 @@
 				$("#msmLocatorInfo1").show();
 			}
 		}
+	}
+	
+	function formatString( inputString){
+		var outputString = inputString.replace(/&/g,'')
+		return outputString;
 	}
 	
 	
