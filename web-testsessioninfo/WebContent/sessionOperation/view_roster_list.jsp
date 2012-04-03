@@ -34,10 +34,8 @@
 	</table>
 	<table id="buttonTbl" style="width: 924px;">
 		<tr>
-			<td align="left" width="15%"><lb:label key="viewStatus.testAccessCode" /></td>
-			<td width="15%"><span id = "rosterTestAccessCode"></span></td>
-			<td align="left" width="15%"><lb:label key="viewStatus.totalStudents" /></td>
-			<td width="10%"><span id = "rosterTotalStudents"></span></td>
+			<td align="left" width="10%"><lb:label key="viewStatus.totalStudents" /></td>
+			<td width="12%"><span id = "rosterTotalStudents"></span></td>
 			<td width="45%" class="buttonsRow">
 				<div id="refreshList" style="float:right;padding-left:5px;">
 					<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><lb:label key="viewStatus.refreshList.button" /></a>
