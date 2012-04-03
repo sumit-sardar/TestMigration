@@ -1151,16 +1151,23 @@ public class SessionOperationController extends PageFlowController {
 	    	TestSession session = studentDetailsWithManifest.getTestSession();
 	    	TestElement[] allSubTests = studentDetailsWithManifest.getAllSchedulableUnit();
 	    	TABERecommendedLevel[] trls = null;
-	    	if(locatorSubtest!=null){
+	    	String productType = TestSessionUtils.getProductType(session.getProductType());
+	    	if(locatorSubtest!=null && !TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
 	    		trls = scheduleTest.getTABERecommendedLevelForStudent(userName, studentId, session.getItemSetId(), locatorSubtest.getItemSetId());
-	    		TestSessionUtils.setRecommendedLevelForSession(allSubTests, trls);
+	    		TestElement[] testAdminItemSet =  studentDetailsWithManifest.getTestAdminItemSet();
+	    		for(int ii =0; ii<testAdminItemSet.length; ii++){//copySubtestLevel
+	    			allRecomendedLevel.put(testAdminItemSet[ii].getItemSetId(), testAdminItemSet[ii].getItemSetForm());
+	    		}
+	    		TestSessionUtils.setRecommendedLevelForSession(allSubTests, trls);//setRecommendedLevelForSession
 	    		for(int ii =0; ii<allSubTests.length; ii++){
-	    			allRecomendedLevel.put(allSubTests[ii].getItemSetId(), allSubTests[ii].getItemSetForm());
+	    			if(allSubTests[ii].getItemSetForm()!=null) {
+	    				allRecomendedLevel.put(allSubTests[ii].getItemSetId(), allSubTests[ii].getItemSetForm());
+	    			}
 	    		}
-	    		String productType = TestSessionUtils.getProductType(session.getProductType());
-	    		if(!TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
-	    			TestSessionUtils.copySubtestLevelIfNull(allRecomendedLevel, studentDetailsWithManifest.getStudentManifests());
-	    		}
+	    		
+	    		//copySubtestLevelIfNull
+	    		 TestSessionUtils.copySubtestLevelIfNull(allRecomendedLevel, studentDetailsWithManifest.getStudentManifests());
+
 	    		locatorSessionInfo = TestSessionUtils.getLocatorSessionInfo(studentDetailsWithManifest.getStudentManifests(), trls);
 	    		if(locatorSessionInfo!=null && locatorSessionInfo.trim().length()>0){
 	    			vo.setLocatorSessionInfo(locatorSessionInfo);

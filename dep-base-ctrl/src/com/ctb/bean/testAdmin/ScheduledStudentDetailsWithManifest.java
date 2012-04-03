@@ -8,6 +8,7 @@ public class ScheduledStudentDetailsWithManifest extends CTBBean {
 	private TestSession testSession;
 	private StudentManifest[] studentManifests;
 	private TestElement[] allSchedulableUnit ;
+	private TestElement[] testAdminItemSet;
 
 	public TestSession getTestSession() {
 		return testSession;
@@ -31,6 +32,14 @@ public class ScheduledStudentDetailsWithManifest extends CTBBean {
 
 	public void setAllSchedulableUnit(TestElement[] allSchedulableUnit) {
 		this.allSchedulableUnit = allSchedulableUnit;
+	}
+
+	public TestElement[] getTestAdminItemSet() {
+		return testAdminItemSet;
+	}
+
+	public void setTestAdminItemSet(TestElement[] testAdminItemSet) {
+		this.testAdminItemSet = testAdminItemSet;
 	}
 
 	

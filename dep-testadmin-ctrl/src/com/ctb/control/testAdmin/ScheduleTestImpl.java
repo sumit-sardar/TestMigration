@@ -3772,7 +3772,8 @@ public class ScheduleTestImpl implements ScheduleTest
                 details.setTestSession(testSession);
                 TestProduct tp =  this.product.getProductForTestAdmin(testAdminId);
                 testSession.setProductType(tp.getProductType());
-
+                TestElement [] testAdminItemSet = itemSet.getTestElementsForSession(testAdminId);
+                details.setTestAdminItemSet(testAdminItemSet);
                 
                 return details;
         } catch (SQLException se) {
