@@ -614,6 +614,7 @@
 						   
 						  if(data.isSuccess){
 							setMsmInfoMessage(messageHeader, warningMessage);
+							updatePopupOnsave();
 						  } else if (data.IsSystemError) {
 						  		if(length==0){
 						         	setMsmErrorMessage(messageHeader, "");
@@ -757,6 +758,18 @@
 				$("#msmLocatorInfo1").show();
 			}
 		}
+	}
+	
+	function updatePopupOnsave(){
+		$("#modifyStudentManifestAccordion").accordion("activate", 0);
+		$("#mmStdList").jqGrid('resetSelection');
+		$("#selectedSubtestsTableMsm").html("");
+        $("#availableSubtestsTableMsm").html("");
+        disableButton('msmSaveButton');
+		modifyManifestStudentId = -1;
+       	oldModifyManifestStudentId = -1;
+       	modifyManifestStudentOrgId = -1;
+       	studentManifestdetails = [];
 	}
 	
 	function formatString( inputString){
