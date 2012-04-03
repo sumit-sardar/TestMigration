@@ -882,7 +882,7 @@ function updateAddStudentLocaldata() {
 	var delStudentTempMap = new Array();
 	for(var i =0 ; i<keys.length; i++ ) {
 		var finalObject = studentTempMap.get(keys[i]);
-		if(finalObject ==null || finalObject == undefined || String((savedStudentMap.get(keys[i])).orgNodeId) != String(finalObject.orgNodeId) ){//subhendu
+		if(finalObject ==null || finalObject == undefined || String((savedStudentMap.get(keys[i])).orgNodeId) != String(finalObject.orgNodeId) ){
 			delStudentTempMap[counter++] = keys[i];
 		}
 	}
