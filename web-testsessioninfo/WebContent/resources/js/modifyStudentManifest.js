@@ -751,7 +751,11 @@
 					$("#level_"+(ii+1)).val(recLevel);
 		          }
 		    }
-			//
+			if( studentManifestdetails.locatorSessionInfo != undefined){
+				$("#msmLocatorDetail").text(studentManifestdetails.locatorSessionInfo);
+				$("#msmLocatorInfo").show();
+				$("#msmLocatorInfo1").show();
+			}
 		}
 	}
 	
