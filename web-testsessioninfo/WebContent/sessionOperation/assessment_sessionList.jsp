@@ -82,7 +82,7 @@
 										</div> 
 										<% if (userScheduleAndFindSessionPermission) {%>
 										    <div id="mStdManifest" style="float:right;padding-left:5px; ">
-											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" title=<lb:label key="homepage.button.modifyTest.tooltip" prefix="'&nbsp;" suffix="&nbsp;'"/> >
+											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
 											   		<lb:label key="homepage.button.modifyTest" />
 											    </a>
 											</div> 
