@@ -755,6 +755,8 @@
 		offGradeSubtestChanged = false;
 		cacheObjVal = {};
 		savedStudentMap = new Map();
+		isFirstAccordSelected = false;
+		isSecondAccordSelected = true;
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');

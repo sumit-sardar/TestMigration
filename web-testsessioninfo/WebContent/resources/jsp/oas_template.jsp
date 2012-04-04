@@ -148,10 +148,19 @@ clear: both;
 						var divID = $(this).parent().attr('id');
 						if(divID == "selectTestId"){
 						
-								if(state =="EDIT"){
-									populateSelectTestGrid(wizard,index);
-								}								
-								else if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
+								if(state =="EDIT" ){
+								   if( isSecondAccordSelected && !validateTestInformation()){
+								   		verifyTestDetails();
+										$('#displayMessage').show();
+										e.stopPropagation();
+								   } else {
+								        $('#displayMessage').hide();
+								   		populateSelectTestGrid(wizard,index);
+								   		isFirstAccordSelected = true;
+										isSecondAccordSelected = false;
+								   }
+									
+								}else if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
 									verifyTestDetails();
 									$('#displayMessage').show();
 									e.stopPropagation();
@@ -167,9 +176,16 @@ clear: both;
 								}
 						}else if(divID == "testDetailId"){
 								if(state =="EDIT"){
-									wizard.accordion("activate", index);
-								}
-								else if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
+								   if(isFirstAccordSelected && !validateTest()){
+								   		$('#displayMessage').show();
+										e.stopPropagation(); 
+								   } else{
+								   		$('#displayMessage').hide();
+								   		wizard.accordion("activate", index);
+								   		isFirstAccordSelected = false;
+										isSecondAccordSelected = true;
+								   }
+								}else if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else{
@@ -184,10 +200,20 @@ clear: both;
 								}
 						}else if(divID == "addStudentId"){
 								if(state =="EDIT"){
-									isStdDetClicked = true;
-									populateStudentGrid(wizard,index);
-								}
-								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+								    if(isFirstAccordSelected && !validateTest()){
+								    	$('#displayMessage').show();
+										e.stopPropagation(); 
+								    } else if(isSecondAccordSelected && !validateTestInformation()){
+								    	$('#displayMessage').show();
+										e.stopPropagation();
+								    } else {
+								    	$('#displayMessage').hide();
+								    	isStdDetClicked = true;
+										populateStudentGrid(wizard,index);
+										isFirstAccordSelected = false;
+										isSecondAccordSelected = false;
+								    } 
+								}else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
@@ -204,10 +230,20 @@ clear: both;
 								}
 						}else if(divID == "addProctorId"){							
 								if(state =="EDIT"){
-									isProcDetClicked = true;
-									populateProctorGrid(wizard,index);
-								}
-								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+									if(isFirstAccordSelected && !validateTest()){
+								    	$('#displayMessage').show();
+										e.stopPropagation(); 
+								    } else if(isSecondAccordSelected && !validateTestInformation()){
+								    	$('#displayMessage').show();
+										e.stopPropagation();
+								    } else {
+								    	$('#displayMessage').hide();
+										isProcDetClicked = true;
+										populateProctorGrid(wizard,index);
+										isFirstAccordSelected = false;
+										isSecondAccordSelected = false;
+									}
+								} else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
