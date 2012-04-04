@@ -99,7 +99,7 @@
 			  });
 			});
 		$("#modifyStudentManifestPopup").dialog( {
-	        title: "Modify Student's Test",
+	        title: "Modify Manifest",
 	        resizable: false,
 	        autoOpen: true,
 	        width: '900px',
