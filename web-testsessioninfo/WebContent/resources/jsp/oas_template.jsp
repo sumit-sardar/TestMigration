@@ -204,6 +204,7 @@ clear: both;
 								    	$('#displayMessage').show();
 										e.stopPropagation(); 
 								    } else if(isSecondAccordSelected && !validateTestInformation()){
+								        verifyTestDetails();
 								    	$('#displayMessage').show();
 										e.stopPropagation();
 								    } else {
@@ -234,6 +235,7 @@ clear: both;
 								    	$('#displayMessage').show();
 										e.stopPropagation(); 
 								    } else if(isSecondAccordSelected && !validateTestInformation()){
+								        verifyTestDetails();
 								    	$('#displayMessage').show();
 										e.stopPropagation();
 								    } else {
