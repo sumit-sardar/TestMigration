@@ -539,8 +539,11 @@
 <br/><p>        
 <h4><netui:span value="${bundle.web['selecttest.subtestDetails.title']}"/></h4>
 
-<c:if test="${isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct}">             
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">             
     <p>Click the Modify Test button below to select subtests, difficulty level, or subtest order.</p>
+</c:if>
+<c:if test="${isLasLinksProduct}">             
+    <p>Click the Modify Test button below to select subtests, or subtest order.</p>
 </c:if>
     
     
