@@ -3381,7 +3381,7 @@ function registerDelegate(tree){
 									var oplist = $("#testGroupList option");
 									var oplistval = $("#testGroupList").val();
 									var updatedTestName = $($('#testGroupList option[value='+oplistval+']')).text()
-									reInitializeModifyTestPopup(updatedPrType, updatedSessionName, updatedTestName);
+									reInitializeModifyTestPopup(updatedPrType, updatedTestName, updatedSessionName);
 								 }
 							  	productType = $("#productType").val();
 							  	$('#showSaveTestMessage').show();
