@@ -230,12 +230,14 @@ public class SQLQuery {
 									   							  "AND item_response.item_id = item.item_id " +
 									   							  "AND item.item_type = 'SR' " +
 									   							  "AND item.activation_status = 'AC' " +
+									   							  "AND item_response.item_set_id = ? " +
 									   							"GROUP BY item_response.item_id, item_set_id) derived " +
 									   					    "WHERE irp.item_id = derived.item_id " +
 									   					      "AND irp.item_id = item.item_id " +
 									   					      "AND item.item_id = derived.item_id " +
 									   					      "AND irp.item_set_id = derived.item_set_id " +
 									   					      "AND irp.response_seq_num = derived.maxseqnum " +
+									   					      "AND irp.item_set_id = ? " +
 									   					      "AND irp.test_roster_id = ? "; 
 	
 	public static final String TOTAL_TEST_TIME_SQL = "SELECT SUM(itms.time_limit) total_time " +

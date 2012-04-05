@@ -36,7 +36,6 @@ public class TABEOnlineDataExport {
 	
 	private static final Integer CUSTOMER_ID = Integer.valueOf(ExtractUtil.getDetail("oas.customerId"));
 	private static final Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
-	//private static final String USER_DIR = System.getProperty("user.dir").toLowerCase();
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
 	private static final String SEPARATOR = "#";
@@ -73,13 +72,11 @@ public class TABEOnlineDataExport {
 		CSVWriter writer = new CSVWriter(new FileWriter(file));
 		StringBuilder headerRow = new StringBuilder();
 		StringBuilder contentDomains = new StringBuilder();
-		//StringBuilder items = new StringBuilder();
 		for (String contentDomain: CONTENT_DOMAIN_LIST) {
-			contentDomains.append(contentDomain).append("(Level, Raw Score, Scale Score)").append(SEPARATOR);
+			contentDomains.append(contentDomain).append("(Level, Raw Score, Scale Score)").append(SEPARATOR)
+			.append("Scale Vector Response").append(SEPARATOR)
+			.append("(Item number, Time spent on first visit, Total time spent)").append(SEPARATOR);
 		}
-		/*for (ItemResponses item: ITEM_LIST) {
-			items.append(item.getItemId()).append(SEPARATOR);
-		}*/
 		headerRow.append("Customer Id").append(SEPARATOR).append("State Name").append(SEPARATOR)
 		.append("State Code").append(SEPARATOR).append("District Name").append(SEPARATOR)
 		.append("District Code").append(SEPARATOR).append("School Name").append(SEPARATOR)
@@ -94,7 +91,6 @@ public class TABEOnlineDataExport {
 		.append("Section 504").append(SEPARATOR)
 		.append("Interrupted").append(SEPARATOR).append("Test Form Id").append(SEPARATOR)
 		.append("Last Item").append(SEPARATOR).append("Timed Out").append(SEPARATOR)
-		.append("Scale Vector Response").append(SEPARATOR)
 		.append(contentDomains.substring(0, contentDomains.length() - 1));
 		
 		writer.writeNext(headerRow.toString().split(SEPARATOR));
@@ -117,7 +113,7 @@ public class TABEOnlineDataExport {
 				.append(tabe.getSection504()).append(SEPARATOR)
 				.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getTestFormId()).append(SEPARATOR)
 				.append(tabe.getLastItem()).append(SEPARATOR).append(tabe.getTimedOut()).append(SEPARATOR)
-				.append(tabe.getScaleVectorResponse()).append(SEPARATOR).append(tabe.getScores());
+				.append(tabe.getScores());
 				
 				rows.add(row.toString().split(SEPARATOR));
 				row = new StringBuilder();
@@ -145,9 +141,7 @@ public class TABEOnlineDataExport {
 			oascon = SqlUtil.openOASDBconnectionForResearch();
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
 			
-			//getAllItems();
 			getAllContentDomain(oascon);
-			
 			customerDemoList = getCustomerDemographic(oascon);
 			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(customerDemoList);
 			for (CustomerDemographic c : set) {
@@ -158,7 +152,6 @@ public class TABEOnlineDataExport {
 				TABEFile catData = new TABEFile();
 				
 				catData.setCustomerID(CUSTOMER_ID.toString());				
-				//	catData.setDateTestingCompleted(roster.getDateTestingCompleted());
 				if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
 					catData.setInterrupted("0");
 				}else{
@@ -173,11 +166,7 @@ public class TABEOnlineDataExport {
 						stateMap,districtMap, schoolMap, classMap);
 				fillAccomodations(studentInfo.getStudentDemographic(), customerDemographic, catData);
 				getScores(oascon, irscon, catData, roster);
-				getScaleVectorResponse(oascon, catData, roster);
 				getTimedOut(oascon, catData, roster);
-				//createAbilityScoreInformation(irscon,catData,roster);
-				//getSemScores(oascon, catData, roster,catData.getAbilityScores());
-				//fillObjective(irscon,catData,roster);
 				tabeFileList.add(catData);								
 			}
 		} catch(Exception e) {
@@ -194,11 +183,6 @@ public class TABEOnlineDataExport {
 	throws SQLException {
 		System.out.println("getCustomerDemographic start");
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
-		/*
-		 * Criteria crit = session.createCriteria(CustomerDemographic.class);
-		 * crit.add(Expression.eq("customerId", customerId)); myList =
-		 * crit.list();
-		 */
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -268,7 +252,6 @@ public class TABEOnlineDataExport {
 				ros.setCustomerId(CUSTOMER_ID);
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
-				//ros.setDateTestingCompleted(Utility.getTimeZone(rs.getString(7).toString(),rs.getString(8).toString(),true));
 				ros.setRestartNumber(rs.getInt(9));
 				ros.setLastMseq(rs.getInt(10));
 				ros.setStartDate(rs.getString(11));
@@ -480,7 +463,6 @@ public class TABEOnlineDataExport {
 		}
 	}
 	
-	//Fix for Defect 68453
 	private void setEthnicity(Set<StudentDemographic> sd, TABEFile tfil) {		
 		for (StudentDemographic studentDemo : sd) {
 			if(studentDemo.getValueName() == null){
@@ -517,289 +499,64 @@ public class TABEOnlineDataExport {
 		}	
 	}
 	
-	
-
-	/*private void createAbilityScoreInformation(Connection con, TABEFile tfil, TestRoster roster) throws SQLException{
-		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
-		HashMap<String,String> contentAreaFact = new HashMap<String, String>();
-		AbilityScore abilityScore = new AbilityScore();
-		GradeEquivalent gradeEquivalent = new GradeEquivalent();
-		NRSLevels nrsLevel = new NRSLevels();
-		PercentageMastery percentMast = new PercentageMastery();
-		PredictedGED predictedGed =  new PredictedGED();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		PreparedStatement ps2 = null;
-		ResultSet rs2 = null;
-		PreparedStatement ps3 = null;
-		ResultSet rs3 = null;
-			
-		try {
-			ps2 = con.prepareStatement(SQLQuery.scoreSkilAreaOverAllSQL);
-			ps2.setInt(1, roster.getStudentId());
-			ps2.setInt(2, roster.getTestAdminId());
-			rs2 = ps2.executeQuery();
-			while(rs2.next()) {
-				if (rs2.getString(1).toString().equalsIgnoreCase("Total Mathematics")){
-					abilityScore.setTotalMathAbilityScore(rs2.getString(2) != null ? rs2.getString(2) : "" );
-					gradeEquivalent.setTotalMath(rs2.getString(3) != null ? rs2.getString(3) : "" );
-					nrsLevel.setTotalMath(rs2.getString(4) != null ? rs2.getString(4) : "" );
-			
-				}else{
-					abilityScore.setTotalBatteryAbilityScore(rs2.getString(2) != null ? rs2.getString(2) : "" );
-					gradeEquivalent.setTotalBattery(rs2.getString(3) != null ? rs2.getString(3) : "");
-					nrsLevel.setTotalBattery(rs2.getString(4) != null ? rs2.getString(4) : "");					
-				}
-
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			SqlUtil.close(ps2, rs2);
-		}
-		
-		try{
-			ps = con.prepareStatement(SQLQuery.scoreSkilAreaSQL);
-			ps.setInt(1, roster.getStudentId());
-			ps.setInt(2, roster.getTestAdminId());
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				if (rs.getString(1).toString().equalsIgnoreCase("Mathematics Computation")){
-					abilityScore.setMathCompAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
-					gradeEquivalent.setMathComp(rs.getString(3) != null ? rs.getString(3) : "" );
-					nrsLevel.setMathComp(rs.getString(4) != null ? rs.getString(4) : "" );
-					percentMast.setMathComp(rs.getString(5) != null ? rs.getString(5) : "");
-			
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Reading")){
-					abilityScore.setReadingAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
-					gradeEquivalent.setReading(rs.getString(3) != null ? rs.getString(3) : "" );
-					nrsLevel.setReading(rs.getString(4) != null ? rs.getString(4) : "" );
-					percentMast.setReading(rs.getString(5) != null ? rs.getString(5) : "");	
-					
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")){
-					abilityScore.setAppliedMathAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
-					gradeEquivalent.setAppliedMath(rs.getString(3) != null ? rs.getString(3) : "" );
-					nrsLevel.setAppliedMath(rs.getString(4) != null ? rs.getString(4) : "" );
-					percentMast.setAppliedMath(rs.getString(5) != null ? rs.getString(5) : "");				
-				
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Language")){
-					abilityScore.setLanguageAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
-					gradeEquivalent.setLanguage(rs.getString(3) != null ? rs.getString(3) : "" );
-					nrsLevel.setLanguage(rs.getString(4) != null ? rs.getString(4) : "" );
-					percentMast.setLanguage(rs.getString(5) != null ? rs.getString(5) : "");				
-				}
-
-			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		finally{
-			SqlUtil.close(ps, rs);
-		}
-		try{
-			ps3 = con.prepareStatement(SQLQuery.getPredictedScores);
-			ps3.setInt(1, roster.getStudentId());
-			ps3.setInt(2, roster.getTestAdminId());
-			rs3 = ps3.executeQuery();
-			while(rs3.next()) {
-				if (rs3.getString(1).toString().equalsIgnoreCase("Average")){	
-					predictedGed.setAverage(rs3.getString(2) != null ? rs3.getString(2) : "");
-					
-				}else if(rs3.getString(1).toString().equalsIgnoreCase("Math")){
-					predictedGed.setMath(rs3.getString(2) != null ? rs3.getString(2) : "");
-					
-				}else if(rs3.getString(1).toString().equalsIgnoreCase("Reading")){
-					predictedGed.setReading(rs3.getString(2) != null ? rs3.getString(2) : "");			
-				
-				}else if(rs3.getString(1).toString().equalsIgnoreCase("Science")){
-					predictedGed.setScience(rs3.getString(2) != null ? rs3.getString(2) : "");
-			
-				}else if(rs3.getString(1).toString().startsWith("Social")){
-					predictedGed.setSocialStudies(rs3.getString(2) != null ? rs3.getString(2) : "");
-			
-				}else if(rs3.getString(1).toString().equalsIgnoreCase("Writing")){
-					predictedGed.setWriting(rs3.getString(2) != null ? rs3.getString(2) : "");
-			
-				}
-
-			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		finally{
-			SqlUtil.close(ps3, rs3);
-		}
-		
-		tfil.setAbilityScores(abilityScore);
-		tfil.setGradeEquivalent(gradeEquivalent);
-		tfil.setNrsLevels(nrsLevel);
-		tfil.setPercentageMastery(percentMast);	
-		tfil.setPredictedGED(predictedGed);
-	}
-	
-	private void getSemScores(Connection con, TABEFile tfil, TestRoster roster, AbilityScore abilityScore) throws SQLException{
-
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		String testCompleted = "";
-		try {
-			ps = con.prepareStatement(SQLQuery.getSemScores);
-			ps.setInt(1, roster.getTestRosterId());
-			ps.setInt(2, roster.getTestRosterId());
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				if (rs.getString(1).toString().equalsIgnoreCase("Mathematics Computation")){
-					abilityScore.setMathCompSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );			
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Reading")) {
-					abilityScore.setReadingSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")) {
-					abilityScore.setAppliedMathSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Language")) {
-					abilityScore.setLanguageSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
-				}
-				testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
-				
-			} 
-
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			SqlUtil.close(ps, rs);
-		}
-		
-		tfil.setDateTestingCompleted(Utility.getTimeZone(testCompleted, roster.getTimeZone(), true));
-		tfil.setAbilityScores(abilityScore);	
-	}
-	
-	private void fillObjective(Connection con, TABEFile tfil, TestRoster roster) throws SQLException, Exception{
-
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		HashMap<String, ObjectiveObj> objectiveMap =  new HashMap<String, ObjectiveObj>();
-		ObjectiveLevel objLevel =  new ObjectiveLevel();
-		ObjectiveMastery objMastery =  new ObjectiveMastery();
-		Method[] objectiveLevelMethods = ObjectiveLevel.class.getMethods();
-		Method[] objectiveMasteryMethods = ObjectiveMastery.class.getMethods();
-		ObjectiveObj objectiveObject = new ObjectiveObj();
-		
-		try{
-			ps = con.prepareStatement(SQLQuery.getObjectiveScores);
-			ps.setInt(1, roster.getStudentId());
-			ps.setInt(2, roster.getTestAdminId());
-			rs = ps.executeQuery();
-
-			while(rs.next()) {
-				if (rs.getString(1) != null){
-					ObjectiveObj objective =  new ObjectiveObj();
-					objective.setObjectiveLevel(rs.getString(2) != null ? rs.getString(2) : "");
-					objective.setObjectiveMastery(rs.getString(3) != null ? rs.getString(3) : "");
-					String tempStr = rs.getString(1);
-					String[] tempStrArray = tempStr.split(" ");
-					if (tempStrArray.length > 0){
-						tempStrArray = tempStrArray[0].split("/");
-					}
-					if (tempStrArray.length > 0){
-						tempStrArray = tempStrArray[0].split(",");
-					}
-											
-					objectiveMap.put(tempStrArray[0].toLowerCase(),objective);
-				}				
-			} 
-			
-			for (Method method: objectiveLevelMethods){
-				if (isSetter(method)){
-					String key = method.getName().substring(3).toLowerCase();
-					if(objectiveMap.containsKey(key)){
-						objectiveObject = objectiveMap.get(key);
-						method.invoke(objLevel, objectiveObject.getObjectiveLevel());
-					}
-				}
-			}
-			for (Method method: objectiveMasteryMethods){
-				if (isSetter(method)){
-					String key = method.getName().substring(3).toLowerCase();
-					if(objectiveMap.containsKey(key)){
-						objectiveObject = objectiveMap.get(key);
-						method.invoke(objMastery, objectiveObject.getObjectiveMastery());
-					}
-				}
-			}
-			tfil.setObjectiveLevel(objLevel);
-			tfil.setObjectiveMastery(objMastery);
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally{
-			SqlUtil.close(ps, rs);
-		}
-	}	
-
-	private static boolean isSetter(Method method){
-	  if(!method.getName().startsWith("set")) return false;
-	  if(method.getParameterTypes().length != 1) return false;
-	  return true;
-	}*/
-	
 	private static void prepareItemResponses(Connection con, String itemSetId,
 			TABEFile tfil, TestRoster roster) throws IOException, Exception {
 		
-		   PreparedStatement ps = null ;
-		   ResultSet rs = null;
-		   HashMap<String, ItemResponses> itemMap = new HashMap<String, ItemResponses>();
-		   StringBuilder response = new StringBuilder();
-		   try {
-				ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
-				ps.setInt(1, roster.getTestRosterId());
-				ps.setString(2, itemSetId);
-				ps.setInt(3, roster.getTestRosterId());
-				rs = ps.executeQuery();
-				while (rs.next()){
-					ItemResponses ir = new ItemResponses();
-					ir.setItemId(rs.getString(1));
-					ir.setResponseValue(rs.getString(2));
-					itemMap.put(ir.getItemId(), ir);
-					tfil.setLastItem(rs.getString(1));
-				}
-				//Getting first time visit data
-				ps = con.prepareStatement(SQLQuery.ITEM_FIRST_TIME_VISIT_SQL);
-				ps.setInt(1, roster.getTestRosterId());
-				ps.setString(2, itemSetId);
-				ps.setInt(3, roster.getTestRosterId());
-				rs = ps.executeQuery();
-				while (rs.next()){
-					ItemResponses ir = itemMap.get(rs.getString(1));
-					ir.setFirstVisitTime(rs.getString(2));
-				}
-				//Getting total time visit data
-				ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
-				ps.setInt(1, roster.getTestRosterId());
-				ps.setString(2, itemSetId);
-				rs = ps.executeQuery();
-				while (rs.next()){
-					ItemResponses ir = itemMap.get(rs.getString(1));
-					ir.setTotalTime(rs.getString(3));
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			} finally {
-				SqlUtil.close(ps, rs);
+	   PreparedStatement ps = null ;
+	   ResultSet rs = null;
+	   HashMap<String, ItemResponses> itemMap = new HashMap<String, ItemResponses>();
+	   StringBuilder response = new StringBuilder();
+	   try {
+			ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
+			ps.setInt(1, roster.getTestRosterId());
+			ps.setString(2, itemSetId);
+			ps.setInt(3, roster.getTestRosterId());
+			rs = ps.executeQuery();
+			while (rs.next()){
+				ItemResponses ir = new ItemResponses();
+				ir.setItemId(rs.getString(1));
+				ir.setResponseValue(rs.getString(2));
+				itemMap.put(ir.getItemId(), ir);
+				tfil.setLastItem(rs.getString(1));
 			}
-			List<ItemResponses> items = ITEM_SET_MAP.get(itemSetId);
-			for(ItemResponses item: items) {
-				ItemResponses ir = itemMap.get(item.getItemId());
-				if(ir != null) {
-					response.append(item.getItemOrder() + "," + Utility.formatData(ir.getFirstVisitTime()) + 
-									"," + Utility.formatData(ir.getTotalTime()) + SEPARATOR);	
-				} else {
-					response.append(item.getItemOrder() + ",," + SEPARATOR);
-				}
+			//Getting first time visit data
+			ps = con.prepareStatement(SQLQuery.ITEM_FIRST_TIME_VISIT_SQL);
+			ps.setInt(1, roster.getTestRosterId());
+			ps.setString(2, itemSetId);
+			ps.setInt(3, roster.getTestRosterId());
+			rs = ps.executeQuery();
+			while (rs.next()){
+				ItemResponses ir = itemMap.get(rs.getString(1));
+				ir.setFirstVisitTime(rs.getString(2));
 			}
-			if(response.length() > 1)
-				tfil.setItemResponse(response.substring(0, response.length() - 1));
-			else 
-				tfil.setItemResponse(response.toString());
+			//Getting total time visit data
+			ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
+			ps.setInt(1, roster.getTestRosterId());
+			ps.setString(2, itemSetId);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				ItemResponses ir = itemMap.get(rs.getString(1));
+				ir.setTotalTime(rs.getString(3));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+		List<ItemResponses> items = ITEM_SET_MAP.get(itemSetId);
+		for(ItemResponses item: items) {
+			ItemResponses ir = itemMap.get(item.getItemId());
+			if(ir != null) {
+				response.append(item.getItemOrder() + "," + Utility.formatData(ir.getFirstVisitTime()) + 
+								"," + Utility.formatData(ir.getTotalTime()) + SEPARATOR);	
+			} else {
+				response.append(item.getItemOrder() + ",," + SEPARATOR);
+			}
+		}
+		if(response.length() > 1)
+			tfil.setItemResponse(response.substring(0, response.length() - 1));
+		else 
+			tfil.setItemResponse(response.toString());
 	}
 	
 	private void getScores(Connection oascon, Connection irscon, 
@@ -840,8 +597,10 @@ public class TABEOnlineDataExport {
 					getAllItemsForItemSet(oascon, score.getItemSetId());
 				}
 				prepareItemResponses(oascon, score.getItemSetId(), tfil, roster);
+				getScaleVectorResponse(oascon, tfil, roster, score.getItemSetId());
 				scores.append(Utility.formatData(score.getLevel()) + "," + Utility.formatData(score.getRawScore())
 					 	  + "," + Utility.formatData(score.getScaleScore()) + SEPARATOR 
+					 	  + tfil.getScaleVectorResponse() + SEPARATOR
 					 	  + tfil.getItemResponse() + SEPARATOR);
 			}
 		} catch(Exception e) {
@@ -856,15 +615,16 @@ public class TABEOnlineDataExport {
 	}
 	
 	private void getScaleVectorResponse(Connection oascon, 
-			   TABEFile tfil, TestRoster roster) throws SQLException {
+			   TABEFile tfil, TestRoster roster, String itemSetId) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		StringBuilder response = new StringBuilder();
 		try {
-			//Getting content domain
 			ps = oascon.prepareStatement(SQLQuery.SCORED_RESPONSE_VECTOR_SQL);
 			ps.setInt(1, roster.getTestRosterId());
-			ps.setInt(2, roster.getTestRosterId());
+			ps.setString(2, itemSetId);
+			ps.setString(3, itemSetId);
+			ps.setInt(4, roster.getTestRosterId());
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				response.append(rs.getString("response") + ",");
