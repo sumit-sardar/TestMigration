@@ -19,7 +19,7 @@ public abstract class StudentImmediateReportUtils {
 	private StudentReportIrsScore[] irsScores;
 	private String testAdminStartDateString;
 	private OutputStream out;
-	private String titleText = "LAS Links Online Student Report";
+	private String titleText = "LAS Links Student Proficiency Report";
 	private String testName;
 	private PrintWriter outWriter;
 	
