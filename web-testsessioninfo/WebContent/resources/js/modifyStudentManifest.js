@@ -302,6 +302,8 @@
 	}
 	
 	function PopulateManifestDetail() {
+	    updateAllSubtests(allSubtestsMsm, selectedSubtestsMsm);
+	    populateAllSubtestMapMsm(allSubtestsMsm);
 		populateLocatorTable();
 		populateSubtestTable();
 	}
@@ -372,7 +374,6 @@
 	   } else {
 	          $("#modifyTestLevelMsm").hide();
 	   }
-	     updateAllSubtests(allSubtestsMsm, selectedSubtestsMsm);
 	     displaySourceTable(allSubtestsMsm, selectedSubtestsMsm,'availableSubtestsTableMsm');
 	     displayDestinationTable(allSubtestsMsm, selectedSubtestsMsm, levelOptions, true ,isProductHasLocator, isLocatorPresent);
 
@@ -775,6 +776,17 @@
 	function formatString( inputString){
 		var outputString = inputString.replace(/&/g,'')
 		return outputString;
+	}
+	
+	function populateAllSubtestMapMsm(valueArray) {
+	    allSubtestMapMsm = new Map();
+	    for (var i = 0; i < valueArray.length; i ++ ) {
+	        allSubtestMapMsm.put(i+1, valueArray[i]);
+	    }
+	    if(subTestDetails.locatorSubtest != undefined ){
+			allSubtestMapMsm.put(0,subTestDetails.locatorSubtest);
+		}
+	    
 	}
 	
 	
