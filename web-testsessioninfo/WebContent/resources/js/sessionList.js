@@ -3383,7 +3383,6 @@ function registerDelegate(tree){
 									var updatedTestName = $($('#testGroupList option[value='+oplistval+']')).text()
 									reInitializeModifyTestPopup(updatedPrType, updatedTestName, updatedSessionName);
 								 }
-							  	productType = $("#productType").val();
 							  	$('#showSaveTestMessage').show();
 							  	$.unblockUI();
 							  	closePopUp("scheduleSession");
