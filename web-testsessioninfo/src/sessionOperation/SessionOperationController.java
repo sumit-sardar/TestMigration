@@ -861,6 +861,13 @@ public class SessionOperationController extends PageFlowController {
     	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
+    	    	if(scheduledSession.getTestSession()!=null && scheduledSession.getTestSession().getIsRandomize()!=null){
+    	    		if(scheduledSession.getTestSession().getIsRandomize().equalsIgnoreCase("Y")){
+    	    			scheduledSession.getTestSession().setIsRandomize("T");
+    	    		} else if (scheduledSession.getTestSession().getIsRandomize().equalsIgnoreCase("N")){
+    	    			scheduledSession.getTestSession().setIsRandomize("F");
+    	    		}
+    	    	}
     	    	if(TestSessionUtils.isTabeBatterySurveyProduct(vo.getProductType()) || TestSessionUtils.isTabeAdaptiveProduct(vo.getProductType())){
     	    		vo.setSavedTestDetailsWithDefaultValue(scheduledSession);
     	    	} else {

@@ -268,12 +268,12 @@
 								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
 								resetSubtestDetails();
 								// End : to show the test as selected when it appears in next page 
-								if(selectedTestSession.testSession.isRandomize == 'Y'){
+								if(selectedTestSession.testSession.isRandomize == 'T'){
 									$("#randomDis").show();	
 									$("#randDisLbl").show();		
 									$("#randomDis").val("Y");
 									$('#randomDis').attr('checked','checked')							
-								}else if(selectedTestSession.testSession.isRandomize == 'N') {
+								}else if(selectedTestSession.testSession.isRandomize == 'F') {
 									$("#randomDis").show();	
 									$("#randDisLbl").show();		
 									$("#randomDis").val("N");
