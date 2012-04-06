@@ -615,6 +615,7 @@
 			$('#hasAutolocator').removeAttr("disabled");
   		$('#aCodeB_l').removeAttr("disabled");
 		setAnchorButtonState('modifyTestButton', false);
+		if($('#modifyTest').length>0) {	$('#modifyTest').attr("disabled",false);}
 		if(isTestExpired){
 			$( "#slider-range" ).slider( "option", "disabled", false );	
 	  		$('#timeZoneList').removeAttr("disabled",true);  
