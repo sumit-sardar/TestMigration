@@ -1379,6 +1379,12 @@ public class ItemLayoutProcessor
                         Element parent = thisElement.getParentElement();
                         widgetElement.setAttribute( "halign", parent.getAttributeValue( "halign" ) );
                     }
+                    
+               		widgetElement.setAttribute("isaudio", thisElement.getAttributeValue( "isaudio") );
+               		widgetElement.setAttribute("autoplay", thisElement.getAttributeValue( "autoplay") );
+               		widgetElement.setAttribute("playorder", thisElement.getAttributeValue( "playorder") );
+               		widgetElement.setAttribute("playonce", thisElement.getAttributeValue( "playonce") );
+
                     String srcImage = getAttributeValue( thisElement, "FileName" );
                     widgetElement.setAttribute( "id", getImageId( srcImage ) );
                     //widgetElement.setAttribute( "src", getImagePath( srcImage ) );

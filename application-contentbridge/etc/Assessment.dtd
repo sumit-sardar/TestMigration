@@ -313,7 +313,11 @@ answer -->
 	height 		CDATA #IMPLIED
 	width 		CDATA #IMPLIED
 	Enlargeable		(yes | no | accommodated ) "no"
-	autoenlargeable 	(yes | no ) "no"
+	autoenlargeable 	(yes | no )    "no"
+	isaudio				(true | false) "false"
+	autoplay			(true | false) "true"
+	playorder			CDATA          "1" 
+	playonce			(true | false) "false"
 >
 <!ELEMENT EPSPrint EMPTY>
 <!ATTLIST EPSPrint
