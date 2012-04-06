@@ -26,9 +26,9 @@
 		msmSelectedTestName = selectedTestName;
 		msmTestAdminName = testAdminName;
 		if((isTabeProduct == "true" || isTabeAdaptiveProduct =="true" ) && (productType!='tabeLocatorProductType') && ($("#modifyStdManifestButton").length > 0)){
-			setAnchorButtonState('modifyStdManifestButton', false);
+			updateModifyStdManifestButton(true);
 		} else if ($("#modifyStdManifestButton").length > 0) {
-			setAnchorButtonState('modifyStdManifestButton', true);
+		   updateModifyStdManifestButton(false);
 		}
 	}
 	
@@ -36,7 +36,7 @@
 		msmSelectedTestName = selectedTestName;
 		msmTestAdminName = testAdminName;
 		if(productType!= undefined && productType!= null && (productType =='tabeBatterySurveyProductType' || productType =='tabeAdaptiveProductType') && ($("#modifyStdManifestButton").length > 0)){
-			setAnchorButtonState('modifyStdManifestButton', false);
+			updateModifyStdManifestButton(true);
 			if(productType =='tabeBatterySurveyProductType'){
 				isSelectedTestTabePr = "true";
 				isSelectedTabeAdaptivePr = "false";
@@ -45,7 +45,7 @@
 				isSelectedTabeAdaptivePr = "true";
 			}
 		} else if ($("#modifyStdManifestButton").length > 0) {
-			setAnchorButtonState('modifyStdManifestButton', true);
+			updateModifyStdManifestButton(false);
 			isSelectedTestTabePr = "false";
 			isSelectedTabeAdaptivePr = "false";
 		}
@@ -787,6 +787,15 @@
 			allSubtestMapMsm.put(0,subTestDetails.locatorSubtest);
 		}
 	    
+	}
+	function updateModifyStdManifestButton(isEnable){
+		if(isEnable==true){
+			setAnchorButtonState('modifyStdManifestButton', false);
+			$('#mStdManifest').show();
+		} else {
+			$('#mStdManifest').hide();
+			setAnchorButtonState('modifyStdManifestButton', true);
+		}
 	}
 	
 	

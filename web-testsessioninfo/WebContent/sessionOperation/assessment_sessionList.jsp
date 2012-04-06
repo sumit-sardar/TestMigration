@@ -80,13 +80,7 @@
 										<div id="viewStatus" style="float:right;padding-left:5px;">
 											<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
 										</div> 
-										<% if (userScheduleAndFindSessionPermission) {%>
-										    <div id="mStdManifest" style="float:right;padding-left:5px; ">
-											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
-											   		<lb:label key="homepage.button.modifyTest" />
-											    </a>
-											</div> 
-									    <%} %>
+										
 									    <%if(canRegisterStudent) { %>
 										    <div id="registerStudent" style="float:right;padding-left:5px;">
 											<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
@@ -98,7 +92,16 @@
 									    <%} %>	
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
-										</div> 		
+										</div> 	
+										
+										<% if (userScheduleAndFindSessionPermission) {%>
+										    <div id="mStdManifest" style="float:right;padding-left:5px; display: none;">
+											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
+											   		<lb:label key="homepage.button.modifyTest" />
+											    </a>
+											</div> 
+									    <%} %>	
+									    
 									</div>  
 								</div>
 				     	   </td>

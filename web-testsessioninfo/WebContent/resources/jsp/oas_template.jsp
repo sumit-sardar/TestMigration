@@ -123,6 +123,7 @@ clear: both;
 						//wizardAcc.accordion("activate", index);
 						setAnchorButtonState('printTicketButton', true);
 						setAnchorButtonState('viewStatusButton', true);
+						$('#mStdManifest').hide();
 						setAnchorButtonState('modifyStdManifestButton', true);
 						if(document.getElementById('selectedTestSessionId').value != ""){
 							var rId = document.getElementById('selectedTestSessionId').value;

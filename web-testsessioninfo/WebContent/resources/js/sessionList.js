@@ -179,12 +179,10 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -205,6 +203,7 @@ function populateSessionListGrid(homePageLoad) {
 			 		}
 			},
 			loadComplete: function () {
+ 				updateModifyStdManifestButton(false);
 				$("#list2").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list2').getGridParam('records') === 0) {
 				 	isGridEmpty = true;
@@ -317,7 +316,6 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -477,12 +475,10 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -499,6 +495,7 @@ function populateCompletedSessionListGrid() {
 			 		}
 			},
 			loadComplete: function () {
+				updateModifyStdManifestButton(false);
 				$("#list3").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list3').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
@@ -584,7 +581,6 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('modifyStdManifestButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -875,7 +871,6 @@ function registerDelegate(tree){
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		setAnchorButtonState('printTicketButton', true);
- 		setAnchorButtonState('modifyStdManifestButton', true);
  		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
@@ -3264,7 +3259,6 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('modifyStdManifestButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3324,7 +3318,6 @@ function registerDelegate(tree){
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('modifyStdManifestButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -4270,7 +4263,7 @@ function registerDelegate(tree){
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
-									setAnchorButtonState('modifyStdManifestButton', true);
+									updateModifyStdManifestButton(false);
 								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
