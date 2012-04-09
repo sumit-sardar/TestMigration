@@ -4979,20 +4979,28 @@ public class SessionOperationController extends PageFlowController {
 		        return null;
 		    }
 		    
-		    protected Base prepareSubtestsDetailInformation(Integer testRosterID, String[] selectedItemSetIds, boolean validation)
-		    {
+		    private boolean isTabeAdaptiveSession(String productType) {
+		        if (productType.equalsIgnoreCase("TA"))
+		            return true;   
+		        else             
+		            return false;
+		    }
+		    
+		    protected Base prepareSubtestsDetailInformation(Integer testRosterID, 
+		    						String[] selectedItemSetIds, boolean validation) {
 		    	Base base = new Base();
 		        RosterElement re = getTestRosterDetails(testRosterID);
 		        TestSessionVO testSession = getTestSessionDetails(this.sessionId);
 		        TestProduct testProduct = getProductForTestAdmin(this.sessionId);
 		        boolean isTabeSession = isTabeSession(testProduct.getProductType());
 		        boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
+		        boolean isTabeAdaptiveSession = isTabeAdaptiveSession(testProduct.getProductType());
 		       
 		        // START- Added for LLO-109 
 		        isLasLinkCustomer();
 		        boolean isLaslinkSession  = this.isLasLinkCustomer;
 		        boolean testSessionCompleted = isTestSessionCompleted(testSession);
-		        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession, isLaslinkSession);       
+		        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, (isTabeSession || isTabeAdaptiveSession), isTabeLocatorSession, isLaslinkSession);       
 		       
 		        String testGrade = getTestGrade(this.studentStatusSubtests);
 		        String testLevel = getTestLevel(this.studentStatusSubtests);
@@ -5003,7 +5011,7 @@ public class SessionOperationController extends PageFlowController {
 		        base.setTestSession(testSession);
 		        base.setTestStatus(FilterSortPageUtils.testStatus_CodeToString(re.getTestCompletionStatus()));
 		        base.setTestElement(this.studentStatusSubtests);
-		        if (!isTabeSession) {
+		        if ((! isTabeSession) && (! isTabeAdaptiveSession)) {
 		            if (!testGrade.equals("--")) {
 		            	base.setTestGrade(testGrade);
 		            }
