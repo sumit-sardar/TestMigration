@@ -113,3 +113,5 @@
 <input type="hidden" id="msmNoStudentTitle" name = "msmNoStudentTitle" value="${bundle.web['modify.student.manifest.noStuSelected.title']}"/>
 <input type="hidden" id="msmSelectStudentValidationTitle" name = "msmSelectStudentValidationTitle" value="${bundle.web['modify.student.manifest.selectStd.validation.title']}"/>
 
+<input type="hidden" id="msmTabeSelectStudentIns"  value=<lb:label key="midify.student.manifest.tabe.select.student.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="msmNonTabeSelectStudentIns" value=<lb:label key="midify.student.manifest.nontabe.select.student.message" prefix="'" suffix="'"/> />

@@ -30,6 +30,11 @@
 		} else if ($("#modifyStdManifestButton").length > 0) {
 		   updateModifyStdManifestButton(false);
 		}
+		if(isTabeProduct == "true"){
+			$("#mmsModifyStdSubtestMsg").html($("#msmTabeSelectStudentIns").val());
+		}else if (isTabeAdaptiveProduct =="true") {
+			$("#mmsModifyStdSubtestMsg").html($("#msmNonTabeSelectStudentIns").val());
+		}
 	}
 	
 	function reInitializeModifyTestPopup(productType, selectedTestName, testAdminName){
@@ -40,9 +45,11 @@
 			if(productType =='tabeBatterySurveyProductType'){
 				isSelectedTestTabePr = "true";
 				isSelectedTabeAdaptivePr = "false";
+				$("#mmsModifyStdSubtestMsg").html($("#msmTabeSelectStudentIns").val());
 			} else if (productType =='tabeAdaptiveProductType') {
 				isSelectedTestTabePr = "false";
 				isSelectedTabeAdaptivePr = "true";
+				$("#mmsModifyStdSubtestMsg").html($("#msmNonTabeSelectStudentIns").val());
 			}
 		} else if ($("#modifyStdManifestButton").length > 0) {
 			updateModifyStdManifestButton(false);
