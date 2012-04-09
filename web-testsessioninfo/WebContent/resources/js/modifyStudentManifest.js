@@ -202,6 +202,7 @@
 				for(var k = 0; k < allRowsInGridPresent.length; k++) {
 					var selectedRowData = $("#mmStdList").getRowData(allRowsInGridPresent[k]);
 					if(selectedRowData.statusEditable != "T") {
+						$("#"+selectedRowData.studentId, "#mmStdList").attr('disabled',true);
 						$("#"+selectedRowData.studentId, "#mmStdList").addClass('ui-state-disabled');
 					}
 				}
