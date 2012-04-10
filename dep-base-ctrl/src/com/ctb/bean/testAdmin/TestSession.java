@@ -77,6 +77,7 @@ public class TestSession extends CTBBean
     private String dailyLoginEndTimeString;
     private String productType;
     private String offGradeBlocked;
+    private String copyable;
    
    
     /**
@@ -683,5 +684,13 @@ public class TestSession extends CTBBean
 
 	public String getLoginEndDateString() {
 		return loginEndDateString;
+	}
+
+	public String getCopyable() {
+		return copyable;
+	}
+
+	public void setCopyable(String copyable) {
+		this.copyable = copyable;
 	}
 } 
