@@ -93,6 +93,7 @@
 <input type="hidden" id="noProctorTitleGrd" name = "noProctorTitleGrd" value=<lb:label key="session.noProcSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noProctorMsgGrd" name = "noProctorMsgGrd" value=<lb:label key="session.noProcSelected.message" prefix="'" suffix="'"/>/>
 
+<input type="hidden" id="copyTestSn" name="copyTestSn" value=<lb:label key="sessionList.copyTest.title" prefix="'" suffix="'"/>/>
 
 
 

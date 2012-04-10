@@ -20,14 +20,19 @@
 	var proctorDtlChange = "F";
 	var cacheObjVal = {};
 	var savedStudentMap = new Map();//used to track student is old or new
+	var isCopySession = false; //added  for copy test session
+	var isSelectTestDetClicked = false; //added  for copy test session
 		
-  function editTestSession(){  
+  function editTestSession(action){  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
      $("#endTest").hide();
      cacheObjVal = {};
      var param = {};
      param.testAdminId = selectedTestAdminId;
+     if(action != undefined){
+     	param.action = action;
+     }
  	
  	$.ajax({
 		async:		true,
@@ -40,7 +45,14 @@
 		data:		param,
 		success:	function(data, textStatus, XMLHttpRequest){
 						
-						if (data.status.isSuccess){			
+						if (data.status.isSuccess){	
+							//added for copy test session
+							if(data.isCopySession){
+								isCopySession = true;
+							}else{
+								isCopySession = false;
+							}
+							//		
 							if(data.noTestExists == true){
 								noTestExist = true;
 								document.getElementById("testDiv").style.display = "none";
@@ -124,9 +136,14 @@
 							  	closePopUp("scheduleSession");
 							  	return;
 					  }
-					
+						 var titleHeader;
+						 if(isCopySession){
+						 	titleHeader = $("#copyTestSn").val();
+						 } else{
+						 	titleHeader = $("#editTestSn").val();
+						 }
 						 $("#scheduleSession").dialog({  
-							title:$("#editTestSn").val(),  
+							title:titleHeader,  
 							resizable:false,
 							autoOpen: true,
 							width: '1024px',
@@ -152,11 +169,18 @@
 									$("#messageEditInfo").html($("#stuLogged").val());
 									$("#contentEditInfo").hide();
 								} else {
-									$("#displayEditInfo").show();
-									$("#titleEditInfo").html("");
-									$("#contentEditInfo").show();
-									$("#contentEditInfo").html($("#noStudentLogged").val());
-									$("#messageEditInfo").html($("#noStudentLogged2").val());
+									if(data.isCopySession){
+										$("#displayEditInfo").show();
+										$("#titleEditInfo").html("");
+										$("#contentEditInfo").show();
+										$("#contentEditInfo").html(data.status.successInfo.messageHeader);
+									}else{
+										$("#displayEditInfo").show();
+										$("#titleEditInfo").html("");
+										$("#contentEditInfo").show();
+										$("#contentEditInfo").html($("#noStudentLogged").val());
+										$("#messageEditInfo").html($("#noStudentLogged2").val());
+									}
 								}
 							}
 							isPopUp = true;						
@@ -186,15 +210,28 @@
     	selectedTestSession =  data.savedTestDetails;	  	
 		fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.savedTestDetails.testSession.timeZone);
 		$("#testSessionName").val(data.savedTestDetails.testSession.testAdminName);
-		$( "#startDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-		$( "#endDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-		if(data.minLoginEndDate != undefined ) {
-			$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-			$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-		} else {
-			$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
-			$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
-		
+		if(data.isCopySession){
+			$( "#startDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
+			$( "#endDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
+			
+			//$( "#endDate" ).datepicker( "option", "defaultDate", data.minLoginEndDate );
+			/*if(data.minLoginEndDate != undefined ) {
+				$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+				$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+			} else {
+				$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
+				$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
+			}*/
+		}else{
+			$( "#startDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
+			$( "#endDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
+			if(data.minLoginEndDate != undefined ) {
+				$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+				$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+			} else {
+				$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
+				$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
+			}
 		}
 		$( "#endDate" ).datepicker( "refresh" );
 		$( "#startDate" ).datepicker( "refresh" );
@@ -232,6 +269,11 @@
     }else{
     		var param = {};
     		param.testAdminId = selectedTestAdminId;
+    		//added for copy test session
+	  		if(isCopySession){
+	  			param.action = "copySession";
+	  		}
+	  		//    		
 		 	$.ajax({
 				async:		true,
 				beforeSend:	function(){
@@ -291,15 +333,21 @@
 										$("#testBreak").attr("checked", true);
 					 					$("#testBreak").trigger('click');
 					 					$("#testBreak").attr("checked", true);
-					 					fillAccessCode(selectedTestSession);
+					 					if(!isCopySession){//added for copy test session
+					 						fillAccessCode(selectedTestSession);
+					 					}
 									} else {
 										$('#testBreak').removeAttr('checked');
-										$('#aCode').val(selectedTestSession.testSession.accessCode);
+										if(!isCopySession){ //added for copy test session
+											$('#aCode').val(selectedTestSession.testSession.accessCode);
+										}
 										
 									}
 									
 								} else {
-									$('#aCode').val(selectedTestSession.testSession.accessCode);
+									if(!isCopySession){ //added for copy test session
+										$('#aCode').val(selectedTestSession.testSession.accessCode);
+									}
 									$("#testBreak").attr('disabled', true);	
 								}
 														
@@ -338,6 +386,11 @@
 	  	if(!offGradeSubtestChanged) {
 	  		var param = {};
 	  		param.testAdminId = selectedTestAdminId;
+	  		//added for copy test session
+	  		if(isCopySession){
+	  			param.action = "copySession";
+	  		}
+	  		//
 	  		$.ajax({
 				async:		true,
 				beforeSend:	function(){
@@ -422,6 +475,11 @@
 	    }else{
 	    		var param = {};
 	    		param.testAdminId = selectedTestAdminId;
+	    		//added for copy test session
+		  		if(isCopySession){
+		  			param.action = "copySession";
+		  		}
+		  		//
 			    $.ajax({
 					async:		true,
 					beforeSend:	function(){
@@ -504,6 +562,7 @@
 		editDataCache = new Map();
         editDataMrkStds = new Map();
         cacheObjVal = {};
+        isCopySession = false; //added for copy test session
   	}
   	
   	function calculateTimeInMin(val){
@@ -758,6 +817,8 @@
 		savedStudentMap = new Map();
 		isFirstAccordSelected = false;
 		isSecondAccordSelected = true;
+		isCopySession = false;//added for copy test session
+		isSelectTestDetClicked = false;//added for copy test session
 	}
 	function isTestExistInCurrentPage(itemSetId){
 		var isetIdArray = $('#testList').jqGrid('getDataIDs');

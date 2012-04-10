@@ -178,6 +178,12 @@ public class TestSessionStatusImpl implements TestSessionStatus
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.UploadDataFile uploadDataFile;
     
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.TestAdmin admins;
+    
     static final long serialVersionUID = 1L;
     
     private static final int CTB_CUSTOMER_ID =2;
@@ -568,6 +574,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             }
             TestSession [] sessions = testAdmin.getTestSessionsForUserHome(userName);
             for(int i=0;i<sessions.length;i++) {
+            	sessions[i].setCopyable(admins.checkCopyable(userName, sessions[i].getTestAdminId()));
                 TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
             }
             tsd.setTestSessions(sessions, pageSize);
@@ -764,6 +771,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             sessions = tsd.getTestSessions();
             for(int i=0;i<sessions.length;i++) {
                 if(sessions[i] != null) {
+                	sessions[i].setCopyable(admins.checkCopyable(userName, sessions[i].getTestAdminId()));
                     TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
                 }
             }

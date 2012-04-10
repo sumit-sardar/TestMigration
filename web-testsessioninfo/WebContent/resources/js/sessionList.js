@@ -122,7 +122,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 mtype:   'POST',
 		 datatype: "json",         
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'','','','',''],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'','','','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -135,7 +135,8 @@ function populateSessionListGrid(homePageLoad) {
 		   		{name:'loginEndDateString',index:'loginEndDateString', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'isSTabeAdaptiveProduct',index:'isSTabeAdaptiveProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'productType',index:'productType', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'productType',index:'productType', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'copyable',index:'copyable', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 			   	records: function(obj) { 
@@ -145,7 +146,8 @@ function populateSessionListGrid(homePageLoad) {
 			   	 $("#list2").jqGrid("hideCol","loginEndDateString");
 			   	 $("#list2").jqGrid("hideCol","isSTabeProduct");
 			   	 $("#list2").jqGrid("hideCol","isSTabeAdaptiveProduct");
-			   	  $("#list2").jqGrid("hideCol","productType");
+			   	 $("#list2").jqGrid("hideCol","productType");
+			   	 $("#list2").jqGrid("hideCol","copyable");
 				   	 if(ishomepageload && obj.orgNodeCategory != undefined){
 				   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
 				   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
@@ -179,15 +181,22 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');
 					var selectedRData = $("#list2").getRowData(rowId);
+					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
+						setAnchorButtonState('copySessionButton', false);
+					}else{
+						setAnchorButtonState('copySessionButton', true);
+					}
 					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType, selectedRData.testName, selectedRData.testAdminName);	
 					selectedTestAdminId = rowId;						
 					$('#showSaveTestMessage').hide();
@@ -316,6 +325,7 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -433,7 +443,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  mtype:   'POST',
 		  datatype: "json",          
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'loginStartDateString','loginEndDateString'],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'loginStartDateString','loginEndDateString','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -443,13 +453,17 @@ function populateCompletedSessionListGrid() {
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginStartDateString',index:'loginStartDateString', width:0},
-		   		{name:'loginEndDateString',index:'loginEndDateString', width:0}
+		   		{name:'loginEndDateString',index:'loginEndDateString', width:0},
+		   		{name:'copyable',index:'copyable', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
 		   	records: function(obj) { 
 		   	 $("#list3").jqGrid("hideCol","creatorOrgNodeId");
 		   	 $("#list3").jqGrid("hideCol","loginStartDateString");
 			 $("#list3").jqGrid("hideCol","loginEndDateString");
+			 $("#list3").jqGrid("hideCol","copyable");
+			 $("#list3").jqGrid("hideCol","isSTabeProduct");
 		   	 sessionListPA = obj.sessionListPAMap;
 		   	 } },
 		   	loadui: "disable",
@@ -475,10 +489,12 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -493,6 +509,12 @@ function populateCompletedSessionListGrid() {
 			 			 	setAnchorButtonState('registerStudentButton', false);
 			 			 }
 			 		}
+			 		var selectedRData = $("#list3").getRowData(rowId);
+					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
+						setAnchorButtonState('copySessionButton', false);
+					}else{
+						setAnchorButtonState('copySessionButton', true);
+					}
 			},
 			loadComplete: function () {
 				updateModifyStdManifestButton(false);
@@ -581,6 +603,7 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+				setAnchorButtonState('copySessionButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -871,6 +894,7 @@ function registerDelegate(tree){
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		setAnchorButtonState('printTicketButton', true);
+ 		setAnchorButtonState('copySessionButton', true);
  		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
@@ -1467,6 +1491,7 @@ function registerDelegate(tree){
 	var postDataObject = {};
  	postDataObject.currentAction = 'init';
  	savedStudentMap = new Map();
+ 	isCopySession = false; //added  for copy test session
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -2957,19 +2982,34 @@ function registerDelegate(tree){
 	 	}else if(state == "EDIT"){
 	 		var val=[] ;
 			
-			val = val.concat(addProctorLocaldata);	 
-			for (var i = 0, j = val.length; i < j; i++){
-			 		proctorIdObjArray[val[i].userId] = val[i];
-			 		if(proctorIdObjArray[val[i].userId].defaultScheduler == "T") {
-			 			schedulerFirstName = proctorIdObjArray[val[i].userId].firstName;
-						schedulerLastName = proctorIdObjArray[val[i].userId].lastName;
-						schedulerUserId = proctorIdObjArray[val[i].userId].userId;
-						schedulerUserName = proctorIdObjArray[val[i].userId].userName;
-						$("#schedulerFirstName").val(schedulerFirstName);
-						$("#schedulerLastName").val(schedulerLastName);
-						$("#schedulerUserId").val(schedulerUserId);
-						$("#schedulerUserName").val(schedulerUserName);
-			 		}
+			val = val.concat(addProctorLocaldata);
+			//added for copy test session	
+			if(isCopySession){
+				schedulerFirstName = $("#loggedInFirstName").val();
+				schedulerLastName = $("#loggedInLastName").val();
+				schedulerUserId = $("#loggedInUserId").val();
+				schedulerUserName = $("#loggedInUserName").val();
+				$("#schedulerFirstName").val(schedulerFirstName);
+				$("#schedulerLastName").val(schedulerLastName);
+				$("#schedulerUserId").val(schedulerUserId);
+				$("#schedulerUserName").val(schedulerUserName);
+				for (var i = 0, j = val.length; i < j; i++){
+				 	proctorIdObjArray[val[i].userId] = val[i];
+				} 		
+			}else{ 
+				for (var i = 0, j = val.length; i < j; i++){
+				 		proctorIdObjArray[val[i].userId] = val[i];
+				 		if(proctorIdObjArray[val[i].userId].defaultScheduler == "T") {
+				 			schedulerFirstName = proctorIdObjArray[val[i].userId].firstName;
+							schedulerLastName = proctorIdObjArray[val[i].userId].lastName;
+							schedulerUserId = proctorIdObjArray[val[i].userId].userId;
+							schedulerUserName = proctorIdObjArray[val[i].userId].userName;
+							$("#schedulerFirstName").val(schedulerFirstName);
+							$("#schedulerLastName").val(schedulerLastName);
+							$("#schedulerUserId").val(schedulerUserId);
+							$("#schedulerUserName").val(schedulerUserName);
+				 		}
+				}
 			}
 			 addProctorLocaldata = val;
 		 }
@@ -3023,14 +3063,27 @@ function registerDelegate(tree){
 					var loggedInUserId = $("#loggedInUserId").val();
 					for(var i = 0; i < allRowsInGrid.length; i++) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
-						if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F") || (selectedRowData.userId == loggedInUserId)) {
-							$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
-				 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
-				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
-				 		}else {
-				 			if(!allProctorSelected && delProctorIdObjArray[selectedRowData.userId]){
-				 				$("#jqg_listProctor_"+ parseInt(i+1)).attr('checked', true).trigger('click').attr('checked', true);
-				 			}
+						//added for copy test session
+						if(isCopySession){
+							if ((selectedRowData.editable == "F") || (selectedRowData.userId == loggedInUserId)) {
+								$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
+					 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
+					 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
+					 		}else {
+					 			if(!allProctorSelected && delProctorIdObjArray[selectedRowData.userId]){
+					 				$("#jqg_listProctor_"+ parseInt(i+1)).attr('checked', true).trigger('click').attr('checked', true);
+					 			}
+					 		}
+						} else{
+							if (selectedRowData.defaultScheduler == 'T' || (selectedRowData.editable == "F") || (selectedRowData.userId == loggedInUserId)) {
+								$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
+					 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
+					 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
+					 		}else {
+					 			if(!allProctorSelected && delProctorIdObjArray[selectedRowData.userId]){
+					 				$("#jqg_listProctor_"+ parseInt(i+1)).attr('checked', true).trigger('click').attr('checked', true);
+					 			}
+					 		}
 				 		}
 					}
 					if(allProctorSelected){
@@ -3051,15 +3104,28 @@ function registerDelegate(tree){
 						var selectedRowData;
 						for(var i = 0; i < addProctorLocaldata.length; i++) {						
 							selectedRowData = addProctorLocaldata[i];
-							if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
-								if(selectedRowData.userId != loggedInUserId){
-									selectedRowData = addProctorLocaldata[i];
-									$("#"+selectedRowData.userId+" td input").attr("checked", true); 
-									
-									tmpselectedRowId = selectedRowData.userId;
-						 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
-					 			}
-					 			
+							if(isCopySession){
+								if (selectedRowData.editable == "T") {
+									if(selectedRowData.userId != loggedInUserId){
+										selectedRowData = addProctorLocaldata[i];
+										$("#"+selectedRowData.userId+" td input").attr("checked", true); 
+										
+										tmpselectedRowId = selectedRowData.userId;
+							 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
+						 			}
+						 			
+						 		}
+							}else{
+								if (selectedRowData.defaultScheduler == 'F' && selectedRowData.editable == "T") {
+									if(selectedRowData.userId != loggedInUserId){
+										selectedRowData = addProctorLocaldata[i];
+										$("#"+selectedRowData.userId+" td input").attr("checked", true); 
+										
+										tmpselectedRowId = selectedRowData.userId;
+							 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
+						 			}
+						 			
+						 		}
 					 		}
 						}
 						proctorSelectedLength = addProctorLocaldata.length;
@@ -3259,6 +3325,7 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('copySessionButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3308,16 +3375,24 @@ function registerDelegate(tree){
 		    
 		    var selectedProctors =getProctorListArray(addProctorLocaldata);
 		    param = param+"&proctors="+selectedProctors.toString() ;
-		    param = param+"&action=EDIT";
+		    //added for copy test session
+		    if(isCopySession){
+		    	param = param+"&action=COPY";
+		    }else{
+		    	param = param+"&action=EDIT";
+		    }
+		    //
 		   	param = param+"&isStudentUpdated="+isStdDetClicked;
 		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
 		   	param = param+"&testAdminId=" +selectedTestAdminId;
 		   	param = param+"&isEndTestSession="+isEndTestSession;
+		   	param = param+"&isSelectTestUpdated="+isSelectTestDetClicked;
 	 }
 	 var selectedId1 = $("#list2").jqGrid('getGridParam', 'selrow');
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('copySessionButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -4264,6 +4339,7 @@ function registerDelegate(tree){
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
 									updateModifyStdManifestButton(false);
+									setAnchorButtonState('copySessionButton', true);
 								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
@@ -4490,4 +4566,7 @@ function validNumber(str){
 	}
 	
 	
-	
+	function copyTestSession(){
+	    var action = "copySession"; 
+	    editTestSession(action);
+	}	

@@ -32,6 +32,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private boolean hasLocator = false;
 	private Integer locatorId = null;
 	Map<Integer,Map> accomodationMap;
+	private boolean isCopySession = false;
 	
 
 	private static final long serialVersionUID = 1L;
@@ -227,6 +228,14 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
 		this.accomodationMap = accomodationMap;
+	}
+
+	public boolean isCopySession() {
+		return isCopySession;
+	}
+
+	public void setCopySession(boolean isCopySession) {
+		this.isCopySession = isCopySession;
 	}
 
 	

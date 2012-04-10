@@ -596,6 +596,8 @@ public class SessionOperationController extends PageFlowController {
         	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
         	if(currentAction.equalsIgnoreCase("EDIT")){
         		isAddOperation = false;
+        	} else if(currentAction.equalsIgnoreCase("COPY")){
+        		isAddOperation = true;
         	} else if (currentAction.equalsIgnoreCase("ADD")){
         		isAddOperation = true;
         	} else if (testAdminIdString == null) {
@@ -612,7 +614,7 @@ public class SessionOperationController extends PageFlowController {
         	
             try
             {
-            	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation);
+            	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation, currentAction); //modified for copy test sesssion
             	
             	
             	if(!validationFailedInfo.isValidationFailed()) {
@@ -765,6 +767,10 @@ public class SessionOperationController extends PageFlowController {
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
+    	  //added for copy test session
+    	    String action = getRequest().getParameter("action"); 
+//    	    System.out.println(">>>>>"+action);
+    	    //
     	    
     	    try {
 
@@ -856,10 +862,25 @@ public class SessionOperationController extends PageFlowController {
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
     	    String userTimeZone = null;
+    	  //added for copy test session
+    	    String action = getRequest().getParameter("action"); 
+//    	    System.out.println(">>>>>"+action);
+    	    String originalTestAdminName = null;
+    	    String testAdminNameCopySession = null;
+    	    //
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
+    	    	//added for copy test session
+    	    	if(action != null && action.equals("copySession")){
+    	    		scheduledSession.setStudentsLoggedIn(new Integer(0));
+    	    		originalTestAdminName = scheduledSession.getTestSession().getTestAdminName();
+    	    		testAdminNameCopySession = "Copy of " + originalTestAdminName;
+    	    		scheduledSession.getTestSession().setTestAdminName(testAdminNameCopySession);
+    	    		vo.setCopySession(true);
+    	    	}
+    	    	//	
     	    	vo.setProductType(TestSessionUtils.getProductType(scheduledSession.getTestSession().getProductType()));
     	    	if(scheduledSession.getTestSession()!=null && scheduledSession.getTestSession().getIsRandomize()!=null){
     	    		if(scheduledSession.getTestSession().getIsRandomize().equalsIgnoreCase("Y")){
@@ -873,21 +894,47 @@ public class SessionOperationController extends PageFlowController {
     	    	} else {
     	    		vo.setSavedTestDetails(scheduledSession);
     	    	}
-    	    	Date now = new Date(System.currentTimeMillis());
-    	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
+    	    	//added for copy test session
     	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 
     	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
     	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
-    	    	if (ovLoginStart != null && !(DateUtils.isBeforeToday(ovLoginStart , this.user.getTimeZone() ))) {
-    	    		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
-	        	} else {
-	        		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
-	        	}
-	        	
-	        	if(ovLoginEnd!= null ) {
-	        		vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
-	        		
-	        	} 
+                if (action != null && action.equals("copySession"))
+                { 
+                	String timeZoneCopySession = scheduledSession.getTestSession().getTimeZone();
+                    Date now = new Date(System.currentTimeMillis());
+                    Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZoneCopySession, now);
+                    Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZoneCopySession, now);
+                    vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
+                    vo.setMinLoginEndDate(DateUtils.formatDateToDateString(tomorrow));
+                    scheduledSession.getTestSession().setLoginStartDate(today);
+                    scheduledSession.getTestSession().setLoginEndDate(tomorrow);
+                    
+                    if (ovLoginStart != null && !DateUtils.isBeforeToday(ovLoginStart, this.user.getTimeZone()))
+                    {
+                        Date loginEndDate = (Date)ovLoginStart.clone();
+                        loginEndDate.setDate(loginEndDate.getDate() + 1);
+                        vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
+                        vo.setMinLoginEndDate(DateUtils.formatDateToDateString(loginEndDate));
+                    }
+                    
+                }else{
+    	    	//
+	    	    	Date now = new Date(System.currentTimeMillis());
+	    	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
+	//    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 
+	//    	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
+	//    	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
+	    	    	if (ovLoginStart != null && !(DateUtils.isBeforeToday(ovLoginStart , this.user.getTimeZone() ))) {
+	    	    		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
+		        	} else {
+		        		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
+		        	}
+		        	
+		        	if(ovLoginEnd!= null ) {
+		        		vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+		        		
+		        	} 
+                }//
     	    	vo.populateLocatorInformation();
 
     	    	if (this.user == null || topNodesMap.size() ==0 ){
@@ -907,6 +954,12 @@ public class SessionOperationController extends PageFlowController {
                 } else {
                 	vo.setTestSessionExpired(Boolean.FALSE);
                 }
+    	    	//added for copy test session
+    	    	if(action != null && action.equals("copySession")){
+    	    		vo.setTestSessionExpired(Boolean.FALSE);
+    	    	}
+    	    	//
+                
                 if(topNodesMap.containsKey(scheduledSession.getTestSession().getCreatorOrgNodeId())){
                 	 vo.populateTopOrgnode(topNodesMap);
                 } else {
@@ -920,7 +973,18 @@ public class SessionOperationController extends PageFlowController {
                 status.setSuccess(true);
                 
                 String timeZone = testSession.getTimeZone();
-                testSession.setTimeZone(DateUtils.getUITimeZone(timeZone));
+    	    	//added for copy test session
+    	    	if(action != null && action.equals("copySession")){
+    	    		testSession.setTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+    	    		testSession.setFormAssignmentMethod(TestSession.FormAssignment.ROUND_ROBIN);
+    	    		SuccessInfo successInfo = new SuccessInfo();
+    	    		successInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.CopyTest", originalTestAdminName));
+    	    		status.setSuccessInfo(successInfo);
+    	    	}else{
+    	    		testSession.setTimeZone(DateUtils.getUITimeZone(timeZone));
+    	    	}
+    	    	//
+//                testSession.setTimeZone(DateUtils.getUITimeZone(timeZone)); //commented for copy test session
                 testSession.setLoginStartDateString(DateUtils.formatDateToDateString(testSession.getLoginStartDate()));
                 testSession.setLoginEndDateString(DateUtils.formatDateToDateString(testSession.getLoginEndDate()));
                 testSession.setDailyLoginStartTimeString(DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime()));
@@ -974,11 +1038,20 @@ public class SessionOperationController extends PageFlowController {
     	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
+    	    //added for copy test session
+    	    String action = getRequest().getParameter("action"); 
+//    	    System.out.println(">>>>>"+action);
+    	    //
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
     	    	SessionStudent[] students =  scheduledSession.getStudents();
-    	    	List<SessionStudent> studentsList = buildStudentList(students, accomodationMap);
+    	    	List<SessionStudent> studentsList = null;
+    	    	if(action != null && action.equals("copySession")){
+    	    		studentsList = buildStudentListForCopySession(students, accomodationMap, action);
+    	    	}else{
+    	    		studentsList = buildStudentList(students, accomodationMap);
+    	    	}
     	    	vo.setSavedStudentsDetails(studentsList);
                 status.setSuccess(true);
                
@@ -1089,10 +1162,19 @@ public class SessionOperationController extends PageFlowController {
 	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
 	    OperationStatus status = new OperationStatus(); 
 	    vo.setOperationStatus(status) ;
+	    //added for copy test session
+	    String action = getRequest().getParameter("action"); 
+//	    System.out.println(">>>>>"+action);
+	    //
 	    try {
 	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
 	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminId);
-	    	 List<UserProfileInformation> proctors= buildProctorList(scheduledSession.getProctors());
+	    	List<UserProfileInformation> proctors = null;
+	    	if(action != null && action.equals("copySession")){
+	    		proctors = buildProctorListForCopySession(scheduledSession.getProctors());
+	    	}else{
+	    		proctors = buildProctorList(scheduledSession.getProctors());
+	    	}
 	    	 vo.setSavedProctorsDetails(proctors);
             status.setSuccess(true);
            
@@ -1239,21 +1321,42 @@ public class SessionOperationController extends PageFlowController {
 		 }
 		return newTestAdminId;
 	}
-    private ScheduledSession populateAndValidateSessionRecord(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation) throws CTBBusinessException
+    private ScheduledSession populateAndValidateSessionRecord(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation, String action) throws CTBBusinessException
     	    {  
     		 //Integer newTestAdminId = null;
     		 ScheduledSession scheduledSession = new ScheduledSession();
     		 ScheduledSession savedSessionMinData = new ScheduledSession();
-    		 populateTestSession(scheduledSession,savedSessionMinData, httpServletRequest, validationFailedInfo , isAddOperation);
-    		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateScheduledUnits(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation ); 
+    		 List<String> accessCodeListForCopy = new ArrayList<String>(); //added for copy test session
+    		 if(action != null && action.equalsIgnoreCase("COPY")){
+    			 accessCodeListForCopy = populateTestSessionForCopySession(scheduledSession,savedSessionMinData, httpServletRequest, validationFailedInfo , isAddOperation, accessCodeListForCopy);
+    		 }else{
+    			 populateTestSession(scheduledSession,savedSessionMinData, httpServletRequest, validationFailedInfo , isAddOperation);
     		 }
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateSessionStudent(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation );
+    			 if(action != null && action.equalsIgnoreCase("COPY")){
+    				 populateScheduledUnitsForCopySession(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation, accessCodeListForCopy);
+    			 }else{
+    				 populateScheduledUnits(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation );
+    			 }
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 
+    			 if(action != null && action.equalsIgnoreCase("COPY")){
+    				 populateSessionStudentForCopySession(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation );
+    			 }else{
+    				 populateSessionStudent(scheduledSession, savedSessionMinData, httpServletRequest, validationFailedInfo, isAddOperation );
+    			 }
+    			 
     		 }
     		 
     		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo, isAddOperation);
+    			 
+    			 if(action != null && action.equalsIgnoreCase("COPY")){
+    				 populateProctorForCopySession(scheduledSession, httpServletRequest , validationFailedInfo, isAddOperation);
+    			 } else {
+    				 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo, isAddOperation);
+    			 }
+    			 
     		 }
     		 
     		/* if(!validationFailedInfo.isValidationFailed()) {
@@ -5501,4 +5604,783 @@ public class SessionOperationController extends PageFlowController {
 		public void setSessionListPAMap(Map<Integer, Map> sessionListPAMap) {
 			this.sessionListPAMap = sessionListPAMap;
 		}
+//**Changes for copy test session
+		
+		public List<UserProfileInformation> buildProctorListForCopySession(User[] users) {
+	        ArrayList<UserProfileInformation> userList = new ArrayList<UserProfileInformation>();
+	        if (users != null) {
+	            //User[] users = uData.getUsers();
+	            if(users != null){
+	                for (int i=0 ; i<users.length ; i++) {
+	                    User user = users[i];
+	                    if (user != null && user.getUserName() != null) {
+	                        UserProfileInformation userDetail = new UserProfileInformation(user);
+	                        if(user.getDefaultScheduler().equals("T")){
+	                        	userDetail.setDefaultScheduler("T");
+	                        	
+	                        }else {
+	                        	userDetail.setDefaultScheduler("F");
+	                        }
+	                        if ("T".equals(user.getCopyable())){
+	                        	userDetail.setEditable("T");
+	                        	userList.add(userDetail);
+	                        }
+	                        //userList.add(userDetail);
+	                    }
+	                }
+	            }
+	        }
+	        return userList;
+	    }
+		
+	    private List<SessionStudent> buildStudentListForCopySession(SessionStudent [] sessionStudents, Map<Integer, Map> accomodationMap, String action) 
+	    {
+	        List<SessionStudent> studentList = new ArrayList<SessionStudent>();
+	        Map<String,String> innerMap;
+	        for (int i=0 ; i<sessionStudents.length; i++) {
+	        	innerMap = new HashMap<String,String>();
+	            SessionStudent ss = (SessionStudent)sessionStudents[i];
+	            if(ss.getStatus()!=null) {
+	            	if(action != null && action.equals("copySession")){
+	            		if ("T".equals(ss.getStatus().getCopyable())){
+	            			ss.setStatusEditable("T");
+	            			ss.setStatusCopyable(ss.getStatus().getCopyable());
+	            		}else{
+	            			ss.setStatusEditable(ss.getStatus().getEditable());
+	    	            	ss.setStatusCopyable(ss.getStatus().getCopyable());
+	            		}
+	            	}else{
+		            	ss.setStatusEditable(ss.getStatus().getEditable());
+		            	ss.setStatusCopyable(ss.getStatus().getCopyable());
+	            	}
+	            } else {
+	            	ss.setStatusEditable("T");
+	            	ss.setStatusCopyable("T");
+	            }
+
+	           
+	            
+	            if (ss != null) {                
+	                StringBuffer buf = new StringBuffer();
+	                buf.append(ss.getFirstName()).append(" ").append(ss.getLastName()).append(": ");
+	                if ("T".equals(ss.getCalculator())) {
+	                    if ("true".equals(ss.getHasColorFontAccommodations()) ||
+	                        "T".equals(ss.getScreenReader()) ||
+	                        "T".equals(ss.getTestPause()) ||
+	                        "T".equals(ss.getUntimedTest()))
+	                        buf.append("Calculator, ");
+	                    else
+	                        buf.append("Calculator");
+	                }
+	                if(ss.getMusicFileId() == null || "".equals(ss.getMusicFileId().trim())){
+	                	ss.setAuditoryCalming("F");
+	                }else {
+	                	ss.setAuditoryCalming("T");
+	                }
+	                
+	                if ("true".equals(ss.getHasColorFontAccommodations())) {
+	                    if ("T".equals(ss.getScreenReader()) ||
+	                        "T".equals(ss.getTestPause()) ||
+	                        "T".equals(ss.getUntimedTest()))
+	                        buf.append("Color/Font, ");
+	                    else
+	                        buf.append("Color/Font");
+	                }
+	                if ("T".equals(ss.getScreenReader())) {
+	                    if ("T".equals(ss.getTestPause()) ||
+	                        "T".equals(ss.getUntimedTest()))
+	                        buf.append("ScreenReader, ");
+	                    else
+	                        buf.append("ScreenReader");
+	                }
+	                if ("T".equals(ss.getTestPause())) {
+	                    if ("T".equals(ss.getUntimedTest()))
+	                        buf.append("TestPause, ");
+	                    else
+	                        buf.append("TestPause");
+	                }
+	                if ("T".equals(ss.getUntimedTest())) {
+	                    buf.append("UntimedTest");
+	                }
+	                buf.append(".");
+	                ss.setExtPin3(escape(buf.toString()));
+	                ss.setHasColorFontAccommodations(getHasColorFontAccommodations(ss));
+	                ss.setHasAccommodations(studentHasAccommodation(ss));
+	                 if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
+	                	ss.setMiddleName( ss.getMiddleName().substring(0,1));
+	                 
+	                 if (ss.getStatus().getCode() == null || ss.getStatus().getCode().equals(""))
+	                     ss.getStatus().setCode("&nbsp;");
+	                 if ("Ses".equals(ss.getStatus().getCode()))
+	                 {
+	                     StringBuffer buf1 = new StringBuffer();
+	                     TestSession ts = ss.getStatus().getPriorSession();
+	                     if (ts != null)
+	                     {
+//	                         String timeZone = ts.getTimeZone();
+	                         TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(ts);
+	                         String testAdminName = ts.getTestAdminName();
+	                         testAdminName = testAdminName.replaceAll("\"", "&quot;");
+	                         buf1.append("Session Name: ").append(testAdminName);
+	                         buf1.append("<br/>Start Date: ").append(DateUtils.formatDateToDateString(ts.getLoginStartDate()));
+	                         buf1.append("<br/>End Date: ").append(DateUtils.formatDateToDateString(ts.getLoginEndDate()));
+//	                         buf.append("<br/>Start Date: ").append(DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(ts.getLoginStartDate(), TimeZone.getDefault().getID(), timeZone, ts.getDailyLoginStartTime())));
+//	                         buf.append("<br/>End Date: ").append(DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(ts.getLoginEndDate(), TimeZone.getDefault().getID(), timeZone, ts.getDailyLoginEndTime())));
+	                     }
+	                     ss.setExtPin2(buf1.toString());
+	                 }
+	                 
+	                 innerMap.put("screenMagnifier", ss.getScreenMagnifier());
+	                 innerMap.put("screenReader", ss.getScreenReader());
+	                 innerMap.put("calculator", ss.getCalculator());
+	                 innerMap.put("testPause", ss.getTestPause());
+	                 innerMap.put("untimedTest", ss.getUntimedTest());
+	                 innerMap.put("highLighter", ss.getHighLighter());
+	                 innerMap.put("maskingRular", ss.getMaskingRular());
+	                 innerMap.put("maskingTool", ss.getMaskingTool());
+	                 innerMap.put("auditoryCalming", ss.getAuditoryCalming());
+	                 innerMap.put("magnifyingGlass", ss.getMagnifyingGlass());
+	                 
+	                 if("T".equals(ss.getExtendedTimeAccom()) || (ss.getExtendedTimeAccom() != null && !ss.getExtendedTimeAccom().equals("") && !ss.getExtendedTimeAccom().equals("F"))){
+	                	 innerMap.put("extendedTimeAccom","T");
+	            	 }else {
+	            		 innerMap.put("extendedTimeAccom","F");
+	            	 }
+	                 innerMap.put("hasColorFontAccommodations",getHasColorFontAccommodations(ss));
+	                 accomodationMap.put(ss.getStudentId(), innerMap);
+	                 //added for copy test session
+	                 if("T".equals(ss.getStatus().getCopyable())){ 
+	                	studentList.add(ss);
+	                 }
+	                //idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
+
+	            }
+	        }
+	        return studentList;
+	    }
+		
+		private List<String> populateTestSessionForCopySession(ScheduledSession scheduledSession, ScheduledSession savedSessionMinData, 
+														HttpServletRequest request, ValidationFailedInfo validationFailedInfo, 
+														boolean isAddOperation, List<String> accessCodeListForCopy) {
+			
+			 try{
+				 TestSession testSession = new TestSession();
+				 TestSession existingTestSession = null;
+				 Set<Integer> keySet            = this.topNodesMap.keySet();
+				 Integer[] topnodeids= (keySet).toArray(new Integer[keySet.size()]);
+				 String creatorOrgNodString	    = RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_CREATOR_ORG_NODE, false, null);			
+				 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
+				 
+				 //TestVO selectedTest = idToTestMap.get(itemSetId);
+				 Integer creatorOrgNod = topnodeids[0];
+				 if(creatorOrgNodString !=null && creatorOrgNodString.trim().length()>0 ){
+					 try{
+						 creatorOrgNod = Integer.valueOf(creatorOrgNodString.trim());
+					 } catch (Exception e){	 }
+				 }
+				 
+				 Integer productId        			= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
+				 String dailyLoginEndTimeString		=RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null);
+				 String dailyLoginStartTimeString	= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_TIME, false, null);
+				 String dailyLoginEndDateString		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_DATE, false, null);
+				 String dailyLoginStartDateString	= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_DATE, false, null);
+
+				 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(dailyLoginEndTimeString);
+				 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
+				 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(dailyLoginEndDateString);
+				 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(dailyLoginStartDateString);
+				 String location          		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_LOCATION, false, null);
+				 String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
+				 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
+				 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+				 String isRandomize       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_RANDOMIZE, true, "");
+				 String timeZone          		= DateUtils.getDBTimeZone( RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TIME_ZONE, false, null));
+				 String sessionName		  		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TEST_NAME, false, null);
+				 //String sessionName       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_SESSION_NAME, false, null);
+				 String showStdFeedbackVal   	= RequestUtil.getValueFromRequest(request, RequestUtil.SHOW_STUDENT_FEEDBACK, true, "false");
+				 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
+				 String productType				= RequestUtil.getValueFromRequest(request, RequestUtil.PRODUCT_TYPE, true, "");
+				 String isEndTestSession 		= RequestUtil.getValueFromRequest(request, RequestUtil.TEST_ADMIN_STATUS, true, "");
+				 //String formOperand       		= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_OPERAND, true, TestSession.FormAssignment.ROUND_ROBIN);
+				 //String overrideFormAssignment 	= RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_FORM_ASSIGNMENT, false, null);
+				 //String overrideLoginStartDate    = RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_LOGIN_START_DATE, false, null);
+				 /*Date overrideLoginSDate        = null ;
+				 if(overrideLoginStartDate!=null)
+					 overrideLoginSDate = DateUtils.getDateFromDateString(overrideLoginStartDate);*/
+				 //String formAssigned			= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_ASSIGNED, true, "");
+				 
+				 String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
+				 Integer testAdminId = null;
+				 //added for copy test session : for handling scenario, when select test accordion not clicked
+				 boolean isSelectTestUpdatedForCopy = true;
+				 String isSelectTestUpdated = request.getParameter("isSelectTestUpdated");
+				 if(isSelectTestUpdated.equalsIgnoreCase("false"))
+					 isSelectTestUpdatedForCopy = false;
+				 //List<String> accessCodeListForCopy = new ArrayList<String>();
+				 Integer testAdminIdBeforeCopy = null;
+				 if(!isSelectTestUpdatedForCopy){
+					 String[] itemSetIdTDs = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]); 
+					 if(itemSetIdTDs.length > 0){
+						 accessCodeListForCopy = scheduleTest.getFixedNoAccessCode(itemSetIdTDs.length+2);// getting new set of access codes
+					 }
+				 }
+				 
+				 if(!isSelectTestUpdatedForCopy){ // modified for copy test session
+					 testAdminIdBeforeCopy = Integer.valueOf(testAdminIdString.trim());
+					 ScheduledSession dbsavedSessionMinData = scheduleTest.getScheduledSessionDetails(userName, testAdminIdBeforeCopy);
+					 savedSessionMinData.setTestSession(dbsavedSessionMinData.getTestSession());
+					 savedSessionMinData.setScheduledUnits(dbsavedSessionMinData.getScheduledUnits());
+					 //savedSessionMinData.setStudents(dbsavedSessionMinData.getStudents());
+					 //savedSessionMinData.setCopyable(dbsavedSessionMinData.getCopyable());
+					 //savedSessionMinData.setStudentsLoggedIn(dbsavedSessionMinData.getStudentsLoggedIn());
+					
+					 existingTestSession = savedSessionMinData.getTestSession();
+					 testSession = existingTestSession;
+					 itemSetId = existingTestSession.getItemSetId();
+				 }
+				 //
+				 /*if(!isAddOperation ){
+					 testAdminIdBeforeCopy = Integer.valueOf(testAdminIdString.trim());
+					 ScheduledSession dbsavedSessionMinData = scheduleTest.getScheduledSessionDetails(userName, testAdminIdBeforeCopy);
+					 savedSessionMinData.setTestSession(dbsavedSessionMinData.getTestSession());
+					 savedSessionMinData.setScheduledUnits(dbsavedSessionMinData.getScheduledUnits());
+					 savedSessionMinData.setStudents(dbsavedSessionMinData.getStudents());
+					 savedSessionMinData.setCopyable(dbsavedSessionMinData.getCopyable());
+					 savedSessionMinData.setStudentsLoggedIn(dbsavedSessionMinData.getStudentsLoggedIn());
+				 }*/ // commented for copy test session
+				 
+				 String formOperand  =  TestSession.FormAssignment.ROUND_ROBIN;
+				 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(this.getCustomerId(), itemSetId); 
+				 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
+					 formOperand = selectedTest.getOverrideFormAssignmentMethod();
+		           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {
+		        	   formOperand = TestSession.FormAssignment.ROUND_ROBIN;
+		            } else {
+		            	formOperand = TestSession.FormAssignment.ROUND_ROBIN;
+		           }
+
+				 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignmentMethod();
+				 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
+				 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
+				 String testName       		    = 	selectedTest.getItemSetName(); 
+				 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
+				 
+				 
+				 // setting default value
+				 testSession.setTestAdminId(testAdminId);			 
+				 testSession.setLoginEndDate(dailyLoginEndDate);
+				 testSession.setDailyLoginEndTime(dailyLoginEndTime);
+				 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
+					 TimeZone defaultTimeZone = TimeZone.getDefault();
+					 Date now = new Date(System.currentTimeMillis());
+			         now = com.ctb.util.DateUtils.getAdjustedDate(now, defaultTimeZone.getID(), timeZone, now);
+		    		 String timeStr = DateUtils.formatDateToTimeString(now);
+				     String dateStr = DateUtils.formatDateToDateString(now);
+					 //testSession.setTestAdminStatus("PA");
+					 testSession.setLoginEndDate(DateUtils.getDateFromDateString(dateStr));
+					 testSession.setDailyLoginEndTime(DateUtils.getDateFromTimeString(timeStr));
+				 }
+		       
+		         if(isAddOperation ){
+		        	 testSession.setTestAdminType("SE");
+		        	 testSession.setActivationStatus("AC"); 
+		        	 testSession.setEnforceTimeLimit("T");
+		        	 testSession.setCreatedBy(this.userName);
+		        	 testSession.setShowStudentFeedback(showStdFeedback);
+		        	 testSession.setTestAdminStatus("CU");
+		         } else {
+		        	 testSession.setTestAdminType(existingTestSession.getTestAdminType());
+		        	 testSession.setActivationStatus(existingTestSession.getActivationStatus()); 
+		        	 testSession.setEnforceTimeLimit(existingTestSession.getEnforceTimeLimit());
+		        	 testSession.setShowStudentFeedback(existingTestSession.getShowStudentFeedback());
+		        	 testSession.setSessionNumber(existingTestSession.getSessionNumber());
+		        	 testSession.setCreatedBy(existingTestSession.getCreatedBy());
+		         }
+		         
+		         testSession.setCreatorOrgNodeId(creatorOrgNod);
+		         testSession.setProductId(productId);	    
+		         testSession.setDailyLoginStartTime(dailyLoginStartTime);
+		         testSession.setLocation(location);
+		         testSession.setEnforceBreak(hasBreak);
+		         testSession.setIsRandomize(isRandomize);	         	       
+		         testSession.setLoginStartDate(dailyLoginStartDate);
+		         testSession.setTimeZone(timeZone);
+		         testSession.setTestName(testName);
+		         testSession.setTestAdminName(sessionName);
+
+		         if (formOperand.equals(TestSession.FormAssignment.MANUAL))
+		             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
+		         else if (formOperand.equals(TestSession.FormAssignment.ALL_SAME))
+		             testSession.setFormAssignmentMethod(TestSession.FormAssignment.ALL_SAME);
+		         else 
+		             testSession.setFormAssignmentMethod(TestSession.FormAssignment.ROUND_ROBIN);
+		         
+		         testSession.setPreferredForm(formAssigned);      
+		         
+		         testSession.setOverrideFormAssignmentMethod(overrideFormAssignment);
+		         testSession.setOverrideLoginStartDate(overrideLoginSDate);
+		         testSession.setOverrideLoginEndDate(overrideLoginEDate);
+		         
+		         testSession.setItemSetId(itemSetId);
+		         
+		         if (productType!=null && (TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()))
+		         {
+		             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
+		             if(overrideFormAssignment!=null)
+		            	 testSession.setOverrideFormAssignmentMethod(TestSession.FormAssignment.MANUAL); 
+		             
+		             testSession.setPreferredForm(null);  
+		         }
+
+		         if (hasBreakBoolean)
+		         {
+		        	String accessCode;
+		        	if(!isSelectTestUpdatedForCopy){
+		        		accessCode = accessCodeListForCopy.get(0); //need to set new access code
+		        	}else{
+		        		accessCode = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true, new String [0])[0];
+		        	}
+		        	
+		         	testSession.setAccessCode(accessCode);    
+		         }
+		         else
+		         {
+		        	 String accessCode;
+			         if(!isSelectTestUpdatedForCopy){
+			        	 accessCode = accessCodeListForCopy.get(0);//need to set new access code
+			         }else{
+			        	 accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODE, true, "");
+			         }
+		        	 testSession.setAccessCode(accessCode); 
+		         }
+		         
+		         validateTestSession(testSession, validationFailedInfo);
+		         if(!validationFailedInfo.isValidationFailed()) {
+		        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate,overrideLoginEDate, validationFailedInfo, isAddOperation); 
+		         }
+		         
+		         scheduledSession.setTestSession(testSession);
+				 
+			 } catch (Exception e) {
+				 e.printStackTrace();
+				 validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+				 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+				 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+				 
+			 }
+			 // retrieving data from request
+			 return accessCodeListForCopy;
+				
+			}
+		
+	    private void populateScheduledUnitsForCopySession(ScheduledSession scheduledSession, ScheduledSession savedSessionMinData,
+					HttpServletRequest request, ValidationFailedInfo validationFailedInfo, 
+					boolean isAddOperation, List<String> accessCodeListForCopy) {
+			/* List subtestList = null;*/
+			//boolean sessionHasLocator = false;
+			try{
+			String productType				= RequestUtil.getValueFromRequest(request, RequestUtil.PRODUCT_TYPE, true, "");
+			Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
+			String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
+			String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
+			boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+			String[] itemSetIdTDs          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]);
+			String[] accesscodes           = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
+			String[] itemSetForms          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
+			String[] itemSetisDefault      = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
+			String autoLocator				=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
+			
+			//added for copy test session : handling for not selecting select test acco
+			boolean isSelectTestUpdatedForCopy = true;
+			String isSelectTestUpdated = request.getParameter("isSelectTestUpdated");// RequestUtil.getValueFromRequest(request, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
+			if(isSelectTestUpdated.equalsIgnoreCase("false"))
+			isSelectTestUpdatedForCopy = false;
+			
+			//List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
+			List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
+			for(int ii =0, jj =itemSetIdTDs.length; ii<jj; ii++ ){
+				SubtestVO subtest = new SubtestVO();
+				subtest.setId(Integer.valueOf(itemSetIdTDs[ii].trim()));
+				if(!isSelectTestUpdatedForCopy){
+					subtest.setTestAccessCode(accessCodeListForCopy.get(ii));
+				}else{
+					subtest.setTestAccessCode(accesscodes[ii]);
+				}
+				subtest.setSessionDefault(itemSetisDefault[ii]);
+				if(itemSetForms[ii] != null && itemSetForms[ii].trim().length()>0){
+					subtest.setLevel(itemSetForms[ii]);
+				}
+				subtestList.add(subtest);
+			
+			}
+			
+			if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
+			{
+			
+				if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue())
+				{
+					
+					if ((autoLocator != null) && autoLocator.equals("true"))
+					{   
+						Integer lItemSetId   = Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+						String lAccesscodes  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IND_ACCESS_CODE, true, "");
+						String lItemSetisDefault  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT, false, null);
+						String lItemSetForms      = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_FORM, false, null);
+						SubtestVO locatorSubtest = new SubtestVO();
+						locatorSubtest.setId(lItemSetId);
+						locatorSubtest.setTestAccessCode(lAccesscodes);
+						locatorSubtest.setSessionDefault(lItemSetisDefault);
+						if(lItemSetForms!=null && lItemSetForms.length() >0 ){
+							locatorSubtest.setLevel(lItemSetForms);
+						}
+						subtestList.add(0, locatorSubtest);
+					} else {
+						TestSessionUtils.setDefaultLevels(subtestList, "E");
+					
+					}
+				} 
+				else
+				{
+					// tabe locator test
+					Integer lItemSetId   = Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+					String lAccesscodes  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IND_ACCESS_CODE, true, "");
+					String lItemSetisDefault  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT, false, null);
+					String lItemSetForms      = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_FORM, false, null);
+					SubtestVO locatorSubtest = new SubtestVO();
+					locatorSubtest.setId(lItemSetId);
+					locatorSubtest.setTestAccessCode(lAccesscodes);
+					locatorSubtest.setSessionDefault(lItemSetisDefault);
+					if(lItemSetForms!=null && lItemSetForms.length() >0 ){
+						locatorSubtest.setLevel(lItemSetForms);
+					}
+					subtestList.add(0, locatorSubtest);
+					
+					TestSessionUtils.setDefaultLevels(subtestList, "1");
+				}   
+			
+			}
+			else
+			{
+				// for non-tabe test
+				subtestList = TestSessionUtils.cloneSubtests(subtestList);
+			}
+			
+			
+			TestElement [] newTEs = new TestElement[subtestList.size()];
+			
+			for (int i=0; i < subtestList.size(); i++)
+			{
+				SubtestVO subVO= (SubtestVO)subtestList.get(i);
+				TestElement te = new TestElement();
+				
+				te.setItemSetId(subVO.getId());
+				
+				if (TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue())
+				{                
+					String level = subVO.getLevel();
+					te.setItemSetForm(level);
+				}
+				
+				if (!hasBreakBoolean ) {
+					//String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODE, true, "");
+					String accessCode = scheduledSession.getTestSession().getAccessCode();
+					te.setAccessCode(accessCode);
+				} else {
+					//String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+i, true, "");
+					//te.setAccessCode(accessCode);
+					te.setAccessCode(subVO.getTestAccessCode());
+				}
+				
+				
+				te.setSessionDefault(subVO.getSessionDefault());
+				
+				newTEs[i] = te;
+			}
+			
+			scheduledSession.setScheduledUnits(newTEs);
+			validateScheduledUnits(scheduledSession, hasBreakBoolean, validationFailedInfo, isAddOperation);
+			if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+			//TABESubtestValidation.validation(A, validateLevels, TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue());
+			
+			}
+			
+			if(scheduledSession.getTestSession().getTestAdminId()!=null && scheduledSession.getTestSession().getTestAdminId()!=-1){
+				if(TestSessionUtils.isTabeProduct(productType).booleanValue()  || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+					if(savedSessionMinData.getTestSession().getItemSetId().intValue() == scheduledSession.getTestSession().getItemSetId().intValue()){
+						TestElement[] te = TestSessionUtils.setupSessionSubtests( savedSessionMinData.getScheduledUnits(), scheduledSession.getScheduledUnits());
+						scheduledSession.setScheduledUnits(te);
+					}
+				
+				}
+			}
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+				validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+				validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+				validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+			}
+
+	     }
+	     
+	 private void populateSessionStudentForCopySession(ScheduledSession scheduledSession,ScheduledSession savedSessionMinData,
+				HttpServletRequest httpServletRequest,
+			ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
+
+		try {
+			
+			//boolean isStudentListUpdated = true;
+			boolean isStudentManifestsExists = false;
+			 String productType				= RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.PRODUCT_TYPE, true, "");
+			/*if(!isAddOperation){
+				String isStudentUpdated = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
+				if(isStudentUpdated.equalsIgnoreCase("false"))
+					isStudentListUpdated = false;
+			}*/
+			//commented for copy test session
+
+			boolean isStudentListUpdatedForCopy = true;
+			String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
+			Integer testAdminIdBeforCopy =  Integer.valueOf(testAdminIdString.trim());
+
+			String isStudentUpdatedForCopy = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
+			if(isStudentUpdatedForCopy.equalsIgnoreCase("false"))
+				isStudentListUpdatedForCopy = false;
+
+				
+			if(isAddOperation && isStudentListUpdatedForCopy){
+
+				String studentsBeforeSave = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.STUDENTS, true, "");
+				int studentCountBeforeSave = 0;
+				if (studentsBeforeSave != null
+						&& studentsBeforeSave.trim().length() > 1) {
+					studentCountBeforeSave = studentsBeforeSave.split(",").length;
+				}
+				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
+				if (studentCountBeforeSave > 0) {
+					String[] studs = studentsBeforeSave.split(",");
+					for (String std : studs) {
+						StringTokenizer st = new StringTokenizer(std, ":");
+						SessionStudent ss = new SessionStudent();
+						while (st.hasMoreTokens()) {
+							StringTokenizer keyVal = new StringTokenizer(st.nextToken(), "=");
+							
+							String key = keyVal.nextToken();
+							String val = null;
+							if(keyVal.countTokens()>0) {
+								val= keyVal.nextToken();
+							}
+
+							if (key.equalsIgnoreCase("studentId")) {
+								ss.setStudentId(Integer.valueOf(val));
+							} else if (key.equalsIgnoreCase("orgNodeId")) {
+								ss.setOrgNodeId(Integer.valueOf(val));
+							} else if (key.equalsIgnoreCase("extendedTimeAccom")) {
+								ss.setExtendedTimeAccom(val);
+							} else if (key.equalsIgnoreCase("statusCopyable")) {
+								EditCopyStatus status = new EditCopyStatus();
+								status.setCopyable(val);
+								ss.setStatus(status);
+							} else if (key.equalsIgnoreCase("itemSetForm")) {
+								ss.setItemSetForm(val);
+							} else if (key.equalsIgnoreCase("isNewStd") && val !=null && val.equalsIgnoreCase("true") ) {
+								ss.setNewStudent(true);
+							}
+						}
+
+						sessionStudents.add(ss);
+
+					}
+				
+			}
+				scheduledSession.setStudents(sessionStudents
+						.toArray(new SessionStudent[sessionStudents.size()]));
+		
+		} else {
+			//fetch student data from db using original test_admin_id
+			ScheduledSession schSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
+			SessionStudent[] sessionStudents = schSession.getStudents();
+			ArrayList<SessionStudent> studentListForCopy = new ArrayList<SessionStudent>(sessionStudents.length);
+			for(int i=0; i< sessionStudents.length; i++){
+				SessionStudent ss = (SessionStudent)sessionStudents[i];
+				if(ss != null){
+					if(ss.getStatus().getCopyable().equals("T")){
+						studentListForCopy.add(ss);
+					}
+				}
+			}
+			scheduledSession.setStudentsLoggedIn(new Integer(0));
+			scheduledSession.setStudents(studentListForCopy.toArray(new SessionStudent[studentListForCopy.size()]));
+	    	isStudentManifestsExists = true;
+		}
+			
+		if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0 && !isAddOperation){
+			if(TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
+				updateStudentstudentManifests(scheduledSession, savedSessionMinData, isStudentManifestsExists );
+			}
+				
+		}
+		
+	  if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0) {
+		  SessionStudent [] sessionStudents = scheduledSession.getStudents();
+		  TestElement [] newTEs = scheduledSession.getScheduledUnits();
+		  boolean sessionHasLocator = false;
+		  if (TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+			  String autoLocator =  RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.HAS_AUTOLOCATOR, true, "false");;
+	          if ((autoLocator != null) && autoLocator.equals("true")) {            
+	              sessionHasLocator = true;
+	          }
+	      }
+		  if (TestSessionUtils.isTabeProduct(productType).booleanValue() ||	TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()) {
+			  
+			  SubtestVO locSubtest = null ;
+			  
+			  for(int i=0; i < sessionStudents.length; i++){
+				  SessionStudent sessionStudent = sessionStudents[i];
+			 
+
+	              // replicate student's manifest if this student has no individual manifest
+	              StudentManifest [] studentManifests = sessionStudent.getStudentManifests();
+	             if ((studentManifests == null) || (studentManifests.length == 0))
+	              {
+	                  
+	                  List studentSubtestList = TestSessionUtils.getDefaultSubtests(newTEs);
+	                  
+	                  studentManifests = new StudentManifest[studentSubtestList.size()];
+	                  
+	                  for (int j=0; j < studentSubtestList.size(); j++)
+	                  {
+	                      
+	                      SubtestVO subtestVO = (SubtestVO)studentSubtestList.get(j);
+	                      
+	                      studentManifests[j] = new StudentManifest();
+	                      
+	                      studentManifests[j].setItemSetId(subtestVO.getId());
+	                      studentManifests[j].setItemSetName(subtestVO.getSubtestName());                            
+	                      studentManifests[j].setItemSetForm(subtestVO.getLevel());
+	                      studentManifests[j].setItemSetOrder(new Integer(j + 1));                            
+	                  }   
+	                  
+	                  // set recommended level for this student if there is no locator for this session
+	                  if (! sessionHasLocator && TestSessionUtils.isTabeProduct(productType).booleanValue())
+	                  {
+	                      Integer studentId = sessionStudent.getStudentId();
+	                      Integer itemSetId = scheduledSession.getTestSession().getItemSetId() /*testSession.getItemSetId()*/;
+	                     // SubtestVO locSubtest = this.locatorSubtest;
+	                      if (locSubtest == null) {
+	                          locSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetId); 
+	                      }
+	                      if (locSubtest != null) {
+	                      	Integer locatorItemSetId = locSubtest.getId();
+	                      	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
+	                      }
+	                  }
+	                               
+	                  sessionStudent.setStudentManifests(studentManifests);
+	              }  
+
+	           }
+		  }
+		  
+	  }
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle
+					.getMessage("System.Exception.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle
+					.getMessage("System.Exception.Body"));
+		}
+
+	}
+	 	
+		private void populateProctorForCopySession(ScheduledSession scheduledSession,
+				HttpServletRequest request,
+				ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
+			
+
+			try {
+				//boolean isProcListUpdated = true;
+				/*if(!isAddOperation){
+					String isStudentUpdated = RequestUtil.getValueFromRequest(request, RequestUtil.IS_PROCTOR_LIST_UPDATED, true, "true");
+					if(isStudentUpdated.equalsIgnoreCase("false"))
+						isProcListUpdated = false;
+				}*/
+				boolean isProcListUpdatedForCopy = true;
+				String testAdminIdString = (RequestUtil.getValueFromRequest(request, RequestUtil.TEST_ADMIN_ID, false, null));
+				Integer testAdminIdBeforCopy =  Integer.valueOf(testAdminIdString.trim());
+
+				String isProcUpdatedForCopy = RequestUtil.getValueFromRequest(request, RequestUtil.IS_STUDENT_LIST_UPDATED, true, "true");
+				if(isProcUpdatedForCopy.equalsIgnoreCase("false"))
+					isProcListUpdatedForCopy = false;
+				
+				if(isAddOperation && isProcListUpdatedForCopy) {
+					String proctorsData = RequestUtil.getValueFromRequest(request, RequestUtil.PROCTORS, true, "");
+					int proctorCount = 0;
+					if (proctorsData != null
+							&& proctorsData.trim().length() > 1) {
+						proctorCount = proctorsData.split(",").length;
+					}
+					if (proctorCount > 0) {
+						ArrayList<User> proctorList = new ArrayList<User>(proctorCount);
+						String[] procs = proctorsData.split(",");
+						for (String procrec : procs) {
+							StringTokenizer st = new StringTokenizer(procrec, ":");
+							User us = new User();
+							while (st.hasMoreTokens()) {
+								StringTokenizer keyVal = new StringTokenizer(st
+										.nextToken(), "=");
+		
+								String key = keyVal.nextToken();
+								String val = null;
+								if (keyVal.countTokens() > 0) {
+									val = keyVal.nextToken();
+								}
+		
+								if (key.equalsIgnoreCase("userId")) {
+									us.setUserId(Integer.valueOf(val));
+								} else if (key.equalsIgnoreCase("userName")) {
+									us.setUserName(val);
+								} else if (key.equalsIgnoreCase("copyable")) {
+									us.setCopyable(val);
+								} 
+							}
+		
+							proctorList.add(us);
+						}
+		
+						scheduledSession.setProctors(proctorList.toArray(new User[proctorList.size()]));
+					} else {
+						User[] proctorArray = new User[1];
+						proctorArray[0]= this.user;
+						scheduledSession.setProctors(proctorArray);
+					}
+				} else {
+					//fetch proctor details from db using original test_admin_id
+					ScheduledSession schSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminIdBeforCopy);
+					User[] sessionProctors = schSession.getProctors();
+					//User[] sessionProctorsForCopy = new User[sessionProctors.length];
+					ArrayList<User> sessionProctorsForCopy = new ArrayList<User>(sessionProctors.length);
+					for(int i=0; i< sessionProctors.length; i++){
+						User user = sessionProctors[i];
+						if(user.getCopyable().equals("T")){
+							sessionProctorsForCopy.add(user); 
+						}
+					}
+					//check if default scheduler value needs to be reset
+					scheduledSession.setProctors(sessionProctorsForCopy.toArray(new User[sessionProctorsForCopy.size()]));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+				validationFailedInfo.setMessageHeader(MessageResourceBundle
+						.getMessage("System.Exception.Header"));
+				validationFailedInfo.updateMessage(MessageResourceBundle
+						.getMessage("System.Exception.Body"));
+			}
+
+		}
+////		
 }

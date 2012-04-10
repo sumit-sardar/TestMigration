@@ -42,8 +42,15 @@ public class TestSessionVO implements java.io.Serializable
     private String productType ;
     private boolean isSTabeProduct = false;
     private boolean isSTabeAdaptiveProduct = false;
+    private String copyable;
     
-    public String getLoginStartDateString() {
+    public String getCopyable() {
+		return copyable;
+	}
+	public void setCopyable(String copyable) {
+		this.copyable = copyable;
+	}
+	public String getLoginStartDateString() {
 		return loginStartDateString;
 	}
 	public void setLoginStartDateString(String loginStartDateString) {
@@ -102,6 +109,7 @@ public class TestSessionVO implements java.io.Serializable
              this.isSTabeProduct         = TestSessionUtils.isTabeProduct(this.productType);
              this.isSTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
          }
+         this.copyable = ts.getCopyable();
     }     
     public String getAccessCode() {
         return this.accessCode;

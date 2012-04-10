@@ -125,6 +125,7 @@ clear: both;
 						setAnchorButtonState('viewStatusButton', true);
 						$('#mStdManifest').hide();
 						setAnchorButtonState('modifyStdManifestButton', true);
+						setAnchorButtonState('copySessionButton', true);
 						if(document.getElementById('selectedTestSessionId').value != ""){
 							var rId = document.getElementById('selectedTestSessionId').value;
 							$("#list2 #"+rId).removeClass("ui-state-highlight");
@@ -159,6 +160,7 @@ clear: both;
 								   		populateSelectTestGrid(wizard,index);
 								   		isFirstAccordSelected = true;
 										isSecondAccordSelected = false;
+										isSelectTestDetClicked = true;
 								   }
 									
 								}else if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {

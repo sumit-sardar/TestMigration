@@ -28,6 +28,9 @@
 	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
 	<input type="hidden" id="isDeleteSessionEnable" name="isDeleteSessionEnable" value='<%=isDeleteSessionEnable %>'/>
 	<input type="hidden" id="loggedInUserId" name = "loggedInUserId" value='<%=schedulerUserId %>'/> 
+	<input type="hidden" id="loggedInUserName" name = "loggedInUserName" value='<%=schedulerUserName %>'/>
+	<input type="hidden" id="loggedInFirstName" name = "loggedInFirstName" value='<%=schedulerFirstName %>'/>
+	<input type="hidden" id="loggedInLastName" name = "loggedInLastName" value='<%=schedulerLastName %>'/>
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>
@@ -93,6 +96,9 @@
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 										</div> 	
+										<div id="copySession" style="float:right;padding-left:5px;">
+											<a href="#" id="copySessionButton" onclick="javascript:copyTestSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.copySession" /></a>
+										</div>
 										
 										<% if (userScheduleAndFindSessionPermission) {%>
 										    <div id="mStdManifest" style="float:right;padding-left:5px; display: none;">
