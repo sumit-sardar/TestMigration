@@ -97,12 +97,12 @@ public class SQLQuery {
            + " ta.preferred_form as testForm,"
            + " tc.test_level as testLevel"
            + " from test_roster tr, test_admin ta, test_catalog tc"
-           + " where tr.customer_id = ?"
-           + " and tr.activation_status = 'AC'"
+           + " where tr.activation_status = 'AC'"
            + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
            + " and tr.test_admin_id = ta.test_admin_id"
            + " and ta.test_catalog_id = tc.test_catalog_id"
-           + " and ta.product_id = ?";
+           + " and ta.login_start_date > SYSDATE - 365"
+           + " and ta.product_id = ? :customerIds";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"

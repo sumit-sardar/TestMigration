@@ -34,10 +34,11 @@ import com.ctb.utils.Utility;
 
 public class TABEOnlineDataExport {
 	
-	private static final Integer CUSTOMER_ID = Integer.valueOf(ExtractUtil.getDetail("oas.customerId"));
+	private static final String CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
 	private static final Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
+	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
 	private static final String SEPARATOR = "#";
 	private static final List<String> CONTENT_DOMAIN_LIST = new ArrayList<String>();
 	private static final Map<String, List<ItemResponses>> ITEM_SET_MAP = new HashMap<String, List<ItemResponses>>();
@@ -61,9 +62,9 @@ public class TABEOnlineDataExport {
 	}
 	
 	private void writeToText() throws Exception {
-
+		System.out.println("Start Writing");
 		List<TABEFile> myList = createList();
-		String modFileName = FILE_NAME + "_" + System.currentTimeMillis() + ExtractUtil.getDetail("oas.exportdata.fileType");
+		String modFileName = FILE_NAME + "_" + System.currentTimeMillis() + FILE_TYPE;
 		if(!(new File(LOCAL_FILE_PATH)).exists()){
 			File f = new File(LOCAL_FILE_PATH);
 			f.mkdirs();
@@ -119,6 +120,9 @@ public class TABEOnlineDataExport {
 				row = new StringBuilder();
 			}
 			writer.writeAll(rows);
+			System.out.println("Total number of record exported:" + rows.size());
+			System.out.println("Export file successfully generated:["+modFileName+"]");
+			System.out.println("Completed Writing");
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -129,11 +133,13 @@ public class TABEOnlineDataExport {
 		List<TABEFile> tabeFileList = new ArrayList<TABEFile>();
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
 		List<CustomerDemographic> customerDemoList = new ArrayList<CustomerDemographic>();
-		HashMap<String, Integer> stateMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> districtMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> schoolMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> classMap = new HashMap<String, Integer>();
-		HashMap<Integer, String> customerDemographic = new HashMap<Integer, String>();
+		Map<String, Integer> stateMap = new HashMap<String, Integer>();
+		Map<String, Integer> districtMap = new HashMap<String, Integer>();
+		Map<String, Integer> schoolMap = new HashMap<String, Integer>();
+		Map<String, Integer> classMap = new HashMap<String, Integer>();
+		Map<String, Map<Integer, String>> customerDemographic = new HashMap<String, Map<Integer, String>>();
+		Map<Integer, String> demoGraphicMap = null;
+		Set<CustomerDemographic> demoSet = null;
 		Connection oascon = null;
 		Connection irscon = null;
 		
@@ -142,16 +148,21 @@ public class TABEOnlineDataExport {
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
 			
 			getAllContentDomain(oascon);
-			customerDemoList = getCustomerDemographic(oascon);
-			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(customerDemoList);
-			for (CustomerDemographic c : set) {
-				customerDemographic.put(c.getCustomerDemographicId(), c.getLabelName());
-			}
 			myrosterList = getTestRoster(oascon);
 			for (TestRoster roster : myrosterList) {
 				TABEFile catData = new TABEFile();
-				
-				catData.setCustomerID(CUSTOMER_ID.toString());				
+				catData.setCustomerID(String.valueOf(roster.getCustomerId()));	
+				if(customerDemographic.get(catData.getCustomerID()) == null) {
+					customerDemoList = getCustomerDemographic(oascon, catData.getCustomerID());
+					demoSet = new HashSet<CustomerDemographic>(customerDemoList);
+					demoGraphicMap = new HashMap<Integer, String>();
+					for (CustomerDemographic c : demoSet) {
+						demoGraphicMap.put(c.getCustomerDemographicId(), c.getLabelName());
+					}
+					customerDemographic.put(catData.getCustomerID(), demoGraphicMap);
+				} else {
+					demoGraphicMap = customerDemographic.get(catData.getCustomerID());
+				}
 				if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
 					catData.setInterrupted("0");
 				}else{
@@ -164,7 +175,7 @@ public class TABEOnlineDataExport {
 				fillStudent(catData, studentInfo);
 				createOrganization(oascon, catData, roster.getStudentId(),
 						stateMap,districtMap, schoolMap, classMap);
-				fillAccomodations(studentInfo.getStudentDemographic(), customerDemographic, catData);
+				fillAccomodations(studentInfo.getStudentDemographic(), demoGraphicMap, catData);
 				getScores(oascon, irscon, catData, roster);
 				getTimedOut(oascon, catData, roster);
 				tabeFileList.add(catData);								
@@ -179,7 +190,7 @@ public class TABEOnlineDataExport {
 	}
 	
 	
-	private List<CustomerDemographic> getCustomerDemographic(Connection con)
+	private List<CustomerDemographic> getCustomerDemographic(Connection con, String customerId)
 	throws SQLException {
 		System.out.println("getCustomerDemographic start");
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
@@ -187,7 +198,7 @@ public class TABEOnlineDataExport {
 		ResultSet rs = null;
 		try {
 			ps = con.prepareStatement(SQLQuery.customerDemographicsql);
-			ps.setInt(1, CUSTOMER_ID);
+			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				CustomerDemographic cd = new CustomerDemographic();
@@ -237,11 +248,17 @@ public class TABEOnlineDataExport {
 	private List<TestRoster> getTestRoster(Connection con) throws SQLException {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
-		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
+		List<TestRoster> rosterList = new ArrayList<TestRoster>();
+		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ")";
+		String query = null;
 		try{
-			ps = con.prepareStatement(SQLQuery.testRosterSql);
-			ps.setInt(1, CUSTOMER_ID);
-			ps.setInt(2, PRODUCT_ID);
+			if(CUSTOMER_IDs != null) {
+				query = SQLQuery.testRosterSql.replace(":customerIds", customerCond);
+			} else {
+				query = SQLQuery.testRosterSql.replace(":customerIds", "");
+			}
+			ps = con.prepareStatement(query);
+			ps.setInt(1, PRODUCT_ID);
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){
@@ -249,13 +266,13 @@ public class TABEOnlineDataExport {
 				ros.setTestRosterId(rs.getInt(1));
 				ros.setActivationStatus(rs.getString(2));
 				ros.setTestCompletionStatus(rs.getString(3));
-				ros.setCustomerId(CUSTOMER_ID);
+				ros.setCustomerId(rs.getInt("customer_id"));
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
 				ros.setRestartNumber(rs.getInt(9));
 				ros.setLastMseq(rs.getInt(10));
 				ros.setStartDate(rs.getString(11));
-				ros.setStudent(getStudent(con,rs.getInt(5))); 
+				ros.setStudent(getStudent(con, rs.getInt("customer_id"), rs.getInt(5))); 
 				ros.setTimeZone(rs.getString(8));
 				ros.setTestFormId(rs.getString("testForm"));
 				ros.setTestLevel(rs.getString("testLevel"));
@@ -269,7 +286,7 @@ public class TABEOnlineDataExport {
 		return rosterList;
 	}
 	
-	private Student getStudent(Connection con, int studentId)
+	private Student getStudent(Connection con, Integer customerId, int studentId)
 	throws SQLException {
 		Student std = null;
 		PreparedStatement ps = null;
@@ -287,7 +304,7 @@ public class TABEOnlineDataExport {
 				std.setBirthDate(rs.getDate(5));
 				std.setGender(rs.getString(6));
 				std.setGrade(rs.getString(7));
-				std.setCustomerId(CUSTOMER_ID);
+				std.setCustomerId(customerId);
 				std.setTestPurpose(rs.getString(9));
 				std.setExtStudentId(rs.getString(10));
 				std.setStudentDemographic(getStudentDemographic(con, studentId));
@@ -328,10 +345,10 @@ public class TABEOnlineDataExport {
 	}
 
 	private void createOrganization(Connection con, TABEFile tfil,
-			Integer studentId,HashMap<String, Integer> stateMap,
-			HashMap<String, Integer> districtMap,
-			HashMap<String, Integer> schoolMap,
-			HashMap<String, Integer> classMap)
+			Integer studentId, Map<String, Integer> stateMap,
+			Map<String, Integer> districtMap,
+			Map<String, Integer> schoolMap,
+			Map<String, Integer> classMap)
 	throws SQLException {
 
 		System.out.println("Create Organization Start");
@@ -428,10 +445,10 @@ public class TABEOnlineDataExport {
 	}
 	
 	private void fillAccomodations(Set<StudentDemographic> sd,
-			HashMap<Integer, String> customerDemographic, TABEFile tfil) {
+			Map<Integer, String> customerDemographic, TABEFile tfil) {
 
 		TreeMap<String, StudentDemographic> set1 = new TreeMap<String, StudentDemographic>();
-		HashMap<Integer, String> studentDemographic = new HashMap<Integer, String>();
+		Map<Integer, String> studentDemographic = new HashMap<Integer, String>();
 
 		for (StudentDemographic studentDem : sd) {
 			if (studentDem.getValue() != null){
@@ -519,6 +536,7 @@ public class TABEOnlineDataExport {
 				itemMap.put(ir.getItemId(), ir);
 				tfil.setLastItem(rs.getString(1));
 			}
+			SqlUtil.close(ps, rs);
 			//Getting first time visit data
 			ps = con.prepareStatement(SQLQuery.ITEM_FIRST_TIME_VISIT_SQL);
 			ps.setInt(1, roster.getTestRosterId());
@@ -529,6 +547,7 @@ public class TABEOnlineDataExport {
 				ItemResponses ir = itemMap.get(rs.getString(1));
 				ir.setFirstVisitTime(rs.getString(2));
 			}
+			SqlUtil.close(ps, rs);
 			//Getting total time visit data
 			ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
 			ps.setInt(1, roster.getTestRosterId());
@@ -579,6 +598,7 @@ public class TABEOnlineDataExport {
 				score.setRawScore(rs.getString("raw_score"));
 				scoreMap.put(score.getContentAreaId(), score);
 			}
+			SqlUtil.close(ps, rs);
 			//Getting scale score
 			ps = irscon.prepareStatement(SQLQuery.SCALE_SCORE_SQL);
 			ps.setInt(1, roster.getStudentId());
@@ -590,6 +610,7 @@ public class TABEOnlineDataExport {
 					score.setScaleScore(rs.getString("scale_score"));
 				}
 			}
+			SqlUtil.close(ps, rs);
 			Set<String> keySet = scoreMap.keySet();
 			for(Iterator<String> itr = keySet.iterator(); itr.hasNext();) {
 				Scores score = scoreMap.get(itr.next());
