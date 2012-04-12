@@ -2794,23 +2794,26 @@ public class StudentManagementImpl implements StudentManagement
 				for(int i = 0; i < studentIds.length; i++) {
 					com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 					
-					for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
-						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
-						if(oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue()) {
-							foundInNewOrgNodes = true;
-							orgId = null;
-						} else
-							foundInNewOrgNodes = false;
-						if (foundInNewOrgNodes) { //activate 
-							orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
-						}
-						else { //delete or deactivate
-							Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
-							if (rosterCount.intValue() >0) {
-								orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+					if(orgId != null) {
+						for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
+							com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
+							if(oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue()) {
+								foundInNewOrgNodes = true;
+								orgId = null;
+								
+							} else
+								foundInNewOrgNodes = false;
+							if (foundInNewOrgNodes) { //activate 
+								orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
 							}
-							else {
-								orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+							else { //delete or deactivate
+								Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+								if (rosterCount.intValue() >0) {
+									orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+								}
+								else {
+									orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+								}
 							}
 						}
 					}
