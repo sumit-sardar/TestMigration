@@ -11,14 +11,7 @@
         			 <li>   			 	
         			 	<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><lb:label key="session.menu.sessions" /></a>
         			 </li>
-        			  <c:if test="${sessionScope.hasScoringConfigured}">    
-						<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
-	        			 	<li>
-	        					<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><lb:label key="session.menu.studentScoring" /></a>
-	        			 	</li>
-        			 	</ctb:auth>
-    				 </c:if>
-    				 <c:if test="${sessionScope.hasProgramStatusConfigured}">
+        			 <c:if test="${sessionScope.hasProgramStatusConfigured}">
         			 <li>
         				<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><lb:label key="session.menu.programStatus" /></a>
         			 </li>
