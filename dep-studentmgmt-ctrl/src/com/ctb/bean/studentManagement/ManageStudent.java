@@ -73,9 +73,11 @@ public class ManageStudent extends CTBBean
     private Integer orgNodeId;
     private String orgIdList;
     private String orgNameList;
-    
+    private String completionStatusTD;
     //Added for out of school
     private String outOfSchool;
+    //Added for new UI hand scoring
+    private String testCatalogName;
     
 	/**
 	 * @return the testPurpose
@@ -656,6 +658,18 @@ public class ManageStudent extends CTBBean
 	}
 	public void setOutOfSchool(String outOfSchool) {
 		this.outOfSchool = outOfSchool;
+	}
+	public String getCompletionStatusTD() {
+		return completionStatusTD;
+	}
+	public void setCompletionStatusTD(String completionStatusTD) {
+		this.completionStatusTD = completionStatusTD;
+	}
+	public String getTestCatalogName() {
+		return testCatalogName;
+	}
+	public void setTestCatalogName(String testCatalogName) {
+		this.testCatalogName = testCatalogName;
 	}
 	
     

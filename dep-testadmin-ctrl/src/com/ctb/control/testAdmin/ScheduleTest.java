@@ -606,4 +606,6 @@ public interface ScheduleTest
     com.ctb.bean.testAdmin.StudentNodeData getTopTestTicketNodesForPrintTT(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
     
     com.ctb.bean.testAdmin.ScheduledStudentDetailsWithManifest getScheduledStudentsManifestDetails(java.lang.String userName, java.lang.Integer studentId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    java.lang.String[] getTestCatalogForUserForScoring(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 } 

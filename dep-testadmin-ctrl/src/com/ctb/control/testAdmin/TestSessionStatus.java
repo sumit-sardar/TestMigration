@@ -482,5 +482,7 @@ public interface TestSessionStatus
     
     com.ctb.bean.testAdmin.TestSessionData getTestSessionsForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort, Integer userId) throws com.ctb.exception.CTBBusinessException;
     
-    public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException;  
+    public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.TestSessionData getTestSessionsForStudentScoring(java.lang.String userName, java.lang.Integer userId, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
 } 

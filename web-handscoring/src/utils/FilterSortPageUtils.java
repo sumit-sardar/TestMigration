@@ -355,37 +355,37 @@ public class FilterSortPageUtils
 	FilterParam fp;
 	
 	if ((firstName != null) && (firstName.length() > 0)) {
-	fp = buildFilterParamSingleValue("FirstName", firstName, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("FirstName", firstName, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
 	
 	if ((middleName != null) && (middleName.length() > 0)) {
-	fp = buildFilterParamSingleValue("MiddleName", middleName, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("MiddleName", middleName, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
 	
 	if ((lastName != null) && (lastName.length() > 0)) {
-	fp = buildFilterParamSingleValue("LastName", lastName, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("LastName", lastName, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
 	
 	if ((loginId != null) && (loginId.length() > 0)) {
-	fp = buildFilterParamSingleValue("LoginId", loginId, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("LoginId", loginId, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
 	
 	if ((studentNumber != null) && (studentNumber.length() > 0)) {
-	fp = buildFilterParamSingleValue("StudentIdNumber", studentNumber, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("StudentIdNumber", studentNumber, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
 	
 	if ((grade != null) && (grade.length() > 0) && (! grade.equalsIgnoreCase(FILTERTYPE_ANY_GRADE))) {
-	fp = buildFilterParamSingleValue("Grade", grade, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("Grade", grade, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}
@@ -393,7 +393,7 @@ public class FilterSortPageUtils
 	
 	
 	if ((gender != null) && (gender.length() > 0) && (! gender.equalsIgnoreCase(FILTERTYPE_ANY_GENDER))) {
-	fp = buildFilterParamSingleValue("Gender", gender, FilterType.EQUALS);
+	fp = buildFilterParamSingleValue("Gender", gender, FilterType.STARTSWITH);
 	if (fp != null)
 	filters.add(fp);
 	}

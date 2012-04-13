@@ -2944,5 +2944,23 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	
+	//Added for new UI hand scoring
+	public ManageStudentData getStudentsMinimalInfoForScoring(String userName, Integer orgNodeId, SortParams sort) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getStudentsMinimalInfoForScoring");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			ManageStudent [] students = studentManagement.getStudentsMinimalInfoForStudentScoring(orgNodeId);
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentsMinimalInfoForScoring: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 
 } 

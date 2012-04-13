@@ -2125,4 +2125,35 @@ public class TestSessionStatusImpl implements TestSessionStatus
  	        throw rde;
  	    }
      }
+     
+     /**
+      * Retrieves a list of test sessions created at and below the specified org node
+ 	 * @param userName - identifies the user
+      * @param orgNodeId - identifies the org node
+ 	 * @return TestSessionData
+ 	 * @throws com.ctb.exception.CTBBusinessException
+      * @common:operation
+      */
+     public TestSessionData getTestSessionsForStudentScoring(String userName, Integer userId, Integer orgNodeId) throws CTBBusinessException
+     {
+    	 validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForStudentScoring");
+         try {
+             TestSessionData tsd = new TestSessionData();
+             Integer pageSize = null;
+             TestSession [] sessions = testAdmin.getTestAdminsForStudentScoring(userId, orgNodeId);
+             tsd.setTestSessions(sessions, pageSize);
+             sessions = tsd.getTestSessions();
+             for(int i=0;i<sessions.length;i++) {
+                 if(sessions[i] != null) {
+                     TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                 }
+             }
+             
+             return tsd;
+         } catch (SQLException se) {
+             TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForStudentScoring: " + se.getMessage());
+             tae.setStackTrace(se.getStackTrace());
+             throw tae;         
+         }
+     }
 } 

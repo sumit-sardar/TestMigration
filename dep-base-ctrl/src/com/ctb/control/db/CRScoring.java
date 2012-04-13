@@ -92,4 +92,9 @@ public interface CRScoring extends JdbcControl {
      // Change for HandScoring: get all item with it's order  
 	 @JdbcControl.SQL(statement = "select derived.item_id as itemId, rownum itemSetOrder  from (select isi.item_id, item_sort_order   from item_set_item isi, item item  where isi.item_id = item.item_id  and item.item_type <> 'NI'  and item.activation_status = 'AC'  and item_set_id = {itemSetIdTD}   order by item_sort_order) derived")
 	 ScorableItem[] getAllScorableCRItemsForTD(Integer itemSetIdTD);
+	 
+	 //Get scoring status for the roster for the item set
+	 @JdbcControl.SQL(statement = "select OAS_UTILS.GET_STD_CAREA_SCORING_STATUS({rosterId}, {itemSetIdTD}) from dual")
+	 String getStatusForRosterAndTD(Integer rosterId, Integer itemSetIdTD);
+	 
 }

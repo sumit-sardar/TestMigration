@@ -24,9 +24,22 @@ body {
 	border-radius: 11px;
 }
 
+.simpleMenu {
+	background-color: #d4ecff;
+	width:153px;
+	padding: 5px 0px 5px 0px;
+}
+
+
 .feature {
 	background-color: #d4ecff; 
 	padding: 10px;
+    padding-top: 15px;
+    z-index:0;
+}
+
+#bodySection {
+	margin-top: -15px;
 }
 
 .roundedHeader {
@@ -59,6 +72,23 @@ body {
 	font-size:10px; 
 	font-weight: bold;
 }
+
+
+.legacyBodyLayout {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+#legacyBody {
+    background-color: #fff;
+    padding: 20px;
+    vertical-align: top;
+}
+
 
 h1 { 
     color: #476cb5;
@@ -272,6 +302,41 @@ input:focus {
     border:1px solid rgba(0,0,255, 0.8); 
 }
 
+
+.search_input {
+  border: none;
+  border-color: #ffffff; 
+  border-style: none; 
+  border-width: 0px; 
+  height: 12px;
+  width: 130px;
+  vertical-align: top;
+}
+  
+.search_input:focus {
+    box-shadow: 0 0 0px rgba(255, 255, 255, 255);
+    -webkit-box-shadow: 0 0 0px rgba(255, 255, 255, 255); 
+    -moz-box-shadow: 0 0 0px rgba(255, 255, 255, 255);
+    border:0px none rgba(255,255,255, 255); 
+}
+
+.search_image {
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+}
+
+.search_input_box {
+  background:  url(search_sm.png) no-repeat left top;
+  padding: 3px 0px 0px 10px;
+  --height: 19px;
+  --width: 168px;
+  height: 19px;
+  width: 170px;
+}
+
+
+
 .treeHeader {
 	background-color: #5cadcc; 
 	color: #ffffff; 
@@ -294,6 +359,267 @@ input:focus {
     border-color: #c5dbec; 
     border-style: solid; 
     border-width: 1px; 
-	padding: 0px;
-    
+	padding: 0px;    
+}
+/*
+#orgNodeHierarchy ul {
+	float: left;
+	clear: both;
+}
+
+#orgNodeHierarchy li {
+	clear: both;
+}	
+
+#innerID ul {
+	float: left;
+	clear: both;
+}
+
+#innerID li {
+	clear: both;
+}	
+*/
+
+#treebackgrounddiv {
+	float:left;
+}
+/*
+#studentBulkOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#studentBulkOrgNode li {
+	clear: both;
+}
+*/
+
+/*
+#bulkStudentMoveOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#bulkStudentMoveOrgNode li {
+	clear: both;
+}
+*/
+
+.gridTable {
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px;  
+	font-style: normal;  
+	font-weight: normal; 	
+	
+}
+
+.treeCtrl {
+	/*visibility: hidden;*/
+	border: 1px solid #A6C9E2;
+	overflow:auto; 
+	height: 487px;  
+	width: 200px;
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px;  
+	font-style: normal;  
+	font-weight: normal; 	
+	padding:0px ! important;
+}
+
+.innertreeCtrl {
+	overflow:auto; 
+	height: 235px;  
+	width: 350px; 
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px; 
+	font-style: normal; 
+	font-weight: normal; 
+	position: absolute;
+}
+
+.treeCtrlHeader {
+	visibility: hidden;
+	padding: 3px 0px 3px 3px;
+	border: 1px solid #A6C9E2;
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px;  
+	font-style: normal;  
+	font-weight: bold; 
+	width: 197px; 	
+}
+
+.gridTableHeader {
+	visibility: hidden;
+	padding:0px;
+	border: 1px solid #A6C9E2;
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px;  
+	font-style: normal;  
+	font-weight: bold; 	
+}
+
+
+
+.ie8 #orgNodeHierarchy ul {
+float: none;
+clear: both;
+}
+
+.ie8 #orgNodeHierarchy li {
+	clear: both;
+}	
+
+.ie8 #innerID ul {
+float: none;
+clear: both;
+}
+
+.ie8 #innerID li {
+	clear: both;
+}
+
+
+
+.ie8 #studentBulkOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #studentBulkOrgNode li {
+	clear: both;
+}
+
+
+
+.ie8 #bulkStudentMoveOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #bulkStudentMoveOrgNode li {
+	clear: both;
+}
+
+.ie8 #outOfSchoolOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #outOfSchoolOrgNode li {
+	clear: both;
+}
+
+.ie8 #scoringOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #scoringOrgNode li {
+	clear: both;
+}
+
+.feature div {
+	margin-left:0px !important;
+}
+
+.gridPos{
+	
+	position:relative;
+	z-index:100;
+}
+
+.subtitle{
+	font-family: Arial, Verdana, Sans Serif;
+	font-size: 12px;
+	font-style: normal;
+	padding-left: 2px;
+	color:#003399;
+}
+
+.buttonsRow{
+	padding-bottom:1px; 
+	min-height: 25px; 
+	height: 25px;
+}
+
+.errMsgs{
+	 text-align: left; 
+	 font-family: Arial, Verdana, Sans Serif; 
+	 font-size: 12px; 
+	 align: left;	 
+	 color:#000;
+	 padding-top: 2px;
+	 font-weight: bold;
+}
+
+.saveMsgs{
+	text-align: left; 
+	 background-color: #FFFFFF; 
+	 font-family: Arial, Verdana, Sans Serif; 
+	 font-size: 12px; 
+	 font-style: normal; 
+	 font-weight: bold;
+	 align: left;
+	 padding-left: 2px;
+	 color:#000;
+}
+
+input[type="button"] {
+	cursor: pointer;
+}
+
+th.ui-th-column div{
+        white-space:normal !important;
+        height:auto !important;
+}
+
+.searchInputBoxContainer {
+	padding:20px 0px;
+}
+
+.tableHeader{
+	background: url(../images/tableHeader3.png);
+    color: #FFF;
+    font-family: Arial, Verdana, Sans Serif; 
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    height: 23px; 
+}
+
+.profileBullet{
+	width:5px;
+	vertical-align: top;
+	color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+}
+
+.profileTransparent {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 2px;
+    vertical-align: top;
+}
+.statusLegendTable {
+	background-color: #FFFFCC;
+	border-color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	color: #000000;
+	font-family: Arial,Helvetica,Sans Serif;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.statusLegendDiv {
+	position: absolute;
+	z-index: 1100;
+}
+.statusLegendTable td {
+	padding: 0px 10px 5px 5px;
 }

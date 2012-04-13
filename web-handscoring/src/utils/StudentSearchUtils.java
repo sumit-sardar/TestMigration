@@ -3,6 +3,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -12,6 +13,8 @@ import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.control.studentManagement.StudentManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
+
+import dto.StudentProfileInformation;
 
 
 
@@ -83,4 +86,55 @@ public class StudentSearchUtils {
         }        
         return msData;
     }
+    
+    /**
+     * student count for org node
+     */
+     public static Integer getStudentsCountForOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId)
+    {    
+        Integer studentCount = 0;
+        try {    
+       	 studentCount = studentManagement.getStudentsCountForOrgNode(userName, orgNodeId);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return studentCount;
+    }
+     
+     /**
+      * searchStudentsByOrgNode with minimal information
+      */
+      public static ManageStudentData getStudentsMinimalInfoForScoring(String userName, StudentManagement studentManagement, Integer orgNodeId,
+                                                            FilterParams filter, PageParams page, SortParams sort)
+     {    
+         ManageStudentData msData = null;
+         try {    
+             msData = studentManagement.getStudentsMinimalInfoForScoring(userName, orgNodeId, sort);
+         }
+         catch (CTBBusinessException be) {
+             be.printStackTrace();
+         }        
+         return msData;
+     }
+      
+      /**
+       * buildStudentList
+       * @param accomodationMap 
+       */    
+      public static List<StudentProfileInformation> buildStudentListForScoring(ManageStudentData msData) 
+      {
+          ArrayList<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
+          if (msData != null) {
+              ManageStudent[] students = msData.getManageStudents();
+              for (int i=0 ; i<students.length ; i++) {
+                  ManageStudent student = (ManageStudent)students[i];
+                  if (student != null) {
+                      StudentProfileInformation studentDetail = new StudentProfileInformation(student);
+                      studentList.add(studentDetail);                  		
+                  }
+              }
+          }
+          return studentList;
+      }
 }
