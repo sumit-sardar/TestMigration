@@ -669,7 +669,6 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	     */    
 	    @Jpf.Action(forwards = { 
 	    		@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-	    		@Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoringLink.do"),
 	    		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
 	    })   
 	    protected Forward assessments()
@@ -688,21 +687,6 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	    	try
 	    	{
 	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
-	    		getResponse().sendRedirect(url);
-	    	} 
-	    	catch (IOException ioe)
-	    	{
-	    		System.err.print(ioe.getStackTrace());
-	    	}
-	    	return null;
-	    }
-
-	    @Jpf.Action()
-	    protected Forward assessments_studentScoringLink()
-	    {
-	    	try
-	    	{
-	    		String url = "/SessionWeb/sessionOperation/assessments_studentScoring.do";
 	    		getResponse().sendRedirect(url);
 	    	} 
 	    	catch (IOException ioe)
