@@ -57,7 +57,11 @@
         	<c:if test="${sessionScope.showReportTab}">
         	<li id="reports" class="simpleMenu"><a class="tab" href="#"  id="reportsLink" onClick="gotoMenuAction('reports.do', 'reportsLink');"><lb:label key="user.menu.reports" /></a>
         	</li>
-        	</c:if>		
+        	</c:if>
+        	<c:if test="${sessionScope.hasScoringConfigured}">
+	        	<li id="scoring" class="simpleMenu"><a class="tab" href="#"  id="studentScoringLink" onClick="gotoMenuAction('studentScoring.do', 'studentScoringLink');"><lb:label key="user.menu.scoring" /></a>
+	        	</li>
+        	</c:if>
         	<li id="services" class="simpleMenu"><a class="tab" href="#"><lb:label key="user.menu.services" /></a>
         		<ul class="sub_menu">
         			 <li>

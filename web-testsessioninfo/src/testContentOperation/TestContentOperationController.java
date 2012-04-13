@@ -129,7 +129,6 @@ public class TestContentOperationController extends PageFlowController {
      */    
     @Jpf.Action(forwards = { 
     		@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-    		@Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoringLink.do"),
     		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
     })   
     protected Forward assessments()
@@ -155,22 +154,6 @@ public class TestContentOperationController extends PageFlowController {
     	}
     	return null;
     }
-
-    @Jpf.Action()
-    protected Forward assessments_studentScoringLink()
-    {
-    	try
-    	{
-    		String url = "/SessionWeb/sessionOperation/assessments_studentScoring.do";
-    		getResponse().sendRedirect(url);
-    	} 
-    	catch (IOException ioe)
-    	{
-    		System.err.print(ioe.getStackTrace());
-    	}
-    	return null;
-    }
-
 
     @Jpf.Action()
     protected Forward assessments_programStatus()
@@ -415,6 +398,35 @@ public class TestContentOperationController extends PageFlowController {
 	protected Forward myProfile()
 	{
 	    return null;
+	}
+	
+	/**
+     * STUDENT SCORING actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "studentScoringLink", path = "scoring_studentScoring.do")
+        }) 
+    protected Forward studentScoring()
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "studentScoringLink";
+    	
+        return new Forward(forwardName);
+    }
+    
+    @Jpf.Action()
+	protected Forward scoring_studentScoring()
+	{
+        try
+        {
+            String url = "/ScoringWeb/studentScoringOperation/beginStudentScoring.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
 
 

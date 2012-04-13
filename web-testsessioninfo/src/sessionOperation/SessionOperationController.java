@@ -2320,7 +2320,6 @@ public class SessionOperationController extends PageFlowController {
      */    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
-            @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
             @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
         }) 
     protected Forward assessments()
@@ -2810,15 +2809,12 @@ public class SessionOperationController extends PageFlowController {
 
 	}
     
-    @Jpf.Action(forwards={
-    		@Jpf.Forward(name = "success", path ="student_scoring.jsp")
-	})
-    protected Forward assessments_studentScoring()
-    {
-    	/*
+    @Jpf.Action()
+	protected Forward assessments_studentScoring()
+	{
         try
         {
-            String url = "/ScoringWeb/scoringOperation/assessments_studentScoring.do";
+            String url = "/ScoringWeb/studentScoringOperation/beginStudentScoring.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -2826,11 +2822,8 @@ public class SessionOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
-        */
-        return new Forward("success");
-    	
-    }
-
+	}
+    
     @Jpf.Action()
     protected Forward assessments_programStatus()
     {
@@ -3114,6 +3107,35 @@ public class SessionOperationController extends PageFlowController {
     {
         return null;
     }
+    
+    /**
+     * STUDENT SCORING actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "studentScoringLink", path = "scoring_studentScoring.do")
+        }) 
+    protected Forward studentScoring()
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "studentScoringLink";
+    	
+        return new Forward(forwardName);
+    }
+    
+    @Jpf.Action()
+	protected Forward scoring_studentScoring()
+	{
+        try
+        {
+            String url = "/ScoringWeb/studentScoringOperation/beginStudentScoring.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
     
     
     /**
