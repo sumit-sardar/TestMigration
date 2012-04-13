@@ -5,8 +5,29 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentScoringResources" />
+<netui-data:declareBundle bundlePath="studentScoringResources" name="scor"/>
 
-<html>
+<netui-template:setAttribute name="title" value="${bundle.scor['studentScoring.window.title']}"/>
+
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6">    <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8">    <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9">    <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<!--[if lt IE 8]>
+<style type='text/css'>
+#scoringOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#scoringOrgNode li {
+	clear: both;
+}
+</style>
+<![endif]-->
   <head>
     <title><netui-template:attribute name="title"/></title>
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
@@ -14,11 +35,11 @@
     <link href="<%=request.getContextPath()%>/resources/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
    
     <link href="<%=request.getContextPath()%>/resources/css/autosuggest.css" type="text/css" rel="stylesheet" />
-    
+    <link href="<%=request.getContextPath()%>/resources/css/jquery.ui.dialog.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
-    <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/popup_menu.css" rel="stylesheet" type="text/css" />
     
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -30,13 +51,19 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.dropdownPlain.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
-	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
+
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
   	
 	<script type="text/javascript">
 	var SelectedUserId;
@@ -52,10 +79,23 @@
 			$(function(){
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
+				$("#profileAccordion").accordion({ header: "h3"});
+				$( "#profileAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   		$("#User_Info").css("height",'250px');
+						$("#Contact_Info").css("height",'250px');
+						$("#Change_Pwd").css("height",'250px'); 
+					}
+				});
 			});
 		
 		
 	</script>
+	<style>
+	.ui-jqgrid-titlebar-close{
+		display:none !important;   //change to hide the circle-triangle in top
+	}
+	</style>
      
 </head>
 
@@ -72,7 +112,7 @@
 				<!-- HEADER SECTION -->
 				<tr class="bodyLayout">
 					<td>
-    					<jsp:include page="/resources/jsp/oas_header.jsp" />  					 
+    					<%@include file="/resources/jsp/oas_header.jsp" %>  					 
 					</td>
 				</tr>
 
@@ -82,61 +122,16 @@
 				  	<td align="left" valign="top">
 
 					  <!-- TABS HEADERS -->
-					  <div id="featureTabsBody">
-					  
-					    <div id="featureTabsContainer">
-					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
-					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
-                		<c:if test="${sessionScope.showReportTab}">
-					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
-                		</c:if>					    
-					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
-					    </div>
-
-
-					  	<!-- TABS BODY -->
-    					<div id="featureElementsContainer" class="rounded {right bottom}">
-
-							<!-- ASSESSMENT MENU -->	
-							<div id="assessments" style="display: none">					
-								<table class="toolbar">
-								<tr class="toolbar">
-									<td class="toolbar" width="120">
-										<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
-									</td>
-								  <c:if test="${sessionScope.hasScoringConfigured}">			      
-									<td class="toolbar" width="120">
-										<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
-									</td>
-	                			  </c:if>
-								  <c:if test="${sessionScope.hasProgramStatusConfigured}">			      
-									<td class="toolbar" width="120">
-										<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
-									</td>
-	                			  </c:if>
-									<td width="*">&nbsp;</td>		
-								</tr>
-								</table>						
-							</div>
-
-							<!-- ORGANIZATION MENU -->
-							<div id="organizations" style="display: none">					
-							</div>
-
-							<!-- REPORTS MENU -->
-							<div id="reports" style="display: none">					
-							</div>
-
-							<!-- SERVICES MENU -->
-							<div id="services" style="display: none">	
-							</div>
-												
-					      	<div class="feature" id="bodySection">
-					            <netui-template:includeSection name="bodySection"/>      	
-					      	</div>
-
-    					</div> <!-- End of TABS BODY -->
-  					</div> <!-- End of TABS HEADERS -->
+					  <%@include file="/resources/jsp/oas_navigation_menu.jsp" %>
+						<div class="feature" id="bodySection">
+							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0" cellspacing="0" >
+							<tr>
+				  			<td  valign="top">
+							<netui-template:includeSection name="bodySection"/>
+							</td>
+							</tr>
+							</table>
+						</div>
 
 					</td>
 				</tr>
@@ -144,7 +139,7 @@
 				<!-- FOOTER SECTION -->
 				<tr>
 				  	<td align="left" valign="top">
-    					<jsp:include page="/resources/jsp/oas_footer.jsp" />  
+    					<%@include file="/resources/jsp/oas_footer.jsp" %>
 				  	</td>
 				</tr>
 

@@ -2407,6 +2407,35 @@ public class StudentOperationController extends PageFlowController {
 	{
 	    return null;
 	}
+	
+	/**
+     * STUDENT SCORING actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "studentScoringLink", path = "scoring_studentScoring.do")
+        }) 
+    protected Forward studentScoring()
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "studentScoringLink";
+    	
+        return new Forward(forwardName);
+    }
+    
+    @Jpf.Action()
+	protected Forward scoring_studentScoring()
+	{
+        try
+        {
+            String url = "/ScoringWeb/studentScoringOperation/beginStudentScoring.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
 
 	
     /////////////////////////////////////////////////////////////////////////////////////////////    

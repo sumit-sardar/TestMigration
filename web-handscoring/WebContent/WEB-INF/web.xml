@@ -8,19 +8,7 @@
     </filter>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/studentScoringPageFlow/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/scorebystudent/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/itemScoringPageFlow/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/scoringOperation/*</url-pattern>
+        <url-pattern>/studentScoringOperation/*</url-pattern>
     </filter-mapping>
     <servlet>
         <description/>
@@ -101,7 +89,7 @@
         <web-resource-collection>
             <web-resource-name>ScoringWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
-            <url-pattern>/scoringOperation/*</url-pattern>
+            <url-pattern>/studentScoringOperation/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>

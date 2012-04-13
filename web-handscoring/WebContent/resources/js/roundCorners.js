@@ -1,14 +1,22 @@
 
   $(document).ready(function(){
-    $('.feature').corners();
+    roundCornerFeatureIE();    
     $('.rounded').corners();
     $('.roundedHeader').corners(); 
     $('.roundedPrivacy').corners(); 
+    $('.menuText').corners('top');    
     $('.roundedMessage').corners(); 
-    $('.treeHeader').corners('top'); 
+    $('.treeHeader').corners('top');
   });
 
- function setAnchorButtonState(elementId, disabled) {
+function roundCornerFeatureIE(){
+ 	$('.feature').corners();
+ 	if($("#bodySection").length>0 && $("#bodySection").children().length == 3){
+ 		$("#bodySection").css('padding-top','0px');
+ 		$("#bodySection").children().eq(1).css('padding-top','10px');
+ 	}
+ } 
+function setAnchorButtonState(elementId, disabled) {
 	var element = document.getElementById(elementId);
 	if (element) {
 		if (disabled) {
