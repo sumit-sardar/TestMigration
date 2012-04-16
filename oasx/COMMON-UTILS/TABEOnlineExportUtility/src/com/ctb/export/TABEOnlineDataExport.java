@@ -34,7 +34,7 @@ import com.ctb.utils.Utility;
 
 public class TABEOnlineDataExport {
 	
-	private static final String CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
+	private static String CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
 	private static final Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
@@ -50,6 +50,11 @@ public class TABEOnlineDataExport {
 	public static void main(String[] args) {
 		TABEOnlineDataExport dataExport = new TABEOnlineDataExport();
 		try {
+			if(args[0] != null) {
+				CUSTOMER_IDs = args[0];
+			} else {
+				CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
+			}
 			dataExport.writeToText();
 		}
 		catch (IOException e) {
@@ -149,6 +154,7 @@ public class TABEOnlineDataExport {
 			
 			getAllContentDomain(oascon);
 			myrosterList = getTestRoster(oascon);
+			int count = 0;
 			for (TestRoster roster : myrosterList) {
 				TABEFile catData = new TABEFile();
 				catData.setCustomerID(String.valueOf(roster.getCustomerId()));	
@@ -178,7 +184,8 @@ public class TABEOnlineDataExport {
 				fillAccomodations(studentInfo.getStudentDemographic(), demoGraphicMap, catData);
 				getScores(oascon, irscon, catData, roster);
 				getTimedOut(oascon, catData, roster);
-				tabeFileList.add(catData);								
+				tabeFileList.add(catData);	
+				System.out.println("Processed record count:" + ++count);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
