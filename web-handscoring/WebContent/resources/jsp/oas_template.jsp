@@ -64,6 +64,7 @@
 
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
   	
 	<script type="text/javascript">
 	var SelectedUserId;

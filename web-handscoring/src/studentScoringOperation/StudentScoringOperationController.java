@@ -494,10 +494,7 @@ try {
 	{     
 		getLoggedInUserPrincipal();
 		getUserDetails();
-		setupUserPermission();
-		
-		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
-        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));		
+		setupUserPermission();	
 	}
 	
 	/**
@@ -1216,11 +1213,41 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     /**
 	 * @jpf:action
 	 */
-	@Jpf.Action()
-	protected Forward broadcastMessage()
-	{
-	    return null;
-	}
+    @Jpf.Action()
+    protected Forward broadcastMessage()
+    {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			this.userName = (String)getSession().getAttribute("userName");
+		}
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        String bcmString = BroadcastUtils.buildBroadcastMessages(broadcastMessages);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+		
+		try{
+    		resp.setContentType(CONTENT_TYPE_JSON);
+			try {
+				stream = resp.getOutputStream();
+	    		resp.flushBuffer();
+	    		stream.write(bcmString.getBytes());
+			} 
+			finally {
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return null;
+    }
 	
 	
 	@Jpf.Action()
