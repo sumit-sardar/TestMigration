@@ -634,7 +634,7 @@ function studentScoring() {
 			sortname: 'itemSetName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 150,
+			height: 170,
 			width: 960,
 			hoverrows: false,
 			editurl: 'beginDisplayStudItemList.do',
