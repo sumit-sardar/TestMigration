@@ -2,8 +2,10 @@ package utils;
 
 import java.util.List;
 
-import dto.TestSessionVO;
+import com.ctb.bean.testAdmin.ScorableItem;
+
 import dto.StudentProfileInformation;
+import dto.TestSessionVO;
 
 
 
@@ -15,6 +17,7 @@ public class Base {
 	private List<Row> rows;
 	private List<StudentProfileInformation> studentProfileInformation;
 	private List<TestSessionVO> testSessionCUPA;
+	private List<ScorableItem> scorableItems;
 	
 	
 	public String getPage() {
@@ -59,6 +62,12 @@ public class Base {
 	}
 	public void setTestSessionCUPA(List<TestSessionVO> testSessionCUPA) {
 		this.testSessionCUPA = testSessionCUPA;
+	}
+	public List<ScorableItem> getScorableItems() {
+		return scorableItems;
+	}
+	public void setScorableItems(List<ScorableItem> scorableItems) {
+		this.scorableItems = scorableItems;
 	}
 	
 	

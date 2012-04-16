@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -39,8 +37,8 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.TestProduct;
-import com.ctb.bean.testAdmin.TestProductData;
+import com.ctb.bean.testAdmin.ScorableItem;
+import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
@@ -60,6 +58,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	@org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.BroadcastMessageLog message;
 	
+	
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 	
@@ -71,16 +70,15 @@ public class StudentScoringOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
+    
+    @Control()
+    private com.ctb.control.crscoring.TestScoring testScoring;
 	
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-	private TestProductData testProductData = null;
-	private TestProduct [] tps;
-	private Hashtable productNameToIndexHash = null;
-    private Hashtable productIdToProductName = null;
 
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -134,13 +132,10 @@ public class StudentScoringOperationController extends PageFlowController {
 
 		OutputStream stream = null;
 		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		try {
 			Integer studentCount = 0;
 			studentCount = StudentSearchUtils.getStudentsCountForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
-			System.out.println("treeOrgNodeId:"+treeOrgNodeId);
-			System.out.println("studentCount:"+studentCount);
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(studentCount);
@@ -177,29 +172,21 @@ public class StudentScoringOperationController extends PageFlowController {
 		String json = "";
 		
 		try {
-			System.out.println ("db process time Start:"+new Date());
 			ManageStudentData msData = findStudentByHierarchy();
-			System.out.println ("db process time End:"+new Date());
 			
 			if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
 			{
-				System.out.println ("List process time Start:"+new Date());
 				studentList = StudentSearchUtils.buildStudentListForScoring(msData);
-				System.out.println ("List process time End:"+new Date());
 			}
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-
-			System.out.println("just b4 gson");	
+	
 			Gson gson = new Gson();
 			
 			base.setStudentProfileInformation(studentList);
 			json = gson.toJson(base);
-			
-
-
 			
 			try{
 
@@ -207,7 +194,6 @@ public class StudentScoringOperationController extends PageFlowController {
 	    		stream = resp.getOutputStream();
 
 	    		String acceptEncoding = req.getHeader("Accept-Encoding");
-	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
 
 	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
 	    		    resp.setHeader("Content-Encoding", "gzip");
@@ -228,7 +214,7 @@ public class StudentScoringOperationController extends PageFlowController {
 
 
 		} catch (Exception e) {
-			System.err.println("Exception while processing CR response.");
+			System.err.println("Exception while processing getStudentForScoringGrid.");
 			e.printStackTrace();
 		}
 
@@ -266,7 +252,6 @@ public class StudentScoringOperationController extends PageFlowController {
 				
 			Gson gson = new Gson();
 			json = gson.toJson(base);
-			System.out.println("json -> " + json);
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
@@ -298,7 +283,6 @@ public class StudentScoringOperationController extends PageFlowController {
 	})
 	protected Forward populateGridDropDowns(StudentSessionScoringForm form){
 
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -337,6 +321,90 @@ public class StudentScoringOperationController extends PageFlowController {
 		return null;
 
 	}
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+			protected Forward beginDisplayStudItemList(StudentSessionScoringForm form)
+	{ 
+			
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String json = "";
+		Integer rosterId = Integer.parseInt(getRequest().getParameter("rosterId"));
+		Integer itemSetIdTC = Integer.parseInt(getRequest().getParameter("itemSetIdTC"));
+			
+try {
+			
+	ScorableItemData sid = getTestItemForStudent(rosterId, itemSetIdTC, null, null);
+	List<ScorableItem> itemList = buildItemList(sid);
+			
+			try{
+				Base base = new Base();
+				base.setScorableItems(itemList);
+				
+				base.setPage("1");
+				base.setRecords("10");
+				base.setTotal("2");
+				
+				Gson gson = new Gson();
+				json = gson.toJson(base);
+
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+
+			}
+
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing populateGridDropDowns.");
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	private ScorableItemData getTestItemForStudent(Integer testRostorId,Integer itemSetId, PageParams page, SortParams sort) 
+    {
+	 ScorableItemData sid = new ScorableItemData();                        
+        try
+        {      
+            sid = this.testScoring.getAllScorableCRItemsForTestRoster(testRostorId, itemSetId, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return sid;
+    } 
+	
+	
+	private List<ScorableItem> buildItemList(ScorableItemData tid) 
+    {
+        ArrayList<ScorableItem> itemList = new ArrayList<ScorableItem>();
+        if (tid != null) {
+        	 ScorableItem[] testItemDetails = tid.getScorableItems();    
+            for (int i=0 ; i<testItemDetails.length ; i++) {
+            	ScorableItem itemDetail = (ScorableItem)testItemDetails[i];
+                if (itemDetail != null) {
+                	if(itemDetail.getAnswered().equals("A")) {
+                		itemDetail.setAnswered("Answered");
+                	} else {
+                		itemDetail.setAnswered("Not Answered");
+                	}
+                    itemList.add(itemDetail);
+                }
+            }
+        }
+        return itemList;
+    }
 	
 	
 	private Base buildTestSessionList(TestSessionData tsd, Base base) 
@@ -1019,12 +1087,19 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         return null;
 	}
     
-    @Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "beginOutOfSchoolStudent.do") 
-	    }) 
+    @Jpf.Action() 
 	protected Forward organizations_manageOutOfSchool()
 	{
-	    return new Forward("success");
+    	 try
+         {
+             String url = "/StudentWeb/outOfSchoolOperation/organizations_manageOutOfSchool.do";
+             getResponse().sendRedirect(url);
+         } 
+         catch (IOException ioe)
+         {
+             System.err.print(ioe.getStackTrace());
+         }
+         return null;
 	}
 
     /**

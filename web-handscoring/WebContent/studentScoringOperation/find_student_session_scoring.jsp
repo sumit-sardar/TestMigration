@@ -32,6 +32,15 @@
 <input type="hidden" id="noSessionMessage" value=<lb:label key="scoring.noSesSelected.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="confirmAlrt" value=<lb:label key="scoring.alert.confirm" prefix="'" suffix="'"/>/>
 <input type="hidden" id="scorPopupTitle" value=<lb:label key="scoring.menu.scoring" prefix="'" suffix="'"/>/>
+<input type="hidden" id="searchStudentSession" value=<lb:label key="common.label.search" prefix="'" suffix="'"/>/>
+<input type="hidden" id="scoringPopupTitle" value=<lb:label key="scoring.page.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemListGripCap" value=<lb:label key="scoring.itemGrid.caption" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripItemNo" value=<lb:label key="scoring.itemGrid.ItemNo" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripSubtest" value=<lb:label key="scoring.itemGrid.subtestName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripScoreItm" value=<lb:label key="scoring.itemGrid.scoreItem" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripManual" value=<lb:label key="scoring.itemGrid.manualStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripMaxScr" value=<lb:label key="scoring.itemGrid.maxScore" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripObtained" value=<lb:label key="scoring.itemGrid.scorObtn" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
@@ -134,4 +143,41 @@
 		</center>
 	</div>	
 </div>
+
+<div id="searchStudentByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="stu.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchStudentByKeywordInput" id="searchStudentByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;"> 
+		<center>
+			<input type="button"  value=<lb:label key="common.button.clear" prefix="'" suffix="'"/> onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.search" prefix="'" suffix="'"/> onclick="javascript:searchStudentByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
+</div>
+
+<div id="searchSessionByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="ses.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchSessionByKeywordInput" id="searchSessionByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;"> 
+		<center>
+			<input type="button"  value=<lb:label key="common.button.clear" prefix="'" suffix="'"/> onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.search" prefix="'" suffix="'"/> onclick="javascript:searchSessionByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
+</div>
+
 <jsp:include page="/studentScoringOperation/find_student_scoring.jsp" />

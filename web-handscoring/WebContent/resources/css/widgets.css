@@ -1353,3 +1353,12 @@ table.p table.pager .textField {
 	height: 315px;
 	overflow:auto;	
 }
+
+.formValueLarge {
+    background-color: #ccc;
+    color: #666666;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 400px;
+}

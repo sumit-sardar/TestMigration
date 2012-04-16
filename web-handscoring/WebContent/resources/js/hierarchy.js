@@ -36,6 +36,23 @@ var myRoleOptions = ":Any;Owner:Owner;Proctor:Proctor";
 var statusOptions = ":Any;Completed:Completed;Current:Current";
 var currentView = "session";
 var selectedRosterId;
+var selectedItemSetTCVal;
+var selectedRData = {};
+var isPopUp = false;
+var stuItemGridLoaded = false;
+
+
+$(document).bind('keydown', function(event) {
+		
+	      var code = (event.keyCode ? event.keyCode : event.which);
+	      if(code == 27){
+	      		if(isPopUp){	
+	      			closePopUp('studentScoringId');
+	      		}
+	            return false;
+	      }
+	  });
+
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -245,7 +262,7 @@ function populateScoringStudentGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val()],
+          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), '', ''],
 		   	colModel:[
 		   		{name:'userName',index:'userName', width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentName',index:'studentName', width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -254,7 +271,9 @@ function populateScoringStudentGrid() {
 		   		{name:'gender',index:'gender', width:60, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
 		   		{name:'studentNumber',index:'studentNumber', width:75, editable: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testSessionName',index:'testSessionName',editable: true, width:150, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:150, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } }
+		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:150, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
+		   		{name:'accessCode',index:'accessCode', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"rosterId",
@@ -269,9 +288,9 @@ function populateScoringStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,
-			width: $("#jqGrid-content-section").width(), 
+			width: $("#jqGrid-content-section").width(),
+			ondblClickRow: function(rowid) {populateGridAsPerView();},
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
-			ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			caption:studentGridTitle,
 			onPaging: function() {
 				var reqestedPage = parseInt($('#studentScoringGrid').getGridParam("page"));
@@ -288,7 +307,8 @@ function populateScoringStudentGrid() {
 			onSelectRow: function (rowId) {
 					setAnchorButtonState('scoreButton', false);
 					selectedRosterId = rowId;
-					alert("selectedRosterId -> " + selectedRosterId);
+					selectedRData = $("#studentScoringGrid").getRowData(rowId);
+					selectedItemSetTCVal = selectedRData.itemSetIdTC;
 			},
 			loadComplete: function () {
 				if ($('#studentScoringGrid').getGridParam('records') === 0) {
@@ -317,8 +337,8 @@ function populateScoringStudentGrid() {
 				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#studentScoringPager",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
-			    	$("#searchUserByKeyword").dialog({  
-						title:$("#searchStudentID").val(),  
+			    	$("#searchStudentByKeyword").dialog({  
+						title:$("#searchStudentSession").val(),  
 					 	resizable:false,
 					 	autoOpen: true,
 					 	width: '300px',
@@ -331,7 +351,7 @@ function populateScoringStudentGrid() {
 			});
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
-				$("#searchUserByKeywordInput").val('');
+				$("#searchStudentByKeywordInput").val('');
 			}); 
 			
 					
@@ -394,7 +414,6 @@ function populateScoringSessionGrid() {
 			height: 370,
 			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getSessionForSelectedOrgNodeGrid.do',
-			ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			caption:sessionGridTitle,
 			onPaging: function() {
 				var reqestedPage = parseInt($('#sessionScoringGrid').getGridParam("page"));
@@ -438,8 +457,8 @@ function populateScoringSessionGrid() {
 				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#sessionScoringPager",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
-			    	$("#searchUserByKeyword").dialog({  
-						title:$("#searchStudentID").val(),  
+			    	$("#searchSessionByKeyword").dialog({  
+						title:$("#searchStudentSession").val(),  
 					 	resizable:false,
 					 	autoOpen: true,
 					 	width: '300px',
@@ -452,7 +471,7 @@ function populateScoringSessionGrid() {
 			});
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
-				$("#searchUserByKeywordInput").val('');
+				$("#searchSessionByKeywordInput").val('');
 			}); 
 			
 					
@@ -527,6 +546,7 @@ function showPopup(stuCount){
 }
 
 function openConfirmationPopup(){
+	isPopUp = true;
 	$("#confirmationPopup").dialog({  
 		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
@@ -560,17 +580,107 @@ function closePopUp(dailogId){
 function displayListPopup(element) {
 	if (isButtonDisabled(element))
 		return true;
-	
+	isPopUp = true;
+	populateGridAsPerView();
+}
+
+function populateGridAsPerView() {
+	UIBlock();
 	if(currentView = "student") {
-		studentScoring();
+		fillStudentFields();
+		if(!stuItemGridLoaded) {
+			studentScoring();
+		} else {
+			gridStudentItemReload();
+		}
+		displayStudentItemPopup();
 	} else {
 		sessionScoring();
 	}
 }
 
 function studentScoring() {
-    
-			$("#studentScoringId").dialog({  
+	
+	stuItemGridLoaded = true;
+	var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.rosterId = selectedRosterId;
+ 		postDataObject.itemSetIdTC = selectedItemSetTCVal;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+        $("#studentItemListGrid").jqGrid({         
+          url:'beginDisplayStudItemList.do', 
+		 mtype:   'POST',
+		 postData: postDataObject,
+		 datatype: "json",         
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val()],
+		   	colModel:[
+		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	
+		   	],
+		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#studentItemListPager', 
+			sortname: 'itemSetName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 150,
+			width: 960,
+			hoverrows: false,
+			editurl: 'beginDisplayStudItemList.do',
+			caption:$("#itemListGripCap").val(),
+			onPaging: function() {
+				var reqestedPage = parseInt($('#studentItemListGrid').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_studentItemListPager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#studentItemListGrid').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#studentItemListGrid').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			onSelectRow: function (rowId) {
+					$("#"+rowId).removeClass('ui-state-highlight');
+			},
+			loadComplete: function () {
+				if ($('#sessionScoringGrid').getGridParam('records') === 0) {
+            		$('#sp_1_studentItemListPager').text("1");
+            		$('#next_studentItemListPager').addClass('ui-state-disabled');
+            		$('#last_studentItemListPager').addClass('ui-state-disabled');
+            		$('#studentItemListGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#studentItemListGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#studentItemListGrid").setGridParam({datatype:'local'});
+				var tdList = ("#studentItemListPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+	  
+	}
+	
+	function displayStudentItemPopup() {
+		$("#studentScoringId").dialog({  
 				title:$("#scorPopupTitle").val(),  
 				resizable:false,
 				autoOpen: true,
@@ -580,7 +690,35 @@ function studentScoring() {
 				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 			});		
 	
-			setPopupPositionHandScoring(); 
+			setPopupPositionStudentScoring();
+	}
+	
+function gridStudentItemReload(){
+	var postDataObject = {};
+	postDataObject.q = 2;
+ 	postDataObject.rosterId = selectedRosterId;
+ 	postDataObject.itemSetIdTC = selectedItemSetTCVal;
+ 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+	jQuery("#studentItemListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#studentItemListGrid").jqGrid('setGridParam', {url:'beginDisplayStudItemList.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#studentItemListGrid").sortGrid('itemSetName',true,'asc');
+
+}
+	
+	
+function fillStudentFields(){
+	$("#studentNameScr").text(selectedRData.studentName);
+	$("#loginNameScr").text(selectedRData.userName);
+	$("#sessionNameScr").text(selectedRData.testSessionName);
+	$("#accessCodeScr").text(selectedRData.accessCode);
+}
+
+
+function setPopupPositionStudentScoring(){
+		var toppos = ($(window).height() - 650) /2 + 'px';
+		var leftpos = ($(window).width() - 1024) /2 + 'px';
+		$("#studentScoringId").parent().css("top",toppos);
+		$("#studentScoringId").parent().css("left",leftpos);	
 	}
 
 
@@ -679,6 +817,125 @@ function registerDelegate(tree){
 
 }
 
+function searchStudentByKeyword(){
+		 var searchFiler = $.trim($("#searchStudentByKeywordInput").val()), f;
+		 var grid = $("#studentScoringGrid"); 
+		 
+		 if (searchFiler.length === 0) {
+			 grid[0].p.search = false;
+		 }else {
+		 	 f = {groupOp:"OR",rules:[]};
+			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"orgNodeNamesStr",op:"cn",data:searchFiler});
+			 f.rules.push({field:"grade",op:"cn",data:searchFiler});
+			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
+			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});  
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+		 }
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
+		 closePopUp('searchUserByKeyword');
+	}
+	
+	function searchSessionByKeyword(){
+		 var searchFiler = $.trim($("#searchSessionByKeywordInput").val()), f;
+		 var grid = $("#sessionScoringGrid"); 
+		 
+		 if (searchFiler.length === 0) {
+			 grid[0].p.search = false;
+		 }else {
+		 	 f = {groupOp:"OR",rules:[]};
+			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+		 }
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
+		 closePopUp('searchSessionByKeyword');
+	}
+	
+	function resetSearch(){
+		if(currentView == "student") {
+			var grid = $("#studentScoringGrid"); 
+			$("#searchStudentByKeywordInput").val('');
+			 grid[0].p.search = false;
+			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+			 closePopUp('searchStudentByKeyword');
+		 } else {
+		 	var grid = $("#studentSessionGrid"); 
+			$("#searchSessionByKeywordInput").val('');
+			 grid[0].p.search = false;
+			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+			 closePopUp('searchSessionByKeyword');
+		 }
+	}
+
+function trapEnterKey(e){
+		var key;
+	   if(window.event)
+	        key = window.event.keyCode;     //IE
+	   else
+	        key = e.which;     //firefox
+	        
+	   if(key == 13){
+	   		if(currentView == "student")
+	   			searchStudentByKeyword();
+	   		else
+	   			searchSessionByKeyword();
+	   }
+	}
+	
+	function responseLinkFmatter(cellvalue, options, rowObject){
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		var type;
+		if(cellvalue=="AI") {
+        	type = "Audio Response";
+        } else {
+        	type = "Text Response";
+        }
+        if(answered != undefined && answered == "Answered") {
+        	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+type+"</a>";
+        } else {
+        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
+        }
+		return val;
+	}
+	
+	function scoreObtainedFormatter(cellvalue, options, rowObject) {
+		var val = cellvalue;
+		var completed = rowObject.scoreStatus;
+		var answered = rowObject.answered;
+		if(completed == "Incomplete") {
+			if(answered != undefined && answered == "Answered") {
+				val = "-";
+			} else {
+				val = "0";
+			}
+		}
+		return val;
+	}
+	
+	function scoreStatusFormatter(cellvalue, options, rowObject) {
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		if(answered != undefined && answered == "Not Answered") {
+			val = "Complete";
+		}
+		return val;
+	}
+	
+	
 
 /******Jstree Methods*****/
 	//method triggered from library

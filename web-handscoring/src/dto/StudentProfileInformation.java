@@ -86,7 +86,8 @@ public class StudentProfileInformation extends SanitizedFormField
     private Integer rosterId;
     private String testSessionName;
     private String studentName;
-    
+    private String accessCode;
+    private Integer itemSetIdTC;
 
     /**
 	 * @return the hasAccommodations
@@ -530,7 +531,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.rosterId = student.getRosterId();
         this.testSessionName = student.getTestSessionName();
         this.studentName = student.getStudentName();
-        
+        this.accessCode = student.getAccessCode();
+        this.itemSetIdTC = student.getItemSetIdTC();
     }
     
 
@@ -1182,5 +1184,25 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setStudentName(String studentName) {
 		this.studentName = studentName;
+	}
+
+
+	public String getAccessCode() {
+		return accessCode;
+	}
+
+
+	public void setAccessCode(String accessCode) {
+		this.accessCode = accessCode;
+	}
+
+
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+
+
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
 	}
 } 
