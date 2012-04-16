@@ -1222,7 +1222,8 @@ function registerDelegate(tree){
 		document.getElementById("accommodationToolTip").style.display = "none";
 	}
 	
-	
+	var selectAllRow = false;
+	var studentCheckCounter = 0;
 	function populateSelectedStudent() {
  		UIBlock();
  		var studentIdTitle = $("#studentIdLabelName").val();
@@ -1327,8 +1328,12 @@ function registerDelegate(tree){
 							deleteStudentCounter++;
 						}
 					}
+					selectAllRow = true;
+					studentCheckCounter = AddStudentLocaldata.length;
 				} else {
-					selectAllForDelete = false;					
+					selectAllForDelete = false;	
+					selectAllRow = false;	
+					studentCheckCounter = 0;			
 				}
 			},
 			onSelectRow: function (rowid, status) {
@@ -1341,6 +1346,7 @@ function registerDelegate(tree){
 						delStuIdObjArray[deleteStudentCounter] = selectedRowId;
 						deleteStudentCounter++;
 					}
+					++studentCheckCounter;
 				} else {
 					selectAllForDelete = false;
 					var delIndx = -1;
@@ -1353,6 +1359,21 @@ function registerDelegate(tree){
 						delStuIdObjArray.splice(delIndx,1);
 						deleteStudentCounter--;
 					}
+					--studentCheckCounter;
+				}
+				alert(selectAllRow);
+				alert(status);
+				alert(studentCheckCounter);
+				alert(AddStudentLocaldata.length);
+				if(selectAllRow && !status) {
+				alert('deselect');
+					selectAllRow = false;
+					$("#cb_list6").attr("checked", false);
+				}
+				if(AddStudentLocaldata.length == studentCheckCounter) {
+				alert('select');
+				selectAllRow = true;
+					$("#cb_list6").attr('checked', true).trigger('click').attr('checked', true);
 				}
 			},
 			loadComplete: function () {
