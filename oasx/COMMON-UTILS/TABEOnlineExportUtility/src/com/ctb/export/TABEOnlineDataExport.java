@@ -471,9 +471,9 @@ public class TABEOnlineDataExport {
 					tfil.setLep(studentDem.getValueName() != null ? "1" : "0");
 				} else if (customerDemoName.startsWith("Labor")) {
 					setLaborForce(sd,tfil);
-				}else if (customerDemoName.startsWith("Migrant")) {
+				} else if (customerDemoName.startsWith("Migrant")) {
 					tfil.setMigrant(studentDem.getValueName() != null ? "1" : "0");
-				}else if (customerDemoName.startsWith("Section")) {
+				} else if (customerDemoName.startsWith("Section")) {
 					tfil.setSection504(studentDem.getValueName() != null ? "1" : "0");
 				}
 			}
@@ -674,6 +674,7 @@ public class TABEOnlineDataExport {
 			if(rs.next()) {
 				totalTestTime = rs.getLong("total_time");
 			}
+			SqlUtil.close(ps, rs);
 			ps = con.prepareStatement(SQLQuery.TOTAL_TIME_TAKEN_SQL);
 			ps.setInt(1, roster.getTestRosterId());
 			rs = ps.executeQuery();
