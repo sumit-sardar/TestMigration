@@ -43,14 +43,14 @@ public class TABEOnlineDataExport {
 	private static final List<String> CONTENT_DOMAIN_LIST = new ArrayList<String>();
 	private static final Map<String, List<ItemResponses>> ITEM_SET_MAP = new HashMap<String, List<ItemResponses>>();
 	
-
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		TABEOnlineDataExport dataExport = new TABEOnlineDataExport();
 		try {
-			if(args[0] != null) {
+			if(args != null && args.length > 0 && args[0] != null) {
 				CUSTOMER_IDs = args[0];
 			} else {
 				CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
