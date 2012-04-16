@@ -12,8 +12,6 @@ import org.ffpojo.metadata.positional.PositionalRecordDescriptor;
 import org.ffpojo.util.ReflectUtil;
 import org.ffpojo.util.StringUtil;
 
-import com.ctb.dto.TABEFile;
-
 
 
 class PositionalRecordParser extends BaseRecordParser implements RecordParser {
