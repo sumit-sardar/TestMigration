@@ -43,8 +43,12 @@ public class TABEFile {
 	private NRSLevels nrsLevels;
 	private PercentageMastery percentageMastery;
 	private PredictedGED predictedGED;
-	private ObjectiveLevel objectiveLevel;
-	private ObjectiveMastery objectiveMastery;
+	private ObjectiveLevel objectiveRawScore;
+	private ObjectiveLevel objectiveTotalRawScore;
+	private ObjectiveLevel objectiveScaleScore;
+	private ObjectiveLevel objectiveScaleScoreSEM;
+	private ObjectiveLevel objectiveMasteryLevel;
+	private ObjectiveLevel objectiveMastery;
 	private String itemResponse;
 
 	/**
@@ -536,49 +540,72 @@ public class TABEFile {
 		this.predictedGED = predictedGED;
 	}
 
-	/**
-	 * @return the objectiveLevel
-	 */
-	@PositionalField(initialPosition = 380, finalPosition = 396)
-	public ObjectiveLevel getObjectiveLevel() {
-		return objectiveLevel;
+	
+	@PositionalField(initialPosition = 380, finalPosition = 413)
+	public String getObjectiveRawScore() {
+		return objectiveRawScore.toString(2);
 	}
 
-	/**
-	 * @param objectiveLevel the objectiveLevel to set
-	 */
-	public void setObjectiveLevel(ObjectiveLevel objectiveLevel) {
-		this.objectiveLevel = objectiveLevel;
+	public void setObjectiveRawScore(ObjectiveLevel objectiveRawScore) {
+		this.objectiveRawScore = objectiveRawScore;
+	}
+	
+	@PositionalField(initialPosition = 414, finalPosition = 447)
+	public String getObjectiveTotalRawScore() {
+		return objectiveTotalRawScore.toString(2);
+	}
+
+	public void setObjectiveTotalRawScore(ObjectiveLevel objectiveTotalRawScore) {
+		this.objectiveTotalRawScore = objectiveTotalRawScore;
+	}
+	
+	@PositionalField(initialPosition = 448, finalPosition = 498)
+	public String getObjectiveScaleScore() {
+		return objectiveScaleScore.toString(3);
+	}
+
+	public void setObjectiveScaleScore(ObjectiveLevel objectiveScaleScore) {
+		this.objectiveScaleScore = objectiveScaleScore;
+	}
+	
+	@PositionalField(initialPosition = 499, finalPosition = 549)
+	public String getObjectiveScaleScoreSEM() {
+		return objectiveScaleScoreSEM.toString(3);
+	}
+
+	public void setObjectiveScaleScoreSEM(ObjectiveLevel objectiveScaleScoreSEM) {
+		this.objectiveScaleScoreSEM = objectiveScaleScoreSEM;
+	}
+	
+	@PositionalField(initialPosition = 550, finalPosition = 566)
+	public String getObjectiveMasteryLevel() {
+		return objectiveMasteryLevel.toString(1);
+	}
+	
+	public void setObjectiveMasteryLevel(ObjectiveLevel objectiveMasteryLevel) {
+		this.objectiveMasteryLevel = objectiveMasteryLevel;
 	}
 
 	/**
 	 * @return the objectiveMastery
 	 */
-	@PositionalField(initialPosition = 397, finalPosition = 413)
-	public ObjectiveMastery getObjectiveMastery() {
-		return objectiveMastery;
+	@PositionalField(initialPosition = 567, finalPosition = 583)
+	public String getObjectiveMastery() {
+		return objectiveMastery.toString(1);
 	}
 
 	/**
 	 * @param objectiveMastery the objectiveMastery to set
 	 */
-	public void setObjectiveMastery(ObjectiveMastery objectiveMastery) {
+	public void setObjectiveMastery(ObjectiveLevel objectiveMastery) {
 		this.objectiveMastery = objectiveMastery;
 	}
 
-	/**
-	 * @return the itemResponse
-	 */
-	@PositionalField(initialPosition = 414, finalPosition = 2006)
 	public String getItemResponse() {
 		return itemResponse;
 	}
 
-	/**
-	 * @param itemResponse the itemResponse to set
-	 */
 	public void setItemResponse(String itemResponse) {
 		this.itemResponse = itemResponse;
 	}
-
 }

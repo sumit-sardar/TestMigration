@@ -1,5 +1,6 @@
 package org.ffpojo.parser;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.ffpojo.metadata.positional.PositionalFieldDescriptor;
 import org.ffpojo.metadata.positional.PositionalRecordDescriptor;
 import org.ffpojo.util.ReflectUtil;
 import org.ffpojo.util.StringUtil;
+
+import com.ctb.dto.TABEFile;
 
 
 
@@ -122,11 +125,24 @@ class PositionalRecordParser extends BaseRecordParser implements RecordParser {
 				int blankSpaces = actualFieldDescriptor.getInitialPosition() - previousFieldDescriptor.getFinalPosition() - 1;
 				sizedFieldValue = StringUtil.fillToLength(sizedFieldValue, blankSpaces + fieldLength, ' ', StringUtil.Direction.LEFT, StringUtil.Direction.valueOf(actualFieldDescriptor.getJustify().toString()));
 			}
-		
 			
 			sbufRecordLine.append(sizedFieldValue);
 		}
-
+		String itemresponse = null; 
+		try {
+			itemresponse = record.getClass().getMethod("getItemResponse", new Class[] {}).invoke(record,  new Object[0]).toString();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		sbufRecordLine.append(itemresponse);
 		return sbufRecordLine.toString();
 	}
 	

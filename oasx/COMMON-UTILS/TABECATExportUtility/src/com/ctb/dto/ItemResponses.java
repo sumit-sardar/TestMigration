@@ -1,19 +1,36 @@
 package com.ctb.dto;
 
-import com.ctb.utils.Utility;
-
-
-
-
 public class ItemResponses
 {
 	private String itemId;
 	private String responseValue;
+	private String originalResponse;
+	private String responseTime;
+	private int index;
+	
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public String getOriginalResponse() {
+		return originalResponse;
+	}
+	public void setOriginalResponse(String originalResponse) {
+		this.originalResponse = originalResponse;
+	}
+	public String getResponseTime() {
+		return (responseTime == null ? " ": responseTime);
+	}
+	public void setResponseTime(String responseTime) {
+		this.responseTime = responseTime;
+	}
 	/**
 	 * @return the responseValue
 	 */
 	public String getResponseValue() {
-		return responseValue;
+		return (responseValue == null ? " ": responseValue);
 	}
 	/**
 	 * @param responseValue the responseValue to set

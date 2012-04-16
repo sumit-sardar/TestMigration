@@ -1,10 +1,7 @@
 package com;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -27,44 +26,56 @@ import com.ctb.dto.GradeEquivalent;
 import com.ctb.dto.ItemResponses;
 import com.ctb.dto.NRSLevels;
 import com.ctb.dto.ObjectiveLevel;
-import com.ctb.dto.ObjectiveMastery;
-import com.ctb.dto.ObjectiveObj;
 import com.ctb.dto.PercentageMastery;
 import com.ctb.dto.PredictedGED;
 import com.ctb.dto.Student;
 import com.ctb.dto.StudentDemographic;
 import com.ctb.dto.TABEFile;
 import com.ctb.dto.TestRoster;
-import com.ctb.utils.Utility;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.SQLQuery;
 import com.ctb.utils.SqlUtil;
+import com.ctb.utils.Utility;
 
 public class DataExportTABECAT {
 	
-	private Integer customerId = new Integer(ExtractUtil
-			.getDetail("oas.customerId"));
-	private Integer productId = new Integer(ExtractUtil
-			.getDetail("oas.productId"));
-	public static String userDir = System.getProperty("user.dir").toLowerCase();
-
+	private static String CUSTOMER_ID = null;
+	private static Integer PRODUCT_ID = new Integer(ExtractUtil.getDetail("oas.productId"));
+	private static String userDir = System.getProperty("user.dir").toLowerCase();
+	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
+	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
+	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
+	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
+	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
+	private static final Map<Integer, Map<String, ItemResponses>> ITEM_SET_ITEM = new HashMap<Integer, Map<String, ItemResponses>>(50);
+	
+	static {
+		CONTENT_DOMAINS.put("Reading", 0);
+		CONTENT_DOMAINS.put("Mathematics Computation", 0);
+		CONTENT_DOMAINS.put("Applied Mathematics", 0);
+		CONTENT_DOMAINS.put("Language", 0);
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		DataExportTABECAT dataExport = new DataExportTABECAT();
-		try{
-		dataExport.writeToText();
+		try {
+			if(args[0] != null) {
+				CUSTOMER_ID = args[0];
+			} else {
+				CUSTOMER_ID = ExtractUtil.getDetail("oas.customerId");
+			}
+			dataExport.writeToText();
 		}
 		catch (IOException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} catch (FFPojoException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,30 +83,26 @@ public class DataExportTABECAT {
 	private void writeToText() throws IOException, FFPojoException, SQLException,Exception {
 
 		List<TABEFile> myList = createList();
-		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
-		String fileName = ExtractUtil.getDetail("oas.exportdata.fileName");
-		fileName = fileName +"_" + System.currentTimeMillis()+ExtractUtil.getDetail("oas.exportdata.fileType");
-		if(!(new File(localFilePath)).exists()){
-			File f = new File(localFilePath);
+		String fileName = FILE_NAME + "_" + System.currentTimeMillis() + FILE_TYPE;
+		if(!(new File(LOCAL_FILE_PATH)).exists()){
+			File f = new File(LOCAL_FILE_PATH);
 			f.mkdirs();
 		}
-		File file = new File(localFilePath, fileName);
+		File file = new File(LOCAL_FILE_PATH, fileName);
 		FlatFileWriter ffWriter = null;
 		try{
 			ffWriter = new FileSystemFlatFileWriter(file, true);
 			ffWriter.writeRecordList(myList);
 			ffWriter.close();
-			System.out.println("Export file successfully generated:["+fileName+"]");
-			System.out.println("Completed Writing");
-
 		} finally {
 			if(ffWriter!=null){
 				ffWriter.close();
 			}
 		}
-		
-
+		System.out.println("Export file successfully generated:["+fileName+"]");
+		System.out.println("Completed Writing");
 	}
+	
 	private List<TABEFile> createList() throws Exception{
 		List<TABEFile> tabeFileList = new ArrayList<TABEFile>();
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
@@ -105,13 +112,13 @@ public class DataExportTABECAT {
 		HashMap<String, Integer> schoolMap = new HashMap<String, Integer>();
 		HashMap<String, Integer> classMap = new HashMap<String, Integer>();
 		HashMap<Integer, String> customerDemographic = new HashMap<Integer, String>();
-		Integer studentCount = 0;
 		Connection oascon = null;
 		Connection irscon = null;
 		
 		try {
 			oascon = SqlUtil.openOASDBconnectionForResearch();
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
+			getAllObjectives(oascon);
 			customerDemoList = getCustomerDemographic(oascon);
 			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
 					customerDemoList);
@@ -127,8 +134,8 @@ public class DataExportTABECAT {
 				
 				Student studentInfo = roster.getStudent();
 				fillStudent(catData, studentInfo);
-				catData.setCustomerID(customerId.toString());				
-			//	catData.setDateTestingCompleted(roster.getDateTestingCompleted());
+				catData.setCustomerID(CUSTOMER_ID.toString());				
+				//	catData.setDateTestingCompleted(roster.getDateTestingCompleted());
 				if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
 					catData.setInterrupted("1");
 				}else{
@@ -139,19 +146,14 @@ public class DataExportTABECAT {
 				fillAccomodations(studentInfo.getStudentDemographic(), customerDemographic, catData);
 				createAbilityScoreInformation(irscon,catData,roster);
 				getSemScores(oascon, catData, roster,catData.getAbilityScores());
-				fillObjective(irscon,catData,roster);
+				fillObjective(oascon, irscon,catData,roster);
 				prepareItemResponses(oascon, catData, roster);
 				tabeFileList.add(catData);								
 			}
-			
-		
 		} finally {
 			SqlUtil.close(oascon);
 			SqlUtil.close(irscon);
-
 		}
-		
-		
 		return tabeFileList;
 	}
 	
@@ -169,7 +171,7 @@ public class DataExportTABECAT {
 		ResultSet rs = null;
 		try {
 			ps = con.prepareStatement(SQLQuery.customerDemographicsql);
-			ps.setInt(1, customerId);
+			ps.setString(1, CUSTOMER_ID);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				CustomerDemographic cd = new CustomerDemographic();
@@ -221,8 +223,8 @@ public class DataExportTABECAT {
 		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
 		try{
 			ps = con.prepareStatement(SQLQuery.testRosterSql);
-			ps.setInt(1, customerId);
-			ps.setInt(2, productId);
+			ps.setString(1, CUSTOMER_ID);
+			ps.setInt(2, PRODUCT_ID);
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){
@@ -230,7 +232,7 @@ public class DataExportTABECAT {
 				ros.setTestRosterId(rs.getInt(1));
 				ros.setActivationStatus(rs.getString(2));
 				ros.setTestCompletionStatus(rs.getString(3));
-				ros.setCustomerId(customerId);
+				ros.setCustomerId(Integer.valueOf(CUSTOMER_ID));
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
 				//ros.setDateTestingCompleted(Utility.getTimeZone(rs.getString(7).toString(),rs.getString(8).toString(),true));
@@ -267,7 +269,7 @@ public class DataExportTABECAT {
 				std.setBirthDate(rs.getDate(5));
 				std.setGender(rs.getString(6));
 				std.setGrade(rs.getString(7));
-				std.setCustomerId(customerId);
+				std.setCustomerId(Integer.valueOf(CUSTOMER_ID));
 				std.setTestPurpose(rs.getString(9));
 				std.setExtStudentId(rs.getString(10));
 				std
@@ -340,7 +342,6 @@ public class DataExportTABECAT {
 					organizationMap.put(new Integer(rs.getString(5)), rs
 							.getString(4));
 				}
-
 			}
 			Integer organizationMapSize = organizationMap.size();
 			rs.beforeFirst();
@@ -489,12 +490,8 @@ public class DataExportTABECAT {
 			}
 		}	
 	}
-	
-	
 
 	private void createAbilityScoreInformation(Connection con, TABEFile tfil, TestRoster roster) throws SQLException{
-		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
-		HashMap<String,String> contentAreaFact = new HashMap<String, String>();
 		AbilityScore abilityScore = new AbilityScore();
 		GradeEquivalent gradeEquivalent = new GradeEquivalent();
 		NRSLevels nrsLevel = new NRSLevels();
@@ -528,8 +525,7 @@ public class DataExportTABECAT {
 		} finally {
 			SqlUtil.close(ps2, rs2);
 		}
-		
-		try{
+		try {
 			ps = con.prepareStatement(SQLQuery.scoreSkilAreaSQL);
 			ps.setInt(1, roster.getStudentId());
 			ps.setInt(2, roster.getTestAdminId());
@@ -541,32 +537,29 @@ public class DataExportTABECAT {
 					nrsLevel.setMathComp(rs.getString(4) != null ? rs.getString(4) : "" );
 					percentMast.setMathComp(rs.getString(5) != null ? rs.getString(5) : "");
 			
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Reading")){
+				} else if(rs.getString(1).toString().equalsIgnoreCase("Reading")){
 					abilityScore.setReadingAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
 					gradeEquivalent.setReading(rs.getString(3) != null ? rs.getString(3) : "" );
 					nrsLevel.setReading(rs.getString(4) != null ? rs.getString(4) : "" );
 					percentMast.setReading(rs.getString(5) != null ? rs.getString(5) : "");	
 					
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")){
+				} else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")){
 					abilityScore.setAppliedMathAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
 					gradeEquivalent.setAppliedMath(rs.getString(3) != null ? rs.getString(3) : "" );
 					nrsLevel.setAppliedMath(rs.getString(4) != null ? rs.getString(4) : "" );
 					percentMast.setAppliedMath(rs.getString(5) != null ? rs.getString(5) : "");				
 				
-				}else if(rs.getString(1).toString().equalsIgnoreCase("Language")){
+				} else if(rs.getString(1).toString().equalsIgnoreCase("Language")){
 					abilityScore.setLanguageAbilityScore(rs.getString(2) != null ? rs.getString(2) : "" );
 					gradeEquivalent.setLanguage(rs.getString(3) != null ? rs.getString(3) : "" );
 					nrsLevel.setLanguage(rs.getString(4) != null ? rs.getString(4) : "" );
 					percentMast.setLanguage(rs.getString(5) != null ? rs.getString(5) : "");				
 				}
-
 			}
-			
-		}
-		finally{
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		try{
+		try {
 			ps3 = con.prepareStatement(SQLQuery.getPredictedScores);
 			ps3.setInt(1, roster.getStudentId());
 			ps3.setInt(2, roster.getTestAdminId());
@@ -591,14 +584,10 @@ public class DataExportTABECAT {
 					predictedGed.setWriting(rs3.getString(2) != null ? rs3.getString(2) : "");
 			
 				}
-
 			}
-			
-		}
-		finally{
+		} finally {
 			SqlUtil.close(ps3, rs3);
 		}
-		
 		tfil.setAbilityScores(abilityScore);
 		tfil.setGradeEquivalent(gradeEquivalent);
 		tfil.setNrsLevels(nrsLevel);
@@ -627,125 +616,213 @@ public class DataExportTABECAT {
 					abilityScore.setLanguageSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}
 				testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
-				
 			} 
-
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
 		tfil.setDateTestingCompleted(Utility.getTimeZone(testCompleted, roster.getTimeZone(), true));
 		tfil.setAbilityScores(abilityScore);	
 	}
 	
-	private void fillObjective(Connection con, TABEFile tfil, TestRoster roster) throws SQLException, Exception{
+	private void fillObjective(Connection oascon, Connection irscon, TABEFile tfil, TestRoster roster) 
+	throws SQLException, Exception {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		HashMap<String, ObjectiveObj> objectiveMap =  new HashMap<String, ObjectiveObj>();
-		ObjectiveLevel objLevel =  new ObjectiveLevel();
-		ObjectiveMastery objMastery =  new ObjectiveMastery();
-		Method[] objectiveLevelMethods = ObjectiveLevel.class.getMethods();
-		Method[] objectiveMasteryMethods = ObjectiveMastery.class.getMethods();
-		ObjectiveObj objectiveObject = new ObjectiveObj();
+		ObjectiveLevel objMasteryLevel = new ObjectiveLevel();
+		ObjectiveLevel objMastery = new ObjectiveLevel();
+		ObjectiveLevel objRawScore = new ObjectiveLevel();
+		ObjectiveLevel objTotalRawScore = new ObjectiveLevel();
+		ObjectiveLevel objScaleScore = new ObjectiveLevel();
+		ObjectiveLevel objScaleScoreSEM = new ObjectiveLevel();
 		
 		try{
-			ps = con.prepareStatement(SQLQuery.getObjectiveScores);
+			ps = irscon.prepareStatement(SQLQuery.OBJECTIVE_MASTERY_SQL);
 			ps.setInt(1, roster.getStudentId());
 			ps.setInt(2, roster.getTestAdminId());
 			rs = ps.executeQuery();
-
 			while(rs.next()) {
-				if (rs.getString(1) != null){
-					ObjectiveObj objective =  new ObjectiveObj();
-					objective.setObjectiveLevel(rs.getString(2) != null ? rs.getString(2) : "");
-					objective.setObjectiveMastery(rs.getString(3) != null ? rs.getString(3) : "");
-					String tempStr = rs.getString(1);
-					String[] tempStrArray = tempStr.split(" ");
-					if (tempStrArray.length > 0){
-						tempStrArray = tempStrArray[0].split("/");
-					}
-					if (tempStrArray.length > 0){
-						tempStrArray = tempStrArray[0].split(",");
-					}
-											
-					objectiveMap.put(tempStrArray[0].toLowerCase(),objective);
+				if (rs.getString("objectivename") != null){
+					objMasteryLevel.getObjectiveMap().put(rs.getString("objectivename"), rs.getString("masterylevel"));
+					objMastery.getObjectiveMap().put(rs.getString("objectivename"), rs.getString("mastery"));
 				}				
-			} 
+			}
+			SqlUtil.close(ps, rs);
 			
-			for (Method method: objectiveLevelMethods){
-				if (isSetter(method)){
-					String key = method.getName().substring(3).toLowerCase();
-					if(objectiveMap.containsKey(key)){
-						objectiveObject = objectiveMap.get(key);
-						method.invoke(objLevel, objectiveObject.getObjectiveLevel());
+			ps = oascon.prepareStatement(SQLQuery.OBJECTIVE_SCORE_SQL);
+			ps.setInt(1, roster.getTestRosterId());
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				String objectiveScore = rs.getString("objective_score");
+				if(objectiveScore != null) {
+					String [] objectives = objectiveScore.split("\\|");
+					for(String objective: objectives) {
+						String [] scores = objective.split(",");
+						String objectiveName = OBJECTIVE_MAP.get(scores[0]);
+						if(objectiveName != null) {
+							objRawScore.getObjectiveMap().put(objectiveName, scores[1]);
+							objTotalRawScore.getObjectiveMap().put(objectiveName, scores[2]);
+							objScaleScore.getObjectiveMap().put(objectiveName, scores[3]);
+							objScaleScoreSEM.getObjectiveMap().put(objectiveName, scores[4]);
+						}
 					}
 				}
 			}
-			for (Method method: objectiveMasteryMethods){
-				if (isSetter(method)){
-					String key = method.getName().substring(3).toLowerCase();
-					if(objectiveMap.containsKey(key)){
-						objectiveObject = objectiveMap.get(key);
-						method.invoke(objMastery, objectiveObject.getObjectiveMastery());
-					}
-				}
-			}
-			tfil.setObjectiveLevel(objLevel);
+			tfil.setObjectiveMasteryLevel(objMasteryLevel);
 			tfil.setObjectiveMastery(objMastery);
-			
+			tfil.setObjectiveRawScore(objRawScore);
+			tfil.setObjectiveTotalRawScore(objTotalRawScore);
+			tfil.setObjectiveScaleScore(objScaleScore);
+			tfil.setObjectiveScaleScoreSEM(objScaleScoreSEM);
 		} finally{
 			SqlUtil.close(ps, rs);
 		}
 	}	
 
-	private static boolean isSetter(Method method){
-		  if(!method.getName().startsWith("set")) return false;
-		  if(method.getParameterTypes().length != 1) return false;
-		  return true;
+	private static void prepareItemResponses(Connection con, TABEFile tfil,
+	   TestRoster roster) throws IOException, Exception {
+	   PreparedStatement ps = null ;
+	   ResultSet rs = null;
+	   Map<String, ItemResponses> itemMap = new HashMap<String, ItemResponses>();
+	   StringBuilder response = new StringBuilder();
+	   try {
+		   getContentDomain(con, roster.getTestRosterId());
+		   Set<String> keySet = CONTENT_DOMAINS.keySet();
+		   for(String itemSetName: keySet) {
+			   StringBuilder itemIds = new StringBuilder();
+			   StringBuilder itemResponse = new StringBuilder();
+			   StringBuilder itemOrgResponse = new StringBuilder();
+			   StringBuilder resposneTime = new StringBuilder();
+			   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
+			   if("Reading".equals(itemSetName)) {
+				   response.append("RD");
+			   } else if("Mathematics Computation".equals(itemSetName)) {
+				   response.append("MC");
+			   } else if("Applied Mathematics".equals(itemSetName)) {
+				   response.append("AM");
+			   } else if("Language".equals(itemSetName)) {
+				   response.append("LN");
+			   }
+			   if(ITEM_SET_ITEM.get(itemSetId) == null) {
+				   getItemsForItemSet(con, itemSetId);
+			   }
+			   itemMap = ITEM_SET_ITEM.get(itemSetId);
+			   
+			   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
+			   ps.setInt(1, roster.getTestRosterId());
+			   ps.setInt(2, itemSetId);
+			   ps.setInt(3, roster.getTestRosterId());
+			   ps.setInt(4, itemSetId);
+			   rs = ps.executeQuery(); 
+			   while (rs.next()) {
+				  ItemResponses ir = itemMap.get(rs.getString("item_id"));
+				  ir.setResponseValue(rs.getString("response"));
+				  itemMap.put(rs.getString("item_id"), ir);
+			   }
+			   SqlUtil.close(ps, rs);
+			   
+			   ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
+			   ps.setInt(1, roster.getTestRosterId());
+			   ps.setInt(2, itemSetId);
+			   rs = ps.executeQuery();
+			   while (rs.next()){
+				  ItemResponses ir = itemMap.get(rs.getString("item_id"));
+				  ir.setResponseTime(rs.getString("total_time"));
+			   }
+			   SqlUtil.close(ps, rs);
+			   
+			   Set<String> itemSet = itemMap.keySet();
+			   for(String itemId: itemSet) {
+				   ItemResponses ir = itemMap.get(itemId);
+				   itemIds.append(ir.getItemId() + ",");
+				   itemResponse.append(ir.getResponseValue());
+				   itemOrgResponse.append(ir.getOriginalResponse());
+				   resposneTime.append(ir.getResponseTime() + ",");
+			   }
+			   response.append(itemIds.substring(0, itemIds.length() - 1)
+					   		 + itemResponse + itemOrgResponse
+					   	     + resposneTime.substring(0, resposneTime.length() - 1));
+			   
+			   ps = con.prepareStatement(SQLQuery.RESTART_ITEM_SQL);
+			   ps.setInt(1, roster.getTestRosterId());
+			   ps.setInt(2, itemSetId);
+			   rs = ps.executeQuery();
+			   if(rs.next()) {
+			      ItemResponses ir = itemMap.get(rs.getString("item_id"));
+				   if(ir.getIndex() < 10) {
+					   response.append("1" + ir.getIndex() + " ");
+				   } else {
+					   response.append("1" + ir.getIndex());
+				   }
+			   } else {
+				   response.append("00");
+			   }
+			   SqlUtil.close(ps, rs);
+		   }
+		   tfil.setItemResponse(response.toString());
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			SqlUtil.close(ps, rs);
 		}
-	private static void prepareItemResponses(Connection con, TABEFile tfil, TestRoster roster) throws IOException, Exception{
-		   FileReader fr = new FileReader(userDir+"//items//items.txt");
-		   BufferedReader br = new BufferedReader(fr);
-		   String line = "";
-		   PreparedStatement ps = null ;
-		   ResultSet rs = null;
-		   List<ItemResponses> irList = new ArrayList<ItemResponses>();
-		   HashMap<String,String> itemMap = new HashMap<String, String>();
-		   StringBuffer strBuff = new StringBuffer("");
-		   while( (line = br.readLine()) != null){
-			   ItemResponses ir = new ItemResponses();
-		         ir.setItemId(line);
-		         ir.setResponseValue(" ");
-		         irList.add(ir);
-		    }
-		   
-		   
-			try{
-				ps = con.prepareStatement(SQLQuery.rosterAllSRItemsResponseDetails);
-				ps.setInt(1, roster.getTestRosterId());
-				ps.setInt(2, roster.getTestRosterId());
-				rs = ps.executeQuery(); rs.setFetchSize(500);
-				while (rs.next()){
-					itemMap.put(rs.getString(1), rs.getString(2));
-				}				
-			}finally {
-				SqlUtil.close(ps, rs);
-			}
-			
-			for (ItemResponses ir : irList){
-				
-				if(itemMap.get(ir.getItemId()) != null){
-				strBuff.append(itemMap.get(ir.getItemId()));	
-				}else{
-					strBuff.append(ir.getResponseValue());
-				}
-			}
-			tfil.setItemResponse(strBuff.toString());
-			
-			
-		
 	}
 	
+	private static void getAllObjectives(Connection con) {
+	    PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(SQLQuery.ALL_OBJECTIVE_SQL);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				OBJECTIVE_MAP.put(rs.getString("objective_id"), rs.getString("objective_name"));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+    }
 	
+	private static void getContentDomain(Connection con, Integer testRosterId) 
+    throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_FOR_ROSTER_SQL);
+			ps.setInt(1, testRosterId);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				CONTENT_DOMAINS.put(rs.getString("item_set_name"), rs.getInt("item_set_id"));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+	}
+	
+	private static void getItemsForItemSet(Connection con, Integer itemSetId) 
+    throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<String, ItemResponses> itemResponse = new HashMap<String, ItemResponses>(50);
+		try {
+			ps = con.prepareStatement(SQLQuery.GET_ITEMS_FOR_ITEM_SET_SQL);
+			ps.setInt(1, itemSetId);
+			rs = ps.executeQuery();
+			int index = 0;
+			while(rs.next()) {
+				ItemResponses ir = new ItemResponses();
+				ir.setItemId(rs.getString("item_id"));
+				ir.setOriginalResponse(rs.getString("correct_answer"));
+				ir.setIndex(++index);
+				itemResponse.put(ir.getItemId(), ir);
+			}
+			ITEM_SET_ITEM.put(itemSetId, itemResponse);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+	}
 }

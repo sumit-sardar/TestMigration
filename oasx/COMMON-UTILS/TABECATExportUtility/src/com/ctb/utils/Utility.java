@@ -149,9 +149,9 @@ public class Utility {
 	public static String getFormatedString(String val, int len){
 		try{
 			if(val != null && !val.startsWith("N/A")){
-			Integer result = Float.valueOf(val).intValue();
-			val = result.toString();
-			}else{
+				Integer result = Float.valueOf(val).intValue();
+				val = result.toString();
+			} else {
 				val = "";
 			}
 		}catch(NumberFormatException ne){
@@ -171,8 +171,6 @@ public class Utility {
 			val = String.format("%"+len+"s", val);
 			return val;
 		}
-
-		
 	}
 	
 	
@@ -241,11 +239,13 @@ public class Utility {
 	public static String getTimeZone(String val, String timeZon,
 			boolean dateType) {
 
+		if(val == null)
+			return "";
+		
 		String newDate = null;
 		if (timeZon == null){
 			timeZon = "GMT";
 		}
-		
 		try {
 			String str_date = val + " " + "GMT";
 			DateFormat formatter;

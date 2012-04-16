@@ -1,6 +1,7 @@
 package com.ctb.utils;
 
 import java.util.Enumeration;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 	public class ExtractUtil extends ResourceBundle {
@@ -13,8 +14,11 @@ import java.util.ResourceBundle;
 		
 				
 		public static String getDetail(String key){
-			return rb.getString(key);
-			
+			try {
+				return rb.getString(key);
+			} catch (MissingResourceException mre) {
+				return null;
+			}
 		}
 				
 		

@@ -50,20 +50,22 @@ public class SQLQuery {
 			+ " where compfact.compositeid = compdim.compositeid"
 			+ " and compfact.studentid = :studentId "
 			+ " and compfact.sessionid = :sessionId ";
+	
 	public static String getPredictedScores = "select preddim.name as name, predfact.predicted_ged as predictedGed "
 			+ " from tabe_pred_subject_fact predfact, pred_subject_dim preddim"
 			+ " where predfact.pred_subjectid = preddim.pred_subjectid"
 			+ " and predfact.studentid = :studentId "
 			+ " and predfact.sessionid = :sessionId ";
 	
-	public static String getObjectiveScores = "select primdim.name as objectiveName,"
-            + " leveldim.name as levelName,"
-            + " primfact.mastery_levelid  "
+	public static String OBJECTIVE_MASTERY_SQL = "select primdim.name as objectiveName,"
+            + " leveldim.name as masterylevel,"
+            + " primfact.mastery_levelid as mastery "
             + " from tabe_prim_obj_fact primfact, prim_obj_dim primdim, level_dim leveldim"
             + " where primfact.levelid = leveldim.levelid"
             + " and primfact.prim_objid = primdim.prim_objid"
             + " and primfact.studentid = :studentId"
             + " and primfact.sessionid = :sessionId";
+	
 	public static String customerDemographicsql = "select this_.customer_demographic_id as customer_demographic_id, "
 			+ " this_.customer_id as customer_id, this_.label_name  as label_name  "
 			+ "from customer_demographic this_ where this_.customer_id = ?";
@@ -88,7 +90,7 @@ public class SQLQuery {
            + " tr.customer_id as customer_id,"
            + " tr.student_id as student_id,"
            + " tr.test_admin_id   as test_admin_id,"
-           + " to_Char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
+           + " to_char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
            + " ta.time_zone as timeZone,"
            + " tr.restart_number as restartNumber,"
            + " tr.last_mseq as lastMSEQ,"
@@ -98,7 +100,7 @@ public class SQLQuery {
            + " and tr.activation_status = 'AC'"
            + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
            + " and tr.test_admin_id = ta.test_admin_id"
-           + "  and ta.product_id = ?";
+           + " and ta.product_id = ?";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
@@ -147,12 +149,70 @@ public class SQLQuery {
 			+ " ) dd , ( select sis.item_set_id , decode(nvl(sis.validation_status, 'IN'), 'IN', 'NC', (decode(nvl(sis.exemptions, 'N'), 'Y',  'NC', ((decode(nvl(sis.absent, 'N'), 'Y', 'NC', 'CO')))))) valid from student_item_set_status sis where test_roster_id = ?"
 			+ " )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
 
-	public static String rosterAllSRItemsResponseDetails = " select irp.item_id, irp.response from item_response irp,  (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum   from item_response , item  where test_roster_id = ?  and item_response.item_id =item.item_id and item.item_type = 'SR'and item.ACTIVATION_STATUS = 'AC' group by item_response.item_id, item_set_id ) derived  "
-			+ " where irp.item_id = derived.item_id    and irp.item_set_id = derived.item_set_id    and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = ? ";
+	public static String ALL_ITEMS_DETAILS_SQL = "SELECT irp.item_id, irp.response " +
+			" FROM item_response irp, item," +
+			" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
+			" from item_response , item  where test_roster_id = ?  " +
+			" and item_response.item_id = item.item_id " +
+			" and item.item_type = 'SR' " +
+			" and item.ACTIVATION_STATUS = 'AC' " +
+			" and item_response.item_set_id = ? " +
+			" group by item_response.item_id, item_set_id ) derived " +
+			" where irp.item_id = derived.item_id " +
+			" and irp.item_set_id = derived.item_set_id  " +
+			" and irp.response_seq_num = derived.maxseqnum  " +
+			" and item.item_id = derived.item_id " +
+			" and irp.item_id = item.item_id " +
+			" and irp.test_roster_id = ? " +
+			" and irp.item_set_id = ? " +
+			" ORDER BY derived.maxseqnum";
 
 	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  "
 			+ " (select item_response.item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  "
 			+ "  from item_response , item where test_roster_id = ?   and item_response.item_id =item.item_id and item.item_type = 'CR' and item.ACTIVATION_STATUS = 'AC' "
 			+ "  group by item_response.item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
 
+	public static String OBJECTIVE_SCORE_SQL = "SELECT siss.objective_score " +
+											     "FROM student_item_set_status siss, " +
+											     "item_set ist " +
+											    "WHERE ist.SAMPLE = 'F' " +
+											      "AND siss.item_set_id = ist.item_set_id " +
+											      "AND siss.test_roster_id = ? ";
+	
+	public static String ALL_OBJECTIVE_SQL = "SELECT objective_id, objective_name " +
+			                                   "FROM tabe_cat_objective";
+	
+	public static String CONTENT_DOMAIN_FOR_ROSTER_SQL = "SELECT DISTINCT its.item_set_id, its.item_set_name " +
+      										               "FROM item_response irp, item_set its " +
+      										              "WHERE its.item_set_id = irp.item_set_id " +
+      										                "AND its.sample = 'F' " +
+      										                "AND irp.test_roster_id = ?";
+	
+	public static final String GET_ITEMS_FOR_ITEM_SET_SQL = "SELECT isi.item_id, item.correct_answer " +
+	  														  "FROM item_set_item isi, item " +
+	  														 "WHERE isi.item_id = item.item_id " +
+	  														   "AND item.item_type = 'SR' " +
+	  														   "AND item.activation_status = 'AC' " +
+	  														   "AND isi.item_set_id = ? " +
+	  														 "ORDER BY isi.item_sort_order";
+	
+	public static final String ITEM_TOTAL_TIME_VISIT_SQL = "SELECT irp.item_id item_id, irp.item_set_id," +
+  															  "SUM(irp.response_elapsed_time) total_time " +
+  															 "FROM item_response irp, item " +
+  															"WHERE test_roster_id = ? " +
+  															  "AND irp.item_id = item.item_id " +
+  															  "AND irp.item_set_id = ? " +
+  															  "AND item.item_type = 'SR' " +
+  															  "AND item.activation_status = 'AC' " +
+  															"GROUP BY irp.item_id, irp.item_set_id";
+	
+	public static final String RESTART_ITEM_SQL = "SELECT irp.item_id " +
+													"FROM item_response irp, item " +
+  												   "WHERE test_roster_id = ? " +
+  												     "AND irp.item_id = item.item_id " +
+  													 "AND irp.item_set_id = ? " +
+  													 "AND item.item_type = 'SR' " +
+  													 "AND item.activation_status = 'AC' " +
+  													 "AND irp.response_seq_num > 9999 " +
+  												   "ORDER BY irp.response_seq_num DESC";
 }
