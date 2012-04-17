@@ -181,21 +181,19 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');
 					var selectedRData = $("#list2").getRowData(rowId);
 					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
-						setAnchorButtonState('copySessionButton', false);
+						updateCopySessionButton(true);
 					}else{
-						setAnchorButtonState('copySessionButton', true);
+						updateCopySessionButton(false);
 					}
 					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType, selectedRData.testName, selectedRData.testAdminName);	
 					selectedTestAdminId = rowId;						
@@ -213,6 +211,7 @@ function populateSessionListGrid(homePageLoad) {
 			},
 			loadComplete: function () {
  				updateModifyStdManifestButton(false);
+ 				updateCopySessionButton(false);
 				$("#list2").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list2').getGridParam('records') === 0) {
 				 	isGridEmpty = true;
@@ -325,7 +324,6 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -489,12 +487,10 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -511,13 +507,14 @@ function populateCompletedSessionListGrid() {
 			 		}
 			 		var selectedRData = $("#list3").getRowData(rowId);
 					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
-						setAnchorButtonState('copySessionButton', false);
+						updateCopySessionButton(true);
 					}else{
-						setAnchorButtonState('copySessionButton', true);
+						updateCopySessionButton(false);
 					}
 			},
 			loadComplete: function () {
 				updateModifyStdManifestButton(false);
+				updateCopySessionButton(false);
 				$("#list3").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list3').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
@@ -603,7 +600,6 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
-				setAnchorButtonState('copySessionButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -894,7 +890,6 @@ function registerDelegate(tree){
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		setAnchorButtonState('printTicketButton', true);
- 		setAnchorButtonState('copySessionButton', true);
  		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
@@ -3346,7 +3341,6 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('copySessionButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3413,7 +3407,6 @@ function registerDelegate(tree){
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('copySessionButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -4360,7 +4353,6 @@ function registerDelegate(tree){
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
 									updateModifyStdManifestButton(false);
-									setAnchorButtonState('copySessionButton', true);
 								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
@@ -4590,4 +4582,7 @@ function validNumber(str){
 	function copyTestSession(){
 	    var action = "copySession"; 
 	    editTestSession(action);
-	}	
+	}
+	function updateCopySessionButton(isEnable){
+		showOrHideAnchorButton('copySessionButton', 'copySession', isEnable);
+	}

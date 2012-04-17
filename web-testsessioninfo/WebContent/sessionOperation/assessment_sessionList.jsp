@@ -96,7 +96,7 @@
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 										</div> 	
-										<div id="copySession" style="float:right;padding-left:5px;">
+										<div id="copySession" style="float:right;padding-left:5px;display: none;">
 											<a href="#" id="copySessionButton" onclick="javascript:copyTestSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.copySession" /></a>
 										</div>
 										
