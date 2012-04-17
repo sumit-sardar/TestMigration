@@ -1356,18 +1356,12 @@ function registerDelegate(tree){
 					}
 					--studentCheckCounter;
 				}
-				alert(selectAllRow);
-				alert(status);
-				alert(studentCheckCounter);
-				alert(AddStudentLocaldata.length);
 				if(selectAllRow && !status) {
-				alert('deselect');
 					selectAllRow = false;
 					$("#cb_list6").attr("checked", false);
 				}
 				if(AddStudentLocaldata.length == studentCheckCounter) {
-				alert('select');
-				selectAllRow = true;
+					selectAllRow = true;
 					$("#cb_list6").attr('checked', true).trigger('click').attr('checked', true);
 				}
 			},
