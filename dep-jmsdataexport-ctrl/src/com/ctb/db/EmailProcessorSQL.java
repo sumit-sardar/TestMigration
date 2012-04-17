@@ -7,5 +7,7 @@ public interface EmailProcessorSQL {
 	String GET_USER_DETAIL_BY_USER_NAME = " select  users.user_id as userId,  users.user_name as userName,  users.email from  users, password_hint_question phq where  phq.password_hint_question_id (+) = users.password_hint_question_id  and users.user_name = ?  and users.activation_status = 'AC'";
 
 	String GET_CUSTOMER_EMAIL_BY_USER_NAME = "  SELECT DISTINCT CST.CONTACT_EMAIL FROM USERS U , USER_ROLE UR , ORG_NODE NODE , CUSTOMER CST  WHERE U.USER_ID = UR.USER_ID AND NODE.ORG_NODE_ID = UR.ORG_NODE_ID AND NODE.CUSTOMER_ID = CST.CUSTOMER_ID AND U.USER_NAME= ? ";
+	
+	String GET_USER_DETAIL_BY_USER_ID = " select  users.user_id as userId,  users.user_name as userName,  users.email from  users, password_hint_question phq where  phq.password_hint_question_id (+) = users.password_hint_question_id  and users.user_id = ?  and users.activation_status = 'AC'";
 
 }

@@ -96,5 +96,34 @@ public class EmailProcessorDao implements EmailProcessorSQL {
 		return customerEmail;
 		
 	}
+	
+	public User getUserDetails(Integer userId) throws CTBBusinessException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		User user = null;
+		try {
+			con = SqlUtil.openOASDBcon();
+			ps = con.prepareStatement(GET_USER_DETAIL_BY_USER_ID);
+			ps.setInt(1, userId);
+			rs = ps.executeQuery();
+			rs.setFetchSize(500);
+			if (rs.next()) {
+				user = new User();
+				user.setUserId(rs.getInt(1));
+				user.setUserName(rs.getString(2));
+				user.setEmail(rs.getString(3));
+			}
+			con.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("EmailProcessorDao:getUserDetails failed");
+		} finally {
+			SqlUtil.close(con, ps, rs);
+		}
+		return user;
+
+	}
 
 }

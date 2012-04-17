@@ -20,6 +20,17 @@ public class OrderFile {
 	private String customerContact;
 	private String customerEmail;
 	private String customerPhone;
+	
+	private String TB = "";
+	private String hierarchyModeLocation= "519";
+	private String specialCodeSelect = "";
+	private String expectedTitles = "Big Shoulders";
+	private String hierarchyModeLocation2= "520";
+	private String specialCodeSelect2= "";
+	private String expectedTitles2 = "City of Chicago";
+	private String submittersEmail;
+	private String maxSubtests= "";
+
 	/**
 	 * @return the customerId
 	 */
@@ -237,6 +248,190 @@ public class OrderFile {
 	 */
 	public void setCustomerPhone(String customerPhone) {
 		this.customerPhone = customerPhone;
+	}
+	/**
+	 * @return the tB
+	 */
+	public String getTB() {
+		if(TB==null){
+			return "";
+		}
+		if(TB.length()>2){
+			return TB.substring(0,2);
+		}else {
+			//return String.format("%2s", TB);
+			return TB;
+		}
+		
+	}
+	/**
+	 * @param tb the tB to set
+	 */
+	public void setTB(String tb) {
+		TB = tb;
+	}
+	/**
+	 * @return the hierarchyModeLocation
+	 */
+	public String getHierarchyModeLocation() {
+		if(hierarchyModeLocation==null){
+			return "519";
+		}
+		if(hierarchyModeLocation.trim().length()>3){
+			return hierarchyModeLocation.trim().substring(0,3);
+		}else {
+			//return String.format("%3s", hierarchyModeLocation);
+			return hierarchyModeLocation.trim();
+		}
+	}
+	/**
+	 * @param hierarchyModeLocation the hierarchyModeLocation to set
+	 */
+	public void setHierarchyModeLocation(String hierarchyModeLocation) {
+		this.hierarchyModeLocation = hierarchyModeLocation;
+	}
+	/**
+	 * @return the specialCodeSelect
+	 */
+	public String getSpecialCodeSelect() {
+		if(specialCodeSelect==null){
+			return "";
+		}
+		if(specialCodeSelect.trim().length()>2){
+			return specialCodeSelect.trim().substring(0,2);
+		}else {
+			//return String.format("%2s", specialCodeSelect);
+			return specialCodeSelect.trim();
+		}
+	}
+	/**
+	 * @param specialCodeSelect the specialCodeSelect to set
+	 */
+	public void setSpecialCodeSelect(String specialCodeSelect) {
+		this.specialCodeSelect = specialCodeSelect;
+	}
+	/**
+	 * @return the expectedTitles
+	 */
+	public String getExpectedTitles() {
+		if(expectedTitles==null){
+			return "";
+		}
+		if(expectedTitles.trim().length()>50){
+			return expectedTitles.trim().substring(0,50);
+		}else {
+			//return String.format("%50s", expectedTitles);
+			return expectedTitles.trim();
+		}
+	}
+	/**
+	 * @param expectedTitles the expectedTitles to set
+	 */
+	public void setExpectedTitles(String expectedTitles) {
+		this.expectedTitles = expectedTitles;
+	}
+	/**
+	 * @return the hierarchyModeLocation2
+	 */
+	public String getHierarchyModeLocation2() {
+		//return hierarchyModeLocation2;
+		if(hierarchyModeLocation2 == null){
+			return "520";
+		}
+		if(hierarchyModeLocation2.trim().length()>3){
+			return hierarchyModeLocation2.trim().substring(0,3);
+		}else {
+			//return String.format("%3s", hierarchyModeLocation2);
+			return hierarchyModeLocation2.trim();
+		}
+		
+	}
+	/**
+	 * @param hierarchyModeLocation2 the hierarchyModeLocation2 to set
+	 */
+	public void setHierarchyModeLocation2(String hierarchyModeLocation2) {
+		this.hierarchyModeLocation2 = hierarchyModeLocation2;
+	}
+	/**
+	 * @return the specialCodeSelect2
+	 */
+	public String getSpecialCodeSelect2() {
+		if(specialCodeSelect2==null){
+			return "";
+		}
+		if(specialCodeSelect2.trim().length()>2){
+			return specialCodeSelect2.trim().substring(0,2);
+		}else {
+			//return String.format("%2s", specialCodeSelect2);
+			return specialCodeSelect2.trim();
+		}
+	}
+	/**
+	 * @param specialCodeSelect2 the specialCodeSelect2 to set
+	 */
+	public void setSpecialCodeSelect2(String specialCodeSelect2) {
+		this.specialCodeSelect2 = specialCodeSelect2;
+	}
+	/**
+	 * @return the expectedTitles2
+	 */
+	public String getExpectedTitles2() {
+		if(expectedTitles2==null){
+			return "";
+		}
+		if(expectedTitles2.trim().length()>50){
+			return expectedTitles2.trim().substring(0,50);
+		}else {
+			//return String.format("%50s", expectedTitles2);
+			return expectedTitles2.trim();
+		}
+	}
+	/**
+	 * @param expectedTitles2 the expectedTitles2 to set
+	 */
+	public void setExpectedTitles2(String expectedTitles2) {
+		this.expectedTitles2 = expectedTitles2;
+	}
+	/**
+	 * @return the submittersEmail
+	 */
+	public String getSubmittersEmail() {
+		//return submittersEmail;
+		if(submittersEmail==null){
+			return "";
+		}
+		if(submittersEmail.trim().length()>64){
+			return submittersEmail.trim().substring(0,64);
+		}else {
+			//return String.format("%64s", submittersEmail);
+			return submittersEmail.trim();
+		}
+	}
+	/**
+	 * @param submittersEmail the submittersEmail to set
+	 */
+	public void setSubmittersEmail(String submittersEmail) {
+		this.submittersEmail = submittersEmail;
+	}
+	/**
+	 * @return the maxSubtests
+	 */
+	public String getMaxSubtests() {
+		if(maxSubtests==null){
+			return "";
+		}
+		if(maxSubtests.length()>2){
+			return maxSubtests.substring(0,2);
+		}else {
+			//return String.format("%-2s", maxSubtests);
+			return  maxSubtests;
+		}
+	}
+	/**
+	 * @param maxSubtests the maxSubtests to set
+	 */
+	public void setMaxSubtests(String maxSubtests) {
+		this.maxSubtests = maxSubtests;
 	}
 	
 }

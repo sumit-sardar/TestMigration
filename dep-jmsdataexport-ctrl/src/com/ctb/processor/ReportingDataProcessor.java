@@ -32,7 +32,7 @@ public class ReportingDataProcessor {
 			 **job generate file**
 			 *********************/
 			
-			generateFile(customerId, fileNameList, formettedTestRoster);
+			generateFile(customerId,userId, fileNameList, formettedTestRoster);
 			
 			/****************************
 			 **process test roster file**
@@ -152,9 +152,9 @@ public class ReportingDataProcessor {
 	}
 
 
-	private void generateFile(int customerId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
+	private void generateFile(int customerId, Integer userId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
 		FileGenerator fileGenerator = new FileGenerator();
-		fileGenerator.execute(customerId, fileNameList, formettedTestRoster);
+		fileGenerator.execute(customerId, userId, fileNameList, formettedTestRoster);
 	}
 	
 	

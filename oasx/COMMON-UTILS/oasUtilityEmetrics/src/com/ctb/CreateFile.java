@@ -1845,6 +1845,24 @@ public class CreateFile {
 			writer.append("CUSTOMER_CONTACT_EMAIL");
 			writer.append(',');
 			writer.append("CUSTOMER_CONTACT_PHONE");
+			writer.append(',');
+			writer.append("TB");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("SUBMITTER_EMAIL");
+			writer.append(',');
+			writer.append("MAX_SUBTESTS");
 			writer.append('\n');
 
 			writer.append(orderFile.getCustomerId().toString());
@@ -1882,6 +1900,28 @@ public class CreateFile {
 			writer.append(orderFile.getCustomerEmail());
 			writer.append(',');
 			writer.append(orderFile.getCustomerPhone());
+			
+			
+			writer.append(',');
+			writer.append(orderFile.getTB());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation2());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect2());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles2());
+			writer.append(',');
+			writer.append(orderFile.getSubmittersEmail());
+			writer.append(',');
+			writer.append(orderFile.getMaxSubtests());
+			
+			
 			writer.append('\n');
 
 			writer.flush();

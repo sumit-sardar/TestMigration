@@ -23,6 +23,8 @@ import org.ffpojo.exception.FFPojoException;
 import org.ffpojo.file.writer.FileSystemFlatFileWriter;
 import org.ffpojo.file.writer.FlatFileWriter;
 
+import com.ctb.bean.testAdmin.User;
+import com.ctb.db.EmailProcessorDao;
 import com.ctb.dto.Accomodations;
 import com.ctb.dto.CustomerDemographic;
 import com.ctb.dto.CustomerDemographicValue;
@@ -44,7 +46,6 @@ import com.ctb.dto.Tfil;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.utils.Configuration;
 import com.ctb.utils.EmetricUtil;
-import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.SqlUtil;
 
 public class FileGenerator {
@@ -102,6 +103,7 @@ public class FileGenerator {
 		+ "where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' "
 		+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
 	
+	@SuppressWarnings("unused")
 	private String  testRosterByIDSql = " select this_.TEST_ROSTER_ID   as TEST_ROSTER_ID,  this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,  this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,  this_.TEST_ADMIN_ID  as TEST_ADMIN_ID  from TEST_ROSTER this_   where this_.TEST_ROSTER_ID IN( <#ROSTER_ID_LIST#> )";
 	private String  testRosterWithStudentByRosterIDSql = " select this_.TEST_ROSTER_ID   as TEST_ROSTER_ID,  this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,  this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.STUDENT_ID   as STUDENT_ID,  this_.TEST_ADMIN_ID  as TEST_ADMIN_ID " +
 			" , student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  decode(upper(student0_.GENDER), 'U', ' ', student0_.GENDER) as GENDER,  student0_.GRADE  as GRADE0,  student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1" +
@@ -176,7 +178,8 @@ public class FileGenerator {
 
 	private Integer customerId = 0;
 	static TreeMap<String, String> wrongMap = new TreeMap<String, String>();
-	private List<String> fileNameList;	
+	private List<String> fileNameList;
+	private Integer userId;	
 	
 	
 	static {
@@ -199,10 +202,11 @@ public class FileGenerator {
 		
 	}*/
 	
-	public void execute (int customerId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
+	public void execute (int customerId, Integer userId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
 
 			this.customerId = customerId;
 			this.fileNameList = fileNameList;
+			this.userId = userId;
 			System.out.println("File generation started.");
 			writeToText( formettedTestRoster);
 			System.out.println("File generation completed.");
@@ -245,6 +249,11 @@ public class FileGenerator {
 			ffWriter.writeRecordList(myList);
 			ffWriter.close();
 			//System.out.println("Export file successfully generated:["+dataFileName+"]");
+			EmailProcessorDao emailProcessorDao = new EmailProcessorDao();
+			User user = emailProcessorDao.getUserDetails(userId);
+			if( user !=null ) {
+				orderFile.setSubmittersEmail(user.getEmail());
+			}
 			orderFile.setDataFileName(EmetricUtil.truncate(dataFileName,
 					100).substring(0, dataFileName.length()));
 			System.out.println("Data File ["+dataFileName+"] created.");
@@ -1997,6 +2006,24 @@ public class FileGenerator {
 			writer.append("CUSTOMER_CONTACT_EMAIL");
 			writer.append(',');
 			writer.append("CUSTOMER_CONTACT_PHONE");
+			writer.append(',');
+			writer.append("TB");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("SUBMITTER_EMAIL");
+			writer.append(',');
+			writer.append("MAX_SUBTESTS");
 			writer.append('\n');
 
 			writer.append(orderFile.getCustomerId().toString());
@@ -2034,6 +2061,26 @@ public class FileGenerator {
 			writer.append(orderFile.getCustomerEmail());
 			writer.append(',');
 			writer.append(orderFile.getCustomerPhone());
+			
+			writer.append(',');
+			writer.append(orderFile.getTB());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation2());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect2());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles2());
+			writer.append(',');
+			writer.append(orderFile.getSubmittersEmail());
+			writer.append(',');
+			writer.append(orderFile.getMaxSubtests());
+			
 			writer.append('\n');
 
 			writer.flush();
