@@ -35,7 +35,7 @@ import com.ctb.utils.Utility;
 public class TABEOnlineDataExport {
 	
 	private static String CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
-	private static final Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
+	private static Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
 	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
@@ -50,11 +50,16 @@ public class TABEOnlineDataExport {
 	public static void main(String[] args) {
 		TABEOnlineDataExport dataExport = new TABEOnlineDataExport();
 		try {
-			if(args != null && args.length > 0 && args[0] != null) {
-				CUSTOMER_IDs = args[0];
-			} else {
-				CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
+			if(args != null && args.length > 0) {
+				if(args[0] != null) {
+					CUSTOMER_IDs = args[0];
+				}
+				if(args[1] != null) {
+					PRODUCT_ID = Integer.valueOf(args[1]);
+				}
 			}
+			System.out.println("Customer Id: " + CUSTOMER_IDs);
+			System.out.println("Product Id: " + PRODUCT_ID);
 			dataExport.writeToText();
 		}
 		catch (IOException e) {
@@ -256,7 +261,7 @@ public class TABEOnlineDataExport {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
 		List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ")";
+		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ") order by tr.customer_id";
 		String query = null;
 		try{
 			if(CUSTOMER_IDs != null) {
