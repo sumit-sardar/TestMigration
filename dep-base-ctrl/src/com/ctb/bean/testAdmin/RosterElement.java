@@ -46,6 +46,8 @@ public class RosterElement extends CTBBean
   private Integer scorePoint;
   private Double extendedTime; // Added for Student Pacing
   private String dnsStatus;
+  private String studentName;
+  private String studentUserName;
   
 
 	public String getDnsStatus() {
@@ -470,5 +472,17 @@ public class RosterElement extends CTBBean
 		this.extendedTime = extendedTime;
 	}
 	// End changes for Student Pacing
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getStudentUserName() {
+		return studentUserName;
+	}
+	public void setStudentUserName(String studentUserName) {
+		this.studentUserName = studentUserName;
+	}
 	
 } 

@@ -32,6 +32,7 @@
 <input type="hidden" id="noSessionMessage" value=<lb:label key="scoring.noSesSelected.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="confirmAlrt" value=<lb:label key="scoring.alert.confirm" prefix="'" suffix="'"/>/>
 <input type="hidden" id="scorPopupTitle" value=<lb:label key="scoring.menu.scoring" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sessionScorPopupTitle" value=<lb:label key="scoring.menu.scoring" prefix="'" suffix="'"/>/>
 <input type="hidden" id="searchStudentSession" value=<lb:label key="common.label.search" prefix="'" suffix="'"/>/>
 <input type="hidden" id="scoringPopupTitle" value=<lb:label key="scoring.page.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="itemListGripCap" value=<lb:label key="scoring.itemGrid.caption" prefix="'" suffix="'"/>/>
@@ -41,6 +42,10 @@
 <input type="hidden" id="itemGripManual" value=<lb:label key="scoring.itemGrid.manualStatus" prefix="'" suffix="'"/>/>
 <input type="hidden" id="itemGripMaxScr" value=<lb:label key="scoring.itemGrid.maxScore" prefix="'" suffix="'"/>/>
 <input type="hidden" id="itemGripObtained" value=<lb:label key="scoring.itemGrid.scorObtn" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbsGridFirstName" value=<lb:label key="dialog.myProfile.firstName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbsGridLastName" value=<lb:label key="dialog.myProfile.lastName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbsGridOnStatus" value=<lb:label key="scoring.itemGrid.onTestStatus" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbsEmptyGrid" value=<lb:label key="scoring.sbs.noStuFound.message" prefix="'" suffix="'"/>/>
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
@@ -181,3 +186,4 @@
 </div>
 
 <jsp:include page="/studentScoringOperation/find_student_scoring.jsp" />
+<jsp:include page="/studentScoringOperation/session_scoring.jsp" />

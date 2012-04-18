@@ -88,6 +88,14 @@
 						$("#Change_Pwd").css("height",'250px'); 
 					}
 				});
+				var sessionWizard = $("#sessionScoringAccordion").accordion({ header: "h3",event:false});
+				$("h3", sessionWizard).each(function(index) { 				
+					$(this).click(function(e){
+						$("#itemListGrid").jqGrid('resetSelection');
+						selectedRowData("");
+					})
+				});
+				
 			});
 		
 		

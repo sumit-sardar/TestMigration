@@ -2,6 +2,7 @@ package utils;
 
 import java.util.List;
 
+import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScorableItem;
 
 import dto.StudentProfileInformation;
@@ -17,7 +18,9 @@ public class Base {
 	private List<Row> rows;
 	private List<StudentProfileInformation> studentProfileInformation;
 	private List<TestSessionVO> testSessionCUPA;
+	private List<ScorableItem> itemList;
 	private List<ScorableItem> scorableItems;
+	private List<RosterElement> scoreByStudentList;
 	
 	
 	public String getPage() {
@@ -63,11 +66,24 @@ public class Base {
 	public void setTestSessionCUPA(List<TestSessionVO> testSessionCUPA) {
 		this.testSessionCUPA = testSessionCUPA;
 	}
+	public List<ScorableItem> getItemList() {
+		return itemList;
+	}
+	public void setItemList(List<ScorableItem> itemList) {
+		this.itemList = itemList;
+	}
+	
 	public List<ScorableItem> getScorableItems() {
 		return scorableItems;
 	}
 	public void setScorableItems(List<ScorableItem> scorableItems) {
 		this.scorableItems = scorableItems;
+	}
+	public List<RosterElement> getScoreByStudentList() {
+		return scoreByStudentList;
+	}
+	public void setScoreByStudentList(List<RosterElement> scoreByStudentList) {
+		this.scoreByStudentList = scoreByStudentList;
 	}
 	
 	

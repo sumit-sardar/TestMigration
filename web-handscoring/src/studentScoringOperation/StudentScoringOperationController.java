@@ -23,6 +23,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.Base;
 import utils.BaseTree;
 import utils.BroadcastUtils;
+import utils.ItemScoringUtils;
+import utils.MessageResourceBundle;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
@@ -37,6 +39,8 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.TestSession;
@@ -65,6 +69,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
 	
+		
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
     
@@ -74,12 +79,14 @@ public class StudentScoringOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.crscoring.TestScoring testScoring;
 	
+    
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-
+    private Integer itemSetIdTC = null; 
+    
 	/**
 	 * Callback that is invoked when this controller instance is created.
 	 */
@@ -277,6 +284,82 @@ public class StudentScoringOperationController extends PageFlowController {
 	}
 	
 	
+	//Added to populate Item List Grid 
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward findItemDetail(StudentSessionScoringForm form){
+		
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String json = "";
+		resp.setCharacterEncoding("UTF-8"); 
+		TestSession ts = null;
+		Base base = new Base();
+//		String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+		Integer itemId = Integer.parseInt(getRequest().getParameter("itemId"));
+		ScorableItemData siData = null;
+		siData = ItemScoringUtils.getItemsByTestSession(testScoring, null, null, null, itemId);
+		if(siData != null){
+			if(siData.getScorableItems()[0].getItemSetIdTC() != null)
+				this.setItemSetIdTC( siData.getScorableItems()[0].getItemSetIdTC());
+		}
+		
+		List<ScorableItem> itemList = ItemScoringUtils.buildItemList(siData);
+		try {
+			ts = testScoring.getTestAdminDetails(itemId);
+		}  catch (CTBBusinessException be){
+			be.printStackTrace();
+		}
+		customerHasBulkAccommodation();
+		if(itemList.isEmpty())
+		{	
+			this.getRequest().setAttribute("itemSearchEmpty", MessageResourceBundle.getMessage("itemSearchEmpty"));        
+			return new Forward("findItem");
+		}
+		base.setPage("1");
+		base.setRecords("10");
+		base.setTotal("2");
+		base.setItemList(itemList);
+		Gson gson = new Gson();
+		json = gson.toJson(base);
+		
+		try {
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	private Boolean customerHasBulkAccommodation() 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+					cc.getDefaultValue().equals("T")) {
+				hasBulkStudentConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+
+
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	
+	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="")
@@ -370,6 +453,104 @@ try {
 
 		return null;
 	}
+	
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward getStudentListForScoreByStudent(StudentSessionScoringForm form) {
+		
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String json = "";
+		
+		Integer testAdminId = 0;
+		if(this.userName == null ) {
+			getLoggedInUserPrincipal();		
+			getUserDetails();
+		}
+		
+		String reqTestAdminId = getRequest().getParameter("testAdminId");		
+		if (reqTestAdminId != null) {
+			testAdminId = Integer.valueOf(reqTestAdminId);
+		}
+		
+		try {
+			RosterElementData reData = null;
+			reData = findStudentForTestSession(testAdminId, this.userName);
+			List<RosterElement> studentList = buildStudentList(reData);
+			try{
+				Base base = new Base();
+				base.setScoreByStudentList(studentList);
+				
+				base.setPage("1");
+				base.setRecords("10");
+				base.setTotal("2");
+				
+				Gson gson = new Gson();
+				json = gson.toJson(base);
+
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+
+			}
+
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+		} catch (Exception e) {
+			System.err.println("Exception while processing getStudentListForScoreByStudent.");
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	
+	/**
+	 * findStudentForTestSession
+	 */
+	private RosterElementData findStudentForTestSession(Integer testAdminId, String userName) {
+		
+		RosterElementData reData = null;
+		try {
+			reData = testScoring.getAllStudentForTestSession(
+					testAdminId, userName, null, null, null);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+
+		return reData;
+	}
+
+	/**
+	 * buildStudentList
+	 */
+	public static List<RosterElement> buildStudentList(RosterElementData reData) {
+		ArrayList<RosterElement> studentList = new ArrayList<RosterElement>();
+		if (reData != null) {
+			RosterElement[] students = reData.getRosterElements();
+			for (RosterElement student : students) {
+				if (student != null) {
+					if(student.getScoringStatus().equals("CO")) {
+						student.setScoringStatus("Complete");
+					} else {
+						student.setScoringStatus("Incomplete");
+					}
+					studentList.add(student);
+				}
+			}
+		}
+		return studentList;
+	}
+	
+	
 	
 	private ScorableItemData getTestItemForStudent(Integer testRostorId,Integer itemSetId, PageParams page, SortParams sort) 
     {
@@ -535,7 +716,6 @@ try {
 	protected Forward scoringOrgNodeHierarchyList(){
 
 		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
@@ -1288,5 +1468,13 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	public static class StudentSessionScoringForm extends SanitizedFormData
 	{
 
+	}
+
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
 	}
 }
