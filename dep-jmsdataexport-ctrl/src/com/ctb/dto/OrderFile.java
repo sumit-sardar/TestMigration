@@ -23,14 +23,13 @@ public class OrderFile {
 	
 	
 	private String TB = "";
-	private String hierarchyModeLocation= "519";
+	private String hierarchyModeLocation= "";
 	private String specialCodeSelect = "";
-	private String expectedTitles = "Big Shoulders";
-	private String hierarchyModeLocation2= "520";
+	private String expectedTitles = "";
+	private String hierarchyModeLocation2= "";
 	private String specialCodeSelect2= "";
-	private String expectedTitles2 = "City of Chicago";
+	private String expectedTitles2 = "";
 	private String submittersEmail;
-	private String maxSubtests= "";
 	
 	
 	/**
@@ -418,25 +417,5 @@ public class OrderFile {
 	 */
 	public void setSubmittersEmail(String submittersEmail) {
 		this.submittersEmail = submittersEmail;
-	}
-	/**
-	 * @return the maxSubtests
-	 */
-	public String getMaxSubtests() {
-		if(maxSubtests==null){
-			return "";
-		}
-		if(maxSubtests.length()>2){
-			return maxSubtests.substring(0,2);
-		}else {
-			//return String.format("%-2s", maxSubtests);
-			return  maxSubtests;
-		}
-	}
-	/**
-	 * @param maxSubtests the maxSubtests to set
-	 */
-	public void setMaxSubtests(String maxSubtests) {
-		this.maxSubtests = maxSubtests;
 	}
 }

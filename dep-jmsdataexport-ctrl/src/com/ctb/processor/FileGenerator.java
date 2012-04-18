@@ -2022,8 +2022,6 @@ public class FileGenerator {
 			writer.append("Expected Titles");
 			writer.append(',');
 			writer.append("SUBMITTER_EMAIL");
-			writer.append(',');
-			writer.append("MAX_SUBTESTS");
 			writer.append('\n');
 
 			writer.append(orderFile.getCustomerId().toString());
@@ -2078,9 +2076,6 @@ public class FileGenerator {
 			writer.append(orderFile.getExpectedTitles2());
 			writer.append(',');
 			writer.append(orderFile.getSubmittersEmail());
-			writer.append(',');
-			writer.append(orderFile.getMaxSubtests());
-			
 			writer.append('\n');
 
 			writer.flush();
