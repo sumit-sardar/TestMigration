@@ -41,24 +41,12 @@ var selectedTestAccessCode;
 var selectedTestAdminId = null;
 var selectedItemSetTCVal;
 var selectedRData = {};
-var isPopUp = false;
 var stuItemGridLoaded = false;
 var itemgridLoaded = false;
 var scoreByStdGridLoaded = false;
 var sbsItemGridLoaded = false;
 var sbiStudentGridLoaded = false;
 
-
-$(document).bind('keydown', function(event) {
-		
-	      var code = (event.keyCode ? event.keyCode : event.which);
-	      if(code == 27){
-	      		if(isPopUp){	
-	      			closePopUp('studentScoringId');
-	      		}
-	            return false;
-	      }
-	  });
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -313,7 +301,6 @@ function showPopup(stuCount){
 }
 
 function openConfirmationPopup(){
-	isPopUp = true;
 	$("#confirmationPopup").dialog({  
 		title:$("#confirmAlrt").val(),  
 	 	resizable:false,
@@ -344,13 +331,11 @@ function displayListPopup(element) {
 	if (isButtonDisabled(element))
 		return true;
 	
-	isPopUp = true;
 	populateGridAsPerView();
 }
 
 function populateGridAsPerView() {
 	UIBlock();
-	isPopUp = true;
 	if(currentView == "student") {
 		fillStudentFields();
 		if(!stuItemGridLoaded) {
@@ -456,9 +441,7 @@ function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, ite
 		populateSBIStudentGrid(itemSetId, itemId);
 	else
 		gridItemStudentReloadSBI(itemSetId, itemId);
-	
-	
-	
+
 }
 
 function fillTestItemFieldsSBI(){
@@ -855,7 +838,8 @@ function populateScoreByItemGrid(){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 170,
-			width: 900, 
+			width: 900,
+			hoverrows: false,
 			editurl: 'findItemDetail.do',
 			caption: $("#itemListGridCaption").val(),
 			onPaging: function() {
@@ -870,7 +854,7 @@ function populateScoreByItemGrid(){
 				}
 			},
 			onSelectRow: function (rowId) {
-				var selectedRowData = $("#itemListGrid").getRowData(rowId);
+				$("#"+rowId).removeClass('ui-state-highlight');
 			},
 			loadComplete: function () {
 			if ($('#itemListGrid').getGridParam('records') === 0) {

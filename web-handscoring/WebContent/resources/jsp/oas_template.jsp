@@ -62,7 +62,6 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
 
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
   	

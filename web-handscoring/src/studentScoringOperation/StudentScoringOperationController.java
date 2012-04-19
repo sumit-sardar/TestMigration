@@ -980,21 +980,6 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
 	    }
 	
-	 private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
-	    {               
-	        boolean TABECustomer = false;
-	        
-	        for (int i=0; i < customerConfigs.length; i++)
-	        {
-	        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
-	            	TABECustomer = true;
-	            }
-	        }
-	        return TABECustomer;
-	    }
-	
-	
 	private void getConfigStudentLabel(CustomerConfiguration[] customerConfigurations) 
 	{     
 		boolean isStudentIdConfigurable = false;
