@@ -46,6 +46,10 @@
 <input type="hidden" id="sbsGridLastName" value=<lb:label key="dialog.myProfile.lastName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="sbsGridOnStatus" value=<lb:label key="scoring.itemGrid.onTestStatus" prefix="'" suffix="'"/>/>
 <input type="hidden" id="sbsEmptyGrid" value=<lb:label key="scoring.sbs.noStuFound.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbiItemEmptyGrid" value=<lb:label key="scoring.sbi.itemSearchEmpty" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbiItemEmptyGridTitle" value=<lb:label key="scoring.noItems.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbiGridItemType" value=<lb:label key="scoring.itemGrid.itemType" prefix="'" suffix="'"/>/>
+
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">

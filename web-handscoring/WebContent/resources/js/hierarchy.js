@@ -43,8 +43,10 @@ var selectedItemSetTCVal;
 var selectedRData = {};
 var isPopUp = false;
 var stuItemGridLoaded = false;
+var itemgridLoaded = false;
 var scoreByStdGridLoaded = false;
 var sbsItemGridLoaded = false;
+var sbiStudentGridLoaded = false;
 
 
 $(document).bind('keydown', function(event) {
@@ -57,7 +59,6 @@ $(document).bind('keydown', function(event) {
 	            return false;
 	      }
 	  });
-
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -166,11 +167,9 @@ function createSingleNodeScoringTree(jsondata) {
 			}
 		});
 		
-		
 		registerDelegate("scoringOrgNode");
 
 }
-
 
 function populateGrid(){
 	UIBlock();
@@ -247,6 +246,332 @@ function populateDropDowns() {
 				});		
 }
 
+function enableScoreByItemGrid(){
+	UIBlock();
+	$("#itemStudentGridDisplaySBI").hide();
+	$("#itemGridDisplaySBI").show();
+	if (!itemgridLoaded){
+		populateScoreByItemGrid();
+	}else{
+		gridTestItemReload();
+	}
+}
+
+function viewBySession() {
+	UIBlock();
+	currentView = "session";
+	$("#studentView").hide();
+	$("#showBySession").val($("#gridShowBySes").val()+'&nbsp;');
+	resetFilters();
+	populateGrid();
+	$("#sessionView").show();
+	setAnchorButtonState('scoreButton', true);
+}
+
+function viewByStudent() {
+	UIBlock();
+	currentView = "student";
+	$("#sessionView").hide();
+	$("#showByStudent").val($("#gridShowByStu").val()+'&nbsp;');
+	resetFilters();
+	populateGrid();
+	$("#studentView").show();
+	setAnchorButtonState('scoreButton', true);
+}
+
+function resetFilters() {
+	$("#gs_grade").val("Any");
+	$("#gs_gender").val("Any");
+	$("#gs_testCatalogName").val("Any");
+	$("#gs_testName").val("Any");
+	$("#gs_AssignedRole").val("Any");
+	$("#gs_testAdminStatus").val("Any");
+}
+
+function UIBlock(){
+	$.blockUI({ message: '<img src="/ScoringWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
+}
+
+
+function showPopup(stuCount){
+	var msg = $("#stuCountId").val();
+	stuCount = addCommas(stuCount);//to add commas at 1000th places
+	var countMsg = msg.replace("XXXX",stuCount);
+	
+	$("#rootNodePopup").dialog({  
+			title:'Alert',  
+			resizable:false,
+			autoOpen: true,
+			modal: true,
+			closeOnEscape: false,
+			open: function(event, ui) {
+				$("#exceedMsg").text(countMsg);
+				$(".ui-dialog-titlebar-close").hide(); 
+			}
+	});
+}
+
+function openConfirmationPopup(){
+	isPopUp = true;
+	$("#confirmationPopup").dialog({  
+		title:$("#confirmAlrt").val(),  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#confirmationPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#confirmationPopup").parent().css("top",toppos);
+		 $("#confirmationPopup").parent().css("left",leftpos);	
+		 
+	}
+	
+function fetchDataOnConfirmation() {
+		closePopUp('confirmationPopup');
+		populateGrid();
+}
+
+function closePopUp(dailogId){
+	
+	$("#"+dailogId).dialog("close");
+}
+
+function displayListPopup(element) {
+	if (isButtonDisabled(element))
+		return true;
+	
+	isPopUp = true;
+	populateGridAsPerView();
+}
+
+function populateGridAsPerView() {
+	UIBlock();
+	isPopUp = true;
+	if(currentView == "student") {
+		fillStudentFields();
+		if(!stuItemGridLoaded) {
+			studentScoring();
+		} else {
+			gridStudentItemReload();
+		}
+		displayStudentItemPopup();
+	} else {
+		$("#scoreByStudentPage").show();
+		$("#scoreByStudentItemPage").hide();
+		sessionScoring();
+	}
+}
+
+function sessionScoring() {
+    
+            $("#sbsTestSessionName").text(selectedTestAdminName);
+            $("#sbsAccessCode").text(selectedTestAccessCode);
+            $("#testSessionNameSBI").text(selectedTestAdminName);
+            $("#testAccessCodeSBI").text(selectedTestAccessCode);
+			$("#sessionScoringId").dialog({  
+				title:$("#sessionScorPopupTitle").val(),  
+				resizable:false,
+				autoOpen: true,
+				width: '1024px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});
+			$("#scoreByStudentItemList").hide();
+			$("#sessionScoringAccordion").accordion('activate',0);
+			if(!scoreByStdGridLoaded)
+            	populateScoreByStudentGrid();
+            else
+            	scoreByStudentGridReload();
+	
+			setPopupPosition('sessionScoringId'); 
+}
+
+
+	function displayStudentItemPopup() {
+		$("#studentScoringId").dialog({  
+				title:$("#scorPopupTitle").val(),  
+				resizable:false,
+				autoOpen: true,
+				width: '1024px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});		
+	
+			setPopupPosition('studentScoringId');
+	}
+	
+
+
+function scoreByStudentGridReload(){
+	var postDataObject = {};
+	postDataObject.q = 2;
+ 	postDataObject.testAdminId = selectedTestAdminId;
+	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam', {url:'getStudentListForScoreByStudent.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#scoreByStudentListGrid").sortGrid('userName',true,'asc');
+
+}
+	
+	
+function fillStudentFields(){
+	$("#studentNameScr").text(selectedRData.studentName);
+	$("#loginNameScr").text(selectedRData.userName);
+	$("#sessionNameScr").text(selectedRData.testSessionName);
+	$("#accessCodeScr").text(selectedRData.accessCode);
+}
+
+function fillStudentFieldsSBS(){
+	$("#studentNameSBS").text(selectedRData.studentName);
+	$("#loginNameSBS").text(selectedRData.userName);
+	$("#sessionNameSBS").text(selectedRData.testSessionName);
+	$("#accessCodeSBS").text(selectedRData.accessCode);
+}
+
+
+function setPopupPosition(popupId){
+		var toppos = ($(window).height() - 650) /2 + 'px';
+		var leftpos = ($(window).width() - 1024) /2 + 'px';
+		$("#"+popupId).parent().css("top",toppos);
+		$("#"+popupId).parent().css("left",leftpos);	
+	}
+
+function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, itemSetName, maxPoints, itemId){
+	
+	selectedRData.itemNo = itemSetOrder;
+	selectedRData.maxPoints = maxPoints;
+	selectedRData.itemSetName = itemSetName;
+	selectedRData.testSessionName = selectedTestAdminName;
+	selectedRData.accessCode = selectedTestAccessCode;
+	UIBlock();
+	fillTestItemFieldsSBI();
+	$("#itemGridDisplaySBI").hide();
+	$("#itemStudentGridDisplaySBI").show();
+	if(!sbiStudentGridLoaded) 
+		populateSBIStudentGrid(itemSetId, itemId);
+	else
+		gridItemStudentReloadSBI(itemSetId, itemId);
+	
+	
+	
+}
+
+function fillTestItemFieldsSBI(){
+	$("#itemNumberSBIStu").text(selectedRData.itemNo);
+	$("#maximumScoreSBIStu").text(selectedRData.maxPoints);
+	$("#subtestNameSBIStu").text(selectedRData.itemSetName);
+	$("#testAccessCodeSBIStu").text(selectedTestAccessCode);
+	$("#testSessionNameSBIStu").text(selectedRData.testSessionName);      
+}
+
+	function scoreByStuItems(studentName, studentLoginId, testRosterId, itemSetIdTC) {
+		selectedRData.studentName = studentName;
+		selectedRData.userName = studentLoginId;
+		selectedRData.testSessionName = selectedTestAdminName;
+		selectedRData.accessCode = selectedTestAccessCode;
+		UIBlock();
+		fillStudentFieldsSBS();
+		$("#scoreByStudentPage").hide();
+		$("#scoreByStudentItemPage").show();
+		selectedRosterId = testRosterId;
+ 		selectedItemSetTCVal = itemSetIdTC;
+		if(!sbsItemGridLoaded) {
+			populateSBSItemListGrid();
+		} else {
+			gridStudentItemReloadSBS();
+		}
+	}
+	
+	function toggleScoreByStudent() {
+		$("#scoreByStudentPage").show();
+		$("#scoreByStudentItemPage").hide();
+	}
+	
+	function toggleScoreByItem(){
+		$("#itemGridDisplaySBI").show();
+		$("#itemStudentGridDisplaySBI").hide();
+	}
+
+/******JqGrid value display Formatters*****/
+
+function itemNumberFormatter(cellvalue, options, rowObject){
+
+	var val = cellvalue;
+	var studentCount = parseInt(rowObject.studentCount);
+	if(studentCount > 0){
+		val = "<a href='#' style='color:blue; text-decoration:underline;' onClick = 'javascript:scoreByItem(\""+rowObject.itemId+"\",\""+
+					rowObject.itemType+"\",\""+rowObject.itemSetId+
+					"\",\""+rowObject.testAdminId+"\",\""+rowObject.itemSetOrder+"\",\""+rowObject.itemSetName+"\",\""+rowObject.maxPoints
+					+"\",\""+rowObject.itemId+"\"); return false;'>"+cellvalue+"</a>";
+	}else{
+	    val = "<span style='color:#999999; text-decoration:underline;'>"+cellvalue+"</span>";
+	}
+	return val;		
+}
+
+function itemStuLoginIdFormatter(cellvalue, options, rowObject) {
+	
+	var val = cellvalue;
+	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+cellvalue+"</a>";
+	return val;
+}
+
+function responseLinkFmatter(cellvalue, options, rowObject){
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		var type;
+		if(cellvalue=="AI") {
+        	type = "Audio Response";
+        } else {
+        	type = "Text Response";
+        }
+        if(answered != undefined && answered == "Answered") {
+        	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+type+"</a>";
+        } else {
+        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
+        }
+		return val;
+	}
+	
+	function scoreObtainedFormatter(cellvalue, options, rowObject) {
+		var val = cellvalue;
+		var completed = rowObject.scoreStatus;
+		var answered = rowObject.answered;
+		if(completed == "Incomplete") {
+			if(answered != undefined && answered == "Answered") {
+				val = "-";
+			} else {
+				val = "0";
+			}
+		}
+		return val;
+	}
+	
+	function scoreStatusFormatter(cellvalue, options, rowObject) {
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		if(answered != undefined && answered == "Not Answered") {
+			val = "Complete";
+		}
+		return val;
+	}
+	
+	function stuLoginIdFormatter(cellvalue, options, rowObject) {
+		var val = cellvalue;
+		var onClick = "onClick = 'javascript:scoreByStuItems(\""+rowObject.studentName+"\",\""+
+					rowObject.studentUserName+"\",\""+rowObject.testRosterId+
+					"\",\""+rowObject.itemSetIdTC+"\"); return false;'";
+		val = "<a href='#' style='color:blue; text-decoration:underline;' "+onClick+">"+val+"</a>";
+		return val;
+	}
+
+
+/******JqGrid Population and Reloads*****/
 
 function populateScoringStudentGrid() {
 		
@@ -359,9 +684,7 @@ function populateScoringStudentGrid() {
 				$("#searchStudentByKeywordInput").val('');
 			}); 
 			
-					
 }
-
 
 function gridScoringStudentReload(){
 	var postDataObject = {};
@@ -420,6 +743,7 @@ function populateScoringSessionGrid() {
 			height: 370,
 			width: $("#jqGrid-content-section").width(), 
 			editurl: 'getSessionForSelectedOrgNodeGrid.do',
+			ondblClickRow: function(rowid) {populateGridAsPerView();},
 			caption:sessionGridTitle,
 			onPaging: function() {
 				var reqestedPage = parseInt($('#sessionScoringGrid').getGridParam("page"));
@@ -485,79 +809,6 @@ function populateScoringSessionGrid() {
 			}); 
 			
 					
-	}
-	
-function populateScoreByItemGrid(){
-
-	var postDataObject = {};
-	postDataObject.q = 2;
-	postDataObject.testAdminId = selectedTestAdminId;
-	$("#itemListGrid").jqGrid({         
-     url: 'findItemDetail.do', 
-	 type: 'POST',
-	 postData: postDataObject,
-	 datatype: "json",         
-     colNames:[$("#grdItemNo").val(),$("#grdSubtestName").val(), $("#grdItemType").val(), $("#grdMaximumScore").val()],
-		   	colModel:[
-		   		{name:'itemSetOrder',index:'itemSetOrder', width:160, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetName',index:'itemSetName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
-		   		{name:'itemType',index:'itemType', width:100, editable: true, align:"left",sorttype:'text',search: false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'maxPoints',index:'maxPoints',editable: true, width:60, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: myRoleOptions } }
-		   	],
-		   	jsonReader: { repeatitems : false, root:"itemList", id:"itemId",
-		   	records: function(obj) {} },
-		   	
-		   	loadui: "disable",
-			rowNum:20,
-			loadonce:true, 
-			multiselect:false,
-			pager: '#itemListPager', 
-			sortname: 'itemNo', 
-			viewrecords: true, 
-			sortorder: "asc",
-			height: 370,
-			width: $("#jqGrid-content-section").width(), 
-			editurl: 'findItemDetail.do',
-//			ondblClickRow: function(rowid) {();},
-			caption: $("#itemListGridCaption").val(),
-			onPaging: function() {
-			    var reqestedPage = parseInt($('#itemListGrid').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_itemListPager').text());
-				var minPageSize = 1;
-				if(reqestedPage > maxPageSize){
-					$('#itemListGrid').setGridParam({"page": maxPageSize});
-				}
-				if(reqestedPage <= minPageSize){
-					$('#itemListGrid').setGridParam({"page": minPageSize});
-				}
-			},
-			
-			onSelectRow: function (rowId) {
-				var selectedRowData = $("#itemListGrid").getRowData(rowId);
-			},
-			
-			loadComplete: function () {
-			if ($('#itemListGrid').getGridParam('records') === 0) {
-            		$('#sp_1_itemListPager').text("1");
-            		$('#next_itemListPager').addClass('ui-state-disabled');
-            		$('#last_itemListPager').addClass('ui-state-disabled');
-            		$('#itemListGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-			 		$('#itemListGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
-            	}
-				$.unblockUI();  
-				$("#itemListGrid").setGridParam({datatype:'local'});
-				var tdList = ("#itemListPager_left table.ui-pg-table  td");
-				for(var i=0; i < tdList.length; i++){
-					$(tdList).eq(i).attr("tabIndex", i+1);
-				}
-				
-			},
-			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
-						
-			}
-     });
 }
 
 function gridScoringSessionReload(){
@@ -571,142 +822,89 @@ function gridScoringSessionReload(){
 }
 
 
-function viewBySession() {
-	UIBlock();
-	currentView = "session";
-	$("#studentView").hide();
-	$("#showBySession").val($("#gridShowBySes").val()+'&nbsp;');
-	resetFilters();
-	populateGrid();
-	$("#sessionView").show();
-	setAnchorButtonState('scoreButton', true);
-}
+function populateScoreByItemGrid(){
 
-function viewByStudent() {
-	UIBlock();
-	currentView = "student";
-	$("#sessionView").hide();
-	$("#showByStudent").val($("#gridShowByStu").val()+'&nbsp;');
-	resetFilters();
-	populateGrid();
-	$("#studentView").show();
-	setAnchorButtonState('scoreButton', true);
-}
-
-function resetFilters() {
-	$("#gs_grade").val("Any");
-	$("#gs_gender").val("Any");
-	$("#gs_testCatalogName").val("Any");
-	$("#gs_testName").val("Any");
-	$("#gs_AssignedRole").val("Any");
-	$("#gs_testAdminStatus").val("Any");
-}
-
-
-
-function UIBlock(){
-	$.blockUI({ message: '<img src="/ScoringWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
-}
-
-
-function showPopup(stuCount){
-	var msg = $("#stuCountId").val();
-	stuCount = addCommas(stuCount);//to add commas at 1000th places
-	var countMsg = msg.replace("XXXX",stuCount);
-	
-	$("#rootNodePopup").dialog({  
-			title:'Alert',  
-			resizable:false,
-			autoOpen: true,
-			modal: true,
-			closeOnEscape: false,
-			open: function(event, ui) {
-				$("#exceedMsg").text(countMsg);
-				$(".ui-dialog-titlebar-close").hide(); 
+ 	itemgridLoaded = true; 
+	var postDataObject = {};
+	postDataObject.q = 2;
+	postDataObject.testAdminId = selectedTestAdminId;
+	$("#itemListGrid").jqGrid({         
+     url: 'findItemDetail.do',
+     mtype: 'POST',
+	 postData: postDataObject,
+	 datatype: "json",         
+     colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#sbiGridItemType").val(), $("#itemGripMaxScr").val(), '', '', ''],
+		   	colModel:[
+		   		{name:'itemSetOrder',index:'itemSetOrder', width:130, editable: true, align:"left",sorttype:'int',formatter:itemNumberFormatter,search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetName',index:'itemSetName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:130, editable: true, align:"left",sorttype:'text',search: false ,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'maxPoints',index:'maxPoints',editable: true, width:100, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:'studentCount',index:'studentCount',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:'itemId',index:'itemId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+				{name:'itemSetId',index:'itemSetId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+ 		   	],
+		   	jsonReader: { repeatitems : false, root:"itemList", id:"itemId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#itemListPager', 
+			sortname: 'itemSetOrder', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 170,
+			width: 900, 
+			editurl: 'findItemDetail.do',
+			caption: $("#itemListGridCaption").val(),
+			onPaging: function() {
+			    var reqestedPage = parseInt($('#itemListGrid').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_itemListPager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#itemListGrid').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#itemListGrid').setGridParam({"page": minPageSize});
+				}
+			},
+			onSelectRow: function (rowId) {
+				var selectedRowData = $("#itemListGrid").getRowData(rowId);
+			},
+			loadComplete: function () {
+			if ($('#itemListGrid').getGridParam('records') === 0) {
+            		$('#sp_1_itemListPager').text("1");
+            		$('#next_itemListPager').addClass('ui-state-disabled');
+            		$('#last_itemListPager').addClass('ui-state-disabled');
+            		$('#itemListGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#itemListGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#sbiItemEmptyGridTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#sbiItemEmptyGrid").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#itemListGrid").setGridParam({datatype:'local'});
+				var tdList = ("#itemListPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
 			}
-	});
+    	 });
 }
 
-function openConfirmationPopup(){
-	isPopUp = true;
-	$("#confirmationPopup").dialog({  
-		title:$("#confirmAlrt").val(),  
-	 	resizable:false,
-	 	autoOpen: true,
-	 	width: '400px',
-	 	modal: true,
-	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-		});	
-		 $("#confirmationPopup").css('height',120);
-		 var toppos = ($(window).height() - 290) /2 + 'px';
-		 var leftpos = ($(window).width() - 410) /2 + 'px';
-		 $("#confirmationPopup").parent().css("top",toppos);
-		 $("#confirmationPopup").parent().css("left",leftpos);	
-		 
-	}
-	
-function fetchDataOnConfirmation() {
-		closePopUp('confirmationPopup');
-		populateGrid();
- 		
-	}
+function gridTestItemReload(){
 
-
-function closePopUp(dailogId){
-
-	$("#"+dailogId).dialog("close");
-	
+	var postDataObject = {};
+	postDataObject.q = 2;
+	postDataObject.testAdminId = selectedTestAdminId;
+	jQuery("#itemListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#itemListGrid").jqGrid('setGridParam', {url:'findItemDetail.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#itemListGrid").sortGrid('itemSetOrder',true,'asc');
 }
 
-
-function displayListPopup(element) {
-	if (isButtonDisabled(element))
-		return true;
-	
-	isPopUp = true;
-	populateGridAsPerView();
-}
-
-function populateGridAsPerView() {
-	UIBlock();
-	if(currentView == "student") {
-		fillStudentFields();
-		if(!stuItemGridLoaded) {
-			studentScoring();
-		} else {
-			gridStudentItemReload();
-		}
-		displayStudentItemPopup();
-	} else {
-		$("#scoreByStudentPage").show();
-		$("#scoreByStudentItemPage").hide();
-		sessionScoring();
-	}
-}
-
-function sessionScoring() {
-    
-            $("#sbsTestSessionName").text(selectedTestAdminName);
-            $("#sbsAccessCode").text(selectedTestAccessCode);
-            $("#sessionScoringAccordion").accordion('activate',0);
-			$("#sessionScoringId").dialog({  
-				title:$("#sessionScorPopupTitle").val(),  
-				resizable:false,
-				autoOpen: true,
-				width: '1024px',
-				modal: true,
-				closeOnEscape: false,
-				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-			});
-			$("#scoreByStudentItemList").hide();
-			if(!scoreByStdGridLoaded)
-            	populateScoreByStudentGrid();
-            else
-            	scoreByStudentGridReload();
-	
-			setPopupPosition('sessionScoringId'); 
-}
 
 function studentScoring() {
 	
@@ -786,107 +984,8 @@ function studentScoring() {
 			}
 	 });
 	  
-	}
-	
-	
-	function populateScoreByStudentGrid() {
-		
-		scoreByStdGridLoaded = true;
-		var postDataObject = {};
- 		postDataObject.q = 2;
- 		postDataObject.testAdminId = selectedTestAdminId;
-        $("#scoreByStudentListGrid").jqGrid({         
-          url:'getStudentListForScoreByStudent.do', 
-		 mtype:   'POST',
-		 postData: postDataObject,
-		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(),$("#sbsGridFirstName").val(), $("#sbsGridLastName").val(), $("#studentIdLabelName").val(),$("#stuGrdGrade").val(), $("#itemGripManual").val(), $("#sbsGridOnStatus").val(), '', '', '', ''],
-		   	colModel:[
-		   		{name:'userName',index:'userName', width:200, editable: true, align:"left", sorttype:'text', sortable:true, formatter:stuLoginIdFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left", sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'extPin1',index:'extPin1',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'grade',index:'grade', width:90, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scoringStatus',index:'scoringStatus',editable: true, width:250, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentName',index:'studentName',editable: true, width:200, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentUserName',index:'studentUserName',editable: true, width:10, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testRosterId',index:'testRosterId',editable: true, width:10, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetIdTC',index:'itemSetIdTC',editable: true, width:200, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
-		   	
-		   	],
-		   	jsonReader: { repeatitems : false, root:"scoreByStudentList", id:"testRosterId",
-		   	records: function(obj) {} },
-		   	
-		   	loadui: "disable",
-			rowNum:10,
-			loadonce:true, 
-			multiselect:false,
-			pager: '#scoreByStudentListPager', 
-			sortname: 'userName', 
-			viewrecords: true, 
-			sortorder: "asc",
-			height: 170,
-			width: 920,
-			hoverrows: false,
-			editurl: 'getStudentListForScoreByStudent.do',
-			caption:$("#stuGridCaption").val(),
-			onPaging: function() {
-				var reqestedPage = parseInt($('#scoreByStudentListGrid').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_scoreByStudentListPager').text());
-				var minPageSize = 1;
-				if(reqestedPage > maxPageSize){
-					$('#scoreByStudentListGrid').setGridParam({"page": maxPageSize});
-				}
-				if(reqestedPage <= minPageSize){
-					$('#scoreByStudentListGrid').setGridParam({"page": minPageSize});
-				}
-				
-			},
-			onSelectRow: function (rowId) {
-					$("#"+rowId).removeClass('ui-state-highlight');
-			},
-			loadComplete: function () {
-				if ($('#scoreByStudentListGrid').getGridParam('records') === 0) {
-            		$('#sp_1_scoreByStudentListPager').text("1");
-            		$('#next_scoreByStudentListPager').addClass('ui-state-disabled');
-            		$('#last_scoreByStudentListPager').addClass('ui-state-disabled');
-            		$('#scoreByStudentListGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-			 		$('#scoreByStudentListGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#sbsEmptyGrid").val()+"</td></tr></tbody></table></td></tr>");
-            	}
-				$.unblockUI();  
-				$("#scoreByStudentListGrid").setGridParam({datatype:'local'});
-				var tdList = ("#scoreByStudentListPager_left table.ui-pg-table  td");
-				for(var i=0; i < tdList.length; i++){
-					$(tdList).eq(i).attr("tabIndex", i+1);
-				}
-				
-			},
-			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
-						
-			}
-	 });
-		
-	}
-	
-	
-	
-	function displayStudentItemPopup() {
-		$("#studentScoringId").dialog({  
-				title:$("#scorPopupTitle").val(),  
-				resizable:false,
-				autoOpen: true,
-				width: '1024px',
-				modal: true,
-				closeOnEscape: false,
-				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-			});		
-	
-			setPopupPosition('studentScoringId');
-	}
-	
+}
+
 function gridStudentItemReload(){
 	var postDataObject = {};
 	postDataObject.q = 2;
@@ -899,39 +998,265 @@ function gridStudentItemReload(){
 
 }
 
-function scoreByStudentGridReload(){
+
+function populateSBIStudentGrid(itemSetId, itemId) {
+	
+		sbiStudentGridLoaded = true;
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.testAdminId = selectedTestAdminId;
+ 		postDataObject.itemSetId = itemSetId;
+ 		postDataObject.itemId = itemId;		
+		$("#itemStudentListGridSBI").jqGrid({
+		url: 'getStudentListForItem.do',
+		mtype:'POST',
+		postData: postDataObject,
+		datatype: "json",
+		colNames:[$("#stuGrdLoginId").val(),$("#sbsGridLastName").val(),$("#sbsGridFirstName").val(),$("#studentIdLabelName").val(),$("#stuGrdGrade").val(),$("#itemGripManual").val(),$("#sbsGridOnStatus").val()],
+		colModel:[
+		   		{name:'userName',index:'userName', width:160, editable: true, align:"left", sorttype:'text', sortable:true, formatter:itemStuLoginIdFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extPin1',index:'extPin1', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade', width:80, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoringStatus',index:'scoringStatus', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		],
+		   	jsonReader: { repeatitems : false, root:"scoreByStudentList", id:"testRosterId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:5,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#itemStudentListPagerSBI', 
+			sortname: 'userName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 72,
+			width: 940,
+			hoverrows: false,
+			editurl: 'getStudentListForItem.do',
+			caption:$("#stuGridCaption").val(),
+			onPaging: function() {
+				var reqestedPage = parseInt($('#itemStudentListGridSBI').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_itemStudentListPagerSBI').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#itemStudentListGridSBI').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#itemStudentListGridSBI').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			onSelectRow: function (rowId) {
+					$("#"+rowId).removeClass('ui-state-highlight');
+			},
+			loadComplete: function () {
+				if ($('#itemStudentListGridSBI').getGridParam('records') === 0) {
+            		$('#sp_1_itemStudentListPagerSBI').text("1");
+            		$('#next_itemStudentListPagerSBI').addClass('ui-state-disabled');
+            		$('#last_itemStudentListPagerSBI').addClass('ui-state-disabled');
+            		$('#itemStudentListGridSBI').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#itemStudentListGridSBI').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#itemStudentListGridSBI").setGridParam({datatype:'local'});
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+
+}
+
+function gridItemStudentReloadSBI(itemSetId, itemId){
+
 	var postDataObject = {};
 	postDataObject.q = 2;
  	postDataObject.testAdminId = selectedTestAdminId;
-	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam', {url:'getStudentListForScoreByStudent.do',postData:postDataObject,page:1}).trigger("reloadGrid");
-	jQuery("#scoreByStudentListGrid").sortGrid('userName',true,'asc');
+ 	postDataObject.itemSetId = itemSetId;
+ 	postDataObject.itemId = itemId;
+	jQuery("#itemStudentListGridSBI").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#itemStudentListGridSBI").jqGrid('setGridParam', {url:'getStudentListForItem.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#itemStudentListGridSBI").sortGrid('userName',true,'asc');
+}
 
+
+function populateSBSItemListGrid() {
+		
+		sbsItemGridLoaded = true;
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.rosterId = selectedRosterId;
+ 		postDataObject.itemSetIdTC = selectedItemSetTCVal;
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+        $("#studentItemListGridSBS").jqGrid({         
+          url:'beginDisplayStudItemList.do', 
+		 mtype:   'POST',
+		 postData: postDataObject,
+		 datatype: "json",         
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val()],
+		   	colModel:[
+		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	
+		   	],
+		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#studentItemListPagerSBS', 
+			sortname: 'itemSetName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 170,
+			width: 920,
+			hoverrows: false,
+			editurl: 'beginDisplayStudItemList.do',
+			caption:$("#itemListGripCap").val(),
+			onPaging: function() {
+				var reqestedPage = parseInt($('#studentItemListGridSBS').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_studentItemListPagerSBS').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#studentItemListGridSBS').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#studentItemListGridSBS').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			onSelectRow: function (rowId) {
+					$("#"+rowId).removeClass('ui-state-highlight');
+			},
+			loadComplete: function () {
+				if ($('#studentItemListGridSBS').getGridParam('records') === 0) {
+            		$('#sp_1_studentItemListPagerSBS').text("1");
+            		$('#next_studentItemListPagerSBS').addClass('ui-state-disabled');
+            		$('#last_studentItemListPagerSBS').addClass('ui-state-disabled');
+            		$('#studentItemListGridSBS').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#studentItemListGridSBS').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#studentItemListGridSBS").setGridParam({datatype:'local'});
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+		
 }
 	
+function gridStudentItemReloadSBS(){
+	var postDataObject = {};
+	postDataObject.q = 2;
+ 	postDataObject.rosterId = selectedRosterId;
+ 	postDataObject.itemSetIdTC = selectedItemSetTCVal;
+ 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+	jQuery("#studentItemListGridSBS").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#studentItemListGridSBS").jqGrid('setGridParam', {url:'beginDisplayStudItemList.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#studentItemListGridSBS").sortGrid('itemSetName',true,'asc');
+}
+
+/******JqGrid Search Implementation*****/
+
+function searchStudentByKeyword(){
+		 var searchFiler = $.trim($("#searchStudentByKeywordInput").val()), f;
+		 var grid = $("#studentScoringGrid"); 
+		 
+		 if (searchFiler.length === 0) {
+			 grid[0].p.search = false;
+		 }else {
+		 	 f = {groupOp:"OR",rules:[]};
+			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"orgNodeNamesStr",op:"cn",data:searchFiler});
+			 f.rules.push({field:"grade",op:"cn",data:searchFiler});
+			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
+			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});  
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+		 }
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
+		 closePopUp('searchUserByKeyword');
+	}
 	
-function fillStudentFields(){
-	$("#studentNameScr").text(selectedRData.studentName);
-	$("#loginNameScr").text(selectedRData.userName);
-	$("#sessionNameScr").text(selectedRData.testSessionName);
-	$("#accessCodeScr").text(selectedRData.accessCode);
-}
-
-function fillStudentFieldsSBS(){
-	$("#studentNameSBS").text(selectedRData.studentName);
-	$("#loginNameSBS").text(selectedRData.userName);
-	$("#sessionNameSBS").text(selectedRData.testSessionName);
-	$("#accessCodeSBS").text(selectedRData.accessCode);
-}
-
-
-function setPopupPosition(popupId){
-		var toppos = ($(window).height() - 650) /2 + 'px';
-		var leftpos = ($(window).width() - 1024) /2 + 'px';
-		$("#"+popupId).parent().css("top",toppos);
-		$("#"+popupId).parent().css("left",leftpos);	
+	function searchSessionByKeyword(){
+		 var searchFiler = $.trim($("#searchSessionByKeywordInput").val()), f;
+		 var grid = $("#sessionScoringGrid"); 
+		 
+		 if (searchFiler.length === 0) {
+			 grid[0].p.search = false;
+		 }else {
+		 	 f = {groupOp:"OR",rules:[]};
+			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+		 }
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
+		 closePopUp('searchSessionByKeyword');
+	}
+	
+	function resetSearch(){
+		if(currentView == "student") {
+			var grid = $("#studentScoringGrid"); 
+			$("#searchStudentByKeywordInput").val('');
+			 grid[0].p.search = false;
+			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+			 closePopUp('searchStudentByKeyword');
+		 } else {
+		 	var grid = $("#sessionScoringGrid"); 
+			$("#searchSessionByKeywordInput").val('');
+			 grid[0].p.search = false;
+			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+			 closePopUp('searchSessionByKeyword');
+		 }
 	}
 
+function trapEnterKey(e){
+	var key;
+	if(window.event)
+		key = window.event.keyCode;     //IE
+	else
+		key = e.which;     //firefox
+	        
+		if(key == 13){
+			if(currentView == "student")
+				searchStudentByKeyword();
+	   		else
+	   			searchSessionByKeyword();
+	   }
+	}
+	
+	
+
+/******Jstree Methods*****/
 
 function registerDelegate(tree){
 
@@ -1028,245 +1353,6 @@ function registerDelegate(tree){
 
 }
 
-function searchStudentByKeyword(){
-		 var searchFiler = $.trim($("#searchStudentByKeywordInput").val()), f;
-		 var grid = $("#studentScoringGrid"); 
-		 
-		 if (searchFiler.length === 0) {
-			 grid[0].p.search = false;
-		 }else {
-		 	 f = {groupOp:"OR",rules:[]};
-			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"orgNodeNamesStr",op:"cn",data:searchFiler});
-			 f.rules.push({field:"grade",op:"cn",data:searchFiler});
-			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
-			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
-			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
-			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});  
-			 grid[0].p.search = true;
-			 grid[0].p.ignoreCase = true;
-			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
-		 }
-		 grid.trigger("reloadGrid",[{page:1,current:true}]);
-		 closePopUp('searchUserByKeyword');
-	}
-	
-	function searchSessionByKeyword(){
-		 var searchFiler = $.trim($("#searchSessionByKeywordInput").val()), f;
-		 var grid = $("#sessionScoringGrid"); 
-		 
-		 if (searchFiler.length === 0) {
-			 grid[0].p.search = false;
-		 }else {
-		 	 f = {groupOp:"OR",rules:[]};
-			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
-			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
-			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
-			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 
-			 grid[0].p.search = true;
-			 grid[0].p.ignoreCase = true;
-			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
-		 }
-		 grid.trigger("reloadGrid",[{page:1,current:true}]);
-		 closePopUp('searchSessionByKeyword');
-	}
-	
-	function resetSearch(){
-		if(currentView == "student") {
-			var grid = $("#studentScoringGrid"); 
-			$("#searchStudentByKeywordInput").val('');
-			 grid[0].p.search = false;
-			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
-			 closePopUp('searchStudentByKeyword');
-		 } else {
-		 	var grid = $("#studentSessionGrid"); 
-			$("#searchSessionByKeywordInput").val('');
-			 grid[0].p.search = false;
-			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
-			 closePopUp('searchSessionByKeyword');
-		 }
-	}
-
-function trapEnterKey(e){
-		var key;
-	   if(window.event)
-	        key = window.event.keyCode;     //IE
-	   else
-	        key = e.which;     //firefox
-	        
-	   if(key == 13){
-	   		if(currentView == "student")
-	   			searchStudentByKeyword();
-	   		else
-	   			searchSessionByKeyword();
-	   }
-	}
-	
-	function responseLinkFmatter(cellvalue, options, rowObject){
-		var val = cellvalue;
-		var answered = rowObject.answered;
-		var type;
-		if(cellvalue=="AI") {
-        	type = "Audio Response";
-        } else {
-        	type = "Text Response";
-        }
-        if(answered != undefined && answered == "Answered") {
-        	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+type+"</a>";
-        } else {
-        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
-        }
-		return val;
-	}
-	
-	function scoreObtainedFormatter(cellvalue, options, rowObject) {
-		var val = cellvalue;
-		var completed = rowObject.scoreStatus;
-		var answered = rowObject.answered;
-		if(completed == "Incomplete") {
-			if(answered != undefined && answered == "Answered") {
-				val = "-";
-			} else {
-				val = "0";
-			}
-		}
-		return val;
-	}
-	
-	function scoreStatusFormatter(cellvalue, options, rowObject) {
-		var val = cellvalue;
-		var answered = rowObject.answered;
-		if(answered != undefined && answered == "Not Answered") {
-			val = "Complete";
-		}
-		return val;
-	}
-	
-	function stuLoginIdFormatter(cellvalue, options, rowObject) {
-		var val = cellvalue;
-		var onClick = "onClick = 'javascript:scoreByStuItems(\""+rowObject.studentName+"\",\""+
-					rowObject.studentUserName+"\",\""+rowObject.testRosterId+
-					"\",\""+rowObject.itemSetIdTC+"\"); return false;'";
-		val = "<a href='#' style='color:blue; text-decoration:underline;' "+onClick+">"+val+"</a>";
-		return val;
-	}
-	
-	function scoreByStuItems(studentName, studentLoginId, testRosterId, itemSetIdTC) {
-		selectedRData.studentName = studentName;
-		selectedRData.userName = studentLoginId;
-		selectedRData.testSessionName = selectedTestAdminName;
-		selectedRData.accessCode = selectedTestAccessCode;
-		UIBlock();
-		fillStudentFieldsSBS();
-		$("#scoreByStudentPage").hide();
-		$("#scoreByStudentItemPage").show();
-		selectedRosterId = testRosterId;
- 		selectedItemSetTCVal = itemSetIdTC;
-		if(!sbsItemGridLoaded) {
-			populateSBSItemListGrid();
-		} else {
-			gridStudentItemReloadSBS();
-		}
-	}
-	
-	function toggleScoreByStudent() {
-		$("#scoreByStudentPage").show();
-		$("#scoreByStudentItemPage").hide();
-	}
-	
-	function populateSBSItemListGrid() {
-		
-		sbsItemGridLoaded = true;
-		var postDataObject = {};
- 		postDataObject.q = 2;
- 		postDataObject.rosterId = selectedRosterId;
- 		postDataObject.itemSetIdTC = selectedItemSetTCVal;
- 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
-        $("#studentItemListGridSBS").jqGrid({         
-          url:'beginDisplayStudItemList.do', 
-		 mtype:   'POST',
-		 postData: postDataObject,
-		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val()],
-		   	colModel:[
-		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
-		   	
-		   	],
-		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
-		   	records: function(obj) {} },
-		   	
-		   	loadui: "disable",
-			rowNum:10,
-			loadonce:true, 
-			multiselect:false,
-			pager: '#studentItemListPagerSBS', 
-			sortname: 'itemSetName', 
-			viewrecords: true, 
-			sortorder: "asc",
-			height: 170,
-			width: 920,
-			hoverrows: false,
-			editurl: 'beginDisplayStudItemList.do',
-			caption:$("#itemListGripCap").val(),
-			onPaging: function() {
-				var reqestedPage = parseInt($('#studentItemListGridSBS').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_studentItemListPagerSBS').text());
-				var minPageSize = 1;
-				if(reqestedPage > maxPageSize){
-					$('#studentItemListGridSBS').setGridParam({"page": maxPageSize});
-				}
-				if(reqestedPage <= minPageSize){
-					$('#studentItemListGridSBS').setGridParam({"page": minPageSize});
-				}
-				
-			},
-			onSelectRow: function (rowId) {
-					$("#"+rowId).removeClass('ui-state-highlight');
-			},
-			loadComplete: function () {
-				if ($('#studentItemListGridSBS').getGridParam('records') === 0) {
-            		$('#sp_1_studentItemListPagerSBS').text("1");
-            		$('#next_studentItemListPagerSBS').addClass('ui-state-disabled');
-            		$('#last_studentItemListPagerSBS').addClass('ui-state-disabled');
-            		$('#studentItemListGridSBS').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-			 		$('#studentItemListGridSBS').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
-            	}
-				$.unblockUI();  
-				$("#studentItemListGridSBS").setGridParam({datatype:'local'});
-				
-			},
-			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unblockUI();  
-				window.location.href="/SessionWeb/logout.do";
-						
-			}
-	 });
-		
-	}
-	
-function gridStudentItemReloadSBS(){
-	var postDataObject = {};
-	postDataObject.q = 2;
- 	postDataObject.rosterId = selectedRosterId;
- 	postDataObject.itemSetIdTC = selectedItemSetTCVal;
- 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
-	jQuery("#studentItemListGridSBS").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#studentItemListGridSBS").jqGrid('setGridParam', {url:'beginDisplayStudItemList.do',postData:postDataObject,page:1}).trigger("reloadGrid");
-	jQuery("#studentItemListGridSBS").sortGrid('itemSetName',true,'asc');
-}
-	
-
-/******Jstree Methods*****/
 	//method triggered from library
 	  function customLoad(){
 	  	//console.log("Custom Load called");

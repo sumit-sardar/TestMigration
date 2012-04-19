@@ -23,15 +23,20 @@ public class ItemScoringUtils {
 	/**
      * buildItemList
      */    
-    public static List buildItemList(ScorableItemData siData) 
+    public static List<ScorableItem> buildItemList(ScorableItemData siData) 
     {
         
-    	ArrayList itemList = new ArrayList();
+    	ArrayList<ScorableItem> itemList = new ArrayList<ScorableItem>();
     	if(siData != null){
     		ScorableItem[] items = siData.getScorableItems();
     		for(int i=0 ; i<items.length ; i++){
     			ScorableItem item = (ScorableItem)items[i];
     			if(item != null){
+    				if(item.getItemType().equalsIgnoreCase("AI")) {
+    					item.setItemType("Audio Item");
+    				} else {
+    					item.setItemType("Constructive Response");
+    				}
     				itemList.add(item);
     			}    			
     		}    		
@@ -42,10 +47,10 @@ public class ItemScoringUtils {
     /**
      * buildStudentListByItem
      */    
-    public static List buildStudentListByItem(RosterElementData reData) 
+    public static List<RosterElement> buildStudentListByItem(RosterElementData reData) 
     {
         
-    	ArrayList studentList = new ArrayList();
+    	ArrayList<RosterElement> studentList = new ArrayList<RosterElement>();
     	if(reData != null){
     		RosterElement[] students = reData.getRosterElements();
     		for(int i=0 ; i<students.length ; i++){

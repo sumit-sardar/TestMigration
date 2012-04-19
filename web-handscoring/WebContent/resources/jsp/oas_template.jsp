@@ -88,12 +88,24 @@
 						$("#Change_Pwd").css("height",'250px'); 
 					}
 				});
-				var sessionWizard = $("#sessionScoringAccordion").accordion({ header: "h3",event:false});
-				$("h3", sessionWizard).each(function(index) { 				
+				var scoringWizard = $("#sessionScoringAccordion").accordion({ header: "h3",event:false});
+				$("h3", scoringWizard).each(function(index) { 				
 					$(this).click(function(e){
-						$("#itemListGrid").jqGrid('resetSelection');
-						selectedRowData("");
-					})
+					if(index == 1){
+						scoringWizard.accordion("activate", index);
+						enableScoreByItemGrid();
+					} else {
+						scoringWizard.accordion("activate", index);
+					}
+						
+					});
+				});
+				
+				$( "#sessionScoringAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   		$("#score_by_student_details_div").css("height",'535px');
+						$("#score_by_item_details_div").css("height",'535px');
+					}
 				});
 				
 			});

@@ -85,7 +85,6 @@ public class StudentScoringOperationController extends PageFlowController {
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-    private Integer itemSetIdTC = null; 
     
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -295,30 +294,14 @@ public class StudentScoringOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
-		resp.setCharacterEncoding("UTF-8"); 
-		TestSession ts = null;
+		resp.setCharacterEncoding("UTF-8");
 		Base base = new Base();
-//		String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
-		Integer itemId = Integer.parseInt(getRequest().getParameter("itemId"));
+		Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
 		ScorableItemData siData = null;
-		siData = ItemScoringUtils.getItemsByTestSession(testScoring, null, null, null, itemId);
-		if(siData != null){
-			if(siData.getScorableItems()[0].getItemSetIdTC() != null)
-				this.setItemSetIdTC( siData.getScorableItems()[0].getItemSetIdTC());
-		}
+		siData = ItemScoringUtils.getItemsByTestSession(testScoring, null, null, null, testAdminId);
 		
 		List<ScorableItem> itemList = ItemScoringUtils.buildItemList(siData);
-		try {
-			ts = testScoring.getTestAdminDetails(itemId);
-		}  catch (CTBBusinessException be){
-			be.printStackTrace();
-		}
-		customerHasBulkAccommodation();
-		if(itemList.isEmpty())
-		{	
-			this.getRequest().setAttribute("itemSearchEmpty", MessageResourceBundle.getMessage("itemSearchEmpty"));        
-			return new Forward("findItem");
-		}
+		
 		base.setPage("1");
 		base.setRecords("10");
 		base.setTotal("2");
@@ -337,28 +320,6 @@ public class StudentScoringOperationController extends PageFlowController {
 
 		return null;
 	}
-	
-	private Boolean customerHasBulkAccommodation() 
-	{
-		boolean hasBulkStudentConfigurable = false;
-		//Bulk Accommodation
-		for (int i=0; i < this.customerConfigurations.length; i++) {
-
-			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
-					cc.getDefaultValue().equals("T")) {
-				hasBulkStudentConfigurable = true; 
-				break;
-			}
-		}
-
-		getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
-
-
-		return new Boolean(hasBulkStudentConfigurable);           
-	}
-	
-	
 	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
@@ -509,6 +470,50 @@ try {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+	
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward getStudentListForItem(StudentSessionScoringForm form){
+		
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String json = "";
+		resp.setCharacterEncoding("UTF-8"); 
+		Base base = new Base();
+		TestSession ts = null;
+		String sortColoum = null;
+		RosterElementData reData = null;
+		Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+		Integer itemSetId = Integer.parseInt(getRequest().getParameter("itemSetId"));
+		String itemId = getRequest().getParameter("itemId");
+		reData = ItemScoringUtils.getStudentsByItem(testScoring, null, null, null, testAdminId, itemSetId, itemId);
+		List<RosterElement> studentList = buildStudentList(reData);
+		try {
+			ts = testScoring.getTestAdminDetails(testAdminId);
+		}  catch (CTBBusinessException be){
+			be.printStackTrace();
+			
+		}
+		
+		base.setPage("1");
+		base.setRecords("10");
+		base.setTotal("2");
+		base.setScoreByStudentList(studentList);
+		Gson gson = new Gson();
+		json = gson.toJson(base);
+		try {
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -1468,13 +1473,5 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	public static class StudentSessionScoringForm extends SanitizedFormData
 	{
 
-	}
-
-	public Integer getItemSetIdTC() {
-		return itemSetIdTC;
-	}
-
-	public void setItemSetIdTC(Integer itemSetIdTC) {
-		this.itemSetIdTC = itemSetIdTC;
 	}
 }
