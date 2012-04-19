@@ -84,25 +84,28 @@ public class SQLQuery {
 			+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
 	
 	public static String testRosterSql = "select tr.test_roster_id as test_roster_id,"
-           + " tr.activation_status as activation_status,"
-           + " tr.test_completion_status as test_completion_status,"
-           + " tr.customer_id as customer_id,"
-           + " tr.student_id as student_id,"
-           + " tr.test_admin_id   as test_admin_id,"
-           + " to_Char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
-           + " ta.time_zone as timeZone,"
-           + " tr.restart_number as restartNumber,"
-           + " tr.last_mseq as lastMSEQ,"
-           + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate," 
-           + " ta.preferred_form as testForm,"
-           + " tc.test_level as testLevel"
-           + " from test_roster tr, test_admin ta, test_catalog tc"
-           + " where tr.activation_status = 'AC'"
-           + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
-           + " and tr.test_admin_id = ta.test_admin_id"
-           + " and ta.test_catalog_id = tc.test_catalog_id"
-           + " and ta.login_start_date > SYSDATE - 365"
-           + " and ta.product_id = ? :customerIds";
+        + " tr.activation_status as activation_status,"
+        + " tr.test_completion_status as test_completion_status,"
+        + " tr.customer_id as customer_id,"
+        + " tr.student_id as student_id,"
+        + " tr.test_admin_id   as test_admin_id,"
+        + " to_Char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
+        + " ta.time_zone as timeZone,"
+        + " tr.restart_number as restartNumber,"
+        + " tr.last_mseq as lastMSEQ,"
+        + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate," 
+        + " tr.form_assignment as testForm,"
+        + " tc.test_level as testLevel,"
+        + " p.product_name"
+        + " from test_roster tr, test_admin ta, test_catalog tc, product p"
+        + " where tr.activation_status = 'AC'"
+        + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
+        + " and tr.test_admin_id = ta.test_admin_id"
+        + " and ta.test_catalog_id = tc.test_catalog_id"
+        + " and ta.login_start_date > SYSDATE - 365"
+        + " and ta.product_id = p.product_id "
+        + " and tr.test_roster_id in(4943563,4943561,4945807,4950034,4950118,4949995,4950105,4950014,4963299,4950008) " 
+        + " and ta.product_id = ? :customerIds";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
@@ -211,6 +214,7 @@ public class SQLQuery {
 													 "FROM student_item_set_status siss, item_set items " +
 													"WHERE items.item_set_id = siss.item_set_id " +
 													  "AND items.sample = 'F' " +
+													  "AND items.item_set_level <> 'L' " +
 													  "AND siss.test_roster_id = ? " +
 													"ORDER BY items.item_set_name ";
 	
@@ -220,7 +224,7 @@ public class SQLQuery {
 												 "WHERE tcaf.studentid = ? " +
 												   "AND tcaf.sessionid = ? ";
 	
-	public static final String SCORED_RESPONSE_VECTOR_SQL = "SELECT decode(irp.response, item.correct_answer, '1', '0') response " +
+	public static final String SCORED_RESPONSE_VECTOR_SQL = "SELECT irp.item_id, decode(irp.response, item.correct_answer, '1', '0') response " +
 									   						  "FROM item_response irp, item, " +
 									   							"(SELECT item_response.item_id item_id, " +
 									   							         "item_set_id, " +
@@ -243,13 +247,15 @@ public class SQLQuery {
 	public static final String TOTAL_TEST_TIME_SQL = "SELECT SUM(itms.time_limit) total_time " +
 	 											 	   "FROM student_item_set_status siss, item_set itms " +
 	 											 	  "WHERE itms.item_set_id = siss.item_set_id " +
-	 											        "AND itms.SAMPLE = 'F' AND siss.test_roster_id = ?";
+	 											        "AND itms.SAMPLE = 'F' " +
+	 											        "AND itms.item_set_level <> 'L' " +
+	 											        "AND siss.test_roster_id = ?";
 	
 	public static final String TOTAL_TIME_TAKEN_SQL = "SELECT SUM(ir.response_elapsed_time) total_time " +
 												  		"FROM item_response ir " +
 												  	   "WHERE ir.test_roster_id = ?";
 	
-	public static final String GET_ALL_CONTENT_DOMAIN_SQL = "SELECT DISTINCT items.item_set_name " +
+	public static final String GET_ALL_CONTENT_DOMAIN_SQL = "SELECT DISTINCT items.item_set_name, items.item_set_id " +
 														      "FROM test_catalog tc, item_set_ancestor isa, item_set items " +
 														     "WHERE tc.item_set_id = isa.ancestor_item_set_id " +
 														       "AND isa.item_set_id = items.item_set_id " +

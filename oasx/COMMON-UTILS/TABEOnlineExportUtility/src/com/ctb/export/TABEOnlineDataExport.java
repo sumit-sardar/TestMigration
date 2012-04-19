@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class TABEOnlineDataExport {
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
 	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
 	private static final String SEPARATOR = "#";
-	private static final List<String> CONTENT_DOMAIN_LIST = new ArrayList<String>();
+	private static final Map<String, String> ALL_CONTENT_DOMAIN = new LinkedHashMap<String, String>();
 	private static final Map<String, List<ItemResponses>> ITEM_SET_MAP = new HashMap<String, List<ItemResponses>>();
 	
 	
@@ -83,7 +82,7 @@ public class TABEOnlineDataExport {
 		CSVWriter writer = new CSVWriter(new FileWriter(file));
 		StringBuilder headerRow = new StringBuilder();
 		StringBuilder contentDomains = new StringBuilder();
-		for (String contentDomain: CONTENT_DOMAIN_LIST) {
+		for (String contentDomain: ALL_CONTENT_DOMAIN.keySet()) {
 			contentDomains.append(contentDomain).append("(Level, Raw Score, Scale Score)").append(SEPARATOR)
 			.append("Scale Vector Response").append(SEPARATOR)
 			.append("(Item number, Time spent on first visit, Total time spent)").append(SEPARATOR);
@@ -107,9 +106,9 @@ public class TABEOnlineDataExport {
 		writer.writeNext(headerRow.toString().split(SEPARATOR));
 		try {
 			StringBuilder row = new StringBuilder();
-			List<String[]> rows = new ArrayList<String[]>();
 			for(TABEFile tabe: myList) {
 				
+				row = new StringBuilder();
 				row.append(tabe.getCustomerID()).append(SEPARATOR).append(tabe.getOrgLevel1Name()).append(SEPARATOR)
 				.append(tabe.getOrgLevel1Code()).append(SEPARATOR).append(tabe.getOrgLevel2Name()).append(SEPARATOR)
 				.append(tabe.getOrgLevel2Code()).append(SEPARATOR).append(tabe.getOrgLevel3Name()).append(SEPARATOR)
@@ -125,12 +124,8 @@ public class TABEOnlineDataExport {
 				.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getTestFormId()).append(SEPARATOR)
 				.append(tabe.getLastItem()).append(SEPARATOR).append(tabe.getTimedOut()).append(SEPARATOR)
 				.append(tabe.getScores());
-				
-				rows.add(row.toString().split(SEPARATOR));
-				row = new StringBuilder();
+				writer.writeNext(row.toString().split(SEPARATOR));
 			}
-			writer.writeAll(rows);
-			System.out.println("Total number of record exported:" + rows.size());
 			System.out.println("Export file successfully generated:["+modFileName+"]");
 			System.out.println("Completed Writing");
 		} catch(Exception e) {
@@ -192,6 +187,7 @@ public class TABEOnlineDataExport {
 				tabeFileList.add(catData);	
 				System.out.println("Processed record count:" + ++count);
 			}
+			System.out.println("Total number of record exported:" + count);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -261,7 +257,7 @@ public class TABEOnlineDataExport {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
 		List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ") order by tr.customer_id";
+		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ") order by tr.customer_id ";
 		String query = null;
 		try{
 			if(CUSTOMER_IDs != null) {
@@ -286,7 +282,12 @@ public class TABEOnlineDataExport {
 				ros.setStartDate(rs.getString(11));
 				ros.setStudent(getStudent(con, rs.getInt("customer_id"), rs.getInt(5))); 
 				ros.setTimeZone(rs.getString(8));
-				ros.setTestFormId(rs.getString("testForm"));
+				String productName = rs.getString("product_name");
+				if(productName.indexOf("9") > 0) {
+					ros.setTestFormId("9");
+				} else if(productName.indexOf("10") > 0) {
+					ros.setTestFormId("10");
+				}
 				ros.setTestLevel(rs.getString("testLevel"));
 				rosterList.add(ros);
 			}
@@ -595,6 +596,7 @@ public class TABEOnlineDataExport {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Map<String, Scores> scoreMap = new LinkedHashMap<String, Scores>();
+		Map<String, Scores> scaleScoreMap = new LinkedHashMap<String, Scores>();
 		StringBuilder scores = new StringBuilder();
 		try {
 			//Getting content domain
@@ -608,7 +610,8 @@ public class TABEOnlineDataExport {
 				score.setItemSetName(rs.getString("item_set_name"));
 				score.setLevel(rs.getString("item_set_level"));
 				score.setRawScore(rs.getString("raw_score"));
-				scoreMap.put(score.getContentAreaId(), score);
+				scoreMap.put(score.getItemSetName(), score);
+				scaleScoreMap.put(score.getContentAreaId(), score);
 			}
 			SqlUtil.close(ps, rs);
 			//Getting scale score
@@ -617,24 +620,40 @@ public class TABEOnlineDataExport {
 			ps.setInt(2, roster.getTestAdminId());
 			rs = ps.executeQuery();
 			while(rs.next()) {
-				Scores score = scoreMap.get(rs.getString("content_areaid"));
+				Scores score = scaleScoreMap.get(rs.getString("content_areaid"));
 				if(score != null) {
 					score.setScaleScore(rs.getString("scale_score"));
 				}
 			}
 			SqlUtil.close(ps, rs);
-			Set<String> keySet = scoreMap.keySet();
-			for(Iterator<String> itr = keySet.iterator(); itr.hasNext();) {
-				Scores score = scoreMap.get(itr.next());
-				if(ITEM_SET_MAP.get(score.getItemSetId()) == null) {
-					getAllItemsForItemSet(oascon, score.getItemSetId());
+			Set<String> keySet = ALL_CONTENT_DOMAIN.keySet();
+			for(String itemSetName : keySet) {
+				String itemSetId = ALL_CONTENT_DOMAIN.get(itemSetName);
+				Scores score = scoreMap.get(itemSetName);
+				if(score != null) {
+					Scores scaleScore = scaleScoreMap.get(score.getContentAreaId());
+					if(scaleScore != null) {
+						score.setScaleScore(scaleScore.getScaleScore());
+					}
 				}
-				prepareItemResponses(oascon, score.getItemSetId(), tfil, roster);
-				getScaleVectorResponse(oascon, tfil, roster, score.getItemSetId());
-				scores.append(Utility.formatData(score.getLevel()) + "," + Utility.formatData(score.getRawScore())
-					 	  + "," + Utility.formatData(score.getScaleScore()) + SEPARATOR 
-					 	  + tfil.getScaleVectorResponse() + SEPARATOR
-					 	  + tfil.getItemResponse() + SEPARATOR);
+				if(score != null) {
+					itemSetId = score.getItemSetId();
+				}
+				if(ITEM_SET_MAP.get(itemSetId) == null) {
+					getAllItemsForItemSet(oascon, itemSetId);
+				}
+				prepareItemResponses(oascon, itemSetId, tfil, roster);
+				getScaleVectorResponse(oascon, tfil, roster, itemSetId);
+				if(score != null) {
+					scores.append(Utility.formatData(score.getLevel()) + "," + Utility.formatData(score.getRawScore())
+						 	  + "," + Utility.formatData(score.getScaleScore()) + SEPARATOR 
+						 	  + tfil.getScaleVectorResponse() + SEPARATOR
+						 	  + tfil.getItemResponse() + SEPARATOR);
+				} else {
+					scores.append(",," + SEPARATOR 
+						 	  + tfil.getScaleVectorResponse() + SEPARATOR
+						 	  + tfil.getItemResponse() + SEPARATOR);
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -647,11 +666,13 @@ public class TABEOnlineDataExport {
 			tfil.setScores(scores.toString());
 	}
 	
+	
 	private void getScaleVectorResponse(Connection oascon, 
 			   TABEFile tfil, TestRoster roster, String itemSetId) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		StringBuilder response = new StringBuilder();
+		Map<String, String> responseMap = new HashMap<String, String>();
 		try {
 			ps = oascon.prepareStatement(SQLQuery.SCORED_RESPONSE_VECTOR_SQL);
 			ps.setInt(1, roster.getTestRosterId());
@@ -659,8 +680,17 @@ public class TABEOnlineDataExport {
 			ps.setString(3, itemSetId);
 			ps.setInt(4, roster.getTestRosterId());
 			rs = ps.executeQuery();
+			List<ItemResponses> items = ITEM_SET_MAP.get(itemSetId);
 			while(rs.next()) {
-				response.append(rs.getString("response") + ",");
+				responseMap.put(rs.getString("item_id"), rs.getString("response"));
+			}
+			for(ItemResponses ir: items) {
+				String val = responseMap.get(ir.getItemId());
+				if(val != null) {
+					response.append(val + ",");
+				} else {
+					response.append(",");
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -714,7 +744,7 @@ public class TABEOnlineDataExport {
 			ps.setInt(1, PRODUCT_ID);
 			rs = ps.executeQuery();
 			while(rs.next()) {
-				CONTENT_DOMAIN_LIST.add(rs.getString("item_set_name"));
+				ALL_CONTENT_DOMAIN.put(rs.getString("item_set_name"), rs.getString("item_set_id"));
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
