@@ -46,6 +46,7 @@ var itemgridLoaded = false;
 var scoreByStdGridLoaded = false;
 var sbsItemGridLoaded = false;
 var sbiStudentGridLoaded = false;
+var isScoreByItemClicked = false;
 
 
 function populateStudentScoringTree() {
@@ -323,7 +324,9 @@ function fetchDataOnConfirmation() {
 }
 
 function closePopUp(dailogId){
-	
+	if(dailogId == 'sessionScoringId') {
+		isScoreByItemClicked = false;
+	}
 	$("#"+dailogId).dialog("close");
 }
 
@@ -887,6 +890,99 @@ function gridTestItemReload(){
 	jQuery("#itemListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#itemListGrid").jqGrid('setGridParam', {url:'findItemDetail.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#itemListGrid").sortGrid('itemSetOrder',true,'asc');
+}
+
+
+function populateScoreByStudentGrid() {
+		
+		scoreByStdGridLoaded = true;
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		postDataObject.testAdminId = selectedTestAdminId;
+        $("#scoreByStudentListGrid").jqGrid({         
+          url:'getStudentListForScoreByStudent.do', 
+		 mtype:   'POST',
+		 postData: postDataObject,
+		 datatype: "json",         
+          colNames:[$("#stuGrdLoginId").val(),$("#sbsGridFirstName").val(), $("#sbsGridLastName").val(), $("#studentIdLabelName").val(),$("#stuGrdGrade").val(), $("#itemGripManual").val(), $("#sbsGridOnStatus").val(), '', '', '', ''],
+		   	colModel:[
+		   		{name:'userName',index:'userName', width:200, editable: true, align:"left", sorttype:'text', sortable:true, formatter:stuLoginIdFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left", sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extPin1',index:'extPin1',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade', width:90, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoringStatus',index:'scoringStatus',editable: true, width:250, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentName',index:'studentName',editable: true, width:200, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentUserName',index:'studentUserName',editable: true, width:10, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testRosterId',index:'testRosterId',editable: true, width:10, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetIdTC',index:'itemSetIdTC',editable: true, width:200, align:"left", sortable:true, hidden:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	
+		   	],
+		   	jsonReader: { repeatitems : false, root:"scoreByStudentList", id:"testRosterId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#scoreByStudentListPager', 
+			sortname: 'userName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 170,
+			width: 920,
+			hoverrows: false,
+			editurl: 'getStudentListForScoreByStudent.do',
+			caption:$("#stuGridCaption").val(),
+			onPaging: function() {
+				var reqestedPage = parseInt($('#scoreByStudentListGrid').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_scoreByStudentListPager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#scoreByStudentListGrid').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#scoreByStudentListGrid').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			onSelectRow: function (rowId) {
+					$("#"+rowId).removeClass('ui-state-highlight');
+			},
+			loadComplete: function () {
+				if ($('#scoreByStudentListGrid').getGridParam('records') === 0) {
+            		$('#sp_1_scoreByStudentListPager').text("1");
+            		$('#next_scoreByStudentListPager').addClass('ui-state-disabled');
+            		$('#last_scoreByStudentListPager').addClass('ui-state-disabled');
+            		$('#scoreByStudentListGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#scoreByStudentListGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#sbsEmptyGrid").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#scoreByStudentListGrid").setGridParam({datatype:'local'});
+				var tdList = ("#scoreByStudentListPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+		
+	}
+	
+function scoreByStudentGridReload(){
+	var postDataObject = {};
+	postDataObject.q = 2;
+ 	postDataObject.testAdminId = selectedTestAdminId;
+	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam', {url:'getStudentListForScoreByStudent.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#scoreByStudentListGrid").sortGrid('userName',true,'asc');
+
 }
 
 

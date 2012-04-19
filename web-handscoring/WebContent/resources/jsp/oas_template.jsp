@@ -92,7 +92,10 @@
 					$(this).click(function(e){
 					if(index == 1){
 						scoringWizard.accordion("activate", index);
-						enableScoreByItemGrid();
+						if(!isScoreByItemClicked) {
+							enableScoreByItemGrid();
+							isScoreByItemClicked = true;
+						}
 					} else {
 						scoringWizard.accordion("activate", index);
 					}

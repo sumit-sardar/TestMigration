@@ -1,9 +1,6 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
-<netui-data:declareBundle bundlePath="webResources" name="web"/>
-<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <% response.setContentType("application/x-javascript"); %>
 
 var acknowledgmentsWindow = null;
