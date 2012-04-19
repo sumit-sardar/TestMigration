@@ -49,6 +49,7 @@
 <input type="hidden" id="sbiItemEmptyGrid" value=<lb:label key="scoring.sbi.itemSearchEmpty" prefix="'" suffix="'"/>/>
 <input type="hidden" id="sbiItemEmptyGridTitle" value=<lb:label key="scoring.noItems.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="sbiGridItemType" value=<lb:label key="scoring.itemGrid.itemType" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sbsGridItemEmpty" value=<lb:label key="scoring.sbs.noItemsFoundMessage" prefix="'" suffix="'"/>/>
 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
