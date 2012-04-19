@@ -24,7 +24,6 @@ import utils.Base;
 import utils.BaseTree;
 import utils.BroadcastUtils;
 import utils.ItemScoringUtils;
-import utils.MessageResourceBundle;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
@@ -485,20 +484,12 @@ try {
 		String json = "";
 		resp.setCharacterEncoding("UTF-8"); 
 		Base base = new Base();
-		TestSession ts = null;
-		String sortColoum = null;
 		RosterElementData reData = null;
 		Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
 		Integer itemSetId = Integer.parseInt(getRequest().getParameter("itemSetId"));
 		String itemId = getRequest().getParameter("itemId");
 		reData = ItemScoringUtils.getStudentsByItem(testScoring, null, null, null, testAdminId, itemSetId, itemId);
 		List<RosterElement> studentList = buildStudentList(reData);
-		try {
-			ts = testScoring.getTestAdminDetails(testAdminId);
-		}  catch (CTBBusinessException be){
-			be.printStackTrace();
-			
-		}
 		
 		base.setPage("1");
 		base.setRecords("10");

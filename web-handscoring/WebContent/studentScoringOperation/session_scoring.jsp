@@ -8,21 +8,21 @@
 	<br>
 
 	<div id="sessionScoringAccordion" style="width:99.5%;">
-		<div style="position:relative;">
+		<div>
 			<div id="scoreByStudentId">
 				<h3><a href="#" ><lb:label key="scoring.accordion.scoreByStudent" /></a></h3>
-				<div id="score_by_student_details" style="overflow-y: scroll !important; overflow-x: hidden !important; height: 535px;">
-					<div align="center">
+				<div id="score_by_student_details_div" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important; height: 535px !important;">
+					<div align="center" style ="width:98%;">
 						<jsp:include page="/studentScoringOperation/score_by_student.jsp" />
 					</div>
 				</div>
 			</div>
 	    </div>
-	    <div style="position:relative;">
+	    <div>
 			<div id="scoreByItemId">
 				<h3><a href="#" ><lb:label key="scoring.accordion.scoreByItem" /></a></h3>
-				<div id="score_by_item_details" style="overflow-y: scroll !important; overflow-x: hidden !important;">
-					<div align="center">
+				<div id="score_by_item_details_div" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important; height: 535px !important;">
+					<div align="center" style ="width:98%;">
 						<jsp:include page="/studentScoringOperation/score_by_item_details.jsp" />
 					</div>
 				</div>
