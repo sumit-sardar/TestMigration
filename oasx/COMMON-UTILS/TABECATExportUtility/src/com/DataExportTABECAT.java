@@ -39,7 +39,7 @@ import com.ctb.utils.Utility;
 
 public class DataExportTABECAT {
 	
-	private static String CUSTOMER_ID = null;
+	private static String CUSTOMER_ID = ExtractUtil.getDetail("oas.customerIds");
 	private static Integer PRODUCT_ID = new Integer(ExtractUtil.getDetail("oas.productId"));
 	private static String userDir = System.getProperty("user.dir").toLowerCase();
 	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
@@ -62,10 +62,13 @@ public class DataExportTABECAT {
 	public static void main(String[] args) {
 		DataExportTABECAT dataExport = new DataExportTABECAT();
 		try {
-			if(args[0] != null) {
-				CUSTOMER_ID = args[0];
-			} else {
-				CUSTOMER_ID = ExtractUtil.getDetail("oas.customerId");
+			if(args != null && args.length > 0) {
+				if(args[0] != null) {
+					CUSTOMER_ID = args[0];
+				}
+				if(args[1] != null) {
+					PRODUCT_ID = Integer.valueOf(args[1]);
+				}
 			}
 			dataExport.writeToText();
 		}
