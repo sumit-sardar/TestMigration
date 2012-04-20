@@ -210,33 +210,26 @@
     	selectedTestSession =  data.savedTestDetails;	  	
 		fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.savedTestDetails.testSession.timeZone);
 		$("#testSessionName").val(data.savedTestDetails.testSession.testAdminName);
-		if(data.isCopySession){
-			$( "#startDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-			$( "#endDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-			
-			//$( "#endDate" ).datepicker( "option", "defaultDate", data.minLoginEndDate );
-			/*if(data.minLoginEndDate != undefined ) {
-				$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-				$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-			} else {
-				$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
-				$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
-			}*/
-		}else{
-			$( "#startDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-			$( "#endDate" ).datepicker( "option" , "minDate" , data.minLoginStartDate ) ;
-			if(data.minLoginEndDate != undefined ) {
-				$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-				$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
-			} else {
-				$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
-				$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
-			}
+		
+		$( "#startDate" ).datepicker( "option" , "minDate" , data.startDate ) ;
+		$( "#endDate" ).datepicker( "option" , "minDate" , data.startDate ) ;
+		if(data.minLoginEndDate != undefined){//for override login end date
+			$( "#startDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+			$( "#endDate" ).datepicker( "option" , "maxDate" , data.minLoginEndDate ) ;
+		} else {
+			$( "#startDate" ).datepicker( "option" , "maxDate" , null ) ;
+			$( "#endDate" ).datepicker( "option" , "maxDate" , null ) ;
 		}
 		$( "#endDate" ).datepicker( "refresh" );
 		$( "#startDate" ).datepicker( "refresh" );
-		document.getElementById("startDate").value = data.savedTestDetails.testSession.loginStartDateString;
-		document.getElementById("endDate").value = data.savedTestDetails.testSession.loginEndDateString;
+		if(data.isCopySession){
+			document.getElementById("startDate").value = data.startDate;
+			document.getElementById("endDate").value = data.endDate;
+		}else {
+			document.getElementById("startDate").value = data.savedTestDetails.testSession.loginStartDateString;
+			document.getElementById("endDate").value = data.savedTestDetails.testSession.loginEndDateString;
+		}
+
 		fillDropDownWithDefaultValue("topOrgNode",data.topNodeDropDownList,data.savedTestDetails.testSession.creatorOrgNodeId);
 		if(data.topNodeDropDownList == undefined || data.topNodeDropDownList.length<2 || stdsLogIn || isTestExpired || isProctor){
 			$("#topOrgNode").attr("disabled",true);

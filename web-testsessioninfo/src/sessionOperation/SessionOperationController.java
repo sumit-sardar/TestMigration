@@ -923,7 +923,6 @@ public class SessionOperationController extends PageFlowController {
     	    String userTimeZone = null;
     	  //added for copy test session
     	    String action = getRequest().getParameter("action"); 
-//    	    System.out.println(">>>>>"+action);
     	    String originalTestAdminName = null;
     	    String testAdminNameCopySession = null;
     	    //
@@ -963,30 +962,32 @@ public class SessionOperationController extends PageFlowController {
                     Date now = new Date(System.currentTimeMillis());
                     Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZoneCopySession, now);
                     Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZoneCopySession, now);
-                    vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
-                    vo.setMinLoginEndDate(DateUtils.formatDateToDateString(tomorrow));
-                    scheduledSession.getTestSession().setLoginStartDate(today);
-                    scheduledSession.getTestSession().setLoginEndDate(tomorrow);
+                    if(ovLoginStart != null && !DateUtils.isBeforeToday(ovLoginStart, this.user.getTimeZone())){
+                    	Date loginEndDate = (Date) ovLoginStart.clone();
+                    	loginEndDate.setDate(loginEndDate.getDate() + 1);
+                    	vo.setStartDate(DateUtils.formatDateToDateString(ovLoginStart));
+                    	vo.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+                    }else {
+                    	vo.setStartDate(DateUtils.formatDateToDateString(today));
+                    	vo.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+    	        	}
                     
-                    if (ovLoginStart != null && !DateUtils.isBeforeToday(ovLoginStart, this.user.getTimeZone()))
-                    {
-                        Date loginEndDate = (Date)ovLoginStart.clone();
-                        loginEndDate.setDate(loginEndDate.getDate() + 1);
-                        vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
-                        vo.setMinLoginEndDate(DateUtils.formatDateToDateString(loginEndDate));
+                    if(ovLoginEnd!= null && !(DateUtils.isAfterToday(ovLoginEnd, timeZoneCopySession ))) {
+                    	vo.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
+                    	vo.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
+                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+                    }else if (ovLoginEnd!= null){
+                    	vo.setMinLoginEndDate(DateUtils.formatDateToDateString(ovLoginEnd));
+                    	
                     }
                     
                 }else{
-    	    	//
 	    	    	Date now = new Date(System.currentTimeMillis());
 	    	    	Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
-	//    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 
-	//    	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
-	//    	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
 	    	    	if (ovLoginStart != null && !(DateUtils.isBeforeToday(ovLoginStart , this.user.getTimeZone() ))) {
-	    	    		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(ovLoginStart));
+	    	    		vo.setStartDate(DateUtils.formatDateToDateString(ovLoginStart));
 		        	} else {
-		        		vo.setMinLoginStartDate(DateUtils.formatDateToDateString(today));
+		        		vo.setStartDate(DateUtils.formatDateToDateString(today));
 		        	}
 		        	
 		        	if(ovLoginEnd!= null ) {

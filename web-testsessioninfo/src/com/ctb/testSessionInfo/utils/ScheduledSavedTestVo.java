@@ -24,7 +24,6 @@ public class ScheduledSavedTestVo implements Serializable {
 	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private OperationStatus status;
 	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
-	private String minLoginStartDate = "";
 	private String minLoginEndDate = "";
 	private SessionStudent[] restrictedStudents;
 	private Integer totalStudent ;
@@ -33,6 +32,8 @@ public class ScheduledSavedTestVo implements Serializable {
 	private Integer locatorId = null;
 	Map<Integer,Map> accomodationMap;
 	private boolean isCopySession = false;
+    private String startDate;
+	private String endDate;
 	
 
 	private static final long serialVersionUID = 1L;
@@ -105,21 +106,6 @@ public class ScheduledSavedTestVo implements Serializable {
 	}
 
 	
-
-	/**
-	 * @return the minLoginStartDate
-	 */
-	public String getMinLoginStartDate() {
-		return minLoginStartDate;
-	}
-
-	
-	/**
-	 * @param minLoginStartDate the minLoginStartDate to set
-	 */
-	public void setMinLoginStartDate(String minLoginStartDate) {
-		this.minLoginStartDate = minLoginStartDate;
-	}
 
 	
 	/**
@@ -236,6 +222,16 @@ public class ScheduledSavedTestVo implements Serializable {
 
 	public void setCopySession(boolean isCopySession) {
 		this.isCopySession = isCopySession;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+		
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate=endDate;
+		
 	}
 
 	
