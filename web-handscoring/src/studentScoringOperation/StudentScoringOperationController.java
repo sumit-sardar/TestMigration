@@ -715,6 +715,10 @@ try {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
+		if(this.userName == null ) {
+			getLoggedInUserPrincipal();		
+			getUserDetails();
+		}
 		try {
 			BaseTree baseTree = new BaseTree ();
 
