@@ -94,7 +94,7 @@ public class SQLQuery {
         + " tr.restart_number as restartNumber,"
         + " tr.last_mseq as lastMSEQ,"
         + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate," 
-        + " tr.form_assignment as testForm,"
+        + " ta.preffered_form as testForm,"
         + " tc.test_level as testLevel,"
         + " p.product_name"
         + " from test_roster tr, test_admin ta, test_catalog tc, product p"
@@ -104,7 +104,6 @@ public class SQLQuery {
         + " and ta.test_catalog_id = tc.test_catalog_id"
         + " and ta.login_start_date > SYSDATE - 365"
         + " and ta.product_id = p.product_id "
-        + " and tr.test_roster_id in(4943563,4943561,4945807,4950034,4950118,4949995,4950105,4950014,4963299,4950008) " 
         + " and ta.product_id = ? :customerIds";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"

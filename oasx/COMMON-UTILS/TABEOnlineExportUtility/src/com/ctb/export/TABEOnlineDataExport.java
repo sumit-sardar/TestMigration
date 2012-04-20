@@ -40,6 +40,7 @@ public class TABEOnlineDataExport {
 	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
 	private static final String SEPARATOR = "#";
 	private static final Map<String, String> ALL_CONTENT_DOMAIN = new LinkedHashMap<String, String>();
+	private static final Map<String, Integer> ITEM_COUNT_MAP = new LinkedHashMap<String, Integer>();
 	private static final Map<String, List<ItemResponses>> ITEM_SET_MAP = new HashMap<String, List<ItemResponses>>();
 	
 	
@@ -82,10 +83,15 @@ public class TABEOnlineDataExport {
 		CSVWriter writer = new CSVWriter(new FileWriter(file));
 		StringBuilder headerRow = new StringBuilder();
 		StringBuilder contentDomains = new StringBuilder();
-		for (String contentDomain: ALL_CONTENT_DOMAIN.keySet()) {
-			contentDomains.append(contentDomain).append("(Level, Raw Score, Scale Score)").append(SEPARATOR)
-			.append("Scale Vector Response").append(SEPARATOR)
-			.append("(Item number, Time spent on first visit, Total time spent)").append(SEPARATOR);
+		for (String contentDomainName: ALL_CONTENT_DOMAIN.keySet()) {
+			contentDomains.append(contentDomainName).append("(Level, Raw Score, Scale Score)").append(SEPARATOR)
+			.append("Scale Vector Response").append(SEPARATOR);
+			Integer itemCount = ITEM_COUNT_MAP.get(contentDomainName);
+			if(itemCount != null) {
+				for(int i=0; i<itemCount; i++) {
+					contentDomains.append("(Item number, first visit, Total time)").append(SEPARATOR);
+				}
+			}
 		}
 		headerRow.append("Customer Id").append(SEPARATOR).append("State Name").append(SEPARATOR)
 		.append("State Code").append(SEPARATOR).append("District Name").append(SEPARATOR)
@@ -640,7 +646,7 @@ public class TABEOnlineDataExport {
 					itemSetId = score.getItemSetId();
 				}
 				if(ITEM_SET_MAP.get(itemSetId) == null) {
-					getAllItemsForItemSet(oascon, itemSetId);
+					getAllItemsForItemSet(oascon, itemSetId, itemSetName);
 				}
 				prepareItemResponses(oascon, itemSetId, tfil, roster);
 				getScaleVectorResponse(oascon, tfil, roster, itemSetId);
@@ -753,7 +759,7 @@ public class TABEOnlineDataExport {
 		}
    }
    
-   private void getAllItemsForItemSet(Connection con, String itemSetId) {
+   private void getAllItemsForItemSet(Connection con, String itemSetId, String itemSetName) {
 	    PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -768,6 +774,7 @@ public class TABEOnlineDataExport {
 				items.add(ir);
 			}
 			ITEM_SET_MAP.put(itemSetId, items);
+			ITEM_COUNT_MAP.put(itemSetName, items.size());
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
