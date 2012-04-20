@@ -149,23 +149,24 @@ public class SQLQuery {
 			+ " ) dd , ( select sis.item_set_id , decode(nvl(sis.validation_status, 'IN'), 'IN', 'NC', (decode(nvl(sis.exemptions, 'N'), 'Y',  'NC', ((decode(nvl(sis.absent, 'N'), 'Y', 'NC', 'CO')))))) valid from student_item_set_status sis where test_roster_id = ?"
 			+ " )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
 
-	public static String ALL_ITEMS_DETAILS_SQL = "SELECT irp.item_id, irp.response " +
-			" FROM item_response irp, item," +
-			" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
-			" from item_response , item  where test_roster_id = ?  " +
-			" and item_response.item_id = item.item_id " +
-			" and item.item_type = 'SR' " +
-			" and item.ACTIVATION_STATUS = 'AC' " +
-			" and item_response.item_set_id = ? " +
-			" group by item_response.item_id, item_set_id ) derived " +
-			" where irp.item_id = derived.item_id " +
-			" and irp.item_set_id = derived.item_set_id  " +
-			" and irp.response_seq_num = derived.maxseqnum  " +
-			" and item.item_id = derived.item_id " +
-			" and irp.item_id = item.item_id " +
-			" and irp.test_roster_id = ? " +
-			" and irp.item_set_id = ? " +
-			" ORDER BY derived.maxseqnum";
+	public static String ALL_ITEMS_DETAILS_SQL = "SELECT irp.item_id, irp.response as original_response, " +
+												"decode(irp.response, item.correct_answer, '1', '0') response " +
+												" FROM item_response irp, item," +
+												" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
+												" from item_response , item  where test_roster_id = ?  " +
+												" and item_response.item_id = item.item_id " +
+												" and item.item_type = 'SR' " +
+												" and item.ACTIVATION_STATUS = 'AC' " +
+												" and item_response.item_set_id = ? " +
+												" group by item_response.item_id, item_set_id ) derived " +
+												" where irp.item_id = derived.item_id " +
+												" and irp.item_set_id = derived.item_set_id  " +
+												" and irp.response_seq_num = derived.maxseqnum  " +
+												" and item.item_id = derived.item_id " +
+												" and irp.item_id = item.item_id " +
+												" and irp.test_roster_id = ? " +
+												" and irp.item_set_id = ? " +
+												" ORDER BY derived.maxseqnum";
 
 	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  "
 			+ " (select item_response.item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  "
@@ -215,4 +216,15 @@ public class SQLQuery {
   													 "AND item.activation_status = 'AC' " +
   													 "AND irp.response_seq_num > 9999 " +
   												   "ORDER BY irp.response_seq_num DESC";
+	
+	public static final String GET_ALL_CONTENT_DOMAIN_SQL = "SELECT DISTINCT items.item_set_name, items.item_set_id " +
+															    "FROM test_catalog tc, item_set_ancestor isa, item_set items " +
+															   "WHERE tc.item_set_id = isa.ancestor_item_set_id " +
+															     "AND isa.item_set_id = items.item_set_id " +
+															     "AND items.item_set_type = 'TD' " +
+															     "AND items.activation_status = 'AC' " +
+															     "AND items.sample = 'F' " +
+															     "AND items.item_set_level <> 'L' " +
+															     "AND tc.product_id = ? " +
+															   "ORDER BY items.item_set_name";
 }

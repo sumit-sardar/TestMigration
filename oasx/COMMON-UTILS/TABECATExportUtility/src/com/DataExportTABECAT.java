@@ -47,7 +47,6 @@ public class DataExportTABECAT {
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
-	private static final Map<Integer, Map<String, ItemResponses>> ITEM_SET_ITEM = new HashMap<Integer, Map<String, ItemResponses>>(50);
 	
 	static {
 		CONTENT_DOMAINS.put("Reading", 0);
@@ -133,6 +132,7 @@ public class DataExportTABECAT {
 						.getLabelName());
 			}
 			myrosterList = getTestRoster(oascon);
+			int count = 0;
 			for (TestRoster roster : myrosterList) {
 				TABEFile catData = new TABEFile();
 				
@@ -152,8 +152,10 @@ public class DataExportTABECAT {
 				getSemScores(oascon, catData, roster,catData.getAbilityScores());
 				fillObjective(oascon, irscon,catData,roster);
 				prepareItemResponses(oascon, catData, roster);
-				tabeFileList.add(catData);								
+				tabeFileList.add(catData);	
+				System.out.println("Record Processed: " + count++);
 			}
+			System.out.println("Toal records: " + count);
 		} finally {
 			SqlUtil.close(oascon);
 			SqlUtil.close(irscon);
@@ -186,8 +188,7 @@ public class DataExportTABECAT {
 						rs.getInt(1)));
 				myList.add(cd);
 			}
-
-			 System.out.println("getCustomerDemographic End");
+            System.out.println("getCustomerDemographic End");
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -247,9 +248,7 @@ public class DataExportTABECAT {
 				ros.setTimeZone(rs.getString(8));
 				rosterList.add(ros);
 			}
-			
-			//System.out.println("populateCustomer");
-		}finally {
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
 		return rosterList;
@@ -276,17 +275,12 @@ public class DataExportTABECAT {
 				std.setCustomerId(Integer.valueOf(CUSTOMER_ID));
 				std.setTestPurpose(rs.getString(9));
 				std.setExtStudentId(rs.getString(10));
-				std
-				.setStudentDemographic(getStudentDemographic(con,
+				std.setStudentDemographic(getStudentDemographic(con,
 						studentId));
-
 			}
-
-			// System.out.println("getStudent");
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-
 		return std;
 	}
 
@@ -766,11 +760,7 @@ public class DataExportTABECAT {
 			   rs = ps.executeQuery();
 			   if(rs.next()) {
 			      ItemResponses ir = itemMap.get(rs.getString("item_id"));
-				   if(ir.getIndex() < 10) {
-					   response.append("1" + ir.getIndex() + " ");
-				   } else {
-					   response.append("1" + ir.getIndex());
-				   }
+				  response.append("1" + ir.getIndex());
 			   } else {
 				   response.append("00");
 			   }
