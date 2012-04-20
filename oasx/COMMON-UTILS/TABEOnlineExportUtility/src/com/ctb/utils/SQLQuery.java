@@ -94,7 +94,7 @@ public class SQLQuery {
         + " tr.restart_number as restartNumber,"
         + " tr.last_mseq as lastMSEQ,"
         + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate," 
-        + " ta.preffered_form as testForm,"
+        + " ta.preferred_form as testForm,"
         + " tc.test_level as testLevel,"
         + " p.product_name"
         + " from test_roster tr, test_admin ta, test_catalog tc, product p"
