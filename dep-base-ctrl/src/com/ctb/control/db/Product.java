@@ -249,7 +249,7 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
     @JdbcControl.SQL(statement = "select resource_uri from product_resource where product_id = {productId} and resource_type_code = {resourceTypeCode}")
     String getDemoInstallerUri(String resourceTypeCode, Integer productId) throws SQLException;
     
-    @JdbcControl.SQL(statement = "select distinct cat.test_name as testCatalogName from product prod,  test_catalog cat,  org_node_test_catalog ontc,  user_role urole,  users where prod.activation_status = 'AC' and prod.product_id = cat.product_id  and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id  and ontc.activation_status = 'AC' and urole.org_node_id = ontc.org_node_id and urole.activation_status = 'AC' and users.user_id = urole.user_id  and users.user_name = {userName} ",
+    @JdbcControl.SQL(statement = "select distinct cat.test_name as testCatalogName from product prod,  test_catalog cat,  org_node_test_catalog ontc,  user_role urole,  users where prod.activation_status = 'AC' and prod.product_id = cat.product_id  and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id  and ontc.activation_status = 'AC' and urole.org_node_id = ontc.org_node_id and urole.activation_status = 'AC' and users.user_id = urole.user_id  and users.user_name = {userName} order by cat.test_name",
             arrayMaxLength = 100000)
             String [] getTestCatalogForUserForScoring(String userName) throws SQLException;
     
