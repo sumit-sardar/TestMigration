@@ -190,7 +190,7 @@ function populateSessionListGrid(homePageLoad) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');
 					var selectedRData = $("#list2").getRowData(rowId);
-					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
+					if(selectedRData.isSTabeProduct == "false" && selectedRData.isSTabeAdaptiveProduct == "false" && selectedRData.copyable == 'T'){
 						updateCopySessionButton(true);
 					}else{
 						updateCopySessionButton(false);
@@ -441,7 +441,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  mtype:   'POST',
 		  datatype: "json",          
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'loginStartDateString','loginEndDateString','',''],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'loginStartDateString','loginEndDateString','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -453,7 +453,8 @@ function populateCompletedSessionListGrid() {
 		   		{name:'loginStartDateString',index:'loginStartDateString', width:0},
 		   		{name:'loginEndDateString',index:'loginEndDateString', width:0},
 		   		{name:'copyable',index:'copyable', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeAdaptiveProduct',index:'isSTabeAdaptiveProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
 		   	records: function(obj) { 
@@ -462,7 +463,7 @@ function populateCompletedSessionListGrid() {
 			 $("#list3").jqGrid("hideCol","loginEndDateString");
 			 $("#list3").jqGrid("hideCol","copyable");
 			 $("#list3").jqGrid("hideCol","isSTabeProduct");
-		   	 sessionListPA = obj.sessionListPAMap;
+			 sessionListPA = obj.sessionListPAMap;
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -506,7 +507,7 @@ function populateCompletedSessionListGrid() {
 			 			 }
 			 		}
 			 		var selectedRData = $("#list3").getRowData(rowId);
-					if(selectedRData.isSTabeProduct == "false" && selectedRData.copyable == 'T'){
+					if(selectedRData.isSTabeProduct == "false" && selectedRData.isSTabeAdaptiveProduct == "false" && selectedRData.copyable == 'T'){
 						updateCopySessionButton(true);
 					}else{
 						updateCopySessionButton(false);
@@ -516,6 +517,7 @@ function populateCompletedSessionListGrid() {
 				updateModifyStdManifestButton(false);
 				updateCopySessionButton(false);
 				$("#list3").jqGrid("hideCol","creatorOrgNodeId");
+				$("#list3").jqGrid("hideCol","isSTabeAdaptiveProduct");
 				if ($('#list3').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
             		$('#sp_1_pager3').text("1");
