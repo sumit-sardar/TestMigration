@@ -208,7 +208,7 @@
     
     function populateTestDetailGrid(data){
     	selectedTestSession =  data.savedTestDetails;	  	
-		fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.savedTestDetails.testSession.timeZone);
+	
 		$("#testSessionName").val(data.savedTestDetails.testSession.testAdminName);
 		
 		$( "#startDate" ).datepicker( "option" , "minDate" , data.startDate ) ;
@@ -223,9 +223,11 @@
 		$( "#endDate" ).datepicker( "refresh" );
 		$( "#startDate" ).datepicker( "refresh" );
 		if(data.isCopySession){
+			fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.userTimeZone);
 			document.getElementById("startDate").value = data.startDate;
 			document.getElementById("endDate").value = data.endDate;
 		}else {
+			fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.savedTestDetails.testSession.timeZone);
 			document.getElementById("startDate").value = data.savedTestDetails.testSession.loginStartDateString;
 			document.getElementById("endDate").value = data.savedTestDetails.testSession.loginEndDateString;
 		}
