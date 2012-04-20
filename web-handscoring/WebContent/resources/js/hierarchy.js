@@ -581,13 +581,13 @@ function populateScoringStudentGrid() {
           colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), '', ''],
 		   	colModel:[
 		   		{name:'userName',index:'userName', width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentName',index:'studentName', width:105, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentName',index:'studentName', width:100, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:100, editable: true, align:"left",sorttype:'text',search: false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'grade',index:'grade',editable: true, width:55, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: gradeOptions } },
-		   		{name:'gender',index:'gender', width:70, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
+		   		{name:'grade',index:'grade',editable: true, width:60, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: gradeOptions } },
+		   		{name:'gender',index:'gender', width:85, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
 		   		{name:'studentNumber',index:'studentNumber', width:75, editable: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testSessionName',index:'testSessionName',editable: true, width:150, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:150, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
+		   		{name:'testSessionName',index:'testSessionName',editable: true, width:140, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:180, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
 		   		{name:'accessCode',index:'accessCode', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
@@ -1051,10 +1051,6 @@ function studentScoring() {
             	}
 				$.unblockUI();  
 				$("#studentItemListGrid").setGridParam({datatype:'local'});
-				var tdList = ("#studentItemListPager_left table.ui-pg-table  td");
-				for(var i=0; i < tdList.length; i++){
-					$(tdList).eq(i).attr("tabIndex", i+1);
-				}
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -1139,7 +1135,7 @@ function populateSBIStudentGrid(itemSetId, itemId) {
             		$('#next_itemStudentListPagerSBI').addClass('ui-state-disabled');
             		$('#last_itemStudentListPagerSBI').addClass('ui-state-disabled');
             		$('#itemStudentListGridSBI').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-			 		$('#itemStudentListGridSBI').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
+			 		$('#itemStudentListGridSBI').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#sbiGridStuEmptyMsg").val()+"</td></tr></tbody></table></td></tr>");
             	}
 				$.unblockUI();  
 				$("#itemStudentListGridSBI").setGridParam({datatype:'local'});
