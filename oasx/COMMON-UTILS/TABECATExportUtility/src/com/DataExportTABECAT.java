@@ -121,6 +121,7 @@ public class DataExportTABECAT {
 		try {
 			oascon = SqlUtil.openOASDBconnectionForResearch();
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
+			getAllContentDomain(oascon);
 			getAllObjectives(oascon);
 			customerDemoList = getCustomerDemographic(oascon);
 			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
@@ -691,6 +692,7 @@ public class DataExportTABECAT {
 	   try {
 		   getContentDomain(con, roster.getTestRosterId());
 		   Set<String> keySet = CONTENT_DOMAINS.keySet();
+		   int itemCount = 0;
 		   for(String itemSetName: keySet) {
 			   StringBuilder itemIds = new StringBuilder();
 			   StringBuilder itemResponse = new StringBuilder();
@@ -699,27 +701,31 @@ public class DataExportTABECAT {
 			   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
 			   if("Reading".equals(itemSetName)) {
 				   response.append("RD");
+				   itemCount = 29;
 			   } else if("Mathematics Computation".equals(itemSetName)) {
 				   response.append("MC");
+				   itemCount = 24;
 			   } else if("Applied Mathematics".equals(itemSetName)) {
 				   response.append("AM");
+				   itemCount = 29;
 			   } else if("Language".equals(itemSetName)) {
 				   response.append("LN");
+				   itemCount = 29;
 			   }
-			   if(ITEM_SET_ITEM.get(itemSetId) == null) {
-				   getItemsForItemSet(con, itemSetId);
-			   }
-			   itemMap = ITEM_SET_ITEM.get(itemSetId);
-			   
+			    
 			   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
 			   ps.setInt(1, roster.getTestRosterId());
 			   ps.setInt(2, itemSetId);
 			   ps.setInt(3, roster.getTestRosterId());
 			   ps.setInt(4, itemSetId);
-			   rs = ps.executeQuery(); 
+			   rs = ps.executeQuery();
+			   int index = 0;
 			   while (rs.next()) {
-				  ItemResponses ir = itemMap.get(rs.getString("item_id"));
+				  ItemResponses ir = new ItemResponses();
+				  ir.setItemId(rs.getString("item_id"));
 				  ir.setResponseValue(rs.getString("response"));
+				  ir.setOriginalResponse(rs.getString("original_response"));
+				  ir.setIndex(index++);
 				  itemMap.put(rs.getString("item_id"), ir);
 			   }
 			   SqlUtil.close(ps, rs);
@@ -735,12 +741,20 @@ public class DataExportTABECAT {
 			   SqlUtil.close(ps, rs);
 			   
 			   Set<String> itemSet = itemMap.keySet();
-			   for(String itemId: itemSet) {
-				   ItemResponses ir = itemMap.get(itemId);
-				   itemIds.append(ir.getItemId() + ",");
-				   itemResponse.append(ir.getResponseValue());
-				   itemOrgResponse.append(ir.getOriginalResponse());
-				   resposneTime.append(ir.getResponseTime() + ",");
+			   List<String> itemList = new ArrayList<String>(itemSet);
+			   for(int i=0; i<itemCount; i++) {
+				   if(i < itemList.size()) {
+					   ItemResponses ir = itemMap.get(itemList.get(i));
+					   itemIds.append(ir.getItemId() + ",");
+					   itemResponse.append(ir.getResponseValue());
+					   itemOrgResponse.append(ir.getOriginalResponse());
+					   resposneTime.append(ir.getResponseTime() + ",");
+				   } else {
+					   itemIds.append(",");
+					   itemResponse.append(" ");
+					   itemOrgResponse.append(" ");
+					   resposneTime.append(",");
+				   }
 			   }
 			   response.append(itemIds.substring(0, itemIds.length() - 1)
 					   		 + itemResponse + itemOrgResponse
@@ -804,24 +818,17 @@ public class DataExportTABECAT {
 		}
 	}
 	
-	private static void getItemsForItemSet(Connection con, Integer itemSetId) 
+	private void getAllContentDomain(Connection con) 
     throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Map<String, ItemResponses> itemResponse = new HashMap<String, ItemResponses>(50);
 		try {
-			ps = con.prepareStatement(SQLQuery.GET_ITEMS_FOR_ITEM_SET_SQL);
-			ps.setInt(1, itemSetId);
+			ps = con.prepareStatement(SQLQuery.GET_ALL_CONTENT_DOMAIN_SQL);
+			ps.setInt(1, PRODUCT_ID);
 			rs = ps.executeQuery();
-			int index = 0;
 			while(rs.next()) {
-				ItemResponses ir = new ItemResponses();
-				ir.setItemId(rs.getString("item_id"));
-				ir.setOriginalResponse(rs.getString("correct_answer"));
-				ir.setIndex(++index);
-				itemResponse.put(ir.getItemId(), ir);
+				CONTENT_DOMAINS.put(rs.getString("item_set_name"), rs.getInt("item_set_id"));
 			}
-			ITEM_SET_ITEM.put(itemSetId, itemResponse);
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

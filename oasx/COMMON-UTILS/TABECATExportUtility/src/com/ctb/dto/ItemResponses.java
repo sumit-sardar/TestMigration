@@ -15,7 +15,7 @@ public class ItemResponses
 		this.index = index;
 	}
 	public String getOriginalResponse() {
-		return originalResponse;
+		return (originalResponse == null ? " ": originalResponse);
 	}
 	public void setOriginalResponse(String originalResponse) {
 		this.originalResponse = originalResponse;
