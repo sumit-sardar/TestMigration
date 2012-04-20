@@ -124,6 +124,7 @@ clear: both;
 						setAnchorButtonState('printTicketButton', true);
 						setAnchorButtonState('viewStatusButton', true);
 						$('#mStdManifest').hide();
+						$('#copySession').hide();
 						setAnchorButtonState('modifyStdManifestButton', true);
 						setAnchorButtonState('copySessionButton', true);
 						if(document.getElementById('selectedTestSessionId').value != ""){
