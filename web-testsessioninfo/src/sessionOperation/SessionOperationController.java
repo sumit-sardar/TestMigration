@@ -41,9 +41,12 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.CustomerReport;
+import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -63,6 +66,7 @@ import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.TimeZones;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
@@ -76,6 +80,7 @@ import com.ctb.testSessionInfo.data.SubtestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
+import com.ctb.testSessionInfo.dto.ReportManager;
 import com.ctb.testSessionInfo.dto.SubtestDetail;
 import com.ctb.testSessionInfo.dto.TestRosterFilter;
 import com.ctb.testSessionInfo.dto.TestRosterVO;
@@ -198,6 +203,16 @@ public class SessionOperationController extends PageFlowController {
 	
 	private List<String> studentGradesForCustomer;
 	
+    public ReportManager reportManager = null;
+    private CustomerReportData customerReportData = null;                
+    private UserNodeData userTopNodes = null;
+    private ProgramData userPrograms = null;
+    public LinkedHashMap timeZoneOptions = null;	 
+	
+	public LinkedHashMap getTimeZoneOptions() {
+		return timeZoneOptions;
+	}
+    
 	/**
 	 * @return the userName
 	 */
@@ -258,9 +273,9 @@ public class SessionOperationController extends PageFlowController {
 			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
 	        	forwardName = "resetPassword";
 	        }
-	        /*else if (this.user.getTimeZone() == null) {
+	        else if (this.user.getTimeZone() == null) {
 	        	forwardName = "editTimeZone";
-	        }*/
+	        }
 	        
 		}
 		else {
@@ -452,19 +467,63 @@ public class SessionOperationController extends PageFlowController {
     /**
      * @jpf:action
      */
-    @Jpf.Action()
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "set_timezone.jsp") 
+        }) 
     protected Forward setTimeZone()
-    {               
-        try
-        {
-            String url = "/UserManagementWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
+    {   /*  
+        initTimeZoneOptions();
+    	
+		try {
+			this.user = userManagement.getUser(this.userName, this.userName);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+        this.userProfile = new UserProfileInformation(this.user);   
+        
+        this.getRequest().setAttribute("organizationNodes", this.userProfile.getOrganizationNodes());
+        */
+        return new Forward("success");
+    }
+    
+    
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="gotoCurrentUI.do"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success", path = "gotoCurrentUI.do"),
+        @Jpf.Forward(name = "error", path = "set_timezone.jsp") 
+    })
+    protected Forward saveTimeZone()
+    {
+    	String forwardName = "success";
+    	
+        return new Forward(forwardName);    	
+    }
+    
+    
+    /**
+     * initTimeZoneOptions	
+    */
+    private void initTimeZoneOptions()
+    {        
+        this.timeZoneOptions = new LinkedHashMap();              
+        this.timeZoneOptions.put("", Message.SELECT_TIME_ZONE);
+          
+        try {
+            TimeZones[] timeZones = this.userManagement.getTimeZones();
+            if (timeZones != null) {
+               for (int i = 0 ; i < timeZones.length ; i++) {
+                    this.timeZoneOptions.put(timeZones[i].getTimeZone(), 
+                            timeZones[i].getTimeZoneDesc());
+                } 
+            }
+            
         }
-        return null;
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     @Jpf.Action()
@@ -2972,7 +3031,144 @@ public class SessionOperationController extends PageFlowController {
     }
 
     
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "home",
+                         path = "turnleaf_report_home.jsp"), 
+            @Jpf.Forward(name = "report",
+                         path = "turnleaf_reports.jsp")
+        })
+    protected Forward viewReports()
+    {
+        if (this.reportManager == null)
+        {
+        	initReportManager();
+        }
+        
+        String selectedReport = (String)this.getRequest().getParameter("report");
+        
+        Integer programId = this.reportManager.getSelectedProgramId();
+        Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
+        List reportList = buildReportList(orgNodeId, programId);
+        String reportUrl = buildReportUrl(selectedReport, reportList);        
+        
+        
+        this.getRequest().setAttribute("reportList", reportList);
+        this.getRequest().setAttribute("selectedReport", selectedReport);
+        this.getRequest().setAttribute("reportUrl", reportUrl);
+
+        this.getRequest().setAttribute("programList", this.reportManager.getProgramNames());
+        this.getRequest().setAttribute("program", this.reportManager.getSelectedProgramName());
+
+        this.getRequest().setAttribute("organizationList", this.reportManager.getOrganizationNames());
+        this.getRequest().setAttribute("organization", this.reportManager.getSelectedOrganizationName());
+
+        this.getRequest().setAttribute("multipleProgram", this.reportManager.isMultiplePrograms());
+        this.getRequest().setAttribute("multipleOrganizations", this.reportManager.isMultipleOrganizations());
+        this.getRequest().setAttribute("singleProgOrg", this.reportManager.isSingleProgramAndOrganization());
+
+        if (selectedReport == null) 
+            return new Forward("home");
+        else 
+            return new Forward("report");
+    }
+
+    private void initReportManager()
+    {
+        try
+        {            
+            SortParams orgNodeNameSort = FilterSortPageUtils.buildSortParams("OrgNodeName", "asc");                        
+            this.userTopNodes = this.testSessionStatus.getTopUserNodesForUser(this.userName, null, null, null, orgNodeNameSort);
+                        
+            String[] sortNames = new String[2];
+            sortNames[0] = "ProductId"; 
+            sortNames[1] = "ProgramStartDate"; 
+            String[] sortOrderBys = new String[2];
+            sortOrderBys[0] = "asc";
+            sortOrderBys[1] = "desc";
+            SortParams programNameSort = FilterSortPageUtils.buildSortParams(sortNames, sortOrderBys);    
+                               
+            this.userPrograms = testSessionStatus.getProgramsForUser(this.userName, null, null, programNameSort);
+            
+            this.reportManager = new ReportManager();
+            this.reportManager.initPrograms(this.userPrograms);
+            this.reportManager.initOrganizations(this.userTopNodes);    
+        	
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+    }
+    
+    /**
+     * buildReportList
+     */
+    private List buildReportList(Integer orgNodeId, Integer programId)
+    {
+    	
+        this.customerReportData = getCustomerReportData(orgNodeId, programId);
+        
+        List reportList = new ArrayList();
+        CustomerReport[] crs = this.customerReportData.getCustomerReports();
+        
+        for (int i=0; i < crs.length; i++)
+        {                
+            CustomerReport cr = crs[i];
+            if (! cr.getReportName().equals("IndividualProfile"))
+            {
+            	reportList.add(cr);
+            }
+        }           
+                         
+        return reportList; 
+    }
+
+    /**
+     * buildReportUrl
+     */
+    private String buildReportUrl(String reportName, List reportList)
+    {
+        String reportUrl = null;
+        if (reportName != null)
+        {        
+            for (int i=0; i < reportList.size(); i++)
+            {                
+                CustomerReport cr = (CustomerReport)reportList.get(i);
+                if (cr.getReportName().equals(reportName))
+                {
+                    reportUrl = cr.getReportUrl();
+                }
+            }
+        }                    
+        
+        return reportUrl; 
+    }
+    
+    private CustomerReportData getCustomerReportData(Integer orgNodeId, Integer programId) 
+    {
+        if (orgNodeId == null)
+        {
+            orgNodeId = this.reportManager.setSelectedOrganization(null);
+        }
+        if (programId == null)
+        {
+            programId = this.reportManager.setSelectedProgram(null);
+        }
+        
+        CustomerReportData crd = null;
+        try
+        {      
+            SortParams sort = FilterSortPageUtils.buildSortParams("DisplayName", "asc");            
+            crd = this.testSessionStatus.getCustomerReportData(this.userName, orgNodeId, programId, null, null, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return crd;
+    }
+    
     /**
      * SERVICES actions
      */
