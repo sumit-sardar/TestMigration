@@ -153,7 +153,7 @@ public class DataExportTABECAT {
 				fillObjective(oascon, irscon,catData,roster);
 				prepareItemResponses(oascon, catData, roster);
 				tabeFileList.add(catData);	
-				System.out.println("Record Processed: " + count++);
+				System.out.println("Record Processed: " + ++count);
 			}
 			System.out.println("Toal records: " + count);
 		} finally {
