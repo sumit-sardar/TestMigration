@@ -167,6 +167,11 @@ function populateGrid(){
 	  		gridloadedStu = true;
 			populateScoringStudentGrid();
 		} else {
+			var grid = $("#studentScoringGrid"); 
+			$("#searchStudentByKeywordInput").val('');
+			if(grid[0] != undefined && grid[0].p != undefined) {
+			 grid[0].p.search = false;
+			 }
 			gridScoringStudentReload();
 		}
 		if(gridloadedSes) {
@@ -178,6 +183,11 @@ function populateGrid(){
 	  		gridloadedSes = true;
 			populateScoringSessionGrid();
 		} else {
+			var grid = $("#sessionScoringGrid"); 
+			$("#searchSessionByKeywordInput").val('');
+			if(grid[0] != undefined && grid[0].p != undefined) {
+			 grid[0].p.search = false;
+			 }
 			gridScoringSessionReload();
 		}
 		if(gridloadedSes) {
@@ -367,7 +377,9 @@ function sessionScoring() {
 				width: '1024px',
 				modal: true,
 				closeOnEscape: false,
-				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();
+					//$(".ui-pg-input",this).css('position','relative').css('z-index',10000);
+				}
 			});
 			$("#scoreByStudentItemList").hide();
 			$("#sessionScoringAccordion").accordion('activate',0);
@@ -388,7 +400,9 @@ function sessionScoring() {
 				width: '1024px',
 				modal: true,
 				closeOnEscape: false,
-				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();
+					$(".ui-pg-input",this).css('position','relative').css('z-index',2000);
+				}
 			});		
 	
 			setPopupPosition('studentScoringId');
@@ -1261,7 +1275,7 @@ function searchStudentByKeyword(){
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 		 }
 		 grid.trigger("reloadGrid",[{page:1,current:true}]);
-		 closePopUp('searchUserByKeyword');
+		 closePopUp('searchStudentByKeyword');
 	}
 	
 	function searchSessionByKeyword(){
