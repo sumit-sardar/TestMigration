@@ -1231,7 +1231,7 @@ public class SessionOperationController extends PageFlowController {
 	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminId);
 	    	List<UserProfileInformation> proctors = null;
 	    	if(action != null && action.equals("copySession")){
-	    		proctors = buildProctorListForCopySession(scheduledSession.getProctors());
+	    		proctors = buildProctorListForCopySession(this.user,scheduledSession.getProctors());
 	    	}else{
 	    		proctors = buildProctorList(scheduledSession.getProctors());
 	    	}
@@ -5831,8 +5831,9 @@ public class SessionOperationController extends PageFlowController {
 		}
 //**Changes for copy test session
 		
-		public List<UserProfileInformation> buildProctorListForCopySession(User[] users) {
+		public List<UserProfileInformation> buildProctorListForCopySession(User schedular, User[] users) {
 	        ArrayList<UserProfileInformation> userList = new ArrayList<UserProfileInformation>();
+	        boolean isDefaultSchedularExists = false;
 	        if (users != null) {
 	            //User[] users = uData.getUsers();
 	            if(users != null){
@@ -5840,8 +5841,9 @@ public class SessionOperationController extends PageFlowController {
 	                    User user = users[i];
 	                    if (user != null && user.getUserName() != null) {
 	                        UserProfileInformation userDetail = new UserProfileInformation(user);
-	                        if(user.getDefaultScheduler().equals("T")){
+	                        if(schedular.getUserId().intValue() == user.getUserId().intValue()){
 	                        	userDetail.setDefaultScheduler("T");
+	                        	isDefaultSchedularExists = true;
 	                        	
 	                        }else {
 	                        	userDetail.setDefaultScheduler("F");
@@ -5855,6 +5857,12 @@ public class SessionOperationController extends PageFlowController {
 	                }
 	            }
 	        }
+	        if(!isDefaultSchedularExists){
+	        	 UserProfileInformation userDetail = new UserProfileInformation(this.user);
+	        	 userDetail.setDefaultScheduler("T");
+	        	 userList.add(userDetail);
+	        }
+	        
 	        return userList;
 	    }
 		
