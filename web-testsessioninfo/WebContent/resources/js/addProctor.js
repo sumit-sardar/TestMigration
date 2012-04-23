@@ -26,11 +26,13 @@ var tempProctorData = {};
 var tempAllSelectOrgProctor= {};
 var onloadGrid = false;
 var previousSavedProctorData =[];
+var existingProctorCount = 0;
 
 function showSelectProctor(){
 	$("#proctorAddDeleteInfo").hide();
 	$("#Proctor_Tab").css('display', 'none');
 	$("#Select_Proctor_Tab").css('display', 'block');
+	existingProctorCount = addProctorLocaldata.length;
 	if(orgTreeHierarchy == "" || orgTreeHierarchy ==undefined) {
 		populateProctorTree();
 	} else {
@@ -454,14 +456,6 @@ function returnSelectedProctor() {
 
 	var val= [] ;
 	var previousDataCount = 0;
-	var previousData = tempProctorData;
-	
-	
-	for (var i in previousData) {		
-		previousDataCount++;
-	}
-	
-	
 	var message = "";
 		
 	delete tempOrgDataInform;
@@ -487,15 +481,15 @@ function returnSelectedProctor() {
 		tempOrgDataInform[j] = count;
 	}
 	$("#proctorAddDeleteInfo").show();
-	if (val.length > previousDataCount && val.length > 1){	
-		if (previousDataCount == 0){
-			previousDataCount = 1;
-		}
-		var value = val.length - previousDataCount;
+	if (existingProctorCount == 0){
+		existingProctorCount = 1;
+	}
+	if (val.length > existingProctorCount && val.length > 1){	
+		var value = val.length - existingProctorCount;
 		message = value + "  " + $("#procAddMsg").val();			
 	}
-	else if(val.length < previousDataCount) {
-		var value = previousDataCount - val.length;
+	else if(val.length < existingProctorCount) {
+		var value = existingProctorCount - val.length;
 		message = value + "  " + $("#procDelMsg").val();			
 	}
 	else {
