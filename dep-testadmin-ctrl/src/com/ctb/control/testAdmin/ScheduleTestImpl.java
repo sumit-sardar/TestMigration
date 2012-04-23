@@ -829,9 +829,9 @@ public class ScheduleTestImpl implements ScheduleTest
             throw tee;
         }
     }
-    
+     
     private String getOrderString(SortParams sort) {
-    	 String searchOrder = " order by lastName";
+    	 String searchOrder = " order by upper(lastName)";
         if (sort != null){
         	SortParam [] params = sort.getSortParams();
         	
@@ -840,11 +840,11 @@ public class ScheduleTestImpl implements ScheduleTest
         		SortType type = param.getType();
         		String field = param.getField();
         		if (field.equalsIgnoreCase("FirstName")){
-        			searchOrder = " order by firstName ";
+        			searchOrder = " order by upper(firstName) ";
         		} else if (field.equalsIgnoreCase("LastName")){
-        			searchOrder = " order by lastName ";
+        			searchOrder = " order by upper(lastName) ";
         		} else if (field.equalsIgnoreCase("MiddleName")){
-        			searchOrder = " order by middleName ";
+        			searchOrder = " order by upper(middleName) ";
         		} else if (field.equalsIgnoreCase("Grade")){
         			searchOrder = " order by grade ";
         		} else if (field.equalsIgnoreCase("Calculator")){
@@ -3704,6 +3704,21 @@ public class ScheduleTestImpl implements ScheduleTest
     	 try {
 
     		 TestElement test = itemSet.getTestElementMinInfoById(customerId, itemsetIdTC);
+    		 test.setForms(itemSet.getFormsForTest(test.getItemSetId()));
+    		 return test;
+    	 } catch (SQLException se){
+    		 UserDataNotFoundException tee = new UserDataNotFoundException("ScheduleTestImpl: getTestElementMinInfoById: " + se.getMessage());
+             tee.setStackTrace(se.getStackTrace());
+             throw tee;
+    	 }
+    	
+    }
+
+    public TestElement getTestElementMinInfoByIds(Integer customerId, Integer itemsetIdTC, Integer orgNodeId) throws CTBBusinessException
+    {
+    	 try {
+
+    		 TestElement test = itemSet.getTestElementMinInfoByIds(customerId, itemsetIdTC, orgNodeId);
     		 test.setForms(itemSet.getFormsForTest(test.getItemSetId()));
     		 return test;
     	 } catch (SQLException se){
