@@ -394,18 +394,6 @@ function sessionScoring() {
 			setPopupPosition('studentScoringId');
 	}
 	
-
-
-function scoreByStudentGridReload(){
-	var postDataObject = {};
-	postDataObject.q = 2;
- 	postDataObject.testAdminId = selectedTestAdminId;
-	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam', {url:'getStudentListForScoreByStudent.do',postData:postDataObject,page:1}).trigger("reloadGrid");
-	jQuery("#scoreByStudentListGrid").sortGrid('userName',true,'asc');
-
-}
-	
 	
 function fillStudentFields(){
 	$("#studentNameScr").text(selectedRData.studentName);
