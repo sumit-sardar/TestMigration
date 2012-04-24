@@ -34,6 +34,8 @@ import com.ctb.utils.Utility;
 public class TABEOnlineDataExport {
 	
 	private static String CUSTOMER_IDs = ExtractUtil.getDetail("oas.customerIds");
+	private static Integer START_ROSTER_ID = null;
+	private static Integer END_ROSTER_ID = null;
 	private static Integer PRODUCT_ID = Integer.valueOf(ExtractUtil.getDetail("oas.productId"));
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
@@ -54,12 +56,21 @@ public class TABEOnlineDataExport {
 				if(args[0] != null) {
 					CUSTOMER_IDs = args[0];
 				}
-				if(args[1] != null) {
+				if(args.length == 2 && args[1] != null) {
 					PRODUCT_ID = Integer.valueOf(args[1]);
 				}
 			}
 			System.out.println("Customer Id: " + CUSTOMER_IDs);
 			System.out.println("Product Id: " + PRODUCT_ID);
+			
+			if(ExtractUtil.getDetail("oas.start.rosterId") != null) {
+				START_ROSTER_ID = Integer.valueOf(ExtractUtil.getDetail("oas.start.rosterId"));
+				System.out.println("Start roster Id: " + START_ROSTER_ID);
+			}
+			if(ExtractUtil.getDetail("oas.end.rosterId") != null) {
+				END_ROSTER_ID = Integer.valueOf(ExtractUtil.getDetail("oas.end.rosterId"));
+				System.out.println("End roster Id: " + END_ROSTER_ID);
+			}
 			dataExport.writeToText();
 		}
 		catch (IOException e) {
@@ -263,16 +274,22 @@ public class TABEOnlineDataExport {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
 		List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		String customerCond = " and tr.customer_id in (" + CUSTOMER_IDs + ") order by tr.customer_id ";
+		String customerCond = SQLQuery.testRosterSql;
 		String query = null;
 		try{
-			if(CUSTOMER_IDs != null) {
-				query = SQLQuery.testRosterSql.replace(":customerIds", customerCond);
-			} else {
-				query = SQLQuery.testRosterSql.replace(":customerIds", "");
+			if(START_ROSTER_ID != null) {
+				customerCond += " and tr.test_roster_id >= " + START_ROSTER_ID;
+			} 
+			if(END_ROSTER_ID != null) {
+				customerCond += " and tr.test_roster_id <= " + END_ROSTER_ID;
 			}
+			if(CUSTOMER_IDs != null) {
+				customerCond += " and tr.customer_id in (" + CUSTOMER_IDs + ") ";
+			}
+			customerCond += " order by tr.customer_id, tr.test_roster_id";
 			ps = con.prepareStatement(query);
 			ps.setInt(1, PRODUCT_ID);
+			
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){

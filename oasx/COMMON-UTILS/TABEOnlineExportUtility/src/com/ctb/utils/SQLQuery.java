@@ -104,7 +104,7 @@ public class SQLQuery {
         + " and ta.test_catalog_id = tc.test_catalog_id"
         + " and ta.login_start_date > SYSDATE - 365"
         + " and ta.product_id = p.product_id "
-        + " and ta.product_id = ? :customerIds";
+        + " and ta.product_id = ? ";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
