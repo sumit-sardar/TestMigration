@@ -274,22 +274,22 @@ public class TABEOnlineDataExport {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
 		List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		String customerCond = SQLQuery.testRosterSql;
-		String query = null;
+		String query = SQLQuery.testRosterSql;
 		try{
 			if(START_ROSTER_ID != null) {
-				customerCond += " and tr.test_roster_id >= " + START_ROSTER_ID;
+				query += " and tr.test_roster_id >= " + START_ROSTER_ID;
 			} 
 			if(END_ROSTER_ID != null) {
-				customerCond += " and tr.test_roster_id <= " + END_ROSTER_ID;
+				query += " and tr.test_roster_id <= " + END_ROSTER_ID;
 			}
 			if(CUSTOMER_IDs != null) {
-				customerCond += " and tr.customer_id in (" + CUSTOMER_IDs + ") ";
+				query += " and tr.customer_id in (" + CUSTOMER_IDs + ") ";
 			}
-			customerCond += " order by tr.customer_id, tr.test_roster_id";
+			query += " order by tr.customer_id, tr.test_roster_id";
+			System.out.println("Test roster SQL : " + query);
+			
 			ps = con.prepareStatement(query);
 			ps.setInt(1, PRODUCT_ID);
-			
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){
