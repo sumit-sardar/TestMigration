@@ -378,9 +378,7 @@ function sessionScoring() {
 				width: '1024px',
 				modal: true,
 				closeOnEscape: false,
-				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();
-					//$(".ui-pg-input",this).css('position','relative').css('z-index',10000);
-				}
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 			});
 			$("#scoreByStudentItemList").hide();
 			$("#sessionScoringAccordion").accordion('activate',0);
@@ -872,10 +870,9 @@ function populateScoreByItemGrid(){
             	}
 				$.unblockUI();  
 				$("#itemListGrid").setGridParam({datatype:'local'});
-				var tdList = ("#itemListPager_left table.ui-pg-table  td");
-				for(var i=0; i < tdList.length; i++){
-					$(tdList).eq(i).attr("tabIndex", i+1);
-				}
+				
+				//Added to make text box in pager editable. Problem was due to modal, but we cannot discard modal.
+				$("#itemListPager .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -893,6 +890,7 @@ function gridTestItemReload(){
 	jQuery("#itemListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#itemListGrid").jqGrid('setGridParam', {url:'findItemDetail.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#itemListGrid").sortGrid('itemSetOrder',true,'asc');
+	$("#itemListPager .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 }
 
 
@@ -963,10 +961,7 @@ function populateScoreByStudentGrid() {
             	}
 				$.unblockUI();  
 				$("#scoreByStudentListGrid").setGridParam({datatype:'local'});
-				var tdList = ("#scoreByStudentListPager_left table.ui-pg-table  td");
-				for(var i=0; i < tdList.length; i++){
-					$(tdList).eq(i).attr("tabIndex", i+1);
-				}
+				$("#scoreByStudentListPager .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -985,6 +980,7 @@ function scoreByStudentGridReload(){
 	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#scoreByStudentListGrid").jqGrid('setGridParam', {url:'getStudentListForScoreByStudent.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#scoreByStudentListGrid").sortGrid('userName',true,'asc');
+	$("#scoreByStudentListPager .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 
 }
 
@@ -1142,6 +1138,7 @@ function populateSBIStudentGrid(itemSetId, itemId) {
             	}
 				$.unblockUI();  
 				$("#itemStudentListGridSBI").setGridParam({datatype:'local'});
+				$("#itemStudentListPagerSBI .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -1163,6 +1160,7 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 	jQuery("#itemStudentListGridSBI").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#itemStudentListGridSBI").jqGrid('setGridParam', {url:'getStudentListForItem.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#itemStudentListGridSBI").sortGrid('userName',true,'asc');
+	$("#itemStudentListPagerSBI .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 }
 
 
@@ -1231,6 +1229,7 @@ function populateSBSItemListGrid() {
             	}
 				$.unblockUI();  
 				$("#studentItemListGridSBS").setGridParam({datatype:'local'});
+				$("#studentItemListPagerSBS .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -1251,6 +1250,7 @@ function gridStudentItemReloadSBS(){
 	jQuery("#studentItemListGridSBS").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#studentItemListGridSBS").jqGrid('setGridParam', {url:'beginDisplayStudItemList.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#studentItemListGridSBS").sortGrid('itemSetName',true,'asc');
+	$("#studentItemListPagerSBS .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 }
 
 /******JqGrid Search Implementation*****/
