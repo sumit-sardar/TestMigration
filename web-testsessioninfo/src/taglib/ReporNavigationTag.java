@@ -59,13 +59,13 @@ public class ReporNavigationTag extends CTBTag
 
                 if (this.selectedReport.equals(reportName)) {
                     displayCellStart("currentNav");
-                        writeToPage("<a href=\"/SessionWeb/homepage/viewReports.do?report=" + reportName + "\">" + displayName + "</a>");
+                        writeToPage("<a href=\"/SessionWeb/sessionOperation/TABEReport.do?report=" + reportName + "\">" + displayName + "</a>");
                     displayCellEnd();
                 }
                 else {
                     displayCellStart(null);
                         String content = verticalBar;
-                        content += "<a href=\"/SessionWeb/homepage/viewReports.do?report=" + reportName + "\">" + displayName + "</a>";
+                        content += "<a href=\"/SessionWeb/sessionOperation/TABEReport.do?report=" + reportName + "\">" + displayName + "</a>";
                         writeToPage(content);
                         
                         if (i < this.reportList.size()-1) {

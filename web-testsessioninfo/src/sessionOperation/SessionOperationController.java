@@ -471,7 +471,7 @@ public class SessionOperationController extends PageFlowController {
             @Jpf.Forward(name = "success", path = "set_timezone.jsp") 
         }) 
     protected Forward setTimeZone()
-    {   /*  
+    {   
         initTimeZoneOptions();
     	
 		try {
@@ -482,7 +482,7 @@ public class SessionOperationController extends PageFlowController {
         this.userProfile = new UserProfileInformation(this.user);   
         
         this.getRequest().setAttribute("organizationNodes", this.userProfile.getOrganizationNodes());
-        */
+        
         return new Forward("success");
     }
     
@@ -1920,7 +1920,7 @@ public class SessionOperationController extends PageFlowController {
 				 existingTestSession = savedSessionMinData.getTestSession();
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
-			 TestElement selectedTest = scheduleTest.getTestElementMinInfoById(this.getCustomerId(), itemSetId); 
+			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, creatorOrgNod); 
 			 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
 				 formOperand = selectedTest.getOverrideFormAssignmentMethod();
 	           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {
@@ -3015,9 +3015,8 @@ public class SessionOperationController extends PageFlowController {
      * REPORTS actions
      */    
     @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "reports.jsp"), 
-            @Jpf.Forward(name = "viewReports", path = "viewReports.do") 
-            
+            @Jpf.Forward(name = "TABEReport", path = "TABEReport.do"),             
+            @Jpf.Forward(name = "LasLinksReport", path = "LasLinksReport.do")             
         }) 
     protected Forward reports()
     {
@@ -3027,8 +3026,10 @@ public class SessionOperationController extends PageFlowController {
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
     	    	
-        return new Forward("success");
-        //return new Forward("viewReports");
+		if (isLaslinkCustomer(customerConfigs)) 		
+			return new Forward("LasLinksReport");
+		else
+			return new Forward("TABEReport");
     }
 
     
@@ -3038,7 +3039,7 @@ public class SessionOperationController extends PageFlowController {
             @Jpf.Forward(name = "report",
                          path = "turnleaf_reports.jsp")
         })
-    protected Forward viewReports()
+    protected Forward TABEReport()
     {
         if (this.reportManager == null)
         {
@@ -3074,6 +3075,29 @@ public class SessionOperationController extends PageFlowController {
             return new Forward("report");
     }
 
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "immediate_report_home.jsp") 
+        })
+    protected Forward LasLinksReport()
+    {
+        return new Forward("success");
+    }
+
+    @Jpf.Action()
+    protected Forward immediateReport()
+    {
+        try
+        {
+            String url = "/ImmediateReportWeb/immediateReportByStudent/beginIndivStudentScoring.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
     private void initReportManager()
     {
         try

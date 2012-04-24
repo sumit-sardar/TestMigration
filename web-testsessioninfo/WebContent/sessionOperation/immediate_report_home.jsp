@@ -21,25 +21,16 @@
 <!-- ********************************************************************************************************************* -->
 <%
     List reportList = (List)request.getAttribute("reportList");
-    Boolean multipleProgram = (Boolean)request.getAttribute("multipleProgram");
-    Boolean multipleOrganizations = (Boolean)request.getAttribute("multipleOrganizations");
-    Boolean singleProgOrg = (Boolean)request.getAttribute("singleProgOrg");
 %>
 
-<netui:form action="TABEReport">
+<netui:form action="LasLinksReport">
 
 <table border="0" width="97%" style="margin:15px auto;">
 <tr><td>
 
 <h1><netui:content value="Reports"/></h1>
 <p>
-<c:if test="${singleProgOrg}"> 
     <netui:content value="Click a report name to view the report."/>
-</c:if>
-    
-<c:if test="${multipleProgram || multipleOrganizations}"> 
-    <netui:content value="Select program and/or organization to view a list of associated reports. Click a report name to view the report."/>
-</c:if>
 </p>
 
 
@@ -49,32 +40,30 @@
 <tr class="transparent">
     <td class="transparent">Customer Program:</td>
     <td class="transparent">
-<c:if test="${multipleProgram}">    
-        <netui:select tagId="program" optionsDataSource="${requestScope.programList}" dataSource="requestScope.program" onChange="getReportList();" size="1" style="width:300px"/>
-</c:if>        
-<c:if test="${! multipleProgram}">    
         <netui:span value="${requestScope.program}"/>
-</c:if>        
     </td>
 </tr>    
 <tr class="transparent">
     <td class="transparent">User Organization:</td>
     <td class="transparent">
-<c:if test="${multipleOrganizations}">    
-        <netui:select tagId="organization" optionsDataSource="${requestScope.organizationList}" dataSource="requestScope.organization" onChange="getReportList();" size="1" style="width:300px"/>
-</c:if>        
-<c:if test="${! multipleOrganizations}">    
         <netui:span value="${requestScope.organization}"/>
-</c:if>        
     </td>
 </tr>    
 </table>    
 </p>
 
 
-<!-- TURNLEAF REPORT LIST -->
-<div id="reportlists" style="height: 500px">
-    <jsp:include page="turnleaf_report_list.jsp" />  
+<div id="reportlists" style="height: 300px;">
+<table class="transparent">
+<tbody>
+<tr class="transparent">
+<td class="transparent" valign="top" width="32">&nbsp;</td>
+<td class="transparent" valign="top" width="650">
+<li style="list-style-type: square;"><a href="/SessionWeb/sessionOperation/immediateReport.do" style="display: inline;">Immediate Scores</a>
+</li>Displays the immediate scores obtained by the student in standard format.
+</td>		
+</tr>
+</table>
 </div>
 
 </td></tr></table>
