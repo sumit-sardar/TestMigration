@@ -162,6 +162,7 @@ function createSingleNodeScoringTree(jsondata) {
 
 function populateGrid(){
 	UIBlock();
+	resetFilters();
 	if(currentView=="student") {
 		if(!gridloadedStu) {
 	  		gridloadedStu = true;
