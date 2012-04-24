@@ -5,12 +5,26 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<lb:bundle baseName="testsessionApplicationResource" />
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html lang="en">
 
 <head>
-    <link href="<%=request.getContextPath()%>/resources/css/legacy.css" type="text/css" rel="stylesheet" />
-    <link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
+  	<title>Report</title>
+
+	<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
+	<link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet" type="text/css" />
+	<link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/resources/css/widgets_NEW.css" type="text/css" rel="stylesheet" />
+          
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script> 
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
+
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/embed.js"></script>    
@@ -29,15 +43,45 @@
 %>
 
 
+
+
+<!-- MAIN BODY -->
+<table class="simpleBody">
+	<tr>
+		<td align="center" valign="top" >
+			<table class="bodyLayout">
+
+				<!-- HEADER SECTION -->
+				<tr class="bodyLayout">
+					<td>
+					 
+						<table class="headerLayout" >
+							<tr>
+								<td align="left" width="100%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+
+				<!-- BODY SECTION -->
+				<tr>
+				  	<td align="left" valign="top">
+
+<div class="feature">
+
+  	<div class="feature" style="background-color: #ffffff; border:0px; padding: 10px;">
+      	
+<table border=0 width="100%">
+<tr>
+    <td style="padding: 0px;">
+        <!-- Begin content-->
+        
 <table style="border-collapse: collapse; border-style: none; border-width: 0px; width: 100%; height: 100%; margin: 0px; padding: 0px; ">
 
 <tr>
     <td style="vertical-align: top; margin: 0px; padding: 0px;">
     
-        <!-- HEADER -->
-        <jsp:include page="/resources/jsp/report_header.jsp" />        
-
-
         <!-- NAVIGATION -->
         <jsp:include page="/resources/jsp/report_navigation.jsp" />        
         
@@ -64,20 +108,41 @@
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>
     <td style="background-color: #fff; width: 100%; height: 100%; vertical-align: top; margin: 0px; padding: 0px;">
-        <iframe src="<%= reportUrl %>" style="width: 100%; height: 100%;" frameborder="0" ></iframe>
-    </td>
-</tr>
-
- 
-    
-<!-- FOOTER -->
-<tr>
-    <td style="vertical-align: bottom; margin: 0px; padding: 0px;">
-        <jsp:include page="/resources/jsp/footer.jsp" />  
+        <iframe src="<%= reportUrl %>" style="width: 100%; height: 500px;" frameborder="0" ></iframe>
     </td>
 </tr>
 
 </table>
+        
+	</td>
+</tr>
+
+
+
+</table>
+
+	</div>
+</div>
+
+</td></tr>
+
+
+				<tr>
+				  	<td align="left" valign="top">
+    					<jsp:include page="/resources/jsp/oas_footer.jsp" />  
+				  	</td>
+				</tr>
+
+</table>
+
+</td></tr>
+
+
+
+
+</table>
+
+
     
     
 </body>

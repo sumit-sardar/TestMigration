@@ -3016,7 +3016,8 @@ public class SessionOperationController extends PageFlowController {
      */    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "TABEReport", path = "TABEReport.do"),             
-            @Jpf.Forward(name = "LasLinksReport", path = "LasLinksReport.do")             
+            @Jpf.Forward(name = "LasLinksReport", path = "LasLinksReport.do"),             
+            @Jpf.Forward(name = "temporary", path = "reports.jsp")             
         }) 
     protected Forward reports()
     {
@@ -3025,14 +3026,17 @@ public class SessionOperationController extends PageFlowController {
 		getUserDetails();
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
-    	    	
+
+		return new Forward("temporary");
+		/*
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("LasLinksReport");
 		else
 			return new Forward("TABEReport");
+		*/
     }
 
-    
+     
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "home",
                          path = "turnleaf_report_home.jsp"), 

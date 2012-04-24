@@ -32,18 +32,20 @@
 <tr><td>
 
 <h1><netui:content value="Reports"/></h1>
-<p>
 <c:if test="${singleProgOrg}"> 
+<p>
     <netui:content value="Click a report name to view the report."/>
-</c:if>
-    
-<c:if test="${multipleProgram || multipleOrganizations}"> 
-    <netui:content value="Select program and/or organization to view a list of associated reports. Click a report name to view the report."/>
-</c:if>
 </p>
+</c:if>
+
+<c:if test="${multipleProgram || multipleOrganizations}"> 
+<p>    
+    <netui:content value="Select program and/or organization to view a list of associated reports. Click a report name to view the report."/>
+</p>
+</c:if>
 
 
-
+<br/>
 <p>
 <table class="transparent">
 <tr class="transparent">
@@ -70,10 +72,11 @@
 </tr>    
 </table>    
 </p>
+<br/>
 
 
 <!-- TURNLEAF REPORT LIST -->
-<div id="reportlists" style="height: 500px">
+<div id="reportlists" style="height: 300px">
     <jsp:include page="turnleaf_report_list.jsp" />  
 </div>
 
