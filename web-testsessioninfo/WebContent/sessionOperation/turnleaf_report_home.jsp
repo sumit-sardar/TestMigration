@@ -16,6 +16,8 @@
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.home']}"/>
 <netui-template:section name="bodySection">
  
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/report_list.js"></script>  
+
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
@@ -27,6 +29,7 @@
 %>
 
 <netui:form action="TABEReport">
+<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
 <table border="0" width="97%" style="margin:15px auto;">
 <tr><td>
@@ -76,7 +79,7 @@
 
 
 <!-- TURNLEAF REPORT LIST -->
-<div id="reportlists" style="height: 300px">
+<div id="reportlists" style="height: auto">
     <jsp:include page="turnleaf_report_list.jsp" />  
 </div>
 

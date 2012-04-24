@@ -3027,13 +3027,14 @@ public class SessionOperationController extends PageFlowController {
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
 
-		return new Forward("temporary");
-		/*
+		
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("LasLinksReport");
 		else
 			return new Forward("TABEReport");
-		*/
+		
+
+		//return new Forward("temporary");
     }
 
      
@@ -3172,6 +3173,29 @@ public class SessionOperationController extends PageFlowController {
         }                    
         
         return reportUrl; 
+    }
+    
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="turnleaf_report_list.jsp"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "turnleaf_report_list.jsp")
+    })
+    protected Forward getReportList()
+    {
+        String programIndex = this.getRequest().getHeader("programIndex");        
+        String organizationIndex = this.getRequest().getHeader("organizationIndex");
+        
+        Integer programId = this.reportManager.setSelectedProgram(programIndex);
+        Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
+        
+        List reportList = buildReportList(orgNodeId, programId);
+
+        this.getRequest().setAttribute("reportList", reportList);
+
+        return new Forward("success");
     }
     
     private CustomerReportData getCustomerReportData(Integer orgNodeId, Integer programId) 

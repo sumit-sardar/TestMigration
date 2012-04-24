@@ -72,7 +72,7 @@
 
   	<div class="feature" style="background-color: #ffffff; border:0px; padding: 10px;">
       	
-<table border=0 width="100%">
+<table border=0 width="100%" height="100%">
 <tr>
     <td style="padding: 0px;">
         <!-- Begin content-->
@@ -108,7 +108,7 @@
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>
     <td style="background-color: #fff; width: 100%; height: 100%; vertical-align: top; margin: 0px; padding: 0px;">
-        <iframe src="<%= reportUrl %>" style="width: 100%; height: 500px;" frameborder="0" ></iframe>
+        <iframe src="<%= reportUrl %>" frameborder="0" height="500px" width="100%" ></iframe>
     </td>
 </tr>
 

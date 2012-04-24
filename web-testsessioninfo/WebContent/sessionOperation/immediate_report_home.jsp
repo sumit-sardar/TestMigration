@@ -24,6 +24,7 @@
 %>
 
 <netui:form action="LasLinksReport">
+<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
 <table border="0" width="97%" style="margin:15px auto;">
 <tr><td>
@@ -53,7 +54,7 @@
 </p>
 
 
-<div id="reportlists" style="height: 300px;">
+<div id="reportlists" style="height: auto;">
 <table class="transparent">
 <tbody>
 <tr class="transparent">
