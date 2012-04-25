@@ -155,7 +155,7 @@ public class DataExportTABECAT {
 				tabeFileList.add(catData);	
 				System.out.println("Record Processed: " + ++count);
 			}
-			System.out.println("Toal records: " + count);
+			System.out.println("Total records: " + count);
 		} finally {
 			SqlUtil.close(oascon);
 			SqlUtil.close(irscon);
@@ -681,7 +681,7 @@ public class DataExportTABECAT {
 	   TestRoster roster) throws IOException, Exception {
 	   PreparedStatement ps = null ;
 	   ResultSet rs = null;
-	   Map<String, ItemResponses> itemMap = new HashMap<String, ItemResponses>();
+	   Map<String, ItemResponses> itemMap = new LinkedHashMap<String, ItemResponses>();
 	   StringBuilder response = new StringBuilder();
 	   try {
 		   getContentDomain(con, roster.getTestRosterId());

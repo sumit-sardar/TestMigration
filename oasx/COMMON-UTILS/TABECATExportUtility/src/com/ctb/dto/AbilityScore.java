@@ -46,6 +46,9 @@ public class AbilityScore
 	 * @return the readingSEMScore
 	 */
 	public String getReadingSEMScore() {
+		if(readingSEMScore != null && readingSEMScore.length() > 0) {
+			return String.valueOf(Math.round(Integer.valueOf(readingSEMScore)));
+		}
 		return readingSEMScore;
 	}
 
@@ -82,6 +85,9 @@ public class AbilityScore
 	 * @return the mathCompSEMScore
 	 */
 	public String getMathCompSEMScore() {
+		if(mathCompSEMScore != null && mathCompSEMScore.length() > 0) {
+			return String.valueOf(Math.round(Integer.valueOf(mathCompSEMScore)));
+		}
 		return mathCompSEMScore;
 	}
 
@@ -118,6 +124,9 @@ public class AbilityScore
 	 * @return the appliedMathSEMScore
 	 */
 	public String getAppliedMathSEMScore() {
+		if(appliedMathSEMScore != null && appliedMathSEMScore.length() > 0) {
+			return String.valueOf(Math.round(Integer.valueOf(appliedMathSEMScore)));
+		}
 		return appliedMathSEMScore;
 	}
 
@@ -154,6 +163,9 @@ public class AbilityScore
 	 * @return the languageSEMScore
 	 */
 	public String getLanguageSEMScore() {
+		if(languageSEMScore != null && languageSEMScore.length() > 0) {
+			return String.valueOf(Math.round(Integer.valueOf(languageSEMScore)));
+		}
 		return languageSEMScore;
 	}
 
@@ -206,13 +218,13 @@ public class AbilityScore
 	public String toString(){
 		String val="";
 		val += Utility.getFormatedString(readingAbilityScore, 3)
-		+Utility.getFormatedString(readingSEMScore, 3) 
+		+Utility.getFormatedString(getReadingSEMScore(), 3) 
 		+Utility.getFormatedString(mathCompAbilityScore, 3) 
-		+Utility.getFormatedString(mathCompSEMScore, 3) 
+		+Utility.getFormatedString(getMathCompSEMScore(), 3) 
 		+Utility.getFormatedString(appliedMathAbilityScore, 3) 
-		+Utility.getFormatedString(appliedMathSEMScore, 3) 
+		+Utility.getFormatedString(getAppliedMathSEMScore(), 3) 
 		+Utility.getFormatedString(languageAbilityScore, 3)
-		+Utility.getFormatedString(languageSEMScore, 3)
+		+Utility.getFormatedString(getLanguageSEMScore(), 3)
 		+Utility.getFormatedString(totalMathAbilityScore, 3)
 		+Utility.getFormatedString(totalBatteryAbilityScore, 3);
 
