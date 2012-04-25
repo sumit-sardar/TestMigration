@@ -47,7 +47,7 @@ public class AbilityScore
 	 */
 	public String getReadingSEMScore() {
 		if(readingSEMScore != null && readingSEMScore.length() > 0) {
-			return String.valueOf(Math.round(Integer.valueOf(readingSEMScore)));
+			return String.valueOf(Math.round(Double.valueOf(readingSEMScore)));
 		}
 		return readingSEMScore;
 	}
@@ -86,7 +86,7 @@ public class AbilityScore
 	 */
 	public String getMathCompSEMScore() {
 		if(mathCompSEMScore != null && mathCompSEMScore.length() > 0) {
-			return String.valueOf(Math.round(Integer.valueOf(mathCompSEMScore)));
+			return String.valueOf(Math.round(Double.valueOf(mathCompSEMScore)));
 		}
 		return mathCompSEMScore;
 	}
@@ -125,7 +125,7 @@ public class AbilityScore
 	 */
 	public String getAppliedMathSEMScore() {
 		if(appliedMathSEMScore != null && appliedMathSEMScore.length() > 0) {
-			return String.valueOf(Math.round(Integer.valueOf(appliedMathSEMScore)));
+			return String.valueOf(Math.round(Double.valueOf(appliedMathSEMScore)));
 		}
 		return appliedMathSEMScore;
 	}
@@ -164,7 +164,7 @@ public class AbilityScore
 	 */
 	public String getLanguageSEMScore() {
 		if(languageSEMScore != null && languageSEMScore.length() > 0) {
-			return String.valueOf(Math.round(Integer.valueOf(languageSEMScore)));
+			return String.valueOf(Math.round(Double.valueOf(languageSEMScore)));
 		}
 		return languageSEMScore;
 	}

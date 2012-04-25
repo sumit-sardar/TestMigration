@@ -7,7 +7,15 @@ public class ItemResponses
 	private String originalResponse;
 	private String responseTime;
 	private int index;
+	private int sequenceNo;
 	
+	
+	public int getSequenceNo() {
+		return sequenceNo;
+	}
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
 	public int getIndex() {
 		return index;
 	}
@@ -51,4 +59,19 @@ public class ItemResponses
 		this.itemId = itemId;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof ItemResponses)) {
+			return false;
+		}
+		if(this.itemId.equals(((ItemResponses)obj).itemId)) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.itemId.hashCode();
+	}
 }

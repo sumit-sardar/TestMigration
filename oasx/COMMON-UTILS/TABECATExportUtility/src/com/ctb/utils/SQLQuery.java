@@ -100,7 +100,8 @@ public class SQLQuery {
            + " and tr.activation_status = 'AC'"
            + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
            + " and tr.test_admin_id = ta.test_admin_id"
-           + " and ta.product_id = ?";
+           + " and ta.product_id = ?"
+           + " order by tr.test_roster_id";
 
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
@@ -150,7 +151,7 @@ public class SQLQuery {
 			+ " )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
 
 	public static String ALL_ITEMS_DETAILS_SQL = "SELECT irp.item_id, irp.response as original_response, " +
-												"decode(irp.response, item.correct_answer, '1', '0') response " +
+												"decode(irp.response, item.correct_answer, '1', '0') response, derived.maxseqnum " +
 												" FROM item_response irp, item," +
 												" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
 												" from item_response , item  where test_roster_id = ?  " +

@@ -679,100 +679,115 @@ public class DataExportTABECAT {
 
 	private static void prepareItemResponses(Connection con, TABEFile tfil,
 	   TestRoster roster) throws IOException, Exception {
-	   PreparedStatement ps = null ;
-	   ResultSet rs = null;
-	   Map<String, ItemResponses> itemMap = new LinkedHashMap<String, ItemResponses>();
-	   StringBuilder response = new StringBuilder();
-	   try {
-		   getContentDomain(con, roster.getTestRosterId());
-		   Set<String> keySet = CONTENT_DOMAINS.keySet();
-		   int itemCount = 0;
-		   for(String itemSetName: keySet) {
-			   StringBuilder itemIds = new StringBuilder();
-			   StringBuilder itemResponse = new StringBuilder();
-			   StringBuilder itemOrgResponse = new StringBuilder();
-			   StringBuilder resposneTime = new StringBuilder();
-			   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
-			   if("Reading".equals(itemSetName)) {
-				   response.append("RD");
-				   itemCount = 29;
-			   } else if("Mathematics Computation".equals(itemSetName)) {
-				   response.append("MC");
-				   itemCount = 24;
-			   } else if("Applied Mathematics".equals(itemSetName)) {
-				   response.append("AM");
-				   itemCount = 29;
-			   } else if("Language".equals(itemSetName)) {
-				   response.append("LN");
-				   itemCount = 29;
-			   }
-			    
-			   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
-			   ps.setInt(1, roster.getTestRosterId());
-			   ps.setInt(2, itemSetId);
-			   ps.setInt(3, roster.getTestRosterId());
-			   ps.setInt(4, itemSetId);
-			   rs = ps.executeQuery();
-			   int index = 0;
-			   while (rs.next()) {
-				  ItemResponses ir = new ItemResponses();
-				  ir.setItemId(rs.getString("item_id"));
-				  ir.setResponseValue(rs.getString("response"));
-				  ir.setOriginalResponse(rs.getString("original_response"));
-				  ir.setIndex(index++);
-				  itemMap.put(rs.getString("item_id"), ir);
-			   }
-			   SqlUtil.close(ps, rs);
-			   
-			   ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
-			   ps.setInt(1, roster.getTestRosterId());
-			   ps.setInt(2, itemSetId);
-			   rs = ps.executeQuery();
-			   while (rs.next()){
-				  ItemResponses ir = itemMap.get(rs.getString("item_id"));
-				  ir.setResponseTime(rs.getString("total_time"));
-			   }
-			   SqlUtil.close(ps, rs);
-			   
-			   Set<String> itemSet = itemMap.keySet();
-			   List<String> itemList = new ArrayList<String>(itemSet);
-			   for(int i=0; i<itemCount; i++) {
-				   if(i < itemList.size()) {
-					   ItemResponses ir = itemMap.get(itemList.get(i));
-					   itemIds.append(ir.getItemId() + ",");
-					   itemResponse.append(ir.getResponseValue());
-					   itemOrgResponse.append(ir.getOriginalResponse());
-					   resposneTime.append(ir.getResponseTime() + ",");
-				   } else {
-					   itemIds.append(",");
-					   itemResponse.append(" ");
-					   itemOrgResponse.append(" ");
-					   resposneTime.append(",");
+		   PreparedStatement ps = null ;
+		   ResultSet rs = null;
+		   Map<String, ItemResponses> itemMap = new LinkedHashMap<String, ItemResponses>();
+		   StringBuilder response = new StringBuilder();
+		   try {
+			   getContentDomain(con, roster.getTestRosterId());
+			   Set<String> keySet = CONTENT_DOMAINS.keySet();
+			   int itemCount = 0;
+			   for(String itemSetName: keySet) {
+				   StringBuilder itemIds = new StringBuilder();
+				   StringBuilder itemResponse = new StringBuilder();
+				   StringBuilder itemOrgResponse = new StringBuilder();
+				   StringBuilder resposneTime = new StringBuilder();
+				   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
+				   if("Reading".equals(itemSetName)) {
+					   response.append("RD");
+					   itemCount = 29;
+				   } else if("Mathematics Computation".equals(itemSetName)) {
+					   response.append("MC");
+					   itemCount = 24;
+				   } else if("Applied Mathematics".equals(itemSetName)) {
+					   response.append("AM");
+					   itemCount = 29;
+				   } else if("Language".equals(itemSetName)) {
+					   response.append("LN");
+					   itemCount = 29;
 				   }
+				    
+				   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
+				   ps.setInt(1, roster.getTestRosterId());
+				   ps.setInt(2, itemSetId);
+				   ps.setInt(3, roster.getTestRosterId());
+				   ps.setInt(4, itemSetId);
+				   rs = ps.executeQuery();
+				   int index = 0;
+				   int currentSequenceNo = 0;
+				   int lastSequenceNo = 0;
+				   String lastItemId = "";
+				   while (rs.next()) {
+					  ItemResponses ir = new ItemResponses();
+					  currentSequenceNo = rs.getInt("maxseqnum");
+					  ir.setItemId(rs.getString("item_id"));
+					  ir.setResponseValue(rs.getString("response"));
+					  ir.setOriginalResponse(rs.getString("original_response"));
+					  ir.setSequenceNo(currentSequenceNo);
+					  ir.setIndex(index++);
+					  if(currentSequenceNo > lastSequenceNo + 100000) {
+						   itemMap.remove(lastItemId);
+					  }
+					  lastSequenceNo = currentSequenceNo;
+					  lastItemId = rs.getString("item_id");
+					  itemMap.put(lastItemId, ir);
+				   }
+				   SqlUtil.close(ps, rs);
+				   
+				   ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
+				   ps.setInt(1, roster.getTestRosterId());
+				   ps.setInt(2, itemSetId);
+				   rs = ps.executeQuery();
+				   while (rs.next()){
+					  ItemResponses ir = itemMap.get(rs.getString("item_id"));
+					  if(ir != null) {
+						  ir.setResponseTime(rs.getString("total_time"));
+					  }
+				   }
+				   SqlUtil.close(ps, rs);
+				   
+				   Set<String> itemSet = itemMap.keySet();
+				   List<String> itemList = new ArrayList<String>(itemSet);
+				   for(int i=0; i<itemCount; i++) {
+					   if(i < itemList.size()) {
+						   ItemResponses ir = itemMap.get(itemList.get(i));
+						   itemIds.append(ir.getItemId() + ",");
+						   itemResponse.append(ir.getResponseValue());
+						   itemOrgResponse.append(ir.getOriginalResponse());
+						   resposneTime.append(ir.getResponseTime() + ",");
+					   } else {
+						   itemIds.append(",");
+						   itemResponse.append(" ");
+						   itemOrgResponse.append(" ");
+						   resposneTime.append(",");
+					   }
+				   }
+				   response.append(itemIds.substring(0, itemIds.length() - 1)
+						   		 + itemResponse + itemOrgResponse
+						   	     + resposneTime.substring(0, resposneTime.length() - 1));
+				   
+				   ps = con.prepareStatement(SQLQuery.RESTART_ITEM_SQL);
+				   ps.setInt(1, roster.getTestRosterId());
+				   ps.setInt(2, itemSetId);
+				   rs = ps.executeQuery();
+				   if(rs.next()) {
+				      ItemResponses ir = itemMap.get(rs.getString("item_id"));
+				      if(ir != null) {
+				    	  response.append("1" + ir.getIndex());
+				      }
+				   } else {
+					   response.append("00");
+				   }
+				   SqlUtil.close(ps, rs);
+				   itemMap.clear();
 			   }
-			   response.append(itemIds.substring(0, itemIds.length() - 1)
-					   		 + itemResponse + itemOrgResponse
-					   	     + resposneTime.substring(0, resposneTime.length() - 1));
-			   
-			   ps = con.prepareStatement(SQLQuery.RESTART_ITEM_SQL);
-			   ps.setInt(1, roster.getTestRosterId());
-			   ps.setInt(2, itemSetId);
-			   rs = ps.executeQuery();
-			   if(rs.next()) {
-			      ItemResponses ir = itemMap.get(rs.getString("item_id"));
-				  response.append("1" + ir.getIndex());
-			   } else {
-				   response.append("00");
-			   }
-			   SqlUtil.close(ps, rs);
-		   }
-		   tfil.setItemResponse(response.toString());
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			SqlUtil.close(ps, rs);
+			   tfil.setItemResponse(response.toString());
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				SqlUtil.close(ps, rs);
+			}
 		}
-	}
 	
 	private static void getAllObjectives(Connection con) {
 	    PreparedStatement ps = null;
