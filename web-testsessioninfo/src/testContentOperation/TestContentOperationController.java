@@ -480,7 +480,7 @@ public class TestContentOperationController extends PageFlowController {
         		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasScoringConfigured", 
-        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
+        		new Boolean( customerHasScoring(customerConfigs).booleanValue()));
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         

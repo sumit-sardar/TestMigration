@@ -969,7 +969,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         		new Boolean( hasProgramStatusConfig().booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasScoringConfigured", 
-        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
+        		new Boolean( customerHasScoring(customerConfigs).booleanValue()));
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         

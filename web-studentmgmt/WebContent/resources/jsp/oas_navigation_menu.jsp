@@ -5,13 +5,6 @@
         			 <li>   			 	
         			 	<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><lb:label key="stu.menu.sessions" /></a>
         			 </li>
-        			  <c:if test="${sessionScope.hasScoringConfigured}">    
-						<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
-	        			 	<li>
-	        					<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><lb:label key="stu.menu.studentScoring" /></a>
-	        			 	</li>
-        			 	</ctb:auth>
-    				 </c:if>
     				 <c:if test="${sessionScope.hasProgramStatusConfigured}">
         			 <li>
         				<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><lb:label key="stu.menu.programStatus" /></a>
@@ -59,8 +52,10 @@
         	</li>
         	</c:if>
         	<c:if test="${sessionScope.hasScoringConfigured}">
-	        	<li id="scoring" class="simpleMenu"><a class="tab" href="#"  id="studentScoringLink" onClick="gotoMenuAction('studentScoring.do', 'studentScoringLink');"><lb:label key="stu.menu.scoring" /></a>
-	        	</li>
+        		<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+	        		<li id="scoring" class="simpleMenu"><a class="tab" href="#"  id="studentScoringLink" onClick="gotoMenuAction('studentScoring.do', 'studentScoringLink');"><lb:label key="scoring.menu.scoring" /></a>
+	        		</li>
+	        	</ctb:auth>
         	</c:if>
         	<li id="services" class="simpleMenu"><a class="tab" href="#"><lb:label key="stu.menu.services" /></a>
         		<ul class="sub_menu">

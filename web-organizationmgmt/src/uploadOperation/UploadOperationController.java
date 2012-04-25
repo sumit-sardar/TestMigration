@@ -1093,7 +1093,7 @@ public class UploadOperationController extends PageFlowController {
         		new Boolean( hasProgramStatusConfig().booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasScoringConfigured", 
-        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
+        		new Boolean( customerHasScoring(customerConfigs).booleanValue()));
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         

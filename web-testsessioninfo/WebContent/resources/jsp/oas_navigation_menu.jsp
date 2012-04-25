@@ -58,8 +58,10 @@
 	        	</li>
         	</c:if>
         	<c:if test="${sessionScope.hasScoringConfigured}">
-	        	<li id="scoring" class="simpleMenu"><a class="tab" href="#"  id="studentScoringLink" onClick="gotoMenuAction('studentScoring.do', 'studentScoringLink');"><lb:label key="session.menu.scoring" /></a>
-	        	</li>
+        		<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+	        		<li id="scoring" class="simpleMenu"><a class="tab" href="#"  id="studentScoringLink" onClick="gotoMenuAction('studentScoring.do', 'studentScoringLink');"><lb:label key="session.menu.scoring" /></a>
+	        		</li>
+	        	</ctb:auth>
         	</c:if>
         	<li id="services" class="simpleMenu"><a class="tab" href="#"><lb:label key="session.menu.services" /></a>
         		<ul class="sub_menu">

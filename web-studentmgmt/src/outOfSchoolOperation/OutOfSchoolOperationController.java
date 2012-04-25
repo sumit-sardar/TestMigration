@@ -482,7 +482,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
-		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable && adminUser));
+		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(hasLicenseConfiguration && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
