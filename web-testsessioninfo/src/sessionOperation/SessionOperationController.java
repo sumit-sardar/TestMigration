@@ -1920,7 +1920,7 @@ public class SessionOperationController extends PageFlowController {
 				 existingTestSession = savedSessionMinData.getTestSession();
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
-			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, creatorOrgNod); 
+			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, this.userName); 
 			 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
 				 formOperand = selectedTest.getOverrideFormAssignmentMethod();
 	           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {
