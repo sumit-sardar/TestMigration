@@ -298,7 +298,8 @@ function resetErrorMessages(){
 	$("#saveTestTitle").text("");
 	$('#errorIcon').hide();
 	$('#infoIcon').hide();
-	document.getElementById('showSaveTestMessage').style.display = "none";										
+	if (document.getElementById('showSaveTestMessage') != null)
+		document.getElementById('showSaveTestMessage').style.display = "none";										
 }
 
  function resetProfile() {
