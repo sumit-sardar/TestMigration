@@ -38,7 +38,7 @@ public class SQLQuery {
 			+ " and careafct.sessionid = :sessionId ";
 	
 	public static String getSemScores = "select ist.item_set_name, siss.sem_score," 
-			+ " to_Char((maxdate.mdate),'MMDDYY HH24:MI:SS') as maxDate from" 
+			+ " to_char((maxdate.mdate),'MMDDYY HH24:MI:SS') as maxDate, siss.ability_score from" 
 			+ " student_item_set_status siss, item_set ist, " 
 			+ " (select max(completion_date_time) mdate from student_item_set_status" 
 			+ " where test_roster_id = ?) maxdate where ist.sample = 'F' and"
@@ -140,18 +140,9 @@ public class SQLQuery {
 	public static String subSkillIrsInformation = "select sec_objid, sessionid, percent_obtained, points_obtained  from laslink_sec_obj_fact "
 			+ " where studentid = ? and sessionid = ?";
 
-	private String rosterAllItemDetails = " select dd.*, valid from  ( select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,  "
-			+ "  decode (td.item_set_name,'HABLANDO','Speaking','ESCUCHANDO', 'Listening','LECTURA','Reading','ESCRITURA','Writing', td.item_set_name) as subtestName "
-			+ " from   item,   item_set sec,   item_Set_category seccat,   item_set_ancestor secisa,   item_Set_item secisi,   item_set td,   item_set_ancestor tdisa,   item_set_item tdisi,   datapoint dp,   test_roster ros,   test_Admin adm,   test_catalog tc,   product prod,  student_item_set_status sis "
-			+ " where   ros.test_roster_id = ?   and adm.test_admin_id = ros.test_admin_id   and tc.test_catalog_id = adm.test_catalog_id   and prod.product_id = tc.product_id   and item.ACTIVATION_STATUS = 'AC'   and tc.ACTIVATION_STATUS = 'AC'  "
-			+ " and sec.item_Set_id = secisa.ancestor_item_Set_id   and sec.item_set_type = 'RE'   and secisa.item_set_id = secisi.item_Set_id   and item.item_id = secisi.item_id   and tdisi.item_id = item.item_id   and td.item_set_id = tdisi.item_set_id   and td.item_set_type = 'TD' "
-			+ " and tdisa.item_set_id = td.item_set_id   and adm.item_set_id = tdisa.ancestor_item_set_id   and seccat.item_Set_category_id = sec.item_set_category_id   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level   and dp.item_id = item.item_id   and td.sample = 'F' "
-			+ " AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID  and sis.test_roster_id  = ros.test_roster_id   "
-			+ " ) dd , ( select sis.item_set_id , decode(nvl(sis.validation_status, 'IN'), 'IN', 'NC', (decode(nvl(sis.exemptions, 'N'), 'Y',  'NC', ((decode(nvl(sis.absent, 'N'), 'Y', 'NC', 'CO')))))) valid from student_item_set_status sis where test_roster_id = ?"
-			+ " )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
-
-	public static String ALL_ITEMS_DETAILS_SQL = "SELECT irp.item_id, irp.response as original_response, " +
-												"decode(irp.response, item.correct_answer, '1', '0') response, derived.maxseqnum " +
+	public static String ALL_ITEMS_DETAILS_SQL = " SELECT irp.item_id, irp.response as original_response, " +
+												" decode(irp.response, item.correct_answer, '1', '0') response, " +
+												" derived.maxseqnum, irp.response_elapsed_time " +
 												" FROM item_response irp, item," +
 												" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
 												" from item_response , item  where test_roster_id = ?  " +
@@ -169,10 +160,6 @@ public class SQLQuery {
 												" and irp.item_set_id = ? " +
 												" ORDER BY derived.maxseqnum";
 
-	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  "
-			+ " (select item_response.item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  "
-			+ "  from item_response , item where test_roster_id = ?   and item_response.item_id =item.item_id and item.item_type = 'CR' and item.ACTIVATION_STATUS = 'AC' "
-			+ "  group by item_response.item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
 
 	public static String OBJECTIVE_SCORE_SQL = "SELECT siss.objective_score " +
 											     "FROM student_item_set_status siss, " +

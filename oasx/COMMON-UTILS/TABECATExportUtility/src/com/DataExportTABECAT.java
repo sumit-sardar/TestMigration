@@ -41,7 +41,6 @@ public class DataExportTABECAT {
 	
 	private static String CUSTOMER_ID = ExtractUtil.getDetail("oas.customerId");
 	private static Integer PRODUCT_ID = new Integer(ExtractUtil.getDetail("oas.productId"));
-	private static String userDir = System.getProperty("user.dir").toLowerCase();
 	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
 	private static final String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.fileName");
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
@@ -150,7 +149,7 @@ public class DataExportTABECAT {
 				fillAccomodations(studentInfo.getStudentDemographic(), customerDemographic, catData);
 				createAbilityScoreInformation(irscon,catData,roster);
 				getSemScores(oascon, catData, roster,catData.getAbilityScores());
-				fillObjective(oascon, irscon,catData,roster);
+				fillObjective(oascon, catData, roster);
 				prepareItemResponses(oascon, catData, roster);
 				tabeFileList.add(catData);	
 				System.out.println("Record Processed: " + ++count);
@@ -513,7 +512,7 @@ public class DataExportTABECAT {
 					gradeEquivalent.setTotalMath(rs2.getString(3) != null ? rs2.getString(3) : "" );
 					nrsLevel.setTotalMath(rs2.getString(4) != null ? rs2.getString(4) : "" );
 			
-				}else{
+				} else {
 					abilityScore.setTotalBatteryAbilityScore(rs2.getString(2) != null ? rs2.getString(2) : "" );
 					gradeEquivalent.setTotalBattery(rs2.getString(3) != null ? rs2.getString(3) : "");
 					nrsLevel.setTotalBattery(rs2.getString(4) != null ? rs2.getString(4) : "");					
@@ -593,7 +592,8 @@ public class DataExportTABECAT {
 		tfil.setPredictedGED(predictedGed);
 	}
 	
-	private void getSemScores(Connection con, TABEFile tfil, TestRoster roster, AbilityScore abilityScore) throws SQLException{
+	private void getSemScores(Connection con, TABEFile tfil, TestRoster roster, AbilityScore abilityScore)
+	throws SQLException {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -605,12 +605,16 @@ public class DataExportTABECAT {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				if (rs.getString(1).toString().equalsIgnoreCase("Mathematics Computation")){
+					abilityScore.setMathCompAbilityScore(rs.getString(4) != null ? rs.getString(4) : "" );
 					abilityScore.setMathCompSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );			
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Reading")) {
+					abilityScore.setReadingAbilityScore(rs.getString(4) != null ? rs.getString(4) : "" );
 					abilityScore.setReadingSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Applied Mathematics")) {
+					abilityScore.setAppliedMathAbilityScore(rs.getString(4) != null ? rs.getString(4) : "" );
 					abilityScore.setAppliedMathSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}else if(rs.getString(1).toString().equalsIgnoreCase("Language")) {
+					abilityScore.setLanguageAbilityScore(rs.getString(4) != null ? rs.getString(4) : "" );
 					abilityScore.setLanguageSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}
 				testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
@@ -622,7 +626,7 @@ public class DataExportTABECAT {
 		tfil.setAbilityScores(abilityScore);	
 	}
 	
-	private void fillObjective(Connection oascon, Connection irscon, TABEFile tfil, TestRoster roster) 
+	private void fillObjective(Connection oascon, TABEFile tfil, TestRoster roster) 
 	throws SQLException, Exception {
 
 		PreparedStatement ps = null;
@@ -635,18 +639,6 @@ public class DataExportTABECAT {
 		ObjectiveLevel objScaleScoreSEM = new ObjectiveLevel();
 		
 		try{
-			ps = irscon.prepareStatement(SQLQuery.OBJECTIVE_MASTERY_SQL);
-			ps.setInt(1, roster.getStudentId());
-			ps.setInt(2, roster.getTestAdminId());
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				if (rs.getString("objectivename") != null){
-					objMasteryLevel.getObjectiveMap().put(rs.getString("objectivename"), rs.getString("masterylevel"));
-					objMastery.getObjectiveMap().put(rs.getString("objectivename"), rs.getString("mastery"));
-				}				
-			}
-			SqlUtil.close(ps, rs);
-			
 			ps = oascon.prepareStatement(SQLQuery.OBJECTIVE_SCORE_SQL);
 			ps.setInt(1, roster.getTestRosterId());
 			rs = ps.executeQuery();
@@ -662,6 +654,15 @@ public class DataExportTABECAT {
 							objTotalRawScore.getObjectiveMap().put(objectiveName, scores[2]);
 							objScaleScore.getObjectiveMap().put(objectiveName, scores[3]);
 							objScaleScoreSEM.getObjectiveMap().put(objectiveName, scores[4]);
+							if(scores.length > 6) {
+								objMasteryLevel.getObjectiveMap().put(objectiveName, scores[5]);
+								if(scores[6] != null) {
+									objMastery.getObjectiveMap().put(objectiveName, String.valueOf(Integer.parseInt(scores[6]) + 1));
+								}
+							} else {
+								objMasteryLevel.getObjectiveMap().put(objectiveName, " ");
+								objMastery.getObjectiveMap().put(objectiveName, String.valueOf(Integer.parseInt(scores[5]) + 1));
+							}
 						}
 					}
 				}
@@ -713,7 +714,7 @@ public class DataExportTABECAT {
 				   ps.setInt(3, roster.getTestRosterId());
 				   ps.setInt(4, itemSetId);
 				   rs = ps.executeQuery();
-				   int index = 0;
+				   int index = 1;
 				   int currentSequenceNo = 0;
 				   int lastSequenceNo = 0;
 				   String lastItemId = "";
@@ -723,6 +724,7 @@ public class DataExportTABECAT {
 					  ir.setItemId(rs.getString("item_id"));
 					  ir.setResponseValue(rs.getString("response"));
 					  ir.setOriginalResponse(rs.getString("original_response"));
+					  ir.setResponseTime(rs.getString("response_elapsed_time"));
 					  ir.setSequenceNo(currentSequenceNo);
 					  ir.setIndex(index++);
 					  if(currentSequenceNo > lastSequenceNo + 100000) {
@@ -733,19 +735,7 @@ public class DataExportTABECAT {
 					  itemMap.put(lastItemId, ir);
 				   }
 				   SqlUtil.close(ps, rs);
-				   
-				   ps = con.prepareStatement(SQLQuery.ITEM_TOTAL_TIME_VISIT_SQL);
-				   ps.setInt(1, roster.getTestRosterId());
-				   ps.setInt(2, itemSetId);
-				   rs = ps.executeQuery();
-				   while (rs.next()){
-					  ItemResponses ir = itemMap.get(rs.getString("item_id"));
-					  if(ir != null) {
-						  ir.setResponseTime(rs.getString("total_time"));
-					  }
-				   }
-				   SqlUtil.close(ps, rs);
-				   
+				    
 				   Set<String> itemSet = itemMap.keySet();
 				   List<String> itemList = new ArrayList<String>(itemSet);
 				   for(int i=0; i<itemCount; i++) {
