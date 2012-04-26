@@ -1019,8 +1019,9 @@ public class SessionOperationController extends PageFlowController {
     	    		vo.setTestSessionExpired(Boolean.FALSE);
     	    	}
     	    	//
-                
-                if(topNodesMap.containsKey(scheduledSession.getTestSession().getCreatorOrgNodeId())){
+                if(action != null && action.equals("copySession")) {
+                	vo.populateTopOrgnode(topNodesMap);
+                } else if(topNodesMap.containsKey(scheduledSession.getTestSession().getCreatorOrgNodeId())){
                 	 vo.populateTopOrgnode(topNodesMap);
                 } else {
                 	Map<Integer, String> tmpNodesMap = new LinkedHashMap<Integer, String>();
