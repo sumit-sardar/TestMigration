@@ -88,13 +88,13 @@
 								
 								state = "EDIT";
 								populateTestDetailGrid(data);
-								//processStudentAccordion();
-								//processProctorAccordion();
-							//	$("#productType").val(data.product[0].productType);
-							//	$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 							    createSubtestGridInEdit(data.savedTestDetails, data.hasLocator , data.locatorId);
 							    $("#selectedNewTestId").val(data.savedTestDetails.testSession.itemSetId);
-							    $("#showStudentFeedback").val(data.savedTestDetails.testSession.showStudentFeedback);
+							    if(data.savedTestDetails.testSession.showStudentFeedback != undefined && data.savedTestDetails.testSession.showStudentFeedback =="T"){
+							     	$("#showStudentFeedback").val(true);
+							    } else {
+							    	$("#showStudentFeedback").val(false);
+							    }
 							    var optionHtml = "<option  value='"+data.savedTestDetails.testSession.productId+"'>"+data.savedTestDetails.testSession.testName+"</option>";
      						    $("#testGroupList").html(optionHtml);
 							    $("#sData").removeClass("ui-state-disabled");
