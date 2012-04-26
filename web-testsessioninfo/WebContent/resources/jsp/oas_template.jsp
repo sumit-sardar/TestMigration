@@ -123,10 +123,9 @@ clear: both;
 						//wizardAcc.accordion("activate", index);
 						setAnchorButtonState('printTicketButton', true);
 						setAnchorButtonState('viewStatusButton', true);
-						$('#mStdManifest').hide();
-						$('#copySession').hide();
 						setAnchorButtonState('modifyStdManifestButton', true);
 						setAnchorButtonState('copySessionButton', true);
+						
 						if(document.getElementById('selectedTestSessionId').value != ""){
 							var rId = document.getElementById('selectedTestSessionId').value;
 							$("#list2 #"+rId).removeClass("ui-state-highlight");

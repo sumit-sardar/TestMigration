@@ -3569,7 +3569,8 @@ public class SessionOperationController extends PageFlowController {
 			}
 			
 		}
-		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
+		//this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
+		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && tabeCustomer));
 		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
