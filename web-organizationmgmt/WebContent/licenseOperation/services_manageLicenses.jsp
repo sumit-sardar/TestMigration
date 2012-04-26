@@ -132,7 +132,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("services", "manageLicensesLink");
-	loadOrgNodeTree();
+	//loadOrgNodeTree();
 }); 
 </script>
 
