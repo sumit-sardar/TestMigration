@@ -349,6 +349,9 @@ function displayListPopup(element) {
 }
 
 function populateGridAsPerView() {
+	if(isButtonDisabled(document.getElementById('scoreButton'))) {
+		return true;
+	}
 	UIBlock();
 	if(currentView == "student") {
 		fillStudentFields();
@@ -579,7 +582,7 @@ function populateScoringStudentGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), '', ''],
+          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), '', '',''],
 		   	colModel:[
 		   		{name:'userName',index:'userName', width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentName',index:'studentName', width:100, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -590,7 +593,8 @@ function populateScoringStudentGrid() {
 		   		{name:'testSessionName',index:'testSessionName',editable: true, width:140, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:180, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
 		   		{name:'accessCode',index:'accessCode', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemCountCRAI',index:'itemCountCRAI', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"rosterId",
@@ -622,10 +626,14 @@ function populateScoringStudentGrid() {
 				
 			},
 			onSelectRow: function (rowId) {
-					setAnchorButtonState('scoreButton', false);
 					selectedRosterId = rowId;
 					selectedRData = $("#studentScoringGrid").getRowData(rowId);
 					selectedItemSetTCVal = selectedRData.itemSetIdTC;
+					if(selectedRData.itemCountCRAI != undefined && selectedRData.itemCountCRAI <= 0) {
+						setAnchorButtonState('scoreButton', true);
+					} else {
+						setAnchorButtonState('scoreButton', false);
+					}
 			},
 			loadComplete: function () {
 				if ($('#studentScoringGrid').getGridParam('records') === 0) {
