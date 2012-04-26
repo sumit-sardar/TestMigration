@@ -4349,6 +4349,7 @@ function registerDelegate(tree){
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
 									updateModifyStdManifestButton(false);
+									updateCopySessionButton(false);
 								} else {
 									var failureMsg = $("#deleteFailureMsg").val();
 									setSessionSaveMessage(failureMsg, "", "errorMessage","");
