@@ -3027,14 +3027,14 @@ public class SessionOperationController extends PageFlowController {
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
 
-		
+		/*
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("LasLinksReport");
 		else
 			return new Forward("TABEReport");
-		
+		*/
 
-		//return new Forward("temporary");
+		return new Forward("temporary");
     }
 
      
