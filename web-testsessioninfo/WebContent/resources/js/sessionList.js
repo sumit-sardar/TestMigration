@@ -4580,5 +4580,6 @@ function validNumber(str){
 	    editTestSession(action);
 	}
 	function updateCopySessionButton(isEnable){
-		showOrHideAnchorButton('copySessionButton', 'copySession', isEnable);
+		enableOrDisableAnchorButton('copySessionButton', 'copySession', isEnable);
 	}
+	

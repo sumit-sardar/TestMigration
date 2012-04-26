@@ -3027,14 +3027,14 @@ public class SessionOperationController extends PageFlowController {
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
 
-		/*
+		
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("LasLinksReport");
 		else
 			return new Forward("TABEReport");
-		*/
+		
 
-		return new Forward("temporary");
+		//return new Forward("temporary");
     }
 
      
@@ -3502,6 +3502,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasBulkStudentMoveConfigurable = false;
     	boolean hasOOSConfigurable = false;
     	boolean laslinkCustomer = false;
+    	boolean tabeCustomer = false;
     	boolean adminUser = isAdminUser();
     	boolean hasUploadDownloadConfig = false;
     	boolean hasProgramStatusConfig = false;
@@ -3533,9 +3534,13 @@ public class SessionOperationController extends PageFlowController {
 					continue;
 				}
 				// For LasLink Customer
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
-						&& cc.getDefaultValue().equals("T")) {
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")) {
 	            	laslinkCustomer = true;
+	            	continue;
+	            }
+				// For TABE Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
+	            	tabeCustomer = true;
 	            	continue;
 	            }
 				// For Upload Download
@@ -3563,6 +3568,7 @@ public class SessionOperationController extends PageFlowController {
 			}
 			
 		}
+		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
 		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));

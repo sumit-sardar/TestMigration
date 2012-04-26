@@ -15,6 +15,7 @@
 	 String schedulerUserId = (String) session.getAttribute("schedulerUserId");
 	 String schedulerUserName = (String) session.getAttribute("schedulerUserName");
 	 Boolean isDeleteSessionEnable = (Boolean)session.getAttribute("isDeleteSessionEnable");
+	 Boolean showModifyManifest = (Boolean) session.getAttribute("showModifyManifest");
 	%>
 	
 	<input type="hidden" id="canRegisterStudent" value='<%=canRegisterStudent %>'/>
@@ -96,12 +97,12 @@
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 										</div> 	
-										<div id="copySession" style="float:right;padding-left:5px;display: none;">
+										<div id="copySession" style="float:right;padding-left:5px;display: block;">
 											<a href="#" id="copySessionButton" onclick="javascript:copyTestSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.copySession" /></a>
 										</div>
 										
-										<% if (userScheduleAndFindSessionPermission) {%>
-										    <div id="mStdManifest" style="float:right;padding-left:5px; display: none;">
+										<% if (showModifyManifest) {%>
+										    <div id="mStdManifest" style="float:right;padding-left:5px; display: block;">
 											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
 											   		<lb:label key="homepage.button.modifyTest" />
 											    </a>

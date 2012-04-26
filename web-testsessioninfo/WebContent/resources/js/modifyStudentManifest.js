@@ -797,17 +797,25 @@
 	    
 	}
 	function updateModifyStdManifestButton(isEnable){
-		showOrHideAnchorButton('modifyStdManifestButton', 'mStdManifest', isEnable);
+		enableOrDisableAnchorButton('modifyStdManifestButton', 'mStdManifest', isEnable);
 	}
 	
 	function showOrHideAnchorButton(buttonId, divId, isEnable){
-	if(isEnable==true){
-		setAnchorButtonState(buttonId, false);
-		$("#"+divId).show();
-	} else {
-		$("#"+divId).hide();
-		setAnchorButtonState(buttonId, true);
+		if(isEnable==true){
+			setAnchorButtonState(buttonId, false);
+			$("#"+divId).show();
+		} else {
+			$("#"+divId).hide();
+			setAnchorButtonState(buttonId, true);
+		}
 	}
-}
+	
+	function enableOrDisableAnchorButton(buttonId, divId, isEnable){
+		if(isEnable==true){
+			setAnchorButtonState(buttonId, false);
+		} else {
+			setAnchorButtonState(buttonId, true);
+		}
+	}
 	
 	
