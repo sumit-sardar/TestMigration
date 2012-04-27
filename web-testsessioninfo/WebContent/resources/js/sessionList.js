@@ -3851,6 +3851,8 @@ function registerDelegate(tree){
 	function closeViewStatusPopup() {
 		closePopUp('viewTestSessionId');
 		$("#rosterTestName").text('');
+		$("#testAccessCode").text('');
+ 	    $("#accessCodeTooltip").css('display', 'none');
 		$("#rosterTotalStudents").text('');
 		$('#rosterList').GridUnload();
 		$("#labelTbl").width(924);
@@ -3899,6 +3901,7 @@ function registerDelegate(tree){
 		         }
 				 $("#rosterTestName").text(obj.testSession.testName);
 				 $("#testAccessCode").text(obj.testSession.accessCode);
+			 	 $("#accessCodeTooltip").css('display', 'inline');
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,

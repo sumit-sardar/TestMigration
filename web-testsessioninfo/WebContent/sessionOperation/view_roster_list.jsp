@@ -34,15 +34,13 @@
 			<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 			<td width="80%"><span id = "rosterTestName"></span></td>
 		</tr>
-		<!-- 
 		<tr height="25">
 			<td align="left" width="14%"><lb:label key="viewStatus.testAccessCode" /></td>
 			<td width="80%">
-			<span id = "testAccessCode"></span>
-			<span>&nbsp;&nbsp;<a href="showAccessCodes.do?width=475" class="jTip" id="tooltip" name="Test Access Codes">View All</a></span>
+			<span id="testAccessCode"></span>
+			<span id="accessCodeTooltip" style="display: none">&nbsp;&nbsp;&lt<a href="showAccessCodes.do?width=475" class="jTip" id="tooltip" name="Test Access Codes">View All</a>&gt</span>
 			</td>
 		</tr>
-		 -->
 	</table>
 	<table id="buttonTbl" style="width: 924px;">
 		<tr>
