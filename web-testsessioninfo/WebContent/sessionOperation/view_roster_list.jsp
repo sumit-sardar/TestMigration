@@ -3,6 +3,9 @@
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="testsessionApplicationResource" />
 
+<link href="<%=request.getContextPath()%>/resources/css/jtip.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jtip.js"></script>
+
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <table width="100%" border="0">
 <tr><td>
@@ -27,10 +30,19 @@
 </td></tr>
 <tr><td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table id="labelTbl" style="margin-top: 5px; width: 924px;">
-		<tr>
+		<tr height="25">
 			<td align="left" width="14%"><lb:label key="viewStatus.testName" /></td>
 			<td width="80%"><span id = "rosterTestName"></span></td>
 		</tr>
+		<!-- 
+		<tr height="25">
+			<td align="left" width="14%"><lb:label key="viewStatus.testAccessCode" /></td>
+			<td width="80%">
+			<span id = "testAccessCode"></span>
+			<span>&nbsp;&nbsp;<a href="showAccessCodes.do?width=475" class="jTip" id="tooltip" name="Test Access Codes">View All</a></span>
+			</td>
+		</tr>
+		 -->
 	</table>
 	<table id="buttonTbl" style="width: 924px;">
 		<tr>

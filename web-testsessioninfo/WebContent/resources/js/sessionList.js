@@ -3898,6 +3898,7 @@ function registerDelegate(tree){
 					$("#buttonTbl").width(982);
 		         }
 				 $("#rosterTestName").text(obj.testSession.testName);
+				 $("#testAccessCode").text(obj.testSession.accessCode);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,

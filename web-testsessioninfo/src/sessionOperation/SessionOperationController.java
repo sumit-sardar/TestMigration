@@ -209,6 +209,8 @@ public class SessionOperationController extends PageFlowController {
     private ProgramData userPrograms = null;
     public LinkedHashMap timeZoneOptions = null;	 
 	
+	private List<TestElement> accessCodes = null; 
+    
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
 	}
@@ -5324,7 +5326,8 @@ public class SessionOperationController extends PageFlowController {
 		            this.sessionId = Integer.valueOf(testAdminId);
 		        RosterElementData red = getRosterForViewTestSession(this.sessionId);
 		        rosterList = buildRosterList(red);   
-		       
+		        
+		    	populateAccessCodes(this.sessionId);
 		        
 		        Base base = new Base();
 				base.setPage("1");
@@ -5348,6 +5351,61 @@ public class SessionOperationController extends PageFlowController {
 		        base.setTestSession(testSession);
 		        createGson(base);
 		        return null;
+		    }
+
+		 
+			private void populateAccessCodes(Integer testAdminId) {
+				
+				this.accessCodes = new ArrayList(); 
+				try {
+					ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
+					TestElement[] testElements = scheduledSession.getScheduledUnits();
+					
+			        for (int i=0; i < testElements.length; i++) {
+			            TestElement te = testElements[i];      			            
+			            this.accessCodes.add(te);	            
+			        }
+		        }
+		        catch (CTBBusinessException e) {
+		            e.printStackTrace();
+		        }
+			}
+	
+	
+		    @Jpf.Action(forwards = { 
+		            @Jpf.Forward(name = "success", path = "access_codes.jsp") 
+		        })
+		    protected Forward showAccessCodes()
+		    {
+		        this.getSession().setAttribute("accessCodes", this.accessCodes);
+		    	
+		        return new Forward("success");
+		    	/*
+		        HttpServletRequest req = getRequest();
+				HttpServletResponse resp = getResponse();
+				OutputStream stream = null;
+				
+				String bcmString = "Tai Truong";
+				
+				try{
+		    		resp.setContentType(CONTENT_TYPE_JSON);
+					try {
+						stream = resp.getOutputStream();
+			    		resp.flushBuffer();
+			    		stream.write(bcmString.getBytes());
+					} 
+					finally {
+						if (stream!=null){
+							stream.close();
+						}
+					}
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+		        
+		        return null;
+		        */
 		    }
 			
 			/**
