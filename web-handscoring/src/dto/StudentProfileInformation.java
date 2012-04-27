@@ -88,6 +88,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String studentName;
     private String accessCode;
     private Integer itemSetIdTC;
+    private Integer itemCountCRAI;
 
     /**
 	 * @return the hasAccommodations
@@ -533,6 +534,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.studentName = student.getStudentName();
         this.accessCode = student.getAccessCode();
         this.itemSetIdTC = student.getItemSetIdTC();
+        this.itemCountCRAI = student.getItemCountCRAI();
     }
     
 
@@ -1204,5 +1206,15 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setItemSetIdTC(Integer itemSetIdTC) {
 		this.itemSetIdTC = itemSetIdTC;
+	}
+
+
+	public Integer getItemCountCRAI() {
+		return itemCountCRAI;
+	}
+
+
+	public void setItemCountCRAI(Integer itemCountCRAI) {
+		this.itemCountCRAI = itemCountCRAI;
 	}
 } 
