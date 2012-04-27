@@ -4580,7 +4580,10 @@ function validNumber(str){
 	}
 	
 	
-	function copyTestSession(){
+	function copyTestSession(element){
+	    if (isButtonDisabled(element) ) {
+			return true;
+		}
 	    var action = "copySession"; 
 	    editTestSession(action);
 	}
