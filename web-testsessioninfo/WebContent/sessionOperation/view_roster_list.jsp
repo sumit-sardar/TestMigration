@@ -35,10 +35,10 @@
 			<td width="80%"><span id = "rosterTestName"></span></td>
 		</tr>
 		<tr height="25">
-			<td align="left" width="14%"><lb:label key="viewStatus.testAccessCode" /></td>
+			<td align="left" width="14%"><lb:label key="viewStatus.subtest.sessionName" /></td>
 			<td width="80%">
-			<span id="testAccessCode"></span>
-			<span id="accessCodeTooltip" style="display: none">&nbsp;&nbsp;&lt<a href="showAccessCodes.do?width=475" class="jTip" id="tooltip" name="Test Access Codes">View All</a>&gt</span>
+			<span id="testAdminName"></span>
+			<span id="subtestDetailTooltip" style="display: none">&nbsp;&nbsp;&lt<a href="showSubtestDetails.do?width=600" class="jTip" id="tooltip" name="Subtest Details">Subtest Details</a>&gt</span>
 			</td>
 		</tr>
 	</table>

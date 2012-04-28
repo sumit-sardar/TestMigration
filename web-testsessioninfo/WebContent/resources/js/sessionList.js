@@ -3851,8 +3851,8 @@ function registerDelegate(tree){
 	function closeViewStatusPopup() {
 		closePopUp('viewTestSessionId');
 		$("#rosterTestName").text('');
-		$("#testAccessCode").text('');
- 	    $("#accessCodeTooltip").css('display', 'none');
+		$("#testAdminName").text('');
+ 	    $("#subtestDetailTooltip").css('display', 'none');
 		$("#rosterTotalStudents").text('');
 		$('#rosterList').GridUnload();
 		$("#labelTbl").width(924);
@@ -3900,8 +3900,8 @@ function registerDelegate(tree){
 					$("#buttonTbl").width(982);
 		         }
 				 $("#rosterTestName").text(obj.testSession.testName);
-				 $("#testAccessCode").text(obj.testSession.accessCode);
-			 	 $("#accessCodeTooltip").css('display', 'inline');
+				 $("#testAdminName").text(obj.testSession.testAdminName);
+			 	 $("#subtestDetailTooltip").css('display', 'inline');
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,

@@ -209,7 +209,7 @@ public class SessionOperationController extends PageFlowController {
     private ProgramData userPrograms = null;
     public LinkedHashMap timeZoneOptions = null;	 
 	
-	private List<TestElement> accessCodes = null; 
+	private List<TestElement> subtestDetails = null; 
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -5327,7 +5327,7 @@ public class SessionOperationController extends PageFlowController {
 		        RosterElementData red = getRosterForViewTestSession(this.sessionId);
 		        rosterList = buildRosterList(red);   
 		        
-		    	populateAccessCodes(this.sessionId);
+		        populateSubtestDetails(this.sessionId);
 		        
 		        Base base = new Base();
 				base.setPage("1");
@@ -5354,16 +5354,24 @@ public class SessionOperationController extends PageFlowController {
 		    }
 
 		 
-			private void populateAccessCodes(Integer testAdminId) {
+			private void populateSubtestDetails(Integer testAdminId) {
 				
-				this.accessCodes = new ArrayList(); 
+				this.subtestDetails = new ArrayList(); 
 				try {
 					ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
 					TestElement[] testElements = scheduledSession.getScheduledUnits();
 					
 			        for (int i=0; i < testElements.length; i++) {
-			            TestElement te = testElements[i];      			            
-			            this.accessCodes.add(te);	            
+			            TestElement te = testElements[i];
+			            String sequence = String.valueOf(i+1);
+			            te.setItemSetLevel(sequence);
+			            
+			            String duration = "Untimed";
+			            if (te.getTimeLimit() != null && te.getTimeLimit().intValue() > 0)
+			                duration = String.valueOf(te.getTimeLimit().intValue() / 60) + " mins";
+			            te.setMediaPath(duration);
+			            
+			            this.subtestDetails.add(te);	            
 			        }
 		        }
 		        catch (CTBBusinessException e) {
@@ -5373,39 +5381,13 @@ public class SessionOperationController extends PageFlowController {
 	
 	
 		    @Jpf.Action(forwards = { 
-		            @Jpf.Forward(name = "success", path = "access_codes.jsp") 
+		            @Jpf.Forward(name = "success", path = "subtest_details.jsp") 
 		        })
-		    protected Forward showAccessCodes()
+		    protected Forward showSubtestDetails()
 		    {
-		        this.getSession().setAttribute("accessCodes", this.accessCodes);
+		        this.getSession().setAttribute("subtestDetails", this.subtestDetails);
 		    	
 		        return new Forward("success");
-		    	/*
-		        HttpServletRequest req = getRequest();
-				HttpServletResponse resp = getResponse();
-				OutputStream stream = null;
-				
-				String bcmString = "Tai Truong";
-				
-				try{
-		    		resp.setContentType(CONTENT_TYPE_JSON);
-					try {
-						stream = resp.getOutputStream();
-			    		resp.flushBuffer();
-			    		stream.write(bcmString.getBytes());
-					} 
-					finally {
-						if (stream!=null){
-							stream.close();
-						}
-					}
-				} 
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-		        
-		        return null;
-		        */
 		    }
 			
 			/**
