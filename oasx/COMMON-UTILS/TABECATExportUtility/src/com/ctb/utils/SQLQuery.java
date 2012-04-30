@@ -85,24 +85,24 @@ public class SQLQuery {
 			+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
 	
 	public static String testRosterSql = "select tr.test_roster_id as test_roster_id,"
-           + "tr.activation_status as activation_status,"
-           + "tr.test_completion_status as test_completion_status,"
-           + " tr.customer_id as customer_id,"
-           + " tr.student_id as student_id,"
-           + " tr.test_admin_id   as test_admin_id,"
-           + " to_char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
-           + " ta.time_zone as timeZone,"
-           + " tr.restart_number as restartNumber,"
-           + " tr.last_mseq as lastMSEQ,"
-           + " to_Char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate" 
-           + " from test_roster tr, test_admin ta"
-           + " where tr.customer_id = ?"
-           + " and tr.activation_status = 'AC'"
-           + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
-           + " and tr.test_admin_id = ta.test_admin_id"
-           + " and ta.product_id = ?"
-           + " order by tr.test_roster_id";
-
+								        + "tr.activation_status as activation_status,"
+								        + "tr.test_completion_status as test_completion_status,"
+								        + " tr.customer_id as customer_id,"
+								        + " tr.student_id as student_id,"
+								        + " tr.test_admin_id   as test_admin_id,"
+								        + " to_char((tr.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,"
+								        + " ta.time_zone as timeZone,"
+								        + " tr.restart_number as restartNumber,"
+								        + " tr.last_mseq as lastMSEQ,"
+								        + " to_char((tr.start_date_time),'MMDDYYYY HH24:MI:SS') as startDate" 
+								        + " from test_roster tr, test_admin ta"
+								        + " where tr.customer_id = ?"
+								        + " and tr.activation_status = 'AC'"
+								        + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
+								        + " and tr.test_admin_id = ta.test_admin_id"
+								        + " and ta.product_id = ?"
+								        + " order by tr.test_roster_id";
+	
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
 			+ " this_.TEST_ADMIN_ID  as TEST_ADMIN_ID  from TEST_ROSTER this_   where this_.TEST_ROSTER_ID IN( <#ROSTER_ID_LIST#> )";
@@ -142,7 +142,7 @@ public class SQLQuery {
 
 	public static String ALL_ITEMS_DETAILS_SQL = " SELECT irp.item_id, irp.response as original_response, " +
 												" decode(irp.response, item.correct_answer, '1', '0') response, " +
-												" derived.maxseqnum, irp.response_elapsed_time " +
+												" derived.maxseqnum, irp.response_elapsed_time, irp.item_response_id " +
 												" FROM item_response irp, item," +
 												" (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum  " +
 												" from item_response , item  where test_roster_id = ?  " +
@@ -160,7 +160,9 @@ public class SQLQuery {
 												" and irp.item_set_id = ? " +
 												" ORDER BY derived.maxseqnum";
 
-
+	public static String GET_ITEM_RESPONSE_FOR_ITEM = "SELECT count(1) as count FROM item_response irp WHERE irp.item_id = ? " +
+													  "and irp.test_roster_id = ? and irp.response_seq_num <= ?";
+	
 	public static String OBJECTIVE_SCORE_SQL = "SELECT siss.objective_score " +
 											     "FROM student_item_set_status siss, " +
 											     "item_set ist " +
@@ -202,8 +204,8 @@ public class SQLQuery {
   													 "AND irp.item_set_id = ? " +
   													 "AND item.item_type = 'SR' " +
   													 "AND item.activation_status = 'AC' " +
-  													 "AND irp.response_seq_num > 9999 " +
-  												   "ORDER BY irp.response_seq_num DESC";
+  													 "AND irp.response_seq_num > 100000 " +
+  												   "ORDER BY irp.response_seq_num";
 	
 	public static final String GET_ALL_CONTENT_DOMAIN_SQL = "SELECT DISTINCT items.item_set_name, items.item_set_id " +
 															    "FROM test_catalog tc, item_set_ancestor isa, item_set items " +

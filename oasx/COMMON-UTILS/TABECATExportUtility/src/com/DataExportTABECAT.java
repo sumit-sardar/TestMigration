@@ -682,6 +682,8 @@ public class DataExportTABECAT {
 	   TestRoster roster) throws IOException, Exception {
 		   PreparedStatement ps = null ;
 		   ResultSet rs = null;
+		   PreparedStatement ps1 = null ;
+		   ResultSet rs1 = null;
 		   Map<String, ItemResponses> itemMap = new LinkedHashMap<String, ItemResponses>();
 		   StringBuilder response = new StringBuilder();
 		   try {
@@ -717,6 +719,7 @@ public class DataExportTABECAT {
 				   int index = 1;
 				   int currentSequenceNo = 0;
 				   int lastSequenceNo = 0;
+				   int restartItemNumber = 0;
 				   String lastItemId = "";
 				   while (rs.next()) {
 					  ItemResponses ir = new ItemResponses();
@@ -728,7 +731,24 @@ public class DataExportTABECAT {
 					  ir.setSequenceNo(currentSequenceNo);
 					  ir.setIndex(index++);
 					  if(currentSequenceNo > lastSequenceNo + 100000) {
-						   itemMap.remove(lastItemId);
+						  ps1 = con.prepareStatement(SQLQuery.GET_ITEM_RESPONSE_FOR_ITEM);
+						  ps1.setString(1, ir.getItemId());
+						  ps1.setInt(2, roster.getTestRosterId());
+						  ps1.setLong(3, currentSequenceNo - 100000);
+						  rs1 = ps1.executeQuery();
+						  if(rs1.next()) {
+							  if(rs1.getInt("count") == 0) {
+								  itemMap.remove(lastItemId);
+								  if(restartItemNumber == 0) {
+									  restartItemNumber = ir.getIndex() - 1;
+								  }
+							  } else {
+								  if(restartItemNumber == 0) {
+									  restartItemNumber = ir.getIndex();
+								  } 
+							  }
+						  }
+						  SqlUtil.close(ps1, rs1);
 					  }
 					  lastSequenceNo = currentSequenceNo;
 					  lastItemId = rs.getString("item_id");
@@ -755,20 +775,11 @@ public class DataExportTABECAT {
 				   response.append(itemIds.substring(0, itemIds.length() - 1)
 						   		 + itemResponse + itemOrgResponse
 						   	     + resposneTime.substring(0, resposneTime.length() - 1));
-				   
-				   ps = con.prepareStatement(SQLQuery.RESTART_ITEM_SQL);
-				   ps.setInt(1, roster.getTestRosterId());
-				   ps.setInt(2, itemSetId);
-				   rs = ps.executeQuery();
-				   if(rs.next()) {
-				      ItemResponses ir = itemMap.get(rs.getString("item_id"));
-				      if(ir != null) {
-				    	  response.append("1" + ir.getIndex());
-				      }
-				   } else {
+				   if(restartItemNumber == 0) {
 					   response.append("00");
+				   } else {
+					   response.append("1" + restartItemNumber);
 				   }
-				   SqlUtil.close(ps, rs);
 				   itemMap.clear();
 			   }
 			   tfil.setItemResponse(response.toString());
