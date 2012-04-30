@@ -1428,13 +1428,13 @@ table.p table.pager .textField {
 }
 
 .reportNavLayout td {
-    background-color: #666666;
-    color: #fff;
-    font-family: Arial, Helvetica, Sans Serif;
+	background: url(../images/tableHeader3.png);
+    color: #000;
+	font-family: Arial, Helvetica, Sans Serif;
     font-size: 11px;
     font-weight: bold;
     line-height: 14px;
-    padding: 0px 20px 0px 0px;
+    padding: 5px 0px 5px 0px;
 }
 
 .reportNavLinks {
@@ -1452,16 +1452,24 @@ table.p table.pager .textField {
 
 .reportNavLinks td a { 
     color: #fff;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .reportNavLinks td a:hover { 
-    color: #fff;
+    color: #0000ff;
     text-decoration: underline;
 }
 
 .reportNavLinks td.currentNav {
-    background-color: #666666;
-    color: #fc0;
+    background-color: #d4ecff;
+    color: #0000ff;
 }
 
+.reportNavLinks td.currentNav a { 
+    color: #0000ff;
+}
+
+.reportNavLinks td.currentNav a:hover { 
+    color: #0000ff;
+    text-decoration: none;
+}

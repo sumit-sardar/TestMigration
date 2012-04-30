@@ -3018,8 +3018,8 @@ public class SessionOperationController extends PageFlowController {
      * REPORTS actions
      */    
     @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "TABEReport", path = "TABEReport.do"),             
-            @Jpf.Forward(name = "LasLinksReport", path = "LasLinksReport.do"),             
+            @Jpf.Forward(name = "TurnLeafReport", path = "turnLeafReport.do"),             
+            @Jpf.Forward(name = "LasLinksReport", path = "lasLinksReport.do"),             
             @Jpf.Forward(name = "temporary", path = "reports.jsp")             
         }) 
     protected Forward reports()
@@ -3034,9 +3034,8 @@ public class SessionOperationController extends PageFlowController {
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("LasLinksReport");
 		else
-			return new Forward("TABEReport");
+			return new Forward("TurnLeafReport");
 		*/
-
 		return new Forward("temporary");
     }
 
@@ -3047,7 +3046,7 @@ public class SessionOperationController extends PageFlowController {
             @Jpf.Forward(name = "report",
                          path = "turnleaf_reports.jsp")
         })
-    protected Forward TABEReport()
+    protected Forward turnLeafReport()
     {
         if (this.reportManager == null)
         {
@@ -3086,8 +3085,16 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "immediate_report_home.jsp") 
         })
-    protected Forward LasLinksReport()
+    protected Forward lasLinksReport()
     {
+        if (this.reportManager == null)
+        {
+        	initReportManager();
+        }
+    	
+        this.getRequest().setAttribute("program", this.reportManager.getSelectedProgramName());
+        this.getRequest().setAttribute("organization", this.reportManager.getSelectedOrganizationName());
+        
         return new Forward("success");
     }
 
@@ -3193,6 +3200,8 @@ public class SessionOperationController extends PageFlowController {
         
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
+        
+        System.out.println("programId=" + programId + " - orgNodeId=" + orgNodeId);
         
         List reportList = buildReportList(orgNodeId, programId);
 

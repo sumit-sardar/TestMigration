@@ -16,14 +16,14 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['homepage.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.home']}"/>
+    <netui-template:setAttribute name="title" value="${bundle.web['reports.window.title']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.generateReportFile']}"/>
 <netui-template:section name="bodySection">
 
-<!-- 
- -->
+
 <link href="<%=request.getContextPath()%>/resources/css/widgets_NEW.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/embed.js"></script>    
+
 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -34,12 +34,10 @@ String selectedReport = (String)request.getAttribute("selectedReport");
 String reportUrl = (String)request.getAttribute("reportUrl");
 String testAdminId = (String)request.getAttribute("testAdminId");
 
-System.out.println("reportList = " + reportList.size());    
-System.out.println("selectedReport = " + selectedReport);    
-System.out.println("testAdminId = " + testAdminId);    
+System.out.println("reportUrl = " + reportUrl);    
 %>
 
-<netui:form action="TABEReport">
+<netui:form action="turnLeafReport">
 <input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
 <table border="0" width="97%" style="margin:15px auto;">

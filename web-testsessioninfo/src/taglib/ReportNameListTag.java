@@ -57,7 +57,7 @@ public class ReportNameListTag extends CTBTag
 				displayCellEnd();
 				displayCellStart("transparent", "650");
                     content = "<li style=\"list-style-type: square;\" >";
-                    content += "<a href=\"/SessionWeb/sessionOperation/TABEReport.do?report=" + reportName + "\"" + this.displayStyle + " >" + displayName + "</a>";
+                    content += "<a href=\"/SessionWeb/sessionOperation/turnLeafReport.do?report=" + reportName + "\"" + this.displayStyle + " >" + displayName + "</a>";
                     content += "</li>";                    
                     content += description;                    
                     writeToPage(content);
