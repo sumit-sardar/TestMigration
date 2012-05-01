@@ -97,10 +97,11 @@
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 										</div> 	
+									    <%if (userScheduleAndFindSessionPermission) {%>
 										<div id="copySession" style="float:right;padding-left:5px;display: block;">
 											<a href="#" id="copySessionButton" onclick="javascript:copyTestSession(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.copySession" /></a>
 										</div>
-										
+									    <%} %>	
 										<% if (showModifyManifest) {%>
 										    <div id="mStdManifest" style="float:right;padding-left:5px; display: block;">
 											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
