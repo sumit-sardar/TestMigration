@@ -30,7 +30,7 @@
 	</tr>
 	<tr>
 		<td><lb:label key="viewStatus.subtest.testSessionName"/></td>
-		<td><span id = "testAdminName"></span></td>
+		<td><span id = "testAdminName_acco"></span></td>
 	</tr>
 	<tr>
 		<td><lb:label key="viewStatus.subtest.testName"/></td>

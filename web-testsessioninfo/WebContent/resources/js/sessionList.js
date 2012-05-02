@@ -3797,6 +3797,7 @@ function registerDelegate(tree){
 					$("#loginName").text("");
 					$("#password").text("");
 					$("#testAdminName").text("");
+					$("#testAdminName_acco").text("");
 					$("#subTestName").text("");
 					$("#testStatus").text("");
 					$("#testGrade").text("");
@@ -3852,6 +3853,7 @@ function registerDelegate(tree){
 		closePopUp('viewTestSessionId');
 		$("#rosterTestName").text('');
 		$("#testAdminName").text('');
+		$("#testAdminName_acco").text('');
  	    $("#subtestDetailTooltip").css('display', 'none');
 		$("#rosterTotalStudents").text('');
 		$('#rosterList').GridUnload();
@@ -4037,6 +4039,7 @@ function registerDelegate(tree){
 							$("#loginName").text(data.loginName);
 							$("#password").text(data.password);
 							$("#testAdminName").text(data.testSession.testAdminName);
+							$("#testAdminName_acco").text(data.testSession.testAdminName);
 							$("#subTestName").text(data.testSession.testName);
 							$("#testStatus").text(data.testStatus);
 							if(data.testGrade != null) {
