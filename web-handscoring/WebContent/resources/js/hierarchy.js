@@ -1317,6 +1317,7 @@ function searchStudentByKeyword(){
 			 grid[0].p.search = false;
 			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 			 closePopUp('searchStudentByKeyword');
+			 grid[0].triggerToolbar();// to trigger previously applied filters
 		 } else {
 		 	var grid = $("#sessionScoringGrid"); 
 			$("#searchSessionByKeywordInput").val('');
