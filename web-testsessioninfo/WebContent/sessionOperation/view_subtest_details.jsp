@@ -29,7 +29,7 @@
 		<td><span id = "password"></span></td>
 	</tr>
 	<tr>
-		<td><lb:label key="viewStatus.subtest.testSessionName"/></td>
+		<td><lb:label key="viewStatus.subtest.sessionName"/></td>
 		<td><span id = "testAdminName_acco"></span></td>
 	</tr>
 	<tr>
