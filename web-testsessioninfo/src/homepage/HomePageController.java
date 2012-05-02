@@ -1100,6 +1100,8 @@ public class HomePageController extends PageFlowController
             }
             if (! cr.getReportName().equals("IndividualProfile"))
             {
+        		reportList.add(cr);
+        		/*
             	if (isTABEAdaptive) {
                     if (cr.getReportName().equals("ExportIndividualStudentResults")) {
                 		reportList.add(cr);            		
@@ -1108,6 +1110,7 @@ public class HomePageController extends PageFlowController
             	else {
             		reportList.add(cr);
             	}
+            	*/
             }
         }           
         
