@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.ffpojo.exception.FFPojoException;
 import org.ffpojo.file.writer.FileSystemFlatFileWriter;
@@ -26,6 +27,7 @@ import com.ctb.dto.GradeEquivalent;
 import com.ctb.dto.ItemResponses;
 import com.ctb.dto.NRSLevels;
 import com.ctb.dto.ObjectiveLevel;
+import com.ctb.dto.Organization;
 import com.ctb.dto.PercentageMastery;
 import com.ctb.dto.PredictedGED;
 import com.ctb.dto.Student;
@@ -46,6 +48,7 @@ public class DataExportTABECAT {
 	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
 	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
+	private static final Set<Integer> CUST_CATEGORIES = new TreeSet<Integer>();
 	
 	static {
 		CONTENT_DOMAINS.put("Reading", 0);
@@ -108,10 +111,6 @@ public class DataExportTABECAT {
 		List<TABEFile> tabeFileList = new ArrayList<TABEFile>();
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
 		List<CustomerDemographic> customerDemoList = new ArrayList<CustomerDemographic>();
-		HashMap<String, Integer> stateMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> districtMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> schoolMap = new HashMap<String, Integer>();
-		HashMap<String, Integer> classMap = new HashMap<String, Integer>();
 		HashMap<Integer, String> customerDemographic = new HashMap<Integer, String>();
 		Connection oascon = null;
 		Connection irscon = null;
@@ -144,8 +143,7 @@ public class DataExportTABECAT {
 				}else{
 					catData.setInterrupted("0");
 				}
-				createOrganization(oascon, catData, roster.getStudentId(),
-						stateMap,districtMap, schoolMap, classMap);
+				createOrganization(oascon, catData, roster.getStudentId());
 				fillAccomodations(studentInfo.getStudentDemographic(), customerDemographic, catData);
 				createAbilityScoreInformation(irscon,catData,roster);
 				getSemScores(oascon, catData, roster,catData.getAbilityScores());
@@ -310,90 +308,77 @@ public class DataExportTABECAT {
 	}
 
 	private void createOrganization(Connection con, TABEFile tfil,
-			Integer studentId,HashMap<String, Integer> stateMap,
-			HashMap<String, Integer> districtMap,
-			HashMap<String, Integer> schoolMap,
-			HashMap<String, Integer> classMap)
+			Integer studentId)
 	throws SQLException {
 
 		System.out.println("Create Organization Start");
-		TreeMap<Integer, String> organizationMap = new TreeMap<Integer, String>();
-
+		List<Organization> studentCatList = new ArrayList<Organization>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = con.prepareStatement(SQLQuery.sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY);
+			if(CUST_CATEGORIES.isEmpty()) {
+				ps = con.prepareStatement(SQLQuery.CATEGORY_LEVEL_FOR_CUSTOMER);
+				ps.setString(1, tfil.getCustomerID());
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					CUST_CATEGORIES.add(rs.getInt("category_level"));
+				}
+				SqlUtil.close(ps, rs);
+			}
+			
+			ps = con.prepareStatement(SQLQuery.sql);
 			ps.setInt(1, studentId);
 			rs = ps.executeQuery();
 			
-			/*if we take the category level there are chances that the customer will have only three 
-			levels instead of the usual four so
-			trying to create a map instead that will give the exact
-			number of organizations from which we can detect the levels*/
 			while (rs.next()) {
 				if (rs.getString(4).equalsIgnoreCase("root")
 						|| rs.getString(4).equalsIgnoreCase("CTB")) {
 					// do nothing
 				} else {
-					organizationMap.put(new Integer(rs.getString(5)), rs
-							.getString(4));
+					Organization org = new Organization();
+					org.setNodeCode(rs.getString("nodeCode"));
+					org.setNodeName(rs.getString("nodeName"));
+					org.setCategoryLevel(rs.getInt("categoryLevel"));
+					studentCatList.add(org);
 				}
-			}
-			Integer organizationMapSize = organizationMap.size();
-			rs.beforeFirst();
-			while (rs.next()) {
-				if (rs.getString(4).equalsIgnoreCase("root")
-						|| rs.getString(4).equalsIgnoreCase("CTB")) {
-					// do nothing
-				} else if (rs.getString(5) != null
-						 && new Integer(organizationMapSize - 3).toString() != null
-						&& rs.getString(5)
-						.equalsIgnoreCase(
-								new Integer(organizationMapSize - 3)
-								.toString())) {
-					tfil.setOrgLevel1Name(rs.getString(4));
-					tfil.setOrgLevel1Code(rs.getString(3));
-
-				} else if (rs.getString(5) != null
-						 && new Integer(organizationMapSize - 2).toString() != null
-							&& rs.getString(5)
-							.equalsIgnoreCase(
-									new Integer(organizationMapSize - 2)
-									.toString())) {
-					tfil.setOrgLevel2Name(rs.getString(4));
-					tfil.setOrgLevel2Code(rs.getString(3));
-				}
-				else if (rs.getString(5) != null
-						 && new Integer(organizationMapSize - 1).toString() != null
-							&& rs.getString(5)
-							.equalsIgnoreCase(
-									new Integer(organizationMapSize - 1)
-									.toString())) {
-					tfil.setOrgLevel3Name(rs.getString(4));
-					tfil.setOrgLevel3Code(rs.getString(3));
-				}
-				else if (rs.getString(5) != null
-						&& rs.getString(5).equalsIgnoreCase(organizationMapSize.toString())) {
-					tfil.setOrgLevel4Name(rs.getString(4));
-					tfil.setOrgLevel4Code(rs.getString(3));
-				}
-
 			}
 			
-			if(tfil.getOrgLevel3Name() == null){
-				tfil.setOrgLevel3Name(tfil.getOrgLevel4Name());
-				tfil.setOrgLevel3Code(tfil.getOrgLevel4Code());
-				
-			}else if(tfil.getOrgLevel2Name() == null){
-				tfil.setOrgLevel2Name(tfil.getOrgLevel3Name());
-				tfil.setOrgLevel2Code(tfil.getOrgLevel3Code());
-				
-			}else if(tfil.getOrgLevel1Name() == null){
-				tfil.setOrgLevel1Name(tfil.getOrgLevel2Name());
-				tfil.setOrgLevel1Code(tfil.getOrgLevel2Code());				
+			if(CUST_CATEGORIES.size() >= 4) {
+				for (Organization org : studentCatList) {
+					if(org.getCategoryLevel() == 1) {
+						tfil.setOrgLevel1Code(org.getNodeCode());
+						tfil.setOrgLevel1Name(org.getNodeName());
+					} else if(org.getCategoryLevel() == 2) {
+						tfil.setOrgLevel2Code(org.getNodeCode());
+						tfil.setOrgLevel2Name(org.getNodeName());
+					} else if(org.getCategoryLevel() == 3) {
+						tfil.setOrgLevel3Code(org.getNodeCode());
+						tfil.setOrgLevel3Name(org.getNodeName());
+					} else if(org.getCategoryLevel() == 4) {
+						tfil.setOrgLevel4Code(org.getNodeCode());
+						tfil.setOrgLevel4Name(org.getNodeName());
+					}
+				}
+			} else {
+				int i=1;
+				for (Organization org : studentCatList) {
+					if(i == 1){
+						tfil.setOrgLevel4Code(org.getNodeCode());
+						tfil.setOrgLevel4Name(org.getNodeName());
+					} else if(i == 2) {
+						tfil.setOrgLevel3Code(org.getNodeCode());
+						tfil.setOrgLevel3Name(org.getNodeName());
+					} else if(i == 3) {
+						tfil.setOrgLevel2Code(org.getNodeCode());
+						tfil.setOrgLevel2Name(org.getNodeName());
+					}
+					i++;	
+				}
+				if(tfil.getOrgLevel1Name() == null) {
+					tfil.setOrgLevel1Code(tfil.getOrgLevel2Code());
+					tfil.setOrgLevel1Name(tfil.getOrgLevel2Name());
+				}
 			}
-
 			System.out.println("Create Organization End");
 		} finally {
 			SqlUtil.close(ps, rs);

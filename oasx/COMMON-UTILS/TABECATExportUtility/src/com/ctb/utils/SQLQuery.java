@@ -6,7 +6,8 @@ public class SQLQuery {
 			+ " org_node_code as nodeCode, node.org_node_name as nodeName, onc.category_level as categoryLevel"
 			+ " from org_node_ancestor ona, org_node_category onc, org_node node, org_node_student ons "
 			+ " where    ons.org_node_id = ona.org_node_id   and  ons.student_id =  ? "
-			+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
+			+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id"
+			+ " order by onc.category_level desc";
 
 	public static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
 			+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYY HH24:MI:SS')  as dateTestingCompleted,  to_Char(nvl(prg.program_start_date, ''),'MMDDYYYY HH24:MI:SS')  as programStartDate"
@@ -217,4 +218,6 @@ public class SQLQuery {
 															     "AND items.item_set_level <> 'L' " +
 															     "AND tc.product_id = ? " +
 															   "ORDER BY items.item_set_name";
+	
+	public static final String CATEGORY_LEVEL_FOR_CUSTOMER = "select category_level from org_node_category where customer_id = ?";
 }
