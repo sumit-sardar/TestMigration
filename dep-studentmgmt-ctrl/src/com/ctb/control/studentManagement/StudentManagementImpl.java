@@ -2784,7 +2784,7 @@ public class StudentManagementImpl implements StudentManagement
 	}
 		
 	//Added for updating the organization node for bulk move student
-	public void updateBulkMoveOperation(String userName, Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
+	public void updateBulkMoveOperation(String userName, Integer destOrgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
 		try {
 			if(studentIds != null) {
 				User user = getUserDetails(userName, userName);
@@ -2792,28 +2792,26 @@ public class StudentManagementImpl implements StudentManagement
 				Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
 				boolean foundInNewOrgNodes = false;
 				for(int i = 0; i < studentIds.length; i++) {
-					com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
-					
-					if(orgId != null) {
-						for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
-							com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
-							if(oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue()) {
-								foundInNewOrgNodes = true;
-								orgId = null;
-								
-							} else
-								foundInNewOrgNodes = false;
-							if (foundInNewOrgNodes) { //activate 
-								orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
+					com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentWithoutActivationStatus(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+					Integer orgId = destOrgId;
+					for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
+						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
+						if ((orgId != null) && (oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue())) {
+							foundInNewOrgNodes = true;
+							orgId = null;
+							
+						} else
+							foundInNewOrgNodes = false;
+						if (foundInNewOrgNodes) { //activate 
+							orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
+						}
+						else { //delete or deactivate
+							Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
+							if (rosterCount.intValue() >0) {
+								orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
 							}
-							else { //delete or deactivate
-								Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
-								if (rosterCount.intValue() >0) {
-									orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
-								}
-								else {
-									orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
-								}
+							else {
+								orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentIds[i], oldOrgNodeInDB.getOrgNodeId());
 							}
 						}
 					}
@@ -2829,7 +2827,6 @@ public class StudentManagementImpl implements StudentManagement
 						orgNodeStudent.setStudentId(studentIds[i]);
 						orgNodeStudents.createOrgNodeStudent(orgNodeStudent);
 					}
-					
 				}
 			}
 			/*int inClauselimit = 999;
