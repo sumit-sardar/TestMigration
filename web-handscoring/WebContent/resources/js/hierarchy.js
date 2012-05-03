@@ -1269,6 +1269,7 @@ function searchStudentByKeyword(){
 		 
 		 if (searchFiler.length === 0) {
 			 grid[0].p.search = false;
+			 grid[0].triggerToolbar();// to trigger previously applied filters
 		 }else {
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
@@ -1293,6 +1294,7 @@ function searchStudentByKeyword(){
 		 
 		 if (searchFiler.length === 0) {
 			 grid[0].p.search = false;
+			 grid[0].triggerToolbar();// to trigger previously applied filters
 		 }else {
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
@@ -1324,6 +1326,7 @@ function searchStudentByKeyword(){
 			 grid[0].p.search = false;
 			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 			 closePopUp('searchSessionByKeyword');
+			 grid[0].triggerToolbar();// to trigger previously applied filters
 		 }
 	}
 
