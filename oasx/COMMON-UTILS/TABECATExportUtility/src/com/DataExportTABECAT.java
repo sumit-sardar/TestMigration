@@ -374,6 +374,10 @@ public class DataExportTABECAT {
 					}
 					i++;	
 				}
+				if(tfil.getOrgLevel2Name() == null) {
+					tfil.setOrgLevel2Code(tfil.getOrgLevel3Code());
+					tfil.setOrgLevel2Name(tfil.getOrgLevel3Name());
+				}
 				if(tfil.getOrgLevel1Name() == null) {
 					tfil.setOrgLevel1Code(tfil.getOrgLevel2Code());
 					tfil.setOrgLevel1Name(tfil.getOrgLevel2Name());
