@@ -58,6 +58,7 @@ import com.ctb.exception.studentManagement.StudentDataDeletionException;
 import com.ctb.util.SQLutils;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
 
 import dto.Message;
@@ -1233,7 +1234,7 @@ public class StudentOperationController extends PageFlowController {
 
 		FilterParams filter = null;
 		PageParams page = null;
-		SortParams sort = null;
+   	 	SortParams sort = FilterSortPageUtils.buildSortParams("LastName",ColumnSortEntry.ASCENDING, null, null);
 
 		if (selectedOrgNodeId != null)
 		{
