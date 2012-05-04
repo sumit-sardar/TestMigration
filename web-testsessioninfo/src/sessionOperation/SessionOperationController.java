@@ -2311,6 +2311,9 @@ public class SessionOperationController extends PageFlowController {
 					this.user =  userManagement.getUser(this.userName, this.userName);
 				und = this.scheduleTest.getTopUserNodesForUser(this.userName, null,
 						null, null, null);
+		        SortParams sortParams = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.ORGNODE_DEFAULT_SORT, FilterSortPageUtils.ASCENDING, null, null);            
+				und.applySorting(sortParams);
+				
 				UserNode[] nodes = und.getUserNodes();
 				for (int i = 0; i < nodes.length; i++) {
 					UserNode node = (UserNode) nodes[i];
