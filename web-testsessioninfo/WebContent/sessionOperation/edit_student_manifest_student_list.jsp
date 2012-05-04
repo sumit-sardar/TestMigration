@@ -4,7 +4,7 @@
 <lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web" />
-	<div class="roundedMessage ui-corner-all" style="padding-bottom: 0px !important;">
+	<div class="roundedMessage ui-corner-all" style="padding-bottom: 5px !important;">
 		<div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
 			<p id="mmsModifyStdSubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 5pt; padding: 5">
 			</p>

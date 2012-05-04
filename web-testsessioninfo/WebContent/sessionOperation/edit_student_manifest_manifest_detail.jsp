@@ -9,7 +9,7 @@
 	style=" background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 
 
-	<div class="roundedMessage ui-corner-all" style="padding-top: 0px !important; margin-bottom: 0px !important;">
+	<div class="roundedMessage ui-corner-all" style="padding-top: 5px !important; margin-bottom: 5px !important;">
 	<div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
 		<p id="mmsModifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 0pt;">
 		</p>
@@ -34,7 +34,7 @@
 		</table>
 	</div>
  
- <div id="mStdMlocatorDiv" class="roundedMessage ui-corner-all" style="display: block; padding-top: 0px !important;">
+ <div id="mStdMlocatorDiv" class="roundedMessage ui-corner-all" style="display: block; padding-top: 5px !important;">
 	<div style="font-weight: bold; color: rgb(46, 110, 158);" id="mStdMlocatorSubtestGridHeading"> 
 		Locator Test
 		<img src="/SessionWeb/resources/images/questionmark.jpg" onmouseover="showLocatorMessage(event);" onmouseout="hideLocatorMessage();" id="mStdMlocatorSubtestGridToolTip"> 
