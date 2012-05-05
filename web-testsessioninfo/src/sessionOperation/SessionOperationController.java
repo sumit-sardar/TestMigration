@@ -1923,7 +1923,7 @@ public class SessionOperationController extends PageFlowController {
 				 existingTestSession = savedSessionMinData.getTestSession();
 			 }
 			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
-			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, this.userName); 
+			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIdsAndUserName(this.getCustomerId(), itemSetId, this.userName);
 			 if(selectedTest.getOverrideFormAssignmentMethod() != null) {
 				 formOperand = selectedTest.getOverrideFormAssignmentMethod();
 	           }else if (selectedTest.getForms()!= null && selectedTest.getForms().length > 0 ) {
@@ -1937,7 +1937,11 @@ public class SessionOperationController extends PageFlowController {
 			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
 			 String testName       		    = 	selectedTest.getItemSetName(); 
 			 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
-			 
+
+			 TestElement tempTestElem = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, creatorOrgNod);
+			 if (tempTestElem != null) {
+				 overrideLoginEDate  		=  tempTestElem.getOverrideLoginEndDate();
+			 }
 			 
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 

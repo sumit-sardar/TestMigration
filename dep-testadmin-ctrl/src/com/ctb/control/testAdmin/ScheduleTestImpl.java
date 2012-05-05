@@ -3714,7 +3714,23 @@ public class ScheduleTestImpl implements ScheduleTest
     	
     }
 
-    public TestElement getTestElementMinInfoByIds(Integer customerId, Integer itemsetIdTC, String userName) throws CTBBusinessException
+    public TestElement getTestElementMinInfoByIds(Integer customerId, Integer itemsetIdTC, Integer orgNodeId) throws CTBBusinessException
+    {
+    	 try {
+
+    		 TestElement test = itemSet.getTestElementMinInfoByIds(customerId, itemsetIdTC, orgNodeId);
+    		 if (test != null)
+    			 test.setForms(itemSet.getFormsForTest(test.getItemSetId()));
+    		 return test;
+    	 } catch (SQLException se){
+    		 UserDataNotFoundException tee = new UserDataNotFoundException("ScheduleTestImpl: getTestElementMinInfoById: " + se.getMessage());
+             tee.setStackTrace(se.getStackTrace());
+             throw tee;
+    	 }
+    	
+    }
+
+    public TestElement getTestElementMinInfoByIdsAndUserName(Integer customerId, Integer itemsetIdTC, String userName) throws CTBBusinessException
     {
     	 try {
 
