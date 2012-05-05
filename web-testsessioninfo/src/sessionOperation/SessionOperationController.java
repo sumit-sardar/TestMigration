@@ -3095,6 +3095,20 @@ public class SessionOperationController extends PageFlowController {
         	initReportManager();
         }
     	
+        Integer programId = this.reportManager.getSelectedProgramId();
+        Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
+
+        List reportList = buildReportList(orgNodeId, programId);
+
+        for (int i=0; i < reportList.size(); i++) {
+            CustomerReport cr = (CustomerReport)reportList.get(i);
+            String reportUrl = cr.getReportUrl();
+            String result = reportUrl.substring(0, reportUrl.indexOf("?"));
+            cr.setReportUrl(result);
+        }
+        
+        this.getRequest().setAttribute("reportList", reportList);
+        
         this.getRequest().setAttribute("program", this.reportManager.getSelectedProgramName());
         this.getRequest().setAttribute("organization", this.reportManager.getSelectedOrganizationName());
         

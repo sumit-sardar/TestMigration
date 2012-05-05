@@ -1,6 +1,7 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+<%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
@@ -54,19 +55,30 @@
 </tr>    
 </table>    
 </p>
-<br/>
 
-<div id="reportlists" style="height: auto;">
-<table class="transparent">
-<tbody>
-<tr class="transparent">
-<td class="transparent" valign="top" width="32">&nbsp;</td>
-<td class="transparent" valign="top" width="650">
-<li style="list-style-type: square;"><a href="/SessionWeb/sessionOperation/immediateReport.do" style="display: inline;"><lb:label key="report.immediateScores" /></a>
-</li><lb:label key="report.immediateScores.description" />
-</td>		
-</tr>
+<div id="reportlistDiv" style="height: auto;">
+<table border="0" width="97%" style="margin:15px auto;">
+    <netui-data:repeater dataSource="requestScope.reportList">
+        <netui-data:repeaterItem>
+  		<tr class="transparent">
+			<td class="transparent">
+            	<netui-data:getData resultId="reportUrl" value="${container.item.reportUrl}"/>  
+				<li style="list-style-type: square;">
+				<a href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
+					<netui:content value="${container.item.reportName}" defaultValue="&nbsp;" />
+				</a>
+				</li>
+			</td>
+		</tr>
+  		<tr class="transparent">
+			<td class="transparent">
+				<netui:content value="${container.item.description}" defaultValue="&nbsp;" />
+			</td>
+		</tr>
+        </netui-data:repeaterItem>
+    </netui-data:repeater>
 </table>
+
 </div>
 
 </td></tr></table>
