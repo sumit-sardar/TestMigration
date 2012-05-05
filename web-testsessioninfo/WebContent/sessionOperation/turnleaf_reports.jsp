@@ -1,46 +1,51 @@
-
 <%@ page import="java.io.*, java.util.*"%>
-<%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="testsessionApplicationResource" />
+
+<html lang="en">
+
+<head>
+    <link href="<%=request.getContextPath()%>/resources/css/legacy.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/embed.js"></script>    
+</head>
   
-<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
-<netui-data:declareBundle bundlePath="webResources" name="web"/>
-<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
-<netui-data:declareBundle bundlePath="helpResources" name="help"/>
-
-<netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['reports.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.generateReportFile']}"/>
-<netui-template:section name="bodySection">
+<body>
 
 
-<link href="<%=request.getContextPath()%>/resources/css/widgets_NEW.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/embed.js"></script>    
-
-
-<!-- ********************************************************************************************************************* -->
-<!-- Start Page Content -->
-<!-- ********************************************************************************************************************* -->
 <%
-List reportList = (List)request.getAttribute("reportList");
-String selectedReport = (String)request.getAttribute("selectedReport");
-String reportUrl = (String)request.getAttribute("reportUrl");
-String testAdminId = (String)request.getAttribute("testAdminId");
-
-System.out.println("reportUrl = " + reportUrl);    
+    List reportList = (List)request.getAttribute("reportList");
+    String selectedReport = (String)request.getAttribute("selectedReport");
+    String reportUrl = (String)request.getAttribute("reportUrl");
+    String testAdminId = (String)request.getAttribute("testAdminId");
+    
+    System.out.println("reportUrl = " + reportUrl + "       selectedReport = " + selectedReport);    
 %>
 
-<netui:form action="turnLeafReport">
-<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
-<table border="0" width="97%" style="margin:15px auto;">
+<table style="border-collapse: collapse; border-style: none; border-width: 0px; width: 100%; height: 100%; margin: 0px; padding: 0px; ">
+
+<tr>
+    <td style="vertical-align: top; margin: 0px; padding: 0px;">
+    
+        <!-- HEADER -->
+        <jsp:include page="/resources/jsp/report_header.jsp" />        
+
+
+        <!-- NAVIGATION -->
+        <jsp:include page="/resources/jsp/report_navigation.jsp" />        
+        
+    </td>    
+</tr>
+
+
+
 <!-- TURNLEAF REPORT LIST -->
 <tr>
     <td>
@@ -53,27 +58,27 @@ System.out.println("reportUrl = " + reportUrl);
         </table>
     </td>
 </tr>
+
+
+
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>
     <td style="background-color: #fff; width: 100%; height: 100%; vertical-align: top; margin: 0px; padding: 0px;">
-        <iframe src="<%= reportUrl %>" frameborder="0" height="500px" width="100%" ></iframe>
+        <iframe src="<%= reportUrl %>" style="width: 100%; height: 100%;" frameborder="0" ></iframe>
+    </td>
+</tr>
+
+ 
+    
+<!-- FOOTER -->
+<tr>
+    <td style="vertical-align: bottom; margin: 0px; padding: 0px;">
+        <jsp:include page="/resources/jsp/footer.jsp" />  
     </td>
 </tr>
 
 </table>
-
-</netui:form>
-
-<script type="text/javascript">
-$(document).ready(function(){
-	setMenuActive("reports", null);
-});
-</script>
-
-<!-- ********************************************************************************************************************* -->
-<!-- End Page Content -->
-<!-- ********************************************************************************************************************* -->
-    </netui-template:section>
-</netui-template:template>
-
-
+    
+    
+</body>
+</html>
