@@ -1940,13 +1940,13 @@ public class SessionOperationController extends PageFlowController {
 
 			 TestElement tempTestElem = scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), itemSetId, creatorOrgNod);
 			 if (tempTestElem != null) {
-				 overrideLoginEDate  		=  tempTestElem.getOverrideLoginEndDate();
+				 overrideLoginSDate  		=  tempTestElem.getOverrideLoginStartDate();
 			 }
 			 
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 
 			 testSession.setLoginEndDate(dailyLoginEndDate);
-			  testSession.setDailyLoginEndTime(dailyLoginEndTime);
+			 testSession.setDailyLoginEndTime(dailyLoginEndTime);
 			 if(testAdminId != null && "true".equalsIgnoreCase(isEndTestSession)){
 				 TimeZone defaultTimeZone = TimeZone.getDefault();
 				 Date now = new Date(System.currentTimeMillis());
