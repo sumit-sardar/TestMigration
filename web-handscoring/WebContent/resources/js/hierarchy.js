@@ -673,7 +673,11 @@ function populateScoringStudentGrid() {
 						
 			}
 	 });  
-	 jQuery("#studentScoringGrid").jqGrid('filterToolbar');
+	 jQuery("#studentScoringGrid").jqGrid('filterToolbar',{
+	 	afterSearch: function(){ 
+	 		searchStudentByKeyword();
+	 		setAnchorButtonState('scoreButton', true);
+	 	}});
 			jQuery("#studentScoringGrid").navGrid('#studentScoringPager',{
 				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#studentScoringPager",{
@@ -693,6 +697,7 @@ function populateScoringStudentGrid() {
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchStudentByKeywordInput").val('');
+				setAnchorButtonState('scoreButton', true);
 			}); 
 			
 }
@@ -797,7 +802,12 @@ function populateScoringSessionGrid() {
 						
 			}
 	 });  
-	 jQuery("#sessionScoringGrid").jqGrid('filterToolbar');
+	 jQuery("#sessionScoringGrid").jqGrid('filterToolbar',{
+	 	afterSearch: function(){ 
+	 		searchSessionByKeyword();
+	 		setAnchorButtonState('scoreButton', true);
+	 	}
+	 });
 			jQuery("#sessionScoringGrid").navGrid('#sessionScoringPager',{
 				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#sessionScoringPager",{
@@ -817,6 +827,7 @@ function populateScoringSessionGrid() {
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
 				$("#searchSessionByKeywordInput").val('');
+				setAnchorButtonState('scoreButton', true);
 			}); 
 			
 					
@@ -1453,10 +1464,21 @@ function searchStudentByKeyword(){
 		 var grid = $("#studentScoringGrid"); 
 		 
 		 if (searchFiler.length === 0) {
-			 grid[0].p.search = false;
-			 grid[0].triggerToolbar();// to trigger previously applied filters
+			 //grid[0].p.search = false;
+			 //grid[0].triggerToolbar();// to trigger previously applied filters
+			 var g = {groupOp:"AND",rules:[]};
+			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }else {
-		 	 f = {groupOp:"OR",rules:[]};
+		 	 var g = {groupOp:"AND",rules:[],groups:[]};
+			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});			 
+			 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"orgNodeNamesStr",op:"cn",data:searchFiler});
@@ -1464,10 +1486,11 @@ function searchStudentByKeyword(){
 			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
-			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});  
+			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});			   
+		 	 g.groups.push(f);		 	
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;
-			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }
 		 grid.trigger("reloadGrid",[{page:1,current:true}]);
 		 closePopUp('searchStudentByKeyword');
@@ -1478,9 +1501,20 @@ function searchStudentByKeyword(){
 		 var grid = $("#sessionScoringGrid"); 
 		 
 		 if (searchFiler.length === 0) {
-			 grid[0].p.search = false;
-			 grid[0].triggerToolbar();// to trigger previously applied filters
+			 //grid[0].p.search = false;
+			 //grid[0].triggerToolbar();// to trigger previously applied filters
+			 var g = {groupOp:"AND",rules:[],groups:[]};
+			 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
+			 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gs_AssignedRole").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }else {
+		 	 var g = {groupOp:"AND",rules:[],groups:[]};
+			 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
+			 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gs_AssignedRole").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});			 
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
@@ -1488,10 +1522,11 @@ function searchStudentByKeyword(){
 			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
 			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
-			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 			 
+			 g.groups.push(f);			 
 			 grid[0].p.search = true;
-			 grid[0].p.ignoreCase = true;
-			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }
 		 grid.trigger("reloadGrid",[{page:1,current:true}]);
 		 closePopUp('searchSessionByKeyword');
@@ -1501,17 +1536,31 @@ function searchStudentByKeyword(){
 		if(currentView == "student") {
 			var grid = $("#studentScoringGrid"); 
 			$("#searchStudentByKeywordInput").val('');
-			 grid[0].p.search = false;
+			 //grid[0].p.search = false;
+			 var g = {groupOp:"AND",rules:[]};
+			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 			 closePopUp('searchStudentByKeyword');
-			 grid[0].triggerToolbar();// to trigger previously applied filters
+			 //grid[0].triggerToolbar();// to trigger previously applied filters
 		 } else {
 		 	var grid = $("#sessionScoringGrid"); 
 			$("#searchSessionByKeywordInput").val('');
-			 grid[0].p.search = false;
+			 //grid[0].p.search = false;
+			 var g = {groupOp:"AND",rules:[],groups:[]};
+			 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
+			 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gs_AssignedRole").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 			 grid.trigger("reloadGrid",[{page:1,current:true}]); 
 			 closePopUp('searchSessionByKeyword');
-			 grid[0].triggerToolbar();// to trigger previously applied filters
+			 //grid[0].triggerToolbar();// to trigger previously applied filters
 		 }
 	}
 
