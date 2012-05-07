@@ -47,6 +47,8 @@ var scoreByStdGridLoaded = false;
 var sbsItemGridLoaded = false;
 var sbiStudentGridLoaded = false;
 var isScoreByItemClicked = false;
+var data1 = null;
+var isRubricPopulated = false;
 
 
 function populateStudentScoringTree() {
@@ -335,8 +337,18 @@ function fetchDataOnConfirmation() {
 }
 
 function closePopUp(dailogId){
+	$('.ui-widget-overlay').css('height', '100%');
 	if(dailogId == 'sessionScoringId') {
 		isScoreByItemClicked = false;
+	}
+	if (dailogId == 'questionAnswerDetail'){
+		var element = document.getElementById('questionInformation');
+		while(element.hasChildNodes()){
+			element.removeChild(element.lastChild);
+		}
+		isRubricPopulated = false;
+		data1 = null;
+		
 	}
 	$("#"+dailogId).dialog("close");
 }
@@ -514,6 +526,8 @@ function itemStuLoginIdFormatter(cellvalue, options, rowObject) {
 function responseLinkFmatter(cellvalue, options, rowObject){
 		var val = cellvalue;
 		var answered = rowObject.answered;
+		var itemSetIdTD = rowObject.itemSetId;
+
 		var type;
 		if(cellvalue=="AI") {
         	type = "Audio Response";
@@ -521,7 +535,9 @@ function responseLinkFmatter(cellvalue, options, rowObject){
         	type = "Text Response";
         }
         if(answered != undefined && answered == "Answered") {
-        	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+type+"</a>";
+        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + rowObject._id_ +"\",\""+
+        	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
+        	  itemSetIdTD + "\"); return false;'>"+type+"</a>";
         } else {
         	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
         }
@@ -1185,7 +1201,7 @@ function populateSBSItemListGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val()],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1193,8 +1209,8 @@ function populateSBSItemListGrid() {
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
-		   	
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		   	records: function(obj) {} },
@@ -1261,6 +1277,175 @@ function gridStudentItemReloadSBS(){
 	$("#studentItemListPagerSBS .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 }
 
+/**
+* Scoring PopUp Implementation
+*
+**/
+
+function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
+console.log(id +" ::" +itemSetOrder+" :: " +itemType+" :: " +testRosterId+" :: " +itemSetId);
+
+			document.getElementById('displayMessageForQues').style.display = "none";
+		 	var element = document.getElementById('questionInformation');
+		 	var iframe = document.createElement('iframe');
+			iframe.name = "swfFrame";
+			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "";
+			iframe.width = "900";
+			iframe.height = "530";
+			element.appendChild(iframe);
+			
+			viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
+			
+			
+		 	
+
+}
+
+
+
+function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
+	
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var itemId = itemIdRubric; 
+	var itemNumber = itemNumber;
+	
+
+	$.ajax(
+		{
+				async:		false,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'showQuestionAnswer.do',
+				type:		'POST',
+				data:		param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){									
+								 var questionNumber = itemNumber;
+								 console.log("data: " + data);
+								 data1 = data.questionAnswer;
+								 //populateTableNew();
+									 $.unblockUI(); 
+								 //$("#rubricDialogID").dialog("open");
+								$("#questionAnswerDetail").dialog({  
+													title:"Scoring for Item No." + questionNumber,  
+												 	resizable:false,
+												 	autoOpen: true,
+												 	width: '1024px',
+												 	modal: true,
+												 	closeOnEscape: false,
+												 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+		 											});	
+
+								 						 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							},
+				complete :  function(){
+								$.unblockUI(); 
+							}
+				}
+			);
+			
+	
+	}
+	
+	function populateTableNew() {
+	
+		var subIframe = $('#rubricIframe'); 
+		var iFrameObj = subIframe.contents();
+											
+		var counter = 0;
+		var rowCountRubric = iFrameObj.find("#rubricTable tr").length;
+											
+		var rowCountExemplar = iFrameObj.find("#exemplarsTable tr").length;								
+		var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;		
+																			
+		//Rows needs to be deleted, since dynamically new rows are added everytime
+		iFrameObj.find("#rubricTable tr:not(:first)").remove();
+		iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
+												
+											 if(cellCountExemplar == 1)	 {
+											 	iFrameObj.find("#rubricExemplarId").hide();
+											 	iFrameObj.find("#exemplarNoDataId").show();
+											 } else {
+											 	iFrameObj.find("#rubricExemplarId").show();
+											 	iFrameObj.find("#exemplarNoDataId").hide();
+											 }
+											 	//alert(data.rubricData.entry);							 
+											 if(data1.rubricData.entry) {
+											 	//alert("...."+data.rubricData.entry);		
+											 	iFrameObj.find("#rubricNoDataId").hide();
+											 	iFrameObj.find("#rubricTableId").show();								 								 
+											 	for(var i=0;i<data1.rubricData.entry.length;i++) {									
+													var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);								
+													iFrameObj.find("#rubricTable tr:last").
+														after('<tr><td><center><small>'+
+															data1.rubricData.entry[i].score+
+																'</small></center></td><td><small>'+description+'</small></td></tr>');
+			
+													if(data1.rubricData.entry[i].rubricExplanation){
+														var explanation = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricExplanation);
+														var response = handleSpecialCharactersNewUI(data1.rubricData.entry[i].sampleResponse);
+														iFrameObj.find("#exemplarsTable tr:last").
+															after('<tr><td><center><small>'+
+																data1.rubricData.entry[i].score+
+																	'</small></center></td><td><small>'+
+																		response+
+																			'</small></td><td><small>'+
+																				explanation+
+																					'</small></td></tr>');																		
+													} else {
+														counter++;
+														if(counter==data1.rubricData.entry.length) {
+															iFrameObj.find("#exemplarNoDataId").show();
+															iFrameObj.find("#rubricExemplarId").hide();
+														}
+													}
+												}
+											} else {
+												iFrameObj.find("#exemplarNoDataId").show();
+												iFrameObj.find("#rubricNoDataId").show();
+												iFrameObj.find("#rubricExemplarId").hide();
+												iFrameObj.find("#rubricTableId").hide();									
+											}										
+								  		  
+	
+	}
+	
+	function handleSpecialCharactersNewUI(s) {
+		s= s.replace(/&nbsp;/g,' ').split('');
+		var k;
+		for(var i= 0; i<s.length; i++){
+			k= s[i];
+			c= k.charCodeAt(0);
+			s[i]= (function(){
+				switch(c){
+					case 60: return "&lt;";
+					case 62: return "&gt;";
+					case 34: return "&quot;";
+					case 38: return "&amp;";
+					case 39: return "&#39;";
+					//For IE
+					case 65535: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					//For Mozila and Safari
+					case 65533: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					default: return k;
+				}
+			})();
+		}
+		return s.join('');
+	}
 /******JqGrid Search Implementation*****/
 
 function searchStudentByKeyword(){
@@ -1736,3 +1921,4 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			$('#innerID').jstree('open_node', "#"+currentNodeId);
 		}
   }
+  

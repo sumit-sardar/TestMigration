@@ -192,3 +192,4 @@
 
 <jsp:include page="/studentScoringOperation/find_student_scoring.jsp" />
 <jsp:include page="/studentScoringOperation/session_scoring.jsp" />
+<jsp:include page="/studentScoringOperation/question_answer.jsp" />

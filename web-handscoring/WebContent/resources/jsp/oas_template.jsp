@@ -111,6 +111,30 @@
 					}
 				});
 				
+				$("#quesAnsAccordion").accordion({header: "h3"});
+				var wizard = $("#quesAnsAccordion").accordion({ header: "h3",event:false});
+				$("h3", wizard).each(function(index) { 				
+					$(this).click(function(e){
+						var divID = $(this).parent().attr('id');
+						if(divID == "scoringRubric"){
+							//This will directly populate the rubric by using the data1 variable
+							if(!isRubricPopulated){
+								populateTableNew();
+							}
+						}
+						});	
+							
+					});
+					
+				$( "#quesAnsAccordion" ).accordion({
+				   	change: function(event, ui) {
+				   	
+				  	 	$("#questionInformation").css("height",'535px');
+				   		$("#rubricInformation").css("height",'535px');
+						$("#answerInformation").css("height",'535px');
+					}
+				});
+				
 			});
 		
 		

@@ -48,7 +48,7 @@ function updateLDB()
 	String url = request.getRequestURL().toString().trim();
     int lastSlash = url.lastIndexOf("/");
     url = url.substring(0,lastSlash).trim();
-    
+       
 %>
 
 

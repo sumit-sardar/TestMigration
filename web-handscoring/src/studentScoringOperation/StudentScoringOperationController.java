@@ -24,6 +24,7 @@ import utils.Base;
 import utils.BaseTree;
 import utils.BroadcastUtils;
 import utils.ItemScoringUtils;
+import utils.JsonUtils;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
@@ -38,14 +39,18 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.QuestionAnswerData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.RubricViewData;
+import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.crscoring.TestScoring;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
@@ -508,6 +513,85 @@ try {
 		return null;
 	}
 	
+	 /**
+	 * Included for rubric View
+	 */
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward showQuestionAnswer(StudentSessionScoringForm form){
+			
+		String jsonResponse = "";
+		String itemId = getRequest().getParameter("itemId");
+		Integer testRosterId = new Integer(getRequest().getParameter("testRosterId"));
+		Integer itemSetId = new Integer(getRequest().getParameter("itemSetId"));
+		String itemType = getRequest().getParameter("itemType");
+
+		System.out.println("item id" + itemId);
+		System.out.println("testRosterId id" + testRosterId);
+		System.out.println("itemSetId id" + itemSetId);
+		System.out.println("itemType id" + itemType);
+
+	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
+		RubricViewData[] scr =  getRubricDetails(itemId);
+		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
+				userName, testRosterId, itemSetId, itemId, itemType);
+		QuestionAnswerData qad = new QuestionAnswerData();
+		qad.setRubricData(scr);
+		qad.setScrContent(scrArea);
+		
+		try {
+			jsonResponse = JsonUtils.getJson(qad, "questionAnswer",qad.getClass());
+
+			System.out.println("jsonresponse" + jsonResponse);
+		   HttpServletResponse resp = this.getResponse();     
+		   resp.setContentType("application/json");
+           resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+		
+	}
+	 /**
+     *getRubricDetails() for rubricView
+     */
+    private RubricViewData[] getRubricDetails(String itemId){
+
+    	RubricViewData[] rubricDetailsData = null;
+    	try {	
+    		rubricDetailsData =  this.testScoring.getRubricDetailsData(itemId);
+    		System.out.println("rubricdetails data");
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	return rubricDetailsData;
+    }
+    
+    
+	private static ScorableCRAnswerContent getIndividualCRResponse(
+			TestScoring testScoring, String userName, Integer testRosterId,
+			Integer deliverableItemSetId, String itemId, String itemType) {
+		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
+		try {
+
+			answerArea = testScoring.getCRItemResponseForScoring(userName,
+					testRosterId, deliverableItemSetId, itemId, itemType);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+
+		return answerArea;
+	}
 	
 	/**
 	 * findStudentForTestSession
