@@ -955,7 +955,8 @@ public class SessionOperationController extends PageFlowController {
     	    		vo.setSavedTestDetails(scheduledSession);
     	    	}
     	    	//added for copy test session
-    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoById(this.getCustomerId(), scheduledSession.getTestSession().getItemSetId()); 
+    	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), 
+    	    			scheduledSession.getTestSession().getItemSetId(), scheduledSession.getTestSession().getCreatorOrgNodeId()); 
     	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
     	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
                 if (action != null && action.equals("copySession"))
