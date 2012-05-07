@@ -1467,17 +1467,17 @@ function searchStudentByKeyword(){
 			 //grid[0].p.search = false;
 			 //grid[0].triggerToolbar();// to trigger previously applied filters
 			 var g = {groupOp:"AND",rules:[]};
-			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
-			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
-			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});
+			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }else {
 		 	 var g = {groupOp:"AND",rules:[],groups:[]};
-			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
-			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
-			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});			 
+			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});			 
 			 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
@@ -1538,9 +1538,9 @@ function searchStudentByKeyword(){
 			$("#searchStudentByKeywordInput").val('');
 			 //grid[0].p.search = false;
 			 var g = {groupOp:"AND",rules:[]};
-			 g.rules.push({field:"testCatalogName",op:"cn",data:$("#gs_testCatalogName").val()});
-			 g.rules.push({field:"gender",op:"cn",data:$("#gs_gender").val()});
-			 g.rules.push({field:"grade",op:"cn",data:$("#gs_grade").val()});
+			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
