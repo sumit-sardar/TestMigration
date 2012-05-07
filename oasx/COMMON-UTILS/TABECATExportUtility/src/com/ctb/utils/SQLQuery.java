@@ -161,8 +161,12 @@ public class SQLQuery {
 												" and irp.item_set_id = ? " +
 												" ORDER BY derived.maxseqnum";
 
-	public static String GET_ITEM_RESPONSE_FOR_ITEM = "SELECT count(1) as count FROM item_response irp WHERE irp.item_id = ? " +
-													  "and irp.test_roster_id = ? and irp.response_seq_num <= ?";
+	public static String GET_ITEM_RESPONSE_FOR_ITEM = "select item_id " 
+												    + "from item_response "
+												    + "where test_roster_id = ? "
+												    + "and item_set_id = ? "
+												    + "and response_seq_num < ? "
+												    + "order by response_seq_num desc";
 	
 	public static String OBJECTIVE_SCORE_SQL = "SELECT siss.objective_score " +
 											     "FROM student_item_set_status siss, " +

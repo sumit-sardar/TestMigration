@@ -721,12 +721,13 @@ public class DataExportTABECAT {
 					  ir.setIndex(index++);
 					  if(currentSequenceNo > lastSequenceNo + 100000) {
 						  ps1 = con.prepareStatement(SQLQuery.GET_ITEM_RESPONSE_FOR_ITEM);
-						  ps1.setString(1, ir.getItemId());
-						  ps1.setInt(2, roster.getTestRosterId());
+						  ps1.setInt(1, roster.getTestRosterId());
+						  ps1.setInt(2, itemSetId);
 						  ps1.setLong(3, currentSequenceNo - 100000);
 						  rs1 = ps1.executeQuery();
 						  if(rs1.next()) {
-							  if(rs1.getInt("count") == 0) {
+							  lastItemId = rs1.getString("item_id");
+							  if(!lastItemId.equals(ir.getItemId())) {
 								  itemMap.remove(lastItemId);
 								  if(restartItemNumber == 0) {
 									  restartItemNumber = ir.getIndex() - 1;
@@ -740,8 +741,7 @@ public class DataExportTABECAT {
 						  SqlUtil.close(ps1, rs1);
 					  }
 					  lastSequenceNo = currentSequenceNo;
-					  lastItemId = rs.getString("item_id");
-					  itemMap.put(lastItemId, ir);
+					  itemMap.put(ir.getItemId(), ir);
 				   }
 				   SqlUtil.close(ps, rs);
 				    
