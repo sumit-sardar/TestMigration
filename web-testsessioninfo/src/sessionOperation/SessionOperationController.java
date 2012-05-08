@@ -3103,9 +3103,10 @@ public class SessionOperationController extends PageFlowController {
 
         for (int i=0; i < reportList.size(); i++) {
             CustomerReport cr = (CustomerReport)reportList.get(i);
-            String reportUrl = cr.getReportUrl();
-            String result = reportUrl.substring(0, reportUrl.indexOf("?"));
-            cr.setReportUrl(result);
+            if ("ImmediateScores".equalsIgnoreCase(cr.getReportName())) {
+            	String reportUrl = "http://google.com";
+            	cr.setReportUrl(reportUrl);
+            }
         }
         
         this.getRequest().setAttribute("reportList", reportList);
@@ -3116,21 +3117,6 @@ public class SessionOperationController extends PageFlowController {
         return new Forward("success");
     }
 
-    @Jpf.Action()
-    protected Forward immediateReport()
-    {
-        try
-        {
-            String url = "/ImmediateReportWeb/immediateReportByStudent/beginIndivStudentScoring.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-    
     private void initReportManager()
     {
         try
