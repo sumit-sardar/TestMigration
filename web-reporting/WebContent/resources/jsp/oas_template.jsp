@@ -63,7 +63,6 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
 
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/immediateReporting.js"></script>
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/utils.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/org_tree.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
