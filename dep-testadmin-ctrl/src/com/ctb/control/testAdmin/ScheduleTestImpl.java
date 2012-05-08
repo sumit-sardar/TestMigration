@@ -3830,4 +3830,19 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    public String[] getAllContentAreaOptionsForUser(String userName) throws CTBBusinessException
+    {
+        //validator.validate(userName, null, "testAdmin.getTestProductsForUser");
+        try {
+            
+        	String[] catalogNames = product.getAllContentAreaOptionsForUser(userName);
+            
+            return catalogNames;
+        } catch (SQLException se) {
+            ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getAllContentAreaOptionsForUser: " + se.getMessage());
+            pde.setStackTrace(se.getStackTrace());
+            throw pde;
+        }
+    }
+    
 } 

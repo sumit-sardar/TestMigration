@@ -3,7 +3,7 @@
   <module>
     <web>
       <web-uri>web-reporting.war</web-uri>
-      <context-root>ImmediateReportWeb</context-root>
+      <context-root>ImmediateReportingWeb</context-root>
     </web>
   </module>
 </application>

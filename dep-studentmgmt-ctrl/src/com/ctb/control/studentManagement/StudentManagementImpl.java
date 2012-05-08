@@ -28,6 +28,7 @@ import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
+import com.ctb.bean.studentManagement.StudentScoreReport;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -41,6 +42,7 @@ import com.ctb.bean.testAdmin.StudentDemoGraphics;
 import com.ctb.bean.testAdmin.StudentDemographicDataBean;
 import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
+import com.ctb.bean.testAdmin.StudentReportIrsScore;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.User;
@@ -133,6 +135,13 @@ public class StudentManagementImpl implements StudentManagement
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.StudentManagement studentManagement;
+	
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	com.ctb.control.db.ImmediateReportingIrs immediateReportingIrs;
+	
 
 	static final long serialVersionUID = 1L;
 
@@ -2958,6 +2967,172 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
+	}
+	
+	public ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAllCompletedStudentForOrgNode");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			ManageStudent [] students = studentManagement.getAllCompletedStudentForOrgNode(userName, orgNodeId);
+			std.setManageStudents(students, pageSize);
+			return std;
+		}catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentsMinimalInfoForScoring: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		
+	}
+	
+	
+	public Integer getCompletedStudentCountForOrgNode(String userName,	Integer orgNodeId) throws com.ctb.exception.CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getCompletedStudentCountForOrgNode");
+		try {
+			Integer studentCount = null;
+			studentCount = studentManagement.getCompletedStudentCountForOrgNode(userName, orgNodeId);
+			return studentCount;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		
+	}
+	
+public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
+		
+		try {
+			StudentScoreReport stuScrReport = new StudentScoreReport();
+			StudentReportIrsScore[] stuScoreData = null;
+			StudentReportIrsScore stuScoreDataComp = null;
+			StudentReportIrsScore[] stuFinalScoreData = null;
+			String contentAreas = null;
+			stuScrReport = studentManagement.getStudentDataForReport(testRosterId);
+			Integer productId = studentManagement.getProductIdFromRoster(testRosterId);
+			contentAreas = stuScrReport.getContentAreaNameString();
+			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
+			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
+			stuFinalScoreData = new StudentReportIrsScore[7];
+			setContentAreaValues(stuFinalScoreData, productId);
+			if(stuScoreData != null && contentAreas != null) {
+				for(int i = 0; i < stuScoreData.length; i++) {
+					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 0, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 1, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 2, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 3, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
+						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5, contentAreas);
+					}
+				}
+			}
+			if(stuScoreDataComp != null)
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
+			
+			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
+			
+			return stuScrReport;
+			
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentReport: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		
+	}
+
+	private void setContentAreaValues(
+			StudentReportIrsScore[] stuFinalScoreData, Integer productId) {
+		for (int i = 0; i < 7; i++) {
+			stuFinalScoreData[i] = new StudentReportIrsScore();
+		}
+		if (productId == 7003) {
+			stuFinalScoreData[0].setContentAreaName("Escuchando");
+			stuFinalScoreData[1].setContentAreaName("Hablando");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Lectura");
+			stuFinalScoreData[4].setContentAreaName("Escritura");
+			stuFinalScoreData[5].setContentAreaName("Comprensión");
+			stuFinalScoreData[6].setContentAreaName("Overall");
+		} else {
+			stuFinalScoreData[0].setContentAreaName("Listening");
+			stuFinalScoreData[1].setContentAreaName("Speaking");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Reading");
+			stuFinalScoreData[4].setContentAreaName("Writing");
+			stuFinalScoreData[5].setContentAreaName("Comprehension");
+			stuFinalScoreData[6].setContentAreaName("Overall");
+		}
+	}
+
+	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData,
+			StudentReportIrsScore stuScoreDataTemp,
+			Integer stuFinalScoreDataValue, String contentAreas) {
+		if (checkAvailability(stuFinalScoreDataValue, contentAreas)) {
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setRawScore(stuScoreDataTemp.getRawScore());
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setScaleScore(stuScoreDataTemp.getScaleScore());
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setProficiencyLevel(stuScoreDataTemp.getProficiencyLevel());
+		} else {
+			stuFinalScoreData[stuFinalScoreDataValue].setRawScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue].setScaleScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setProficiencyLevel("N/A");
+		}
+
+	}
+
+	private boolean checkAvailability(Integer stuFinalScoreDataValue,
+			String contentAreas) {
+		if (stuFinalScoreDataValue == 0
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando")))
+			return true;
+		if (stuFinalScoreDataValue == 1
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando")))
+			return true;
+		if (stuFinalScoreDataValue == 2
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando"))
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando")))
+			return true;
+		if (stuFinalScoreDataValue == 3
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura")))
+			return true;
+		if (stuFinalScoreDataValue == 4
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		if (stuFinalScoreDataValue == 5
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura"))
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando")))
+			return true;
+		if (stuFinalScoreDataValue == 6
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando"))
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando"))
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura"))
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		return false;
 	}
 
 } 

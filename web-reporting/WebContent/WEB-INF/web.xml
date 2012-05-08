@@ -8,7 +8,7 @@
     </filter>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/immediateReportByStudent/*</url-pattern>
+        <url-pattern>/immediateReportingOperation/*</url-pattern>
     </filter-mapping>
     <servlet>
         <description/>
@@ -75,9 +75,9 @@
     <security-constraint>
         <display-name/>
         <web-resource-collection>
-            <web-resource-name>ImmediateReportWeb</web-resource-name>
+            <web-resource-name>ImmediateReportingWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
-            <url-pattern>/immediateReportByStudent/*</url-pattern>
+            <url-pattern>/immediateReportingOperation/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
@@ -99,8 +99,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>OAS</realm-name>
         <form-login-config>
-            <form-login-page>/../TestSessionInfoWeb/login.jsp</form-login-page>
-            <form-error-page>/../TestSessionInfoWeb/loginError.do</form-error-page>
+            <form-login-page>/../SessionWeb/login.jsp</form-login-page>
+            <form-error-page>/../SessionWeb/loginError.do</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>

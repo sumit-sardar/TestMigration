@@ -612,4 +612,6 @@ public interface ScheduleTest
     com.ctb.bean.testAdmin.ScheduledStudentDetailsWithManifest getScheduledStudentsManifestDetails(java.lang.String userName, java.lang.Integer studentId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
     
     java.lang.String[] getTestCatalogForUserForScoring(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+
+    java.lang.String[] getAllContentAreaOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
 } 

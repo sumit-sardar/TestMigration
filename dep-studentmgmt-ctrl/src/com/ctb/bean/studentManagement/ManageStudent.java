@@ -79,6 +79,15 @@ public class ManageStudent extends CTBBean
     //Added for new UI hand scoring
     private String testCatalogName;
     
+    
+    private String completedContentArea;
+    private Date testWindowOpenDate;
+    private String form;
+    private String proficiencyLevel;
+    private String organizationNames;
+    private String contentAreaString;
+    private String defaultScheduler;
+    
 	/**
 	 * @return the testPurpose
 	 */
@@ -670,6 +679,90 @@ public class ManageStudent extends CTBBean
 	}
 	public void setTestCatalogName(String testCatalogName) {
 		this.testCatalogName = testCatalogName;
+	}
+	/**
+	 * @return the completedContentArea
+	 */
+	public String getCompletedContentArea() {
+		return completedContentArea;
+	}
+	/**
+	 * @param completedContentArea the completedContentArea to set
+	 */
+	public void setCompletedContentArea(String completedContentArea) {
+		this.completedContentArea = completedContentArea;
+	}
+	/**
+	 * @return the testWindowOpenDate
+	 */
+	public Date getTestWindowOpenDate() {
+		return testWindowOpenDate;
+	}
+	/**
+	 * @param testWindowOpenDate the testWindowOpenDate to set
+	 */
+	public void setTestWindowOpenDate(Date testWindowOpenDate) {
+		this.testWindowOpenDate = testWindowOpenDate;
+	}
+	/**
+	 * @return the form
+	 */
+	public String getForm() {
+		return form;
+	}
+	/**
+	 * @param form the form to set
+	 */
+	public void setForm(String form) {
+		this.form = form;
+	}
+	/**
+	 * @return the proficiencyLevel
+	 */
+	public String getProficiencyLevel() {
+		return proficiencyLevel;
+	}
+	/**
+	 * @param proficiencyLevel the proficiencyLevel to set
+	 */
+	public void setProficiencyLevel(String proficiencyLevel) {
+		this.proficiencyLevel = proficiencyLevel;
+	}
+	/**
+	 * @return the organizationNames
+	 */
+	public String getOrganizationNames() {
+		return organizationNames;
+	}
+	/**
+	 * @param organizationNames the organizationNames to set
+	 */
+	public void setOrganizationNames(String organizationNames) {
+		this.organizationNames = organizationNames;
+	}
+	/**
+	 * @return the contentAreaString
+	 */
+	public String getContentAreaString() {
+		return contentAreaString;
+	}
+	/**
+	 * @param contentAreaString the contentAreaString to set
+	 */
+	public void setContentAreaString(String contentAreaString) {
+		this.contentAreaString = contentAreaString;
+	}
+	/**
+	 * @return the defaultScheduler
+	 */
+	public String getDefaultScheduler() {
+		return defaultScheduler;
+	}
+	/**
+	 * @param defaultScheduler the defaultScheduler to set
+	 */
+	public void setDefaultScheduler(String defaultScheduler) {
+		this.defaultScheduler = defaultScheduler;
 	}
 	
     

@@ -1,21 +1,27 @@
 package utils; 
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class PathNode implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
 
     private Integer id = null;
     private String name = null;
-    private Integer filteredCount = null;
-    private Integer selectedCount = null;
-    private Integer childNodeCount = null;
-    private String hasChildren = null;
+    private Integer childrenNodeCount = null;
+    private Integer studentCount = null;
     private String categoryName = null;
-    private String clickable = null;
+    private String selectable = null;
+    private String fullPathName = null;
+	 //Bulk accommodation
+	private String clickable;
+	private Integer filteredCount = null;
+	private String hasChildren = null;
+	private Integer selectedCount = null;
     
-    public PathNode() 
-    {
-    }    
+    public PathNode() {}
     
     public Integer getId() {
         return this.id;
@@ -29,33 +35,24 @@ public class PathNode implements java.io.Serializable
     public void setName(String name) {
         this.name = name;
     }
-    public Integer getFilteredCount() {
-        return this.filteredCount;
+    public Integer getStudentCount() {
+        return this.studentCount;
     }
-    public void setFilteredCount(Integer filteredCount) {
-        if (filteredCount == null)
-            filteredCount = new Integer(0);
-        this.filteredCount = filteredCount;
+    public void setStudentCount(Integer studentCount) {
+        this.studentCount = studentCount;
     }
-    public Integer getSelectedCount() {
-        return this.selectedCount;
+    public Integer getChildrenNodeCount() {
+        return this.childrenNodeCount;
     }
-    public void setSelectedCount(Integer selectedCount) {
-        if (selectedCount == null)
-            selectedCount = new Integer(0);
-        this.selectedCount = selectedCount;
+    public void setChildrenNodeCount(Integer childrenNodeCount) {
+        this.childrenNodeCount = childrenNodeCount;
     }
-    public Integer getChildNodeCount() {
-        return this.childNodeCount;
-    }
-    public void setChildNodeCount(Integer childNodeCount) {
-        this.childNodeCount = childNodeCount;
-    }    
     public String getHasChildren() {
-        return this.hasChildren;
-    }
-    public void setHasChildren(String hasChildren) {
-        this.hasChildren = hasChildren;
+        
+        if ((this.childrenNodeCount != null) && (this.childrenNodeCount.intValue() > 0)) 
+            return "true";
+        else
+            return "false";
     }
     public String getCategoryName() {
         return this.categoryName;
@@ -63,10 +60,23 @@ public class PathNode implements java.io.Serializable
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-     
+    public void setSelectable(String selectable) {
+        this.selectable = selectable;
+    }
+    public String getSelectable() {
+        return this.selectable != null ? this.selectable : "false";
+    }
+    public String getFullPathName() {
+        return this.fullPathName;
+    }
+    public void setFullPathName(String fullPathName) {
+        this.fullPathName = fullPathName;
+    }
+	 //Bulk Accommodation
     public String getClickable() {
         if (this.clickable == null) {
-            if ((this.hasChildren != null) && this.hasChildren.equals("true"))  
+            if ((this.childrenNodeCount != null) && (this.childrenNodeCount.intValue() > 0 &&
+            		(this.filteredCount != null) && (this.filteredCount.intValue() > 0)))
                 this.clickable = "true";
             else
                 this.clickable = "false";
@@ -76,4 +86,41 @@ public class PathNode implements java.io.Serializable
     public void setClickable(String clickable) {
         this.clickable = clickable;
     }
+
+	/**
+	 * @return the filteredCount
+	 */
+	public Integer getFilteredCount() {
+		return filteredCount;
+	}
+
+	/**
+	 * @param filteredCount the filteredCount to set
+	 */
+	public void setFilteredCount(Integer filteredCount) {
+		this.filteredCount = filteredCount;
+	}
+
+	/**
+	 * @param hasChildren the hasChildren to set
+	 */
+	public void setHasChildren(String hasChildren) {
+		this.hasChildren = hasChildren;
+	}
+
+	/**
+	 * @return the selectedCount
+	 */
+	public Integer getSelectedCount() {
+		return selectedCount;
+	}
+
+	/**
+	 * @param selectedCount the selectedCount to set
+	 */
+	public void setSelectedCount(Integer selectedCount) {
+		this.selectedCount = selectedCount;
+	}
+    
+    
 } 

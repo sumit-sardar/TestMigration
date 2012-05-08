@@ -58,6 +58,12 @@ public class StudentProfileInformation extends SanitizedFormField
     private String contentAreaString;
     private String defaultScheduler;
 
+	private String testCatalogName;
+
+	private String orgNameList;
+
+	private String studentName;
+
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
         this.studentExported="";
@@ -160,6 +166,10 @@ public class StudentProfileInformation extends SanitizedFormField
         this.organizationNames = student.getOrganizationNames();
         this.contentAreaString = student.getContentAreaString();
         this.defaultScheduler = student.getDefaultScheduler();
+        this.testCatalogName = student.getTestCatalogName(); 
+        this.orgNameList     = student.getOrgNameList();
+        this.studentName = student.getStudentName();
+        
     }
     
 
@@ -190,6 +200,8 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setOrganizationNames(this.organizationNames);
         copied.setContentAreaString(this.contentAreaString);
         copied.setDefaultScheduler(this.defaultScheduler);
+        copied.setTestCatalogName(this.testCatalogName);
+        copied.setOrgNameList(this.orgNameList);
         return copied;       
     }
   
@@ -739,5 +751,53 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setDefaultScheduler(String defaultScheduler) {
 		this.defaultScheduler = defaultScheduler;
+	}
+
+
+	/**
+	 * @return the testCatalogName
+	 */
+	public String getTestCatalogName() {
+		return testCatalogName;
+	}
+
+
+	/**
+	 * @param testCatalogName the testCatalogName to set
+	 */
+	public void setTestCatalogName(String testCatalogName) {
+		this.testCatalogName = testCatalogName;
+	}
+
+
+	/**
+	 * @return the orgNameList
+	 */
+	public String getOrgNameList() {
+		return orgNameList;
+	}
+
+
+	/**
+	 * @param orgNameList the orgNameList to set
+	 */
+	public void setOrgNameList(String orgNameList) {
+		this.orgNameList = orgNameList;
+	}
+
+
+	/**
+	 * @return the studentName
+	 */
+	public String getStudentName() {
+		return studentName;
+	}
+
+
+	/**
+	 * @param studentName the studentName to set
+	 */
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 } 

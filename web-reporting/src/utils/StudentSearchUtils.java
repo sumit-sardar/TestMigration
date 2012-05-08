@@ -50,11 +50,22 @@ public class StudentSearchUtils {
         return studentList;
     }
     
-    
+    public static Integer getCompletedStudentCountForOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId)
+    {    
+        Integer studentCount = 0;
+        try {    
+       	 studentCount = studentManagement.getCompletedStudentCountForOrgNode(userName, orgNodeId);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return studentCount;
+    }
     /**
      * searchAllStudentsAtAndBelow
+     * @throws CTBBusinessException 
      */    
-    public static ManageStudentData searchAllStudentsAtAndBelow(String userName, StudentManagement studentManagement,Integer productId, PageParams page, SortParams sort)
+   /* public static ManageStudentData searchAllStudentsAtAndBelow(String userName, StudentManagement studentManagement,Integer productId, PageParams page, SortParams sort)
     {   
         ManageStudentData msData = null;
         try {    
@@ -64,12 +75,19 @@ public class StudentSearchUtils {
             be.printStackTrace();
         }        
         return msData;
-    }
+    }*/
+
+
+	public static ManageStudentData getAllCompletedStudentForOrgNode(String userName,	StudentManagement studentManagement, Integer treeOrgNodeId) throws CTBBusinessException {
+		
+		ManageStudentData msData = studentManagement.getAllCompletedStudentForOrgNode(userName, treeOrgNodeId);
+		return msData;
+	}
 
     /**
      * searchStudentsByProfile
      */    
-    public static ManageStudentData searchStudentsByProfile(String userName, StudentManagement studentManagement,Integer productId, FilterParams filter, PageParams page, SortParams sort)
+    /*public static ManageStudentData searchStudentsByProfile(String userName, StudentManagement studentManagement,Integer productId, FilterParams filter, PageParams page, SortParams sort)
     {   
         ManageStudentData msData = null;
         
@@ -96,5 +114,5 @@ public class StudentSearchUtils {
 		 ManageStudentData msData = null;
          msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId ,rosterId, filter, page, sort);
         return msData;
-	}
+	}*/
 }

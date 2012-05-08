@@ -3104,7 +3104,7 @@ public class SessionOperationController extends PageFlowController {
         for (int i=0; i < reportList.size(); i++) {
             CustomerReport cr = (CustomerReport)reportList.get(i);
             if ("ImmediateScores".equalsIgnoreCase(cr.getReportName())) {
-            	String reportUrl = "http://google.com";
+            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/ImmediateReportingOperationController.jpf";
             	cr.setReportUrl(reportUrl);
             }
         }
