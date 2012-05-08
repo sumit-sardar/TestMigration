@@ -9,12 +9,11 @@
 <lb:bundle baseName="immediateReportingResources" />
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
-<netui-data:declareBundle bundlePath="webResources" name="web"/>
-<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<netui-data:declareBundle bundlePath="immediateReportingResources" name="web"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['homepage.window.title']}"/>
+    <netui-template:setAttribute name="title" value="${bundle.web['immediateReport.window.title']}"/>
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageSessions']}"/>
 <netui-template:section name="bodySection">
  
