@@ -1,8 +1,5 @@
 package utils; 
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class PathNode implements java.io.Serializable 
 { 
@@ -18,6 +15,7 @@ public class PathNode implements java.io.Serializable
 	 //Bulk accommodation
 	private String clickable;
 	private Integer filteredCount = null;
+	@SuppressWarnings("unused")
 	private String hasChildren = null;
 	private Integer selectedCount = null;
     

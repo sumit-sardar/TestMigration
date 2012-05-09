@@ -16,7 +16,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class LabelTag extends TagSupport {
 
-
+	private static final long serialVersionUID = 1L;
 	private String key="";
 	private String prefix="";
 	private String suffix="";
@@ -45,6 +45,7 @@ public class LabelTag extends TagSupport {
 		this.key = key;
 	}
 
+	@SuppressWarnings("unchecked")
 	public int doStartTag() {
 		
 		try {

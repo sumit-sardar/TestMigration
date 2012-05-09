@@ -70,7 +70,8 @@ public class StudentPathListUtils
     /**
      * setupOrgNodePath
      */    
-    public static List setupOrgNodePath(List orgNodes)
+    @SuppressWarnings("unchecked")
+	public static List setupOrgNodePath(List orgNodes)
     {
         List orgNodePath = new ArrayList();
         
@@ -93,7 +94,8 @@ public class StudentPathListUtils
     /**
      * adjustOrgNodePath
      */    
-    public static boolean adjustOrgNodePath(List orgNodes, Integer orgNodeId, String orgNodeName)
+    @SuppressWarnings("unchecked")
+	public static boolean adjustOrgNodePath(List orgNodes, Integer orgNodeId, String orgNodeName)
     {
         boolean ret = false;
 
@@ -118,7 +120,8 @@ public class StudentPathListUtils
     /**
      * findNodeId
      */    
-    public static boolean findNodeId(List orgNodes, Integer orgNodeId) 
+    @SuppressWarnings("unchecked")
+	public static boolean findNodeId(List orgNodes, Integer orgNodeId) 
     {
         for (int i=0 ; i<orgNodes.size() ; i++) {
             PathListEntry node = (PathListEntry)orgNodes.get(i);
@@ -132,7 +135,8 @@ public class StudentPathListUtils
     /**
      * addNode
      */    
-    public static void addNode(List orgNodes, Integer orgNodeId, String orgNodeName) 
+    @SuppressWarnings("unchecked")
+	public static void addNode(List orgNodes, Integer orgNodeId, String orgNodeName) 
     {
         PathListEntry node = new PathListEntry();
         node.setLabel(orgNodeName);
@@ -144,7 +148,8 @@ public class StudentPathListUtils
     /**
      * findLastNodeId
      */    
-    public static Integer findLastNodeId(List orgNodes) 
+    @SuppressWarnings("unchecked")
+	public static Integer findLastNodeId(List orgNodes) 
     {
         PathListEntry node = findLastNode(orgNodes);
         return node.getValue();
@@ -154,7 +159,8 @@ public class StudentPathListUtils
     /**
      * findLastNode
      */    
-    public static PathListEntry findLastNode(List orgNodes) 
+    @SuppressWarnings("unchecked")
+	public static PathListEntry findLastNode(List orgNodes) 
     {
         int index = orgNodes.size() - 1;
         PathListEntry node = (PathListEntry)orgNodes.get(index);
@@ -165,7 +171,8 @@ public class StudentPathListUtils
     /**
      * removeDescendentNodes
      */    
-    public static void removeDescendentNodes(List orgNodes, Integer orgNodeId) 
+    @SuppressWarnings("unchecked")
+	public static void removeDescendentNodes(List orgNodes, Integer orgNodeId) 
     {
         for (int i=orgNodes.size()-1 ; i>=0 ; i--) {
             PathListEntry node = (PathListEntry)orgNodes.get(i);
@@ -194,7 +201,8 @@ public class StudentPathListUtils
     /**
      * buildOrgNodeList
      */    
-    public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action, Boolean isClassReassignable) 
+    @SuppressWarnings("unchecked")
+	public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action, Boolean isClassReassignable) 
     {
         ArrayList nodeList = new ArrayList();
         PathNode pathNode = null;
@@ -231,7 +239,8 @@ public class StudentPathListUtils
     /**
      * getOrgCategoryName
      */
-    public static String getOrgCategoryName(List nodeList) {
+    @SuppressWarnings("unchecked")
+	public static String getOrgCategoryName(List nodeList) {
         String categoryName = "Organization";        
         if (nodeList.size() > 0) {
             PathNode node = (PathNode)nodeList.get(0);
@@ -263,7 +272,8 @@ public class StudentPathListUtils
     /**
      * findOrgNode
      */    
-    public static PathNode findOrgNode(List orgNodes, Integer orgNodeId)
+    @SuppressWarnings("unchecked")
+	public static PathNode findOrgNode(List orgNodes, Integer orgNodeId)
     {
         if (orgNodes != null && orgNodeId != null) {
             for (int i=0 ; i<orgNodes.size() ; i++) {
@@ -278,7 +288,8 @@ public class StudentPathListUtils
     /**
      * buildSelectedOrgNodes
      */
-    public static List buildSelectedOrgNodes(HashMap currentOrgNodesInPathList, Integer[] currentOrgNodeIds, List selectedOrgNodes) 
+    @SuppressWarnings("unchecked")
+	public static List buildSelectedOrgNodes(HashMap currentOrgNodesInPathList, Integer[] currentOrgNodeIds, List selectedOrgNodes) 
     {        
         ArrayList resultList = new ArrayList();
 
@@ -353,7 +364,8 @@ public class StudentPathListUtils
      * buildSelectableOrgNodes
      * retrieve unchecked nodes in pathlist
      */
-    public static List buildSelectableOrgNodes(HashMap currentOrgNodesInPathList, List selectedOrgNodes) 
+    @SuppressWarnings("unchecked")
+	public static List buildSelectableOrgNodes(HashMap currentOrgNodesInPathList, List selectedOrgNodes) 
     {    
         ArrayList nonSelectedNodeNames = new ArrayList();                        
         Set orgIds = currentOrgNodesInPathList.keySet();
@@ -379,7 +391,8 @@ public class StudentPathListUtils
     /**
      * retrieveCurrentOrgNodeIds
      */
-    public static Integer[] retrieveCurrentOrgNodeIds(List selectedOrgNodes) {
+    @SuppressWarnings("unchecked")
+	public static Integer[] retrieveCurrentOrgNodeIds(List selectedOrgNodes) {
         
         Integer[] result = new Integer[selectedOrgNodes.size()];
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
@@ -392,7 +405,8 @@ public class StudentPathListUtils
     /**
      * buildOrgNodeHashMap
      */
-    public static HashMap buildOrgNodeHashMap(List orgNodes) 
+    @SuppressWarnings("unchecked")
+	public static HashMap buildOrgNodeHashMap(List orgNodes) 
     {
         
         HashMap result = new HashMap();
@@ -406,7 +420,8 @@ public class StudentPathListUtils
     /**
      * getOrgNodeAssignment
      */
-    public static List getOrgNodeAssignment(StudentProfileInformation studentProfile) 
+    @SuppressWarnings("unchecked")
+	public static List getOrgNodeAssignment(StudentProfileInformation studentProfile) 
     {    
         ArrayList resultList = new ArrayList();
         

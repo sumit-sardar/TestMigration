@@ -4,9 +4,6 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.control.studentManagement.StudentManagement;

@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class BundleTag extends TagSupport{
 	
+	private static final long serialVersionUID = 1L;
 	private String baseName = "";
 	private String ccode = "";
 	public String getBaseName() {
@@ -30,6 +31,7 @@ public class BundleTag extends TagSupport{
 		this.ccode = ccode;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public int doStartTag() {
 		try {
 			
