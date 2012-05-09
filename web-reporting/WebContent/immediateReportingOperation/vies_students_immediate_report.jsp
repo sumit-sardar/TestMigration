@@ -90,7 +90,7 @@
 	</div>
 	<BR/>
 	<div style="padding-bottom: 5px;">
-	<center><input type="button" value=<lb:label key="common.button.ok" prefix="'" suffix="'"/>
+	<center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>
 		onclick="closePopUp('immdRptScorePopup');" class="ui-widget-header"></center>
 	</div>
 </div>
