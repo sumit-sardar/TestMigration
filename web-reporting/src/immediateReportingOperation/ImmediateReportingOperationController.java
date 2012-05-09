@@ -269,12 +269,12 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	protected Forward getStudentScoreDetails(){
 
 		OutputStream stream = null;
-		Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
-		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 		HttpServletResponse resp = getResponse();
 		resp.setCharacterEncoding("UTF-8"); 
 
 		try {
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 			stuReport.setTestAdminStartDateString(  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY));
 			try {
@@ -292,6 +292,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			}
 		}
 		catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while retrieving all completed student.");
 			e.printStackTrace();
 		}

@@ -32,7 +32,7 @@ function populateUserOrgHierarchy() {
 						$("#imdRptOrgTree").css("visibility","visible");	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();  
+						//$.unblockUI();  
 						window.location.href="error.do";
 					},
 		complete :  function(){
@@ -62,7 +62,7 @@ function populateUserOrgHierarchy() {
 							}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							$.unblockUI();  
+							//$.unblockUI();  
 							window.location.href="error.do";
 						}
 			});		
@@ -173,7 +173,7 @@ function populateGrid() {
 			$.unblockUI(); 
 		},
 		loadError: function(XMLHttpRequest, textStatus, errorThrown){
-			$.unblockUI();  
+			//$.unblockUI();  
 			window.location.href="error.do";
 		}
 	 });  
@@ -293,7 +293,7 @@ function populateDropDowns() {
 							}
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();  
+						//$.unblockUI();  
 						window.location.href="error.do";
 					}
 	});		
@@ -409,8 +409,8 @@ function getAndPopulateStudentScoreDetails(){
 					$.unblockUI();		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();  
-						window.location.href="/SessionWeb/logout.do";
+						//$.unblockUI();  
+						window.location.href="error.do";
 					}
 	});
 }
