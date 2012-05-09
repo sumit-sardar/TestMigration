@@ -2185,6 +2185,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                 Integer nodeId = (Integer)it.next();
                 ArrayList hierarchyDetail = (ArrayList)hierarchyMap.get(nodeId);
                 
+				if (hierarchyDetail.size() > 0) {
                 Node node = (Node)hierarchyDetail.get(hierarchyDetail.size() - 1);
                 
                 if (commonPathMap.containsKey(node.getParentOrgNodeId())) {
@@ -2218,10 +2219,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         }
                     }   
                 } 
+            	}
             }
-            
         }
-        
         
     }
     
