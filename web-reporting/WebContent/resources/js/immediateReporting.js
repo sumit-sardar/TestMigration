@@ -33,7 +33,7 @@ function populateUserOrgHierarchy() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/SessionWeb/logout.do";
+						window.location.href="error.do";
 					},
 		complete :  function(){
 						 $.unblockUI();  
@@ -63,7 +63,7 @@ function populateUserOrgHierarchy() {
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  
-							window.location.href="/SessionWeb/logout.do";
+							window.location.href="error.do";
 						}
 			});		
 	}else{
@@ -174,7 +174,7 @@ function populateGrid() {
 		},
 		loadError: function(XMLHttpRequest, textStatus, errorThrown){
 			$.unblockUI();  
-			window.location.href="/SessionWeb/logout.do";
+			window.location.href="error.do";
 		}
 	 });  
 
@@ -294,7 +294,7 @@ function populateDropDowns() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/SessionWeb/logout.do";
+						window.location.href="error.do";
 					}
 	});		
 }

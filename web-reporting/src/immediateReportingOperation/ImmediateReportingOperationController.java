@@ -92,6 +92,12 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		initialize();
 		return new Forward("success");
 	}
+	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "/error.jsp") })
+	protected Forward error() {
+		initialize();
+		return new Forward("success");
+	}
 
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "immediate_scoring_report_main.jsp") })
 	public Forward beginImmediateReporting() {
@@ -171,7 +177,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Exception while processing CR response.");
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while retrieving organization hierarchy.");
 			e.printStackTrace();
 		}
 
@@ -187,9 +194,9 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	protected Forward getStudentCountForOrgNode(){
 
 		OutputStream stream = null;
-		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 		HttpServletResponse resp = getResponse();
 		try {
+			Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 			Integer studentCount = 0;
 			studentCount = StudentSearchUtils.getCompletedStudentCountForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
 			try {
@@ -207,6 +214,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			}
 		}
 		catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while retrieving student Count.");
 			e.printStackTrace();
 		}
@@ -219,12 +227,12 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	protected Forward getAllCompletedStudentForOrgNode(){
 
 		OutputStream stream = null;
-		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 		HttpServletResponse resp = getResponse();
 		resp.setCharacterEncoding("UTF-8"); 
 		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>(0);
 		try {
 			ManageStudentData msData = null;
+			Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 			msData = StudentSearchUtils.getAllCompletedStudentForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
 			studentList = StudentSearchUtils.buildStudentList(msData);
 			Base base = new Base();
@@ -247,6 +255,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			}
 		}
 		catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while retrieving all completed student.");
 			e.printStackTrace();
 		}
@@ -301,35 +310,29 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String json = "";
 		resp.setCharacterEncoding("UTF-8"); 
-		if(this.userName == null ) {
-			getLoggedInUserPrincipal();		
-			getUserDetails();
-		}
-		
 		try {
-			
+			if(this.userName == null ) {
+				getLoggedInUserPrincipal();		
+				getUserDetails();
+			}
 			GridDropLists dropList = new GridDropLists();
 			dropList.setGradeOptions(getGradeOptions());
 			dropList.setTestCatalogOptions(getTestNameOptions());
 			dropList.setContentAreaOptions(getContentAreaOptions());
-			
 			try{
-
 				Gson gson = new Gson();
 				json = gson.toJson(dropList);
 				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
 				stream.write(json.getBytes("UTF-8"));
-
-			}
-
-			finally{
+			} finally{
 				if (stream!=null){
 					stream.close();
 				}
 			}
 		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			System.err.println("Exception while processing populateGridDropDowns.");
 			e.printStackTrace();
 		}
@@ -1099,46 +1102,30 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR);
 	}
 	
-	private String[] getGradeOptions() {
+	private String[] getGradeOptions() throws Exception {
 		String[] grades = null;
-		try {
-			grades = this.studentManagement.getGradesForCustomer(this.userName,
+		grades = this.studentManagement.getGradesForCustomer(this.userName,
 					this.customerId);
-		} catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-
 		List<String> options = new ArrayList<String>();
 		for (int i = 0; i < grades.length; i++) {
 			options.add(grades[i]);
 		}
-
 		return (String[]) options.toArray(new String[0]);
 	}
 	
-	private String[] getTestNameOptions() {
+	private String[] getTestNameOptions() throws Exception {
 		String[] testNameOptions = null;
-		try {
-			testNameOptions = this.scheduleTest
+		testNameOptions = this.scheduleTest
 					.getTestCatalogForUserForScoring(this.userName);
-		} catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
 
 		return testNameOptions;
 
 	}
 	
-	private String[] getContentAreaOptions() {
+	private String[] getContentAreaOptions() throws Exception {
 		String[] testNameOptions = null;
-		try {
-			testNameOptions = this.scheduleTest.getAllContentAreaOptionsForUser(this.userName);
-		} catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-
+		testNameOptions = this.scheduleTest.getAllContentAreaOptionsForUser(this.userName);
 		return testNameOptions;
-
 	}
 	
 	public static class ImmediateReportingForm extends SanitizedFormData{

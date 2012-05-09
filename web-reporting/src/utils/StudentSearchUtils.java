@@ -50,32 +50,12 @@ public class StudentSearchUtils {
         return studentList;
     }
     
-    public static Integer getCompletedStudentCountForOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId)
+    public static Integer getCompletedStudentCountForOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId) throws CTBBusinessException
     {    
         Integer studentCount = 0;
-        try {    
        	 studentCount = studentManagement.getCompletedStudentCountForOrgNode(userName, orgNodeId);
-        }
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }        
-        return studentCount;
+       	 return studentCount;
     }
-    /**
-     * searchAllStudentsAtAndBelow
-     * @throws CTBBusinessException 
-     */    
-   /* public static ManageStudentData searchAllStudentsAtAndBelow(String userName, StudentManagement studentManagement,Integer productId, PageParams page, SortParams sort)
-    {   
-        ManageStudentData msData = null;
-        try {    
-            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(userName,productId, null, page, sort);
-        }
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }        
-        return msData;
-    }*/
 
 
 	public static ManageStudentData getAllCompletedStudentForOrgNode(String userName,	StudentManagement studentManagement, Integer treeOrgNodeId) throws CTBBusinessException {
@@ -84,35 +64,4 @@ public class StudentSearchUtils {
 		return msData;
 	}
 
-    /**
-     * searchStudentsByProfile
-     */    
-    /*public static ManageStudentData searchStudentsByProfile(String userName, StudentManagement studentManagement,Integer productId, FilterParams filter, PageParams page, SortParams sort)
-    {   
-        ManageStudentData msData = null;
-        
-        try {    
-            msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForReporting(userName, productId ,filter, page, sort);
-        }
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }        
-        return msData;
-    }
-
-
-	public static ManageStudentData findAllScoredStudentBySession(	String userName, StudentManagement studentManagement, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
-		
-		 ManageStudentData msData = null;
-         msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId, null ,filter, page, sort);
-        return msData;
-	}
-
-
-	public static ManageStudentData findScoredStudentBySessionAndRoster(String userName, StudentManagement studentManagement,Integer rosterId, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException{
-		
-		 ManageStudentData msData = null;
-         msData = studentManagement.findAllScoredStudentBySessionAtAndBelowTopOrgNodes(userName, testAdminId ,rosterId, filter, page, sort);
-        return msData;
-	}*/
 }
