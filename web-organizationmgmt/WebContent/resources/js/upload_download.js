@@ -24,6 +24,7 @@ function populateDownloadListGrid() {
 				setAnchorButtonState('exportDataButton', false);
 			},
 			loadComplete: function () {
+				$.unblockUI();
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();
@@ -164,6 +165,8 @@ function downloadData(element)
 {
 	if (isButtonDisabled(element)) 
 		return true;
+
+	showLoadingProgress('<br/><b>Data exporting...</b><br/>');
 
     var element = document.getElementById("downloadFile");
     element.form.action = "downloadData.do";

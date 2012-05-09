@@ -194,6 +194,11 @@ public class DownloadOperationController extends PageFlowController {
                 
             }
             
+            if (data == null) {
+                this.getRequest().setAttribute("errorMessage", "Failed to export data.");            
+                return new Forward("error");
+            }
+        	
 	        HttpServletResponse resp = this.getResponse();        
 	        String bodypart = "attachment; filename=\"" + fileName + "\" ";
 	
@@ -207,9 +212,12 @@ public class DownloadOperationController extends PageFlowController {
 	        OutputStream stream = resp.getOutputStream();
 	        stream.write(data);
 	        stream.close();
+            
 	            
         } catch(Exception e) {
             e.printStackTrace();
+            this.getRequest().setAttribute("errorMessage", "Failed to export data.");            
+            return new Forward("error");
         }
         
         return null;
