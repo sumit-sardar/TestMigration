@@ -423,7 +423,7 @@ function populateReportHeader(data){
 	if(data.district != undefined) 		$("#districtVal").text(data.district); else $("#districtVal").text("");
 	if(data.school != undefined) 		$("#schoolVal").text(data.school); else $("#schoolVal").text("");
 	if(data.grade != undefined) 		$("#gradeVal").text(data.grade); else $("#gradeVal").text("");
-	if(data.testAdminName != undefined) $("#testNameVal").text(data.testAdminName);  else $("#testNameVal").text("");
+	if(data.testName != undefined) $("#testNameVal").text(data.testName);  else $("#testNameVal").text("");
 }	
 
 function populateReportTable(data){ 
