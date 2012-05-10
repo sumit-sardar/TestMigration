@@ -610,11 +610,11 @@ try {
 			// start- added for  Process Scores   button changes
 			String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
 			if (completionStatus.equals("CO")) {
-				//this.testSessionStatus.rescoreStudent(testRosterId);
+				this.testSessionStatus.rescoreStudent(testRosterId);
 			} else { // Change for immediate reporting requirements
 				String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
 				if (completionStatusRosterAndTD.equals("CO")) {
-					//this.testSessionStatus.rescoreStudent(testRosterId);
+					this.testSessionStatus.rescoreStudent(testRosterId);
 					completeTD = "CO";
 				} else {
 					completeTD = "IN";
@@ -660,7 +660,7 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 
 		System.out.println("rescore Student" + testRosterId);
         try {    
-           // this.testSessionStatus.rescoreStudent(testRosterId);
+            this.testSessionStatus.rescoreStudent(testRosterId);
         	
         	ManageStudent ms = new ManageStudent();
 			ms.setIsSuccess(true);
