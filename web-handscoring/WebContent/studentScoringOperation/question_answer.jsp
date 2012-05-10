@@ -119,20 +119,21 @@ function stopAudio(){
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 
 	<div id="displayMessageForQues" class="roundedMessage"> 
-			<table>
-				<tr>
-					<td rowspan="3" valign="top">
-                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-					</td>
-					<td>
 						<table>
-							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
-							<tr><td><div id= "content">	</div></td></tr>
-							<tr><td><div id= "message">	</div></td></tr>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="errorIconQues" style="display:none;">
+				                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+									</div>
+									<div id="infoIconQues" style="display:none;">
+										<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id= "contentMainQues"></div>
+								</td>
+							</tr>
 						</table>
-					</td>
-				</tr>
-			</table>
 	</div>	
 	
 	<div id="quesAnsAccordion" style="width:99.5%;">

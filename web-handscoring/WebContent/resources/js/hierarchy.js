@@ -388,6 +388,7 @@ function sessionScoring() {
             $("#sbsAccessCode").text(selectedTestAccessCode);
             $("#testSessionNameSBI").text(selectedTestAdminName);
             $("#testAccessCodeSBI").text(selectedTestAccessCode);
+            clearMessage();
 			$("#sessionScoringId").dialog({  
 				title:$("#sessionScorPopupTitle").val(),  
 				resizable:false,
@@ -409,6 +410,7 @@ function sessionScoring() {
 
 
 	function displayStudentItemPopup() {
+		clearMessage();
 		$("#studentScoringId").dialog({  
 				title:$("#scorPopupTitle").val(),  
 				resizable:false,
@@ -456,6 +458,7 @@ function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, ite
 	selectedRData.accessCode = selectedTestAccessCode;	
 	selectedRData.itemSetId = itemSetId;
  	selectedRData.itemId = itemId;
+ 	selectedRData.itemType = itemType;
 	UIBlock();
 	fillTestItemFieldsSBI();
 	$("#itemGridDisplaySBI").hide();
@@ -1297,8 +1300,10 @@ function populateSBSItemListGrid() {
 		   	if (obj.processScoreBtn == "F"){
 		   		//Process button disable
 		   		setAnchorButtonState("processScoreSBS", true);
+		   		setAnchorButtonState("processScore", true);
 		   	}else{
 		   		setAnchorButtonState("processScoreSBS", false);
+		   		setAnchorButtonState("processScore", false);
 		   	}
 		   	} },
 		   	
@@ -1481,6 +1486,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								 //populateTableNew();
 									 $.unblockUI(); 
 								 //$("#rubricDialogID").dialog("open");
+								 clearMessage();
 								$("#questionAnswerDetail").dialog({  
 													title:"Scoring for Item No." + questionNumber,  
 												 	resizable:false,
@@ -1609,7 +1615,11 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	function formSave() {
 			var itemId =  selectedRowObjectScoring.id ;
 			var itemSetId = selectedRowObjectScoring.itemSetId  ;
-			
+			var messageObject = {messageElement:"displayMessageForQues",
+													infoElement:"infoIconQues",
+													errorElement:"errorIconQues",
+													contentElement:"contentMainQues"
+													};
 
 			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+selectedRowObjectScoring.testRosterId + "&score="+$("#pointsDropDown option:selected").val()+"&itemSetIdTC="+selectedItemSetTCVal;    
 			var optionValue = $("#pointsDropDown option:selected").val();
@@ -1639,11 +1649,17 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
 													if(data.SaveStatus.completionStatusTD){
 														setAnchorButtonState("processScoreSBS", false);
+														setAnchorButtonState("processScore", false);
 													}else{
 													setAnchorButtonState("processScoreSBS", true);
-													}
+													setAnchorButtonState("processScore", false);
+													}																						
+							
+													buildMessage(messageObject,"scoreSuccess", true);
 													}else{
 													//Message
+										
+													buildMessage(messageObject,"scoringError",false);
 													}
 																			
 													$.unblockUI(); 
@@ -1690,6 +1706,20 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 		
 		
 		function processScore(){
+				
+			var messageObject = {messageElement:"displayMessageStudent",
+													infoElement:"infoIconStu",
+													errorElement:"errorIconStu",
+													contentElement:"contentMainStu"
+													};
+			var messageObject1 = {messageElement:"displayMessageSession",
+													infoElement:"infoIconSession",
+													errorElement:"errorIconSession",
+													contentElement:"contentMainSession"
+													};
+		if (isButtonDisabled(element))
+				return true; 
+				
 		var param = "&rosterId="+selectedRosterId;
 		
 		$.ajax(
@@ -1705,18 +1735,15 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								success:	function(data, textStatus, XMLHttpRequest){	
 													//Message
 												
-													if(data.isSuccess){
-													var dataToBeAdded = {scoreStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
-				
-													jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
-													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");	
-													var dataToBeAddedItem = {scoringStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
-													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
-													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
-													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
-													setAnchorButtonState("processScoreSBS", false);
+													if(data.SaveStatus.isSuccess){
+																			
+													buildMessage(messageObject,"processSuccessful", true);
+													buildMessage(messageObject1,"processSuccessful", true);
 													}else{
 													//Message
+													buildMessage(messageObject,"processError", false);
+													buildMessage(messageObject1,"processError", false);
+													
 													}
 																			
 													$.unblockUI(); 
@@ -1733,6 +1760,25 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 						}
 					);
 		}
+		
+ function clearMessage(){
+ document.getElementById('displayMessageForQues').style.display = "none";	
+ document.getElementById('displayMessageStudent').style.display = "none";	
+ document.getElementById('displayMessageSession').style.display = "none";	 
+ }
+ 
+ function buildMessage(argObject,element, status){
+	 document.getElementById(argObject.messageElement).style.display = "block";	
+	 if(status){
+	 	$("#"+argObject.infoElement).show();
+	 	$("#"+argObject.errorElement).hide();
+	 }else{
+		 $("#"+argObject.infoElement).hide();
+	 	$("#"+argObject.errorElement).show();
+	 }
+	 var textMessage = $("#"+element).val();
+	$("#"+argObject.contentElement).text(textMessage);
+ }
 /******JqGrid Search Implementation*****/
 
 function searchStudentByKeyword(){

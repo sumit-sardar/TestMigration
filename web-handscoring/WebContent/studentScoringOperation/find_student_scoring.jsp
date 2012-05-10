@@ -3,10 +3,31 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="studentScoringResources" />
+<input type="hidden" id="scoreSuccess" name="scoreSuccess" value=<lb:label key="scoring.successful" prefix="'" suffix="'"/>/>
+<input type="hidden" id="scoringError" name="scoringError" value=<lb:label key="scoring.error" prefix="'" suffix="'"/>/>
+<input type="hidden" id="processSuccessful" name="processSuccessful" value=<lb:label key="process.successful" prefix="'" suffix="'"/>/>
+<input type="hidden" id="processError" name="processError" value=<lb:label key="process.error" prefix="'" suffix="'"/>/>
 
 <div id="studentScoringId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
 
+			<div id="displayMessageStudent" class="errMsgs" style="display: none; width: 50%; float: left;">
+						<table>
+							<tr>
+								<td width="18" valign="middle">
+									<div id="errorIconStu" style="display:none;">
+				                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+									</div>
+									<div id="infoIconStu" style="display:none;">
+										<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+									</div>
+								</td>
+								<td class="saveMsgs" valign="middle">
+									<div id= "contentMainStu"></div>
+								</td>
+							</tr>
+						</table>
+					</div>	 
 	<div id="handScoringDiv" style="background-color: #FFFFFF; padding:20px; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 		<p>
 			<lb:label key="scoring.stuPopup.message" />
