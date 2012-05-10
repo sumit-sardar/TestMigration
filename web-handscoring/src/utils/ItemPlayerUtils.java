@@ -4,12 +4,7 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import sun.net.www.http.HttpClient;
-
-
-
 public class ItemPlayerUtils {
-	public static HttpClient client;
 	
 	public static String getMIMEType(String ext) {
 		String mimeType = "image/gif";
