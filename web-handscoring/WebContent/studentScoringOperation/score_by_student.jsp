@@ -105,7 +105,7 @@
 		<table width="100%">
 			<tr>
 				<td align="right">
-					<a href="#" id="processScoreSBS" class="rounded {transparent} button">Process Scores</a>
+					<a href="#" id="processScoreSBS" class="rounded {transparent} button" onclick="processScore()">Process Scores</a>
 				</td>
 			</tr>
 			<tr>

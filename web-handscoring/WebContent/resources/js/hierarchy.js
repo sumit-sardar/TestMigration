@@ -49,7 +49,8 @@ var sbiStudentGridLoaded = false;
 var isScoreByItemClicked = false;
 var data1 = null;
 var isRubricPopulated = false;
-
+var selectedRowObjectScoring = {};
+var selectedRowObjectScoringByItem = {};
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -348,7 +349,8 @@ function closePopUp(dailogId){
 		}
 		isRubricPopulated = false;
 		data1 = null;
-		
+		$('#quesAnsAccordion').accordion('activate', 0 );
+		selectedRowObjectScoring = {};
 	}
 	$("#"+dailogId).dialog("close");
 }
@@ -451,7 +453,9 @@ function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, ite
 	selectedRData.maxPoints = maxPoints;
 	selectedRData.itemSetName = itemSetName;
 	selectedRData.testSessionName = selectedTestAdminName;
-	selectedRData.accessCode = selectedTestAccessCode;
+	selectedRData.accessCode = selectedTestAccessCode;	
+	selectedRData.itemSetId = itemSetId;
+ 	selectedRData.itemId = itemId;
 	UIBlock();
 	fillTestItemFieldsSBI();
 	$("#itemGridDisplaySBI").hide();
@@ -468,7 +472,10 @@ function fillTestItemFieldsSBI(){
 	$("#maximumScoreSBIStu").text(selectedRData.maxPoints);
 	$("#subtestNameSBIStu").text(selectedRData.itemSetName);
 	$("#testAccessCodeSBIStu").text(selectedTestAccessCode);
-	$("#testSessionNameSBIStu").text(selectedRData.testSessionName);      
+	$("#testSessionNameSBIStu").text(selectedRData.testSessionName); 
+
+
+	   
 }
 
 	function scoreByStuItems(studentName, studentLoginId, testRosterId, itemSetIdTC) {
@@ -519,7 +526,25 @@ function itemNumberFormatter(cellvalue, options, rowObject){
 function itemStuLoginIdFormatter(cellvalue, options, rowObject) {
 	
 	var val = cellvalue;
-	val = "<a href='#' style='color:blue; text-decoration:underline;'>"+cellvalue+"</a>";
+	var testRosterId = null;
+	if(rowObject._id_){
+			testRosterId = rowObject._id_;
+		}else{
+			testRosterId = rowObject.testRosterId;
+		}
+
+		var type;
+		if(selectedRData.itemType=="Audio Item") {
+        	type = "AI";
+        } else {
+        	type = "CR";
+        }
+       	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + selectedRData.itemId +"\",\""+
+        	 selectedRData.itemNo + "\",\"" + type + "\",\"" + testRosterId + "\", \"" +
+        	  selectedRData.itemSetId + "\",\"" + selectedRData.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoringStatus+ "\"); return false;'>"+cellvalue+"</a>";
+       
+	
+	
 	return val;
 }
 
@@ -527,6 +552,12 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		var val = cellvalue;
 		var answered = rowObject.answered;
 		var itemSetIdTD = rowObject.itemSetId;
+		var itemId = null;
+		if(rowObject._id_){
+			itemId = rowObject._id_;
+		}else{
+			itemId = rowObject.itemId;
+		}
 
 		var type;
 		if(cellvalue=="AI") {
@@ -535,9 +566,9 @@ function responseLinkFmatter(cellvalue, options, rowObject){
         	type = "Text Response";
         }
         if(answered != undefined && answered == "Answered") {
-        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + rowObject._id_ +"\",\""+
+        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesAnsPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
-        	  itemSetIdTD + "\"); return false;'>"+type+"</a>";
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\"); return false;'>"+type+"</a>";
         } else {
         	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
         }
@@ -577,6 +608,40 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 	}
 
 
+	function updateMaxPoints(scoreCutOff){
+		var select = document.getElementById('pointsDropDown');
+		 select.options.length = 0; 
+		 addOption(select , "Please Select", "" );
+		
+		  for(var i=0; i <= scoreCutOff; i++) {  
+		    addOption(select,i,i);
+		     } 
+		}
+	
+		function updateScore(score,status){
+		
+			var complete = trim(status);
+			if(complete =="Complete"){
+		
+				var select = document.getElementById('pointsDropDown');
+				
+				for(var i=0; i< select.options.length; i++){
+				if(select.options[i].value == trim(score)){
+						select.options[i].selected = 'true';
+						break;
+					}
+				
+				}
+			}
+		}
+	
+		function addOption(selectbox,text,value )
+		{
+			var optn = document.createElement("OPTION");
+			optn.text = text;
+			optn.value = value;
+			selectbox.options.add(optn);
+		}
 /******JqGrid Population and Reloads*****/
 
 function populateScoringStudentGrid() {
@@ -642,7 +707,7 @@ function populateScoringStudentGrid() {
 				
 			},
 			onSelectRow: function (rowId) {
-					selectedRosterId = rowId;
+					osterId = rowId;
 					selectedRData = $("#studentScoringGrid").getRowData(rowId);
 					selectedItemSetTCVal = selectedRData.itemSetIdTC;
 					if(selectedRData.itemCountCRAI != undefined && selectedRData.itemCountCRAI <= 0) {
@@ -1033,7 +1098,7 @@ function studentScoring() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val()],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1041,11 +1106,13 @@ function studentScoring() {
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
-		   	
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
-		   	records: function(obj) {} },
+		   	records: function(obj) {
+
+		   	} },
 		   	
 		   	loadui: "disable",
 			rowNum:10,
@@ -1117,12 +1184,13 @@ function populateSBIStudentGrid(itemSetId, itemId) {
  		postDataObject.testAdminId = selectedTestAdminId;
  		postDataObject.itemSetId = itemSetId;
  		postDataObject.itemId = itemId;		
+
 		$("#itemStudentListGridSBI").jqGrid({
 		url: 'getStudentListForItem.do',
 		mtype:'POST',
 		postData: postDataObject,
 		datatype: "json",
-		colNames:[$("#stuGrdLoginId").val(),$("#sbsGridLastName").val(),$("#sbsGridFirstName").val(),$("#studentIdLabelName").val(),$("#stuGrdGrade").val(),$("#itemGripManual").val(),$("#sbsGridOnStatus").val()],
+		colNames:[$("#stuGrdLoginId").val(),$("#sbsGridLastName").val(),$("#sbsGridFirstName").val(),$("#studentIdLabelName").val(),$("#stuGrdGrade").val(),$("#itemGripManual").val(),$("#sbsGridOnStatus").val(),"scorePoint"],
 		colModel:[
 		   		{name:'userName',index:'userName', width:160, editable: true, align:"left", sorttype:'text', sortable:true, formatter:itemStuLoginIdFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1130,7 +1198,8 @@ function populateSBIStudentGrid(itemSetId, itemId) {
 		   		{name:'extPin1',index:'extPin1', width:100, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade', width:80, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoringStatus',index:'scoringStatus', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'testCompletionStatusDesc',index:'testCompletionStatusDesc', width:160, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scorePoint',index:'scorePoint', width:0,hidden: true, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		],
 		   	jsonReader: { repeatitems : false, root:"scoreByStudentList", id:"testRosterId",
 		   	records: function(obj) {} },
@@ -1224,7 +1293,14 @@ function populateSBSItemListGrid() {
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
-		   	records: function(obj) {} },
+		   	records: function(obj) {
+		   	if (obj.processScoreBtn == "F"){
+		   		//Process button disable
+		   		setAnchorButtonState("processScoreSBS", true);
+		   	}else{
+		   		setAnchorButtonState("processScoreSBS", false);
+		   	}
+		   	} },
 		   	
 		   	loadui: "disable",
 			rowNum:10,
@@ -1293,9 +1369,19 @@ function gridStudentItemReloadSBS(){
 *
 **/
 
-function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
-console.log(id +" ::" +itemSetOrder+" :: " +itemType+" :: " +testRosterId+" :: " +itemSetId);
-
+function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus){
+			var score= null;
+			var status = null;
+			selectedRowObjectScoring.id = id;
+			selectedRowObjectScoring.itemSetOrder = itemSetOrder;
+			selectedRowObjectScoring.itemType = itemType
+			selectedRowObjectScoring.testRosterId = testRosterId;
+			selectedRowObjectScoring.itemSetId = itemSetId;
+			selectedRowObjectScoring.maxPoints = maxPoints;
+			
+			$("#crText").hide();
+			$("#audioPlayer").hide();
+				
 			document.getElementById('displayMessageForQues').style.display = "none";
 		 	var element = document.getElementById('questionInformation');
 		 	var iframe = document.createElement('iframe');
@@ -1304,10 +1390,16 @@ console.log(id +" ::" +itemSetOrder+" :: " +itemType+" :: " +testRosterId+" :: "
 			iframe.width = "900";
 			iframe.height = "530";
 			element.appendChild(iframe);
-			
+			updateMaxPoints(maxPoints);		
+			var scoreAndPoints =  getScorePoints();
+			score = scoreAndPoints[0];
+			status = scoreAndPoints[1];
+			selectedRowObjectScoring.scoreObtained = score;
+			selectedRowObjectScoring.scoringStatus = status;				
+		
+
+			updateScore(score, status);
 			viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
-			
-			
 		 	
 
 }
@@ -1326,6 +1418,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				async:		false,
 				beforeSend:	function(){
 								UIBlock();
+								$("#audioPlayer").hide();
+								$("#crText").hide();
 							},
 				url:		'showQuestionAnswer.do',
 				type:		'POST',
@@ -1333,8 +1427,57 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 var questionNumber = itemNumber;
-								 console.log("data: " + data);
 								 data1 = data.questionAnswer;
+								 
+								var crTextResponse = "";
+								var isAudioItem = data1.scrContent.isAudioItem;
+								var linebreak ="\n\n";
+								
+								if(isAudioItem){
+								$("#crText").hide();
+								document.getElementById("itemType").value = "AI";
+								var audioResponseString = data1.scrContent.audioItemContent;
+								audioResponseString = audioResponseString.substr(13);
+								audioResponseString = audioResponseString.split("%3C%2F");
+								document.getElementById("audioResponseString").value = audioResponseString[0];
+								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
+								$('#Question').addClass('ui-state-disabled');
+								
+								if(navigator.userAgent.indexOf('Win') != -1) {
+
+												$("#iframeDiv").hide();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "about:blank");
+												
+												$("#audioPlayer").show();
+												getAudioPlayer('audioPlayer');
+											
+											}else {
+
+												$("#audioPlayer").hide();
+												$("#iframeDiv").show();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "audioPlayer.jsp");
+											}								
+								
+								}else{
+								document.getElementById("itemType").value = "CR";								
+								var crResponses =data1.scrContent.cRItemContent.string.length;
+								for(var i = 0; i < crResponses; i++){
+									if( i == (crResponses-1)){
+										linebreak ="";
+										document.getElementById("pointsDropDown").removeAttribute("disabled");
+										document.getElementById("Question").removeAttribute("disabled");
+										$('#Question').removeClass('ui-state-disabled'); 
+									}
+									crTextResponse = crTextResponse + data1.scrContent.cRItemContent.string[i] + linebreak;
+								  }
+								$("#crText").show();
+								$("#crText").val(crTextResponse);
+								}
+								
+
+								
 								 //populateTableNew();
 									 $.unblockUI(); 
 								 //$("#rubricDialogID").dialog("open");
@@ -1457,6 +1600,135 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 		}
 		return s.join('');
 	}
+	
+	function hideMessage(){
+	
+	}
+	
+	
+	function formSave() {
+			var itemId =  selectedRowObjectScoring.id ;
+			var itemSetId = selectedRowObjectScoring.itemSetId  ;
+			
+
+			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+selectedRowObjectScoring.testRosterId + "&score="+$("#pointsDropDown option:selected").val()+"&itemSetIdTC="+selectedItemSetTCVal;    
+			var optionValue = $("#pointsDropDown option:selected").val();
+			console.log("form save");
+			if($("#pointsDropDown option:selected").val() != ''){
+					$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){											
+												UIBlock();												
+											},
+								url:		'saveDetails.do',
+								type:		'POST',
+								data:		param,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+													//Message
+												
+													if(data.isSuccess){
+													var dataToBeAdded = {scoreStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
+				
+													jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
+													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");	
+													var dataToBeAddedItem = {scoringStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
+													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
+													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
+													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
+													setAnchorButtonState("processScoreSBS", false);
+													}else{
+													//Message
+													}
+																			
+													$.unblockUI(); 
+												
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+												//changes for defect #66003
+												window.location.href="/SessionWeb/logout.do";
+											},
+								complete :  function(){
+												//alert('after complete....');
+											//	$.unblockUI(); 
+											}
+						}
+					);
+				}
+			}
+			
+			function getScorePoints(){
+				var rowElement = document.getElementById(selectedRowObjectScoring.id);
+				var pointStatus = [];
+				if(rowElement){				
+					
+					var score = rowElement.lastChild.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
+					score = trim(score);
+					status = trim(status);
+					pointStatus[0] = score;
+					pointStatus[1] = status;
+				}else{
+					rowElement = document.getElementById(selectedRowObjectScoring.testRosterId);
+					if(rowElement){
+					var score = rowElement.lastChild.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+					score = trim(score);
+					status = trim(status);
+					pointStatus[0] = score;
+					pointStatus[1] = status;					
+					}
+				}
+				
+				return pointStatus;
+			}			
+		
+		
+		function processScore(){
+		var param = "&rosterId="+selectedRosterId;
+		
+		$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){											
+												UIBlock();												
+											},
+								url:		'rescoreStudent.do',
+								type:		'POST',
+								data:		param,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+													//Message
+												
+													if(data.isSuccess){
+													var dataToBeAdded = {scoreStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
+				
+													jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
+													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");	
+													var dataToBeAddedItem = {scoringStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
+													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
+													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
+													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
+													setAnchorButtonState("processScoreSBS", false);
+													}else{
+													//Message
+													}
+																			
+													$.unblockUI(); 
+												
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+												//changes for defect #66003
+												window.location.href="/SessionWeb/logout.do";
+											},
+								complete :  function(){
+												//alert('after complete....');
+											//	$.unblockUI(); 
+											}
+						}
+					);
+		}
 /******JqGrid Search Implementation*****/
 
 function searchStudentByKeyword(){
@@ -1970,4 +2242,8 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			$('#innerID').jstree('open_node', "#"+currentNodeId);
 		}
   }
+  
+  function isWindows() {
+		return navigator.userAgent.indexOf('Win') > -1;
+	}
   

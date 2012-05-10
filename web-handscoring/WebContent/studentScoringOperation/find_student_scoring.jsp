@@ -64,7 +64,7 @@
 		<table width="100%">
 			<tr>
 				<td align="right">
-					<a href="#" id="processScore" class="rounded {transparent} button">Process Scores</a>
+					<a href="#" id="processScore" class="rounded {transparent} button" onclick="processScore()">Process Scores</a>
 				</td>
 			</tr>
 			<tr>

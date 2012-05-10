@@ -26,6 +26,7 @@ table.gridtable td {
 	border-style: solid;
 	border-color: #666666;
 	background-color: #ffffff;
+	font-size:14px;
 }
 </style>
 </head>
