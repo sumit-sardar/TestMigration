@@ -139,7 +139,7 @@ function stopAudio(){
 	<div id="quesAnsAccordion" style="width:99.5%;">
 			
 			<div id="scoringQues">
-				<h3><a href="#">Question</a></h3>
+				<h3><a href="#"><lb:label key="questionpopup.question" /></a></h3>
 				
 					<div id="questionInformation" style="background-color: #FFFFFF;height: 535px !important;">
 					
@@ -147,45 +147,85 @@ function stopAudio(){
 				
 			</div>
 			<div id="scoringRubric">
-				<h3><a href="#">Rubric</a></h3>
-				<div id="rubricInformation" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-						<iframe id="rubricIframe" src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp" style=" font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 100%; height: 95%; " frameborder="1" scrollable="yes"></iframe>
-				</div>
-			</div>
-			<div id="scoringAns">
-				<h3><a href="#">Answer</a></h3>
-				<div id="answerInformation" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<table border="0" width="100%">
-							<tr width="100%">
-								<td class="transparent" style="width: 10%;"><span><b> Answer :</b></span></td>
-							</tr>
-							<tr width="100%">
-								<td class="transparent" style="width: 90%;padding-left:5px;" id="dialogIdDiv">
-									<textarea id="crText" width="70%" cols="85" rows="8" readonly="readonly"></textarea>
-									<div id="audioPlayer">
+				<h3><a href="#"><lb:label key="questionpopup.rubric" /></a></h3>
+					<div id="rubricInformation" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
+								
+								<TABLE>
+									<TR>
+										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.answer" /> :</b></span></td>
+										<TD rowspan=4>
+										<div id='outerdiv' style="width:545px;height:400px; overflow-x: hidden;"><iframe id="rubricIframe"
+											src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
+											style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 100%; height: 98%;"
+											frameborder="1" scrollable="yes"></iframe></div>
+										</TD>
+									</TR>
+									<TR>
+										<td class="transparent" style="width: 50%; padding-left: 5px;" id="dialogIdDiv"><textarea id="crText" width="70%"
+											cols="50" rows="12" readonly="readonly"></textarea>
+										<div id="audioPlayer"><script>
+																								//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+																		</script></div>
+										<div id="iframeDiv"><iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0"
+											scrolling="no"> </iframe></div>
+										</td>
+									</tr>
+									<TR>
+										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.score" /> :</b></span></td>
+									</tr>
+									<TR>
+										<td class="transparent" style="padding-left: 5px;">
+										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button"
+											id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay();" /></div>
+										</td>
+									</tr>
+								</TABLE>
+<!-- <table width="100%">
+						<tbody>
+							<tr>
+								<td width="35%">
+								<table border="0" width="35%">
+									<tr width="100%">
+										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.answer" /> :</b></span></td>
+									</tr>
+									<tr>
+										<td class="transparent" style="width: 90%; padding-left: 5px;" id="dialogIdDiv">
+										<textarea id="crText" width="70%" cols="50" rows="12" readonly="readonly"></textarea>
+										<div id="audioPlayer">
 										<script>
-											//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
-										</script>
-									
-									</div>
-								<div id="iframeDiv">
-								<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no" >
-								</iframe>
-								</div>
+																//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+										</script></div>
+										<div id="iframeDiv">
+										<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no">
+										 </iframe>
+										 </div>
+										</td>					
+									</tr>
+									<tr width="100%">
+										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.score" /> :</b></span></td>
+					
+									</tr>
+									<tr width="100%">
+										<td class="transparent" style="padding-left: 5px;">
+										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input
+											type="button" id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay();" /></div>
+										</td>
+									</tr>
+								</table>
+								</td>
+								<td style="width: 800px">
+								<div id='outerdiv' style="width: 800px; height: 290px; overflow-x: hidden;"><iframe id="rubricIframe"
+									src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
+									style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 75%; height: 98%;"
+									frameborder="1" scrollable="yes"></iframe></div>
 								</td>
 							</tr>
-							<tr width="100%">
-								<td class="transparent" style="width: 10%;"><span><b> Score :</b></span></td>
-
-							</tr>
-							<tr width="100%">
-								<td class="transparent" style="padding-left:5px;">
-								<div><select id="pointsDropDown" onChange="hideMessage();" ></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay();" /></div>
-								</td>							
-							</tr>							
-					</table>
+						</tbody>
+					</table>	-->		
+					
 				</div>
-			</div>			
+			</div>
+		
 	</div>
 	<br>
 	<center>

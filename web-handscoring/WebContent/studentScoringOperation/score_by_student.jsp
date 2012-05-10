@@ -105,7 +105,7 @@
 		<table width="100%">
 			<tr>
 				<td align="right">
-					<a href="#" id="processScoreSBS" class="rounded {transparent} button" onclick="processScore()" ><lb:label key="scoring.button.process.score" /></a>
+					<a href="#" id="processScoreSBS" class="rounded {transparent} button" onclick="processScore(this)"><lb:label key="scoring.button.process.score" /></a>
 				</td>
 			</tr>
 			<tr>

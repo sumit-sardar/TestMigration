@@ -919,6 +919,7 @@ function populateScoreByItemGrid(){
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.testAdminId = selectedTestAdminId;
+	clearMessage();
 	$("#itemListGrid").jqGrid({         
      url: 'findItemDetail.do',
      mtype: 'POST',

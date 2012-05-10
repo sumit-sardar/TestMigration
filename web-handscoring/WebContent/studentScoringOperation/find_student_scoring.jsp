@@ -7,11 +7,16 @@
 <input type="hidden" id="scoringError" name="scoringError" value=<lb:label key="scoring.error" prefix="'" suffix="'"/>/>
 <input type="hidden" id="processSuccessful" name="processSuccessful" value=<lb:label key="process.successful" prefix="'" suffix="'"/>/>
 <input type="hidden" id="processError" name="processError" value=<lb:label key="process.error" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopUpHeader" name="questionPopUpHeader" value=<lb:label key="questionpopup.header" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopUpAnswer" name="questionPopUpAnswer" value=<lb:label key="questionpopup.answer" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopUpScore" name="questionPopUpScore" value=<lb:label key="questionpopup.score" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopUpQuestion" name="questionPopUpQuestion" value=<lb:label key="questionpopup.question" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopUpRubric" name="questionPopUpRubric" value=<lb:label key="questionpopup.rubric" prefix="'" suffix="'"/>/>
 
 <div id="studentScoringId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
 
-			<div id="displayMessageStudent" class="errMsgs" style="display: none; width: 50%; float: left;">
+			<div id="displayMessageStudent" class="roundedMessage">
 						<table>
 							<tr>
 								<td width="18" valign="middle">
@@ -85,7 +90,7 @@
 		<table width="100%">
 			<tr>
 				<td align="right">
-					<a href="#" id="processScore" class="rounded {transparent} button" onclick="processScore()" ><lb:label key="scoring.button.process.score" /> </a>
+					<a href="#" id="processScore" class="rounded {transparent} button" onclick="processScore(this)"><lb:label key="scoring.button.process.score" /> </a>
 				</td>
 			</tr>
 			<tr>

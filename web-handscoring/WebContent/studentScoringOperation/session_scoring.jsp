@@ -6,7 +6,7 @@
 
 <div id="sessionScoringId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
-			<div id="displayMessageSession" class="errMsgs" style="display: none; width: 50%; float: left;">
+			<div id="displayMessageSession" class="roundedMessage" >
 						<table>
 							<tr>
 								<td width="18" valign="middle">
