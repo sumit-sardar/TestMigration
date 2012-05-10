@@ -713,6 +713,7 @@ function populateScoringStudentGrid() {
 					osterId = rowId;
 					selectedRData = $("#studentScoringGrid").getRowData(rowId);
 					selectedItemSetTCVal = selectedRData.itemSetIdTC;
+					selectedRosterId = rowId
 					if(selectedRData.itemCountCRAI != undefined && selectedRData.itemCountCRAI <= 0) {
 						setAnchorButtonState('scoreButton', true);
 					} else {
@@ -1113,8 +1114,15 @@ function studentScoring() {
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
-		   	records: function(obj) {
-
+		    records: function(obj) {
+		   	if (obj.processScoreBtn == "F"){
+		   		//Process button disable
+		   		setAnchorButtonState("processScoreSBS", true);
+		   		setAnchorButtonState("processScore", true);
+		   	}else{
+		   		setAnchorButtonState("processScoreSBS", false);
+		   		setAnchorButtonState("processScore", false);
+		   	}
 		   	} },
 		   	
 		   	loadui: "disable",
@@ -1608,7 +1616,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	}
 	
 	function hideMessage(){
-	
+		clearMessage();
 	}
 	
 	
@@ -1705,7 +1713,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			}			
 		
 		
-		function processScore(){
+		function processScore(element){
 				
 			var messageObject = {messageElement:"displayMessageStudent",
 													infoElement:"infoIconStu",
