@@ -46,18 +46,18 @@
     <tr class="transparent">
         <td align="center">        
 		<table width="100%" >
-		   	<tr> <td colspan="3" class="buttonsRow"> </td></tr>
+		   	<%-- <tr> <td colspan="3" class="buttonsRow"> </td></tr> --%>
 		   	
 		   	<tr>
 		   	   <td> </td>
 		   		<td colspan="2" class="buttonsRow" id="buttonRow">
-					<div id="generate_pdf" style="float:right;visibility:hidden; padding-right: 5px;">
+					<div id="generate_pdf" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
 						<a href="#" id="generatePDFButton" onclick="downloadImmediatePDFReport(this);" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 					</div>
-					<div id="generate_csv" style="float:right;visibility:hidden;  padding-right: 5px;">
+					<div id="generate_csv" style="float:right;visibility:hidden;  padding-right: 5px; padding-top: 5px;">
 						<a href="#" id="generateCSVButton" onclick="return downloadImmediateCSVReport(this);" class="rounded {transparent} button"><lb:label key="immediate.report.generate.csv.button.value" /></a>
 					</div>
-					<div id="view_report" style="float:right;visibility:hidden; padding-right: 5px;">
+					<div id="view_report" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
 						<a href="#" id="viewReportButton" onclick="javascript:viewHtmlReport(this); return false;" class="rounded {transparent} button"><lb:label key="immediate.report.view.report.button.value" /></a>
 					</div>
 		   		</td>

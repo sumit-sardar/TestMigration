@@ -8,8 +8,16 @@
 <br />
 	<div class="roundedMessage">
 		<table class="transparent" width="100%">
-		
+			<tr class="transparent"> <td width="5"> </td> <td colspan="3" class="transparent"> </td></tr>
+		    <tr class="transparent">
+		       <td width="15px"> </td>
+		       <td colspan="3"> <h1>
+		       		<lb:label key="immediate.report.view.report.title" /></h1>
+		       </td>
+		    </tr>
+		    <tr class="transparent"> <td width="5"> </td> <td colspan="3" class="transparent"> </td></tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.stdName" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="stdNameVal" styleClass="formValueLarge"> </span></div>
@@ -17,12 +25,14 @@
 			</tr>
 		
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.Id" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="idVal" styleClass="formValueLarge"> </span></div>
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.TestDate" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="testDateVal" styleClass="formValueLarge"> </span></div>
@@ -30,18 +40,21 @@
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.Form" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="formVal" styleClass="formValueLarge"> </span></div>
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.District" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="districtVal" styleClass="formValueLarge"> </span></div>
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.School" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="schoolVal" styleClass="formValueLarge"> </span></div>
@@ -49,6 +62,7 @@
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.Grade" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="gradeVal" styleClass="formValueLarge"> </span></div>
@@ -56,6 +70,7 @@
 				</td>
 			</tr>
 			<tr class="transparent">
+				<td width="15px"> </td>
 				<td class="transparent"><lb:label key="immediate.report.TestName" /></td>
 				<td class="transparent">
 				<div class="formValueLarge"><span id="testNameVal" styleClass="formValueLarge"> </span></div>
@@ -78,10 +93,10 @@
 		<br/>
 	    <%-- For button --%>
 		
-		<div id="generate_csv_pop" style="float:left; padding-right: 15px;">
+		<div id="generate_csv_pop" style="float:left; padding-left: 25px;">
 				<a href="#" id="generateCSVButtonPop" onclick="return downloadImmediateCSVReport(this);" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.csv.button.value" /></a>
 		</div>
-		<div id="generate_pdf_pop" style="float:left; padding-right: 5px;">
+		<div id="generate_pdf_pop" style="float:left; padding-left: 5px;">
 			<a href="#" id="generatePDFButtonPop" onclick="return downloadImmediatePDFReport(this);" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 		</div>
 		<BR/>

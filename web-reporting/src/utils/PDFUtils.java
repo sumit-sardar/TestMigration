@@ -352,7 +352,7 @@ public class PDFUtils {
 	           if(cell < cols){
 	               return getNormalBoldBlueFont();
 	           }
-	           else if ((cell+1)%cols == 0){
+	           else if (cell%cols != 0){
 	               return getDataEntryFont();
 	           }
 	           else{
