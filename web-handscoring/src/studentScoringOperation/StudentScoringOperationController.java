@@ -37,6 +37,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.QuestionAnswerData;
@@ -82,8 +83,8 @@ public class StudentScoringOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.crscoring.TestScoring testScoring;
-	
-    
+	@Control()
+    private com.ctb.control.db.CRScoring scoring;
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
@@ -382,11 +383,22 @@ public class StudentScoringOperationController extends PageFlowController {
 		String json = "";
 		Integer rosterId = Integer.parseInt(getRequest().getParameter("rosterId"));
 		Integer itemSetIdTC = Integer.parseInt(getRequest().getParameter("itemSetIdTC"));
+		HashMap<Integer,String> itemSetIdMap = new HashMap<Integer, String>();
+		
 			
 try {
 			
 	ScorableItemData sid = getTestItemForStudent(rosterId, itemSetIdTC, null, null);
 	List<ScorableItem> itemList = buildItemList(sid);
+	String status = "T";
+	for (ScorableItem si : itemList){
+		System.out.println("si.getScoreStatus" + si.getScoreStatus() + " :: "+si.getAnswered());
+		if (si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
+			status= "F";
+			break;
+		}
+		
+	}
 			
 			try{
 				Base base = new Base();
@@ -395,6 +407,7 @@ try {
 				base.setPage("1");
 				base.setRecords("10");
 				base.setTotal("2");
+				base.setProcessScoreBtn(status);
 				
 				Gson gson = new Gson();
 				json = gson.toJson(base);
@@ -561,6 +574,103 @@ try {
 		return null;
 		
 	}
+	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
+	protected Forward saveDetails(StudentSessionScoringForm form) {
+		System.out.println("Save details");
+		String jsonMessageResponse = "";
+		if (user == null) {
+			getUserDetails();
+		}
+		String itemId = getRequest().getParameter("itemId");
+		Integer itemSetId = Integer.valueOf(getRequest().getParameter(
+		"itemSetId"));
+		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
+		"rosterId"));
+		Integer score = Integer.valueOf(getRequest().getParameter("score"));
+		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
+		try {
+			String completeTD = null;
+			Boolean isSuccess = this.testScoring.saveOrUpdateScore(user
+					.getUserId(), itemId, itemSetId, testRosterId, score);
+			// start- added for  Process Scores   button changes
+			String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
+			if (completionStatus.equals("CO")) {
+				//this.testSessionStatus.rescoreStudent(testRosterId);
+			} else { // Change for immediate reporting requirements
+				String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
+				if (completionStatusRosterAndTD.equals("CO")) {
+					//this.testSessionStatus.rescoreStudent(testRosterId);
+					completeTD = "CO";
+				} else {
+					completeTD = "IN";
+				}
+			}
+
+
+			ManageStudent ms = new ManageStudent();
+			ms.setIsSuccess(isSuccess);
+			ms.setCompletionStatus(completionStatus);
+			ms.setCompletionStatusTD(completeTD);
+			jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+			// end - added for  Process Scores   button changes
+
+			HttpServletResponse resp = this.getResponse();
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+			OutputStream stream = resp.getOutputStream();
+			stream.write(jsonMessageResponse.getBytes());
+			stream.close();
+
+		} catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "")
+	})
+public Forward rescoreStudent(StudentSessionScoringForm form) {
+		String jsonMessageResponse = "";
+		if (user == null) {
+			getUserDetails();
+		}
+		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
+		"rosterId"));
+
+		System.out.println("rescore Student" + testRosterId);
+        try {    
+           // this.testSessionStatus.rescoreStudent(testRosterId);
+            HttpServletResponse resp = this.getResponse();
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+			OutputStream stream = resp.getOutputStream();
+			stream.write(new String("SUCCESS").getBytes());
+			stream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            HttpServletResponse resp = this.getResponse();
+			resp.setContentType("application/json");
+			try {
+				resp.flushBuffer();
+				OutputStream stream = resp.getOutputStream();
+				stream.write(new String("FAIL").getBytes());
+				stream.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+        }                
+        return null;
+}
 	 /**
      *getRubricDetails() for rubricView
      */

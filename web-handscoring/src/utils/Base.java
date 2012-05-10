@@ -21,6 +21,7 @@ public class Base {
 	private List<ScorableItem> itemList;
 	private List<ScorableItem> scorableItems;
 	private List<RosterElement> scoreByStudentList;
+	private String processScoreBtn;
 	
 	
 	public String getPage() {
@@ -84,6 +85,18 @@ public class Base {
 	}
 	public void setScoreByStudentList(List<RosterElement> scoreByStudentList) {
 		this.scoreByStudentList = scoreByStudentList;
+	}
+	/**
+	 * @return the processScoreBtn
+	 */
+	public String getProcessScoreBtn() {
+		return processScoreBtn;
+	}
+	/**
+	 * @param processScoreBtn the processScoreBtn to set
+	 */
+	public void setProcessScoreBtn(String processScoreBtn) {
+		this.processScoreBtn = processScoreBtn;
 	}
 	
 	

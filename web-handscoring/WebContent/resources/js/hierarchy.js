@@ -1613,7 +1613,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 
 			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+selectedRowObjectScoring.testRosterId + "&score="+$("#pointsDropDown option:selected").val()+"&itemSetIdTC="+selectedItemSetTCVal;    
 			var optionValue = $("#pointsDropDown option:selected").val();
-			console.log("form save");
+
 			if($("#pointsDropDown option:selected").val() != ''){
 					$.ajax(
 						{
