@@ -85,7 +85,7 @@
 		<table width="100%">
 			<tr>
 				<td align="right">
-					<a href="#" id="processScore" class="rounded {transparent} button" onclick="processScore()">Process Scores</a>
+					<a href="#" id="processScore" class="rounded {transparent} button" onclick="processScore()" ><lb:label key="scoring.button.process.score" /> </a>
 				</td>
 			</tr>
 			<tr>
