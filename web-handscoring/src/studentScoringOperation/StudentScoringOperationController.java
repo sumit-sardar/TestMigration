@@ -647,23 +647,31 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 		System.out.println("rescore Student" + testRosterId);
         try {    
            // this.testSessionStatus.rescoreStudent(testRosterId);
+        	
+        	ManageStudent ms = new ManageStudent();
+			ms.setIsSuccess(true);
+			jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
             HttpServletResponse resp = this.getResponse();
 			resp.setContentType("application/json");
 			resp.flushBuffer();
 			OutputStream stream = resp.getOutputStream();
-			stream.write(new String("SUCCESS").getBytes());
+			stream.write(jsonMessageResponse.getBytes());
 			stream.close();
         }
         catch (Exception e) {
             e.printStackTrace();
-            HttpServletResponse resp = this.getResponse();
-			resp.setContentType("application/json");
+
 			try {
+	        	ManageStudent ms = new ManageStudent();
+				ms.setIsSuccess(false);
+				jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+	            HttpServletResponse resp = this.getResponse();
+				resp.setContentType("application/json");
 				resp.flushBuffer();
 				OutputStream stream = resp.getOutputStream();
-				stream.write(new String("FAIL").getBytes());
+				stream.write(jsonMessageResponse.getBytes());
 				stream.close();
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}

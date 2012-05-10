@@ -1628,7 +1628,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								success:	function(data, textStatus, XMLHttpRequest){	
 													//Message
 												
-													if(data.isSuccess){
+													if(data.SaveStatus.isSuccess){
 													var dataToBeAdded = {scoreStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
 				
 													jQuery("#studentItemListGridSBS").setRowData(itemId, dataToBeAdded, "first");
@@ -1637,7 +1637,11 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
 													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
-													setAnchorButtonState("processScoreSBS", false);
+													if(data.SaveStatus.completionStatusTD){
+														setAnchorButtonState("processScoreSBS", false);
+													}else{
+													setAnchorButtonState("processScoreSBS", true);
+													}
 													}else{
 													//Message
 													}
