@@ -2,6 +2,7 @@ package studentScoringOperation;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.KeyStore.Entry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,6 +89,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
+
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
     
@@ -383,8 +385,8 @@ public class StudentScoringOperationController extends PageFlowController {
 		String json = "";
 		Integer rosterId = Integer.parseInt(getRequest().getParameter("rosterId"));
 		Integer itemSetIdTC = Integer.parseInt(getRequest().getParameter("itemSetIdTC"));
-		HashMap<Integer,String> itemSetIdMap = new HashMap<Integer, String>();
-		
+		HashMap<Integer,ScorableItem> incompleteItemSetIdMap = new HashMap<Integer, ScorableItem>();
+		HashMap<Integer,ScorableItem> totalItemSetIdMap = new HashMap<Integer, ScorableItem>();
 			
 try {
 			
@@ -392,13 +394,25 @@ try {
 	List<ScorableItem> itemList = buildItemList(sid);
 	String status = "T";
 	for (ScorableItem si : itemList){
-		System.out.println("si.getScoreStatus" + si.getScoreStatus() + " :: "+si.getAnswered());
-		if (si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
-			status= "F";
-			break;
+				
+		if(si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
+			incompleteItemSetIdMap.put(si.getItemSetId(),si);
+		}
+		totalItemSetIdMap.put(si.getItemSetId(),si);
+	}
+	
+	for (Integer id : totalItemSetIdMap.keySet()){
+		if(incompleteItemSetIdMap.get(id) == null){
+			System.out.println("status true");
+			status = "T";
+		}else{
+			status ="F";
+			System.out.println("status false");
 		}
 		
 	}
+	
+
 			
 			try{
 				Base base = new Base();
