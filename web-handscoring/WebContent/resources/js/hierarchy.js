@@ -459,6 +459,7 @@ function scoreByItem(itemNo, itemType, itemSetId, testAdminId, itemSetOrder, ite
 	selectedRData.itemSetId = itemSetId;
  	selectedRData.itemId = itemId;
  	selectedRData.itemType = itemType;
+ 	selectedItemSetTCVal = getItemSetIdTC(itemId);
 	UIBlock();
 	fillTestItemFieldsSBI();
 	$("#itemGridDisplaySBI").hide();
@@ -1694,12 +1695,29 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 					
 					var score = rowElement.lastChild.previousSibling.innerHTML;
 					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
-					score = trim(score);
-					status = trim(status);
-					pointStatus[0] = score;
-					pointStatus[1] = status;
+					var valid = Number(status);
+					if ( valid == NaN){
+						score = trim(score);
+						status = trim(status);
+						pointStatus[0] = score;
+						pointStatus[1] = status;
+						}else{
+							rowElement = $('#'+selectedRowObjectScoring.testRosterId,'#itemStudentListGridSBI');
+							rowElement = rowElement[0];
+							
+							if(rowElement){
+								score = rowElement.lastChild.innerHTML;
+								status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+								score = trim(score);
+								status = trim(status);
+								pointStatus[0] = score;
+								pointStatus[1] = status;							
+							}
+					}
 				}else{
-					rowElement = document.getElementById(selectedRowObjectScoring.testRosterId);
+					rowElement = $('#'+selectedRowObjectScoring.testRosterId,'#itemStudentListGridSBI');
+					rowElement = rowElement[0];
+
 					if(rowElement){
 					var score = rowElement.lastChild.innerHTML;
 					var status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
@@ -1713,6 +1731,16 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				return pointStatus;
 			}			
 		
+		function getItemSetIdTC(itemId){
+			var rowElement = $('#'+itemId,'#itemListGrid');
+			rowElement = rowElement[0];
+			
+			if(rowElement){
+			var itemSetIdTC = rowElement.lastChild.innerHTML;
+			return itemSetIdTC;
+			}
+
+		}
 		
 		function processScore(element){
 				
