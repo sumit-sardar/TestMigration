@@ -380,14 +380,14 @@ function showHtmlReportPopup(){
 	        title: "Immediate Report",
 	        resizable: false,
 	        autoOpen: true,
-	        width: '740px',
+	        width: '720px',
 	        modal: true,
 	        open: function(event, ui) {
 	            $(".ui-dialog-titlebar-close").hide();
 	        }
 	    });
-	var toppos = (($(window).height() - 530) / 2) + 50 + 'px';
-	var leftpos = (($(window).width() - 740) / 2) + 'px';
+	var toppos = (($(window).height() - 601) / 2) + 50 + 'px';
+	var leftpos = (($(window).width() - 720) / 2) + 'px';
 	$("#immdRptScorePopup").parent().css("top", toppos);
 	$("#immdRptScorePopup").parent().css("left", leftpos);
 }
