@@ -43,7 +43,7 @@
 <body bgcolor="#FFFFCC">
 
 <div id="audioPlayer"
-	style="width: 100%; height: 90%; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 8px; font-weight: normal;">
+	style="width: 100%; height: 90%;font-family: Arial, Verdana, Sans Serif; font-size: 8px; font-weight: normal;">
 	<script>
 		getAudioPlayer('audioPlayer');
 	</script>
