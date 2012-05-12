@@ -127,7 +127,7 @@ function populateGrid() {
 		viewrecords: true, 
 		sortorder: "asc",
 		height: 370,
-		width: 958,
+		width: 989,
 		caption:$("#imdRptStuListGridCaption").val(),
 		ondblClickRow: function(rowid) {viewHtmlReport();},
 		onPaging: function() {
