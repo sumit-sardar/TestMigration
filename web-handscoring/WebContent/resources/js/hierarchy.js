@@ -926,7 +926,7 @@ function populateScoreByItemGrid(){
      mtype: 'POST',
 	 postData: postDataObject,
 	 datatype: "json",         
-     colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#sbiGridItemType").val(), $("#itemGripMaxScr").val(), '', '', ''],
+     colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#sbiGridItemType").val(), $("#itemGripMaxScr").val(), '', '', '',''],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:130, editable: true, align:"left",sorttype:'int',formatter:itemNumberFormatter,search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -934,7 +934,8 @@ function populateScoreByItemGrid(){
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:100, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 				{name:'studentCount',index:'studentCount',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 				{name:'itemId',index:'itemId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-				{name:'itemSetId',index:'itemSetId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+				{name:'itemSetId',index:'itemSetId',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:'itemSetIdTC',index:'itemSetIdTC',editable: true, width:60,hidden: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
  		   	],
 		   	jsonReader: { repeatitems : false, root:"itemList", id:"itemId",
 		   	records: function(obj) {} },
@@ -1623,6 +1624,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	
 	
 	function formSave() {
+			closePopUp('confirmationPopupQues');
 			var itemId =  selectedRowObjectScoring.id ;
 			var itemSetId = selectedRowObjectScoring.itemSetId  ;
 			var messageObject = {messageElement:"displayMessageForQues",
@@ -1657,6 +1659,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
 													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
+													
 													if(data.SaveStatus.completionStatusTD){
 														setAnchorButtonState("processScoreSBS", false);
 														setAnchorButtonState("processScore", false);
@@ -1695,8 +1698,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 					
 					var score = rowElement.lastChild.previousSibling.innerHTML;
 					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
-					var valid = Number(status);
-					if ( valid == NaN){
+					if ( isNaN(status)){
 						score = trim(score);
 						status = trim(status);
 						pointStatus[0] = score;
