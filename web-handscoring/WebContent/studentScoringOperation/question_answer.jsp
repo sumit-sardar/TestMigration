@@ -82,17 +82,16 @@ function stopAudio(){
 		//alert("inside getPlayCompleted");
 	}
 	
-	function checkPlay(){
+	function checkPlay(element){
 		//alert("playCompleted in checkplay : "+playCompleted);
-	
+	if(element.className.indexOf('disabled') > 0){
+		return true;
+	}
 		if(document.getElementById("itemType").value == "AI"){			
 				if(playCompleted == true){	
 					formSave();
 				}else{
-					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
-					if(confSave == true){
-					formSave();
-					}
+					openConfirmationPopupQues();
 				}
 		}else{
 				formSave();
@@ -105,6 +104,23 @@ function stopAudio(){
 		return audioResponseString;
 	}
 	
+	
+	function openConfirmationPopupQues(){
+	$("#confirmationPopupQues").dialog({  
+		title:$("#confirmAlrt").val(),  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#confirmationPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#confirmationPopup").parent().css("top",toppos);
+		 $("#confirmationPopup").parent().css("left",leftpos);	
+		 
+	}
 	
 </script>
 <input type="hidden" id="itemSetId" />
@@ -135,6 +151,20 @@ function stopAudio(){
 							</tr>
 						</table>
 	</div>	
+	<div id="confirmationPopupQues"
+		style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="confirmmessage.audio" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:formSave(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('confirmationPopupQues'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
+</div>
 	
 	<div id="quesAnsAccordion" style="width:99.5%;">
 			
@@ -154,15 +184,15 @@ function stopAudio(){
 									<TR>
 										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.answer" /> :</b></span></td>
 										<TD rowspan=4>
-										<div id='outerdiv' style="width:545px;height:400px; overflow-x: hidden;"><iframe id="rubricIframe"
+										<div id='outerdiv' style="width:545px;height:440px; overflow-x: hidden;"><iframe id="rubricIframe"
 											src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
-											style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 100%; height: 98%;"
+											style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 99%; height: 98%;"
 											frameborder="1" scrollable="yes"></iframe></div>
 										</TD>
 									</TR>
 									<TR>
 										<td class="transparent" style="width: 50%; padding-left: 5px;" id="dialogIdDiv"><textarea id="crText" width="70%"
-											cols="50" rows="12" readonly="readonly"></textarea>
+											cols="50" rows="20" readonly="readonly"></textarea>
 										<div id="audioPlayer"><script>
 																								//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 																		</script></div>
@@ -176,52 +206,10 @@ function stopAudio(){
 									<TR>
 										<td class="transparent" style="padding-left: 5px;">
 										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button"
-											id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay();" /></div>
+											id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay(this);" /></div>
 										</td>
 									</tr>
 								</TABLE>
-<!-- <table width="100%">
-						<tbody>
-							<tr>
-								<td width="35%">
-								<table border="0" width="35%">
-									<tr width="100%">
-										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.answer" /> :</b></span></td>
-									</tr>
-									<tr>
-										<td class="transparent" style="width: 90%; padding-left: 5px;" id="dialogIdDiv">
-										<textarea id="crText" width="70%" cols="50" rows="12" readonly="readonly"></textarea>
-										<div id="audioPlayer">
-										<script>
-																//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
-										</script></div>
-										<div id="iframeDiv">
-										<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no">
-										 </iframe>
-										 </div>
-										</td>					
-									</tr>
-									<tr width="100%">
-										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.score" /> :</b></span></td>
-					
-									</tr>
-									<tr width="100%">
-										<td class="transparent" style="padding-left: 5px;">
-										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input
-											type="button" id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay();" /></div>
-										</td>
-									</tr>
-								</table>
-								</td>
-								<td style="width: 800px">
-								<div id='outerdiv' style="width: 800px; height: 290px; overflow-x: hidden;"><iframe id="rubricIframe"
-									src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
-									style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 75%; height: 98%;"
-									frameborder="1" scrollable="yes"></iframe></div>
-								</td>
-							</tr>
-						</tbody>
-					</table>	-->		
 					
 				</div>
 			</div>
