@@ -305,9 +305,9 @@ function immdRptGridresetSearch(){
 	$("#immdRptGridSearhInputParam").val('');
 	 //grid[0].p.search = false;
 	 var g = {groupOp:"AND",rules:[],groups:[]};
- 	 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
-	 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
-	 g.rules.push({field:"contentAreaString",op:"cn",data:$("#gs_contentAreaString").val()});
+ 	  if($("#gs_grade").val().length>0) g.rules.push({field:"grade",op:"eq",data:$("#gs_grade").val()});
+	  if($("#gs_testCatalogName").val().length>0) g.rules.push({field:"testCatalogName",op:"eq",data:$("#gs_testCatalogName").val()});
+	  if($("#gs_contentAreaString").val().length>0) g.rules.push({field:"contentAreaString",op:"cn",data:$("#gs_contentAreaString").val()});
 	 grid[0].p.search = true;
 	 grid[0].p.ignoreCase = true;			 
 	 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
