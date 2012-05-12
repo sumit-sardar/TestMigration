@@ -57,10 +57,10 @@ function stopAudio(){
 		if(document.getElementById("itemType").value == "AI"){
 			if(disableStatus == "true"){
 				document.getElementById("pointsDropDown").setAttribute("disabled",true);
-				document.getElementById("Question").setAttribute("disabled",true);
+				$('#Question').addClass('ui-state-disabled'); 
 			}else{
 				document.getElementById("pointsDropDown").removeAttribute("disabled");
-				document.getElementById("Question").removeAttribute("disabled");
+				$('#Question').removeClass('ui-state-disabled'); 
 			}
 		}
 	}
