@@ -189,7 +189,7 @@ function populateGrid() {
 		}).jqGrid('navButtonAdd',"#immdRptGridPager",{
 			caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
 				$("#immdRptGridSearhPopup").dialog({  
-					title:$("#searchStudentSession").val(),  
+					title:$("#immdRptTabSearchPopupTitle").val(),  
 					resizable:false,
 					autoOpen: true,
 					width: '300px',

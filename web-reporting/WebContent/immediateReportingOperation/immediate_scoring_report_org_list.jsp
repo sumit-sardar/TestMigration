@@ -24,6 +24,7 @@
 <input type="hidden" id="immdRptTabHeaderRawScore" value=<lb:label key="immediate.report.score.table.header.rawscore" prefix="'" suffix="'"/>/>
 <input type="hidden" id="immdRptTabHeaderScaleScore" value=<lb:label key="immediate.report.score.table.header.scalescore" prefix="'" suffix="'"/>/>
 <input type="hidden" id="immdRptTabHeaderProficiencyLevel" value=<lb:label key="immediate.report.score.table.header.proficiencylevel" prefix="'" suffix="'"/>/>
+<input type="hidden" id="immdRptTabSearchPopupTitle" value=<lb:label key="common.label.search" prefix="'" suffix="'"/>/>
 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
