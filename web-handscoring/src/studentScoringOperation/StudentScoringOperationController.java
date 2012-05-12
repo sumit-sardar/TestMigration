@@ -405,6 +405,7 @@ try {
 		if(incompleteItemSetIdMap.get(id) == null){
 			System.out.println("status true");
 			status = "T";
+			break;
 		}else{
 			status ="F";
 			System.out.println("status false");

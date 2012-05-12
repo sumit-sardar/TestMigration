@@ -1625,6 +1625,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	
 	function formSave() {
 			closePopUp('confirmationPopupQues');
+			$('#Question').removeClass('ui-state-disabled'); 
+			
 			var itemId =  selectedRowObjectScoring.id ;
 			var itemSetId = selectedRowObjectScoring.itemSetId  ;
 			var messageObject = {messageElement:"displayMessageForQues",
@@ -1657,15 +1659,21 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													jQuery("#studentItemListGrid").setRowData(itemId, dataToBeAdded, "first");	
 													var dataToBeAddedItem = {scoringStatus:"Complete",scorePoint:$("#pointsDropDown option:selected").val()};
 													jQuery("#itemStudentListGridSBI").setRowData(selectedRowObjectScoring.testRosterId,dataToBeAddedItem,"first");	
-													var dataForScoreByStudentGrid = {scoringStatus:data.completionStatus};				
+													var dataForScoreByStudentGrid;	
+													
+													if (data.SaveStatus.completionStatus == 'CO'){
+													dataForScoreByStudentGrid	= {scoringStatus:'Complete'};
+													}else {
+													dataForScoreByStudentGrid	= {scoringStatus:'Incomplete'};			
+													}
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
 													
-													if(data.SaveStatus.completionStatusTD){
+													if(data.SaveStatus.completionStatusTD == 'CO'){
 														setAnchorButtonState("processScoreSBS", false);
 														setAnchorButtonState("processScore", false);
 													}else{
 													setAnchorButtonState("processScoreSBS", true);
-													setAnchorButtonState("processScore", false);
+													setAnchorButtonState("processScore", true);
 													}																						
 							
 													buildMessage(messageObject,"scoreSuccess", true);
