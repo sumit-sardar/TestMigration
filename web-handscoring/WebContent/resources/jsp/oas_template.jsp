@@ -112,7 +112,7 @@
 					}
 				});
 				
-				$("#quesAnsAccordion").accordion({header: "h3"});
+				$("#quesAnsAccordion").accordion({header: "h3",animated : false, autoHeight:false});
 				var wizard = $("#quesAnsAccordion").accordion({ header: "h3",event:false});
 				$("h3", wizard).each(function(index) { 				
 					$(this).click(function(e){

@@ -37,10 +37,17 @@
 		document.myApplet.stopAudio();
 	}
 	
+	window.clearApplet= function(){
+	var appletElement = document.getElementById('audioPlayer');
+		if(appletElement.hasChildNodes()){
+			appletElement.removeChild(appletElement.childNodes[0]);
+		}
+	
+	}
 </script>
 
 </head>
-<body bgcolor="#FFFFCC">
+<body>
 
 <div id="audioPlayer"
 	style="width: 100%; height: 90%;font-family: Arial, Verdana, Sans Serif; font-size: 8px; font-weight: normal;">

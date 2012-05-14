@@ -343,13 +343,18 @@ function closePopUp(dailogId){
 		isScoreByItemClicked = false;
 	}
 	if (dailogId == 'questionAnswerDetail'){
+		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
 			element.removeChild(element.lastChild);
 		}
+		
+		if(document.getElementById("itemType").value == "AI"){
+			document.getElementById("iframeAudio").contentWindow.clearApplet();
+		}
 		isRubricPopulated = false;
 		data1 = null;
-		$('#quesAnsAccordion').accordion('activate', 0 );
+
 		selectedRowObjectScoring = {};
 	}
 	$("#"+dailogId).dialog("close");
@@ -1458,23 +1463,11 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								document.getElementById("audioResponseString").value = audioResponseString[0];
 								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
 								$('#Question').addClass('ui-state-disabled');
-								
-								if(navigator.userAgent.indexOf('Win') != -1) {
-
-												$("#iframeDiv").hide();
-												var iframe = $("#iframeAudio");
-												$(iframe).attr('src', "about:blank");
-												
-												$("#audioPlayer").show();
-												getAudioPlayer('audioPlayer');
-											
-											}else {
-
-												$("#audioPlayer").hide();
-												$("#iframeDiv").show();
-												var iframe = $("#iframeAudio");
-												$(iframe).attr('src', "audioPlayer.jsp");
-											}								
+								$("#audioPlayer").hide();
+								$("#iframeDiv").show();
+								var iframe = $("#iframeAudio");
+								$(iframe).attr('src', "audioPlayer.jsp");
+							
 								
 								}else{
 								document.getElementById("itemType").value = "CR";								
@@ -1625,7 +1618,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	
 	function formSave() {
 			closePopUp('confirmationPopupQues');
-			$('#Question').removeClass('ui-state-disabled'); 
+
 			
 			var itemId =  selectedRowObjectScoring.id ;
 			var itemSetId = selectedRowObjectScoring.itemSetId  ;
