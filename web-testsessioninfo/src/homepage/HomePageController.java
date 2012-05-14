@@ -1079,13 +1079,15 @@ public class HomePageController extends PageFlowController
      */
     private List buildReportList(Integer orgNodeId, Integer programId)
     {
-    	
         this.customerReportData = getCustomerReportData(orgNodeId, programId);
         
         List reportList = new ArrayList();
         CustomerReport[] crs = this.customerReportData.getCustomerReports();
         
         boolean isTABEAdaptive = false;
+    	CustomerReport ExportIndividualStudentResults = null;
+    	CustomerReport GroupList = null;
+    	CustomerReport IndividualPortfolio = null;
         
         for (int i=0; i < crs.length; i++)
         {                
@@ -1098,30 +1100,30 @@ public class HomePageController extends PageFlowController
             	reportUrl = reportUrl.replaceAll("http:", "https:");
             	cr.setReportUrl(reportUrl);
             }
-            if (! cr.getReportName().equals("IndividualProfile"))
-            {
+            if (! cr.getReportName().equals("IndividualProfile")) {
         		reportList.add(cr);
-        		/*
-            	if (isTABEAdaptive) {
-                    if (cr.getReportName().equals("ExportIndividualStudentResults")) {
-                		reportList.add(cr);            		
-                    }
-            	}
-            	else {
-            		reportList.add(cr);
-            	}
-            	*/
+            }
+            if (cr.getReportName().equals("ExportIndividualStudentResults")) {
+            	ExportIndividualStudentResults = cr;
+            }
+            if (cr.getReportName().equals("GroupList")) {
+            	GroupList = cr;
+            }
+            if (cr.getReportName().equals("IndividualPortfolio")) {
+            	IndividualPortfolio = cr;
             }
         }           
+         
         
-        /*
         if (isTABEAdaptive) {
-        	CustomerReport groupList =  (CustomerReport)reportList.get(0);
-        	CustomerReport indPorfolio =  (CustomerReport)reportList.get(1);
-        	reportList.set(0, indPorfolio);
-        	reportList.set(1, groupList);
+            reportList = new ArrayList();
+            if (IndividualPortfolio != null)
+            	reportList.add(IndividualPortfolio);
+            if (GroupList != null)
+            	reportList.add(GroupList);            
+            if (ExportIndividualStudentResults != null)
+            	reportList.add(ExportIndividualStudentResults);
         }
-        */
         
         return reportList; 
     }

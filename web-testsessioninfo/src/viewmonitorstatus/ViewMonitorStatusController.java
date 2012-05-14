@@ -217,12 +217,6 @@ public class ViewMonitorStatusController extends PageFlowController
         TestSessionVO testSession = getTestSessionDetails(this.sessionId);
         getRequest().setAttribute("testSession", testSession);
 
-    	if (testSession.getProductId().intValue() == 8001) {
-    		// for now hide the report button for tabe adaptive test
-    		// will turn back on when reports are fixed 
-    		this.showStudentReportButton = false;
-    	}
-        
         form.setActionElement("none");   
         return new Forward("success");
     }
