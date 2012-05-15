@@ -204,7 +204,7 @@ function stopAudio(){
 										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.score" /> :</b></span></td>
 									</tr>
 									<TR>
-										<td class="transparent" style="padding-left: 15px;vertical-align: top;">
+										<td class="transparent" style="padding-left: 10px;vertical-align: top;">
 										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button"
 											id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay(this);" /></div>
 										</td>
