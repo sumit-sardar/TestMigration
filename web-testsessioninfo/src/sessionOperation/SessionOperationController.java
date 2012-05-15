@@ -3156,15 +3156,46 @@ public class SessionOperationController extends PageFlowController {
         List reportList = new ArrayList();
         CustomerReport[] crs = this.customerReportData.getCustomerReports();
         
+        boolean isTABEAdaptive = false;
+    	CustomerReport ExportIndividualStudentResults = null;
+    	CustomerReport GroupList = null;
+    	CustomerReport IndividualPortfolio = null;
+        
         for (int i=0; i < crs.length; i++)
         {                
             CustomerReport cr = crs[i];
-            if (! cr.getReportName().equals("IndividualProfile"))
-            {
-            	reportList.add(cr);
+            if (cr.getProductId().intValue() == 8000)
+            	isTABEAdaptive = true;
+            
+            String reportUrl = cr.getReportUrl();
+            if (reportUrl.indexOf("http:") == 0) {
+            	reportUrl = reportUrl.replaceAll("http:", "https:");
+            	cr.setReportUrl(reportUrl);
+            }
+            if (! cr.getReportName().equals("IndividualProfile")) {
+        		reportList.add(cr);
+            }
+            if (cr.getReportName().equals("ExportIndividualStudentResults")) {
+            	ExportIndividualStudentResults = cr;
+            }
+            if (cr.getReportName().equals("GroupList")) {
+            	GroupList = cr;
+            }
+            if (cr.getReportName().equals("IndividualPortfolio")) {
+            	IndividualPortfolio = cr;
             }
         }           
-                         
+              
+        if (isTABEAdaptive) {
+            reportList = new ArrayList();
+            if (IndividualPortfolio != null)
+            	reportList.add(IndividualPortfolio);
+            if (GroupList != null)
+            	reportList.add(GroupList);            
+            if (ExportIndividualStudentResults != null)
+            	reportList.add(ExportIndividualStudentResults);
+        }
+        
         return reportList; 
     }
 
