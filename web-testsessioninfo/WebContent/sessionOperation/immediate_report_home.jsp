@@ -65,7 +65,7 @@
             	<netui-data:getData resultId="reportUrl" value="${container.item.reportUrl}"/>  
 				<li style="list-style-type: square;">
 				<a href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
-					<netui:content value="${container.item.reportName}" defaultValue="&nbsp;" />
+					<netui:content value="${container.item.displayName}" defaultValue="&nbsp;" />
 				</a>
 				</li>
 			</td>
