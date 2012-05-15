@@ -191,7 +191,7 @@ function stopAudio(){
 										</TD>
 									</TR>
 									<TR>
-										<td class="transparent" style="width: 50%; padding-left: 5px;" id="dialogIdDiv"><textarea id="crText" width="70%"
+										<td class="transparent" style="width: 50%; padding-left: 5px;vertical-align: top;" id="dialogIdDiv"><textarea id="crText" width="70%"
 											cols="50" rows="20" readonly="readonly"></textarea>
 										<div id="audioPlayer"><script>
 																								//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
@@ -204,7 +204,7 @@ function stopAudio(){
 										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.score" /> :</b></span></td>
 									</tr>
 									<TR>
-										<td class="transparent" style="padding-left: 5px;">
+										<td class="transparent" style="padding-left: 15px;vertical-align: top;">
 										<div><select id="pointsDropDown" onChange="hideMessage();"></select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button"
 											id="Question" width="60" class="ui-widget-header" value="Save" onclick="checkPlay(this);" /></div>
 										</td>
