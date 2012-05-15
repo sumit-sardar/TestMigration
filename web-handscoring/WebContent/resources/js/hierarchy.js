@@ -1661,13 +1661,22 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													}
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
 													
-													if(data.SaveStatus.completionStatusTD == 'CO'){
-														setAnchorButtonState("processScoreSBS", false);
-														setAnchorButtonState("processScore", false);
-													}else{
-													setAnchorButtonState("processScoreSBS", true);
-													setAnchorButtonState("processScore", true);
-													}																						
+													
+														if(data.SaveStatus.completionStatusTD){
+															if(data.SaveStatus.completionStatusTD == 'CO'){
+																setAnchorButtonState("processScoreSBS", false);
+																setAnchorButtonState("processScore", false);
+															}else{
+															setAnchorButtonState("processScoreSBS", true);
+															setAnchorButtonState("processScore", true);
+															}													
+														}else{
+															if(data.SaveStatus.completionStatus == 'CO'){
+																setAnchorButtonState("processScoreSBS", false);
+																setAnchorButtonState("processScore", false);
+															}
+														
+														}																						
 							
 													buildMessage(messageObject,"scoreSuccess", true);
 													}else{
