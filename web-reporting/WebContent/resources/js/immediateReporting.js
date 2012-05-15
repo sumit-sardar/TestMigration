@@ -127,7 +127,7 @@ function populateGrid() {
 		viewrecords: true, 
 		sortorder: "asc",
 		height: 370,
-		width: 993,
+		width: $("#jqGrid-content-section").width(),
 		caption:$("#imdRptStuListGridCaption").val(),
 		ondblClickRow: function(rowid) {viewHtmlReport();},
 		onPaging: function() {

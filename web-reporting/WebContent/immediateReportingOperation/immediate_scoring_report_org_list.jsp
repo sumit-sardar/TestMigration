@@ -47,11 +47,9 @@
     <tr class="transparent">
         <td align="center">        
 		<table width="100%" >
-		   	<%-- <tr> <td colspan="3" class="buttonsRow"> </td></tr> --%>
 		   	
-		   	<tr>
-		   	   <td> </td>
-		   		<td colspan="2" class="buttonsRow" id="buttonRow">
+		   	<tr >
+		   		<td colspan="3" class="buttonsRow" id="buttonRow">
 					<div id="generate_pdf" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
 						<a href="#" id="generatePDFButton" onclick="downloadImmediatePDFReport(this);" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 					</div>
