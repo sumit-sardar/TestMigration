@@ -123,7 +123,7 @@ function populateGrid() {
 		loadonce:true, 
 		multiselect:false,
 		pager: '#immdRptGridPager', 
-		sortname: 'studentNumber', 
+		sortname: 'userName', 
 		viewrecords: true, 
 		sortorder: "asc",
 		height: 370,
@@ -212,7 +212,7 @@ function gridScoringStudentReload(){
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
 	jQuery("#immdRptGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#immdRptGrid").jqGrid('setGridParam', {url:'getAllCompletedStudentForOrgNode.do',postData:postDataObject,page:1}).trigger("reloadGrid");
-	jQuery("#immdRptGrid").sortGrid('studentNumber',true,'asc');
+	jQuery("#immdRptGrid").sortGrid('userName',true,'asc');
 }
 
 function enableDisableImmediateReportButton(enabled){
