@@ -377,9 +377,9 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-			protected Forward beginDisplayStudItemList(StudentSessionScoringForm form)
+	protected Forward beginDisplayStudItemList(StudentSessionScoringForm form)
 	{ 
-			
+
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -387,42 +387,51 @@ public class StudentScoringOperationController extends PageFlowController {
 		Integer itemSetIdTC = Integer.parseInt(getRequest().getParameter("itemSetIdTC"));
 		HashMap<Integer,ScorableItem> incompleteItemSetIdMap = new HashMap<Integer, ScorableItem>();
 		HashMap<Integer,ScorableItem> totalItemSetIdMap = new HashMap<Integer, ScorableItem>();
-			
-try {
-			
-	ScorableItemData sid = getTestItemForStudent(rosterId, itemSetIdTC, null, null);
-	List<ScorableItem> itemList = buildItemList(sid);
-	String status = "T";
-	for (ScorableItem si : itemList){
-				
-		if(si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
-			incompleteItemSetIdMap.put(si.getItemSetId(),si);
-		}
-		totalItemSetIdMap.put(si.getItemSetId(),si);
-	}
-	
-	for (Integer id : totalItemSetIdMap.keySet()){
-		if(incompleteItemSetIdMap.get(id) == null){
-			System.out.println("status true");
-			status = "T";
-			break;
-		}else{
-			status ="F";
-			System.out.println("status false");
-		}
-		
-	}
-	
+
+		try {
+
+			//can be used for immediate report button
+			ScorableItemData sid = getTestItemForStudent(rosterId, itemSetIdTC, null, null);
+			List<ScorableItem> itemList = buildItemList(sid);
+			String status = "T";
+			for (ScorableItem si : itemList){
+
+				if(si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
+					incompleteItemSetIdMap.put(si.getItemSetId(),si);
+				}
+				totalItemSetIdMap.put(si.getItemSetId(),si);
+			}
+
+			for (Integer id : totalItemSetIdMap.keySet()){
+				if(incompleteItemSetIdMap.get(id) == null){
+					System.out.println("status true");
+					status = "T";
+					break;
+				}else{
+					status ="F";
+					System.out.println("status false");
+				}
+
+			}
+
 
 			
 			try{
+				
+				String completionStatus = scoring.getScoringStatus(rosterId,itemSetIdTC);
+				Boolean scoringButton = false;
+				if(completionStatus.equals("CO")){
+					 scoringButton = true;
+				}else{
+					 scoringButton = false;
+				}
 				Base base = new Base();
 				base.setScorableItems(itemList);
 				
 				base.setPage("1");
 				base.setRecords("10");
 				base.setTotal("2");
-				base.setProcessScoreBtn(status);
+				base.setProcessScoreBtn(scoringButton.toString());
 				
 				Gson gson = new Gson();
 				json = gson.toJson(base);

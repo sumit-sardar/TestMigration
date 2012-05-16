@@ -1123,7 +1123,7 @@ function studentScoring() {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		    records: function(obj) {
-		   	if (obj.processScoreBtn == "F"){
+		   	if (obj.processScoreBtn == "false"){
 		   		//Process button disable
 		   		setAnchorButtonState("processScoreSBS", true);
 		   		setAnchorButtonState("processScore", true);
@@ -1313,7 +1313,7 @@ function populateSBSItemListGrid() {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
 		   	records: function(obj) {
-		   	if (obj.processScoreBtn == "F"){
+		   	if (obj.processScoreBtn == "false"){
 		   		//Process button disable
 		   		setAnchorButtonState("processScoreSBS", true);
 		   		setAnchorButtonState("processScore", true);
@@ -1662,22 +1662,16 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 													jQuery("#scoreByStudentListGrid").setRowData(selectedRowObjectScoring.testRosterId,dataForScoreByStudentGrid,"first");
 													
 													
-														if(data.SaveStatus.completionStatusTD){
-															if(data.SaveStatus.completionStatusTD == 'CO'){
-																setAnchorButtonState("processScoreSBS", false);
-																setAnchorButtonState("processScore", false);
-															}else{
+													if(data.SaveStatus.completionStatus){
+														
+														if(data.SaveStatus.completionStatus == 'CO'){
+															setAnchorButtonState("processScoreSBS", false);
+															setAnchorButtonState("processScore", false);
+														}else{
 															setAnchorButtonState("processScoreSBS", true);
 															setAnchorButtonState("processScore", true);
-															}													
-														}else{
-															if(data.SaveStatus.completionStatus == 'CO'){
-																setAnchorButtonState("processScoreSBS", false);
-																setAnchorButtonState("processScore", false);
 															}
-														
-														}																						
-							
+														}	
 													buildMessage(messageObject,"scoreSuccess", true);
 													}else{
 													//Message
