@@ -259,19 +259,11 @@ public class SessionOperationController extends PageFlowController {
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
-		//System.out.println("getCustomerConfigurations start..."+new Date());
-
     	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
     	
-    	//System.out.println("getCustomerConfigurations end..."+new Date());
-    	//System.out.println("accessNewUI start..."+new Date());
-		
     	if (accessNewUI(customerConfigs)) {
-			//System.out.println("accessNewUI end if..."+new Date());
-			//System.out.println("setupUserPermission start..."+new Date());
-			// direct to revised UI
 			setupUserPermission(customerConfigs);
-			//System.out.println("setupUserPermission end..."+new Date());
+			
 			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
 	        	forwardName = "resetPassword";
 	        }
@@ -281,7 +273,6 @@ public class SessionOperationController extends PageFlowController {
 	        
 		}
 		else {
-			//System.out.println("accessNewUI end else..."+new Date());
 			forwardName = "legacyUI";	
 		}
 		
@@ -3630,8 +3621,9 @@ public class SessionOperationController extends PageFlowController {
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
 	{
-        //boolean TABECustomer = isTABECustomer(customerConfigs);
-         setUpAllUserPermission(customerConfigs);
+        setUpAllUserPermission(customerConfigs);
+        
+        //this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
        
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   

@@ -5,7 +5,7 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
 
-	<%
+<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
 	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
@@ -16,7 +16,7 @@
 	 String schedulerUserName = (String) session.getAttribute("schedulerUserName");
 	 Boolean isDeleteSessionEnable = (Boolean)session.getAttribute("isDeleteSessionEnable");
 	 Boolean showModifyManifest = (Boolean) session.getAttribute("showModifyManifest");
-	%>
+%>
 	
 	<input type="hidden" id="canRegisterStudent" value='<%=canRegisterStudent %>'/>
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -87,7 +87,7 @@
 										
 									    <%if(canRegisterStudent) { %>
 										    <div id="registerStudent" style="float:right;padding-left:5px;">
-											<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
+											<a href="#" id="registerStudentButton" onclick="javascript:rapidRegistration(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
 										    </div>
 									    <%} if (userScheduleAndFindSessionPermission) {%>
 										    <div id="scSession" style="float:right;padding-left:5px;">

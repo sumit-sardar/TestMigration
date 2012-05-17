@@ -181,10 +181,12 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -324,6 +326,7 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -488,10 +491,12 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -602,6 +607,7 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
+ 				setAnchorButtonState('registerStudentButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -3337,6 +3343,7 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('registerStudentButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3403,6 +3410,7 @@ function registerDelegate(tree){
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
+			setAnchorButtonState('registerStudentButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -4355,6 +4363,7 @@ function registerDelegate(tree){
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
+ 									setAnchorButtonState('registerStudentButton', true);
 									updateModifyStdManifestButton(false);
 									updateCopySessionButton(false);
 								} else {
@@ -4592,5 +4601,12 @@ function validNumber(str){
 	}
 	function updateCopySessionButton(isEnable){
 		enableOrDisableAnchorButton('copySessionButton', 'copySession', isEnable);
+	}
+
+	function rapidRegistration(element){
+	    if (isButtonDisabled(element) ) {
+			return true;
+		}
+	    alert("rapidRegistration");
 	}
 	
