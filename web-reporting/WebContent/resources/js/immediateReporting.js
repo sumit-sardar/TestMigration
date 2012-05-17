@@ -89,9 +89,9 @@ function populateUserOrgHierarchy() {
 }
 
 function resetFilters() {
-	$("#gs_grade").val("Any");
-	$("#gs_testCatalogName").val("Any");
-	$("#gs_contentAreaString").val("Any");
+	$("#gs_grade option:eq(0)").attr('selected','Any'); 
+	$("#gs_testCatalogName option:eq(0)").attr('selected','Any'); 
+	$("#gs_contentAreaString option:eq(0)").attr('selected','Any'); 
 }
 
 function populateGrid() {
