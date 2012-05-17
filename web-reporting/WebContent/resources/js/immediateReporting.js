@@ -417,14 +417,14 @@ function getAndPopulateStudentScoreDetails(){
 }
 
 function populateReportHeader(data){
-	if(data.studentName != undefined) 	$("#stdNameVal").text(data.studentName); else $("#stdNameVal").text("");
-	if(data.studentExtPin1 != undefined) 	$("#idVal").text(data.studentExtPin1); else $("#idVal").text("");
-	if(data.testAdminStartDateString != undefined) 	$("#testDateVal").text(data.testAdminStartDateString); else $("#testDateVal").text("");
-	if(data.form != undefined) 			$("#formVal").text(data.form); else $("#formVal").text("");
-	if(data.district != undefined) 		$("#districtVal").text(data.district); else $("#districtVal").text("");
-	if(data.school != undefined) 		$("#schoolVal").text(data.school); else $("#schoolVal").text("");
-	if(data.grade != undefined) 		$("#gradeVal").text(data.grade); else $("#gradeVal").text("");
-	if(data.testName != undefined) $("#testNameVal").text(data.testName);  else $("#testNameVal").text("");
+	if(data.studentName != undefined && data.studentName.length>0) 	$("#stdNameVal").text(data.studentName); else $("#stdNameVal").html('&nbsp;');
+	if(data.studentExtPin1 != undefined && data.studentExtPin1.length>0)	$("#idVal").text(data.studentExtPin1); else $("#idVal").html('&nbsp;');
+	if(data.testAdminStartDateString != undefined && data.testAdminStartDateString.length>0)	$("#testDateVal").text(data.testAdminStartDateString); else $("#testDateVal").html('&nbsp;');
+	if(data.form != undefined && data.form.length>0) 	$("#formVal").text(data.form); else $("#formVal").html('&nbsp;');
+	if(data.district != undefined && data.district.length>0) 	$("#districtVal").text(data.district); else $("#districtVal").html('&nbsp;');
+	if(data.school != undefined && data.school.length>0)	$("#schoolVal").text(data.school); else $("#schoolVal").html('&nbsp;');
+	if(data.grade != undefined && data.grade.length>0) 	$("#gradeVal").text(data.grade); else $("#gradeVal").html('&nbsp;');
+	if(data.testName != undefined && data.testName.length>0)	$("#testNameVal").text(data.testName);  else $("#testNameVal").html('&nbsp;');
 }	
 
 function populateReportTable(data){ 
