@@ -455,9 +455,9 @@ function populateCompletedSessionListGrid() {
 		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'loginStartDateString',index:'loginStartDateString', width:0},
 		   		{name:'loginEndDateString',index:'loginEndDateString', width:0},
-		   		{name:'copyable',index:'copyable', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
-		   		{name:'isSTabeAdaptiveProduct',index:'isSTabeAdaptiveProduct', width:0,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
+		   		{name:'copyable',index:'copyable', width:10,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeProduct',index:'isSTabeProduct', width:10,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'isSTabeAdaptiveProduct',index:'isSTabeAdaptiveProduct', width:10,editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
 		   	records: function(obj) { 
