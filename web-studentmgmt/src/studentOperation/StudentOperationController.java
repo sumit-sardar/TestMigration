@@ -2526,7 +2526,9 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
-		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
+		//this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
+        this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
+		
 		this.getRequest().setAttribute("isMandatoryBirthDate", mandatoryBirthdateValue);
 		boolean addDeleteStudentEnabled = addDeleteStudentEnable(roleName);
 		this.getSession().setAttribute("addStudentEnable", addDeleteStudentEnabled);

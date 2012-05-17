@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 
+
 <input type="hidden" id="addStudentEnable" name="addStudentEnable" value='<%=session.getAttribute("addStudentEnable") %>'/>
 <input type="hidden" id="deleteStudentEnable" name="deleteStudentEnable" value='<%=session.getAttribute("deleteStudentEnable") %>'/>
 <input type="hidden" id="jqgFirstNameID" name="jqgFirstNameID" value=<lb:label key="stu.info.firstName" prefix="'" suffix="'"/>/>
@@ -46,6 +47,11 @@
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value=<lb:label key="student.noStuSelected.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value=<lb:label key="student.filterNoStuSelected.message" prefix="'" suffix="'"/>/> 
 
+<%
+	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
+%>
+<input type="hidden" id="canRegisterStudent" value='<%=canRegisterStudent %>'/>
+
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
         <td>
@@ -86,8 +92,30 @@
 							</tr>
 						</table>	
 						</div>
+			    <% if (canRegisterStudent) { %>
+						<div id="registerStudentDiv" style="visibility:hidden; float: right;">
+							<div id="cpw">
+								<a href="#" id="registerStudentButton" onclick="javascript:rapidRegistration(); return false;" class="rounded {transparent} button">
+									<lb:label key="common.button.registerStudent" />
+								</a>
+							</div>
+						</div>
+			    <% } %>
+						<div style="clear:both;"></div>
 					</td>
 				</tr>
+				<!-- 
+		    < % if(canRegisterStudent) { %>
+				<tr class="transparent"> visibility:hidden;
+			        <td colspan="3" align="right">
+						<div id="ShowButtons" style="display:block; float:right;">
+							<a href="#" id="registerStudentButton" onclick="" class="rounded {transparent} button"><lb:label key="common.button.registerStudent" /></a>
+						</div>
+					</td>
+				</tr>
+		    < % } %>
+				 -->
+								
 				<tr class="transparent">
 		        <td style="vertical-align:top; width:16%;" align="left">
 			      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>

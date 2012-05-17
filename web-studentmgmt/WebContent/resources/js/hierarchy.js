@@ -656,6 +656,8 @@ function updateOrganization(element, isChecked){
 			
 	function populateGrid() {
 	
+		setAnchorButtonState('registerStudentButton', true);
+	
 		//$("#searchresultheader").css("visibility","visible");	
 		resetSearchCrit();
 		var studentIdTitle = $("#studentIdLabelName").val();
@@ -718,11 +720,16 @@ function updateOrganization(element, isChecked){
 				if(reqestedPage <= minPageSize){
 					$('#list2').setGridParam({"page": minPageSize});
 				}
+				setAnchorButtonState('registerStudentButton', true);
 				
 			},
 			onSelectRow: function () {
 				clearMessage();
+				setAnchorButtonState('registerStudentButton', false);
 			},
+			onSortCol: function() {
+ 				setAnchorButtonState('registerStudentButton', true);
+			},			
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
             		$('#sp_1_pager2').text("1");
@@ -737,6 +744,10 @@ function updateOrganization(element, isChecked){
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				
+				if (document.getElementById('registerStudentDiv') != null) 
+					document.getElementById('registerStudentDiv').style.visibility = "visible";
+				setAnchorButtonState('registerStudentButton', true);
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
