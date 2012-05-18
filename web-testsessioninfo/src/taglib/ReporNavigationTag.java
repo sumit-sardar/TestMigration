@@ -59,7 +59,8 @@ public class ReporNavigationTag extends CTBTag
 
                 if (this.selectedReport.equals(reportName)) {
                     displayCellStart("currentNav");
-                        writeToPage("<a href=\"/SessionWeb/sessionOperation/turnLeafReport.do?report=" + reportName + "\">" + displayName + "</a>");
+                        //writeToPage("<a href=\"/SessionWeb/sessionOperation/turnLeafReport.do?report=" + reportName + "\">" + displayName + "</a>");
+                    	writeToPage(displayName);
                     displayCellEnd();
                 }
                 else {
