@@ -3102,8 +3102,15 @@ public class SessionOperationController extends PageFlowController {
         
         this.getRequest().setAttribute("reportList", reportList);
         
+        this.getRequest().setAttribute("programList", this.reportManager.getProgramNames());
         this.getRequest().setAttribute("program", this.reportManager.getSelectedProgramName());
+
+        this.getRequest().setAttribute("organizationList", this.reportManager.getOrganizationNames());
         this.getRequest().setAttribute("organization", this.reportManager.getSelectedOrganizationName());
+
+        this.getRequest().setAttribute("multipleProgram", this.reportManager.isMultiplePrograms());
+        this.getRequest().setAttribute("multipleOrganizations", this.reportManager.isMultipleOrganizations());
+        this.getRequest().setAttribute("singleProgOrg", this.reportManager.isSingleProgramAndOrganization());
         
         return new Forward("success");
     }

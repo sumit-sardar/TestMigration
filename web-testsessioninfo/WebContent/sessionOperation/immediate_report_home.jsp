@@ -24,6 +24,9 @@
 <!-- ********************************************************************************************************************* -->
 <%
     List reportList = (List)request.getAttribute("reportList");
+    Boolean multipleProgram = (Boolean)request.getAttribute("multipleProgram");
+    Boolean multipleOrganizations = (Boolean)request.getAttribute("multipleOrganizations");
+    Boolean singleProgOrg = (Boolean)request.getAttribute("singleProgOrg");
 %>
 
 <netui:form action="lasLinksReport">
@@ -33,9 +36,17 @@
 <tr><td>
 
 <h1><lb:label key="report.generic.title" /></h1>
+<c:if test="${singleProgOrg}"> 
 <p>
     <lb:label key="report.generic.description" />
 </p>
+</c:if>
+
+<c:if test="${multipleProgram || multipleOrganizations}"> 
+<p>    
+	<lb:label key="report.mutipleProducts.description" />
+</p>
+</c:if>
 <br/>
 
 
@@ -44,13 +55,24 @@
 <tr class="transparent">
     <td class="transparent"><lb:label key="report.customerProgram" />:</td>
     <td class="transparent">
+<c:if test="${multipleProgram}">    
+        <netui:select tagId="program" optionsDataSource="${requestScope.programList}" dataSource="requestScope.program" size="1" style="width:300px"/>
+</c:if>        
+<c:if test="${! multipleProgram}">    
         <netui:span value="${requestScope.program}"/>
+</c:if>        
     </td>
 </tr>    
 <tr class="transparent">
     <td class="transparent"><lb:label key="report.userOrganization" />:</td>
+    
     <td class="transparent">
+<c:if test="${multipleOrganizations}">    
+        <netui:select tagId="organization" optionsDataSource="${requestScope.organizationList}" dataSource="requestScope.organization" size="1" style="width:300px"/>
+</c:if>        
+<c:if test="${! multipleOrganizations}">    
         <netui:span value="${requestScope.organization}"/>
+</c:if>        
     </td>
 </tr>    
 </table>    
@@ -83,7 +105,6 @@
 
 </td></tr></table>
 
-
 </netui:form>
 
 <script type="text/javascript">
@@ -91,10 +112,6 @@ $(document).ready(function(){
 	setMenuActive("reports", null);
 });
 </script>
-
-<!-- 
-<img width="0" height="0" border="0" id="TLLogout"  src="< %= System.getProperty("TLLogoutURL") %>?fncv=< %= System.currentTimeMillis() %>" />
--->
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
