@@ -2958,7 +2958,7 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 			ManageStudentData std = new ManageStudentData();
 			Integer pageSize = null;
-			ManageStudent [] students = studentManagement.getStudentsMinimalInfoForStudentScoring(orgNodeId);
+			ManageStudent [] students = studentManagement.getStudentsMinimalInfoForStudentScoring(orgNodeId, userName);
 			std.setManageStudents(students, pageSize);
 			if(sort != null) std.applySorting(sort);
 			return std;
