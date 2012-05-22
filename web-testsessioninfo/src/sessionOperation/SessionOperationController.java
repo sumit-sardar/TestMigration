@@ -249,7 +249,7 @@ public class SessionOperationController extends PageFlowController {
 	 */
 	@Jpf.Action(forwards = { 
 	        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
-	        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do"),
+	        @Jpf.Forward(name = "setTimeZone", path = "setTimeZone.do"),
 			@Jpf.Forward(name = "currentUI", path = "gotoCurrentUI.do"),
 			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do")
 	})
@@ -268,7 +268,7 @@ public class SessionOperationController extends PageFlowController {
 	        	forwardName = "resetPassword";
 	        }
 	        else if (this.user.getTimeZone() == null) {
-	        	forwardName = "editTimeZone";
+	        	forwardName = "setTimeZone";
 	        }
 	        
 		}
@@ -491,7 +491,22 @@ public class SessionOperationController extends PageFlowController {
     protected Forward saveTimeZone()
     {
     	String forwardName = "success";
-    	
+
+		String timeZone = this.userProfile.getTimeZone();
+		if (timeZone.length() > 0) {
+			this.user.setTimeZone(timeZone);
+			try {			
+		        this.userManagement.updateUser(this.userName, this.user);
+			} catch (CTBBusinessException e) {
+				e.printStackTrace();
+				forwardName = "error";
+			}
+		}
+		else {
+			getRequest().setAttribute("errorMsg", "Please select a time zone to continue");
+			forwardName = "error";   
+		}
+		
         return new Forward(forwardName);    	
     }
     
