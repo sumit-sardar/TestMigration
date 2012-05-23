@@ -283,12 +283,12 @@ function viewByStudent() {
 }
 
 function resetFilters() {
-	$("#gs_grade").val("Any");
-	$("#gs_gender").val("Any");
-	$("#gs_testCatalogName").val("Any");
-	$("#gs_testName").val("Any");
-	$("#gs_AssignedRole").val("Any");
-	$("#gs_testAdminStatus").val("Any");
+	$("#gs_grade option:eq(0)").attr('selected','Any'); 
+	$("#gs_gender option:eq(0)").attr('selected','Any'); 
+	$("#gs_testCatalogName option:eq(0)").attr('selected','Any'); 
+	$("#gs_testName option:eq(0)").attr('selected','Any'); 
+	$("#gs_AssignedRole option:eq(0)").attr('selected','Any'); 
+	$("#gs_testAdminStatus option:eq(0)").attr('selected','Any'); 
 }
 
 function UIBlock(){
