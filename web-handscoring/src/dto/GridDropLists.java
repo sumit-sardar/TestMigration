@@ -4,6 +4,7 @@ public class GridDropLists {
 	
 	private String[] gradeOptions;
 	private String[] testCatalogOptions;
+	private String useRole;
 
 	public String[] getGradeOptions() {
 		return gradeOptions;
@@ -19,6 +20,14 @@ public class GridDropLists {
 
 	public void setTestCatalogOptions(String[] testCatalogOptions) {
 		this.testCatalogOptions = testCatalogOptions;
+	}
+
+	public String getUseRole() {
+		return useRole;
+	}
+
+	public void setUseRole(String useRole) {
+		this.useRole = useRole;
 	}
 
 }

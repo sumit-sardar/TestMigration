@@ -51,6 +51,7 @@ var data1 = null;
 var isRubricPopulated = false;
 var selectedRowObjectScoring = {};
 var selectedRowObjectScoringByItem = {};
+var isUserProctor = false;
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -178,7 +179,7 @@ function populateGrid(){
 			 }
 			gridScoringStudentReload();
 		}
-		if(gridloadedSes) {
+		if(gridloadedStu) {
 			document.getElementById('scoreButton').style.visibility = "visible";
 			setAnchorButtonState('scoreButton', true);
 		}
@@ -218,6 +219,12 @@ function populateDropDowns() {
 					success:	function(data, textStatus, XMLHttpRequest){
 									$.unblockUI();
 									if(data != undefined) {
+										if(data.useRole != undefined && data.useRole == 'PROCTOR') {
+											isUserProctor = true;
+											currentView = "student";
+										} else {
+											isUserProctor = false;
+										}
 										if(data.gradeOptions != undefined) {
 											var gOptionsArr = data.gradeOptions;
 											var gOptions = ":Any;";
@@ -739,6 +746,11 @@ function populateScoringStudentGrid() {
 				var tdList = ("#studentScoringPager_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				if(isUserProctor) {
+					$("#showByStudent").attr('disabled',true);
+				} else {
+					$("#showByStudent").attr('disabled',false);
 				}
 				
 			},

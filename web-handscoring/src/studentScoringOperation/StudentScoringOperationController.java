@@ -347,6 +347,7 @@ public class StudentScoringOperationController extends PageFlowController {
 			GridDropLists dropList = new GridDropLists();
 			dropList.setGradeOptions(getGradeOptions());
 			dropList.setTestCatalogOptions(getTestNameOptions());
+			dropList.setUseRole(this.user.getRole().getRoleName().toUpperCase());
 			
 			try{
 
