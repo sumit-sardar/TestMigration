@@ -26,32 +26,16 @@ public class TestAdminStatusComputer
     public static void adjustSessionTimesToGMT(TestSession session) {
         Date originalStartTime = session.getDailyLoginStartTime();
         Date startOffSetDate = concatinateDateTime(session.getLoginStartDate(), originalStartTime);
-        startOffSetDate = DateUtils.getAdjustedDate(startOffSetDate, session.getTimeZone(), "GMT", startOffSetDate);
-        Date adjustedStartTime = DateUtils.getAdjustedDate(session.getDailyLoginStartTime(), session.getTimeZone(), "GMT", startOffSetDate);
         
         Date originalEndTime = session.getDailyLoginEndTime();
         Date endOffSetDate = concatinateDateTime(session.getLoginEndDate(), originalEndTime);
-        endOffSetDate = DateUtils.getAdjustedDate(endOffSetDate, session.getTimeZone(), "GMT", endOffSetDate);
-        Date adjustedEndTime = DateUtils.getAdjustedDate(session.getDailyLoginEndTime(), session.getTimeZone(), "GMT", endOffSetDate);
+
+        Date adjustedStartDate = DateUtils.getAdjustedDate(startOffSetDate, session.getTimeZone(), "GMT", startOffSetDate);
+        Date adjustedEndDate = DateUtils.getAdjustedDate(endOffSetDate, session.getTimeZone(), "GMT", endOffSetDate);
         
-        Date originalStartDate = session.getLoginStartDate();
-        Date adjustedStartDate = DateUtils.getAdjustedDate(session.getLoginStartDate(), session.getTimeZone(), "GMT", startOffSetDate);
-        
-        Date originalEndDate = session.getLoginEndDate();
-        Date adjustedEndDate = DateUtils.getAdjustedDate(session.getLoginEndDate(), session.getTimeZone(), "GMT", endOffSetDate);
-        
-        if(DateUtils.dateAfter(adjustedStartTime, originalStartTime))
-            adjustedStartDate.setTime(adjustedStartDate.getTime() + DateUtils.daysToMillis(1));
-        else if(DateUtils.dateBefore(adjustedStartTime, originalStartTime))
-            adjustedStartDate.setTime(adjustedStartDate.getTime() - DateUtils.daysToMillis(1));
-            
-        if(DateUtils.dateAfter(adjustedEndTime, originalEndTime))
-            adjustedEndDate.setTime(adjustedEndDate.getTime() + DateUtils.daysToMillis(1));
-        else if(DateUtils.dateBefore(adjustedEndTime, originalEndTime))
-            adjustedEndDate.setTime(adjustedEndDate.getTime() - DateUtils.daysToMillis(1));
-        
-        session.setDailyLoginStartTime(adjustedStartTime);
-        session.setDailyLoginEndTime(adjustedEndTime);
+       
+        session.setDailyLoginStartTime(adjustedStartDate);
+        session.setDailyLoginEndTime(adjustedEndDate);
         session.setLoginStartDate(adjustedStartDate);
         session.setLoginEndDate(adjustedEndDate);
     }
