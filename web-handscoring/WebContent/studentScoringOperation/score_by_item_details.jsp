@@ -9,13 +9,13 @@
 
 <div id="itemGridDisplaySBI">
 	<div style="float:left;" align="left">
-		<lb:label key="scoring.scoreByStuPopup.msg" />
+		<lb:label key="scoring.scoreByItemPopup.msg" />
 	</div>
 	<br>
 	<br>
-	<table class="transparent" width="100%">
+	<table class="transparent" width="100%" style="text-align: left">
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 	  			<lb:label key="scoring.student.popup.testAccessCode" />
 	  		</td>
 			<td class="transparent">
@@ -54,7 +54,7 @@
 	</div>
 	<br>
 	<br>
-	<table class="transparent" width="100%">
+	<table class="transparent" width="100%" style="text-align: left">
 		<tr class="transparent">
         	<td  nowrap valign="top" class="transparent" colspan="2">
         		<h2>
@@ -63,7 +63,7 @@
         	</td>
 		</tr>
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 	  			<lb:label key="scoring.itemStudent.popup.itemNumber" />
 	  		</td>
 			<td class="transparent">
@@ -73,7 +73,7 @@
 			</td>
 		</tr>
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 				<lb:label key="scoring.itemStudent.popup.maximumScore" />
 			</td>
 			<td class="transparent">
@@ -83,7 +83,7 @@
 			</td>
 		</tr>
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 				<lb:label key="scoring.itemStudent.popup.subtestName" />
 			</td>
 			<td class="transparent">
@@ -93,7 +93,7 @@
 			</td>
 		</tr>
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 				<lb:label key="scoring.student.popup.testAccessCode" />
 			</td>
 			<td class="transparent">
@@ -103,7 +103,7 @@
 			</td>
 		</tr>
 		<tr class="transparent">
-			<td>
+			<td class="transparent">
 				<lb:label key="scoring.student.popup.testSessionName" />
 			</td>
 			<td class="transparent">
@@ -115,7 +115,7 @@
 	</table>
 	<br>
 	<table width="100%">
-		<tr>
+		<tr style="text-align: left">
 			<td valign="top" class="transparent" colspan="2">
 				<h2>
 					<lb:label key="scoring.item.student.testRoster" />

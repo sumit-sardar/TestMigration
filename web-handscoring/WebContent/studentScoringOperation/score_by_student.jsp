@@ -10,7 +10,7 @@
 </div>
 <br>
 <br>
-<table class="transparent" width="100%">
+<table class="transparent" width="100%" style="text-align: left">
 			<tr class="transparent">
 				<td class="transparent">
 					<lb:label key="scoring.student.popup.accessCode" />
@@ -55,7 +55,7 @@
 		<br>
 		<br>
 		<br>
-		<table class="transparent" width="100%">
+		<table class="transparent" width="100%" style="text-align: left">
 			<tr class="transparent">
 				<td class="transparent">
 					<lb:label key="scoring.student.popup.studentName" />
