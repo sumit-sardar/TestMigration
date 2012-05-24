@@ -122,6 +122,27 @@ function stopAudio(){
 		 
 	}
 	
+  
+  var iframeSrc = "";
+  function unlinkQuestionIframe() {
+		var element = document.getElementById('questionInformation');
+		while(element.hasChildNodes()){
+			if (element.lastChild.src.indexOf("itemPlayer") > 0)
+				iframeSrc = element.lastChild.src;
+			element.removeChild(element.lastChild);
+		}
+  }  
+
+  function linkQuestionIframe() {
+		 	var element = document.getElementById('questionInformation');
+		 	var iframe = document.createElement('iframe');
+			iframe.name = "swfFrame";
+			iframe.src = iframeSrc;
+			iframe.width = "900";
+			iframe.height = "530";
+			element.appendChild(iframe);
+  }
+  	
 </script>
 <input type="hidden" id="itemSetId" />
 <input type="hidden" id="itemId" />
@@ -168,17 +189,9 @@ function stopAudio(){
 	
 	<div id="quesAnsAccordion" style="width:99.5%;">
 			
-			<div id="scoringQues">
-				<h3><a href="#"><lb:label key="questionpopup.question" /></a></h3>
-				
-					<div id="questionInformation" style="background-color: #FFFFFF;height: 535px !important;">
-					
-					</div>
-				
-			</div>
 			<div id="scoringRubric">
-				<h3><a href="#"><lb:label key="questionpopup.rubric" /></a></h3>
-					<div id="rubricInformation" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
+				<h3><a href="#" onclick="unlinkQuestionIframe(); return false;" ><lb:label key="questionpopup.rubric" /></a></h3>
+					<div id="rubricInformation" style="overflow-y: scroll !important; overflow-x: hidden !important; height: 500px !important;"><!-- changes for defect #66994 -->
 								
 								<TABLE>
 									<TR>
@@ -212,6 +225,15 @@ function stopAudio(){
 								</TABLE>
 					
 				</div>
+			</div>
+		
+			<div id="scoringQues">
+				<h3><a href="#" onclick="linkQuestionIframe(); return false;"><lb:label key="questionpopup.question" /></a></h3>
+				
+					<div id="questionInformation" style="background-color: #FFFFFF; height: 500px !important;">
+					
+					</div>
+				
 			</div>
 		
 	</div>
