@@ -2975,7 +2975,7 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 			ManageStudentData std = new ManageStudentData();
 			Integer pageSize = null;
-			ManageStudent [] students = studentManagement.getAllCompletedStudentForOrgNode(userName, orgNodeId);
+			ManageStudent [] students = studentManagement.getAllCompletedStudentForOrgNode(orgNodeId);
 			std.setManageStudents(students, pageSize);
 			return std;
 		}catch (SQLException se) {
