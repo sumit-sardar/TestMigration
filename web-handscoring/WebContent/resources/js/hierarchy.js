@@ -1516,6 +1516,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								 						 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
 								$.unblockUI(); 
