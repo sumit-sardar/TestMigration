@@ -87,6 +87,7 @@ public class ManageStudent extends CTBBean
     private String organizationNames;
     private String contentAreaString;
     private String defaultScheduler;
+    private Date administrationDate; // added for Immediate Report
     
 	/**
 	 * @return the testPurpose
@@ -763,6 +764,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setDefaultScheduler(String defaultScheduler) {
 		this.defaultScheduler = defaultScheduler;
+	}
+	/**
+	 * @return the administrationDate
+	 */
+	public Date getAdministrationDate() {
+		return administrationDate;
+	}
+	/**
+	 * @param administrationDate the administrationDate to set
+	 */
+	public void setAdministrationDate(Date administrationDate) {
+		this.administrationDate = administrationDate;
 	}
 	
     

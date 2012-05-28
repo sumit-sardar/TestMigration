@@ -104,7 +104,7 @@ function populateGrid() {
 	 	mtype:   'POST',
 	 	postData: postDataObject,
 	 	datatype: "json",         
-       	colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), $("#contentArea").val(), ''],
+       	colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), $("#contentArea").val(),$("#grdForm").val(),$("#grdAdministrationDate").val(),$("#grdCreatedBy").val(),'', ''],
 	   	colModel:[
 	   		{name:'userName',   	index:'userName', 			width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   		{name:'studentName',	index:'studentName',		width:120, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -114,6 +114,10 @@ function populateGrid() {
 	   		{name:'testSessionName',index:'testSessionName',	width:140, editable: true, align:"left",				search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   		{name:'testCatalogName',index:'testCatalogName',	width:200, editable: true, align:"left", 				search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
 	   		{name:'contentAreaString',index:'contentAreaString',width:140, editable: true, align:"left",sorttype:'text',search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['cn'], value: contentAreaOptions } },
+	   		{name:'form',	index:'form', width:65, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   		{name:'administrationDate',	index:'administrationDate', width:110, editable: true, align:"left",sorttype:'date',formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   		{name:'createBy',	index:'createBy', width:70, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   	    {name:'administrationDateString',	index:'administrationDateString', width:1,   editable: true, align:"left",hidden: true,	search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   	    {name:'testAdminId',	index:'testAdminId', 		width:1,   editable: true, align:"left",hidden: true,	search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 	   	],
 	   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"rosterId",
@@ -128,6 +132,7 @@ function populateGrid() {
 		sortorder: "asc",
 		height: 370,
 		width: $("#jqGrid-content-section").width(),
+		shrinkToFit: false, 
 		caption:$("#imdRptStuListGridCaption").val(),
 		ondblClickRow: function(rowid) {viewHtmlReport();},
 		onPaging: function() {
@@ -344,7 +349,10 @@ function immdRptGridSearh(){
 			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
 			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"contentAreaString",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"contentAreaString",op:"cn",data:searchFiler});
+			 f.rules.push({field:"form",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"administrationDateString",op:"cn",data:searchFiler}); 
+			 f.rules.push({field:"createBy",op:"cn",data:searchFiler});  
 			 g.groups.push(f);   
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;

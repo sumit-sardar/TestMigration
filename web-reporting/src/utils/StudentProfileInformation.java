@@ -63,6 +63,9 @@ public class StudentProfileInformation extends SanitizedFormField
 	private String orgNameList;
 
 	private String studentName;
+	
+	private Date administrationDate; // added for Immediate Report
+	private String administrationDateString; // added for Immediate Report
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -101,6 +104,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.organizationNames = "";
         this.contentAreaString = "";
         this.defaultScheduler = "";
+        this.administrationDate = null;
+        this.administrationDateString = "";
     }
         
         
@@ -169,7 +174,10 @@ public class StudentProfileInformation extends SanitizedFormField
         this.testCatalogName = student.getTestCatalogName(); 
         this.orgNameList     = student.getOrgNameList();
         this.studentName = student.getStudentName();
-        
+        this.administrationDate = student.getAdministrationDate();     
+        if (this.administrationDate != null) {
+        	this.administrationDateString = DateUtils.formatDateToDateString(this.administrationDate);
+        }
     }
     
 
@@ -202,6 +210,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setDefaultScheduler(this.defaultScheduler);
         copied.setTestCatalogName(this.testCatalogName);
         copied.setOrgNameList(this.orgNameList);
+        copied.setAdministrationDate(this.administrationDate);
         return copied;       
     }
   
@@ -246,6 +255,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setOrganizationNames(this.organizationNames);
         copied.setContentAreaString(this.contentAreaString);
         copied.setDefaultScheduler(this.defaultScheduler);
+        copied.setAdministrationDate(this.administrationDate);
         return copied;       
     }
     
@@ -783,6 +793,38 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setOrgNameList(String orgNameList) {
 		this.orgNameList = orgNameList;
+	}
+
+
+	/**
+	 * @return the administrationDate
+	 */
+	public Date getAdministrationDate() {
+		return administrationDate;
+	}
+
+
+	/**
+	 * @param administrationDate the administrationDate to set
+	 */
+	public void setAdministrationDate(Date administrationDate) {
+		this.administrationDate = administrationDate;
+	}
+
+	
+	/**
+	 * @return the administrationDateString
+	 */
+	public String getAdministrationDateString() {
+		return administrationDateString;
+	}
+
+
+	/**
+	 * @param administrationDateString the administrationDateString to set
+	 */
+	public void setAdministrationDateString(String administrationDateString) {
+		this.administrationDateString = administrationDateString;
 	}
 
 
