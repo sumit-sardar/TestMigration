@@ -56,6 +56,8 @@ var topOrgNodeStuCount = 0;
 var accomodationMap = {};
 var leafNodePathMap = {};	
 var leafNodeTextMap = {};		
+var editingStudentId = null;
+var isSetEditStudentDetail = false;
 
 
 $(document).bind('keydown', function(event) {
@@ -1830,6 +1832,8 @@ function fillselectedOrgNode( elementId, orgList) {
 		rowid = SelectedStudentId;
 	}
 	
+	editingStudentId = rowid;
+	
     var createBy =  getCreatedBy();
  	var postDataObject = {};
  	postDataObject.studentID = rowid;
@@ -1881,7 +1885,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						organizationNodes = data.organizationNodes;
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						prepareCheckedList();
-						setEditStudentDetail(rowid);
+						//setEditStudentDetail(rowid);
 						if(profileEditable === "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
@@ -1930,6 +1934,13 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 }
 
+	function doSetEditStudentDetail() {
+		if (! isSetEditStudentDetail) {
+			setEditStudentDetail(editingStudentId);
+			isSetEditStudentDetail = true;
+		}
+	}
+	
 	function prepareCheckedList(){	
 		var orgList = assignedOrgNodeIds;
 		orgList = String(orgList).split(",");	

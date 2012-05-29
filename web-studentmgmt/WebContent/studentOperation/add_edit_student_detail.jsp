@@ -217,7 +217,7 @@
 				
 			</div>
 			<div>
-				<h3><a href="#"><lb:label key="stu.label.extraInfo" /></a></h3>
+				<h3><a href="#" onclick="doSetEditStudentDetail();"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<%@include file="/studentOperation/add_edit_student_by_demographic.jsp" %>				
 				</div>
