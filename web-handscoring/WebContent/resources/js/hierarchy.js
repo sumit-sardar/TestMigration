@@ -1439,7 +1439,7 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 			updateScore(score, status);
 			viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
 		 	
-		 	setTimeout("activateAccordion()", 1000);
+		 	setTimeout("activateAccordion()", 2000);
 		 	
 }
 
