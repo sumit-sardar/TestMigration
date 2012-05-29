@@ -118,6 +118,7 @@ function createSingleNodeScoringTree(jsondata) {
 		
 		$("#scoringOrgNode").delegate("a","click", function(e) {
   			SelectedOrgNodeId = $(this).parent().attr("id");
+  			$("#displayMessageMain").hide();
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    if(currentView == "student") {
 		 		if(parseInt(rootNodeId) == parseInt(SelectedOrgNodeId)){
@@ -378,6 +379,7 @@ function populateGridAsPerView() {
 	if(isButtonDisabled(document.getElementById('scoreButton'))) {
 		return true;
 	}
+	$("#displayMessageMain").hide();
 	UIBlock();
 	if(currentView == "student") {
 		fillStudentFields();
@@ -723,6 +725,7 @@ function populateScoringStudentGrid() {
 				
 			},
 			onSelectRow: function (rowId) {
+					$("#displayMessageMain").hide();
 					osterId = rowId;
 					selectedRData = $("#studentScoringGrid").getRowData(rowId);
 					selectedItemSetTCVal = selectedRData.itemSetIdTC;
@@ -796,6 +799,7 @@ function gridScoringStudentReload(){
 	jQuery("#studentScoringGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#studentScoringGrid").jqGrid('setGridParam', {url:'getStudentForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#studentScoringGrid").sortGrid('userName',true,'asc');
+	$("#displayMessageMain").hide();
 
 }
 
@@ -862,6 +866,7 @@ function populateScoringSessionGrid() {
 			},
 			onSelectRow: function (rowId) {
 					setAnchorButtonState('scoreButton', false);
+					$("#displayMessageMain").hide();
 					var selectedRowData = $("#sessionScoringGrid").getRowData(rowId);
 					selectedTestAdminName = selectedRowData.testAdminName;
 					selectedTestAccessCode = selectedRowData.accessCode;
@@ -927,7 +932,7 @@ function gridScoringSessionReload(){
 	jQuery("#sessionScoringGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#sessionScoringGrid").jqGrid('setGridParam', {url:'getSessionForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#sessionScoringGrid").sortGrid('studentNumber',true,'asc');
-
+	$("#displayMessageMain").hide();
 }
 
 
