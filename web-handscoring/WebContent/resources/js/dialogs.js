@@ -16,7 +16,7 @@ function viewBroadcastMessage() {
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'ScoringWeb/studentScoringOperation/broadcastMessage.do',
+				url:		'broadcastMessage.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'html',

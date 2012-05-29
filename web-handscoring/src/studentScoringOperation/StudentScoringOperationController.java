@@ -898,7 +898,10 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 	{     
 		getLoggedInUserPrincipal();
 		getUserDetails();
-		setupUserPermission();	
+		setupUserPermission();
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 	}
 	
 	/**
