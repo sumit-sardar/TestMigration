@@ -132,7 +132,9 @@
 				   	
 				  	 	$("#questionInformation").css("height",'535px');
 				   		$("#rubricInformation").css("height",'535px');
-						$("#answerInformation").css("height",'535px');
+						if(!isRubricPopulated){
+							populateTableNew();
+						}
 					}
 				});
 				

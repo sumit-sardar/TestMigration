@@ -123,24 +123,30 @@ function stopAudio(){
 	}
 	
   
-  var iframeSrc = "";
+  var iframeQuestion;
   function unlinkQuestionIframe() {
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
-			if (element.lastChild.src.indexOf("itemPlayer") > 0)
-				iframeSrc = element.lastChild.src;
+			if (element.lastChild.src != undefined) {
+				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
+					iframeQuestion = element.lastChild;
+				}
+			}
 			element.removeChild(element.lastChild);
 		}
   }  
 
   function linkQuestionIframe() {
-		 	var element = document.getElementById('questionInformation');
-		 	var iframe = document.createElement('iframe');
-			iframe.name = "swfFrame";
-			iframe.src = iframeSrc;
-			iframe.width = "900";
-			iframe.height = "530";
-			element.appendChild(iframe);
+	 	var element = document.getElementById('questionInformation');
+		while(element.hasChildNodes()){
+			if (element.lastChild.src != undefined) {
+				if (element.lastChild.src.indexOf("itemPlayer") > 0) {
+					return;
+				}
+			}
+			element.removeChild(element.lastChild);
+		}
+		element.appendChild(iframeQuestion);
   }
   	
 </script>
@@ -189,6 +195,15 @@ function stopAudio(){
 	
 	<div id="quesAnsAccordion" style="width:99.5%;">
 			
+			<div id="scoringQues">
+				<h3><a href="#" onclick="linkQuestionIframe(); return false;"><lb:label key="questionpopup.question" /></a></h3>
+				
+					<div id="questionInformation" style="background-color: #FFFFFF; height: 500px !important;">
+					
+					</div>
+				
+			</div>
+			
 			<div id="scoringRubric">
 				<h3><a href="#" onclick="unlinkQuestionIframe(); return false;" ><lb:label key="questionpopup.rubric" /></a></h3>
 					<div id="rubricInformation" style="overflow-y: scroll !important; overflow-x: hidden !important; height: 500px !important;"><!-- changes for defect #66994 -->
@@ -227,14 +242,6 @@ function stopAudio(){
 				</div>
 			</div>
 		
-			<div id="scoringQues">
-				<h3><a href="#" onclick="linkQuestionIframe(); return false;"><lb:label key="questionpopup.question" /></a></h3>
-				
-					<div id="questionInformation" style="background-color: #FFFFFF; height: 500px !important;">
-					
-					</div>
-				
-			</div>
 		
 	</div>
 	<br>
@@ -244,3 +251,4 @@ function stopAudio(){
 	<br>
 		
 </div>
+

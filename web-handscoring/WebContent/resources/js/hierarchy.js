@@ -1434,10 +1434,13 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 			updateScore(score, status);
 			viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
 		 	
-
+		 	setTimeout("activateAccordion()", 1000);
+		 	
 }
 
-
+function activateAccordion() {
+		$('#quesAnsAccordion').accordion('activate', 1);
+}
 
 function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
 	
@@ -1530,6 +1533,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	
 	function populateTableNew() {
 	
+		isRubricPopulated = true;
+			
 		var subIframe = $('#rubricIframe'); 
 		var iFrameObj = subIframe.contents();
 											
