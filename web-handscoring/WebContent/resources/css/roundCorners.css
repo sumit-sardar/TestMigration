@@ -38,7 +38,7 @@
   }
 
   .buttonDisabled:hover {
-    cursor: default;
+    cursor: default !important;
   }
 
   
