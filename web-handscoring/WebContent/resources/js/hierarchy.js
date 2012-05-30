@@ -606,6 +606,19 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		}
 		return val;
 	}
+	function scoreObtainedUnformatter(cellvalue, options){
+		var formattedCellValue = cellvalue;
+		var completed = options.scoreStatus;
+		var answered = options.answered;
+		if(completed == "Incomplete") {
+			if(answered != undefined && answered == "Answered") {
+				formattedCellValue = "-";
+			} else {
+				formattedCellValue = "0";
+			}
+		}
+		return formattedCellValue;
+	}
 	
 	function scoreStatusFormatter(cellvalue, options, rowObject) {
 		var val = cellvalue;
@@ -614,6 +627,15 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			val = "Complete";
 		}
 		return val;
+	}
+	
+	function scoreStatusUnformatter(cellvalue, options){
+		var formattedCellValue = cellvalue;
+		var answered = options.answered;
+		if(answered != undefined && answered == "Not Answered") {
+			formattedCellValue = "Complete";
+		}
+		return formattedCellValue;
 	}
 	
 	function stuLoginIdFormatter(cellvalue, options, rowObject) {
@@ -722,7 +744,10 @@ function populateScoringStudentGrid() {
 				if(reqestedPage <= minPageSize){
 					$('#studentScoringGrid').setGridParam({"page": minPageSize});
 				}
-				
+				setAnchorButtonState('scoreButton', true);
+			},
+			onSortCol : function(index, columnIndex, sortOrder) { 
+				setAnchorButtonState('scoreButton', true);
 			},
 			onSelectRow: function (rowId) {
 					$("#displayMessageMain").hide();
@@ -862,7 +887,10 @@ function populateScoringSessionGrid() {
 				if(reqestedPage <= minPageSize){
 					$('#sessionScoringGrid').setGridParam({"page": minPageSize});
 				}
-				
+				setAnchorButtonState('scoreButton', true);
+			},
+			onSortCol : function(index, columnIndex, sortOrder) { 
+				setAnchorButtonState('scoreButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setAnchorButtonState('scoreButton', false);
@@ -1133,9 +1161,9 @@ function studentScoring() {
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sorttype:scoreStatusUnformatter, sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
@@ -1323,9 +1351,9 @@ function populateSBSItemListGrid() {
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left",sorttype:scoreStatusUnformatter, sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left", sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scorePoint',index:'scorePoint',editable: true, width:150, align:"left",sorttype:scoreObtainedUnformatter, sortable:true, formatter:scoreObtainedFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',index:'itemSetId',editable: true, width:0,hidden: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"scorableItems", id:"itemId",
