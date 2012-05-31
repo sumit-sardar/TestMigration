@@ -506,7 +506,9 @@ public class SessionOperationController extends PageFlowController {
 			getRequest().setAttribute("errorMsg", "Please select a time zone to continue");
 			forwardName = "error";   
 		}
-		
+				
+        this.getRequest().setAttribute("organizationNodes", this.userProfile.getOrganizationNodes());
+        
         return new Forward(forwardName);    	
     }
     

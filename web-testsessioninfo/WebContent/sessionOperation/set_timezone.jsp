@@ -130,7 +130,7 @@
     </tr>
     <%--CR Dex --%>
     <tr class="transparent">
-        <td class="transparent-top" width="100"><netui:content value="Organization:"/></td>
+        <td class="transparent-top" width="100"><netui:content value="Group:"/></td>
         <td class="transparent-top">
             <table class="transparent">
             <netui-data:repeater dataSource="requestScope.organizationNodes">
