@@ -1527,7 +1527,10 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 										document.getElementById("Question").removeAttribute("disabled");
 										$('#Question').removeClass('ui-state-disabled'); 
 									}
-									crTextResponse = crTextResponse + data1.scrContent.cRItemContent.string[i] + linebreak;
+									var crResponseToShow = data1.scrContent.cRItemContent.string[i];
+									if(isObject(crResponseToShow))
+										crResponseToShow = "";
+									crTextResponse = crTextResponse + crResponseToShow + linebreak;
 								  }
 								$("#crText").show();
 								$("#crText").val(crTextResponse);
@@ -1562,6 +1565,10 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			);
 			
 	
+	}
+	
+	function isObject (obj){
+			return obj.toString() === '[object Object]';
 	}
 	
 	function populateTableNew() {
