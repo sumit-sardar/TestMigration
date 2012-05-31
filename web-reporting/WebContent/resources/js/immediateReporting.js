@@ -115,8 +115,8 @@ function populateGrid() {
 	   		{name:'testCatalogName',index:'testCatalogName',	width:200, editable: true, align:"left", 				search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
 	   		{name:'contentAreaString',index:'contentAreaString',width:140, editable: true, align:"left",sorttype:'text',search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['cn'], value: contentAreaOptions } },
 	   		{name:'form',	index:'form', width:65, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-	   		{name:'administrationDate',	index:'administrationDate', width:100, editable: true, align:"left",sorttype:'date',formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-	   		{name:'defaultScheduler',	index:'defaultScheduler', width:80, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   		{name:'administrationDate',	index:'administrationDate', width:120, fixed:true, editable: true, align:"left",sorttype:'date',formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   		{name:'defaultScheduler',	index:'defaultScheduler', width:120, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   	    {name:'administrationDateString',	index:'administrationDateString', width:1,   editable: true, align:"left",hidden: true,	search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   	    {name:'testAdminId',	index:'testAdminId', 		width:1,   editable: true, align:"left",hidden: true,	search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 	   	],
@@ -352,7 +352,7 @@ function immdRptGridSearh(){
 			 f.rules.push({field:"contentAreaString",op:"cn",data:searchFiler});
 			 f.rules.push({field:"form",op:"cn",data:searchFiler}); 
 			 f.rules.push({field:"administrationDateString",op:"cn",data:searchFiler}); 
-			 f.rules.push({field:"createBy",op:"cn",data:searchFiler});  
+			 f.rules.push({field:"defaultScheduler",op:"cn",data:searchFiler});  
 			 g.groups.push(f);   
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;
