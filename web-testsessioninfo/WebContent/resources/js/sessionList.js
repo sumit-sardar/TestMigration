@@ -3379,6 +3379,7 @@ function registerDelegate(tree){
 	    param = param+"&proctors="+selectedProctors.toString();
 	    param = param+"&action=ADD";
 	 } else {
+	 		$("#timeZoneList").removeAttr("disabled");
 		    var param1 =$("#testDiv *").serialize(); 
 		    param1 = param1 +serializeDisabledFieldFromDiv("testDiv");
 		    
