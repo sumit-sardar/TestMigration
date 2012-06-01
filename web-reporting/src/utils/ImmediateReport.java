@@ -21,7 +21,7 @@ public interface ImmediateReport {
 	public static final float SCORE_TABLE_SPACING = 30f;
 	public static final float SCORE_BORDER = 1f;
 	
-	public static final String COPYWRITE = "Developed and published by CTB/McGraw-Hill LLC, a subsidiary of the McGraw-Hill Companies, Inc., 20 Ryan Ranch Road, Monterey, California, 93940-5703. Copyright © 2008 by CTB/McGraw-Hill LLC. All rights reserved. Only authorized customers may copy, download and/or print the document, located online at ctb.com. Any other use or reproduction of this document, in whole or in part, requires written permission of the publisher.";
+	public static final String COPYWRITE = "Developed and published by CTB/McGraw-Hill LLC, a subsidiary of the McGraw-Hill Companies, Inc., 20 Ryan Ranch Road, Monterey, California, 93940-5703. Copyright © 2012 by CTB/McGraw-Hill LLC. All rights reserved. Only authorized customers may copy, download and/or print the document, located online at ctb.com. Any other use or reproduction of this document, in whole or in part, requires written permission of the publisher.";
 	public static final String STUDENT_NAME_LABEL = "Student: ";
 	public static final String STUDENT_Id_LABEL = "ID: ";
 	public static final String TEST_DATE_LABEL = "Test Date: ";
