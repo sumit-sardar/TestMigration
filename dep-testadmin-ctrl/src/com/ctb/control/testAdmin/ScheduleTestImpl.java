@@ -3845,4 +3845,18 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    public String[] getAllFormOptionsForUser(String userName) throws CTBBusinessException
+    {
+        try {
+            
+        	String[] formNames = product.getAllFormOptionsForUser(userName);
+            
+            return formNames;
+        } catch (SQLException se) {
+            ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getAllFormOptionsForUser: " + se.getMessage());
+            pde.setStackTrace(se.getStackTrace());
+            throw pde;
+        }
+    }
+    
 } 

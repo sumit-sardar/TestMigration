@@ -5,11 +5,13 @@ var gridloadedStu = false;
 var gradeOptions = ":Any";
 var testNameOptions = ":Any";
 var contentAreaOptions = ":Any";
+var allFormOptions = ":Any";
 var immdRptSelectedRosterId;
 var immdRptSelectedTestAdminId;
 var prvGrade 		= "";
 var prvCatalog 		= "";
 var prvContentArea	= "";
+var prvForm	= "";
 
 
 function populateUserOrgHierarchy() {
@@ -91,7 +93,8 @@ function populateUserOrgHierarchy() {
 function resetFilters() {
 	$("#gs_grade option:eq(0)").attr('selected','Any'); 
 	$("#gs_testCatalogName option:eq(0)").attr('selected','Any'); 
-	$("#gs_contentAreaString option:eq(0)").attr('selected','Any'); 
+	$("#gs_contentAreaString option:eq(0)").attr('selected','Any');
+	$("#gs_form option:eq(0)").attr('selected','Any'); 
 }
 
 function populateGrid() {
@@ -114,7 +117,7 @@ function populateGrid() {
 	   		{name:'testSessionName',index:'testSessionName',	width:140, editable: true, align:"left",				search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   		{name:'testCatalogName',index:'testCatalogName',	width:200, editable: true, align:"left", 				search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
 	   		{name:'contentAreaString',index:'contentAreaString',width:140, editable: true, align:"left",sorttype:'text',search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['cn'], value: contentAreaOptions } },
-	   		{name:'form',	index:'form', width:65, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+	   		{name:'form',	index:'form', width:65, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: allFormOptions } },
 	   		{name:'administrationDate',	index:'administrationDate', width:120, fixed:true, editable: true, align:"left",sorttype:'date',formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'},search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   		{name:'defaultScheduler',	index:'defaultScheduler', width:120, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 	   	    {name:'administrationDateString',	index:'administrationDateString', width:1,   editable: true, align:"left",hidden: true,	search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -169,12 +172,13 @@ function populateGrid() {
 			for(var i=0; i < tdList.length; i++){
 				$(tdList).eq(i).attr("tabIndex", i+1);
 			}
-			if((prvGrade != $("#gs_grade").val()) || (prvCatalog != $("#gs_testCatalogName").val()) || (prvContentArea != $("#gs_contentAreaString").val())) {
+			if((prvGrade != $("#gs_grade").val()) || (prvCatalog != $("#gs_testCatalogName").val()) || (prvContentArea != $("#gs_contentAreaString").val()) || (prvForm != $("#gs_form").val())) {
 				enableDisableImmediateReportButton(false);
 			}
 			prvGrade 		= $("#gs_grade").val();
 			prvCatalog 		= $("#gs_testCatalogName").val();
 			prvContentArea	= $("#gs_contentAreaString").val();
+			prvForm	= $("#gs_form").val();
 			//$("#immdRptGrid").setGridWidth($("#jqGrid-content-section").width());
 			$.unblockUI(); 
 		},
@@ -296,6 +300,16 @@ function populateDropDowns() {
 						 				contentAreaOptions = contentOptions.substring(0,contentOptions.length-1);
 						 			}
 								}
+								if(data.formOptions != undefined) {
+									var formOptionsArr = data.formOptions;
+									var formOptions = ":Any;";
+									for(var i=0; i<formOptionsArr.length; i++){
+										formOptions = formOptions+formOptionsArr[i] +":"+formOptionsArr[i]+";";
+									}
+						 			if(formOptions != ""){
+						 				allFormOptions = formOptions.substring(0,formOptions.length-1);
+						 			}
+								}
 							}
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -313,6 +327,7 @@ function immdRptGridresetSearch(){
  	  if($("#gs_grade").val().length>0) g.rules.push({field:"grade",op:"eq",data:$("#gs_grade").val()});
 	  if($("#gs_testCatalogName").val().length>0) g.rules.push({field:"testCatalogName",op:"eq",data:$("#gs_testCatalogName").val()});
 	  if($("#gs_contentAreaString").val().length>0) g.rules.push({field:"contentAreaString",op:"cn",data:$("#gs_contentAreaString").val()});
+	  if($("#gs_form").val().length>0) g.rules.push({field:"form",op:"eq",data:$("#gs_form").val()});
 	 grid[0].p.search = true;
 	 grid[0].p.ignoreCase = true;			 
 	 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
@@ -333,6 +348,7 @@ function immdRptGridSearh(){
 		 	 if($("#gs_grade").val().length>0) g.rules.push({field:"grade",op:"eq",data:$("#gs_grade").val()});
 			 if($("#gs_testCatalogName").val().length>0) g.rules.push({field:"testCatalogName",op:"eq",data:$("#gs_testCatalogName").val()});
 			 if($("#gs_contentAreaString").val().length>0) g.rules.push({field:"contentAreaString",op:"cn",data:$("#gs_contentAreaString").val()});
+			 if($("#gs_form").val().length>0) g.rules.push({field:"form",op:"eq",data:$("#gs_form").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
@@ -341,6 +357,7 @@ function immdRptGridSearh(){
 		 	 if($("#gs_grade").val().length>0) g.rules.push({field:"grade",op:"eq",data:$("#gs_grade").val()});
 			 if($("#gs_testCatalogName").val().length>0) g.rules.push({field:"testCatalogName",op:"eq",data:$("#gs_testCatalogName").val()});
 			 if($("#gs_contentAreaString").val().length>0) g.rules.push({field:"contentAreaString",op:"cn",data:$("#gs_contentAreaString").val()});
+			 if($("#gs_form").val().length>0) g.rules.push({field:"form",op:"eq",data:$("#gs_form").val()});
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});

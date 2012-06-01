@@ -614,4 +614,6 @@ public interface ScheduleTest
     java.lang.String[] getTestCatalogForUserForScoring(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 
     java.lang.String[] getAllContentAreaOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
+    
+    java.lang.String[] getAllFormOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
 } 

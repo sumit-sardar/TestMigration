@@ -320,6 +320,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			dropList.setGradeOptions(getGradeOptions());
 			dropList.setTestCatalogOptions(getTestNameOptions());
 			dropList.setContentAreaOptions(getContentAreaOptions());
+			dropList.setFormOptions(getFormOptions());
 			try{
 				Gson gson = new Gson();
 				json = gson.toJson(dropList);
@@ -1126,6 +1127,12 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	private String[] getContentAreaOptions() throws Exception {
 		String[] testNameOptions = null;
 		testNameOptions = this.scheduleTest.getAllContentAreaOptionsForUser(this.userName);
+		return testNameOptions;
+	}
+	
+	private String[] getFormOptions() throws Exception {
+		String[] testNameOptions = null;
+		testNameOptions = this.scheduleTest.getAllFormOptionsForUser(this.userName);
 		return testNameOptions;
 	}
 	
