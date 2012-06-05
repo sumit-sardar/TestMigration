@@ -118,9 +118,10 @@
 					$(this).click(function(e){
 						var divID = $(this).parent().attr('id');
 						if(divID == "scoringRubric"){
-							//This will directly populate the rubric by using the data1 variable
+							//This will directly populate the rubric
 							if(!isRubricPopulated){
-								populateTableNew();
+								UIBlock();
+								viewRubricNewUI(itemIdRub,itemNumberRub,itemTypeRub,testRosterIdRub,itemSetIdRub);
 							}
 						}
 						});	
@@ -129,12 +130,8 @@
 					
 				$( "#quesAnsAccordion" ).accordion({
 				   	change: function(event, ui) {
-				   	
-				  	 	$("#questionInformation").css("height",'535px');
+				   		$("#questionInformation").css("height",'535px');
 				   		$("#rubricInformation").css("height",'535px');
-						if(!isRubricPopulated){
-							populateTableNew();
-						}
 					}
 				});
 				

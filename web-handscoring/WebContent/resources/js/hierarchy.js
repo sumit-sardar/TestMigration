@@ -52,6 +52,11 @@ var isRubricPopulated = false;
 var selectedRowObjectScoring = {};
 var selectedRowObjectScoringByItem = {};
 var isUserProctor = false;
+var itemIdRub = 0;
+var itemNumberRub = 0;
+var itemTypeRub = '';
+var testRosterIdRub = 0;
+var itemSetIdRub = 0;
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -363,7 +368,15 @@ function closePopUp(dailogId){
 		}
 		isRubricPopulated = false;
 		data1 = null;
-
+		
+		var subIframe = $('#rubricIframe');
+		if(subIframe != undefined) {
+			var iFrameObj = subIframe.contents();
+			if(iFrameObj != undefined) {
+				iFrameObj.find("#rubricTable tr:not(:first)").remove();
+				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
+			}
+		}
 		selectedRowObjectScoring = {};
 	}
 	$("#"+dailogId).dialog("close");
@@ -1466,9 +1479,24 @@ function showQuesAnsPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPo
 		
 
 			updateScore(score, status);
-			viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
+			//viewRubricNewUI(id,itemSetOrder, itemType, testRosterId, itemSetId);
+		 	itemIdRub = id;
+		 	itemNumberRub = itemSetOrder;
+		 	itemTypeRub = itemType;
+		 	testRosterIdRub = testRosterId;
+		 	itemSetIdRub = itemSetId;
+		 	//setTimeout("activateAccordion()", 2000);
 		 	
-		 	setTimeout("activateAccordion()", 2000);
+		 	clearMessage();
+			$("#questionAnswerDetail").dialog({  
+				title:$("#responsePopupTitl").val() + itemSetOrder,  
+				resizable:false,
+				autoOpen: true,
+				width: '1024px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});	
 		 	
 }
 
@@ -1477,7 +1505,7 @@ function activateAccordion() {
 }
 
 function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
-	
+	UIBlock();
 	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
 	var itemId = itemIdRubric; 
 	var itemNumber = itemNumber;
@@ -1485,7 +1513,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 
 	$.ajax(
 		{
-				async:		false,
+				async:		true,
 				beforeSend:	function(){
 								UIBlock();
 								$("#audioPlayer").hide();
@@ -1539,19 +1567,10 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								
 
 								
-								 //populateTableNew();
-									 $.unblockUI(); 
+								 populateTableNew();
+									// $.unblockUI(); 
 								 //$("#rubricDialogID").dialog("open");
-								 clearMessage();
-								$("#questionAnswerDetail").dialog({  
-													title:"Scoring for Item No." + questionNumber,  
-												 	resizable:false,
-												 	autoOpen: true,
-												 	width: '1024px',
-												 	modal: true,
-												 	closeOnEscape: false,
-												 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-		 											});	
+								
 
 								 						 						
 							},
@@ -1560,7 +1579,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
-								$.unblockUI(); 
+								//$.unblockUI(); 
 							}
 				}
 			);
@@ -1634,7 +1653,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 												iFrameObj.find("#rubricTableId").hide();									
 											}										
 								  		  
-	
+		$.unblockUI();
 	}
 	
 	function handleSpecialCharactersNewUI(s) {
