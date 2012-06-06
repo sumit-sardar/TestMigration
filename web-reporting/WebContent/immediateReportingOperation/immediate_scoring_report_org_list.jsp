@@ -13,7 +13,7 @@
 <input type="hidden" id="imdRptStuListGridCaption" value=<lb:label key="immediate.report.stu.grid.caption" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuGrdLoginId" value=<lb:label key="immediate.report.stuGrig.loginId" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuGrdStdName" value=<lb:label key="immediate.report.stuGrig.stdName" prefix="'" suffix="'"/>/>
-<input type="hidden" id="grdGroup" value=<lb:label key="immediate.report.stuGrig.group" prefix="'" suffix="'"/>/>
+<input type="hidden" id="grdGroup" value=<lb:label key="immediate.report.stuGrig.teacherName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuGrdGrade" value=<lb:label key="immediate.report.stuGrig.grade" prefix="'" suffix="'"/>/>
 <input type="hidden" id="grdSessionName" value=<lb:label key="immediate.report.stuGrig.sessionName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="grdTestName" value=<lb:label key="immediate.report.stuGrig.testName" prefix="'" suffix="'"/>/>
