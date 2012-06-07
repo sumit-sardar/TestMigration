@@ -373,7 +373,14 @@ public class ItemPlayerController extends PageFlowController {
 		String ext = mimeType.substring(mimeType
 				.lastIndexOf("/") + 1);
 		String b64data = element.getText();
-		b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+		if(b64data.contains("&amp;#43;")){
+				b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+		}else if(b64data.contains("&#43;")){
+				b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); 	
+		}else{
+				b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); 	
+		}
+		
 		byte[] imageData = Base64.decode(b64data);
 		aAssetInfo.setData(imageData);
 		aAssetInfo.setCreatedDateTime(createdDateTime);
