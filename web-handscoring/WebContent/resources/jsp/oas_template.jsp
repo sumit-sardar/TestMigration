@@ -124,6 +124,10 @@
 								viewRubricNewUI(itemIdRub,itemNumberRub,itemTypeRub,testRosterIdRub,itemSetIdRub);
 							}
 						}
+						if(index == 0) { // Audio Response will stop if first accordion is clicked
+							var x = document.getElementById('iframeDiv');
+							x.childNodes[0].contentWindow.stopAudio();
+						}
 						});	
 							
 					});

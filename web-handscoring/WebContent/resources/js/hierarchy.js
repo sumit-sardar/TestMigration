@@ -356,7 +356,8 @@ function closePopUp(dailogId){
 		isScoreByItemClicked = false;
 	}
 	if (dailogId == 'questionAnswerDetail'){
-		stopAudio();
+		var x = document.getElementById('iframeDiv');
+		x.childNodes[0].contentWindow.stopAudio();
 		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
