@@ -125,8 +125,12 @@
 							}
 						}
 						if(index == 0) { // Audio Response will stop if first accordion is clicked
-							var x = document.getElementById('iframeDiv');
-							x.childNodes[0].contentWindow.stopAudio();
+							if(isRubricPopulated) {
+								var x = document.getElementById('iframeDiv');
+								if(x != null && x != undefined) {
+									stopAudio();
+								}
+							}
 						}
 						});	
 							

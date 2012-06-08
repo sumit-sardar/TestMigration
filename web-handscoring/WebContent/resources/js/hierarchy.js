@@ -356,8 +356,12 @@ function closePopUp(dailogId){
 		isScoreByItemClicked = false;
 	}
 	if (dailogId == 'questionAnswerDetail'){
-		var x = document.getElementById('iframeDiv');
-		x.childNodes[0].contentWindow.stopAudio();
+		if(isRubricPopulated) {
+			var x = document.getElementById('iframeDiv');
+			if(x != null && x != undefined) {
+				stopAudio();
+			}
+		}
 		$('#quesAnsAccordion').accordion('activate', 0 );
 		var element = document.getElementById('questionInformation');
 		while(element.hasChildNodes()){
