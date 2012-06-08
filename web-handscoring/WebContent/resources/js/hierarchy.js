@@ -277,9 +277,9 @@ function viewBySession() {
 	UIBlock();
 	currentView = "session";
 	$("#studentView").hide();
-	$("#showBySession").val($("#gridShowBySes").val()+'&nbsp;');
 	resetFilters();
 	populateGrid();
+	document.getElementById("showBySession").options[0].selected = true;
 	$("#sessionView").show();
 	setAnchorButtonState('scoreButton', true);
 }
@@ -288,9 +288,9 @@ function viewByStudent() {
 	UIBlock();
 	currentView = "student";
 	$("#sessionView").hide();
-	$("#showByStudent").val($("#gridShowByStu").val()+'&nbsp;');
 	resetFilters();
 	populateGrid();
+	document.getElementById("showByStudent").options[0].selected = true;
 	$("#studentView").show();
 	setAnchorButtonState('scoreButton', true);
 }
@@ -856,7 +856,7 @@ function populateScoringSessionGrid() {
 		var sessionGridTitle = '<table width="'+$("#jqGrid-content-section").width()+'px">'
 								+ '<tbody><tr><td align="left"><span>'+$("#sesGridCaption").val()+'</span>'
 								+ '</td><td align="right"><span style="float: right;"><b>'
-								+$("#gridShowBy").val()+'</b>:<select id="showBySession"'
+								+$("#gridShowBy").val()+'</b>:<select id="showBySession" '
 								+ ' onchange="viewByStudent();"><option>'+$("#gridShowBySes").val()
 								+'&nbsp;</option><option>'+$("#gridShowByStu").val()+'&nbsp;</option>'
 								+ '</select>&nbsp;&nbsp;</span></td></tr></tbody></table>';
