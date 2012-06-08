@@ -128,7 +128,8 @@
 							if(isRubricPopulated) {
 								var x = document.getElementById('iframeDiv');
 								if(x != null && x != undefined) {
-									stopAudio();
+									//stopAudio();
+									x.childNodes[0].contentWindow.stopAudio();
 								}
 							}
 						}

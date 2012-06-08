@@ -8,19 +8,7 @@ var playCompleted = false;
 function stopAudio(){
 	try {
        var subIframe = $('#iframeAudio');
-
-		if(isWindows()) {
-	        var myApp = document.getElementById("myApp");
-	       	myApp.script.stopAudio("");
-		}
-		else {
-			subIframe[0].contentWindow.stopAudio();
-			//alert(subIframe);
-		}
-       	/*if(subIframe != '' || subIframe != null) {
-		$(subIframe).attr('src', "#");
-		}*/	
-											
+		subIframe[0].contentWindow.stopAudio();
 	}catch (e) {
         
     }
@@ -221,9 +209,6 @@ function stopAudio(){
 									<TR>
 										<td class="transparent" style="width: 50%; padding-left: 5px;vertical-align: top;" id="dialogIdDiv"><textarea id="crText" width="70%"
 											cols="50" rows="20" readonly="readonly"></textarea>
-										<div id="audioPlayer"><script>
-																								//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
-																		</script></div>
 										<div id="iframeDiv"><iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0"
 											scrolling="no"> </iframe></div>
 										</td>

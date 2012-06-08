@@ -9,7 +9,7 @@
 		var audioResponseString = sng;
 		var regExp = /\s+/g;
 		var stringFX = audioResponseString.replace(regExp,'');
-		var fxstring = '<applet CODEBASE = "/ScoringWeb/resources/fxResources/" mayscript="true" scriptable="true" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "myApplet" id= "myApp"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
+		var fxstring = '<applet CODEBASE = "/ScoringWeb/resources/fxResources/" mayscript="true" scriptable="true" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "myApplet" id= "myApplet"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
 		document.getElementById(parentObj).innerHTML = fxstring;
 		parent.playCompleted = false;
 	}
@@ -33,8 +33,10 @@
 	}
 	
 	function stopAudio() {
-		//alert(document.myApplet);
-		document.myApplet.stopAudio();
+		try {
+			document.myApplet.stopAudio();
+		} catch(e) {
+		}
 	}
 	
 	window.clearApplet= function(){
