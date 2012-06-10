@@ -3,15 +3,6 @@
 	<name>SchedulingWebService</name>
 	<comment></comment>
 	<projects>
-		<project>dep-base-ctrl</project>
-		<project>dep-testadmin-ctrl</project>
-		<project>dep-weblib-taglib</project>
-		<project>dep-weblib-webutils</project>
-		<project>web-demo</project>
-		<project>dep-licensing-ctrl</project>
-		<project>dep-orgmgmt-ctrl</project>
-		<project>dep-studentmgmt-ctrl</project>
-		<project>dep-usermgmt-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
