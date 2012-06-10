@@ -2,11 +2,17 @@ package services;
 
 import javax.jws.*;
 
+import weblogic.jws.CallbackService;
+import weblogic.wsee.jws.CallbackInterface;
+import weblogic.jws.Callback;
+import weblogic.jws.Context;
+import weblogic.wsee.jws.JwsContext;
+import org.apache.beehive.controls.api.events.EventHandler;
+import weblogic.jws.Conversation;
+import java.io.Serializable;
 
 import org.apache.beehive.controls.api.bean.Control;
 
-import org.apache.beehive.controls.api.events.EventHandler;
-import weblogic.jws.Conversation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +42,8 @@ import dto.PathNode;
 import dto.StudentProfileInformation;
 import dto.SubtestVO;
 import dto.TestRosterVO;
-import dto.SchedulingData;
+import dto.SecureUser;
+import dto.Session;
 
 import com.ctb.control.studentManagement.StudentManagement;
 import com.ctb.control.testAdmin.TestSessionStatus;
@@ -61,8 +68,9 @@ public class SchedulingWS implements Serializable {
 
 	
 	@WebMethod
-	public SchedulingData scheduleSession(String testLevel, String firstName, String lastName) {
+	public Session scheduleSession(SecureUser user, Session session) {
 
+		/*
 		// CREATE STUDENT
     	firstName = "first";
     	lastName = "last";
@@ -103,10 +111,12 @@ public class SchedulingWS implements Serializable {
                 rosterList.add(vo);
             }
         }   
+		*/
 		
-		SchedulingData schedulingData = new SchedulingData();
+		session.setAssignmentId("12345");
+		session.setAccessCode("accessCode");
 		
-		return schedulingData;
+		return session;
 	}
 
 	/**
