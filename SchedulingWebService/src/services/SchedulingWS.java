@@ -55,8 +55,16 @@ import com.ctb.control.testAdmin.ScheduleTest;
 public class SchedulingWS implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
     private User defaultUser = null;
-    private PathNode defaultNode = null;
+    private String defaultUserName = null;
+    private Integer defaultTopNode = null;
+    private Integer defaultClassNode = null;
+    private Integer defaultProductId = null;
+	
+	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
+	private static final String AUTHENTICATE_PASSWORD = "12345";
+    
 	
 	@Control
 	private StudentManagement studentManagement;
@@ -72,34 +80,65 @@ public class SchedulingWS implements Serializable {
 	public Session scheduleSession(SecureUser user, Session session) {
 
 		// AUTHENTICATE USER
-    	if (! isValidUser(user)) {
+    	if (! authenticateUser(user)) {
     		session.setStatus("Error: Invalid user");
     		return session;
     	}
     	
+    	
+    	// SETUP DEFAULT VALUES
+    	if (! setDefaultInformation(user)) {
+    		session.setStatus("Error: Invalid data");
+    		return session;    		
+    	}
+    	
+    	
 		// CREATE STUDENT
     	dto.Student[] students = session.getStudents();
-		SessionStudent[] sessionStudents = new SessionStudent[students.length];
+    	int numberStudentAdded = 0;
     	
-    	for (int i= 0 ; i<students.length ; i++) {
+    	for (int i=0 ; i<students.length ; i++) {
     		dto.Student student = students[i];
         	StudentProfileInformation studentProfile = buildStudentProfile(student);
         	Integer studentId = createNewStudent(studentProfile);
         	if (studentId != null) {
-        		System.out.println("studentId = " + studentId);
-        		SessionStudent ss = buildSessionStudent(studentId);
-        		sessionStudents[i] = ss;
+        		System.out.println("Create student sucessfully - studentId = " + studentId);
+        		numberStudentAdded++;
+        		student.setStatus("OK");
+        		student.setId(studentId);
+        		student.setAssignmentId(studentId.toString());
         	}
         	else {
+        		System.out.println("Failed to create student = " + studentProfile.getLastName() + "," + studentProfile.getFirstName());
         		student.setStatus("Error: Failed to add");
+        		student.setId(null);
+        		student.setAssignmentId(null);
         	}
     	}
     	
 		
 		// CREATE SESSION
+		SessionStudent[] sessionStudents = new SessionStudent[numberStudentAdded];
+		int index = 0;
+    	for (int i= 0 ; i<students.length ; i++) {
+    		dto.Student student = students[i];
+    		if (student.getId() != null) {
+    			SessionStudent ss = buildSessionStudent(student.getId());
+    			sessionStudents[index++] = ss;
+    		}
+    	}
+    	
+		
     	ScheduledSession newSession = populateSession(session, sessionStudents);
         Integer testAdminId = createNewTestSession(newSession);
-		System.out.println("testAdminId = " + testAdminId);
+        if (testAdminId != null) {
+        	System.out.println("Create session sucessfully - testAdminId = " + testAdminId);
+        	session.setId(testAdminId);
+        }
+        else {
+    		System.out.println("Failed to create session = " + session.getName());
+        	session.setId(null);
+        }
 		
 		
 		// COLLECT ROSTERS INFORMATION
@@ -120,13 +159,53 @@ public class SchedulingWS implements Serializable {
 		return session;
 	}
 
-	   
+
+    
 	/**
-	 * isValidUser
+	 * authenticateUser
 	 */
-	private boolean isValidUser(SecureUser user) 
+	private boolean authenticateUser(SecureUser user) 
+	{   
+		return user.getName().equals(AUTHENTICATE_USER_NAME) && user.getPassword().equals(AUTHENTICATE_PASSWORD);
+	}
+	
+	/**
+	 * setDefaultInformation
+	 */
+	private boolean setDefaultInformation(SecureUser user)
 	{
-		return user.getName().equals("tai_ws");
+		this.defaultUser = null;
+		this.defaultTopNode = null;
+		this.defaultClassNode = null;
+		this.defaultUserName = user.getName(); 
+		this.defaultProductId = new Integer(3510); 		
+		
+		try
+		{
+			this.defaultUser = this.scheduleTest.getUserDetails(this.defaultUserName, this.defaultUserName);
+			
+			UserNodeData und = this.studentManagement.getTopUserNodesForUser(this.defaultUserName, null, null, null);
+			UserNode[] un = und.getUserNodes();
+			Integer orgNodeId = un[0].getOrgNodeId();
+			this.defaultTopNode = orgNodeId;
+			
+			while (true) {
+				OrganizationNodeData ond = this.studentManagement.getOrganizationNodesForParent(this.defaultUserName, orgNodeId, null, null, null);
+				OrganizationNode[] ons = ond.getOrganizationNodes();
+				if (ons.length > 0)
+					orgNodeId = ons[0].getOrgNodeId();
+				else
+					break;
+			}
+			
+			this.defaultClassNode = orgNodeId;				
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}                    
+		
+		return true;
 	}
 	
 	/**
@@ -135,9 +214,8 @@ public class SchedulingWS implements Serializable {
 	private SessionStudent buildSessionStudent(Integer studentId)
 	{
 		SessionStudent ss = new SessionStudent();
-		Integer orgNodeId = getDefaultOrganization().getId();
 		
-		ss.setOrgNodeId(orgNodeId);
+		ss.setOrgNodeId(this.defaultClassNode);
 		ss.setStudentId(studentId);
 		ss.setExtendedTimeAccom("F");
 		
@@ -167,70 +245,17 @@ public class SchedulingWS implements Serializable {
 		return studentProfile;
 	}
 
-	/**
-	 * getDefaultUser
-	 */
-	private User getDefaultUser()
-	{
-		if (this.defaultUser == null) {
-			String userName = "tai_ws"; 
-			try {
-				this.defaultUser = this.scheduleTest.getUserDetails(userName, userName);
-			} catch (CTBBusinessException e) {
-				e.printStackTrace();
-			}
-		}
-		return this.defaultUser;
-	}
-
-	/**
-	 * getDefaultOrganization
-	 */
-	private PathNode getDefaultOrganization()
-	{
-		if (this.defaultNode == null) {
-			
-			this.defaultNode = new PathNode();
-	    	String userName = getDefaultUser().getUserName();
-	    	
-			try
-			{           
-				UserNodeData und = this.studentManagement.getTopUserNodesForUser(userName, null, null, null);
-				UserNode[] un = und.getUserNodes();
-				Integer orgNodeId = un[0].getOrgNodeId();
-	
-				while (true) {
-					OrganizationNodeData ond = this.studentManagement.getOrganizationNodesForParent(userName, orgNodeId, null, null, null);
-					OrganizationNode[] ons = ond.getOrganizationNodes();
-					if (ons.length > 0)
-						orgNodeId = ons[0].getOrgNodeId();
-					else
-						break;
-				}
-				
-				this.defaultNode.setId(orgNodeId);				
-			}
-			catch (StudentDataCreationException sde)
-			{
-				sde.printStackTrace();
-			}        
-			catch (CTBBusinessException be)
-			{
-				be.printStackTrace();
-			}                    
-		}
-		return this.defaultNode;
-	}
 	
 	/**
 	 * ///////////////////////////////   createNewStudent   //////////////////////////////////
 	 */
 	private Integer createNewStudent(StudentProfileInformation studentProfile)
 	{
-    	String userName = getDefaultUser().getUserName();
+    	String userName = this.defaultUser.getUserName();
 		Integer studentId = null;
 		
-    	PathNode node = getDefaultOrganization();   			
+    	PathNode node = new PathNode(); 
+    	node.setId(this.defaultClassNode);   			
     	List orgNodes = new ArrayList();   	
     	orgNodes.add(node);
 		
@@ -258,7 +283,7 @@ public class SchedulingWS implements Serializable {
 	 */
 	private Integer createNewTestSession(ScheduledSession newSession)
 	{
-    	String userName = getDefaultUser().getUserName();
+    	String userName = this.defaultUser.getUserName();
 		
 		Integer testAdminId = null;
 		
@@ -304,16 +329,13 @@ public class SchedulingWS implements Serializable {
 	private void populateTestSession(Session session, ScheduledSession scheduledSession) {
 		
 		 try{
-	    	 String userName = getDefaultUser().getUserName();
 			 
 			 TestSession testSession = new TestSession();
-			 String creatorOrgNodString	    = ""; 	
-			 Integer itemSetId        		= Integer.valueOf(273901); 
-			 Integer customerId        		= getDefaultUser().getCustomer().getCustomerId(); //Integer.valueOf(10779); 
-			 Integer creatorOrgNodeId  		= Integer.valueOf(446138); 
+			 Integer itemSetId        		= session.getTestId(); 	
+			 Integer customerId        		= this.defaultUser.getCustomer().getCustomerId(); 
+			 Integer creatorOrgNodeId  		= this.defaultTopNode; 
+			 Integer productId  			= this.defaultProductId; 
 			 
-			 
-			 Integer productId        			= Integer.valueOf(3510); 
 			 String dailyLoginEndTimeString		= "5:00 PM"; 
 			 String dailyLoginStartTimeString	= "8:00 AM";
 			 String dailyLoginEndDateString		= "06/05/13";
@@ -323,27 +345,24 @@ public class SchedulingWS implements Serializable {
 			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
 			 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(dailyLoginEndDateString);
 			 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(dailyLoginStartDateString);
-			 String location          		= "";
-			 String hasBreakValue     		= "F"; 
-			 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
-			 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+			 String location          		= session.getTestLocation() == null ? "" : session.getTestLocation();
+			 String hasBreak          		= session.getHasBreak().booleanValue() ? "T" : "F";
 			 String isRandomize       		= "";
-			 String timeZone          		= "America/Los_Angeles";
-			 String sessionName		  		= "TerraNova Online TESTING";
+			 String timeZone          		= session.getTimeZone();
+			 String sessionName		  		= session.getName();
 			 String showStdFeedbackVal   	= "false";
 			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
-			 String productType				= "genericProductType";
 			 String isEndTestSession 		= "";
 			 
 			 Integer testAdminId = null;
-			 String formOperand       		=  TestSession.FormAssignment.ROUND_ROBIN;
-			 TestElement selectedTest = scheduleTest.getTestElementMinInfoByIdsAndUserName(customerId, itemSetId, userName);
+			 String formOperand       		= TestSession.FormAssignment.ROUND_ROBIN;
+			 TestElement selectedTest 		= scheduleTest.getTestElementMinInfoByIdsAndUserName(customerId, itemSetId, this.defaultUserName);
 
-			 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignmentMethod();
-			 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
-			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
-			 String testName       		    = 	selectedTest.getItemSetName(); 
-			 Date overrideLoginEDate  		=  selectedTest.getOverrideLoginEndDate();
+			 String overrideFormAssignment 	= selectedTest.getOverrideFormAssignmentMethod();
+			 Date overrideLoginSDate  		= selectedTest.getOverrideLoginStartDate();
+			 String formAssigned			= (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
+			 String testName       		    = selectedTest.getItemSetName(); 
+			 Date overrideLoginEDate  		= selectedTest.getOverrideLoginEndDate();
 			 
 			 // setting default value
 			 testSession.setTestAdminId(testAdminId);			 
@@ -353,7 +372,7 @@ public class SchedulingWS implements Serializable {
         	 testSession.setTestAdminType("SE");
         	 testSession.setActivationStatus("AC"); 
         	 testSession.setEnforceTimeLimit("T");
-        	 testSession.setCreatedBy(userName);
+        	 testSession.setCreatedBy(this.defaultUserName);
         	 testSession.setShowStudentFeedback(showStdFeedback);
         	 testSession.setTestAdminStatus("CU");
 	         
@@ -384,7 +403,7 @@ public class SchedulingWS implements Serializable {
 	         testSession.setItemSetId(itemSetId);
 	         
 
-	         if (hasBreakBoolean)
+	         if (session.getHasBreak().booleanValue())
 	         {
 	        	String accessCode = "accesscode123";
 	         	testSession.setAccessCode(accessCode);    
@@ -408,66 +427,47 @@ public class SchedulingWS implements Serializable {
 	 */
     private void populateScheduledUnits(Session session, ScheduledSession scheduledSession) {
     	
-    	Subtest[] subtests = session.getSubtests();
-    	
-    	
 		 try{
-			 String productType				= "genericProductType";
-	    	 Integer itemSetId        		= Integer.valueOf(273901);
-	    	 String hasBreakValue     		= "F";
-	    	 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
-	    	 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
-	    	 String[] itemSetIdTDs          = new String [4];
-	    	 itemSetIdTDs[0] = "273902";
-	    	 itemSetIdTDs[1] = "273913";
-	    	 itemSetIdTDs[2] = "273915";
-	    	 itemSetIdTDs[3] = "273918";
-	    	 
-	    	 String[] accesscodes           = new String [itemSetIdTDs.length]; 
-	    	 accesscodes[0] = "accesscode123";
-	    	 accesscodes[1] = "accesscode123";
-	    	 accesscodes[2] = "accesscode123";
-	    	 accesscodes[3] = "accesscode123";
-	    	 
-	    	 String[] itemSetForms          = new String [itemSetIdTDs.length];
-	    	 itemSetForms[0] = "";
-	    	 itemSetForms[1] = "";
-	    	 itemSetForms[2] = "";
-	    	 itemSetForms[3] = "";
-	    	 
-	    	 String[] itemSetisDefault      = new String [itemSetIdTDs.length]; // [T, T, T, T]
-	    	 itemSetisDefault[0] = "T";
-	    	 itemSetisDefault[1] = "T";
-	    	 itemSetisDefault[2] = "T";
-	    	 itemSetisDefault[3] = "T";
-	    	 
+	    	 Integer itemSetId        		= session.getTestId();
 	    	 String autoLocator				=  "false";
+	    	 
+	    	 Subtest[] subtests = session.getSubtests();
+	    	 String[] itemSetIdTDs          = new String [subtests.length];
+	    	 String[] accesscodes           = new String [subtests.length]; 
+	    	 String[] itemSetForms          = new String [subtests.length];
+	    	 String[] itemSetisDefault      = new String [subtests.length]; 
+	    	 
+	    	 for (int i=0 ; i<subtests.length ; i++) {
+	    		 Subtest subtest = subtests[i]; 
+	    		 itemSetIdTDs[i] = subtest.getId().toString();
+		    	 accesscodes[i] = "accesscode123";
+		    	 itemSetForms[i] = "";
+		    	 itemSetisDefault[0] = "T";
+	    	 }
 	    	 
 	    	 
 	    	 List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
-	    	 for(int ii =0, jj =itemSetIdTDs.length; ii<jj; ii++ ){
+	    	 for(int i=0 ; i<subtests.length; i++ ){
 	    		 SubtestVO subtest = new SubtestVO();
-	    		 subtest.setId(Integer.valueOf(itemSetIdTDs[ii].trim()));
-	    		 subtest.setTestAccessCode(accesscodes[ii]);
-	    		 subtest.setSessionDefault(itemSetisDefault[ii]);
-	    		 if(itemSetForms[ii] != null && itemSetForms[ii].trim().length()>0){
-	    			 subtest.setLevel(itemSetForms[ii]);
-	    		 }
+	    		 subtest.setId(Integer.valueOf(itemSetIdTDs[i].trim()));
+	    		 subtest.setTestAccessCode(accesscodes[i]);
+	    		 subtest.setSessionDefault(itemSetisDefault[i]);
+    			 subtest.setLevel(itemSetForms[i]);
+	    		 
 	    		 subtestList.add(subtest);
 	    		 
 	    	 }
 	        
 	        
-	    	 TestElement [] newTEs = new TestElement[subtestList.size()];
+	    	 TestElement [] newTEs = new TestElement[subtests.length];
 	        
-	    	 for (int i=0; i < subtestList.size(); i++)
-	    	 {
-	            SubtestVO subVO= (SubtestVO)subtestList.get(i);
+	    	 for (int i=0; i<subtestList.size() ; i++) {
+	            SubtestVO subVO = (SubtestVO)subtestList.get(i);
 	            TestElement te = new TestElement();
 	        
 	            te.setItemSetId(subVO.getId());
 	            
-	            if (!hasBreakBoolean ) {
+	            if (!session.getHasBreak().booleanValue() ) {
 	            	String accessCode = scheduledSession.getTestSession().getAccessCode();
 	            	te.setAccessCode(accessCode);
 	            } else {
@@ -504,15 +504,8 @@ public class SchedulingWS implements Serializable {
 	private void populateProctor(Session session, ScheduledSession scheduledSession) {
 
 		try {
-			String userName = getDefaultUser().getUserName();
 			User[] proctorArray = new User[1];
-			
-			User user = new User();
-			user.setDefaultScheduler("");
-			user.setUserId(new Integer(212449));
-			user.setUserName(userName);
-						
-			proctorArray[0]= user;
+			proctorArray[0]= this.defaultUser;
 			scheduledSession.setProctors(proctorArray);
 		
 		} catch (Exception e) {
@@ -522,14 +515,15 @@ public class SchedulingWS implements Serializable {
 	}
 
 	
+	/**
+	 * getRosterForViewTestSession
+	 */
 	private RosterElementData getRosterForViewTestSession(Integer sessionId) 
     {
-   	 	String userName = getDefaultUser().getUserName();
-        
         RosterElementData red = null;
         try
         {      
-        	red = this.testSessionStatus.getRosterForTestSession(userName, sessionId, null, null, null);
+        	red = this.testSessionStatus.getRosterForTestSession(this.defaultUserName, sessionId, null, null, null);
         }
         catch (CTBBusinessException be)
         {
