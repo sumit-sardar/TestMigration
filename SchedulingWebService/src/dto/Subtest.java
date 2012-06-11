@@ -1,11 +1,20 @@
 package dto;
 
-public class Subtest {
+/**
+ * This object contains information for sub-tests which describes a test structure.   
+ * The values which required from ACUITY through input are: 
+ * 				id, name, order   
+ * The values which OAS platform populated in return are:  
+ * 				accessCode
+ * 
+ * @author Tai_Truong
+ */
+public class Subtest implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
     private Integer id = null;
-    private String name = null;
-    private String accessCode = null;
+    private String name = null;			// 512 chars
+    private String accessCode = null;	// 32 chars
     private Integer order = null;
     private Integer duration = null;
 

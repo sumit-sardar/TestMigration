@@ -1,80 +1,68 @@
 package dto;
 
-public class Accommodation {
+/**
+ * This object contains information for student accommodations
+ * None of these values required from ACUITY through input 
+ * or populated by OAS in return.  
+ * 
+ * @author Tai_Truong
+ */
+public class Accommodation implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
-    private Integer id = null;
-    private String name = null;
-    private String screenMagnifier = null;
-    private String screenReader = null;
-    private String calculator = null; 
-    private String testPause = null;
-    private String untimedTest = null;
-    private String questionBackgroundColor = null;
-    private String questionFontColor = null;
-    private String questionFontSize = null;
-    private String answerBackgroundColor = null;
-    private String answerFontColor = null;
-    private String answerFontSize = null;
-    private String colorFontAccommodation = null;
-    private String highlighter = null;
+    private Boolean screenMagnifier = null;
+    private Boolean screenReader = null;
+    private Boolean calculator = null; 
+    private Boolean testPause = null;
+    private Boolean untimedTest = null;
+    private String questionBackgroundColor = null;	// 32 chars
+    private String questionFontColor = null;		// 32 chars
+    private String questionFontSize = null;			// 32 chars
+    private String answerBackgroundColor = null;	// 32 chars
+    private String answerFontColor = null;			// 32 chars
+    private String answerFontSize = null;			// 32 chars
+    private Boolean highlighter = null;
     
 	public Accommodation() {
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getScreenMagnifier() {
+	public Boolean getScreenMagnifier() {
 		return screenMagnifier;
 	}
 
-	public void setScreenMagnifier(String screenMagnifier) {
+	public void setScreenMagnifier(Boolean screenMagnifier) {
 		this.screenMagnifier = screenMagnifier;
 	}
 
-	public String getScreenReader() {
+	public Boolean getScreenReader() {
 		return screenReader;
 	}
 
-	public void setScreenReader(String screenReader) {
+	public void setScreenReader(Boolean screenReader) {
 		this.screenReader = screenReader;
 	}
 
-	public String getCalculator() {
+	public Boolean getCalculator() {
 		return calculator;
 	}
 
-	public void setCalculator(String calculator) {
+	public void setCalculator(Boolean calculator) {
 		this.calculator = calculator;
 	}
 
-	public String getTestPause() {
+	public Boolean getTestPause() {
 		return testPause;
 	}
 
-	public void setTestPause(String testPause) {
+	public void setTestPause(Boolean testPause) {
 		this.testPause = testPause;
 	}
 
-	public String getUntimedTest() {
+	public Boolean getUntimedTest() {
 		return untimedTest;
 	}
 
-	public void setUntimedTest(String untimedTest) {
+	public void setUntimedTest(Boolean untimedTest) {
 		this.untimedTest = untimedTest;
 	}
 
@@ -126,19 +114,11 @@ public class Accommodation {
 		this.answerFontSize = answerFontSize;
 	}
 
-	public String getColorFontAccommodation() {
-		return colorFontAccommodation;
-	}
-
-	public void setColorFontAccommodation(String colorFontAccommodation) {
-		this.colorFontAccommodation = colorFontAccommodation;
-	}
-
-	public String getHighlighter() {
+	public Boolean getHighlighter() {
 		return highlighter;
 	}
 
-	public void setHighlighter(String highlighter) {
+	public void setHighlighter(Boolean highlighter) {
 		this.highlighter = highlighter;
 	}
     

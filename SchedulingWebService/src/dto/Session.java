@@ -2,27 +2,37 @@ package dto;
 
 import java.util.Date;
 
-public class Session {
+/**
+ * This is the second object which passed into scheduling web service to perform TN scheduling session for Acuity application 
+ * This object contains information for session, accommodations, sub-tests, and students
+ * The values which required from ACUITY through input are: 
+ * 				assignmentId, testId, name, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
+ * The values which OAS platform populated in return are:  
+ * 				status, accessCode
+ * 
+ * @author Tai_Truong
+ */
+public class Session implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
-    private String assignmentId = null;		// publicId
-    private String testId = null;	
+    private String assignmentId = null;		// publicId - 32 chars
+    private Integer testId = null;	
     private Integer id = null;
-    private String name = null;
-    private String accessCode = null;
+    private String name = null;				// 64 chars
+    private String accessCode = null;		// 32 chars
     private String startTime = null;
     private String endTime = null;
     private Date startDate = null;
     private Date endDate = null;
     private Boolean hasBreak = null;
-    private String timeZone = null;
-    private String testLocation = null;
+    private String timeZone = null;			// 255 chars
+    private String testLocation = null;		// 64 chars
     
     private Accommodation[] accommodations = null;
     private Subtest[] subtests = null;
     private Student[] students = null;
     
-    private String status = "OK";
+    private String status = "OK";			// 32 chars
     
 	public Session() {
 	}
@@ -35,11 +45,11 @@ public class Session {
 		this.assignmentId = assignmentId;
 	}
 
-	public String getTestId() {
+	public Integer getTestId() {
 		return testId;
 	}
 
-	public void setTestId(String testId) {
+	public void setTestId(Integer testId) {
 		this.testId = testId;
 	}
 

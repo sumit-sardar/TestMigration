@@ -2,19 +2,28 @@ package dto;
 
 import java.util.Date;
 
-public class Student {
+/**
+ * This object contains information for students who will be created in OAS for an administration
+ * The values which required from ACUITY through input are: 
+ * 				firstName, lastName, gender, grade   
+ * The values which OAS platform populated in return are:  
+ * 				status, assignmentId, loginName, password
+ * 
+ * @author Tai_Truong
+ */
+public class Student implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
     private String assignmentId = null;	// publicId
     private Integer id = null;
-    private String firstName = null;
-    private String middleName = null;
-    private String lastName = null;
-    private String gender = null;
-    private String grade = null;
+    private String firstName = null;	// 32 chars
+    private String middleName = null;	// 32 chars
+    private String lastName = null;		// 32 chars
+    private String gender = null;		// 32 chars
+    private String grade = null;		// 32 chars
     private Date birthdate = null;
-    private String loginName = null;
-    private String password = null;
+    private String loginName = null;	// 32 chars
+    private String password = null;		// 32 chars
 
     private String status = "OK";
     

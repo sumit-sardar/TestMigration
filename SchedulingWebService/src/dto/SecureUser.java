@@ -1,13 +1,21 @@
 package dto;
 
-public class SecureUser {
+/**
+ * This is the first object which passed into scheduling web service to perform authentication for security purpose 
+ * This object contains information for user
+ * The values which required from ACUITY through input are: 
+ * 				name, password, userType
+ * 
+ * @author Tai_Truong
+ */
+public class SecureUser implements java.io.Serializable {
 
     static final long serialVersionUID = 1L;
 
     private Integer id = null;
-    private String name = null;
-    private String password = null;
-    private String userType = null;
+    private String name = null;			// 32 chars
+    private String password = null;		// 32 chars
+    private String userType = null;		// 32 chars
 	
 	public SecureUser() {
 	}
