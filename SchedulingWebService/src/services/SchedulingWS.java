@@ -40,6 +40,7 @@ import com.ctb.util.DateUtils;
 
 import dto.PathNode;
 import dto.StudentProfileInformation;
+import dto.Subtest;
 import dto.SubtestVO;
 import dto.TestRosterVO;
 import dto.SecureUser;
@@ -70,34 +71,38 @@ public class SchedulingWS implements Serializable {
 	@WebMethod
 	public Session scheduleSession(SecureUser user, Session session) {
 
-		/*
+		// AUTHENTICATE USER
+    	if (! isValidUser(user)) {
+    		session.setStatus("Error: Invalid user");
+    		return session;
+    	}
+    	
 		// CREATE STUDENT
-    	firstName = "first";
-    	lastName = "last";
-    	String gender = "Male";
-    	String grade = "10";
+    	dto.Student[] students = session.getStudents();
+		SessionStudent[] sessionStudents = new SessionStudent[students.length];
     	
-    	StudentProfileInformation studentProfile = buildStudentProfile(firstName, lastName, gender, grade);
+    	for (int i= 0 ; i<students.length ; i++) {
+    		dto.Student student = students[i];
+        	StudentProfileInformation studentProfile = buildStudentProfile(student);
+        	Integer studentId = createNewStudent(studentProfile);
+        	if (studentId != null) {
+        		System.out.println("studentId = " + studentId);
+        		SessionStudent ss = buildSessionStudent(studentId);
+        		sessionStudents[i] = ss;
+        	}
+        	else {
+        		student.setStatus("Error: Failed to add");
+        	}
+    	}
     	
-    	Integer studentId = createNewStudent(studentProfile);
-		System.out.println("studentId = " + studentId);
-		
-		SessionStudent[] students = new SessionStudent[1];
-		SessionStudent ss = buildSessionStudent(studentId);
-		students[0] = ss;
-		
-		
 		
 		// CREATE SESSION
-    	ScheduledSession session = populateSession(students);
-		
-        Integer testAdminId = createNewTestSession(session);
+    	ScheduledSession newSession = populateSession(session, sessionStudents);
+        Integer testAdminId = createNewTestSession(newSession);
 		System.out.println("testAdminId = " + testAdminId);
 		
-    	
 		
 		// COLLECT ROSTERS INFORMATION
-		//Integer testAdminId = new Integer(164389);
 		RosterElementData red = getRosterForViewTestSession(testAdminId); 
 		
         List rosterList = new ArrayList();    
@@ -111,14 +116,19 @@ public class SchedulingWS implements Serializable {
                 rosterList.add(vo);
             }
         }   
-		*/
-		
-		session.setAssignmentId("12345");
-		session.setAccessCode("accessCode");
 		
 		return session;
 	}
 
+	   
+	/**
+	 * isValidUser
+	 */
+	private boolean isValidUser(SecureUser user) 
+	{
+		return user.getName().equals("tai_ws");
+	}
+	
 	/**
 	 * buildSessionStudent
 	 */
@@ -143,13 +153,16 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * buildStudentProfile
 	 */
-	private StudentProfileInformation buildStudentProfile(String firstName, String lastName, String gender, String grade)
+	private StudentProfileInformation buildStudentProfile(dto.Student student)
 	{
 		StudentProfileInformation studentProfile = new StudentProfileInformation();
-		studentProfile.setFirstName(firstName);
-		studentProfile.setLastName(lastName);
-		studentProfile.setGender(gender);
-		studentProfile.setGrade(grade);
+		
+		studentProfile.setFirstName(student.getFirstName());
+		studentProfile.setMiddleName(student.getMiddleName());
+		studentProfile.setLastName(student.getLastName());
+		studentProfile.setGender(student.getGender());
+		studentProfile.setGrade(student.getGrade());
+		studentProfile.setBirthdate(student.getBirthdate());
 		
 		return studentProfile;
 	}
@@ -243,7 +256,7 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * ///////////////////////////////   createNewTestSession   //////////////////////////////////
 	 */
-	private Integer createNewTestSession(ScheduledSession session)
+	private Integer createNewTestSession(ScheduledSession newSession)
 	{
     	String userName = getDefaultUser().getUserName();
 		
@@ -251,7 +264,7 @@ public class SchedulingWS implements Serializable {
 		
 		try
 		{
-	        testAdminId = this.scheduleTest.createNewTestSession(userName, session);
+	        testAdminId = this.scheduleTest.createNewTestSession(userName, newSession);
 		}
 		catch (StudentDataCreationException sde)
 		{
@@ -269,17 +282,17 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * populateSession
 	 */
-    private ScheduledSession populateSession(SessionStudent[] students)
+    private ScheduledSession populateSession(Session session, SessionStudent[] students)
     {  
     	ScheduledSession scheduledSession = new ScheduledSession();
 
-    	populateTestSession(scheduledSession);
+    	populateTestSession(session, scheduledSession);
 	 
-    	populateScheduledUnits(scheduledSession);
+    	populateScheduledUnits(session, scheduledSession);
 
-    	populateSessionStudent(scheduledSession, students);
+    	populateSessionStudent(session, scheduledSession, students);
 	 
-    	populateProctor(scheduledSession);
+    	populateProctor(session, scheduledSession);
 	 
         return scheduledSession;
     }
@@ -288,7 +301,7 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * populateTestSession
 	 */
-	private void populateTestSession(ScheduledSession scheduledSession) {
+	private void populateTestSession(Session session, ScheduledSession scheduledSession) {
 		
 		 try{
 	    	 String userName = getDefaultUser().getUserName();
@@ -393,7 +406,10 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * populateScheduledUnits
 	 */
-    private void populateScheduledUnits(ScheduledSession scheduledSession) {
+    private void populateScheduledUnits(Session session, ScheduledSession scheduledSession) {
+    	
+    	Subtest[] subtests = session.getSubtests();
+    	
     	
 		 try{
 			 String productType				= "genericProductType";
@@ -475,17 +491,17 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * populateSessionStudent
 	 */
-	private void populateSessionStudent(ScheduledSession scheduledSession, SessionStudent[] students) {
+	private void populateSessionStudent(Session session, ScheduledSession scheduledSession, SessionStudent[] students) {
 
 		scheduledSession.setStudents(students);
 		
 	}
          
-
+ 
 	/**
 	 * populateProctor
 	 */
-	private void populateProctor(ScheduledSession scheduledSession) {
+	private void populateProctor(Session session, ScheduledSession scheduledSession) {
 
 		try {
 			String userName = getDefaultUser().getUserName();
