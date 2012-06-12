@@ -96,9 +96,9 @@ public class SchedulingWS implements Serializable {
     	}
 
     	// SCHEDULE OR UPDATE SESSION
-    	String assignmentId = session.getAssignmentId(); 
+    	Integer sessionId = session.getSessionId(); 
     	
-    	if ((assignmentId != null) && (assignmentId.length() > 0)) {
+    	if ((sessionId != null) && (sessionId.intValue() > 0)) {
     		session = updateExistingSession(session);
     	}
     	else {
@@ -125,14 +125,12 @@ public class SchedulingWS implements Serializable {
         		System.out.println("Create student sucessfully - studentId = " + studentId);
         		numberStudentAdded++;
         		student.setStatus("OK");
-        		student.setId(studentId);
-        		student.setAssignmentId(studentId.toString());
+        		student.setStudentId(studentId);
         	}
         	else {
         		System.out.println("Failed to create student = " + studentProfile.getLastName() + "," + studentProfile.getFirstName());
         		student.setStatus("Error: Failed to add");
-        		student.setId(null);
-        		student.setAssignmentId(null);
+        		student.setStudentId(null);
         	}
     	}
     	
@@ -142,8 +140,8 @@ public class SchedulingWS implements Serializable {
 		int index = 0;
     	for (int i= 0 ; i<students.length ; i++) {
     		dto.Student student = students[i];
-    		if (student.getId() != null) {
-    			SessionStudent ss = buildSessionStudent(student.getId());
+    		if (student.getStudentId() != null) {
+    			SessionStudent ss = buildSessionStudent(student.getStudentId());
     			sessionStudents[index++] = ss;
     		}
     	}
@@ -153,13 +151,11 @@ public class SchedulingWS implements Serializable {
         Integer testAdminId = createNewTestSession(newSession);
         if (testAdminId != null) {
         	System.out.println("Create session sucessfully - testAdminId = " + testAdminId);
-        	session.setAssignmentId(testAdminId.toString());
-        	session.setId(testAdminId);
+        	session.setSessionId(testAdminId);
         }
         else {
-    		System.out.println("Failed to create session = " + session.getName());
-        	session.setId(null);
-        	session.setAssignmentId(null);
+    		System.out.println("Failed to create session = " + session.getSessionName());
+        	session.setSessionId(null);
         }
 		
 		
@@ -196,7 +192,7 @@ public class SchedulingWS implements Serializable {
 	 */
 	private boolean authenticateUser(SecureUser user) 
 	{   
-		return user.getName().equals(AUTHENTICATE_USER_NAME) && user.getPassword().equals(AUTHENTICATE_PASSWORD);
+		return user.getUserName().equals(AUTHENTICATE_USER_NAME) && user.getPassword().equals(AUTHENTICATE_PASSWORD);
 	}
 	
 	/**
@@ -207,7 +203,7 @@ public class SchedulingWS implements Serializable {
 		this.defaultUser = null;
 		this.defaultTopNode = null;
 		this.defaultClassNode = null;
-		this.defaultUserName = user.getName(); 
+		this.defaultUserName = user.getUserName(); 
 		this.defaultProductId = new Integer(3510); 		
 		
 		try
@@ -379,7 +375,7 @@ public class SchedulingWS implements Serializable {
 			 String hasBreak          		= session.getHasBreak().booleanValue() ? "T" : "F";
 			 String isRandomize       		= "";
 			 String timeZone          		= session.getTimeZone();
-			 String sessionName		  		= session.getName();
+			 String sessionName		  		= session.getSessionName();
 			 String showStdFeedbackVal   	= "false";
 			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
 			 String isEndTestSession 		= "";
@@ -469,7 +465,7 @@ public class SchedulingWS implements Serializable {
 	    	 
 	    	 for (int i=0 ; i<subtests.length ; i++) {
 	    		 Subtest subtest = subtests[i]; 
-	    		 itemSetIdTDs[i] = subtest.getId().toString();
+	    		 itemSetIdTDs[i] = subtest.getSubtestId().toString();
 		    	 accesscodes[i] = "accesscode123";
 		    	 itemSetForms[i] = "";
 		    	 itemSetisDefault[0] = "T";

@@ -6,19 +6,18 @@ import java.util.Date;
  * This is the second object which passed into scheduling web service to perform TN scheduling session for Acuity application 
  * This object contains information for session, accommodations, sub-tests, and students
  * The values which required from ACUITY through input are: 
- * 				assignmentId, testId, name, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
+ * 				testId, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
  * The values which OAS platform populated in return are:  
- * 				status, accessCode
+ * 				status, sessionId, accessCode
  * 
  * @author Tai_Truong
  */
 public class Session implements java.io.Serializable {
     static final long serialVersionUID = 1L;
-
-    private String assignmentId = null;		// publicId - 32 chars
+ 
+    private Integer sessionId = null;		// publicId - null for creating new session - not null for update.
     private Integer testId = null;	
-    private Integer id = null;
-    private String name = null;				// 64 chars
+    private String sessionName = null;		// 64 chars
     private String accessCode = null;		// 32 chars
     private String startTime = null;
     private String endTime = null;
@@ -37,12 +36,12 @@ public class Session implements java.io.Serializable {
 	public Session() {
 	}
 
-	public String getAssignmentId() {
-		return assignmentId;
+	public Integer getSessionId() {
+		return sessionId;
 	}
 
-	public void setAssignmentId(String assignmentId) {
-		this.assignmentId = assignmentId;
+	public void setSessionId(Integer sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public Integer getTestId() {
@@ -53,20 +52,12 @@ public class Session implements java.io.Serializable {
 		this.testId = testId;
 	}
 
-	public Integer getId() {
-		return id;
+	public String getSessionName() {
+		return sessionName;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setSessionName(String sessionName) {
+		this.sessionName = sessionName;
 	}
 
 	public String getAccessCode() {

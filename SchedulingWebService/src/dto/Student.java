@@ -7,15 +7,15 @@ import java.util.Date;
  * The values which required from ACUITY through input are: 
  * 				firstName, lastName, gender, grade   
  * The values which OAS platform populated in return are:  
- * 				status, assignmentId, loginName, password
+ * 				status, studentId, loginName, password
  * 
  * @author Tai_Truong
  */
 public class Student implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
-    private String assignmentId = null;	// publicId
-    private Integer id = null;
+    private String assignmentId = null;	// publicId 
+    private Integer studentId = null; 	// null for creating new student - not null for update.
     private String firstName = null;	// 32 chars
     private String middleName = null;	// 32 chars
     private String lastName = null;		// 32 chars
@@ -24,7 +24,7 @@ public class Student implements java.io.Serializable {
     private Date birthdate = null;
     private String loginName = null;	// 32 chars
     private String password = null;		// 32 chars
-
+ 
     private String status = "OK";
     
 	public Student() {
@@ -38,12 +38,12 @@ public class Student implements java.io.Serializable {
 		this.assignmentId = assignmentId;
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getStudentId() {
+		return studentId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
 	}
 
 	public String getFirstName() {
