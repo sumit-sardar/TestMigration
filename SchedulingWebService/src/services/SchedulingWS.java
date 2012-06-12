@@ -76,6 +76,9 @@ public class SchedulingWS implements Serializable {
 	private ScheduleTest scheduleTest;
 
 	
+	/**
+	 * scheduleSession: this is web service which is called from Acuity
+	 */
 	@WebMethod
 	public Session scheduleSession(SecureUser user, Session session) {
 
@@ -91,8 +94,25 @@ public class SchedulingWS implements Serializable {
     		session.setStatus("Error: Invalid data");
     		return session;    		
     	}
+
+    	// SCHEDULE OR UPDATE SESSION
+    	String assignmentId = session.getAssignmentId(); 
     	
+    	if ((assignmentId != null) && (assignmentId.length() > 0)) {
+    		session = updateExistingSession(session);
+    	}
+    	else {
+    		session = scheduleNewSession(session);
+    	}
     	
+		return session;
+	}
+
+	/**
+	 * scheduleNewSession
+	 */
+	private Session scheduleNewSession(Session session) {
+	
 		// CREATE STUDENT
     	dto.Student[] students = session.getStudents();
     	int numberStudentAdded = 0;
@@ -133,11 +153,13 @@ public class SchedulingWS implements Serializable {
         Integer testAdminId = createNewTestSession(newSession);
         if (testAdminId != null) {
         	System.out.println("Create session sucessfully - testAdminId = " + testAdminId);
+        	session.setAssignmentId(testAdminId.toString());
         	session.setId(testAdminId);
         }
         else {
     		System.out.println("Failed to create session = " + session.getName());
         	session.setId(null);
+        	session.setAssignmentId(null);
         }
 		
 		
@@ -160,6 +182,14 @@ public class SchedulingWS implements Serializable {
 	}
 
 
+	/**
+	 * updateExistingSession
+	 */
+	private Session updateExistingSession(Session session)
+	{
+		return session;
+	}
+		
     
 	/**
 	 * authenticateUser
