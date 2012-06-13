@@ -21,8 +21,8 @@ public class Session implements java.io.Serializable {
     private String accessCode = null;		// 32 chars
     private String startTime = null;
     private String endTime = null;
-    private Date startDate = null;
-    private Date endDate = null;
+    private String startDate = null;
+    private String endDate = null;
     private Boolean hasBreak = null;
     private String timeZone = null;			// 255 chars
     private String testLocation = null;		// 64 chars
@@ -84,19 +84,19 @@ public class Session implements java.io.Serializable {
 		this.endTime = endTime;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 

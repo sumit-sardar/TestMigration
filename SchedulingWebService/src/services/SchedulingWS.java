@@ -85,8 +85,8 @@ public class SchedulingWS implements Serializable {
 	 * scheduleSession: this is web service which is called from Acuity
 	 */
 	@WebMethod
-	public Session scheduleSession(SecureUser user, Session session) {
-
+	public Session scheduleSession(SecureUser user, Session session) 
+	{
 		// AUTHENTICATE USER
     	if (! authenticateUser(user)) {
     		session.setStatus("Error: Invalid user");
@@ -100,6 +100,7 @@ public class SchedulingWS implements Serializable {
     		return session;    		
     	}
 
+    	
     	// SCHEDULE OR UPDATE SESSION
     	Integer sessionId = session.getSessionId(); 
     	if ((sessionId != null) && (sessionId.intValue() > 0)) {
@@ -109,8 +110,13 @@ public class SchedulingWS implements Serializable {
     		session = scheduleNewSession(session);
     	}
     	
+    	
+    	// COLLECT INFORMATION
+    	collectResultInformation(session);
+    	
 		return session;
 	}
+
 
 	/**
 	 * scheduleNewSession
@@ -152,7 +158,9 @@ public class SchedulingWS implements Serializable {
     	
 		
     	ScheduledSession newSession = populateSession(session, sessionStudents);
+    	
         Integer testAdminId = createNewTestSession(newSession);
+        
         if (testAdminId != null) {
         	System.out.println("Create session sucessfully - testAdminId = " + testAdminId);
         	session.setSessionId(testAdminId);
@@ -161,38 +169,6 @@ public class SchedulingWS implements Serializable {
     		System.out.println("Failed to create session = " + session.getSessionName());
         	session.setSessionId(null);
         }
-		
-		
-		// COLLECT SESSION INFORMATION
-    	TestSessionData tsd = getTestSessionDetails(testAdminId);
-    	TestSession[] tss = tsd.getTestSessions();
-    	TestSession ts = tss[0];
-    	session.setAccessCode(ts.getAccessCode());
-        
-    	
-		// COLLECT ROSTERS INFORMATION
-		RosterElementData red = getRosterForViewTestSession(testAdminId); 
-        RosterElement[] rosterElements = red.getRosterElements();
-        
-        for (int i=0; i < rosterElements.length; i++) {
-            RosterElement rosterElt = rosterElements[i];
-            if (rosterElt != null) {
-                TestRosterVO vo = new TestRosterVO(rosterElt);
-                Integer studentId = vo.getStudentId();
-                String loginName = vo.getLoginName();
-                String password = vo.getPassword();
-                
-            	for (int j=0 ; j<students.length ; j++) {
-            		dto.Student student = students[j];
-            		if (studentId.intValue() == student.getStudentId().intValue()) {
-            			student.setLoginName(loginName);
-            			student.setPassword(password);
-                    	System.out.println("Roster Info = " + studentId + " - " + loginName + " - " + password);
-            			break;
-            		}
-            	}
-            }
-        }   
 		
 		return session;
 	}
@@ -382,10 +358,10 @@ public class SchedulingWS implements Serializable {
 			 Integer creatorOrgNodeId  		= this.defaultTopNode; 
 			 Integer productId  			= this.defaultProductId; 
 			 
-			 String dailyLoginEndTimeString		= "5:00 PM"; 
-			 String dailyLoginStartTimeString	= "8:00 AM";
-			 String dailyLoginEndDateString		= "06/05/13";
-			 String dailyLoginStartDateString	= "06/04/12";
+			 String dailyLoginStartDateString	= session.getStartDate();
+			 String dailyLoginEndDateString		= session.getEndDate();
+			 String dailyLoginStartTimeString	= session.getStartTime();
+			 String dailyLoginEndTimeString		= session.getEndTime(); 
 
 			 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(dailyLoginEndTimeString);
 			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
@@ -616,6 +592,37 @@ public class SchedulingWS implements Serializable {
 			e.printStackTrace();
 		}
 	}
+    
+	/**
+	 * collectResultInformation
+	 */
+	private void collectResultInformation(Session session)
+	{
+		dto.Student[] students = session.getStudents();
+		Integer testAdminId = session.getSessionId();
+		RosterElementData red = getRosterForViewTestSession(testAdminId); 
+	    RosterElement[] rosterElements = red.getRosterElements();
+	    
+	    for (int i=0; i < rosterElements.length; i++) {
+	        RosterElement rosterElt = rosterElements[i];
+	        if (rosterElt != null) {
+	            TestRosterVO vo = new TestRosterVO(rosterElt);
+	            Integer studentId = vo.getStudentId();
+	            String loginName = vo.getLoginName();
+	            String password = vo.getPassword();
+	        	for (int j=0 ; j<students.length ; j++) {
+	        		dto.Student student = students[j];
+	        		if (studentId.intValue() == student.getStudentId().intValue()) {
+	        			student.setLoginName(loginName);
+	        			student.setPassword(password);
+	                	System.out.println("Roster Info = " + studentId + " - " + loginName + " - " + password);
+	        			break;
+	        		}
+	        	}
+	        }
+	    }   
+	}
+	
 	
 	
 }
