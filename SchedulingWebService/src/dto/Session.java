@@ -27,7 +27,7 @@ public class Session implements java.io.Serializable {
     private String timeZone = null;			// 255 chars
     private String testLocation = null;		// 64 chars
     
-    private Accommodation[] accommodations = null;
+    private Accommodation accommodation = null;
     private Subtest[] subtests = null;
     private Student[] students = null;
     
@@ -124,12 +124,12 @@ public class Session implements java.io.Serializable {
 		this.testLocation = testLocation;
 	}
 
-	public Accommodation[] getAccommodations() {
-		return accommodations;
+	public Accommodation getAccommodation() {
+		return accommodation;
 	}
 
-	public void setAccommodations(Accommodation[] accommodations) {
-		this.accommodations = accommodations;
+	public void setAccommodations(Accommodation accommodation) {
+		this.accommodation = accommodation;
 	}
 
 	public Subtest[] getSubtests() {
