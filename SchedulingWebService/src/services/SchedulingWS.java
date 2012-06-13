@@ -16,6 +16,7 @@ import org.apache.beehive.controls.api.bean.Control;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ctb.bean.request.SortParams;
@@ -30,6 +31,7 @@ import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
@@ -37,6 +39,7 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 
 import com.ctb.util.DateUtils;
+import com.ctb.util.testAdmin.AccessCodeGenerator;
 
 import dto.PathNode;
 import dto.StudentProfileInformation;
@@ -75,6 +78,8 @@ public class SchedulingWS implements Serializable {
 	@Control
 	private ScheduleTest scheduleTest;
 
+    @Control()
+    private com.ctb.control.db.TestAdmin admins;
 	
 	/**
 	 * scheduleSession: this is web service which is called from Acuity
@@ -97,7 +102,6 @@ public class SchedulingWS implements Serializable {
 
     	// SCHEDULE OR UPDATE SESSION
     	Integer sessionId = session.getSessionId(); 
-    	
     	if ((sessionId != null) && (sessionId.intValue() > 0)) {
     		session = updateExistingSession(session);
     	}
@@ -114,7 +118,7 @@ public class SchedulingWS implements Serializable {
 	private Session scheduleNewSession(Session session) {
 	
 		// CREATE STUDENT
-    	dto.Student[] students = session.getStudents();
+		dto.Student[] students = session.getStudents();
     	int numberStudentAdded = 0;
     	
     	for (int i=0 ; i<students.length ; i++) {
@@ -159,18 +163,34 @@ public class SchedulingWS implements Serializable {
         }
 		
 		
+		// COLLECT SESSION INFORMATION
+    	TestSessionData tsd = getTestSessionDetails(testAdminId);
+    	TestSession[] tss = tsd.getTestSessions();
+    	TestSession ts = tss[0];
+    	session.setAccessCode(ts.getAccessCode());
+        
+    	
 		// COLLECT ROSTERS INFORMATION
 		RosterElementData red = getRosterForViewTestSession(testAdminId); 
-		
-        List rosterList = new ArrayList();    
         RosterElement[] rosterElements = red.getRosterElements();
-        for (int i=0; i < rosterElements.length; i++)
-        {
+        
+        for (int i=0; i < rosterElements.length; i++) {
             RosterElement rosterElt = rosterElements[i];
-            if (rosterElt != null)
-            {
-                TestRosterVO vo = new TestRosterVO(rosterElt);   
-                rosterList.add(vo);
+            if (rosterElt != null) {
+                TestRosterVO vo = new TestRosterVO(rosterElt);
+                Integer studentId = vo.getStudentId();
+                String loginName = vo.getLoginName();
+                String password = vo.getPassword();
+                
+            	for (int j=0 ; j<students.length ; j++) {
+            		dto.Student student = students[j];
+            		if (studentId.intValue() == student.getStudentId().intValue()) {
+            			student.setLoginName(loginName);
+            			student.setPassword(password);
+                    	System.out.println("Roster Info = " + studentId + " - " + loginName + " - " + password);
+            			break;
+            		}
+            	}
             }
         }   
 		
@@ -428,18 +448,6 @@ public class SchedulingWS implements Serializable {
 	         
 	         testSession.setItemSetId(itemSetId);
 	         
-
-	         if (session.getHasBreak().booleanValue())
-	         {
-	        	String accessCode = "accesscode123";
-	         	testSession.setAccessCode(accessCode);    
-	         }
-	         else
-	         {
-	        	 String accessCode = "accesscode123";
-	        	 testSession.setAccessCode(accessCode); 
-	         }
-	         
 	         scheduledSession.setTestSession(testSession);
 			 
 		 } catch (Exception e) {
@@ -453,20 +461,24 @@ public class SchedulingWS implements Serializable {
 	 */
     private void populateScheduledUnits(Session session, ScheduledSession scheduledSession) {
     	
-		 try{
+    	try{
 	    	 Integer itemSetId        		= session.getTestId();
 	    	 String autoLocator				=  "false";
 	    	 
 	    	 Subtest[] subtests = session.getSubtests();
 	    	 String[] itemSetIdTDs          = new String [subtests.length];
-	    	 String[] accesscodes           = new String [subtests.length]; 
+	    	 String[] accessCodes           = new String [subtests.length]; 
 	    	 String[] itemSetForms          = new String [subtests.length];
 	    	 String[] itemSetisDefault      = new String [subtests.length]; 
-	    	 
+	    
+        	 generateAccessCodes(accessCodes, session.getHasBreak());
+        	 scheduledSession.getTestSession().setAccessCode(accessCodes[0]);    
+        	 session.setAccessCode(accessCodes[0]);
+        	 
+        	 
 	    	 for (int i=0 ; i<subtests.length ; i++) {
 	    		 Subtest subtest = subtests[i]; 
 	    		 itemSetIdTDs[i] = subtest.getSubtestId().toString();
-		    	 accesscodes[i] = "accesscode123";
 		    	 itemSetForms[i] = "";
 		    	 itemSetisDefault[0] = "T";
 	    	 }
@@ -476,7 +488,7 @@ public class SchedulingWS implements Serializable {
 	    	 for(int i=0 ; i<subtests.length; i++ ){
 	    		 SubtestVO subtest = new SubtestVO();
 	    		 subtest.setId(Integer.valueOf(itemSetIdTDs[i].trim()));
-	    		 subtest.setTestAccessCode(accesscodes[i]);
+	    		 subtest.setTestAccessCode(accessCodes[i]);
 	    		 subtest.setSessionDefault(itemSetisDefault[i]);
     			 subtest.setLevel(itemSetForms[i]);
 	    		 
@@ -544,12 +556,12 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * getRosterForViewTestSession
 	 */
-	private RosterElementData getRosterForViewTestSession(Integer sessionId) 
+	private RosterElementData getRosterForViewTestSession(Integer testAdminId) 
     {
         RosterElementData red = null;
         try
         {      
-        	red = this.testSessionStatus.getRosterForTestSession(this.defaultUserName, sessionId, null, null, null);
+        	red = this.testSessionStatus.getRosterForTestSession(this.defaultUserName, testAdminId, null, null, null);
         }
         catch (CTBBusinessException be)
         {
@@ -557,5 +569,53 @@ public class SchedulingWS implements Serializable {
         }        
         return red;
     }
+
+	/**
+	 * getTestSessionDetails
+	 */
+	private TestSessionData getTestSessionDetails(Integer testAdminId) 
+    {
+		TestSessionData tsd = null;
+        try
+        {      
+        	tsd = this.testSessionStatus.getTestSessionDetails(this.defaultUserName, testAdminId);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+        return tsd;
+    }
+	
+	/**
+	 * generateAccessCodes
+	 */
+	private void generateAccessCodes(String[] accessCodes, Boolean hasBreak)
+	{
+	    HashMap accessCodeHashmap = new HashMap();
+	    try {
+	        for (int i=0 ; i<accessCodes.length ; i++) {
+	        	boolean validCode = false;
+	            String code = null;
+	            while (!validCode) {
+					code = AccessCodeGenerator.generateAccessCode();
+	                if (!accessCodeHashmap.containsKey(code)) {
+	                    validCode = admins.getTestAdminsByAccessCode(code).length == 0;
+	                }
+	            }
+	            accessCodeHashmap.put(code, code);
+	            accessCodes[i] = code;
+        		if (! hasBreak.booleanValue()) {
+	    	        for (int j=1 ; j<accessCodes.length ; j++) {
+	    	            accessCodes[j] = code;
+	    	        }
+	    	        return;
+	            }
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 }
