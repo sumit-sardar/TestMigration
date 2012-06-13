@@ -470,6 +470,7 @@ public class SchedulingWS implements Serializable {
 	    		 
 	    		 subtestList.add(subtest);
 	    		 
+	    		 subtests[i].setAccessCode(accessCodes[i]);
 	    	 }
 	        
 	        
