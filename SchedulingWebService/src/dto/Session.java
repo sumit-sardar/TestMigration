@@ -6,7 +6,7 @@ import java.util.Date;
  * This is the second object which passed into scheduling web service to perform TN scheduling session for Acuity application 
  * This object contains information for session, accommodations, sub-tests, and students
  * The values which required from ACUITY through input are: 
- * 				testId, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
+ * 				testName, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
  * The values which OAS platform populated in return are:  
  * 				status, sessionId, accessCode
  * 
@@ -16,7 +16,8 @@ public class Session implements java.io.Serializable {
     static final long serialVersionUID = 1L;
  
     private Integer sessionId = null;		// publicId - null for creating new session - not null for update.
-    private Integer testId = null;	
+    private String testName = null;				
+    private Integer testId = null;			// internal to OAS	
     private String sessionName = null;		// 64 chars
     private String accessCode = null;		// 32 chars
     private String startTime = null;
@@ -44,6 +45,14 @@ public class Session implements java.io.Serializable {
 		this.sessionId = sessionId;
 	}
 
+	public String getTestName() {
+		return testName;
+	}
+
+	public void setTestName(String testName) {
+		this.testName = testName;
+	}
+	
 	public Integer getTestId() {
 		return testId;
 	}

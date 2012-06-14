@@ -454,8 +454,12 @@ public class SchedulingWS implements Serializable {
 	    	 String[] itemSetisDefault      = new String [subtests.length]; 
 	    
         	 generateAccessCodes(accessCodes, session.getHasBreak());
-        	 scheduledSession.getTestSession().setAccessCode(accessCodes[0]);    
-        	 session.setAccessCode(accessCodes[0]);
+    		 scheduledSession.getTestSession().setAccessCode(accessCodes[0]);
+
+    		 if (session.getHasBreak())
+            	 session.setAccessCode(null);
+        	 else 
+            	 session.setAccessCode(accessCodes[0]);
         	 
         	 
 	    	 for (int i=0 ; i<subtests.length ; i++) {
