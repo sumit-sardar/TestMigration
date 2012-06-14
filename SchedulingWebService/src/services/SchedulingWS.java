@@ -92,6 +92,12 @@ public class SchedulingWS implements Serializable {
     		session.setStatus("Error: Invalid user");
     		return session;
     	}
+
+    	
+    	// VALIDATE SESSION INPUT
+    	if (! validateInput(session)) {
+    		return session;
+    	}
     	
     	
     	// SETUP DEFAULT VALUES
@@ -624,6 +630,83 @@ public class SchedulingWS implements Serializable {
 	    }   
 	}
 	
+	
+	/**
+	 * validateInput
+	 */
+	private boolean validateInput(Session session) {
+		
+		if ((session.getTestId() == null) || (session.getTestId().intValue() <= 0)) { 
+    		session.setStatus("Error: Invalid Test ID");
+    		return false;
+		}
+		if ((session.getSessionName() == null) || (session.getSessionName().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid Session Name");
+    		return false;
+		}
+		if ((session.getStartTime() == null) || (session.getStartTime().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid Start Time");
+    		return false;
+		}
+		if ((session.getEndTime() == null) || (session.getEndTime().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid End Time");
+    		return false;
+		}
+		if ((session.getStartDate() == null) || (session.getStartDate().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid Start Date");
+    		return false;
+		}
+		if ((session.getEndDate() == null) || (session.getEndDate().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid End Date");
+    		return false;
+		}
+		if (session.getHasBreak() == null) { 
+    		session.setStatus("Error: Invalid Test Break");
+    		return false;
+		}
+		if ((session.getTimeZone() == null) || (session.getTimeZone().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid Time Zone");
+    		return false;
+		}
+		if ((session.getSubtests() == null) || (session.getSubtests().length == 0)) { 
+    		session.setStatus("Error: Invalid Subtests");
+    		return false;
+		}
+   	 	Subtest[] subtests = session.getSubtests();
+   	 	for (int i=0 ; i<subtests.length ; i++) {
+   	 		Subtest subtest = subtests[i];
+   	 		if ((subtest.getSubtestId() == null) || (subtest.getSubtestId().intValue() <= 0)) {
+   	    		session.setStatus("Error: Invalid Subtest");
+   	    		return false;   	 			
+   	 		}
+   	 	}
+		if (session.getStudents() == null) { 
+    		session.setStatus("Error: Invalid Students");
+    		return false;
+		}
+		dto.Student[] students = session.getStudents();
+   	 	for (int i=0 ; i<students.length ; i++) {
+   	 		dto.Student student = students[i];
+   			if ((student.getFirstName() == null) || (student.getFirstName().trim().length() == 0)) { 
+   	    		session.setStatus("Error: Invalid First Name");
+   	    		return false;   	 			
+   	 		}
+   			if ((student.getLastName() == null) || (student.getLastName().trim().length() == 0)) { 
+   	    		session.setStatus("Error: Invalid Last Name");
+   	    		return false;   	 			
+   	 		}
+   			if ((student.getGender() == null) || (student.getGender().trim().length() == 0)) { 
+   	    		session.setStatus("Error: Invalid Gender");
+   	    		return false;   	 			
+   	 		}
+   			if ((student.getGrade() == null) || (student.getGrade().trim().length() == 0)) { 
+   	    		session.setStatus("Error: Invalid Grade");
+   	    		return false;   	 			
+   	 		}
+   	 	}
+			
+		return true;
+	}
 	
 	
 }

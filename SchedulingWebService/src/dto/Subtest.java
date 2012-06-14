@@ -3,7 +3,7 @@ package dto;
 /**
  * This object contains information for sub-tests which describes a test structure.   
  * The values which required from ACUITY through input are: 
- * 				subtestId, subtestName   
+ * 				subtestId   
  * The values which OAS platform populated in return are:  
  * 				accessCode
  * 
