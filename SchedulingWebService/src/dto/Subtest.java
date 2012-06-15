@@ -3,7 +3,7 @@ package dto;
 /**
  * This object contains information for sub-tests which describes a test structure.   
  * The values which required from ACUITY through input are: 
- * 				subtestId   
+ * 				subtestName   
  * The values which OAS platform populated in return are:  
  * 				accessCode
  * 
@@ -12,8 +12,8 @@ package dto;
 public class Subtest implements java.io.Serializable {
     static final long serialVersionUID = 1L;
 
-    private Integer subtestId = null;			// publicId - null for creating new subtest - not null for update.
-    private String subtestName = null;			// 512 chars
+    private Integer subtestId = null;			// internal to OAS.
+    private String subtestName = null;			// 512 chars - subtest name from ACUITY
     private String accessCode = null;			// 32 chars
     private Integer order = null; 	
     private Integer duration = null;

@@ -15,8 +15,8 @@ import java.util.Date;
 public class Session implements java.io.Serializable {
     static final long serialVersionUID = 1L;
  
-    private Integer sessionId = null;		// publicId - null for creating new session - not null for update.
-    private String testName = null;				
+    private Integer sessionId = null;		// internal to OAS.
+    private String testName = null;			// publicId - null for creating new session - not null for update.	
     private Integer testId = null;			// internal to OAS	
     private String sessionName = null;		// 64 chars
     private String accessCode = null;		// 32 chars
