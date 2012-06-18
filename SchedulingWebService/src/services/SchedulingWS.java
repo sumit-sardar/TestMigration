@@ -132,36 +132,47 @@ public class SchedulingWS implements Serializable {
 		// CREATE STUDENT
 		dto.Student[] students = session.getStudents();
     	int numberStudentAdded = 0;
+    	Integer studentId = null;
     	
-    	for (int i=0 ; i<students.length ; i++) {
-    		dto.Student student = students[i];
-        	StudentProfileInformation studentProfile = buildStudentProfile(student);
-        	Integer studentId = createNewStudent(studentProfile);
-        	if (studentId != null) {
-        		System.out.println("Create student sucessfully - studentId = " + studentId);
-        		numberStudentAdded++;
-        		student.setStatus("OK");
-        		student.setStudentId(studentId);
-        	}
-        	else {
-        		System.out.println("Failed to create student = " + studentProfile.getLastName() + "," + studentProfile.getFirstName());
-        		student.setStatus("Error: Failed to add");
-        		student.setStudentId(null);
-        	}
-    	}
-    	
+		if ((students != null) && (students.length > 0)) { 
+	    	for (int i=0 ; i<students.length ; i++) {
+	    		dto.Student student = students[i];
+	    		studentId = student.getStudentId();
+	    		if (studentId != null) {
+	    			Student studentDetail = getStudent(studentId);
+	    			studentId = studentDetail.getStudentId();
+	    		}
+	    		else {
+	    			StudentProfileInformation studentProfile = buildStudentProfile(student);
+	    			studentId = createNewStudent(studentProfile);
+	    		}
+	    		
+	        	if (studentId != null) {
+	        		System.out.println("Create student sucessfully - studentId = " + studentId);
+	        		numberStudentAdded++;
+	        		student.setStatus("OK");
+	        		student.setStudentId(studentId);
+	        	}
+	        	else {
+	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
+	        		student.setStatus("Error: Failed to add");
+	        		student.setStudentId(null);
+	        	}
+	    	}
+		}    	
 		
 		// CREATE SESSION
 		SessionStudent[] sessionStudents = new SessionStudent[numberStudentAdded];
-		int index = 0;
-    	for (int i= 0 ; i<students.length ; i++) {
-    		dto.Student student = students[i];
-    		if (student.getStudentId() != null) {
-    			SessionStudent ss = buildSessionStudent(student.getStudentId());
-    			sessionStudents[index++] = ss;
-    		}
-    	}
-    	
+		if ((students != null) && (students.length > 0)) { 
+			int index = 0;
+	    	for (int i= 0 ; i<students.length ; i++) {
+	    		dto.Student student = students[i];
+	    		if (student.getStudentId() != null) {
+	    			SessionStudent ss = buildSessionStudent(student.getStudentId());
+	    			sessionStudents[index++] = ss;
+	    		}
+	    	}
+		}    	
 		
     	ScheduledSession newSession = populateSession(session, sessionStudents);
     	
@@ -306,6 +317,23 @@ public class SchedulingWS implements Serializable {
 		return studentId;
 	}
 
+	private Student getStudent(Integer studentId)
+	{
+    	String userName = this.defaultUser.getUserName();
+    	Student studentdetail = null;
+    	
+		try
+		{           
+			studentdetail = this.studentManagement.getStudentProfile(userName, studentId);
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}                    
+
+		return studentdetail;
+	}
+	
 	/**
 	 * ///////////////////////////////   createNewTestSession   //////////////////////////////////
 	 */
@@ -640,7 +668,7 @@ public class SchedulingWS implements Serializable {
 	 */
 	private boolean validateInput(Session session) {
 		
-		if ((session.getTestId() == null) || (session.getTestId().intValue() <= 0)) { 
+		if ((session.getTestName() == null) || (session.getTestName().trim().length() == 0)) { 
     		session.setStatus("Error: Invalid Test ID");
     		return false;
 		}
@@ -672,11 +700,11 @@ public class SchedulingWS implements Serializable {
     		session.setStatus("Error: Invalid Time Zone");
     		return false;
 		}
-		if ((session.getSubtests() == null) || (session.getSubtests().length == 0)) { 
+   	 	Subtest[] subtests = session.getSubtests();
+		if ((subtests == null) || (subtests.length == 0)) { 
     		session.setStatus("Error: Invalid Subtests");
     		return false;
 		}
-   	 	Subtest[] subtests = session.getSubtests();
    	 	for (int i=0 ; i<subtests.length ; i++) {
    	 		Subtest subtest = subtests[i];
    	 		if ((subtest.getSubtestId() == null) || (subtest.getSubtestId().intValue() <= 0)) {
@@ -684,30 +712,30 @@ public class SchedulingWS implements Serializable {
    	    		return false;   	 			
    	 		}
    	 	}
-		if (session.getStudents() == null) { 
-    		session.setStatus("Error: Invalid Students");
-    		return false;
-		}
 		dto.Student[] students = session.getStudents();
-   	 	for (int i=0 ; i<students.length ; i++) {
-   	 		dto.Student student = students[i];
-   			if ((student.getFirstName() == null) || (student.getFirstName().trim().length() == 0)) { 
-   	    		session.setStatus("Error: Invalid First Name");
-   	    		return false;   	 			
-   	 		}
-   			if ((student.getLastName() == null) || (student.getLastName().trim().length() == 0)) { 
-   	    		session.setStatus("Error: Invalid Last Name");
-   	    		return false;   	 			
-   	 		}
-   			if ((student.getGender() == null) || (student.getGender().trim().length() == 0)) { 
-   	    		session.setStatus("Error: Invalid Gender");
-   	    		return false;   	 			
-   	 		}
-   			if ((student.getGrade() == null) || (student.getGrade().trim().length() == 0)) { 
-   	    		session.setStatus("Error: Invalid Grade");
-   	    		return false;   	 			
-   	 		}
-   	 	}
+		if ((students != null) && (students.length > 0)) { 
+	   	 	for (int i=0 ; i<students.length ; i++) {
+	   	 		dto.Student student = students[i];
+	   	 		if (student.getStudentId() == null) {
+		   			if ((student.getFirstName() == null) || (student.getFirstName().trim().length() == 0)) { 
+		   	    		session.setStatus("Error: Invalid First Name");
+		   	    		return false;   	 			
+		   	 		}
+		   			if ((student.getLastName() == null) || (student.getLastName().trim().length() == 0)) { 
+		   	    		session.setStatus("Error: Invalid Last Name");
+		   	    		return false;   	 			
+		   	 		}
+		   			if ((student.getGender() == null) || (student.getGender().trim().length() == 0)) { 
+		   	    		session.setStatus("Error: Invalid Gender");
+		   	    		return false;   	 			
+		   	 		}
+		   			if ((student.getGrade() == null) || (student.getGrade().trim().length() == 0)) { 
+		   	    		session.setStatus("Error: Invalid Grade");
+		   	    		return false;   	 			
+		   	 		}
+	   	 		}
+	   	 	}
+		}
 			
 		return true;
 	}
