@@ -3,6 +3,9 @@
 	<name>SchedulingWebService</name>
 	<comment></comment>
 	<projects>
+		<project>dep-testadmin-ctrl</project>
+		<project>dep-base-ctrl</project>
+		<project>dep-studentmgmt-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
