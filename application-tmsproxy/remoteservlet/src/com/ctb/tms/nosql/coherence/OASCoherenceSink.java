@@ -124,7 +124,9 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			if(manifests[i].getRosterEndTime() > endTime) {
 				endTime = manifests[i].getRosterEndTime();
 			}
-			ttsSpeedStatus =  manifests[i].getTtsSpeedStatus();
+			if (manifests[i].getTtsSpeedStatus() != null){
+				ttsSpeedStatus =  manifests[i].getTtsSpeedStatus();
+			}
 		}
 		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setTutorialTaken(tutorialTaken);
