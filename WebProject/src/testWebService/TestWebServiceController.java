@@ -37,7 +37,7 @@ public class TestWebServiceController extends PageFlowController
 	}
 	
     @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "schedulingService.do") 
+            @Jpf.Forward(name = "success", path = "testWebService.jsp") 
         }) 
     protected Forward begin()
     {

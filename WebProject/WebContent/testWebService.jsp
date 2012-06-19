@@ -126,7 +126,7 @@ TerraNova Mathematics Survey - Part 2&nbsp;<input type="checkbox" checked id="su
 	<h3>Student Information</h3>
 	</td></tr>
 <tr><td>
-Student ID:<input type="text" id="studentId1" name="studentId1" value="2707732" size="8"/>&nbsp;
+Student ID:<input type="text" id="studentId1" name="studentId1" value="" size="8"/>&nbsp;
 First Name:<input type="text" id="firstName1" name="firstName1" value="firstName1" size="32"/>&nbsp;
 Last Name:<input type="text" id="lastName1" name="lastName1" value="lastName1" size="32"/>&nbsp;
 Gender:<select id="gender1" name="gender1">
