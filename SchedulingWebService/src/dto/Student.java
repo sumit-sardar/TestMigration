@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * This object contains information for students who will be created in OAS for an administration
  * The values which required from ACUITY through input are: 
- * 				firstName, lastName, gender, grade   
+ * 				assignmentId, firstName, lastName, gender, grade   
  * The values which OAS platform populated in return are:  
  * 				status, studentId, loginName, password
  * 

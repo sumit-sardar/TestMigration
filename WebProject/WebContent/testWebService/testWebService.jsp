@@ -45,7 +45,8 @@
 					 
 						<table class="headerLayout" >
 							<tr>
-								<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+								<td align="left" width="40%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+								<td align="left" width="60%"><h1>TerraNova Form G - Web Service Unit Test Page</h1></td>
 							</tr>
 						</table>
 					</td>
@@ -236,8 +237,15 @@ Grade:<select id="grade4" name="grade4">
 <tr><td>&nbsp;</td></tr>
 
 <tr>
+	<td>
+		<b>Repeat input student(s)&nbsp;<input type="text" id="repeatCount" name="repeatCount" value="0" size="4"/>&nbsp;times</b>
+	</td>
+</tr>
+	
+<tr><td>&nbsp;</td></tr>
+
+<tr>
     <td>
-    	<INPUT TYPE="hidden" NAME="runStart" VALUE="runStart">
 		<input type="submit" value="Invoke Scheduling Service" />
     </td>
 </tr>
@@ -254,10 +262,8 @@ Grade:<select id="grade4" name="grade4">
 
 		<div>
 			<br/>
-			<br/>
 			<h2><%= resultText %></h2>
 			<br/> 
-			<br/>
 		</div>
 
 </netui:form>

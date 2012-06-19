@@ -57,10 +57,15 @@ public class TestWebServiceController extends PageFlowController
 		// populate session
 	    Session session = populateSessionData();
 		
+	    long startTime = System.currentTimeMillis();
+	    
 		// call web service
 		session = schedulingWSServiceControl.scheduleSession(user, session);
 		 
-	    String resultText = "Web servive returns with status = " + session.getStatus();
+	    long elapsedTimeInSeconds = (System.currentTimeMillis() - startTime) / 1000;
+		
+	    String resultText = "Web service returns with status = " + session.getStatus();
+	    resultText += "<br/>Elapse Time:" + String.valueOf(elapsedTimeInSeconds) + " seconds";
     	this.getRequest().setAttribute("resultText", resultText);
     		
         return new Forward("success");
@@ -213,4 +218,4 @@ public class TestWebServiceController extends PageFlowController
 		return session;
     }
     
-}
+ }
