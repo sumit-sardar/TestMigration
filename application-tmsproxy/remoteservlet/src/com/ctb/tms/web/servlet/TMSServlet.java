@@ -313,6 +313,7 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
         
+        System.out.println("Savwe XML : TMS : " + xml);
     	int nextScoIndex = 0;
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
@@ -517,6 +518,10 @@ public class TMSServlet extends HttpServlet {
 	    				if(thisSco.getCompletionStatus() == null) {
 	    					thisSco.setCompletionStatus("IP");
 	    				}
+	    			}
+	    			
+	    			if (tsd.getTtsSpeedValue() != null){	    				
+	    				manifest.setTtsSpeedStatus(tsd.getTtsSpeedValue());
 	    			}
 		    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 			    }

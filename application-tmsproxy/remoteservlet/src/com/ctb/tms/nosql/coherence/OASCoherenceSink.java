@@ -82,6 +82,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		int randomSeed = 0;
 		String rosterStatus = "";
 		String tutorialTaken = null;
+		String ttsSpeedStatus = "";
 		boolean allcoManifest = true;
 		long startTime = 0;
 		long endTime = 0;
@@ -123,6 +124,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			if(manifests[i].getRosterEndTime() > endTime) {
 				endTime = manifests[i].getRosterEndTime();
 			}
+			ttsSpeedStatus =  manifests[i].getTtsSpeedStatus();
 		}
 		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setTutorialTaken(tutorialTaken);
@@ -133,6 +135,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRandomDistractorSeed(randomSeed);
 			manifests[i].setRosterStartTime(startTime);
 			manifests[i].setRosterEndTime(endTime);
+			manifests[i].setTtsSpeedStatus(ttsSpeedStatus);
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {

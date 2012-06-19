@@ -3,35 +3,50 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 
 public class Manifest implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 	private ManifestData[] manifest;
-	
+
 	private String testRosterId;
 	private String accessCode;
 	private long rosterStartTime;
-    private long rosterEndTime;
-    private int rosterLastMseq = -1;
-    private int rosterCorrelationId = 0;
-    private String rosterCompletionStatus;
-    private int rosterRestartNumber;
-    private String studentName;
-    private int randomDistractorSeed;
-    private String tutorialTaken;
-    private boolean forceReplication;
-    
-    public Manifest () {
-    	
-    }
-    
-   /* public String toString() {
+	private long rosterEndTime;
+	private int rosterLastMseq = -1;
+	private int rosterCorrelationId = 0;
+	private String rosterCompletionStatus;
+	private int rosterRestartNumber;
+	private String studentName;
+	private int randomDistractorSeed;
+	private String tutorialTaken;
+	private boolean forceReplication;
+	private String ttsSpeedStatus;
+
+	/**
+	 * @return Returns the ttsSpeedStatus.
+	 */
+	public String getTtsSpeedStatus() {
+		return ttsSpeedStatus;
+	}
+	/**
+	 * @param ttsSpeedStatus The ttsSpeedStatus to set.
+	 */
+	public void setTtsSpeedStatus(String ttsSpeedStatus) {
+		this.ttsSpeedStatus = ttsSpeedStatus;
+	}
+
+
+	public Manifest () {
+
+	}
+
+	/* public String toString() {
     	String result = testRosterId + "::" + accessCode + "::" + rosterLastMseq + "::" + rosterCompletionStatus;
     	for(int i=0;i<manifest.length;i++) {
     		result += "\n" + manifest[i].getId() + ":" + manifest[i].getTitle() + ":" + manifest[i].getSubtestLastMseq() + ":" + manifest[i].getCompletionStatus();
     	}
     	return result;
     } */
-    
+
 	public String getTutorialTaken() {
 		return tutorialTaken;
 	}
@@ -49,7 +64,7 @@ public class Manifest implements Serializable {
 	public void setTestRosterId(String testRosterId) {
 		this.testRosterId = testRosterId;
 	}
-	
+
 	public String getAccessCode() {
 		return accessCode;
 	}
@@ -61,14 +76,14 @@ public class Manifest implements Serializable {
 	public int getRandomDistractorSeed() {
 		return randomDistractorSeed;
 	}
-	
+
 	public void setRandomDistractorSeed(int randomDistractorSeed) {
 		if(this.randomDistractorSeed == 0) {
 			this.randomDistractorSeed = randomDistractorSeed;
 		}
 	}
-    
-    public String getStudentName() {
+
+	public String getStudentName() {
 		return studentName;
 	}
 	public void setStudentName(String studentName) {
@@ -118,6 +133,6 @@ public class Manifest implements Serializable {
 	public void setManifest(ManifestData[] manifest) {
 		this.manifest = manifest;
 	}
-	
-	
+
+
 }
