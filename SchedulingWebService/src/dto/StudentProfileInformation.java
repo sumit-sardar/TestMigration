@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
-import com.ctb.util.DateUtils;
+import com.ctb.util.DateUtil;
 
 /**
  * 
@@ -84,12 +84,12 @@ public class StudentProfileInformation
         //GACR005   For Defect # 65786
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
-            this.birthdateString = DateUtils.formatDateToDateString(this.birthdate);     
+            this.birthdateString = DateUtil.formatDateToDateString(this.birthdate);     
             StringTokenizer tokenizer = new StringTokenizer(this.birthdateString, "/");
             this.month = tokenizer.nextToken();
             this.day = tokenizer.nextToken();
             this.year = tokenizer.nextToken();
-            this.birthdateString = DateUtils.formatDateToDateString(this.birthdate);     
+            this.birthdateString = DateUtil.formatDateToDateString(this.birthdate);     
         }
         
         this.organizationNodes = student.getOrganizationNodes();
@@ -128,8 +128,8 @@ public class StudentProfileInformation
         //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         
-        if (DateUtils.allSelected(month, day, year)) 
-        	 date = DateUtils.createDate(this.year, this.month, this.day);
+        if (DateUtil.allSelected(month, day, year)) 
+        	 date = DateUtil.createDate(this.year, this.month, this.day);
         
         copied.setBirthDate(date);
         

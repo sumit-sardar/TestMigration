@@ -38,7 +38,7 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 
-import com.ctb.util.DateUtils;
+import com.ctb.util.DateUtil;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
 
 import dto.PathNode;
@@ -404,10 +404,10 @@ public class SchedulingWS implements Serializable {
 			 String dailyLoginStartTimeString	= session.getStartTime();
 			 String dailyLoginEndTimeString		= session.getEndTime(); 
 
-			 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(dailyLoginEndTimeString);
-			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
-			 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(dailyLoginEndDateString);
-			 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(dailyLoginStartDateString);
+			 Date dailyLoginEndTime   		= DateUtil.getDateFromTimeString(dailyLoginEndTimeString);
+			 Date dailyLoginStartTime 		= DateUtil.getDateFromTimeString(dailyLoginStartTimeString);
+			 Date dailyLoginEndDate   		= DateUtil.getDateFromDateString(dailyLoginEndDateString);
+			 Date dailyLoginStartDate 		= DateUtil.getDateFromDateString(dailyLoginStartDateString);
 			 String location          		= session.getTestLocation() == null ? "" : session.getTestLocation();
 			 String hasBreak          		= session.getHasBreak().booleanValue() ? "T" : "F";
 			 String isRandomize       		= "";

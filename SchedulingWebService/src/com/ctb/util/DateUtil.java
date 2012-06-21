@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class DateUtils 
+public class DateUtil 
 { 
     public final static int DATE_VALID = 0;
     public final static int DATE_INVALID = 1;
