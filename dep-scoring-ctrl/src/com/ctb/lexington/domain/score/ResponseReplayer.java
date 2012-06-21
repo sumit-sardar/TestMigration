@@ -258,7 +258,7 @@ public class ResponseReplayer {
         } else */
         if(itemSet.getObjectiveScore() != null) {
         	//System.out.println("-------Instead of addResponseEvent-------");
-        	if(itemSet.getValidationStatus().equals("VA") && itemSet.getUnscored() == 0 && itemSet.isMinAnswered())
+        	if(itemSet.getValidationStatus().equals("VA") && itemSet.isMinAnswered())
         		addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
         }
         else
@@ -347,7 +347,7 @@ public class ResponseReplayer {
     		final List events,
             final ItemSetVO itemSet) {
     	if(itemSet.getObjectiveScore() != null) {
-    		if(itemSet.getUnscored() != null && itemSet.getUnscored() == 0 && itemSet.isMinAnswered()) {
+    		if(itemSet.isMinAnswered()) {
 	    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 		        		itemSet.getItemSetId(),
 		                itemSet.getItemSetForm(), itemSet.getItemSetName(),
