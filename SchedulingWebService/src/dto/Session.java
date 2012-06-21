@@ -159,30 +159,20 @@ public class Session implements java.io.Serializable {
 		this.status = status;
 	}
 
-	/**
-	 * @return the product_id
-	 */
 	public Integer getProductId() {
 		return productId;
 	}
 
-	/**
-	 * @param product_id the product_id to set
-	 */
 	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
-	/**
-	 * @return the level
-	 */
+
 	public String getLevel() {
 		return level;
 	}
 
-	/**
-	 * @param level the level to set
-	 */
+
 	public void setLevel(String level) {
 		this.level = level;
 	}
