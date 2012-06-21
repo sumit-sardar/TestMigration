@@ -190,6 +190,13 @@ public class ResponseReplayer {
         
         for (final Iterator it = subtests.iterator(); it.hasNext();) {
             final ItemSetVO subtest = (ItemSetVO) it.next();
+            if(subtest.getObjectiveScore() != null) {
+	            List responses = itemResponseMapper.findItemResponsesBySubtestForAdaptive(
+	                    asLong(subtest.getItemSetId()), testRosterId);
+	            
+	            boolean isMinumAnswered = checkResponseForAdaptive(responses);
+	            subtest.setMinAnswered(isMinumAnswered);
+            }
 
             events.addAll(getSubtestEvents(roster.getNormGroup(), roster.getAgeCategory(), subtest, requireSubtestsComplete,
                     itemResponseMapper,
@@ -197,6 +204,33 @@ public class ResponseReplayer {
         }
 
         return events;
+    }
+    /**
+     * This method is implemented in order to meet the same requirement as 
+     * that of tabe online exams, i.e. scoring for that content area or subtest
+     * should be held only if the student have answered minimum 5 questions
+     * and should have answered minimum one question correctly.
+     */
+    private static boolean checkResponseForAdaptive(final List responses) {
+        if (responses.isEmpty()) return false;
+        
+        boolean minimun5Answered = false;
+        boolean min1Correct = false;
+        
+        if(responses.size() >= 5 ) {
+        	minimun5Answered = true;
+        } else {
+        	minimun5Answered = false;
+        }
+        for (final Iterator it = responses.iterator(); it.hasNext();) {
+        	ItemResponseVO adaptiveResponse = (ItemResponseVO) it.next();
+        	if(adaptiveResponse.getResponse().equals(adaptiveResponse.getCorrectAnswer())) {
+        		min1Correct = true;
+        		break;
+        	}
+        }
+
+        return minimun5Answered && min1Correct;
     }
 
     private static StudentItemSetStatusRecord getSubtestStatus(
@@ -224,7 +258,7 @@ public class ResponseReplayer {
         } else */
         if(itemSet.getObjectiveScore() != null) {
         	//System.out.println("-------Instead of addResponseEvent-------");
-        	if(itemSet.getValidationStatus().equals("VA") && itemSet.getUnscored() == 0)
+        	if(itemSet.getValidationStatus().equals("VA") && itemSet.getUnscored() == 0 && itemSet.isMinAnswered())
         		addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
         }
         else
@@ -313,7 +347,7 @@ public class ResponseReplayer {
     		final List events,
             final ItemSetVO itemSet) {
     	if(itemSet.getObjectiveScore() != null) {
-    		if(itemSet.getUnscored() != null && itemSet.getUnscored() == 0) {
+    		if(itemSet.getUnscored() != null && itemSet.getUnscored() == 0 && itemSet.isMinAnswered()) {
 	    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 		        		itemSet.getItemSetId(),
 		                itemSet.getItemSetForm(), itemSet.getItemSetName(),

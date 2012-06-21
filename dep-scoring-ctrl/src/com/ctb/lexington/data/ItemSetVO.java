@@ -143,6 +143,7 @@ public class ItemSetVO implements Persistent, Serializable
     protected Double semScore = null;
     protected String objectiveScore = null;
     protected Integer unscored = null; // Added to handle student stop in case of tabe adaptive
+    protected boolean minAnswered = false; // Added to meet same condition as of tabe online
 
     public ItemSetVO() { }
 
@@ -703,6 +704,14 @@ public class ItemSetVO implements Persistent, Serializable
 
 	public void setUnscored(Integer unscored) {
 		this.unscored = unscored;
+	}
+
+	public boolean isMinAnswered() {
+		return minAnswered;
+	}
+
+	public void setMinAnswered(boolean minAnswered) {
+		this.minAnswered = minAnswered;
 	}
 
 }

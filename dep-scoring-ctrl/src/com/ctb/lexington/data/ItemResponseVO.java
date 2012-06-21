@@ -47,6 +47,7 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
     private Integer conditionCodeId;
     private String comments;
     private Clob constructedResponse;
+    private String correctAnswer; // Added for tabe adaptive
 
 	/**
 	 * @return Returns the constructedResponse.
@@ -251,5 +252,11 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
             return null;
         }
     }
+	public String getCorrectAnswer() {
+		return correctAnswer;
+	}
+	public void setCorrectAnswer(String correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
     
 }

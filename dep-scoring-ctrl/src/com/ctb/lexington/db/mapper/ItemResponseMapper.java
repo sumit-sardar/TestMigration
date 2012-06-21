@@ -19,6 +19,7 @@ public class ItemResponseMapper extends AbstractDBMapper {
     public static final String FIND_SCORED_ITEMS = "findItemsThatAreScored";
     public static final String FIND_SCORED_OFFLINE_ITEMS_FOR_SUBTEST = "findOfflineItemsThatAreScoredBySubtest";
     public static final String FIND_SCORED_ITEMS_FOR_SUBTEST = "findItemsThatAreScoredBySubtest";
+    public static final String FIND_ITEMS_RESPONSE_FOR_ADAPTIVE = "findItemResponsesForAdaptive";
 
     public ItemResponseMapper(final Connection conn) {
         super(conn);
@@ -29,6 +30,13 @@ public class ItemResponseMapper extends AbstractDBMapper {
         map.put("itemSetId", itemSetId);
         map.put("testRosterId", testRosterId);
     	return findMany(FIND_MANY_BY_ITEM_SET_ID, map);
+    }
+    //Added for tabe adaptive
+    public List findItemResponsesBySubtestForAdaptive(final Long itemSetId, final Long testRosterId) {
+        HashMap map = new HashMap();
+        map.put("itemSetId", itemSetId);
+        map.put("testRosterId", testRosterId);
+    	return findMany(FIND_ITEMS_RESPONSE_FOR_ADAPTIVE, map);
     }
     
     public List findItemResponsesByRoster(final Long testRosterId) throws CTBSystemException {
