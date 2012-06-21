@@ -25,7 +25,7 @@
  * This is the second object which passed into scheduling web service to perform TN scheduling session for Acuity application 
  * This object contains information for session, accommodations, sub-tests, and students
  * The values which required from ACUITY through input are: 
- * testName, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
+ * productId, level, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
  * The values which OAS platform populated in return are:  
  * status, sessionId, accessCode
  * @author Tai_Truong
@@ -36,6 +36,8 @@
           <xs:element minOccurs="1" name="EndDate" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="EndTime" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="HasBreak" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="Level" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="ProductId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="SessionId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="SessionName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="StartDate" nillable="true" type="xs:string"/>
@@ -45,7 +47,6 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="Subtests" nillable="true" type="java:Subtest" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="TestLocation" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="TestName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="TimeZone" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
@@ -54,7 +55,7 @@
           <xs:documentation>/** 
  * This object contains information for students who will be created in OAS for an administration
  * The values which required from ACUITY through input are: 
- * firstName, lastName, gender, grade   
+ * assignmentId, firstName, lastName, gender, grade   
  * The values which OAS platform populated in return are:  
  * status, studentId, loginName, password
  * @author Tai_Truong
@@ -139,7 +140,7 @@
   </s0:binding>
   <s0:service name="SchedulingWSService">
     <s0:port binding="s1:SchedulingWSServiceSoapBinding" name="SchedulingWSSoapPort">
-      <s2:address location="http://oastest.ctb.com:22621/SchedulingWebService/SchedulingWS"/>
+      <s2:address location="http://nj09mhe5338.mhe.mhc:22611/SchedulingWebService/SchedulingWS"/>
     </s0:port>
   </s0:service>
 </s0:definitions>
