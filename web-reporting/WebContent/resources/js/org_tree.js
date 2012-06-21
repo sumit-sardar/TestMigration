@@ -62,6 +62,7 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 		$("#"+node_id).delegate("a","click", function(e) {
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+ 		    $("#displayMessageMain").hide();
  		    processStudentTable();
 		});
 		

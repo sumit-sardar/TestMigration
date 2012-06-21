@@ -137,7 +137,7 @@ function populateGrid() {
 		width: $("#jqGrid-content-section").width(),
 		shrinkToFit: false, 
 		caption:$("#imdRptStuListGridCaption").val(),
-		ondblClickRow: function(rowid) {viewHtmlReport();},
+		ondblClickRow: function(rowid) {viewHtmlReport(); $("#displayMessageMain").hide();},
 		onPaging: function() {
 			var reqestedPage = parseInt($('#immdRptGrid').getGridParam("page"));
 			var maxPageSize = parseInt($('#sp_1_immdRptGridPager').text());
@@ -158,6 +158,7 @@ function populateGrid() {
 			selectedRData = $("#immdRptGrid").getRowData(rowId);
 			immdRptSelectedTestAdminId = selectedRData.testAdminId;
 			enableDisableImmediateReportButton(true);
+			$("#displayMessageMain").hide();
 		},
 		loadComplete: function () {
 			if ($('#immdRptGrid').getGridParam('records') === 0) {
@@ -222,6 +223,7 @@ function gridScoringStudentReload(){
 	jQuery("#immdRptGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#immdRptGrid").jqGrid('setGridParam', {url:'getAllCompletedStudentForOrgNode.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#immdRptGrid").sortGrid('userName',true,'asc');
+	$("#displayMessageMain").hide();
 }
 
 function enableDisableImmediateReportButton(enabled){
@@ -397,6 +399,7 @@ function viewHtmlReport(element){
 	if (element!=null && isButtonDisabled(element)) 
 		return true;
 	resetViewReportPopupData();
+	$("#displayMessageMain").hide();
 	getAndPopulateStudentScoreDetails();
 }
 
@@ -491,6 +494,7 @@ function populateReportTable(data){
     var element = document.getElementById("downloadImmediateReport");
     element.form.action = "studentsImmediateScoreReportInPDF.do";
     element.form.submit();
+    $("#displayMessageMain").hide();
 	return false;
  }
  
@@ -502,6 +506,7 @@ function populateReportTable(data){
     var element = document.getElementById("downloadImmediateReport");
     element.form.action = "studentsImmediateScoreReportInCSV.do";
     element.form.submit();
+    $("#displayMessageMain").hide();
 	return false;
  }
 
