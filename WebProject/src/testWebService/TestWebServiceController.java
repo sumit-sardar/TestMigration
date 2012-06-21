@@ -78,8 +78,8 @@ public class TestWebServiceController extends PageFlowController
     {
 		// init session
 		Session session = new Session();
-		session.setTestId(Integer.valueOf(273901));
-		session.setTestName(this.getRequest().getParameter("testName"));
+		session.setProductId(Integer.valueOf(3500));
+		session.setLevel(this.getRequest().getParameter("level"));
 		session.setSessionName(this.getRequest().getParameter("sessionName"));
 		session.setStartDate(this.getRequest().getParameter("startDate"));
 		session.setEndDate(this.getRequest().getParameter("endDate"));
@@ -213,6 +213,8 @@ public class TestWebServiceController extends PageFlowController
 			}
 		}
 		
+		String repeatCount = this.getRequest().getParameter("repeatCount");
+			
 		session.setStudents(students);
 
 		return session;

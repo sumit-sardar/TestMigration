@@ -80,6 +80,12 @@ public class SchedulingWS implements Serializable {
 
     @Control()
     private com.ctb.control.db.TestAdmin admins;
+    
+    @Control()
+    private com.ctb.control.db.Product product;
+    
+    @Control()
+    private com.ctb.control.db.ItemSet itemSet;
 	
 	/**
 	 * scheduleSession: this is web service which is called from Acuity
@@ -387,7 +393,8 @@ public class SchedulingWS implements Serializable {
 		 try{
 			 
 			 TestSession testSession = new TestSession();
-			 Integer itemSetId        		= session.getTestId(); 	
+			 Integer itemSetId        		= getItemSetIdTCByProductAndLevel(session);
+			 session.setTestId(itemSetId);
 			 Integer customerId        		= this.defaultUser.getCustomer().getCustomerId(); 
 			 Integer creatorOrgNodeId  		= this.defaultTopNode; 
 			 Integer productId  			= this.defaultProductId; 
@@ -489,10 +496,16 @@ public class SchedulingWS implements Serializable {
         	 else 
             	 session.setAccessCode(accessCodes[0]);
         	 
-        	 
+    		 TestElement[] allsubtest = getAllItemSetIdTSbyItemSetIdTC(itemSetId);
 	    	 for (int i=0 ; i<subtests.length ; i++) {
 	    		 Subtest subtest = subtests[i]; 
-	    		 itemSetIdTDs[i] = subtest.getSubtestId().toString();
+	    		 Integer itesetIdTs = getFromAllSubtestArray(allsubtest,  subtest.getSubtestName().trim());
+	    		 if(itesetIdTs == null ){
+	    			 itemSetIdTDs[i] = getItemSetIdTSbyItemSetIdTCandItemSetName(itemSetId, subtest.getSubtestName().trim()).getItemSetId().toString();
+	    		 } else {
+	    			 itemSetIdTDs[i] = itesetIdTs.toString();
+	    		 }
+	    		 itemSetIdTDs[i] = 
 		    	 itemSetForms[i] = "";
 		    	 itemSetisDefault[0] = "T";
 	    	 }
@@ -668,8 +681,12 @@ public class SchedulingWS implements Serializable {
 	 */
 	private boolean validateInput(Session session) {
 		
-		if ((session.getTestName() == null) || (session.getTestName().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Test ID");
+		if ((session.getProductId() == null) || (session.getProductId().intValue() <= 0)) { 
+    		session.setStatus("Error: Invalid Product ID");
+    		return false;
+		}
+		if ((session.getLevel() == null) || (session.getLevel().trim().length() == 0)) { 
+    		session.setStatus("Error: Invalid Level");
     		return false;
 		}
 		if ((session.getSessionName() == null) || (session.getSessionName().trim().length() == 0)) { 
@@ -740,5 +757,57 @@ public class SchedulingWS implements Serializable {
 		return true;
 	}
 	
+	/**
+	 * get itemSetIdTC
+	 */
+	private Integer getItemSetIdTCByProductAndLevel(Session session) {
+		Integer itemSetId = null;
+		try {
+			itemSetId = product.getItemSetIdTCByProductAndLevel(AUTHENTICATE_USER_NAME, session.getProductId(), session.getLevel());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itemSetId;
+	}
 	
+	/**
+	 * get all itemSetIdTS
+	 */
+	private TestElement[] getAllItemSetIdTSbyItemSetIdTC(Integer itemSetIdTC) {
+		TestElement[] ItemSetIdTS = null;
+		try {
+			ItemSetIdTS = itemSet.getAllItemSetIdTSbyItemSetIdTC(itemSetIdTC);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ItemSetIdTS;
+	}
+	
+	
+	/**
+	 * get itemSetIdTS
+	 */
+	private TestElement getItemSetIdTSbyItemSetIdTCandItemSetName(Integer itemSetIdTC, String itemSetName) {
+		TestElement ItemSetIdTS = null;
+		try {
+			ItemSetIdTS = itemSet.getItemSetIdTSbyItemSetIdTCandItemSetName(itemSetIdTC, itemSetName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ItemSetIdTS;
+	}
+	
+	private Integer getFromAllSubtestArray (TestElement[] allSubtest, String SubtestName){
+		Integer subtestId = null;
+		if(allSubtest!=null && allSubtest.length>0){
+			for (TestElement ts :allSubtest) {
+				if (SubtestName.equalsIgnoreCase(ts.getItemSetName())){
+					subtestId = ts.getItemSetId();
+					break;
+				}
+				
+			}
+		}
+		return subtestId;
+	}
 }

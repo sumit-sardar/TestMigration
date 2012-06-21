@@ -65,8 +65,8 @@
 <tr><td colspan="2">
 	<h3>Session Information</h3>
 </td></tr>
-<tr><td>Test Name:</td>
-<td><input type="text" id="testName" name="testName" value="FORM_GCB_5480800_Level_13" size="64" />&nbsp;</td>
+<tr><td>TerraNova Form G - Level:</td>
+<td><input type="text" id="level" name="level" value="13" size="4" />&nbsp;</td>
 </tr>
 <tr><td>Session Name:</td>
 <td><input type="text" id="sessionName" name="sessionName" value="TNG Level 13 Session One" size="64"/>&nbsp;</td>

@@ -4,7 +4,7 @@ import com.bea.control.ServiceControl;
 import org.apache.beehive.controls.api.events.EventSet;
 import org.apache.beehive.controls.api.bean.ControlExtension;
 
-@ServiceControl.Location(urls = {"http://localhost:7001/SchedulingWebService/SchedulingWS"})
+@ServiceControl.Location(urls = {"http://oastest.ctb.com:22621/SchedulingWebService/SchedulingWS"})
 @ServiceControl.HttpSoapProtocol
 @ServiceControl.SOAPBinding(style = ServiceControl.SOAPBinding.Style.DOCUMENT, use = ServiceControl.SOAPBinding.Use.LITERAL, parameterStyle = ServiceControl.SOAPBinding.ParameterStyle.WRAPPED)
 @ServiceControl.WSDL(resourcePath = "testWebService/SchedulingWSService.wsdl", service = "SchedulingWSService")

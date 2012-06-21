@@ -6,7 +6,7 @@ import java.util.Date;
  * This is the second object which passed into scheduling web service to perform TN scheduling session for Acuity application 
  * This object contains information for session, accommodations, sub-tests, and students
  * The values which required from ACUITY through input are: 
- * 				testName, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
+ * 				productId, level, sessionName, startTime, endTime, startDate, endDate, hasBreak, timeZone, subtests, students   
  * The values which OAS platform populated in return are:  
  * 				status, sessionId, accessCode
  * 
@@ -16,8 +16,9 @@ public class Session implements java.io.Serializable {
     static final long serialVersionUID = 1L;
  
     private Integer sessionId = null;		// null for creating new session - not null for update existing session.
-    private String testName = null;			// publicId - test name which Acuity and OAS agreed upon.	
-    private Integer testId = null;			// internal to OAS	
+    private Integer testId = null;			// internal to OAS
+    private Integer productId; 				// input from Acuity
+    private String level ;   				// input from Acuity 
     private String sessionName = null;		// 64 chars
     private String accessCode = null;		// 32 chars
     private String startTime = null;
@@ -34,6 +35,7 @@ public class Session implements java.io.Serializable {
     
     private String status = "OK";			// 32 chars
     
+    
 	public Session() {
 	}
 
@@ -44,14 +46,6 @@ public class Session implements java.io.Serializable {
 	public void setSessionId(Integer sessionId) {
 		this.sessionId = sessionId;
 	}
-
-	public String getTestName() {
-		return testName;
-	}
-
-	public void setTestName(String testName) {
-		this.testName = testName;
-	}
 	
 	public Integer getTestId() {
 		return testId;
@@ -60,7 +54,7 @@ public class Session implements java.io.Serializable {
 	public void setTestId(Integer testId) {
 		this.testId = testId;
 	}
-
+		
 	public String getSessionName() {
 		return sessionName;
 	}
@@ -163,6 +157,34 @@ public class Session implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the product_id
+	 */
+	public Integer getProductId() {
+		return productId;
+	}
+
+	/**
+	 * @param product_id the product_id to set
+	 */
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	/**
+	 * @return the level
+	 */
+	public String getLevel() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(String level) {
+		this.level = level;
 	}
     
 	
