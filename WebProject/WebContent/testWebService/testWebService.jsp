@@ -66,7 +66,7 @@
 	<h3>Session Information</h3>
 </td></tr>
 <tr><td>TerraNova Form G - Level:</td>
-<td><input type="text" id="level" name="level" value="13" size="4" />&nbsp;</td>
+<td><input type="text" id="level" name="level" value="13" size="2" />&nbsp;</td>
 </tr>
 <tr><td>Session Name:</td>
 <td><input type="text" id="sessionName" name="sessionName" value="TNG Level 13 Session One" size="64"/>&nbsp;</td>

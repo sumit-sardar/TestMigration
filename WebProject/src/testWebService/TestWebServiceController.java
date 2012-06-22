@@ -100,16 +100,16 @@ public class TestWebServiceController extends PageFlowController
 		
 		int index = 0;		
 		if (this.getRequest().getParameter("subtest1") != null) {
-			subtest = new Subtest(); subtest.setSubtestId(new Integer(273902)); subtests[index] = subtest; index++;
+			subtest = new Subtest(); subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 1"); subtests[index] = subtest; index++;
 		}
 		if (this.getRequest().getParameter("subtest2") != null) {
-			subtest = new Subtest(); subtest.setSubtestId(new Integer(273913)); subtests[index] = subtest; index++;
+			subtest = new Subtest(); subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 2"); subtests[index] = subtest; index++;
 		}
 		if (this.getRequest().getParameter("subtest3") != null) {
-			subtest = new Subtest(); subtest.setSubtestId(new Integer(273915)); subtests[index] = subtest; index++;
+			subtest = new Subtest(); subtest.setSubtestName("TerraNova Mathematics Survey - Part 1"); subtests[index] = subtest; index++;
 		}
 		if (this.getRequest().getParameter("subtest4") != null) {
-			subtest = new Subtest(); subtest.setSubtestId(new Integer(273918)); subtests[index] = subtest; index++;
+			subtest = new Subtest(); subtest.setSubtestName("TerraNova Mathematics Survey - Part 2"); subtests[index] = subtest; index++;
 		}
 		session.setSubtests(subtests);
 		
@@ -213,10 +213,32 @@ public class TestWebServiceController extends PageFlowController
 			}
 		}
 		
-		String repeatCount = this.getRequest().getParameter("repeatCount");
-			
-		session.setStudents(students);
-
+		String repeatCountStr = this.getRequest().getParameter("repeatCount");
+		if ((repeatCountStr != null) && (repeatCountStr.trim().length() > 0)) {
+			int repeatCount = Integer.valueOf(repeatCountStr).intValue();
+			int totalCount = studentCount + (studentCount * repeatCount);
+			dto.Student[] repeatStudents = new dto.Student[totalCount];
+			index = 0;
+			for (int i=0 ; i<studentCount ; i++) {
+				student = students[i];
+				repeatStudents[index] = student;
+				index++;
+				for (int j=0 ; j<repeatCount ; j++) {
+					dto.Student studentRepeat = new dto.Student(); 
+					studentRepeat.setFirstName(student.getFirstName()); 
+					studentRepeat.setLastName(student.getLastName()); 
+					studentRepeat.setGender(student.getGender()); 
+					studentRepeat.setGrade(student.getGrade()); 
+					repeatStudents[index] = studentRepeat;
+					index++;
+				}
+			}
+			session.setStudents(repeatStudents);
+		}
+		else {
+			session.setStudents(students);
+		}
+		
 		return session;
     }
     

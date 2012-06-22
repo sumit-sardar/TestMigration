@@ -505,7 +505,6 @@ public class SchedulingWS implements Serializable {
 	    		 } else {
 	    			 itemSetIdTDs[i] = itesetIdTs.toString();
 	    		 }
-	    		 itemSetIdTDs[i] = 
 		    	 itemSetForms[i] = "";
 		    	 itemSetisDefault[0] = "T";
 	    	 }
@@ -724,7 +723,7 @@ public class SchedulingWS implements Serializable {
 		}
    	 	for (int i=0 ; i<subtests.length ; i++) {
    	 		Subtest subtest = subtests[i];
-   	 		if ((subtest.getSubtestId() == null) || (subtest.getSubtestId().intValue() <= 0)) {
+   	 		if ((subtest.getSubtestName() == null) || (subtest.getSubtestName().trim().length() == 0)) {
    	    		session.setStatus("Error: Invalid Subtest");
    	    		return false;   	 			
    	 		}
