@@ -210,7 +210,7 @@ public class ItemLayoutPublisher {
 								+ sourceFile.substring(sourceFile
 										.indexOf("/images/") + 8);
 						sourceFile = sourceFile.replaceAll("%20", " ");
-						 sourceFile = "c:\\mappingdata\\images\\" + img;
+						 //sourceFile = "c:\\mappingdata\\images\\" + img;
 						String destination = destinationPath + img;
 						// sftpChannel.cd(destinationPath);
 						sftpChannel.put(sourceFile, destination);
