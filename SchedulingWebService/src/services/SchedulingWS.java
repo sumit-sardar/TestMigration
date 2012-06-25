@@ -411,7 +411,7 @@ public class SchedulingWS implements Serializable {
 			 String location          		= session.getTestLocation() == null ? "" : session.getTestLocation();
 			 String hasBreak          		= session.getHasBreak().booleanValue() ? "T" : "F";
 			 String isRandomize       		= "";
-			 String timeZone          		= session.getTimeZone();
+			 String timeZone          		= DateUtil.getDBTimeZone(session.getTimeZone());
 			 String sessionName		  		= session.getSessionName();
 			 String showStdFeedbackVal   	= "false";
 			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  

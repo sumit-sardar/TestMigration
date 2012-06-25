@@ -85,8 +85,7 @@ public class TestWebServiceController extends PageFlowController
 		session.setEndDate(this.getRequest().getParameter("endDate"));
 		session.setStartTime(this.getRequest().getParameter("startTime"));
 		session.setEndTime(this.getRequest().getParameter("endTime"));
-		//session.setTimeZone(this.getRequest().getParameter("timeZone"));
-		session.setTimeZone("America/Los_Angeles");
+		session.setTimeZone(this.getRequest().getParameter("timeZone"));
 		session.setHasBreak(new Boolean(this.getRequest().getParameter("hasBreak") != null));
 		
 		// init subtests
