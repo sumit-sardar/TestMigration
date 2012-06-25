@@ -33,7 +33,7 @@ public class Session implements java.io.Serializable {
     private Subtest[] subtests = null;
     private Student[] students = null;
     
-    private String status = "OK";			// 32 chars
+    private String status = null;			
     
     
 	public Session() {
@@ -151,6 +151,22 @@ public class Session implements java.io.Serializable {
 		this.students = students;
 	}
 
+	public Integer getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -159,33 +175,9 @@ public class Session implements java.io.Serializable {
 		this.status = status;
 	}
 
-	/**
-	 * @return the product_id
-	 */
-	public Integer getProductId() {
-		return productId;
+	public void setStatusNonOverwritten(String status) {
+		if (this.status == null) 
+			this.status = status;
 	}
-
-	/**
-	 * @param product_id the product_id to set
-	 */
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
-
-	/**
-	 * @return the level
-	 */
-	public String getLevel() {
-		return level;
-	}
-
-	/**
-	 * @param level the level to set
-	 */
-	public void setLevel(String level) {
-		this.level = level;
-	}
-    
 	
 }

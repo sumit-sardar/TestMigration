@@ -95,7 +95,7 @@ public class SchedulingWS implements Serializable {
 	{
 		// AUTHENTICATE USER
     	if (! authenticateUser(user)) {
-    		session.setStatus("Error: Invalid user");
+    		session.setStatusNonOverwritten("Error: Invalid user");
     		return session;
     	}
 
@@ -108,7 +108,7 @@ public class SchedulingWS implements Serializable {
     	
     	// SETUP DEFAULT VALUES
     	if (! setDefaultInformation(user)) {
-    		session.setStatus("Error: Invalid data");
+    		session.setStatusNonOverwritten("Error: Invalid data");
     		return session;    		
     	}
 
@@ -156,12 +156,12 @@ public class SchedulingWS implements Serializable {
 	        	if (studentId != null) {
 	        		System.out.println("Create student sucessfully - studentId = " + studentId);
 	        		numberStudentAdded++;
-	        		student.setStatus("OK");
+	        		student.setStatusNonOverwritten("OK");
 	        		student.setStudentId(studentId);
 	        	}
 	        	else {
 	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
-	        		student.setStatus("Error: Failed to add");
+	        		student.setStatusNonOverwritten("Error: Failed to add");
 	        		student.setStudentId(null);
 	        	}
 	    	}
@@ -187,10 +187,12 @@ public class SchedulingWS implements Serializable {
         if (testAdminId != null) {
         	System.out.println("Create session sucessfully - testAdminId = " + testAdminId);
         	session.setSessionId(testAdminId);
+        	session.setStatusNonOverwritten("OK");
         }
         else {
     		System.out.println("Failed to create session = " + session.getSessionName());
         	session.setSessionId(null);
+        	session.setStatusNonOverwritten("Error: Failed to create session");
         }
 		
 		return session;
@@ -457,7 +459,7 @@ public class SchedulingWS implements Serializable {
 	         else 
 	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.ROUND_ROBIN);
 	         
-	        testSession.setPreferredForm(formAssigned);      
+	         testSession.setPreferredForm(formAssigned);      
 	         
 	         testSession.setOverrideFormAssignmentMethod(overrideFormAssignment);
 	         testSession.setOverrideLoginStartDate(overrideLoginSDate);
@@ -469,6 +471,7 @@ public class SchedulingWS implements Serializable {
 			 
 		 } catch (Exception e) {
 			 e.printStackTrace();
+			 session.setStatusNonOverwritten("Error: Failed to populate test session");
 		 }
 	}
 	
@@ -548,6 +551,7 @@ public class SchedulingWS implements Serializable {
 	        
 		 } catch (Exception e) {
 			 e.printStackTrace();
+			 session.setStatusNonOverwritten("Error: Failed to populate scheduled units");
 		 }
     }
 	
@@ -558,8 +562,12 @@ public class SchedulingWS implements Serializable {
 	 */
 	private void populateSessionStudent(Session session, ScheduledSession scheduledSession, SessionStudent[] students) {
 
-		scheduledSession.setStudents(students);
-		
+		try {
+			scheduledSession.setStudents(students);
+		} catch (Exception e) {
+			e.printStackTrace();
+			session.setStatusNonOverwritten("Error: Failed to populate session students");
+		}
 	}
          
  
@@ -572,11 +580,10 @@ public class SchedulingWS implements Serializable {
 			User[] proctorArray = new User[1];
 			proctorArray[0]= this.defaultUser;
 			scheduledSession.setProctors(proctorArray);
-		
 		} catch (Exception e) {
 			e.printStackTrace();
+			session.setStatusNonOverwritten("Error: Failed to populate proctor");
 		}
-
 	}
 
 	
@@ -681,50 +688,50 @@ public class SchedulingWS implements Serializable {
 	private boolean validateInput(Session session) {
 		
 		if ((session.getProductId() == null) || (session.getProductId().intValue() <= 0)) { 
-    		session.setStatus("Error: Invalid Product ID");
+    		session.setStatusNonOverwritten("Error: Invalid Product ID");
     		return false;
 		}
 		if ((session.getLevel() == null) || (session.getLevel().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Level");
+    		session.setStatusNonOverwritten("Error: Invalid Level");
     		return false;
 		}
 		if ((session.getSessionName() == null) || (session.getSessionName().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Session Name");
+    		session.setStatusNonOverwritten("Error: Invalid Session Name");
     		return false;
 		}
 		if ((session.getStartTime() == null) || (session.getStartTime().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Start Time");
+    		session.setStatusNonOverwritten("Error: Invalid Start Time");
     		return false;
 		}
 		if ((session.getEndTime() == null) || (session.getEndTime().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid End Time");
+    		session.setStatusNonOverwritten("Error: Invalid End Time");
     		return false;
 		}
 		if ((session.getStartDate() == null) || (session.getStartDate().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Start Date");
+    		session.setStatusNonOverwritten("Error: Invalid Start Date");
     		return false;
 		}
 		if ((session.getEndDate() == null) || (session.getEndDate().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid End Date");
+    		session.setStatusNonOverwritten("Error: Invalid End Date");
     		return false;
 		}
 		if (session.getHasBreak() == null) { 
-    		session.setStatus("Error: Invalid Test Break");
+    		session.setStatusNonOverwritten("Error: Invalid Test Break");
     		return false;
 		}
 		if ((session.getTimeZone() == null) || (session.getTimeZone().trim().length() == 0)) { 
-    		session.setStatus("Error: Invalid Time Zone");
+    		session.setStatusNonOverwritten("Error: Invalid Time Zone");
     		return false;
 		}
    	 	Subtest[] subtests = session.getSubtests();
 		if ((subtests == null) || (subtests.length == 0)) { 
-    		session.setStatus("Error: Invalid Subtests");
+    		session.setStatusNonOverwritten("Error: Invalid Subtests");
     		return false;
 		}
    	 	for (int i=0 ; i<subtests.length ; i++) {
    	 		Subtest subtest = subtests[i];
    	 		if ((subtest.getSubtestName() == null) || (subtest.getSubtestName().trim().length() == 0)) {
-   	    		session.setStatus("Error: Invalid Subtest");
+   	    		session.setStatusNonOverwritten("Error: Invalid Subtest");
    	    		return false;   	 			
    	 		}
    	 	}
@@ -734,19 +741,19 @@ public class SchedulingWS implements Serializable {
 	   	 		dto.Student student = students[i];
 	   	 		if (student.getStudentId() == null) {
 		   			if ((student.getFirstName() == null) || (student.getFirstName().trim().length() == 0)) { 
-		   	    		session.setStatus("Error: Invalid First Name");
+		   	    		session.setStatusNonOverwritten("Error: Invalid First Name");
 		   	    		return false;   	 			
 		   	 		}
 		   			if ((student.getLastName() == null) || (student.getLastName().trim().length() == 0)) { 
-		   	    		session.setStatus("Error: Invalid Last Name");
+		   	    		session.setStatusNonOverwritten("Error: Invalid Last Name");
 		   	    		return false;   	 			
 		   	 		}
 		   			if ((student.getGender() == null) || (student.getGender().trim().length() == 0)) { 
-		   	    		session.setStatus("Error: Invalid Gender");
+		   	    		session.setStatusNonOverwritten("Error: Invalid Gender");
 		   	    		return false;   	 			
 		   	 		}
 		   			if ((student.getGrade() == null) || (student.getGrade().trim().length() == 0)) { 
-		   	    		session.setStatus("Error: Invalid Grade");
+		   	    		session.setStatusNonOverwritten("Error: Invalid Grade");
 		   	    		return false;   	 			
 		   	 		}
 	   	 		}

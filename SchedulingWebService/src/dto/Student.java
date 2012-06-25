@@ -25,7 +25,7 @@ public class Student implements java.io.Serializable {
     private String loginName = null;	// 32 chars
     private String password = null;		// 32 chars
  
-    private String status = "OK";
+    private String status = null;
     
 	public Student() {
 	}
@@ -116,6 +116,11 @@ public class Student implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public void setStatusNonOverwritten(String status) {
+		if (this.status == null) 
+			this.status = status;
 	}
 	
 }
