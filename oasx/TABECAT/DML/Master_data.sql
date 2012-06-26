@@ -44,6 +44,7 @@ insert into product_type_code values ('TA', 'Tabe Adaptive')
 -- updating the time
 
 select item_set_id, item_set_name,time_limit  from item_set where  item_set_id in( select item_set_id from item_set_product where product_id = 8001) and adaptive = 'T'
+--DEV
 /
 update item_set set time_limit = 2400 where item_set_id = 30212
 /
@@ -52,4 +53,17 @@ update item_set set time_limit = 1800 where item_set_id = 30412
 update item_set set time_limit = 1200 where item_set_id = 30173
 /
 update item_set set time_limit = 1800 where item_set_id = 30292
+--TS
 /
+update item_set set time_limit = 1800 where item_set_id = 30213
+/
+update item_set set time_limit = 1800 where item_set_id = 30413
+/
+update item_set set time_limit = 1200 where item_set_id = 30174
+/
+update item_set set time_limit = 1200 where item_set_id = 30232
+/
+update item_set set time_limit = 1800 where item_set_id = 30293
+
+
+
