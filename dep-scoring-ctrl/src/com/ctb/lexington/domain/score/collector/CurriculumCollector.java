@@ -788,7 +788,7 @@ public class CurriculumCollector {
         		"	product prod, " +
         		"	item_set ca, " +
         		"	item_Set_category cacat, " +
-        		"	student_item_set_status siss, " +
+        		"	item_set_ancestor isa, " +
         		"	test_roster ros, " +
         		"	test_admin adm, " +
         		"	test_catalog tc " +
@@ -797,8 +797,9 @@ public class CurriculumCollector {
         		"	and adm.test_admin_id = ros.test_admin_id " +
         		"	and tc.test_catalog_id = adm.test_catalog_id " +
         		"	and prod.product_id = tc.product_id " +
-        		"	and siss.test_roster_id = ros.test_roster_id " +
-        		"	and ca.item_set_id = siss.item_set_id " +
+        		"	and tc.item_set_id = isa.ancestor_item_set_id " +
+        		"	and isa.item_set_id = ca.item_set_id " +
+        		"	and isa.item_set_type = 'TD' " +
         		"	and ca.sample = 'F' " +
         		"	and tc.ACTIVATION_STATUS = 'AC' " +
         		"	and (ca.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
@@ -864,21 +865,18 @@ public class CurriculumCollector {
         	"	tco.objective_name as primaryObjectiveName, " +
         	"	tco.items as primaryNumItems, " +
         	"	iset.item_set_id as subtestId, " +
-        	"	siss.objective_score as subtestLevel, " +
+        	"	iset.item_set_level as subtestLevel, " +
         	"	prod.product_id as productId " +
         	"from " +
         	"	test_roster ros, " +
         	"	test_admin adm, " +
         	"	product prod, " +
         	"	tabe_cat_objective tco, " +
-        	"	student_item_set_status siss, " +
         	"	item_set iset " +
         	"where " +
         	"	ros.test_roster_id = ? " +
         	"	and adm.test_admin_id = ros.test_admin_id " +
         	"	and adm.product_id = prod.product_id " +
-        	"	and siss.test_roster_id = ros.test_roster_id " +
-        	"	and siss.item_set_id = iset.item_set_id " +
         	"	and iset.item_set_id = tco.content_area_id";
         
         PreparedStatement ps = null;
@@ -896,7 +894,7 @@ public class CurriculumCollector {
                 primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
                 primaryObjective.setPrimaryObjectivePointsPossible(new Long(0));
                 primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
-                primaryObjective.setSubtestLevel("CAT"); // Default value to be entered for changes in cat adaptive engine
+                primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
                 
