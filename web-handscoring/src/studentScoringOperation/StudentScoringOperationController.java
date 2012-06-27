@@ -800,6 +800,9 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
                 if (itemDetail != null) {
                 	if(itemDetail.getAnswered().equals("A")) {
                 		itemDetail.setAnswered("Answered");
+                		if(itemDetail.getScoreStatus().equalsIgnoreCase("Incomplete")) {
+                			itemDetail.setScorePoint("-");
+                		}
                 	} else {
                 		itemDetail.setAnswered("Not Answered");
                 	}
