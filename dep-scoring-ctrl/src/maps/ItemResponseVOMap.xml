@@ -260,6 +260,7 @@
                 AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
                 AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
                 AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
+                AND IR.RESPONSE IS NOT NULL
         ORDER BY               
                IR.RESPONSE_SEQ_NUM ASC
     </select>

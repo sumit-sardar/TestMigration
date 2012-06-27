@@ -230,7 +230,7 @@ public class ResponseReplayer {
         	}
         }
 
-        return minimun5Answered && min1Correct;
+        return (min1Correct || minimun5Answered);
     }
 
     private static StudentItemSetStatusRecord getSubtestStatus(
