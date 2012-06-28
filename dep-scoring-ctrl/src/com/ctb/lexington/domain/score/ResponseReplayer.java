@@ -195,6 +195,7 @@ public class ResponseReplayer {
 	                    asLong(subtest.getItemSetId()), testRosterId);
 	            
 	            boolean isMinumAnswered = checkResponseForAdaptive(responses);
+	            //System.out.println("isMinumAnswered -> " + isMinumAnswered);
 	            subtest.setMinAnswered(isMinumAnswered);
             }
 
@@ -209,7 +210,7 @@ public class ResponseReplayer {
      * This method is implemented in order to meet the same requirement as 
      * that of tabe online exams, i.e. scoring for that content area or subtest
      * should be held only if the student have answered minimum 5 questions
-     * and should have answered minimum one question correctly.
+     * or should have answered minimum one question correctly.
      */
     private static boolean checkResponseForAdaptive(final List responses) {
         if (responses.isEmpty()) return false;
