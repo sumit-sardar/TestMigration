@@ -36,7 +36,7 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     
     private static final String TABE_FRAMEWORK_CODE = "TABE";
     private static final List ALLOWED_TEST_LEVELS_FOR_GED_CALCS = Arrays.asList(new String[] {"A",
-    "D", "CAT"});
+    "D", "CAT", "Adaptive"});
     
     private final Map contentAreaDerivedScoreEvents = new SafeHashMap(String.class,
             ContentAreaDerivedScoreEvent.class);
@@ -89,6 +89,7 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
             final String message = "TABECompositeScoreCalculator.onEvent(ContentAreaDerivedScoreEvent event)";
             Timer timer = Timer.startTimer();
             contentAreaDerivedScoreEvents.put(event.getContentAreaName(), event);
+            //System.out.println("ContentAreaDerivedScoreEvent.getContentAreaName() -> " + event.getContentAreaName());
             Timer.logElapsed(message, timer);
         }
     }
@@ -190,7 +191,9 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     
     private boolean areContentAreasInCorrectLevelForTotal() {
         String reading = getContentAreaLevel(READING_CONTENT_AREA_NAME);
+        //System.out.println("reading -> " + reading);
         String language = getContentAreaLevel(LANGUAGE_CONTENT_AREA_NAME);
+        //System.out.println("language -> " + language);
         ContentAreaDerivedScoreEvent readDerivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(READING_CONTENT_AREA_NAME);
         Integer readSubtestId = DatabaseHelper.asInteger(readDerivedScoreEvent.getSubtestId());
         ContentAreaDerivedScoreEvent langDerivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(LANGUAGE_CONTENT_AREA_NAME);
