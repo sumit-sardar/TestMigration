@@ -897,6 +897,7 @@ public class CurriculumCollector {
                 primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                primaryObjective.setSubtestForm("Adaptive");
                 
                 String level = rs.getString("subtestLevel");
                 System.out.println("*** OAS ROSTER ID: " + oasRosterId.toString());

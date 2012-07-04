@@ -268,7 +268,7 @@ public class AdminController {
        else if("TA".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
                                           new Long(
-                                        	"CAT".equals(level)?23:24 ));
+                                        	"Adaptive".equals(level)?23:24 ));
         } else {
             assessmentData.setLevelid(new Long(6));
         }

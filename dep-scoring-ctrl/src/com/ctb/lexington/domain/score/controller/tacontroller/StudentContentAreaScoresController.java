@@ -63,13 +63,13 @@ public class StudentContentAreaScoresController {
                    newFact.setContentAreaid(contentAreas[i].getContentAreaId());
                    newFact.setCurrentResultid(context.getCurrentResultId());
                    newFact.setFormid(new Long(
-                                            "CAT".equals(contentAreas[i].getSubtestForm())?13:14));
+                                            "Adaptive".equals(contentAreas[i].getSubtestForm())?13:14));
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replace('+', '9'))));
                    }
                    newFact.setGradeid(context.getGradeId());
                    newFact.setLevelid(new Long(
-                                            "CAT".equals(contentAreas[i].getSubtestLevel())?23:24));
+                                            "Adaptive".equals(contentAreas[i].getSubtestLevel())?23:24));
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null:new Long(fact.getNationalPercentile().longValue()));
                    newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));

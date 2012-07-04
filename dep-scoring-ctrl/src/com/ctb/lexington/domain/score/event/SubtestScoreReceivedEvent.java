@@ -7,7 +7,7 @@ public class SubtestScoreReceivedEvent extends SubtestEvent{
 	protected Double totalObjectiveRawScore;
 	protected Double objectiveScore;
 	protected Double objectiveSSsem; // Standard Error of Measurement
-	protected String objectiveLevel = "CAT"; //Default value is non is set for tabe adaptive
+	protected String objectiveLevel = "Adaptive"; //Default value is set to adaptive as per requirement
 	protected Integer objectiveMasteryLevel;
 	protected Double abilityScore;
 	protected Double semScore;

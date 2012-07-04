@@ -147,3 +147,9 @@ insert into mastery_level_dim values (5,'Beginner')
 /
 insert into mastery_level_dim values (6,'Advanced')
 /
+
+--updating form and level as per new requirement
+UPDATE form_dim SET NAME = 'Adaptive' WHERE NAME = 'CAT' AND product_typeid = 5
+/
+UPDATE level_dim SET NAME = 'Adaptive' WHERE NAME = 'CAT' AND product_typeid = 5
+/

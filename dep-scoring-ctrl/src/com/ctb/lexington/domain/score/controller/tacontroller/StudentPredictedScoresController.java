@@ -33,7 +33,7 @@ public class StudentPredictedScoresController {
         this.currData = currData;
         this.context = context;
         if(currData != null && currData.getContentAreas() != null && currData.getContentAreas().length > 0) {
-            this.formid = new Long("CAT".equals(currData.getContentAreas()[0].getSubtestForm())?13:14);
+            this.formid = new Long("Adaptive".equals(currData.getContentAreas()[0].getSubtestForm())?13:14);
         } else {
             this.formid = new Long(14);
         }
