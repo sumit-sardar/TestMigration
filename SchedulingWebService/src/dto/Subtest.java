@@ -17,6 +17,7 @@ public class Subtest implements java.io.Serializable {
     private String accessCode = null;			// 32 chars
     private Integer order = null; 	
     private Integer duration = null;
+    private Long subTestKey = null;
 
 	public Subtest() {
 	}
@@ -59,6 +60,16 @@ public class Subtest implements java.io.Serializable {
 
 	public void setDuration(Integer duration) {
 		this.duration = duration;
+	}
+
+
+	public Long getSubTestKey() {
+		return subTestKey;
+	}
+
+
+	public void setSubTestKey(Long subTestKey) {
+		this.subTestKey = subTestKey;
 	}
     
 	

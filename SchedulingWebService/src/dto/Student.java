@@ -26,6 +26,7 @@ public class Student implements java.io.Serializable {
     private String password = null;		// 32 chars
  
     private String status = null;
+     private Long studentKey = null;
     
 	public Student() {
 	}
@@ -121,6 +122,14 @@ public class Student implements java.io.Serializable {
 	public void setStatusNonOverwritten(String status) {
 		if (this.status == null) 
 			this.status = status;
+	}
+
+	public Long getStudentKey() {
+		return studentKey;
+	}
+
+	public void setStudentKey(Long studentKey) {
+		this.studentKey = studentKey;
 	}
 	
 }

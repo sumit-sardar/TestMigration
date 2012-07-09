@@ -73,6 +73,7 @@
           <xs:element minOccurs="1" name="Password" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="StudentId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="StudentKey" nillable="true" type="xs:long"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="Subtest">
@@ -90,6 +91,7 @@
           <xs:element minOccurs="1" name="AccessCode" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="Duration" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="Order" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="SubTestKey" nillable="true" type="xs:long"/>
           <xs:element minOccurs="1" name="SubtestId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="SubtestName" nillable="true" type="xs:string"/>
         </xs:sequence>
