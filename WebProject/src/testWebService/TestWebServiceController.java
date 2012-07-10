@@ -7,6 +7,7 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.beehive.controls.api.bean.Control;
 
+import dto.Accommodation;
 import dto.SecureUser;
 import dto.Session;
 import dto.Subtest;
@@ -188,6 +189,8 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			students[index] = student;
+			index++;
 		}
 		else {
 			firstName = this.getRequest().getParameter("firstName2");
@@ -208,6 +211,8 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			students[index] = student;
+			index++;
 		}
 		else {
 			firstName = this.getRequest().getParameter("firstName3");
@@ -228,6 +233,8 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			students[index] = student;
+			index++;
 		}
 		else {		
 			firstName = this.getRequest().getParameter("firstName4");
@@ -269,6 +276,13 @@ public class TestWebServiceController extends PageFlowController
 		else {
 			session.setStudents(students);
 		}
+		
+		// init accommodations
+		Accommodation accom = new Accommodation();
+		accom.setCalculator(Boolean.TRUE);
+		accom.setTestPause(Boolean.TRUE);
+		
+		session.setAccommodations(accom);
 		
 		return session;
     }
