@@ -67,7 +67,10 @@ public class TestWebServiceController extends PageFlowController
 	    String resultText = "Web service returns with status = " + session.getStatus();
 	    resultText += "<br/>Elapse Time:" + String.valueOf(elapsedTimeInSeconds) + " seconds";
     	this.getRequest().setAttribute("resultText", resultText);
-    		
+    	
+    	String infoText = getInfoText(session);
+    	this.getRequest().setAttribute("infoText", infoText);
+
         return new Forward("success");
     }
     
@@ -97,18 +100,39 @@ public class TestWebServiceController extends PageFlowController
 		if (this.getRequest().getParameter("subtest4") != null) subtestCount++;
 		Subtest[] subtests = new Subtest[subtestCount];
 		
+		Long key;
 		int index = 0;		
 		if (this.getRequest().getParameter("subtest1") != null) {
-			subtest = new Subtest(); subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 1"); subtests[index] = subtest; index++;
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 1"); 
+			key = getKeyValue("subtestKey1");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
 		}
 		if (this.getRequest().getParameter("subtest2") != null) {
-			subtest = new Subtest(); subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 2"); subtests[index] = subtest; index++;
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 2"); 
+			key = getKeyValue("subtestKey2");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
 		}
 		if (this.getRequest().getParameter("subtest3") != null) {
-			subtest = new Subtest(); subtest.setSubtestName("TerraNova Mathematics Survey - Part 1"); subtests[index] = subtest; index++;
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Mathematics Survey - Part 1"); 
+			key = getKeyValue("subtestKey3");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
 		}
 		if (this.getRequest().getParameter("subtest4") != null) {
-			subtest = new Subtest(); subtest.setSubtestName("TerraNova Mathematics Survey - Part 2"); subtests[index] = subtest; index++;
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Mathematics Survey - Part 2"); 
+			key = getKeyValue("subtestKey4");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
 		}
 		session.setSubtests(subtests);
 		
@@ -153,6 +177,8 @@ public class TestWebServiceController extends PageFlowController
 				student.setLastName(this.getRequest().getParameter("lastName1")); 
 				student.setGender(this.getRequest().getParameter("gender1")); 
 				student.setGrade(this.getRequest().getParameter("grade1")); 
+				key = getKeyValue("studentKey1");
+				student.setStudentKey(key);
 				students[index] = student;
 				index++;
 			}
@@ -171,6 +197,8 @@ public class TestWebServiceController extends PageFlowController
 				student.setLastName(this.getRequest().getParameter("lastName2")); 
 				student.setGender(this.getRequest().getParameter("gender2")); 
 				student.setGrade(this.getRequest().getParameter("grade2")); 
+				key = getKeyValue("studentKey2");
+				student.setStudentKey(key);
 				students[index] = student;
 				index++;
 			}
@@ -189,6 +217,8 @@ public class TestWebServiceController extends PageFlowController
 				student.setLastName(this.getRequest().getParameter("lastName3")); 
 				student.setGender(this.getRequest().getParameter("gender3")); 
 				student.setGrade(this.getRequest().getParameter("grade3")); 
+				key = getKeyValue("studentKey3");
+				student.setStudentKey(key);
 				students[index] = student;
 				index++;
 			}
@@ -207,6 +237,8 @@ public class TestWebServiceController extends PageFlowController
 				student.setLastName(this.getRequest().getParameter("lastName4")); 
 				student.setGender(this.getRequest().getParameter("gender4")); 
 				student.setGrade(this.getRequest().getParameter("grade4")); 
+				key = getKeyValue("studentKey4");
+				student.setStudentKey(key);
 				students[index] = student;
 				index++;
 			}
@@ -239,6 +271,64 @@ public class TestWebServiceController extends PageFlowController
 		}
 		
 		return session;
+    }
+    
+	/**
+	 * getKeyValue
+	 */
+    private Long getKeyValue(String name) {
+    	Long value = null;
+		String key = this.getRequest().getParameter(name);
+		if ((key != null) && (key.trim().length() > 0)) {
+			value = new Long(key);
+		}
+		return value;
+    }
+
+	/**
+	 * getInfoText
+	 */
+    private String getInfoText(Session session) {
+    	String infoText = "";
+    	
+    	infoText += "<br/>TAC: ";
+    	for (int i=0 ; i<session.getSubtests().length ; i++) {
+        	infoText += (session.getSubtests()[i].getAccessCode() + " , ");
+    	}
+
+    	infoText += "<br/>Subtest key: ";
+    	for (int i=0 ; i<session.getSubtests().length ; i++) {
+    		if (session.getSubtests()[i].getSubTestKey() != null)
+    			infoText += (session.getSubtests()[i].getSubTestKey().toString() + " , ");
+    		else
+    			infoText += "null , ";
+    	}
+
+    	infoText += "<br/>Student key: ";
+    	for (int i=0 ; i<session.getStudents().length ; i++) {
+    		if (session.getStudents()[i].getStudentKey() != null)
+    			infoText += (session.getStudents()[i].getStudentKey().toString() + " , ");
+    		else
+    			infoText += "null , ";
+    	}
+
+    	infoText += "<br/>Student ID: ";
+    	for (int i=0 ; i<session.getStudents().length ; i++) {
+    		if (session.getStudents()[i].getStudentId() != null)
+    			infoText += (session.getStudents()[i].getStudentId().toString() + " , ");
+    		else
+    			infoText += "null , ";
+    	}
+
+    	infoText += "<br/>Student password: ";
+    	for (int i=0 ; i<session.getStudents().length ; i++) {
+    		if (session.getStudents()[i].getPassword() != null)
+    			infoText += (session.getStudents()[i].getPassword().toString() + " , ");
+    		else
+    			infoText += "null , ";
+    	}
+    	
+		return infoText;
     }
     
  }

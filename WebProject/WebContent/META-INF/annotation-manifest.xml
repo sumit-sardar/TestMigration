@@ -7,7 +7,7 @@
       <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
       <array-member>
         <member-name>urls</member-name>
-        <member-value>http://localhost:7001/SchedulingWebService/SchedulingWS</member-value>
+        <member-value>http://nj09mhe5338.mhe.mhc:22611/SchedulingWebService/SchedulingWS</member-value>
       </array-member>
     </annotation>
   </annotated-class>

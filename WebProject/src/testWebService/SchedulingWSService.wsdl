@@ -142,7 +142,7 @@
   </s0:binding>
   <s0:service name="SchedulingWSService">
     <s0:port binding="s1:SchedulingWSServiceSoapBinding" name="SchedulingWSSoapPort">
-      <s2:address location="http://nj09mhe5338.mhe.mhc:22611/SchedulingWebService/SchedulingWS"/>
+      <s2:address location="http://localhost:7001/SchedulingWebService/SchedulingWS"/>
     </s0:port>
   </s0:service>
 </s0:definitions>

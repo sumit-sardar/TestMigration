@@ -5,6 +5,7 @@
 
 <%
 	String resultText = (String)request.getAttribute("resultText");
+	String infoText = (String)request.getAttribute("infoText");
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -103,22 +104,30 @@
 
 
 <table class="simpleBlock">
-<tr><td>&nbsp;</td></tr>
-<tr><td>
-	<h3>Subtest Information</h3>
-</td></tr>
-<tr><td>
+<tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><h3>Subtest Information</h3></td>
+<td>&nbsp;</td>
+</tr>
+<tr><td width="300">
 TerraNova Reading/Language Arts Survey - Part 1&nbsp;<input type="checkbox" checked id="subtest1" name="subtest1"/>&nbsp;
-</td></tr>
-<tr><td>
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey1" name="subtestKey1" value="" size="8"/></td>
+</tr>
+<tr><td width="300">
 TerraNova Reading/Language Arts Survey - Part 2&nbsp;<input type="checkbox" checked id="subtest2" name="subtest2"/>&nbsp;
-</td></tr>
-<tr><td>
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey2" name="subtestKey2" value="" size="8"/></td>
+</tr>
+<tr><td width="300">
 TerraNova Mathematics Survey - Part 1&nbsp;<input type="checkbox" checked id="subtest3" name="subtest3"/>&nbsp;
-</td></tr>
-<tr><td>
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey3" name="subtestKey3" value="" size="8"/></td>
+</tr>
+<tr><td width="300">
 TerraNova Mathematics Survey - Part 2&nbsp;<input type="checkbox" checked id="subtest4" name="subtest4"/>&nbsp;
-</td></tr>
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey4" name="subtestKey4" value="" size="8"/></td>
+</tr>
 </table>
 
 <table class="simpleBlock">
@@ -150,6 +159,7 @@ Grade:<select id="grade1" name="grade1">
 <option value="11">11</option>
 <option value="12">12</option>
 </select>&nbsp;
+Student Key:<input type="text" id="studentKey1" name="studentKey1" value="" size="8"/>&nbsp;
 </td></tr>
 
 <tr><td>
@@ -176,6 +186,7 @@ Grade:<select id="grade2" name="grade2">
 <option value="11">11</option>
 <option value="12">12</option>
 </select>&nbsp;
+Student Key:<input type="text" id="studentKey2" name="studentKey2" value="" size="8"/>&nbsp;
 </td></tr>
 
 
@@ -203,6 +214,7 @@ Grade:<select id="grade3" name="grade3">
 <option value="11">11</option>
 <option selected value="12">12</option>
 </select>&nbsp;
+Student Key:<input type="text" id="studentKey3" name="studentKey3" value="" size="8"/>&nbsp;
 </td></tr>
 
 <tr><td>
@@ -229,6 +241,7 @@ Grade:<select id="grade4" name="grade4">
 <option value="11">11</option>
 <option value="12">12</option>
 </select>&nbsp;
+Student Key:<input type="text" id="studentKey4" name="studentKey4" value="" size="8"/>&nbsp;
 </td></tr>
 
 </table>
@@ -263,7 +276,10 @@ Grade:<select id="grade4" name="grade4">
 		<div>
 			<br/>
 			<h2><%= resultText %></h2>
-			<br/> 
+		</div>
+
+		<div align="left">
+			<%= infoText %>
 		</div>
 
 </netui:form>
