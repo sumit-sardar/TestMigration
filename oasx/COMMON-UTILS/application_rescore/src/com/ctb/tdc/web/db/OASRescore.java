@@ -4,19 +4,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.ctb.tdc.web.to.AuthenticationData;
 import com.ctb.tdc.web.to.ItemResponseData;
 import com.ctb.tdc.web.to.ItemSet;
 import com.ctb.tdc.web.to.StudentCredentials;
+import com.ctb.tdc.web.to.TestData;
 import com.ctb.tdc.web.utils.CATEngineProxy;
 import com.ctb.tdc.web.utils.Constants;
 
 public class OASRescore {
 	public static String cArea=null;
-	
+	ArrayList<TestData> testData = new ArrayList<TestData>();
 	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
-	private static final String ITEMSET_SQL = "SELECT SISS.COMPLETION_STATUS AS COMPLETIONSTATUS,ISET.ITEM_SET_ID AS ID FROM ITEM_SET ISET, STUDENT_ITEM_SET_STATUS SISS, TEST_ROSTER TR, TEST_ADMIN TA WHERE tr.test_roster_id=? AND tr.test_admin_id = ta.test_admin_id AND iset.item_set_id = siss.item_set_id AND siss.test_roster_id = tr.test_roster_id AND ISET.ITEM_SET_TYPE = 'TD'";
+	private static final String ITEMSET_SQL = "SELECT SISS.COMPLETION_STATUS AS COMPLETIONSTATUS,ISET.ITEM_SET_ID AS ID FROM ITEM_SET ISET, STUDENT_ITEM_SET_STATUS SISS, TEST_ROSTER TR, TEST_ADMIN TA WHERE tr.test_roster_id=? AND tr.test_admin_id = ta.test_admin_id AND iset.item_set_id = siss.item_set_id AND siss.test_roster_id = tr.test_roster_id AND ISET.ITEM_SET_TYPE = 'TD' AND siss.completion_status = 'CO' AND siss.objective_score IS NOT NULL";
 	private static final String GET_ROSTER_DATA = "SELECT "
 		+"stu.user_name username,tr.PASSWORD password,ta.access_code accesscode "
 		+"FROM test_roster tr, test_admin ta, student stu "
@@ -27,8 +29,10 @@ public class OASRescore {
 	private static final String RESTART_RESPONSES_SQL = "select  ir.item_id as itemId, its.subject contentArea, ir.response_seq_num as responseSeqNum,  ir.student_marked as studentMarked,  i.item_type as itemType,  isi.item_sort_order as itemSortOrder,  ir.response as response, TO_CLOB(decode (i.answer_area,'AudioItem', decode(length(icr.constructed_response),'','',ir.test_roster_id || '_' || ir.item_id), DBMS_LOB.SUBSTR(icr.constructed_response, 4000, 1))) as constructedResponse, ir.response_elapsed_time as responseElapsedTime,  decode(ir.response, i.correct_answer, 1, 0) as score,  i.ads_item_id as eid, decode(i.answer_area,'AudioItem','T','F') as audioItem from  item_response ir,  item i,  item_response_cr icr,  item_set_item isi  ,item_set its where  ir.test_roster_id = ?  and ir.item_set_id = ?  and ir.item_id = i.item_id and its.item_set_id = ir.item_set_id and ir.item_set_id = isi.item_set_id  and ir.item_id = isi.item_id AND its.item_set_type = 'TD' and its.sample = 'F' and ir.response_seq_num =  (select  max(ir1.response_seq_num)  from  item_response ir1  where  ir1.item_set_id = ir.item_set_id  and ir1.item_id = ir.item_id  and ir1.test_roster_id = ir.test_roster_id) \t  AND ir.test_roster_id = icr.test_roster_id (+) \t  AND ir.item_set_id = icr.item_set_id (+) \t  AND ir.item_id = icr.item_id (+) order by  ir.response_seq_num asc";
 	private static final String UPDATE_SCORE="UPDATE student_item_set_status siss SET siss.objective_score = ? ,siss.ability_score = ? ,siss.sem_score = ? WHERE siss.item_set_id=? AND siss.test_roster_id=?";
 	private static final String UPDATE_RESCORESTATUS="UPDATE test_roster_temp tr SET tr.rescored = 'T' WHERE tr.test_roster_id=?";
+	private static final String CHECK_RESCORESTATUS="SELECT tr.rescored rescored FROM test_roster_temp tr WHERE tr.test_roster_id=?";
 	
-	public void getRoster(int rosterId, Connection conn){
+	
+	public ArrayList<TestData> getRoster(int rosterId, Connection conn){
 		PreparedStatement stmt;
 		String key = null;
 		try{
@@ -39,21 +43,14 @@ public class OASRescore {
 				key = rs1.getString("username") + ":" + rs1.getString("password") + ":" + rs1.getString("accesscode");
 			}
 			rs1.close();
-			getRosterData(conn,key);
+			return getRosterData(conn,key);
 		}catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if(conn != null) {
-					conn.close();
-				}
-			}catch (Exception ie) {
-				System.err.println(ie);
-			}
 		}
+		return null;
 	}
 	
-	public void getRosterData(Connection conn, String key)  throws Exception {
+	public ArrayList<TestData> getRosterData(Connection conn, String key)  throws Exception {
 		String username = key.substring(0, key.indexOf(":"));
     	key = key.substring(key.indexOf(":") + 1, key.length());
     	String password = key.substring(0, key.indexOf(":"));
@@ -65,20 +62,20 @@ public class OASRescore {
     	creds.setPassword(password);
     	creds.setAccesscode(accessCode);
     	
-    	getRosterData(conn, creds);
+    	return getRosterData(conn, creds);
 	}
 	
-	private void getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
+	private ArrayList<TestData> getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	String username = creds.getUsername();
     	String password = creds.getPassword();
     	String accessCode = creds.getAccesscode();
 
     	// might be more than one roster for these creds, due to random passwords
     	AuthenticationData [] authDataArray = authenticateStudentByCreds(conn, username, password);
-    	generateRosterData(conn, authDataArray);
+    	return generateRosterData(conn, authDataArray);
     }
 	
-	private void generateRosterData (Connection conn, AuthenticationData [] authDataArray) throws Exception {
+	private ArrayList<TestData> generateRosterData (Connection conn, AuthenticationData [] authDataArray) throws Exception {
 		ArrayList itemSetData = new ArrayList();
     	AuthenticationData authData = null;
         int testRosterId = -1;
@@ -87,47 +84,59 @@ public class OASRescore {
             testRosterId = authData.getTestRosterId();
             itemSetData = getItemSetData(conn, String.valueOf(testRosterId));
         }
-        if(authData != null) {    
-	        for(int i=0; i<itemSetData.size() ;i++) {
-	        	ItemSet iSet = (ItemSet)itemSetData.get(i);
-	            if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(iSet.getStudentTestCompletionStatus())) {
-                	ItemResponseData[] itemResponseData = getRestartItemResponses(conn, testRosterId, iSet.getId());
-                    RosterData.generateRestartData(itemResponseData);
-	            }
-		        if(RosterData.restartItemCount>0){
-			        CATEngineProxy.initCAT(cArea);
-		        	CATEngineProxy.restartCAT(RosterData.restartItemCount,RosterData.restartItemsArr,RosterData.restartItemsRawScore);
-		        	
-		        	Double abilityScore = CATEngineProxy.getAbilityScore();
-        			Double sem = CATEngineProxy.getSEM();
-        			String objScore = CATEngineProxy.getObjScore();	
-        			
-        			updateScore(abilityScore,sem,objScore,conn,testRosterId,iSet.getId());
-        			updateRescoredStatus(conn,testRosterId);
+        if(!checkRescoredStatus(conn,testRosterId)){
+	        if(authData != null) {    
+		        for(int i=0; i<itemSetData.size() ;i++) {
+		        	ItemSet iSet = (ItemSet)itemSetData.get(i);
+		            if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(iSet.getStudentTestCompletionStatus())) {
+	                	ItemResponseData[] itemResponseData = getRestartItemResponses(conn, testRosterId, iSet.getId());
+	                    RosterData.generateRestartData(itemResponseData);
+		            }
+			        if(RosterData.restartItemCount>0){
+				        CATEngineProxy.initCAT(cArea);
+			        	CATEngineProxy.restartCAT(RosterData.restartItemCount,RosterData.restartItemsArr,RosterData.restartItemsRawScore);
+			        	
+			        	Double abilityScore = CATEngineProxy.getAbilityScore();
+	        			Double sem = CATEngineProxy.getSEM();
+	        			String objScore = CATEngineProxy.getObjScore();	
+	        			
+	        			TestData tData = new TestData();
+	        			tData.setTestRosterId(testRosterId);
+	        			tData.setItemSetId(iSet.getId());
+	        			tData.setAbilityScore(abilityScore);
+	        			tData.setSem(sem);
+	        			tData.setObjScore(objScore);
+	        			
+	        			testData.add(tData);
+			        }
 		        }
-	        }
-	        System.out.println("restartItemsArr: item "+ RosterData.restartItemCount+RosterData.restartItemsArr+RosterData.restartItemsRawScore );
-        } 
+	        } 
+        }
+        return testData;
     }
 	
-	private void updateScore(Double abilityScore,Double sem,String objScore,Connection con, int testRosterId, int itemSetId){
+	public void updateScore(Connection con, ArrayList<TestData> allTestData){
 		PreparedStatement stmt1 = null;
 		
-		System.out.println("abilityScore: sem : objscore" + abilityScore + " :: " +sem + " :: " + objScore);
 		try{
 			stmt1 = con.prepareStatement(UPDATE_SCORE);
-			stmt1.setString(1, objScore);
-			stmt1.setFloat(2, abilityScore.floatValue());
-			stmt1.setFloat(3, sem.floatValue());
-			stmt1.setInt(4, itemSetId);
-			stmt1.setInt(5, testRosterId);
 			
-			stmt1.executeUpdate();
+			Iterator itr = allTestData.iterator();
+			while(itr.hasNext()){
+				TestData tData = new TestData();
+				tData = (TestData) itr.next();
+				stmt1.setString(1, tData.getObjScore());
+				stmt1.setFloat(2, tData.getAbilityScore().floatValue());
+				stmt1.setFloat(3, tData.getSem().floatValue());
+				stmt1.setInt(4, tData.getItemSetId());
+				stmt1.setInt(5, tData.getTestRosterId());
+				stmt1.addBatch();				
+			}
+			stmt1.executeBatch();
 			con.commit();
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			//manifests = null;
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();
@@ -137,18 +146,23 @@ public class OASRescore {
 		}
 	}
 	
-	private void updateRescoredStatus(Connection con, int testRosterId){
+	public void updateRescoredStatus(Connection con, ArrayList<TestData> allTestData){
 		PreparedStatement stmt1 = null;
 		try{
 			stmt1 = con.prepareStatement(UPDATE_RESCORESTATUS);
-			stmt1.setInt(1, testRosterId);
 			
-			stmt1.executeUpdate();
+			Iterator itr = allTestData.iterator();
+			while(itr.hasNext()){
+				TestData tData = new TestData();
+				tData = (TestData) itr.next();
+				stmt1.setInt(1, tData.getTestRosterId());
+				stmt1.addBatch();				
+			}
+			stmt1.executeBatch();
 			con.commit();
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			//manifests = null;
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();
@@ -156,6 +170,32 @@ public class OASRescore {
 				System.err.println("Exception occured in update score"+e);
 			}
 		}
+	}
+	
+	private boolean checkRescoredStatus(Connection con, int testRosterId){
+		PreparedStatement stmt1 = null;
+		boolean isRescored=false; 
+		
+		try{
+			stmt1 = con.prepareStatement(CHECK_RESCORESTATUS);
+			stmt1.setInt(1, testRosterId);
+			ResultSet rs = stmt1.executeQuery();
+			while(rs.next()){
+				if(rs.getString("rescored").equalsIgnoreCase("T")){
+					isRescored = true;
+				}
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				System.err.println("Exception occured in update score"+e);
+			}
+		}
+		return isRescored;
 	}
 	
 	private ArrayList getItemSetData(Connection con, String testRosterId){

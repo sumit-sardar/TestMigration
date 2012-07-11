@@ -11,8 +11,11 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.ctb.tdc.web.db.OASRescore;
+import com.ctb.tdc.web.to.TestData;
 import com.ctb.tdc.web.utils.ExtractUtil;
 
 
@@ -23,8 +26,7 @@ public class Main {
 	private static String[] rosterIdList = {};
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		try{
-			
-			System.out.println("rosterId*** ");
+			ArrayList<TestData> testData = new ArrayList<TestData>();
 			String rosterID = ExtractUtil.getDetail("rosterId");
 			if(rosterID.length()>0 && rosterID.indexOf(",")!=-1){
 				rosterIdList = rosterID.split(",");
@@ -34,16 +36,13 @@ public class Main {
 				rosterIdList[0] = ExtractUtil.getDetail("rosterId");
 			}
 						
-			System.out.println("rosterId*** "+rosterID);
-			//conn = getConnection();
-			
-			System.out.println("conn*** "+conn);
 			OASRescore oRescore = new OASRescore();
 			for(int i=0;i<rosterIdList.length;i++){
-				System.out.println("rosterIdList********     "+rosterIdList[i]);
 				conn = getConnection();
-				oRescore.getRoster(Integer.parseInt(rosterIdList[i]),conn);
+				testData = oRescore.getRoster(Integer.parseInt(rosterIdList[i]),conn);
 			}
+			oRescore.updateScore(conn,testData);
+			oRescore.updateRescoredStatus(conn,testData);
 		}
 		catch (Exception e) {
 			System.out.println("exception in getting rescoring "+e);
@@ -64,13 +63,13 @@ public class Main {
 		    // Load the JDBC driver
 		    
 		    Class.forName ("oracle.jdbc.driver.OracleDriver");
-		    userName = ExtractUtil.getDetail("userName");
-			password = ExtractUtil.getDetail("password");
+		    userName = ExtractUtil.getDetail("oas.db.user.name");
+			password = ExtractUtil.getDetail("oas.db.user.password");
 
 		    // Create a connection to the database
-		    String serverName = ExtractUtil.getDetail("serverName");
-		    String portNumber = ExtractUtil.getDetail("portNumber");
-		    String sid = ExtractUtil.getDetail("sid");
+		    String serverName = ExtractUtil.getDetail("oas.db.host.address");
+		    String portNumber = ExtractUtil.getDetail("oas.db.portNumber");
+		    String sid = ExtractUtil.getDetail("oas.db.sid.address");
 		    String url = "jdbc:oracle:thin:@" + serverName + ":" + portNumber + ":" + sid;
 		    connection = DriverManager.getConnection(url, userName, password);
 		} catch (ClassNotFoundException e) {
