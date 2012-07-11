@@ -281,8 +281,8 @@ public class TestWebServiceController extends PageFlowController
 		Accommodation accom = new Accommodation();
 		accom.setCalculator(Boolean.TRUE);
 		accom.setTestPause(Boolean.TRUE);
-		
-		session.setAccommodations(accom);
+		accom.setScreenMagnifier(Boolean.FALSE);
+		session.setAccom(accom);
 		
 		return session;
     }

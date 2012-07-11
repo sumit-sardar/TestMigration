@@ -19,6 +19,29 @@
           <xs:element minOccurs="1" name="UserType" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="Accommodation">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * This object contains information for student accommodations
+ * None of these values required from ACUITY through input 
+ * or populated by OAS in return.  
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="AnswerBackgroundColor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="AnswerFontColor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Calculator" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="FontSize" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Highlighter" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="QuestionBackgroundColor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="QuestionFontColor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="ScreenMagnifier" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="ScreenReader" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="TestPause" nillable="true" type="xs:boolean"/>
+          <xs:element minOccurs="1" name="UntimedTest" nillable="true" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="Session">
         <xs:annotation>
           <xs:documentation>/** 
@@ -33,6 +56,7 @@
         </xs:annotation>
         <xs:sequence>
           <xs:element minOccurs="1" name="AccessCode" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Accom" nillable="true" type="java:Accommodation" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="EndDate" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="EndTime" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="HasBreak" nillable="true" type="xs:boolean"/>

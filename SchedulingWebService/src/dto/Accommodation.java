@@ -17,12 +17,11 @@ public class Accommodation implements java.io.Serializable {
     private Boolean untimedTest = null;
     private String questionBackgroundColor = null;	// 32 chars
     private String questionFontColor = null;		// 32 chars
-    private String questionFontSize = null;			// 32 chars
     private String answerBackgroundColor = null;	// 32 chars
     private String answerFontColor = null;			// 32 chars
-    private String answerFontSize = null;			// 32 chars
+    private String fontSize = null;					// 32 chars
     private Boolean highlighter = null;
-    
+	
 	public Accommodation() {
 	}
 
@@ -82,12 +81,12 @@ public class Accommodation implements java.io.Serializable {
 		this.questionFontColor = questionFontColor;
 	}
 
-	public String getQuestionFontSize() {
-		return questionFontSize;
+	public String getFontSize() {
+		return fontSize;
 	}
 
-	public void setQuestionFontSize(String questionFontSize) {
-		this.questionFontSize = questionFontSize;
+	public void setFontSize(String fontSize) {
+		this.fontSize = fontSize;
 	}
 
 	public String getAnswerBackgroundColor() {
@@ -106,14 +105,6 @@ public class Accommodation implements java.io.Serializable {
 		this.answerFontColor = answerFontColor;
 	}
 
-	public String getAnswerFontSize() {
-		return answerFontSize;
-	}
-
-	public void setAnswerFontSize(String answerFontSize) {
-		this.answerFontSize = answerFontSize;
-	}
-
 	public Boolean getHighlighter() {
 		return highlighter;
 	}
@@ -122,5 +113,4 @@ public class Accommodation implements java.io.Serializable {
 		this.highlighter = highlighter;
 	}
     
-	
 }

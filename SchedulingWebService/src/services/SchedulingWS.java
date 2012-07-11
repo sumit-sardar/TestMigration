@@ -29,6 +29,7 @@ import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
@@ -40,7 +41,9 @@ import com.ctb.exception.studentManagement.StudentDataCreationException;
 
 import com.ctb.util.DateUtil;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
+import com.ctb.util.AccommodationUtil;
 
+import dto.Accommodation;
 import dto.PathNode;
 import dto.StudentProfileInformation;
 import dto.Subtest;
@@ -87,6 +90,7 @@ public class SchedulingWS implements Serializable {
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
 	
+    
 	/**
 	 * scheduleSession: this is web service which is called from Acuity
 	 */
@@ -158,6 +162,11 @@ public class SchedulingWS implements Serializable {
 	        		numberStudentAdded++;
 	        		student.setStatusNonOverwritten("OK");
 	        		student.setStudentId(studentId);
+	        		
+	        		// create student accommodations
+	        		Accommodation accom = session.getAccom();
+	        		StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
+   					createStudentAccommodations(studentId, sa);
 	        	}
 	        	else {
 	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
@@ -816,4 +825,21 @@ public class SchedulingWS implements Serializable {
 		}
 		return subtestId;
 	}
+	
+	/**
+	 * createStudentAccommodations
+	 */
+	private void createStudentAccommodations(Integer studentId, StudentAccommodations sa)
+	{
+    	String userName = this.defaultUser.getUserName();
+		try
+		{    
+			this.studentManagement.createStudentAccommodations(userName, sa);
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}        
+	}
+	
 }
