@@ -15,6 +15,16 @@ public class AccommodationUtil {
         "#FFFFFF",    "#000000",    "#000080",
         "#663300",    "#FFFF99",    "#00CC00"
       };
+    private static final String[] fontSizes = { "1", "1.5" };
+    private static final String[] fontSizeLabels = { "Standard", "Large" };
+    
+    public static final String DEFAULT_QUESTION_BGRDCOLOR = colorHexs[3];   // White
+    public static final String DEFAULT_QUESTION_FONTSIZE = fontSizes[0];    // Light blue
+    public static final String DEFAULT_QUESTION_FONTCOLOR = colorHexs[4];   // Black
+    public static final String DEFAULT_ANSWER_BGRDCOLOR = colorHexs[2];     // Light yellow
+    public static final String DEFAULT_ANSWER_FONTSIZE = fontSizes[0];      // Light blue
+    public static final String DEFAULT_ANSWER_FONTCOLOR = colorHexs[4];     // Black
+    public static final String DEFAULT_FONT_SIZE = fontSizes[0];            // 1 == 14px
 	
     public static StudentAccommodations makeCopy(Integer studentId, Accommodation accom)
     {
@@ -22,14 +32,6 @@ public class AccommodationUtil {
         boolean hasData = false;
         
         copied.setStudentId(studentId);
-        
-        if ((accom.getScreenReader() != null) && accom.getScreenReader().booleanValue()) {
-            copied.setScreenReader("T");
-            hasData = true;
-        }
-        else {
-            copied.setScreenReader("F");
-        }
         
         if ((accom.getCalculator() != null) && accom.getCalculator().booleanValue()) {
             copied.setCalculator("T");
@@ -63,6 +65,14 @@ public class AccommodationUtil {
             copied.setHighlighter("F");
         }
 
+        if ((accom.getScreenReader() != null) && accom.getScreenReader().booleanValue()) {
+            copied.setScreenReader("T");
+            hasData = true;
+        }
+        else {
+            copied.setScreenReader("F");
+        }
+                
         copied.setScreenMagnifier("");  // not used
         copied.setStudentGrade("");     // not used
         

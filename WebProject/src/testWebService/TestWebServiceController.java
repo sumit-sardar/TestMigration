@@ -267,6 +267,7 @@ public class TestWebServiceController extends PageFlowController
 					studentRepeat.setLastName(student.getLastName()); 
 					studentRepeat.setGender(student.getGender()); 
 					studentRepeat.setGrade(student.getGrade()); 
+					studentRepeat.setStudentKey(student.getStudentKey());
 					repeatStudents[index] = studentRepeat;
 					index++;
 				}
@@ -279,9 +280,23 @@ public class TestWebServiceController extends PageFlowController
 		
 		// init accommodations
 		Accommodation accom = new Accommodation();
-		accom.setCalculator(Boolean.TRUE);
-		accom.setTestPause(Boolean.TRUE);
-		accom.setScreenMagnifier(Boolean.FALSE);
+		
+		if (this.getRequest().getParameter("calculator") != null)
+			accom.setCalculator(Boolean.TRUE);
+		if (this.getRequest().getParameter("testPause") != null)
+			accom.setTestPause(Boolean.TRUE);
+		if (this.getRequest().getParameter("untimed") != null)
+			accom.setUntimedTest(Boolean.TRUE);
+		if (this.getRequest().getParameter("highlighter") != null)
+			accom.setHighlighter(Boolean.TRUE);
+		if (this.getRequest().getParameter("customColor") != null) {
+			accom.setFontSize("1");
+			accom.setQuestionBackgroundColor("Light blue");
+			accom.setQuestionFontColor("Dark blue");
+			accom.setAnswerBackgroundColor("White");
+			accom.setAnswerFontColor("Black");
+		}
+		
 		session.setAccom(accom);
 		
 		return session;

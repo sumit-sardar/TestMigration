@@ -104,6 +104,18 @@
 
 
 <table class="simpleBlock">
+<tr><td colspan="5"><h3>Accommodation Information</h3></td></tr>
+<tr>
+<td width="120">Calculator:&nbsp;<input type="checkbox" id="calculator" name="calculator"/>&nbsp;</td>
+<td width="120">Test Pause:&nbsp;<input type="checkbox" id="testPause" name="testPause"/>&nbsp;</td>
+<td width="120">Untimed Test:&nbsp;<input type="checkbox" id="untimed" name="untimed"/>&nbsp;</td>
+<td width="120">Highlighter:&nbsp;<input type="checkbox" id="highlighter" name="highlighter"/>&nbsp;</td>
+<td width="120">Custom Color:&nbsp;<input type="checkbox" id="customColor" name="customColor"/>&nbsp;</td>
+</tr>
+</table>
+
+
+<table class="simpleBlock">
 <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr><td><h3>Subtest Information</h3></td>
 <td>&nbsp;</td>
