@@ -26,7 +26,7 @@ public class CATEngineProxy {
 	//public static HashMap itemIdMap;
 	
 	private static void initItemMap() {
-		itemIdMap.put(String.valueOf(299817), Integer.valueOf(38682402));
+		/*itemIdMap.put(String.valueOf(299817), Integer.valueOf(38682402));
 		itemIdMap.put(String.valueOf(299997), Integer.valueOf(38682502));
 		itemIdMap.put(String.valueOf(299813), Integer.valueOf(38682602));
 		itemIdMap.put(String.valueOf(299977), Integer.valueOf(38682702));
@@ -351,7 +351,7 @@ public class CATEngineProxy {
 		itemIdMap.put(String.valueOf(1379070), Integer.valueOf(38714602));
 		itemIdMap.put(String.valueOf(1379072), Integer.valueOf(38714702));
 		itemIdMap.put(String.valueOf(1379074), Integer.valueOf(38714802));
-		itemIdMap.put(String.valueOf(1379076), Integer.valueOf(38714902));
+		itemIdMap.put(String.valueOf(1379076), Integer.valueOf(38714902));*/
 		
 	}
 	public static native int setup_cat(String contentArea);
