@@ -163,14 +163,16 @@ public class Utility {
 				val = null;
 			}
 		}
-		if(val != null && val.trim().length() !=0){
-			val = String.format("%"+len+"s", val).replace(" ", " ");
+		/*if(val != null && val.trim().length() !=0){
+			val = String.format("%"+len+"s", val).replace(" ", " ").concat("#");
 			return val;
 		}else{
 			val = "";
-			val = String.format("%"+len+"s", val);
+			val = String.format("%"+len+"s", val).concat("#");
 			return val;
-		}
+		} */
+		val=val.concat("#");
+		return val;
 	}
 	
 	

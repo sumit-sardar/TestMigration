@@ -1,6 +1,7 @@
 package com;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,8 +18,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.ffpojo.exception.FFPojoException;
-import org.ffpojo.file.writer.FileSystemFlatFileWriter;
-import org.ffpojo.file.writer.FlatFileWriter;
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.ctb.dto.AbilityScore;
 import com.ctb.dto.CustomerDemographic;
@@ -49,12 +49,22 @@ public class DataExportTABECAT {
 	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
 	private static final Set<Integer> CUST_CATEGORIES = new TreeSet<Integer>();
+	private static final String SEPARATOR = "#";
+	private static final Map<String, Integer> ITEM_COUNT_MAP = new LinkedHashMap<String, Integer>();
+	private static final Map<String, Integer> SCORE_TYPES = new LinkedHashMap<String, Integer>();
 	
 	static {
 		CONTENT_DOMAINS.put("Reading", 0);
 		CONTENT_DOMAINS.put("Mathematics Computation", 0);
 		CONTENT_DOMAINS.put("Applied Mathematics", 0);
 		CONTENT_DOMAINS.put("Language", 0);
+		
+		SCORE_TYPES.put("Objective Raw Score", 0);
+		SCORE_TYPES.put("Objective Total Raw Score", 0);
+		SCORE_TYPES.put("Objective Scale Score", 0);
+		SCORE_TYPES.put("Objective Scale Score SEM", 0);
+		SCORE_TYPES.put("Objective Mastery Level", 0);
+		SCORE_TYPES.put("Objective Mastery", 0);
 	}
 	
 	/**
@@ -93,20 +103,130 @@ public class DataExportTABECAT {
 			f.mkdirs();
 		}
 		File file = new File(LOCAL_FILE_PATH, fileName);
-		FlatFileWriter ffWriter = null;
-		try{
-			ffWriter = new FileSystemFlatFileWriter(file, true);
-			ffWriter.writeRecordList(myList);
-			ffWriter.close();
-		} finally {
-			if(ffWriter!=null){
-				ffWriter.close();
-			}
+		CSVWriter writer = new CSVWriter(new FileWriter(file));
+		StringBuilder headerRow = new StringBuilder();		
+		String itemDetails[] = {"ItemID","ItemResponse","ItemOrgResponse","ItemRespTime"};
+		int count=0;
+		int i=0;
+		StringBuilder contentDomains = new StringBuilder();		
+		for (String scoreType: SCORE_TYPES.keySet()) {
+				contentDomains.append(scoreType).append("(Recall Information").append(SEPARATOR)
+				.append("Construct Meaning in Context").append(SEPARATOR).append("Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
+				.append("Whole Numbers").append(SEPARATOR).append("Decimals, Fractions, Percents").append(SEPARATOR)				
+				.append("Integers").append(SEPARATOR).append("Algebraic Operations").append(SEPARATOR)
+				.append("Number and Number Operations").append(SEPARATOR).append("Computation and Estimation").append(SEPARATOR)
+				.append("Measurement").append(SEPARATOR).append("Geometry and Spatial Sense").append(SEPARATOR)
+				.append("Statistics and Probability").append(SEPARATOR).append("Patterns, Functions, Algebra").append(SEPARATOR)
+				.append("Problem Solving and Reasoning").append(SEPARATOR).append("Usage").append(SEPARATOR)
+				.append("Sentence and Paragraph Development").append(SEPARATOR).append("Writing Mechanics and Conventions)").append(SEPARATOR);
 		}
-		System.out.println("Export file successfully generated:["+fileName+"]");
-		System.out.println("Completed Writing");
-	}
-	
+		
+		for(String contentDomainName: CONTENT_DOMAINS.keySet()) {
+			count=0;
+			contentDomains.append(contentDomainName).append(SEPARATOR);
+			Integer itemCount = ITEM_COUNT_MAP.get(contentDomainName);
+			if(itemCount != null) {
+				i=0;
+				while(i < itemCount) {
+					contentDomains.append(itemDetails[count]+(i+1)).append(SEPARATOR);
+					i++;
+					if(i==(itemCount)) {
+						if(count==(itemDetails.length)-1){
+							break;
+						}
+						i=0;
+						count++;
+						continue;
+					}	
+				}
+				contentDomains.append("Restart Flag").append(SEPARATOR).append("Restart Item Number").append(SEPARATOR)
+				.append("Timed Out").append(SEPARATOR).append("Stopped Item Number").append(SEPARATOR);			
+			}
+		}			
+				
+		headerRow.append("Customer Id").append(SEPARATOR).append("State Name").append(SEPARATOR)
+		.append("State Code").append(SEPARATOR).append("District Name").append(SEPARATOR)
+		.append("District Code").append(SEPARATOR).append("School Name").append(SEPARATOR)
+		.append("School Code").append(SEPARATOR).append("Class Name").append(SEPARATOR)
+		.append("Class Code").append(SEPARATOR).append("Grade").append(SEPARATOR)
+		.append("Student Id").append(SEPARATOR).append("First Name").append(SEPARATOR)
+		.append("Last Name").append(SEPARATOR).append("Middle Initial").append(SEPARATOR)
+		.append("Birth Date").append(SEPARATOR).append("Gender").append(SEPARATOR)
+		.append("Student Id 2").append(SEPARATOR).append("ELL").append(SEPARATOR)		
+		.append("Ethnicity").append(SEPARATOR).append("Free Lunch").append(SEPARATOR)
+		.append("IEP").append(SEPARATOR).append("LEP").append(SEPARATOR)
+		.append("Labor Force").append(SEPARATOR).append("Migrant").append(SEPARATOR)
+		.append("Section 504").append(SEPARATOR).append("Date Testing Complete").append(SEPARATOR)
+		.append("Interrupted").append(SEPARATOR).append("Reading - Ability Score").append(SEPARATOR)
+		.append("Reading - SEM Score").append(SEPARATOR).append("Math Comp - Ability Score").append(SEPARATOR)
+		.append("Math Comp - SEM Score").append(SEPARATOR).append("Applied Math - Ability Score").append(SEPARATOR)
+		.append("Applied Math - SEM Score").append(SEPARATOR).append("Language - Ability Score").append(SEPARATOR)
+		.append("Language - SEM Score").append(SEPARATOR).append("Total Math - Ability Score").append(SEPARATOR)
+		.append("Total Battery - Ability Score").append(SEPARATOR).append("Grade Equivalent - Reading").append(SEPARATOR)
+		.append("Grade Equivalent - Math Comp").append(SEPARATOR).append("Grade Equivalent - Applied Math").append(SEPARATOR)
+		.append("Grade Equivalent - Language").append(SEPARATOR).append("Grade Equivalent - Total Math").append(SEPARATOR)
+		.append("Grade Equivalent - Total Battery").append(SEPARATOR).append("NRS Level - Reading").append(SEPARATOR)
+		.append("NRS Level - Math Comp").append(SEPARATOR).append("NRS Level - Applied Math").append(SEPARATOR)
+		.append("NRS Level - Language").append(SEPARATOR).append("NRS Level - Total Math").append(SEPARATOR)
+		.append("NRS Level - Total Battery").append(SEPARATOR).append("Percentage Mastery - Reading").append(SEPARATOR)
+		.append("Percentage Mastery - Math Comp").append(SEPARATOR).append("Percentage Mastery - Applied Math").append(SEPARATOR)
+		.append("Percentage Mastery - Language").append(SEPARATOR).append("Predicted GED - Average").append(SEPARATOR)
+		.append("Predicted GED - Math").append(SEPARATOR).append("Predicted GED - Reading").append(SEPARATOR)
+		.append("Predicted GED - Science").append(SEPARATOR).append("Predicted GED - Social Studies").append(SEPARATOR)
+		.append("Predicted GED - Writing").append(SEPARATOR).append(contentDomains.substring(0, contentDomains.length() - 1));		
+				
+		writer.writeNext(headerRow.toString().split(SEPARATOR));
+		try {
+			StringBuilder row = new StringBuilder();
+			for(TABEFile tabe: myList) {
+				
+				row = new StringBuilder();
+				row.append(tabe.getCustomerID()).append(SEPARATOR).append(tabe.getOrgLevel1Name()).append(SEPARATOR)
+				.append(tabe.getOrgLevel1Code()).append(SEPARATOR).append(tabe.getOrgLevel2Name()).append(SEPARATOR)
+				.append(tabe.getOrgLevel2Code()).append(SEPARATOR).append(tabe.getOrgLevel3Name()).append(SEPARATOR)
+				.append(tabe.getOrgLevel3Code()).append(SEPARATOR).append(tabe.getOrgLevel4Name()).append(SEPARATOR)
+				.append(tabe.getOrgLevel4Code()).append(SEPARATOR).append(tabe.getGrade()).append(SEPARATOR)
+				.append(tabe.getStudentID()).append(SEPARATOR).append(tabe.getStudentFirstName()).append(SEPARATOR)
+				.append(tabe.getStudentLastName()).append(SEPARATOR).append(tabe.getStudentMiddleName()).append(SEPARATOR)
+				.append(tabe.getStudentBirthDate()).append(SEPARATOR).append(tabe.getStudentGender()).append(SEPARATOR)
+				.append(tabe.getStudentId2()).append(SEPARATOR).append(tabe.getEll()).append(SEPARATOR)
+				.append(tabe.getEthnicity()).append(SEPARATOR).append(tabe.getFreeLunch()).append(SEPARATOR)
+				.append(tabe.getIep()).append(SEPARATOR).append(tabe.getLep()).append(SEPARATOR)
+				.append(tabe.getLaborForceStatus()).append(SEPARATOR).append(tabe.getMigrant()).append(SEPARATOR)
+				.append(tabe.getSection504()).append(SEPARATOR).append(tabe.getDateTestingCompleted()).append(SEPARATOR)
+				.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getAbilityScores().getReadingAbilityScore()).append(SEPARATOR)
+				.append(tabe.getAbilityScores().getReadingSEMScore()).append(SEPARATOR).append(tabe.getAbilityScores().getMathCompAbilityScore()).append(SEPARATOR)
+				.append(tabe.getAbilityScores().getMathCompSEMScore()).append(SEPARATOR).append(tabe.getAbilityScores().getAppliedMathAbilityScore()).append(SEPARATOR)
+				.append(tabe.getAbilityScores().getAppliedMathSEMScore()).append(SEPARATOR).append(tabe.getAbilityScores().getLanguageAbilityScore()).append(SEPARATOR)
+				.append(tabe.getAbilityScores().getLanguageSEMScore()).append(SEPARATOR).append(tabe.getAbilityScores().getTotalMathAbilityScore()).append(SEPARATOR)
+				.append(tabe.getAbilityScores().getTotalBatteryAbilityScore()).append(SEPARATOR).append(tabe.getGradeEquivalent().getReading()).append(SEPARATOR)
+				.append(tabe.getGradeEquivalent().getMathComp()).append(SEPARATOR).append(tabe.getGradeEquivalent().getAppliedMath()).append(SEPARATOR)
+				.append(tabe.getGradeEquivalent().getLanguage()).append(SEPARATOR).append(tabe.getGradeEquivalent().getTotalMath()).append(SEPARATOR)
+				.append(tabe.getGradeEquivalent().getTotalBattery()).append(SEPARATOR).append(tabe.getNrsLevels().getReading()).append(SEPARATOR)
+				.append(tabe.getNrsLevels().getMathComp()).append(SEPARATOR).append(tabe.getNrsLevels().getAppliedMath()).append(SEPARATOR)
+				.append(tabe.getNrsLevels().getLanguage()).append(SEPARATOR).append(tabe.getNrsLevels().getTotalMath()).append(SEPARATOR)
+				.append(tabe.getNrsLevels().getTotalBattery()).append(SEPARATOR).append(tabe.getPercentageMastery().getReading()).append(SEPARATOR)
+				.append(tabe.getPercentageMastery().getMathComp()).append(SEPARATOR).append(tabe.getPercentageMastery().getAppliedMath()).append(SEPARATOR)
+				.append(tabe.getPercentageMastery().getLanguage()).append(SEPARATOR).append(tabe.getPredictedGED().getAverage()).append(SEPARATOR)
+				.append(tabe.getPredictedGED().getMath()).append(SEPARATOR).append(tabe.getPredictedGED().getReading()).append(SEPARATOR)
+				.append(tabe.getPredictedGED().getScience()).append(SEPARATOR).append(tabe.getPredictedGED().getSocialStudies()).append(SEPARATOR)
+				.append(tabe.getPredictedGED().getWriting()).append(SEPARATOR).append(tabe.getObjectiveRawScore())
+				.append(tabe.getObjectiveTotalRawScore()).append(tabe.getObjectiveScaleScore())
+				.append(tabe.getObjectiveScaleScoreSEM()).append(tabe.getObjectiveMasteryLevel())
+				.append(tabe.getObjectiveMastery()).append(tabe.getItemResponse());
+						
+						
+				writer.writeNext(row.toString().split(SEPARATOR));
+			}
+			System.out.println("Export file successfully generated:["+fileName+"]");
+			System.out.println("Completed Writing");
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+	}		
+		
 	private List<TABEFile> createList() throws Exception{
 		List<TABEFile> tabeFileList = new ArrayList<TABEFile>();
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
@@ -148,7 +268,7 @@ public class DataExportTABECAT {
 				createAbilityScoreInformation(irscon,catData,roster);
 				getSemScores(oascon, catData, roster,catData.getAbilityScores());
 				fillObjective(oascon, catData, roster);
-				prepareItemResponses(oascon, catData, roster);
+				prepareItemResponses(oascon, catData, roster);				
 				tabeFileList.add(catData);	
 				System.out.println("Record Processed: " + ++count);
 			}
@@ -170,6 +290,7 @@ public class DataExportTABECAT {
 		 * crit.add(Expression.eq("customerId", customerId)); myList =
 		 * crit.list();
 		 */
+	 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -263,15 +384,15 @@ public class DataExportTABECAT {
 			if (rs.next()) {
 				std = new Student();
 				std.setStudentId(studentId);
-				std.setFirstName(rs.getString(2));
-				std.setLastName(rs.getString(3));
-				std.setMiddleName(rs.getString(4));
+				std.setFirstName(rs.getString(2) != null ? rs.getString(2) : "");
+				std.setLastName(rs.getString(3) != null ? rs.getString(3) : "");
+				std.setMiddleName(rs.getString(4) != null ? rs.getString(4) : "");
 				std.setBirthDate(rs.getDate(5));
-				std.setGender(rs.getString(6));
-				std.setGrade(rs.getString(7));
+				std.setGender(rs.getString(6) != null ? rs.getString(6) : "");
+				std.setGrade(rs.getString(7) != null ? rs.getString(7) : "");
 				std.setCustomerId(Integer.valueOf(CUSTOMER_ID));
-				std.setTestPurpose(rs.getString(9));
-				std.setExtStudentId(rs.getString(10));
+				std.setTestPurpose(rs.getString(9) != null ? rs.getString(9) : "");
+				std.setExtStudentId(rs.getString(10) != null ? rs.getString(10) : "");
 				std.setStudentDemographic(getStudentDemographic(con,
 						studentId));
 			}
@@ -336,8 +457,8 @@ public class DataExportTABECAT {
 					// do nothing
 				} else {
 					Organization org = new Organization();
-					org.setNodeCode(rs.getString("nodeCode"));
-					org.setNodeName(rs.getString("nodeName"));
+					org.setNodeCode(rs.getString("nodeCode") != null ? rs.getString("nodeCode") : "");
+					org.setNodeName(rs.getString("nodeName") != null ? rs.getString("nodeName") : "");
 					org.setCategoryLevel(rs.getInt("categoryLevel"));
 					studentCatList.add(org);
 				}
@@ -637,7 +758,7 @@ public class DataExportTABECAT {
 					String [] objectives = objectiveScore.split("\\|");
 					for(String objective: objectives) {
 						String [] scores = objective.split(",");
-						String objectiveName = OBJECTIVE_MAP.get(scores[0]);
+						String objectiveName = OBJECTIVE_MAP.get(scores[0]);						
 						if(objectiveName != null) {
 							objRawScore.getObjectiveMap().put(objectiveName, scores[1]);
 							objTotalRawScore.getObjectiveMap().put(objectiveName, scores[2]);
@@ -649,7 +770,7 @@ public class DataExportTABECAT {
 									objMastery.getObjectiveMap().put(objectiveName, String.valueOf(Integer.parseInt(scores[6]) + 1));
 								}
 							} else {
-								objMasteryLevel.getObjectiveMap().put(objectiveName, " ");
+								objMasteryLevel.getObjectiveMap().put(objectiveName, "N/A");
 								objMastery.getObjectiveMap().put(objectiveName, String.valueOf(Integer.parseInt(scores[5]) + 1));
 							}
 						}
@@ -667,12 +788,13 @@ public class DataExportTABECAT {
 		}
 	}	
 
-	private static void prepareItemResponses(Connection con, TABEFile tfil,
+	private void prepareItemResponses(Connection con, TABEFile tfil,
 	   TestRoster roster) throws IOException, Exception {
 		   PreparedStatement ps = null ;
 		   ResultSet rs = null;
 		   PreparedStatement ps1 = null ;
 		   ResultSet rs1 = null;
+		   int timedOut = 0;
 		   Map<String, ItemResponses> itemMap = new LinkedHashMap<String, ItemResponses>();
 		   StringBuilder response = new StringBuilder();
 		   try {
@@ -686,19 +808,19 @@ public class DataExportTABECAT {
 				   StringBuilder resposneTime = new StringBuilder();
 				   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
 				   if("Reading".equals(itemSetName)) {
-					   response.append("RD");
+					   response.append("RD"+SEPARATOR);
 					   itemCount = 29;
 				   } else if("Mathematics Computation".equals(itemSetName)) {
-					   response.append("MC");
+					   response.append("MC"+SEPARATOR);
 					   itemCount = 24;
 				   } else if("Applied Mathematics".equals(itemSetName)) {
-					   response.append("AM");
+					   response.append("AM"+SEPARATOR);
 					   itemCount = 29;
 				   } else if("Language".equals(itemSetName)) {
-					   response.append("LN");
+					   response.append("LN"+SEPARATOR);
 					   itemCount = 29;
 				   }
-				    
+				   ITEM_COUNT_MAP.put(itemSetName, itemCount);
 				   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL);
 				   ps.setInt(1, roster.getTestRosterId());
 				   ps.setInt(2, itemSetId);
@@ -710,6 +832,7 @@ public class DataExportTABECAT {
 				   int lastSequenceNo = 0;
 				   int restartItemNumber = 0;
 				   String lastItemId = "";
+				   String stoppedItem = "";
 				   while (rs.next()) {
 					  ItemResponses ir = new ItemResponses();
 					  currentSequenceNo = rs.getInt("maxseqnum");
@@ -718,7 +841,8 @@ public class DataExportTABECAT {
 					  ir.setOriginalResponse(rs.getString("original_response"));
 					  ir.setResponseTime(rs.getString("response_elapsed_time"));
 					  ir.setSequenceNo(currentSequenceNo);
-					  ir.setIndex(index++);
+					  ir.setIndex(index++);	
+					 // stoppedItem = rs.getString("item_id");
 					  if(currentSequenceNo > lastSequenceNo + 100000) {
 						  ps1 = con.prepareStatement(SQLQuery.GET_ITEM_RESPONSE_FOR_ITEM);
 						  ps1.setInt(1, roster.getTestRosterId());
@@ -726,7 +850,7 @@ public class DataExportTABECAT {
 						  ps1.setLong(3, currentSequenceNo - 100000);
 						  rs1 = ps1.executeQuery();
 						  if(rs1.next()) {
-							  lastItemId = rs1.getString("item_id");
+							  lastItemId = rs1.getString("item_id");							  
 							  if(!lastItemId.equals(ir.getItemId())) {
 								  itemMap.remove(lastItemId);
 								  if(restartItemNumber == 0) {
@@ -747,31 +871,46 @@ public class DataExportTABECAT {
 				    
 				   Set<String> itemSet = itemMap.keySet();
 				   List<String> itemList = new ArrayList<String>(itemSet);
+				   stoppedItem = String.valueOf(itemList.size());
 				   for(int i=0; i<itemCount; i++) {
 					   if(i < itemList.size()) {
 						   ItemResponses ir = itemMap.get(itemList.get(i));
-						   itemIds.append(ir.getItemId() + ",");
-						   itemResponse.append(ir.getResponseValue());
-						   itemOrgResponse.append(ir.getOriginalResponse());
-						   resposneTime.append(ir.getResponseTime() + ",");
+						   itemIds.append(ir.getItemId().trim() + SEPARATOR);
+						   itemResponse.append(ir.getResponseValue().trim() + SEPARATOR);
+						   itemOrgResponse.append(ir.getOriginalResponse().trim() + SEPARATOR);
+						   resposneTime.append(ir.getResponseTime().trim() + SEPARATOR);
 					   } else {
-						   itemIds.append(",");
-						   itemResponse.append(" ");
-						   itemOrgResponse.append(" ");
-						   resposneTime.append(",");
+						   itemIds.append(SEPARATOR);
+						   itemResponse.append(SEPARATOR);
+						   itemOrgResponse.append(SEPARATOR);
+						   resposneTime.append(SEPARATOR);
 					   }
 				   }
-				   response.append(itemIds.substring(0, itemIds.length() - 1)
-						   		 + itemResponse + itemOrgResponse
-						   	     + resposneTime.substring(0, resposneTime.length() - 1));
-				   if(restartItemNumber == 0) {
-					   response.append("00");
-				   } else {
-					   response.append("1" + restartItemNumber);
+				   timedOut = getTimedOut(con, tfil, roster, itemSetId);
+				   if(timedOut == 0) {
+					   if(itemList.size() < itemCount) {
+						   timedOut = 2;
+					   }
+					   else 
+						   stoppedItem = "";
 				   }
+				   response.append(itemIds.substring(0, itemIds.length() - 1)+ SEPARATOR
+						   		 + itemResponse + itemOrgResponse 
+						   		 + resposneTime.substring(0, resposneTime.length() - 1) + SEPARATOR) ;
+				   if(restartItemNumber == 0) {
+					   response.append("0" +SEPARATOR +"0" + SEPARATOR);
+				   } else {
+					   response.append("1" + SEPARATOR + restartItemNumber + SEPARATOR);
+				   }
+				   response.append(timedOut + SEPARATOR);
+				   response.append(stoppedItem + SEPARATOR);
 				   itemMap.clear();
 			   }
-			   tfil.setItemResponse(response.toString());
+			   
+			   if(response.length() > 1)
+					tfil.setItemResponse(response.substring(0, response.length() - 1));
+				else 
+					tfil.setItemResponse(response.toString());
 			} catch(Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -830,4 +969,40 @@ public class DataExportTABECAT {
 			SqlUtil.close(ps, rs);
 		}
 	}
+	
+	private int getTimedOut(Connection con, TABEFile tfil, TestRoster roster, Integer itemSetId) 
+	   throws SQLException {
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			long totalTestTime = 0L;
+			long totalTimeTaken = 0L;
+			int timedOut = 0;
+			try {
+				ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL);
+				ps.setInt(1, itemSetId);
+				ps.setInt(2, roster.getTestRosterId());
+				rs = ps.executeQuery();
+				if(rs.next()) {
+					totalTestTime = rs.getLong("total_time");
+				}
+				SqlUtil.close(ps, rs);
+				ps = con.prepareStatement(SQLQuery.TOTAL_TIME_TAKEN_SQL);
+				ps.setInt(1, itemSetId);
+				ps.setInt(2, roster.getTestRosterId());
+				rs = ps.executeQuery();
+				if(rs.next()) {
+					totalTimeTaken = rs.getLong("total_time");
+				}
+				if(totalTimeTaken > totalTestTime) {
+					timedOut = 1;
+				} else {
+					timedOut = 0;
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				SqlUtil.close(ps, rs);
+			}
+			return timedOut;
+		}
 }

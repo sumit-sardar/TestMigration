@@ -224,4 +224,23 @@ public class SQLQuery {
 															   "ORDER BY items.item_set_name";
 	
 	public static final String CATEGORY_LEVEL_FOR_CUSTOMER = "select category_level from org_node_category where customer_id = ?";
+	
+	public static final String TOTAL_TEST_TIME_SQL = "SELECT SUM(itms.time_limit) total_time " +
+	   													"FROM student_item_set_status siss, item_set itms " +
+	   													"WHERE itms.item_set_id = siss.item_set_id " +
+	   													"AND itms.SAMPLE = 'F' " +
+	   													"AND itms.item_set_level <> 'L' " +
+	   													"AND siss.item_set_id = ?" +
+	   													"AND siss.test_roster_id = ?";
+
+	public static final String TOTAL_TIME_TAKEN_SQL = "SELECT SUM(ir.response_elapsed_time) total_time " +
+														"FROM item_response ir " +
+														"WHERE ir.item_set_id = ?" +
+														"AND ir.test_roster_id = ?";
+
+	public static final String getAbilityScores = "SELECT cadim.name, tcaf.scale_score " +
+													"FROM tabe_content_area_fact tcaf, content_area_dim cadim " +
+													"WHERE tcaf.studentid = ? " +
+													"AND tcaf.sessionid = ?" +
+													"AND tcaf.content_areaid = cadim.content_areaid";
 }
