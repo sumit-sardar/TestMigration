@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.Main;
+import com.Main.ScoringMessage;
 import com.ctb.tdc.web.to.AuthenticationData;
 import com.ctb.tdc.web.to.ItemResponseData;
 import com.ctb.tdc.web.to.ItemSet;
@@ -85,6 +87,7 @@ public class OASRescore {
             itemSetData = getItemSetData(conn, String.valueOf(testRosterId));
         }
         if(!checkRescoredStatus(conn,testRosterId)){
+        	Main.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), new Integer(testRosterId).toString()));
 	        if(authData != null) {    
 		        for(int i=0; i<itemSetData.size() ;i++) {
 		        	ItemSet iSet = (ItemSet)itemSetData.get(i);
@@ -120,21 +123,21 @@ public class OASRescore {
 		
 		try{
 			stmt1 = con.prepareStatement(UPDATE_SCORE);
-			
-			Iterator itr = allTestData.iterator();
-			while(itr.hasNext()){
-				TestData tData = new TestData();
-				tData = (TestData) itr.next();
-				stmt1.setString(1, tData.getObjScore());
-				stmt1.setFloat(2, tData.getAbilityScore().floatValue());
-				stmt1.setFloat(3, tData.getSem().floatValue());
-				stmt1.setInt(4, tData.getItemSetId());
-				stmt1.setInt(5, tData.getTestRosterId());
-				stmt1.addBatch();				
+			if(allTestData.size() > 0){
+				Iterator itr = allTestData.iterator();
+				while(itr.hasNext()){
+					TestData tData = new TestData();
+					tData = (TestData) itr.next();
+					stmt1.setString(1, tData.getObjScore());
+					stmt1.setFloat(2, tData.getAbilityScore().floatValue());
+					stmt1.setFloat(3, tData.getSem().floatValue());
+					stmt1.setInt(4, tData.getItemSetId());
+					stmt1.setInt(5, tData.getTestRosterId());
+					stmt1.addBatch();				
+				}
+				stmt1.executeBatch();
+				con.commit();
 			}
-			stmt1.executeBatch();
-			con.commit();
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -150,17 +153,17 @@ public class OASRescore {
 		PreparedStatement stmt1 = null;
 		try{
 			stmt1 = con.prepareStatement(UPDATE_RESCORESTATUS);
-			
-			Iterator itr = allTestData.iterator();
-			while(itr.hasNext()){
-				TestData tData = new TestData();
-				tData = (TestData) itr.next();
-				stmt1.setInt(1, tData.getTestRosterId());
-				stmt1.addBatch();				
+			if(allTestData.size() > 0){
+				Iterator itr = allTestData.iterator();
+				while(itr.hasNext()){
+					TestData tData = new TestData();
+					tData = (TestData) itr.next();
+					stmt1.setInt(1, tData.getTestRosterId());
+					stmt1.addBatch();				
+				}
+				stmt1.executeBatch();
+				con.commit();
 			}
-			stmt1.executeBatch();
-			con.commit();
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally {
