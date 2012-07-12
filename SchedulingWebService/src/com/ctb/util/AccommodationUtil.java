@@ -65,14 +65,7 @@ public class AccommodationUtil {
             copied.setHighlighter("F");
         }
 
-        if ((accom.getScreenReader() != null) && accom.getScreenReader().booleanValue()) {
-            copied.setScreenReader("T");
-            hasData = true;
-        }
-        else {
-            copied.setScreenReader("F");
-        }
-                
+        copied.setScreenReader("");		// not used
         copied.setScreenMagnifier("");  // not used
         copied.setStudentGrade("");     // not used
         

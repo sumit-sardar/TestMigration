@@ -35,7 +35,7 @@
 
 <!-- MAIN BODY -->
 
-<table  class="simpleBody">
+<table class="simpleBody">
 	<tr>
 		<td align="center" valign="top" >
 			<table class="bodyLayout">
@@ -98,10 +98,8 @@
 <tr><td>End Date:</td><td><input type="text" id="endDate" name="endDate" value="07/04/13" /></td></tr>
 <tr><td>Start Time:</td><td><input type="text" id="startTime" name="startTime" value="8:00 AM" /></td></tr>
 <tr><td>End Time:</td><td><input type="text" id="endTime" name="endTime" value="5:00 PM" /></td></tr>
-
-
 </table>
-
+<br/>
 
 <table class="simpleBlock">
 <tr><td colspan="5"><h3>Accommodation Information</h3></td></tr>
@@ -110,7 +108,7 @@
 <td width="120">Test Pause:&nbsp;<input type="checkbox" id="testPause" name="testPause"/>&nbsp;</td>
 <td width="120">Untimed Test:&nbsp;<input type="checkbox" id="untimed" name="untimed"/>&nbsp;</td>
 <td width="120">Highlighter:&nbsp;<input type="checkbox" id="highlighter" name="highlighter"/>&nbsp;</td>
-<td width="120">Custom Color:&nbsp;<input type="checkbox" id="customColor" name="customColor"/>&nbsp;</td>
+<td width="320">Custom Font/Color:&nbsp;<input type="checkbox" id="customColor" name="customColor"/>&nbsp;(set to default values)</td>
 </tr>
 </table>
 
@@ -258,23 +256,17 @@ Student Key:<input type="text" id="studentKey4" name="studentKey4" value="" size
 
 </table>
 
-<table class="simpleBlock">
-<tr><td>&nbsp;</td></tr>
+<br/>
+<table class="simpleBlock" width="100%">
 
 <tr>
-	<td>
+	<td width="60%">
 		<b>Repeat input student(s)&nbsp;<input type="text" id="repeatCount" name="repeatCount" value="0" size="4"/>&nbsp;times</b>
 	</td>
-</tr>
-	
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-    <td>
+    <td width="40%">
 		<input type="submit" value="Invoke Scheduling Service" />
     </td>
 </tr>
-
 </table>
 
 </div>

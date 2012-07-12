@@ -318,7 +318,7 @@ public class TestWebServiceController extends PageFlowController
 	 * getInfoText
 	 */
     private String getInfoText(Session session) {
-    	String infoText = "";
+    	String infoText = "<b>Output Result:</b>";
     	
     	infoText += "<br/>TAC: ";
     	for (int i=0 ; i<session.getSubtests().length ; i++) {

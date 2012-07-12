@@ -148,13 +148,17 @@ public class SchedulingWS implements Serializable {
 	    	for (int i=0 ; i<students.length ; i++) {
 	    		dto.Student student = students[i];
 	    		studentId = student.getStudentId();
+	    		boolean createNewStudent = true;
+	    		
 	    		if (studentId != null) {
 	    			Student studentDetail = getStudent(studentId);
 	    			studentId = studentDetail.getStudentId();
+	    			createNewStudent = false;
 	    		}
 	    		else {
 	    			StudentProfileInformation studentProfile = buildStudentProfile(student);
 	    			studentId = createNewStudent(studentProfile);
+	    			createNewStudent = true;
 	    		}
 	    		
 	        	if (studentId != null) {
@@ -163,10 +167,15 @@ public class SchedulingWS implements Serializable {
 	        		student.setStatusNonOverwritten("OK");
 	        		student.setStudentId(studentId);
 	        		
-	        		// create student accommodations
+	        		// create/update student accommodations
 	        		Accommodation accom = session.getAccom();
-	        		StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
-   					createStudentAccommodations(studentId, sa);
+	        		if (accom != null) {
+		        		StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
+		        		if (createNewStudent)
+		        			createStudentAccommodations(studentId, sa);
+		        		else
+		        			updateStudentAccommodations(studentId, sa);
+	        		}
 	        	}
 	        	else {
 	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
@@ -835,6 +844,22 @@ public class SchedulingWS implements Serializable {
 		try
 		{    
 			this.studentManagement.createStudentAccommodations(userName, sa);
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}        
+	}
+	
+	/**
+	 * updateStudentAccommodations
+	 */
+	private void updateStudentAccommodations(Integer studentId, StudentAccommodations sa)
+	{
+    	String userName = this.defaultUser.getUserName();
+		try
+		{    
+			this.studentManagement.updateStudentAccommodations(userName, sa);
 		}
 		catch (CTBBusinessException be)
 		{
