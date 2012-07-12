@@ -55,3 +55,15 @@ function sanitize(str)
     }        
     return true;
 }
+
+function toggleAccomm(element) 
+{
+	var divTR = document.getElementById("accommDiv");
+	if (element.checked) {
+		divTR.style.display = "block";
+	}
+	else {
+		divTR.style.display = "none";
+	}
+	return true;
+}

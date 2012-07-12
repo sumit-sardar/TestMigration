@@ -103,7 +103,8 @@
 
 <table class="simpleBlock">
 <tr><td colspan="5"><h3>Accommodation Information</h3></td></tr>
-<tr>
+<tr><td colspan="5">Has Accommodations:&nbsp;<input type="checkbox" id="hasAccomm" name="hasAccomm" onclick="return toggleAccomm(this);"/>&nbsp;</td></tr>
+<tr id="accommDiv" name="accommDiv" style="display: none">
 <td width="120">Calculator:&nbsp;<input type="checkbox" id="calculator" name="calculator"/>&nbsp;</td>
 <td width="120">Test Pause:&nbsp;<input type="checkbox" id="testPause" name="testPause"/>&nbsp;</td>
 <td width="120">Untimed Test:&nbsp;<input type="checkbox" id="untimed" name="untimed"/>&nbsp;</td>
@@ -258,14 +259,13 @@ Student Key:<input type="text" id="studentKey4" name="studentKey4" value="" size
 
 <br/>
 <table class="simpleBlock" width="100%">
-
 <tr>
-	<td width="60%">
+	<td>
 		<b>Repeat input student(s)&nbsp;<input type="text" id="repeatCount" name="repeatCount" value="0" size="4"/>&nbsp;times</b>
 	</td>
-    <td width="40%">
-		<input type="submit" value="Invoke Scheduling Service" />
-    </td>
+</tr>
+<tr>
+	<td width="100%"><h3>&nbsp;</h3><input type="submit" value="Invoke Scheduling Service" /></td>
 </tr>
 </table>
 

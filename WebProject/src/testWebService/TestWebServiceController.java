@@ -279,22 +279,38 @@ public class TestWebServiceController extends PageFlowController
 		}
 		
 		// init accommodations
-		Accommodation accom = new Accommodation();
+		Accommodation accom = null;
 		
-		if (this.getRequest().getParameter("calculator") != null)
-			accom.setCalculator(Boolean.TRUE);
-		if (this.getRequest().getParameter("testPause") != null)
-			accom.setTestPause(Boolean.TRUE);
-		if (this.getRequest().getParameter("untimed") != null)
-			accom.setUntimedTest(Boolean.TRUE);
-		if (this.getRequest().getParameter("highlighter") != null)
-			accom.setHighlighter(Boolean.TRUE);
-		if (this.getRequest().getParameter("customColor") != null) {
-			accom.setFontSize("1");
-			accom.setQuestionBackgroundColor("Light blue");
-			accom.setQuestionFontColor("Dark blue");
-			accom.setAnswerBackgroundColor("White");
-			accom.setAnswerFontColor("Black");
+		if (this.getRequest().getParameter("hasAccomm") != null) {
+			accom = new Accommodation();
+			
+			if (this.getRequest().getParameter("calculator") != null)
+				accom.setCalculator(Boolean.TRUE);
+			else
+				accom.setCalculator(Boolean.FALSE);
+			
+			if (this.getRequest().getParameter("testPause") != null)
+				accom.setTestPause(Boolean.TRUE);
+			else
+				accom.setTestPause(Boolean.FALSE);
+				
+			if (this.getRequest().getParameter("untimed") != null)
+				accom.setUntimedTest(Boolean.TRUE);
+			else
+				accom.setUntimedTest(Boolean.FALSE);
+				
+			if (this.getRequest().getParameter("highlighter") != null)
+				accom.setHighlighter(Boolean.TRUE);
+			else
+				accom.setHighlighter(Boolean.FALSE);
+				
+			if (this.getRequest().getParameter("customColor") != null) {
+				accom.setFontSize("1");
+				accom.setQuestionBackgroundColor("Light blue");
+				accom.setQuestionFontColor("Dark blue");
+				accom.setAnswerBackgroundColor("White");
+				accom.setAnswerFontColor("Black");
+			}
 		}
 		
 		session.setAccom(accom);
