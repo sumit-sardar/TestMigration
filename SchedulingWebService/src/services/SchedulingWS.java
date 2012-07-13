@@ -829,6 +829,9 @@ public class SchedulingWS implements Serializable {
 		RosterElementData red = getRosterForViewTestSession(testAdminId); 
 	    RosterElement[] rosterElements = red.getRosterElements();
 	    
+	    if ((students == null) || (rosterElements == null))
+	    	return;
+	    
 	    for (int i=0; i < rosterElements.length; i++) {
 	        RosterElement rosterElt = rosterElements[i];
 	        if (rosterElt != null) {

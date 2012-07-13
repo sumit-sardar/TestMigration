@@ -370,36 +370,38 @@ public class TestWebServiceController extends PageFlowController
     			infoText += "null , ";
     	}
 
-    	infoText += "<br/>Student key: ";
-    	for (int i=0 ; i<session.getStudents().length ; i++) {
-    		if (session.getStudents()[i].getStudentKey() != null)
-    			infoText += (session.getStudents()[i].getStudentKey().toString() + " , ");
-    		else
-    			infoText += "null , ";
-    	}
+    	if (session.getStudents() != null) {
+        	infoText += "<br/>Student key: ";
+	    	for (int i=0 ; i<session.getStudents().length ; i++) {
+	    		if (session.getStudents()[i].getStudentKey() != null)
+	    			infoText += (session.getStudents()[i].getStudentKey().toString() + " , ");
+	    		else
+	    			infoText += "null , ";
+	    	}
 
-    	infoText += "<br/>Student ID: ";
-    	for (int i=0 ; i<session.getStudents().length ; i++) {
-    		if (session.getStudents()[i].getStudentId() != null)
-    			infoText += (session.getStudents()[i].getStudentId().toString() + " , ");
-    		else
-    			infoText += "null , ";
-    	}
-
-    	infoText += "<br/>Student password: ";
-    	for (int i=0 ; i<session.getStudents().length ; i++) {
-    		if (session.getStudents()[i].getPassword() != null)
-    			infoText += (session.getStudents()[i].getPassword().toString() + " , ");
-    		else
-    			infoText += "null , ";
-    	}
-    	
-    	infoText += "<br/>Student update status: ";
-    	for (int i=0 ; i<session.getStudents().length ; i++) {
-    		if (session.getStudents()[i].getStatus() != null)
-    			infoText += (session.getStudents()[i].getStatus().toString() + " , ");
-    		else
-    			infoText += "null , ";
+	    	infoText += "<br/>Student ID: ";
+	    	for (int i=0 ; i<session.getStudents().length ; i++) {
+	    		if (session.getStudents()[i].getStudentId() != null)
+	    			infoText += (session.getStudents()[i].getStudentId().toString() + " , ");
+	    		else
+	    			infoText += "null , ";
+	    	}
+	
+	    	infoText += "<br/>Student password: ";
+	    	for (int i=0 ; i<session.getStudents().length ; i++) {
+	    		if (session.getStudents()[i].getPassword() != null)
+	    			infoText += (session.getStudents()[i].getPassword().toString() + " , ");
+	    		else
+	    			infoText += "null , ";
+	    	}
+	    	
+	    	infoText += "<br/>Student update status: ";
+	    	for (int i=0 ; i<session.getStudents().length ; i++) {
+	    		if (session.getStudents()[i].getStatus() != null)
+	    			infoText += (session.getStudents()[i].getStatus().toString() + " , ");
+	    		else
+	    			infoText += "null , ";
+	    	}
     	}
     	
 		return infoText;
