@@ -17,7 +17,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.ManageStudent;
@@ -42,6 +45,7 @@ import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.util.DateUtil;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.AccommodationUtil;
+import com.ctb.util.SessionValidatorUtil;
 
 import dto.Accommodation;
 import dto.PathNode;
@@ -89,7 +93,15 @@ public class SchedulingWS implements Serializable {
     
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
+    
+    @Control()
+    private com.ctb.control.db.Students students;
 	
+    @Control()
+    private com.ctb.control.db.TestRoster rosters;
+    
+    @Control()
+    private com.ctb.control.db.StudentItemSetStatus siss;
     
 	/**
 	 * scheduleSession: this is web service which is called from Acuity
@@ -222,6 +234,105 @@ public class SchedulingWS implements Serializable {
 	 */
 	private Session updateExistingSession(Session session)
 	{
+	    
+		if(!validateEditableSessionData(session)){
+			return session;
+		}
+		
+		// CREATE OR REMOVE STUDENT
+		dto.Student[] students = session.getStudents();
+    	int numberStudentAdded = 0;
+        Map<Integer, Integer> deleteStudentMap = new TreeMap<Integer, Integer>();
+    	Integer studentId = null;
+		if ((students != null) && (students.length > 0)) { 
+			
+	    	for (int i=0 ; i<students.length ; i++) {
+	    		dto.Student student = students[i];
+	    		studentId = student.getStudentId();
+	    		boolean createNewStudent = true;
+	    		boolean removedStudent = false;
+	    		
+	    		if (studentId != null && !student.getRemoveStatus()) {  // for update student
+	    			Student studentDetail = getStudent(studentId);
+	    			studentId = studentDetail.getStudentId();
+	    			createNewStudent = false;
+	    		} else if (studentId != null && student.getRemoveStatus()){  // for remove student
+	    			if(!validateStudentForRemove(session, student)){
+	    				createNewStudent = false;
+	    			} else	if (!deleteStudent(student,  session.getSessionId())){
+	    				createNewStudent = false;
+	        		}  else {
+	        			removedStudent = true;
+	        			createNewStudent = false;
+	        			deleteStudentMap.put(studentId, studentId);
+	        			student.setStatusNonOverwritten("OK");
+	        		}
+	    		} else {    											// for create student
+	    			StudentProfileInformation studentProfile = buildStudentProfile(student);
+	    			studentId = createNewStudent(studentProfile);
+	    			createNewStudent = true;
+	    		}
+	    		
+	        	if (studentId != null && !removedStudent) {
+	        		if(deleteStudentMap.get(studentId) == null){
+	        			System.out.println("Create student sucessfully - studentId = " + studentId);
+		        		numberStudentAdded++;
+		        		student.setStatusNonOverwritten("OK");
+		        		student.setStudentId(studentId);
+	        		}
+	        		// create/update student accommodations
+	        		Accommodation accom = session.getAccom();
+	        		if (accom != null) {
+		        		StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
+		        		if (createNewStudent)
+		        			createStudentAccommodations(studentId, sa);
+		        		/*else
+		        			updateStudentAccommodations(studentId, sa);*/
+	        		}
+	        		
+	        	} else if (!removedStudent){
+	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
+	        		student.setStatusNonOverwritten("Error: Failed to add");
+	        		student.setStudentId(null);
+	        	}
+	    	}
+		}  
+		
+		Map<Integer, SessionStudent> savedStudent = getSessionStudentsMinimalInfoForAdmin(session.getSessionId());
+		updateAllScheduleStudentsAccomodation(session, savedStudent);
+		
+		// CREATE SESSION
+		SessionStudent[] sessionStudents = new SessionStudent[numberStudentAdded];
+		if ((students != null) && (students.length > 0)) { 
+			int index = 0;
+	    	for (int i= 0 ; i<students.length ; i++) {
+	    		dto.Student student = students[i];
+	    		if (student.getStudentId() != null && deleteStudentMap.get(student.getStudentId()) == null) {
+	    			SessionStudent ss = buildSessionStudent(student.getStudentId());
+	    			if(savedStudent.get(ss.getStudentId())!=null){
+	    				ss.setItemSetForm(savedStudent.get(ss.getStudentId()).getItemSetForm());
+	    			}
+	    			sessionStudents[index++] = ss;
+	    		}
+	    	}
+		}    	
+		// update all ready existing students accomodation
+		
+    	ScheduledSession newSession = populateSession(session, sessionStudents);
+    	
+        Integer testAdminId = updateTestSession(newSession);
+        
+        if (testAdminId != null) {
+        	System.out.println("Session updated sucessfully - testAdminId = " + testAdminId);
+        	session.setSessionId(testAdminId);
+        	session.setStatusNonOverwritten("OK");
+        }
+        else {
+    		System.out.println("Failed to uypdate session = " + session.getSessionName());
+        	session.setSessionId(null);
+        	session.setStatusNonOverwritten("Error: Failed to create session");
+        }
+		
 		return session;
 	}
 		
@@ -385,6 +496,30 @@ public class SchedulingWS implements Serializable {
 		return testAdminId;
 	}
 	
+	/**
+	 * ///////////////////////////////   updateTestSession   //////////////////////////////////
+	 */
+	private Integer updateTestSession(ScheduledSession newSession)
+	{
+    	String userName = this.defaultUser.getUserName();
+		
+		Integer testAdminId = null;
+		
+		try
+		{
+	        testAdminId = this.scheduleTest.updateTestSession(userName, newSession);
+		}
+		catch (StudentDataCreationException sde)
+		{
+			sde.printStackTrace();
+		}        
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}                    
+
+		return testAdminId;
+	}
 	
 	/**
 	 * populateSession
@@ -392,6 +527,7 @@ public class SchedulingWS implements Serializable {
     private ScheduledSession populateSession(Session session, SessionStudent[] students)
     {  
     	ScheduledSession scheduledSession = new ScheduledSession();
+    	scheduledSession.setFromTAS(false);
 
     	populateTestSession(session, scheduledSession);
 	 
@@ -437,7 +573,7 @@ public class SchedulingWS implements Serializable {
 			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
 			 String isEndTestSession 		= "";
 			 
-			 Integer testAdminId = null;
+			 Integer testAdminId = session.getSessionId();
 			 String formOperand       		= TestSession.FormAssignment.ROUND_ROBIN;
 			 TestElement selectedTest 		= scheduleTest.getTestElementMinInfoByIdsAndUserName(customerId, itemSetId, this.defaultUserName);
 
@@ -508,14 +644,7 @@ public class SchedulingWS implements Serializable {
 	    	 String[] accessCodes           = new String [subtests.length]; 
 	    	 String[] itemSetForms          = new String [subtests.length];
 	    	 String[] itemSetisDefault      = new String [subtests.length]; 
-	    
-        	 generateAccessCodes(accessCodes, session.getHasBreak());
-    		 scheduledSession.getTestSession().setAccessCode(accessCodes[0]);
 
-    		 if (session.getHasBreak())
-            	 session.setAccessCode(null);
-        	 else 
-            	 session.setAccessCode(accessCodes[0]);
         	 
     		 TestElement[] allsubtest = getAllItemSetIdTSbyItemSetIdTC(itemSetId);
 	    	 for (int i=0 ; i<subtests.length ; i++) {
@@ -529,6 +658,24 @@ public class SchedulingWS implements Serializable {
 		    	 itemSetForms[i] = "";
 		    	 itemSetisDefault[0] = "T";
 	    	 }
+	    	 
+	    	 
+	    	 
+	    	 if(session.getSessionId()!=null && session.getSessionId()>0){ // for update case
+	    		 TestSessionData savedSessionData = getTestSessionDetails(session.getSessionId());
+	    		  if(! SessionValidatorUtil.isEnforceBreakUpdated(session, savedSessionData.getTestSessions()[0])){ // if not updated 
+	    			 
+	    			  TestElement[] testUnits = getScheduledUnits(session.getSessionId());
+	    			  populateAccessCode(testUnits, itemSetIdTDs, accessCodes);
+	    		  } 
+	    	 }
+	    	 generateAccessCodes(accessCodes, session.getHasBreak());
+	    	 scheduledSession.getTestSession().setAccessCode(accessCodes[0]);
+	    	 
+	    	 if (session.getHasBreak())
+            	 session.setAccessCode(null);
+        	 else 
+            	 session.setAccessCode(accessCodes[0]);
 	    	 
 	    	 
 	    	 List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
@@ -647,6 +794,9 @@ public class SchedulingWS implements Serializable {
 	    HashMap accessCodeHashmap = new HashMap();
 	    try {
 	        for (int i=0 ; i<accessCodes.length ; i++) {
+	        	if(accessCodes[i]!=null){
+	        		continue;
+	        	}
 	        	boolean validCode = false;
 	            String code = null;
 	            while (!validCode) {
@@ -688,7 +838,7 @@ public class SchedulingWS implements Serializable {
 	            String password = vo.getPassword();
 	        	for (int j=0 ; j<students.length ; j++) {
 	        		dto.Student student = students[j];
-	        		if (studentId.intValue() == student.getStudentId().intValue()) {
+	        		if (student.getStudentId() != null && studentId.intValue() == student.getStudentId().intValue()) {
 	        			student.setLoginName(loginName);
 	        			student.setPassword(password);
 	                	System.out.println("Roster Info = " + studentId + " - " + loginName + " - " + password);
@@ -865,6 +1015,211 @@ public class SchedulingWS implements Serializable {
 		{
 			be.printStackTrace();
 		}        
+	}
+
+	
+	private boolean validateEditableSessionData(Session session) {
+		boolean isValid = true;
+		TestSessionData savedSessionData = getTestSessionDetails(session.getSessionId());
+		TestElement[] testUnits = null;
+		if (savedSessionData == null) {
+			System.out.println("SessionData is null.");
+			session.setStatusNonOverwritten("Error: OAS System Error.");
+			isValid = false;
+		} else if (savedSessionData.getTestSessions() == null
+				|| savedSessionData.getTestSessions().length < 1
+				|| savedSessionData.getTestSessions()[0] == null) {
+			System.out.println("Session does not exists.");
+			session.setStatusNonOverwritten("Error: Session does not exists.");
+			isValid = false;
+		} else if (isSessionExpired(savedSessionData)) {
+			boolean productUpdated = SessionValidatorUtil.isProductUpdated(
+					session, savedSessionData.getTestSessions()[0]);
+			testUnits = getScheduledUnits(session.getSessionId());
+			if (testUnits == null) {
+				System.out.println("subtest is null.");
+				session.setStatusNonOverwritten("Error: OAS System Error.");
+				return false;
+			}
+			boolean subtestUpdated = SessionValidatorUtil.isSubtestUpdated(	session.getSubtests(), testUnits);
+			boolean levelUpdated = SessionValidatorUtil.isLevelUpdated(session,	savedSessionData.getTestSessions()[0]);
+			boolean sessionUpdated = SessionValidatorUtil.isSessionNameUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean startDateUpdated = SessionValidatorUtil.isStartDateUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean endDateUpdated = SessionValidatorUtil.isEndDateUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean startTimeUpdated = SessionValidatorUtil.isStartTimeUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean endTimeUpdated = SessionValidatorUtil.isEndTimeUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean timeZoneUpdated = SessionValidatorUtil.isTimeZoneUpdated(session, savedSessionData.getTestSessions()[0]);
+			boolean enforceBreakUpdated =  SessionValidatorUtil.isEnforceBreakUpdated(	session, savedSessionData.getTestSessions()[0]);
+			
+			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || endDateUpdated || startTimeUpdated || endTimeUpdated || timeZoneUpdated || enforceBreakUpdated) {
+				System.out.println("Modification of product, subtest , level, session, startDate, endDate, startTime, endTime and timeZone is not allowed. ");
+				//session.setStatusNonOverwritten("Error: Session modification failed. Modification of product, subtest , level, session name, startDate, endDate, startTime, endTime and timeZone is not allowed. ");
+				session.setStatusNonOverwritten("Error: Session modification failed. Modification  of field [" + SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, timeZoneUpdated, enforceBreakUpdated)+ "] is not allowed as session already expired . ");
+				isValid = false;
+			}
+
+		} else if (isStudentAlreadyLoggedIn(session.getSessionId())) {
+
+			boolean productUpdated = SessionValidatorUtil.isProductUpdated(
+					session, savedSessionData.getTestSessions()[0]);
+			testUnits = getScheduledUnits(session.getSessionId());
+			if (testUnits == null) {
+				System.out.println("subtest is null.");
+				session.setStatusNonOverwritten("Error: OAS System Error.");
+				return false;
+			}
+			boolean subtestUpdated = SessionValidatorUtil.isSubtestUpdated(	session.getSubtests(), testUnits);
+			boolean levelUpdated = SessionValidatorUtil.isLevelUpdated(session,	savedSessionData.getTestSessions()[0]);
+			boolean sessionUpdated = SessionValidatorUtil.isSessionNameUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean startDateUpdated = SessionValidatorUtil.isStartDateUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean enforceBreakUpdated =  SessionValidatorUtil.isEnforceBreakUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean endTimeUpdated = false;
+			boolean timeZoneUpdated = false;
+
+			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || enforceBreakUpdated) {
+				System.out.println("Modification of product, subtest , level, session and startDate is not allowed. ");
+				session.setStatusNonOverwritten("Error: Session modification failed. Modification of field [" +SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated) +"] is not allowed as student logged in. ");
+				isValid = false;
+			}
+		} else {
+			boolean productUpdated = SessionValidatorUtil.isProductUpdated(
+					session, savedSessionData.getTestSessions()[0]);
+			testUnits = getScheduledUnits(session.getSessionId());
+			if (testUnits == null) {
+				System.out.println("Subtest is null.");
+				session.setStatusNonOverwritten("Error: OAS System Error.");
+				return false;
+			}
+			boolean subtestUpdated = SessionValidatorUtil.isSubtestUpdated(	session.getSubtests(), testUnits);
+			boolean levelUpdated = SessionValidatorUtil.isLevelUpdated(session,	savedSessionData.getTestSessions()[0]);
+			boolean sessionUpdated = false;
+			boolean startDateUpdated = false;
+			boolean endTimeUpdated = false;
+			boolean timeZoneUpdated = false;
+			boolean enforceBreakUpdated = false;
+			
+			if (productUpdated || subtestUpdated || levelUpdated) {
+				System.out.println("Modification of product, subtest and level is not allowed. ");
+				session.setStatusNonOverwritten("Error: Session modification failed. Modification of field [" +SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated) +"] is not allowed. ");
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
+
+	private boolean isStudentAlreadyLoggedIn(Integer sessionId) {
+		boolean isStudentAlreadyLoggedIn = false;
+		try {
+			if (this.students.getLoggedInSessionStudentCountForAdmin(sessionId) > 0) {
+				isStudentAlreadyLoggedIn = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return isStudentAlreadyLoggedIn;
+	}
+
+	private boolean isSessionExpired(TestSessionData sessionData) {
+		boolean isSessionExpired = false;
+		if ("PA".equalsIgnoreCase(sessionData.getTestSessions()[0].getTestAdminStatus())) {
+			isSessionExpired = true;
+		}
+		return isSessionExpired;
+	}
+
+	private TestElement[] getScheduledUnits(Integer sessionId) {
+		TestElement[] testUnits = null;
+		try {
+			testUnits = itemSet.getTestElementsForSession(sessionId);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return testUnits;
+	}
+	
+	
+	private boolean deleteStudent(dto.Student student, Integer testAdminId) {
+		boolean deleted = false;
+		try {
+			RosterElement roster = rosters.getRosterElementForStudentAndAdmin(student.getStudentId(), testAdminId);
+			if (roster == null) {
+				deleted = true;
+			} else {
+				siss.deleteStudentItemSetStatusesForRoster(roster.getTestRosterId());
+				rosters.deleteTestRoster(roster);
+				deleted = true;
+			}
+		} catch (Exception e) {
+			System.out.println("Failed to remove student = " +  student.getStudentId());
+			e.printStackTrace();
+			student.setStatusNonOverwritten("Error: Failed to remove student due to system error.");
+		}
+		return deleted;
+	}
+	
+	private boolean validateStudentForRemove (Session session, dto.Student student ) {
+		boolean validate = false;
+		try {
+			 RosterElement rosterElement = rosters.getRosterElementForStudentAndAdmin(student.getStudentId(), session.getSessionId());
+			 if(rosterElement == null){
+				 validate = true;  // already removed
+			 } else if(("SC".equals(rosterElement.getTestCompletionStatus()) || "NT".equals(rosterElement.getTestCompletionStatus())) ){
+				 if(students.isStudentEditableByUser(AUTHENTICATE_USER_NAME, rosterElement.getStudentId()).intValue() > 0 ? true : false){
+					 validate = true; 
+				 } else {
+					 System.out.println("Failed to remove student = " +  student.getStudentId());
+		        	 student.setStatusNonOverwritten("Error: Failed to remove student as student out of scope.");
+				 }
+			 } else {
+				 System.out.println("Failed to remove student = " +  student.getStudentId());
+	        	 student.setStatusNonOverwritten("Error: Failed to remove student as student already logged in.");
+			 }
+		} catch(Exception e){
+			System.out.println("Failed to remove student = " +  student.getStudentId());
+			e.printStackTrace();
+			student.setStatusNonOverwritten("Error: Failed to remove student due to system error.");
+		}
+		return validate;
+	}
+	
+	private Map<Integer, SessionStudent> getSessionStudentsMinimalInfoForAdmin(Integer testAdminId) {
+		Map<Integer, SessionStudent> savedStudent = new TreeMap<Integer, SessionStudent>();
+		try{
+			SessionStudent [] savedRoster= students.getSessionStudentsMinimalInfoForAdmin(testAdminId);
+			for (SessionStudent sessionStudent : savedRoster) {
+				savedStudent.put(sessionStudent.getStudentId(), sessionStudent);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return savedStudent;
+		
+	}
+	
+	private void updateAllScheduleStudentsAccomodation(Session session, Map<Integer, SessionStudent> savedStudent){
+		Accommodation accom = session.getAccom();
+		if (accom != null) {
+			for (Integer studentId : savedStudent.keySet()) {
+				StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
+				updateStudentAccommodations(studentId, sa);
+			}
+    		
+    	}
+	}
+	
+	private void  populateAccessCode(TestElement[] testUnits,  String[] itemSetIdTDs , String[] accessCodes ){
+		for (int i = 0; i < itemSetIdTDs.length; i++) {
+			for (TestElement testUnit : testUnits) {
+				if(testUnit.getItemSetId().toString().equalsIgnoreCase(itemSetIdTDs[i])){
+					accessCodes[i]=testUnit.getAccessCode();
+					break;
+				}
+			}
+		}
+		
 	}
 	
 }

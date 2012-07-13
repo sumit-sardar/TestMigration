@@ -81,6 +81,7 @@ public class TestWebServiceController extends PageFlowController
     private Session populateSessionData()
     {
 		// init session
+    	Integer sessionId = null;
 		Session session = new Session();
 		session.setProductId(Integer.valueOf(3510));
 		session.setLevel(this.getRequest().getParameter("level"));
@@ -91,6 +92,12 @@ public class TestWebServiceController extends PageFlowController
 		session.setEndTime(this.getRequest().getParameter("endTime"));
 		session.setTimeZone(this.getRequest().getParameter("timeZone"));
 		session.setHasBreak(new Boolean(this.getRequest().getParameter("hasBreak") != null));
+		
+		if(this.getRequest().getParameter("sesionId") != null && (this.getRequest().getParameter("sesionId")).trim().length()>0){
+			String sessionIdString = (this.getRequest().getParameter("sesionId")).trim();
+			sessionId = Integer.valueOf(sessionIdString);
+		}
+		session.setSessionId(sessionId);
 		
 		// init subtests
 		Subtest subtest = null;
@@ -167,6 +174,9 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			if(this.getRequest().getParameter("studentRemoveKey1") != null){
+				student.setRemoveStatus(true);
+			}
 			students[index] = student;
 			index++;
 		}
@@ -189,6 +199,9 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			if(this.getRequest().getParameter("studentRemoveKey2") != null){
+				student.setRemoveStatus(true);
+			}
 			students[index] = student;
 			index++;
 		}
@@ -211,6 +224,9 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			if(this.getRequest().getParameter("studentRemoveKey3") != null){
+				student.setRemoveStatus(true);
+			}
 			students[index] = student;
 			index++;
 		}
@@ -233,6 +249,9 @@ public class TestWebServiceController extends PageFlowController
 		if ((studentId != null) && (studentId.trim().length() > 0)) {
 			student = new dto.Student(); 
 			student.setStudentId(new Integer(studentId));
+			if(this.getRequest().getParameter("studentRemoveKey4") != null){
+				student.setRemoveStatus(true);
+			}
 			students[index] = student;
 			index++;
 		}
@@ -335,7 +354,9 @@ public class TestWebServiceController extends PageFlowController
 	 */
     private String getInfoText(Session session) {
     	String infoText = "<b>Output Result:</b>";
-    	
+    	infoText += "<br/>Session Id: ";
+    	infoText +=session.getSessionId();
+    		
     	infoText += "<br/>TAC: ";
     	for (int i=0 ; i<session.getSubtests().length ; i++) {
         	infoText += (session.getSubtests()[i].getAccessCode() + " , ");
@@ -369,6 +390,14 @@ public class TestWebServiceController extends PageFlowController
     	for (int i=0 ; i<session.getStudents().length ; i++) {
     		if (session.getStudents()[i].getPassword() != null)
     			infoText += (session.getStudents()[i].getPassword().toString() + " , ");
+    		else
+    			infoText += "null , ";
+    	}
+    	
+    	infoText += "<br/>Student update status: ";
+    	for (int i=0 ; i<session.getStudents().length ; i++) {
+    		if (session.getStudents()[i].getStatus() != null)
+    			infoText += (session.getStudents()[i].getStatus().toString() + " , ");
     		else
     			infoText += "null , ";
     	}

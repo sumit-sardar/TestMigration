@@ -66,6 +66,9 @@
 <tr><td colspan="2">
 	<h3>Session Information</h3>
 </td></tr>
+<tr><td>Session Id:</td>
+<td><input type="text" id="sesionId" name="sesionId" value="" size="2" />&nbsp;</td>
+</tr>
 <tr><td>TerraNova Form G - Level:</td>
 <td><input type="text" id="level" name="level" value="13" size="2" />&nbsp;</td>
 </tr>
@@ -171,6 +174,7 @@ Grade:<select id="grade1" name="grade1">
 <option value="12">12</option>
 </select>&nbsp;
 Student Key:<input type="text" id="studentKey1" name="studentKey1" value="" size="8"/>&nbsp;
+Remove Flag :<input type="checkbox"  id="studentRemoveKey1" name="studentRemoveKey1"/>&nbsp;
 </td></tr>
 
 <tr><td>
@@ -198,6 +202,7 @@ Grade:<select id="grade2" name="grade2">
 <option value="12">12</option>
 </select>&nbsp;
 Student Key:<input type="text" id="studentKey2" name="studentKey2" value="" size="8"/>&nbsp;
+Remove Flag :<input type="checkbox"  id="studentRemoveKey2" name="studentRemoveKey2"/>&nbsp;
 </td></tr>
 
 
@@ -226,6 +231,7 @@ Grade:<select id="grade3" name="grade3">
 <option selected value="12">12</option>
 </select>&nbsp;
 Student Key:<input type="text" id="studentKey3" name="studentKey3" value="" size="8"/>&nbsp;
+Remove Flag :<input type="checkbox"  id="studentRemoveKey3" name="studentRemoveKey3"/>&nbsp;
 </td></tr>
 
 <tr><td>
@@ -253,6 +259,7 @@ Grade:<select id="grade4" name="grade4">
 <option value="12">12</option>
 </select>&nbsp;
 Student Key:<input type="text" id="studentKey4" name="studentKey4" value="" size="8"/>&nbsp;
+Remove Flag :<input type="checkbox" id="studentRemoveKey4" name="studentRemoveKey4"/>&nbsp;
 </td></tr>
 
 </table>

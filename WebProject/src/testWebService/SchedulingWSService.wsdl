@@ -95,6 +95,7 @@
           <xs:element minOccurs="1" name="LoginName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="MiddleName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="Password" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="RemoveStatus" nillable="true" type="xs:boolean"/>
           <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="StudentId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="StudentKey" nillable="true" type="xs:long"/>

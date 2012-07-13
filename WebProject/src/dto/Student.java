@@ -26,7 +26,8 @@ public class Student implements java.io.Serializable {
     private String password = null;		// 32 chars
  
     private String status = null;
-     private Long studentKey = null;
+    private Long studentKey = null;
+    private Boolean removeStatus = new Boolean("false");
     
 	public Student() {
 	}
@@ -131,5 +132,16 @@ public class Student implements java.io.Serializable {
 	public void setStudentKey(Long studentKey) {
 		this.studentKey = studentKey;
 	}
+
+	public Boolean getRemoveStatus() {
+		return removeStatus;
+	}
+
+	public void setRemoveStatus(Boolean removeStatus) {
+		this.removeStatus = removeStatus;
+	}
+
+
+	
 	
 }
