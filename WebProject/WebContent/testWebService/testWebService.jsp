@@ -67,7 +67,7 @@
 	<h3>Session Information</h3>
 </td></tr>
 <tr><td>Session Id:</td>
-<td><input type="text" id="sesionId" name="sesionId" value="" size="2" />&nbsp;</td>
+<td><input type="text" id="sesionId" name="sesionId" value=""  />&nbsp;</td>
 </tr>
 <tr><td>TerraNova Form G - Level:</td>
 <td><input type="text" id="level" name="level" value="13" size="2" />&nbsp;</td>
