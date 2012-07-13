@@ -2602,18 +2602,22 @@ public class ScheduleTestImpl implements ScheduleTest
                 }
             }
             updateStudentItemSetStatusRecords(customerId, assignments);
-            Iterator iter = oldMap.values().iterator();
-            while (iter.hasNext()) {
-                RosterElement oldUnit = (RosterElement) iter.next();
-                if(!("SC".equals(oldUnit.getTestCompletionStatus()) || "NT".equals(oldUnit.getTestCompletionStatus()))) {
-                    throw new SessionCreationException("ScheduleTestImpl: updateTestRosters: attempted to remove a roster which has already begun testing");  
-                } else {
-                    // can only remove rosters to which editing user has permission
-                    if(students.isStudentEditableByUser(userName, oldUnit.getStudentId()).intValue() > 0 ? true : false) {
-                    	//siss.getConnection().setAutoCommit(false);
-                    	siss.deleteStudentItemSetStatusesForRoster(oldUnit.getTestRosterId());
-                    	//rosters.getConnection().setAutoCommit(false);
-                    	rosters.deleteTestRoster(oldUnit);
+            if(!newSession.isFromTAS()){
+            	return;
+            } else{
+            	Iterator iter = oldMap.values().iterator();
+                while (iter.hasNext()) {
+                    RosterElement oldUnit = (RosterElement) iter.next();
+                    if(!("SC".equals(oldUnit.getTestCompletionStatus()) || "NT".equals(oldUnit.getTestCompletionStatus()))) {
+                        throw new SessionCreationException("ScheduleTestImpl: updateTestRosters: attempted to remove a roster which has already begun testing");  
+                    } else {
+                        // can only remove rosters to which editing user has permission
+                        if(students.isStudentEditableByUser(userName, oldUnit.getStudentId()).intValue() > 0 ? true : false) {
+                        	//siss.getConnection().setAutoCommit(false);
+                        	siss.deleteStudentItemSetStatusesForRoster(oldUnit.getTestRosterId());
+                        	//rosters.getConnection().setAutoCommit(false);
+                        	rosters.deleteTestRoster(oldUnit);
+                        }
                     }
                 }
             }

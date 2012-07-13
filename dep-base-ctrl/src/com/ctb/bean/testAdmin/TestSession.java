@@ -78,6 +78,7 @@ public class TestSession extends CTBBean
     private String productType;
     private String offGradeBlocked;
     private String copyable;
+    private String testLevel;
    
    
     /**
@@ -692,5 +693,14 @@ public class TestSession extends CTBBean
 
 	public void setCopyable(String copyable) {
 		this.copyable = copyable;
+	}
+
+	public String getTestLevel() {
+		return testLevel;
+	}
+
+
+	public void setTestLevel(String testLevel) {
+		this.testLevel = testLevel;
 	}
 } 

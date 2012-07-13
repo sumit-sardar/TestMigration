@@ -26,6 +26,7 @@ public class ScheduledSession extends CTBBean
     private User [] proctors;
     private TestElement [] scheduledUnits;
     private String copyable;
+    private Boolean fromTAS = true;
     
     /**
 	 * @return Returns the copyable.
@@ -99,4 +100,17 @@ public class ScheduledSession extends CTBBean
 	public void setTestSession(TestSession testSession) {
 		this.testSession = testSession;
 	}
+	/**
+	 * @return the fromTAS
+	 */
+	public Boolean isFromTAS() {
+		return fromTAS;
+	}
+	/**
+	 * @param fromTAS the fromTAS to set
+	 */
+	public void setFromTAS(Boolean fromTAS) {
+		this.fromTAS = fromTAS;
+	}
+	
 } 
