@@ -123,22 +123,22 @@
 <td>&nbsp;</td>
 </tr>
 <tr><td width="300">
-TerraNova Reading/Language Arts Survey - Part 1&nbsp;<input type="checkbox" checked id="subtest1" name="subtest1"/>&nbsp;
+TerraNova Reading - Part 1&nbsp;<input type="checkbox" checked id="subtest1" name="subtest1"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey1" name="subtestKey1" value="" size="8"/></td>
 </tr>
 <tr><td width="300">
-TerraNova Reading/Language Arts Survey - Part 2&nbsp;<input type="checkbox" checked id="subtest2" name="subtest2"/>&nbsp;
+TerraNova Reading - Part 2&nbsp;<input type="checkbox" checked id="subtest2" name="subtest2"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey2" name="subtestKey2" value="" size="8"/></td>
 </tr>
 <tr><td width="300">
-TerraNova Mathematics Survey - Part 1&nbsp;<input type="checkbox" checked id="subtest3" name="subtest3"/>&nbsp;
+TerraNova Mathematics - Part 1&nbsp;<input type="checkbox" checked id="subtest3" name="subtest3"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey3" name="subtestKey3" value="" size="8"/></td>
 </tr>
 <tr><td width="300">
-TerraNova Mathematics Survey - Part 2&nbsp;<input type="checkbox" checked id="subtest4" name="subtest4"/>&nbsp;
+TerraNova Mathematics - Part 2&nbsp;<input type="checkbox" checked id="subtest4" name="subtest4"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey4" name="subtestKey4" value="" size="8"/></td>
 </tr>

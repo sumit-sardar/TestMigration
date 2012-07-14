@@ -112,7 +112,7 @@ public class TestWebServiceController extends PageFlowController
 		int index = 0;		
 		if (this.getRequest().getParameter("subtest1") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 1"); 
+			subtest.setSubtestName("TerraNova Reading - Part 1"); 
 			key = getKeyValue("subtestKey1");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
@@ -120,7 +120,7 @@ public class TestWebServiceController extends PageFlowController
 		}
 		if (this.getRequest().getParameter("subtest2") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Reading/Language Arts Survey - Part 2"); 
+			subtest.setSubtestName("TerraNova Reading - Part 2"); 
 			key = getKeyValue("subtestKey2");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
@@ -128,7 +128,7 @@ public class TestWebServiceController extends PageFlowController
 		}
 		if (this.getRequest().getParameter("subtest3") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Mathematics Survey - Part 1"); 
+			subtest.setSubtestName("TerraNova Mathematics - Part 1"); 
 			key = getKeyValue("subtestKey3");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
@@ -136,7 +136,7 @@ public class TestWebServiceController extends PageFlowController
 		}
 		if (this.getRequest().getParameter("subtest4") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Mathematics Survey - Part 2"); 
+			subtest.setSubtestName("TerraNova Mathematics - Part 2"); 
 			key = getKeyValue("subtestKey4");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
