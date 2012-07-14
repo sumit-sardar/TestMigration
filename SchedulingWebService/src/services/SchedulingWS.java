@@ -70,7 +70,6 @@ public class SchedulingWS implements Serializable {
     private String defaultUserName = null;
     private Integer defaultTopNode = null;
     private Integer defaultClassNode = null;
-    private Integer defaultProductId = null;
 	
 	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
@@ -354,7 +353,6 @@ public class SchedulingWS implements Serializable {
 		this.defaultTopNode = null;
 		this.defaultClassNode = null;
 		this.defaultUserName = user.getUserName(); 
-		this.defaultProductId = new Integer(3510); 		
 		
 		try
 		{
@@ -553,7 +551,7 @@ public class SchedulingWS implements Serializable {
 			 session.setTestId(itemSetId);
 			 Integer customerId        		= this.defaultUser.getCustomer().getCustomerId(); 
 			 Integer creatorOrgNodeId  		= this.defaultTopNode; 
-			 Integer productId  			= this.defaultProductId; 
+			 Integer productId  			= session.getProductId(); 
 			 
 			 String dailyLoginStartDateString	= session.getStartDate();
 			 String dailyLoginEndDateString		= session.getEndDate();
