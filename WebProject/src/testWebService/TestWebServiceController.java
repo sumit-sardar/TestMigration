@@ -83,7 +83,7 @@ public class TestWebServiceController extends PageFlowController
 		// init session
     	Integer sessionId = null;
 		Session session = new Session();
-		session.setProductId(Integer.valueOf(3510));
+		session.setProductId(Integer.valueOf(3720));
 		session.setLevel(this.getRequest().getParameter("level"));
 		session.setSessionName(this.getRequest().getParameter("sessionName"));
 		session.setStartDate(this.getRequest().getParameter("startDate"));
