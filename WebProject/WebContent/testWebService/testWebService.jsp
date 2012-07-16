@@ -69,8 +69,14 @@
 <tr><td>Session Id:</td>
 <td><input type="text" id="sesionId" name="sesionId" value=""  />&nbsp;</td>
 </tr>
-<tr><td>TerraNova Form G - Level:</td>
-<td><input type="text" id="level" name="level" value="13" size="2" />&nbsp;</td>
+<tr><td>Product Type:</td>
+<td>
+<select id="productType" name="productType">
+<option value="3720">Complete Battery&nbsp;&nbsp;&nbsp;&nbsp;</option>
+<option value="3710">Survey</option>
+</select>
+&nbsp;&nbsp;&nbsp;&nbsp;Level:&nbsp;<input type="text" id="level" name="level" value="13" size="2" />&nbsp;
+</td>
 </tr>
 <tr><td>Session Name:</td>
 <td><input type="text" id="sessionName" name="sessionName" value="TNG Level 13 Session One" size="64"/>&nbsp;</td>
@@ -133,16 +139,32 @@ TerraNova Reading - Part 2&nbsp;<input type="checkbox" checked id="subtest2" nam
 <td>Subtest Key: <input type="text" id="subtestKey2" name="subtestKey2" value="" size="8"/></td>
 </tr>
 <tr><td width="300">
-TerraNova Mathematics - Part 1&nbsp;<input type="checkbox" checked id="subtest3" name="subtest3"/>&nbsp;
+TerraNova Language&nbsp;<input type="checkbox" checked id="subtest3" name="subtest3"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey3" name="subtestKey3" value="" size="8"/></td>
 </tr>
 <tr><td width="300">
-TerraNova Mathematics - Part 2&nbsp;<input type="checkbox" checked id="subtest4" name="subtest4"/>&nbsp;
+TerraNova Mathematics - Part 1&nbsp;<input type="checkbox" checked id="subtest4" name="subtest4"/>&nbsp;
 </td>
 <td>Subtest Key: <input type="text" id="subtestKey4" name="subtestKey4" value="" size="8"/></td>
 </tr>
+<tr><td width="300">
+TerraNova Mathematics - Part 2&nbsp;<input type="checkbox" checked id="subtest5" name="subtest5"/>&nbsp;
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey5" name="subtestKey5" value="" size="8"/></td>
+</tr>
+<tr><td width="300">
+TerraNova Science&nbsp;<input type="checkbox" checked id="subtest6" name="subtest6"/>&nbsp;
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey6" name="subtestKey6" value="" size="8"/></td>
+</tr>
+<tr><td width="300">
+TerraNova Social Studies&nbsp;<input type="checkbox" checked id="subtest7" name="subtest7"/>&nbsp;
+</td>
+<td>Subtest Key: <input type="text" id="subtestKey7" name="subtestKey7" value="" size="8"/></td>
+</tr>
 </table>
+
 
 <table class="simpleBlock">
 <tr><td>&nbsp;</td></tr>

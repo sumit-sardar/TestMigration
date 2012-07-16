@@ -83,7 +83,8 @@ public class TestWebServiceController extends PageFlowController
 		// init session
     	Integer sessionId = null;
 		Session session = new Session();
-		session.setProductId(Integer.valueOf(3720));
+		String productType = this.getRequest().getParameter("productType");
+		session.setProductId(Integer.valueOf(productType));
 		session.setLevel(this.getRequest().getParameter("level"));
 		session.setSessionName(this.getRequest().getParameter("sessionName"));
 		session.setStartDate(this.getRequest().getParameter("startDate"));
@@ -106,6 +107,9 @@ public class TestWebServiceController extends PageFlowController
 		if (this.getRequest().getParameter("subtest2") != null) subtestCount++;
 		if (this.getRequest().getParameter("subtest3") != null) subtestCount++;
 		if (this.getRequest().getParameter("subtest4") != null) subtestCount++;
+		if (this.getRequest().getParameter("subtest5") != null) subtestCount++;
+		if (this.getRequest().getParameter("subtest6") != null) subtestCount++;
+		if (this.getRequest().getParameter("subtest7") != null) subtestCount++;
 		Subtest[] subtests = new Subtest[subtestCount];
 		
 		Long key;
@@ -128,7 +132,7 @@ public class TestWebServiceController extends PageFlowController
 		}
 		if (this.getRequest().getParameter("subtest3") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Mathematics - Part 1"); 
+			subtest.setSubtestName("TerraNova Language"); 
 			key = getKeyValue("subtestKey3");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
@@ -136,8 +140,32 @@ public class TestWebServiceController extends PageFlowController
 		}
 		if (this.getRequest().getParameter("subtest4") != null) {
 			subtest = new Subtest(); 
-			subtest.setSubtestName("TerraNova Mathematics - Part 2"); 
+			subtest.setSubtestName("TerraNova Mathematics - Part 1"); 
 			key = getKeyValue("subtestKey4");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
+		}
+		if (this.getRequest().getParameter("subtest5") != null) {
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Mathematics - Part 2"); 
+			key = getKeyValue("subtestKey5");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
+		}
+		if (this.getRequest().getParameter("subtest6") != null) {
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Science"); 
+			key = getKeyValue("subtestKey6");
+			subtest.setSubTestKey(key);
+			subtests[index] = subtest; 
+			index++;
+		}
+		if (this.getRequest().getParameter("subtest7") != null) {
+			subtest = new Subtest(); 
+			subtest.setSubtestName("TerraNova Social Studies"); 
+			key = getKeyValue("subtestKey7");
 			subtest.setSubTestKey(key);
 			subtests[index] = subtest; 
 			index++;
