@@ -571,6 +571,21 @@ public class CATEngineProxy {
 			}
 		return 1; 
 	}
+	
+	/**
+	 * This is to tell the cat engine that the test is ended because in restart case you'll never 
+	 * know whether the test has ended or not
+	 */ 
+	public static double getAbilityScoreAfterRestart() {
+		set_rwo(-9); 
+		theta = score();
+		 if (theta == unReportable){
+			 reportable = false;
+		 }
+		return theta;
+	}
+	
+
 	public static boolean isStudentStop(){
 		System.out.println("Insite isStudentStop- studentStop = " + studentStop);
 		return(studentStop);

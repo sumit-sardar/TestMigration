@@ -101,7 +101,7 @@ public class OASRescore {
 			        if(RosterData.restartItemCount>0){
 				        CATEngineProxy.initCAT(cArea);
 			        	CATEngineProxy.restartCAT(RosterData.restartItemCount,RosterData.restartItemsArr,RosterData.restartItemsRawScore);
-			        	CATEngineProxy.set_rwo(-9);			        	
+			                	
 			        	 abilityScore = CATEngineProxy.getAbilityScoreAfterRestart();
 			        	 if(abilityScore > 0){
 		        			 sem = CATEngineProxy.getSEM();
