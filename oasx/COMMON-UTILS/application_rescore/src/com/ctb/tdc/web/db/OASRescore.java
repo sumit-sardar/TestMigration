@@ -81,6 +81,9 @@ public class OASRescore {
 		ArrayList itemSetData = new ArrayList();
     	AuthenticationData authData = null;
         int testRosterId = -1;
+    	double sem = 0;
+    	double abilityScore = 0;
+    	String objScore = null;
         for(int a=0;authDataArray != null && a<authDataArray.length;a++) {
             authData = authDataArray[a];
             testRosterId = authData.getTestRosterId();
@@ -98,11 +101,18 @@ public class OASRescore {
 			        if(RosterData.restartItemCount>0){
 				        CATEngineProxy.initCAT(cArea);
 			        	CATEngineProxy.restartCAT(RosterData.restartItemCount,RosterData.restartItemsArr,RosterData.restartItemsRawScore);
-			        	
-			        	Double abilityScore = CATEngineProxy.getAbilityScore();
-	        			Double sem = CATEngineProxy.getSEM();
-	        			String objScore = CATEngineProxy.getObjScore();	
+			        	CATEngineProxy.set_rwo(-9);			        	
+			        	 abilityScore = CATEngineProxy.getAbilityScoreAfterRestart();
+			        	 if(abilityScore > 0){
+		        			 sem = CATEngineProxy.getSEM();
+		        			 objScore = CATEngineProxy.getObjScore();
+			        	 }else{
+			        		 abilityScore = 0;			        		 
+			        	 }
 	        			
+	        			
+	        			System.out.println("AbilityScore::SEM::objScore");
+	        			System.out.println(abilityScore  + " :: " + sem + " :: " + objScore );
 	        			TestData tData = new TestData();
 	        			tData.setTestRosterId(testRosterId);
 	        			tData.setItemSetId(iSet.getId());
