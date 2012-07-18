@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.ffpojo.exception.FFPojoException;
+
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.ctb.dto.AbilityScore;
@@ -50,6 +51,7 @@ public class DataExportTABECAT {
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
 	private static final Set<Integer> CUST_CATEGORIES = new TreeSet<Integer>();
 	private static final String SEPARATOR = "#";
+	private static final String SPACE = " ";
 	private static final Map<String, Integer> ITEM_COUNT_MAP = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> SCORE_TYPES = new LinkedHashMap<String, Integer>();
 	
@@ -214,8 +216,7 @@ public class DataExportTABECAT {
 				.append(tabe.getObjectiveTotalRawScore()).append(tabe.getObjectiveScaleScore())
 				.append(tabe.getObjectiveScaleScoreSEM()).append(tabe.getObjectiveMasteryLevel())
 				.append(tabe.getObjectiveMastery()).append(tabe.getItemResponse());
-						
-						
+				
 				writer.writeNext(row.toString().split(SEPARATOR));
 			}
 			System.out.println("Export file successfully generated:["+fileName+"]");
@@ -808,16 +809,16 @@ public class DataExportTABECAT {
 				   StringBuilder resposneTime = new StringBuilder();
 				   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
 				   if("Reading".equals(itemSetName)) {
-					   response.append("RD"+SEPARATOR);
+					   response.append("RD" + SEPARATOR);
 					   itemCount = 29;
 				   } else if("Mathematics Computation".equals(itemSetName)) {
-					   response.append("MC"+SEPARATOR);
+					   response.append("MC" + SEPARATOR);
 					   itemCount = 24;
 				   } else if("Applied Mathematics".equals(itemSetName)) {
-					   response.append("AM"+SEPARATOR);
+					   response.append("AM" + SEPARATOR);
 					   itemCount = 29;
 				   } else if("Language".equals(itemSetName)) {
-					   response.append("LN"+SEPARATOR);
+					   response.append("LN" + SEPARATOR);
 					   itemCount = 29;
 				   }
 				   ITEM_COUNT_MAP.put(itemSetName, itemCount);
@@ -832,7 +833,6 @@ public class DataExportTABECAT {
 				   int lastSequenceNo = 0;
 				   int restartItemNumber = 0;
 				   String lastItemId = "";
-				   String stoppedItem = "";
 				   while (rs.next()) {
 					  ItemResponses ir = new ItemResponses();
 					  currentSequenceNo = rs.getInt("maxseqnum");
@@ -871,7 +871,6 @@ public class DataExportTABECAT {
 				    
 				   Set<String> itemSet = itemMap.keySet();
 				   List<String> itemList = new ArrayList<String>(itemSet);
-				   stoppedItem = String.valueOf(itemList.size());
 				   for(int i=0; i<itemCount; i++) {
 					   if(i < itemList.size()) {
 						   ItemResponses ir = itemMap.get(itemList.get(i));
@@ -880,37 +879,45 @@ public class DataExportTABECAT {
 						   itemOrgResponse.append(ir.getOriginalResponse().trim() + SEPARATOR);
 						   resposneTime.append(ir.getResponseTime().trim() + SEPARATOR);
 					   } else {
-						   itemIds.append(SEPARATOR);
-						   itemResponse.append(SEPARATOR);
-						   itemOrgResponse.append(SEPARATOR);
-						   resposneTime.append(SEPARATOR);
+						   itemIds.append(SPACE + SEPARATOR);
+						   itemResponse.append(SPACE + SEPARATOR);
+						   itemOrgResponse.append(SPACE + SEPARATOR);
+						   resposneTime.append(SPACE + SEPARATOR);
 					   }
+				   }
+				   
+				   String stoppedItem = "";
+				   if(itemList.size() < itemCount) {
+					   stoppedItem = String.valueOf(itemList.size());
 				   }
 				   timedOut = getTimedOut(con, tfil, roster, itemSetId);
 				   if(timedOut == 0) {
 					   if(itemList.size() < itemCount) {
 						   timedOut = 2;
 					   }
-					   else 
-						   stoppedItem = "";
 				   }
 				   response.append(itemIds.substring(0, itemIds.length() - 1)+ SEPARATOR
 						   		 + itemResponse + itemOrgResponse 
-						   		 + resposneTime.substring(0, resposneTime.length() - 1) + SEPARATOR) ;
-				   if(restartItemNumber == 0) {
-					   response.append("0" +SEPARATOR +"0" + SEPARATOR);
+						   		 + resposneTime.substring(0, resposneTime.length() - 1) + SEPARATOR);
+				   
+				   if(itemMap.size() > 0) {
+					   if(restartItemNumber == 0) {
+						   response.append("0" + SEPARATOR + SPACE + SEPARATOR);
+					   } else {
+						   response.append("1" + SEPARATOR + restartItemNumber + SEPARATOR);
+					   }
+					   response.append(timedOut + SEPARATOR);
+					   response.append(stoppedItem + SEPARATOR);
 				   } else {
-					   response.append("1" + SEPARATOR + restartItemNumber + SEPARATOR);
+					   response.append(SPACE + SEPARATOR + SPACE + SEPARATOR + SPACE + SEPARATOR + SPACE + SEPARATOR);
 				   }
-				   response.append(timedOut + SEPARATOR);
-				   response.append(stoppedItem + SEPARATOR);
 				   itemMap.clear();
 			   }
 			   
 			   if(response.length() > 1)
-					tfil.setItemResponse(response.substring(0, response.length() - 1));
-				else 
-					tfil.setItemResponse(response.toString());
+				  tfil.setItemResponse(response.substring(0, response.length() - 1));
+			   else 
+				  tfil.setItemResponse(response.toString());
 			} catch(Exception e) {
 				e.printStackTrace();
 			} finally {
