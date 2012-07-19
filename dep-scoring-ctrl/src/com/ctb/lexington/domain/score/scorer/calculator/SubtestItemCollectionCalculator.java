@@ -50,6 +50,7 @@ public class SubtestItemCollectionCalculator extends Calculator {
             if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
             	
             	Map<String,Map<String,String>> contentAreaItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+            	System.out.println("event.getItemSetId() -> " + event.getItemSetId());
             	List<WsTvCaItemPeidVo> itemsPeids = new ItemMapper(oasWsTvConnection).findItemIdsAndPeidsByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));
             	

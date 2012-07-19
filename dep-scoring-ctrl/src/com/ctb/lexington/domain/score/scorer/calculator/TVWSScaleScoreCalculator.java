@@ -37,7 +37,7 @@ public class TVWSScaleScoreCalculator {
 		 * the relative path and comment the absolute path.
 		 */
 		//String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"..";
-		String path = "C:\\WorkspaceLocal94\\application-scoring\\EarContent\\APP-INF\\lib";
+		String path = "C:\\workspace10.3\\application-scoring\\EarContent\\APP-INF\\lib";
 		//The parFile will remain as it is.
 		parFile = path+File.separator+"tvWsScoringFiles/"+fileName;
 		try {
@@ -135,7 +135,7 @@ public class TVWSScaleScoreCalculator {
 		String responseString = "";
 		Map<String,String> itemResponses = contentAreaResponse.get(contentAreaName);
 		for(Map.Entry<String, String> entry : itemResponses.entrySet()) {
-			responseString.concat(entry.getValue());
+			responseString = responseString + entry.getValue().toString();
 		}
 		System.out.println("ContentArea -> " + contentAreaName);
 		System.out.println("ResponseString -> " + responseString);
@@ -155,9 +155,17 @@ public class TVWSScaleScoreCalculator {
 			ps.setString(2, contentAreaName);
 			ps.setString(3, pTestLevel);
 			rs = ps.executeQuery();
+			Double lossVal = null;
+			Double hossVal = null;
 			while (rs.next()) {
-				loss = rs.getInt("MINDESTVAL");
-				hoss = rs.getInt("MAXDESTVAL");
+				lossVal = new Double(rs.getInt("MINDESTVAL"));
+				hossVal = new Double(rs.getInt("MAXDESTVAL"));
+			}
+			if(lossVal != null && lossVal != 0) {
+				loss = lossVal;
+			}
+			if(hossVal != null && hossVal != 0) {
+				hoss = hossVal;
 			}
 			System.out.println("loss -> " + loss);
 			System.out.println("hoss -> " + hoss);

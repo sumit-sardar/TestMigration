@@ -121,7 +121,7 @@
     ORDER BY
         CONTENTAREANAME
     </select>
-    <select id="findItemIdPeIdsForWSTV" parameterClass="com.ctb.lexington.data.ItemVO" resultClass="com.ctb.lexington.data.ItemVO">
+    <select id="findItemIdPeIdsForWSTV" parameterClass="com.ctb.lexington.data.WsTvCaItemPeidVo" resultClass="com.ctb.lexington.data.WsTvCaItemPeidVo">
         SELECT 
         	ISET.SUBJECT AS CONTENTAREA, 
         	ITEM.ITEM_ID AS ITEMID, 

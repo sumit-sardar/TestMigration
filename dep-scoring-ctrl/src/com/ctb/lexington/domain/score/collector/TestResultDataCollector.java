@@ -2,8 +2,10 @@ package com.ctb.lexington.domain.score.collector;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -11,10 +13,6 @@ import com.ctb.lexington.data.ItemResponseVO;
 import com.ctb.lexington.data.StudentItemSetStatusRecord;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.CurriculumData;
-import com.ctb.lexington.db.data.CurriculumData.ContentArea;
-import com.ctb.lexington.db.data.CurriculumData.Item;
-import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
-import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.db.data.OrgNodeData;
 import com.ctb.lexington.db.data.ScoreMoveData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
@@ -26,22 +24,22 @@ import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentTestData;
-import com.ctb.lexington.db.data.StudentTestDetails;
 import com.ctb.lexington.db.data.TestRosterData;
 import com.ctb.lexington.db.data.UserData;
-import com.ctb.lexington.db.irsdata.IrsDemographicData;
+import com.ctb.lexington.db.data.WsTvStudentItemResponseData;
+import com.ctb.lexington.db.data.CurriculumData.ContentArea;
+import com.ctb.lexington.db.data.CurriculumData.Item;
+import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
+import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.db.mapper.ItemResponseMapper;
 import com.ctb.lexington.db.mapper.StudentItemSetStatusMapper;
 import com.ctb.lexington.domain.score.ConnectionProvider;
 import com.ctb.lexington.domain.teststructure.CompletionStatus;
-import com.ctb.lexington.domain.teststructure.ProductType;
 import com.ctb.lexington.domain.teststructure.ScoringStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
 import com.ctb.lexington.util.CTBConstants;
 import com.ctb.lexington.util.SimpleCache;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class TestResultDataCollector {
     private Long oasRosterId;
@@ -90,6 +88,7 @@ public class TestResultDataCollector {
         data.setStudentSubtestScoresData(new StudentSubtestScoresData());
         data.setStsTestResultFactData(new StsTestResultFactData());
         data.setStsTotalStudentScoreData(new StsTotalStudentScoreData());
+        data.setCaResponseWsTv(new WsTvStudentItemResponseData());
 
         if(data.getAdminData().getProgramId() == null) {
         	throw new CTBSystemException("Program ID is null for roster: " + oasRosterId);
