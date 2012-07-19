@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class TVWSScaleScoreCalculator {
 	
 	@SuppressWarnings("unchecked")
 	public BigDecimal getTVWSScaleScoreCalculator(String pTestLevel, String contentAreaName, Integer productId,
-			Map<String,Map<String,String>> contentAreaResponse, Connection irsCon) {
+			LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaResponse, Connection irsCon) {
 		
 		String fileName = getFileNameForPar(pTestLevel, contentAreaName, productId, irsCon);
 		String parFile = "";
@@ -40,13 +41,18 @@ public class TVWSScaleScoreCalculator {
 		String path = "C:\\workspace10.3\\application-scoring\\EarContent\\APP-INF\\lib";
 		//The parFile will remain as it is.
 		parFile = path+File.separator+"tvWsScoringFiles/"+fileName;
+		BigDecimal scaleScore = null;
 		try {
 			System.out.println("parFile:"+parFile);
 			List<Item> items = Item.load(parFile);
-			GridSearch g = new GridSearch(items,loss,hoss,numGridPoints);
-			int scale_score = score_dat(g,items,1.0, genResponseString);
-			System.out.println("scale_score -> " + scale_score);
-			BigDecimal scaleScore = new BigDecimal(scale_score);
+			if(items.size() > contentAreaResponse.get(contentAreaName).size()) {
+				scaleScore = null;
+			} else {
+				GridSearch g = new GridSearch(items,loss,hoss,numGridPoints);
+				int scale_score = score_dat(g,items,1.0, genResponseString);
+				System.out.println("scale_score -> " + scale_score);
+				scaleScore = new BigDecimal(scale_score);
+			}
 			return scaleScore;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -131,11 +137,12 @@ public class TVWSScaleScoreCalculator {
 		return parFileName;		
 	}
 	
-	private String generateResponseString(Map<String,Map<String,String>> contentAreaResponse, String contentAreaName) {
+	private String generateResponseString(LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaResponse, String contentAreaName) {
 		String responseString = "";
-		Map<String,String> itemResponses = contentAreaResponse.get(contentAreaName);
+		LinkedHashMap<String,String> itemResponses = contentAreaResponse.get(contentAreaName);
 		for(Map.Entry<String, String> entry : itemResponses.entrySet()) {
-			responseString = responseString + entry.getValue().toString();
+			responseString = responseString + entry.getValue();
+			System.out.println(entry.getKey() + " - " + entry.getValue());
 		}
 		System.out.println("ContentArea -> " + contentAreaName);
 		System.out.println("ResponseString -> " + responseString);

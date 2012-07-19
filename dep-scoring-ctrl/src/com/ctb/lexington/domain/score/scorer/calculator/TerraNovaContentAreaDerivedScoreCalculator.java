@@ -1,7 +1,7 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.ContentAreaCumulativeNumberCorrectEvent;
@@ -25,6 +25,7 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
     public void onEvent(ContentAreaCumulativeNumberCorrectEvent event) {
         final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
         String frameworkCode = TERRANOVA_FRAMEWORK_CODE;
+        System.out.println("event.getContentAreaName() =====>>> " + event.getContentAreaName());
         
         if("19/20".equals(pTestLevel) || "19-20".equals(pTestLevel)) {
             //QA indicates OAS 3.x uses level 20 norms for test level 19/20
@@ -43,7 +44,7 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
         	tvWSScaleScore.getLossHossValue(event.getSubtestId(), event.getContentAreaName(), pTestLevel, scorer.getOASConnection());
             System.out.println("scheduledProductId -> " + scheduledProductId);
             System.out.println("event.getContentAreaName() -> " + event.getContentAreaName());
-            Map<String,Map<String,String>> contentAreaResponse = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+            LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaResponse = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
             final BigDecimal scaleScoreIRT = tvWSScaleScore.getTVWSScaleScoreCalculator(pTestLevel, 
             		event.getContentAreaName(), scheduledProductId, contentAreaResponse, 
             		scorer.getIRSConnection());

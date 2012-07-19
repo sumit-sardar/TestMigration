@@ -1,6 +1,6 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.ctb.lexington.data.ItemVO;
@@ -38,8 +38,8 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
             if (isConditionCode || response == null) {
             	if (sicEvent.isMarked(event)) {
             		if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
-                		Map<String,String> itemIdResp = new HashMap<String,String>();
+            			LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+            			LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
                 		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
                 			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
                 			if(itemIdResp.containsKey(itemId)) {
@@ -55,8 +55,8 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
             } else {
                 if (sicEvent.isCorrectResponse(itemId, response)) {
                 	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
-                		Map<String,String> itemIdResp = new HashMap<String,String>();
+                		LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
                 		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
                 			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
                 			if(itemIdResp.containsKey(itemId)) {
@@ -68,8 +68,8 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                     channel.send(new CorrectResponseEvent(event));
                 } else {
                 	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
-                		Map<String,String> itemIdResp = new HashMap<String,String>();
+                		LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
                 		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
                 			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
                 			if(itemIdResp.containsKey(itemId)) {

@@ -3,6 +3,7 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class SubtestItemCollectionCalculator extends Calculator {
             //This will retrieve all the itemids and the corresponding peids for the content area.
             if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
             	
-            	Map<String,Map<String,String>> contentAreaItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+            	LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
             	System.out.println("event.getItemSetId() -> " + event.getItemSetId());
             	List<WsTvCaItemPeidVo> itemsPeids = new ItemMapper(oasWsTvConnection).findItemIdsAndPeidsByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));
@@ -62,6 +63,7 @@ public class SubtestItemCollectionCalculator extends Calculator {
             		for(WsTvCaItemPeidVo caItemPeid : itemsPeids) {
             			contentAreaName = caItemPeid.getContentArea();
             			itemIdVal = caItemPeid.getItemId();
+            			System.out.println("itemIdVal -> " + itemIdVal);
             			if(contentAreaItemMap != null && !contentAreaItemMap.isEmpty()) {
             				if(contentAreaItemMap.containsKey(contentAreaName)) {
             					if(contentAreaItemMap.get(contentAreaName).containsKey(itemIdVal)) {
@@ -70,12 +72,12 @@ public class SubtestItemCollectionCalculator extends Calculator {
             						contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
             					}
             				} else {
-            					contentAreaItemMap.put(contentAreaName, new HashMap<String,String>());
+            					contentAreaItemMap.put(contentAreaName, new LinkedHashMap<String,String>());
             					contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
             				}
             			} else {
-            				contentAreaItemMap = new HashMap<String,Map<String,String>>();
-            				contentAreaItemMap.put(contentAreaName, new HashMap<String,String>());
+            				contentAreaItemMap = new LinkedHashMap<String,LinkedHashMap<String,String>>();
+            				contentAreaItemMap.put(contentAreaName, new LinkedHashMap<String,String>());
             				contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
             			}
             		}

@@ -1,17 +1,17 @@
 package com.ctb.lexington.db.data;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class WsTvStudentItemResponseData {
 	
-	Map<String,Map<String,String>> contentAreaItems;
+	LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaItems;
 
-	public Map<String, Map<String, String>> getContentAreaItems() {
+	public LinkedHashMap<String, LinkedHashMap<String, String>> getContentAreaItems() {
 		return contentAreaItems;
 	}
 
 	public void setContentAreaItems(
-			Map<String, Map<String, String>> contentAreaItems) {
+			LinkedHashMap<String, LinkedHashMap<String, String>> contentAreaItems) {
 		this.contentAreaItems = contentAreaItems;
 	}
 
