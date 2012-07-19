@@ -32,6 +32,7 @@ import com.ctb.lexington.db.data.StudentTestDetails;
 import com.ctb.lexington.db.data.UserData;
 import com.ctb.lexington.db.data.StudentDemographicData;
 import com.ctb.lexington.db.data.ValidatedScoreRecord;
+import com.ctb.lexington.db.data.WsReportingDataTV;
 import com.ctb.lexington.db.irsdata.IrsDemographicData;
 import com.ctb.lexington.db.mapper.StsTestResultFactRecordMapper;
 import com.ctb.lexington.db.mapper.StsTotalStudentScoreRecordMapper;
@@ -117,6 +118,10 @@ public class TVTestResultController implements TestResultController {
         
         // persist scores
      //   new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
+        
+        WsReportingDataTV wsTvReportData = new WsReportingDataTV();
+        wsTvReportData.setStudentid(studentData.getOasStudentId());
+        
         System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
         new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
@@ -129,6 +134,10 @@ public class TVTestResultController implements TestResultController {
     
         new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
+        
+        new TVWsAcuityDataController(curriculumData, context, factData, wsTvReportData, studentScoreSummaryData);
+        System.out.println("Stop");
+        
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

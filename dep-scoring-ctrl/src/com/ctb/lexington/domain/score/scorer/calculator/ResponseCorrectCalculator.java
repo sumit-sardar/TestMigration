@@ -1,5 +1,8 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
@@ -28,19 +31,53 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
         validateItemSetId(event.getItemSetId());
 
         final String itemId = event.getItemId();
+        System.out.println("itemId ==> " + itemId);
         if (ItemVO.ITEM_TYPE_SR.equals(sicEvent.getType(itemId))) {
             final String response = event.getResponse();
             final boolean isConditionCode = sicEvent.isConditionCode(itemId, response);
             if (isConditionCode || response == null) {
             	if (sicEvent.isMarked(event)) {
+            		if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		Map<String,String> itemIdResp = new HashMap<String,String>();
+                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
+                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
+                			if(itemIdResp.containsKey(itemId)) {
+                				itemIdResp.put(itemId, "0");
+                			}
+                		}
+                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
+                	}
                 	channel.send(new IncorrectResponseEvent(event));
                 } else {
                 	channel.send(new NoResponseEvent(event));
                 }
             } else {
                 if (sicEvent.isCorrectResponse(itemId, response)) {
+                	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		Map<String,String> itemIdResp = new HashMap<String,String>();
+                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
+                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
+                			if(itemIdResp.containsKey(itemId)) {
+                				itemIdResp.put(itemId, "1");
+                			}
+                		}
+                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
+                	}
                     channel.send(new CorrectResponseEvent(event));
                 } else {
+                	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+                		Map<String, Map<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		Map<String,String> itemIdResp = new HashMap<String,String>();
+                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
+                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
+                			if(itemIdResp.containsKey(itemId)) {
+                				itemIdResp.put(itemId, "0");
+                			}
+                		}
+                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
+                	}
                     channel.send(new IncorrectResponseEvent(event));
                 }
             }

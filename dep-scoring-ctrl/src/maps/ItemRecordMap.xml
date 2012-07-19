@@ -121,4 +121,18 @@
     ORDER BY
         CONTENTAREANAME
     </select>
+    <select id="findItemIdPeIdsForWSTV" parameterClass="com.ctb.lexington.data.ItemVO" resultClass="com.ctb.lexington.data.ItemVO">
+        SELECT 
+        	ISET.SUBJECT AS CONTENTAREA, 
+        	ITEM.ITEM_ID AS ITEMID, 
+        	ITEM.EXTERNAL_ID AS PEID
+  		FROM 
+  			ITEM_SET ISET, 
+  			ITEM, 
+  			ITEM_SET_ITEM ISI
+ 		WHERE ISET.ITEM_SET_ID = #itemSetId:NUMERIC#
+   			AND ISET.ITEM_SET_ID = ISI.ITEM_SET_ID
+   			AND ISI.ITEM_ID = ITEM.ITEM_ID
+ 		ORDER BY ISI.ITEM_SORT_ORDER
+    </select>
 </sqlMap>

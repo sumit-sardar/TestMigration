@@ -1,6 +1,5 @@
 package com.ctb.lexington.db.data;
 
-import com.ctb.lexington.db.irsdata.IrsDemographicData;
 import java.sql.Timestamp;
 
 public class ScoreMoveData {
@@ -29,6 +28,7 @@ public class ScoreMoveData {
     private StudentPredictedScoresData studentPredictedScoresData;
     private StudentItemResponseData studentItemResponseData;
     private boolean updateContextData;
+    private WsTvStudentItemResponseData caResponseWsTv;
 
 	/**
 	 * @return Returns the updateContextData.
@@ -240,5 +240,12 @@ public class ScoreMoveData {
 	public void setStudentItemResponseData(
 			StudentItemResponseData studentItemResponseData) {
 		this.studentItemResponseData = studentItemResponseData;
+	}
+	
+	public WsTvStudentItemResponseData getCaResponseWsTv() {
+		return caResponseWsTv;
+	}
+	public void setCaResponseWsTv(WsTvStudentItemResponseData caResponseWsTv) {
+		this.caResponseWsTv = caResponseWsTv;
 	}
 }

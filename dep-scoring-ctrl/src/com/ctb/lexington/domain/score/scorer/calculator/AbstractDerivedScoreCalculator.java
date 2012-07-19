@@ -31,6 +31,7 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
     protected Long testRosterId;
     protected Double abilityScore;
     protected Double semScore;
+    protected Integer scheduledProductId;
     
 
     public AbstractDerivedScoreCalculator(final Channel channel, final Scorer scorer) {
@@ -47,6 +48,7 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         pGrade = event.getGrade();
         pNormYear = this.scorer.getResultHolder().getAdminData().getNormsYear();
         pAgeCategory = "AD".equals(pGrade)?"A":"J";
+        scheduledProductId = event.getProductId();
     }
 
     public void onEvent(SubtestStartedEvent event) {
@@ -54,6 +56,7 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         pTestForm  = "%"; 
         pDupTestForm =  event.getItemSetForm();
         pTestLevel = event.getItemSetLevel();
+        System.out.println("pTestLevel -> " + pTestLevel);
         pNormGroup = event.getNormGroup();
         pRecommendedLevel = event.getRecommendedLevel();
         //pAgeCategory = event.getAgeCategory();

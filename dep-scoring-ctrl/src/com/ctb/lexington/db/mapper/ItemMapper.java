@@ -7,8 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.data.ItemContentArea;
+import com.ctb.lexington.data.ItemVO;
+import com.ctb.lexington.data.WsTvCaItemPeidVo;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 
 public class ItemMapper extends AbstractDBMapper {
@@ -16,6 +17,7 @@ public class ItemMapper extends AbstractDBMapper {
     private static final String FIND_ITEM_BY_ITEM_SET_ID_NAME = "findItemByItemSetId";
     private static final String FIND_CONDITION_CODE_ID_ITEM_IDS_BY_ITEM_SET_ID_NAME = "findConditionCodeIdItemIdsForItemSet";
     private static final String FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT = "findItemGroupByContentAreaForItemSetAndProduct";
+    private static final String FIND_ITEM_PEIDS_WSTV_BY_ITEM_SET_ID = "findItemIdPeIdsForWSTV";
 
     /**
      * @param conn
@@ -45,6 +47,14 @@ public class ItemMapper extends AbstractDBMapper {
         template.setProductId(productId);
 
         return findMany(FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT,template);
+    }
+    
+    public List<WsTvCaItemPeidVo> findItemIdsAndPeidsByItemSetId(Long itemSetId) {
+    	WsTvCaItemPeidVo template = new WsTvCaItemPeidVo();
+        template.setItemSetId(itemSetId);
+
+        List<WsTvCaItemPeidVo> result = findMany(FIND_ITEM_PEIDS_WSTV_BY_ITEM_SET_ID, template);
+        return result;
     }
 
     /**
