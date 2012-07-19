@@ -886,14 +886,13 @@ public class DataExportTABECAT {
 					   }
 				   }
 				   
-				   String stoppedItem = "";
-				   if(itemList.size() < itemCount) {
-					   stoppedItem = String.valueOf(itemList.size());
-				   }
+				   String stoppedItem = String.valueOf(itemList.size());
 				   timedOut = getTimedOut(con, tfil, roster, itemSetId);
 				   if(timedOut == 0) {
 					   if(itemList.size() < itemCount) {
 						   timedOut = 2;
+					   } else {
+						   stoppedItem = "";
 					   }
 				   }
 				   response.append(itemIds.substring(0, itemIds.length() - 1)+ SEPARATOR
@@ -902,7 +901,7 @@ public class DataExportTABECAT {
 				   
 				   if(itemMap.size() > 0) {
 					   if(restartItemNumber == 0) {
-						   response.append("0" + SEPARATOR + SPACE + SEPARATOR);
+						   response.append("0" + SEPARATOR + "0" + SEPARATOR);
 					   } else {
 						   response.append("1" + SEPARATOR + restartItemNumber + SEPARATOR);
 					   }
