@@ -1204,10 +1204,13 @@ public class SchedulingWS implements Serializable {
 		Accommodation accom = session.getAccom();
 		if (accom != null) {
 			for (Integer studentId : savedStudent.keySet()) {
-				StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
-				updateStudentAccommodations(studentId, sa);
+				SessionStudent ss = savedStudent.get(studentId);
+				String testStatus = ss.getTestCompletionStatus();
+				if (testStatus.equals("SC") || testStatus.equals("NT")) {
+					StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
+					updateStudentAccommodations(studentId, sa);
+				}
 			}
-    		
     	}
 	}
 	
