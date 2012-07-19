@@ -78,9 +78,9 @@ public class TVTestResultController implements TestResultController {
         StudentPredictedScoresData predictedData = data.getStudentPredictedScoresData();
         StudentItemResponseData studentItemResponseData = data.getStudentItemResponseData();
         // persist context
-      //  new OrgNodeController(conn, orgNodeData, adminData).run();
-      //  new StudentController(conn, studentData).run();
-      //  new AdminController(conn, adminData, curriculumData, new Long(studentData.getGrade().equals("AD")?1:2)).run();
+        new OrgNodeController(conn, orgNodeData, adminData).run();
+        new StudentController(conn, studentData).run();
+        new AdminController(conn, adminData, curriculumData, new Long(studentData.getGrade().equals("AD")?1:2)).run();
         
         // gather context dim ids for fact records
         ContextData context = new ContextData();
@@ -113,7 +113,7 @@ public class TVTestResultController implements TestResultController {
         context.setProgramId(adminData.getProgramId());
         context.setDemographicData(demographicData);
         
-       // new CurriculumController(conn, curriculumData, adminData, context).run();
+        new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");
         
         // persist scores
@@ -123,16 +123,16 @@ public class TVTestResultController implements TestResultController {
         wsTvReportData.setStudentid(studentData.getOasStudentId());
         
         System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
-      //  new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
+        new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
-      //  new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
+        new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
-       // new StudentObjectiveScoresController(conn, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
+        new StudentObjectiveScoresController(conn, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted objective fact data.");
-       // new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
+        new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
     
-       // new StudentResultStatusController(conn, context).run();
+        new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
        // new TVWsAcuityDataController(curriculumData, context, factData, wsTvReportData, studentScoreSummaryData);
