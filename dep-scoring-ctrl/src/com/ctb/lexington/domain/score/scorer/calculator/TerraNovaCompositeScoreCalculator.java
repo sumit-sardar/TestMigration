@@ -79,7 +79,16 @@ public class TerraNovaCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     }
 
     public void onEvent(ContentAreaDerivedScoreEvent event) {
-        contentAreaDerivedScoreEvents.put(event.getContentAreaName(), event);
+    	// Need to change for third edition as science ans social studies are proper
+    	//content areas here but in composite, only total of rd, la, ma are required
+    	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+    		if(contentAreaNamesRequiredForTotalComposite.contains(event.getContentAreaName())) {
+    			contentAreaDerivedScoreEvents.put(event.getContentAreaName(), event);
+    		}
+    	} else {
+    		contentAreaDerivedScoreEvents.put(event.getContentAreaName(), event);
+    	}
+        
         this.normYear = event.getNormYear();
         this.normGroup = event.getNormGroup();
     }
@@ -242,7 +251,9 @@ public class TerraNovaCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     	BigDecimal reading = getReadingCompositeScaleScore();
     	BigDecimal language = getLanguageCompositeScaleScore();
     	BigDecimal math = getMathCompositeScaleScore();
-
+System.out.println("reading -> " + reading);
+System.out.println("language -> " + language);
+System.out.println("math -> " + math);
     	if(reading != null && language != null && math != null) {
     		return reading.add(language.add(math)).divide(
                 new BigDecimal("3"), BigDecimal.ROUND_HALF_UP);
