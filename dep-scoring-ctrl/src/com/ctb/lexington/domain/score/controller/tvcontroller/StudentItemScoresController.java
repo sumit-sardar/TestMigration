@@ -77,7 +77,12 @@ public class StudentItemScoresController {
                                         "19".equals(items[i].getSubtestLevel())?13:
                                         "19-20".equals(items[i].getSubtestLevel())?14:
                                         "19/20".equals(items[i].getSubtestLevel())?14:
-                                        "20".equals(items[i].getSubtestLevel())?14:15));
+                                        "20".equals(items[i].getSubtestLevel())?14:
+                                        "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
+                                        "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                        "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                        "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                        "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
                 itemFact.setOrgNodeid(contextData.getOrgNodeId());
                 itemFact.setProgramid(contextData.getProgramId());
                 itemFact.setSessionid(contextData.getSessionId());
@@ -111,7 +116,10 @@ public class StudentItemScoresController {
                         "31".equals(adminData.getNormsGroup())?"SPRING":
                         adminData.getNormsGroup();
                 
-                if( ("1" + contextData.getGradeId().toString()).equals(items[i].getSubtestLevel()) || ("19/20".equals(items[i].getSubtestLevel()) && ("9".equals(contextData.getGradeId().toString()) || "10".equals(contextData.getGradeId().toString())))) {
+                if( ("1" + contextData.getGradeId().toString()).equals(items[i].getSubtestLevel()) || 
+                		("19/20".equals(items[i].getSubtestLevel()) && ("9".equals(contextData.getGradeId().toString()) || "10".equals(contextData.getGradeId().toString()))) ||
+                		("21-22".equals(items[i].getSubtestLevel()) && ("11".equals(contextData.getGradeId().toString()) || "12".equals(contextData.getGradeId().toString()))) ||
+                		("21/22".equals(items[i].getSubtestLevel()) && ("11".equals(contextData.getGradeId().toString()) || "12".equals(contextData.getGradeId().toString())))) {
                     itemFact.setNationalAverage(item.getNationalAverage(normGroup + String.valueOf(contextData.getGradeId().longValue())));
                 } else {
                     itemFact.setNationalAverage(new BigDecimal(-1.0));

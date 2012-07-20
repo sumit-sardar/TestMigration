@@ -251,9 +251,9 @@ public class TerraNovaCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     	BigDecimal reading = getReadingCompositeScaleScore();
     	BigDecimal language = getLanguageCompositeScaleScore();
     	BigDecimal math = getMathCompositeScaleScore();
-System.out.println("reading -> " + reading);
-System.out.println("language -> " + language);
-System.out.println("math -> " + math);
+		System.out.println("reading -> " + reading);
+		System.out.println("language -> " + language);
+		System.out.println("math -> " + math);
     	if(reading != null && language != null && math != null) {
     		return reading.add(language.add(math)).divide(
                 new BigDecimal("3"), BigDecimal.ROUND_HALF_UP);

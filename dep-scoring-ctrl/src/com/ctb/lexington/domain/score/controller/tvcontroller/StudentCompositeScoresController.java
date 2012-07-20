@@ -112,7 +112,12 @@ public class StudentCompositeScoresController {
                                           "19".equals(currData.getContentAreas()[0].getSubtestLevel())?13:
                                           "19-20".equals(currData.getContentAreas()[0].getSubtestLevel())?14:
                                           "19/20".equals(currData.getContentAreas()[0].getSubtestLevel())?14:
-                                          "20".equals(currData.getContentAreas()[0].getSubtestLevel())?14:15));
+                                          "20".equals(currData.getContentAreas()[0].getSubtestLevel())?14:
+                                          "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
+                                          "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                          "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                          "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                          "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
                    }
                    newFact.setCompositeIndex(new Long(1));
                    facts.add(newFact);

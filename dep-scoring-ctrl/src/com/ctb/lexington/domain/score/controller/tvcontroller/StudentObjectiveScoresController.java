@@ -109,7 +109,12 @@ public class StudentObjectiveScoresController {
                                             "19".equals(prim.getSubtestLevel())?13:
                                             "19-20".equals(prim.getSubtestLevel())?14:
                                             "19/20".equals(prim.getSubtestLevel())?14:
-                                            "20".equals(prim.getSubtestLevel())?14:15));
+                                            "20".equals(prim.getSubtestLevel())?14:
+                                            "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
+                                            "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                            "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
                 primObjFacts[i].setOrgNodeid(contextData.getOrgNodeId());
                 primObjFacts[i].setProgramid(contextData.getProgramId());
                 primObjFacts[i].setSessionid(contextData.getSessionId());
@@ -179,7 +184,12 @@ public class StudentObjectiveScoresController {
                                             "19".equals(sec.getSubtestLevel())?13:
                                             "19-20".equals(sec.getSubtestLevel())?14:
                                             "19/20".equals(sec.getSubtestLevel())?14:
-                                            "20".equals(sec.getSubtestLevel())?14:15));
+                                            "20".equals(sec.getSubtestLevel())?14:
+                                            "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
+                                            "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                            "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
+                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
                 secObjFacts[i].setOrgNodeid(contextData.getOrgNodeId());
                 secObjFacts[i].setProgramid(contextData.getProgramId());
                 secObjFacts[i].setSessionid(contextData.getSessionId());

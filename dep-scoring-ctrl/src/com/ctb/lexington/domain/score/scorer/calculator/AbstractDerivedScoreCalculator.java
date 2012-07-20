@@ -56,11 +56,9 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         pTestForm  = "%"; 
         pDupTestForm =  event.getItemSetForm();
         pTestLevel = event.getItemSetLevel();
-        System.out.println("pTestLevel -> " + pTestLevel);
         pNormGroup = event.getNormGroup();
         pRecommendedLevel = event.getRecommendedLevel();
         //pAgeCategory = event.getAgeCategory();
-     //   System.out.println("Inside SubtestStartedEvent  of AbstractDerivedScoreCalculator");
     	abilityScore = event.getAbilityScore();
     	semScore = event.getSemScore();
     	pContentArea = event.getItemSetName();

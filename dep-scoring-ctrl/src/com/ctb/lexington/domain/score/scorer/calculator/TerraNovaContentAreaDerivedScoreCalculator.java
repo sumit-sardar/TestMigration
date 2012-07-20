@@ -25,7 +25,6 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
     public void onEvent(ContentAreaCumulativeNumberCorrectEvent event) {
         final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
         String frameworkCode = TERRANOVA_FRAMEWORK_CODE;
-        System.out.println("event.getContentAreaName() =====>>> " + event.getContentAreaName());
         
         if("19/20".equals(pTestLevel) || "19-20".equals(pTestLevel)) {
             //QA indicates OAS 3.x uses level 20 norms for test level 19/20
@@ -38,12 +37,14 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
         
       //Added for acuity students scheduled through web-service with IRT calculation logic.
         if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+        	if("21/22".equals(pTestLevel) || "21-22".equals(pTestLevel)) {
+                //QA indicates OAS 3.x uses level 20 norms for test level 19/20
+                pTestLevel = "22";
+            }
         	try {
         	TVWSScaleScoreCalculator tvWSScaleScore = new TVWSScaleScoreCalculator();
         	//Retrieve the loss and hoss value
         	tvWSScaleScore.getLossHossValue(event.getSubtestId(), event.getContentAreaName(), pTestLevel, scorer.getOASConnection());
-            System.out.println("scheduledProductId -> " + scheduledProductId);
-            System.out.println("event.getContentAreaName() -> " + event.getContentAreaName());
             LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaResponse = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
             final BigDecimal scaleScoreIRT = tvWSScaleScore.getTVWSScaleScoreCalculator(pTestLevel, 
             		event.getContentAreaName(), scheduledProductId, contentAreaResponse, 

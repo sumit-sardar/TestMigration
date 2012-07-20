@@ -37,8 +37,8 @@ public class TVWSScaleScoreCalculator {
 		 * So, it will not be able to get the proper path of the file. Hence while checking in, uncomment
 		 * the relative path and comment the absolute path.
 		 */
-		//String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"..";
-		String path = "C:\\workspace10.3\\application-scoring\\EarContent\\APP-INF\\lib";
+		String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"..";
+		//String path = "C:\\WorkspaceLocal94\\application-scoring\\EarContent\\APP-INF\\lib";
 		//The parFile will remain as it is.
 		parFile = path+File.separator+"tvWsScoringFiles/"+fileName;
 		BigDecimal scaleScore = null;
@@ -50,7 +50,6 @@ public class TVWSScaleScoreCalculator {
 			} else {
 				GridSearch g = new GridSearch(items,loss,hoss,numGridPoints);
 				int scale_score = score_dat(g,items,1.0, genResponseString);
-				System.out.println("scale_score -> " + scale_score);
 				scaleScore = new BigDecimal(scale_score);
 			}
 			return scaleScore;
@@ -112,7 +111,6 @@ public class TVWSScaleScoreCalculator {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				parFileName = rs.getString("FILE_NAME");
-				System.out.println("parFileName -> " + parFileName);
 			}
 		} catch (SQLException se) {
 			throw new RuntimeException(se);
@@ -142,10 +140,7 @@ public class TVWSScaleScoreCalculator {
 		LinkedHashMap<String,String> itemResponses = contentAreaResponse.get(contentAreaName);
 		for(Map.Entry<String, String> entry : itemResponses.entrySet()) {
 			responseString = responseString + entry.getValue();
-			System.out.println(entry.getKey() + " - " + entry.getValue());
 		}
-		System.out.println("ContentArea -> " + contentAreaName);
-		System.out.println("ResponseString -> " + responseString);
 		return responseString;
 	}
 	

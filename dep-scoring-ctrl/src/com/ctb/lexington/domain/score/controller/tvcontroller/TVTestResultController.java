@@ -136,7 +136,6 @@ public class TVTestResultController implements TestResultController {
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
        // new TVWsAcuityDataController(curriculumData, context, factData, wsTvReportData, studentScoreSummaryData);
-        System.out.println("Stop");
         
     }
     
