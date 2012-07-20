@@ -100,6 +100,7 @@ public class SQLQuery {
 								        + " where tr.customer_id = ?"
 								        + " and tr.activation_status = 'AC'"
 								        + " and tr.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')"
+								        + " and tr.VALIDATION_STATUS = 'VA'"
 								        + " and tr.test_admin_id = ta.test_admin_id"
 								        + " and ta.product_id = ?"
 								        + " order by tr.test_roster_id";
