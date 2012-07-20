@@ -10,8 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 
 public class FileUtil {
 	private static String inserQuery="INSERT INTO IRT_SCORE_LOOKUP_FILES VALUES(?,?,?,?,?)";
@@ -96,17 +98,21 @@ public class FileUtil {
 	}
 	public static boolean writeInOASDB(String path) throws IOException
 	{
-		String File_name,file_location,Content_area_initial,Product_type,product_id;
+		String File_name,file_location,Content_area_initial,Product_type,product_id,matchingFileName=null,matchingFile_location=null;
 		String Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name;
 		List<String> contentOfFile = new ArrayList<String>();
 		List<String> itemSetIdList = new ArrayList<String>();
+		List<String> tempList = null;
+		Map<String,List<String>> matchingFileMap = new HashMap<String,List<String>>();
+		Iterator<String> itr;
+
 		boolean successInSCORE_LOOKUP=false,successInScore_lookup_item_set=false;
 		File file = new File(path);                
 		File[] files = file.listFiles(); 
 		System.out.println("Processing " + path + "... "); 
 			for (File inFile: files ) 
 			{    
-				if(inFile.getName().substring(0,2).equals("NS") || inFile.getName().substring(0,2).equals("SE"))
+				if(inFile.getName().substring(0,2).equals("NS"))
 				{
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -134,13 +140,64 @@ public class FileUtil {
 					if(Product_type.equals("MA"))
 						product_id="3700";
 					
-					if(inFile.getName().substring(0,2).equals("NS")) {
-						Source_score_type_code = "NSC";
-						dest_Score_type_code = "SCL";
-					} else {
-						Source_score_type_code = "SCL";
-						dest_Score_type_code = "SEM";
+					Source_score_type_code = "NSC";
+					dest_Score_type_code = "SCL";
+										
+					Test_Level=File_name.substring(4, 6);
+					score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
+					
+					test_form = "G";framework_code = "TERRAB3";
+					product_internal_display_name=getDisplayName(product_id);
+					
+					contentOfFile=readFileDataNS(file_location);
+					matchingFileName="SE"+File_name.substring(2, 8);
+					matchingFile_location=path+"\\"+matchingFileName;
+					tempList = new ArrayList<String>();
+					for ( itr = contentOfFile.iterator(); itr.hasNext(); ) 
+					{   
+						String str = itr.next().toString();                                
+						String[] splitSt = str.split("    "); 
+						String second_column="";
+						second_column = splitSt[1].trim(); 
+						tempList.add(second_column);
 					}
+					matchingFileMap.put(matchingFile_location, tempList);
+					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
+					
+					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
+					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
+					
+				}
+				if(inFile.getName().substring(0,2).equals("SE"))
+				{
+					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+					
+					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
+					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
+										
+					File_name = inFile.getName();
+					file_location=path+"\\"+File_name;
+					Content_area_initial=File_name.substring(2, 4);
+					if(Content_area_initial.equals("LA"))
+						Content_area="Language";
+					if(Content_area_initial.equals("RD"))
+						Content_area="Reading";
+					if(Content_area_initial.equals("SS"))
+						Content_area="Social Studies";
+					if(Content_area_initial.equals("SC"))
+						Content_area="Science";
+					if(Content_area_initial.equals("MA"))
+						Content_area="Mathematics";
+					Product_type=File_name.substring(6, File_name.length());
+					if(Product_type.equals("SV"))
+						product_id="3710";
+					if(Product_type.equals("CB"))
+						product_id="3720";
+					if(Product_type.equals("MA"))
+						product_id="3700";
+					
+					Source_score_type_code = "SCL";
+					dest_Score_type_code = "SEM";
 					
 					Test_Level=File_name.substring(4, 6);
 					score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
@@ -149,14 +206,9 @@ public class FileUtil {
 					product_internal_display_name=getDisplayName(product_id);
 					System.out.println("file_location = "+file_location);
 					
-					contentOfFile=readFileData(file_location);
+					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-					if(inFile.getName().substring(0,2).equals("NS")) {
-						itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
-						successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
-					}
-					
 				}
 				
 			}
@@ -195,6 +247,54 @@ public class FileUtil {
 		{  line++;		
 		   if(line > 1){
 			list.add(strLine); 
+		   }                    
+		}  
+		return list;
+	}
+	public static List<String> readFileDataNS(String fileName) throws IOException
+	{
+		List<String> list = new ArrayList<String>();
+		String strLine,tempLine=null; 
+		int line = 0;
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		
+		while ((strLine = br.readLine()) != null) 
+		{  line++;		
+		   if(line == 2){
+			list.add(strLine); 
+		   }
+		   tempLine=strLine;
+		}  
+		String lastLine = tempLine;
+		list.add(lastLine);
+		return list;
+	}
+	public static List<String> readFileDataSE(String fileName, Map<String,List<String>> matchingFileMap) throws IOException
+	{
+		List<String> list = new ArrayList<String>();
+		String strLine; 
+		int line = 0;
+		List<String> tempList = matchingFileMap.get(fileName);
+		//String[] tempHolder = null; 
+		ArrayList<String> tempHolder = new ArrayList<String>();
+		for(Iterator<String> itr = tempList.iterator(); itr.hasNext();){
+			String temp=itr.next();
+			tempHolder.add(temp.trim());
+		}
+		int lowerLimit = Integer.parseInt(tempHolder.get(0));
+		int upperLimit = Integer.parseInt(tempHolder.get(1));
+		
+		
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		while ((strLine = br.readLine()) != null) 
+		{  line++;		
+		   if(line > 1){
+			    String[] splitSt = strLine.split("    "); 
+				int first_column;
+				first_column = Integer.parseInt(splitSt[0].trim());
+				if(first_column >= lowerLimit && first_column <= upperLimit){
+					list.add(strLine); 
+				}
 		   }                    
 		}  
 		return list;
