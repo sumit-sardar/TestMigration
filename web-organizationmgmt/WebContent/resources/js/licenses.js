@@ -430,6 +430,10 @@ function isEditing() {
 
 function setEditingId(id) {
 	editingId = id;
+	
+	if (editingId != null) {
+		document.getElementById('isEditing').value = "true";
+	}
 }
 
 function setEditingInfo(iRow, iCol) {
@@ -486,7 +490,9 @@ function str2num(sText) {
 function saveLicenses() {
 
 	var result = confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
-	if (result) { 
+	if (result) {
+		document.getElementById('isEditing').value = "false";
+	 
 		$.ajax({
 			async:		false,
 			beforeSend:	function(){
@@ -508,4 +514,5 @@ function saveLicenses() {
 		});
 	}
 }
+                
                 

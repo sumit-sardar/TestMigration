@@ -66,3 +66,18 @@ $().ready(function(){
 	});
 	
 });
+
+function verifyEditLicenseAndGotoMenuAction(action, menuId){
+     
+	var isEditing = document.getElementById('isEditing').value;
+    if (isEditing == 'true') { 
+	    var ret = confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
+	    if (ret)
+	    	gotoMenuAction(action, menuId);
+	    else
+	    	return true;
+	}
+	else {
+    	gotoMenuAction(action, menuId);
+    }
+}

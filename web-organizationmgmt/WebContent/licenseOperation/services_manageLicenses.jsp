@@ -11,7 +11,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<netui-template:template templatePage="/resources/jsp/oas_template.jsp">
+<netui-template:template templatePage="/resources/jsp/oas_template_manage_license.jsp">
 <netui-template:setAttribute name="title" value="${bundle.web['manageLicense.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.testLicense']}"/>
 <netui-template:section name="bodySection">
@@ -28,6 +28,7 @@
 <input type="hidden" id="noOrgTitleGrd" name = "noOrgTitleGrd" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noOrgMsgGrd" name = "noOrgMsgGrd" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
 
+<input type="hidden" id="isEditing" name = "isEditing" value="false" />
 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -132,7 +133,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("services", "manageLicensesLink");
-	//loadOrgNodeTree();
+	loadOrgNodeTree();
 }); 
 </script>
 
