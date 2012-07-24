@@ -46,7 +46,11 @@ public class StudentContentAreaScoresController {
             mapper.delete(newFact);
             if(new Long(1).equals(context.getCurrentResultId()))  {
                 System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
-                mapper.insert(newFact);
+                if(adminData.getProductId() == 3700) {
+                	mapper.insertWithSem(newFact);
+                } else {
+                	mapper.insert(newFact);
+                }
             }
         }
     }
@@ -122,6 +126,9 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr14id(context.getDemographicData().getAttr14Id());
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
+                   if(adminData.getProductId() == 3700) {
+                	   newFact.setSemScore(fact.getStandardErrorOfMeasurement().longValue());
+                   }
                    facts.add(newFact);
                }
             }

@@ -54,6 +54,7 @@ public class IrsTVContentAreaFactData implements Persistent{
     private Long recLevelid;
     private Long programid;
     private Long currentResultid;
+    private Long semScore;	// Added for third edition
     
     public boolean equals(Object arg0) {
 			return 
@@ -452,5 +453,13 @@ public class IrsTVContentAreaFactData implements Persistent{
 
 	public void setAttr16id(Long attr16id) {
 		this.attr16id = attr16id;
+	}
+
+	public Long getSemScore() {
+		return semScore;
+	}
+
+	public void setSemScore(Long semScore) {
+		this.semScore = semScore;
 	}
 }

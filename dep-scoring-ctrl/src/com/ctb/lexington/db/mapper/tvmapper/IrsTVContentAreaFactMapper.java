@@ -15,6 +15,7 @@ public class IrsTVContentAreaFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_CA_STUDENT_SESSION = "TVfindByCAStudentSession";
 	private static final String INSERT_INTO_CONTENTAREAFACT = "TVinsertTVContentAreaFact";
+	private static final String INSERT_INTO_CONTENTAREAFACT_WITH_SEM = "TVinsertTVContentAreaFactwithSem";
 	private static final String UPDATE_CONTENTAREAFACT = "TVupdateTVContentAreaFact";
 	private static final String DELETE_BY_CONTENTAREAFACTID = "TVdeleteByContentAreaFactId";
     private static final String UPDATE_CURRENTRESULT_STATUS = "TVupdateTVContentAreaFactCurrentResult";
@@ -37,7 +38,11 @@ public class IrsTVContentAreaFactMapper extends AbstractDBMapper{
 	
 	public void insert(IrsTVContentAreaFactData record)throws SQLException{
 		insert(INSERT_INTO_CONTENTAREAFACT, record);
-    }	
+    }
+	
+	public void insertWithSem(IrsTVContentAreaFactData record)throws SQLException{
+		insert(INSERT_INTO_CONTENTAREAFACT_WITH_SEM, record);
+    }
 	
 	public void update(IrsTVContentAreaFactData record)throws SQLException{
         update(UPDATE_CONTENTAREAFACT, record);
