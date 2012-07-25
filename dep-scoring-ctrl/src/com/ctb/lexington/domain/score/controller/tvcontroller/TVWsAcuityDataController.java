@@ -2,6 +2,7 @@ package com.ctb.lexington.domain.score.controller.tvcontroller;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.ctb.lexington.db.data.AdminData;
@@ -94,11 +95,13 @@ public class TVWsAcuityDataController {
 			StudentScoreSummaryData studentScoreSummaryData) {
         ContentArea [] contentAreas = currData.getContentAreas();
         ArrayList<ContentAreaScore> contentAreaFact = new ArrayList<ContentAreaScore>();
+        Map<String,String> populated = new HashMap<String,String>();
         if(contentAreas != null) {
         	wsTvData.setFormId(contentAreas[0].getSubtestForm());
         	wsTvData.setLevelId(Integer.parseInt(contentAreas[0].getSubtestLevel()));
             for(int i=0;i<contentAreas.length;i++) {
-               StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
+            	if(populated != null && !populated.containsKey(contentAreas[i])) {
+            	StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
                if(fact != null &&
                     ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
             	   ContentAreaScore newFact = new ContentAreaScore();
@@ -124,6 +127,7 @@ public class TVWsAcuityDataController {
                    newFact.setPrimaryObjScores(priObjScores);
                    contentAreaFact.add(newFact);
                }
+            }
             }
             wsTvData.setContentAreaScores((ContentAreaScore []) contentAreaFact.toArray(new ContentAreaScore[0]));
         }

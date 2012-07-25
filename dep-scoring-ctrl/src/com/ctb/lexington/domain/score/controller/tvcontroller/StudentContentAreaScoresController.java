@@ -127,7 +127,11 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
                    if(adminData.getProductId() == 3700) {
-                	   newFact.setSemScore(fact.getStandardErrorOfMeasurement().longValue());
+                	   if(fact.getStandardErrorOfMeasurement() != null) {
+                		   newFact.setSemScore(fact.getStandardErrorOfMeasurement().longValue());
+                	   } else {
+                		   newFact.setSemScore(null);
+                	   }
                    }
                    facts.add(newFact);
                }

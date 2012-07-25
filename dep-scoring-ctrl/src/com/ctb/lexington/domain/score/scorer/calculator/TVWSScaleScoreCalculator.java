@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class TVWSScaleScoreCalculator {
 	
-	double loss = 260;
-	double hoss = 650;
+	double loss = 230;
+	double hoss = 797;
 	double threshold = 0.8;
 	int numGridPoints = 89;
 	
@@ -180,16 +180,16 @@ public class TVWSScaleScoreCalculator {
 		}
 	}
 
-	public double getLoss() {
-		return loss;
+	public long getLoss() {
+		return (long)loss;
 	}
 
 	public void setLoss(double loss) {
 		this.loss = loss;
 	}
 
-	public double getHoss() {
-		return hoss;
+	public long getHoss() {
+		return (long)hoss;
 	}
 
 	public void setHoss(double hoss) {
