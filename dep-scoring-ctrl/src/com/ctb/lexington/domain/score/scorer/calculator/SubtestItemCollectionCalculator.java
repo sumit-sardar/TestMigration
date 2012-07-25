@@ -59,7 +59,9 @@ public class SubtestItemCollectionCalculator extends Calculator {
             		String contentAreaName = "";
             		String itemIdVal = "";
             		currentWsTvSubject = itemsPeids.get(0).getContentArea();
-            		//Consider all items as unattempted at first so these are populated as F.
+            		//Consider all items as not attempted at first so these are populated as 0.
+            		// No need to consider condition for F as this is online test and student cannot click
+            		// more than one option at once.
             		for(WsTvCaItemPeidVo caItemPeid : itemsPeids) {
             			contentAreaName = caItemPeid.getContentArea();
             			itemIdVal = caItemPeid.getItemId();

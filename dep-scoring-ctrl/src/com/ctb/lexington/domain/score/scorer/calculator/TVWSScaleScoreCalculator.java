@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class TVWSScaleScoreCalculator {
 		String fileName = getFileNameForPar(pTestLevel, contentAreaName, productId, irsCon);
 		String parFile = "";
 		String genResponseString = generateResponseString(contentAreaResponse, contentAreaName);
+		Map<String,String> caLossHoss = new HashMap<String,String>();
 		/**
 		 * The below path given is the relative path, which will not be able to read if we make ear of the file.
 		 * It is because this java file is present inside dep-scoring-ctrl, which in turn becomes a jar file.
@@ -169,13 +171,29 @@ public class TVWSScaleScoreCalculator {
 			if(hossVal != null && hossVal != 0) {
 				hoss = hossVal;
 			}
-			System.out.println("loss -> " + loss);
-			System.out.println("hoss -> " + hoss);
+			//System.out.println("loss -> " + loss);
+			//System.out.println("hoss -> " + hoss);
 		} catch (SQLException se) {
 			throw new RuntimeException(se);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public double getLoss() {
+		return loss;
+	}
+
+	public void setLoss(double loss) {
+		this.loss = loss;
+	}
+
+	public double getHoss() {
+		return hoss;
+	}
+
+	public void setHoss(double hoss) {
+		this.hoss = hoss;
 	}
 
 }

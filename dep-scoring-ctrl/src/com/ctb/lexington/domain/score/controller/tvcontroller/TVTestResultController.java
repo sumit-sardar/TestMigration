@@ -5,11 +5,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
-import com.ctb.lexington.db.constants.ATSDatabaseConstants;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -17,25 +15,18 @@ import com.ctb.lexington.db.data.OrgNodeData;
 import com.ctb.lexington.db.data.ReportingLevels;
 import com.ctb.lexington.db.data.ScoreMoveData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
-import com.ctb.lexington.db.data.StsTestResultFactDetails;
 import com.ctb.lexington.db.data.StsTotalStudentScoreData;
-import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import com.ctb.lexington.db.data.StudentData;
+import com.ctb.lexington.db.data.StudentDemographicData;
 import com.ctb.lexington.db.data.StudentItemResponseData;
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentPredictedScoresData;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
-import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentTestData;
-import com.ctb.lexington.db.data.StudentTestDetails;
 import com.ctb.lexington.db.data.UserData;
-import com.ctb.lexington.db.data.StudentDemographicData;
-import com.ctb.lexington.db.data.ValidatedScoreRecord;
-import com.ctb.lexington.db.data.WsReportingDataTV;
 import com.ctb.lexington.db.irsdata.IrsDemographicData;
-import com.ctb.lexington.db.mapper.StsTestResultFactRecordMapper;
-import com.ctb.lexington.db.mapper.StsTotalStudentScoreRecordMapper;
+import com.ctb.lexington.db.irsdata.irstvdata.StudentScore;
 import com.ctb.lexington.domain.score.controller.AdminController;
 import com.ctb.lexington.domain.score.controller.CurriculumController;
 import com.ctb.lexington.domain.score.controller.OrgNodeController;
@@ -44,11 +35,6 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.teststructure.ValidationStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
-import com.ctb.lexington.util.CTBConstants;
-import com.ctb.lexington.util.Timer;
-import java.util.Date;
-import java.util.Map;
-import java.util.TimeZone;
 
 public class TVTestResultController implements TestResultController {
     private Connection conn;
@@ -119,9 +105,6 @@ public class TVTestResultController implements TestResultController {
         // persist scores
      //   new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
         
-        WsReportingDataTV wsTvReportData = new WsReportingDataTV();
-        wsTvReportData.setStudentid(studentData.getOasStudentId());
-        
         System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
         new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
@@ -135,7 +118,14 @@ public class TVTestResultController implements TestResultController {
         new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
-       // new TVWsAcuityDataController(curriculumData, context, factData, wsTvReportData, studentScoreSummaryData);
+        if(adminData.getProductId() == 3700) {
+        	StudentScore studentScore = new StudentScore();
+        	studentScore.setStudentId(studentData.getOasStudentId());
+        	studentScore.setSessionId(adminData.getSessionId());
+        	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
+        			adminData, studentItemScoreData);
+        	System.out.println("Stop");
+        }
         
     }
     

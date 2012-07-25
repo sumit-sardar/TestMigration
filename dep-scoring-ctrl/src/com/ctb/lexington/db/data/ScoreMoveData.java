@@ -1,6 +1,7 @@
 package com.ctb.lexington.db.data;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 public class ScoreMoveData {
     private Long testRosterId;
@@ -29,6 +30,7 @@ public class ScoreMoveData {
     private StudentItemResponseData studentItemResponseData;
     private boolean updateContextData;
     private WsTvStudentItemResponseData caResponseWsTv;
+    private Map<String,String> caLossHoss;
 
 	/**
 	 * @return Returns the updateContextData.
@@ -247,5 +249,11 @@ public class ScoreMoveData {
 	}
 	public void setCaResponseWsTv(WsTvStudentItemResponseData caResponseWsTv) {
 		this.caResponseWsTv = caResponseWsTv;
+	}
+	public Map<String, String> getCaLossHoss() {
+		return caLossHoss;
+	}
+	public void setCaLossHoss(Map<String, String> caLossHoss) {
+		this.caLossHoss = caLossHoss;
 	}
 }

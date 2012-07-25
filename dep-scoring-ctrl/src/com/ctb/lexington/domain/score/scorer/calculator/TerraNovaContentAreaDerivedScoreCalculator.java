@@ -1,7 +1,9 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.ContentAreaCumulativeNumberCorrectEvent;
@@ -45,6 +47,13 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
         	TVWSScaleScoreCalculator tvWSScaleScore = new TVWSScaleScoreCalculator();
         	//Retrieve the loss and hoss value
         	tvWSScaleScore.getLossHossValue(event.getSubtestId(), event.getContentAreaName(), pTestLevel, scorer.getOASConnection());
+        	if(scorer.getResultHolder().getCaLossHoss() == null || scorer.getResultHolder().getCaLossHoss().size() == 0) {
+        		Map<String,String> caLossHossVal = new HashMap<String,String>();
+        		caLossHossVal.put(event.getContentAreaName(), tvWSScaleScore.getLoss()+","+tvWSScaleScore.getHoss());
+        		scorer.getResultHolder().setCaLossHoss(caLossHossVal);
+        	} else {
+        		scorer.getResultHolder().getCaLossHoss().put(event.getContentAreaName(), tvWSScaleScore.getLoss()+","+tvWSScaleScore.getHoss());
+        	}
             LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaResponse = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
             final BigDecimal scaleScoreIRT = tvWSScaleScore.getTVWSScaleScoreCalculator(pTestLevel, 
             		event.getContentAreaName(), scheduledProductId, contentAreaResponse, 
