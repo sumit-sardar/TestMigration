@@ -18,6 +18,7 @@ public class TestWebServiceController extends PageFlowController
     static final long serialVersionUID = 1L;
 	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
+	private static final String ACUITY_USER_TYPE = "ACUITY_QA";
 	
 	@Control
 	private SchedulingWSServiceControl schedulingWSServiceControl;
@@ -54,6 +55,7 @@ public class TestWebServiceController extends PageFlowController
 		SecureUser user = new SecureUser();
 		user.setUserName(AUTHENTICATE_USER_NAME);
 		user.setPassword(AUTHENTICATE_PASSWORD);
+		user.setUserType(ACUITY_USER_TYPE);
 
 		// populate session
 	    Session session = populateSessionData();

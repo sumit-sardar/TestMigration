@@ -134,6 +134,7 @@ public class SchedulingWS implements Serializable {
     		session = updateExistingSession(session);
     	}
     	else {
+    		session.setTestLocation(user.getUserType());
     		session = scheduleNewSession(session);
     	}
     	
