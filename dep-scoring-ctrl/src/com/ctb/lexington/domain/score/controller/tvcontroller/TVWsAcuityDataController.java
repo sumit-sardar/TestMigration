@@ -94,6 +94,9 @@ public class TVWsAcuityDataController {
 			StudentScoreSummaryData studentScoreSummaryData) {
         ContentArea [] contentAreas = currData.getContentAreas();
         ArrayList<ContentAreaScore> contentAreaFact = new ArrayList<ContentAreaScore>();
+        if(contentAreas != null) {
+        	wsTvData.setFormId(contentAreas[0].getSubtestForm());
+        	wsTvData.setLevelId(Integer.parseInt(contentAreas[0].getSubtestLevel()));
             for(int i=0;i<contentAreas.length;i++) {
                StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
                if(fact != null &&
@@ -123,6 +126,7 @@ public class TVWsAcuityDataController {
                }
             }
             wsTvData.setContentAreaScores((ContentAreaScore []) contentAreaFact.toArray(new ContentAreaScore[0]));
+        }
     }
 	
 	private PrimaryObjScore[] getPrimaryObjectiveScores (Long contentAreaId, StudentScoreSummaryData studentScoreSummaryData) {
