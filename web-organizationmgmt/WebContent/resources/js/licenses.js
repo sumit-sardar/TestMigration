@@ -314,11 +314,11 @@ function loadChildrenOrgNodeLicense() {
 		   	 
           	beforeEditCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeEditCell: ' + rowid + " - " + value);
-              	setEditingInfo(iRow, iCol);
+              	setEditingInfo(iRow, iCol, value);
           	},
           	beforeSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeSaveCell: ' + rowid + " - " + value);
-              	setEditingInfo(null, null);
+              	setEditingInfo(null, null, value);
 				
               	errorMsg = "";
               	if (! validNumber(value)) {
@@ -332,7 +332,7 @@ function loadChildrenOrgNodeLicense() {
           	},
           	beforeSubmitCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeSubmitCell: ' + rowid + " - " + value);
-              	setEditingInfo(null, null);
+              	setEditingInfo(null, null, value);
 
               	if (errorMsg.length > 0) {
               		alert(errorMsg);
@@ -340,7 +340,7 @@ function loadChildrenOrgNodeLicense() {
           	},
           	afterSubmitCell : function(serverresponse,rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSubmitCell: ' + serverresponse.responseText );
-              	setEditingInfo(null, null);
+              	setEditingInfo(null, null, value);
 
               	if (serverresponse.responseText == 'OK') {
               	
@@ -357,7 +357,7 @@ function loadChildrenOrgNodeLicense() {
           	},
           	afterSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSaveCell: ' + rowid + " - " + value);
-              	setEditingInfo(null, null);
+              	setEditingInfo(null, null, value);
           	},
 		   	 
 			onPaging: function() {
@@ -392,10 +392,11 @@ function loadChildrenOrgNodeLicense() {
             		$('#sp_1_orgNodePager').text("1");
             		$('#next_orgNodePager').addClass('ui-state-disabled');
             		$('#last_orgNodePager').addClass('ui-state-disabled');
-			 		$('#orgNodeGrid').append("<tr><td style='width: 100%; padding-left: 35%;' colspan='4'><table><tbody><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th>"+$("#noOrgTitleGrd").val()+"</th></tr><tr><td>"+$("#noOrgMsgGrd").val()+"</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></tbody></table></td></tr>");
+	    			document.getElementById('noDataGridSection').style.display = "block";
             	}
 				else {
 	    			document.getElementById('orgNodeGridSection').style.display = "block";
+	    			document.getElementById('noDataGridSection').style.display = "none";
 				}
 				
 				highLightNoAvailable();
@@ -430,19 +431,21 @@ function isEditing() {
 
 function setEditingId(id) {
 	editingId = id;
-	
 	if (editingId != null) {
 		document.getElementById('isEditing').value = "true";
 	}
 }
 
-function setEditingInfo(iRow, iCol) {
+function setEditingInfo(iRow, iCol, value) {
 	if (iRow != null)
 		editingId = iRow + "_available";
 	else 
 		editingId = null;
    	editingRow = iRow;
    	editingCol = iCol;
+	if (editingId != null) {
+		document.getElementById('isEditing').value = "true";
+	}
 }
 
 function highLightNoAvailable() {
@@ -453,7 +456,6 @@ function highLightNoAvailable() {
 			if (this.className.indexOf('ui-widget-content jqgrow ui-row-ltr') != -1) {
 				var el = $('td:eq(3)', $(this));                 
 				el.removeAttr('bgcolor');
-				//el.attr('bgcolor', '#ffffff');
 				if (el.text() == '0') {                        
 					el.attr('bgcolor', '#ff0000');
 				}
@@ -515,4 +517,32 @@ function saveLicenses() {
 	}
 }
                 
+function verifyEditLicenseAndGotoMenuAction(action, menuId){
+     
+	var isEditing = document.getElementById('isEditing').value;
+    if (isEditing == 'true') { 
+	    var ret = confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
+	    if (ret)
+	    	gotoMenuAction(action, menuId);
+	    else
+	    	return true;
+	}
+	else {
+    	gotoMenuAction(action, menuId);
+    }
+}
+
+function cancelEditingLicenses() {
+	var isEditing = document.getElementById('isEditing').value;
+    if (isEditing == 'true') { 
+	    var ret = confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
+	    if (ret)
+	    	gotoMenuAction('services.do', 'manageLicensesLink');
+	    else
+	    	return true;
+	}
+	else {
+    	gotoMenuAction('services.do', 'manageLicensesLink');
+    }
+}
                 

@@ -25,9 +25,6 @@
 <input type="hidden" id="consumed" name = "consumed" value=<lb:label key="license.consumed" prefix="'" suffix="'"/>/>
 <input type="hidden" id="available" name = "available" value=<lb:label key="license.available" prefix="'" suffix="'"/>/>
 
-<input type="hidden" id="noOrgTitleGrd" name = "noOrgTitleGrd" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
-<input type="hidden" id="noOrgMsgGrd" name = "noOrgMsgGrd" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
-
 <input type="hidden" id="isEditing" name = "isEditing" value="false" />
 
 <!-- ********************************************************************************************************************* -->
@@ -104,12 +101,16 @@
 						<br/><br/>
 						<div id="orgNodeGridSection" style="display: none">
 							<table class="subtitle" border="0" width="100%"><tr>
-							<td width="90%" align="left">
+							<td width="*" align="left">
 							Click on the cell under <b>Available</b> column to edit the license quatity. Hit <b>Enter</b> to commit the value. Click <b>Save</b> button to save your changes.
 							</td>
-							<td width="10%" align="right">
+							<td width="20%" align="right">
 							<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
           						<lb:label key="license.save.button" />
+           					</a>
+           					&nbsp;
+							<a href="#" id="cancelEditing" onclick="return cancelEditingLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
+          						<lb:label key="license.cancel.button" />
            					</a>
 							</td>
 							</tr></table>
@@ -119,6 +120,19 @@
 								<div id="orgNodePager" class="gridTable" ></div>
 							</div>
 						</div>
+						
+						<div id="noDataGridSection" style="display: none">
+<table class="transparent"><tbody>
+<tr width="100%">
+	<th rowspan="2" style="padding-right: 12px; text-align: right;"><img height="23" src="/OrganizationWeb/resources/images/messaging/icon_info.gif"></th>
+	<th class="subtitle" align="left">No groups found.</th>
+</tr>
+<tr class="subtitle" width="100%">
+	<td colspan="2">To edit the license quatity for this group, please select the parent group.</td>
+</tr>
+</tbody></table>			 				
+						</div>
+						
 					</td>
 						
 				</tr>

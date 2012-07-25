@@ -80,6 +80,8 @@
 
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/upload_download.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
+
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/licenses.js"></script>
   	
 	<script type="text/javascript">
 	var SelectedUserId;

@@ -579,13 +579,13 @@ public class LicenseOperationController extends PageFlowController {
 System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productId=" + productId + "    subtestModel=" + subtestModel + "    customerId=" + customerId + "    available=" + available);
         }
 
-        /*
+        
         try {
-			result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList);
+			boolean result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList);
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
-        */
+        
         
         return null;
     }
