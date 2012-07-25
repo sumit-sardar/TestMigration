@@ -1,7 +1,6 @@
 package com.ctb.lexington.domain.score.controller.tvcontroller;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -10,16 +9,19 @@ import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
 import com.ctb.lexington.db.data.StsTestResultFactDetails;
+import com.ctb.lexington.db.data.StsTotalStudentScoreData;
+import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
+import com.ctb.lexington.db.data.CurriculumData.Composite;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
+import com.ctb.lexington.db.irsdata.irstvdata.CompositeScore;
 import com.ctb.lexington.db.irsdata.irstvdata.ContentAreaScore;
-import com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData;
 import com.ctb.lexington.db.irsdata.irstvdata.ItemScore;
 import com.ctb.lexington.db.irsdata.irstvdata.PrimaryObjScore;
 import com.ctb.lexington.db.irsdata.irstvdata.SecondaryObjScore;
@@ -37,16 +39,55 @@ public class TVWsAcuityDataController {
 	private AdminData adminData;
 	private ContextData contextData;
 	private CurriculumData currData;
+	private StsTotalStudentScoreData totalData;
 	
 	public TVWsAcuityDataController(CurriculumData currData, ContextData context, StsTestResultFactData factData, StudentScore wsTvData, 
-			StudentScoreSummaryData studentScoreSummaryData, Map<String,String> lossHoss, AdminData adminData, StudentItemScoreData studentItemScoreData) {
+			StudentScoreSummaryData studentScoreSummaryData, Map<String,String> lossHoss, AdminData adminData, 
+			StudentItemScoreData studentItemScoreData, StsTotalStudentScoreData totalData) {
 		
 		this.studentItemScoreData = studentItemScoreData;
 		this.adminData = adminData;
 		this.contextData = context;
 		this.currData = currData;
+		this.totalData = totalData;
 		getContentAreaFactBeans(factData, wsTvData, lossHoss, studentScoreSummaryData);
+		getCompositeFactBeans(wsTvData);
     }
+	
+	//Set the composite fact data
+	public void getCompositeFactBeans(StudentScore wsTvData) {
+		
+		if(totalData.size() > 0) {
+			Composite [] composites = currData.getComposites();
+			ArrayList<CompositeScore> facts = new ArrayList<CompositeScore>();
+			for(int i=0;i<composites.length;i++) {
+				StsTotalStudentScoreDetail total = totalData.get(composites[i].getCompositeName());
+				if(total != null && ("T".equals(total.getValidScore()) || "Y".equals(total.getValidScore()))) {
+					CompositeScore newFact = new CompositeScore();
+					newFact.setCompositeId(composites[i].getCompositeId().toString());
+					newFact.setCompositeName(composites[i].getCompositeName());
+					if(total.getGradeEquivalent() != null) {
+                        Float ge = new Float(Float.parseFloat(total.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9')));
+                        
+                        DecimalFormat df2 = new DecimalFormat( "#,###,###,##0.00" );
+                        float gedec = new Float(df2.format(ge)).floatValue();
+                        
+                        newFact.setGradeEquivalent(new Float(gedec));
+                   }
+					newFact.setNationalPercentile((total.getNationalPercentile()==null)?null:new Long(total.getNationalPercentile().longValue()));
+	                newFact.setNationalStanine((total.getNationalStanine()==null)?null:new Long(total.getNationalStanine().longValue()));
+	                newFact.setNormCurveEquivalent((total.getNormalCurveEquivalent()==null)?null:new Long(total.getNormalCurveEquivalent().longValue()));
+	                newFact.setPointsAttempted(total.getPointsAttempted());
+	                newFact.setPointsObtained(total.getPointsObtained());
+	                newFact.setPointsPossible(composites[i].getCompositePointsPossible());
+	                newFact.setScaleScore((total.getScaleScore()==null)?null:new Long(total.getScaleScore().longValue()));
+	                facts.add(newFact);
+				}
+			}
+			wsTvData.setCompositeScores((CompositeScore []) facts.toArray(new CompositeScore[0]));
+		}
+		
+	}
 	
 	// Set the content area related data
 	public void getContentAreaFactBeans(StsTestResultFactData factData, StudentScore wsTvData, Map<String,String> lossHoss, 

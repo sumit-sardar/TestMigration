@@ -118,12 +118,13 @@ public class TVTestResultController implements TestResultController {
         new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
+        // Added for TN Acuity webservice integration
         if(adminData.getProductId() == 3700) {
         	StudentScore studentScore = new StudentScore();
         	studentScore.setStudentId(studentData.getOasStudentId());
         	studentScore.setSessionId(adminData.getSessionId());
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
-        			adminData, studentItemScoreData);
+        			adminData, studentItemScoreData, totalStudentScoreData);
         	System.out.println("Stop");
         }
         
