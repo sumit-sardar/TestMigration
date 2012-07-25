@@ -31,23 +31,11 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
         validateItemSetId(event.getItemSetId());
 
         final String itemId = event.getItemId();
-        System.out.println("itemId ==> " + itemId);
         if (ItemVO.ITEM_TYPE_SR.equals(sicEvent.getType(itemId))) {
             final String response = event.getResponse();
             final boolean isConditionCode = sicEvent.isConditionCode(itemId, response);
             if (isConditionCode || response == null) {
             	if (sicEvent.isMarked(event)) {
-            		if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-            			LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
-            			LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
-                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
-                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
-                			if(itemIdResp.containsKey(itemId)) {
-                				itemIdResp.put(itemId, "0");
-                			}
-                		}
-                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
-                	}
                 	channel.send(new IncorrectResponseEvent(event));
                 } else {
                 	channel.send(new NoResponseEvent(event));
@@ -67,17 +55,6 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                 	}
                     channel.send(new CorrectResponseEvent(event));
                 } else {
-                	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-                		LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
-                		LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
-                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
-                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
-                			if(itemIdResp.containsKey(itemId)) {
-                				itemIdResp.put(itemId, "0");
-                			}
-                		}
-                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
-                	}
                     channel.send(new IncorrectResponseEvent(event));
                 }
             }

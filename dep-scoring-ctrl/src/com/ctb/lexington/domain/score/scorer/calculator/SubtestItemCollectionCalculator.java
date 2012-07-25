@@ -63,22 +63,22 @@ public class SubtestItemCollectionCalculator extends Calculator {
             		for(WsTvCaItemPeidVo caItemPeid : itemsPeids) {
             			contentAreaName = caItemPeid.getContentArea();
             			itemIdVal = caItemPeid.getItemId();
-            			System.out.println("itemIdVal -> " + itemIdVal);
+            			//System.out.println("itemIdVal -> " + itemIdVal);
             			if(contentAreaItemMap != null && !contentAreaItemMap.isEmpty()) {
             				if(contentAreaItemMap.containsKey(contentAreaName)) {
             					if(contentAreaItemMap.get(contentAreaName).containsKey(itemIdVal)) {
             						continue;
             					} else {
-            						contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
+            						contentAreaItemMap.get(contentAreaName).put(itemIdVal, "0");
             					}
             				} else {
             					contentAreaItemMap.put(contentAreaName, new LinkedHashMap<String,String>());
-            					contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
+            					contentAreaItemMap.get(contentAreaName).put(itemIdVal, "0");
             				}
             			} else {
             				contentAreaItemMap = new LinkedHashMap<String,LinkedHashMap<String,String>>();
             				contentAreaItemMap.put(contentAreaName, new LinkedHashMap<String,String>());
-            				contentAreaItemMap.get(contentAreaName).put(itemIdVal, "F");
+            				contentAreaItemMap.get(contentAreaName).put(itemIdVal, "0");
             			}
             		}
             		scorer.getResultHolder().getCaResponseWsTv().setContentAreaItems(contentAreaItemMap);
