@@ -51,6 +51,10 @@
 <input type="hidden" id="sbiGridItemType" value=<lb:label key="scoring.itemGrid.itemType" prefix="'" suffix="'"/>/>
 <input type="hidden" id="sbsGridItemEmpty" value=<lb:label key="scoring.sbs.noItemsFoundMessage" prefix="'" suffix="'"/>/>
 <input type="hidden" id="responsePopupTitl" value=<lb:label key="questionpopup.header" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripViewRubric" value=<lb:label key="scoring.itemGrid.viewRubric" prefix="'" suffix="'"/>/>
+<input type="hidden" id="itemGripViewQues" value=<lb:label key="scoring.itemGrid.viewQues" prefix="'" suffix="'"/>/>
+<input type="hidden" id="questionPopupTitle" value=<lb:label key="questionpopup.quesTitle" prefix="'" suffix="'"/>/>
+<input type="hidden" id="rubricPopupTitle" value=<lb:label key="questionpopup.rubricTitle" prefix="'" suffix="'"/>/>
 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 
@@ -194,3 +198,5 @@
 <jsp:include page="/studentScoringOperation/find_student_scoring.jsp" />
 <jsp:include page="/studentScoringOperation/session_scoring.jsp" />
 <jsp:include page="/studentScoringOperation/question_answer.jsp" />
+<jsp:include page="/studentScoringOperation/question.jsp" />
+<jsp:include page="/studentScoringOperation/rubric.jsp" />

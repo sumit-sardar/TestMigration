@@ -57,6 +57,7 @@ var itemNumberRub = 0;
 var itemTypeRub = '';
 var testRosterIdRub = 0;
 var itemSetIdRub = 0;
+var parentDivId = '';
 
 function populateStudentScoringTree() {
 	$.ajax({
@@ -373,8 +374,9 @@ function closePopUp(dailogId){
 		}
 		isRubricPopulated = false;
 		data1 = null;
+		parentDivId = '';
 		
-		var subIframe = $('#rubricIframe');
+		var subIframe = $('#rubricIframe','#rubricInformation');
 		if(subIframe != undefined) {
 			var iFrameObj = subIframe.contents();
 			if(iFrameObj != undefined) {
@@ -384,6 +386,41 @@ function closePopUp(dailogId){
 		}
 		selectedRowObjectScoring = {};
 	}
+	
+	if (dailogId == 'questionDetail'){
+		
+		$('#questionAccordion').accordion('activate', 0 );
+		var element = document.getElementById('questionInfo');
+		while(element.hasChildNodes()){
+			element.removeChild(element.lastChild);
+		}
+		data1 = null;
+		selectedRowObjectScoring = {};
+	}
+	
+	if (dailogId == 'answerDetail'){
+		
+	/*	$('#ansAccordion').accordion('activate', 0 );
+		var element = document.getElementById('rubricInfo');
+		while(element.hasChildNodes()){
+			element.removeChild(element.lastChild);
+		}*/
+		
+		isRubricPopulated = false;
+		data1 = null;
+		parentDivId = '';
+		
+		var subIframe = $('#rubricIframe', '#rubricInfo');
+		if(subIframe != undefined) {
+			var iFrameObj = subIframe.contents();
+			if(iFrameObj != undefined) {
+				iFrameObj.find("#rubricTable tr:not(:first)").remove();
+				iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
+			}
+		}
+		//selectedRowObjectScoring = {};
+	}
+	
 	$("#"+dailogId).dialog("close");
 }
 
@@ -701,6 +738,60 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 			optn.value = value;
 			selectbox.options.add(optn);
 		}
+		
+		function rubricLinkFmatter(cellvalue, options, rowObject){
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		var itemSetIdTD = rowObject.itemSetId;
+		var itemId = null;
+		if(rowObject._id_){
+			itemId = rowObject._id_;
+		}else{
+			itemId = rowObject.itemId;
+		}
+
+		var type = "View";
+		/*if(cellvalue=="AI") {
+        	type = "Audio Response";
+        } else {
+        	type = "Text Response";
+        } */
+        if(answered != undefined && answered == "Answered") {
+        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showAnswerPopup(\"" + itemId +"\",\""+
+        	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
+        	  itemSetIdTD + "\"); return false;'>"+type+"</a>";
+        } else {
+        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
+        }
+		return val;
+	}
+	
+	function quesLinkFmatter(cellvalue, options, rowObject){
+		var val = cellvalue;
+		var answered = rowObject.answered;
+		var itemSetIdTD = rowObject.itemSetId;
+		var itemId = null;
+		if(rowObject._id_){
+			itemId = rowObject._id_;
+		}else{
+			itemId = rowObject.itemId;
+		}
+
+		var type = "View Question";
+		/*if(cellvalue=="AI") {
+        	type = "Audio Response";
+        } else {
+        	type = "Text Response";
+        }*/
+        if(answered != undefined && answered == "Answered") {
+        	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesPopup(\"" + itemId +"\",\""+
+        	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
+        	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\"); return false;'>"+type+"</a>";
+        } else {
+        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
+        }
+		return val;
+	}
 /******JqGrid Population and Reloads*****/
 
 function populateScoringStudentGrid() {
@@ -1162,7 +1253,6 @@ function scoreByStudentGridReload(){
 
 
 function studentScoring() {
-	
 	stuItemGridLoaded = true;
 	var postDataObject = {};
  		postDataObject.q = 2;
@@ -1174,11 +1264,13 @@ function studentScoring() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:quesLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:rubricLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left", sorttype:scoreStatusUnformatter, sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1352,7 +1444,6 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 
 
 function populateSBSItemListGrid() {
-		
 		sbsItemGridLoaded = true;
 		var postDataObject = {};
  		postDataObject.q = 2;
@@ -1364,11 +1455,13 @@ function populateSBSItemListGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
+          colNames:[$("#itemGripItemNo").val(),$("#itemGripSubtest").val(), $("#itemGripScoreItm").val(), $("#itemGripViewQues").val(), $("#itemGripViewRubric").val(), $("#sesGridStatus").val(),$("#itemGripManual").val(), $("#itemGripMaxScr").val(), $("#itemGripObtained").val(), "itemSetId"],
 		   	colModel:[
 		   		{name:'itemSetOrder',index:'itemSetOrder', width:120, editable: true, align:"left", sorttype:'int', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',index:'itemSetName', width:180, editable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:responseLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:quesLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemType',index:'itemType', width:180, editable: true, align:"left", sorttype:'text', formatter:rubricLinkFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'answered',index:'answered',editable: true, width:160, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scoreStatus',index:'scoreStatus', width:260, editable: true, align:"left",sorttype:scoreStatusUnformatter, sortable:true, formatter:scoreStatusFormatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'maxPoints',index:'maxPoints',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1597,10 +1690,16 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	}
 	
 	function populateTableNew() {
-	
-		isRubricPopulated = true;
-			
-		var subIframe = $('#rubricIframe'); 
+		var subIframe;
+		if(parentDivId != null && parentDivId != '') {
+			if (parentDivId == "answerDetail") {
+				subIframe = $('#rubricIframe','#rubricInfo');
+			}
+		}
+		else {
+			subIframe = $('#rubricIframe','#rubricInformation');
+		}
+		
 		var iFrameObj = subIframe.contents();
 											
 		var counter = 0;
@@ -1619,14 +1718,14 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 											 } else {
 											 	iFrameObj.find("#rubricExemplarId").show();
 											 	iFrameObj.find("#exemplarNoDataId").hide();
-											 }
-											 	//alert(data.rubricData.entry);							 
+											 }						 
 											 if(data1.rubricData.entry) {
-											 	//alert("...."+data.rubricData.entry);		
+											 	//alert("...."+data1.rubricData.entry);		
 											 	iFrameObj.find("#rubricNoDataId").hide();
-											 	iFrameObj.find("#rubricTableId").show();								 								 
+											 	iFrameObj.find("#rubricTableId").show();	
+											 								 								 
 											 	for(var i=0;i<data1.rubricData.entry.length;i++) {									
-													var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);								
+													var description = handleSpecialCharactersNewUI(data1.rubricData.entry[i].rubricDescription);
 													iFrameObj.find("#rubricTable tr:last").
 														after('<tr><td><center><small>'+
 															data1.rubricData.entry[i].score+
@@ -1657,7 +1756,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 												iFrameObj.find("#rubricExemplarId").hide();
 												iFrameObj.find("#rubricTableId").hide();									
 											}										
-								  		  
+								  		  isRubricPopulated = true;
 		$.unblockUI();
 	}
 	
@@ -1906,6 +2005,102 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 	 var textMessage = $("#"+element).val();
 	$("#"+argObject.contentElement).text(textMessage);
  }
+ 
+ function showQuesPopup(id,itemSetOrder,itemType,testRosterId,itemSetId, maxPoints, scoreObtained, scoringStatus){
+			var score= null;
+			var status = null;
+			selectedRowObjectScoring.id = id;
+			selectedRowObjectScoring.itemSetOrder = itemSetOrder;
+			selectedRowObjectScoring.itemType = itemType
+			selectedRowObjectScoring.testRosterId = testRosterId;
+			selectedRowObjectScoring.itemSetId = itemSetId;
+			selectedRowObjectScoring.maxPoints = maxPoints;
+				
+			document.getElementById('displayMessageForQues').style.display = "none";
+		 	var element = document.getElementById('questionInfo');
+		 	var iframe = document.createElement('iframe');
+			iframe.name = "swfFrame";
+			iframe.src="/ScoringWeb/itemPlayer/index.jsp?itemSortNumber=" + itemSetOrder +"&itemNumber=" + id + "";
+			iframe.width = "900";
+			iframe.height = "530";
+			element.appendChild(iframe);
+			updateMaxPoints(maxPoints);		
+			var scoreAndPoints =  getScorePoints();
+			score = scoreAndPoints[0];
+			status = scoreAndPoints[1];
+			selectedRowObjectScoring.scoreObtained = score;
+			selectedRowObjectScoring.scoringStatus = status;
+		 	
+		 	clearMessage();
+			$("#questionDetail").dialog({  
+				title:$("#questionPopupTitle").val() + itemSetOrder,  
+				resizable:false,
+				autoOpen: true,
+				width: '1024px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});	
+		 	
+}
+
+function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
+
+		 	clearMessage();
+			$("#answerDetail").dialog({  
+				title:$("#rubricPopupTitle").val() + itemSetOrder,  
+				resizable:false,
+				autoOpen: true,
+				width: '850px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});	
+			parentDivId = $("#answerDetail").attr('id');
+			
+			//alert("parentDivId -> " + parentDivId);
+		 	viewRubric(id,itemSetOrder, itemType, testRosterId, itemSetId);
+}
+
+function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
+	UIBlock();
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var itemId = itemIdRubric; 
+	var itemNumber = itemNumber;
+	
+
+	$.ajax(
+		{
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+								//$("#audioPlayer").hide();
+								//$("#crText").hide();
+							},
+				url:		'showQuestionAnswer.do',
+				type:		'POST',
+				data:		param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){									
+								 var questionNumber = itemNumber;
+								 data1 = data.questionAnswer;
+								 
+								 populateTableNew();
+									// $.unblockUI(); 
+								 //$("#rubricDialogID").dialog("open");		
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								//$.unblockUI(); 
+							}
+				}
+			);
+			
+	
+	}
 /******JqGrid Search Implementation*****/
 
 function searchStudentByKeyword(){
