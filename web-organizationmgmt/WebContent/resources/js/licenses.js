@@ -89,7 +89,6 @@ function createOrgNodeTree(jsondata) {
 		);
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
-	    	document.getElementById('displayMessageMain').style.display = "none";
 	    	
 			if (isEditing()) {
 				//jQuery('#orgNodeGrid').jqGrid("restoreCell", editingRow, editingCol); 				
@@ -426,10 +425,9 @@ function childrenOrgNodeLicenseReload(){
 
 function isEditing() {
    	if (editingId != null) {
-   		var r = confirm("Do you want to discard your change?");
+   		var r = confirm("You are currently editing license quatity. Do you want to discard your change?");
    		if (r) {
    			editingId = null;
-			document.getElementById('currentEditing').value = 'false';
    		}
    		return !r;
    	}  		
@@ -447,7 +445,6 @@ function setEditingInfo(iRow, iCol, value) {
 	}
 	else { 
 		editingId = null;
-		document.getElementById('currentEditing').value = 'false';
 	}
    	editingRow = iRow;
    	editingCol = iCol;
@@ -524,9 +521,9 @@ function saveLicenses() {
 }
                 
 function verifyEditLicenseAndGotoMenuAction(action, menuId){
-     
+    
 	var currentEditing = document.getElementById('currentEditing').value;
-    if (currentEditing == 'true') { 
+    if (currentEditing == 'true') {
 	    var ret = confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
 	    if (ret) {
 	    	editingId = null;
@@ -541,5 +538,5 @@ function verifyEditLicenseAndGotoMenuAction(action, menuId){
     	gotoMenuAction(action, menuId);
     }
 }
-
+ 
                 

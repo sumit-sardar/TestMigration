@@ -809,7 +809,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		 
 		 this.licenseNodes = new ArrayList();
 
-		 this.getRequest().setAttribute("subtestModel", this.customerLicenses[0].getSubtestModel());
+		 this.getRequest().setAttribute("licenseModel", this.customerLicenses[0].getSubtestModel());
 		 
 		 return new Forward("success");
 	 }

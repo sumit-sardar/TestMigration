@@ -32,11 +32,11 @@
 <!-- ********************************************************************************************************************* -->
 
 <%
-	String subtestModel = (String)request.getAttribute("subtestModel");
-	if (subtestModel.equals("T")) 
-		subtestModel = "Subtest";
+	String licenseModel = (String)request.getAttribute("licenseModel");
+	if (licenseModel.equals("T")) 
+		licenseModel = "Subtest";
 	else
-		subtestModel = "Session";
+		licenseModel = "Session";
 %>
 
 <netui:form action="services_manageLicenses">
@@ -62,30 +62,17 @@
 		</td>
     </tr>
 	
+	<tr class="transparent" valign="bottom">
+		<td align="right" valign="bottom">
+				<p id="licenseModelDiv" class="subtitle" style="padding-right: 12px">
+					License model: <b><%= licenseModel %></b>
+				</p> 
+		</td>
+	</tr>
+
 	<tr class="transparent">
         <td align="center">        
-			<table width="100%"> 
-		      	<tr>
-					<td colspan="3" class="buttonsRow">
-			        <div id="displayMessageMain" class="errMsgs" style="display:none; width:99.5%;float:left;">
-						<table>
-							<tr>
-								<td width="18" valign="middle">
-									<div id="errorIcon" style="display:none;">
-				                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
-									</div>
-									<div id="infoIcon" style="display:none;">
-										<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
-									</div>
-								</td>
-								<td class="saveMsgs" valign="middle">
-									<div id="contentMain"></div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					</td>
-				</tr>
+			<table width="100%" border=0> 
 				<tr class="transparent">
 			        <td style="vertical-align:top; width:16%;" align="left">
 				      	<div id="searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
@@ -98,15 +85,11 @@
 					<td class="transparent" width="5px">&nbsp;</td>
 					 	 
 					<td style="vertical-align:top;" id="jqGrid-content-section">
-						<div id="outerInfo">
-							<p id="licenseModelDiv" class="subtitle" style="display: none">
-								License model: <b><%= subtestModel %></b>
-							</p> 
-						   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
-						</div>
-						<br/><br/>
+					   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
+						<br/>
 						<div id="orgNodeGridSection" style="display: none">
-							<table class="subtitle" border="0" width="100%"><tr>
+							<table class="subtitle" border="0" width="100%">
+							<tr>
 							<td width="*" align="left">
 							Click on the cell under <b>Available</b> column to edit the license quatity. Hit <b>Enter</b> to commit the value. Click <b>Save</b> button to save your changes.
 							</td>
@@ -119,7 +102,8 @@
           						<lb:label key="license.cancel.button" />
            					</a>
 							</td>
-							</tr></table>
+							</tr>
+							</table>
 							<br/>
 							<div id="outerGrid"> 
 					    		<table id="orgNodeGrid" class="gridTable"></table>
