@@ -808,6 +808,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		 this.customerLicenses = getCustomerLicenses();
 		 
 		 this.licenseNodes = new ArrayList();
+
+		 this.getRequest().setAttribute("subtestModel", this.customerLicenses[0].getSubtestModel());
 		 
 		 return new Forward("success");
 	 }

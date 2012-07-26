@@ -25,13 +25,19 @@
 <input type="hidden" id="consumed" name = "consumed" value=<lb:label key="license.consumed" prefix="'" suffix="'"/>/>
 <input type="hidden" id="available" name = "available" value=<lb:label key="license.available" prefix="'" suffix="'"/>/>
 
-<input type="hidden" id="isEditing" name = "isEditing" value="false" />
+<input type="hidden" id="currentEditing" name="currentEditing" value="false" />
 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
-
+<%
+	String subtestModel = (String)request.getAttribute("subtestModel");
+	if (subtestModel.equals("T")) 
+		subtestModel = "Subtest";
+	else
+		subtestModel = "Session";
+%>
 
 <netui:form action="services_manageLicenses">
 
@@ -94,7 +100,7 @@
 					<td style="vertical-align:top;" id="jqGrid-content-section">
 						<div id="outerInfo">
 							<p id="licenseModelDiv" class="subtitle" style="display: none">
-								License model: <b>Session</b>
+								License model: <b><%= subtestModel %></b>
 							</p> 
 						   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
 						</div>
@@ -109,7 +115,7 @@
           						<lb:label key="license.save.button" />
            					</a>
            					&nbsp;
-							<a href="#" id="cancelEditing" onclick="return cancelEditingLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
+							<a href="#" id="cancelEditing" onclick="return verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');" class="rounded {transparent} button" style="text-decoration: none;" >
           						<lb:label key="license.cancel.button" />
            					</a>
 							</td>
@@ -128,7 +134,7 @@
 	<th class="subtitle" align="left">No groups found.</th>
 </tr>
 <tr class="subtitle" width="100%">
-	<td colspan="2">To edit the license quatity for this group, please select the parent group.</td>
+	<td colspan="2">To edit the license quatity for selected group, please select the parent group.</td>
 </tr>
 </tbody></table>			 				
 						</div>
