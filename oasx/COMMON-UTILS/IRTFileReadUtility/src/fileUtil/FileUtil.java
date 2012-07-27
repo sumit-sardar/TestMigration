@@ -688,8 +688,6 @@ public class FileUtil {
 				e1.printStackTrace();
 			}
 		e.printStackTrace();
-		}finally {
-			SqlUtil.close(con,ps,rs);
 		}
 		return (save==1)? true :  false;
 	}
