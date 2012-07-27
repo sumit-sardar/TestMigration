@@ -432,7 +432,7 @@ public class FileUtil {
 		try {
 			con=SqlUtil.openOASDBcon();
 			ps = con.prepareStatement(itemSetIdGEQuery);
-			ps.setString(2,Content_area);
+			ps.setString(1,Content_area);
 			rs=ps.executeQuery();
 			while(rs.next())
 			{
