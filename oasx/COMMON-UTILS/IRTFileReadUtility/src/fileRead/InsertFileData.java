@@ -10,10 +10,10 @@ public class InsertFileData {
 		String filePath=FileUtil.getFilePath();
 		try{
 			
-			writesuccessfulinIRS = FileUtil.writeInIRSDB(filePath);
+			/*writesuccessfulinIRS = FileUtil.writeInIRSDB(filePath);
 			if(writesuccessfulinIRS==true)
 				System.out.println("Files are saved in IRS Database successfully.");
-			
+			*/
 			writesuccessfulinOAS=FileUtil.writeInOASDB(filePath);
 			if(writesuccessfulinOAS==true)
 				System.out.println("Files are saved in OAS Database successfully.");

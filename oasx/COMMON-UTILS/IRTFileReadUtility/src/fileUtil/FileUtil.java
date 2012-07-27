@@ -21,6 +21,9 @@ public class FileUtil {
 	private static String insertScore_lookupQuery="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
 			"source_score_value,dest_score_value,test_form,test_level,content_area,framework_code,product_internal_display_name) " +
 			"VALUES(?,?,?,?,?,?,?,?,?,?)";
+	private static String insertScore_lookupQuery_withNorms="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
+	"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name) " +
+	"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static String itemSetIDQuery=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
 			"where tc.product_id = ? and tc.item_set_id = isa.ancestor_item_Set_id and isa.item_set_id = iset.item_set_id " +
 			"and iset.item_set_type = 'TD' and iset.sample = 'F' and iset.subject = ? and iset.item_set_level = ? ";
@@ -113,7 +116,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS"))
-				{
+				{/*
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -167,10 +170,9 @@ public class FileUtil {
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
 					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					
-				}
-				if(inFile.getName().substring(0,2).equals("SE"))
-				{
-					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+				*/} else if(inFile.getName().substring(0,2).equals("SE")) {
+					
+					/*File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
@@ -209,6 +211,32 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {
+						File_name = inFile.getName();
+						file_location=path+"\\"+File_name;
+						Content_area_initial=File_name.substring(3, 5);
+						Source_score_type_code = "SCL";
+						dest_Score_type_code = "NCE";
+						test_form = "G";
+						framework_code = "TERRAB3";
+						score_lookup_id	= framework_code;
+						Content_area = processContentAreaName(Content_area_initial);
+						contentOfFile = readFileDataNCE(file_location);
+						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
+								null, null, Content_area, framework_code, null, Content_area_initial);
+				} else if (inFile.getName().substring(0,2).equals("NP")) {
+					File_name = inFile.getName();
+					file_location=path+"\\"+File_name;
+					Content_area_initial=File_name.substring(2, 4);
+					Source_score_type_code = "SCL";
+					dest_Score_type_code = "NP";
+					test_form = "G";
+					framework_code = "TERRAB3";
+					score_lookup_id	= framework_code;
+					Content_area = processContentAreaName(Content_area_initial);
+					contentOfFile = readFileDataNCE(file_location);
+					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
+							null, null, Content_area, framework_code, null, Content_area_initial);
 				}
 				
 			}
@@ -217,6 +245,23 @@ public class FileUtil {
 			else
 				return false;
 		     
+	}
+	
+	private static String processContentAreaName(String caShortName) {
+		
+		String caName = null;		
+		if(caShortName.equals("LA"))
+			caName="Language";
+		if(caShortName.equals("RD"))
+			caName="Reading";
+		if(caShortName.equals("SS"))
+			caName="Social Studies";
+		if(caShortName.equals("SC"))
+			caName="Science";
+		if(caShortName.equals("MA"))
+			caName="Mathematics";
+		
+		return caName;
 	}
 	
 	public static String getDisplayName(String product_id)
@@ -237,6 +282,22 @@ public class FileUtil {
 		}
 		return name;
 	}
+	
+	public static List<String> readFileDataNCE(String fileName) throws IOException
+	{
+		List<String> list = new ArrayList<String>();
+		String strLine; 
+		int line = 0;
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		while ((strLine = br.readLine()) != null) 
+		{  line++;		
+		   if(line > 1){
+			list.add(strLine); 
+		   }
+		}  
+		return list;
+	}
+	
 	public static List<String> readFileData(String fileName) throws IOException
 	{
 		List<String> list = new ArrayList<String>();
@@ -402,6 +463,105 @@ public class FileUtil {
 				con.rollback();
 				save=0;
 				System.out.println("Data are not saved in Score_lookup_item_set table.");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		e.printStackTrace();
+		}finally {
+			SqlUtil.close(con,ps,rs);
+		}
+		return (save==1)? true :  false;
+	}
+	
+	public static boolean writeInSCORE_LOOKUP_NCENP(List<String> contentOfFile,String Source_score_type_code,String dest_Score_type_code,
+			String score_lookup_id,String test_form,String Test_Level,String Content_area,String framework_code,
+			String product_internal_display_name, String Content_area_initial)
+	{
+		Iterator<String> itrFile = contentOfFile.iterator();
+		Iterator<String> itr;
+		String firstLine = "";
+		int save=0;
+		if(itrFile.hasNext()) {
+			firstLine = itrFile.next().toString();
+		}
+		if (!firstLine.equals("")) {
+			String[] gradeVal = firstLine.split(" ");
+			int grade = 0;
+			int quaterMonth = 0;
+			
+			for(itr = contentOfFile.iterator(); itr.hasNext();) {
+				String str = itr.next().toString();
+				if(str.startsWith("Grade")) {
+					continue;
+				}
+				String[] splitSt = str.split("     "); 
+				String source_score_value="",dest_score_value="";
+				source_score_value = splitSt[0];
+				for(int i = 1; i < gradeVal.length; i++) {
+					String[] gradeQm = gradeVal[i].split("\\.");
+					grade = Integer.parseInt(gradeQm[0]);
+					quaterMonth = Integer.parseInt(gradeQm[1]);
+					if(grade == 0) {
+						continue;
+					} else {
+						if(quaterMonth == 125) {
+							dest_score_value = splitSt[i];
+							insertScoreLookupNCENP(Source_score_type_code, dest_Score_type_code, grade, source_score_value, 
+									dest_score_value, null, null, Content_area, framework_code, null, "FALL", Content_area_initial);
+						} else if(quaterMonth == 450) {
+							dest_score_value = splitSt[i];
+							insertScoreLookupNCENP(Source_score_type_code, dest_Score_type_code, grade, source_score_value, 
+									dest_score_value, null, null, Content_area, framework_code, null, "WINTER", Content_area_initial);
+						} else if(quaterMonth == 725) {
+							dest_score_value = splitSt[i];
+							insertScoreLookupNCENP(Source_score_type_code, dest_Score_type_code, grade, source_score_value, 
+									dest_score_value, null, null, Content_area, framework_code, null, "SPRING", Content_area_initial);
+						} else {
+							continue;
+						}
+					}
+					
+				}
+				
+			}
+		}
+		
+		return (save==1)? true :  false;
+	}
+	
+	private static boolean insertScoreLookupNCENP(String Source_score_type_code,String dest_Score_type_code, int grade, 
+			String source_score_value, String dest_score_value, String test_form, String Test_Level, String Content_area,
+			String framework_code, String product_internal_display_name, String normGroup, String Content_area_initial) {
+		int save = 0;
+		try {
+			con=SqlUtil.openOASDBcon();
+			con.setAutoCommit(false);
+			String score_lookup_id = framework_code + "_" + normGroup + "_" + grade + "_" + Content_area_initial;
+			ps = con.prepareStatement(insertScore_lookupQuery_withNorms);
+			ps.setString(1, Source_score_type_code);
+			ps.setString(2, dest_Score_type_code);
+			ps.setString(3, score_lookup_id);
+			ps.setInt(4, Integer.parseInt(source_score_value.trim()));
+			ps.setInt(5, Integer.parseInt(dest_score_value.trim()));
+			ps.setString(6, test_form);
+			ps.setString(7, Test_Level);
+			ps.setString(8, String.valueOf(grade));
+			ps.setString(9, Content_area);
+			ps.setString(10, normGroup);
+			ps.setString(11, "2011");
+			ps.setString(12, framework_code);
+			ps.setString(13,product_internal_display_name);
+			System.out.println(score_lookup_id + " " + Integer.parseInt(source_score_value.trim()) + " " +
+					Integer.parseInt(dest_score_value.trim()) + " " + String.valueOf(grade) + Content_area +
+					normGroup);
+			//save=ps.executeUpdate();
+			SqlUtil.close(ps);
+			
+		}catch(SQLException e) {
+			try {
+				con.rollback();
+				save=0;
+				System.out.println("Data are not saved in SCORE_LOOKUP table.");
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
