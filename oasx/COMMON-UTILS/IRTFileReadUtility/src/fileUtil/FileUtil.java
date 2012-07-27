@@ -96,6 +96,8 @@ public class FileUtil {
 	}
 	public static boolean writeInOASDB(String path) throws IOException
 	{
+		String levels = ExtractUtil.getDetail("file.testLevel").trim();
+		
 		String File_name,file_location,Content_area_initial,Product_type,product_id,matchingFileName=null,matchingFile_location=null;
 		String Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name;
 		List<String> contentOfFile = new ArrayList<String>();
@@ -110,7 +112,7 @@ public class FileUtil {
 		System.out.println("Processing " + path + "... "); 
 			for (File inFile: files ) 
 			{    
-				if(inFile.getName().substring(0,2).equals("NS"))
+				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
 				{
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -156,7 +158,7 @@ public class FileUtil {
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
 					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					
-				} else if(inFile.getName().substring(0,2).equals("SE")) {
+				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -508,32 +510,47 @@ public class FileUtil {
 					columnNumber.put(new Integer(i), gradeVal[i]);
 				}
 			}
-			
-			for(itr = contentOfFile.iterator(); itr.hasNext();) {
-				String str = itr.next().toString();
-				if(str.startsWith("Grade")) {
-					continue;
-				}
-				String[] splitSt = str.split("\\s+"); 
-				String source_score_value="",dest_score_value="";
-				source_score_value = splitSt[0];
-				for (Map.Entry<Integer, String> entry : columnNumber.entrySet()) {
-					columnIndex = entry.getKey();
-					gradeQmVal = entry.getValue();
-					if(gradeQmVal.endsWith("125")) {
-						normsGroup = "FALL";
-					} else if (gradeQmVal.endsWith("450")) {
-						normsGroup = "WINTER";
-					} else if (gradeQmVal.endsWith("725")) {
-						normsGroup = "SPRING";
-					} else {
-						normsGroup = null;
+			try {
+				con=SqlUtil.openOASDBcon();
+				con.setAutoCommit(false);
+				for(itr = contentOfFile.iterator(); itr.hasNext();) {
+					String str = itr.next().toString();
+					if(str.startsWith("Grade")) {
+						continue;
 					}
-					grade = Integer.parseInt(gradeQmVal.substring(0, 2));
-					dest_score_value = splitSt[columnIndex];
-					insertScoreLookupNCENP(Source_score_type_code, dest_Score_type_code, grade, source_score_value, 
-							dest_score_value, null, null, Content_area, framework_code, null, normsGroup, Content_area_initial);
+					String[] splitSt = str.split("\\s+"); 
+					String source_score_value="",dest_score_value="";
+					source_score_value = splitSt[0];
+					for (Map.Entry<Integer, String> entry : columnNumber.entrySet()) {
+						columnIndex = entry.getKey();
+						gradeQmVal = entry.getValue();
+						if(gradeQmVal.endsWith("125")) {
+							normsGroup = "FALL";
+						} else if (gradeQmVal.endsWith("450")) {
+							normsGroup = "WINTER";
+						} else if (gradeQmVal.endsWith("725")) {
+							normsGroup = "SPRING";
+						} else {
+							normsGroup = null;
+						}
+						grade = Integer.parseInt(gradeQmVal.substring(0, 2));
+						dest_score_value = splitSt[columnIndex];
+						insertScoreLookupNCENP(Source_score_type_code, dest_Score_type_code, grade, source_score_value, 
+								dest_score_value, null, null, Content_area, framework_code, null, normsGroup, Content_area_initial);
+					}
 				}
+			} catch(SQLException se) {
+
+				try {
+					con.rollback();
+					save=0;
+					System.out.println("Data are not saved in SCORE_LOOKUP table.");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				se.printStackTrace();
+			}finally {
+				SqlUtil.close(con,ps,rs);
 			}
 		}
 		
@@ -545,8 +562,7 @@ public class FileUtil {
 			String framework_code, String product_internal_display_name, String normGroup, String Content_area_initial) {
 		int save = 0;
 		try {
-			con=SqlUtil.openOASDBcon();
-			con.setAutoCommit(false);
+			
 			String score_lookup_id = framework_code + "_" + normGroup + "_" + grade + "_" + Content_area_initial;
 			ps = con.prepareStatement(insertScore_lookupQuery_withNorms);
 			ps.setString(1, Source_score_type_code);
@@ -574,8 +590,6 @@ public class FileUtil {
 				e1.printStackTrace();
 			}
 		e.printStackTrace();
-		}finally {
-			SqlUtil.close(con,ps,rs);
 		}
 		return (save==1)? true :  false;
 	}
@@ -589,7 +603,10 @@ public class FileUtil {
 		String source_score_value="",dest_score_value="";
 		Map<String,String> isetMap = new HashMap<String, String>();
 		List<String> itemSetIdList = new ArrayList<String>();
-		Iterator<String> itr;		
+		Iterator<String> itr;
+		try {
+			con=SqlUtil.openOASDBcon();
+			con.setAutoCommit(false);
 			for(itr = contentOfFile.iterator(); itr.hasNext();) {
 				str = itr.next().toString();
 				String[] splitSt = str.split("\\s+"); 
@@ -619,6 +636,17 @@ public class FileUtil {
 				isetMap.put(score_lookup_id, Content_area);
 				
 			}
+	} catch(SQLException e) {
+		try {
+			con.rollback();
+			System.out.println("Data are not saved in SCORE_LOOKUP table.");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	e.printStackTrace();
+	}finally {
+		SqlUtil.close(con,ps,rs);
+	}
 			itemSetIdList=getItemSetIDGE(Content_area);
 			for (Map.Entry<String, String> entry : isetMap.entrySet()) {
 				save = writeInScore_lookup_item_set(entry.getKey(),itemSetIdList);
@@ -633,8 +661,7 @@ public class FileUtil {
 			String Content_area_initial, String score_lookup_id) {
 		int save = 0;
 		try {
-			con=SqlUtil.openOASDBcon();
-			con.setAutoCommit(false);
+			
 			ps = con.prepareStatement(insertScore_lookupQuery_withNorms);
 			ps.setString(1, Source_score_type_code);
 			ps.setString(2, dest_Score_type_code);
