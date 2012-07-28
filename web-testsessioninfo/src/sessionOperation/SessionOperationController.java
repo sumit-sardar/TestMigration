@@ -44,7 +44,9 @@ import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
+import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
+import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.RosterElement;
@@ -109,6 +111,7 @@ import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
+import com.ctb.control.db.OrgNode;
 
 
 
@@ -141,6 +144,9 @@ public class SessionOperationController extends PageFlowController {
         
     @Control()
     private com.ctb.control.db.Users users;
+
+	@Control
+	private OrgNode orgNode; 
     
     //Added for view/monitor test status
    
@@ -209,7 +215,7 @@ public class SessionOperationController extends PageFlowController {
     private ProgramData userPrograms = null;
     public LinkedHashMap timeZoneOptions = null;	 
 	
-	private List<TestElement> subtestDetails = null; 
+	private List<TestElement> subtestDetails = null;
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -576,7 +582,6 @@ public class SessionOperationController extends PageFlowController {
                      vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
                      vo.populateTimeZone();
                      vo.populateDefaultDateAndTime(userTimeZone);
-    
                 }
           /* } */
             if(tps.length<=0) {
@@ -861,7 +866,7 @@ public class SessionOperationController extends PageFlowController {
                      selectedProductId = tps[0].getProductId().toString();
                      this.vo.populateAccessCode(scheduleTest);
                      this.vo.populateDefaultDateAndTime(this.user.getTimeZone());
-                    }
+                     }
            
                 if(tps.length<=0) {
                 	
@@ -2599,10 +2604,31 @@ public class SessionOperationController extends PageFlowController {
 			base.setGradeList(this.studentGradesForCustomer);
 			base.setAccomodationMap(accomodationMap);
 			
+			// get licenses
+			/*
+			if (this.hasLicenseConfig) {
+				CustomerLicense[] customerLicenses = getCustomerLicenses(); 
+				if ((customerLicenses != null) && (customerLicenses.length > 0)) {
+					CustomerLicense cl = customerLicenses[0];
+				    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(selectedOrgNodeId, cl.getProductId(), cl.getSubtestModel());
+				    Node n = this.orgNode.getOrgNodeById(selectedOrgNodeId);
+				    Integer available = (onli.getLicPurchased() != null) ? onli.getLicPurchased() : new Integer(0);
+			        List<Row> rowList = new ArrayList<Row>();
+					Row row = new Row(0);
+					String[] cells = new String[4];
+					cells[0] = selectedOrgNodeId.toString();
+					cells[1] = n.getOrgNodeName();
+					cells[2] = cl.getSubtestModel().equals("T") ? "Subtest" : "Session";
+					cells[3] = available.toString();
+					row.setCell(cells);			
+					rowList.add(row);
+					base.setRows(rowList);
+				}
+			}
+			*/
+			
 			Gson gson = new Gson();
-			//System.out.println ("Json process time Start:"+new Date());
 			json = gson.toJson(base);
-			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
@@ -2623,6 +2649,24 @@ public class SessionOperationController extends PageFlowController {
 
 	}
     	
+    /**
+     * getLicenseQuantitiesByOrg
+     */    
+    private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId, Integer productId, String subtestModel) {
+        OrgNodeLicenseInfo onli = null;
+        try {
+            onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+										                    orgNodeId, 
+										                    productId, 
+										                    subtestModel);
+        }    
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+        return onli;
+    }
+    
+    
     @Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="find_user_hierarchy.jsp")

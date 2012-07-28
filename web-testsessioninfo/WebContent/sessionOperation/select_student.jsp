@@ -5,7 +5,22 @@
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
+<div id="licenseInfoDiv" style="display: none">
+<table width="910" border=0 cellpadding="0">
+    <tr>
+ 		<td width="210"><div id="groupName"></div></td>
+		<td width="200"><div id="licenseModel"></div></td>
+	 	<td width="200"><div id="licenseAvailable"></div></td>
+	 	<td width="300">
+	 		<div id="licenseUsed" style="background-color:#347C17; color:#ffffff; padding:2px; width: 280px;" align="center"></div>
+	 	</td> 
+	</tr>
+</table>	
+</div>
+
+
 <table class="transparent">
+
     <tr class="transparent">
         <td class="transparent"  valign="middle">
       	<div  id= "innerSearchheader" class="ui-corner-tl ui-corner-tr ui-widget-header innerTreeCtrlHeader"><lb:label key="sessionList.stuTab.gridTitle"/></div>
@@ -13,9 +28,10 @@
 			<div id="stuOrgNodeHierarchy" style="width:auto;height:auto;display:table">
 			</div>
 		</div>
-		
 	 	</td>
+	 	
  		<td class="transparent" width="3px">&nbsp;</td>
+ 		
 	 	<td >
       		<table id="selectStudent" class="gridTable"></table>
 			<div id="selectStudentPager" class="gridTable"></div>			
@@ -46,7 +62,7 @@
 </table>-->
 <table cellspacing="0" cellpadding="0" border="0" class="EditTable" width="100%">
 	<tbody>
-		<br>
+		<br/>
 		<tr id="Act_Buttons" align="center">
 			<td  width="100%">
 				<center>

@@ -46,6 +46,7 @@ var studentEditStatusMap = new Map(); //changes for ie issue
 var accomodationMapForAll = {};
 var filterLoadFlag = false;
 var filterTimer = null;
+var licenseInfo = null;
 
 
 /// FOR FILTER
@@ -56,6 +57,8 @@ function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
 	$("#selectStudentPager").css('display', 'none');
+	$("#licenseInfoDiv").css('display', 'none');
+	
 	if(orgTreeHierarchy == "" || orgTreeHierarchy ==undefined) {
 		populateStuTree();
 	} else {
@@ -84,6 +87,7 @@ function hideSelectStudentPopup() {
 	$("#Student_Tab").css('display', 'block');
 	$("#Select_Student_Tab").css('display', 'none');
 	$("#selectStudentPager").css('display', 'none');
+	$("#licenseInfoDiv").css('display', 'none');
 }
 
 function loadInnerStuOrgTree() {
@@ -175,6 +179,8 @@ function createinnSingleNodeSelectedTree(jsondata) {
 					$("#selectStudent").jqGrid("hideCol",["orgNodeId","orgNodeName","hasAccommodations"]);
 					jQuery("#selectStudent").setGridWidth(width,true);
 					$("#selectStudentPager").css('display', 'block');
+					if (licenseInfo != null)
+						$("#licenseInfoDiv").css('display', 'block');
 				}
 				
 		   });
@@ -317,6 +323,11 @@ function populateSelectStudentGrid() {
 		   	$('#gs_untimedTest').val("");
 
 		   	accomodationMapForAll = obj.accomodationMap;
+		   	if ((obj.rows == null) || (obj.rows == undefined))
+		   		licenseInfo = null;
+		   	else  
+		   		licenseInfo = obj.rows[0].cell;
+		   	
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
@@ -577,6 +588,10 @@ function populateSelectStudentGrid() {
 													
 				}
 				$.unblockUI(); 
+				
+				if (licenseInfo != null)				
+					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);		
+				
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -621,6 +636,10 @@ function populateSelectStudentGrid() {
 					}
 					$("#cb_selectStudent").attr("checked", false);
 				}
+				
+				if (licenseInfo != null)				
+					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);		
+				
 			},
 			loadComplete: function () {
 				if ($('#selectStudent').getGridParam('records') === 0) {
@@ -667,6 +686,20 @@ function populateSelectStudentGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				
+				if (licenseInfo != null) {				
+					$("#licenseInfoDiv").css('display', 'block');
+
+					var groupName = document.getElementById("groupName");
+					groupName.innerHTML = "Group: " + "<b>" + licenseInfo[1] + "</b>";
+					var licenseModel = document.getElementById("licenseModel");
+					licenseModel.innerHTML = "License model: " + "<b>" + licenseInfo[2] + "</b>";
+					var licenseAvailable = document.getElementById("licenseAvailable");
+					licenseAvailable.innerHTML = "License Available: " + "<b>" + licenseInfo[3] + "</b>";
+					
+					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);
+				}
+						
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -1412,3 +1445,60 @@ function getStudentListArray(studentArray) {
 	 
 		
 	}
+	
+	
+function setLicenseUsedForOrgNode(orgNodeId, availableLicense) {
+
+	var usedLicenses = 0; 
+	var licensePerSubtest = 1; // temp set to Session model
+	var studentCount = 0;
+	var keys = studentTempMap.getKeys();
+	for(var i=0 ; i<keys.length; i++ ) {
+		var stdId = keys[i];
+		var objstr = studentTempMap.get(stdId);
+		if (objstr.orgNodeId == orgNodeId) {
+			studentCount++;
+			usedLicenses += licensePerSubtest;
+		}
+	}
+
+	var usedLicPercent;
+	if (availableLicense == 0)
+		usedLicPercent = -1;
+	else
+		usedLicPercent = Math.round((usedLicenses * 100) / availableLicense);
+	var licenseText;
+	var licenseUsed = document.getElementById("licenseUsed");
+			
+   	if (usedLicPercent < 0) { 
+   		licenseText = "No Licenses Available";
+   		licenseUsed.style.backgroundColor = "#ff0000";
+		licenseUsed.style.color = "#ffffff";
+   	}
+   	else
+   	if (usedLicPercent > 100) { 
+   		licenseText = "Exceeds Licenses Available (over 100%)";
+   		licenseUsed.style.backgroundColor = "#ff0000";
+		licenseUsed.style.color = "#ffffff";
+   	}
+   	else {
+		licenseText = "Used " + usedLicenses + " out of " + availableLicense + " licenses " + "(" + usedLicPercent + "%)";
+		if (usedLicPercent >= 90 ) { 
+   			licenseUsed.style.backgroundColor = "#ff0000";
+		licenseUsed.style.color = "#ffffff";
+   		}
+		else 
+		if (usedLicPercent >= 70) {
+   			licenseUsed.style.backgroundColor = "#ffff00";
+   			licenseUsed.style.color = "#000000";
+   		}
+		else {  
+   			licenseUsed.style.backgroundColor = "#347C17";
+			licenseUsed.style.color = "#ffffff";
+   		}
+	}
+
+	licenseUsed.innerHTML = "<b>" + licenseText + "</b>";
+	
+}
+	
