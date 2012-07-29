@@ -36,6 +36,8 @@ public class FileUtil {
 	private static PreparedStatement ps = null;
 	private static ResultSet rs=null;
 	private static Connection con=null;
+	
+	private static Map<Integer, String> productName = new HashMap<Integer,String>();
 
 	public static String getFilePath()
 	{
@@ -114,7 +116,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{/*
+				{
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -159,7 +161,7 @@ public class FileUtil {
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
 					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					
-				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
+				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -191,7 +193,7 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+				} else if(inFile.getName().substring(0,3).equals("NCE")) {
 						File_name = inFile.getName();
 						file_location=path+"\\"+File_name;
 						Content_area_initial=File_name.substring(3, 5);
@@ -204,7 +206,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
+				} else if (inFile.getName().substring(0,2).equals("NP")) {
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(2, 4);
@@ -217,7 +219,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
+				} else if (inFile.getName().substring(0,2).equals("GE")) {
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(2, 4);
@@ -231,7 +233,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				} else if (inFile.getName().substring(4,7).equals("OPI")) {
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(0,2);
@@ -242,10 +244,11 @@ public class FileUtil {
 					dest_Score_type_code = "HMR";
 					test_form = "G";
 					framework_code = "TERRAB3";
-					score_lookup_id	= framework_code + "_MR_";
+					score_lookup_id	= framework_code;
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
-							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, Integer.parseInt(product_id));
+							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
+							Integer.parseInt(product_id), Product_type);
 				}
 				
 			}
@@ -721,28 +724,35 @@ public class FileUtil {
 	
 	public static boolean writeInSCORE_LOOKUP_Mastery_Range(List<String> contentOfFile,String Source_score_type_code,String dest_Score_type_code,
 			String score_lookup_id,String test_form,String Content_area,String framework_code,
-			String Content_area_initial, Integer product_id)
+			String Content_area_initial, Integer product_id, String Product_type)
 	{
-		boolean save = false;
+		int save = 0;
 		String str;
 		String source_score_value="",dest_score_value="";
 		Map<String,String> isetMap = new HashMap<String, String>();
 		List<String> itemSetIdList = new ArrayList<String>();
 		Iterator<String> itr;
 		String currentLevel = "";
-		Map<String,Map<Integer,String>> objectiveMap = new HashMap<String,Map<Integer,String>>();
+		Map<String,Integer> objectiveMap = new HashMap<String,Integer>();
 		String levelsPopulated = ",";
 		Integer objectiveId = 0;
 		String objectiveName = "";
 		String objectiveCode = "";
-		
+		String objectiveCodeFile = "";
+		Integer destScore = 0;
+		String product_internal_display_name = "";
+		Float destVal = new Float(0);
 		try {
 			con=SqlUtil.openOASDBcon();
 			con.setAutoCommit(false);
 			for(itr = contentOfFile.iterator(); itr.hasNext();) {
 				str = itr.next().toString();
-				String[] splitSt = str.split("\\s+"); 
-				currentLevel = splitSt[2];
+				String[] splitSt = str.split("\\s+");
+				if(Content_area_initial.equalsIgnoreCase("SC")) {
+					currentLevel = splitSt[1];
+				} else {
+					currentLevel = splitSt[2];
+				}
 				if(!levelsPopulated.contains(currentLevel)) {
 					ps = con.prepareStatement(get_objectives_values);
 					ps.setInt(1, product_id);
@@ -756,15 +766,74 @@ public class FileUtil {
 						objectiveCode = objectiveName.substring(0, 2);
 						objectiveName = objectiveName.substring(3).trim();
 						if(!objectiveMap.containsKey(objectiveId)) {
-							Map<Integer,String> value = new HashMap<Integer,String>();
-							value.put(objectiveId, objectiveName);
-							objectiveMap.put(objectiveCode, value);
-							System.out.println(objectiveCode + " - " + objectiveId + " - " + objectiveName);
+							objectiveMap.put(objectiveCode, objectiveId);
 						}
 					}
+					SqlUtil.close(rs);
+					SqlUtil.close(ps);
 				}
 				levelsPopulated = levelsPopulated + currentLevel;
+				if(Content_area_initial.equalsIgnoreCase("SC")) {
+					objectiveCodeFile = splitSt[3];
+				} else {
+					objectiveCodeFile = splitSt[4];
+				}
 				
+				if(Content_area_initial.equalsIgnoreCase("SC")) {
+					destVal =  Float.valueOf(splitSt[4]) * 100;
+				} else {
+					destVal =  Float.valueOf(splitSt[5]) * 100;
+				}
+				
+				destScore = destVal.intValue();
+				if(!productName.containsKey(product_id)) {
+					product_internal_display_name=getDisplayName(product_id.toString());
+					productName.put(product_id, product_internal_display_name);
+					con=SqlUtil.openOASDBcon();
+				}
+				dest_Score_type_code = "LMR";
+				product_internal_display_name = productName.get(product_id);
+				score_lookup_id = score_lookup_id + "_" + dest_Score_type_code + "_" + Product_type + "_" + currentLevel + "_" + Content_area_initial + "_" + objectiveCodeFile;
+				ps = con.prepareStatement(insertScore_lookupQuery);
+				ps.setString(1, Source_score_type_code);
+				ps.setString(2, dest_Score_type_code);
+				ps.setString(3, score_lookup_id);
+				ps.setInt(4, new Integer(0));
+				ps.setInt(5, destScore);
+				ps.setString(6, test_form);
+				ps.setString(7, currentLevel);
+				ps.setString(8, Content_area);
+				ps.setString(9, framework_code);
+				ps.setString(10,product_internal_display_name);
+				save=ps.executeUpdate();
+				SqlUtil.close(ps);
+				score_lookup_id = framework_code;
+				dest_Score_type_code = "HMR";
+				score_lookup_id = score_lookup_id + "_" + dest_Score_type_code + "_" + Product_type + "_" + currentLevel + "_" + Content_area_initial + "_" + objectiveCodeFile;
+				if(Content_area_initial.equalsIgnoreCase("SC")) {
+					destVal =  Float.valueOf(splitSt[5]) * 100;
+				} else {
+					destVal =  Float.valueOf(splitSt[6]) * 100;
+				}
+				
+				destScore = destVal.intValue();
+				ps = con.prepareStatement(insertScore_lookupQuery);
+				ps.setString(1, Source_score_type_code);
+				ps.setString(2, dest_Score_type_code);
+				ps.setString(3, score_lookup_id);
+				ps.setInt(4, new Integer(0));
+				ps.setInt(5, destScore);
+				ps.setString(6, test_form);
+				ps.setString(7, currentLevel);
+				ps.setString(8, Content_area);
+				ps.setString(9, framework_code);
+				ps.setString(10,product_internal_display_name);
+				save=ps.executeUpdate();
+				SqlUtil.close(ps);
+				if(objectiveMap.get(objectiveCodeFile) != null) {
+					itemSetIdList.add(objectiveMap.get(objectiveCodeFile).toString());
+					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
+				}
 			}
 	} catch(SQLException e) {
 		try {
@@ -777,7 +846,7 @@ public class FileUtil {
 	}finally {
 		SqlUtil.close(con,ps,rs);
 	}
-		return save;
+		return save == 1 ? true : false;
 	}
 	
 }
