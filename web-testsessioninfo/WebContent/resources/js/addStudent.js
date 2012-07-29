@@ -179,8 +179,9 @@ function createinnSingleNodeSelectedTree(jsondata) {
 					$("#selectStudent").jqGrid("hideCol",["orgNodeId","orgNodeName","hasAccommodations"]);
 					jQuery("#selectStudent").setGridWidth(width,true);
 					$("#selectStudentPager").css('display', 'block');
-					if (licenseInfo != null)
+					if (licenseInfo != null) {
 						$("#licenseInfoDiv").css('display', 'block');
+					}
 				}
 				
 		   });
@@ -589,8 +590,9 @@ function populateSelectStudentGrid() {
 				}
 				$.unblockUI(); 
 				
-				if (licenseInfo != null)				
-					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);		
+				if (licenseInfo != null) {				
+					showLicenseUsedForOrgNode();
+				}		
 				
 			},
 			onSelectRow: function (rowid, status) {
@@ -637,8 +639,9 @@ function populateSelectStudentGrid() {
 					$("#cb_selectStudent").attr("checked", false);
 				}
 				
-				if (licenseInfo != null)				
-					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);		
+				if (licenseInfo != null) {				
+					showLicenseUsedForOrgNode();
+				}		
 				
 			},
 			loadComplete: function () {
@@ -687,17 +690,8 @@ function populateSelectStudentGrid() {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				
-				if (licenseInfo != null) {				
-					$("#licenseInfoDiv").css('display', 'block');
-
-					var groupName = document.getElementById("groupName");
-					groupName.innerHTML = "Group: " + "<b>" + licenseInfo[1] + "</b>";
-					var licenseModel = document.getElementById("licenseModel");
-					licenseModel.innerHTML = "License model: " + "<b>" + licenseInfo[2] + "</b>";
-					var licenseAvailable = document.getElementById("licenseAvailable");
-					licenseAvailable.innerHTML = "License Available: " + "<b>" + licenseInfo[3] + "</b>";
-					
-					setLicenseUsedForOrgNode(licenseInfo[0], licenseInfo[3]);
+				if (licenseInfo != null) {	
+					showLicenseInformation();
 				}
 						
 			},
@@ -803,7 +797,9 @@ function returnSelectedStudent() {
 	studentMap = new Map();
 
 
-
+	if (! validateLicenseUsed()) {
+		return;
+	} 
 
 	var keys = studentTempMap.getKeys();
 	for(var ll =0 ; ll<keys.length; ll++ ) {
@@ -1447,58 +1443,125 @@ function getStudentListArray(studentArray) {
 	}
 	
 	
-function setLicenseUsedForOrgNode(orgNodeId, availableLicense) {
+function showLicenseInformation() {
+	$("#licenseInfoDiv").css('display', 'block');
 
+	var groupName = document.getElementById("groupName");
+	groupName.innerHTML = "Group: " + "<b>" + licenseInfo[1] + "</b>";
+
+	var model = "Session";
+	if (licenseInfo[2] == "T")
+		model= "Subtest";
+	var licenseModel = document.getElementById("licenseModel");
+	licenseModel.innerHTML = "License model: " + "<b>" + model + "</b>";
+	
+	var licenseAvailable = document.getElementById("licenseAvailable");
+	licenseAvailable.innerHTML = "License Available: " + "<b>" + licenseInfo[4] + "</b>";
+
+	showLicenseUsedForOrgNode();
+}
+
+function showLicenseUsedForOrgNode() {
+	var orgNodeId = licenseInfo[0];
+	var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
+	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed);
+	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage);
+}
+	
+	
+function showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage) {
+	var licenseText;
+	var licenseUsedCtrl = document.getElementById("licenseUsed");
+	var availableLicense = licenseInfo[4];
+			
+   	if (licenseUsedPercentage < 0) { 
+   		licenseText = "No Licenses Available";
+   		licenseUsedCtrl.style.backgroundColor = "#ff0000";
+		licenseUsedCtrl.style.color = "#ffffff";
+   	}
+   	else
+   	if (licenseUsedPercentage > 100) { 
+   		licenseText = "Exceeds Licenses Available (over 100%)";
+   		licenseUsedCtrl.style.backgroundColor = "#ff0000";
+		licenseUsedCtrl.style.color = "#ffffff";
+   	}
+   	else {
+		licenseText = "Used " + licenseUsed + " out of " + availableLicense + " licenses " + "(" + licenseUsedPercentage + "%)";
+		if (licenseUsedPercentage >= 90 ) { 
+   			licenseUsedCtrl.style.backgroundColor = "#ff0000";
+		licenseUsedCtrl.style.color = "#ffffff";
+   		}
+		else 
+		if (licenseUsedPercentage >= 70) {
+   			licenseUsedCtrl.style.backgroundColor = "#ffff00";
+   			licenseUsedCtrl.style.color = "#000000";
+   		}
+		else {  
+   			licenseUsedCtrl.style.backgroundColor = "#347C17";
+			licenseUsedCtrl.style.color = "#ffffff";
+   		}
+	}
+
+	licenseUsedCtrl.innerHTML = "<b>" + licenseText + "</b>";
+}
+	
+function calculateLicenseUsedForOrgNode(orgNodeId) {
+	var model = licenseInfo[2];
+	var numberSubtests = licenseInfo[3];
+	var licensePerStudent = 1; 
+	if (model == "T")
+		licensePerStudent = parseInt(numberSubtests);
+		
 	var usedLicenses = 0; 
-	var licensePerSubtest = 1; // temp set to Session model
 	var studentCount = 0;
 	var keys = studentTempMap.getKeys();
-	for(var i=0 ; i<keys.length; i++ ) {
+	for(var i=0 ; i<keys.length; i++) {
 		var stdId = keys[i];
 		var objstr = studentTempMap.get(stdId);
 		if (objstr.orgNodeId == orgNodeId) {
 			studentCount++;
-			usedLicenses += licensePerSubtest;
+			usedLicenses += licensePerStudent;
 		}
 	}
-
-	var usedLicPercent;
-	if (availableLicense == 0)
-		usedLicPercent = -1;
-	else
-		usedLicPercent = Math.round((usedLicenses * 100) / availableLicense);
-	var licenseText;
-	var licenseUsed = document.getElementById("licenseUsed");
-			
-   	if (usedLicPercent < 0) { 
-   		licenseText = "No Licenses Available";
-   		licenseUsed.style.backgroundColor = "#ff0000";
-		licenseUsed.style.color = "#ffffff";
-   	}
-   	else
-   	if (usedLicPercent > 100) { 
-   		licenseText = "Exceeds Licenses Available (over 100%)";
-   		licenseUsed.style.backgroundColor = "#ff0000";
-		licenseUsed.style.color = "#ffffff";
-   	}
-   	else {
-		licenseText = "Used " + usedLicenses + " out of " + availableLicense + " licenses " + "(" + usedLicPercent + "%)";
-		if (usedLicPercent >= 90 ) { 
-   			licenseUsed.style.backgroundColor = "#ff0000";
-		licenseUsed.style.color = "#ffffff";
-   		}
-		else 
-		if (usedLicPercent >= 70) {
-   			licenseUsed.style.backgroundColor = "#ffff00";
-   			licenseUsed.style.color = "#000000";
-   		}
-		else {  
-   			licenseUsed.style.backgroundColor = "#347C17";
-			licenseUsed.style.color = "#ffffff";
-   		}
-	}
-
-	licenseUsed.innerHTML = "<b>" + licenseText + "</b>";
-	
+	return usedLicenses;
 }
-	
+
+function calculateLicenseUsedPercentForOrgNode(usedLicenses) {
+	var availableLicense = licenseInfo[4];
+	var licenseUsedPercentage;
+	if (availableLicense == 0)
+		licenseUsedPercentage = -1;
+	else
+		licenseUsedPercentage = Math.round((usedLicenses * 100) / availableLicense);
+	return licenseUsedPercentage;
+}
+
+
+function validateLicenseUsed() {
+	var result = true;	
+	if (licenseInfo != null) {	
+		orgNodeMap = new Map();
+		
+		var keys = studentTempMap.getKeys();
+		for(var i=0 ; i<keys.length; i++) {
+			var stdId = keys[i];
+			var objstr = studentTempMap.get(stdId);
+			orgNodeMap.put(objstr.orgNodeId, objstr.orgNodeName);
+		}
+		
+		var nodekeys = orgNodeMap.getKeys();
+		for(var j=0 ; j<nodekeys.length; j++) {
+			var orgNodeId = nodekeys[j];
+			var orgNodeName = orgNodeMap.get(orgNodeId);
+			var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
+			var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed);
+			if ((licenseUsedPercentage < 0) || (licenseUsedPercentage > 100)) {
+				alert(orgNodeName);
+				result = false;
+				break;
+			}
+		}
+		
+	}
+	return result;
+}	

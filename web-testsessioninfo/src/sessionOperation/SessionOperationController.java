@@ -2615,11 +2615,12 @@ public class SessionOperationController extends PageFlowController {
 				    Integer available = (onli.getLicPurchased() != null) ? onli.getLicPurchased() : new Integer(0);
 			        List<Row> rowList = new ArrayList<Row>();
 					Row row = new Row(0);
-					String[] cells = new String[4];
+					String[] cells = new String[5];
 					cells[0] = selectedOrgNodeId.toString();
 					cells[1] = n.getOrgNodeName();
-					cells[2] = cl.getSubtestModel().equals("T") ? "Subtest" : "Session";
-					cells[3] = available.toString();
+					cells[2] = cl.getSubtestModel();
+					cells[3] = "3";	// number of scheduled subtests
+					cells[4] = available.toString();
 					row.setCell(cells);			
 					rowList.add(row);
 					base.setRows(rowList);
