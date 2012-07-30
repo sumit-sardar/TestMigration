@@ -73,6 +73,7 @@ public class SchedulingWS implements Serializable {
 	
 	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
+	private static final String DELETE_SESSION = "Delete_Session";
     
 	
 	@Control
@@ -131,7 +132,10 @@ public class SchedulingWS implements Serializable {
     	// SCHEDULE OR UPDATE SESSION
     	Integer sessionId = session.getSessionId(); 
     	if ((sessionId != null) && (sessionId.intValue() > 0)) {
-    		session = updateExistingSession(session);
+    		if ((session.getStatus() != null) && session.getStatus().equals(DELETE_SESSION))
+    			session = deleteExistingSession(session);
+    		else
+    			session = updateExistingSession(session);
     	}
     	else {
     		session.setTestLocation(user.getUserType());
@@ -337,6 +341,28 @@ public class SchedulingWS implements Serializable {
 	}
 		
     
+	/**
+	 * deleteExistingSession
+	 */
+	private Session deleteExistingSession(Session session)
+	{
+		if(!validateDeletableSessionData(session)){
+			return session;
+		}
+		
+    	Integer sessionId = session.getSessionId(); 
+		try {
+			this.scheduleTest.deleteTestSession(this.defaultUserName, sessionId);
+	    	session.setStatus("OK");	
+		}
+		catch (Exception e) {
+			session.setStatus(e.getMessage());			
+			e.printStackTrace();
+		}                    
+		
+		return session;
+	}
+	
 	/**
 	 * authenticateUser
 	 */
@@ -1019,6 +1045,17 @@ public class SchedulingWS implements Serializable {
 		}        
 	}
 
+
+	private boolean validateDeletableSessionData(Session session) {
+		boolean isValid = true;
+		
+		if (isStudentAlreadyLoggedIn(session.getSessionId())) {
+			isValid = false;
+			session.setStatus("One or more students have started this assessment. You can no longer delete this assignment.");
+		}
+		
+		return isValid;
+	}
 	
 	private boolean validateEditableSessionData(Session session) {
 		boolean isValid = true;
@@ -1207,7 +1244,7 @@ public class SchedulingWS implements Serializable {
 			for (Integer studentId : savedStudent.keySet()) {
 				SessionStudent ss = savedStudent.get(studentId);
 				String testStatus = ss.getTestCompletionStatus();
-				if (testStatus.equals("SC") || testStatus.equals("NT")) {
+				if (! testStatus.equals("IP")) {
 					StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
 					updateStudentAccommodations(studentId, sa);
 				}

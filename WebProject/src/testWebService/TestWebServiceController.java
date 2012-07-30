@@ -19,6 +19,7 @@ public class TestWebServiceController extends PageFlowController
 	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
 	private static final String ACUITY_USER_TYPE = "ACUITY_QA";
+	private static final String DELETE_SESSION = "Delete_Session";
 	
 	@Control
 	private SchedulingWSServiceControl schedulingWSServiceControl;
@@ -99,8 +100,13 @@ public class TestWebServiceController extends PageFlowController
 		if(this.getRequest().getParameter("sesionId") != null && (this.getRequest().getParameter("sesionId")).trim().length()>0){
 			String sessionIdString = (this.getRequest().getParameter("sesionId")).trim();
 			sessionId = Integer.valueOf(sessionIdString);
+			
+			if (this.getRequest().getParameter("removeSession") != null) {
+				session.setStatus(DELETE_SESSION);	
+			}
 		}
 		session.setSessionId(sessionId);
+		
 		
 		// init subtests
 		Subtest subtest = null;
