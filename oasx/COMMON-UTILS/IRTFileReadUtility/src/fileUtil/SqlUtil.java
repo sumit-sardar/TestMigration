@@ -88,5 +88,15 @@ public class SqlUtil {
 			}
 		}
 	}
+	
+	public static void close(ResultSet rs) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();// do nothing
+			}
+		}
+	}
 
 }
