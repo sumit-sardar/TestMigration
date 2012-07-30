@@ -362,10 +362,11 @@ function loadChildrenOrgNodeLicense() {
               	//alert('afterSaveCell: ' + rowid + " - " + value);
               	setEditingInfo(null, null, value);
           	},
-			/*			
+					
 			onCellSelect: function (rowid, iCol, cellcontent, e) {
+				highLightNoAvailable();
 			},		   	
-			*/	   	 
+				   	 
 			onPaging: function() {
 
 				if (isEditing()) {
@@ -452,19 +453,17 @@ function setEditingInfo(iRow, iCol, value) {
 
 function highLightNoAvailable() {
 	$("table tr").each(function(){   
-	
 		if( $(this).text().indexOf('0') != -1 ) {  
-		
 			if (this.className.indexOf('ui-widget-content jqgrow ui-row-ltr') != -1) {
 				var el = $('td:eq(3)', $(this));                 
 				el.removeAttr('bgcolor');
+				//console.log("el=" + el.text());
 				if (el.text() == '0') {                        
 					el.attr('bgcolor', '#ff0000');
 				}
 			}
 			         
 		}	
-		
 	});
 }
 
