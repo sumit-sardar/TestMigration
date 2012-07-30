@@ -70,19 +70,21 @@ public class ScoreLookupHelper {
         }
     }
     
-    public Integer getObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level, Connection conn) {
+    public Integer getObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, 
+    		final String level, Connection conn, Integer productId) {
         try {
             final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
-            return mapper.findObjectiveHMR(itemSetId, testForm, contentArea, normGroup, grade, level);
+            return mapper.findObjectiveHMR(itemSetId, testForm, contentArea, normGroup, grade, level, productId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     
-    public Integer getObjectiveLMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level, Connection conn) {
+    public Integer getObjectiveLMR(final Long itemSetId, final String testForm, final String contentArea, 
+    		final String normGroup, final String grade, final String level, Connection conn, Integer productId) {
         try {
             final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
-            return mapper.findObjectiveLMR(itemSetId, testForm, contentArea, normGroup, grade, level);
+            return mapper.findObjectiveLMR(itemSetId, testForm, contentArea, normGroup, grade, level, productId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

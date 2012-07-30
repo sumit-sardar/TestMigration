@@ -28,6 +28,8 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
         testRosterId = event.getTestRosterId();
         pGrade = event.getGrade();
         pNormYear = this.scorer.getResultHolder().getAdminData().getNormsYear();
+        if(scorer.getResultHolder().getAdminData().getProductId() == 3700)
+        	scheduledProductId = event.getProductId();
     }
 
     public void onEvent(SubtestStartedEvent event) {
@@ -48,8 +50,8 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
             	Integer highMR = null;
             	Integer lowMR = null;
-            	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
-            	lowMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
+            	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
+            	lowMR = getScoreLookupHelper().getObjectiveLMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
             	System.out.println(event.getObjectiveId() + " - " + highMR + " - " + lowMR);
             	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
             			.getObjectiveId(), pValue, event.getSubtestId(), highMR, lowMR));

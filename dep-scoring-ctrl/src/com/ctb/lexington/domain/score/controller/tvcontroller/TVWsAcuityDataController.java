@@ -114,8 +114,9 @@ public class TVWsAcuityDataController {
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null: fact.getNationalPercentile().longValue());
                    newFact.setNationalStanine((fact.getNationalStanine()==null)?null: fact.getNationalStanine().longValue());
                    newFact.setNormCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
-                   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?null:new Float(fact.getPercentObjectiveMastery().longValue()));
-                   newFact.setPercentObtained(fact.getPercentObtained().floatValue());
+                   if(fact != null && fact.getPercentObjectiveMastery() != null)
+                	   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?null:new Float(fact.getPercentObjectiveMastery().longValue()));
+                   newFact.setPercentObtained((fact.getPercentObtained()==null)? null : fact.getPercentObtained().floatValue());
                    newFact.setScaleScore((fact.getScaleScore()==null)?null:new Long(fact.getScaleScore().longValue()));
                    newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? null : new Long(fact.getStandardErrorOfMeasurement().longValue()));
                    String[] lossHossValue = lossHoss.get(contentAreas[i].getContentAreaName()).split(",");
@@ -234,7 +235,7 @@ public class TVWsAcuityDataController {
     				if(studentItemScoreData.contains(item.getOasItemId()+ contentAreaName)) {
     					StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
     					if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && !"F".equals(scoreDetails.getAtsArchive())) {
-    						itemFact.setPointsObtained(scoreDetails.getPoints() == null?null:new Long(scoreDetails.getPoints().intValue()));
+    						itemFact.setPointsObtained(scoreDetails.getPoints() == null?new Long(0):new Long(scoreDetails.getPoints().intValue()));
     					} else {
     						itemFact.setPointsObtained(new Long(0));
     					}

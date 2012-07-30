@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 import com.ctb.lexington.db.data.AdminData;
@@ -34,7 +35,6 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.teststructure.ValidationStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
-import com.ctb.service.ScoringServiceControl;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore;
@@ -131,7 +131,7 @@ public class TVTestResultController implements TestResultController {
         	studentScore.setSessionId(adminData.getSessionId());
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
         			adminData, studentItemScoreData, totalStudentScoreData, conn);
-        	try{
+        	/*try{
         		AuthenticatedUser user_arg = new AuthenticatedUser();
         		user_arg.setUsername("User");
         		user_arg.setPassword("Password");
@@ -152,7 +152,7 @@ public class TVTestResultController implements TestResultController {
         		e.printStackTrace()	;
         	}
         	
-        	System.out.println("Stop");
+        	System.out.println("Stop");*/
         }
         
     }

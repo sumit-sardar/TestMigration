@@ -2,6 +2,7 @@ package com.ctb.lexington.db.mapper;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ctb.lexington.db.record.ScoreLookupRecord;
@@ -160,11 +161,10 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue();
     }
     
-    public Integer findObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+    public Integer findObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, 
+    		final String normGroup, final String grade, final String level, final Integer productId) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
                 ScoreLookupCode.HIGH_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
-        template.setNormGroup(normGroup);
-        template.setGrade(grade);
         template.setTestLevel(level);
         template.setTestForm(testForm);
         template.setContentArea(contentArea);
@@ -185,11 +185,27 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             System.err.println(buf.toString());
             return null;
         }
-        else
+        else {
+        	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
+				if(slr != null && slr.getScoreLookupId() != null) {
+					if(slr.getScoreLookupId().contains("CB") && productId == 3720) {
+						return slr.getDestScoreValue().intValue();
+					} else if(slr.getScoreLookupId().contains("SV") && productId == 3710) {
+						return slr.getDestScoreValue().intValue();
+					} else
+						return slr.getDestScoreValue().intValue();
+				} else {
+					return null;
+				}
+				
+			}
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue().intValue();
+        }
     }
     
-    public Integer findObjectiveLMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+    public Integer findObjectiveLMR(final Long itemSetId, final String testForm, final String contentArea, 
+    		final String normGroup, final String grade, final String level, final Integer productId) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
                 ScoreLookupCode.LOW_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
         template.setNormGroup(normGroup);
@@ -214,7 +230,21 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             System.err.println(buf.toString());
             return null;
         }
-        else
+        else {
+        	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
+				if(slr != null && slr.getScoreLookupId() != null) {
+					if(slr.getScoreLookupId().contains("CB") && productId == 3720) {
+						return slr.getDestScoreValue().intValue();
+					} else if(slr.getScoreLookupId().contains("SV") && productId == 3710) {
+						return slr.getDestScoreValue().intValue();
+					} else
+						return slr.getDestScoreValue().intValue();
+				} else {
+					return null;
+				}
+			}
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue().intValue();
+        }
     }
 }

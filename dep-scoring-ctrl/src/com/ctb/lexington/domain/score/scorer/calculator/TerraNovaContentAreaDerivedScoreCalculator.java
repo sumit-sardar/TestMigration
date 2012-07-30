@@ -16,7 +16,7 @@ import com.ctb.lexington.domain.teststructure.ScoreLookupCode;
 
 public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedScoreCalculator {
     private static final String TERRANOVA_FRAMEWORK_CODE = "TERRAB";
-    private static final String TERRANOVA_THIRD_EDITION_FRAMEWORK_CODE = "TERRA3";
+    private static final String TERRANOVA_THIRD_EDITION_FRAMEWORK_CODE = "TERRAB3";
 
 	public TerraNovaContentAreaDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
