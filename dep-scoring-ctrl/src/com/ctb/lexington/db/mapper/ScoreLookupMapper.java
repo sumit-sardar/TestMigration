@@ -16,6 +16,8 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_TV_COMPOSITE_SCORE = "findTerraNovaCompositeScore";
     private static final String FIND_TV_PERFORMANCE_LEVEL = "findTerraNovaPerformanceLevel";
     private static final String FIND_LL_PERFORMANCE_LEVEL = "findLasLinkPerformanceLevel";  // For Laslink Scoring
+    private static final String FIND_HIGH_MODERATE_MASTERY = "findScoreLookupForHighMasteryRange";
+    private static final String FIND_LOW_MODERATE_MASTERY = "findScoreLookupForLowMasteryRange";
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -131,7 +133,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
 
     public BigDecimal findObjectivePValue(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SUBTEST_NUMBER_CORRECT.getCode(),
-                ScoreLookupCode.OBJECTIVE_P_VALUE.getCode(), new BigDecimal(0), null);
+                ScoreLookupCode.HIGH_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
         template.setNormGroup(normGroup);
         template.setGrade(grade);
         template.setTestLevel(level);
@@ -156,5 +158,63 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         }
         else
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue();
+    }
+    
+    public Integer findObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
+                ScoreLookupCode.HIGH_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
+        template.setNormGroup(normGroup);
+        template.setGrade(grade);
+        template.setTestLevel(level);
+        template.setTestForm(testForm);
+        template.setContentArea(contentArea);
+
+        List results = findMany(FIND_HIGH_MODERATE_MASTERY, template);
+        if (results==null || results.isEmpty()) {
+            StringBuffer buf = new StringBuffer("Unable to find Objective PValue value for: ");
+            buf.append("\n\tparams: " + itemSetId);
+            buf.append(" | " + normGroup);
+            buf.append(" | " + grade);
+            buf.append(" | " + level);
+            buf.append(" | " + testForm);
+            buf.append(" | " + contentArea);
+            buf.append(" | " + ScoreLookupCode.SCALED_SCORE.getCode());
+            buf.append(" | " + new BigDecimal(0));
+            buf.append(" | " + ScoreLookupCode.HIGH_MODERATE_MASTERY.getCode());
+            buf.append("\n(continuing)\n");
+            System.err.println(buf.toString());
+            return null;
+        }
+        else
+            return ((ScoreLookupRecord) results.get(0)).getDestScoreValue().intValue();
+    }
+    
+    public Integer findObjectiveLMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
+                ScoreLookupCode.LOW_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
+        template.setNormGroup(normGroup);
+        template.setGrade(grade);
+        template.setTestLevel(level);
+        template.setTestForm(testForm);
+        template.setContentArea(contentArea);
+
+        List results = findMany(FIND_LOW_MODERATE_MASTERY, template);
+        if (results==null || results.isEmpty()) {
+            StringBuffer buf = new StringBuffer("Unable to find Objective PValue value for: ");
+            buf.append("\n\tparams: " + itemSetId);
+            buf.append(" | " + normGroup);
+            buf.append(" | " + grade);
+            buf.append(" | " + level);
+            buf.append(" | " + testForm);
+            buf.append(" | " + contentArea);
+            buf.append(" | " + ScoreLookupCode.SCALED_SCORE.getCode());
+            buf.append(" | " + new BigDecimal(0));
+            buf.append(" | " + ScoreLookupCode.LOW_MODERATE_MASTERY.getCode());
+            buf.append("\n(continuing)\n");
+            System.err.println(buf.toString());
+            return null;
+        }
+        else
+            return ((ScoreLookupRecord) results.get(0)).getDestScoreValue().intValue();
     }
 }

@@ -41,11 +41,22 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
         try {
             conn = getOASConnection();
             BigDecimal pValue = new BigDecimal(-1.0);
-            if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))) {
+            if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))
+            		|| ("11".equals(pGrade) && "21".equals(pLevel)) || ("12".equals(pGrade) && "22".equals(pLevel))) {
                 pValue = getScoreLookupHelper().getObjectivePValue(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
             }
-            channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
-                    .getObjectiveId(), pValue, event.getSubtestId()));
+            if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+            	Integer highMR = null;
+            	Integer lowMR = null;
+            	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
+            	lowMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
+            	System.out.println(event.getObjectiveId() + " - " + highMR + " - " + lowMR);
+            	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
+            			.getObjectiveId(), pValue, event.getSubtestId(), highMR, lowMR));
+            } else {
+            	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
+            			.getObjectiveId(), pValue, event.getSubtestId(), null, null));
+            }
         } finally {
             closeConnection(conn);
         }

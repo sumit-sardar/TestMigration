@@ -263,6 +263,8 @@ public class CurriculumData {
         private Long primaryObjectiveIndex;
         private BigDecimal nationalAverage;
         private Long productId;
+        private Integer highMasteryRange;
+        private Integer lowMasteryRange;
         
         public Long getProductId() {
 			return productId;
@@ -405,6 +407,30 @@ public class CurriculumData {
 		 */
 		public void setPrimaryObjectiveType(String primaryObjectiveType) {
 			this.primaryObjectiveType = primaryObjectiveType;
+		}
+		/**
+		 * @return Returns the highMasteryRange.
+		 */
+		public Integer getHighMasteryRange() {
+			return highMasteryRange;
+		}
+		/**
+		 * @param highMasteryRange The highMasteryRange to set.
+		 */
+		public void setHighMasteryRange(Integer highMasteryRange) {
+			this.highMasteryRange = highMasteryRange;
+		}
+		/**
+		 * @return Returns the lowMasteryRange.
+		 */
+		public Integer getLowMasteryRange() {
+			return lowMasteryRange;
+		}
+		/**
+		 * @param lowMasteryRange The lowMasteryRange to set.
+		 */
+		public void setLowMasteryRange(Integer lowMasteryRange) {
+			this.lowMasteryRange = lowMasteryRange;
 		}
     }
     

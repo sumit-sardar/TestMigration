@@ -26,7 +26,6 @@ import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.UserData;
 import com.ctb.lexington.db.irsdata.IrsDemographicData;
-import com.ctb.lexington.db.irsdata.irstvdata.StudentScore;
 import com.ctb.lexington.domain.score.controller.AdminController;
 import com.ctb.lexington.domain.score.controller.CurriculumController;
 import com.ctb.lexington.domain.score.controller.OrgNodeController;
@@ -35,6 +34,13 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.teststructure.ValidationStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
+import com.ctb.service.ScoringServiceControl;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScoreResponse;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
 public class TVTestResultController implements TestResultController {
     private Connection conn;
@@ -124,7 +130,28 @@ public class TVTestResultController implements TestResultController {
         	studentScore.setStudentId(studentData.getOasStudentId());
         	studentScore.setSessionId(adminData.getSessionId());
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
-        			adminData, studentItemScoreData, totalStudentScoreData);
+        			adminData, studentItemScoreData, totalStudentScoreData, conn);
+        	try{
+        		AuthenticatedUser user_arg = new AuthenticatedUser();
+        		user_arg.setUsername("User");
+        		user_arg.setPassword("Password");
+        		ProcessStudentScore pss = new ProcessStudentScore();
+		    	 pss.setScore(studentScore);
+		    	 ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
+		    	 String endPointUrl = rb.getString("url");
+        		 String url = "http://192.168.14.136:8080/host/services/ScoringService";
+		    	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
+		    	  ScoringServiceStub stub = new ScoringServiceStub(url);
+		    	  ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
+		    	  ScoringStatus status = resp.get_return();
+		    	  System.out.println("status.getStudentId() -> " + status.getStudentId());
+		    	  System.out.println("status.getSessionId() -> " + status.getSessionId());
+		    	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
+		    	  System.out.println("status.getStatus() -> " + status.getStatus());
+        	}catch (Exception e){
+        		e.printStackTrace()	;
+        	}
+        	
         	System.out.println("Stop");
         }
         

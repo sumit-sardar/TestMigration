@@ -20,12 +20,15 @@ public final class ScoreLookupCode extends StringConstant {
     public static final ScoreLookupCode NATIONAL_PERCENTILE = new ScoreLookupCode("NP", "National Percentile");
     public static final ScoreLookupCode HIGH_NATIONAL_PERCENTILE = new ScoreLookupCode("NPH", "High National Percentile");
     public static final ScoreLookupCode LOW_NATIONAL_PERCENTILE = new ScoreLookupCode("NPL", "Low National Percentile");
-public static final ScoreLookupCode NATIONAL_STANINE = new ScoreLookupCode("NS", "National Stanine");
+    public static final ScoreLookupCode NATIONAL_STANINE = new ScoreLookupCode("NS", "National Stanine");
     public static final ScoreLookupCode GRADE_EQUIVALENT = new ScoreLookupCode("GE", "Grade Equivalent");
     public static final ScoreLookupCode PERFORMANCE_LEVEL = new ScoreLookupCode("PL", "Performance Level");
     public static final ScoreLookupCode OBJECTIVE_P_VALUE = new ScoreLookupCode("OPV", "Objective P Value");
     public static final ScoreLookupCode STANDARD_ERROR_MEASUREMENT = new ScoreLookupCode("SEM", "STANDARD ERROR OF MEASUREMENT");
     public static final ScoreLookupCode GRADE_MEAN_EQUIVALENT = new ScoreLookupCode("GME", "GRADE MEAN EQUIVALENT");
+    
+    public static final ScoreLookupCode HIGH_MODERATE_MASTERY = new ScoreLookupCode("HMR", "HIGH MODERATE MASTERY");
+    public static final ScoreLookupCode LOW_MODERATE_MASTERY = new ScoreLookupCode("LMR", "LOW MODERATE MASTERY");
 
     public static final ScoreLookupCode EXPECTED_GED_READING = new ScoreLookupCode("EGEDRD", "EXPECTED GED FOR SUBJECT READING");
     public static final ScoreLookupCode EXPECTED_GED_MATH = new ScoreLookupCode("EGEDMA", "EXPECTED GED FOR SUBJECT MATHEMATICS");

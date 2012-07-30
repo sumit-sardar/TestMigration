@@ -16,6 +16,7 @@ import com.ctb.lexington.domain.teststructure.ScoreLookupCode;
 
 public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedScoreCalculator {
     private static final String TERRANOVA_FRAMEWORK_CODE = "TERRAB";
+    private static final String TERRANOVA_THIRD_EDITION_FRAMEWORK_CODE = "TERRA3";
 
 	public TerraNovaContentAreaDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
@@ -70,6 +71,8 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
     				scaleScoreIRT,
     				ScoreLookupCode.STANDARD_ERROR_MEASUREMENT,
     				null);
+            
+            frameworkCode = TERRANOVA_THIRD_EDITION_FRAMEWORK_CODE;
 
             final BigDecimal normalCurveEquivalent = getScore(
             		frameworkCode,
@@ -95,6 +98,8 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
     				ScoreLookupCode.NATIONAL_PERCENTILE,
     				null);
             
+            frameworkCode = TERRANOVA_FRAMEWORK_CODE;
+            //For nationalStanine, the value of lookup is same for terrab3 as that for terrab
             final BigDecimal nationalStanine = getScore(
             		frameworkCode,
     				null,

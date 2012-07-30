@@ -1,5 +1,6 @@
 package com.ctb.lexington.domain.score.controller.tvcontroller;
 
+import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,13 +22,13 @@ import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
-import com.ctb.lexington.db.irsdata.irstvdata.CompositeScore;
-import com.ctb.lexington.db.irsdata.irstvdata.ContentAreaScore;
-import com.ctb.lexington.db.irsdata.irstvdata.ItemScore;
-import com.ctb.lexington.db.irsdata.irstvdata.PrimaryObjScore;
-import com.ctb.lexington.db.irsdata.irstvdata.SecondaryObjScore;
-import com.ctb.lexington.db.irsdata.irstvdata.StudentScore;
 import com.ctb.lexington.domain.teststructure.MasteryLevel;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.CompositeScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ContentAreaScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ItemScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.PrimaryObjScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.SecondaryObjScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
 /**
  * @author TCS
@@ -44,7 +45,7 @@ public class TVWsAcuityDataController {
 	
 	public TVWsAcuityDataController(CurriculumData currData, ContextData context, StsTestResultFactData factData, StudentScore wsTvData, 
 			StudentScoreSummaryData studentScoreSummaryData, Map<String,String> lossHoss, AdminData adminData, 
-			StudentItemScoreData studentItemScoreData, StsTotalStudentScoreData totalData) {
+			StudentItemScoreData studentItemScoreData, StsTotalStudentScoreData totalData, Connection con) {
 		
 		this.studentItemScoreData = studentItemScoreData;
 		this.adminData = adminData;
@@ -105,16 +106,16 @@ public class TVWsAcuityDataController {
                if(fact != null &&
                     ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
             	   ContentAreaScore newFact = new ContentAreaScore();
-                   newFact.setContentAreaId(contentAreas[i].getContentAreaId());
+                   newFact.setContentAreaId(contentAreas[i].getContentAreaId().toString());
                    newFact.setContentAreaName(contentAreas[i].getContentAreaName());
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
                    }
-                   newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null: fact.getNationalPercentile().intValue());
-                   newFact.setNationalStanine((fact.getNationalStanine()==null)?null: fact.getNationalStanine().intValue());
+                   newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null: fact.getNationalPercentile().longValue());
+                   newFact.setNationalStanine((fact.getNationalStanine()==null)?null: fact.getNationalStanine().longValue());
                    newFact.setNormCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
-                   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?null:new Long(fact.getPercentObjectiveMastery().longValue()));
-                   newFact.setPercentObtained(fact.getPercentObtained());
+                   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?null:new Float(fact.getPercentObjectiveMastery().longValue()));
+                   newFact.setPercentObtained(fact.getPercentObtained().floatValue());
                    newFact.setScaleScore((fact.getScaleScore()==null)?null:new Long(fact.getScaleScore().longValue()));
                    newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? null : new Long(fact.getStandardErrorOfMeasurement().longValue()));
                    String[] lossHossValue = lossHoss.get(contentAreas[i].getContentAreaName()).split(",");
@@ -140,9 +141,13 @@ public class TVWsAcuityDataController {
 			if(prims[i].getContentAreaId().equals(contentAreaId) || prims[i].getContentAreaId().longValue() == contentAreaId.longValue()) {
 				PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
 				PrimaryObjScore priObjFacts = new PrimaryObjScore();
-				priObjFacts.setPrimaryObjectiveId(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()));
+				priObjFacts.setPrimaryObjId(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()));
 				StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
 				priObjFacts.setNationalAverage(prim.getNationalAverage() == null?new Float(0):prim.getNationalAverage().floatValue());
+				priObjFacts.setHighModMasteryRange(new Long (prim.getHighMasteryRange()));
+				priObjFacts.setLowModMasteryRange(new Long (prim.getLowMasteryRange()));
+				priObjFacts.setModMasteryRange(prim.getHighMasteryRange() + "-" + prim.getLowMasteryRange());
+				setMasteryRange(priObjFacts);
 				if(details != null) {
 					priObjFacts.setPercentObtained(details.getPercentObtained().floatValue());
 					priObjFacts.setPointsAttempted(details.getPointsAttempted());
@@ -164,7 +169,7 @@ public class TVWsAcuityDataController {
                     }
 				}
 				SecondaryObjScore[] secondaryObjScore = getSecondaryObjScores(prims[i].getPrimaryObjectiveId(), studentScoreSummaryData);
-				priObjFacts.setSecondaryObjectiveFact(secondaryObjScore);
+				priObjFacts.setSecondaryObjScores(secondaryObjScore);
 				primObjFacts.add(priObjFacts);
 			}
 			
@@ -231,7 +236,7 @@ public class TVWsAcuityDataController {
     					if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && !"F".equals(scoreDetails.getAtsArchive())) {
     						itemFact.setPointsObtained(scoreDetails.getPoints() == null?null:new Long(scoreDetails.getPoints().intValue()));
     					} else {
-    						itemFact.setPointsObtained(null);
+    						itemFact.setPointsObtained(new Long(0));
     					}
     				}
                 }
@@ -239,6 +244,10 @@ public class TVWsAcuityDataController {
 			}
 		}
 		return (ItemScore[]) itemFacts.toArray(new ItemScore[0]);
+	}
+	
+	private void setMasteryRange(PrimaryObjScore priObjFacts) {
+		
 	}
 
 }
