@@ -3814,6 +3814,8 @@ function registerDelegate(tree){
 					$("#testGradeRow").hide();
 					$("#testLevelRow").hide();
 					$("#toggleValidationSubTest").hide();
+					$("#toggleExemtionSubTest").hide();
+					$("#toggleAbsentSubTest").hide();
 					$("#subtestList").html("");
 					if($.trim(selectedTestRosterId) != "") {
 						viewSubtestDetails(index);
@@ -4077,6 +4079,15 @@ function registerDelegate(tree){
                					html += '&nbsp;&nbsp;<span>'+$("#validationStatusLbl").val()+'</span>';
            						html += '</th>';
            					}
+           					if(data.isLaslinkSession) {
+	           					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+	               				html += '&nbsp;&nbsp;<span>'+$("#exemtionStatusLbl").val()+'</span>';
+	           					html += '</th>';
+	           					
+	           					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+	               				html += '&nbsp;&nbsp;<span>'+$("#absentStatusLbl").val()+'</span>';
+	           					html += '</th>';
+           					}
            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
                				html += '&nbsp;&nbsp;<span>'+$("#subtestStatusLbl").val()+'</span>';
            					html += '</th>';
@@ -4116,7 +4127,7 @@ function registerDelegate(tree){
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
 									}
-									html += '<td class="sortable alignLeft"> <span>'+row.subtestName+'</span></td>';
+									html += '<td class="sortable alignCenter"> <span>'+row.subtestName+'</span></td>';
 									if(data.isTabeSession) {
 										if(row.level != null && row.level != "") {
 											html += '<td class="sortable alignCenter"> <span>'+row.level+'</span></td>';
@@ -4129,6 +4140,18 @@ function registerDelegate(tree){
 											html += '<td class="sortable alignCenter">'+row.validationStatus+'</td>';
 										} else{
 											html += '<td class="sortable alignCenter"> <font color="red">'+row.validationStatus+'</font></td>';
+										}
+									}
+									if(data.isLaslinkSession) {
+										if(row.testExemptions == 'Y') {
+											html += '<td class="sortable alignCenter"><span>Yes</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"><span>No</span></td>';
+										}
+										if(row.absent == 'Y') {
+											html += '<td class="sortable alignCenter"><span>Yes</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"><span>No</span></td>';
 										}
 									}
 									html += '<td class="sortable alignCenter"> <span>'+row.completionStatus+'</span></td>';
@@ -4168,6 +4191,15 @@ function registerDelegate(tree){
 								setAnchorButtonState('toggleValidationSubtestButton', true);
 							} else {
 								$("#toggleValidationSubTest").hide();
+							}
+							if(data.isLaslinkSession) {
+								$("#toggleExemtionSubTest").show();
+								$("#toggleAbsentSubTest").show();
+								setAnchorButtonState('toggleExemtionSubtestButton', true);
+								setAnchorButtonState('toggleAbsentSubtestButton', true);
+							} else {
+								$("#toggleExemtionSubTest").hide();
+								$("#toggleAbsentSubTest").hide();
 							}
 							statusWizard.accordion("activate", index);
 						},
@@ -4303,8 +4335,12 @@ function registerDelegate(tree){
 		});
 		if(statusFlag) {
 			setAnchorButtonState('toggleValidationSubtestButton', false);
+			setAnchorButtonState('toggleExemtionSubtestButton', false);
+			setAnchorButtonState('toggleAbsentSubtestButton', false);
 		} else {
 			setAnchorButtonState('toggleValidationSubtestButton', true);
+			setAnchorButtonState('toggleExemtionSubtestButton', true);
+			setAnchorButtonState('toggleAbsentSubtestButton', true);
 		}
 	}
 	// Added for TAS View-Montitor Student Test Status user story: End
@@ -4609,5 +4645,121 @@ function validNumber(str){
 			return true;
 		}
 	    alert("rapidRegistration");
+	}
+	
+	function toggleExemtionValidationStatus(){
+		$("#displayMessageViewTestSubtest").hide();
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		var itemSetIds = "";
+		$("input[name=toggleSubtest]").each(function(idx) {
+			if($(this).attr("checked")) {
+				itemSetIds += $(this).val() + "|";
+			}
+        });
+		if(itemSetIds.length > 1) {
+			itemSetIds = itemSetIds.substr(0, itemSetIds.length - 1);
+			var postDataObject = {};
+ 			postDataObject.testRosterId = selectedTestRosterId;
+ 			postDataObject.itemSetIds = itemSetIds;
+ 			
+			$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'toggleExemtionValidationStatus.do',
+				type:		'POST',
+				dataType:	'json',
+				data:		postDataObject,
+				success:	function(data, textStatus, XMLHttpRequest){	
+								var itemSetIds = "";
+								$("input[name=toggleSubtest]").each(function(idx) {
+									var rowId = $(this).val();
+									var cell = null;
+									if(data.isTabeSession) {
+										cell = $("#" + rowId).children('td').eq(4);
+									} else {
+										cell = $("#" + rowId).children('td').eq(3);
+									}
+									if(this.checked) {
+										if($.trim($(cell).text()) == 'No') {
+											$(cell).html('Yes');
+										} else if ($.trim($(cell).text()) == 'Yes') {
+											$(cell).html('No');
+										}
+									}
+								});
+								$("#displayMessageViewTestSubtest").show();
+								$("#subtestMessage").html($("#monitorStsValidMsg").val());
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
+	}
+	
+	function toggleAbsentValidationStatus(){
+		$("#displayMessageViewTestSubtest").hide();
+		var invalidCount = 0;
+		var subTestCount = 0;
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		var itemSetIds = "";
+		$("input[name=toggleSubtest]").each(function(idx) {
+			if($(this).attr("checked")) {
+				itemSetIds += $(this).val() + "|";
+			}
+        });
+		if(itemSetIds.length > 1) {
+			itemSetIds = itemSetIds.substr(0, itemSetIds.length - 1);
+			var postDataObject = {};
+ 			postDataObject.testRosterId = selectedTestRosterId;
+ 			postDataObject.itemSetIds = itemSetIds;
+ 			
+			$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'toggleAbsentValidationStatus.do',
+				type:		'POST',
+				dataType:	'json',
+				data:		postDataObject,
+				success:	function(data, textStatus, XMLHttpRequest){	
+								var itemSetIds = "";
+								$("input[name=toggleSubtest]").each(function(idx) {
+									var rowId = $(this).val();
+									var cell = null;
+									if(data.isTabeSession) {
+										cell = $("#" + rowId).children('td').eq(5);
+									} else {
+										cell = $("#" + rowId).children('td').eq(4);
+									}
+									if(this.checked) {
+										if($.trim($(cell).text()) == 'No') {
+											$(cell).html('Yes');
+										} else if ($.trim($(cell).text()) == 'Yes') {
+											$(cell).html('No');
+										}
+									}
+								});
+								$("#displayMessageViewTestSubtest").show();
+								$("#subtestMessage").html($("#monitorStsValidMsg").val());
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
 	}
 	

@@ -6820,5 +6820,58 @@ public class SessionOperationController extends PageFlowController {
 			}
 
 		}
+		@Jpf.Action(forwards = { 
+			    @Jpf.Forward(name = "success",
+		                     path = "view_subtest_details.jsp")
+		    })
+			 protected Forward toggleExemtionValidationStatus(ViewMonitorStatusForm form)  {       
+				String strItemSetIds = null;
+				String[] itemSetIdsList = null;
+				Base base = new Base();
+	            Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+		        if(getRequest().getParameter("itemSetIds") != null){
+		        	strItemSetIds = getRequest().getParameter("itemSetIds");
+		        	itemSetIdsList = strItemSetIds.split("\\|");
+		        }
+		        Integer[] itemSetIds = new Integer[itemSetIdsList.length];
+		        for(int i=0; i<itemSetIdsList.length; i++){
+		        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
+		        }
+		        try {
+		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ExemptionStatus" );
+		        }
+		        catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		        createGson(base);
+	 		    return null;
+			}
+		
+			@Jpf.Action(forwards = { 
+			    @Jpf.Forward(name = "success",
+		                     path = "view_subtest_details.jsp")
+		    })
+			 protected Forward toggleAbsentValidationStatus(ViewMonitorStatusForm form)  {       
+				String strItemSetIds = null;
+				String[] itemSetIdsList = null;
+				Base base = new Base();
+	            Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+		        if(getRequest().getParameter("itemSetIds") != null){
+		        	strItemSetIds = getRequest().getParameter("itemSetIds");
+		        	itemSetIdsList = strItemSetIds.split("\\|");
+		        }
+		        Integer[] itemSetIds = new Integer[itemSetIdsList.length];
+		        for(int i=0; i<itemSetIdsList.length; i++){
+		        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
+		        }
+		        try {
+		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "AbsentStatus" );
+		        }
+		        catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		        createGson(base);
+	 		    return null;
+			}
 ////		
 }

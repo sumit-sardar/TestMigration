@@ -49,11 +49,21 @@
 		<td><span id = "testLevel"></span></td>
 	</tr>
 </table>
-<table style="margin-bottom: 10px; width: 924px;">
+<table style="margin-bottom: 10px; width: 350px;">
 	<tr>
 		<td>
 			<div id="toggleValidationSubTest" style="float:left;padding-top:5px;display:none">
 				<a href="#" id="toggleValidationSubtestButton" onclick="javascript:toggleSubtestValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button"/></a>
+			</div> 
+		</td>
+		<td>
+			<div id="toggleExemtionSubTest" style="float:left;padding-top:5px;display:none">
+				<a href="#" id="toggleExemtionSubtestButton" onclick="javascript:toggleExemtionValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleExemtion.button"/></a>
+			</div> 
+		</td>
+		<td>
+			<div id="toggleAbsentSubTest" style="float:left;padding-top:5px;display:none">
+				<a href="#" id="toggleAbsentSubtestButton" onclick="javascript:toggleAbsentValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleAbsent.button"/></a>
 			</div> 
 		</td>
 	</tr>
@@ -66,6 +76,8 @@
 	<input type="hidden" name="subtestLevelLbl" id="subtestLevelLbl" value=<lb:label key="ViewSubtestDetails.text.subtestLevel" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="subtestStatusLbl" id="subtestStatusLbl" value=<lb:label key="ViewSubtestDetails.text.subtestStatus" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="ViewSubtestDetails.text.validationStatus" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="exemtionStatusLbl" id="exemtionStatusLbl" value=<lb:label key="ViewSubtestDetails.text.exemtionStatus" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="absentStatusLbl" id="absentStatusLbl" value=<lb:label key="ViewSubtestDetails.text.absentStatus" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="startDateLbl" id="startDateLbl" value=<lb:label key="homepage.grid.startDate" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="completionDateLbl" id="completionDateLbl" value=<lb:label key="ViewSubtestDetails.text.completionDate" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value=<lb:label key="ViewSubtestDetails.text.totalItems" prefix="'" suffix="'"/>/>
