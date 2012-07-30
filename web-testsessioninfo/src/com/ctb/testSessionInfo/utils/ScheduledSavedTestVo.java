@@ -8,6 +8,7 @@ import java.util.Map;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.util.OperationStatus;
 
@@ -34,9 +35,18 @@ public class ScheduledSavedTestVo implements Serializable {
 	private boolean isCopySession = false;
     private String startDate;
 	private String endDate;
+	private TestSessionVO testSession;
 	
-
 	private static final long serialVersionUID = 1L;
+	
+	
+	public TestSessionVO getTestSession() {
+		return testSession;
+	}
+
+	public void setTestSession(TestSessionVO testSession) {
+		this.testSession = testSession;
+	}
 
 	public void setSavedTestDetails(ScheduledSession savedTestDetails) {
 		this.savedTestDetails = savedTestDetails;

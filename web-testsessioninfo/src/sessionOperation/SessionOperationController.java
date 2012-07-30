@@ -668,6 +668,7 @@ public class SessionOperationController extends PageFlowController {
         	Boolean checkRestricted = Boolean.valueOf(checkRestrictedStr.trim().toLowerCase());
         	SessionStudent[] restStudent = null;
         	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+        	TestSessionVO testSessionVO = null;
         	if(currentAction.equalsIgnoreCase("EDIT")){
         		isAddOperation = false;
         	} else if(currentAction.equalsIgnoreCase("COPY")){
@@ -690,7 +691,6 @@ public class SessionOperationController extends PageFlowController {
             {
             	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation, currentAction); //modified for copy test sesssion
             	
-            	
             	if(!validationFailedInfo.isValidationFailed()) {
             		isValidationFailed = false;
             		
@@ -707,8 +707,11 @@ public class SessionOperationController extends PageFlowController {
             		studentCountBeforeSave = session.getStudents().length;
             		if(restStudent == null || restStudent.length ==0) { 
             			testAdminId = saveOrUpdateTestSession( session );
-                		RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);
-                        studentCountAfterSave = red.getTotalCount().intValue();  
+            			RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);
+                		TestSessionData testSessionData = this.testSessionStatus.getTestSessionDetails(this.userName, testAdminId);
+                		testSessionVO = new TestSessionVO(testSessionData.getTestSessions()[0]);
+            			testSessionVO.setId(testAdminId);
+                		studentCountAfterSave = red.getTotalCount().intValue();  
             		} else {
             			isValidationFailed = true;
             			vo.setRestrictedStudents(restStudent);
@@ -813,7 +816,8 @@ public class SessionOperationController extends PageFlowController {
           // if(vo.getRestrictedStudents() == null  ){
         	   vo.setOperationStatus(status);
           // }
-            
+           
+           vo.setTestSession(testSessionVO);
            Gson gson = new Gson();
 	       jsonData = gson.toJson(vo);
 	  

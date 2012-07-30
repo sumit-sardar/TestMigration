@@ -3444,8 +3444,6 @@ function registerDelegate(tree){
 						  	key 		    = data.validationFailedInfo.key;
 							messageHeader 	= data.validationFailedInfo.messageHeader;
 							messageArray    = data.validationFailedInfo.message;
-						  
-						  
 						  }
 						  if(messageArray!=undefined){
 								   	length= messageArray.length;
@@ -3471,6 +3469,29 @@ function registerDelegate(tree){
 									reInitializeModifyTestPopup(updatedPrType, updatedTestName, updatedSessionName);
 								 }
 							  	$('#showSaveTestMessage').show();
+							  	var sortCol = jQuery("#list2").getGridParam("sortname");
+							  	if(vdata.testSession != null) {
+							  		var testSessionData = vdata.testSession;
+							  		var dataToBeAdded = {testAdminName:testSessionData.testAdminName,
+							  							 testName:testSessionData.testName,
+							  							 creatorOrgNodeName:testSessionData.creatorOrgNodeName,
+							  							 creatorOrgNodeId:testSessionData.creatorOrgNodeId,
+							  							 AssignedRole:testSessionData.AssignedRole,
+							  							 loginStartDate:$.datepicker.formatDate('mm/dd/y', new Date(testSessionData.loginStartDate)),
+							  							 loginEndDate:$.datepicker.formatDate('mm/dd/y', new Date(testSessionData.loginEndDate)),
+							  							 loginStartDateString:testSessionData.loginStartDateString,
+							  							 loginEndDateString:testSessionData.loginEndDateString,
+							  							 isSTabeProduct:testSessionData.isSTabeProduct,
+							  							 isSTabeAdaptiveProduct:testSessionData.isSTabeAdaptiveProduct,
+							  							 productType:testSessionData.productType,
+							  							 copyable: testSessionData.copyable};
+							  		if(state == "EDIT") {
+							  			jQuery("#list2").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  		} else {
+							  			jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  		}
+							  	}
+							  	jQuery("#list2").sortGrid(sortCol, true);
 							  	$.unblockUI();
 							  	closePopUp("scheduleSession");
 						  } else if (data.IsSystemError) {
@@ -3518,6 +3539,13 @@ function registerDelegate(tree){
 		//	saveEditTestData();
 		//}
 	}
+	
+	function formatJSONDate(jsonDate){
+	    var newDate = dateFormat(jsonDate, "mm/dd/yyyy");
+	    return newDate;
+	
+	}
+	
 	function toggleRandomDisVal() {
 			var randomDisVal = document.getElementById("randomDis");
 			if(!randomDisVal.checked){		

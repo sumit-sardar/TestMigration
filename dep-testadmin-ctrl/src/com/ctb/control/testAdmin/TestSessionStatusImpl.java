@@ -639,6 +639,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
         try {
             TestSession [] sessions = new TestSession[1];
             sessions[0] = testAdmin.getTestAdminDetails(testAdminId);
+            sessions[0].setCopyable(admins.checkCopyable(userName, sessions[0].getTestAdminId()));
             TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[0]);
             TestSessionData tsd = new TestSessionData();
             tsd.setTestSessions(sessions, null);
@@ -1244,7 +1245,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
              	}
              	 //END- added for updating toggle values of validation ,exemption and absent status
             
-            String newRosterStatus =studentItemSetStatus.getRosterValidationStatusFromSubtests(testRosterId);
+            String newRosterStatus = studentItemSetStatus.getRosterValidationStatusFromSubtests(testRosterId);
             RosterElement rosterDetail = getRoster(testRosterId);
             rosterDetail.setValidationStatus(newRosterStatus);
             roster.updateTestRoster(rosterDetail);
