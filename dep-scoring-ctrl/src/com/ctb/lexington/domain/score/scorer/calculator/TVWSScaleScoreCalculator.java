@@ -45,7 +45,7 @@ public class TVWSScaleScoreCalculator {
 		//parFile = path+File.separator+"tvWsScoringFiles/"+fileName+".txt";
 		ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
 		path = rb.getString("FilePath");
-		path = path + fileName;
+		path = path + "/" + fileName;
 		
 		BigDecimal scaleScore = null;
 		try {
