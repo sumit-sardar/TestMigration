@@ -1,4 +1,3 @@
-
 /**
  * ScoringServiceStub.java
  *
@@ -6,6 +5,12 @@
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
         package com.mcgraw_hill.ctb.acuity.scoring;
+
+import java.io.IOException;
+
+
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 
         
 
@@ -182,6 +187,10 @@
 
         // add the message contxt to the operation client
         _operationClient.addMessageContext(_messageContext);
+        
+        String requestXML = _messageContext.getEnvelope().toString();
+        
+        System.out.println("Request XML ********************" + requestXML);
 
         //execute the operation client
         _operationClient.execute(true);
@@ -300,7 +309,7 @@
         // add the message context to the operation client
         _operationClient.addMessageContext(_messageContext);
 
-
+          
                     
                         _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
                             public void onMessage(org.apache.axis2.context.MessageContext resultContext) {

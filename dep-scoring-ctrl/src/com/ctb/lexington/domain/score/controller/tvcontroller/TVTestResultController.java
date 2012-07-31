@@ -131,7 +131,7 @@ public class TVTestResultController implements TestResultController {
         	studentScore.setSessionId(adminData.getSessionId());
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
         			adminData, studentItemScoreData, totalStudentScoreData, conn);
-        	/*try{
+        	try{
         		AuthenticatedUser user_arg = new AuthenticatedUser();
         		user_arg.setUsername("User");
         		user_arg.setPassword("Password");
@@ -143,16 +143,16 @@ public class TVTestResultController implements TestResultController {
 		    	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
 		    	  ScoringServiceStub stub = new ScoringServiceStub(url);
 		    	  ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-		    	  ScoringStatus status = resp.get_return();
-		    	  System.out.println("status.getStudentId() -> " + status.getStudentId());
+		    	  //ScoringStatus status = resp.get_return();
+		    	  /*System.out.println("status.getStudentId() -> " + status.getStudentId());
 		    	  System.out.println("status.getSessionId() -> " + status.getSessionId());
 		    	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
-		    	  System.out.println("status.getStatus() -> " + status.getStatus());
+		    	  System.out.println("status.getStatus() -> " + status.getStatus());*/
         	}catch (Exception e){
         		e.printStackTrace()	;
         	}
         	
-        	System.out.println("Stop");*/
+        	System.out.println("Stop");
         }
         
     }
