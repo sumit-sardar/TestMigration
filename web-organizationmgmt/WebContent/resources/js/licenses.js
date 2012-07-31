@@ -390,16 +390,19 @@ function loadChildrenOrgNodeLicense() {
 			},
 			loadComplete: function () {
 				if ($('#orgNodeGrid').getGridParam('records') === 0) {
-					document.getElementById('orgNodeGridSection').style.display = "none";	
+					document.getElementById('saveButtonSection').style.display = "none";	
 					isGridEmpty = true;
             		$('#sp_1_orgNodePager').text("1");
             		$('#next_orgNodePager').addClass('ui-state-disabled');
             		$('#last_orgNodePager').addClass('ui-state-disabled');
-	    			document.getElementById('noDataGridSection').style.display = "block";
+            		$('#orgNodeGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#orgNodeGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noOrgTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noOrgMsg").val()+"</td></tr></tbody></table></td></tr>");
+            		
+	    			document.getElementById('noGroupSection').style.display = "block";
             	}
 				else {
-	    			document.getElementById('orgNodeGridSection').style.display = "block";
-	    			document.getElementById('noDataGridSection').style.display = "none";
+	    			document.getElementById('saveButtonSection').style.display = "block";
+	    			document.getElementById('noGroupSection').style.display = "none";
 				}
 				
 				highLightNoAvailable();

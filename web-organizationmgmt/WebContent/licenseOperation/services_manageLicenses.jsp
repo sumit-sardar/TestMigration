@@ -27,6 +27,9 @@
 
 <input type="hidden" id="currentEditing" name="currentEditing" value="false" />
 
+<input type="hidden" id="noOrgTitle" name = "noOrgTitle" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noOrgMsg" name = "noOrgMsg" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
+
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
@@ -87,42 +90,39 @@
 					<td style="vertical-align:top;" id="jqGrid-content-section">
 					   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
 						<br/>
-						<div id="orgNodeGridSection" style="display: none">
-							<table class="subtitle" border="0" width="100%">
-							<tr>
-							<td width="*" align="left">
-							<lb:label key="services.license.message2" />
-							</td>
-							<td width="20%" align="right">
-							<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
-          						<lb:label key="license.save.button" />
-           					</a>
-           					&nbsp;
-							<a href="#" id="cancelEditing" onclick="return verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');" class="rounded {transparent} button" style="text-decoration: none;" >
-          						<lb:label key="license.cancel.button" />
-           					</a>
-							</td>
-							</tr>
-							</table>
-							<br/>
+						<div id="orgNodeGridSection">
+							<div id="saveButtonSection" style="display: none">
+								<table class="subtitle" border="0" width="100%">
+								<tr>
+								<td width="*" align="left">
+								<lb:label key="services.license.message2" />
+								</td>
+								<td width="20%" align="right">
+								<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
+	          						<lb:label key="license.save.button" />
+	           					</a>
+	           					&nbsp;
+								<a href="#" id="cancelEditing" onclick="return verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');" class="rounded {transparent} button" style="text-decoration: none;" >
+	          						<lb:label key="license.cancel.button" />
+	           					</a>
+								</td>
+								</tr>
+								</table>
+								<br/>
+							</div>
+							<div id="noGroupSection" style="display: none">
+								<table class="subtitle" border="0" width="100%">
+								<tr><td width="*" align="left">
+									<lb:label key="services.license.message3" />
+								</td></tr>
+								</table>
+								<br/>
+							</div>
 							<div id="outerGrid"> 
 					    		<table id="orgNodeGrid" class="gridTable"></table>
 								<div id="orgNodePager" class="gridTable" ></div>
 							</div>
 						</div>
-						
-						<div id="noDataGridSection" style="display: none">
-<table class="transparent"><tbody>
-<tr width="100%">
-	<th rowspan="2" style="padding-right: 12px; text-align: right;"><img height="23" src="/OrganizationWeb/resources/images/messaging/icon_info.gif"></th>
-	<th class="subtitle" align="left"><lb:label key="org.noOrgSelected.title" /></th>
-</tr>
-<tr class="subtitle" width="100%">
-	<td colspan="2"><lb:label key="services.license.message3" /></td>
-</tr>
-</tbody></table>			 				
-						</div>
-						
 					</td>
 						
 				</tr>
