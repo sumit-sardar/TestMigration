@@ -6,7 +6,6 @@ import gscode.Score;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class TVWSScaleScoreCalculator {
 	
@@ -39,10 +39,14 @@ public class TVWSScaleScoreCalculator {
 		 * So, it will not be able to get the proper path of the file. Hence while checking in, uncomment
 		 * the relative path and comment the absolute path.
 		 */
-		String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"..";
+		String path;// = getClass().getProtectionDomain().getCodeSource().getLocation().getPath()+File.separator+"..";
 		//String path = "C:\\WorkspaceLocal94\\application-scoring\\EarContent\\APP-INF\\lib";
 		//The parFile will remain as it is.
-		parFile = path+File.separator+"tvWsScoringFiles/"+fileName;
+		//parFile = path+File.separator+"tvWsScoringFiles/"+fileName+".txt";
+		ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
+		path = rb.getString("FilePath");
+		path = path + fileName;
+		
 		BigDecimal scaleScore = null;
 		try {
 			System.out.println("parFile:"+parFile);
