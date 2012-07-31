@@ -426,7 +426,7 @@ function childrenOrgNodeLicenseReload(){
 
 function isEditing() {
    	if (editingId != null) {
-   		var r = confirm("You are currently editing license quatity. Do you want to discard your change?");
+   		var r = confirm("You are currently editing a license quantity. Do you want to discard your change?");
    		if (r) {
    			editingId = null;
    		}

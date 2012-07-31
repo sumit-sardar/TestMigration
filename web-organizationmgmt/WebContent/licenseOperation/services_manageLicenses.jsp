@@ -91,7 +91,7 @@
 							<table class="subtitle" border="0" width="100%">
 							<tr>
 							<td width="*" align="left">
-							Click on the cell under <b>Available</b> column to edit the license quatity. Hit <b>Enter</b> to commit the value. Click <b>Save</b> button to save your changes.
+							<lb:label key="services.license.message2" />
 							</td>
 							<td width="20%" align="right">
 							<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
@@ -115,10 +115,10 @@
 <table class="transparent"><tbody>
 <tr width="100%">
 	<th rowspan="2" style="padding-right: 12px; text-align: right;"><img height="23" src="/OrganizationWeb/resources/images/messaging/icon_info.gif"></th>
-	<th class="subtitle" align="left">No groups found.</th>
+	<th class="subtitle" align="left"><lb:label key="org.noOrgSelected.title" /></th>
 </tr>
 <tr class="subtitle" width="100%">
-	<td colspan="2">To edit the license quatity for selected group, please select the parent group.</td>
+	<td colspan="2"><lb:label key="services.license.message3" /></td>
 </tr>
 </tbody></table>			 				
 						</div>
