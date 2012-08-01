@@ -91,7 +91,7 @@ function createOrgNodeTree(jsondata) {
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	
 			if (isEditing()) {
-				//jQuery('#orgNodeGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+				//jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
 				return true;
 			}
 	    	
@@ -207,7 +207,7 @@ function loadOrgNodeLicense() {
  		 postDataObject.q = 2;
  		 postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
  		 
-         $("#orgNodeLicenseGrid").jqGrid({    
+         $("#orgNodeLicenseParentGrid").jqGrid({    
     
          url:'loadOrgNodeLicense.do', 
 		 mtype:   'POST',
@@ -270,8 +270,8 @@ function orgNodeLicenseReload(){
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
-	jQuery("#orgNodeLicenseGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#orgNodeLicenseGrid").jqGrid('setGridParam', {url:'loadOrgNodeLicense.do',postData: postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#orgNodeLicenseParentGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#orgNodeLicenseParentGrid").jqGrid('setGridParam', {url:'loadOrgNodeLicense.do',postData: postDataObject,page:1}).trigger("reloadGrid");
 }
 
 function loadChildrenOrgNodeLicense() {
@@ -279,7 +279,7 @@ function loadChildrenOrgNodeLicense() {
  		 postDataObject.q = 2;
  		 postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
  		 
-         $("#orgNodeGrid").jqGrid({    
+         $("#orgNodeLicenseChildrenGrid").jqGrid({    
     
          url:'loadChildrenOrgNodeLicense.do', 
 		 mtype:   'POST',
@@ -303,7 +303,7 @@ function loadChildrenOrgNodeLicense() {
 			rowNum:10,
 			loadonce:true, 
 			multiselect:false,
-			pager: '#orgNodePager', 
+			pager: '#orgNodeLicenseChildrenPager', 
 			sortname: 'name', 
 			viewrecords: true, 
 			sortorder: "asc",
@@ -370,33 +370,33 @@ function loadChildrenOrgNodeLicense() {
 			onPaging: function() {
 
 				if (isEditing()) {
-					jQuery('#orgNodeGrid').jqGrid("restoreCell", editingRow, editingCol); 				
-					$('#orgNodeGrid').setGridParam({"page": requestedPage});
+					jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+					$('#orgNodeLicenseChildrenGrid').setGridParam({"page": requestedPage});
 					return 'stop';
 				}
 						
-				requestedPage = parseInt($('#orgNodeGrid').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_orgNodePager').text());
+				requestedPage = parseInt($('#orgNodeLicenseChildrenGrid').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_orgNodeLicenseChildrenPager').text());
 				var minPageSize = 1;
 				if(requestedPage > maxPageSize){
 					requestedPage = maxPageSize;
-					$('#orgNodeGrid').setGridParam({"page": maxPageSize});
+					$('#orgNodeLicenseChildrenGrid').setGridParam({"page": maxPageSize});
 				}
 				if(requestedPage <= minPageSize){
 					requestedPage = minPageSize;
-					$('#orgNodeGrid').setGridParam({"page": minPageSize});
+					$('#orgNodeLicenseChildrenGrid').setGridParam({"page": minPageSize});
 				}
 				
 			},
 			loadComplete: function () {
-				if ($('#orgNodeGrid').getGridParam('records') === 0) {
+				if ($('#orgNodeLicenseChildrenGrid').getGridParam('records') === 0) {
 					document.getElementById('saveButtonSection').style.display = "none";	
 					isGridEmpty = true;
-            		$('#sp_1_orgNodePager').text("1");
-            		$('#next_orgNodePager').addClass('ui-state-disabled');
-            		$('#last_orgNodePager').addClass('ui-state-disabled');
-            		$('#orgNodeGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-			 		$('#orgNodeGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noOrgTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noOrgMsg").val()+"</td></tr></tbody></table></td></tr>");
+            		$('#sp_1_orgNodeLicenseChildrenPager').text("1");
+            		$('#next_orgNodeLicenseChildrenPager').addClass('ui-state-disabled');
+            		$('#last_orgNodeLicenseChildrenPager').addClass('ui-state-disabled');
+            		$('#orgNodeLicenseChildrenGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#orgNodeLicenseChildrenGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noOrgTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noOrgMsg").val()+"</td></tr></tbody></table></td></tr>");
             		
 	    			document.getElementById('noGroupSection').style.display = "block";
             	}
@@ -422,9 +422,9 @@ function childrenOrgNodeLicenseReload(){
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
-	jQuery("#orgNodeGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#orgNodeGrid").jqGrid('setGridParam', {url:'loadChildrenOrgNodeLicense.do',postData: postDataObject,page:1}).trigger("reloadGrid");
-	jQuery("#orgNodeGrid").sortGrid('name',true,'asc');
+	jQuery("#orgNodeLicenseChildrenGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
+	jQuery("#orgNodeLicenseChildrenGrid").jqGrid('setGridParam', {url:'loadChildrenOrgNodeLicense.do',postData: postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#orgNodeLicenseChildrenGrid").sortGrid('name',true,'asc');
 }
 
 function isEditing() {

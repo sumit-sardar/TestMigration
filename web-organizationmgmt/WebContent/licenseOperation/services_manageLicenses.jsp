@@ -27,8 +27,8 @@
 
 <input type="hidden" id="currentEditing" name="currentEditing" value="false" />
 
-<input type="hidden" id="noOrgTitle" name = "noOrgTitle" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
-<input type="hidden" id="noOrgMsg" name = "noOrgMsg" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noOrgTitle" name="noOrgTitle" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
+<input type="hidden" id="noOrgMsg" name="noOrgMsg" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -87,8 +87,8 @@
 					    
 					<td class="transparent" width="5px">&nbsp;</td>
 					 	 
-					<td style="vertical-align:top;" id="jqGrid-content-section">
-					   	<table id="orgNodeLicenseGrid" class="gridTable"></table>
+					<td id="jqGrid-content-section" valign="top">
+					   	<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
 						<br/>
 						<div id="orgNodeGridSection">
 							<div id="saveButtonSection" style="display: none">
@@ -119,8 +119,8 @@
 								<br/>
 							</div>
 							<div id="outerGrid"> 
-					    		<table id="orgNodeGrid" class="gridTable"></table>
-								<div id="orgNodePager" class="gridTable" ></div>
+					    		<table id="orgNodeLicenseChildrenGrid" class="gridTable"></table>
+								<div id="orgNodeLicenseChildrenPager" class="gridTable" ></div>
 							</div>
 						</div>
 					</td>
