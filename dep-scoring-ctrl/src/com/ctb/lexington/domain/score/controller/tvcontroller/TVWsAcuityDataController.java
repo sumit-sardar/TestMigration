@@ -147,7 +147,7 @@ public class TVWsAcuityDataController {
 				priObjFacts.setNationalAverage(prim.getNationalAverage() == null?new Float(0):prim.getNationalAverage().floatValue());
 				priObjFacts.setHighModMasteryRange(new Long (prim.getHighMasteryRange()));
 				priObjFacts.setLowModMasteryRange(new Long (prim.getLowMasteryRange()));
-				priObjFacts.setModMasteryRange(prim.getHighMasteryRange() + "-" + prim.getLowMasteryRange());
+				priObjFacts.setModMasteryRange(prim.getLowMasteryRange() + "-" + prim.getHighMasteryRange());
 				setMasteryRange(priObjFacts);
 				if(details != null) {
 					priObjFacts.setPercentObtained(details.getPercentObtained().floatValue());

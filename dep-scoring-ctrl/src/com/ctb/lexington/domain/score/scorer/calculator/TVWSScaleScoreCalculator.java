@@ -6,6 +6,7 @@ import gscode.Score;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -46,7 +47,7 @@ public class TVWSScaleScoreCalculator {
 		ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
 		path = rb.getString("FilePath");
 		System.out.println("path -> " + path);
-		parFile = path + "/" + fileName;
+		parFile = path + File.separator + fileName;
 		
 		BigDecimal scaleScore = null;
 		try {

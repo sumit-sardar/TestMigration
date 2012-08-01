@@ -131,25 +131,39 @@ public class TVTestResultController implements TestResultController {
         	studentScore.setSessionId(adminData.getSessionId());
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
         			adminData, studentItemScoreData, totalStudentScoreData, conn);
+        	AuthenticatedUser user_arg = new AuthenticatedUser();
+    		user_arg.setUsername("User");
+    		user_arg.setPassword("Password");
+    		ProcessStudentScore pss = new ProcessStudentScore();
+	    	pss.setScore(studentScore);
+	    	ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
+	    	String endPointUrl = rb.getString("url");
+	    	ScoringStatus status = null;
         	try{
-        		AuthenticatedUser user_arg = new AuthenticatedUser();
-        		user_arg.setUsername("User");
-        		user_arg.setPassword("Password");
-        		ProcessStudentScore pss = new ProcessStudentScore();
-		    	 pss.setScore(studentScore);
-		    	 ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
-		    	 String endPointUrl = rb.getString("url");
-        		 String url = "http://192.168.14.136:8080/host/services/ScoringService";
-		    	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
-		    	  ScoringServiceStub stub = new ScoringServiceStub(url);
-		    	  ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-		    	  //ScoringStatus status = resp.get_return();
-		    	  /*System.out.println("status.getStudentId() -> " + status.getStudentId());
-		    	  System.out.println("status.getSessionId() -> " + status.getSessionId());
-		    	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
-		    	  System.out.println("status.getStatus() -> " + status.getStatus());*/
+        		ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
+		    	ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
+		    	status = resp.get_return();
         	}catch (Exception e){
-        		e.printStackTrace()	;
+        		try{
+        			ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
+   		    	  	ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
+   		    	  	status = resp.get_return();
+        		}catch (Exception ex){
+        			try{
+        				ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
+        				ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
+        				status = resp.get_return();
+        			}catch (Exception exc){
+        				exc.printStackTrace()	;
+        			}
+        		}
+        	} finally {
+        		if(status != null) {
+        			System.out.println("status.getStudentId() -> " + status.getStudentId());
+    				System.out.println("status.getSessionId() -> " + status.getSessionId());
+    				System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
+    				System.out.println("status.getStatus() -> " + status.getStatus());
+        		}
         	}
         	
         	System.out.println("Stop");
