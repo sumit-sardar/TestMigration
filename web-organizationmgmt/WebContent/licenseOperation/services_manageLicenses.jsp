@@ -94,7 +94,7 @@
 							<div id="saveButtonSection" style="display: none">
 								<table class="subtitle" border="0" width="100%">
 								<tr>
-								<td width="*" align="left">
+								<td width="80%" align="left">
 								<lb:label key="services.license.message2" />
 								</td>
 								<td width="20%" align="right">
@@ -112,7 +112,7 @@
 							</div>
 							<div id="noGroupSection" style="display: none">
 								<table class="subtitle" border="0" width="100%">
-								<tr><td width="*" align="left">
+								<tr><td>
 									<lb:label key="services.license.message3" />
 								</td></tr>
 								</table>
