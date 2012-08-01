@@ -32,10 +32,21 @@ public class FileUtil {
 			"product prod WHERE prod.parent_product_id = 3700 AND prod.product_id = tc.product_id AND tc.item_set_id = isa.ancestor_item_set_id AND " +
 			"isa.item_set_id = iset.item_set_id AND iset.item_set_type = 'TD' AND iset.SAMPLE = 'F' AND iset.subject = ?";
 	private static String insertScore_lookup_item_setQuery="INSERT INTO SCORE_LOOKUP_ITEM_SET VALUES(?,?)";
-	private static String get_objectives_values = "SELECT DISTINCT ISET.ITEM_SET_ID   AS ITEMSETID, ISET.ITEM_SET_NAME AS OBJECTIVENAME FROM TEST_CATALOG TC, ITEM_SET_ANCESTOR ISA, ITEM_SET ISETTD, ITEM_SET_ITEM ISI, ITEM, ITEM_SET_ITEM ISIRE, ITEM_SET_ANCESTOR ISARE, ITEM_SET ISET, PRODUCT PROD, ITEM_SET_CATEGORY ISCAT WHERE TC.PRODUCT_ID = ? AND TEST_LEVEL = ? AND ISA.ANCESTOR_ITEM_SET_ID = TC.ITEM_SET_ID AND ISETTD.ITEM_SET_ID = ISA.ITEM_SET_ID AND ISETTD.SUBJECT = ? AND ISI.ITEM_SET_ID = ISETTD.ITEM_SET_ID AND ITEM.ITEM_ID = ISI.ITEM_ID AND ISIRE.ITEM_ID = ITEM.ITEM_ID AND ISARE.ITEM_SET_ID = ISIRE.ITEM_SET_ID AND ISARE.ITEM_SET_TYPE = 'RE' AND ISET.ITEM_SET_ID = ISARE.ANCESTOR_ITEM_SET_ID AND ISET.ITEM_SET_CATEGORY_ID = ISCAT.ITEM_SET_CATEGORY_ID AND ISCAT.ITEM_SET_CATEGORY_LEVEL = PROD.SCORING_ITEM_SET_LEVEL AND TC.PRODUCT_ID = PROD.PRODUCT_ID";
+	private static String get_objectives_values = "SELECT DISTINCT ISET.ITEM_SET_ID   AS ITEMSETID, ISET.ITEM_SET_NAME AS OBJECTIVENAME " +
+			"FROM TEST_CATALOG TC, ITEM_SET_ANCESTOR ISA, ITEM_SET ISETTD, ITEM_SET_ITEM ISI, ITEM, ITEM_SET_ITEM ISIRE, " +
+			"ITEM_SET_ANCESTOR ISARE, ITEM_SET ISET, PRODUCT PROD, ITEM_SET_CATEGORY ISCAT " +
+			"WHERE TC.PRODUCT_ID = ? AND TEST_LEVEL = ? AND ISA.ANCESTOR_ITEM_SET_ID = TC.ITEM_SET_ID " +
+			"AND ISETTD.ITEM_SET_ID = ISA.ITEM_SET_ID AND ISETTD.SUBJECT = ? " +
+			"AND ISI.ITEM_SET_ID = ISETTD.ITEM_SET_ID AND ITEM.ITEM_ID = ISI.ITEM_ID " +
+			"AND ISIRE.ITEM_ID = ITEM.ITEM_ID AND ISARE.ITEM_SET_ID = ISIRE.ITEM_SET_ID " +
+			"AND ISARE.ITEM_SET_TYPE = 'RE' AND ISET.ITEM_SET_ID = ISARE.ANCESTOR_ITEM_SET_ID " +
+			"AND ISET.ITEM_SET_CATEGORY_ID = ISCAT.ITEM_SET_CATEGORY_ID " +
+			"AND ISCAT.ITEM_SET_CATEGORY_LEVEL = PROD.SCORING_ITEM_SET_LEVEL " +
+			"AND TC.PRODUCT_ID = PROD.PRODUCT_ID";
 	private static PreparedStatement ps = null;
 	private static ResultSet rs=null;
 	private static Connection con=null;
+	public static Map<String,Integer> _OBJECTIVEMAP = new HashMap<String,Integer>();
 	
 	private static Map<Integer, String> productName = new HashMap<Integer,String>();
 
@@ -116,7 +127,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{
+				{/*
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -161,7 +172,7 @@ public class FileUtil {
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
 					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					
-				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
+				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -193,7 +204,7 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				} else if(inFile.getName().substring(0,3).equals("NCE")) {
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						file_location=path+"\\"+File_name;
 						Content_area_initial=File_name.substring(3, 5);
@@ -206,7 +217,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				} else if (inFile.getName().substring(0,2).equals("NP")) {
+				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(2, 4);
@@ -219,7 +230,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				} else if (inFile.getName().substring(0,2).equals("GE")) {
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(2, 4);
@@ -233,7 +244,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
 					File_name = inFile.getName();
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(0,2);
@@ -259,7 +270,7 @@ public class FileUtil {
 		     
 	}
 	
-	private static String getProductIdFromType(String Product_type) {
+	public static String getProductIdFromType(String Product_type) {
 		
 		if(Product_type.equals("SV")) {
 			return "3710";
@@ -270,7 +281,7 @@ public class FileUtil {
 		}
 	}
 	
-	private static String processContentAreaName(String caShortName) {
+	public static String processContentAreaName(String caShortName) {
 		
 		String caName = null;		
 		if(caShortName.equals("LA"))
@@ -285,6 +296,16 @@ public class FileUtil {
 			caName="Mathematics";
 		
 		return caName;
+	}
+	
+	public static String processNongroupName(String nonGroupCode) {
+		if(nonGroupCode.equals("F"))
+			return "FALL";
+		else if(nonGroupCode.equals("W"))
+			return "WINTER";
+		else if(nonGroupCode.equals("S"))
+			return "SPRING";
+		return "";
 	}
 	
 	public static String getDisplayName(String product_id)
@@ -673,7 +694,7 @@ public class FileUtil {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-	e.printStackTrace();
+		e.printStackTrace();
 	}finally {
 		SqlUtil.close(con,ps,rs);
 	}
@@ -728,12 +749,9 @@ public class FileUtil {
 	{
 		int save = 0;
 		String str;
-		String source_score_value="",dest_score_value="";
-		Map<String,String> isetMap = new HashMap<String, String>();
 		List<String> itemSetIdList = new ArrayList<String>();
 		Iterator<String> itr;
 		String currentLevel = "";
-		Map<String,Integer> objectiveMap = new HashMap<String,Integer>();
 		String levelsPopulated = ",";
 		Integer objectiveId = 0;
 		String objectiveName = "";
@@ -765,15 +783,15 @@ public class FileUtil {
 						objectiveName = rs.getString("OBJECTIVENAME");
 						objectiveCode = objectiveName.substring(0, 2);
 						objectiveName = objectiveName.substring(3).trim();
-						if(!objectiveMap.containsKey(objectiveId)) {
-							objectiveMap.put(objectiveCode, objectiveId);
+						if(!_OBJECTIVEMAP.containsKey(objectiveId)) {
+							_OBJECTIVEMAP.put(objectiveCode, objectiveId);
 						}
 					}
 					SqlUtil.close(rs);
 					SqlUtil.close(ps);
 				}
 				levelsPopulated = levelsPopulated + currentLevel;
-				if(Content_area_initial.equalsIgnoreCase("SC")) {
+				/*if(Content_area_initial.equalsIgnoreCase("SC")) {
 					objectiveCodeFile = splitSt[3];
 				} else {
 					objectiveCodeFile = splitSt[4];
@@ -783,15 +801,15 @@ public class FileUtil {
 					destVal =  Float.valueOf(splitSt[4]) * 100;
 				} else {
 					destVal =  Float.valueOf(splitSt[5]) * 100;
-				}
+				}*/
 				
-				destScore = destVal.intValue();
+				/*destScore = destVal.intValue();
 				if(!productName.containsKey(product_id)) {
 					product_internal_display_name=getDisplayName(product_id.toString());
 					productName.put(product_id, product_internal_display_name);
 					con=SqlUtil.openOASDBcon();
-				}
-				dest_Score_type_code = "LMR";
+				}*/
+				/*dest_Score_type_code = "LMR";
 				product_internal_display_name = productName.get(product_id);
 				score_lookup_id = score_lookup_id + "_" + dest_Score_type_code + "_" + Product_type + "_" + currentLevel + "_" + Content_area_initial + "_" + objectiveCodeFile;
 				ps = con.prepareStatement(insertScore_lookupQuery);
@@ -830,10 +848,10 @@ public class FileUtil {
 				ps.setString(10,product_internal_display_name);
 				save=ps.executeUpdate();
 				SqlUtil.close(ps);
-				if(objectiveMap.get(objectiveCodeFile) != null) {
-					itemSetIdList.add(objectiveMap.get(objectiveCodeFile).toString());
+				if(_OBJECTIVEMAP.get(objectiveCodeFile) != null) {
+					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile).toString());
 					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
-				}
+				}*/
 			}
 	} catch(SQLException e) {
 		try {
@@ -842,15 +860,171 @@ public class FileUtil {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-	e.printStackTrace();
-	}finally {
+		e.printStackTrace();
+	} finally {
 		SqlUtil.close(con,ps,rs);
 	}
 		return save == 1 ? true : false;
 	}
 	
-}
-	
-	
+	public static List<PVALFileData> readTNGFile (String path) {
+		
+		File tngFile = new File(path + File.separator + "tngobj.txt");  
+		List<PVALFileData> tngDataList = new ArrayList<PVALFileData>();
+		String strLine = null;
+		String edition = "";
+		String subtest = "";
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(tngFile));
+			PVALFileData pvaData = null;
+			CodeValue codeValue = null;
+			while ((strLine = br.readLine()) != null) { 
+				strLine = strLine.trim();
+				String[] data = strLine.split("        ");
+				if(data.length == 1)
+					continue;
+				
+				if(data.length == 4) {
+					pvaData = new PVALFileData();
+					codeValue = new CodeValue();
+					edition = data[0].trim();
+					subtest = data[1].trim();
+					pvaData.setOther(edition.substring(0, 2));
+					pvaData.setForm(edition.substring(2, 3));
+					pvaData.setContent(subtest);
+					pvaData.setLevel(data[2].trim());
+					int grade = Integer.valueOf(data[2].trim()) - 10;
+					if(grade < 9) {
+						pvaData.setGrade("0" + grade);
+					} else {
+						pvaData.setGrade(String.valueOf(grade));
+					}
+					
+					codeValue.setCode(data[3].trim());
+					pvaData.setCodeValue(codeValue);
+					tngDataList.add(pvaData);
+				} else if (data.length == 2) {
+					pvaData = new PVALFileData();
+					codeValue = new CodeValue();
+					pvaData.setOther(edition.substring(0, 2));
+					pvaData.setForm(edition.substring(2, 3));
+					pvaData.setContent(subtest);
+					pvaData.setLevel(data[0]);
+					int grade = Integer.valueOf(data[0].trim()) - 10;
+					if(grade < 9) {
+						pvaData.setGrade("0" + grade);
+					} else {
+						pvaData.setGrade(String.valueOf(grade));
+					}
+					
+					codeValue.setCode(data[1].trim());
+					pvaData.setCodeValue(codeValue);
+					tngDataList.add(pvaData);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return tngDataList;
+	}
 
- 
+	public static List<PVALFileData> readPVALFile (String path) {
+		File allFile = new File(path);                
+		File[] files = allFile.listFiles();
+		PVALFileData pvaData = new PVALFileData();
+		BufferedReader br = null;
+		List<PVALFileData> pvalDataList = new ArrayList<PVALFileData>();
+		List<CodeValue> dataList = null;
+		String strLine = null;
+		
+		try {
+			for(File file: files) {
+				String fileName = file.getName();
+				if(fileName.startsWith("PVAL")) {
+					br = new BufferedReader(new FileReader(file));
+					dataList = new ArrayList<CodeValue>();
+					int startIndex = 0;
+					int endIndex = 2;
+					
+					while ((strLine = br.readLine()) != null) { 
+						strLine = strLine.trim();
+						if(strLine.trim().length() == 0) {
+							pvaData.setDataList(dataList);
+							String nonGroup = fileName.substring(fileName.indexOf(".") - 1, fileName.indexOf("."));
+							pvaData.setNonGroup(nonGroup);
+							pvalDataList.add(pvaData);
+							pvaData = new PVALFileData();
+							startIndex = 0;
+							endIndex = 2;
+							dataList = new ArrayList<CodeValue>();
+							continue;
+						}
+						String[] generalData = strLine.split(" ");
+						if(generalData.length == 1) {
+							String[] objCode = strLine.split("``");
+							if(objCode.length == 1) {
+								int index = 0;
+								while (endIndex <= strLine.length()) {
+									dataList.get(index).setValue(Double.valueOf(strLine.substring(startIndex, endIndex)) / 100);
+									startIndex += 2;
+									endIndex += 2;
+									index++;
+								}
+							} else {
+								int length = objCode.length * 2;
+								for(int i=1; i<length; i++) {
+									CodeValue val = new CodeValue();
+									if(i < 10) {
+										val.setCode("0" + i);
+									} else {
+										val.setCode(String.valueOf(i));
+									}
+									dataList.add(val);
+								}
+							}
+						} else {
+							pvaData.setLevel(generalData[3].split(":")[1]);
+							pvaData.setGrade(generalData[4].split(":")[1]);
+							pvaData.setForm(generalData[5].split(":")[1]);
+							pvaData.setOther(generalData[6].split(":")[1]);
+							pvaData.setContent(generalData[8].split(":")[1]);
+						}
+					} 
+					br.close();
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return pvalDataList;
+	}
+	
+	public static List<PVALFileData> populatePValue (List<PVALFileData> tngFileData, 
+													 List<PVALFileData> pvalFileData) {
+		
+		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
+		for(PVALFileData pvalFile: tngFileData) {
+			if(pvalFileData.indexOf(pvalFile) != -1) {
+				int index = pvalFileData.indexOf(pvalFile);
+				PVALFileData pvalFile1 = pvalFileData.get(index);
+				int codeIndex = pvalFile1.getDataList().indexOf(pvalFile.getCodeValue());
+				if(codeIndex != -1) {
+					CodeValue val = pvalFile1.getDataList().get(codeIndex);
+					if(val.getValue() != null) {
+						pvalFile.setNonGroup(pvalFile1.getNonGroup());
+						pvalFile.getCodeValue().setValue(val.getValue());
+						contentList.add(pvalFile);
+					}
+				}
+			} 
+		}
+		System.out.println("Total "+contentList.size());
+		return contentList;
+	}
+	
+}
