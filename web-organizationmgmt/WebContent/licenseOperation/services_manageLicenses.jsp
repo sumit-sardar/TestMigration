@@ -88,29 +88,32 @@
 					<td class="transparent" width="5px">&nbsp;</td>
 					 	 
 					<td id="jqGrid-content-section" valign="top">
-					   	<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
-						<br/>
 						<div id="orgNodeGridSection">
-							<div id="saveButtonSection" style="display: none">
+							<div id="parentOuterGrid"> 
+						   		<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
+						   	</div>
+							<div id="saveButtonSection" style="display: none" align="left">
+								<br/>
 								<table class="subtitle" border="0" width="100%">
 								<tr>
-								<td width="80%" align="left">
-								<lb:label key="services.license.message2" />
-								</td>
-								<td width="20%" align="right">
-								<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
-	          						<lb:label key="license.save.button" />
-	           					</a>
-	           					&nbsp;
-								<a href="#" id="cancelEditing" onclick="return verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');" class="rounded {transparent} button" style="text-decoration: none;" >
-	          						<lb:label key="license.cancel.button" />
-	           					</a>
-								</td>
+									<td width="80%" align="left">
+										<lb:label key="services.license.message2" />
+									</td>
+									<td width="20%" align="right">
+									<a href="#" id="saveLicenses" onclick="return saveLicenses();" class="rounded {transparent} button" style="text-decoration: none;" >
+		          						<lb:label key="license.save.button" />
+		           					</a>
+		           					&nbsp;
+									<a href="#" id="cancelEditing" onclick="return verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');" class="rounded {transparent} button" style="text-decoration: none;" >
+		          						<lb:label key="license.cancel.button" />
+		           					</a>
+									</td>
 								</tr>
 								</table>
 								<br/>
 							</div>
-							<div id="noGroupSection" style="display: none">
+							<div id="noGroupSection" style="display: none" align="left">
+								<br/>
 								<table class="subtitle" border="0" width="100%">
 								<tr><td>
 									<lb:label key="services.license.message3" />
@@ -118,7 +121,7 @@
 								</table>
 								<br/>
 							</div>
-							<div id="outerGrid"> 
+							<div id="childrenOuterGrid"> 
 					    		<table id="orgNodeLicenseChildrenGrid" class="gridTable"></table>
 								<div id="orgNodeLicenseChildrenPager" class="gridTable" ></div>
 							</div>
