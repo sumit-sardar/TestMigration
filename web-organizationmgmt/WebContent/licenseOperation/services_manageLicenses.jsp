@@ -90,8 +90,9 @@
 					<td id="jqGrid-content-section" valign="top">
 						<div id="orgNodeGridSection">
 							<div id="parentOuterGrid"> 
-						   		<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
-						   	</div>
+					   			<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
+					   		</div>
+					   		<!-- 
 							<div id="saveButtonSection" style="display: none" align="left">
 								<br/>
 								<table class="subtitle" border="0" width="100%">
@@ -121,6 +122,8 @@
 								</table>
 								<br/>
 							</div>
+					   		 -->
+							<br/>
 							<div id="childrenOuterGrid"> 
 					    		<table id="orgNodeLicenseChildrenGrid" class="gridTable"></table>
 								<div id="orgNodeLicenseChildrenPager" class="gridTable" ></div>
