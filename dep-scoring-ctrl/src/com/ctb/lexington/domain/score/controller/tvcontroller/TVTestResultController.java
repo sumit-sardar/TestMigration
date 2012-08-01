@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 import com.ctb.lexington.db.data.AdminData;
@@ -37,9 +36,14 @@ import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.CompositeScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ContentAreaScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ItemScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.PrimaryObjScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScoreResponse;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.SecondaryObjScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
 public class TVTestResultController implements TestResultController {
@@ -136,8 +140,7 @@ public class TVTestResultController implements TestResultController {
     		user_arg.setPassword("Password");
     		ProcessStudentScore pss = new ProcessStudentScore();
 	    	pss.setScore(studentScore);
-	    	ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
-	    	String endPointUrl = rb.getString("url");
+	    	String endPointUrl = data.getUrlData().getWebserviceUrl();
 	    	ScoringStatus status = null;
         	try{
         		ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
@@ -164,11 +167,90 @@ public class TVTestResultController implements TestResultController {
     				System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
     				System.out.println("status.getStatus() -> " + status.getStatus());
         		}
+        		displayScoresInRequest(studentScore);
         	}
         	
         	System.out.println("Stop");
         }
         
+    }
+    
+    public void displayScoresInRequest(StudentScore studentScore) {
+    	if(studentScore != null) {
+    		System.out.println("studentId - " + studentScore.getStudentId());
+    		System.out.println("formId - " + studentScore.getFormId());
+    		System.out.println("sessionId - " + studentScore.getSessionId());
+    		System.out.println("levelId - " + studentScore.getLevelId());
+    		if(studentScore.getContentAreaScores() != null) {
+    			ContentAreaScore[] caScore = studentScore.getContentAreaScores();
+    			for(int i = 0; i < caScore.length; i++) {
+    				System.out.println("contentAreaId - " + caScore[i].getContentAreaId());
+    				System.out.println("contentAreaName - " + caScore[i].getContentAreaName());
+    				System.out.println("scaleScore - " + caScore[i].getScaleScore());
+    				System.out.println("sem - " + caScore[i].getSem());
+    				System.out.println("minScaleScore - " + caScore[i].getMinScaleScore());
+    				System.out.println("maxScaleScore - " + caScore[i].getMaxScaleScore());
+    				System.out.println("gradeEquivalent - " + caScore[i].getGradeEquivalent());
+    				System.out.println("nationalStanine - " + caScore[i].getNationalStanine());
+    				System.out.println("nationalPercentile - " + caScore[i].getNationalPercentile());
+    				System.out.println("normalCurveEquivalent - " + caScore[i].getNormCurveEquivalent());
+    				System.out.println("percentageMastery - " + caScore[i].getPercentMastery());
+    				System.out.println("pointsObtained - " + caScore[i].getPointsObtained());
+    				System.out.println("percentObtained - " + caScore[i].getPercentObtained());
+    				System.out.println("pointsPossible - " + caScore[i].getPointsPossible());
+    				System.out.println("pointsAttempted - " + caScore[i].getPointsAttempted());
+    				PrimaryObjScore[] priScore = caScore[i].getPrimaryObjScores();
+    				if(priScore != null) {
+    					for(int j = 0; j < priScore.length; j++) {
+    						System.out.println("primaryObjectiveId - " + priScore[j].getPrimaryObjId());
+    						System.out.println("pointsAttempted - " + priScore[j].getPointsAttempted());
+    						System.out.println("pointsObtained - " + priScore[j].getPointsObtained());
+    						System.out.println("pointsPossible - " + priScore[j].getPointsPossible());
+    						System.out.println("percentObtained - " + priScore[j].getPercentObtained());
+    						System.out.println("masteryLevel - " + priScore[j].getMasteryLevel());
+    						System.out.println("nationalAverage - " + priScore[j].getNationalAverage());
+    						System.out.println("lowMmr - " + priScore[j].getLowModMasteryRange());
+    						System.out.println("highMmr - " + priScore[j].getHighModMasteryRange());
+    						SecondaryObjScore[] secScore = priScore[j].getSecondaryObjScores();
+    						if(secScore != null) {
+    							for(int k = 0; k < secScore.length; k++) {
+    								System.out.println("secondaryObjectiveId - " + secScore[k].getSecondaryObjId());
+    								System.out.println("pointsAttempted - " + secScore[k].getPointsAttempted());
+    								System.out.println("pointsObtained - " + secScore[k].getPercentObtained());
+    								System.out.println("pointsPossible - " + secScore[k].getPointsPossible());
+    								System.out.println("percentObtained - " + secScore[k].getPercentObtained());
+    								System.out.println("masteryLevel - " + secScore[k].getMasteryLevel());
+    								ItemScore[] itemScore = secScore[k].getItemScores();
+    								if(itemScore != null) {
+    									for(int l = 0; l < itemScore.length; l ++) {
+    										System.out.println("itemId - " + itemScore[l].getItemId());
+    										System.out.println("pointsObtained - " + itemScore[l].getPointsObtained());
+    										System.out.println("pointsPossible - " + itemScore[l].getPointsPossible());
+    										System.out.println("nationalAverage - " + itemScore[l].getNationalAverage());
+    									}
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    		if(studentScore.getCompositeScores() != null) {
+    			CompositeScore[] comp = studentScore.getCompositeScores();
+    			for(int i = 0; i < comp.length; i ++) {
+    				System.out.println("compositeId - " + comp[i].getCompositeId());
+    				System.out.println("compositeName - " + comp[i].getCompositeName());
+    				System.out.println("scaleScore - " + comp[i].getScaleScore());
+    				System.out.println("gradeEquivalent - " + comp[i].getGradeEquivalent());
+    				System.out.println("nationalStanine - " + comp[i].getNationalStanine());
+    				System.out.println("nationalPercentile - " + comp[i].getNationalPercentile());
+    				System.out.println("normalCurveEquivalent - " + comp[i].getNormCurveEquivalent());
+    				System.out.println("pointsObtained - " + comp[i].getPointsObtained());
+    				System.out.println("pointsPossible - " + comp[i].getPointsPossible());
+    				System.out.println("pointsAttempted - " + comp[i].getPointsAttempted());
+    			}
+    		}
+    	}
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

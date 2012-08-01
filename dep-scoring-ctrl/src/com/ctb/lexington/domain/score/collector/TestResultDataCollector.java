@@ -25,6 +25,7 @@ import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentTestData;
 import com.ctb.lexington.db.data.TestRosterData;
+import com.ctb.lexington.db.data.UrlData;
 import com.ctb.lexington.db.data.UserData;
 import com.ctb.lexington.db.data.WsTvStudentItemResponseData;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
@@ -89,6 +90,9 @@ public class TestResultDataCollector {
         data.setStsTestResultFactData(new StsTestResultFactData());
         data.setStsTotalStudentScoreData(new StsTotalStudentScoreData());
         data.setCaResponseWsTv(new WsTvStudentItemResponseData());
+        if(data.getAdminData().getProductId() == 3700) {
+        	data.setUrlData(getAcuityUrl(data.getAdminData().getSessionId()));
+        }
 
         if(data.getAdminData().getProgramId() == null) {
         	throw new CTBSystemException("Program ID is null for roster: " + oasRosterId);
@@ -206,5 +210,10 @@ public class TestResultDataCollector {
         	data.addStudentItemResponseVO((ItemResponseVO) iterator.next());
         }
         return data;
+    }
+    
+    private UrlData getAcuityUrl(Long testAdminId) throws SQLException, DataException {
+    	UrlDataCollector collector = new UrlDataCollector(oasConnection);
+    	return collector.collectAquityUrlData(testAdminId);
     }
 }

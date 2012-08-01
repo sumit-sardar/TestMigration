@@ -70,6 +70,15 @@ public class ScoreLookupHelper {
         }
     }
     
+    public BigDecimal getObjectivePValueTerrab3(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findObjectivePValueForTerrab3(itemSetId, testForm, contentArea, normGroup, grade, level);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public Integer getObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, 
     		final String level, Connection conn, Integer productId) {
         try {

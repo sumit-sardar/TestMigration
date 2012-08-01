@@ -190,7 +190,7 @@ import javax.xml.soap.SOAPMessage;
         
         String requestXML = _messageContext.getEnvelope().toString();
         
-        System.out.println("Request XML ********************" + requestXML);
+        //System.out.println("Request XML ********************" + requestXML);
 
         //execute the operation client
         _operationClient.execute(true);

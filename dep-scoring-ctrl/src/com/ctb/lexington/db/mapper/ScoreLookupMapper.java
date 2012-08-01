@@ -134,7 +134,36 @@ public class ScoreLookupMapper extends AbstractDBMapper {
 
     public BigDecimal findObjectivePValue(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SUBTEST_NUMBER_CORRECT.getCode(),
-                ScoreLookupCode.HIGH_MODERATE_MASTERY.getCode(), new BigDecimal(0), null);
+                ScoreLookupCode.OBJECTIVE_P_VALUE.getCode(), new BigDecimal(0), null);
+        template.setNormGroup(normGroup);
+        template.setGrade(grade);
+        template.setTestLevel(level);
+        template.setTestForm(testForm);
+        template.setContentArea(contentArea);
+
+        List results = findMany(FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SET, template);
+        if (results==null || results.isEmpty()) {
+            StringBuffer buf = new StringBuffer("Unable to find Objective PValue value for: ");
+            buf.append("\n\tparams: " + itemSetId);
+            buf.append(" | " + normGroup);
+            buf.append(" | " + grade);
+            buf.append(" | " + level);
+            buf.append(" | " + testForm);
+            buf.append(" | " + contentArea);
+            buf.append(" | " + ScoreLookupCode.SUBTEST_NUMBER_CORRECT.getCode());
+            buf.append(" | " + new BigDecimal(0));
+            buf.append(" | " + ScoreLookupCode.OBJECTIVE_P_VALUE.getCode());
+            buf.append("\n(continuing)\n");
+            System.err.println(buf.toString());
+            return null;
+        }
+        else
+            return ((ScoreLookupRecord) results.get(0)).getDestScoreValue();
+    }
+    
+    public BigDecimal findObjectivePValueForTerrab3(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
+                ScoreLookupCode.OBJECTIVE_P_VALUE.getCode(), new BigDecimal(0), null);
         template.setNormGroup(normGroup);
         template.setGrade(grade);
         template.setTestLevel(level);

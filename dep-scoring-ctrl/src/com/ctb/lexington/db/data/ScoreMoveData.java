@@ -31,6 +31,7 @@ public class ScoreMoveData {
     private boolean updateContextData;
     private WsTvStudentItemResponseData caResponseWsTv;
     private Map<String,String> caLossHoss;
+    private UrlData urlData;
 
 	/**
 	 * @return Returns the updateContextData.
@@ -255,5 +256,11 @@ public class ScoreMoveData {
 	}
 	public void setCaLossHoss(Map<String, String> caLossHoss) {
 		this.caLossHoss = caLossHoss;
+	}
+	public UrlData getUrlData() {
+		return urlData;
+	}
+	public void setUrlData(UrlData urlData) {
+		this.urlData = urlData;
 	}
 }
