@@ -49,7 +49,7 @@ import com.ctb.util.SessionValidatorUtil;
 
 import dto.Accommodation;
 import dto.PathNode;
-import dto.StudentProfileInformation;
+import dto.StudentProfileInfo;
 import dto.Subtest;
 import dto.SubtestVO;
 import dto.TestRosterVO;
@@ -172,7 +172,7 @@ public class SchedulingWS implements Serializable {
 	    			createNewStudent = false;
 	    		}
 	    		else {
-	    			StudentProfileInformation studentProfile = buildStudentProfile(student);
+	    			StudentProfileInfo studentProfile = buildStudentProfile(student);
 	    			studentId = createNewStudent(studentProfile);
 	    			createNewStudent = true;
 	    		}
@@ -272,7 +272,7 @@ public class SchedulingWS implements Serializable {
 	        			student.setStatusNonOverwritten("OK");
 	        		}
 	    		} else {    											// for create student
-	    			StudentProfileInformation studentProfile = buildStudentProfile(student);
+	    			StudentProfileInfo studentProfile = buildStudentProfile(student);
 	    			studentId = createNewStudent(studentProfile);
 	    			createNewStudent = true;
 	    		}
@@ -439,9 +439,9 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * buildStudentProfile
 	 */
-	private StudentProfileInformation buildStudentProfile(dto.Student student)
+	private StudentProfileInfo buildStudentProfile(dto.Student student)
 	{
-		StudentProfileInformation studentProfile = new StudentProfileInformation();
+		StudentProfileInfo studentProfile = new StudentProfileInfo();
 		
 		studentProfile.setFirstName(student.getFirstName());
 		studentProfile.setMiddleName(student.getMiddleName());
@@ -457,7 +457,7 @@ public class SchedulingWS implements Serializable {
 	/**
 	 * ///////////////////////////////   createNewStudent   //////////////////////////////////
 	 */
-	private Integer createNewStudent(StudentProfileInformation studentProfile)
+	private Integer createNewStudent(StudentProfileInfo studentProfile)
 	{
     	String userName = this.defaultUser.getUserName();
 		Integer studentId = null;
