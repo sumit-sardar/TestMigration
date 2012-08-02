@@ -77,6 +77,7 @@ function createOrgNodeTree(jsondata) {
 				
 	    });
 	    
+	    /*
 	    $("#orgNodeHierarchy").bind("loaded.jstree", 
 		 	function (event, data) {
 				for(var i = 0; i < rootNode.length; i++) {
@@ -87,6 +88,7 @@ function createOrgNodeTree(jsondata) {
 				}
 			}
 		);
+	    */
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	
@@ -95,8 +97,6 @@ function createOrgNodeTree(jsondata) {
 				return true;
 			}
 	    	
-			currentClickedId = this.parentNode.id;
-			currentClickedTcl = this.parentNode.getAttribute("tcl");	 
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		     		    

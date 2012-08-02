@@ -76,8 +76,8 @@
 	<tr class="transparent">
         <td align="center">        
 			<table width="100%" border=0> 
-				<tr class="transparent" valign="top">
-			        <td class="transparent" style="vertical-align:top;" width="16%">
+				<tr class="transparent">
+			        <td style="vertical-align:top; width:16%;" align="left">
 				      	<div id="searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
 				    	<div id="outertreebgdiv" class="treeCtrl">
 					    	<div id="orgNodeHierarchy" style="width:auto;height:auto;display:table">
@@ -85,9 +85,9 @@
 						</div>
 				    </td>
 					    
-					<td class="transparent" style="vertical-align:top;" width="5px">&nbsp;</td>
+					<td style="vertical-align:top; width:5px";>&nbsp;</td>
 					 	 
-					<td class="transparent" id="jqGrid-content-section" style="vertical-align:top;" width="90%">
+					<td id="jqGrid-content-section" style="vertical-align:top; width:90%;">
 						<div id="orgNodeGridSection">
 							<div id="parentOuterGrid"> 
 					   			<table id="orgNodeLicenseParentGrid" class="gridTable"></table>
