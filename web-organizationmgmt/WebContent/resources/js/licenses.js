@@ -226,7 +226,7 @@ function loadOrgNodeLicense() {
 		   	
 		   	
 		   	loadui: "disable",
-			rowNum:10,
+			rowNum:1,
 			loadonce:true, 
 			multiselect:false,
 			viewrecords: true, 
@@ -390,7 +390,7 @@ function loadChildrenOrgNodeLicense() {
 			},
 			loadComplete: function () {
 				if ($('#orgNodeLicenseChildrenGrid').getGridParam('records') === 0) {
-					//document.getElementById('saveButtonSection').style.display = "none";	
+					document.getElementById('saveButtonSection').style.display = "none";	
 					isGridEmpty = true;
             		$('#sp_1_orgNodeLicenseChildrenPager').text("1");
             		$('#next_orgNodeLicenseChildrenPager').addClass('ui-state-disabled');
@@ -398,11 +398,11 @@ function loadChildrenOrgNodeLicense() {
             		$('#orgNodeLicenseChildrenGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
 			 		$('#orgNodeLicenseChildrenGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noOrgTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noOrgMsg").val()+"</td></tr></tbody></table></td></tr>");
             		
-	    			//document.getElementById('noGroupSection').style.display = "block";
+	    			document.getElementById('noGroupSection').style.display = "block";
             	}
 				else {
-	    			//document.getElementById('saveButtonSection').style.display = "block";
-	    			//document.getElementById('noGroupSection').style.display = "none";
+	    			document.getElementById('saveButtonSection').style.display = "block";
+	    			document.getElementById('noGroupSection').style.display = "none";
 				}
 				
 				highLightNoAvailable();

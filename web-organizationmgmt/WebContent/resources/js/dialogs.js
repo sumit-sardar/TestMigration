@@ -292,10 +292,12 @@ function saveLoginUserDetail(){
 }
 
 function resetErrorMessages(){
-	$("#contentMain").text("");
-	$('#errorIcon').hide();
-	$('#infoIcon').hide();
-	document.getElementById('displayMessageMain').style.display = "none";										
+	if (document.getElementById('displayMessageMain') != null) {
+		$("#contentMain").text("");
+		$('#errorIcon').hide();
+		$('#infoIcon').hide();
+		document.getElementById('displayMessageMain').style.display = "none";
+	}										
 }
 
  function resetProfile() {
