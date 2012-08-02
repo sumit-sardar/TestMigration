@@ -143,18 +143,18 @@ public class TVTestResultController implements TestResultController {
     		user_arg.setPassword("Password");
     		String endPointUrl = data.getUrlData().getWebserviceUrl();
 	    	ScoringStatus status = null;
+	    	ScoringServiceStub stub = null;
 	    	try {
         		final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
-        		ScoringServiceStub stub = new ScoringServiceStub(ctx, endPointUrl);
+        		stub = new ScoringServiceStub(ctx, endPointUrl);
         		stub._getServiceClient().engageModule("logging");
         		status = stub.processStudentScore(user_arg, studentScore);
 		  	} catch (Exception e) {
+		  		System.out.println("Requeset XML **********" + stub._getServiceClient().getLastOperationContext().getMessageContext("Out").getEnvelope().toString());
         		try {
-        			ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
         			status = stub.processStudentScore(user_arg, studentScore);
    		    	} catch (Exception ex) {
         			try {
-        				ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
         				status = stub.processStudentScore(user_arg, studentScore);
         			} catch (Exception exc) {
         				exc.printStackTrace();
