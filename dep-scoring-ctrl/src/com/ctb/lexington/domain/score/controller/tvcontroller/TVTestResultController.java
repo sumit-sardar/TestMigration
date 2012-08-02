@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
+
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -138,26 +141,23 @@ public class TVTestResultController implements TestResultController {
         	AuthenticatedUser user_arg = new AuthenticatedUser();
     		user_arg.setUsername("User");
     		user_arg.setPassword("Password");
-    		ProcessStudentScore pss = new ProcessStudentScore();
-	    	pss.setScore(studentScore);
-	    	String endPointUrl = data.getUrlData().getWebserviceUrl();
+    		String endPointUrl = data.getUrlData().getWebserviceUrl();
 	    	ScoringStatus status = null;
-        	try{
-        		ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
-		    	ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-		    	status = resp.get_return();
-        	}catch (Exception e){
-        		try{
+	    	try {
+        		final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
+        		ScoringServiceStub stub = new ScoringServiceStub(ctx, endPointUrl);
+        		stub._getServiceClient().engageModule("logging");
+        		status = stub.processStudentScore(user_arg, studentScore);
+		  	} catch (Exception e) {
+        		try {
         			ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
-   		    	  	ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-   		    	  	status = resp.get_return();
-        		}catch (Exception ex){
-        			try{
+        			status = stub.processStudentScore(user_arg, studentScore);
+   		    	} catch (Exception ex) {
+        			try {
         				ScoringServiceStub stub = new ScoringServiceStub(endPointUrl);
-        				ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-        				status = resp.get_return();
-        			}catch (Exception exc){
-        				exc.printStackTrace()	;
+        				status = stub.processStudentScore(user_arg, studentScore);
+        			} catch (Exception exc) {
+        				exc.printStackTrace();
         			}
         		}
         	} finally {

@@ -31,9 +31,10 @@ public class TestClient {
 		    	  pss.setUser(user);
 		    	  String url = "http://192.168.14.136:8080/host/services/ScoringService";
 		    	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
-		    	  ScoringServiceStub stub = new ScoringServiceStub(url);
-		    	  ProcessStudentScoreResponse resp = stub.processStudentScore(pss);
-		    	  ScoringStatus status = resp.get_return();
+		  		  final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo",null);
+		    	  ScoringServiceStub stub = new ScoringServiceStub(ctx, url);
+		  		  stub._getServiceClient().engageModule("logging");
+		    	  ScoringStatus status = stub.processStudentScore(user, stuScore);
 		    	  System.out.println("status.getStudentId() -> " + status.getStudentId());
 		    	  System.out.println("status.getSessionId() -> " + status.getSessionId());
 		    	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
