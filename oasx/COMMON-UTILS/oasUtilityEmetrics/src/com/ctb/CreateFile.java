@@ -294,6 +294,7 @@ public class CreateFile {
 			for (TestRoster roster : myrosterList) {
 				Tfil tfil = new Tfil();
 				
+				tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
 				Student st = roster.getStudent();
 				System.out.println("Studnet Id"+ st.getStudentId() +" :: "+ roster.getTestRosterId());
 				setStudentList(tfil, st);

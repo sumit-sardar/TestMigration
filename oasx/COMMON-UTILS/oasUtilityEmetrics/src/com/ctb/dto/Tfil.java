@@ -86,6 +86,7 @@ public class Tfil {
 	private String specialCodeR = new String(" ");
 	private String specialCodeS = new String(" ");
 	private String specialCodeT = new String(" ");
+	private String testRosterId = "";
 	private SpecialCodes userDefinedBioPage;
 	private String sbiCtbUseColumns;
 	private ScaleScores scaleScores;
@@ -98,6 +99,7 @@ public class Tfil {
 	private SubSkillPercentCorrect subSkillPercentCorrect;
 	private ItemResponsesGRT itemResponseGRT;
 
+	
 	/**
 	 * @return the modelLevel
 	 */
@@ -1518,6 +1520,15 @@ public class Tfil {
 	 */
 	public void setClassId(String classId) {
 		this.classId = classId;
+	}
+
+	@PositionalField(initialPosition = 899, finalPosition = 910)
+	public String getTestRosterId() {
+		return testRosterId;
+	}
+
+	public void setTestRosterId(String testRosterId) {
+		this.testRosterId = testRosterId;
 	}
 
 }
