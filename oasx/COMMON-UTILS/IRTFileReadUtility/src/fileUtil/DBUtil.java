@@ -25,7 +25,7 @@ public class DBUtil {
 				if(pvalFileData != null && levels.contains(pvalFileData.getLevel().trim())) {
 					String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNonGroup() 
 					+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent()
-					+ "_" + pvalFileData.getOther();
+					+ "_" + pvalFileData.getOther() + "_" + pvalFileData.getCodeValue().getCode();
 					ps.setString(1, "SCL");
 					ps.setString(2, "OPV");
 					ps.setString(3, scoreLookupId);
@@ -39,6 +39,7 @@ public class DBUtil {
 					ps.setString(11, "2011");
 					ps.setString(12, "TERRAB3");
 					ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
+					System.out.println(scoreLookupId);
 					//ps.addBatch();
 					ps.executeUpdate();
 					

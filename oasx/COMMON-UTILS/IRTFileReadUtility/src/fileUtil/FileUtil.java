@@ -71,6 +71,7 @@ public class FileUtil {
 				{
 					File_name="";Content_area_initial  = ""; Content_area="";Test_Level = ""; Product_type = ""; product_id = "";
 					File_name = inFile.getName();
+					System.out.println("File_name -> " + File_name);
 					Content_area_initial=File_name.substring(2, 4);
 					Content_area = processContentAreaName(Content_area_initial);
 					Test_Level=File_name.substring(4, 6);
@@ -127,7 +128,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{
+				{/*
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -173,7 +174,7 @@ public class FileUtil {
 					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
 					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					
-				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
+				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -206,7 +207,7 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				} else if(inFile.getName().substring(0,3).equals("NCE")) {
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -220,7 +221,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				} else if (inFile.getName().substring(0,2).equals("NP")) {
+				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -234,7 +235,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				} else if (inFile.getName().substring(0,2).equals("GE")) {
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -249,7 +250,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -422,7 +423,7 @@ public class FileUtil {
 		for ( itr = contentOfFile.iterator(); itr.hasNext(); ) 
 		{   
 			String str = itr.next().toString();                                
-			String[] splitSt = str.split("\\s+"); 
+			String[] splitSt = str.split("    "); 
 			String source_score_value="",dest_score_value="";
 			source_score_value = splitSt[0];                                        
 			dest_score_value = splitSt[1]; 
@@ -563,7 +564,7 @@ public class FileUtil {
 				String[] gradeQm = gradeVal[i].split("\\.");
 				grade = Integer.parseInt(gradeQm[0]);
 				qmNumber = Integer.parseInt(gradeQm[1]);
-				if(grade != 0 && (qmNumber == 125 || qmNumber == 450 || qmNumber == 725)) {
+				if(grade != 0 && (qmNumber == 175 || qmNumber == 475 || qmNumber == 775)) {
 					columnNumber.put(new Integer(i), gradeVal[i]);
 				}
 			}
@@ -581,11 +582,11 @@ public class FileUtil {
 					for (Map.Entry<Integer, String> entry : columnNumber.entrySet()) {
 						columnIndex = entry.getKey();
 						gradeQmVal = entry.getValue();
-						if(gradeQmVal.endsWith("125")) {
+						if(gradeQmVal.endsWith("175")) {
 							normsGroup = "FALL";
-						} else if (gradeQmVal.endsWith("450")) {
+						} else if (gradeQmVal.endsWith("475")) {
 							normsGroup = "WINTER";
-						} else if (gradeQmVal.endsWith("725")) {
+						} else if (gradeQmVal.endsWith("775")) {
 							normsGroup = "SPRING";
 						} else {
 							normsGroup = null;
@@ -802,11 +803,11 @@ public class FileUtil {
 					SqlUtil.close(rs);
 					SqlUtil.close(ps);
 				}
-				if(con == null || con.isClosed()) {
+				/*if(con == null || con.isClosed()) {
 					con=SqlUtil.openOASDBcon();
 				}
 				levelsPopulated = levelsPopulated + currentLevel;
-				/*if(Content_area_initial.equalsIgnoreCase("SC")) {
+				if(Content_area_initial.equalsIgnoreCase("SC")) {
 					objectiveCodeFile = splitSt[3];
 				} else {
 					objectiveCodeFile = splitSt[4];
@@ -816,16 +817,17 @@ public class FileUtil {
 					destVal =  Float.valueOf(splitSt[4]) * 100;
 				} else {
 					destVal =  Float.valueOf(splitSt[5]) * 100;
-				}*/
+				}
 				
-				/*destScore = destVal.intValue();
+				destScore = destVal.intValue();
 				if(!productName.containsKey(product_id)) {
 					product_internal_display_name=getDisplayName(product_id.toString());
 					productName.put(product_id, product_internal_display_name);
 					con=SqlUtil.openOASDBcon();
-				}*/
-				/*dest_Score_type_code = "LMR";
+				}
+				dest_Score_type_code = "LMR";
 				product_internal_display_name = productName.get(product_id);
+				score_lookup_id = framework_code;
 				score_lookup_id = score_lookup_id + "_" + dest_Score_type_code + "_" + Product_type + "_" + currentLevel + "_" + Content_area_initial + "_" + objectiveCodeFile;
 				System.out.println("score_lookup_id -> " + score_lookup_id);
 				ps = con.prepareStatement(insertScore_lookupQuery);
@@ -843,11 +845,11 @@ public class FileUtil {
 				con.commit();
 				SqlUtil.close(ps);
 				
-				if(objectiveMap.get(objectiveCodeFile) != null) {
+				if(_OBJECTIVEMAP.get(objectiveCodeFile) != null) {
 					if(con == null || con.isClosed()) {
 						con=SqlUtil.openOASDBcon();
 					}
-					itemSetIdList.add(objectiveMap.get(objectiveCodeFile).toString());
+					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile).toString());
 					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 				}
 				if(con == null || con.isClosed()) {
@@ -879,11 +881,11 @@ public class FileUtil {
 				save=ps.executeUpdate();
 				con.commit();
 				SqlUtil.close(ps);
-				if(objectiveMap.get(objectiveCodeFile) != null) {
+				if(_OBJECTIVEMAP.get(objectiveCodeFile) != null) {
 					if(con == null || con.isClosed()) {
 						con=SqlUtil.openOASDBcon();
 					}
-					itemSetIdList.add(objectiveMap.get(objectiveCodeFile).toString());
+					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile).toString());
 					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 				}*/
 			}
