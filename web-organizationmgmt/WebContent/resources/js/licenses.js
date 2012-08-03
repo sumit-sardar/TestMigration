@@ -92,6 +92,8 @@ function createOrgNodeTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	
+	    	document.getElementById('displayMessageMain').style.display = "none";
+	    	
 			if (isEditing()) {
 				//jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
 				return true;
@@ -324,7 +326,7 @@ function loadChildrenOrgNodeLicense() {
               	setEditingInfo(null, null, value);
 				
               	errorMsg = "";
-              	if (! validNumber(value)) {
+              	if (! validLicenseNumber(value)) {
               		errorMsg = "Enter a number that is 0 or greater.";
 					return 'ERROR';
 				}
@@ -484,13 +486,17 @@ function validLicenseNumber(sText) {
    	
 }
 
+function validLicenseNumber(sText) {
+    if (sText == "") {
+    	return false;	
+    }
+    return validNumber(sText);
+}
+
 function validNumber(sText) {
     var ValidChars = "0123456789.";
     var Char;
 
-    if (sText == "") {
-    	return false;	
-    }
 	sText = $.trim(sText);
     for (i = 0; i < sText.length; i++) {
         Char = sText.charAt(i);

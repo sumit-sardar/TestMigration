@@ -64,6 +64,28 @@
 		</table>
 		</td>
     </tr>
+
+   	<tr>
+		<td class="transparent">
+        <div id="displayMessageMain" class="errMsgs" style="display:none; width:99.5%;float:left;">
+			<table>
+				<tr>
+					<td width="18" valign="middle">
+						<div id="errorIcon" style="display:none;">
+	                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
+						</div>
+						<div id="infoIcon" style="display:none;">
+							<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+						</div>
+					</td>
+					<td class="saveMsgs" valign="middle">
+						<div id="contentMain"></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
 	
 	<tr class="transparent" valign="bottom">
 		<td align="right" valign="bottom">
@@ -72,6 +94,7 @@
 				</p> 
 		</td>
 	</tr>
+
 
 	<tr class="transparent">
         <td align="center">        
