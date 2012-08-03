@@ -207,7 +207,7 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -221,7 +221,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
+				} else if (inFile.getName().substring(0,2).equals("NP")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -250,7 +250,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -267,7 +267,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
 							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
 							Integer.parseInt(product_id), Product_type);
-				}
+				*/}
 				
 			}
 			if(successInSCORE_LOOKUP==true && successInScore_lookup_item_set==true)

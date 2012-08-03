@@ -14,7 +14,7 @@ public class SqlUtil {
 		String user = ExtractUtil.getDetail("irs.db.user.name").trim();
 		String password = ExtractUtil.getDetail("irs.db.user.password").trim();
 		
-		String connURL = "jdbc:oracle:thin:@" + dbip + ":1522:"	+ sid;
+		String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:"	+ sid;
 		Connection conn = null;
 		try {
 
@@ -37,7 +37,7 @@ public class SqlUtil {
 		String user = ExtractUtil.getDetail("oas.db.user.name").trim();
 		String password = ExtractUtil.getDetail("oas.db.user.password").trim();
 		
-		String connURL = "jdbc:oracle:thin:@" + dbip + ":1522:"	+ sid;
+		String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:"	+ sid;
 		Connection conn = null;
 		try {
 
