@@ -10,13 +10,17 @@ function viewBroadcastMessage() {
 	var param = "param";
 	var isHidden = true; // $('#broadcastMsgDialogId').is(':hidden');  
 	
+	var broadcastMessageURL = '/OrganizationWeb/orgOperation/broadcastMessage.do';
+	if (document.getElementById("broadcastMessageURL") != null)
+		broadcastMessageURL = document.getElementById("broadcastMessageURL").value;
+		
 	if (isHidden) {
 		$.ajax(
 		{
 				async:		false,
 				beforeSend:	function(){
 							},
-				url:		'/OrganizationWeb/orgOperation/broadcastMessage.do',
+				url:		broadcastMessageURL,
 				type:		'POST',
 				data:		param,
 				dataType:	'html',

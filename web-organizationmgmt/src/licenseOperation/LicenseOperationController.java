@@ -72,6 +72,8 @@ public class LicenseOperationController extends PageFlowController {
     
     private List licenseNodes = null;
     
+    public static String CONTENT_TYPE_JSON = "application/json";
+    
 	/**
 	 * @return the userName
 	 */
@@ -297,7 +299,6 @@ public class LicenseOperationController extends PageFlowController {
 		 CustomerLicense cl = this.customerLicenses[0];
 		 
 		 try {
-			 
 				NodeData subOrganizationList = OrganizationPathListUtils.getOrganizationNodesForParentIncludingParentName(this.userName, this.organizationManagement, treeOrgNodeId);
 				if (subOrganizationList != null) {
 			    	orgNodeLicenses = buildOrgNodeLicenses(subOrganizationList, cl, treeOrgNodeId);
@@ -345,7 +346,6 @@ public class LicenseOperationController extends PageFlowController {
 		 CustomerLicense cl = this.customerLicenses[0];
 		   
 		 try {
-			 
 			 Node node = this.organizationManagement.getOrganization(this.userName, treeOrgNodeId);
 			 
 			 LicenseNode licenseNode = findCachedLicenseNode(treeOrgNodeId);
@@ -877,22 +877,6 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
    
     
 	/**
-	 * @jpf:action
-	 */
-	@Jpf.Action()
-	protected Forward broadcastMessage()
-	{
-	    return null;
-	}
-	
-	
-	@Jpf.Action()
-	protected Forward myProfile()
-	{
-	    return null;
-	}
-	
-	/**
      * STUDENT SCORING actions
      */    
     @Jpf.Action(forwards = { 
@@ -1195,9 +1179,40 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		return new Boolean(hasOOSConfigurable);           
 	}
 
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-    ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-
+	@Jpf.Action()
+    protected Forward broadcastMessage()
+    {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			this.userName = (String)getSession().getAttribute("userName");
+		}
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        String bcmString = BroadcastUtils.buildBroadcastMessages(broadcastMessages);
+		
+		try{
+    		resp.setContentType(CONTENT_TYPE_JSON);
+			try {
+				stream = resp.getOutputStream();
+	    		resp.flushBuffer();
+	    		stream.write(bcmString.getBytes());
+			} 
+			finally {
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return null;
+    }
+	
 	
 }

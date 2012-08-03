@@ -115,8 +115,9 @@
      
 </head>
 
- <body>
+<body>
 
+<input type="hidden" id="broadcastMessageURL" name="broadcastMessageURL" value="/OrganizationWeb/orgOperation/broadcastMessage.do" />
 
 <!-- MAIN BODY -->
 <table class="simpleBody" >

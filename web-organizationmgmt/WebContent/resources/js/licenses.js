@@ -328,6 +328,10 @@ function loadChildrenOrgNodeLicense() {
               		errorMsg = "Enter a number that is 0 or greater.";
 					return 'ERROR';
 				}
+              	if (! validLicenseNumber(value)) {
+              		errorMsg = "Enter a number that is smaller than 1000000";
+					return 'ERROR';
+				}
 				var intValue = str2num(value);
 				value = intValue.toString();
 				
@@ -470,6 +474,16 @@ function highLightNoAvailable() {
 	});
 }
 
+
+function validLicenseNumber(sText) {
+   	var intValue = str2num(sText);
+   	if (intValue >= 1000000)
+   		return false;
+   	else
+   		return true;
+   	
+}
+
 function validNumber(sText) {
     var ValidChars = "0123456789.";
     var Char;
@@ -484,6 +498,7 @@ function validNumber(sText) {
 		    return false;
 		}
     }
+    
     return true;
 }
 
@@ -495,6 +510,11 @@ function str2num(sText) {
 
 function saveLicenses() {
 
+   	if (editingId != null) {
+   		alert("You are currently editing a license quantity. Commit your changes first before saving.");
+   		return;
+	}
+	
 	var result = confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
 	if (result) {
 		editingId = null;

@@ -117,8 +117,9 @@
      
 </head>
 
- <body>
+<body>
 
+<input type="hidden" id="broadcastMessageURL" name="broadcastMessageURL" value="/OrganizationWeb/licenseOperation/broadcastMessage.do" />
 
 <!-- MAIN BODY -->
 <table class="simpleBody" >
