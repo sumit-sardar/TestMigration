@@ -150,8 +150,7 @@ public class TVTestResultController implements TestResultController {
         		stub._getServiceClient().engageModule("logging");
         		status = stub.processStudentScore(user_arg, studentScore);
 		  	} catch (Exception e) {
-		  		System.out.println("Requeset XML **********" + stub._getServiceClient().getLastOperationContext().getMessageContext("Out").getEnvelope().toString());
-        		try {
+		  		try {
         			status = stub.processStudentScore(user_arg, studentScore);
    		    	} catch (Exception ex) {
         			try {
