@@ -8,14 +8,14 @@ import dto.Subtest;
 
 public class SessionValidatorUtil {
 	
-	public static final String MESSAGE_PRODUCT_UNEDITABLE = "Error:You can no longer edit \"Product\" for this assignment.";
-	public static final String MESSAGE_SUBTEST_UNEDITABLE = "Error:You can no longer edit \"Subtest\" for this assignment.";
-	public static final String MESSAGE_LEVEL_UNEDITABLE = "Error:You can no longer edit \"Level\" for this assignment.";
-	public static final String MESSAGE_ALLOW_BREAK_UNEDITABLE = "Error:You can no longer edit \"Allow Breaks\" for this assignment.";
-	public static final String MESSAGE_ASSESSMENT_NAME_UNEDITABLE = "Error:You can no longer edit \"Assessment Name\" for this assignment.";
-	public static final String MESSAGE_START_DATE_UNEDITABLE = "Error:You can no longer edit \"Start Date\" for this assignment.";
-	public static final String MESSAGE_END_DATE_UNEDITABLE = "Error:You can no longer edit \"End Date\" for this assignment.";
-	public static final String MESSAGE_TIME_ZONE_UNEDITABLE = "Error:You can no longer edit \"Time Zone\" for this assignment.";
+	public static final String MESSAGE_PRODUCT_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Product\" for this assignment.";
+	public static final String MESSAGE_SUBTEST_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Subtest\" for this assignment.";
+	public static final String MESSAGE_LEVEL_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Level\" for this assignment.";
+	public static final String MESSAGE_ALLOW_BREAK_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Allow Breaks\" for this assignment.";
+	public static final String MESSAGE_ASSESSMENT_NAME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Assessment Name\" for this assignment.";
+	public static final String MESSAGE_START_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Date\" for this assignment.";
+	public static final String MESSAGE_END_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Date\" for this assignment.";
+	public static final String MESSAGE_TIME_ZONE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Time Zone\" for this assignment.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "OK:One or more students have started this assessment. The changes you have made to the accommodations will be applicable to students who begin this test after this change is saved.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_STUDENT = "Error:You can no longer edit accomodation for this student.";
 	
