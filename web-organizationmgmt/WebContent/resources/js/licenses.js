@@ -309,7 +309,7 @@ function loadChildrenOrgNodeLicense() {
 			sortname: 'name', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 150,
+			height: 165,
 			width: $("#jqGrid-content-section").width(), 
 			caption:'Group List',
 					   	
@@ -461,19 +461,24 @@ function setEditingInfo(iRow, iCol, value) {
 }
 
 function highLightNoAvailable() {
-	$("table tr").each(function(){   
+
+	$("table tr").each(function(){
+	   
 		if( $(this).text().indexOf('0') != -1 ) {  
 			if (this.className.indexOf('ui-widget-content jqgrow ui-row-ltr') != -1) {
 				var el = $('td:eq(3)', $(this));                 
 				el.removeAttr('bgcolor');
 				//console.log("el=" + el.text());
-				if (el.text() == '0') {                        
+				if (el.text() == '0') {      
+					//alert("xxx101 = " + el.text());                  
 					el.attr('bgcolor', '#ff0000');
 				}
 			}
 			         
 		}	
 	});
+	
+	
 }
 
 
