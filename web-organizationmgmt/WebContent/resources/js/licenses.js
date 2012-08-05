@@ -367,6 +367,7 @@ function loadChildrenOrgNodeLicense() {
           	afterSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSaveCell: ' + rowid + " - " + value);
               	setEditingInfo(null, null, value);
+				highLightNoAvailable();
           	},
 					
 			onCellSelect: function (rowid, iCol, cellcontent, e) {
@@ -446,6 +447,7 @@ function isEditing() {
 
 function setEditingId(id) {
 	editingId = id;
+	highLightNoAvailable();
 }
 
 function setEditingInfo(iRow, iCol, value) {
@@ -470,7 +472,6 @@ function highLightNoAvailable() {
 				el.removeAttr('bgcolor');
 				//console.log("el=" + el.text());
 				if (el.text() == '0') {      
-					//alert("xxx101 = " + el.text());                  
 					el.attr('bgcolor', '#ff0000');
 				}
 			}
