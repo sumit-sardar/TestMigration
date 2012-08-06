@@ -331,7 +331,7 @@ public class SchedulingWS implements Serializable {
         	session.setSessionId(testAdminId);
         	if(session.getStatus() == null && hasAccomodationWarning){
         		session.setStatus(SessionValidatorUtil.MESSAGE_UPDATE_ACCOMODATION_AT_SESSION);
-        	} else if (session.getStatus() == null && hasAccomodationWarning ) {
+        	} else if (session.getStatus() == null && !hasAccomodationWarning ) {
         		session.setStatus("OK");
 			} else if(session.getStatus() != null && hasAccomodationWarning) {
 				session.setStatus(session.getStatus()+"|"+SessionValidatorUtil.MESSAGE_UPDATE_ACCOMODATION_AT_SESSION);
