@@ -751,18 +751,11 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		}
 
 		var type = "View";
-		/*if(cellvalue=="AI") {
-        	type = "Audio Response";
-        } else {
-        	type = "Text Response";
-        } */
-        if(answered != undefined && answered == "Answered") {
+		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showAnswerPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
         	  itemSetIdTD + "\"); return false;'>"+type+"</a>";
-        } else {
-        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
-        }
+       
 		return val;
 	}
 	
@@ -778,18 +771,11 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		}
 
 		var type = "View Question";
-		/*if(cellvalue=="AI") {
-        	type = "Audio Response";
-        } else {
-        	type = "Text Response";
-        }*/
-        if(answered != undefined && answered == "Answered") {
+		
         	val = "<a href='#' style='color:blue; text-decoration:underline;' onClick='javascript:showQuesPopup(\"" + itemId +"\",\""+
         	 rowObject.itemSetOrder + "\",\"" + rowObject.itemType + "\",\"" + selectedRosterId + "\", \"" +
         	  itemSetIdTD + "\",\"" + rowObject.maxPoints + "\",\"" + rowObject.scorePoint + "\",\"" + rowObject.scoreStatus+ "\"); return false;'>"+type+"</a>";
-        } else {
-        	val = "<span style='color:#999999; text-decoration:underline;'>"+type+"</span>";
-        }
+      
 		return val;
 	}
 /******JqGrid Population and Reloads*****/
