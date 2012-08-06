@@ -77,7 +77,9 @@
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/showBySession.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/showByStudent.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/formRecommendation.js"></script>
-  	  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/editSubtestTest.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/editSubtestTest.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/addStudent.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/recommendedSession.js"></script>
   	
   	
 	<script type="text/javascript">

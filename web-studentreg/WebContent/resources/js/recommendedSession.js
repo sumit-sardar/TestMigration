@@ -1,18 +1,17 @@
-//added by sumit : start
 
-//Path Show by Student: used for popup to show all session 
 
- function populateSessionGridInPopup() {
+
+function populateSessionGridInPopupForFR(){
 		var postDataObject = {};
  		postDataObject.q = 2;
- 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
- 		postDataObject.studentId = selectedStudentId;
- 		$("#list2").jqGrid({         
-          url:'getSessionForOrgNodeWithStudentStatus.do', 
+ 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeId").val();
+ 		postDataObject.selectedProductId = $("#recommendedProductId").val();
+        $("#list2").jqGrid({         
+          url:'getRecommendedSessionForReportingGrid.do', 
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#grdGroup").val(), $("#sesGridMyRole").val(),$("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '','',''],
+          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#grdGroup").val(), $("#sesGridMyRole").val(),$("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), ''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:160, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
@@ -21,11 +20,7 @@
 		   		{name:'testAdminStatus',index:'testAdminStatus', width:80, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: statusOptions } },
 		   		{name:'loginStartDateString',index:'loginStartDateString',editable: true, width:80, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'loginEndDateString',index:'loginEndDateString',editable: true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   	    {name:'productType',index:'productType',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-		   	    {name:'isTabeProduct',index:'isTabeProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-		   	    {name:'isTabeAdaptiveProduct',index:'isTabeAdaptiveProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-		   	    {name:'itemSetId',index:'itemSetId',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-		   	    {name:'isStudentsSession',index:'isStudentsSession',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
+		   	    {name:'itemSetId',index:'itemSetId',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSession", id:"testAdminId",
 		   	records: function(obj) {} },
@@ -40,7 +35,7 @@
 			sortorder: "asc",
 			height: 370,
 			width: 760, 
-			editurl: 'getSessionForOrgNodeWithStudentStatus.do',
+			editurl: 'getRecommendedSessionForReportingGrid.do',
 			ondblClickRow: function(rowid) {/*populateGridAsPerView();*/},
 			caption:$("#sesGridCaption").val(),
 			onPaging: function() {
@@ -53,31 +48,20 @@
 				if(reqestedPage <= minPageSize){
 					$('#list2').setGridParam({"page": minPageSize});
 				}
-				disableButton('nextButtonStdPopup');
+				
+				
 			},
 			onSortCol : function(index, columnIndex, sortOrder) { 
+				
 				disableButton('nextButtonStdPopup');
 			},
 			onSelectRow: function (rowId) {
+					enableButton('nextButtonStdPopup');
 					$("#displayMessageMain").hide();
 					var selectedRowData = $("#list2").getRowData(rowId);
 					selectedTestAdminName = selectedRowData.testAdminName;
 					selectedTestAdminId = rowId;
 					selectedItemSetIdTC = selectedRowData.itemSetId;
-					if(selectedRowData.isTabeAdaptiveProduct == 'true' ){
-						isTabeProduct = false;
-						isTabeAdaptiveProduct = true;
-					} else {
-						isTabeProduct = true;
-						isTabeAdaptiveProduct = false;
-					} 
-					
-					if(selectedRowData.isStudentsSession=="T"){
-						disableButton('nextButtonStdPopup');
-					} else{
-						enableButton('nextButtonStdPopup');
-					}
-					
 				},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
@@ -100,12 +84,12 @@
 				window.location.href="/SessionWeb/logout.do";
 						
 			}
-	 });  
+	 });
 	 
 	}
 	
 	
-	function reloadSessionGridFromStd(){
+	function reloadSessionGridFromStdOnFR(){
 		//resetSearchCrit();
   	    var postDataObject = {};
 		postDataObject.q = 2;
@@ -113,6 +97,6 @@
 			
         jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
   	   //var sortArrow = jQuery("#list2");
-        jQuery("#list2").jqGrid('setGridParam', {url:'getSessionForOrgNodeWithStudentStatus.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+        jQuery("#list2").jqGrid('setGridParam', {url:'getRecommendedSessionForReportingGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
         jQuery("#list2").sortGrid($("#grdSessionName").val(),true,'asc');
 	}
