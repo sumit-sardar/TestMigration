@@ -519,7 +519,7 @@ function str2num(sText) {
 function saveLicenses() {
 
    	if (editingId != null) {
-   		alert("You are currently editing a license quantity. Commit your changes first before saving.");
+   		alert("You are currently editing a license quantity. Click outside the edit box to confirm the change before saving.");
    		return;
 	}
 	
