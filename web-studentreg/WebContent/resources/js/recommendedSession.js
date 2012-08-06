@@ -77,7 +77,7 @@ function populateSessionGridInPopupForFR(){
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				
+				$("#pager2 .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
