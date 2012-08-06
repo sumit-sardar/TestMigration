@@ -118,7 +118,7 @@ public class TVWsAcuityDataController {
                 	   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?null:new Float(fact.getPercentObjectiveMastery().longValue()));
                    newFact.setPercentObtained((fact.getPercentObtained()==null)? null : fact.getPercentObtained().floatValue());
                    newFact.setScaleScore((fact.getScaleScore()==null)?null:new Long(fact.getScaleScore().longValue()));
-                   newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? null : new Long(fact.getStandardErrorOfMeasurement().longValue()));
+                   newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? new Long(0) : new Long(fact.getStandardErrorOfMeasurement().longValue()));
                    String[] lossHossValue = lossHoss.get(contentAreas[i].getContentAreaName()).split(",");
                    newFact.setMinScaleScore(Long.parseLong(lossHossValue[0]));
                    newFact.setMaxScaleScore(Long.parseLong(lossHossValue[1]));
@@ -216,6 +216,8 @@ public class TVWsAcuityDataController {
 				itemFact.setItemId(item.getOasItemId());
 				itemFact.setPointsPossible(new Long(item.getItemPointsPossible().intValue()));
 				String normGroup = "6".equals(adminData.getNormsGroup())?"FALL":
+					"07".equals(adminData.getNormsGroup())?"FALL":
+                	"7".equals(adminData.getNormsGroup())?"FALL":
                     "18".equals(adminData.getNormsGroup())?"WINTER":
                     "19".equals(adminData.getNormsGroup())?"WINTER":
                     "30".equals(adminData.getNormsGroup())?"SPRING":

@@ -156,7 +156,7 @@ public class TVTestResultController implements TestResultController {
         			try {
         				status = stub.processStudentScore(user_arg, studentScore);
         			} catch (Exception exc) {
-        				exc.printStackTrace();
+        				//exc.printStackTrace();
         			}
         		}
         	} finally {

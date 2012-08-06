@@ -12,8 +12,10 @@ public final class NormGroup extends StringConstant {
     private static final HashMap ALL_STATUSES_BY_INTEGER = new SafeHashMap(Integer.class, NormGroup.class);
 
     public final static NormGroup FALL = new NormGroup(new Integer(6), "FALL", "Fall");
+    public final static NormGroup FALLTN = new NormGroup(new Integer(7), "FALL", "Fall");
     public final static NormGroup WINTER = new NormGroup(new Integer(19), "WINTER", "Winter");
     public final static NormGroup SPRING = new NormGroup(new Integer(30), "SPRING", "Spring");
+    public final static NormGroup SPRINGTN = new NormGroup(new Integer(31), "SPRING", "Spring");
 
     private final Integer intValue;
 

@@ -110,7 +110,9 @@ public class StudentItemScoresController {
                 itemFact.setSubtestName(item.getSubtestName());
                 
                 String normGroup = "6".equals(adminData.getNormsGroup())?"FALL":
-                        "18".equals(adminData.getNormsGroup())?"WINTER":
+                		"07".equals(adminData.getNormsGroup())?"FALL":
+                		"7".equals(adminData.getNormsGroup())?"FALL":
+                		"18".equals(adminData.getNormsGroup())?"WINTER":
                         "19".equals(adminData.getNormsGroup())?"WINTER":
                         "30".equals(adminData.getNormsGroup())?"SPRING":
                         "31".equals(adminData.getNormsGroup())?"SPRING":
