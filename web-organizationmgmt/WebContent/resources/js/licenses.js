@@ -447,7 +447,6 @@ function isEditing() {
 
 function setEditingId(id) {
 	editingId = id;
-	highLightNoAvailable();
 }
 
 function setEditingInfo(iRow, iCol, value) {
@@ -463,23 +462,20 @@ function setEditingInfo(iRow, iCol, value) {
 }
 
 function highLightNoAvailable() {
-
 	$("table tr").each(function(){
-	   
-		if( $(this).text().indexOf('0') != -1 ) {  
-			if (this.className.indexOf('ui-widget-content jqgrow ui-row-ltr') != -1) {
-				var el = $('td:eq(3)', $(this));                 
-				el.removeAttr('bgcolor');
-				//console.log("el=" + el.text());
-				if (el.text() == '0') {      
-					el.attr('bgcolor', '#ff0000');
+		var role = $(this).attr('role');
+		if (role == 'row') {
+			var tds = $('td', $(this));
+			if (tds.length == 4) {
+				var td = $(tds[3]); 
+				var el = tds[3];
+				el.className = "";
+				if (td.text() == '0') {
+					el.className = "ui-state-error";
 				}
 			}
-			         
-		}	
+		}
 	});
-	
-	
 }
 
 
