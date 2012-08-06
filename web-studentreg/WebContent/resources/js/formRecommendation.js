@@ -1,5 +1,5 @@
 function onNextFromShowBySessionPopUp () {
-	if(isPopupOnByepassFR ||isPopupOnFRAccept||isPopupOnFRNotAccept){
+	if(isPopupOnByepassFR ||isPopupOnFRAccept||isPopupOnFRNotAccept || (currentView != "student" && isTabeAdaptiveProduct)){
 		openModifyTestPopup(null);
 	}
 	else {
@@ -71,12 +71,13 @@ function onNextFromShowBySessionPopUp () {
 										if(currentView == "student"){
 											isPopupOnByepassFR = true;
 										 	sessionPopupFromStudentView();
+										 	$.unblockUI();
 										 }
 										 else{
 										 	openModifyTestPopup(null);
 										 }
 										 	
-								         $.unblockUI();//added by sumit  
+								         //$.unblockUI();
 									}
 									
 									

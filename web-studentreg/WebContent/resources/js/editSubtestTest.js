@@ -35,6 +35,8 @@
 	var allSubtestsMsm = new Array();
 	var allSubtestMapMsm = new Map();
 	var levelOptions = new Array();
+	var recomendedLevelMap = {};
+	var locatorSessionInfo ="";
 	
 	
 	function openModifyTestPopup(element){
@@ -45,14 +47,11 @@
 		$('#msmTestSessionName1').text(selectedTestAdminName);
 		$('#msmStudentName').text(selectedStudentNameFromSessionPopup);
 		$('#msmOrgName').html(getOrgDropDownList(selectedStudentOrgNodeName, selectedStudentOrgNodeid));
-		if(isTabeProduct  ){ 
-	   		$("#mmsModifySubtestMsg").html($("#tabeModifySubtestMsg").val())
-	   } else {
-	   		$("#mmsModifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
-	   }
+		
 		
 		var param = "&testAdminId="+selectedTestAdminId;
 		 param += "&itemSetIdTc="+selectedItemSetIdTC;
+		 param += "&studentId="+selectedStudentId;
 		   
     	UIBlock();
     	$.ajax({
@@ -67,6 +66,8 @@
 			                subTestDetails = data.testSession;
 			                studentManifests = data.studentDefaultManifest;
 			                levelOptions = data.levelOptions; 
+			                recomendedLevelMap = data.recomendedLevel;
+			                locatorSessionInfo = data.locatorSessionInfo;
 			                $("#numberOfRowsMsm").val(subTestDetails.subtests.length);
 							openModifyManifestPopup();	
 							 $.unblockUI();		
@@ -85,10 +86,20 @@
 	function openModifyManifestPopup() {
 		
 		isForStudentSubtestModification = true;//used for subtest modification false for testadmin	
-		//$("#selectedSubtestsTableMsm").html("");
-        //$("#availableSubtestsTableMsm").html("");
+		$("#selectedSubtestsTableMsm").html("");
+        $("#availableSubtestsTableMsm").html("");
        // $("#selectedSubtestsTable").html("");
         //$("#availableSubtestsTable").html("");
+        if(!subTestDetails.hasMultipleSubtests){
+       	 $("#mmsModifySubtestMsg").html("");
+         $("#mmsModifySubtestMsg").html("");
+        }else if(isTabeProduct){ 
+	   		$("#mmsModifySubtestMsg").html($("#tabeModifySubtestMsg").val())
+	   } else {
+	   		$("#mmsModifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
+	   }
+	   $("#msmLocatorInfo").hide();
+	   $("#msmLocatorInfo1").hide();
 		hideSubtestValidationMessage();
 	   
 	    $("#modifyTestPopup").dialog( {
@@ -143,7 +154,18 @@
 	     updateAllSubtests(allSubtestsMsm, selectedSubtestsMsm);
 	     populateAllSubtestMapMsm(allSubtestsMsm);
 		 populateLocatorTable();
-		 populateSubtestTable();
+		 if(subTestDetails.hasMultipleSubtests){
+		    var isLocatorPresentForStd = (subTestDetails.locatorSubtest.id == studentManifests[0].id) ? true : false;
+		  	populateSubtestTable();
+		  	populateRecomendedLevel(recomendedLevelMap , isLocatorPresentForStd);
+		  	$("#subtestTableDiv").show();
+		  	$("#msmHasAutolocator").removeAttr('disabled');
+		    $("#mStdMlocatorSubtestGridToolTip").show();
+		 } else {
+		 	$("#subtestTableDiv").hide();
+		 	$("#msmHasAutolocator").attr("disabled", true);
+		 	$("#mStdMlocatorSubtestGridToolTip").hide();
+		 }
 	}
 	
 	function prepareSelectedSubtestsMsm() {
@@ -974,5 +996,36 @@
 	    closePopUp('modifyTestPopup');
 	    closePopUp('sessionStudRegId');
 	    displayStudConfirmation();
+	}
+	
+	function populateRecomendedLevel(recomendedLevelMap, isLocatorPresentForStd){
+		if(subTestDetails.locatorSubtest == undefined || recomendedLevelMap.length==0){
+			return;
+		}
+		
+		if(isLocatorPresentForStd ){
+		    for (var ii=0; ii<allSubtestsMsm.length; ii++ ) {
+		         var recLevel= recomendedLevelMap[allSubtestsMsm[ii].id];
+		    	if(recLevel != undefined){
+		    	 	$("#level_"+(ii+1)).val(recLevel);
+		    	}
+		    }
+		
+		} else {
+			for (var ii=0; ii<allSubtestsMsm.length; ii++ ) {
+		         var recLevel= recomendedLevelMap[allSubtestsMsm[ii].id];
+		          if (recLevel != undefined && !isExists(selectedSubtestsMsm, allSubtestsMsm[ii])) {
+					$("#level_"+(ii+1)).val(recLevel);
+		          }
+		    }
+			if( locatorSessionInfo != undefined && locatorSessionInfo!=""){
+				$("#msmLocatorDetail").text(locatorSessionInfo);
+				$("#msmLocatorInfo").show();
+				$("#msmLocatorInfo1").show();
+			}else {
+				$("#msmLocatorInfo").hide();
+				$("#msmLocatorInfo1").hide();
+			}
+		}
 	}
 	

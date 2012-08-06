@@ -31,10 +31,22 @@
  
  --><div style="padding-bottom: 5px !important;" class="roundedMessage ui-corner-all">
  <div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
-		<p id="mmsModifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 0pt;">
+ 			<table class="transparent">
+				<tr class="transparent">
+					<td>
+			    		<h1><lb:label key="registration.modifyManifest.caption" /></h1>
+					</td>
+				</tr>
+				<tr> 
+					<td class="mmsModifySubtestMsg">  
+						<lb:label key="student.registration.page.subtitle" />
+					</td>	
+				</tr>
+			</table>	
+		 <!--<p id="mmsModifySubtestMsg" style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-top: 2pt; margin-bottom: 0pt;">
 		</p>
-	</div>
-		 <table id="msmLabelTb" style="margin-top: 5px; width: 808px;">
+	--></div>
+		 <table id="msmLabelTb" style="margin-top: 10px; width: 808px;">
 			<tr>
 				<td align="left" width="16%"  style="padding: 2px !important;"><lb:label key="viewStatus.subtest.testSessionName" /></td>
 				<td width="80%"><span id = "msmTestSessionName1"></span></td>

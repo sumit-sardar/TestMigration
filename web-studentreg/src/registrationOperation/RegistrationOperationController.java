@@ -35,7 +35,9 @@ import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.TABERecommendedLevel;
 import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
@@ -94,6 +96,9 @@ public class RegistrationOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
+    
+    @Control()
+    private com.ctb.control.db.TestAdmin admins;
     
     /*@Control()
     private com.ctb.control.crscoring.TestScoring testScoring;
@@ -928,29 +933,44 @@ public class RegistrationOperationController extends PageFlowController {
 		 ModifyManifestVo vo = new ModifyManifestVo();
 		 HttpServletResponse resp = getResponse();
 		 OutputStream stream = null;
+		 String locatorSessionInfo = "";
+		 Map<Integer, String> allRecomendedLevel =  new HashMap<Integer, String>();
 		 try {
 			 Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
 			 Integer itemSetIdTc = Integer.parseInt(getRequest().getParameter("itemSetIdTc"));
+			 Integer studentId = Integer.parseInt(getRequest().getParameter("studentId"));
+			 TestSession session = admins.getTestAdminDetails(testAdminId);
 			 //TestElement[] allSubtest = this.itemSet.getTestElementByTestAdmin(testAdminId);
-			 ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(scheduleTest, userName, testAdminId);
-			 // populating all subtest
-			 vo.populateTestSession(scheduledSession);
-			 vo.populateLevelOptions();
+			 TestElement [] allSubtest = itemSet.getTestElementsForSession(testAdminId);
+			 //ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(scheduleTest, userName, testAdminId);
+			 TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(allSubtest);
+			 
 
-			 if(!vo.getTestSession().isAutoLocator()){
-				 SubtestVO locatorSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetIdTc);
-				 //vo.getTestSession().getSubtests().add(0, locatorSubtest);
-				 vo.getTestSession().setLocatorSubtest(locatorSubtest);
-				 vo.getTestSession().setAutoLocator(true);
-			 } else{
-				 
+			 if(locatorSubtest == null){
+				 TestElementData suTed = scheduleTest.getSchedulableUnitsForTest(userName, itemSetIdTc, new Boolean(true), null, null, null);
+				 locatorSubtest = TestSessionUtils.getLocatorSubtest(suTed.getTestElements());
+			 } 
+			 
+			 String productType = TestSessionUtils.getProductType(session.getProductType());
+			 if(locatorSubtest!=null && !TestSessionUtils.isTabeAdaptiveProduct(productType)){
+				 TABERecommendedLevel[] trls = scheduleTest.getTABERecommendedLevelForStudent(userName, studentId, session.getItemSetId(), locatorSubtest.getItemSetId());
+				 TestSessionUtils.setRecommendedLevelForSession(allSubtest, trls);
+				 for (TestElement testElement : allSubtest) {
+					 allRecomendedLevel.put(testElement.getItemSetId(), testElement.getItemSetForm());
+				}
+				 locatorSessionInfo = TestSessionUtils.getLocatorSessionInfo( allSubtest, trls);
 			 }
+			 			 
+			 vo.populateDefaultTestSession(allSubtest);
 			 
-			 vo.populateDefaultManifest(scheduledSession.getScheduledUnits() );
-			 
-			
-			
-			 
+			 if(vo.getTestSession().getLocatorSubtest()==null && locatorSubtest!=null){
+				 vo.populateLocatorSubtest(locatorSubtest);
+			 }
+
+			 vo.populateLevelOptions();
+			 vo.populateDefaultManifest(allSubtest);
+			 vo.setLocatorSessionInfo(locatorSessionInfo);
+			 vo.setRecomendedLevel(allRecomendedLevel);
 			 
 			 
 		 } catch (Exception e) {

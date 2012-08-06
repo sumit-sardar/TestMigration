@@ -418,6 +418,37 @@ public class TestSessionUtils
         }
         return true;
     }
+    
+    public static boolean checkRecommendedlevels(TABERecommendedLevel[] trls, TestElement[] subtests )
+    {
+        if (trls.length == 0) {
+            return false;
+        }
+
+        for (int i=0 ; i<subtests.length ; i++) {
+        	TestElement subtest = (TestElement)subtests[i];
+            for (int j=0 ; j<trls.length ; j++) {
+                TABERecommendedLevel trl = trls[j];
+                Integer id = trl.getItemSetId();
+                if (id.intValue() == subtest.getItemSetId().intValue()) {
+                    boolean same = false;
+                    String srcLevel = subtest.getItemSetForm();
+                    String desLevel = trl.getRecommendedLevel();
+                    if ((srcLevel == null) && (desLevel == null))
+                        same = true;
+                    else {
+                        if (srcLevel == null) srcLevel = "E";
+                        if (desLevel == null) desLevel = srcLevel;
+                    	same = desLevel.equals(srcLevel);
+                    }
+                    if (! same) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * setDefaultLevels
@@ -1272,6 +1303,39 @@ public class TestSessionUtils
 
 		String locatorSessionInfo = "";
 		StudentManifest subtest = null;
+
+		if (!checkRecommendedlevels(trls, subtests)) {
+			return locatorSessionInfo;
+		}
+
+		HashMap<Integer, Integer> trlHash = new HashMap<Integer, Integer>();
+		for (int i = 0; i < subtests.length; i++) {
+			subtest = subtests[i];
+			for (int j = 0; j < trls.length; j++) {
+				TABERecommendedLevel trl = trls[j];
+				Integer id = trl.getItemSetId();
+				if (id.intValue() == subtest.getItemSetId().intValue()) {
+					if (trl.getTestAdminName() != null
+							&& !"".equals(trl.getTestAdminName())) {
+						if (!trlHash.containsKey(trl.getTestAdminId())) {
+							String dateStr = DateUtils.formatDateToDateString(trl.getCompletedDate());
+							locatorSessionInfo += (trl.getTestAdminName()+ ", " + dateStr + "\n");
+							trlHash.put(trl.getTestAdminId(), trl.getTestAdminId());
+						}
+					}
+				}
+			}
+		}
+
+		return locatorSessionInfo;
+
+	}
+	
+	public static String getLocatorSessionInfo(TestElement[] subtests,
+			TABERecommendedLevel[] trls) {
+
+		String locatorSessionInfo = "";
+		TestElement subtest = null;
 
 		if (!checkRecommendedlevels(trls, subtests)) {
 			return locatorSessionInfo;

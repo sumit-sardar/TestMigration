@@ -1,9 +1,10 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.TestElement;
 
 
@@ -17,8 +18,10 @@ public class ModifyManifestVo {
 	
 	private TestVO testSession = null;
 	private ArrayList<String> levelOptions = new ArrayList<String>();
-	List<SubtestVO> studentDefaultManifest = new ArrayList<SubtestVO>();
+	private List<SubtestVO> studentDefaultManifest = new ArrayList<SubtestVO>();
 	boolean hasDefaultAutoLocator = false;
+	private String locatorSessionInfo ;
+	private Map<Integer, String> recomendedLevel =  new HashMap<Integer, String>();
 	
 	
 	
@@ -56,8 +59,8 @@ public class ModifyManifestVo {
 	
  }
 	
-	public void populateTestSession(ScheduledSession scheduledSession) {
-		TestElement[] usTes = scheduledSession.getScheduledUnits();
+	public void populateDefaultTestSession(TestElement[] usTes) {
+		//TestElement[] usTes = scheduledSession.getScheduledUnits();
 		SubtestVO locatorSubtest = null;
 		List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
 		
@@ -81,7 +84,9 @@ public class ModifyManifestVo {
             }
         }
         subtestList = getDefaultSubtests(subtestList);
-
+        if(locatorSubtest!=null && locatorSubtest.getSessionDefault().equalsIgnoreCase("T")){
+        	hasDefaultAutoLocator = true;
+        }
         TestVO testVO = new TestVO( subtestList, locatorSubtest);
         setTestSession(testVO);
 	}
@@ -170,6 +175,64 @@ public class ModifyManifestVo {
 	 */
 	public void setTestSession(TestVO testSession) {
 		this.testSession = testSession;
+	}
+
+	/**
+	 * @return the studentDefaultManifest
+	 */
+	public List<SubtestVO> getStudentDefaultManifest() {
+		return studentDefaultManifest;
+	}
+
+	/**
+	 * @param studentDefaultManifest the studentDefaultManifest to set
+	 */
+	public void setStudentDefaultManifest(List<SubtestVO> studentDefaultManifest) {
+		this.studentDefaultManifest = studentDefaultManifest;
+	}
+
+	/**
+	 * @return the locatorSessionInfo
+	 */
+	public String getLocatorSessionInfo() {
+		return locatorSessionInfo;
+	}
+
+	/**
+	 * @param locatorSessionInfo the locatorSessionInfo to set
+	 */
+	public void setLocatorSessionInfo(String locatorSessionInfo) {
+		this.locatorSessionInfo = locatorSessionInfo;
+	}
+
+	public void populateLocatorSubtest(TestElement locatorSubtest) {
+		int durationMinutes = locatorSubtest.getTimeLimit().intValue()/60;
+        String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " mins";
+        SubtestVO lsubtest = new SubtestVO(locatorSubtest.getItemSetId(),
+                                            String.valueOf(1), 
+                                            locatorSubtest.getItemSetName(), 
+                                            duration, 
+                                            locatorSubtest.getAccessCode(),
+                                            locatorSubtest.getSessionDefault(),
+                                            locatorSubtest.getItemSetForm(),
+                                            false);
+        getTestSession().setLocatorSubtest(lsubtest);
+		getTestSession().setAutoLocator(true);
+		
+	}
+
+	/**
+	 * @return the recomendedLevel
+	 */
+	public Map<Integer, String> getRecomendedLevel() {
+		return recomendedLevel;
+	}
+
+	/**
+	 * @param recomendedLevel the recomendedLevel to set
+	 */
+	public void setRecomendedLevel(Map<Integer, String> recomendedLevel) {
+		this.recomendedLevel = recomendedLevel;
 	}
 
 	
