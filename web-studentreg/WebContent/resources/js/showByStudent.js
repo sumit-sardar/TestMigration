@@ -101,6 +101,33 @@
 						
 			}
 	 });  
+	 jQuery("#list2").jqGrid('filterToolbar',{
+	 	afterSearch: function(){ 
+	 		searchStudentSessionByKeyword();
+	 		setAnchorButtonState('registerButton', true);
+	 	}
+	 });
+	 	jQuery("#list2").navGrid('#pager2',{
+				search: false,add:false,edit:false,del:false 	
+			}).jqGrid('navButtonAdd',"#pager2",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	$("#searchStudentSessionByKeyword").dialog({  
+						title:$("#searchStudentSession").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+					 	});
+			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
+			});
+			
+			jQuery(".ui-icon-refresh").bind("click",function(){
+				$("#searchStudentSessionByKeywordInput").val('');
+				setAnchorButtonState('registerButton', true);
+			}); 
 	 
 	}
 	
