@@ -5,7 +5,7 @@ var jsonData;
 var assignedOrgNodeIds = "";
 var SelectedOrgNodeId;
 var SelectedOrgNode;
-var SelectedOrgNodes = [];
+//var SelectedOrgNodes = [];
 var currentNodeId ;
 var currentCategoryLevel;
 var currentTreeArray;
@@ -63,8 +63,7 @@ var leafNodeTextMap = {};
 var isAction = true;
 var isAddStudPopup = false;
 var organizationNodes = [];
-/*rapid registration end 
-*/
+
 var accomodationMap = {};
 function populateStudentRegTree() {
 	$.ajax({
@@ -209,7 +208,7 @@ function populateGrid(){
 			if(grid[0] != undefined && grid[0].p != undefined) {
 			 grid[0].p.search = false;
 			 }
-			gridScoringSessionReload();
+			reloadRegistrationSessionGrid();
 		}
 		if(gridloadedSes) {
 			document.getElementById('registerButton').style.visibility = "visible";
@@ -694,7 +693,7 @@ function populateRegistrationSessionGrid() {
 			sortorder: "asc",
 			height: 370,
 			width: $("#jqGrid-content-section").width(), 
-			editurl: 'getSessionForSelectedOrgNodeGrid.do',
+			editurl: 'getSessionForReportingGrid.do',
 			ondblClickRow: function(rowid) {populateGridAsPerView();},
 			caption:sessionGridTitle,
 			onPaging: function() {
@@ -781,7 +780,7 @@ function populateRegistrationSessionGrid() {
 }
 
 // for landing page of session grid
-function gridScoringSessionReload(){
+function reloadRegistrationSessionGrid(){
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
