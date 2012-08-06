@@ -267,8 +267,8 @@
         destRow.style.display = getDisplayShow();
                 
 		var table = destRow.parentNode;		
-        var index = getFirstInvisibleRowIndex(table);       
-            
+        var index = getFirstInvisibleRowIndex(table);     
+        
         if (index < numberOfRows) {
 			table.insertBefore(destRow, table.rows[index]);
 		}
@@ -294,9 +294,9 @@
                 addSelectedRow(srcRow);
             }
         }
-
-		unSelectItem();
     
+		unSelectItem();
+        
         return true;   
     }    
 
@@ -451,7 +451,7 @@
  
     function getFirstInvisibleRowIndex(table) 
     {
-		var index = table.rows.length-1; 
+		var index = table.rows.length-1;
 		for (var i=0 ; i<table.rows.length ; i++) {
             var row = table.rows[i];
 			if (isRowHidden(row)) {           

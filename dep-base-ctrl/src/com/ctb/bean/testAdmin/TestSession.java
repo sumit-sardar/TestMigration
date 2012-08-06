@@ -79,6 +79,7 @@ public class TestSession extends CTBBean
     private String offGradeBlocked;
     private String copyable;
     private String testLevel;
+    private String isStudentsSession;
    
    
     /**
@@ -702,5 +703,19 @@ public class TestSession extends CTBBean
 
 	public void setTestLevel(String testLevel) {
 		this.testLevel = testLevel;
+	}
+
+	/**
+	 * @return the isStudentsSession
+	 */
+	public String getIsStudentsSession() {
+		return isStudentsSession;
+	}
+
+	/**
+	 * @param isStudentsSession the isStudentsSession to set
+	 */
+	public void setIsStudentsSession(String isStudentsSession) {
+		this.isStudentsSession = isStudentsSession;
 	}
 } 

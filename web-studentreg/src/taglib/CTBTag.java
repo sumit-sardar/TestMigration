@@ -260,5 +260,52 @@ public class CTBTag extends TagSupport {
                             " onClick=\"" + onClick + "\" />";
         return hiddenStr + controlStr;
 	}
+	protected void displayCellStartColspan(String class_, String width_, String colspan_) throws IOException {
+		StringBuffer buff = new StringBuffer();
+		buff.append("<td");
+		if(class_ != null)
+			buff.append(" class=\"" + class_ + "\"");
+		if(width_ != null)
+			buff.append(" width=\"" + width_ + "\"");
+		if(colspan_ != null)
+			buff.append(" colspan=\"" + colspan_ + "\"");
+		buff.append(">");
+		writeToPage(buff.toString());
+	}
+	
+	protected void displayTableStartWithStyle(String class_, String style_) throws IOException {
+		StringBuffer buff = new StringBuffer();
+		buff.append("<table ");
+		if(class_ != null){
+			buff.append(" class=\"" + class_ + "\"");
+		}
+		if(style_ != null){
+			buff.append(" style=\"" + style_ + "\"");
+		}
+		buff.append(">");
+		writeToPage(buff.toString());	
+	}
+	
+	protected void displayCellStartWithStyle(String id_, String class_, String style_) throws IOException {
+		StringBuffer buff = new StringBuffer();
+		buff.append("<td");
+		if(id_ != null)
+			buff.append(" id=\"" + id_ + "\"");
+		if(class_ != null)
+			buff.append(" class=\"" + class_ + "\"");
+		if(style_ != null)
+			buff.append(" style=\"" + style_ + "\""); 
+		buff.append(" >");
+		writeToPage(buff.toString());
+	}
+	
+	protected void displayColorTableStart(String width_) throws IOException {
+		StringBuffer buff = new StringBuffer();
+		buff.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
+		if(width_ != null)
+			buff.append(" width=\"" + width_ + "\"");
+        buff.append(" >");
+		writeToPage(buff.toString());
+	}
 	
 }

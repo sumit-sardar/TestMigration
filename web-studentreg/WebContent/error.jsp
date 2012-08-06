@@ -8,7 +8,7 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
-<netui-template:template templatePage="/resources/jsp/template.jsp">
+<netui-template:template templatePage="/resources/jsp/oas_template.jsp">
     <netui-template:setAttribute name="title" value="Error"/>
     <netui-template:section name="bodySection">
 

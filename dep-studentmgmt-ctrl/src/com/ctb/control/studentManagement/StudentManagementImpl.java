@@ -3135,4 +3135,39 @@ public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdm
 		return false;
 	}
 
+	@Override
+	public ManageStudentData getStudentsForSelectedOrgNode(String userName,	Integer orgNodeId, Integer testAdminId) throws CTBBusinessException {
+		
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getStudentsForSelectedOrgNode");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			ManageStudent [] students = studentManagement.getStudentsForSelectedOrgNode(orgNodeId , testAdminId);
+			std.setManageStudents(students, pageSize);
+			return std;
+		}catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentsForSelectedOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+	
+	
+	@Override
+	public ManageStudentData getStudentsAtAndBelowForSelectedOrgNode(String userName,	Integer orgNodeId) throws CTBBusinessException {
+		
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getStudentsAtAndBelowForSelectedOrgNode");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			ManageStudent [] students = studentManagement.getStudentsAtAndBelowForSelectedOrgNode(orgNodeId );
+			std.setManageStudents(students, pageSize);
+			return std;
+		}catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentsAtAndBelowForSelectedOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+
 } 

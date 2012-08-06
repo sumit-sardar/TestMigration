@@ -52,6 +52,9 @@ public class Message implements java.io.Serializable
 	public static final String STUDENT_ID_UNUNIQUE_ERROR = "Please re-enter your Student ID information with an unique value.";
 	public static final String STUDENT_ID_UNUNIQUE_ERROR_AT_SAVE = "Please press back button to re-enter your Student ID information with an unique value.";
     //END- TABE-BAUM 060: Unique Student ID
+	
+	public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one group (class) for testing. Please choose only one.";
+	public static final String DEFAULT_STUDENT_ID_LABEL = "Student ID";
     
     public Message()
     {

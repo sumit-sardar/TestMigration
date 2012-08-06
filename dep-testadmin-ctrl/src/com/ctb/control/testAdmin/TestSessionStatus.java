@@ -485,4 +485,11 @@ public interface TestSessionStatus
     public void updateDonotScore(Integer testRosterId, String dnsStatus, Integer userName) throws CTBBusinessException;
     
     com.ctb.bean.testAdmin.TestSessionData getTestSessionsForStudentScoring(java.lang.String userName, java.lang.Integer userId, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+
+	 com.ctb.bean.testAdmin.TestSessionData getCurrentFutureTestAdminsForOrgNode(String userName,Integer userId, Integer treeOrgNodeId) throws CTBBusinessException;
+	
+	com.ctb.bean.testAdmin.TestSessionData getRecommendedTestSessionsForOrgNode(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
+
+	com.ctb.bean.testAdmin.TestSessionData getCurrentFutureTestAdminsForOrgNodeWithStudentStatus( String userName, Integer userId, Integer treeOrgNodeId,	Integer studentId) throws CTBBusinessException;
+	
 } 

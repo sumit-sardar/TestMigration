@@ -1,6 +1,6 @@
 package utils; 
 
-import data.SubtestVO;
+import dto.SubtestVO;
 import java.util.List;
 
 public class TABESubtestValidation 

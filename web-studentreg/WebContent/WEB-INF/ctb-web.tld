@@ -5,9 +5,8 @@
   <tlib-version>1.0</tlib-version>
   <jsp-version>1.2</jsp-version>
   <short-name>CTBWeb</short-name>
-  <description>CTB Tag Library for StudentRegistrationWeb</description>
-
-
+  <description>CTB Tag Library for TestAdministrationWeb</description>
+  
   <tag> 
       <name>subtestOrderList</name>
       <tag-class>taglib.SubtestOrderListTag</tag-class>
@@ -48,7 +47,7 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
- 
+
 
   <tag> 
       <name>autoLocatorTag</name>
@@ -80,9 +79,150 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+  
+  <tag> 
+      <name>studentDemographics</name>
+      <tag-class>taglib.StudentDemographicsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>demographics</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>studentImported</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag> 
+      <name>viewStudentDemographics</name>
+      <tag-class>taglib.ViewStudentDemographicsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>demographics</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>studentImported</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
 
+  <tag> 
+      <name>studentAccommodations</name>
+      <tag-class>taglib.StudentAccommodationsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>customerConfigurations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>musicList</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag> 
+      <name>viewStudentAccommodations</name>
+      <tag-class>taglib.ViewStudentAccommodationsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>customerConfigurations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>musicList</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+ 
+   <tag> 
+      <name>studentBulkAccommodations</name>
+      <tag-class>taglib.StudentBulkAccommodationTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>customerConfigurations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+ 
+  <tag> 
+      <name>studentColorSettings</name>
+      <tag-class>taglib.StudentColorSettingsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>id</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
+  
 </taglib>
  
  

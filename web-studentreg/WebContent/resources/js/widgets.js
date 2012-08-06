@@ -66,19 +66,21 @@ function setElementValueAndSubmit(elementId, value) {
 
 function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
     var element = document.getElementById(elementId);
-
+	//alert(element);
     if( element ) {
         element.value = value;
-
+		//alert("element..." + element.value);
         var actionElement = document.getElementById('actionElement');
         if( actionElement ) {
             actionElement.value = elementId;
+            //alert("actionElement.value..." + actionElement.value);
         }
 
         if ((anchorName != null) && (anchorName != "null")) {            
             var index = element.form.action.indexOf("#");
             if (index == -1) {                
                 element.form.action += ("#" + anchorName); 
+                //alert("element..." + element.form.action);
             }
         }
         
@@ -91,10 +93,45 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
 }
  
 
+//Changes for existing defect in Students section of selectsettings page for removeSelectedStudents button
+var totalSelectedCount = 0;
+function toggleEnableElementById(element) {
+   // alert("element apply fileter" + elementId + " " + element);
+    
+    if(element.checked)
+    	totalSelectedCount++;
+    else
+    	totalSelectedCount--;
+    	
+    var removeButton = document.getElementById("removeSelectedStudents");
+    
+    if(totalSelectedCount<=0)
+    	removeButton.setAttribute("disabled",'true');
+    else
+    	removeButton.removeAttribute("disabled");
+}    
+
+//Changes for existing defect in Proctor section of selectsettings page for removeSelectedProctors button
+var totalSelectedProctorCount = 0;
+function toggleEnableElementByIdProctor(element) {
+   // alert("element apply fileter" + elementId + " " + element);
+    
+    if(element.checked)
+    	totalSelectedProctorCount++;
+    else
+    	totalSelectedProctorCount--;
+    	
+    var removeButton = document.getElementById("removeSelectedProctors");
+    
+    if(totalSelectedProctorCount<=0)
+    	removeButton.setAttribute("disabled",'true');
+    else
+    	removeButton.removeAttribute("disabled");
+}  
 
 function enableElementById(elementId) {
     var element = document.getElementById(elementId);
-    
+    //alert("element apply fileter" + elementId + " " + element);
     if( element != null) {
         element.removeAttribute("disabled");      
     }
@@ -316,33 +353,15 @@ var calendar = null;
 function showCalendar(formElementChosen, formElementNoEarlier) {
 
     if( calendar == null )
-        calendar = new Calendar("testSession");
+        calendar = new Calendar();
     
     calendar.init(formElementChosen, formElementNoEarlier);
     calendar.show();
 }
 
-function showStudentCalendar(formElementChosen) {
 
-    if( calendar == null )
-        calendar = new Calendar("student");
-    
-    calendar.init(formElementChosen, null);
-    calendar.show();
-}
-
-function showUserCalendar(formElementChosen) {
-
-    if( calendar == null )
-        calendar = new Calendar("user");
-    
-    calendar.init(formElementChosen, null);
-    calendar.show();
-}
-
-function Calendar(calendarType) {
+function Calendar() {
     // member variables
-    this.type = calendarType;
     this.title = "Calendar";
     this.date = new Date();
     this.noEarlierDate = new Date();
@@ -354,21 +373,12 @@ function Calendar(calendarType) {
     
     // methods
     this.init = CalendarInit;
-    
-    if (this.type == "testSession") {
-        this.parseDate = TestSessionCalendarParseDate;
-        this.choseDate = TestSessionCalendarChoseDate;
-    }
-    else {
-        this.parseDate = CalendarParseDate;
-        this.choseDate = CalendarChoseDate;
-    }
-    
+    this.parseDate = CalendarParseDate;
     this.show = CalendarShow;
     this.focus = CalendarFocus;
     this.draw = CalendarDraw;
     this.endOfTheMonth = CalendarEndOfTheMonth;
-    
+    this.choseDate = CalendarChoseDate;
 }
 
 
@@ -379,7 +389,7 @@ function CalendarInit(formElementChosen, formElementNoEarlier) {
     this.noEarlierDate = new Date(); // default today.
 
     if( formElementChosen != null && formElementChosen.value != null && formElementChosen.value.length > 0 && !isNaN(Date.parse(formElementChosen.value)) ) {
-        this.date = this.parseDate(formElementChosen.value);
+        this.date = this.parseDate(formElementChosen.value);        
     }
 
     if( formElementNoEarlier != null && formElementNoEarlier.value != null && formElementNoEarlier.value.length > 0 && !isNaN(Date.parse(formElementNoEarlier.value)) ) {
@@ -388,33 +398,20 @@ function CalendarInit(formElementChosen, formElementNoEarlier) {
     
 }
 
-function TestSessionCalendarParseDate(strDate) {
+function CalendarParseDate(strDate) {
     var re = /(\d\d)\/(\d\d)\/(\d\d)/;
     var tokens = re.exec( strDate );
     var parsedDate = new Date();
 
     if( tokens != null ) {
-        parsedDate.setYear( parseInt(tokens[3],10) + 2000);
-        parsedDate.setDate( tokens[2] );
-        parsedDate.setMonth( tokens[1] - 1 );
-        
+        var year = parseInt(tokens[3],10) + 2000;
+        var month = tokens[1] - 1;
+        var day = tokens[2];
+        parsedDate = new Date(year, month, day);
     }
     return parsedDate;
 }
 
-function CalendarParseDate(strDate) {
-    var re = /(\d\d)\/(\d\d)\/(\d\d\d\d)/;
-    var tokens = re.exec( strDate );
-    var parsedDate = new Date();
-    
-    if( tokens != null ) {
-        parsedDate.setYear( parseInt(tokens[3],10) );
-        parsedDate.setDate( tokens[2] );
-        parsedDate.setMonth( tokens[1] - 1 );
-        
-    }
-    return parsedDate;
-}
 
 function CalendarShow() {
     var width  = 300;
@@ -442,7 +439,7 @@ function CalendarFocus() {
     }
 }
 
-function TestSessionCalendarChoseDate(month, day, year) {
+function CalendarChoseDate(month, day, year) {
     if( this.window != null ) {
         var output;
         if( month < 10 )
@@ -468,27 +465,6 @@ function TestSessionCalendarChoseDate(month, day, year) {
     }
 }
 
-function CalendarChoseDate(month, day, year) {
-    if( this.window != null ) {
-        var output;
-        if( month < 10 )
-            output = "0" + month + "/";
-        else
-            output = month + "/";
-
-        if( day < 10 )
-            output += "0" + day + "/";
-        else
-            output += day + "/";
-
-        output += year;
-        
-        if( this.formElement )
-            this.formElement.value = output;
-        this.window.close();
-    }
-}
-
 function CalendarEndOfTheMonth(monthIndex, year) {
     var daysInMonth = this.monthDays[monthIndex];
     
@@ -505,7 +481,7 @@ function CalendarEndOfTheMonth(monthIndex, year) {
 function CalendarDraw(monthIndex, year) {
     if( this.window != null ) {
         var viewedDate = new Date();
-        
+
         if( monthIndex == null || year == null ) {
             viewedDate.setYear(this.date.getFullYear());
             viewedDate.setDate(1);
@@ -531,6 +507,7 @@ function CalendarDraw(monthIndex, year) {
         var cells = new Array();
         var cellStyle;
         var dayNum = 0;
+                
         for(var week=0; week < 6; week++ ) {
             cells[week] = new Array();
             for(var day=0; day < 7; day++ ) {
@@ -541,9 +518,12 @@ function CalendarDraw(monthIndex, year) {
 
                 if( viewedDate.getFullYear() == this.date.getFullYear() && viewedDate.getMonth() == this.date.getMonth() && dayNum == this.date.getDate() ) {
                     cellStyle = "chosen";
-                } else if( day == 0 || day == 6 ) {
+                } 
+                else 
+                if( day == 0 || day == 6 ) {
                     cellStyle = "weekend";
-                } else {
+                } 
+                else {
                     cellStyle = "default";
                 }
 
@@ -554,18 +534,15 @@ function CalendarDraw(monthIndex, year) {
                     cellDate.setYear( viewedDate.getFullYear() );
                     cellDate.setMonth( viewedDate.getMonth() );
                     cellDate.setDate( dayNum );
+
                     
-                    
-                    if ( (this.type == "student") || (this.type == "user")
-                         ( cellDate >= this.noEarlierDate && cellDate >= today ) ) 
+                    if( cellDate >= this.noEarlierDate && cellDate >= today ) 
                         cells[week][day] += "<a href='#' onclick='choseDate(" + (viewedDate.getMonth()+1)  + ", " + dayNum + ", " + viewedDate.getFullYear() + "); return false;'>" + dayNum + "</a>";
                     else 
                         cells[week][day] += dayNum;
                         
                     cells[week][day] += "</td>";
-                    
-                } 
-                else {
+                } else {
                     cells[week][day] = "<td class='" + cellStyle + "'>&nbsp;</td>";
                 }
             }
@@ -745,7 +722,11 @@ function CalendarDraw(monthIndex, year) {
         alert("CalendarDraw(): Calendar window is not defined!");
     }
 }
-    
+
+
+
+/** moveSelectedOption *******************************************************/
+
 function moveSelectedOption(elementId, moveDirection) 
 {
     var selbox = document.getElementById(elementId);    
@@ -826,11 +807,388 @@ function moveSelectedOption(elementId, moveDirection)
 }    
 
 
-//START- FORM RECOMMENDATION
-	function setStudentId(studentId){
-
-	    document.getElementById("studentId").value = studentId;
-		
+/** Order List *******************************************************/
+	var chosenRow = null;
+	var dragState = null;
+	
+	function hilightRow(row) 
+    {
+		if( row != chosenRow ) {
+			if( dragState ) {
+				row.className = 'dynamicHilightDrag'; 
+			} 
+            else {
+				row.className = 'dynamicHilight'; 
+			}
+		}
+        return true;
 	}
-	//END- FORM RECOMMENDATION
+	
+	function unhilightRow(row) 
+    {
+		if( row == chosenRow ) {
+			row.className = 'dynamicChosen'; 
+		} 
+        else {
+			row.className = 'dynamic'; 
+		}
+        return true;
+	}
 
+	
+	function dragRow(event, row) 
+    {
+		var targetElement = event.srcElement;
+        
+		if( row == null ) {
+            if( chosenRow != null ) {
+                chosenRow.className = 'dynamic';
+            }
+			chosenRow = null;
+		} 
+        else {
+			if( chosenRow != null ) {
+				chosenRow.className = 'dynamic';
+			}
+			chosenRow = row;
+			chosenRow.className = 'dynamicChosen';
+            
+            if (targetElement.tagName == 'TD') {
+                chosenRow.parentNode.style.cursor = 'move';
+                dragState = true;
+            }
+		}        
+        return true;
+	}
+	
+	function cancelDrag() 
+    {
+        if (chosenRow != null) {
+            chosenRow.parentNode.style.cursor = 'default';
+        }
+        dragState = null;
+        return true;
+	}
+
+	function dropRow(row) 
+    {
+		if( row == null )
+			return false;
+
+		var table = row.parentNode;
+        table.removeChild(row);
+        chosenRow = null;
+        
+		for(var i=0; i < table.rows.length; i++) {
+			var column = table.rows[i].cells[0];
+            var order = i + 1;
+			column.innerHTML = column.innerHTML.replace(/value=.*? /, 'value="' + order + '"');
+		}        
+        return true;            
+	}
+  
+	function moveRow(row, delta) 
+    {
+		if( row == null || delta == 0 )
+			return false;
+
+		var table = row.parentNode;
+		var targetIndex = row.rowIndex + delta;
+        
+		if( delta > 0 ) 
+			targetIndex++;
+            
+		if( targetIndex < 0 )
+			targetIndex = 0;
+        
+                
+		if( targetIndex <= table.rows.length ) {
+        
+            if( targetIndex == table.rows.length )
+                table.appendChild(row);
+            else
+                table.insertBefore(row, table.rows[targetIndex]);
+        
+    
+            for(var i=0; i < table.rows.length; i++) {
+                var column = table.rows[i].cells[0];
+                var order = i + 1;
+                column.innerHTML = column.innerHTML.replace(/value=.*? /, 'value="' + order + '"');
+            }
+            
+            selectRow(row);
+        }
+                        
+        return false;
+	}
+	
+	function selectRow(row) 
+    {
+		if( row == null ) {
+            if( chosenRow != null ) {
+                chosenRow.className = 'dynamic';
+            }
+			chosenRow = null;
+		} 
+        else {
+			if( chosenRow != null ) {
+				chosenRow.className = 'dynamic';
+			}
+			chosenRow = row;
+			chosenRow.className = 'dynamicChosen';
+            var id = row.id;
+            if (id.indexOf("src_row_") == 0) {
+                enableSourceTableButtons();
+                disableDestinationTableButtons();
+            }
+            else {
+                enableDestinationTableButtons();
+                disableSourceTableButtons();
+            }
+		}        
+        return true;
+	}
+    
+	function delegateEvent(event, listener) 
+    {
+		var targetElement;
+
+		
+		if( !event ) {
+			event = window.event;
+		}
+		if( event.target ) {
+			targetElement = event.target;
+		} else if( event.srcElement ) {
+			targetElement = event.srcElement;
+		}
+		if( targetElement.nodeType == 3 ) {
+			targetElement = targetElement.parentNode;
+		}
+
+		switch(event.type)
+		{
+			case 'mouseup':
+				if( chosenRow != null ) {
+                    if (targetElement.parentNode.rowIndex != null) {
+                        if (targetElement.tagName == 'TD') {                    
+                            var delta = targetElement.parentNode.rowIndex - chosenRow.rowIndex;
+                            moveRow(chosenRow, delta);
+                            chosenRow.parentNode.style.cursor = 'default';
+                        }
+                        else return false;
+                    }
+                    else return false;
+				}
+				dragState = null;
+				unhilightRow(targetElement.parentNode);
+				break;
+			case 'mouseout':
+				if( targetElement.tagName == 'div' ) {
+				}
+				break;
+			default:
+				break;
+		}
+        
+        return true;
+	}
+  
+
+    function enableDestinationTableButtons() 
+    {
+        var removeRow = document.getElementById("removeRow");
+        removeRow.removeAttribute("disabled");      
+
+        var removeAllRows = document.getElementById("removeAllRows");
+        removeAllRows.removeAttribute("disabled");      
+
+        var moveUp = document.getElementById("moveUp");
+        moveUp.removeAttribute("disabled");      
+
+        var moveDown = document.getElementById("moveDown");
+        moveDown.removeAttribute("disabled");   
+        
+        var visibleRows = getVisibleRows("des_row_");
+
+        
+        if (visibleRows <= 1) {
+            moveUp.setAttribute("disabled", "true");   
+            moveDown.setAttribute("disabled", "true");   
+        } 
+        if (chosenRow != null) {
+            if (isFirstVisibleRow(chosenRow, "des_row_")) { 
+                moveUp.setAttribute("disabled", "true");   
+            }
+            if (isLastVisibleRow(chosenRow, "des_row_")) { 
+                moveDown.setAttribute("disabled", "true");   
+            }
+        }
+    }    
+
+    function disableDestinationTableButtons() 
+    {
+        var removeRow = document.getElementById("removeRow");
+        removeRow.setAttribute("disabled", "true");   
+        
+        var removeAllRows = document.getElementById("removeAllRows");
+        removeAllRows.setAttribute("disabled", "true");   
+        var visibleRows = getVisibleRows("des_row_");
+        if (visibleRows > 0) {
+            removeAllRows.removeAttribute("disabled");      
+        }
+        
+        var moveUp = document.getElementById("moveUp");
+        moveUp.setAttribute("disabled", "true");   
+
+        var moveDown = document.getElementById("moveDown");        
+        moveDown.setAttribute("disabled", "true");   
+    }    
+
+    function enableSourceTableButtons() 
+    {
+        var addRow = document.getElementById("addRow");
+        addRow.removeAttribute("disabled");      
+
+        var addAllRows = document.getElementById("addAllRows");
+        addAllRows.removeAttribute("disabled");      
+    }    
+
+    function disableSourceTableButtons() 
+    {
+        var addRow = document.getElementById("addRow");
+        addRow.setAttribute("disabled", "true");   
+
+        var addAllRows = document.getElementById("addAllRows");
+        addAllRows.setAttribute("disabled", "true");           
+
+        var visibleRows = getVisibleRows("src_row_");
+        if (visibleRows > 0) {
+            addAllRows.removeAttribute("disabled");      
+        }        
+    }    
+
+    function getVisibleRows(rowPrefix) 
+    {
+        var numberOfRows = document.getElementById("numberOfRows").value;      
+        var visibleRows = 0;
+
+        for (var i=1 ; i<=numberOfRows ; i++) {
+            var id = rowPrefix + i;
+            var row = document.getElementById(id); 
+            
+            if (row.style.display != "none") {
+                visibleRows = visibleRows + 1;
+            }
+        }    
+
+        return visibleRows;   
+    }    
+
+    function isFirstVisibleRow(srcRow, rowPrefix) 
+    {
+        var id = srcRow.id;
+        id = "index_" + id.substr(8, id.length);
+        var value = document.getElementById(id).value; 
+
+        if (value == 1)
+            return true;
+        return false;
+    }
+
+    function isLastVisibleRow(srcRow, rowPrefix) 
+    {
+        var numberOfRows = document.getElementById("numberOfRows").value;      
+        var id = srcRow.id;
+        id = "index_" + id.substr(8, id.length);
+        var value = document.getElementById(id).value; 
+        if (value == numberOfRows)
+            return true;
+        return false;
+    }
+    
+    function addSelectedRow(row) 
+    {
+		if( row == null )
+			return false;
+
+        // get Ids
+        var srcId = row.id;
+        var desId = "des" + srcId.substr(3, srcId.length);
+        
+        // remove row from source table
+        var srcRow = document.getElementById(srcId);        
+        srcRow.style.display = "none";
+        srcRow.className = 'dynamic';
+        
+        // add row into destination table
+        var destRow = document.getElementById(desId);        
+        destRow.style.display = "block";
+        
+        var numberOfRows = document.getElementById("numberOfRows").value;      
+        moveRow(destRow, numberOfRows) 
+                
+        return true; 
+    }    
+
+    function addAllSelectedRows() 
+    {
+        var numberOfRows = document.getElementById("numberOfRows").value;      
+        
+        for (var i=1 ; i<=numberOfRows ; i++) {
+            var srcId = "src_row_" + i;
+            var srcRow = document.getElementById(srcId); 
+            if (srcRow.style.display != "none") {
+                addSelectedRow(srcRow);
+            }
+        }
+    
+        return true;   
+    }    
+
+    function removeSelectedRow(row) 
+    {
+		if( row == null )
+			return false;
+
+        // get Ids
+        var desId = row.id;
+        var srcId = "src" + desId.substr(3, desId.length);
+        
+        // remove row from destination table
+        var destRow = document.getElementById(desId);        
+        destRow.style.display = "none";
+        destRow.className = 'dynamic';
+
+        // add row into source table
+        var srcRow = document.getElementById(srcId);        
+        srcRow.style.display = "block";
+        
+        selectRow(srcRow); 
+        
+        return true; 
+    }    
+
+    function removeAllSelectedRows() 
+    {
+        var numberOfRows = document.getElementById("numberOfRows").value;      
+        
+        for (var i=1 ; i<=numberOfRows ; i++) {
+            var desId = "des_row_" + i;
+            var desRow = document.getElementById(desId);      
+            if (desRow.style.display != "none") {
+                removeSelectedRow(desRow);
+            }
+        }
+    
+        return true;   
+    } 
+    
+    function getNetuiTagName(id)
+{
+    alert("getNetuiTagName===" + id);
+   alert("NetuiTagName===" + netui_names[id]);
+      return netui_names[id];
+  
+}
+       

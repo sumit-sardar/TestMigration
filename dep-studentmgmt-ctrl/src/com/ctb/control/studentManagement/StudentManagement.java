@@ -7,6 +7,7 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
@@ -524,6 +525,10 @@ public interface StudentManagement
 	java.lang.Integer getCompletedStudentCountForOrgNode(String userName,	Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
 
 	com.ctb.bean.studentManagement.StudentScoreReport getStudentReport(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+
+	com.ctb.bean.studentManagement.ManageStudentData getStudentsForSelectedOrgNode(String userName,	Integer orgNodeId, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+
+	com.ctb.bean.studentManagement.ManageStudentData getStudentsAtAndBelowForSelectedOrgNode(String userName,	Integer orgNodeId)throws com.ctb.exception.CTBBusinessException;
 	
 } 	
 

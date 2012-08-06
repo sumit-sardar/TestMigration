@@ -89,6 +89,8 @@ public class ManageStudent extends CTBBean
     private String defaultScheduler;
     private Date administrationDate; // added for Immediate Report
     
+    private String isSessionStudent;
+    
 	/**
 	 * @return the testPurpose
 	 */
@@ -776,6 +778,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setAdministrationDate(Date administrationDate) {
 		this.administrationDate = administrationDate;
+	}
+	/**
+	 * @return the isSessionStudent
+	 */
+	public String getIsSessionStudent() {
+		return isSessionStudent;
+	}
+	/**
+	 * @param isSessionStudent the isSessionStudent to set
+	 */
+	public void setIsSessionStudent(String isSessionStudent) {
+		this.isSessionStudent = isSessionStudent;
 	}
 	
     

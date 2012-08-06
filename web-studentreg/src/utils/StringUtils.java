@@ -95,6 +95,15 @@ public class StringUtils
 
         return (sb.toString());
     }
-
+    
+    public static boolean isNullEmpty(String s){
+    	if(s == null){
+    		return true;
+    	}
+    	if("".equals(s.trim())){
+    		return true;
+    	}
+    	return false;
+    }
     
 } 

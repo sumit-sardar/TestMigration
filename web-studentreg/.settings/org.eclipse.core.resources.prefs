@@ -1,10 +1,15 @@
-#Tue Oct 13 20:03:35 IST 2009
+#Fri Aug 03 17:28:04 IST 2012
 eclipse.preferences.version=1
+encoding//WebContent/error.jsp=UTF-8
 encoding//WebContent/error401.jsp=ISO-8859-1
-encoding//WebContent/registration/add_student.jsp=UTF-8
-encoding//WebContent/registration/congratulations.jsp=UTF-8
-encoding//WebContent/registration/enter_student.jsp=UTF-8
-encoding//WebContent/registration/find_student.jsp=UTF-8
-encoding//WebContent/registration/find_student_result.jsp=UTF-8
-encoding//WebContent/registration/modify_test.jsp=UTF-8
-encoding//WebContent/registration/show_message.jsp=ISO-8859-1
+encoding//WebContent/registrationOperation/editSubtest.jsp=ISO-8859-1
+encoding//WebContent/registrationOperation/find_student_session.jsp=UTF-8
+encoding//WebContent/registrationOperation/formRecommendation.jsp=UTF-8
+encoding//WebContent/registrationOperation/student_add_edit_detail.jsp=ISO-8859-1
+encoding//WebContent/registrationOperation/student_popup_from_session.jsp=UTF-8
+encoding//WebContent/registrationOperation/student_registration_confirmation.jsp=ISO-8859-1
+encoding//WebContent/registrationOperation/student_session_list.jsp=UTF-8
+encoding//WebContent/resources/js/js_web.jsp=ISO-8859-1
+encoding//WebContent/resources/jsp/oas_header.jsp=ISO-8859-1
+encoding//WebContent/resources/jsp/oas_navigation_menu.jsp=ISO-8859-1
+encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1

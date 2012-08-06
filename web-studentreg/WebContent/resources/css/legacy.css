@@ -14,7 +14,6 @@ body {
     background-color: #000;
     margin: 0px;
     padding: 0px;
-    scroll: yes;
 }
 
 
@@ -105,7 +104,10 @@ p {
 
 
 
-
+#legacyBodyViewer {
+    background-color: #fff;
+    vertical-align: top;
+}
 
 
 /******************************************************************************/
@@ -276,11 +278,12 @@ p {
 #legacyFooter a:hover {
     text-decoration: underline;
 }
- 
+
 span.navleft-unclickable {
     vertical-align: top;
     background-color: #ffc; /* yellow background of side menu */
     line-height: 16px;
     color: #336 ; /* needed to color the bullets */
 }
+
 

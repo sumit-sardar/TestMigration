@@ -822,6 +822,36 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }
     
+    public TestSessionData getRecommendedTestSessionsForOrgNode(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
+        try {
+            TestSessionData tsd = new TestSessionData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            TestSession [] sessions = null;
+
+           	sessions = testAdmin.getRecommendedTestSessionsForOrgNode(orgNodeId, userId, selectedProductId);	
+            tsd.setTestSessions(sessions, pageSize);
+            if(filter != null) tsd.applyFiltering(filter);
+            if(sort != null) tsd.applySorting(sort);
+            if(page != null) tsd.applyPaging(page);
+            sessions = tsd.getTestSessions();
+            for(int i=0;i<sessions.length;i++) {
+                if(sessions[i] != null) {
+                    TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                }
+            }
+            
+            return tsd;
+        } catch (SQLException se) {
+            TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+            tae.setStackTrace(se.getStackTrace());
+            throw tae;         
+        }
+    }
     
     public RosterElement[] getTestRosterForStudentIdAndOrgNode(Integer studentId, Integer orgNodeId) throws CTBBusinessException
     {
@@ -2157,4 +2187,59 @@ public class TestSessionStatusImpl implements TestSessionStatus
              throw tae;         
          }
      }
+     
+     public TestSessionData getCurrentFutureTestAdminsForOrgNode(String userName, Integer userId, Integer orgNodeId) throws CTBBusinessException
+     {
+         validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
+         try {
+             TestSessionData tsd = new TestSessionData();
+             Integer pageSize = null;
+             TestSession [] sessions = testAdmin.getCurrentFutureTestAdminsForOrgNode(orgNodeId, userId);
+             tsd.setTestSessions(sessions, pageSize);
+
+             sessions = tsd.getTestSessions();
+             for(int i=0;i<sessions.length;i++) {
+                 if(sessions[i] != null) {
+                 	sessions[i].setCopyable(admins.checkCopyable(userName, sessions[i].getTestAdminId()));
+                     TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                 }
+             }
+             
+             return tsd;
+         } catch (SQLException se) {
+             TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+             tae.setStackTrace(se.getStackTrace());
+             throw tae;         
+         }
+     }
+     
+     
+     public TestSessionData getCurrentFutureTestAdminsForOrgNodeWithStudentStatus(String userName, Integer userId, Integer orgNodeId,	Integer studentId) throws CTBBusinessException
+     {
+         validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
+         try {
+             TestSessionData tsd = new TestSessionData();
+             Integer pageSize = null;
+
+             TestSession [] sessions = testAdmin.getCurrentFutureTestAdminsForOrgNodeWithStudentStatus(orgNodeId, userId, studentId);
+             tsd.setTestSessions(sessions, pageSize);
+             sessions = tsd.getTestSessions();
+             for(int i=0;i<sessions.length;i++) {
+                 if(sessions[i] != null) {
+                 	sessions[i].setCopyable(admins.checkCopyable(userName, sessions[i].getTestAdminId()));
+                     TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                 }
+             }
+             
+             return tsd;
+         } catch (SQLException se) {
+             TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+             tae.setStackTrace(se.getStackTrace());
+             throw tae;         
+         }
+     }
+
+	
+
+	
 } 

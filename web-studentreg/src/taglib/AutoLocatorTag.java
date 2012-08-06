@@ -1,6 +1,6 @@
 package taglib;
 
-import data.SubtestVO;
+import dto.SubtestVO;
 import java.io.IOException;
 import java.util.List;
 

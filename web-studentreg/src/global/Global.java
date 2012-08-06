@@ -9,6 +9,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
  * page flow in a webapp. The "jpf:catch" annotation provides a global way to catch
  * unhandled exceptions by forwarding to an error page.
  *
+ * removed@jpf:catch type="PageFlowException" method="handlePageFlowException"
+ *
  * @jpf:catch type="Exception" method="handleException"
  */
 @Jpf.Controller(catches = { 
@@ -16,8 +18,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
                method = "handleException")
 })
 public class Global extends GlobalApp
-{
-    static final long serialVersionUID = 1L;
+{ 
+    static final long serialVersionUID = 1L;    
 
     /**
      * Global action to go to the homepage.
@@ -28,7 +30,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/homepage/HomePageController.jpf");
+            getResponse().sendRedirect("/SessionWeb/sessionOperation/begin.do");
         } 
         catch (IOException ioe)
         {
@@ -36,6 +38,7 @@ public class Global extends GlobalApp
         }        
         return null;
     }
+    
 
     /**
      * Global action to peform the logout activity.  Includes session invalidation
@@ -47,7 +50,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/logout.do");
+            getResponse().sendRedirect("/SessionWeb/logout.do");
         } 
         catch (IOException ioe)
         {
@@ -64,7 +67,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/sessionTimeout.do");
+            getResponse().sendRedirect("/SessionWeb/sessionTimeout.do");
         } 
         catch (IOException ioe)
         {
@@ -93,9 +96,30 @@ public class Global extends GlobalApp
         }
         
         System.err.print( "[" + getRequest().getContextPath() + "] " );
-        System.err.println( "Unhandled exception caught in StudentRegistration Global.app:" );
+        System.err.println( "Unhandled exception caught in HandScoring Global.app:" );
         ex.printStackTrace();
         return new Forward( "errorPage" );
     }
 
+    /*
+     * Handler for native page flow exceptions (e.g., ActionNotFoundException,
+     * which is thrown when an unknown page flow action is requested). This handler
+     * allows PageFlowExceptions to write informative error pages to the response.
+     * To use the standard exception-handler for these exceptions, simply remove
+     * this method and the "jpf:catch" annotation for PageFlowException.
+     *
+     * @jpf:exception-handler
+     * 
+     *
+    
+    public Forward handlePageFlowException( PageFlowException ex, String actionName,
+                                            String message, FormData form ) 
+        throws java.io.IOException
+    { 
+        System.err.println("TestAdministration Name="+actionName+" message="+message);
+        ex.printStackTrace();
+        ex.sendError( getRequest(), getResponse() ); 
+        return null; 
+    } 
+ */ 
 }
