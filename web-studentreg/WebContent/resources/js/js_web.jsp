@@ -269,5 +269,139 @@ function enableColorSettingsLink(enabled)
    	return true;
 } 
 
+function setQuestionColorOptions() 
+{
+    var bgrdbox = document.getElementById("question_bgrdColor");
+    var selIndex = bgrdbox.selectedIndex;
+    var option = bgrdbox.options[selIndex];
+    var chosen = option.value;
+    
+    var selbox = document.getElementById("question_fontColor"); 
+    selbox.options.length = 0;
+
+    if (chosen == "Dark blue") {
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+    }
+    else
+    if (chosen == "Black") {
+      selbox.options[selbox.options.length] = new Option('Green', 'Green');
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+      selbox.options[selbox.options.length] = new Option('Yellow', 'Yellow');
+    }
+    else {
+      selbox.options[selbox.options.length] = new Option('Black', 'Black');
+      selbox.options[selbox.options.length] = new Option('Dark blue', 'Dark blue');
+      selbox.options[selbox.options.length] = new Option('Dark brown', 'Dark brown');
+    }
+    
+    var questionBox = document.getElementById("questionBox");
+    setBackgroundColor(questionBox, chosen);
+
+    var colorbox = document.getElementById("question_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(questionBox, colorValue);        
+}
+
+function setAnswerColorOptions() 
+{
+    var bgrdbox = document.getElementById("answer_bgrdColor");
+    var selIndex = bgrdbox.selectedIndex;
+    var option = bgrdbox.options[selIndex];
+    var chosen = option.value;
+    
+    var selbox = document.getElementById("answer_fontColor"); 
+    selbox.options.length = 0;
+
+    if (chosen == "Dark blue") {
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+    }
+    else
+    if (chosen == "Black") {
+      selbox.options[selbox.options.length] = new Option('Green', 'Green');
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+      selbox.options[selbox.options.length] = new Option('Yellow', 'Yellow');
+    }
+    else {
+      selbox.options[selbox.options.length] = new Option('Black', 'Black');
+      selbox.options[selbox.options.length] = new Option('Dark blue', 'Dark blue');
+      selbox.options[selbox.options.length] = new Option('Dark brown', 'Dark brown');
+    }
+    
+    var answerBox = document.getElementById("answerBox");
+    setBackgroundColor(answerBox, chosen);
+
+    var colorbox = document.getElementById("answer_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(answerBox, colorValue);    
+}
+
+function setQuestionColorBox() 
+{
+    var questionBox = document.getElementById("questionBox");
+    var colorbox = document.getElementById("question_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(questionBox, colorValue);    
+}
+ 
+function setAnswerColorBox() 
+{
+    var answerBox = document.getElementById("answerBox");
+    var colorbox = document.getElementById("answer_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(answerBox, colorValue);    
+}
+
+function setBackgroundColor(control, color)
+{
+    if (color == "Light blue") 
+        control.style.backgroundColor  = '#CCECFF';
+    if (color == "Light pink") 
+        control.style.backgroundColor  = '#FFCCCC';
+    if (color == "Light yellow") 
+        control.style.backgroundColor  = '#FFFFB0';
+    if (color == "White") 
+        control.style.backgroundColor  = '#FFFFFF';
+    if (color == "Black") 
+        control.style.backgroundColor  = '#000000';
+    if (color == "Dark blue") 
+        control.style.backgroundColor  = '#000080';
+    if (color == "Dark brown") 
+        control.style.backgroundColor  = '#663300';
+    if (color == "Yellow") 
+        control.style.backgroundColor  = '#FFFF99';
+    if (color == "Green") 
+        control.style.backgroundColor  = '#00CC00';
+}
+
+function setColor(control, color)
+{
+    if (color == "Light blue") 
+        control.style.color  = '#CCECFF';
+    if (color == "Light pink") 
+        control.style.color  = '#FFCCCC';
+    if (color == "Light yellow") 
+        control.style.color  = '#FFFFB0';
+    if (color == "White") 
+        control.style.color  = '#FFFFFF';
+    if (color == "Black") 
+        control.style.color  = '#000000';
+    if (color == "Dark blue") 
+        control.style.color  = '#000080';
+    if (color == "Dark brown") 
+        control.style.color  = '#663300';
+    if (color == "Yellow") 
+        control.style.color  = '#FFFF99';
+    if (color == "Green") 
+        control.style.color  = '#00CC00';
+}
+
 
 
