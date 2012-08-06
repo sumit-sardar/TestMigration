@@ -214,10 +214,10 @@
 		<parameter name="port">80</parameter>
     </transportReceiver>
                        
-	<!--transportReceiver name="https"
+	<!-- <transportReceiver name="https"
                        class="org.apache.axis2.transport.http.AxisServletListener">
 		<parameter name="port">8443</parameter>
-	</transportReceiver-->		
+	</transportReceiver> -->		
 
     <!--Uncomment if you want to have TCP transport support-->
     <!--transportReceiver name="tcp"
@@ -250,11 +250,11 @@
         <!--parameter name="CONNECTION_TIMEOUT"></parameter-->
     </transportSender>
 
-    <!--transportSender name="https"
+    <transportSender name="https"
                      class="org.apache.axis2.transport.http.CommonsHTTPTransportSender">
         <parameter name="PROTOCOL">HTTP/1.1</parameter>
         <parameter name="Transfer-Encoding">chunked</parameter>
-    </transportSender-->
+    </transportSender>
 
     <!-- Please enable this if you need the java transport -->
     <!-- <transportSender name="java"
