@@ -1247,7 +1247,7 @@ function registerDelegate(tree){
 		var fragment = document.createDocumentFragment();
 		var ulElement = document.createElement('ul');
 		
-		if(type.indexOf("innerOrgNodeHierarchyForStd") < 0){
+		if(type == "innerOrgNodeHierarchyForStd"){
 			stream(objArray,ulElement,fragment,streamPush, null, function(){
 			currentElement.appendChild(fragment);
 			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
@@ -1255,7 +1255,7 @@ function registerDelegate(tree){
 		 });	
 		 }
 		 /* rapid registration start*/
-		 else if(type.indexOf("orgInnerID") < 0){
+		 else if(type == "orgInnerID"){
 			stream(objArray,ulElement,fragment,streamInnerPush1, null, function(){
 			currentElement.appendChild(fragment);
 			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
@@ -1366,7 +1366,7 @@ function registerDelegate(tree){
 		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
 			liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
-		    liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		    //liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> "; // commented for overwriting innerHTML
 		ulElement.appendChild(liElement);
 		fragment.appendChild(ulElement);
 	  }
