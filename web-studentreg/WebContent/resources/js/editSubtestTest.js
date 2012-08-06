@@ -119,31 +119,7 @@
 	    $("#modifyTestPopup").parent().css("left", leftpos);
 	  
 	   PopulateManifestDetail();
-	   /* 
-	     updateEditSubtestTable();
-	    selectedAccessCodeMap = new Map();
-	   
-		
-		populateRecomendedLevel(studentManifestdetails);
-	    if(isTestBreak) {
-		    for(var i=0;i<subtestLength;i++){	
-		   			var itemSetIdTd = document.getElementById("itemSetIdTD"+i).value;
-			      	var selectedAccessCode = document.getElementById("aCodeB"+i).value;
-			      	selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
-			}
-			if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && hasAutolocator) {
-				var itemSetIdTd = document.getElementById("itemSetIdTD").value;
-			    var selectedAccessCode = document.getElementById("aCodeB_l").value;
-				selectedAccessCodeMap.put(itemSetIdTd, selectedAccessCode);
-			}
-	    	
-	    } else {
-				var selectedAccessCode = document.getElementById("aCode").value;
-				selectedAccessCodeMap.put('AccessCode', selectedAccessCode);
-	    
-	    }
-	    */
-	   
+	  	   
 	}
 	
 	
