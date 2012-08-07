@@ -104,6 +104,29 @@ public class AccommodationUtil {
         
         return copied;    	
     }
+
+    public static StudentAccommodations createDefault(Integer studentId)
+    {
+        StudentAccommodations copied = new StudentAccommodations();    
+        
+        copied.setStudentId(studentId);
+        copied.setCalculator("F");
+        copied.setTestPause("F");
+        copied.setUntimedTest("F");
+        copied.setHighlighter("F");
+        copied.setScreenReader("F");	
+        copied.setScreenMagnifier("");  
+        copied.setStudentGrade("");     
+        copied.setColorFontAccommodation("F");
+        copied.setQuestionBackgroundColor(null);
+        copied.setQuestionFontColor(null);
+        copied.setQuestionFontSize(null);
+        copied.setAnswerBackgroundColor(null);
+        copied.setAnswerFontColor(null);
+        copied.setAnswerFontSize(null);
+        
+        return copied;    	
+    }
     
     private static String getColorHexMapping(String color) {
     	if (color != null) {

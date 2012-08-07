@@ -184,14 +184,17 @@ public class SchedulingWS implements Serializable {
 	        		student.setStudentId(studentId);
 	        		
 	        		// create/update student accommodations
+	        		StudentAccommodations sa = null;
 	        		Accommodation accom = session.getAccom();
-	        		if (accom != null) {
-		        		StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
-		        		if (createNewStudent)
-		        			createStudentAccommodations(studentId, sa);
-		        		else
-		        			updateStudentAccommodations(studentId, sa);
-	        		}
+	        		if (accom != null) 
+		        		sa = AccommodationUtil.makeCopy(studentId, accom);
+	        		else
+		        		sa = AccommodationUtil.createDefault(studentId);
+
+	        		if (createNewStudent)
+		        		createStudentAccommodations(studentId, sa);
+		        	else
+		        		updateStudentAccommodations(studentId, sa);
 	        	}
 	        	else {
 	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());

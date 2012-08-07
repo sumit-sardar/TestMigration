@@ -103,8 +103,6 @@
 <option value="(GMT-06:00) Central Time (US and Canada)">(GMT-06:00) Central Time (US and Canada)&nbsp;&nbsp;</option>
 <option value="(GMT-05:00) Indiana (East)">(GMT-05:00) Indiana (East)&nbsp;&nbsp;</option>
 <option value="(GMT-05:00) Eastern Time (US and Canada)">(GMT-05:00) Eastern Time (US and Canada)&nbsp;&nbsp;</option>
-<option value="(GMT+08:00) China Standard Time">(GMT+08:00) China Standard Time&nbsp;&nbsp;</option>
-<option value="(GMT+09:00) Korea Standard Time">(GMT+09:00) Korea Standard Time&nbsp;&nbsp;</option>
 </select>
 </td></tr>
 
