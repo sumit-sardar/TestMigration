@@ -10,7 +10,6 @@ import java.util.TimeZone;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
-import org.apache.commons.httpclient.protocol.Protocol;
 
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
@@ -44,6 +43,8 @@ import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.CompositeScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ContentAreaScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ItemScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.PrimaryObjScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore;
+import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScoreResponse;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.SecondaryObjScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
@@ -145,18 +146,19 @@ public class TVTestResultController implements TestResultController {
 	    	ScoringServiceStub stub = null;
 	    	try {
         		final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
-        		// 1.) unregister the current https protocol.  
-	            org.apache.commons.httpclient.protocol.Protocol.unregisterProtocol("https");  
-	               
-	            // 2.) reregister the new https protocol to use the easy ssl protocol socked factory.  
-	            org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https",  
-	             new Protocol("https", new org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory(), 443));  
-	           
         		stub = new ScoringServiceStub(ctx, endPointUrl);
         		stub._getServiceClient().engageModule("logging");
         		status = stub.processStudentScore(user_arg, studentScore);
 		  	} catch (Exception e) {
-		  		e.printStackTrace();
+		  		try {
+        			status = stub.processStudentScore(user_arg, studentScore);
+   		    	} catch (Exception ex) {
+        			try {
+        				status = stub.processStudentScore(user_arg, studentScore);
+        			} catch (Exception exc) {
+        				//exc.printStackTrace();
+        			}
+        		}
         	} finally {
         		if(status != null) {
         			System.out.println("status.getStudentId() -> " + status.getStudentId());
