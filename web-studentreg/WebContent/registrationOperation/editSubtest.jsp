@@ -39,7 +39,7 @@
 				</tr>
 				<tr> 
 					<td class="mmsModifySubtestMsg">  
-						<lb:label key="student.registration.page.subtitle" />
+					   <span id="mmsModifySubtestMsg"> </span>
 					</td>	
 				</tr>
 			</table>	
@@ -192,7 +192,7 @@
 </div>
 <div style="padding: 10px;">
 <center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
-	onclick=" javascript:validateAndUpdateSubtest('modifyTestPopup');return false;" class="ui-widget-header" style="width: 60px">&nbsp;
+	onclick=" javascript:validateAndScheduleStudent('modifyTestPopup');return false;" class="ui-widget-header" style="width: 60px">&nbsp;
 <input type="button" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/>
 	onclick="javascript:closePopUp('modifyTestPopup'); return false;" class="ui-widget-header" style="width: 60px">
 </center>
