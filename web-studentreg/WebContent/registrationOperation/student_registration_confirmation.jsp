@@ -46,7 +46,7 @@
 		<table align="center" width="95%">
 			<tr>
 				<td>
-					<div class="ui-widget-header"><h3><lb:label key="student.registration.showBy.student" /></h3></div>
+					<div class="ui-widget-header"><lb:label key="student.registration.showBy.student" /></div>
 					<table class="sortable" width="100%">
 						<tr class="transparent">
 							<td class="transparent" width="50%">
@@ -88,7 +88,7 @@
 	<table align="center" width="95%">
 		<tr>
 			<td>
-				<div class="ui-widget-header"> <h3><lb:label key="stu.label.testSession" /></h3></div>
+				<div class="ui-widget-header"><lb:label key="stu.label.testSession" /></div>
 					<table class="sortable" width="100%">
 						<tr class="transparent">
 							<td class="transparent" width="50%">
@@ -153,7 +153,7 @@
 		<table align="center" width="95%">
 			<tr>
 				<td>
-					<div class="ui-widget-header"> <h3><lb:label key="stu.label.testStructure" /></h3></div>
+					<div class="ui-widget-header"><lb:label key="stu.label.testStructure" /></div>
 						<table class="sortable">
 					    	<tr class="sortable">
 					        	<th class="sortable alignLeft" height="25" width="*">&nbsp;<span><lb:label key="stu.label.subtest" /></span></th>
