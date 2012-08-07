@@ -144,7 +144,7 @@ public class TVTestResultController implements TestResultController {
 	    	ScoringStatus status = null;
 	    	ScoringServiceStub stub = null;
 	    	try {
-        		final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
+        		//final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
         		// 1.) unregister the current https protocol.  
 	            org.apache.commons.httpclient.protocol.Protocol.unregisterProtocol("https");  
 	               
@@ -152,8 +152,8 @@ public class TVTestResultController implements TestResultController {
 	            org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https",  
 	             new Protocol("https", new org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory(), 443));  
 	           
-        		stub = new ScoringServiceStub(ctx, endPointUrl);
-        		stub._getServiceClient().engageModule("logging");
+        		stub = new ScoringServiceStub(endPointUrl);
+        		//stub._getServiceClient().engageModule("logging");
         		status = stub.processStudentScore(user_arg, studentScore);
 		  	} catch (Exception e) {
 		  		e.printStackTrace();
@@ -164,7 +164,7 @@ public class TVTestResultController implements TestResultController {
     				System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
     				System.out.println("status.getStatus() -> " + status.getStatus());
         		}
-        		displayScoresInRequest(studentScore);
+        		//displayScoresInRequest(studentScore);
         	}
         	
         	System.out.println("Stop");
