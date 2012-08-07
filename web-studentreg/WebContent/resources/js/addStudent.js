@@ -271,6 +271,15 @@ function studentDetailSubmit(){
 			}
 		}
 	}	
+	
+	function initCap(str) {
+	 /* First letter as uppercase, rest lower */
+	 var returnStr = $.trim(str);
+	 if(str != null && str != ""){
+	 	returnStr = returnStr.substring(0,1).toUpperCase() + returnStr.substring(1,returnStr.length);
+	 }
+	 return returnStr;
+	} 
 
 function VerifyStudentDetail(assignedOrgNodeIds){
                        // alert($("#isMandatoryBirthDate").val());
@@ -781,7 +790,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 						}
 				var isChecked = $(element).hasClass("jstree-checked");
 				if(isChecked){
-					var completePath = $("#innerID").jstree("get_path",$("#"+elementId),true);
+					var completePath = $("#orgInnerID").jstree("get_path",$("#"+elementId),true);
 					if(completePath){
 						leafNodePathMap[elementId] = completePath.toString();
 						leafNodeTextMap[elementId] = trim($("#"+elementId).text());
