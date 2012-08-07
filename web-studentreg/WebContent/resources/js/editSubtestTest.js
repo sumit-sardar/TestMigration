@@ -1010,12 +1010,11 @@
 	function validateAndScheduleStudent() {
 	     var validSubtest = validateSubtest();
 	     if(validSubtest){
-	        //scheduleStudent();
+	        closePopUp('modifyTestPopup');
+	    	closePopUp('sessionStudRegId');
+	    	displayStudConfirmation();
 	     }
-	   
-	   /* closePopUp('modifyTestPopup');
-	    closePopUp('sessionStudRegId');
-	    displayStudConfirmation();*/
+
 	}
 	
 	function validateSubtest(){
