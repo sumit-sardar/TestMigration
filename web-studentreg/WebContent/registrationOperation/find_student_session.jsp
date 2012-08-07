@@ -76,6 +76,23 @@
 <input type="hidden" id="invalidDateID" name="invalidDateID" value=<lb:label key="stu.msg.invalidDate" prefix="'" suffix="'"/>/>
 <input type="hidden" id="alphaNumericCharsID" name="alphaNumericCharsID" value=<lb:label key="stu.msg.alphaNumericChars" prefix="'" suffix="'"/>/>
 
+
+
+<input type="hidden" id="noSubtestMsg" name = "noSubtestMsg" value=<lb:label key="session.noSubtest.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="languageDependencyMsg" name = "languageDependencyMsg" value=<lb:label key="session.languageDependency.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="languageLevelMsg" name = "languageLevelMsg" value=<lb:label key="session.languageLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="readingDependencyMsg" name = "readingDependencyMsg" value=<lb:label key="session.readingDependency.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="readingLevelMsg" name = "readingLevelMsg" value=<lb:label key="session.readingLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mathSubtestsMsg" name = "mathSubtestsMsg" value=<lb:label key="session.mathSubtests.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="scoreCalulatableMsg" name = "scoreCalulatableMsg" value=<lb:label key="session.scoreCalulatable.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mathLevelMsg" name = "mathLevelMsg" value=<lb:label key="session.mathLevel.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="subtestValidationFailedMsg" name = "subtestValidationFailedMsg" value=<lb:label key="session.subtestValidationFailed.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="textSelectMsg" name = "textSelectMsg" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
+<input type="hidden" id="msmTabeSelectStudentIns"  value=<lb:label key="midify.student.manifest.tabe.select.student.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="msmNonTabeSelectStudentIns" value=<lb:label key="midify.student.manifest.nontabe.select.student.message" prefix="'" suffix="'"/> />
+
+
+
 <table class="transparent" width="97%" style="margin:15px auto;"> 
 	<tr class="transparent">
 		<td>

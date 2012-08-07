@@ -39,7 +39,7 @@
 				</tr>
 				<tr> 
 					<td class="mmsModifySubtestMsg">  
-					   <span id="mmsModifySubtestMsg"> </span>
+					   <span id="mmsModifySubtestMsg" style="padding-top: 5px; padding-left: 2px; padding-right: 5px;"> </span>
 					</td>	
 				</tr>
 			</table>	

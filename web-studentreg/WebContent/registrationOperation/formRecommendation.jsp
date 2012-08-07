@@ -74,8 +74,8 @@
   	<div id="showBySessionFRButtonDiv" style="float: left; clear: both; padding-top: 20px; padding-bottom: 15px; visibility: none;width: 100%;">
 		<div style="float: none">
 		<center>
-		    <input type="button"  id="Yes" value="&nbsp;Yes&nbsp;"      onclick="javascript:sessionListPopupOnFRAcceptForSession(); return false;" class="ui-widget-header" style="width:60px">
-			<input type="button"  id="No"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:openModifyTestPopup(this); return false;" class="ui-widget-header" style="width:60px">
+		    <input type="button"  id="Yes" value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/>      onclick="javascript:sessionListPopupOnFRAcceptForSession(); return false;" class="ui-widget-header" style="width:60px">
+			<input type="button"  id="No"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:openModifyTestPopup(this); return false;" class="ui-widget-header" style="width:60px">
    		</center>
    		</div>		
   </div>
@@ -83,8 +83,8 @@
     <div id="showByStudentFRButtonDiv" style="float: left; clear: both; padding-top: 20px; padding-bottom: 15px; visibility: none; width: 100%;">
 		<div style="float: none">
 		<center>
-		    <input type="button"  id="showByStudentYes" value="&nbsp;Yes&nbsp;"      onclick="javascript:sessionListPopupOnFRAccept(); return false;" class="ui-widget-header" style="width:60px">
-			<input type="button"  id="showByStudentNo"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:sessionListPopupOnFRNotAccept(); return false;" class="ui-widget-header" style="width:60px">
+		    <input type="button"  id="showByStudentYes" value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/>      onclick="javascript:sessionListPopupOnFRAccept(); return false;" class="ui-widget-header" style="width:60px">
+			<input type="button"  id="showByStudentNo"  value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:sessionListPopupOnFRNotAccept(); return false;" class="ui-widget-header" style="width:60px">
    		</center>
    		</div>
   </div>
