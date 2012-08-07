@@ -18,6 +18,8 @@ public class SessionValidatorUtil {
 	public static final String MESSAGE_TIME_ZONE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Time Zone\" for this assignment.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "OK:One or more students have started this assessment. The changes you have made to the accommodations will be applicable to students who begin this test <i>after</i> this change is saved.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_STUDENT = "Error:You can no longer edit accomodation for this student.";
+	public static final String MESSAGE_START_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Time\" for this assignment.";
+	public static final String MESSAGE_END_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Time\" for this assignment.";
 	
 
 	public static boolean isProductUpdated(Session session, TestSession testSession){
@@ -118,7 +120,7 @@ public class SessionValidatorUtil {
 		}
 		return isUpdated;
 	}
-	public static String getInvalidField(boolean productUpdated, boolean subtestUpdated, boolean levelUpdated, boolean sessionUpdated, boolean  startDateUpdated, boolean endTimeUpdated, boolean timeZoneUpdated, boolean enforceBreakUpdated){
+	public static String getInvalidField(boolean productUpdated, boolean subtestUpdated, boolean levelUpdated, boolean sessionUpdated, boolean  startDateUpdated,  boolean  endDateUpdated, boolean startTimeUpdated, boolean endTimeUpdated, boolean timeZoneUpdated, boolean enforceBreakUpdated){
 		String result = "";
 		if(productUpdated){
 			result = SessionValidatorUtil.MESSAGE_PRODUCT_UNEDITABLE;
@@ -154,10 +156,22 @@ public class SessionValidatorUtil {
 			result = SessionValidatorUtil.MESSAGE_START_DATE_UNEDITABLE;
 		}
 		
-		if (endTimeUpdated && result.length()>0){
+		if (endDateUpdated && result.length()>0){
 			result += " | " + SessionValidatorUtil.MESSAGE_END_DATE_UNEDITABLE;
-		} else if (endTimeUpdated && result.length()==0){
+		} else if (endDateUpdated && result.length()==0){
 			result = SessionValidatorUtil.MESSAGE_END_DATE_UNEDITABLE;;
+		}
+
+		if (startTimeUpdated && result.length()>0){
+			result += " | " + SessionValidatorUtil.MESSAGE_START_TIME_UNEDITABLE;
+		} else if (startTimeUpdated && result.length()==0){
+			result = SessionValidatorUtil.MESSAGE_START_TIME_UNEDITABLE;;
+		}
+		
+		if (endTimeUpdated && result.length()>0){
+			result += " | " + SessionValidatorUtil.MESSAGE_END_TIME_UNEDITABLE;
+		} else if (endTimeUpdated && result.length()==0){
+			result = SessionValidatorUtil.MESSAGE_END_TIME_UNEDITABLE;;
 		}
 		
 		if (timeZoneUpdated && result.length()>0){

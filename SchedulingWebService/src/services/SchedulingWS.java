@@ -1091,7 +1091,7 @@ public class SchedulingWS implements Serializable {
 			boolean levelUpdated = SessionValidatorUtil.isLevelUpdated(session,	savedSessionData.getTestSessions()[0]);
 			boolean sessionUpdated = SessionValidatorUtil.isSessionNameUpdated(	session, savedSessionData.getTestSessions()[0]);
 			boolean startDateUpdated = SessionValidatorUtil.isStartDateUpdated(	session, savedSessionData.getTestSessions()[0]);
-			boolean endDateUpdated = SessionValidatorUtil.isEndDateUpdated(	session, savedSessionData.getTestSessions()[0]);
+			boolean endDateUpdated = false;
 			boolean startTimeUpdated = SessionValidatorUtil.isStartTimeUpdated(	session, savedSessionData.getTestSessions()[0]);
 			boolean endTimeUpdated = SessionValidatorUtil.isEndTimeUpdated(	session, savedSessionData.getTestSessions()[0]);
 			boolean timeZoneUpdated = SessionValidatorUtil.isTimeZoneUpdated(session, savedSessionData.getTestSessions()[0]);
@@ -1099,7 +1099,7 @@ public class SchedulingWS implements Serializable {
 			
 			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || endDateUpdated || startTimeUpdated || endTimeUpdated || timeZoneUpdated || enforceBreakUpdated) {
 				System.out.println("Modification of product, subtest , level, session, startDate, endDate, startTime, endTime and timeZone is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, timeZoneUpdated, enforceBreakUpdated));
+				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated,startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
 				isValid = false;
 			}
 
@@ -1120,10 +1120,12 @@ public class SchedulingWS implements Serializable {
 			boolean enforceBreakUpdated =  SessionValidatorUtil.isEnforceBreakUpdated(	session, savedSessionData.getTestSessions()[0]);
 			boolean endTimeUpdated = false;
 			boolean timeZoneUpdated = false;
+			boolean endDateUpdated = false;
+			boolean startTimeUpdated = false;
 
 			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || enforceBreakUpdated) {
 				System.out.println("Modification of product, subtest , level, session and startDate is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
 				isValid = false;
 			}
 		} else {
@@ -1139,13 +1141,15 @@ public class SchedulingWS implements Serializable {
 			boolean levelUpdated = SessionValidatorUtil.isLevelUpdated(session,	savedSessionData.getTestSessions()[0]);
 			boolean sessionUpdated = false;
 			boolean startDateUpdated = false;
+			boolean endDateUpdated = false;
+			boolean startTimeUpdated = false;
 			boolean endTimeUpdated = false;
 			boolean timeZoneUpdated = false;
 			boolean enforceBreakUpdated = false;
 			
 			if (productUpdated || subtestUpdated || levelUpdated) {
 				System.out.println("Modification of product, subtest and level is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
 				isValid = false;
 			}
 		}
