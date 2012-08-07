@@ -518,7 +518,16 @@ function str2num(sText) {
 
 function saveLicenses() {
 
-   	if (editingId != null) {
+	var inputCtrlPresent = false;
+	$(":input").each(function(){
+		var xxx = $(this);
+		var id = xxx.attr('id');
+		if (id.indexOf('_available') != -1) {
+			inputCtrlPresent = true;
+		}
+	});
+	
+   	if ((editingId != null) || inputCtrlPresent) {
    		alert("You are currently editing a license quantity. Click outside the edit box to confirm the change before saving.");
    		return;
 	}
