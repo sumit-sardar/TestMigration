@@ -36,7 +36,7 @@ public class UrlDataCollector {
 		        data.setWebserviceUrl(rs.getString("URL"));
     		}
     		if (data == null || data.getWebserviceUrl() == null) {
-    			data.setWebserviceUrl("http://192.168.14.136:8080/host/services/ScoringService");
+    			data.setWebserviceUrl("https://151.108.140.171/bredexsoap/services/ScoringService?wsdl");
     		}
     		return data;
     	} finally {
