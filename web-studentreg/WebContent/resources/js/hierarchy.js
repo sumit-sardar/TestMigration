@@ -987,7 +987,7 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 			//grid[0].p.search = false;
 			//grid[0].triggerToolbar();// to trigger previously applied filters
 			var g = {groupOp:"AND",rules:[]};
-			g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			//g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
 			g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
 			grid[0].p.search = true;
@@ -995,7 +995,7 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 			$.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		}else {
 			var g = {groupOp:"AND",rules:[],groups:[]};
-			g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			//g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
 			g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});			 
 			f = {groupOp:"OR",rules:[]};
@@ -1005,8 +1005,8 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 			f.rules.push({field:"grade",op:"cn",data:searchFiler});
 			f.rules.push({field:"gender",op:"cn",data:searchFiler});
 			f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
-			f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
-			f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});			   
+			//f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
+			//f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});			   
 		 	g.groups.push(f);		 	
 			grid[0].p.search = true;
 			grid[0].p.ignoreCase = true;
@@ -1058,7 +1058,7 @@ function gridItemStudentReloadSBI(itemSetId, itemId){
 			$("#searchStudentByKeywordInput").val('');
 			 //grid[0].p.search = false;
 			 var g = {groupOp:"AND",rules:[]};
-			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
+			// g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
 			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
 			 grid[0].p.search = true;

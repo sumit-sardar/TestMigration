@@ -212,26 +212,24 @@ function studentDetailSubmit(){
 													accomodationMap[modifyStudentId] = updateAccomodationMap[modifyStudentId];
 																										
 													if(showStudentInGrid) {
-														var dataToBeAdded = {lastName:initCap($("#studentRegLastName").val()),
-																			firstName:initCap($("#studentRegFirstName").val()),
-																			middleInitial:$.trim($("#studentRegMiddleName").val()).substring(0,1).toUpperCase(),
+														
+														var dataToBeAdded = {studentName:initCap($("#studentRegLastName").val())+','+ initCap($("#studentRegFirstName").val()),
 																			grade:$("#gradeOptions").val(),
 																			orgNodeNamesStr:$.trim(assignedOrg),
 																			gender:$("#genderOptions").val(),
-																			hasAccommodations:data.hasAccommodation,
-																			userName:data.studentLoginId};
-																			//studentNumber:$("#studentExternalId").val()};
+																			userName:data.studentLoginId,
+																			studentNumber:$("#studentRegExtPin1").val()};
 														
-														var sortOrd = jQuery("#list2").getGridParam("sortorder");
-														var sortCol = jQuery("#list2").getGridParam("sortname");	
+														var sortOrd = jQuery("#studentRegistrationGrid").getGridParam("sortorder");
+														var sortCol = jQuery("#studentRegistrationGrid").getGridParam("sortname");	
 														
 														if(!isAddStudent) {
-															jQuery("#list2").setRowData(data.studentId, dataToBeAdded, "first");
+															jQuery("#studentRegistrationGrid").setRowData(data.studentId, dataToBeAdded, "first");
 														}
 														else {
-															jQuery("#list2").addRowData(data.studentId, dataToBeAdded, "first");
+															jQuery("#studentRegistrationGrid").addRowData(data.studentId, dataToBeAdded, "first");
 														}
-															jQuery("#list2").sortGrid(sortCol,true);
+															jQuery("#studentRegistrationGrid").sortGrid(sortCol,true);
 														
 													} 
 													assignedOrgNodeIds = "";
