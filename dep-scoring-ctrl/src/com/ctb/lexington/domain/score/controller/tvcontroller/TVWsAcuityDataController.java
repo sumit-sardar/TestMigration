@@ -52,8 +52,15 @@ public class TVWsAcuityDataController {
 		this.contextData = context;
 		this.currData = currData;
 		this.totalData = totalData;
-		getContentAreaFactBeans(factData, wsTvData, lossHoss, studentScoreSummaryData);
-		getCompositeFactBeans(wsTvData);
+		if(context.getCurrentResultId() == 1) {
+			getContentAreaFactBeans(factData, wsTvData, lossHoss, studentScoreSummaryData);
+			getCompositeFactBeans(wsTvData);
+		} else {
+			if(currData.getContentAreas() != null) {
+				wsTvData.setFormId(currData.getContentAreas()[0].getSubtestForm());
+	        	wsTvData.setLevelId(Integer.parseInt(currData.getContentAreas()[0].getSubtestLevel()));
+			}
+		}
     }
 	
 	//Set the composite fact data
