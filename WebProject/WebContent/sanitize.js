@@ -4,6 +4,12 @@ function submitWS(action)
    	document.forms[0].submit();
 }    
 
+function clearInfo()
+{
+	document.getElementById('resultText').innerHTML = "";
+	document.getElementById('infoText').innerHTML = "";
+}    
+
 function submitLogin()
 {
 

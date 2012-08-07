@@ -363,7 +363,7 @@ public class SchedulingWS implements Serializable {
     	Integer sessionId = session.getSessionId(); 
 		try {
 			this.scheduleTest.deleteTestSession(this.defaultUserName, sessionId);
-	    	session.setStatusNonOverwritten("OK");	
+	    	session.setStatus("OK");	
 		}
 		catch (Exception e) {
 			session.setStatus(e.getMessage());			

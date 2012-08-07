@@ -71,7 +71,7 @@
 	<input type="text" id="sesionId" name="sesionId" value=""  />&nbsp;
 	<!-- 
 	Remove:<input type="checkbox"  id="removeSession" name="removeSession"/>&nbsp;
-	 -->
+	 -->	
 </td>
 </tr>
 <tr><td>Product Type:</td>
@@ -297,7 +297,7 @@ Remove:<input type="checkbox" id="studentRemoveKey4" name="studentRemoveKey4"/>&
 	</td>
 </tr>
 <tr>
-	<td width="100%"><h3>&nbsp;</h3><input type="submit" value="Invoke Scheduling Service" /></td>
+	<td width="100%"><h3>&nbsp;</h3><input type="submit" value="Invoke Scheduling Service" onclick="clearInfo();" /></td>
 </tr>
 </table>
 
@@ -309,12 +309,12 @@ Remove:<input type="checkbox" id="studentRemoveKey4" name="studentRemoveKey4"/>&
 
 </table>
 
-		<div>
+		<div id="resultText">
 			<br/>
 			<h2><%= resultText %></h2>
 		</div>
 
-		<div align="left">
+		<div id="infoText" align="left">
 			<%= infoText %>
 		</div>
 
