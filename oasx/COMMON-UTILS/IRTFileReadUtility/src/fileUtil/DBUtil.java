@@ -40,14 +40,14 @@ public class DBUtil {
 					ps.setString(12, "TERRAB3");
 					ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
 					System.out.println(scoreLookupId);
-					//ps.addBatch();
-					ps.executeUpdate();
+					ps.addBatch();
+					//ps.executeUpdate();
 					
 					insertScoreLookupItemSet(ps1, scoreLookupId, pvalFileData);
 				}
 			}
-			//ps.executeBatch();
-			//ps1.executeBatch();
+			ps.executeBatch();
+			ps1.executeBatch();
 			con.commit();
 			SqlUtil.close(ps);
 			SqlUtil.close(ps1);
@@ -68,8 +68,8 @@ public class DBUtil {
 			System.out.println(scoreLookupId + " - " + pvalFileData.getCodeValue().getCode() + " - " + FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()) + " - " + FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()));
 			ps.setString(1, scoreLookupId);
 			ps.setLong(2, FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()));
-			//ps.addBatch();
-			ps.executeUpdate();
+			ps.addBatch();
+			//ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
