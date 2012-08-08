@@ -1061,8 +1061,8 @@ public class FileUtil {
 	
 	public static List<PVALFileData> populatePValue (String filePath) {
 		
-		List<PVALFileData> pvalFileData = FileUtil.readPVALFile(filePath);
-		List<PVALFileData> tngFileData = FileUtil.readTNGFile(filePath);
+		List<PVALFileData> pvalFileData = readPVALFile(filePath);
+		List<PVALFileData> tngFileData = readTNGFile(filePath);
 		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
 		
 		for(PVALFileData pvalFile: tngFileData) {
