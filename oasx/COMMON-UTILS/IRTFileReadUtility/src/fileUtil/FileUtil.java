@@ -301,7 +301,24 @@ public class FileUtil {
 			caName="Science";
 		if(caShortName.equals("MA"))
 			caName="Mathematics";
-		
+		if(caShortName.equals("SP"))
+			caName="Spelling";
+		if(caShortName.equals("VO"))
+			caName="Vocabulary";
+		if(caShortName.equals("MC"))
+			caName="Math Computation";
+		if(caShortName.equals("WA"))
+			caName="Word Analysis";
+		if(caShortName.equals("LM"))
+			caName="Language Mechanics";
+		if(caShortName.equals("TL"))
+			caName="Total Language";
+		if(caShortName.equals("TR"))
+			caName="Total Reading";
+		if(caShortName.equals("TM"))
+			caName="Total Math";
+		if(caShortName.equals("TB"))
+			caName="Total Score";
 		return caName;
 	}
 	
