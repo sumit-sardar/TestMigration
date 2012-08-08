@@ -49,6 +49,8 @@ public class FileUtil {
 	public static Map<String,Integer> _OBJECTIVEMAP = new HashMap<String,Integer>();
 	
 	private static Map<Integer, String> productName = new HashMap<Integer,String>();
+	
+	private static enum NON_GROUP {F, S, W};
 
 	public static String getFilePath()
 	{
@@ -930,7 +932,7 @@ public class FileUtil {
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(tngFile));
-			PVALFileData pvaData = null;
+			PVALFileData pvalData = null;
 			CodeValue codeValue = null;
 			while ((strLine = br.readLine()) != null) { 
 				strLine = strLine.trim();
@@ -939,41 +941,41 @@ public class FileUtil {
 					continue;
 				
 				if(data.length == 4) {
-					pvaData = new PVALFileData();
+					pvalData = new PVALFileData();
 					codeValue = new CodeValue();
 					edition = data[0].trim();
 					subtest = data[1].trim();
-					pvaData.setOther(edition.substring(0, 2));
-					pvaData.setForm(edition.substring(2, 3));
-					pvaData.setContent(subtest);
-					pvaData.setLevel(data[2].trim());
+					pvalData.setOther(edition.substring(0, 2));
+					pvalData.setForm(edition.substring(2, 3));
+					pvalData.setContent(subtest);
+					pvalData.setLevel(data[2].trim());
 					int grade = Integer.valueOf(data[2].trim()) - 10;
 					if(grade < 9) {
-						pvaData.setGrade("0" + grade);
+						pvalData.setGrade("0" + grade);
 					} else {
-						pvaData.setGrade(String.valueOf(grade));
+						pvalData.setGrade(String.valueOf(grade));
 					}
 					
 					codeValue.setCode(data[3].trim());
-					pvaData.setCodeValue(codeValue);
-					tngDataList.add(pvaData);
+					pvalData.setCodeValue(codeValue);
+					tngDataList.add(pvalData);
 				} else if (data.length == 2) {
-					pvaData = new PVALFileData();
+					pvalData = new PVALFileData();
 					codeValue = new CodeValue();
-					pvaData.setOther(edition.substring(0, 2));
-					pvaData.setForm(edition.substring(2, 3));
-					pvaData.setContent(subtest);
-					pvaData.setLevel(data[0]);
+					pvalData.setOther(edition.substring(0, 2));
+					pvalData.setForm(edition.substring(2, 3));
+					pvalData.setContent(subtest);
+					pvalData.setLevel(data[0]);
 					int grade = Integer.valueOf(data[0].trim()) - 10;
 					if(grade < 9) {
-						pvaData.setGrade("0" + grade);
+						pvalData.setGrade("0" + grade);
 					} else {
-						pvaData.setGrade(String.valueOf(grade));
+						pvalData.setGrade(String.valueOf(grade));
 					}
 					
 					codeValue.setCode(data[1].trim());
-					pvaData.setCodeValue(codeValue);
-					tngDataList.add(pvaData);
+					pvalData.setCodeValue(codeValue);
+					tngDataList.add(pvalData);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -1062,19 +1064,22 @@ public class FileUtil {
 		
 		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
 		for(PVALFileData pvalFile: tngFileData) {
-			if(pvalFileData.indexOf(pvalFile) != -1) {
-				int index = pvalFileData.indexOf(pvalFile);
-				PVALFileData pvalFile1 = pvalFileData.get(index);
-				int codeIndex = pvalFile1.getDataList().indexOf(pvalFile.getCodeValue());
-				if(codeIndex != -1) {
-					CodeValue val = pvalFile1.getDataList().get(codeIndex);
-					if(val.getValue() != null) {
-						pvalFile.setNonGroup(pvalFile1.getNonGroup());
-						pvalFile.getCodeValue().setValue(val.getValue());
-						contentList.add(pvalFile);
+			for(NON_GROUP nonGroup : NON_GROUP.values()) {
+				pvalFile.setNonGroup(nonGroup.name());
+				if(pvalFileData.indexOf(pvalFile) != -1) {
+					int index = pvalFileData.indexOf(pvalFile);
+					PVALFileData pvalFile1 = pvalFileData.get(index);
+					int codeIndex = pvalFile1.getDataList().indexOf(pvalFile.getCodeValue());
+					if(codeIndex != -1) {
+						CodeValue val = pvalFile1.getDataList().get(codeIndex);
+						if(val.getValue() != null) {
+							pvalFile.setNonGroup(pvalFile1.getNonGroup());
+							pvalFile.getCodeValue().setValue(val.getValue());
+							contentList.add(pvalFile);
+						}
 					}
-				}
-			} 
+				} 
+			}
 		}
 		System.out.println("Total "+contentList.size());
 		return contentList;
