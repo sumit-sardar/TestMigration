@@ -64,7 +64,7 @@ function onNextFromShowBySessionPopUp () {
 										 	$("#showBySessionFRButtonDiv").show();
 										}
 										 	
-										//added by sumit : end
+										
 										$.unblockUI();
 									}else{
 										
@@ -94,7 +94,7 @@ function onNextFromShowBySessionPopUp () {
     
     }
 
-//added by sumit : start	
+	
 	var isPopupOnFRAccept = false;
 	var isPopupOnFRNotAccept = false;
 	var isPopupOnByepassFR = false;
@@ -121,4 +121,3 @@ function onNextFromShowBySessionPopUp () {
 		sessionPopupFromStudentView();
 	}
 
-//added by sumit : end

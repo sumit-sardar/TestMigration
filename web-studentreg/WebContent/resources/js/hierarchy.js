@@ -380,7 +380,7 @@ function closePopUp(dailogId){
 	$('.ui-widget-overlay').css('height', '100%');
 	if(dailogId == 'sessionStudRegId') {
 		isScoreByItemClicked = false;
-		$('#list2').GridUnload();// added by sumit : to destroy the grid instance
+		$('#list2').GridUnload();//to destroy the grid instance
 		gridloadedStdFromSes = false;
 		gridloadedSessionFromStd = false;
 		$('#innerOrgNodeHierarchyForStd').jstree('close_all', -1);//to reset the popup tree
@@ -396,7 +396,7 @@ function closePopUp(dailogId){
 	}
 	if(dailogId=='sessionStudRegId' || dailogId==''){
 		isPopUp = false;
-		$('#list2').GridUnload();// added by sumit : to destroy the grid instance
+		$('#list2').GridUnload();//to destroy the grid instance
 		gridloadedStdFromSes = false;
 		gridloadedSessionFromStd = false;
 		$('#innerOrgNodeHierarchyForStd').jstree('close_all', -1);//to reset the popup tree
@@ -1842,13 +1842,25 @@ function isExist(val, customerValCheckbox){
 		
 	}
 	
+	function trapEnterKeyInStudentPopup(e){
+		var key;
+		if(window.event)
+			key = window.event.keyCode;     //IE
+		else
+			key = e.which;     //firefox
+		        
+		if(key == 13){
+			searchStudentSessionByKeyword();
+	    }
+	}
+	
 	function resetSessionSearch(){
 			 	var grid = $("#list2"); 
 				$("#searchStudentSessionByKeywordInput").val('');
 				 //grid[0].p.search = false;
 				 var g = {groupOp:"AND",rules:[],groups:[]};
-				 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
-				 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});
+				 g.rules.push({field:"testName",op:"cn",data:$("#gview_list2 select[id=gs_testName]").val()});
+				 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list2 select[id=gs_testAdminStatus]").val()});
 				 grid[0].p.search = true;
 				 grid[0].p.ignoreCase = true;			 
 				 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
@@ -1865,16 +1877,16 @@ function isExist(val, customerValCheckbox){
 		 if (searchFiler.length === 0) {
 			 //grid[0].p.search = false;
 			 //grid[0].triggerToolbar();// to trigger previously applied filters
-			 var g = {groupOp:"AND",rules:[],groups:[]};
-			 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
-			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});
+			 var g = {groupOp:"AND",rules:[],groups:[]};			 
+			 g.rules.push({field:"testName",op:"cn",data:$("#gview_list2 select[id=gs_testName]").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list2 select[id=gs_testAdminStatus]").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }else {
-		 	 var g = {groupOp:"AND",rules:[],groups:[]};
-			 g.rules.push({field:"testName",op:"cn",data:$("#gs_testName").val()});
-			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gs_testAdminStatus").val()});			 
+		 	 var g = {groupOp:"AND",rules:[],groups:[]};			 
+		 	 g.rules.push({field:"testName",op:"cn",data:$("#gview_list2 select[id=gs_testName]").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list2 select[id=gs_testAdminStatus]").val()});
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testName",op:"cn",data:searchFiler});

@@ -241,7 +241,7 @@
 	</div>
 	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
 		<center>
-			<input type="text" name="searchSessionByKeywordInput" id="searchStudentSessionByKeywordInput" onkeypress="trapEnterKey(event);"/>
+			<input type="text" name="searchSessionByKeywordInput" id="searchStudentSessionByKeywordInput" onkeypress="trapEnterKeyInStudentPopup(event);"/>
 		</center>	
 	</div>
 	<div style="padding-bottom:20px;"> 
