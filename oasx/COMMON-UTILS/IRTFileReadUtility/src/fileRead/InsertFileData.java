@@ -1,10 +1,7 @@
 package fileRead;
 
-import java.util.List;
-
 import fileUtil.DBUtil;
 import fileUtil.FileUtil;
-import fileUtil.PVALFileData;
 
 public class InsertFileData {
 	public static void main(String[] args) {
@@ -19,9 +16,7 @@ public class InsertFileData {
 			writesuccessfulinOAS = FileUtil.writeInOASDB(filePath);
 			if(writesuccessfulinOAS == true)
 				System.out.println("Files are saved in OAS Database successfully.");
-			/*List<PVALFileData> pvalFileData = FileUtil.readPVALFile(filePath);
-			List<PVALFileData> tngFileData = FileUtil.readTNGFile(filePath);
-			DBUtil.insertScoreLookup(FileUtil.populatePValue(tngFileData, pvalFileData));*/
+			DBUtil.insertScoreLookup(FileUtil.populatePValue(filePath));
 		} catch(Exception ie) {
 			ie.printStackTrace();
 		}

@@ -82,6 +82,7 @@ public class PVALFileData {
 				&& this.getGrade().equals(obj1.getGrade())
 				&& this.getForm().equals(obj1.getForm())
 				&& this.getOther().equals(obj1.getOther())
+				&& this.getNonGroup().equals(obj1.getNonGroup())
 				&& this.getContent().equals(obj1.getContent())) {
 			
 			return true;

@@ -922,7 +922,7 @@ public class FileUtil {
 		return save == 1 ? true : false;
 	}
 	
-	public static List<PVALFileData> readTNGFile (String path) {
+	private static List<PVALFileData> readTNGFile (String path) {
 		
 		File tngFile = new File(path + File.separator + "tngobj.txt");  
 		List<PVALFileData> tngDataList = new ArrayList<PVALFileData>();
@@ -986,7 +986,7 @@ public class FileUtil {
 		return tngDataList;
 	}
 
-	public static List<PVALFileData> readPVALFile (String path) {
+	private static List<PVALFileData> readPVALFile (String path) {
 		File allFile = new File(path);                
 		File[] files = allFile.listFiles();
 		PVALFileData pvaData = new PVALFileData();
@@ -1059,10 +1059,12 @@ public class FileUtil {
 		return pvalDataList;
 	}
 	
-	public static List<PVALFileData> populatePValue (List<PVALFileData> tngFileData, 
-													 List<PVALFileData> pvalFileData) {
+	public static List<PVALFileData> populatePValue (String filePath) {
 		
+		List<PVALFileData> pvalFileData = FileUtil.readPVALFile(filePath);
+		List<PVALFileData> tngFileData = FileUtil.readTNGFile(filePath);
 		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
+		
 		for(PVALFileData pvalFile: tngFileData) {
 			for(NON_GROUP nonGroup : NON_GROUP.values()) {
 				pvalFile.setNonGroup(nonGroup.name());
