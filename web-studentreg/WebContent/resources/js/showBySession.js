@@ -73,7 +73,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	 		    UIBlock();
 	 		    
 		 		
-	 			//added by sumit : start
+
 	 			if(currentView == "student"){
 		 			if(!gridloadedSessionFromStd){
 		 				if(isPopupOnFRNotAccept || isPopupOnByepassFR)
@@ -106,7 +106,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 			 			
 			 		}
 	 			}
-	 			//added by sumit : end
+
 	 		//} 
 	 		
 		});
@@ -119,7 +119,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 
 
 
-//added by sumit : end
 
 	function populateStudentGridInPopup() {
 
@@ -306,8 +305,8 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 			 $("#searchInSessionPopupByKeywordInput").val('');
 			 //grid[0].p.search = false;// uncommented to test search only w/o filters
 			 var g = {groupOp:"AND",rules:[]};
-			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
-			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gview_list2 select[id=gs_gender]").val()});
+			 g.rules.push({field:"grade",op:"bw",data:$("#gview_list2 select[id=gs_grade]").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
@@ -325,14 +324,14 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 			 //grid[0].p.search = false; // uncommented to test search only w/o filters
 			 //grid[0].triggerToolbar();// to trigger previously applied filters
 			 var g = {groupOp:"AND",rules:[],groups:[]};
-			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
-			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});			 grid[0].p.search = true;
+			 g.rules.push({field:"grade",op:"bw",data:$("#gview_list2 select[id=gs_grade]").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gview_list2 select[id=gs_gender]").val()});			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
 		 }else {
 		 	 var g = {groupOp:"AND",rules:[],groups:[]};
-			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
-			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
+			 g.rules.push({field:"grade",op:"bw",data:$("#gview_list2 select[id=gs_grade]").val()});
+			 g.rules.push({field:"gender",op:"bw",data:$("#gview_list2 select[id=gs_gender]").val()});
 			 			 
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
