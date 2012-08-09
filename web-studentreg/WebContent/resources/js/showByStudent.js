@@ -3,6 +3,8 @@
 //Path Show by Student: used for popup to show all session 
 
  function populateSessionGridInPopup() {
+ 		resetSearchCritInPopupFromStudentView();
+ 		resetFiltersInPopupFromStudentView();
 		var postDataObject = {};
  		postDataObject.q = 2;
  		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
@@ -132,6 +134,8 @@
 	
 	function reloadSessionGridFromStd(){
 		//resetSearchCrit();
+		resetSearchCritInPopupFromStudentView();
+ 		resetFiltersInPopupFromStudentView();
   	    var postDataObject = {};
 		postDataObject.q = 2;
 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();

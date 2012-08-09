@@ -2,6 +2,8 @@
 
 
 function populateSessionGridInPopupForFR(){
+		resetSearchCritInPopupFromStudentView();
+ 		resetFiltersInPopupFromStudentView();
 		var postDataObject = {};
  		postDataObject.q = 2;
  		postDataObject.treeOrgNodeId     = $("#treeOrgNodeId").val();
@@ -116,6 +118,8 @@ function populateSessionGridInPopupForFR(){
 	
 	function reloadSessionGridFromStdOnFR(){
 		//resetSearchCrit();
+		resetSearchCritInPopupFromStudentView();
+ 		resetFiltersInPopupFromStudentView();
   	    var postDataObject = {};
 		postDataObject.q = 2;
 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();

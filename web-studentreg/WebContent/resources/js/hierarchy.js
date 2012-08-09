@@ -1854,6 +1854,19 @@ function isExist(val, customerValCheckbox){
 	    }
 	}
 	
+	function resetFiltersInPopupFromStudentView() { // need to call this to reset popup filters from student view
+		$("#gview_list2 select[id=gs_testName] option:eq(0)").attr('selected','Any'); 
+		$("#gview_list2 select[id=gs_testAdminStatus] option:eq(0)").attr('selected','Any');
+	}  
+	
+	function resetSearchCritInPopupFromStudentView(){
+		$("#searchStudentSessionByKeywordInput").val('');
+		var grid = $("#list2"); 
+		grid.jqGrid('setGridParam',{search:false});	
+	    var postData = grid.jqGrid('getGridParam','postData');
+	    $.extend(postData,{filters:""});
+	}
+	
 	function resetSessionSearch(){
 			 	var grid = $("#list2"); 
 				$("#searchStudentSessionByKeywordInput").val('');

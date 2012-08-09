@@ -276,6 +276,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	
 	 function reloadStudentGridFromSes(){ 
 	 	resetSearchCrit();
+	 	resetFiltersInSessionPopup();
   	    var postDataObject = {};
 		postDataObject.q = 2;
 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
@@ -350,8 +351,8 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	}  
 	
 	function resetFiltersInSessionPopup() { // need to call this to reset popup filters 
-		$("#gs_grade option:eq(0)").attr('selected','Any'); 
-		$("#gs_gender option:eq(0)").attr('selected','Any');
+		$("#gview_list2 select[id=gs_grade] option:eq(0)").attr('selected','Any'); 
+		$("#gview_list2 select[id=gs_gender] option:eq(0)").attr('selected','Any');
 	}  
 	
 	function resetSearchCrit(){
