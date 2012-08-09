@@ -2,6 +2,9 @@ package com.ctb.control.crscoring;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -174,25 +177,25 @@ public class TestScoringImpl implements TestScoring {
 			return rosterElementData;
 		} catch (SQLException se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all Student for a TestSession and TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all Student for a TestSession and TD.",
+					se);
 			StudentNotAddedToSessionException rde = new StudentNotAddedToSessionException(
 					"TestScoringImpl: getAllStudentForTestSessionAndTD: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		} catch (Exception se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all Student for a TestSession and TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all Student for a TestSession and TD.",
+					se);
 			StudentNotAddedToSessionException rde = new StudentNotAddedToSessionException(
 					"TestScoringImpl: getAllStudentForTestSessionAndTD: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
@@ -249,25 +252,25 @@ public class TestScoringImpl implements TestScoring {
 			return scorableItemData;
 		} catch (SQLException se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all scorable CR Items for student and TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all scorable CR Items for student and TD.",
+					se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
 					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		} catch (Exception se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all scorable CR Items for student and TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all scorable CR Items for student and TD.",
+					se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
 					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
@@ -322,25 +325,25 @@ public class TestScoringImpl implements TestScoring {
 			return scorableItemData;
 		} catch (SQLException se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all scorable CR Items for TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all scorable CR Items for TD.",
+					se);
 			TestAdminDataNotFoundException rde = new TestAdminDataNotFoundException(
 					"TestScoringImpl: getAllStudentForTestSessionAndTD: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		} catch (Exception se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting all scorable CR Items for TD.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting all scorable CR Items for TD.",
+					se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
 					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
@@ -388,25 +391,25 @@ public class TestScoringImpl implements TestScoring {
 
 		} catch (SQLException se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting scorable CR Items response.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting scorable CR Items response.",
+					se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getCRItemResponseForScoring: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		} catch (Exception se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting scorable CR Items response.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting scorable CR Items response.",
+					se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getCRItemResponseForScoring: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
@@ -427,8 +430,8 @@ public class TestScoringImpl implements TestScoring {
 	@Override
 	public Boolean saveOrUpdateScore(Integer userId, String itemId,
 			Integer itemSetIdTD, Integer testRosterId, Integer point)
-			throws CTBBusinessException {
-	
+	throws CTBBusinessException {
+
 		Boolean isSuccess  = new Boolean(false);
 		try {
 			ResponsePoints[] responsePoints = getResponseForScore(itemId,
@@ -438,7 +441,7 @@ public class TestScoringImpl implements TestScoring {
 				OASLogger.getLogger("TestAdmin").error(
 						"No valid response found for itemId["+itemId+"]"+" itemsetId["+itemSetIdTD+"] testRosterId["+testRosterId+"]");
 				ScoringException rde = new ScoringException(
-						"TestScoringImpl: saveOrUpdateScore: ");
+				"TestScoringImpl: saveOrUpdateScore: ");
 				throw rde;
 			}
 			for (ResponsePoints points : responsePoints) {
@@ -450,14 +453,14 @@ public class TestScoringImpl implements TestScoring {
 					isSuccess = true;
 				}
 			}
-			
-			
+
+
 		} catch (SQLException se) {
 			OASLogger.getLogger("TestAdmin").error(
 					"Exception occurred while saveing score.", se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: saveOrUpdateScore: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 		} catch (Exception e) {
@@ -466,66 +469,70 @@ public class TestScoringImpl implements TestScoring {
 					"Exception occurred while saveing score.", e);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: saveOrUpdateScore: "
-							+ e.getMessage());
+					+ e.getMessage());
+			e.printStackTrace();
 			rde.setStackTrace(e.getStackTrace());
 			throw rde;
-		
+
 		}
 		finally{
 			return isSuccess;
 
 		}
-		
+
 	}
-	
-	
+
+
 	/***
 	 * Retrieves Decrypted Item XMl from ADS Database 
 	 * 
 	 * 
 	 * 
 	 */
-	
+
 	@Override
 	public ItemData getItemXML(String itemId) throws CTBBusinessException{
-		
+
 		ItemData item = new ItemData();
 		Blob itemXml = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		
+		StringBuilder str = new StringBuilder();
+
+
 		try{
-			
-		ScorableItem [] scrItem = 	ads.getDecryptedItemXml(itemId);
-		if(scrItem != null && scrItem.length > 0){
-		itemXml = scrItem[0].getItemXml();
-		
-		}
-		if(itemXml != null){
-		InputStream is = itemXml.getBinaryStream();
-		boolean moreData = true;
-		while(moreData) {
-			byte [] buffer = new byte[128];
-			int read = is.read(buffer);
-			moreData = read > 0;
-			if(moreData) {
-				baos.write(buffer, 0, read);
+
+			ScorableItem [] scrItem = 	ads.getDecryptedItemXml(itemId);
+			if(scrItem != null && scrItem.length > 0){
+				itemXml = scrItem[0].getItemXml();
+
 			}
+			if(itemXml != null){
+				InputStream is = itemXml.getBinaryStream();
+				Reader reader = 
+					new InputStreamReader(is, Charset.forName("ISO-8859-1"));
+				
+				 int data = reader.read();
+				    while(data != -1){
+				        char dataChar = (char) data;
+				        data = reader.read();
+				        str.append(dataChar);
+				    }
+
+			}
+			item.setItem(str.toString().getBytes());
+			item.setItemId(itemId);
+			item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
 		}
-		item.setItem(baos.toByteArray());
-		item.setItemId(itemId);
-		item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
-		}
-		}
-		
+
+
 		catch (Exception e){
 			OASLogger.getLogger("TestAdmin").error(
 					"Exception occurred while retrieving the item.", e);
 		}
 		return item;
 	}
-	
-	
+
+
 
 	/**
 	 * Retrieves array of active students for a test sessions.
@@ -536,7 +543,7 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws SQLException
 	 */
 	private RosterElement[] getAllStudentForTestSession(Integer testAdminID, String userName)
-			throws SQLException {
+	throws SQLException {
 		return scoring.getAllStudentForTestSession(testAdminID , userName);
 	}
 
@@ -581,7 +588,7 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws SQLException
 	 */
 	private ScorableItem[] getAllScorableCRItemsForItemSet(Integer testAdminId)
-			throws SQLException {
+	throws SQLException {
 		return scoring.getAllScorableCRItemsForItemSet(testAdminId);
 	}
 
@@ -647,7 +654,7 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws SQLException
 	 */
 	private String[] getAnswerStrValue(Clob responseContent)
-			throws SQLException {
+	throws SQLException {
 		String[] crResponse = new String[1];
 		if (responseContent == null) {
 			crResponse[0] = "";
@@ -709,8 +716,8 @@ public class TestScoringImpl implements TestScoring {
 			OASLogger.getLogger("TestAdmin").error(
 					"Exception occurred while getting testadmin details.", e);
 			ScoringException rde = new ScoringException(
-					"TestScoringImpl:testDetails");
-							
+			"TestScoringImpl:testDetails");
+
 			rde.setStackTrace(e.getStackTrace());
 			throw rde;
 		}
@@ -751,13 +758,13 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws Exception
 	 */
 	private int saveOrUpdateScore(ResponsePoints responsePoints) throws SQLException,
-			Exception {
+	Exception {
 		int noOfRows= scoring.saveOrUpdateScore(responsePoints);
-		
+
 		return noOfRows;
 	}
-	
-	
+
+
 	/**
 	 * Method retrieves score, sample and corresponding explanation for rubric view as per the itemid
 	 * 
@@ -776,32 +783,32 @@ public class TestScoringImpl implements TestScoring {
 
 		} catch (SQLException se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting rubric data.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting rubric data.",
+					se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getRubricDetailsData: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		} catch (Exception se) {
 			OASLogger
-					.getLogger("TestAdmin")
-					.error(
-							"Exception occurred while getting rubric data.",
-							se);
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting rubric data.",
+					se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getRubricDetailsData: "
-							+ se.getMessage());
+					+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
 
 		}
 		return rubricData;
 	}
-	
+
 	/**
 	 * This method returns scoring status of student.
 	 * @param rosterId
@@ -812,14 +819,14 @@ public class TestScoringImpl implements TestScoring {
 	private String getScoringStatus(int rosterId, int itemSetIDTC) throws Exception{
 		return scoring.getScoringStatus(rosterId, itemSetIDTC);
 	}
-	
+
 	private Integer getScorePoints(Integer itemSetId, String itemId,
 			Integer testRosterId) throws Exception {
 		return scoring.getScorePoints(itemSetId, itemId, testRosterId);
 	}
-	
+
 	private TreeMap<String, ScorableItem> getAllScorableCRItemsForTD(
-			 Integer itemSetIdTD) throws SQLException {
+			Integer itemSetIdTD) throws SQLException {
 		ScorableItem scorableItem[] = scoring.getAllScorableCRItemsForTD(itemSetIdTD);
 		TreeMap<String, ScorableItem> map = new TreeMap<String, ScorableItem>();
 		if (scorableItem!= null){
