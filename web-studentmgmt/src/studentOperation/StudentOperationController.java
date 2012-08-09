@@ -2128,7 +2128,8 @@ public class StudentOperationController extends PageFlowController {
 	 */    
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+			@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	})   
 	protected Forward assessments()
 	{
@@ -2169,6 +2170,24 @@ public class StudentOperationController extends PageFlowController {
         }
         return null;
 	}
+    
+    /**
+     * STUDENT REGISTRATION actions
+     */
+    @Jpf.Action()
+    protected Forward assessments_studentRegistrationLink()
+    {
+        try
+        {
+        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+        	getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
 			
 	/**
 	 * ORGANIZATIONS actions
@@ -2449,6 +2468,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean TABECustomer = false;
     	boolean mandatoryBirthdateValue = true;
     	boolean multiOrgAssociationValid = true;
+    	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -2534,7 +2554,14 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("addStudentEnable", addDeleteStudentEnabled);
 		this.getSession().setAttribute("deleteStudentEnable", addDeleteStudentEnabled);
 		this.getSession().setAttribute("isClassReassignable",multiOrgAssociationValid);	// Changes for defect #67959 imported student's organization
+		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
     }
+
+	private boolean isAdminCoordinatotUser() //For Student Registration
+	{               
+		String roleName = this.user.getRole().getRoleName();        
+		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+	}
     
 	private void setupUserPermission()
 	{

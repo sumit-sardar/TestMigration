@@ -1,3 +1,4 @@
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<div id="page-wrap">
         <ul class="dropdown">
         	<li id="assessments" class="simpleMenu"><a class="tab" href="#"><lb:label key="user.menu.assessments" /></a>
@@ -8,6 +9,11 @@
     				 <c:if test="${sessionScope.hasProgramStatusConfigured}">
         			 <li>
         				<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><lb:label key="user.menu.programStatus" /></a>
+        			 </li>
+        			 <</c:if>
+        			<c:if test="${sessionScope.hasRapidRagistrationConfigured}">
+        			 <li>
+        				<a href="#" id="studentRegistrationLink" onClick="gotoMenuAction('assessments.do', 'studentRegistrationLink');"><lb:label key="student.registration.menu" /></a>
         			 </li>
         			 </c:if>
         		</ul>

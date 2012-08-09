@@ -717,7 +717,8 @@ public class OrgOperationController extends PageFlowController {
 	  */    
 	 @Jpf.Action(forwards = { 
 			 @Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-			 @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+			 @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+			 @Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	 })   
 	 protected Forward assessments()
 	 {
@@ -758,6 +759,24 @@ public class OrgOperationController extends PageFlowController {
 		 }
 		 return null;
 	 }
+	 
+	 /**
+	     * STUDENT REGISTRATION actions
+	 */
+	    @Jpf.Action()
+	    protected Forward assessments_studentRegistrationLink()
+	    {
+	        try
+	        {
+	        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+	        	getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+	    }
 	  
 	 /**
 	  * ORGANIZATIONS actions
@@ -1092,6 +1111,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasScoringConfigurable = false;
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
+    	boolean adminCoordinatorUser = isAdminCoordinatotUser();//For Student Registration
     	String roleName = this.user.getRole().getRoleName();
     	
 		if( customerConfigurations != null ) {
@@ -1167,8 +1187,13 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer &&(adminUser || adminCoordinatorUser) ));//For Student Registration
     }
-    
+	private boolean isAdminCoordinatotUser() 
+	{               
+		String roleName = this.user.getRole().getRoleName();        
+		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+	}
 	private void setupUserPermission()
 	{
         CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);

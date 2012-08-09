@@ -725,7 +725,8 @@ public class UploadOperationController extends PageFlowController {
 	 */    
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+			@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	})   
 	protected Forward assessments()
 	{
@@ -766,6 +767,24 @@ public class UploadOperationController extends PageFlowController {
         }
         return null;
 	}
+    
+    /**
+     * STUDENT REGISTRATION actions
+     */
+    @Jpf.Action()
+    protected Forward assessments_studentRegistrationLink()
+    {
+        try
+        {
+        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+        	getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
 			
 	
     /**
@@ -1080,6 +1099,7 @@ public class UploadOperationController extends PageFlowController {
         boolean adminUser = isAdminUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
+        boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1104,8 +1124,15 @@ public class UploadOperationController extends PageFlowController {
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));
      	
      	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
+     	this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 	}
-
+	
+	private boolean isAdminCoordinatotUser() //For Student Registration
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+    }
+	
     private Boolean userHasReports() 
     {
         boolean hasReports = false;
