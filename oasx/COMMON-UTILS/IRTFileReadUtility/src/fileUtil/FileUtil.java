@@ -1059,25 +1059,28 @@ public class FileUtil {
 		return pvalDataList;
 	}
 	
-	public static List<PVALFileData> populatePValue (String filePath) {
+	public static List<PVALFileData> populatePValue (String filePath) 
+	throws CloneNotSupportedException {
 		
 		List<PVALFileData> pvalFileData = readPVALFile(filePath);
 		List<PVALFileData> tngFileData = readTNGFile(filePath);
 		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
+		PVALFileData tempPVALFile = null;
 		
 		for(PVALFileData pvalFile: tngFileData) {
 			for(NON_GROUP nonGroup : NON_GROUP.values()) {
-				pvalFile.setNonGroup(nonGroup.name());
-				if(pvalFileData.indexOf(pvalFile) != -1) {
-					int index = pvalFileData.indexOf(pvalFile);
+				tempPVALFile = (PVALFileData) pvalFile.clone();
+				tempPVALFile.setNonGroup(nonGroup.name());
+				if(pvalFileData.indexOf(tempPVALFile) != -1) {
+					int index = pvalFileData.indexOf(tempPVALFile);
 					PVALFileData pvalFile1 = pvalFileData.get(index);
-					int codeIndex = pvalFile1.getDataList().indexOf(pvalFile.getCodeValue());
+					int codeIndex = pvalFile1.getDataList().indexOf(tempPVALFile.getCodeValue());
 					if(codeIndex != -1) {
 						CodeValue val = pvalFile1.getDataList().get(codeIndex);
 						if(val.getValue() != null) {
-							pvalFile.setNonGroup(pvalFile1.getNonGroup());
-							pvalFile.getCodeValue().setValue(val.getValue());
-							contentList.add(pvalFile);
+							tempPVALFile.setNonGroup(pvalFile1.getNonGroup());
+							tempPVALFile.getCodeValue().setValue(val.getValue());
+							contentList.add(tempPVALFile);
 						}
 					}
 				} 

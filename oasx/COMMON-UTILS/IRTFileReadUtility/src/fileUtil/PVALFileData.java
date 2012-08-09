@@ -2,7 +2,7 @@ package fileUtil;
 
 import java.util.List;
 
-public class PVALFileData {
+public class PVALFileData implements Cloneable {
 
 	private String level;
 	private String grade;
@@ -88,5 +88,10 @@ public class PVALFileData {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }
