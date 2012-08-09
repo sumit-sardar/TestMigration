@@ -38,7 +38,7 @@
 	var recomendedLevelMap = {};
 	var locatorSessionInfo ="";
 	
-	
+	var displayAccessCodeOnTicket = false;
 	function openModifyTestPopup(element){
 	 if(element !=null && isButtonDisabled(element))
 		return true;
@@ -1008,21 +1008,22 @@
 	
 	
 	function validateAndScheduleStudent() {
-	     var validSubtest = validateSubtest();
+	     var tmpSelectedSubtestsMsm = new Array();
+	     var validSubtest = validateSubtest(tmpSelectedSubtestsMsm);
 	     if(validSubtest){
-	        closePopUp('modifyTestPopup');
-	    	closePopUp('sessionStudRegId');
-	    	displayStudConfirmation();
+	        //closePopUp('modifyTestPopup');
+	    	//closePopUp('sessionStudRegId');
+	    	scheduleStudentAndOpenConfirmMationPopup(tmpSelectedSubtestsMsm);
 	     }
 
 	}
 	
-	function validateSubtest(){
+	function validateSubtest(tmpSelectedSubtestsMsm){
 	
 		hideMessage();
 		var isValidated = true;
 		var validateLevels = true;
-	    var tmpSelectedSubtestsMsm = new Array();
+	    //var tmpSelectedSubtestsMsm = new Array();
 	    if(subTestDetails.locatorSubtest != undefined){
 		  	validateLevels = !(document.getElementById("msmHasAutolocator").checked);
 		 }
@@ -1206,6 +1207,183 @@
         return null;
     }
     
+    function scheduleStudentAndOpenConfirmMationPopup(finalSelectedSubtestsMsm){
+			var param = "";
+			var msmParam ="";
+			var locElement = document.getElementById("msmHasAutolocator");
+			var msmHasLocator = false;
+			if( subTestDetails.locatorSubtest != undefined  && locElement !=null && locElement.checked){
+				 msmHasLocator = true;
+			 } 
+			 msmParam += "&hasAutolocator="+msmHasLocator;
+			 if(msmHasLocator){
+			 	msmParam += "&itemSetIdTD_l=" + subTestDetails.locatorSubtest.id;
+			 	msmParam += "&subtestName_l=" +formatString(subTestDetails.locatorSubtest.subtestName);
+			 }
+			for(var ii=0; ii<finalSelectedSubtestsMsm.length; ii++){
+				msmParam += "&itemSetIdTD=" + finalSelectedSubtestsMsm[ii].id;
+			   	if(finalSelectedSubtestsMsm[ii].level != undefined){
+			   		msmParam += "&itemSetForm=" + finalSelectedSubtestsMsm[ii].level;
+			   	}
+			   	msmParam += "&subtestName=" +formatString(finalSelectedSubtestsMsm[ii].subtestName);
+			}  
+	        param += "testAdminId="+ selectedTestAdminId;
+			param += "&studentId=" + selectedStudentId;
+			param += "&studentOrgNodeId=" + $("#stdOrg").val();
+			param += msmParam;
+			
+			
+			$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'registerStudent.do',
+				type:		'POST',
+				data:		 param ,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+							 if(data.status.isSuccess){
+							    closePopUp('modifyTestPopup');
+		    					closePopUp('sessionStudRegId');
+		    					$("#SubtestDetails").html("");
+							 	displayStudConfirmation();
+							 	populateStudConfirmation(data);
+							 }
+						  	$.unblockUI();
+						  
+						},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
+	    
+	   function populateStudConfirmation(data){
+	     $("#dstudentName").text(data.studentName);
+	    
+	     if(data.enforceBreak=="No"){
+	      	$("#enforceBreakNo").text(data.testAccessCode);
+	      	$("#enforceBreakNo").show();
+	      	$("#enforceBreakYes").hide();
+	     } else {
+	     $("#enforceBreakNo").text("");
+	     	$("#enforceBreakNo").hide();
+	     	$("#enforceBreakYes").show();
+	     }
+	     $("#dloginName").text(data.loginName);
+	     $("#dpassword").text(data.password);
+	     $("#dtestName").text(data.testName);
+	     $("#dcreatorOrgNodeName").text(data.creatorOrgNodeName);
+	     $("#dstartDate").text(data.startDate);
+	     $("#dstartTime").text(data.startTime);
+	     if(data.isLocatorTest){
+	     	$("#dDisplayAutolocator").hide();
+	     } else {
+	     	$("#dDisplayAutolocator").show();
+	     	 
+	     	 $("#dautoLocatorDisplay").text(data.autoLocatorDisplay);
+	     }
+	     $("#dtestAdminName").text(data.testAdminName);
+	     $("#dsessionNumber").text(data.sessionNumber);
+	     $("#dendDate").text(data.endDate);
+	     $("#dendTime").text(data.endTime);
+	     if(data.isLocatorTest){
+	     	$("#dShowHideAllowBreak").hide();
+	     } else {
+	     	$("#dShowHideAllowBreak").show();
+	     	 $("#denforceBreak").text(data.enforceBreak);
+	     }
+	     $("#dorgNodeId").val(data.studentOrgId);
+	     if(data.showAccessCode){
+	     	$("#showAccessCode").show();
+	     } else {
+	     	$("#showAccessCode").hide();
+	     }		
+     
+	     if(data.autoLocator){
+	     	$("#locatorDiv").show();
+	     	$("#loc_subtest_name").text(data.locatorSubtest.itemSetName);
+	     	$("#loc_subtest_name").show();
+	     	if(data.enforceBreak=="Yes"){
+	     		$("#loc_accesscode_value").text(data.locatorSubtest.accessCode);
+	     		$("#loc_accesscode_header").show();
+	     		$("#loc_accesscode_value").show();
+	     	} else {
+	     		$("#loc_accesscode_header").hide();
+	     		$("#loc_accesscode_value").hide();
+	     		$("#loc_accesscode_value").text("");
+	     	}
+	     	
+	     } else {
+	     	$("#locatorDiv").hide();
+	     }
+     
+	     if(data.isLocatorTest || data.selectedSubtests.length<1){
+	     	$("#SubtestDetails").html("");
+	     	$("#SubtestDetails").hide();
+	     } else {
+	        var subtestTable = getSubtestTableData(data);
+	        $("#SubtestDetails").html(subtestTable);
+	        $("#SubtestDetails").show();
+	     }
+     
+    
+    }
+    
+    
+    
+    function  getSubtestTableData(data){
+      var retString = "";
+      var autolocator =  data.autoLocator;
+       	retString +='<table align="center" width="95%">	<tr>	<td>	<table class="sortable">';
+      	retString +='<tr class="sortable"> <th class="sortable alignCenter" height="25">';
+      	retString +=$("#subtestDisplayorder").val();
+      	retString +='</th> '; 
+      	retString +=' <th class="sortable alignLeft" height="25">&nbsp;&nbsp;';
+      	retString +=  $("#subtestDisplayName").val();
+      	retString +='</th> ';             
+		if(!autolocator){
+			retString +=' <th class="sortable alignLeft" height="25">&nbsp;&nbsp;';
+	      	retString +=  $("#subtestDisplayLevel").val();
+	      	retString +='</th> '; 
+		}			        
+		retString += '</tr>';			        
+      
+      
+      for (var ii = 0,jj = data.selectedSubtests.length; ii < jj; ii ++ ) {
+      	retString += '<tr class="sortable"><td class="sortable alignCenter">';
+      	retString += (ii+1);
+       	retString += '</td>';
+       	retString +='<td class="sortable">';
+       	retString +=data.selectedSubtests[ii].itemSetName;
+       	retString +='</td>';
+       	if(!autolocator){
+       		retString +='<td class="sortable">';
+       		retString +=data.selectedSubtests[ii].itemSetForm;
+       		retString +='</td>';
+       	}
+       	
+       	retString += '</tr>';
+      }
+	
+	  retString +='</table>   </td>	</tr> </table>';
+    
+      return retString;
+    
+    }
+    
+    
+    
+    function formatString( inputString){
+		var outputString = inputString.replace(/&/g,'')
+		return outputString;
+	}
+    
 	function setSubtestValidationMessage(title, content) {
 	    $("#subTitle").text(title);
 	    $("#subContent").html(content);
@@ -1217,3 +1395,26 @@
 	    $("#subContent").html("");
 	    $('#displaySubtestValidationMsg').hide();
 	}
+	
+	function openTestTicketIndividual( anchor ) {
+		var testAdminId = selectedTestAdminId;
+		var orgNodeId= $("#dorgNodeId").val();
+		var studentId =selectedStudentId;
+		var url = "/SessionWeb/testTicketOperation/individualTestTicket.do";
+		return openTestTicket( "individual", anchor, url, testAdminId, orgNodeId, studentId  );
+	}
+	function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId, studentId ) {
+	    anchor.href  = url;
+	    anchor.href += "?testAdminId=" + testAdminId;
+	    anchor.href += "&orgNodeId=" + orgNodeId;
+	    anchor.href += "&studentId=" + studentId;
+	    anchor.href += "&ticketType=" + ticketType; 
+	    anchor.href += "&displayAccess=" + displayAccessCodeOnTicket;   
+	    return true;
+	}
+	
+	function accessCode() {
+	
+	var checkAccess = document.getElementsByName("individualAccess");
+	displayAccessCodeOnTicket = checkAccess[0].checked;
+ }

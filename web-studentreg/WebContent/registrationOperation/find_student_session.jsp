@@ -91,6 +91,10 @@
 <input type="hidden" id="msmTabeSelectStudentIns"  value=<lb:label key="midify.student.manifest.tabe.select.student.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="msmNonTabeSelectStudentIns" value=<lb:label key="midify.student.manifest.nontabe.select.student.message" prefix="'" suffix="'"/> />
 
+<input type="hidden" id="subtestDisplayorder" value=<lb:label key="stu.label.order" prefix="'" suffix="'"/> />
+<input type="hidden" id="subtestDisplayName" value=<lb:label key="stu.label.subtests" prefix="'" suffix="'"/> />
+<input type="hidden" id="subtestDisplayLevel" value=<lb:label key="session.modifySubtest.header.selectedSubtestlevel" prefix="'" suffix="'"/> />
+
 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 

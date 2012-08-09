@@ -20,44 +20,10 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.studentManagement.CustomerConfiguration;
-import com.ctb.bean.studentManagement.CustomerConfigurationValue;
-import com.ctb.bean.studentManagement.ManageStudent;
-import com.ctb.bean.studentManagement.ManageStudentData;
-import com.ctb.bean.studentManagement.MusicFiles;
-import com.ctb.bean.studentManagement.StudentDemographic;
-import com.ctb.bean.studentManagement.StudentDemographicValue;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.ScheduledSession;
-import com.ctb.bean.testAdmin.Student;
-import com.ctb.bean.testAdmin.StudentAccommodations;
-import com.ctb.bean.testAdmin.StudentSessionStatus;
-import com.ctb.bean.testAdmin.TABERecommendedLevel;
-import com.ctb.bean.testAdmin.TestElement;
-import com.ctb.bean.testAdmin.TestElementData;
-import com.ctb.bean.testAdmin.TestSession;
-import com.ctb.bean.testAdmin.TestSessionData;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.UserNodeData;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.studentManagement.StudentDataCreationException;
-import com.google.gson.Gson;
-
-import dto.Message;
-import dto.StudentAccommodationsDetail;
-import dto.SubtestVO;
-import dto.GridDropLists;
-import dto.StudentProfileInformation;
-import dto.TestSessionVO;
-
-import utils.BroadcastUtils;
-
-
+import utils.RequestUtil;
 import utils.Base;
 import utils.BaseTree;
+import utils.BroadcastUtils;
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.JsonStudentUtils;
@@ -71,6 +37,46 @@ import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
 import utils.TestSessionUtils;
 import utils.TreeData;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.studentManagement.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.studentManagement.ManageStudent;
+import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.MusicFiles;
+import com.ctb.bean.studentManagement.StudentDemographic;
+import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.StudentAccommodations;
+import com.ctb.bean.testAdmin.StudentManifest;
+import com.ctb.bean.testAdmin.StudentManifestData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.TABERecommendedLevel;
+import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestElementData;
+import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.studentManagement.StudentDataCreationException;
+import com.ctb.util.OperationStatus;
+import com.ctb.util.ValidationFailedInfo;
+import com.google.gson.Gson;
+
+import dto.GridDropLists;
+import dto.Message;
+import dto.RapidRegistrationVO;
+import dto.StudentAccommodationsDetail;
+import dto.StudentProfileInformation;
+import dto.TestSessionVO;
 
 
 @Jpf.Controller()
@@ -100,10 +106,7 @@ public class RegistrationOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.db.TestAdmin admins;
     
-    /*@Control()
-    private com.ctb.control.crscoring.TestScoring testScoring;
-	@Control()
-    private com.ctb.control.db.CRScoring scoring;*/
+
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
@@ -1116,6 +1119,236 @@ public class RegistrationOperationController extends PageFlowController {
 
 	}
 	
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="")
+	})
+    protected Forward registerStudent(){
+
+		String jsonData = "";
+		OutputStream stream = null;
+		HttpServletResponse resp = getResponse();
+	    resp.setCharacterEncoding("UTF-8"); 
+		OperationStatus status = new OperationStatus();
+		RapidRegistrationVO vo = new RapidRegistrationVO();
+		vo.setStatus(status);
+		boolean sessionHasDefaultLocatorSubtest = false; 
+    
+		try{
+			String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, true, "-1");
+			String studentIdString   = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ID, true, "-1");
+			String studentOrgNodeIdString   = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENT_ORG_NODE_ID, true, "-1");
+			Integer testAdminId      = Integer.valueOf(testAdminIdString);
+			Integer studentId        = Integer.valueOf(studentIdString);	
+			Integer studentOrgNodeId = Integer.valueOf(studentOrgNodeIdString);
+			List  selectedSubtest = new ArrayList();
+			
+			String[] itemSetIds   = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_ID_TD, true, new String[0]);
+			String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
+			String[] subtestNames = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.SUB_TEST_NAME, true, new String[itemSetIds.length]);
+			String autoLocator	  =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.HAS_AUTOLOCATOR, true, "false");
+			int subtestSize       = itemSetIds.length;
+			int order             = 0;
+			boolean hasAutoLocator = false;
+			StudentManifest locatorManifest = null;
+			TestProduct tp = scheduleTest.getProductForTestAdmin(this.userName, testAdminId);
+			ManageStudent student = studentManagement.getManageStudent(userName, studentId);  
+			ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, testAdminId);
+			
+			String productType = TestSessionUtils.getProductType(tp.getProductType());
+			TestSession testSession = scheduledSession.getTestSession();
+		    TestElement [] testElements = scheduledSession.getScheduledUnits();
+		    TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(testElements); 
+		    if(locatorSubtest!=null && locatorSubtest.getSessionDefault().equals("T")){
+		    	sessionHasDefaultLocatorSubtest=true;
+		    }
+
+		    
+		    
+		    
+			if(autoLocator.equalsIgnoreCase("true") ){
+				Integer locatorItemSetId = Integer.valueOf(RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
+				String locatorItemSetName = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.LOCATOR_SUB_TEST_NAME, false, null);
+				locatorManifest = new StudentManifest(); 
+				locatorManifest.setItemSetId(locatorItemSetId);
+				locatorManifest.setItemSetOrder(0);
+				locatorManifest.setItemSetName(locatorItemSetName);
+				subtestSize = subtestSize+1;
+				order = order+1;
+				hasAutoLocator = true;
+			}
+			
+			 StudentManifest [] manifestArray = new StudentManifest[subtestSize];
+			 if(hasAutoLocator){
+				 manifestArray[0] = locatorManifest;
+			 }
+			 
+			 for(int ii=0; ii<itemSetIds.length; ii++ ,order++){
+				 StudentManifest manifest = new StudentManifest(); 
+				 manifest.setItemSetId(Integer.valueOf(itemSetIds[ii]));
+				 if(!hasAutoLocator && TestSessionUtils.isTabeProduct(productType)){
+					 manifest.setItemSetForm(levels[ii]); 
+				 }
+				 manifest.setItemSetOrder(order);
+				 manifest.setItemSetName(subtestNames[ii]);
+				 manifestArray[order]=manifest;
+				 manifest.setTestAccessCode(getAccessCode(testElements, Integer.valueOf(itemSetIds[ii]) ));
+				 selectedSubtest.add(manifest);
+			 }
+			 
+			 
+			 
+			// manifestData.setStudentManifests(manifestArray , new Integer(manifestArray.length));
+
+			 boolean isTabeAdaptiveProduct =  TestSessionUtils.isTabeAdaptiveProduct(productType);
+			 if(TestSessionUtils.isTabeLocatorProduct(productType) || tp.getProductId().intValue() == 4013){
+				for (StudentManifest studentManifest : manifestArray) {
+					studentManifest.setItemSetForm("1");
+				}
+			 } else if(isTabeAdaptiveProduct){
+				 for (StudentManifest studentManifest : manifestArray) {
+						studentManifest.setItemSetForm(null);
+					}
+			 } else { // tabe other product
+				 for (StudentManifest studentManifest : manifestArray) {
+					 if(studentManifest.getItemSetForm()==null)
+						studentManifest.setItemSetForm("E");
+					}
+			 }
+
+			 RosterElement roster = new RosterElement(); 
+			 List sstList = TestSessionUtils.getStudentSubtests(this.scheduleTest, this.userName, studentId, testAdminId);
+			 if (sstList.size() > 0)  {
+				 // student already in session, update student roster
+	             StudentManifestData smanifestData = new StudentManifestData();
+	             smanifestData.setStudentManifests(manifestArray, new Integer(manifestArray.length));
+	             roster = TestSessionUtils.updateManifestForRoster(this.scheduleTest, this.userName, studentId, studentOrgNodeId, testAdminId, smanifestData);
+			 } else  {
+				 // student not in session, add student roster
+	             SessionStudent ss = new SessionStudent();
+	             ss.setStudentId(studentId);
+	             ss.setOrgNodeId(studentOrgNodeId);
+	             ss.setStudentManifests(manifestArray);
+	             roster = TestSessionUtils.addStudentToSession(this.scheduleTest, this.userName, ss, testAdminId);
+	         }
+			 //selectedSubtests = TestSessionUtils.getStudentSubtests(this.scheduleTest, this.userName, studentId, testAdminId);
+			 status.setSuccess(true);
+			 
+			 String startDate = DateUtils.formatDateToDateString(testSession.getLoginStartDate());
+		     String endDate = DateUtils.formatDateToDateString(testSession.getLoginEndDate());
+		     String startTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime());
+		     String endTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime());
+		     String enforceBreak = testSession.getEnforceBreak(); 
+		     List selectedProctors = new ArrayList();
+		     User [] proctors = scheduledSession.getProctors();
+		     for (int i=0; i < proctors.length; i++)  {
+		            User user = proctors[i];
+		            selectedProctors.add(user);
+		        }
+
+			 vo.setStudentId(studentId.toString());
+			 vo.setStudentName(student.getStudentName());
+			 vo.setLoginName(student.getLoginId());
+			 vo.setTestAdminId(testSession.getTestAdminId().toString());
+			 vo.setStudentOrgId(studentOrgNodeId.toString());
+			 vo.setPassword(roster.getPassword());
+			 vo.setTestName(testSession.getTestName());
+			 vo.setTestAdminName(testSession.getTestAdminName());
+			 vo.setTestAccessCode(testElements[0].getAccessCode());
+			 vo.setSessionNumber(testSession.getSessionNumber());
+			 vo.setCreatorOrgNodeName(testSession.getCreatorOrgNodeName());
+			 vo.setStartDate(startDate);
+			 vo.setEndDate(endDate);
+			 vo.setStartTime(startTime);
+			 vo.setEndTime(endTime);
+			 vo.setShowAccessCode(customerHasAccessCode(testSession.getTestAdminId()));
+			 vo.setLocatorTest(TestSessionUtils.isTabeLocatorProduct(productType));
+			 if(TestSessionUtils.isTabeLocatorProduct(productType) || sessionHasDefaultLocatorSubtest) {
+				 vo.setAutoLocator(true);
+				 vo.setAutoLocatorDisplay("Yes");
+			 } else {
+				 vo.setAutoLocator(false);
+				 vo.setAutoLocatorDisplay("No");
+			 }
+			 if((enforceBreak != null) && (enforceBreak.equalsIgnoreCase("T"))){
+				 vo.setEnforceBreak("Yes") ;
+			 } else {
+				 vo.setEnforceBreak("No") ;
+			 }
+			 
+			
+				 
+			 vo.setSelectedProctors(selectedProctors);
+			 vo.setLocatorSubtest(locatorSubtest);
+			 vo.setSelectedSubtests(selectedSubtest);
+			
+				 
+			 
+			 
+		}catch(Exception e) {
+			 e.printStackTrace();
+			 status.setSuccess(false);
+		}
+		
+		Gson gson = new Gson();
+		jsonData = gson.toJson(vo);
+		try {
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(jsonData.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return null; 
+	}
+	
+	
+	
+	private String getAccessCode(TestElement[] testElements, Integer valueOf) {
+		String selectedAccessCode = "";
+		for (TestElement testElement : testElements) {
+			if(testElement.getItemSetId().intValue()== valueOf.intValue()){
+				selectedAccessCode = testElement.getAccessCode();
+				break;
+			}
+		}
+		return selectedAccessCode;
+	}
+
+	private Boolean customerHasAccessCode(Integer testAdminId)
+	{               
+	    
+	    boolean hasAccessCodeConfigurable = false;
+	    String hasBreak = "T";
+	    for (int i=0; i < customerConfigurations.length; i++)
+	    {
+	    	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	        if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
+	        		cc.getDefaultValue().equals("T")	) {
+	        	hasAccessCodeConfigurable = true;
+	            break;
+	        } 
+	    }
+	    
+	    try {
+	    	hasBreak = this.studentManagement.hasMultipleAccessCode(testAdminId);
+	    	
+	    	if(hasBreak.equals("F") && hasAccessCodeConfigurable)
+	    		hasAccessCodeConfigurable = true;
+	    	else
+	    		hasAccessCodeConfigurable = false;
+	    }
+	    catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+	   
+	    return new Boolean(hasAccessCodeConfigurable);
+	}
 
 	private void initialize()
 	{     

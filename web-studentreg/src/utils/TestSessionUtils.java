@@ -118,6 +118,33 @@ public class TestSessionUtils
         }
         return roster;
     }
+    
+    /**
+     * updateManifestForRoster
+     */
+    public static RosterElement updateManifestForRoster(ScheduleTest scheduleTest,
+									    				String userName,
+									    				Integer studentId,
+									    				Integer orgNodeId,
+									    				Integer testAdminId,
+									    				StudentManifestData manifestData) throws CTBBusinessException 
+    {
+        RosterElement roster = null;        
+        try {  
+            roster = scheduleTest.updateManifestForRoster(userName, studentId, orgNodeId, testAdminId, manifestData);
+        }
+        //START- Added for Deferred defect #64308
+        catch (InsufficientLicenseQuantityException e)
+        {
+            e.printStackTrace();
+            throw e;         
+        }
+         //END- Added for Deferred defect #64308
+        catch (Exception be) {
+            be.printStackTrace();
+        }  
+        return roster;      
+    }
 
     /**
      * getStudentSubtests
