@@ -48,7 +48,6 @@ var filterLoadFlag = false;
 var filterTimer = null;
 var licenseInfo = null;
 
-
 /// FOR FILTER
 
 function showSelectStudent(){
@@ -1466,6 +1465,7 @@ function showLicenseUsedForOrgNode() {
 	var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
 	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed);
 	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage);
+	showLicenseErrorMessage(licenseUsed);
 }
 	
 	
@@ -1503,6 +1503,21 @@ function showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage) {
 	}
 
 	licenseUsedCtrl.innerHTML = "<b>" + licenseText + "</b>";
+}
+
+
+function showLicenseErrorMessage(licenseUsed) {
+	var licenseText;
+	var availableLicense = licenseInfo[4];
+			
+	$('#displayMessage').hide();
+	
+   	if (licenseUsed > availableLicense) { 
+   		var licenseNeeded = licenseUsed - availableLicense; 
+   		licenseText = "There are insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
+		setMessage("Exceeds Licenses Available", "", "errorMessage", licenseText);       
+		$('#displayMessage').show();
+   	}
 }
 	
 function calculateLicenseUsedForOrgNode(orgNodeId) {
