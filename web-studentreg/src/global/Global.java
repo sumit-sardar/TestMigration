@@ -96,7 +96,7 @@ public class Global extends GlobalApp
         }
         
         System.err.print( "[" + getRequest().getContextPath() + "] " );
-        System.err.println( "Unhandled exception caught in HandScoring Global.app:" );
+        System.err.println( "Unhandled exception caught in StudentRegistration Global.app:" );
         ex.printStackTrace();
         return new Forward( "errorPage" );
     }
