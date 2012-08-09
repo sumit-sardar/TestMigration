@@ -644,7 +644,8 @@ public class ProgramOperationController extends PageFlowController {
 	 */    
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
+			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do"),
+			@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	})   
 	protected Forward assessments()
 	{
@@ -669,6 +670,21 @@ public class ProgramOperationController extends PageFlowController {
 	        }
 	        return null;
 		}
+	 
+	 @Jpf.Action()
+	    protected Forward assessments_studentRegistrationLink()
+	    {
+	        try
+	        {
+	        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+	        	getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+	    }
 	    
 	    @Jpf.Action(forwards={
 	    		@Jpf.Forward(name = "success", path ="manageProgram.do")
@@ -1010,6 +1026,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
     	String roleName = this.user.getRole().getRoleName();
+    	boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -1084,6 +1101,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer&&(adminUser || adminCoordinatorUser) ));
     }
     
 	private void setupUserPermission()
@@ -1114,6 +1132,13 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
+    
+    private boolean isAdminCoordinatotUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+    }
+    
 
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               

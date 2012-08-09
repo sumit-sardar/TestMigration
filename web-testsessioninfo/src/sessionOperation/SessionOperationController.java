@@ -2408,7 +2408,8 @@ public class SessionOperationController extends PageFlowController {
      */    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
-            @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
+            @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do"),
+            @Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
         }) 
     protected Forward assessments()
     {
@@ -2959,6 +2960,23 @@ public class SessionOperationController extends PageFlowController {
         {
             String url = "/SessionWeb/programOperation/assessments_programStatus.do";
             getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    /**
+     * STUDENT REGISTRATION actions
+     */
+    @Jpf.Action()
+    protected Forward assessments_studentRegistrationLink()
+    {
+        try
+        {
+        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+        	getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
         {
@@ -3615,6 +3633,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean laslinkCustomer = false;
     	boolean tabeCustomer = false;
     	boolean adminUser = isAdminUser();
+    	boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	boolean hasUploadDownloadConfig = false;
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
@@ -3690,6 +3709,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
+		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
     }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
@@ -3802,6 +3822,12 @@ public class SessionOperationController extends PageFlowController {
     {               
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
+    }
+    
+    private boolean isAdminCoordinatotUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
     }
     
     @SuppressWarnings("unused")
