@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
@@ -146,6 +148,8 @@ public class TVWsAcuityDataController {
 	private PrimaryObjScore[] getPrimaryObjectiveScores (Long contentAreaId, StudentScoreSummaryData studentScoreSummaryData) {
 		PrimaryObjective [] prims = currData.getPrimaryObjectives();
 		ArrayList<PrimaryObjScore> primObjFacts = new ArrayList<PrimaryObjScore>();
+		Set<Long> populated = new HashSet<Long>();
+		
 		for(int i=0;i<prims.length;i++) {
 			if(prims[i].getContentAreaId().equals(contentAreaId) || prims[i].getContentAreaId().longValue() == contentAreaId.longValue()) {
 				PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
@@ -177,9 +181,12 @@ public class TVWsAcuityDataController {
                                     "Mastered".equals(details.getMasteryLevel())?3:4 ));
                     }
 				}
-				SecondaryObjScore[] secondaryObjScore = getSecondaryObjScores(prims[i].getPrimaryObjectiveId(), studentScoreSummaryData);
-				priObjFacts.setSecondaryObjScores(secondaryObjScore);
-				primObjFacts.add(priObjFacts);
+				if(!populated.contains(prims[i].getPrimaryObjectiveId())) {
+					SecondaryObjScore[] secondaryObjScore = getSecondaryObjScores(prims[i].getPrimaryObjectiveId(), studentScoreSummaryData);
+					priObjFacts.setSecondaryObjScores(secondaryObjScore);
+					primObjFacts.add(priObjFacts);
+					populated.add(prims[i].getPrimaryObjectiveId());
+				}
 			}
 			
         }
@@ -190,6 +197,8 @@ public class TVWsAcuityDataController {
 		
 		SecondaryObjective [] secs = currData.getSecondaryObjectives();
 		ArrayList<SecondaryObjScore> secObjFacts = new ArrayList<SecondaryObjScore>();
+		Set<Long> populated = new HashSet<Long>();
+		
 		for(int i=0;i<secs.length;i++) {
 			if(secs[i].getPrimaryObjectiveId().equals(primaryObjId) || secs[i].getPrimaryObjectiveId().longValue() == primaryObjId.longValue()) {
 				SecondaryObjScore newSecObjFacts = new SecondaryObjScore();
@@ -205,9 +214,12 @@ public class TVWsAcuityDataController {
                             "Partially Mastered".equals(details.getMasteryLevel())?2:
                             "Mastered".equals(details.getMasteryLevel())?3:4 ));
 				}
-				ItemScore[] itemScores = getItemScoresFact(secs[i].getSecondaryObjectiveId());
-				newSecObjFacts.setItemScores(itemScores);
-				secObjFacts.add(newSecObjFacts);
+				if(!populated.contains(secs[i].getSecondaryObjectiveId())) {
+					ItemScore[] itemScores = getItemScoresFact(secs[i].getSecondaryObjectiveId());
+					newSecObjFacts.setItemScores(itemScores);
+					secObjFacts.add(newSecObjFacts);
+					populated.add(secs[i].getSecondaryObjectiveId());
+				}
 			}
 		}
 		return (SecondaryObjScore []) secObjFacts.toArray(new SecondaryObjScore[0]);
@@ -217,6 +229,8 @@ public class TVWsAcuityDataController {
 		
 		Item[] items = currData.getItems();
 		ArrayList<ItemScore> itemFacts = new ArrayList<ItemScore>();
+		Set<String> populated = new HashSet<String>();
+		
 		for(int i=0;i<items.length;i++) {
 			if(items[i].getSecondaryObjectiveId().equals(secondaryObjectiveId) || items[i].getSecondaryObjectiveId().longValue() == secondaryObjectiveId.longValue()) {
 				Item item = items[i];
@@ -251,7 +265,10 @@ public class TVWsAcuityDataController {
     					}
     				}
                 }
-                itemFacts.add(itemFact);
+                if(!populated.contains(itemFact.getItemId())) {
+                	itemFacts.add(itemFact);
+                	populated.add(itemFact.getItemId());
+                }
 			}
 		}
 		return (ItemScore[]) itemFacts.toArray(new ItemScore[0]);
