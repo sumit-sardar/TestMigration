@@ -53,7 +53,7 @@ import dto.GridDropLists;
 import dto.StudentProfileInformation;
 import dto.TestSessionVO;
 
-//import utils.BroadcastUtils;
+import utils.BroadcastUtils;
 
 
 import utils.Base;
@@ -481,10 +481,39 @@ public class RegistrationOperationController extends PageFlowController {
 	 * @jpf:action
 	 */
 	@Jpf.Action()
-	protected Forward broadcastMessage()
-	{
-	    return null;
-	}
+    protected Forward broadcastMessage()
+    {
+        HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			this.userName = (String)getSession().getAttribute("userName");
+		}
+		
+		List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+        String bcmString = BroadcastUtils.buildBroadcastMessages(broadcastMessages);
+		
+		try{
+    		resp.setContentType(CONTENT_TYPE_JSON);
+			try {
+				stream = resp.getOutputStream();
+	    		resp.flushBuffer();
+	    		stream.write(bcmString.getBytes());
+			} 
+			finally {
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return null;
+    }
 	
 	
 	/**
