@@ -13,6 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="jdom.jar"/>
+	<classpathentry kind="lib" path="/application-testsessioninfo/EarContent/APP-INF/lib/jdom.jar"/>
+	<classpathentry kind="lib" path="/application-testsessioninfo/EarContent/APP-INF/lib/weblogic-jdbc-control.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
