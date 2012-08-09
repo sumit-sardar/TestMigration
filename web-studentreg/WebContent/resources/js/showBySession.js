@@ -34,14 +34,14 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 
 	    	//clear message before moving to pther node
 	    	clearMessage();
-  			SelectedOrgNodeId = $(this).parent().attr("id");
- 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+  			selectedOrgNodeIdInPopup = $(this).parent().attr("id");
+ 		    $("#treeOrgNodeIdInPopup").val(selectedOrgNodeIdInPopup);
             stuForSelectedOrg = $(this).parent().attr("id");
             var topNodeSelected = $(this).parent().attr("cid");
  		   /* 
-	 		if(parseInt(rootNodeId) == parseInt(SelectedOrgNodeId)){
+	 		if(parseInt(rootNodeId) == parseInt(selectedOrgNodeIdInPopup)){
 	 			var postDataObject = {};
-	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 	 		   $.ajax({
 					async:		true,
 					beforeSend:	function(){									
@@ -130,7 +130,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		var studentIdTitle = $("#studentIdLabelName").val();
 		var postDataObject = {};
  		postDataObject.q = 2;
- 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
  		postDataObject.testAdminId = selectedTestAdminId;
         $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do', 
@@ -279,7 +279,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	 	resetFiltersInSessionPopup();
   	    var postDataObject = {};
 		postDataObject.q = 2;
-		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+		postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 		postDataObject.testAdminId = selectedTestAdminId;
 			
         jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     

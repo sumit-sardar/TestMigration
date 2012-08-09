@@ -7,7 +7,7 @@
  		resetFiltersInPopupFromStudentView();
 		var postDataObject = {};
  		postDataObject.q = 2;
- 		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 		postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
  		postDataObject.studentId = selectedStudentId;
  		$("#list2").jqGrid({         
           url:'getSessionForOrgNodeWithStudentStatus.do', 
@@ -138,7 +138,7 @@
  		resetFiltersInPopupFromStudentView();
   	    var postDataObject = {};
 		postDataObject.q = 2;
-		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+		postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 			
         jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
   	   //var sortArrow = jQuery("#list2");

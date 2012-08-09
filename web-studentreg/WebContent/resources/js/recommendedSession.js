@@ -6,7 +6,7 @@ function populateSessionGridInPopupForFR(){
  		resetFiltersInPopupFromStudentView();
 		var postDataObject = {};
  		postDataObject.q = 2;
- 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeId").val();
+ 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInPopup").val();
  		postDataObject.selectedProductId = $("#recommendedProductId").val();
         $("#list2").jqGrid({         
           url:'getRecommendedSessionForReportingGrid.do', 
@@ -122,7 +122,7 @@ function populateSessionGridInPopupForFR(){
  		resetFiltersInPopupFromStudentView();
   	    var postDataObject = {};
 		postDataObject.q = 2;
-		postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+		postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 			
         jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
   	   //var sortArrow = jQuery("#list2");

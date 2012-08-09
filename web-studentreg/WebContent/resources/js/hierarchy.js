@@ -4,6 +4,7 @@ var orgTreeHierarchy;
 var jsonData;
 var assignedOrgNodeIds = "";
 var SelectedOrgNodeId;
+var selectedOrgNodeIdInPopup;
 var SelectedOrgNode;
 //var SelectedOrgNodes = [];
 var currentNodeId ;
