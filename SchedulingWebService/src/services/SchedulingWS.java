@@ -1259,6 +1259,9 @@ public class SchedulingWS implements Serializable {
 				SessionStudent ss = savedStudent.get(studentId);
 				StudentAccommodations sa = AccommodationUtil.makeCopy(studentId, accom);
 				updateStudentAccommodations(studentId, sa);
+				if(!hasAccomodationWarning && ss.getTestCompletionStatus().equals("IP")){
+					hasAccomodationWarning = true;
+				}
 			}
     	}
 		return hasAccomodationWarning;
