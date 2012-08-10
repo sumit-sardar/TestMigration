@@ -16,7 +16,7 @@ public class SessionValidatorUtil {
 	public static final String MESSAGE_START_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Date\" for this assignment.";
 	public static final String MESSAGE_END_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Date\" for this assignment.";
 	public static final String MESSAGE_TIME_ZONE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Time Zone\" for this assignment.";
-	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "OK:One or more students have started this assessment. The changes you have made to the accommodations will be applicable to students who begin this test <i>after</i> this change is saved.";
+	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "OK:One or more students have started this assessment. The changes you have made to the accommodations will be visible to students who begin this test <i>after</i> this change is saved.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_STUDENT = "Error:You can no longer edit accomodation for this student.";
 	public static final String MESSAGE_START_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Time\" for this assignment.";
 	public static final String MESSAGE_END_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Time\" for this assignment.";
