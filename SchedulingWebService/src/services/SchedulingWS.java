@@ -1206,7 +1206,7 @@ public class SchedulingWS implements Serializable {
 		} catch (Exception e) {
 			System.out.println("Failed to remove student = " +  student.getStudentId());
 			e.printStackTrace();
-			student.setStatusNonOverwritten("Error:Failed to remove student due to system error.");
+			student.setStatusNonOverwritten("Error:Failed to remove.");
 		}
 		return deleted;
 	}
