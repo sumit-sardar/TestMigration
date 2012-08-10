@@ -259,11 +259,11 @@ public class SchedulingWS implements Serializable {
 	    		boolean createNewStudent = true;
 	    		boolean removedStudent = false;
 	    		
-	    		if (studentId != null && student.getRemoveStatus() != null && !student.getRemoveStatus()) {  // for update student
+	    		if (studentId != null && (student.getRemoveStatus() == null || !student.getRemoveStatus())) {  // for update student
 	    			Student studentDetail = getStudent(studentId);
 	    			studentId = studentDetail.getStudentId();
 	    			createNewStudent = false;
-	    		} else if (studentId != null && student.getRemoveStatus() !=null && student.getRemoveStatus()){  // for remove student
+	    		} else if (studentId != null && (student.getRemoveStatus() != null && student.getRemoveStatus())){  // for remove student
 	    			if(!validateStudentForRemove(session, student)){
 	    				createNewStudent = false;
 	    			} else	if (!deleteStudent(student,  session.getSessionId())){
