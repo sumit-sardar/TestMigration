@@ -330,7 +330,7 @@ function loadChildrenOrgNodeLicense() {
               		errorMsg = "Enter a number that is 0 or greater.";
 					return 'ERROR';
 				}
-              	if (! validLicenseNumber(value)) {
+              	if (! validBigLicenseNumber(value)) {
               		errorMsg = "Enter a number that is smaller than 1000000";
 					return 'ERROR';
 				}
@@ -479,7 +479,10 @@ function highLightNoAvailable() {
 }
 
 
-function validLicenseNumber(sText) {
+function validBigLicenseNumber(sText) {
+	if (sText.length > 7)
+		return false;
+		
    	var intValue = str2num(sText);
    	if (intValue >= 1000000)
    		return false;
