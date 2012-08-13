@@ -7,12 +7,12 @@
 <div id="recommendedDialogID" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 <input type="hidden" id= "recommendedProductId" />
 	<div  >
-	    <span>&nbsp;&nbsp;Student&nbsp; </span> 
+	    <span>&nbsp;Student&nbsp; </span> 
 		<b> <span id="studentName"></span> </b>  
 		<span> &nbsp;most recently took : </span>
 	</div>
 
-	<div  style="float: left; width: 100%; padding-left: 10px; padding-top: 5px;">
+	<div  style="float: left; width: 100%; padding-left: 0px; padding-top: 5px;">
 		<table cellpadding="0" style="float: left;" width="95%">
 			<tr>
 				<td width="30%"><lb:label key="registration.SessionName" prefix=" " suffix=" " /> </td>
@@ -54,7 +54,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="30%"> <lb:label key="registration.completedDate" prefix=" " suffix=" " /> </td>
+				<td width="30%"> <lb:label key="registration.completedDate" prefix="" suffix=" " /> </td>
 				<td><b> <span id="completedDate" > </span> </b></td>
 			</tr>
 		</table>
@@ -65,7 +65,7 @@
 		<br>
 		<span >
 			<lb:label key="registration.recommendation.yes.info" prefix="  " suffix=" " /> 
-			<span id="recommendedTest"></span></b> 
+			<b><span id="recommendedTest"></span></b> 
 	    </span> <br>
 		<span ><lb:label key="registration.recommendation.no.info" prefix="  " suffix=" " />  </span>
 		<br>
