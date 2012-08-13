@@ -900,12 +900,12 @@
 		} else {
 			removeSubtestLevel = false;
 			$("#modifyTestLevelMsm").show();
-			/*if( studentManifestdetails.locatorSessionInfo != undefined){
-				$("#msmLocatorDetail").text(studentManifestdetails.locatorSessionInfo);
+			if( locatorSessionInfo != undefined && locatorSessionInfo != ""){
+				$("#msmLocatorDetail").text(locatorSessionInfo);
 				$("#msmLocatorInfo").show();
 				$("#msmLocatorInfo1").show();
 				
-			}*/
+			}
 			
 		}
 		for( var ii=0, jj=allSubtestsMsm.length; ii<jj; ii++ ){
