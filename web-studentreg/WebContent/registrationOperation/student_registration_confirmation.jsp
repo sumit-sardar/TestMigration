@@ -166,7 +166,7 @@
 					        	</th>
 					        	
 					        	<th id="loc_accesscode_header"  class="sortable alignLeft" height="25" width="*">
-					        	&nbsp;<span><lb:label key="stu.label.subtest" /></span>
+					        	&nbsp;<span><lb:label key="session.modifySubtest.header.selectedSubtestlevel" /></span>
 					        	</th>
 					        	
 					    	</tr>

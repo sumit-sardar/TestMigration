@@ -1341,14 +1341,20 @@
       var retString = "";
       var autolocator =  data.autoLocator;
        	retString +='<table align="center" width="95%">	<tr>	<td>	<table class="sortable">';
-      	retString +='<tr class="sortable"> <th class="sortable alignCenter" height="25">';
+      	retString +='<tr class="sortable"> <th class="ui-widget-header alignCenter" height="25">';
       	retString +=$("#subtestDisplayorder").val();
       	retString +='</th> '; 
-      	retString +=' <th class="sortable alignLeft" height="25">&nbsp;&nbsp;';
+      	retString +=' <th class="ui-widget-header alignLeft" height="25">&nbsp;&nbsp;';
       	retString +=  $("#subtestDisplayName").val();
-      	retString +='</th> ';             
+      	retString +='</th> ';  
+      	if(data.enforceBreak=="Yes"){
+      		retString +=' <th class="ui-widget-header alignLeft" height="25">&nbsp;&nbsp;';
+      		retString +=  $("#subtestDisplayAccessCode").val();
+      		retString +='</th> '; 
+      	}
+      	           
 		if(!autolocator){
-			retString +=' <th class="sortable alignLeft" height="25">&nbsp;&nbsp;';
+			retString +=' <th class="ui-widget-header alignLeft" height="25">&nbsp;&nbsp;';
 	      	retString +=  $("#subtestDisplayLevel").val();
 	      	retString +='</th> '; 
 		}			        
@@ -1362,6 +1368,11 @@
        	retString +='<td class="sortable">';
        	retString +=data.selectedSubtests[ii].itemSetName;
        	retString +='</td>';
+       	if(data.enforceBreak=="Yes"){
+       		retString +='<td class="sortable">';
+       		retString +=data.selectedSubtests[ii].testAccessCode;
+       		retString +='</td>';
+       	}
        	if(!autolocator){
        		retString +='<td class="sortable">';
        		retString +=data.selectedSubtests[ii].itemSetForm;

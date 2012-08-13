@@ -94,6 +94,7 @@
 <input type="hidden" id="subtestDisplayorder" value=<lb:label key="stu.label.order" prefix="'" suffix="'"/> />
 <input type="hidden" id="subtestDisplayName" value=<lb:label key="stu.label.subtests" prefix="'" suffix="'"/> />
 <input type="hidden" id="subtestDisplayLevel" value=<lb:label key="session.modifySubtest.header.selectedSubtestlevel" prefix="'" suffix="'"/> />
+<input type="hidden" id="subtestDisplayAccessCode" value=<lb:label key="register.student.popup.accessCode" prefix="'" suffix="'"/> />
 
 
 
