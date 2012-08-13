@@ -1133,7 +1133,7 @@ public class RegistrationOperationController extends PageFlowController {
 		OperationStatus status = new OperationStatus();
 		RapidRegistrationVO vo = new RapidRegistrationVO();
 		vo.setStatus(status);
-		boolean sessionHasDefaultLocatorSubtest = false; 
+		//boolean sessionHasDefaultLocatorSubtest = false; 
     
 		try{
 			String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, true, "-1");
@@ -1160,9 +1160,9 @@ public class RegistrationOperationController extends PageFlowController {
 			TestSession testSession = scheduledSession.getTestSession();
 		    TestElement [] testElements = scheduledSession.getScheduledUnits();
 		    TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(testElements); 
-		    if(locatorSubtest!=null && locatorSubtest.getSessionDefault().equals("T")){
+		    /*if(locatorSubtest!=null && locatorSubtest.getSessionDefault().equals("T")){
 		    	sessionHasDefaultLocatorSubtest=true;
-		    }
+		    }*/
 
 		    
 		    
@@ -1202,7 +1202,11 @@ public class RegistrationOperationController extends PageFlowController {
 			// manifestData.setStudentManifests(manifestArray , new Integer(manifestArray.length));
 
 			 boolean isTabeAdaptiveProduct =  TestSessionUtils.isTabeAdaptiveProduct(productType);
-			 if(TestSessionUtils.isTabeLocatorProduct(productType) || tp.getProductId().intValue() == 4013){
+			 if(hasAutoLocator && !TestSessionUtils.isTabeLocatorProduct(productType)){
+				 for (StudentManifest studentManifest : manifestArray) {
+						studentManifest.setItemSetForm(null);
+					}
+			 } else  if(TestSessionUtils.isTabeLocatorProduct(productType) || tp.getProductId().intValue() == 4013){
 				for (StudentManifest studentManifest : manifestArray) {
 					studentManifest.setItemSetForm("1");
 				}
@@ -1233,6 +1237,13 @@ public class RegistrationOperationController extends PageFlowController {
 	             roster = TestSessionUtils.addStudentToSession(this.scheduleTest, this.userName, ss, testAdminId);
 	         }
 			 //selectedSubtests = TestSessionUtils.getStudentSubtests(this.scheduleTest, this.userName, studentId, testAdminId);
+			 
+			 if(locatorManifest !=null && locatorSubtest == null ){
+				 locatorSubtest = new TestElement();
+				 locatorSubtest.setItemSetName(locatorManifest.getItemSetName());
+				 locatorSubtest.setAccessCode(locatorManifest.getTestAccessCode());
+				 locatorSubtest.setItemSetId(locatorManifest.getItemSetId());
+			 }
 			 status.setSuccess(true);
 			 
 			 String startDate = DateUtils.formatDateToDateString(testSession.getLoginStartDate());
@@ -1264,7 +1275,7 @@ public class RegistrationOperationController extends PageFlowController {
 			 vo.setEndTime(endTime);
 			 vo.setShowAccessCode(customerHasAccessCode(testSession.getTestAdminId()));
 			 vo.setLocatorTest(TestSessionUtils.isTabeLocatorProduct(productType));
-			 if(TestSessionUtils.isTabeLocatorProduct(productType) || sessionHasDefaultLocatorSubtest) {
+			 if(TestSessionUtils.isTabeLocatorProduct(productType) || hasAutoLocator) {
 				 vo.setAutoLocator(true);
 				 vo.setAutoLocatorDisplay("Yes");
 			 } else {
