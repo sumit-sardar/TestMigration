@@ -6,7 +6,7 @@
 <input type="hidden" id="dorgNodeId" name="orgNodeId" value="" />
 <div id="studentConfirmation" 
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="studRegInfo" style ="background-color: #FFFFFF;">
+	<div id="studRegInfo" style ="background-color: #FFFFFF; padding-left: 15px;">
 	 <table width="100%" cellpadding="0" cellspacing="0" class="transparent">
 	    <tr>
 	        <td nowrap="">
@@ -201,7 +201,7 @@
 			<input type="radio" id="deny" name="individualAccess" value="No"  onclick="" checked="checked"><lb:label key="common.button.no" /></input>
 		</p>
 	</div>
-		<p align="right">
+		<p align="right" style="padding-right: 15px">
 		    <a href="#" style='color:blue; text-decoration:underline;' onClick="return openTestTicketIndividual(this);">
 		   	 <lb:label key="stu.label.testTicket" />
 		    </a>
