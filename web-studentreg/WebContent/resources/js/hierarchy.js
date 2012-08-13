@@ -448,6 +448,13 @@ function populateGridAsPerView() {
 
  	function sessionScoring() {
     	clearMessage();
+    	if(currentView == "student"){
+		   	$("#sessionListSubTitle").show();
+		   	$("#studentListSubTitle").hide();
+    	} else {
+    		$("#sessionListSubTitle").hide();
+		   	$("#studentListSubTitle").show();
+    	}
 		$("#sessionStudRegId").dialog({  
 			title:$("#sessionStudRegPopupTitle").val(),  
 			resizable:false,
@@ -467,6 +474,16 @@ function populateGridAsPerView() {
 	
 	function sessionPopupFromStudentView(){
 		clearMessage();
+		if(currentView == "student"){
+		   	$("#sessionListSubTitle").show();
+		   	$("#studentListSubTitle").hide();
+    	} else if(currentView != "student" && (isPopupOnByepassFR ||isPopupOnFRAccept||isPopupOnFRNotAccept)) {
+    		$("#sessionListSubTitle").show();
+		   	$("#studentListSubTitle").hide();		   	    		
+    	} else {
+    		$("#sessionListSubTitle").hide();
+		   	$("#studentListSubTitle").show();
+    	}
 		$("#sessionStudRegId").dialog({  
 			title:$("#sessionStudRegPopupTitle").val(),  
 			resizable:false,

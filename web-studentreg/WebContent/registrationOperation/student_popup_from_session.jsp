@@ -18,7 +18,8 @@
 			</tr>
 			<tr> 
 				<td class="subtitle">  
-					<lb:label key="student.popup.subtitle" />
+					<div id="sessionListSubTitle" style="display:none"><lb:label key="session.popup.subtitle" /></div>
+					<div id="studentListSubTitle" style="display:none"><lb:label key="student.popup.subtitle" /></div>
 				</td>	
 			</tr>
 		</table>	
