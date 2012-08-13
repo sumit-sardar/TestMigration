@@ -47,6 +47,7 @@ var accomodationMapForAll = {};
 var filterLoadFlag = false;
 var filterTimer = null;
 var licenseInfo = null;
+var licenseInfoMap = new Map();
 
 /// FOR FILTER
 
@@ -323,10 +324,13 @@ function populateSelectStudentGrid() {
 		   	$('#gs_untimedTest').val("");
 
 		   	accomodationMapForAll = obj.accomodationMap;
-		   	if ((obj.rows == null) || (obj.rows == undefined))
+		   	if ((obj.rows == null) || (obj.rows == undefined)) {
 		   		licenseInfo = null;
-		   	else  
+		   	}
+		   	else {  
 		   		licenseInfo = obj.rows[0].cell;
+		   		licenseInfoMap.put(licenseInfo[0], licenseInfo[4]);
+		   	}
 		   	
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
@@ -1463,7 +1467,7 @@ function showLicenseInformation() {
 function showLicenseUsedForOrgNode() {
 	var orgNodeId = licenseInfo[0];
 	var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
-	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed);
+	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, licenseInfo[4]);
 	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage);
 	showLicenseErrorMessage(licenseUsed);
 }
@@ -1541,8 +1545,7 @@ function calculateLicenseUsedForOrgNode(orgNodeId) {
 	return usedLicenses;
 }
 
-function calculateLicenseUsedPercentForOrgNode(usedLicenses) {
-	var availableLicense = licenseInfo[4];
+function calculateLicenseUsedPercentForOrgNode(usedLicenses, availableLicense) {
 	var licenseUsedPercentage;
 	if (availableLicense == 0)
 		licenseUsedPercentage = -1;
@@ -1555,22 +1558,24 @@ function calculateLicenseUsedPercentForOrgNode(usedLicenses) {
 function validateLicenseUsed() {
 	var result = true;	
 	if (licenseInfo != null) {	
-		orgNodeMap = new Map();
-		
+	
+		orgNodeMap = new Map();	
 		var keys = studentTempMap.getKeys();
 		for(var i=0 ; i<keys.length; i++) {
 			var stdId = keys[i];
 			var objstr = studentTempMap.get(stdId);
 			orgNodeMap.put(objstr.orgNodeId, objstr.orgNodeName);
 		}
-		
-		var nodekeys = orgNodeMap.getKeys();
-		for(var j=0 ; j<nodekeys.length; j++) {
-			var orgNodeId = nodekeys[j];
+	
+		var licenseInfoKeys = licenseInfoMap.getKeys();
+		for(var i=0 ; i<licenseInfoKeys.length; i++) {
+			var orgNodeId = licenseInfoKeys[i];
 			var orgNodeName = orgNodeMap.get(orgNodeId);
+			var availableLicense = licenseInfoMap.get(orgNodeId);
+			
 			var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
-			var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed);
-			if ((licenseUsedPercentage < 0) || (licenseUsedPercentage > 100)) {
+			var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
+			if (licenseUsedPercentage > 100) {
 				alert(orgNodeName);
 				result = false;
 				break;
