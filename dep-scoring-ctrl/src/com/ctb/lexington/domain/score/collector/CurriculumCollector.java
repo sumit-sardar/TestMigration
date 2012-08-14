@@ -177,41 +177,80 @@ public class CurriculumCollector {
             composites[0].setCompositeName("Total Score");
             composites[0].setCompositeType("TERRANOVA COMPOSITE");
             composites[0].setSubject("TV Total Score");
-            if(level != null && level.indexOf("19") >= 0) {
-                composites[0].setAssessmentId(new Long(72153));
-                composites[0].setCompositeId(new Long(12));
-                composites[0].setCompositeNumItems(new Long(80));
-                composites[0].setCompositePointsPossible(new Long(80));
-            } else if("18".equals(level)) {
-                composites[0].setAssessmentId(new Long(72272));
-                composites[0].setCompositeId(new Long(13));
-                composites[0].setCompositeNumItems(new Long(86));
-                composites[0].setCompositePointsPossible(new Long(86));
-            } else if("17".equals(level)) {
-                composites[0].setAssessmentId(new Long(72252));
-                composites[0].setCompositeId(new Long(14));
-                composites[0].setCompositeNumItems(new Long(87));
-                composites[0].setCompositePointsPossible(new Long(87));
-            } else if("16".equals(level)) {
-                composites[0].setAssessmentId(new Long(72232));
-                composites[0].setCompositeId(new Long(15));
-                composites[0].setCompositeNumItems(new Long(86));
-                composites[0].setCompositePointsPossible(new Long(86));
-            } else if("15".equals(level)) {
-                composites[0].setAssessmentId(new Long(72152));
-                composites[0].setCompositeId(new Long(16));
-                composites[0].setCompositeNumItems(new Long(87));
-                composites[0].setCompositePointsPossible(new Long(87));
-            } else if("14".equals(level)) {
-                composites[0].setAssessmentId(new Long(72212));
-                composites[0].setCompositeId(new Long(17));
-                composites[0].setCompositeNumItems(new Long(87));
-                composites[0].setCompositePointsPossible(new Long(87));
-            } else if("13".equals(level)) {
-                composites[0].setAssessmentId(new Long(72192));
-                composites[0].setCompositeId(new Long(18));
-                composites[0].setCompositeNumItems(new Long(80));
-                composites[0].setCompositePointsPossible(new Long(80));
+            if("G".equalsIgnoreCase(form)) {
+            	if(level != null && level.indexOf("19") >= 0) {
+	                composites[0].setAssessmentId(new Long(72153));
+	                composites[0].setCompositeId(new Long(45));
+	                composites[0].setCompositeNumItems(new Long(80));
+	                composites[0].setCompositePointsPossible(new Long(80));
+	            } else if("18".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72272));
+	                composites[0].setCompositeId(new Long(44));
+	                composites[0].setCompositeNumItems(new Long(86));
+	                composites[0].setCompositePointsPossible(new Long(86));
+	            } else if("17".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87627));
+	                composites[0].setCompositeId(new Long(43));
+	                composites[0].setCompositeNumItems(new Long(137));
+	                composites[0].setCompositePointsPossible(new Long(137));
+	            } else if("16".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87625));
+	                composites[0].setCompositeId(new Long(42));
+	                composites[0].setCompositeNumItems(new Long(136));
+	                composites[0].setCompositePointsPossible(new Long(136));
+	            } else if("15".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87623));
+	                composites[0].setCompositeId(new Long(41));
+	                composites[0].setCompositeNumItems(new Long(137));
+	                composites[0].setCompositePointsPossible(new Long(137));
+	            } else if("14".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87605));
+	                composites[0].setCompositeId(new Long(40));
+	                composites[0].setCompositeNumItems(new Long(137));
+	                composites[0].setCompositePointsPossible(new Long(137));
+	            } else if("13".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87603));
+	                composites[0].setCompositeId(new Long(39));
+	                composites[0].setCompositeNumItems(new Long(120));
+	                composites[0].setCompositePointsPossible(new Long(120));
+	            }
+            } else {
+	            if(level != null && level.indexOf("19") >= 0) {
+	                composites[0].setAssessmentId(new Long(72153));
+	                composites[0].setCompositeId(new Long(12));
+	                composites[0].setCompositeNumItems(new Long(80));
+	                composites[0].setCompositePointsPossible(new Long(80));
+	            } else if("18".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72272));
+	                composites[0].setCompositeId(new Long(13));
+	                composites[0].setCompositeNumItems(new Long(86));
+	                composites[0].setCompositePointsPossible(new Long(86));
+	            } else if("17".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72252));
+	                composites[0].setCompositeId(new Long(14));
+	                composites[0].setCompositeNumItems(new Long(87));
+	                composites[0].setCompositePointsPossible(new Long(87));
+	            } else if("16".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72232));
+	                composites[0].setCompositeId(new Long(15));
+	                composites[0].setCompositeNumItems(new Long(86));
+	                composites[0].setCompositePointsPossible(new Long(86));
+	            } else if("15".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72152));
+	                composites[0].setCompositeId(new Long(16));
+	                composites[0].setCompositeNumItems(new Long(87));
+	                composites[0].setCompositePointsPossible(new Long(87));
+	            } else if("14".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72212));
+	                composites[0].setCompositeId(new Long(17));
+	                composites[0].setCompositeNumItems(new Long(87));
+	                composites[0].setCompositePointsPossible(new Long(87));
+	            } else if("13".equals(level)) {
+	                composites[0].setAssessmentId(new Long(72192));
+	                composites[0].setCompositeId(new Long(18));
+	                composites[0].setCompositeNumItems(new Long(80));
+	                composites[0].setCompositePointsPossible(new Long(80));
+	            }
             }
             return composites;
         } 
