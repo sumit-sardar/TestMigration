@@ -179,7 +179,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             buf.append(" | " + level);
             buf.append(" | " + testForm);
             buf.append(" | " + contentArea);
-            buf.append(" | " + ScoreLookupCode.SUBTEST_NUMBER_CORRECT.getCode());
+            buf.append(" | " + ScoreLookupCode.SCALED_SCORE.getCode());
             buf.append(" | " + new BigDecimal(0));
             buf.append(" | " + ScoreLookupCode.OBJECTIVE_P_VALUE.getCode());
             buf.append("\n(continuing)\n");
