@@ -23,8 +23,11 @@ public class FileUtil {
 			"source_score_value,dest_score_value,test_form,test_level,content_area,framework_code,product_internal_display_name) " +
 			"VALUES(?,?,?,?,?,?,?,?,?,?)";
 	private static String insertScore_lookupQuery_withNorms="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
-	"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name) " +
-	"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name) " +
+		"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static String insertScore_lookupQuery_withNorms_GE="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
+		"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name" +
+		", extended_flag) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static String itemSetIDQuery=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
 			"where tc.product_id = ? and tc.item_set_id = isa.ancestor_item_Set_id and isa.item_set_id = iset.item_set_id " +
 			"and iset.item_set_type = 'TD' and iset.sample = 'F' and iset.subject = ? and iset.item_set_level = ? ";
@@ -208,7 +211,7 @@ public class FileUtil {
 					contentOfFile=readFileDataSE(file_location,matchingFileMap);
 					
 					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -222,7 +225,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				} else if (inFile.getName().substring(0,2).equals("NP")) {/*
+				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -236,7 +239,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -251,7 +254,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {/*
+				} else if (inFile.getName().substring(4,7).equals("OPI")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -268,7 +271,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
 							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
 							Integer.parseInt(product_id), Product_type);
-				*/}
+				}
 				
 			}
 			if(successInSCORE_LOOKUP==true && successInScore_lookup_item_set==true)
@@ -738,7 +741,7 @@ public class FileUtil {
 		int save = 0;
 		try {
 			
-			ps = con.prepareStatement(insertScore_lookupQuery_withNorms);
+			ps = con.prepareStatement(insertScore_lookupQuery_withNorms_GE);
 			ps.setString(1, Source_score_type_code);
 			ps.setString(2, dest_Score_type_code);
 			ps.setString(3, score_lookup_id);
@@ -752,6 +755,7 @@ public class FileUtil {
 			ps.setString(11, "2011");
 			ps.setString(12, framework_code);
 			ps.setString(13,product_internal_display_name);
+			ps.setString(14, "+");
 			save=ps.executeUpdate();
 			SqlUtil.close(ps);
 			
