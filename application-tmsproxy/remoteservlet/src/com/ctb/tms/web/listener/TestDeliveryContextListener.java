@@ -145,29 +145,34 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					oasDBSource.markActiveRosters(conn, clusterName, nodeId);
 					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn, clusterName, nodeId);
 					fetchedCount = creds.length;
-					for(int i=0;i<creds.length;i++) {						
-						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						try {
-							if(creds[i].getUsername().startsWith("pt-student") && creds[i].getAccesscode().startsWith("PTest")) {
-								oasSink.deleteAllItemResponses(Integer.parseInt(creds[i].getTestRosterId()));
-							}
-							RosterData rd = oasDBSource.getRosterData(conn, key);
-							Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
-							if(manifests != null && manifests.length > 0) {
-								oasSink.putRosterData(creds[i], rd, false);
-								oasSink.putAllManifests(creds[i].getTestRosterId(), new ManifestWrapper(manifests), false);
-								rd = null;
-								manifests = null;
-								storedCount++;
-							} else {
+					for(int i=0;i<creds.length;i++) {
+						if(creds[i].getUsername() == null || creds[i].getPassword() == null || creds[i].getAccesscode() == null) {
+							logger.info("Invalid or deleted roster in pre-pop table, removing manifest data for roster: " + creds[i].getTestRosterId());
+							oasSink.deleteAllManifests(creds[i].getTestRosterId());
+						} else {
+							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+							try {
+								if(creds[i].getUsername().startsWith("pt-student") && creds[i].getAccesscode().startsWith("PTest")) {
+									oasSink.deleteAllItemResponses(Integer.parseInt(creds[i].getTestRosterId()));
+								}
+								RosterData rd = oasDBSource.getRosterData(conn, key);
+								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
+								if(manifests != null && manifests.length > 0) {
+									oasSink.putRosterData(creds[i], rd, false);
+									oasSink.putAllManifests(creds[i].getTestRosterId(), new ManifestWrapper(manifests), false);
+									rd = null;
+									manifests = null;
+									storedCount++;
+								} else {
+									errorCount++;
+									lastError = new Exception("Couldn't retrieve manifest for " + key);
+								}
+							} catch (Exception e) {
 								errorCount++;
-								lastError = new Exception("Couldn't retrieve manifest for " + key);
+								lastError = e;
 							}
-						} catch (Exception e) {
-							errorCount++;
-							lastError = e;
+							key = null;
 						}
-						key = null;
 					}
 					if(errorCount > 0) {
 						logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: " + lastError.getMessage());

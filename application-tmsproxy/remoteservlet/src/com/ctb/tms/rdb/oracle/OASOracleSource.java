@@ -100,7 +100,18 @@ public class OASOracleSource implements OASRDBSource
 	"                    and ta.activation_status = 'AC' " + 
 	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
 	"                    and stu.student_id = tr.student_id " +
-	"                    and tais.test_Admin_id = ta.test_admin_id";
+	"                    and tais.test_Admin_id = ta.test_admin_id " +
+	"				union select distinct " +
+	"					null as username, " +
+	"					null as password, " +
+	"					null as accessCode, " +
+	"					'F' as tmsUpdate, " +
+	"					prepop.test_roster_id as testRosterId " +
+	"				from " +
+	"					prepop_table prepop " +
+	"				where " +
+	"					prepop.node_id = ?" +
+	"					and not exists (select * from test_roster where test_roster_id = prepop.test_roster_id)";
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
@@ -137,6 +148,7 @@ public class OASOracleSource implements OASRDBSource
     		}
     		stmt1 = con.prepareStatement(GET_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
     		stmt1.setInt(1, nodeid);
+    		stmt1.setInt(2, nodeid);
 			ResultSet rs1 = stmt1.executeQuery();
 			ArrayList<StudentCredentials> dataList = new ArrayList<StudentCredentials>();
 			while (rs1.next()) {

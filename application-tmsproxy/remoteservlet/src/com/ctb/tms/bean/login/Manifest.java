@@ -20,6 +20,16 @@ public class Manifest implements Serializable {
 	private String tutorialTaken;
 	private boolean forceReplication;
 	private String ttsSpeedStatus;
+	
+	private boolean usable;
+	
+	public boolean isUsable() {
+		return usable;
+	}
+
+	public void setUsable(boolean usable) {
+		this.usable = usable;
+	}
 
 	/**
 	 * @return Returns the ttsSpeedStatus.

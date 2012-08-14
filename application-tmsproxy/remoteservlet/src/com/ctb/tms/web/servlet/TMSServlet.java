@@ -299,7 +299,7 @@ public class TMSServlet extends HttpServlet {
         return response.xmlText();
 	}
 
-	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException, SQLException, InvalidItemSetIdException {
+	private String save(HttpServletResponse response, String xml) throws Exception {
 		String rosterId = null;
 		String accessCode = null;
 		Manifest manifest = null;
@@ -330,6 +330,9 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
 	    		manifest = oasSource.getManifest(rosterId, accessCode);
+	    		if(!manifest.isUsable()) {
+	    			throw new Exception("Manifest has been marked unusable due to failed response persistence!");
+	    		}
 		    	ManifestData[] manifestData = manifest.getManifest();	
 		    	int j;
 		    	String thisScid = tsd.getScid();
@@ -868,7 +871,7 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterRestartNumber(newRestartCount);
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		
-		
+		manifest.setUsable(true);
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest, true);
 		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd, true);

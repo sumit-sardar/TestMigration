@@ -1,6 +1,6 @@
 package com.ctb.tms.rdb.oracle;
 
-import java.math.BigInteger;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,19 +8,19 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 
-import noNamespace.AdssvcRequestDocument;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.BaseType;
 
 import org.apache.log4j.Logger;
-import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.NoSQLStorageFactory;
+import com.ctb.tms.nosql.OASNoSQLSink;
+import com.ctb.tms.nosql.OASNoSQLSource;
 import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASOracleSink implements OASRDBSink {	
@@ -41,7 +41,7 @@ public class OASOracleSink implements OASRDBSink {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException {		
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException, IOException, ClassNotFoundException {		
 		String response = ird.getResponse();
 		String CRresponse = null;
 		String responseType = ird.getResponseType();
@@ -68,24 +68,37 @@ public class OASOracleSink implements OASRDBSink {
                     response = response.substring(0, end);
             }
         }
-		
-		if(response != null && !"".equals(response.trim())) {
-			if(responseType.equals(BaseType.IDENTIFIER.toString())) {
-				logger.debug("Storing SR response");
-				storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
-            } else if(responseType.equals(BaseType.STRING.toString())) {
-            	logger.debug("Storing CR response");
-            	CRresponse = response;
-            	response = null;
-            	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
-                storeCRResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), CRresponse, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked(), ird.isAudioItem());
-            }
-			//logger.info("Finished putItemResponse for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
-	    } else{
-	    	logger.debug("Storing null response");
-	    	response = "";
-	    	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
-        }  
+		try {
+			if(response != null && !"".equals(response.trim())) {
+				if(responseType.equals(BaseType.IDENTIFIER.toString())) {
+					logger.debug("Storing SR response");
+					storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
+	            } else if(responseType.equals(BaseType.STRING.toString())) {
+	            	logger.debug("Storing CR response");
+	            	CRresponse = response;
+	            	response = null;
+	            	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
+	                storeCRResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), CRresponse, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked(), ird.isAudioItem());
+	            }
+				//logger.info("Finished putItemResponse for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
+		    } else{
+		    	logger.debug("Storing null response");
+		    	response = "";
+		    	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
+	        }
+		} catch (SQLException sqe) {
+			logger.warn("Couldn't store response, marking roster unusable: " + testRosterId);
+			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
+			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
+			ManifestWrapper wrapper = oasSource.getAllManifests(String.valueOf(testRosterId));
+			Manifest[] manifests = wrapper.getManifests();
+			for(int i=0;i<manifests.length;i++) {
+				manifests[i].setUsable(false);
+			}
+			wrapper.setManifests(manifests);
+			oasSink.putAllManifests(String.valueOf(testRosterId), wrapper, false);
+			throw sqe;
+		}
 		logger.debug("\n***** OASOracleSink: putItemResponse: " + ird.getTestRosterId() + ", mseq: " + ird.getResponseSeqNum() + ", item: " + ird.getItemId() + ", item type: " + ird.getItemType() + ", response type: " + responseType + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + response + ", CR response: " + CRresponse);
 	}
 

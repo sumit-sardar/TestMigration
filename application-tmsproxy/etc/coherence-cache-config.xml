@@ -41,7 +41,7 @@
     	<local-scheme>
    			<scheme-name>BackMemoryScheme</scheme-name>
    			<eviction-policy>LRU</eviction-policy>
-   			<high-units>357913941</high-units>
+   			<high-units>268435456</high-units>
    			<unit-calculator>BINARY</unit-calculator>
 		</local-scheme>
 		<local-scheme>

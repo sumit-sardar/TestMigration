@@ -1,5 +1,6 @@
 package com.ctb.tms.rdb;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -11,7 +12,7 @@ import com.ctb.tms.bean.login.StudentCredentials;
 public interface OASRDBSink {
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
 	
-	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException;
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException, IOException, ClassNotFoundException;
 
 	public void putManifest(Connection conn, String testRosterId, Manifest[] manifest) throws Exception;
 	
