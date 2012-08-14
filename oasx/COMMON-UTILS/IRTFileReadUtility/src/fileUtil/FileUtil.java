@@ -46,11 +46,10 @@ public class FileUtil {
 	private static PreparedStatement ps = null;
 	private static ResultSet rs=null;
 	private static Connection con=null;
-	public static Map<String,Integer> _OBJECTIVEMAP = new HashMap<String,Integer>();
+	public static Map<String, Integer> _OBJECTIVEMAP = new HashMap<String, Integer>();
+	public static List<String> _GRADE = new ArrayList<String>();
 	
-	private static Map<Integer, String> productName = new HashMap<Integer,String>();
-	
-	private static enum NON_GROUP {F, S, W};
+	private static enum NORMS_GROUP {F, S, W};
 
 	public static String getFilePath()
 	{
@@ -815,8 +814,8 @@ public class FileUtil {
 						objectiveCode = objectiveName.substring(0, 2);
 						objectiveName = objectiveName.substring(3).trim();
 						//System.out.println(objectiveId + " - " + objectiveCode + " - " + objectiveName);
-						if(!_OBJECTIVEMAP.containsKey(objectiveId)) {
-							_OBJECTIVEMAP.put(objectiveCode, objectiveId);
+						if(!_OBJECTIVEMAP.containsKey(objectiveId + currentLevel)) {
+							_OBJECTIVEMAP.put(objectiveCode + currentLevel, objectiveId);
 						}
 					}
 					SqlUtil.close(rs);
@@ -922,6 +921,7 @@ public class FileUtil {
 		return save == 1 ? true : false;
 	}
 	
+
 	private static List<PVALFileData> readTNGFile (String path) {
 		
 		File tngFile = new File(path + File.separator + "tngobj.txt");  
@@ -989,7 +989,7 @@ public class FileUtil {
 	private static List<PVALFileData> readPVALFile (String path) {
 		File allFile = new File(path);                
 		File[] files = allFile.listFiles();
-		PVALFileData pvaData = new PVALFileData();
+		PVALFileData pvalData = new PVALFileData();
 		BufferedReader br = null;
 		List<PVALFileData> pvalDataList = new ArrayList<PVALFileData>();
 		List<CodeValue> dataList = null;
@@ -1007,11 +1007,11 @@ public class FileUtil {
 					while ((strLine = br.readLine()) != null) { 
 						strLine = strLine.trim();
 						if(strLine.trim().length() == 0) {
-							pvaData.setDataList(dataList);
-							String nonGroup = fileName.substring(fileName.indexOf(".") - 1, fileName.indexOf("."));
-							pvaData.setNonGroup(nonGroup);
-							pvalDataList.add(pvaData);
-							pvaData = new PVALFileData();
+							pvalData.setDataList(dataList);
+							String normsGroup = fileName.substring(fileName.indexOf(".") - 1, fileName.indexOf("."));
+							pvalData.setNormsGroup(normsGroup);
+							pvalDataList.add(pvalData);
+							pvalData = new PVALFileData();
 							startIndex = 0;
 							endIndex = 2;
 							dataList = new ArrayList<CodeValue>();
@@ -1041,13 +1041,14 @@ public class FileUtil {
 								}
 							}
 						} else {
-							pvaData.setLevel(generalData[3].split(":")[1]);
-							pvaData.setGrade(generalData[4].split(":")[1]);
-							pvaData.setForm(generalData[5].split(":")[1]);
-							pvaData.setOther(generalData[6].split(":")[1]);
-							pvaData.setContent(generalData[8].split(":")[1]);
+							pvalData.setLevel(generalData[3].split(":")[1]);
+							pvalData.setGrade(generalData[4].split(":")[1]);
+							pvalData.setForm(generalData[5].split(":")[1]);
+							pvalData.setOther(generalData[6].split(":")[1]);
+							pvalData.setContent(generalData[8].split(":")[1]);
+							_GRADES.add(pvalData.getGrade());
 						}
-					} 
+					}
 					br.close();
 				}
 			}
@@ -1068,9 +1069,9 @@ public class FileUtil {
 		PVALFileData tempPVALFile = null;
 		
 		for(PVALFileData pvalFile: tngFileData) {
-			for(NON_GROUP nonGroup : NON_GROUP.values()) {
+			for(NORMS_GROUP normsGroup : NORMS_GROUP.values()) {
 				tempPVALFile = (PVALFileData) pvalFile.clone();
-				tempPVALFile.setNonGroup(nonGroup.name());
+				tempPVALFile.setNormsGroup(normsGroup.name());
 				if(pvalFileData.indexOf(tempPVALFile) != -1) {
 					int index = pvalFileData.indexOf(tempPVALFile);
 					PVALFileData pvalFile1 = pvalFileData.get(index);
@@ -1078,7 +1079,7 @@ public class FileUtil {
 					if(codeIndex != -1) {
 						CodeValue val = pvalFile1.getDataList().get(codeIndex);
 						if(val.getValue() != null) {
-							tempPVALFile.setNonGroup(pvalFile1.getNonGroup());
+							tempPVALFile.setNormsGroup(pvalFile1.getNormsGroup());
 							tempPVALFile.getCodeValue().setValue(val.getValue());
 							contentList.add(tempPVALFile);
 						}
@@ -1089,5 +1090,4 @@ public class FileUtil {
 		System.out.println("Total "+contentList.size());
 		return contentList;
 	}
-	
 }

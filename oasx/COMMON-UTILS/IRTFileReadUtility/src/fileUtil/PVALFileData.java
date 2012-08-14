@@ -9,15 +9,15 @@ public class PVALFileData implements Cloneable {
 	private String form;
 	private String other;
 	private String content;
-	private String nonGroup;
+	private String normsGroup;
 	private CodeValue codeValue;
 	private List<CodeValue> dataList;
 	
-	public String getNonGroup() {
-		return nonGroup;
+	public String getNormsGroup() {
+		return normsGroup;
 	}
-	public void setNonGroup(String nonGroup) {
-		this.nonGroup = nonGroup;
+	public void setNormsGroup(String normsGroup) {
+		this.normsGroup = normsGroup;
 	}
 	public CodeValue getCodeValue() {
 		return codeValue;
