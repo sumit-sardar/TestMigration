@@ -756,7 +756,7 @@ public class FileUtil {
 			ps.setString(11, "2011");
 			ps.setString(12, framework_code);
 			ps.setString(13,product_internal_display_name);
-			if(dest_score_value.trim().equals("13")) {
+			if(dest_score_value.trim().contains("13")) {
 				ps.setString(14, "+");
 			} else {
 				ps.setString(14, null);
