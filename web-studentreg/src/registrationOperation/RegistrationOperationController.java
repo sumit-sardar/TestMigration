@@ -1142,7 +1142,6 @@ public class RegistrationOperationController extends PageFlowController {
 			Integer testAdminId      = Integer.valueOf(testAdminIdString);
 			Integer studentId        = Integer.valueOf(studentIdString);	
 			Integer studentOrgNodeId = Integer.valueOf(studentOrgNodeIdString);
-			List  selectedSubtest = new ArrayList();
 			
 			String[] itemSetIds   = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_ID_TD, true, new String[0]);
 			String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
@@ -1153,19 +1152,11 @@ public class RegistrationOperationController extends PageFlowController {
 			boolean hasAutoLocator = false;
 			StudentManifest locatorManifest = null;
 			TestProduct tp = scheduleTest.getProductForTestAdmin(this.userName, testAdminId);
-			ManageStudent student = studentManagement.getManageStudent(userName, studentId);  
 			ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, testAdminId);
 			
 			String productType = TestSessionUtils.getProductType(tp.getProductType());
-			TestSession testSession = scheduledSession.getTestSession();
 		    TestElement [] testElements = scheduledSession.getScheduledUnits();
-		    TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(testElements); 
-		    /*if(locatorSubtest!=null && locatorSubtest.getSessionDefault().equals("T")){
-		    	sessionHasDefaultLocatorSubtest=true;
-		    }*/
 
-		    
-		    
 		    
 			if(autoLocator.equalsIgnoreCase("true") ){
 				Integer locatorItemSetId = Integer.valueOf(RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
@@ -1194,7 +1185,6 @@ public class RegistrationOperationController extends PageFlowController {
 				 manifest.setItemSetName(subtestNames[ii]);
 				 manifestArray[order]=manifest;
 				 manifest.setTestAccessCode(getAccessCode(testElements, Integer.valueOf(itemSetIds[ii]) ));
-				 selectedSubtest.add(manifest);
 			 }
 			 
 			 
@@ -1236,67 +1226,9 @@ public class RegistrationOperationController extends PageFlowController {
 	             ss.setStudentManifests(manifestArray);
 	             roster = TestSessionUtils.addStudentToSession(this.scheduleTest, this.userName, ss, testAdminId);
 	         }
-			 //selectedSubtests = TestSessionUtils.getStudentSubtests(this.scheduleTest, this.userName, studentId, testAdminId);
-			 
-			 if(locatorManifest !=null && locatorSubtest == null ){
-				 locatorSubtest = new TestElement();
-				 locatorSubtest.setItemSetName(locatorManifest.getItemSetName());
-				 locatorSubtest.setAccessCode(locatorManifest.getTestAccessCode());
-				 locatorSubtest.setItemSetId(locatorManifest.getItemSetId());
-			 }
 			 status.setSuccess(true);
-			 
-			 String startDate = DateUtils.formatDateToDateString(testSession.getLoginStartDate());
-		     String endDate = DateUtils.formatDateToDateString(testSession.getLoginEndDate());
-		     String startTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime());
-		     String endTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime());
-		     String enforceBreak = testSession.getEnforceBreak(); 
-		     List selectedProctors = new ArrayList();
-		     User [] proctors = scheduledSession.getProctors();
-		     for (int i=0; i < proctors.length; i++)  {
-		            User user = proctors[i];
-		            selectedProctors.add(user);
-		        }
+			 prepareResultVo(vo, roster, studentId, testAdminId, studentOrgNodeId, productType, hasAutoLocator);
 
-			 vo.setStudentId(studentId.toString());
-			 vo.setStudentName(student.getStudentName());
-			 vo.setLoginName(student.getLoginId());
-			 vo.setTestAdminId(testSession.getTestAdminId().toString());
-			 vo.setStudentOrgId(studentOrgNodeId.toString());
-			 vo.setPassword(roster.getPassword());
-			 vo.setTestName(testSession.getTestName());
-			 vo.setTestAdminName(testSession.getTestAdminName());
-			 vo.setTestAccessCode(testElements[0].getAccessCode());
-			 vo.setSessionNumber(testSession.getSessionNumber());
-			 vo.setCreatorOrgNodeName(testSession.getCreatorOrgNodeName());
-			 vo.setStartDate(startDate);
-			 vo.setEndDate(endDate);
-			 vo.setStartTime(startTime);
-			 vo.setEndTime(endTime);
-			 vo.setShowAccessCode(customerHasAccessCode(testSession.getTestAdminId()));
-			 vo.setLocatorTest(TestSessionUtils.isTabeLocatorProduct(productType));
-			 if(TestSessionUtils.isTabeLocatorProduct(productType) || hasAutoLocator) {
-				 vo.setAutoLocator(true);
-				 vo.setAutoLocatorDisplay("Yes");
-			 } else {
-				 vo.setAutoLocator(false);
-				 vo.setAutoLocatorDisplay("No");
-			 }
-			 if((enforceBreak != null) && (enforceBreak.equalsIgnoreCase("T"))){
-				 vo.setEnforceBreak("Yes") ;
-			 } else {
-				 vo.setEnforceBreak("No") ;
-			 }
-			 
-			
-				 
-			 vo.setSelectedProctors(selectedProctors);
-			 vo.setLocatorSubtest(locatorSubtest);
-			 vo.setSelectedSubtests(selectedSubtest);
-			
-				 
-			 
-			 
 		}catch(Exception e) {
 			 e.printStackTrace();
 			 status.setSuccess(false);
@@ -1319,6 +1251,90 @@ public class RegistrationOperationController extends PageFlowController {
 	
 	
 	
+	private void prepareResultVo(RapidRegistrationVO vo, RosterElement roster, Integer studentId , Integer testAdminId,
+			Integer studentOrgNodeId, String productType, boolean hasAutoLocator) throws CTBBusinessException {
+		List  selectedSubtest = new ArrayList();
+		ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, testAdminId);
+		ManageStudent student = studentManagement.getManageStudent(userName, studentId);  
+		StudentManifestData  smd =  this.scheduleTest.getManifestForRoster(this.userName,studentId,testAdminId,null,null,null);
+		StudentManifest[] studentManifest= smd.getStudentManifests();
+		
+		TestSession testSession = scheduledSession.getTestSession();
+		TestElement[] testElements = scheduledSession.getScheduledUnits();
+		TestElement locatorSubtest = TestSessionUtils.getLocatorSubtest(testElements); 
+		StudentManifest locatorManifest = null;
+		
+		 
+		 for (StudentManifest manifest : studentManifest) {
+			 for (TestElement testElement : testElements) {
+				 if(manifest.getItemSetId().intValue() == testElement.getItemSetId().intValue()){
+					 manifest.setTestAccessCode(testElement.getAccessCode());
+					 break;
+				 }
+			}
+			 if(locatorSubtest!=null && locatorSubtest.getItemSetId().intValue() == manifest.getItemSetId().intValue()){
+				 locatorManifest = manifest;
+			 } else {
+				 selectedSubtest.add(manifest);
+			 }
+			 
+		}
+		
+		if(hasAutoLocator){
+			
+		}
+		
+		 
+		 String startDate = DateUtils.formatDateToDateString(testSession.getLoginStartDate());
+	     String endDate = DateUtils.formatDateToDateString(testSession.getLoginEndDate());
+	     String startTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime());
+	     String endTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime());
+	     String enforceBreak = testSession.getEnforceBreak(); 
+	     List selectedProctors = new ArrayList();
+	     User [] proctors = scheduledSession.getProctors();
+	     for (int i=0; i < proctors.length; i++)  {
+	            User user = proctors[i];
+	            selectedProctors.add(user);
+	        }
+
+		 vo.setStudentId(studentId.toString());
+		 vo.setStudentName(student.getStudentName());
+		 vo.setLoginName(student.getLoginId());
+		 vo.setTestAdminId(testSession.getTestAdminId().toString());
+		 vo.setStudentOrgId(studentOrgNodeId.toString());
+		 vo.setPassword(roster.getPassword());
+		 vo.setTestName(testSession.getTestName());
+		 vo.setTestAdminName(testSession.getTestAdminName());
+		 vo.setTestAccessCode(testElements[0].getAccessCode());
+		 vo.setSessionNumber(testSession.getSessionNumber());
+		 vo.setCreatorOrgNodeName(testSession.getCreatorOrgNodeName());
+		 vo.setStartDate(startDate);
+		 vo.setEndDate(endDate);
+		 vo.setStartTime(startTime);
+		 vo.setEndTime(endTime);
+		 vo.setShowAccessCode(customerHasAccessCode(testSession.getTestAdminId()));
+		 vo.setLocatorTest(TestSessionUtils.isTabeLocatorProduct(productType));
+		 if(TestSessionUtils.isTabeLocatorProduct(productType) || hasAutoLocator) {
+			 vo.setAutoLocator(true);
+			 vo.setAutoLocatorDisplay("Yes");
+		 } else {
+			 vo.setAutoLocator(false);
+			 vo.setAutoLocatorDisplay("No");
+		 }
+		 if((enforceBreak != null) && (enforceBreak.equalsIgnoreCase("T"))){
+			 vo.setEnforceBreak("Yes") ;
+		 } else {
+			 vo.setEnforceBreak("No") ;
+		 }
+		 
+		
+			 
+		 vo.setSelectedProctors(selectedProctors);
+		 vo.setLocatorSubtest(locatorSubtest);
+		 vo.setSelectedSubtests(selectedSubtest);
+		
+	}
+
 	private String getAccessCode(TestElement[] testElements, Integer valueOf) {
 		String selectedAccessCode = "";
 		for (TestElement testElement : testElements) {

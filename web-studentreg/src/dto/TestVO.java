@@ -213,7 +213,7 @@ public class TestVO implements java.io.Serializable
 
 
     public boolean hasMultipleSubtests() {
-        if (this.subtests.size() > 1)
+        if (this.subtests.size() > 0)
             return true;
         else
             return false;
