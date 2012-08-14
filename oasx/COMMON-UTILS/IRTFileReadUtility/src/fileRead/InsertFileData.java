@@ -18,7 +18,7 @@ public class InsertFileData {
 			writesuccessfulinOAS = writeInOASDB(filePath);
 			if(writesuccessfulinOAS == true)
 				System.out.println("Files are saved in OAS Database successfully.");
-			DBUtil.insertScoreLookup(populatePValue(filePath));
+			//DBUtil.insertScoreLookup(populatePValue(filePath));
 		} catch(Exception ie) {
 			ie.printStackTrace();
 		}

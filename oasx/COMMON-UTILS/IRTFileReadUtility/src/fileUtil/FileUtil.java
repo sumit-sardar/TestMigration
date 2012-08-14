@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class FileUtil {
 	private static String inserQuery="INSERT INTO IRT_SCORE_LOOKUP_FILES VALUES(?,?,?,?,?)";
@@ -133,7 +134,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{/*
+				{
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -156,30 +157,33 @@ public class FileUtil {
 					dest_Score_type_code = "SCL";
 										
 					Test_Level=File_name.substring(4, 6);
-					score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
-					
-					test_form = "G";framework_code = "TERRAB3";
-					product_internal_display_name=getDisplayName(product_id);
-					
-					contentOfFile=readFileDataNS(file_location);
-					matchingFileName="SE"+File_name.substring(2, 8);
-					matchingFile_location=path+"\\"+matchingFileName;
-					tempList = new ArrayList<String>();
-					for ( itr = contentOfFile.iterator(); itr.hasNext(); ) 
-					{   
-						String str = itr.next().toString();                                
-						String[] splitSt = str.split("    "); 
-						String second_column="";
-						second_column = splitSt[1].trim(); 
-						tempList.add(second_column);
+					String testToBe = ResourceBundle.getBundle("config").getString("file.testLevel");
+					if(testToBe.contains(Test_Level)) {
+						score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
+						
+						test_form = "G";framework_code = "TERRAB3";
+						product_internal_display_name=getDisplayName(product_id);
+						
+						contentOfFile=readFileDataNS(file_location);
+						matchingFileName="SE"+File_name.substring(2, 8);
+						matchingFile_location=path+"\\"+matchingFileName;
+						tempList = new ArrayList<String>();
+						for ( itr = contentOfFile.iterator(); itr.hasNext(); ) 
+						{   
+							String str = itr.next().toString();                                
+							String[] splitSt = str.split("    "); 
+							String second_column="";
+							second_column = splitSt[1].trim(); 
+							tempList.add(second_column);
+						}
+						matchingFileMap.put(matchingFile_location, tempList);
+						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
+						
+						itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
+						successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					}
-					matchingFileMap.put(matchingFile_location, tempList);
-					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
 					
-					itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
-					successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
-					
-				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
+				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -203,16 +207,19 @@ public class FileUtil {
 					dest_Score_type_code = "SEM";
 					
 					Test_Level=File_name.substring(4, 6);
-					score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
-					
-					test_form = "G";framework_code = "TERRAB3";
-					product_internal_display_name=getDisplayName(product_id);
-					System.out.println("file_location = "+file_location);
-					
-					contentOfFile=readFileDataSE(file_location,matchingFileMap);
-					
-					successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+					String testToBe = ResourceBundle.getBundle("config").getString("file.testLevel");
+					if(testToBe.contains(Test_Level)) {
+						score_lookup_id	="TERRAB3"+"_"+Product_type+"_"+Test_Level+"_"+"G"+"_"+Content_area_initial;
+						
+						test_form = "G";framework_code = "TERRAB3";
+						product_internal_display_name=getDisplayName(product_id);
+						System.out.println("file_location = "+file_location);
+						
+						contentOfFile=readFileDataSE(file_location,matchingFileMap);
+						
+						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
+					}
+				} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -255,7 +262,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -272,7 +279,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
 							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
 							Integer.parseInt(product_id), Product_type);
-				}
+				*/}
 				
 			}
 			if(successInSCORE_LOOKUP==true && successInScore_lookup_item_set==true)
