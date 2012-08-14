@@ -1249,6 +1249,9 @@
 		    					$("#SubtestDetails").html("");
 							 	displayStudConfirmation();
 							 	populateStudConfirmation(data);
+							 } else {
+							  	setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
+							 
 							 }
 						  	$.unblockUI();
 						  
