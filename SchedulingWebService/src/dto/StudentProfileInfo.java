@@ -114,7 +114,7 @@ public class StudentProfileInfo
         return copied;       
     }
   
-    public ManageStudent makeCopy(Integer studentId, List selectedOrgNodes) {
+    public ManageStudent makeCopy(Integer studentId, List selectedOrgNodes, Date birthDate) {
         ManageStudent copied = new ManageStudent();
         
         copied.setId(studentId);
@@ -125,15 +125,11 @@ public class StudentProfileInfo
         copied.setGrade(this.grade);
         copied.setStudentIdNumber(this.studentNumber.trim());
         copied.setStudentIdNumber2(this.studentSecondNumber.trim());
-        //GACRCT2010CR007 - changed for creating date when supplied.
-        Date date = null;
         
-        if (DateUtil.allSelected(this.month, this.day, this.year)) 
-        	 date = DateUtil.createDate(this.year, this.month, this.day);
-        else 
-       	 	date = DateUtil.createDate("2011", "Jan", "1");
+        if (birthDate == null) 
+        	birthDate = DateUtil.createDate("2011", "Jan", "1");
         
-        copied.setBirthDate(date);
+        copied.setBirthDate(birthDate);
         
         if (this.gender.equals("Male")) copied.setGender("M");
         else if (this.gender.equals("Female")) copied.setGender("F");

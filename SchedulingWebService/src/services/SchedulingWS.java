@@ -470,7 +470,7 @@ public class SchedulingWS implements Serializable {
     	List orgNodes = new ArrayList();   	
     	orgNodes.add(node);
 		
-		ManageStudent student = studentProfile.makeCopy(studentId, orgNodes);
+		ManageStudent student = studentProfile.makeCopy(studentId, orgNodes, studentProfile.getBirthdate());
 		
 		try
 		{           

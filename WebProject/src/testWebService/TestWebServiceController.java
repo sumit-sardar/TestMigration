@@ -1,5 +1,7 @@
 package testWebService;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.netui.pageflow.Forward;
@@ -226,6 +228,7 @@ public class TestWebServiceController extends PageFlowController
 				student.setGrade(this.getRequest().getParameter("grade1")); 
 				key = getKeyValue("studentKey1");
 				student.setStudentKey(key);
+				student.setBirthdate(new Date());			
 				students[index] = student;
 				index++;
 			}
@@ -251,6 +254,7 @@ public class TestWebServiceController extends PageFlowController
 				student.setGrade(this.getRequest().getParameter("grade2")); 
 				key = getKeyValue("studentKey2");
 				student.setStudentKey(key);
+				student.setBirthdate(new Date());			
 				students[index] = student;
 				index++;
 			}
@@ -276,6 +280,7 @@ public class TestWebServiceController extends PageFlowController
 				student.setGrade(this.getRequest().getParameter("grade3")); 
 				key = getKeyValue("studentKey3");
 				student.setStudentKey(key);
+				student.setBirthdate(new Date());			
 				students[index] = student;
 				index++;
 			}
@@ -301,6 +306,7 @@ public class TestWebServiceController extends PageFlowController
 				student.setGrade(this.getRequest().getParameter("grade4")); 
 				key = getKeyValue("studentKey4");
 				student.setStudentKey(key);
+				student.setBirthdate(new Date());			
 				students[index] = student;
 				index++;
 			}
@@ -323,6 +329,7 @@ public class TestWebServiceController extends PageFlowController
 					studentRepeat.setGender(student.getGender()); 
 					studentRepeat.setGrade(student.getGrade()); 
 					studentRepeat.setStudentKey(student.getStudentKey());
+					studentRepeat.setBirthdate(new Date());			
 					repeatStudents[index] = studentRepeat;
 					index++;
 				}
