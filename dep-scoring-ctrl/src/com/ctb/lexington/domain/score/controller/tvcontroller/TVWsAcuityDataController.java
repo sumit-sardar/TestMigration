@@ -120,20 +120,20 @@ public class TVWsAcuityDataController {
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
                    }
-                   newFact.setNationalPercentile((fact.getNationalPercentile()==null)?0l: fact.getNationalPercentile().longValue());
-                   newFact.setNationalStanine((fact.getNationalStanine()==null)?0l: fact.getNationalStanine().longValue());
-                   newFact.setNormCurveEquivalent((fact.getNormalCurveEquivalent()==null)?0l:new Long(fact.getNormalCurveEquivalent().longValue()));
+                   newFact.setNationalPercentile((fact.getNationalPercentile()==null)?-99l: fact.getNationalPercentile().longValue());
+                   newFact.setNationalStanine((fact.getNationalStanine()==null)?-99l: fact.getNationalStanine().longValue());
+                   newFact.setNormCurveEquivalent((fact.getNormalCurveEquivalent()==null)?-99l:new Long(fact.getNormalCurveEquivalent().longValue()));
                    if(fact != null && fact.getPercentObjectiveMastery() != null)
-                	   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?0f:new Float(fact.getPercentObjectiveMastery().longValue()));
-                   newFact.setPercentObtained((fact.getPercentObtained()==null)? 0f : fact.getPercentObtained().floatValue());
-                   newFact.setScaleScore((fact.getScaleScore()==null)?0l:new Long(fact.getScaleScore().longValue()));
-                   newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? 0l : new Long(fact.getStandardErrorOfMeasurement().longValue()));
+                	   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?-99f:new Float(fact.getPercentObjectiveMastery().longValue()));
+                   newFact.setPercentObtained((fact.getPercentObtained()==null)? -99f : fact.getPercentObtained().floatValue());
+                   newFact.setScaleScore((fact.getScaleScore()==null)?-99l:new Long(fact.getScaleScore().longValue()));
+                   newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? -99l : new Long(fact.getStandardErrorOfMeasurement().longValue()));
                    String[] lossHossValue = lossHoss.get(contentAreas[i].getContentAreaName()).split(",");
                    newFact.setMinScaleScore(Long.parseLong(lossHossValue[0]));
                    newFact.setMaxScaleScore(Long.parseLong(lossHossValue[1]));
-                   newFact.setPointsAttempted((fact.getPointsAttempted()==null)?0l:new Long(fact.getPointsAttempted().longValue()));
-                   newFact.setPointsObtained((fact.getPointsObtained()==null)?0l:new Long(fact.getPointsObtained().longValue()));
-                   newFact.setPointsPossible((fact.getPointsPossible()==null)?0l:new Long(fact.getPointsPossible().longValue()));
+                   newFact.setPointsAttempted((fact.getPointsAttempted()==null)? -99l:new Long(fact.getPointsAttempted().longValue()));
+                   newFact.setPointsObtained((fact.getPointsObtained()==null)? -99l:new Long(fact.getPointsObtained().longValue()));
+                   newFact.setPointsPossible((fact.getPointsPossible()==null)? -99l:new Long(fact.getPointsPossible().longValue()));
                    PrimaryObjScore[] priObjScores = getPrimaryObjectiveScores(contentAreas[i].getContentAreaId(), studentScoreSummaryData);
                    newFact.setPrimaryObjScores(priObjScores);
                    contentAreaFact.add(newFact);
@@ -156,7 +156,7 @@ public class TVWsAcuityDataController {
 				PrimaryObjScore priObjFacts = new PrimaryObjScore();
 				priObjFacts.setPrimaryObjId(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()));
 				StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
-				priObjFacts.setNationalAverage(prim.getNationalAverage() == null?0f:prim.getNationalAverage().floatValue());
+				priObjFacts.setNationalAverage(prim.getNationalAverage() == null? -99f:prim.getNationalAverage().floatValue());
 				priObjFacts.setHighModMasteryRange(new Long (prim.getHighMasteryRange()));
 				priObjFacts.setLowModMasteryRange(new Long (prim.getLowMasteryRange()));
 				priObjFacts.setModMasteryRange(prim.getLowMasteryRange() + "-" + prim.getHighMasteryRange());
@@ -259,7 +259,7 @@ public class TVWsAcuityDataController {
     				if(studentItemScoreData.contains(item.getOasItemId()+ contentAreaName)) {
     					StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
     					if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && !"F".equals(scoreDetails.getAtsArchive())) {
-    						itemFact.setPointsObtained(scoreDetails.getPoints() == null?0l:new Long(scoreDetails.getPoints().intValue()));
+    						itemFact.setPointsObtained(scoreDetails.getPoints() == null? -99l:new Long(scoreDetails.getPoints().intValue()));
     					} else {
     						itemFact.setPointsObtained(new Long(0));
     					}
