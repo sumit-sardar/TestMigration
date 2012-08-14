@@ -115,7 +115,7 @@ public class TVWsAcuityDataController {
                if(fact != null &&
                     ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
             	   ContentAreaScore newFact = new ContentAreaScore();
-                   newFact.setContentAreaId(contentAreas[i].getContentAreaId().toString());
+                   newFact.setContentAreaId(contentAreas[i].getContentAreaId().toString().substring(4));
                    newFact.setContentAreaName(contentAreas[i].getContentAreaName());
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
