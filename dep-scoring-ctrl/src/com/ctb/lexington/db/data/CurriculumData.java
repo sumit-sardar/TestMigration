@@ -265,6 +265,7 @@ public class CurriculumData {
         private Long productId;
         private Integer highMasteryRange;
         private Integer lowMasteryRange;
+        private String monarchId;
         
         public Long getProductId() {
 			return productId;
@@ -432,6 +433,14 @@ public class CurriculumData {
 		public void setLowMasteryRange(Integer lowMasteryRange) {
 			this.lowMasteryRange = lowMasteryRange;
 		}
+
+		public String getMonarchId() {
+			return monarchId;
+		}
+
+		public void setMonarchId(String monarchId) {
+			this.monarchId = monarchId;
+		}
     }
     
     public static class SecondaryObjective {
@@ -446,6 +455,7 @@ public class CurriculumData {
         private String subtestLevel;
         private String subtestName;
         private Long productId;
+        private String monarchId;
         
         public Long getProductId() {
 			return productId;
@@ -575,6 +585,14 @@ public class CurriculumData {
 		 */
 		public void setSecondaryObjectiveType(String secondaryObjectiveType) {
 			this.secondaryObjectiveType = secondaryObjectiveType;
+		}
+
+		public String getMonarchId() {
+			return monarchId;
+		}
+
+		public void setMonarchId(String monarchId) {
+			this.monarchId = monarchId;
 		}
     }
     

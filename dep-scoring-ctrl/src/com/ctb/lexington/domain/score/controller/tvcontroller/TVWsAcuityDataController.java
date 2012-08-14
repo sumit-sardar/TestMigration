@@ -154,7 +154,7 @@ public class TVWsAcuityDataController {
 			if(prims[i].getContentAreaId().equals(contentAreaId) || prims[i].getContentAreaId().longValue() == contentAreaId.longValue()) {
 				PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
 				PrimaryObjScore priObjFacts = new PrimaryObjScore();
-				priObjFacts.setPrimaryObjId(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()));
+				priObjFacts.setPrimaryObjId(prims[i].getMonarchId());
 				StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
 				priObjFacts.setNationalAverage(prim.getNationalAverage() == null? -99f:prim.getNationalAverage().floatValue());
 				priObjFacts.setHighModMasteryRange(new Long (prim.getHighMasteryRange()));
@@ -202,7 +202,7 @@ public class TVWsAcuityDataController {
 		for(int i=0;i<secs.length;i++) {
 			if(secs[i].getPrimaryObjectiveId().equals(primaryObjId) || secs[i].getPrimaryObjectiveId().longValue() == primaryObjId.longValue()) {
 				SecondaryObjScore newSecObjFacts = new SecondaryObjScore();
-				newSecObjFacts.setSecondaryObjId(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()));
+				newSecObjFacts.setSecondaryObjId(secs[i].getMonarchId());
 				StudentScoreSummaryDetails details = studentScoreSummaryData.get(secs[i].getSecondaryObjectiveId());
 				if(details != null) {
 					newSecObjFacts.setPointsObtained(details.getPointsObtained());

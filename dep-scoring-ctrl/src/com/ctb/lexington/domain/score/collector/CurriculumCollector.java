@@ -501,7 +501,8 @@ public class CurriculumCollector {
             "  subtestForm, " + 
             "  subtestLevel, " + 
             "  subtestId, " +
-            "  productId " +  
+            "  productId, " +
+            "  monarchId " +  
             " from (select distinct " +
             "   prim.item_Set_id as primaryObjectiveId, " +
             "   prod.product_id || ca.item_Set_id as contentAreaId, " +
@@ -512,7 +513,8 @@ public class CurriculumCollector {
             "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form) as subtestForm, " +
             "   td.item_set_level as subtestLevel, " +
             "   td.item_set_id as subtestId, " +
-            "   prod.product_id as productId " + 
+            "   prod.product_id as productId, " +
+            "	prim.ext_cms_item_set_id as monarchId " + 
             "from " +  
             "   item, " +
             "   item_set prim, " +
@@ -564,7 +566,8 @@ public class CurriculumCollector {
             "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " +
             "   td.item_Set_level, " + 
             "   td.item_Set_id, " +
-            "   prod.product_id)";
+            "   prod.product_id, " +
+            "	prim.ext_cms_item_set_id)";
         
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -585,6 +588,7 @@ public class CurriculumCollector {
                 primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                primaryObjective.setMonarchId(rs.getString("monarchId"));
                 
                 String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();
                 
@@ -617,7 +621,8 @@ public class CurriculumCollector {
             "   td.item_set_level as subtestLevel, " +
             "   td.item_set_id as subtestId, " +
             "   td.item_set_name as subtestName, " +
-            "   prod.product_id as productId " + 
+            "   prod.product_id as productId, " +
+            "	sec.ext_cms_item_set_id as monarchId " + 
             "from " +  
             "   item, " +
             "   item_set sec, " +
@@ -669,7 +674,8 @@ public class CurriculumCollector {
             "   td.item_Set_level, " + 
             "   td.item_Set_id, " +
             "   td.item_set_name, " +
-            "   prod.product_id";
+            "   prod.product_id, " +
+            "	sec.ext_cms_item_set_id";
         
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -690,6 +696,7 @@ public class CurriculumCollector {
                 secondaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 secondaryObjective.setSubtestName(rs.getString("subtestName"));
                 secondaryObjective.setProductId(new Long(rs.getLong("productId")));
+                secondaryObjective.setMonarchId(rs.getString("monarchId"));
                 
                 secondaryObjectives.add(secondaryObjective);
             }
