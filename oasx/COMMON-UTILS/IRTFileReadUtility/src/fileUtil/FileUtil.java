@@ -47,7 +47,7 @@ public class FileUtil {
 	private static ResultSet rs=null;
 	private static Connection con=null;
 	public static Map<String, Integer> _OBJECTIVEMAP = new HashMap<String, Integer>();
-	public static List<String> _GRADE = new ArrayList<String>();
+	public static List<String> _GRADES = new ArrayList<String>();
 	
 	private static enum NORMS_GROUP {F, S, W};
 

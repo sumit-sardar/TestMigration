@@ -82,7 +82,7 @@ public class PVALFileData implements Cloneable {
 				&& this.getGrade().equals(obj1.getGrade())
 				&& this.getForm().equals(obj1.getForm())
 				&& this.getOther().equals(obj1.getOther())
-				&& this.getNonGroup().equals(obj1.getNonGroup())
+				&& this.getNormsGroup().equals(obj1.getNormsGroup())
 				&& this.getContent().equals(obj1.getContent())) {
 			
 			return true;

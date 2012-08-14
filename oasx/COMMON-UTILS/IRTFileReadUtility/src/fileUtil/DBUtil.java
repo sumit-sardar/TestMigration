@@ -23,27 +23,29 @@ public class DBUtil {
 			ps1 = con.prepareStatement(Query.insertScoreLookupItemSet);
 			for (PVALFileData pvalFileData : fileDataList) {
 				if(pvalFileData != null && levels.contains(pvalFileData.getLevel().trim())) {
-					String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNonGroup() 
-					+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent()
-					+ "_" + pvalFileData.getOther() + "_" + pvalFileData.getCodeValue().getCode();
-					ps.setString(1, "SCL");
-					ps.setString(2, "OPV");
-					ps.setString(3, scoreLookupId);
-					ps.setInt(4, 0);
-					ps.setDouble(5, pvalFileData.getCodeValue().getValue());
-					ps.setString(6, pvalFileData.getForm());
-					ps.setString(7, pvalFileData.getLevel());
-					ps.setString(8, pvalFileData.getGrade());
-					ps.setString(9, FileUtil.processContentAreaName(pvalFileData.getContent()));
-					ps.setString(10, FileUtil.processNongroupName(pvalFileData.getNonGroup()));
-					ps.setString(11, "2011");
-					ps.setString(12, "TERRAB3");
-					ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
-					System.out.println(scoreLookupId);
-					ps.addBatch();
-					//ps.executeUpdate();
-					
-					insertScoreLookupItemSet(ps1, scoreLookupId, pvalFileData);
+					for(String grade : FileUtil._GRADES) {
+						String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
+						+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent()
+						+ "_" + pvalFileData.getOther();
+						System.out.println("scoreLookupId ***********" + scoreLookupId);
+						ps.setString(1, "SCL");
+						ps.setString(2, "OPV");
+						ps.setString(3, scoreLookupId);
+						ps.setInt(4, 0);
+						ps.setDouble(5, pvalFileData.getCodeValue().getValue());
+						ps.setString(6, pvalFileData.getForm());
+						ps.setString(7, pvalFileData.getLevel());
+						ps.setString(8, grade);
+						ps.setString(9, FileUtil.processContentAreaName(pvalFileData.getContent()));
+						ps.setString(10, FileUtil.processNongroupName(pvalFileData.getNormsGroup()));
+						ps.setString(11, "2011");
+						ps.setString(12, "TERRAB3");
+						ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
+						ps.addBatch();
+						//ps.executeUpdate();
+						
+						insertScoreLookupItemSet(ps1, scoreLookupId, pvalFileData);	
+					}
 				}
 			}
 			ps.executeBatch();
@@ -51,11 +53,11 @@ public class DBUtil {
 			con.commit();
 			SqlUtil.close(ps);
 			SqlUtil.close(ps1);
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			try {
 				con.rollback();
 				System.out.println("Data are not saved in SCORE_LOOKUP table.");
-			} catch (SQLException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			e.printStackTrace();
@@ -67,7 +69,7 @@ public class DBUtil {
 		try {
 			System.out.println(scoreLookupId + " - " + pvalFileData.getCodeValue().getCode() + " - " + FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()) + " - " + FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()));
 			ps.setString(1, scoreLookupId);
-			ps.setLong(2, FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode()));
+			ps.setLong(2, FileUtil._OBJECTIVEMAP.get(pvalFileData.getCodeValue().getCode() + pvalFileData.getLevel()));
 			ps.addBatch();
 			//ps.executeUpdate();
 		} catch (SQLException e) {
