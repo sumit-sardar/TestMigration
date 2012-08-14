@@ -26,7 +26,8 @@ public class DBUtil {
 					//for(String grade : FileUtil._GRADES) {
 						String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
 						+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent()
-						+ "_" + pvalFileData.getOther();
+						+ "_" + pvalFileData.getOther() + "_" + pvalFileData.getCodeValue().getCode()
+						+ "_" + pvalFileData.getLevel();
 						System.out.println("scoreLookupId ***********" + scoreLookupId);
 						ps.setString(1, "SCL");
 						ps.setString(2, "OPV");

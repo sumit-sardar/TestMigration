@@ -51,6 +51,7 @@ public class FileUtil {
 	private static Connection con=null;
 	public static Map<String, Integer> _OBJECTIVEMAP = new HashMap<String, Integer>();
 	public static List<String> _GRADES = new ArrayList<String>();
+	public static Map<Integer, String> productName = new HashMap<Integer, String>();
 	
 	private static enum NORMS_GROUP {F, S, W};
 
@@ -239,7 +240,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -254,7 +255,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				} else if (inFile.getName().substring(4,7).equals("OPI")) {
+				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -818,14 +819,14 @@ public class FileUtil {
 						objectiveCode = objectiveName.substring(0, 2);
 						objectiveName = objectiveName.substring(3).trim();
 						//System.out.println(objectiveId + " - " + objectiveCode + " - " + objectiveName);
-						if(!_OBJECTIVEMAP.containsKey(objectiveId + currentLevel)) {
+						if(!_OBJECTIVEMAP.containsKey(objectiveCode + currentLevel)) {
 							_OBJECTIVEMAP.put(objectiveCode + currentLevel, objectiveId);
 						}
 					}
 					SqlUtil.close(rs);
 					SqlUtil.close(ps);
 				}
-				/*if(con == null || con.isClosed()) {
+				if(con == null || con.isClosed()) {
 					con=SqlUtil.openOASDBcon();
 				}
 				levelsPopulated = levelsPopulated + currentLevel;
@@ -867,11 +868,11 @@ public class FileUtil {
 				con.commit();
 				SqlUtil.close(ps);
 				
-				if(_OBJECTIVEMAP.get(objectiveCodeFile) != null) {
+				if(_OBJECTIVEMAP.get(objectiveCodeFile+currentLevel) != null) {
 					if(con == null || con.isClosed()) {
 						con=SqlUtil.openOASDBcon();
 					}
-					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile).toString());
+					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile+currentLevel).toString());
 					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 				}
 				if(con == null || con.isClosed()) {
@@ -903,13 +904,13 @@ public class FileUtil {
 				save=ps.executeUpdate();
 				con.commit();
 				SqlUtil.close(ps);
-				if(_OBJECTIVEMAP.get(objectiveCodeFile) != null) {
+				if(_OBJECTIVEMAP.get(objectiveCodeFile+currentLevel) != null) {
 					if(con == null || con.isClosed()) {
 						con=SqlUtil.openOASDBcon();
 					}
-					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile).toString());
+					itemSetIdList.add(_OBJECTIVEMAP.get(objectiveCodeFile+currentLevel).toString());
 					writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
-				}*/
+				}
 			}
 	} catch(SQLException e) {
 		try {
