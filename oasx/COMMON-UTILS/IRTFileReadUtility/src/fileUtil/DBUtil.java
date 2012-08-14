@@ -23,7 +23,7 @@ public class DBUtil {
 			ps1 = con.prepareStatement(Query.insertScoreLookupItemSet);
 			for (PVALFileData pvalFileData : fileDataList) {
 				if(pvalFileData != null && levels.contains(pvalFileData.getLevel().trim())) {
-					for(String grade : FileUtil._GRADES) {
+					//for(String grade : FileUtil._GRADES) {
 						String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
 						+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent()
 						+ "_" + pvalFileData.getOther();
@@ -35,7 +35,7 @@ public class DBUtil {
 						ps.setDouble(5, pvalFileData.getCodeValue().getValue());
 						ps.setString(6, pvalFileData.getForm());
 						ps.setString(7, pvalFileData.getLevel());
-						ps.setString(8, grade);
+						ps.setString(8, pvalFileData.getGrade());
 						ps.setString(9, FileUtil.processContentAreaName(pvalFileData.getContent()));
 						ps.setString(10, FileUtil.processNongroupName(pvalFileData.getNormsGroup()));
 						ps.setString(11, "2011");
@@ -45,7 +45,7 @@ public class DBUtil {
 						//ps.executeUpdate();
 						
 						insertScoreLookupItemSet(ps1, scoreLookupId, pvalFileData);	
-					}
+					//}
 				}
 			}
 			ps.executeBatch();
