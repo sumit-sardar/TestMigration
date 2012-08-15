@@ -75,9 +75,9 @@ public class RosterCacheStore implements OASCacheStore {
 		while(it.hasNext()) {
 			BinaryEntry entry = (BinaryEntry) it.next();
 			ReplicationObject value = (ReplicationObject) entry.getValue();
-			if(!value.isReplicate().booleanValue()) {
+			//if(!value.isReplicate().booleanValue()) {
 				it.remove();
-			}
+			//}
 		}
 	}
 

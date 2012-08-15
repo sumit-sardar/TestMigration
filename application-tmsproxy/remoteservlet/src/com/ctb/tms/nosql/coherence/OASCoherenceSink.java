@@ -48,7 +48,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putRosterData(StudentCredentials creds, RosterData rosterData, boolean replicate) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		rosterData.setReplicate(replicate);
+		//rosterData.setReplicate(replicate);
 		rosterData.setCacheTime(System.currentTimeMillis());
 		rosterCache.put(key, rosterData);
 	}
@@ -141,7 +141,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
-			wrapper.setReplicate(replicate);
+			//wrapper.setReplicate(replicate);
 			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
@@ -202,7 +202,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 				manifests[i].setRosterEndTime(endTime);
 			}
 			wrapper.setManifests(manifests);
-			wrapper.setReplicate(replicate);
+			//wrapper.setReplicate(replicate);
 			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
@@ -210,7 +210,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putItemResponse(ItemResponseData ird, boolean replicate) throws IOException {
 		String key = ird.getTestRosterId() + ":" + ird.getResponseSeqNum();
-		ird.setReplicate(replicate);
+		//ird.setReplicate(replicate);
 		ird.setCacheTime(System.currentTimeMillis());
 		if("CR".equals(ird.getItemType()) && (ird.getConstructedResponse() == null || "".equals(ird.getConstructedResponse().trim()))) {
 			ird.setConstructedResponse(ird.getResponse());

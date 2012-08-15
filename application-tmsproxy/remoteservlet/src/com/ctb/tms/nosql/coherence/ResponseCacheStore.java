@@ -40,13 +40,10 @@ public class ResponseCacheStore implements OASCacheStore {
     	try {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-    		//String testRosterId = (String) oKey;
-    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
     		ItemResponseData tsd = (ItemResponseData) oValue;
-		    //tsd.setTestRosterId(testRosterId);
-		    if(tsd.isReplicate().booleanValue()) {
+		    //if(tsd.isReplicate().booleanValue()) {
 		    	sink.putItemResponse(conn, tsd);
-		    }
+		    //}
     	} catch (Exception e) {
     		logger.warn("ResponseCacheStore.store: Error storing response to DB: " + e.getMessage());
 			throw new RuntimeException(e.getMessage());
@@ -112,10 +109,10 @@ public class ResponseCacheStore implements OASCacheStore {
     			BinaryEntry entry = it.next();
     			ItemResponseData ird = (ItemResponseData) entry.getValue();
     			try {
-		    		if(ird.isReplicate().booleanValue()) {
+		    		//if(ird.isReplicate().booleanValue()) {
 		    			sink.putItemResponse(conn, ird);
 			    		conn.commit();
-		    		}
+		    		//}
     			} catch (Exception e) {
     				success = false;
     				logger.warn("ResponseCacheStore.storeAll (binary): Error storing response to DB for key " + entry.getKey() + ": " + e.getMessage());
@@ -154,10 +151,10 @@ public class ResponseCacheStore implements OASCacheStore {
 	    		String key = (String) it.next();
 	    		ItemResponseData ird = (ItemResponseData) mapEntries.get(key);
     			try {
-		    		if(ird.isReplicate().booleanValue()) {
+		    		//if(ird.isReplicate().booleanValue()) {
 		    			sink.putItemResponse(conn, ird);
 			    		conn.commit();
-		    		}
+		    		//}
     			} catch (Exception e) {
     				success = false;
     				logger.warn("ResponseCacheStore.storeAll: Error storing response to DB for key " + key + ": " + e.getMessage());

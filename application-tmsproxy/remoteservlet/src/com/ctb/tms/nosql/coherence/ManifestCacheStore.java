@@ -62,9 +62,9 @@ public class ManifestCacheStore implements OASCacheStore {
     		key = (String) oKey;
     	    logger.debug("Storing manifest to DB for roster " + key);
     		ManifestWrapper wrapper = (ManifestWrapper) oValue;
-		    if(wrapper.isReplicate().booleanValue()) {
+		    //if(wrapper.isReplicate().booleanValue()) {
 		    	sink.putManifest(conn, key, wrapper.getManifests());
-		    }
+		    //}
     	} catch (Exception e) {
     		logger.warn("ManifestCacheStore.store: Error storing manifest to DB: " + e.getMessage());
 			throw new RuntimeException(e.getMessage());
@@ -114,9 +114,9 @@ public class ManifestCacheStore implements OASCacheStore {
 		while(it.hasNext()) {
 			BinaryEntry entry = (BinaryEntry) it.next();
 			ReplicationObject value = (ReplicationObject) entry.getValue();
-			if(!value.isReplicate().booleanValue()) {
+			//if(!value.isReplicate().booleanValue()) {
 				it.remove();
-			}
+			//}
 		}
 	}
 
@@ -160,10 +160,10 @@ public class ManifestCacheStore implements OASCacheStore {
     			key = (String) oKey;
 	    		ManifestWrapper value = (ManifestWrapper) mapEntries.get(key);
 	    		try {
-		    		if(value.isReplicate().booleanValue()) {
+		    		//if(value.isReplicate().booleanValue()) {
 		    			sink.putManifest(conn, key, value.getManifests());
 			    		conn.commit();
-		    		} 
+		    		//} 
 	    		} catch (Exception e) {
     				success = false;
     				logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for key " + key + ": " + e.getMessage());
@@ -210,10 +210,10 @@ public class ManifestCacheStore implements OASCacheStore {
 				Object value = entry.getValue();
 				ManifestWrapper wrapper = (ManifestWrapper) value;
 				try {
-					if(wrapper.isReplicate().booleanValue()) {
+					//if(wrapper.isReplicate().booleanValue()) {
 						sink.putManifest(conn, key, wrapper.getManifests());
 						conn.commit();
-					}
+					//}
 				} catch (Exception e) {
     				success = false;
     				logger.warn("ManifestCacheStore.storeAll (binary): Error storing manifest to DB for key " + key + ": " + e.getMessage());

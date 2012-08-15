@@ -66,7 +66,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	if(this.store != null) {
     		if(this.cacheName.startsWith("OAS")) {
     			ReplicationObject rep = (ReplicationObject) oValue;
-    			if(rep != null && rep.isReplicate().booleanValue()) {
+    			if(rep != null) { // && rep.isReplicate().booleanValue()) {
     				this.store.store(oKey, rep);
     			}
 	    	}
@@ -77,7 +77,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	if(this.store != null) {
     		if(this.cacheName.startsWith("OAS")) {
     			ReplicationObject rep = (ReplicationObject) entry.getValue();
-    			if(rep != null && rep.isReplicate().booleanValue()) {
+    			if(rep != null) { // && rep.isReplicate().booleanValue()) {
     				this.store.store(entry.getKey(), rep);
 	    		}
 	    	}
