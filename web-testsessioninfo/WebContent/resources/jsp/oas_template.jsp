@@ -139,6 +139,8 @@ clear: both;
 					$(this).click(function(e){
 						$("#list2").jqGrid('resetSelection');
 						$("#list3").jqGrid('resetSelection');
+						jQuery("#list2").trigger("reloadGrid");
+						jQuery("#list3").trigger("reloadGrid");
 						setSelectedTestAdminId("");
 					})
 				});

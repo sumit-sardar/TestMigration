@@ -3468,9 +3468,9 @@ function registerDelegate(tree){
 									var updatedTestName = $($('#testGroupList option[value='+oplistval+']')).text()
 									reInitializeModifyTestPopup(updatedPrType, updatedTestName, updatedSessionName);
 								 }
-								$('#showSaveTestMessage').show();
-							  	var sortCol = jQuery("#list2").getGridParam("sortname");
-							  	if(vdata.testSession != null) {
+								var sortCol = jQuery("#list2").getGridParam("sortname");
+								var sortCol1 = jQuery("#list3").getGridParam("sortname");
+								if(vdata.testSession != null) {
 							  		var testSessionData = vdata.testSession;
 							  		var dataToBeAdded = {testAdminName:testSessionData.testAdminName,
 							  							 testName:testSessionData.testName,
@@ -3485,32 +3485,61 @@ function registerDelegate(tree){
 							  							 isSTabeAdaptiveProduct:testSessionData.isSTabeAdaptiveProduct,
 							  							 productType:testSessionData.productType,
 							  							 copyable: testSessionData.copyable};
-							  							 
 							  		if(state == "EDIT") {
-							  			jQuery("#list2").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-							  			jQuery("#list3").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-							  			if(isCopySession) {
-							  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-							  			}
-							  			if(isEndTestSession) {
-							  				jQuery("#list2").delRowData(testSessionData.testAdminId);
-							  				jQuery("#list3").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-							  			}
-							  			if(!jQuery("#list2").getInd(testSessionData.testAdminId)
-							  				&& jQuery("#list3").getInd(testSessionData.testAdminId) == 1
-							  				&& compareDate(testSessionData.loginEndDate)) {
+							  			if(testSessionData.testAdminStatus == 'CU') {
+							  				if(isCopySession) {
 							  				
-							  				jQuery("#list3").delRowData(testSessionData.testAdminId);
-							  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				var testAdminIdToSelect = $("#list2").jqGrid('getGridParam', 'selrow');
+								  				jQuery("#list2").sortGrid(sortCol, true);
+								  				jQuery("#list2").setSelection(testAdminIdToSelect, true);
+								  			} else if(!isCopySession 
+								  				&& jQuery("#list2").getInd(testSessionData.testAdminId) > 0
+								  				&& !jQuery("#list3").getInd(testSessionData.testAdminId)) {
+								  				
+								  				jQuery("#list2").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				jQuery("#list2").sortGrid(sortCol, true);
+								  				jQuery("#list2").setSelection(testSessionData.testAdminId, true);
+								  			} else if(!isCopySession 
+								  				&& jQuery("#list3").getInd(testSessionData.testAdminId) > 0
+								  				&& !jQuery("#list2").getInd(testSessionData.testAdminId)) {
+								  				
+								  				jQuery("#list3").delRowData(testSessionData.testAdminId);
+								  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				setAnchorButtonState('viewStatusButton', true);
+												setAnchorButtonState('printTicketButton', true);
+	 											setAnchorButtonState('registerStudentButton', true);
+												updateModifyStdManifestButton(false);
+												updateCopySessionButton(false);
+								  			}
+							  			} else if(testSessionData.testAdminStatus == 'PA') {
+							  				
+							  				if(jQuery("#list3").getInd(testSessionData.testAdminId) > 0) {
+								  				
+								  				jQuery("#list3").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				jQuery("#list3").sortGrid(sortCol1, true);
+								  				jQuery("#list3").setSelection(testSessionData.testAdminId, true);
+								  			} else if(jQuery("#list2").getInd(testSessionData.testAdminId) > 0) {
+								  			
+								  				jQuery("#list2").delRowData(testSessionData.testAdminId);
+								  				jQuery("#list3").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+								  				setAnchorButtonState('viewStatusButton', true);
+												setAnchorButtonState('printTicketButton', true);
+	 											setAnchorButtonState('registerStudentButton', true);
+												updateModifyStdManifestButton(false);
+												updateCopySessionButton(false);
+								  			}
 							  			}
 							  		} else {
 							  			jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			var testAdminIdToSelect = $("#list2").jqGrid('getGridParam', 'selrow');
+								  		jQuery("#list2").sortGrid(sortCol, true);
+								  		jQuery("#list2").setSelection(testAdminIdToSelect, true);
 							  		}
 							  	}
-							  	jQuery("#list2").sortGrid(sortCol, true);
+							  	$('#showSaveTestMessage').show();
 							  	$.unblockUI();
 							  	closePopUp("scheduleSession");
-							  	$('#showSaveTestMessage').show();
 						  } else if (data.IsSystemError) {
 								if(length==0) {
 									setSessionSaveMessage(messageHeader, "", "errorMessage","");
