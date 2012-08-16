@@ -3468,7 +3468,7 @@ function registerDelegate(tree){
 									var updatedTestName = $($('#testGroupList option[value='+oplistval+']')).text()
 									reInitializeModifyTestPopup(updatedPrType, updatedTestName, updatedSessionName);
 								 }
-							  	$('#showSaveTestMessage').show();
+								$('#showSaveTestMessage').show();
 							  	var sortCol = jQuery("#list2").getGridParam("sortname");
 							  	if(vdata.testSession != null) {
 							  		var testSessionData = vdata.testSession;
@@ -3485,8 +3485,24 @@ function registerDelegate(tree){
 							  							 isSTabeAdaptiveProduct:testSessionData.isSTabeAdaptiveProduct,
 							  							 productType:testSessionData.productType,
 							  							 copyable: testSessionData.copyable};
+							  							 
 							  		if(state == "EDIT") {
 							  			jQuery("#list2").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			jQuery("#list3").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			if(isCopySession) {
+							  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			}
+							  			if(isEndTestSession) {
+							  				jQuery("#list2").delRowData(testSessionData.testAdminId);
+							  				jQuery("#list3").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			}
+							  			if(!jQuery("#list2").getInd(testSessionData.testAdminId)
+							  				&& jQuery("#list3").getInd(testSessionData.testAdminId) == 1
+							  				&& compareDate(testSessionData.loginEndDate)) {
+							  				
+							  				jQuery("#list3").delRowData(testSessionData.testAdminId);
+							  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
+							  			}
 							  		} else {
 							  			jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
 							  		}
@@ -3494,6 +3510,7 @@ function registerDelegate(tree){
 							  	jQuery("#list2").sortGrid(sortCol, true);
 							  	$.unblockUI();
 							  	closePopUp("scheduleSession");
+							  	$('#showSaveTestMessage').show();
 						  } else if (data.IsSystemError) {
 								if(length==0) {
 									setSessionSaveMessage(messageHeader, "", "errorMessage","");
@@ -3543,6 +3560,16 @@ function registerDelegate(tree){
 	function formatJSONDate(jsonDate){
 	    var newDate = dateFormat(jsonDate, "mm/dd/yyyy");
 	    return newDate;
+	
+	}
+	
+	function compareDate(jsonDate){
+	    var newDate = $.datepicker.formatDate('mm/dd/y', new Date(jsonDate));
+	    var today = $.datepicker.formatDate('mm/dd/y', new Date());
+	    if(newDate >= today) {
+	    	return true;
+	    }
+	    return false;
 	
 	}
 	
