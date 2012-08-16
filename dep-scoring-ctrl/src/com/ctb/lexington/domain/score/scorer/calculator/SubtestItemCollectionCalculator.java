@@ -97,14 +97,19 @@ public class SubtestItemCollectionCalculator extends Calculator {
             }
         }
         if(items != null && items.size() > 0) {
-	        SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
-	                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items);
-	        subtestItemsEvent.setProductId(productId);
-	        if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
-	        	 subtestItemsEvent.setItemSetName(currentWsTvSubject);
-	        }
 	       
-	        channel.send(subtestItemsEvent);
-        }
+	        if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+	        	SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
+		                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items, currentWsTvSubject);
+		        subtestItemsEvent.setProductId(productId);
+	        	subtestItemsEvent.setContentArea(currentWsTvSubject);
+	        	channel.send(subtestItemsEvent);
+	        } else {
+	        	SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
+	 	                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items);
+	 	        subtestItemsEvent.setProductId(productId);
+	 	        channel.send(subtestItemsEvent);
+	        }
+	    }
     }
 }

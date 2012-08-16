@@ -45,13 +45,13 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                 	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
                 		LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
                 		LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
-                		if(caItemMap.containsKey(sicEvent.getItemSetName())) {
-                			itemIdResp = caItemMap.get(sicEvent.getItemSetName());
+                		if(caItemMap.containsKey(sicEvent.getContentArea())) {
+                			itemIdResp = caItemMap.get(sicEvent.getContentArea());
                 			if(itemIdResp.containsKey(itemId)) {
                 				itemIdResp.put(itemId, "1");
                 			}
                 		}
-                		caItemMap.put(sicEvent.getItemSetName(), itemIdResp);
+                		caItemMap.put(sicEvent.getContentArea(), itemIdResp);
                 	}
                     channel.send(new CorrectResponseEvent(event));
                 } else {

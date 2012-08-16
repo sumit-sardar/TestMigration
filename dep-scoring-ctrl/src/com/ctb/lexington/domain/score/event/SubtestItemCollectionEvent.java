@@ -27,6 +27,19 @@ public class SubtestItemCollectionEvent extends SubtestEvent {
             }
         }, itemDTOCollection);
     }
+    
+    public SubtestItemCollectionEvent(final Long testRosterId, final Integer itemSetId,
+            final String itemSetName, final Collection itemDTOCollection, final String contentArea) {
+        super(testRosterId, itemSetId);
+        this.itemSetName = itemSetName;
+        this.contentArea = contentArea;
+
+        itemIndex = new IndexMap(String.class, ItemVO.class, new IndexMap.Mapper() {
+            public Object getKeyFor(final Object value) {
+                return ((ItemVO) value).getItemId();
+            }
+        }, itemDTOCollection);
+    }
 
     private ItemVO getItem(final String itemId) {
         return (ItemVO) itemIndex.get(itemId);

@@ -5,6 +5,7 @@ import com.ctb.lexington.domain.score.event.common.Event;
 public abstract class SubtestEvent extends Event {
     private final Integer itemSetId;
     protected String itemSetName;
+    protected String contentArea; // Added for TN via Acuity
 
     public SubtestEvent(final Long testRosterId, final Integer itemSetId) {
         super(testRosterId);
@@ -50,4 +51,12 @@ public abstract class SubtestEvent extends Event {
     public void setItemSetName(final String itemSetName) {
         this.itemSetName = itemSetName;
     }
+
+	public String getContentArea() {
+		return contentArea;
+	}
+
+	public void setContentArea(String contentArea) {
+		this.contentArea = contentArea;
+	}
 }

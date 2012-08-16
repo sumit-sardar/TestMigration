@@ -57,11 +57,6 @@ public class TVWsAcuityDataController {
 		if(context.getCurrentResultId() == 1) {
 			getContentAreaFactBeans(factData, wsTvData, lossHoss, studentScoreSummaryData);
 			getCompositeFactBeans(wsTvData);
-		} else {
-			if(currData.getContentAreas() != null) {
-				wsTvData.setFormId(currData.getContentAreas()[0].getSubtestForm());
-	        	wsTvData.setLevelId(Integer.parseInt(currData.getContentAreas()[0].getSubtestLevel()));
-			}
 		}
     }
 	
@@ -106,9 +101,7 @@ public class TVWsAcuityDataController {
         ContentArea [] contentAreas = currData.getContentAreas();
         ArrayList<ContentAreaScore> contentAreaFact = new ArrayList<ContentAreaScore>();
         Map<String,String> populated = new HashMap<String,String>();
-        if(contentAreas != null) {
-        	wsTvData.setFormId(contentAreas[0].getSubtestForm());
-        	wsTvData.setLevelId(Integer.parseInt(contentAreas[0].getSubtestLevel()));
+        if(contentAreas != null && contentAreas.length > 0) {
             for(int i=0;i<contentAreas.length;i++) {
             	if(populated != null && !populated.containsKey(contentAreas[i].getContentAreaName())) {
             	StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
