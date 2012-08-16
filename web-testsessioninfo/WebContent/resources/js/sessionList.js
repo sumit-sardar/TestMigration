@@ -3490,16 +3490,13 @@ function registerDelegate(tree){
 							  				if(isCopySession) {
 							  				
 								  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-								  				var testAdminIdToSelect = $("#list2").jqGrid('getGridParam', 'selrow');
 								  				jQuery("#list2").sortGrid(sortCol, true);
-								  				jQuery("#list2").setSelection(testAdminIdToSelect, true);
 								  			} else if(!isCopySession 
 								  				&& jQuery("#list2").getInd(testSessionData.testAdminId) > 0
 								  				&& !jQuery("#list3").getInd(testSessionData.testAdminId)) {
 								  				
 								  				jQuery("#list2").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
 								  				jQuery("#list2").sortGrid(sortCol, true);
-								  				jQuery("#list2").setSelection(testSessionData.testAdminId, true);
 								  			} else if(!isCopySession 
 								  				&& jQuery("#list3").getInd(testSessionData.testAdminId) > 0
 								  				&& !jQuery("#list2").getInd(testSessionData.testAdminId)) {
@@ -3518,7 +3515,6 @@ function registerDelegate(tree){
 								  				
 								  				jQuery("#list3").setRowData(testSessionData.testAdminId, dataToBeAdded, "first");
 								  				jQuery("#list3").sortGrid(sortCol1, true);
-								  				jQuery("#list3").setSelection(testSessionData.testAdminId, true);
 								  			} else if(jQuery("#list2").getInd(testSessionData.testAdminId) > 0) {
 								  			
 								  				jQuery("#list2").delRowData(testSessionData.testAdminId);
@@ -3532,10 +3528,8 @@ function registerDelegate(tree){
 							  			}
 							  		} else {
 							  			jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
-							  			var testAdminIdToSelect = $("#list2").jqGrid('getGridParam', 'selrow');
-								  		jQuery("#list2").sortGrid(sortCol, true);
-								  		jQuery("#list2").setSelection(testAdminIdToSelect, true);
-							  		}
+							  			jQuery("#list2").sortGrid(sortCol, true);
+								  	}
 							  	}
 							  	$('#showSaveTestMessage').show();
 							  	$.unblockUI();
