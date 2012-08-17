@@ -422,6 +422,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
     	String roleName = this.user.getRole().getRoleName();
+    	boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -488,6 +489,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
+		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));
     }
     
 	private void setupUserPermission()
@@ -530,6 +532,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        String roleName = this.user.getRole().getRoleName();        
 	        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
 	    }
+	 private boolean isAdminCoordinatotUser() 
+	 {               
+	        String roleName = this.user.getRole().getRoleName();        
+	        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+	 }
 	
 	 private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
 	    {               
