@@ -47,7 +47,7 @@ var accomodationMapForAll = {};
 var filterLoadFlag = false;
 var filterTimer = null;
 var licenseInfo = null;
-var licenseInfoMap = new Map();
+var licenseInfoMap = null;
 
 /// FOR FILTER
 
@@ -64,10 +64,12 @@ function showSelectStudent(){
 	} else {
 		loadInnerStuOrgTree();
 	}
-		allSelectOrgTmp = allSelectOrg.slice(0);
-		visitedNodeCounter = new Map();
-		visitedNodeTraverseCounter = new Map();
 	
+	allSelectOrgTmp = allSelectOrg.slice(0);
+	visitedNodeCounter = new Map();
+	visitedNodeTraverseCounter = new Map();
+	
+	licenseInfoMap = new Map();
 }
 // when back button invoked
 function hideSelectStudent(){
@@ -799,7 +801,6 @@ function returnSelectedStudent() {
 	studentWithaccommodation = 0;
 	studentMap = new Map();
 
-
 	if (! validateLicenseUsed()) {
 		return;
 	} 
@@ -1458,8 +1459,9 @@ function showLicenseInformation() {
 	var licenseModel = document.getElementById("licenseModel");
 	licenseModel.innerHTML = "License model: " + "<b>" + model + "</b>";
 	
-	var licenseAvailable = document.getElementById("licenseAvailable");
-	licenseAvailable.innerHTML = "License Available: " + "<b>" + licenseInfo[4] + "</b>";
+	var licenseAvailableCtrl = document.getElementById("licenseAvailable");
+	var availableLicense = licenseInfo[4];
+	licenseAvailableCtrl.innerHTML = "License Available: " + "<b>" + availableLicense + "</b>";
 
 	showLicenseUsedForOrgNode();
 }
@@ -1467,18 +1469,18 @@ function showLicenseInformation() {
 function showLicenseUsedForOrgNode() {
 	var orgNodeId = licenseInfo[0];
 	var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
-	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, licenseInfo[4]);
-	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage);
-	showLicenseErrorMessage(licenseUsed);
+	var availableLicense = licenseInfo[4];
+	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
+	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage, availableLicense);
+	showLicenseErrorMessage(licenseUsed, availableLicense);
 }
 	
 	
-function showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage) {
+function showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage, availableLicense) {
 	var licenseText;
 	var licenseUsedCtrl = document.getElementById("licenseUsed");
-	var availableLicense = licenseInfo[4];
 			
-   	if (licenseUsedPercentage < 0) { 
+   	if (availableLicense == 0) { 
    		licenseText = "No Licenses Available";
    		licenseUsedCtrl.style.backgroundColor = "#ff0000";
 		licenseUsedCtrl.style.color = "#ffffff";
@@ -1510,12 +1512,9 @@ function showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage) {
 }
 
 
-function showLicenseErrorMessage(licenseUsed) {
-	var licenseText;
-	var availableLicense = licenseInfo[4];
-			
+function showLicenseErrorMessage(licenseUsed, availableLicense) {
+	var licenseText;		
 	$('#displayMessage').hide();
-	
    	if (licenseUsed > availableLicense) { 
    		var licenseNeeded = licenseUsed - availableLicense; 
    		licenseText = "There are insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
@@ -1554,6 +1553,13 @@ function calculateLicenseUsedPercentForOrgNode(usedLicenses, availableLicense) {
 	return licenseUsedPercentage;
 }
 
+function showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense) {
+	var licenseNeeded = licenseUsed - availableLicense; 
+	var licenseTitle = orgNodeName + " has insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
+	var licenseText = "Please reduce number of students and save the session and get more licenses then come back to add more students. Get it?";
+	setMessage("Exceeds Licenses Available", licenseTitle, "errorMessage", licenseText);       
+	$('#displayMessage').show();
+}
 
 function validateLicenseUsed() {
 	var result = true;	
@@ -1571,14 +1577,15 @@ function validateLicenseUsed() {
 		for(var i=0 ; i<licenseInfoKeys.length; i++) {
 			var orgNodeId = licenseInfoKeys[i];
 			var orgNodeName = orgNodeMap.get(orgNodeId);
-			var availableLicense = licenseInfoMap.get(orgNodeId);
-			
-			var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
-			var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
-			if (licenseUsedPercentage > 100) {
-				alert(orgNodeName);
-				result = false;
-				break;
+			if (orgNodeName != null) {
+				var availableLicense = licenseInfoMap.get(orgNodeId);
+				var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
+				var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
+				if ((licenseUsedPercentage < 0) || (licenseUsedPercentage > 100)) {
+					showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense);
+					result = false;
+					break;
+				}
 			}
 		}
 		
