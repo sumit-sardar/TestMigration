@@ -73,6 +73,8 @@ public class SessionValidatorUtil {
 	}
 	
 	public static boolean isStartDateUpdated(Session session, TestSession testSession){
+		System.out.println("StartDate from db:"+testSession.getLoginStartDateString());
+		System.out.println("StartDate from acuity:"+session.getStartDate());
 		boolean isUpdated = false;
 		if(!session.getStartDate().equals(testSession.getLoginStartDateString())){
 			isUpdated = true;
@@ -81,6 +83,8 @@ public class SessionValidatorUtil {
 	}
 	
 	public static boolean isEndDateUpdated(Session session, TestSession testSession){
+		 System.out.println("EndDate from db:["+testSession.getLoginEndDateString()+"]");
+		 System.out.println("EndDate from acuity:["+session.getEndDate()+"]");
 		boolean isUpdated = false;
 		if(!session.getEndDate().equals(testSession.getLoginEndDateString())){
 			isUpdated = true;
@@ -89,15 +93,21 @@ public class SessionValidatorUtil {
 	}
 	public static boolean isStartTimeUpdated(Session session, TestSession testSession){
 		boolean isUpdated = false;
-		if(!session.getStartTime().equals(testSession.getDailyLoginStartTime())){
+		String dbStartTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime());
+		System.out.println("StartTime from db:"+dbStartTime+"]");
+		System.out.println("StartTime from acuity:"+session.getStartTime()+"]");
+		if(!session.getStartTime().equals(dbStartTime)){
 			isUpdated = true;
 		}
 		return isUpdated;
 	}
 	
 	public static boolean isEndTimeUpdated(Session session, TestSession testSession){
+		String dbEndTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime());
+		System.out.println("EndTime from db:"+dbEndTime+"]");
+		System.out.println("EndTime from acuity:"+session.getEndTime()+"]");
 		boolean isUpdated = false;
-		if(!session.getEndTime().equals(testSession.getDailyLoginEndTime())){
+		if(!session.getEndTime().equals(dbEndTime)){
 			isUpdated = true;
 		}
 		return isUpdated;
@@ -105,7 +115,10 @@ public class SessionValidatorUtil {
 	
 	public static boolean isTimeZoneUpdated(Session session, TestSession testSession){
 		boolean isUpdated = false;
-		if(!session.getTimeZone().equals(testSession.getTimeZone())){
+		String timeZone = DateUtil.getUITimeZone(testSession.getTimeZone());
+		System.out.println("timeZone from db:"+timeZone+"]");
+		System.out.println("timeZone from acuity:"+session.getTimeZone()+"]");
+		if(!session.getTimeZone().equals(timeZone)){
 			isUpdated = true;
 		}
 		return isUpdated;
