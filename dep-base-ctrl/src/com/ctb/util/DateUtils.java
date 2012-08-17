@@ -9,6 +9,7 @@ public class DateUtils
     static final long serialVersionUID = 1L;
     
     private final static String DATE_FORMAT="MM/dd/yy";
+    private final static String TIME_FORMAT="hh:mm a";
 	/**
 	 * Converts a date in the input timezone to a date in the output timezone.
 	 * @param date
@@ -102,5 +103,21 @@ public class DateUtils
             e.printStackTrace();
         }
         return result;
-    }  
+    }
+
+    public static String formatDateToTimeString(Date date){
+        String result = null;
+        if (date == null)
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(TIME_FORMAT);
+        try{
+            result = sdf.format(date);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }    
 } 
