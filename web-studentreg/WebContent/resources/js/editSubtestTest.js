@@ -944,8 +944,8 @@
 		var orgNameArray = selectedStudentOrgNodeName.split("|");
 		var orgIdArray   = selectedStudentOrgNodeid.split("|");
         	ret = '<select id="stdOrg" > ';
-			for(var i=0;i<orgNameArray.length; i++){	
-				ret += '<option value="'+ orgIdArray[i] +'" >'+orgNameArray[i]+'</option> ';
+			for(var i=0;i<orgNameArray.length && i<orgIdArray.length ; i++){	
+				ret += '<option value="'+ orgIdArray[i] +'" >'+orgNameArray[i]+" "+'</option> ';
     		}
     		ret += '</select>';
        	return ret;

@@ -13,7 +13,11 @@
 	  	<table class="transparent" style="padding-left: 5px;">
 	  		<tr class="transparent">
 				<td>
-			    	<h1><lb:label key="student.registration.menu" /></h1>
+				    
+			    	<h1>
+			    		<div id="sessionListTitle" style="display:none"><lb:label key="session.popup.title" /></div>
+						<div id="studentListTitle" style="display:none"><lb:label key="student.popup.title" /></div>
+			    	</h1>
 				</td>
 			</tr>
 			<tr> 

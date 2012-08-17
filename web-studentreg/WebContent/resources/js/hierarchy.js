@@ -451,9 +451,13 @@ function populateGridAsPerView() {
     	if(currentView == "student"){
 		   	$("#sessionListSubTitle").show();
 		   	$("#studentListSubTitle").hide();
+		   	$("#sessionListTitle").show();
+		   	$("#studentListTitle").hide();
     	} else {
     		$("#sessionListSubTitle").hide();
 		   	$("#studentListSubTitle").show();
+		   	$("#sessionListTitle").hide();
+		   	$("#studentListTitle").show();
     	}
 		$("#sessionStudRegId").dialog({  
 			title:$("#sessionStudRegPopupTitle").val(),  
@@ -477,12 +481,18 @@ function populateGridAsPerView() {
 		if(currentView == "student"){
 		   	$("#sessionListSubTitle").show();
 		   	$("#studentListSubTitle").hide();
+		   	$("#sessionListTitle").show();
+		   	$("#studentListTitle").hide();
     	} else if(currentView != "student" && (isPopupOnByepassFR ||isPopupOnFRAccept||isPopupOnFRNotAccept)) {
     		$("#sessionListSubTitle").show();
-		   	$("#studentListSubTitle").hide();		   	    		
+		   	$("#studentListSubTitle").hide();	
+		   	$("#sessionListTitle").show();
+		   	$("#studentListTitle").hide();	   	    		
     	} else {
     		$("#sessionListSubTitle").hide();
 		   	$("#studentListSubTitle").show();
+		   	$("#sessionListTitle").hide();
+		   	$("#studentListTitle").show();
     	}
 		$("#sessionStudRegId").dialog({  
 			title:$("#sessionStudRegPopupTitle").val(),  
