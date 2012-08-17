@@ -79,17 +79,7 @@ public class FindPasswordController extends PageFlowController
     })
     protected Forward begin()
     {
-        try
-        {
-            String url = "https://172.16.80.132/bredexsoap/services/ScoringService?wsdl";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    	
+        return new Forward("success");
     }
 
     /**
