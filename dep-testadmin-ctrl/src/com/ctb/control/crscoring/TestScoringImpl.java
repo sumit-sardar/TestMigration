@@ -2,6 +2,9 @@ package com.ctb.control.crscoring;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -488,36 +491,39 @@ public class TestScoringImpl implements TestScoring {
 	
 	@Override
 	public ItemData getItemXML(String itemId) throws CTBBusinessException{
-		
+
 		ItemData item = new ItemData();
 		Blob itemXml = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		
+		StringBuilder str = new StringBuilder();
+
+
 		try{
-			
-		ScorableItem [] scrItem = 	ads.getDecryptedItemXml(itemId);
-		if(scrItem != null && scrItem.length > 0){
-		itemXml = scrItem[0].getItemXml();
-		
-		}
-		if(itemXml != null){
-		InputStream is = itemXml.getBinaryStream();
-		boolean moreData = true;
-		while(moreData) {
-			byte [] buffer = new byte[128];
-			int read = is.read(buffer);
-			moreData = read > 0;
-			if(moreData) {
-				baos.write(buffer, 0, read);
+
+			ScorableItem [] scrItem = 	ads.getDecryptedItemXml(itemId);
+			if(scrItem != null && scrItem.length > 0){
+				itemXml = scrItem[0].getItemXml();
+
 			}
+			if(itemXml != null){
+				InputStream is = itemXml.getBinaryStream();
+				Reader reader = 
+					new InputStreamReader(is, Charset.forName("ISO-8859-1"));
+				
+				 int data = reader.read();
+				    while(data != -1){
+				        char dataChar = (char) data;
+				        data = reader.read();
+				        str.append(dataChar);
+				    }
+
+			}
+			item.setItem(str.toString().getBytes());
+			item.setItemId(itemId);
+			item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
 		}
-		item.setItem(baos.toByteArray());
-		item.setItemId(itemId);
-		item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
-		}
-		}
-		
+
+
 		catch (Exception e){
 			OASLogger.getLogger("TestAdmin").error(
 					"Exception occurred while retrieving the item.", e);
