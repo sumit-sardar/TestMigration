@@ -69,9 +69,7 @@
 <tr><td>Session Id:</td>
 <td>
 	<input type="text" id="sesionId" name="sesionId" value=""  />&nbsp;&nbsp;&nbsp;&nbsp;
-	<!-- 
 	Remove:<input type="checkbox"  id="removeSession" name="removeSession"/>&nbsp;
-	 -->
 </td>
 </tr>
 <tr><td>Product Type:</td>
