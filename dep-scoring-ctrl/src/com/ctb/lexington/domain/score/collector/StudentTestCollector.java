@@ -31,7 +31,10 @@ public class StudentTestCollector {
                    "cust.customer_name, " + 
                    "td.item_set_name sub_test_name, " +
                    "td.item_set_id as subtestId, " +
-                   "siss.completion_date_time as subtestCompletionTimestamp " +
+                   "td.subject as subject, " +
+                   "td.sample as sample, " +
+                   "siss.completion_date_time as subtestCompletionTimestamp, " +
+                   "siss.completion_status as completionStatus " +
             "from " +
                 "test_admin admin, " +
                 "item_set tc, " +
@@ -49,7 +52,8 @@ public class StudentTestCollector {
 				 "and siss.item_set_id = td.item_set_id " +
                  "and tc.item_set_type in ('TC', 'AT') " +
                  "and td.item_set_type = 'TD' " +
-                 "and cat.item_set_id = tc.item_set_id";
+                 "and cat.item_set_id = tc.item_set_id " +
+            "order by td.subject";
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -72,6 +76,9 @@ public class StudentTestCollector {
                 detail.setTestScoreType(ATSDatabaseConstants.OAS_SCORE_TYPE);
                 detail.setSubtestId(SQLUtil.getLong(rs, "subtestId"));
                 detail.setSubtestCompletionTimestamp(SQLUtil.getTimestamp(rs, "subtestCompletionTimestamp"));
+                detail.setSample(SQLUtil.getString(rs, "SAMPLE"));
+                detail.setSubject(SQLUtil.getString(rs, "SUBJECT"));
+                detail.setCompletionStatus(SQLUtil.getString(rs, "COMPLETIONSTATUS"));
                 data.add(detail);
             }
             if (data.size() == 0) {

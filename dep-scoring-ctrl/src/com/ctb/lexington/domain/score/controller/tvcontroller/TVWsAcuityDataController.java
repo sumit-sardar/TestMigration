@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,8 @@ import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
+import com.ctb.lexington.db.data.StudentTestData;
+import com.ctb.lexington.db.data.StudentTestDetails;
 import com.ctb.lexington.db.data.CurriculumData.Composite;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
@@ -44,16 +48,19 @@ public class TVWsAcuityDataController {
 	private ContextData contextData;
 	private CurriculumData currData;
 	private StsTotalStudentScoreData totalData;
+	private StudentTestData testData;
 	
 	public TVWsAcuityDataController(CurriculumData currData, ContextData context, StsTestResultFactData factData, StudentScore wsTvData, 
 			StudentScoreSummaryData studentScoreSummaryData, Map<String,String> lossHoss, AdminData adminData, 
-			StudentItemScoreData studentItemScoreData, StsTotalStudentScoreData totalData, Connection con) {
+			StudentItemScoreData studentItemScoreData, StsTotalStudentScoreData totalData, 
+			Connection con, StudentTestData testData) {
 		
 		this.studentItemScoreData = studentItemScoreData;
 		this.adminData = adminData;
 		this.contextData = context;
 		this.currData = currData;
 		this.totalData = totalData;
+		this.testData = testData;
 		if(context.getCurrentResultId() == 1) {
 			getContentAreaFactBeans(factData, wsTvData, lossHoss, studentScoreSummaryData);
 			getCompositeFactBeans(wsTvData);
@@ -109,7 +116,9 @@ public class TVWsAcuityDataController {
                     ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
             	   ContentAreaScore newFact = new ContentAreaScore();
                    newFact.setContentAreaId(contentAreas[i].getContentAreaId().toString().substring(4));
-                   newFact.setContentAreaName(contentAreas[i].getContentAreaName());
+                   String caName = contentAreas[i].getContentAreaName();
+                   newFact.setContentAreaName(caName);
+                   updateIncompleteFlag(caName, newFact);
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
                    }
@@ -137,6 +146,44 @@ public class TVWsAcuityDataController {
             wsTvData.setContentAreaScores((ContentAreaScore []) contentAreaFact.toArray(new ContentAreaScore[0]));
         }
     }
+	
+	private void updateIncompleteFlag(String caName, ContentAreaScore newFact) {
+		boolean incompleteFlag = false;
+		List<String> subtestNames = new ArrayList<String>();
+		List<StudentTestDetails> studentTestDetails = new ArrayList<StudentTestDetails>();
+		
+		if(testData != null) {
+			for (int i = 0; i < testData.size(); i++) {
+				StudentTestDetails stuTestDetails = testData.get(i);
+				if(stuTestDetails.getSubject().equalsIgnoreCase(caName) && stuTestDetails.getSample().equalsIgnoreCase("F")) {
+					studentTestDetails.add(stuTestDetails);
+				}
+			}
+			if(studentTestDetails != null && studentTestDetails.size() > 0) {
+				int counter = 0;
+				for (Iterator<StudentTestDetails> iterator = studentTestDetails.iterator(); iterator
+						.hasNext();) {
+					StudentTestDetails tempDetails = (StudentTestDetails) iterator
+							.next();
+					String coStatus = tempDetails.getCompletionStatus();
+					if (!"SC".equals(coStatus) && !"NT".equals(coStatus)
+							&& !"IP".equals(coStatus) && !"IN".equals(coStatus)) {
+						counter ++;
+						subtestNames.add(tempDetails.getSubTestName());
+					}
+				}
+				if(counter < studentTestDetails.size()) {
+					incompleteFlag = true;
+				}
+				counter = 0;
+			}
+			//newFact.setIncompleteFlag(incompleteFlag);
+			//newFact.setSubtestNames((String[]) subtestNames.toArray());
+			System.out.println("newFact.getContentAreaName() -> " + newFact.getContentAreaName());
+			System.out.println("IncompleteFlag -> " + incompleteFlag);
+			System.out.println(subtestNames.size() + "-" + subtestNames.get(0).toString());
+		}
+	}
 	
 	private PrimaryObjScore[] getPrimaryObjectiveScores (Long contentAreaId, StudentScoreSummaryData studentScoreSummaryData) {
 		PrimaryObjective [] prims = currData.getPrimaryObjectives();

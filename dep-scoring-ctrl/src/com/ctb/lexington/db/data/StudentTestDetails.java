@@ -20,8 +20,26 @@ public class StudentTestDetails implements Persistent {
 	private String sessionNumber;
     private Long subtestId;
     private Timestamp subtestCompletionTimestamp;
+    private String subject;
+    private String sample;
+    private String completionStatus;
 
-    /**
+
+	/**
+	 * @return the subject
+	 */
+	public String getSubject() {
+		return subject;
+	}
+
+	/**
+	 * @param subject the subject to set
+	 */
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	/**
 	 * @return Returns the subtestCompletionTimestamp.
 	 */
 	public Timestamp getSubtestCompletionTimestamp(String timeZone) {
@@ -215,5 +233,33 @@ public class StudentTestDetails implements Persistent {
 
 	public void setTestGrade(String testGrade) {
 		this.testGrade = testGrade;
+	}
+
+	/**
+	 * @return the sample
+	 */
+	public String getSample() {
+		return sample;
+	}
+
+	/**
+	 * @param sample the sample to set
+	 */
+	public void setSample(String sample) {
+		this.sample = sample;
+	}
+
+	/**
+	 * @return the completionStatus
+	 */
+	public String getCompletionStatus() {
+		return completionStatus;
+	}
+
+	/**
+	 * @param completionStatus the completionStatus to set
+	 */
+	public void setCompletionStatus(String completionStatus) {
+		this.completionStatus = completionStatus;
 	}
 }
