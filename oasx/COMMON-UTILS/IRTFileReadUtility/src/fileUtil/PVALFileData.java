@@ -1,5 +1,6 @@
 package fileUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PVALFileData implements Cloneable {
@@ -10,20 +11,13 @@ public class PVALFileData implements Cloneable {
 	private String other;
 	private String content;
 	private String normsGroup;
-	private CodeValue codeValue;
-	private List<CodeValue> dataList;
+	private List<CodeValue> dataList = new ArrayList<CodeValue>();
 	
 	public String getNormsGroup() {
 		return normsGroup;
 	}
 	public void setNormsGroup(String normsGroup) {
 		this.normsGroup = normsGroup;
-	}
-	public CodeValue getCodeValue() {
-		return codeValue;
-	}
-	public void setCodeValue(CodeValue codeValue) {
-		this.codeValue = codeValue;
 	}
 	public String getLevel() {
 		return level;
@@ -77,13 +71,12 @@ public class PVALFileData implements Cloneable {
 		if(!(obj instanceof PVALFileData)) {
 			return false;
 		}
-		PVALFileData obj1 = (PVALFileData) obj;
-		if(this.getLevel().equals(obj1.getLevel()) 
-				&& this.getGrade().equals(obj1.getGrade())
-				&& this.getForm().equals(obj1.getForm())
-				&& this.getOther().equals(obj1.getOther())
-				&& this.getNormsGroup().equals(obj1.getNormsGroup())
-				&& this.getContent().equals(obj1.getContent())) {
+		PVALFileData pval = (PVALFileData) obj;
+		if(this.getLevel().equals(pval.getLevel()) 
+			&& this.getForm().equals(pval.getForm())
+			&& this.getOther().equals(pval.getOther())
+			&& this.getNormsGroup().equals(pval.getNormsGroup())
+			&& this.getContent().equals(pval.getContent())) {
 			
 			return true;
 		}
@@ -91,7 +84,18 @@ public class PVALFileData implements Cloneable {
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public PVALFileData clone() throws CloneNotSupportedException {
+		
+		PVALFileData pvalFileData = (PVALFileData) super.clone();
+		List<CodeValue> valueList = new ArrayList<CodeValue>();
+		if(pvalFileData.getDataList() != null) {
+			for(CodeValue val : pvalFileData.getDataList()) {
+				CodeValue codeVal = new CodeValue();
+				codeVal.setCode(val.getCode());
+				valueList.add(codeVal);
+			}
+			pvalFileData.setDataList(valueList);
+		}
+		return pvalFileData;
 	}
 }

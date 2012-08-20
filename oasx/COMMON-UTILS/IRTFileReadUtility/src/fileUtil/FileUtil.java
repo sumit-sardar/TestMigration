@@ -938,70 +938,6 @@ public class FileUtil {
 	}
 	
 
-	private static List<PVALFileData> readTNGFile (String path) {
-		
-		File tngFile = new File(path + File.separator + "tngobj.txt");  
-		List<PVALFileData> tngDataList = new ArrayList<PVALFileData>();
-		String strLine = null;
-		String edition = "";
-		String subtest = "";
-		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(tngFile));
-			PVALFileData pvalData = null;
-			CodeValue codeValue = null;
-			while ((strLine = br.readLine()) != null) { 
-				strLine = strLine.trim();
-				String[] data = strLine.split("        ");
-				if(data.length == 1)
-					continue;
-				
-				if(data.length == 4) {
-					pvalData = new PVALFileData();
-					codeValue = new CodeValue();
-					edition = data[0].trim();
-					subtest = data[1].trim();
-					pvalData.setOther(edition.substring(0, 2));
-					pvalData.setForm(edition.substring(2, 3));
-					pvalData.setContent(subtest);
-					pvalData.setLevel(data[2].trim());
-					int grade = Integer.valueOf(data[2].trim()) - 10;
-					if(grade < 9) {
-						pvalData.setGrade("0" + grade);
-					} else {
-						pvalData.setGrade(String.valueOf(grade));
-					}
-					
-					codeValue.setCode(data[3].trim());
-					pvalData.setCodeValue(codeValue);
-					tngDataList.add(pvalData);
-				} else if (data.length == 2) {
-					pvalData = new PVALFileData();
-					codeValue = new CodeValue();
-					pvalData.setOther(edition.substring(0, 2));
-					pvalData.setForm(edition.substring(2, 3));
-					pvalData.setContent(subtest);
-					pvalData.setLevel(data[0]);
-					int grade = Integer.valueOf(data[0].trim()) - 10;
-					if(grade < 9) {
-						pvalData.setGrade("0" + grade);
-					} else {
-						pvalData.setGrade(String.valueOf(grade));
-					}
-					
-					codeValue.setCode(data[1].trim());
-					pvalData.setCodeValue(codeValue);
-					tngDataList.add(pvalData);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return tngDataList;
-	}
-
 	private static List<PVALFileData> readPVALFile (String path) {
 		File allFile = new File(path);                
 		File[] files = allFile.listFiles();
@@ -1062,7 +998,6 @@ public class FileUtil {
 							pvalData.setForm(generalData[5].split(":")[1]);
 							pvalData.setOther(generalData[6].split(":")[1]);
 							pvalData.setContent(generalData[8].split(":")[1]);
-							_GRADES.add(pvalData.getGrade());
 						}
 					}
 					br.close();
@@ -1079,31 +1014,16 @@ public class FileUtil {
 	public static List<PVALFileData> populatePValue (String filePath) 
 	throws CloneNotSupportedException {
 		
-		List<PVALFileData> pvalFileData = readPVALFile(filePath);
-		List<PVALFileData> tngFileData = readTNGFile(filePath);
-		List<PVALFileData> contentList = new ArrayList<PVALFileData>();
-		PVALFileData tempPVALFile = null;
-		
-		for(PVALFileData pvalFile: tngFileData) {
-			for(NORMS_GROUP normsGroup : NORMS_GROUP.values()) {
-				tempPVALFile = (PVALFileData) pvalFile.clone();
-				tempPVALFile.setNormsGroup(normsGroup.name());
-				if(pvalFileData.indexOf(tempPVALFile) != -1) {
-					int index = pvalFileData.indexOf(tempPVALFile);
-					PVALFileData pvalFile1 = pvalFileData.get(index);
-					int codeIndex = pvalFile1.getDataList().indexOf(tempPVALFile.getCodeValue());
-					if(codeIndex != -1) {
-						CodeValue val = pvalFile1.getDataList().get(codeIndex);
-						if(val.getValue() != null) {
-							tempPVALFile.setNormsGroup(pvalFile1.getNormsGroup());
-							tempPVALFile.getCodeValue().setValue(val.getValue());
-							contentList.add(tempPVALFile);
-						}
-					}
-				} 
+		List<PVALFileData> pvalFileDataList = readPVALFile(filePath);
+		for(PVALFileData pvalFileData: pvalFileDataList) {
+			List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()));
+			Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList);
+			
+			for(CodeValue codeVal : pvalFileData.getDataList()) {
+				codeVal.setItemId(itemMap.get(codeVal.getCode()));
 			}
 		}
-		System.out.println("Total "+contentList.size());
-		return contentList;
+		System.out.println("Total " + pvalFileDataList.size());
+		return pvalFileDataList;
 	}
 }

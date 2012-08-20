@@ -4,7 +4,14 @@ public class CodeValue {
 
 	private String code;
 	private Double value;
+	private String itemId;
 	
+	public String getItemId() {
+		return itemId;
+	}
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
 	public String getCode() {
 		return code;
 	}
