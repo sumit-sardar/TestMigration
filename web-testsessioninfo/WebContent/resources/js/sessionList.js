@@ -3486,7 +3486,7 @@ function registerDelegate(tree){
 							  							 productType:testSessionData.productType,
 							  							 copyable: testSessionData.copyable};
 							  		if(state == "EDIT") {
-							  			if(testSessionData.testAdminStatus == 'CU') {
+							  			if(testSessionData.testAdminStatus == 'CU' || testSessionData.testAdminStatus == 'FU') {
 							  				if(isCopySession) {
 							  				
 								  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
