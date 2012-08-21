@@ -47,6 +47,11 @@
 		$('#msmTestSessionName1').text(selectedTestAdminName);
 		$('#msmStudentName').text(selectedStudentNameFromSessionPopup);
 		$('#msmOrgName').html(getOrgDropDownList(selectedStudentOrgNodeName, selectedStudentOrgNodeid));
+		if(selectedStudentOrgNodeid.split("|").length<2){
+			$('#stdOrg').attr('disabled',true);
+		} else {
+			$('#stdOrg').removeAttr('disabled');
+		}
 		
 		
 		var param = "&testAdminId="+selectedTestAdminId;
