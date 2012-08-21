@@ -148,9 +148,25 @@
 		  	populateSubtestTable();
 		  	populateRecomendedLevel(recomendedLevelMap , isLocatorPresentForStd);
 		  	$("#subtestTableDiv").show();
+		  	
+		  	$("#subtestHeading").show();
+		  	$("#SubtestInfo").show();
+		  	if(isTabeProduct){
+		  		$("#SubtestInfoForTabe").show();
+		  		$("#SubtestInfoForTabeAdaptive").hide();
+		  	} else if (isTabeAdaptiveProduct){
+		  		$("#SubtestInfoForTabe").hide();
+		  		$("#SubtestInfoForTabeAdaptive").show();
+		  	} else {
+		  		$("#SubtestInfoForTabe").hide();
+		  		$("#SubtestInfoForTabeAdaptive").hide();
+		  	}
+		  	
 		  	$("#msmHasAutolocator").removeAttr('disabled');
 		    $("#mStdMlocatorSubtestGridToolTip").show();
 		 } else {
+		 	$("#subtestHeading").hide();
+		  	$("#SubtestInfo").hide();
 		 	$("#subtestTableDiv").hide();
 		 	$("#msmHasAutolocator").attr("disabled", true);
 		 	$("#mStdMlocatorSubtestGridToolTip").hide();
@@ -224,7 +240,7 @@
 		    }
 		    
 			var html = "";
-			html += '<table cellspacing="1" cellpadding="0" width="100%" class="ts"> ';
+			html += '<table cellspacing="1" cellpadding="0" width="100%" class="ts" style="border: 1px solid rgb(166, 201, 226);"> ';
 			html += '<tbody> ';
 			html += '<tr class="subtestHeader"> ';
 			html += '<th height="23" align="center" width="24"> <strong>Select</strong> </th> ';

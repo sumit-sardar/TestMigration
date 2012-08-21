@@ -65,9 +65,9 @@
 			</tr >
 
 		</table>
-	</div>
+
  
- <div id="mStdMlocatorDiv" class="roundedMessage ui-corner-all" style="display: block; padding-top: 5px !important;">
+ <div id="mStdMlocatorDiv" class="roundedMessage" style="display: block; padding-top: 5px !important;">
 	<div style="font-weight: bold; color: rgb(46, 110, 158);" id="mStdMlocatorSubtestGridHeading"> 
 		Locator Test
 		<img src="/SessionWeb/resources/images/questionmark.jpg" onmouseover="showLocatorMessage(event);" onmouseout="hideLocatorMessage();" id="mStdMlocatorSubtestGridToolTip"> 
@@ -76,6 +76,17 @@
 		
 	</div>
  </div>
+ 
+ 	<div id="subtestHeading" style="font-weight: bold; color: rgb(46, 110, 158); padding-bottom: 2px; padding-top: 5px;"> 
+		<span id="SubtestInfoForTabe"> Subtest Details </span>
+	</div>
+	<div id="SubtestInfo" style="padding-bottom: 5px; padding-top: 2px;">
+		<span id="SubtestInfoForTabe"> <lb:label key="register.student.manifest.tabe.msg" /></span>
+		<span id="SubtestInfoForTabeAdaptive"> <lb:label key="register.student.manifest.tabeadaptive.msg" /> </span>
+	</div>
+ 
+ 
+ 
 <div id="subtestTableDiv">
 <table class="layout ">
 	<tbody>
@@ -190,6 +201,7 @@
 </table>
 
 </div>
+	</div>
 <div style="padding: 10px;">
 <center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
 	onclick=" javascript:validateAndScheduleStudent('modifyTestPopup');return false;" class="ui-widget-header" style="width: 60px">&nbsp;
