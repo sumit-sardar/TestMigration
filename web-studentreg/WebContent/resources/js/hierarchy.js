@@ -642,7 +642,7 @@ function populateReportingStudentGrid() {
 					 	width: '300px',
 					 	modal: true,
 						closeOnEscape: false,
-					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
 					 	});
 			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
 			}).jqGrid('navSeparatorAdd',"#studentRegistrationPager",{position: "first"
