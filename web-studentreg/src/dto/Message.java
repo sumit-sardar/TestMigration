@@ -20,7 +20,7 @@ public class Message implements java.io.Serializable
     public static final String INVALID_DATE  = "Please re-select valid month, day, and year.";
 
     public static final String ADD_TITLE      = "Add Student";
-    public static final String ADD_SUCCESSFUL = "Student has been successfully added into your organization.";
+    public static final String ADD_SUCCESSFUL = "Student has been successfully added into your group.";
     public static final String ADD_ERROR = "Failed to create this student.";
 
     public static final String EDIT_TITLE      = "Edit Student";
