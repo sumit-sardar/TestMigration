@@ -1182,3 +1182,7 @@
 	    legendDiv.style.display = "block";
 	    htimer = setTimeout("hideLocatorMessage()", 10000);
 	}
+	
+	function getNumberSelectedSubtests() {
+		return selectedSubtests.length;
+	}

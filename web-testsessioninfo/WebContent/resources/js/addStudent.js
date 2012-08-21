@@ -331,9 +331,10 @@ function populateSelectStudentGrid() {
 		   	}
 		   	else {  
 		   		licenseInfo = obj.rows[0].cell;
+		   		licenseInfo[3] = getNumberSelectedSubtests();
 		   		licenseInfoMap.put(licenseInfo[0], licenseInfo[4]);
 		   	}
-		   	
+		   	 
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
@@ -1556,7 +1557,7 @@ function calculateLicenseUsedPercentForOrgNode(usedLicenses, availableLicense) {
 function showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense) {
 	var licenseNeeded = licenseUsed - availableLicense; 
 	var licenseTitle = orgNodeName + " has insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
-	var licenseText = "Please reduce number of students and save the session and get more licenses then come back to add more students. Get it?";
+	var licenseText = "Please reduce number of students and save the session and get more licenses then come back to add more students.";
 	setMessage("Exceeds Licenses Available", licenseTitle, "errorMessage", licenseText);       
 	$('#displayMessage').show();
 }

@@ -79,6 +79,7 @@ import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.testSessionInfo.data.SubtestVO;
+import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
@@ -112,6 +113,7 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
 import com.ctb.control.db.OrgNode;
+import com.ctb.control.db.ProductBean;
 
 
 
@@ -605,7 +607,6 @@ public class SessionOperationController extends PageFlowController {
                      if (!"".equals(acknowledgmentsURL))
                          this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
                  }
-            	
             }
     
             Gson gson = new Gson();
@@ -2610,7 +2611,6 @@ public class SessionOperationController extends PageFlowController {
 			base.setAccomodationMap(accomodationMap);
 			
 			// get licenses
-			/*
 			if (this.hasLicenseConfig) {
 				CustomerLicense[] customerLicenses = getCustomerLicenses(); 
 				if ((customerLicenses != null) && (customerLicenses.length > 0)) {
@@ -2624,14 +2624,13 @@ public class SessionOperationController extends PageFlowController {
 					cells[0] = selectedOrgNodeId.toString();
 					cells[1] = n.getOrgNodeName();
 					cells[2] = cl.getSubtestModel();
-					cells[3] = "3";	// number of scheduled subtests
+					cells[3] = "1";	
 					cells[4] = available.toString();
 					row.setCell(cells);			
 					rowList.add(row);
 					base.setRows(rowList);
 				}
 			}
-			*/
 			
 			Gson gson = new Gson();
 			json = gson.toJson(base);
@@ -2654,7 +2653,7 @@ public class SessionOperationController extends PageFlowController {
 		return null;
 
 	}
-    	
+    
     /**
      * getLicenseQuantitiesByOrg
      */    
