@@ -676,7 +676,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	     */    
 	    @Jpf.Action(forwards = { 
 	    		@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-	    		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+	    		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+	    		@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	    })   
 	    protected Forward assessments()
 	    {
@@ -687,6 +688,23 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	    	return new Forward(forwardName);	    
 	    }
 
+	    /**
+	     * STUDENT REGISTRATION actions
+	     */
+	    @Jpf.Action()
+	    protected Forward assessments_studentRegistrationLink()
+	    {
+	        try
+	        {
+	        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+	        	getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+	    }
 
 	    @Jpf.Action()
 	    protected Forward assessments_sessionsLink()
