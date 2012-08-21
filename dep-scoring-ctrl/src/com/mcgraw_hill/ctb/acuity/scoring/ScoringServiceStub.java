@@ -106,7 +106,7 @@
      */
     public ScoringServiceStub(org.apache.axis2.context.ConfigurationContext configurationContext) throws org.apache.axis2.AxisFault {
         
-                    this(configurationContext,"http://151.108.140.171/bredexsoap/services/ScoringService.ScoringServiceHttpSoap12Endpoint/" );
+                    this(configurationContext,"http://localhost/host/services/ScoringService.ScoringServiceHttpSoap12Endpoint/" );
                 
     }
 
@@ -115,7 +115,7 @@
      */
     public ScoringServiceStub() throws org.apache.axis2.AxisFault {
         
-                    this("http://151.108.140.171/bredexsoap/services/ScoringService.ScoringServiceHttpSoap12Endpoint/" );
+                    this("http://localhost/host/services/ScoringService.ScoringServiceHttpSoap12Endpoint/" );
                 
     }
 
@@ -180,8 +180,6 @@
 
         // add the message contxt to the operation client
         _operationClient.addMessageContext(_messageContext);
-        
-        System.out.println("Request XML ******************" + _messageContext.getEnvelope().toString());
 
         //execute the operation client
         _operationClient.execute(true);
@@ -429,7 +427,7 @@
         }
         return false;
     }
-     //http://151.108.140.171/bredexsoap/services/ScoringService.ScoringServiceHttpSoap12Endpoint/
+     //http://localhost/host/services/ScoringService.ScoringServiceHttpSoap12Endpoint/
         public static class ProcessStudentScoreResponse
         implements org.apache.axis2.databinding.ADBBean{
         
@@ -6912,6 +6910,51 @@
         
 
                         /**
+                        * field for CompleteContArea
+                        */
+
+                        
+                                    protected boolean localCompleteContArea ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localCompleteContAreaTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCompleteContArea(){
+                               return localCompleteContArea;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CompleteContArea
+                               */
+                               public void setCompleteContArea(boolean param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (false) {
+                                           localCompleteContAreaTracker = true;
+                                              
+                                       } else {
+                                          localCompleteContAreaTracker = true;
+                                       }
+                                   
+                                            this.localCompleteContArea=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for ContentAreaId
                         */
 
@@ -7666,6 +7709,88 @@
                                }
                             
 
+                        /**
+                        * field for SubtestNames
+                        * This was an Array!
+                        */
+
+                        
+                                    protected java.lang.String[] localSubtestNames ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localSubtestNamesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String[]
+                           */
+                           public  java.lang.String[] getSubtestNames(){
+                               return localSubtestNames;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for SubtestNames
+                               */
+                              protected void validateSubtestNames(java.lang.String[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param SubtestNames
+                              */
+                              public void setSubtestNames(java.lang.String[] param){
+                              
+                                   validateSubtestNames(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localSubtestNamesTracker = true;
+                                          } else {
+                                             localSubtestNamesTracker = true;
+                                                 
+                                          }
+                                      
+                                      this.localSubtestNames=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param java.lang.String
+                             */
+                             public void addSubtestNames(java.lang.String param){
+                                   if (localSubtestNames == null){
+                                   localSubtestNames = new java.lang.String[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localSubtestNamesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localSubtestNames);
+                               list.add(param);
+                               this.localSubtestNames =
+                             (java.lang.String[])list.toArray(
+                            new java.lang.String[list.size()]);
+
+                             }
+                             
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -7762,7 +7887,36 @@
 
                
                    }
-                if (localContentAreaIdTracker){
+                if (localCompleteContAreaTracker){
+                                    namespace = "http://vo.scoring.terranova.mhdigitallearning.com/xsd";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"completeContArea", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"completeContArea");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("completeContArea");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCompleteContArea));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localContentAreaIdTracker){
                                     namespace = "http://vo.scoring.terranova.mhdigitallearning.com/xsd";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -8269,7 +8423,93 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localSubtestNamesTracker){
+                             if (localSubtestNames!=null) {
+                                   namespace = "http://vo.scoring.terranova.mhdigitallearning.com/xsd";
+                                   boolean emptyNamespace = namespace == null || namespace.length() == 0;
+                                   prefix =  emptyNamespace ? null : xmlWriter.getPrefix(namespace);
+                                   for (int i = 0;i < localSubtestNames.length;i++){
+                                        
+                                            if (localSubtestNames[i] != null){
+                                        
+                                                if (!emptyNamespace) {
+                                                    if (prefix == null) {
+                                                        java.lang.String prefix2 = generatePrefix(namespace);
+
+                                                        xmlWriter.writeStartElement(prefix2,"subtestNames", namespace);
+                                                        xmlWriter.writeNamespace(prefix2, namespace);
+                                                        xmlWriter.setPrefix(prefix2, namespace);
+
+                                                    } else {
+                                                        xmlWriter.writeStartElement(namespace,"subtestNames");
+                                                    }
+
+                                                } else {
+                                                    xmlWriter.writeStartElement("subtestNames");
+                                                }
+
+                                            
+                                                        xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSubtestNames[i]));
+                                                    
+                                                xmlWriter.writeEndElement();
+                                              
+                                                } else {
+                                                   
+                                                           // write null attribute
+                                                            namespace = "http://vo.scoring.terranova.mhdigitallearning.com/xsd";
+                                                            if (! namespace.equals("")) {
+                                                                prefix = xmlWriter.getPrefix(namespace);
+
+                                                                if (prefix == null) {
+                                                                    prefix = generatePrefix(namespace);
+
+                                                                    xmlWriter.writeStartElement(prefix,"subtestNames", namespace);
+                                                                    xmlWriter.writeNamespace(prefix, namespace);
+                                                                    xmlWriter.setPrefix(prefix, namespace);
+
+                                                                } else {
+                                                                    xmlWriter.writeStartElement(namespace,"subtestNames");
+                                                                }
+
+                                                            } else {
+                                                                xmlWriter.writeStartElement("subtestNames");
+                                                            }
+                                                            writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                            xmlWriter.writeEndElement();
+                                                       
+                                                }
+
+                                   }
+                             } else {
+                                 
+                                         // write the null attribute
+                                        // write null attribute
+                                            java.lang.String namespace2 = "http://vo.scoring.terranova.mhdigitallearning.com/xsd";
+                                            if (! namespace2.equals("")) {
+                                                java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                                if (prefix2 == null) {
+                                                    prefix2 = generatePrefix(namespace2);
+
+                                                    xmlWriter.writeStartElement(prefix2,"subtestNames", namespace2);
+                                                    xmlWriter.writeNamespace(prefix2, namespace2);
+                                                    xmlWriter.setPrefix(prefix2, namespace2);
+
+                                                } else {
+                                                    xmlWriter.writeStartElement(namespace2,"subtestNames");
+                                                }
+
+                                            } else {
+                                                xmlWriter.writeStartElement("subtestNames");
+                                            }
+
+                                           // write the nil attribute
+                                           writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                           xmlWriter.writeEndElement();
+                                    
                              }
+
+                        }
                     xmlWriter.writeEndElement();
                
 
@@ -8431,7 +8671,13 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localContentAreaIdTracker){
+                 if (localCompleteContAreaTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd",
+                                                                      "completeContArea"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCompleteContArea));
+                            } if (localContentAreaIdTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd",
                                                                       "contentAreaId"));
                                  
@@ -8546,7 +8792,34 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSem));
+                            } if (localSubtestNamesTracker){
+                            if (localSubtestNames!=null){
+                                  for (int i = 0;i < localSubtestNames.length;i++){
+                                      
+                                         if (localSubtestNames[i] != null){
+                                          elementList.add(new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd",
+                                                                              "subtestNames"));
+                                          elementList.add(
+                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSubtestNames[i]));
+                                          } else {
+                                             
+                                                    elementList.add(new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd",
+                                                                              "subtestNames"));
+                                                    elementList.add(null);
+                                                
+                                          }
+                                      
+
+                                  }
+                            } else {
+                              
+                                    elementList.add(new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd",
+                                                                              "subtestNames"));
+                                    elementList.add(null);
+                                
                             }
+
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -8622,8 +8895,37 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list14 = new java.util.ArrayList();
+                        java.util.ArrayList list15 = new java.util.ArrayList();
                     
+                        java.util.ArrayList list18 = new java.util.ArrayList();
+                    
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd","completeContArea").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCompleteContArea(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -9030,14 +9332,14 @@
                                     
                                                           nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                                           if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                                              list14.add(null);
+                                                              list15.add(null);
                                                               reader.next();
                                                           } else {
-                                                        list14.add(PrimaryObjScore.Factory.parse(reader));
+                                                        list15.add(PrimaryObjScore.Factory.parse(reader));
                                                                 }
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone14 = false;
-                                                        while(!loopDone14){
+                                                        boolean loopDone15 = false;
+                                                        while(!loopDone15){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -9048,19 +9350,19 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone14 = true;
+                                                                loopDone15 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd","primaryObjScores").equals(reader.getName())){
                                                                     
                                                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                                                          list14.add(null);
+                                                                          list15.add(null);
                                                                           reader.next();
                                                                       } else {
-                                                                    list14.add(PrimaryObjScore.Factory.parse(reader));
+                                                                    list15.add(PrimaryObjScore.Factory.parse(reader));
                                                                         }
                                                                 }else{
-                                                                    loopDone14 = true;
+                                                                    loopDone15 = true;
                                                                 }
                                                             }
                                                         }
@@ -9069,7 +9371,7 @@
                                                         object.setPrimaryObjScores((PrimaryObjScore[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 PrimaryObjScore.class,
-                                                                list14));
+                                                                list15));
                                                             
                               }  // End of if for expected property start element
                                 
@@ -9137,6 +9439,65 @@
                                         
                                                object.setSem(java.lang.Long.MIN_VALUE);
                                            
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd","subtestNames").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    
+                                              nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                              if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                  list18.add(null);
+                                                       
+                                                  reader.next();
+                                              } else {
+                                            list18.add(reader.getElementText());
+                                            }
+                                            //loop until we find a start element that is not part of this array
+                                            boolean loopDone18 = false;
+                                            while(!loopDone18){
+                                                // Ensure we are at the EndElement
+                                                while (!reader.isEndElement()){
+                                                    reader.next();
+                                                }
+                                                // Step out of this element
+                                                reader.next();
+                                                // Step to next element event.
+                                                while (!reader.isStartElement() && !reader.isEndElement())
+                                                    reader.next();
+                                                if (reader.isEndElement()){
+                                                    //two continuous end elements means we are exiting the xml structure
+                                                    loopDone18 = true;
+                                                } else {
+                                                    if (new javax.xml.namespace.QName("http://vo.scoring.terranova.mhdigitallearning.com/xsd","subtestNames").equals(reader.getName())){
+                                                         
+                                                          nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                                          if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                              list18.add(null);
+                                                                   
+                                                              reader.next();
+                                                          } else {
+                                                        list18.add(reader.getElementText());
+                                                        }
+                                                    }else{
+                                                        loopDone18 = true;
+                                                    }
+                                                }
+                                            }
+                                            // call the converter utility  to convert and set the array
+                                            
+                                                    object.setSubtestNames((java.lang.String[])
+                                                        list18.toArray(new java.lang.String[list18.size()]));
+                                                
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
                                     }
                                   
                             while (!reader.isStartElement() && !reader.isEndElement())
