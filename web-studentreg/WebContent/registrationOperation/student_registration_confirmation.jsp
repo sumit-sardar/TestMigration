@@ -42,6 +42,20 @@
 
 
 <!-- student section -->
+	<div id="subtestWarnMsg" style="clear: both; width: 98%; text-align: left; display: none;" class= "roundedMessage ui-corner-all">
+		<table>
+			<tr>
+				<td width="18" valign="middle">
+				<div><img
+					src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+				</div>
+				</td>
+				<td valign="middle">
+					<div id="subtestWarnMsgcontent"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<p>
 	<div id="StudentDetail">
 		<table align="center" width="95%">

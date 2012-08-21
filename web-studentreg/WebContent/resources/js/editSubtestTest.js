@@ -37,6 +37,7 @@
 	var levelOptions = new Array();
 	var recomendedLevelMap = {};
 	var locatorSessionInfo ="";
+	var subtestWarningMsg="";
 	
 	var displayAccessCodeOnTicket = false;
 	function openModifyTestPopup(element){
@@ -1014,6 +1015,7 @@
 	
 	function validateAndScheduleStudent() {
 	     var tmpSelectedSubtestsMsm = new Array();
+	     subtestWarningMsg = "";
 	     var validSubtest = validateSubtest(tmpSelectedSubtestsMsm);
 	     if(validSubtest){
 	        //closePopUp('modifyTestPopup');
@@ -1083,6 +1085,23 @@
 	    	isValid = false;
          	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#mathLevelMsg").val());
 	    }
+	    
+	    var currentMessage = "";
+	        if ( ! mathSubtests(subtests)) {
+	            currentMessage = $("#mathSubtestsMsg").val();
+	        }
+	        if ( ! scoreCalculatable(subtests)) {
+	            if (currentMessage == "")
+	                currentMessage = $("#scoreCalulatableMsg").val();
+	            // just warning, not error
+	            else {
+	                currentMessage += "<br/>";
+	                currentMessage += $("#scoreCalulatableMsg").val();
+	                // just warning, not error
+	            }
+	        }
+	     subtestWarningMsg = currentMessage;
+	    
 	    return isValid;
 	}
 	
@@ -1092,8 +1111,22 @@
 		if (subtests == undefined || subtests == null || subtests.length == 0) {
 	        isValid = false;
         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
-	    } 	
-	 return isValid;
+	    } 
+	    
+	    var currentMessage = "";
+	   	if ( ! mathSubtests_TABE_ADAPTIVE(subtests)) {
+	    	currentMessage = $("#mathSubtestsMsg").val();
+	    }
+	    if ( ! scoreCalculatable_TABE_ADAPTIVE(subtests)) {
+	    	if (currentMessage == "")
+	        	currentMessage = $("#scoreCalulatableMsg").val();  // just warning, not error
+	        else {
+	            currentMessage += "<br/>";
+	           	currentMessage += $("#scoreCalulatableMsg").val();  // just warning, not error
+	       }
+	    }
+	    subtestWarningMsg = currentMessage;	
+	 	return isValid;
 	}
 	
 	function languageDependency(subtests) {
@@ -1180,6 +1213,13 @@
         }
         return true;
     }
+    
+    function scoreCalculatable(subtests) {
+		if (presented(READING, subtests) && presented(LANGUAGE, subtests) && presented(MATH_COMPUTATION, subtests) && presented(APPLIED_MATH, subtests)) {
+	        return true;
+	    }
+	    return false;
+	}
     
     function scoreCalculatable_TABE_ADAPTIVE(subtests) {
 	    if (presented(TABE_ADAPTIVE_READING, subtests) && presented(TABE_ADAPTIVE_LANGUAGE, subtests) && presented(TABE_ADAPTIVE_MATH_COMPUTATION, subtests) && presented(TABE_ADAPTIVE_APPLIED_MATH, subtests)) {
@@ -1272,6 +1312,15 @@
 		}
 	    
 	   function populateStudConfirmation(data){
+	   
+	    if(subtestWarningMsg!=undefined && subtestWarningMsg != null && subtestWarningMsg.length>0) {
+			$("#subtestWarnMsg").show();
+			$("#subtestWarnMsgcontent").html(subtestWarningMsg);
+	    } else {
+	    	$("#subtestWarnMsg").hide();
+	    	$("#subtestWarnMsgcontent").html("");
+	    }
+	   
 	     $("#dstudentName").text(data.studentName);
 	    
 	     if(data.enforceBreak=="No"){
