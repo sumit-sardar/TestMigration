@@ -65,7 +65,7 @@
 <div id="searchInSessionPopupByKeyword"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div>
-		<p><lb:label key="ses.search.info.message"/></p>
+		<p><lb:label key="stu.search.info.message"/></p>
 	</div>
 	<div class="searchInputBoxContainer" id="searchInputBoxContainerPopup">
 		<center>
