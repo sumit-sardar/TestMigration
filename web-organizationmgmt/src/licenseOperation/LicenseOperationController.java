@@ -599,7 +599,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 	 */    
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
-			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+			@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+			@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
 	})   
 	protected Forward assessments()
 	{
@@ -610,7 +611,24 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		return new Forward(forwardName);	    
 	}
 
-
+	/**
+     * STUDENT REGISTRATION actions
+     */
+    @Jpf.Action()
+    protected Forward assessments_studentRegistrationLink()
+    {
+        try
+        {
+        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+        	getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
 	@Jpf.Action()
 	protected Forward assessments_sessionsLink()
 	{
@@ -940,6 +958,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 	{
         CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
         boolean adminUser = isAdminUser();
+        boolean adminCoordinatorUser = isAdminCoordinatotUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         
@@ -966,6 +985,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));
      	
      	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
+     	
+     	this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));
 	}
 
     private Boolean userHasReports() 
@@ -989,6 +1010,12 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
+    
+    private boolean isAdminCoordinatotUser() //For Student Registration
+	{               
+		String roleName = this.user.getRole().getRoleName();        
+		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+	}
     
     private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
     {               

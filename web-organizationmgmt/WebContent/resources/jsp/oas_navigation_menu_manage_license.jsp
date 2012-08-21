@@ -10,6 +10,11 @@
         				<a href="#" id="programStatusLink" onClick="verifyEditLicenseAndGotoMenuAction('assessments.do', 'programStatusLink');"><lb:label key="org.menu.programStatus" /></a>
         			 </li>
         			 </c:if>
+        			 <c:if test="${sessionScope.hasRapidRagistrationConfigured}">
+        			 <li>
+        				<a href="#" id="studentRegistrationLink" onClick="gotoMenuAction('assessments.do', 'studentRegistrationLink');"><lb:label key="student.registration.menu" /></a>
+        			 </li>
+        			 </c:if>
         		</ul>
         	</li>
         	<li id="organizations" class="simpleMenu"><a class="tab" href="#"><lb:label key="org.menu.orgs" /></a>        	
