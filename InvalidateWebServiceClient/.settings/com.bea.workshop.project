@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-project guid="InvalidateWebServiceClient_13944080688_24d3dfc8367e3001" version="5">
+	<web-app guid="InvalidateWebServiceClient_13944080688_490775e5da490b5">
+		<web-app-type>com.m7.webapp.java</web-app-type>
+		<folder-mapping project-name="InvalidateWebServiceClient" project-uri="WebContent" web-app-uri="/"/>
+	</web-app>
+	<properties>
+		<property name="validation.compile" value="true"/>
+		<property name="validation.missingFile" value="true"/>
+		<property name="validation.unresolvedVar" value="false"/>
+		<property name="validation" value="true"/>
+		<property name="taglib.downloadRemote" value="true"/>
+		<property name="validation.resources" value="true"/>
+		<property name="validation.unresolvedType" value="true"/>
+		<property name="validation.compile.jspQuotation" value="false"/>
+	</properties>
+</web-project>

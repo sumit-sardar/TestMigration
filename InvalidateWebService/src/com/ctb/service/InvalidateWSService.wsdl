@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<s0:definitions name="InvalidateWSServiceDefinitions" targetNamespace="http://com/ctb/service" xmlns="" xmlns:s0="http://schemas.xmlsoap.org/wsdl/" xmlns:s1="http://com/ctb/service" xmlns:s2="http://schemas.xmlsoap.org/wsdl/soap/">
+  <s0:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://com/ctb/service" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="java:com.ctb.dto"/>
+      <xs:element name="validateClass">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="details" type="java:StudentValidationDetails" xmlns:java="java:com.ctb.dto"/>
+            <xs:element name="secureUser" type="java:SecureUser" xmlns:java="java:com.ctb.dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="validateClassResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="java:com.ctb.dto" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="SecureUser">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="Password" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="UserId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="UserName" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="UserType" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="StudentValidationDetails">
+        <xs:sequence>
+          <xs:element minOccurs="1" name="SessionId" nillable="false" type="xs:long"/>
+          <xs:element minOccurs="1" name="StudentId" nillable="false" type="xs:long"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subtest" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </s0:types>
+  <s0:message name="validateClass">
+    <s0:part element="s1:validateClass" name="parameters"/>
+  </s0:message>
+  <s0:message name="validateClassResponse">
+    <s0:part element="s1:validateClassResponse" name="parameters"/>
+  </s0:message>
+  <s0:portType name="InvalidateWS">
+    <s0:operation name="validateClass" parameterOrder="parameters">
+      <s0:input message="s1:validateClass"/>
+      <s0:output message="s1:validateClassResponse"/>
+    </s0:operation>
+  </s0:portType>
+  <s0:binding name="InvalidateWSServiceSoapBinding" type="s1:InvalidateWS">
+    <s2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <s0:operation name="validateClass">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+  </s0:binding>
+  <s0:service name="InvalidateWSService">
+    <s0:port binding="s1:InvalidateWSServiceSoapBinding" name="InvalidateWSSoapPort">
+      <s2:address location="http://localhost:7001/InvalidateWebService/InvalidateWS"/>
+    </s0:port>
+  </s0:service>
+</s0:definitions>
