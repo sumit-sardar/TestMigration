@@ -78,7 +78,7 @@
  </div>
  
  	<div id="subtestHeading" style="font-weight: bold; color: rgb(46, 110, 158); padding-bottom: 2px; padding-top: 5px;"> 
-		<span id="SubtestInfoForTabe"> Subtest Details </span>
+		<span id="SubtestInfoTitle"> Subtest Details </span>
 	</div>
 	<div id="SubtestInfo" style="padding-bottom: 5px; padding-top: 2px;">
 		<span id="SubtestInfoForTabe"> <lb:label key="register.student.manifest.tabe.msg" /></span>
