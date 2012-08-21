@@ -258,7 +258,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 						closeOnEscape: false,
 					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
 					 	});
-			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
+			    }, position: "one-before-last", title:"Search Student", cursor: "pointer"
 			}).jqGrid('navSeparatorAdd',"#pager2",{position: "first"
 			});
 			

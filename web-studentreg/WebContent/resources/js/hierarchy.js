@@ -793,7 +793,7 @@ function populateRegistrationSessionGrid() {
 					 	width: '300px',
 					 	modal: true,
 						closeOnEscape: false,
-					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").show();}
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
 					 	});
 			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
 			}).jqGrid('navSeparatorAdd',"#sessionRegistrationPager",{position: "first"
