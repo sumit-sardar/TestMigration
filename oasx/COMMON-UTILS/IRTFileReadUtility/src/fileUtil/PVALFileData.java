@@ -1,7 +1,9 @@
 package fileUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PVALFileData implements Cloneable {
 
@@ -12,6 +14,10 @@ public class PVALFileData implements Cloneable {
 	private String content;
 	private String normsGroup;
 	private List<CodeValue> dataList = new ArrayList<CodeValue>();
+	private Map<String,Integer> objItemCount = new HashMap<String,Integer>();
+	private Map<String,String> itemObjectiveMap = new HashMap<String,String>();
+	private Map<String,Double> objectiveItemSumMap = new HashMap<String,Double>();
+	private Map<String,Integer> objectiveMap = new HashMap<String,Integer>();
 	
 	public String getNormsGroup() {
 		return normsGroup;
@@ -97,5 +103,29 @@ public class PVALFileData implements Cloneable {
 			pvalFileData.setDataList(valueList);
 		}
 		return pvalFileData;
+	}
+	public Map<String, Integer> getObjItemCount() {
+		return objItemCount;
+	}
+	public void setObjItemCount(Map<String, Integer> objItemCount) {
+		this.objItemCount = objItemCount;
+	}
+	public Map<String, String> getItemObjectiveMap() {
+		return itemObjectiveMap;
+	}
+	public void setItemObjectiveMap(Map<String, String> itemObjectiveMap) {
+		this.itemObjectiveMap = itemObjectiveMap;
+	}
+	public Map<String, Double> getObjectiveItemSumMap() {
+		return objectiveItemSumMap;
+	}
+	public void setObjectiveItemSumMap(Map<String, Double> objectiveItemSumMap) {
+		this.objectiveItemSumMap = objectiveItemSumMap;
+	}
+	public Map<String, Integer> getObjectiveMap() {
+		return objectiveMap;
+	}
+	public void setObjectiveMap(Map<String, Integer> objectiveMap) {
+		this.objectiveMap = objectiveMap;
 	}
 }

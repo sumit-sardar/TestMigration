@@ -134,7 +134,7 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{
+				{/*
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
@@ -183,7 +183,7 @@ public class FileUtil {
 						successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					}
 					
-				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
+				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
 					
 					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
@@ -219,7 +219,7 @@ public class FileUtil {
 						
 						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
 					}
-				} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -1016,12 +1016,23 @@ public class FileUtil {
 		
 		List<PVALFileData> pvalFileDataList = readPVALFile(filePath);
 		for(PVALFileData pvalFileData: pvalFileDataList) {
-			List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()));
-			Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList);
 			
+			List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
+					pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+			Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+			Map<String, Double> objSumMap = new HashMap<String, Double>();
+			Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
 			for(CodeValue codeVal : pvalFileData.getDataList()) {
 				codeVal.setItemId(itemMap.get(codeVal.getCode()));
+				String objName = itemObjMap.get(codeVal.getItemId());
+				if(objSumMap.containsKey(objName)) {
+					Double oldValue = objSumMap.get(objName);
+					objSumMap.put(objName, oldValue + codeVal.getValue());
+				} else {
+					objSumMap.put(objName, codeVal.getValue());
+				}
 			}
+			pvalFileData.setObjectiveItemSumMap(objSumMap);
 		}
 		System.out.println("Total " + pvalFileDataList.size());
 		return pvalFileDataList;

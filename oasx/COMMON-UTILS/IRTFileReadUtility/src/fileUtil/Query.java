@@ -18,9 +18,27 @@ public class Query {
 													  "AND isa.item_set_type = 'TD' " +
 													  "AND itemset.item_set_id = isa.item_set_id " +
 													  "AND itemset.subject = ? " + 
-													  "AND tc.product_id = ?";
+													  "AND tc.product_id = ? " +
+													  "AND itemset.item_set_level = ? " +
+													  "AND itemset.sample = 'F'";
 	
-	public static String ITEMS_FROM_ITEM_SET = "SELECT isi.item_id, isi.item_sort_order" +
-													  " FROM item_set_item isi WHERE isi.item_set_id IN (#)";
+	public static String ITEMS_FROM_ITEM_SET = " SELECT ISITD.ITEM_ID AS ITEM_ID, "
+			+ "ISITD.ITEM_SORT_ORDER AS ITEM_SORT_ORDER, "
+			+ "ISET.ITEM_SET_ID AS OBJECTIVE_ID, "
+			+ "ISET.ITEM_SET_NAME AS OBJECTIVE_NAME"
+			+ "FROM ITEM_SET_ITEM     ISI, "
+			+ "ITEM_SET_ANCESTOR ISA, "
+			+ "ITEM_SET          ISET, "
+			+ "ITEM_SET_CATEGORY ISC, "
+			+ "PRODUCT           PROD, "
+			+ "ITEM_SET_ITEM     ISITD "
+			+ "WHERE ISITD.ITEM_SET_ID IN (#) "
+			+ "AND ISI.ITEM_ID = ISITD.ITEM_ID "
+			+ "AND ISI.ITEM_SET_ID = ISA.ITEM_SET_ID "
+			+ "AND ISA.ANCESTOR_ITEM_SET_ID = ISET.ITEM_SET_ID "
+			+ "AND ISET.ITEM_SET_TYPE = 'RE' "
+			+ "AND ISET.ITEM_SET_CATEGORY_ID = ISC.ITEM_SET_CATEGORY_ID "
+			+ "AND ITEM_SET_CATEGORY_LEVEL = PROD.SCORING_ITEM_SET_LEVEL "
+			+ "AND PROD.PRODUCT_ID = 3720 " + "ORDER BY ISITD.ITEM_SORT_ORDER";
 
 }
