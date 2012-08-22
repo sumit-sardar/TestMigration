@@ -1016,23 +1016,26 @@ public class FileUtil {
 		
 		List<PVALFileData> pvalFileDataList = readPVALFile(filePath);
 		for(PVALFileData pvalFileData: pvalFileDataList) {
-			
-			List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
-					pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
-			Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
-			Map<String, Double> objSumMap = new HashMap<String, Double>();
-			Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
-			for(CodeValue codeVal : pvalFileData.getDataList()) {
-				codeVal.setItemId(itemMap.get(codeVal.getCode()));
-				String objName = itemObjMap.get(codeVal.getItemId());
-				if(objSumMap.containsKey(objName)) {
-					Double oldValue = objSumMap.get(objName);
-					objSumMap.put(objName, oldValue + codeVal.getValue());
-				} else {
-					objSumMap.put(objName, codeVal.getValue());
+			if(!(pvalFileData.getContent() == null || pvalFileData.getGrade() == null || pvalFileData.getLevel() == null)) {
+				List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
+						pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+				Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+				Map<String, Double> objSumMap = new HashMap<String, Double>();
+				Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
+				for(CodeValue codeVal : pvalFileData.getDataList()) {
+					if(itemMap.get(codeVal.getCode()) != null) {
+						codeVal.setItemId(itemMap.get(codeVal.getCode()));
+						String objName = itemObjMap.get(codeVal.getItemId());
+						if(objSumMap.containsKey(objName)) {
+							Double oldValue = objSumMap.get(objName);
+							objSumMap.put(objName, oldValue + codeVal.getValue());
+						} else {
+							objSumMap.put(objName, codeVal.getValue());
+						}
+					}
 				}
+				pvalFileData.setObjectiveItemSumMap(objSumMap);
 			}
-			pvalFileData.setObjectiveItemSumMap(objSumMap);
 		}
 		System.out.println("Total " + pvalFileDataList.size());
 		return pvalFileDataList;

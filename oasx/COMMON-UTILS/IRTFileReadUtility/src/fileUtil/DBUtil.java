@@ -28,45 +28,46 @@ public class DBUtil {
 			ps = con.prepareStatement(Query.insertScoreLookup);
 			ps1 = con.prepareStatement(Query.insertScoreLookupItemSet);
 			for(PVALFileData pvalFileData : fileDataList) {
-				if(levels.contains(pvalFileData.getLevel().trim())) {
-					Map<String,Double> sumMap = pvalFileData.getObjectiveItemSumMap();
-					Map<String,Integer> countMap = pvalFileData.getObjItemCount();
-					Map<String,Integer> objIdMap = pvalFileData.getObjectiveMap();
-					for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
-						Long objectiveId = Long.valueOf(objIdMap.get(entry.getKey()));
-						String objectiveName = entry.getKey();
-						Double pVal = sumMap.get(entry.getKey()) / Double.valueOf(countMap.get(entry.getKey()));
-						System.out.println(objIdMap.get(entry.getKey()) + " - " + entry.getKey() + " - " + sumMap.get(entry.getKey()) + " - " + countMap.get(entry.getKey()) + " - " + pVal);
-						String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
-						+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent() + "_" + pvalFileData.getLevel()
-						+ "_" + pvalFileData.getOther();
-						scoreLookupId = scoreLookupId + "_" + objectiveName.substring(0, 2);
-						ps.setString(1, "SCL");
-						ps.setString(2, "OPV");
-						ps.setString(3, scoreLookupId);
-						ps.setInt(4, 0);
-						ps.setDouble(5, pVal);
-						ps.setString(6, pvalFileData.getForm());
-						ps.setString(7, pvalFileData.getLevel());
-						ps.setString(8, pvalFileData.getGrade());
-						ps.setString(9, FileUtil.processContentAreaName(pvalFileData.getContent()));
-						ps.setString(10, FileUtil.processNongroupName(pvalFileData.getNormsGroup()));
-						ps.setString(11, "2011");
-						ps.setString(12, "TERRAB3");
-						ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
-						System.out.println(scoreLookupId);
-						ps.addBatch();
-						//ps.executeUpdate();
-						
-						insertScoreLookupItemSet(ps1, scoreLookupId, objectiveId);
+				if(!(pvalFileData.getContent() == null || pvalFileData.getGrade() == null || pvalFileData.getLevel() == null)) {
+					if(levels.contains(pvalFileData.getLevel().trim())) {
+						Map<String,Double> sumMap = pvalFileData.getObjectiveItemSumMap();
+						Map<String,Integer> countMap = pvalFileData.getObjItemCount();
+						Map<String,Integer> objIdMap = pvalFileData.getObjectiveMap();
+						for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+							Long objectiveId = Long.valueOf(objIdMap.get(entry.getKey()));
+							String objectiveName = entry.getKey();
+							Double pVal = sumMap.get(entry.getKey()) / Double.valueOf(countMap.get(entry.getKey()));
+							System.out.println(objIdMap.get(entry.getKey()) + " - " + entry.getKey() + " - " + sumMap.get(entry.getKey()) + " - " + countMap.get(entry.getKey()) + " - " + pVal);
+							String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
+							+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent() + "_" + pvalFileData.getLevel()
+							+ "_" + pvalFileData.getOther();
+							scoreLookupId = scoreLookupId + "_" + objectiveName.substring(0, 2);
+							ps.setString(1, "SCL");
+							ps.setString(2, "OPV");
+							ps.setString(3, scoreLookupId);
+							ps.setInt(4, 0);
+							ps.setDouble(5, pVal);
+							ps.setString(6, pvalFileData.getForm());
+							ps.setString(7, pvalFileData.getLevel());
+							ps.setString(8, pvalFileData.getGrade());
+							ps.setString(9, FileUtil.processContentAreaName(pvalFileData.getContent()));
+							ps.setString(10, FileUtil.processNongroupName(pvalFileData.getNormsGroup()));
+							ps.setString(11, "2011");
+							ps.setString(12, "TERRAB3");
+							ps.setString(13, FileUtil.getDisplayName(FileUtil.getProductIdFromType(pvalFileData.getOther())));
+							System.out.println(scoreLookupId);
+							ps.addBatch();
+							//ps.executeUpdate();
+							
+							insertScoreLookupItemSet(ps1, scoreLookupId, objectiveId);
+						}
+						ps.executeBatch();
+						ps1.executeBatch();
+						con.commit();
+						SqlUtil.close(ps);
+						SqlUtil.close(ps1);
 					}
-					/*ps.executeBatch();
-					ps1.executeBatch();
-					con.commit();*/
-					SqlUtil.close(ps);
-					SqlUtil.close(ps1);
 				}
-				
 			}
 		} catch(SQLException e) {
 			try {
@@ -159,15 +160,19 @@ public class DBUtil {
 			con = SqlUtil.openOASDBcon();
 			ps = con.prepareStatement(Query.INSERT_ITEM_P_VALUE);
 			for (PVALFileData pvalFileData : dataList) {
-				if(levels.contains(pvalFileData.getLevel().trim())) {
-					for(CodeValue codeVal : pvalFileData.getDataList()) {
-						ps.setString(1, pvalFileData.getForm().trim());
-						ps.setString(2, pvalFileData.getLevel());
-						ps.setString(3, pvalFileData.getGrade());
-						ps.setString(4, codeVal.getItemId());
-						ps.setDouble(5, codeVal.getValue());
-						ps.setString(6, pvalFileData.getNormsGroup());
-						ps.addBatch();
+				if(!(pvalFileData.getContent() == null || pvalFileData.getGrade() == null || pvalFileData.getLevel() == null)) {
+					if(levels.contains(pvalFileData.getLevel().trim())) {
+						for(CodeValue codeVal : pvalFileData.getDataList()) {
+							if(codeVal.getItemId() != null) {
+								ps.setString(1, pvalFileData.getForm().trim());
+								ps.setString(2, pvalFileData.getLevel());
+								ps.setString(3, pvalFileData.getGrade());
+								ps.setString(4, codeVal.getItemId());
+								ps.setDouble(5, codeVal.getValue());
+								ps.setString(6, pvalFileData.getNormsGroup());
+								ps.addBatch();
+							}
+						}
 					}
 				}
 			}
@@ -223,7 +228,8 @@ public class DBUtil {
 			for(String itemSetId : itemSetIdList) {
 				itemSetIds += itemSetId + ",";
 			}
-			ps = con.prepareStatement(Query.ITEMS_FROM_ITEM_SET.replaceAll("#", itemSetIds.substring(1, itemSetIds.length() - 1)));
+			String itemQuery = Query.ITEMS_FROM_ITEM_SET.replaceAll("#", itemSetIds.substring(0, itemSetIds.length() - 1));
+			ps = con.prepareStatement(itemQuery);
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {

@@ -15,10 +15,10 @@ public class InsertFileData {
 			if(writesuccessfulinIRS==true)
 				System.out.println("Files are saved in IRS Database successfully.");
 			*/
-			writesuccessfulinOAS = writeInOASDB(filePath);
-			if(writesuccessfulinOAS == true)
-				System.out.println("Files are saved in OAS Database successfully.");
-			//DBUtil.insertScoreLookup(populatePValue(filePath));
+			//writesuccessfulinOAS = writeInOASDB(filePath);
+			//if(writesuccessfulinOAS == true)
+				//System.out.println("Files are saved in OAS Database successfully.");
+			DBUtil.insertScoreLookup(populatePValue(filePath));
 		} catch(Exception ie) {
 			ie.printStackTrace();
 		}
