@@ -64,11 +64,11 @@ public class DBUtil {
 						ps.executeBatch();
 						ps1.executeBatch();
 						con.commit();
-						SqlUtil.close(ps);
-						SqlUtil.close(ps1);
 					}
 				}
 			}
+			SqlUtil.close(ps);
+			SqlUtil.close(ps1);
 		} catch(SQLException e) {
 			try {
 				con.rollback();
@@ -164,6 +164,7 @@ public class DBUtil {
 					if(levels.contains(pvalFileData.getLevel().trim())) {
 						for(CodeValue codeVal : pvalFileData.getDataList()) {
 							if(codeVal.getItemId() != null) {
+								System.out.println(pvalFileData.getForm().trim() + " - " + pvalFileData.getLevel() + " - " + pvalFileData.getGrade() + " - " + codeVal.getItemId() + " - " + codeVal.getValue() + " - " + pvalFileData.getNormsGroup());
 								ps.setString(1, pvalFileData.getForm().trim());
 								ps.setString(2, pvalFileData.getLevel());
 								ps.setString(3, pvalFileData.getGrade());
@@ -229,6 +230,7 @@ public class DBUtil {
 				itemSetIds += itemSetId + ",";
 			}
 			String itemQuery = Query.ITEMS_FROM_ITEM_SET.replaceAll("#", itemSetIds.substring(0, itemSetIds.length() - 1));
+			System.out.println(itemQuery);
 			ps = con.prepareStatement(itemQuery);
 			rs = ps.executeQuery();
 			
