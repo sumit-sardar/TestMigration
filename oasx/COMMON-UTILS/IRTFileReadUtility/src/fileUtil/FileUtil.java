@@ -951,6 +951,7 @@ public class FileUtil {
 			for(File file: files) {
 				String fileName = file.getName();
 				if(fileName.startsWith("PVAL")) {
+					System.out.println("fileName -> " + fileName);
 					br = new BufferedReader(new FileReader(file));
 					dataList = new ArrayList<CodeValue>();
 					int startIndex = 0;
@@ -1015,26 +1016,30 @@ public class FileUtil {
 	throws CloneNotSupportedException {
 		
 		List<PVALFileData> pvalFileDataList = readPVALFile(filePath);
+		ResourceBundle rb = ResourceBundle.getBundle("config");
+		String levels = rb.getString("file.testLevel");
 		for(PVALFileData pvalFileData: pvalFileDataList) {
 			if(!(pvalFileData.getContent() == null || pvalFileData.getGrade() == null || pvalFileData.getLevel() == null)) {
-				List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
-						pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
-				Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
-				Map<String, Double> objSumMap = new HashMap<String, Double>();
-				Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
-				for(CodeValue codeVal : pvalFileData.getDataList()) {
-					if(itemMap.get(codeVal.getCode()) != null) {
-						codeVal.setItemId(itemMap.get(codeVal.getCode()));
-						String objName = itemObjMap.get(codeVal.getItemId());
-						if(objSumMap.containsKey(objName)) {
-							Double oldValue = objSumMap.get(objName);
-							objSumMap.put(objName, oldValue + codeVal.getValue());
-						} else {
-							objSumMap.put(objName, codeVal.getValue());
+				if(levels.contains(pvalFileData.getLevel().trim())) {
+					List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
+							pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+					Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+					Map<String, Double> objSumMap = new HashMap<String, Double>();
+					Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
+					for(CodeValue codeVal : pvalFileData.getDataList()) {
+						if(itemMap.get(codeVal.getCode()) != null) {
+							codeVal.setItemId(itemMap.get(codeVal.getCode()));
+							String objName = itemObjMap.get(codeVal.getItemId());
+							if(objSumMap.containsKey(objName)) {
+								Double oldValue = objSumMap.get(objName);
+								objSumMap.put(objName, oldValue + codeVal.getValue());
+							} else {
+								objSumMap.put(objName, codeVal.getValue());
+							}
 						}
 					}
+					pvalFileData.setObjectiveItemSumMap(objSumMap);
 				}
-				pvalFileData.setObjectiveItemSumMap(objSumMap);
 			}
 		}
 		System.out.println("Total " + pvalFileDataList.size());
