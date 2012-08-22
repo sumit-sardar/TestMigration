@@ -107,7 +107,7 @@
 		<tr>
 			<td>
 				<div class="ui-widget-header"><lb:label key="stu.label.testSession" /></div>
-				  <div id="StudentTableDetail"> <div>
+				  <div id="StudentTableDetail"> 
 					<table class="sortable" width="100%">
 						<tr class="transparent">
 							<td class="transparent" width="50%">
@@ -160,6 +160,7 @@
 							</td>
 						</tr>
 					</table>
+				 </div>
 				</td>
 			</tr>
 		</table>
@@ -225,12 +226,14 @@
 	<br/>
 	
 	</div>
-	<br/>
-	<div id="StudConfClose">
+
+ </div> 
+	
+	<div id="StudConfClose" style="padding-top: 5px;">
 		<center>
 			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header">
 		</center>
 		<br>
 	</div>	
-</div> 
+</div>
 
