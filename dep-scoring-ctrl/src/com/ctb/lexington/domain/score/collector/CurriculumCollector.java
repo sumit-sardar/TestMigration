@@ -178,16 +178,16 @@ public class CurriculumCollector {
             composites[0].setCompositeType("TERRANOVA COMPOSITE");
             composites[0].setSubject("TV Total Score");
             if("G".equalsIgnoreCase(form)) {
-            	if(level != null && level.indexOf("19") >= 0) {
-	                composites[0].setAssessmentId(new Long(72153));
+            	if(level != null && "19".equals(level)) {
+	                composites[0].setAssessmentId(new Long(87635));
 	                composites[0].setCompositeId(new Long(45));
-	                composites[0].setCompositeNumItems(new Long(80));
-	                composites[0].setCompositePointsPossible(new Long(80));
+	                composites[0].setCompositeNumItems(new Long(126));
+	                composites[0].setCompositePointsPossible(new Long(126));
 	            } else if("18".equals(level)) {
-	                composites[0].setAssessmentId(new Long(72272));
+	                composites[0].setAssessmentId(new Long(87633));
 	                composites[0].setCompositeId(new Long(44));
-	                composites[0].setCompositeNumItems(new Long(86));
-	                composites[0].setCompositePointsPossible(new Long(86));
+	                composites[0].setCompositeNumItems(new Long(136));
+	                composites[0].setCompositePointsPossible(new Long(136));
 	            } else if("17".equals(level)) {
 	                composites[0].setAssessmentId(new Long(87627));
 	                composites[0].setCompositeId(new Long(43));
