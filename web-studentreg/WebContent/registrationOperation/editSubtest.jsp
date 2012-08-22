@@ -29,7 +29,7 @@
 	
  </div>
  
- --><div style="padding-bottom: 5px !important;" class="roundedMessage ui-corner-all">
+ --><div id="editSubtedtinnerDiv" style="padding-bottom: 5px !important;" class="roundedMessage ui-corner-all">
  <div style="clear: both; width: 99.99%; text-align: left;" class= "blueSubHeading">
  			<table class="transparent">
 				<tr class="transparent">
@@ -201,7 +201,7 @@
 </table>
 
 </div>
-	</div>
+</div>
 <div style="padding: 10px;">
 <center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
 	onclick=" javascript:validateAndScheduleStudent('modifyTestPopup');return false;" class="ui-widget-header" style="width: 60px">&nbsp;

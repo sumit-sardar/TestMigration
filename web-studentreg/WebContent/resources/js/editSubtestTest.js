@@ -20,14 +20,9 @@
 	var TABE_ADAPTIVE_MATH_COMPUTATION = "TABE Adaptive Mathematics Computation";
 	var TABE_ADAPTIVE_APPLIED_MATH = "TABE Adaptive Applied Mathematics";
 	var TABE_ADAPTIVE_LANGUAGE = "TABE Adaptive Language";
-	
-	
-	var selectedTestAdminName;
 	var selectedStudentOrgNodeName;
 	var selectedStudentOrgNodeid;
 	
-	var selectedItemSetIdTC = null;
-	//var selectedTestAdminIdForManifest = null;
 	var selectedSubtestsMsm = new Array();
 	var subTestDetails = {};
 	var hasDefaultAutoLocator= false;
@@ -40,6 +35,14 @@
 	var subtestWarningMsg="";
 	
 	var displayAccessCodeOnTicket = false;
+	
+	function updateModifyTestSize(){
+		$("#modifyTestPopup").parent().height($("#sessionStudRegId").parent().height());
+		$("#modifyTestPopup").parent().width($("#sessionStudRegId").parent().width());
+		$("#editSubtedtinnerDiv").height($("#sessionStudRegId").parent().height()-100);
+	}
+	
+
 	function openModifyTestPopup(element){
 	 if(element !=null && isButtonDisabled(element))
 		return true;
@@ -122,10 +125,8 @@
 	        }
 	    });
 	    //$("#modifyTestPopup").css('height',120);
-	    var toppos = (($(window).height() - 290) / 2) + 50 + 'px';
-	    var leftpos = (($(window).width() - 968) / 2) + 'px';
-	    $("#modifyTestPopup").parent().css("top", toppos);
-	    $("#modifyTestPopup").parent().css("left", leftpos);
+	    updateModifyTestSize();
+	    setPopupPosition("modifyTestPopup");
 	  
 	   PopulateManifestDetail();
 	  	   

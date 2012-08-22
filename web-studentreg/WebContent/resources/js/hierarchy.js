@@ -36,7 +36,6 @@ var testNameOptions = ":Any";
 var myRoleOptions = ":Any;Owner:Owner;Proctor:Proctor";
 var statusOptions = ":Any;Current:Current;Future:Future";
 var currentView = "session";
-var selectedTestAdminId = null;
 var selectedRData = {};
 var stuItemGridLoaded = false;
 var itemgridLoaded = false;
@@ -64,6 +63,17 @@ var leafNodeTextMap = {};
 var isAction = true;
 var isAddStudPopup = false;
 var organizationNodes = [];
+
+var isTabeProduct = false;
+var isTabeAdaptiveProduct = false;
+var isTabeProductFinal = false;
+var isTabeAdaptiveProductFinal = false;
+var selectedItemSetIdTC = null;
+var selectedItemSetIdTCFinal = null;
+var selectedTestAdminId = null;
+var selectedTestAdminIdFinal = null;
+var selectedTestAdminName;
+var selectedTestAdminNameFinal;
 
 var accomodationMap = {};
 function populateStudentRegTree() {
