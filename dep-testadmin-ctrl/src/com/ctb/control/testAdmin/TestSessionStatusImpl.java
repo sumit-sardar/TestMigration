@@ -639,6 +639,9 @@ public class TestSessionStatusImpl implements TestSessionStatus
         try {
             TestSession [] sessions = new TestSession[1];
             sessions[0] = testAdmin.getTestAdminDetails(testAdminId);
+            if(sessions[0].getTestLevel() == null){
+            	sessions[0].setTestLevel(testAdmin.getTestCataLogLevelByTestAdmin(testAdminId));
+            }
             sessions[0].setCopyable(admins.checkCopyable(userName, sessions[0].getTestAdminId()));
             TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[0]);
             TestSessionData tsd = new TestSessionData();
