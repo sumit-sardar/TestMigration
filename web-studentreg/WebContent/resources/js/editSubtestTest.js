@@ -1312,9 +1312,13 @@
 		    					closePopUp('sessionStudRegId');
 		    					$("#SubtestDetails").html("");
 							 	populateStudConfirmation(data);
-							 	$("#studRegInfo").height($("#modifyTestPopup").height()-20);
-							 	$("#studRegInfo").parent().width($("#modifyTestPopup").width());
 							 	displayStudConfirmation();
+							 	setPopupPosition("studentConfirmation");
+							 	$("#studentConfirmation").height($("#modifyTestPopup").height());
+							 	//$("#studRegInfo").height($("#studentConfirmation").height()-15);
+							 	$("#studRegInfo").height($("#studentConfirmation").parent().height()-15);
+							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width());
+							 	
 							 } else {
 							  	setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
 							 

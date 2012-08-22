@@ -229,7 +229,8 @@
 
  </div> 
 	
-	<div id="StudConfClose" style="padding-top: 5px;">
+	<div id="StudConfClose">
+		<br>
 		<center>
 			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header">
 		</center>
