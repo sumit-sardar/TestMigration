@@ -1023,22 +1023,24 @@ public class FileUtil {
 				if(levels.contains(pvalFileData.getLevel().trim())) {
 					List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
 							pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
-					Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
-					Map<String, Double> objSumMap = new HashMap<String, Double>();
-					Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
-					for(CodeValue codeVal : pvalFileData.getDataList()) {
-						if(itemMap.get(codeVal.getCode()) != null) {
-							codeVal.setItemId(itemMap.get(codeVal.getCode()));
-							String objName = itemObjMap.get(codeVal.getItemId());
-							if(objSumMap.containsKey(objName)) {
-								Double oldValue = objSumMap.get(objName);
-								objSumMap.put(objName, oldValue + codeVal.getValue());
-							} else {
-								objSumMap.put(objName, codeVal.getValue());
+					if(itemSetList != null && itemSetList.size() > 0) {
+						Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+						Map<String, Double> objSumMap = new HashMap<String, Double>();
+						Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
+						for(CodeValue codeVal : pvalFileData.getDataList()) {
+							if(itemMap.get(codeVal.getCode()) != null) {
+								codeVal.setItemId(itemMap.get(codeVal.getCode()));
+								String objName = itemObjMap.get(codeVal.getItemId());
+								if(objSumMap.containsKey(objName)) {
+									Double oldValue = objSumMap.get(objName);
+									objSumMap.put(objName, oldValue + codeVal.getValue());
+								} else {
+									objSumMap.put(objName, codeVal.getValue());
+								}
 							}
 						}
+						pvalFileData.setObjectiveItemSumMap(objSumMap);
 					}
-					pvalFileData.setObjectiveItemSumMap(objSumMap);
 				}
 			}
 		}
