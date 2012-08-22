@@ -180,7 +180,7 @@ public class TVWsAcuityDataController {
 				counter = 0;
 			}
 			newFact.setCompleteContArea(completeFlag);
-			newFact.setSubtestNames((String[]) subtestNames.toArray());
+			//newFact.setSubtestNames((String[]) subtestNames.toArray());
 			System.out.println("newFact.getContentAreaName() -> " + newFact.getContentAreaName());
 			System.out.println("IncompleteFlag -> " + completeFlag);
 			System.out.println(subtestNames.size() + "-" + subtestNames.get(0).toString());
