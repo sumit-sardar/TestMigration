@@ -229,12 +229,10 @@
 
  </div> 
 	
-	<div id="StudConfClose">
-		<br>
+	<div id="StudConfClose" style="padding-top: 5px; padding-bottom: 15px; width: 100%;clear: both;">
 		<center>
-			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header">
+			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header"/>
 		</center>
-		<br>
 	</div>	
 </div>
 
