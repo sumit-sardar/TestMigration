@@ -15,6 +15,7 @@
 <input type="hidden" id="menuId" name="menuId" value="studentRegistrationLink" />
 <input type="hidden" id="treeOrgNodeId" />
 <input type="hidden" id="treeOrgNodeIdInPopup">
+<input type="hidden" id="treeOrgNodeIdInSecondaryDiv">
 	<jsp:include page="/registrationOperation/find_student_session.jsp" />
 </netui:form>
 

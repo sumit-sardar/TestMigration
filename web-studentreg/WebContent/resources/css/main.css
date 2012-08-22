@@ -479,7 +479,14 @@ clear: both;
 	clear: both;
 }
 
+.ie8 #secondaryInnerOrgNodeHierarchy ul {
+float: none;
+clear: both;
+}
 
+.ie8 #secondaryInnerOrgNodeHierarchy li {
+	clear: both;
+}
 
 .ie8 #studentBulkOrgNode ul {
 float: none;

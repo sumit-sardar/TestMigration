@@ -42,8 +42,8 @@
 
 
 <!-- student section -->
-	<div id="subtestWarnMsg" style="clear: both; width: 98%; text-align: left; display: none;" class= "roundedMessage ui-corner-all">
-		<table>
+	<div id="subtestWarnMsg" style="clear: both; width: 900px; text-align: left; display: none;" class= "roundedMessage ui-corner-all">
+		<table width="100%">
 			<tr>
 				<td width="18" valign="middle">
 				<div><img

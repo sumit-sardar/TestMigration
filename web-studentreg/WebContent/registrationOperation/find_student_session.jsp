@@ -258,6 +258,24 @@
 	</div>
 </div>
 
+<div id="searchByKeywordInSecondaryDiv"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="ses.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchByKeywordInSecondaryDivInput" id="searchByKeywordInSecondaryDivInput" onkeypress="trapEnterKeyInSecondaryDiv(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;"> 
+		<center>
+			<input type="button"  value=<lb:label key="common.button.clear" prefix="'" suffix="'"/> onclick="javascript:resetSearchInSecondaryDiv(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.search" prefix="'" suffix="'"/> onclick="javascript:searchByKeywordInSecondaryDiv(); return false;" class="ui-widget-header">
+		</center>
+	</div>
+</div>
+
 
 <div id="statusLocatorLegend" style="display:none;" class="statusLegendDiv">
 <table width="360" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">

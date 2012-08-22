@@ -38,7 +38,9 @@
 	
 	function updateModifyTestSize(){
 		$("#modifyTestPopup").parent().height($("#sessionStudRegId").parent().height());
+		$("#modifyTestPopup").height($("#sessionStudRegId").parent().height()-30);
 		$("#modifyTestPopup").parent().width($("#sessionStudRegId").parent().width());
+		$("#modifyTestPopup").width($("#sessionStudRegId").parent().width()-15);
 		$("#editSubtedtinnerDiv").height($("#sessionStudRegId").parent().height()-100);
 	}
 	
@@ -113,9 +115,9 @@
 	   $("#msmLocatorInfo").hide();
 	   $("#msmLocatorInfo1").hide();
 		hideSubtestValidationMessage();
-	   
+	    closePopUp('sessionStudRegId');
 	    $("#modifyTestPopup").dialog( {
-	        title: "Modify Test",
+	        title:$("#sessionStudRegPopupTitle").val(),
 	        resizable: false,
 	        autoOpen: true,
 	        width: '900px',
@@ -1309,8 +1311,10 @@
 							    closePopUp('modifyTestPopup');
 		    					closePopUp('sessionStudRegId');
 		    					$("#SubtestDetails").html("");
-							 	displayStudConfirmation();
 							 	populateStudConfirmation(data);
+							 	$("#studRegInfo").height($("#modifyTestPopup").height()-20);
+							 	$("#studRegInfo").parent().width($("#modifyTestPopup").width());
+							 	displayStudConfirmation();
 							 } else {
 							  	setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
 							 

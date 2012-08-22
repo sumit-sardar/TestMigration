@@ -90,19 +90,19 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	 			} else {
 	 				if(!gridloadedStdFromSes){
 	 				    setAnchorButtonState('registerButton', false);
-	 				    if(isPopupOnFRAccept){
-	 				    	populateSessionGridInPopupForFR();
-	 				    } else {
+	 				    //if(isPopupOnFRAccept){
+	 				    	//populateSessionGridInPopupForFR();
+	 				    //} else {
 	 				    	populateStudentGridInPopup();
-	 				    }
+	 				   // }
 		 				
 		 				gridloadedStdFromSes = true;
 			 		} else {
-			 			 if(isPopupOnFRAccept){
-			 			 	reloadSessionGridFromStdOnFR();	
-			 			 } else {
+			 			 //if(isPopupOnFRAccept){
+			 			 	//reloadSessionGridFromStdOnFR();	
+			 			 //} else {
 			 			 	reloadStudentGridFromSes();
-			 			 }
+			 			 //}
 			 			
 			 		}
 	 			}
@@ -377,5 +377,376 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		element.removeClass('ui-widget-header');
 		element.addClass('ui-state-disabled');
 		element.attr('disabled', 'disabled');
+	
+	}		
+
+	function createSingleNodeSelectionTreeForStudentSecondary(){
+	
+		$("#secondaryInnerOrgNodeHierarchy").jstree({
+	        "json_data" : {	             
+	            "data" : rootNode,
+				"progressive_render" : true,
+				"progressive_unload" : true
+	        },
+            "themes" : {
+			    "theme" : "apple",
+			    "dots" : false,
+			    "icons" : false
+			},       
+	        "ui" : {  
+	           "select_limit" : 1
+         	}, 
+				"plugins" : [ "themes", "json_data", "ui"]  
+				
+	    });
+	    $("#secondaryInnerOrgNodeHierarchy").bind("loaded.jstree", 
+		 	function (event, data) {
+				for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#secondaryInnerOrgNodeHierarchy ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
+	    $("#secondaryInnerOrgNodeHierarchy").delegate("a","click", function(e) {
+
+	    	//clear message before moving to pther node
+	    	clearMessage();
+	    	/* added for new changes: start */ 
+  			//selectedOrgNodeIdInPopup = $(this).parent().attr("id");
+ 		    //$("#treeOrgNodeIdInPopup").val(selectedOrgNodeIdInPopup);
+ 		    selectedOrgNodeIdInSecondaryDiv = $(this).parent().attr("id");
+ 		    $("#treeOrgNodeIdInSecondaryDiv").val(selectedOrgNodeIdInSecondaryDiv);
+ 		    /* added for new changes: end */
+            stuForSelectedOrg = $(this).parent().attr("id");
+            var topNodeSelected = $(this).parent().attr("cid");
+ 		   /* 
+	 		if(parseInt(rootNodeId) == parseInt(selectedOrgNodeIdInSecondaryDiv)){
+	 			var postDataObject = {};
+	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInSecondaryDiv").val();
+	 		   $.ajax({
+					async:		true,
+					beforeSend:	function(){									
+									UIBlock();
+								},
+					url:		'getStudentCountForOrgNode.do', 
+					type:		'POST',
+					data:		 postDataObject,
+					dataType:	'json',
+					success:	function(data, textStatus, XMLHttpRequest){	
+									$.unblockUI();
+									topOrgNodeStuCount = data;
+									if(parseInt(topOrgNodeStuCount) > stuThreshold){
+										showPopup(topOrgNodeStuCount);
+									}else{
+										showGrid();
+									}
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();  
+									window.location.href="/SessionWeb/logout.do";
+									
+								}
+				});		
+	 		 }else{
+	 		    showGrid();
+	 		} 	*/	
+	 		//if(topNodeSelected == String(leafNodeCategoryId)) {
+	 		    UIBlock();
+	 		    
+		 		
+
+	 			if(currentView == "student"){
+		 			if(!gridloadedSessionFromStdInSecondaryDiv){
+		 				if(isPopupOnFRNotAccept || isPopupOnByepassFR)
+		 				{	//populateSessionGridInPopup(); // commented for new changes
+		 					populateSessionGridInPopupInSecondaryDiv();
+		 				}
+						else if(isPopupOnFRAccept)
+							populateSessionGridInPopupForFR();		 					
+		 				gridloadedSessionFromStdInSecondaryDiv = true;
+		 			} else {
+		 				if(isPopupOnFRNotAccept || isPopupOnByepassFR)
+		 				{	//reloadSessionGridFromStd();// commented for new changes
+		 					reloadSessionGridFromStdInSecondaryDiv();
+		 				}
+						else if(isPopupOnFRAccept)
+							reloadSessionGridFromStdOnFR();		 					
+		 			}
+	 			} else {
+	 				if(!gridloadedStdFromSesInSecondaryDiv){
+	 				    setAnchorButtonState('registerButton', false);
+	 				    if(isPopupOnFRAccept){
+	 				    	populateSessionGridInPopupForFR();
+	 				    } else {
+	 				    	//populateStudentGridInPopup();//commented for new changes
+	 				    }
+		 				
+		 				gridloadedStdFromSesInSecondaryDiv = true;
+			 		} else {
+			 			 if(isPopupOnFRAccept){
+			 			 	reloadSessionGridFromStdOnFR();	
+			 			 } else {
+			 			 	//reloadStudentGridFromSes();//commented for new changes
+			 			 }
+			 			
+			 		}
+	 			}
+
+	 		//} 
+	 		
+		});
+		
+		$("#secondaryOuterTreeFromSessionDiv").height(510);
+		
+		registerDelegate("secondaryInnerOrgNodeHierarchy");
+		
+	}
+	
+	function trapEnterKeyInSecondaryDiv(e){
+		var key;
+		if(window.event)
+			key = window.event.keyCode;     //IE
+		else
+			key = e.which;     //firefox
+		        
+		if(key == 13){
+			searchByKeywordInSecondaryDiv();
+	    }
+	}
+	
+	function searchByKeywordInSecondaryDiv(){
+		 var searchFiler = $.trim($("#searchByKeywordInSecondaryDivInput").val()), f;
+		 	var grid = $("#list3"); 
+		 
+		 if (searchFiler.length === 0) {
+			 //grid[0].p.search = false;
+			 //grid[0].triggerToolbar();// to trigger previously applied filters
+			 var g = {groupOp:"AND",rules:[],groups:[]};			 
+			 g.rules.push({field:"testName",op:"cn",data:$("#gview_list3 select[id=gs_testName]").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list3 select[id=gs_testAdminStatus]").val()});
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
+		 }else {
+		 	 var g = {groupOp:"AND",rules:[],groups:[]};			 
+		 	 g.rules.push({field:"testName",op:"cn",data:$("#gview_list3 select[id=gs_testName]").val()});
+			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list3 select[id=gs_testAdminStatus]").val()});
+		 	 f = {groupOp:"OR",rules:[]};
+			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
+			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 			 
+			 g.groups.push(f);			 
+			 grid[0].p.search = true;
+			 grid[0].p.ignoreCase = true;			 
+			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
+		 }
+		 grid.trigger("reloadGrid",[{page:1,current:true}]);
+		 closePopUp('searchByKeywordInSecondaryDiv');
+	}	
+	
+	function resetFiltersInSecondaryDiv() { // need to call this to reset popup filters from student view
+		$("#gview_list3 select[id=gs_testName] option:eq(0)").attr('selected','Any'); 
+		$("#gview_list3 select[id=gs_testAdminStatus] option:eq(0)").attr('selected','Any');
+	}  
+	
+	function resetSearchCritInSecondaryDiv(){
+		$("#searchByKeywordInSecondaryDivInput").val('');
+		var grid = $("#list3"); 
+		grid.jqGrid('setGridParam',{search:false});	
+	    var postData = grid.jqGrid('getGridParam','postData');
+	    $.extend(postData,{filters:""});
+	}
+	
+	function resetSearchInSecondaryDiv(){
+		var grid = $("#list3"); 
+		$("#searchByKeywordInSecondaryDivInput").val('');
+		//grid[0].p.search = false;
+		var g = {groupOp:"AND",rules:[],groups:[]};
+		g.rules.push({field:"testName",op:"cn",data:$("#gview_list3 select[id=gs_testName]").val()});
+		g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list3 select[id=gs_testAdminStatus]").val()});
+		grid[0].p.search = true;
+		grid[0].p.ignoreCase = true;			 
+		$.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
+		grid.trigger("reloadGrid",[{page:1,current:true}]); 
+		closePopUp('searchByKeywordInSecondaryDiv');
+		 //grid[0].triggerToolbar();// to trigger previously applied filters
+	}
+	
+	function onBackFromShowBySessionPopUp(){
+		console.log("back button clicked...");
+		$('#secondaryJQGridDiv').hide();
+		$('#primaryJQGridDiv').show();
+		$('#list2').GridUnload();
+		$('#innerOrgNodeHierarchyForStd').jstree('close_all', -1);
+		$('#list3').GridUnload();
+		$('#secondaryInnerOrgNodeHierarchy').jstree('close_all', -1);
+		disableButton('backButtonSPFPopup');
+		enableButton('nextButtonStdPopup');
+		isPopupOnFRAccept = false; // need to reset this flag
+		gridloadedStdFromSesInSecondaryDiv = false;
+	}
+	
+	function populateSessionGridInPopupInSecondaryDiv(){
+		
+		/* added for new changes: start */ 
+		resetSearchCritInSecondaryDiv();
+		resetFiltersInSecondaryDiv();
+		//resetSearchCritInPopupFromStudentView();
+ 		//resetFiltersInPopupFromStudentView();
+ 		/* added for new changes: end */
+		var postDataObject = {};
+ 		postDataObject.q = 2;
+ 		//postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInPopup").val();
+ 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInSecondaryDiv").val();// added for new changes
+ 		
+ 		postDataObject.studentId = selectedStudentId;
+ 		$("#list3").jqGrid({         
+          url:'getSessionForOrgNodeWithStudentStatus.do', 
+		 mtype:   'POST',
+		 postData: postDataObject,
+		 datatype: "json",         
+          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '','',''],
+		   	colModel:[
+		   		{name:'testAdminName',index:'testAdminName', width:160, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testName',index:'testName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
+		   		{name:'testAdminStatus',index:'testAdminStatus', width:80, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: statusOptions } },
+		   		{name:'loginStartDateString',index:'loginStartDateString',editable: true, width:80, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'loginEndDateString',index:'loginEndDateString',editable: true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   	    {name:'productType',index:'productType',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   	    {name:'isTabeProduct',index:'isTabeProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   	    {name:'isTabeAdaptiveProduct',index:'isTabeAdaptiveProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   	    {name:'itemSetId',index:'itemSetId',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   	    {name:'isStudentsSession',index:'isStudentsSession',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
+		   	],
+		   	jsonReader: { repeatitems : false, root:"testSession", id:"testAdminId",
+		   	records: function(obj) {} },
+		   	
+		   	loadui: "disable",
+			rowNum:20,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#pager3', 
+			sortname: 'testAdminName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 370,
+			width: 760, 
+			editurl: 'getSessionForOrgNodeWithStudentStatus.do',
+			ondblClickRow: function(rowid) {/*populateGridAsPerView();*/},
+			caption:$("#sesGridCaption").val(),
+			onPaging: function() {
+				var reqestedPage = parseInt($('#list3').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_pager3').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#list3').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#list3').setGridParam({"page": minPageSize});
+				}
+				disableButton('nextButtonStdPopup');
+			},
+			onSortCol : function(index, columnIndex, sortOrder) { 
+				disableButton('nextButtonStdPopup');
+			},
+			onSelectRow: function (rowId) {
+					$("#displayMessageMain").hide();
+					var selectedRowData = $("#list3").getRowData(rowId);
+					selectedTestAdminName = selectedRowData.testAdminName;
+					selectedTestAdminId = rowId;
+					selectedItemSetIdTC = selectedRowData.itemSetId;
+					if(selectedRowData.isTabeAdaptiveProduct == 'true' ){
+						isTabeProduct = false;
+						isTabeAdaptiveProduct = true;
+					} else {
+						isTabeProduct = true;
+						isTabeAdaptiveProduct = false;
+					} 
+					
+					if(selectedRowData.isStudentsSession=="T"){
+						disableButton('nextButtonStdPopup');
+					} else{
+						enableButton('nextButtonStdPopup');
+					}
+					
+				},
+			loadComplete: function () {
+				if ($('#list3').getGridParam('records') === 0) {
+            		$('#sp_1_pager3').text("1");
+            		$('#next_pager3').addClass('ui-state-disabled');
+            		$('#last_pager3').addClass('ui-state-disabled');
+            		$('#list3').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 		$('#list3').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/ScoringWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noSessionTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noSessionMessage").val()+"</td></tr></tbody></table></td></tr>");
+            	}
+				$.unblockUI();  
+				$("#list3").setGridParam({datatype:'local'});
+				var tdList = ("#pager3_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				$("#pager3 .ui-pg-input").attr("style", "position: relative; z-index: 100000;");
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });  
+	 jQuery("#list3").jqGrid('filterToolbar',{
+	 	afterSearch: function(){
+	 		/* added for new changes: start */ 
+	 		//searchStudentSessionByKeyword();
+	 		searchByKeywordInSecondaryDiv();
+	 		/* added for new changes: end */ 
+	 		setAnchorButtonState('registerButton', true);
+	 	}
+	 });
+	 	jQuery("#list3").navGrid('#pager3',{
+				search: false,add:false,edit:false,del:false 	
+			}).jqGrid('navButtonAdd',"#pager3",{
+			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
+			    	//$("#searchStudentSessionByKeyword").dialog({
+			    	$("#searchByKeywordInSecondaryDiv").dialog({ //added for new changes: start
+						title:$("#searchStudentSession").val(),  
+					 	resizable:false,
+					 	autoOpen: true,
+					 	width: '300px',
+					 	modal: true,
+						closeOnEscape: false,
+					 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
+					 	});
+			    }, position: "one-before-last", title:"Search Session", cursor: "pointer"
+			}).jqGrid('navSeparatorAdd',"#pager3",{position: "first"
+			});
+			
+			jQuery(".ui-icon-refresh").bind("click",function(){
+				//$("#searchStudentSessionByKeywordInput").val('');
+				$("#searchByKeywordInSecondaryDivInput").val('');//added for new changes: start
+				setAnchorButtonState('registerButton', true);
+			}); 
+			
+	}
+	
+	function reloadSessionGridFromStdInSecondaryDiv(){
+		//resetSearchCrit();
+		/* added for new changes: start */ 
+		resetSearchCritInSecondaryDiv();
+		resetFiltersInSecondaryDiv();
+		//resetSearchCritInPopupFromStudentView();
+ 		//resetFiltersInPopupFromStudentView();
+ 		/* added for new changes: end */
+  	    var postDataObject = {};
+		postDataObject.q = 2;
+		//postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
+		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInSecondaryDiv").val();// added for new changes	
+        
+        jQuery("#list3").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
+  	   //var sortArrow = jQuery("#list3");
+        jQuery("#list3").jqGrid('setGridParam', {url:'getSessionForOrgNodeWithStudentStatus.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+        jQuery("#list3").sortGrid($("#grdSessionName").val(),true,'asc');
 	
 	}

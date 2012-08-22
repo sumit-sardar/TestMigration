@@ -101,23 +101,30 @@ function onNextFromShowBySessionPopUp () {
 	
 	function sessionListPopupOnFRAcceptForSession(){
 		closePopUp('recommendedDialogID');
-		$('#list2').GridUnload();
-		$('#innerOrgNodeHierarchyForStd').jstree('close_all', -1);
+		$('#secondaryJQGridDiv').show();
+		$('#primaryJQGridDiv').hide();
 	    isPopupOnFRAccept = true;
 	    gridloadedStdFromSes = false;
 	    disableButton('nextButtonStdPopup');
+	    gridloadedStdFromSesInSecondaryDiv = false;
+	    if(currentView == "session" && isPopupOnFRAccept)
+	    	enableButton('backButtonSPFPopup');
 	    sessionPopupFromStudentView();
 	}
 	
 	function sessionListPopupOnFRAccept(){
 		closePopUp('recommendedDialogID');
 		isPopupOnFRAccept = true;
+		$('#secondaryJQGridDiv').show();
+		$('#primaryJQGridDiv').hide();
 		sessionPopupFromStudentView();
 	}
 	
 	function sessionListPopupOnFRNotAccept(){
 		closePopUp('recommendedDialogID');
 		isPopupOnFRNotAccept = true;
+		$('#secondaryJQGridDiv').show();
+		$('#primaryJQGridDiv').hide();
 		sessionPopupFromStudentView();
 	}
 

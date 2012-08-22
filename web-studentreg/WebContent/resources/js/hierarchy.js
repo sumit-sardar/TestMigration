@@ -5,6 +5,7 @@ var jsonData;
 var assignedOrgNodeIds = "";
 var SelectedOrgNodeId;
 var selectedOrgNodeIdInPopup;
+var selectedOrgNodeIdInSecondaryDiv;
 var SelectedOrgNode;
 //var SelectedOrgNodes = [];
 var currentNodeId ;
@@ -45,7 +46,9 @@ var sbiStudentGridLoaded = false;
 var isScoreByItemClicked = false;
 var data1 = null;
 var gridloadedStdFromSes = false;
+var gridloadedStdFromSesInSecondaryDiv = false;
 var gridloadedSessionFromStd = false;
+var gridloadedSessionFromStdInSecondaryDiv = false;
 var registerBySessionGridFromStudent = false; 
 var requetForStudent  = "";
 var studentGradeOptions = []; 
@@ -96,6 +99,7 @@ function populateStudentRegTree() {
 						$("#searchheader").css("visibility","visible");	
 						$("#stdRegOrgNode").css("visibility","visible");	
 						$("#stdFromSessionOrgSearchHeader").css("visibility","visible");						
+						$("#secondaryOrgSearchHeader").css("visibility","visible");
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -194,7 +198,8 @@ function populateGrid(){
 		if(!gridloadedStu) {
 	  		gridloadedStu = true;
 	  		populateTreeSelect(); 
-	  		populateStudentTreeSelect(); 
+	  		populateStudentTreeSelect();
+	  		populateTreeSelectSecondary(); 
 			populateReportingStudentGrid();
 		} else {
 			var grid = $("#studentRegistrationGrid"); 
@@ -212,6 +217,7 @@ function populateGrid(){
 		if(!gridloadedSes) {
 	  		gridloadedSes = true;
 	  		populateTreeSelect();
+	  		populateTreeSelectSecondary(); 
 			populateRegistrationSessionGrid();
 		} else {
 			var grid = $("#sessionRegistrationGrid"); 
@@ -403,6 +409,12 @@ function closePopUp(dailogId){
 		}else {
 			$("#sessionRegistrationGrid").jqGrid('resetSelection');
 		}
+		$('#primaryJQGridDiv').show();
+		$('#secondaryJQGridDiv').hide()
+		$('#list3').GridUnload();//to destroy the grid instance
+		$('#secondaryInnerOrgNodeHierarchy').jstree('close_all', -1);
+		gridloadedStdFromSesInSecondaryDiv = false;
+		gridloadedSessionFromStdInSecondaryDiv = false;
 		setAnchorButtonState('registerButton', true);
 	}
 	if(dailogId=='sessionStudRegId' || dailogId==''){
@@ -448,6 +460,7 @@ function populateGridAsPerView() {
 	}
 	$("#displayMessageMain").hide();
 	disableButton('nextButtonStdPopup');
+	disableButton('backButtonSPFPopup');
 	if(currentView == "student") {
 		onNextFromShowBySessionPopUp();
 	} else {
@@ -1267,7 +1280,15 @@ function registerDelegate(tree){
 		if (isPopUp){
 			currentElement = $('li[id='+ currentNodeId+ ']');
 			if(currentElement.length < 2) currentElement = currentElement[0];
-			else {/*currentElement = currentElement[1];*/ currentElement  = $("#outerTreeForStudentFromSessionDiv li[id="+currentNodeId+"]")[0];}
+			else {
+				/*currentElement = currentElement[1];*/ 
+				if($('#secondaryJQGridDiv').is(':visible')){
+					currentElement  = $("#secondaryOuterTreeFromSessionDiv li[id="+currentNodeId+"]")[0];
+				}
+				else {
+					currentElement  = $("#outerTreeForStudentFromSessionDiv li[id="+currentNodeId+"]")[0];
+				}				
+			}
 				
 		/* rapid registration start*/		
 		} else if(isAddStudPopup) {
@@ -1285,7 +1306,7 @@ function registerDelegate(tree){
 		var fragment = document.createDocumentFragment();
 		var ulElement = document.createElement('ul');
 		
-		if(type == "innerOrgNodeHierarchyForStd"){
+		if(type == "innerOrgNodeHierarchyForStd" || type == "secondaryInnerOrgNodeHierarchy"){
 			stream(objArray,ulElement,fragment,streamPush, null, function(){
 			currentElement.appendChild(fragment);
 			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
@@ -1578,6 +1599,8 @@ function registerDelegate(tree){
           currentTreeArray = map.get(currentNodeId);
           $('#innerOrgNodeHierarchyForStd').jstree('open_node', "#" + currentNodeId);
           $('#orgInnerID').jstree('open_node', "#"+currentNodeId); // rapid registration
+          if($('#secondaryJQGridDiv').is(':visible'))
+          	$('#secondaryInnerOrgNodeHierarchy').jstree('open_node', "#" + currentNodeId);
       }
   }
   
@@ -1598,6 +1621,17 @@ function registerDelegate(tree){
 		$("#innerOrgNodeHierarchyForStd").undelegate();
 		$("#innerOrgNodeHierarchyForStd").unbind();
 		createSingleNodeSelectionTreeForStudent (orgTreeHierarchy);
+	}
+	
+
+	function populateTreeSelectSecondary() {
+		//if(customerDemographicValue == "")
+  			//customerDemographicValue = $("#studentAddEditDetail *").serializeArray(); 
+		$("#notSelectedOrgNodes").css("display","inline");
+		$("#selectedOrgNodesName").text("");	
+		$("#secondaryInnerOrgNodeHierarchy").undelegate();
+		$("#secondaryInnerOrgNodeHierarchy").unbind();
+		createSingleNodeSelectionTreeForStudentSecondary (orgTreeHierarchy);
 	}
 	
 	function hideLocatorMessage() {
