@@ -525,6 +525,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 			 //grid[0].triggerToolbar();// to trigger previously applied filters
 			 var g = {groupOp:"AND",rules:[],groups:[]};			 
 			 g.rules.push({field:"testName",op:"cn",data:$("#gview_list3 select[id=gs_testName]").val()});
+			 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gview_list3 select[id=gs_AssignedRole]").val()});
 			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list3 select[id=gs_testAdminStatus]").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
@@ -532,10 +533,13 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		 }else {
 		 	 var g = {groupOp:"AND",rules:[],groups:[]};			 
 		 	 g.rules.push({field:"testName",op:"cn",data:$("#gview_list3 select[id=gs_testName]").val()});
+		 	 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gview_list3 select[id=gs_AssignedRole]").val()});
 			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list3 select[id=gs_testAdminStatus]").val()});
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
 			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
 			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 			 
@@ -609,10 +613,12 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '','',''],
+          colNames:[$("#grdSessionName").val(),$("#grdTestName").val() , $("#grdGroup").val(), $("#sesGridMyRole").val(), $("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:160, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
+		   		{name:'creatorOrgNodeName',index:'creatorOrgNodeName', width:100, editable: true, align:"left",sorttype:'text',search: false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+				{name:'AssignedRole',index:'AssignedRole',editable: true, width:60, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: myRoleOptions } },
 		   		{name:'testAdminStatus',index:'testAdminStatus', width:80, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: statusOptions } },
 		   		{name:'loginStartDateString',index:'loginStartDateString',editable: true, width:80, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'loginEndDateString',index:'loginEndDateString',editable: true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },

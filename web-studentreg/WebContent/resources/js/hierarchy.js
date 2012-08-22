@@ -1964,6 +1964,7 @@ function isExist(val, customerValCheckbox){
 			 //grid[0].triggerToolbar();// to trigger previously applied filters
 			 var g = {groupOp:"AND",rules:[],groups:[]};			 
 			 g.rules.push({field:"testName",op:"cn",data:$("#gview_list2 select[id=gs_testName]").val()});
+			  g.rules.push({field:"AssignedRole",op:"cn",data:$("#gview_list2 select[id=gs_AssignedRole]").val()});
 			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list2 select[id=gs_testAdminStatus]").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
@@ -1971,10 +1972,13 @@ function isExist(val, customerValCheckbox){
 		 }else {
 		 	 var g = {groupOp:"AND",rules:[],groups:[]};			 
 		 	 g.rules.push({field:"testName",op:"cn",data:$("#gview_list2 select[id=gs_testName]").val()});
+		 	 g.rules.push({field:"AssignedRole",op:"cn",data:$("#gview_list2 select[id=gs_AssignedRole]").val()});
 			 g.rules.push({field:"testAdminStatus",op:"cn",data:$("#gview_list2 select[id=gs_testAdminStatus]").val()});
 		 	 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"testAdminName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"creatorOrgNodeName",op:"cn",data:searchFiler});
+			 f.rules.push({field:"AssignedRole",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testAdminStatus",op:"cn",data:searchFiler});
 			 f.rules.push({field:"loginStartDateString",op:"cn",data:searchFiler});
 			 f.rules.push({field:"loginEndDateString",op:"cn",data:searchFiler}); 			 
