@@ -37,7 +37,6 @@ public class DBUtil {
 							Long objectiveId = Long.valueOf(objIdMap.get(entry.getKey()));
 							String objectiveName = entry.getKey();
 							Double pVal = sumMap.get(entry.getKey()) / Double.valueOf(countMap.get(entry.getKey()));
-							System.out.println(objIdMap.get(entry.getKey()) + " - " + entry.getKey() + " - " + sumMap.get(entry.getKey()) + " - " + countMap.get(entry.getKey()) + " - " + pVal);
 							String scoreLookupId = "TERRAB3" + "_" + pvalFileData.getNormsGroup() 
 							+ "_" + pvalFileData.getGrade() + "_" + pvalFileData.getContent() + "_" + pvalFileData.getLevel()
 							+ "_" + pvalFileData.getOther();
@@ -73,6 +72,7 @@ public class DBUtil {
 			try {
 				con.rollback();
 				System.out.println("Data are not saved in SCORE_LOOKUP table.");
+				System.exit(0);
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}

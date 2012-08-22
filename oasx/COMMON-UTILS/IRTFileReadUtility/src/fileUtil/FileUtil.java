@@ -296,7 +296,7 @@ public class FileUtil {
 		} else if(Product_type.equals("CB")) {
 			return "3720";
 		} else {
-			return "3700";
+			return "3730";
 		}
 	}
 	
