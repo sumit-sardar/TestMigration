@@ -148,7 +148,7 @@ public class TVWsAcuityDataController {
     }
 	
 	private void updateIncompleteFlag(String caName, ContentAreaScore newFact) {
-		boolean incompleteFlag = false;
+		boolean completeFlag = false;
 		List<String> subtestNames = new ArrayList<String>();
 		List<StudentTestDetails> studentTestDetails = new ArrayList<StudentTestDetails>();
 		
@@ -172,15 +172,17 @@ public class TVWsAcuityDataController {
 						subtestNames.add(tempDetails.getSubTestName());
 					}
 				}
-				if(counter < studentTestDetails.size()) {
-					incompleteFlag = true;
+				if(counter == studentTestDetails.size()) {
+					completeFlag = true;
+				} else {
+					completeFlag = false;
 				}
 				counter = 0;
 			}
-			//newFact.setIncompleteFlag(incompleteFlag);
-			//newFact.setSubtestNames((String[]) subtestNames.toArray());
+			newFact.setCompleteContArea(completeFlag);
+			newFact.setSubtestNames((String[]) subtestNames.toArray());
 			System.out.println("newFact.getContentAreaName() -> " + newFact.getContentAreaName());
-			System.out.println("IncompleteFlag -> " + incompleteFlag);
+			System.out.println("IncompleteFlag -> " + completeFlag);
 			System.out.println(subtestNames.size() + "-" + subtestNames.get(0).toString());
 		}
 	}

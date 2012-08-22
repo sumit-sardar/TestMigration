@@ -138,7 +138,7 @@ public class TVTestResultController implements TestResultController {
         	studentScore.setFormId(testData.get(0).getTestForm());
         	studentScore.setLevelId(Integer.parseInt(testData.get(0).getTestLevel().trim()));
         	new TVWsAcuityDataController(curriculumData, context, factData, studentScore, studentScoreSummaryData, data.getCaLossHoss(), 
-        			adminData, studentItemScoreData, totalStudentScoreData, conn);
+        			adminData, studentItemScoreData, totalStudentScoreData, conn, testData);
         	AuthenticatedUser user_arg = new AuthenticatedUser();
     		user_arg.setUsername("User");
     		user_arg.setPassword("Password");
