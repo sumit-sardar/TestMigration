@@ -1,5 +1,7 @@
 package com.ctb.util;
 
+import java.util.Date;
+
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 
@@ -94,9 +96,10 @@ public class SessionValidatorUtil {
 	public static boolean isStartTimeUpdated(Session session, TestSession testSession){
 		boolean isUpdated = false;
 		String dbStartTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime());
+		String inPutStartTime	= DateUtils.formatDateToTimeString(DateUtil.getDateFromTimeString(session.getStartTime()));
 		System.out.println("StartTime from db:"+dbStartTime+"]");
-		System.out.println("StartTime from acuity:"+session.getStartTime()+"]");
-		if(!session.getStartTime().equals(dbStartTime)){
+		System.out.println("StartTime from acuity:"+inPutStartTime+"]");
+		if(!inPutStartTime.equals(dbStartTime)){
 			isUpdated = true;
 		}
 		return isUpdated;
@@ -104,10 +107,11 @@ public class SessionValidatorUtil {
 	
 	public static boolean isEndTimeUpdated(Session session, TestSession testSession){
 		String dbEndTime = DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime());
+		String inPutEndTime	= DateUtils.formatDateToTimeString(DateUtil.getDateFromTimeString(session.getEndTime()));
 		System.out.println("EndTime from db:"+dbEndTime+"]");
-		System.out.println("EndTime from acuity:"+session.getEndTime()+"]");
+		System.out.println("EndTime from acuity:"+inPutEndTime+"]");
 		boolean isUpdated = false;
-		if(!session.getEndTime().equals(dbEndTime)){
+		if(!inPutEndTime.equals(dbEndTime)){
 			isUpdated = true;
 		}
 		return isUpdated;
