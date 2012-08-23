@@ -66,11 +66,16 @@ public class TestSessionUtils
     /**
      * addStudentToSession
      */
-    public static RosterElement addStudentToSession(ScheduleTest scheduleTest, String userName, SessionStudent ss, Integer testAdminId)
+    public static RosterElement addStudentToSession(ScheduleTest scheduleTest, String userName, SessionStudent ss, Integer testAdminId) throws CTBBusinessException 
     {
         RosterElement roster = null;
         try {
             roster = scheduleTest.addStudentToSession(userName, ss, testAdminId);
+        }
+        catch (InsufficientLicenseQuantityException e)
+        {
+            e.printStackTrace();
+            throw e;         
         }
         catch (Exception be) {
             be.printStackTrace();
