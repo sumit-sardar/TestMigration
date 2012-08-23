@@ -393,6 +393,17 @@ function fetchDataOnConfirmation() {
 		}
 }
 
+function hidePopup(dailogId){
+    if(dailogId !=null && dailogId!=undefined && $("#"+dailogId).length ==1 )
+		$("#"+dailogId).parent().hide();
+
+}
+
+function displayPopup(dailogId){
+    if(dailogId !=null && dailogId!=undefined && $("#"+dailogId).length ==1 )
+		$("#"+dailogId).parent().show();
+}
+
 function closePopUp(dailogId){
 	$('.ui-widget-overlay').css('height', '100%');
 	if(dailogId == 'sessionStudRegId') {

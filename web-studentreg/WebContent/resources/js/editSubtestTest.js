@@ -115,7 +115,8 @@
 	   $("#msmLocatorInfo").hide();
 	   $("#msmLocatorInfo1").hide();
 		hideSubtestValidationMessage();
-	    closePopUp('sessionStudRegId');
+	    //closePopUp('sessionStudRegId');
+	    hidePopup('sessionStudRegId');
 	    $("#modifyTestPopup").dialog( {
 	        title:$("#sessionStudRegPopupTitle").val(),
 	        resizable: false,
@@ -1507,7 +1508,12 @@
 	}
 	
 	function accessCode() {
-	
-	var checkAccess = document.getElementsByName("individualAccess");
-	displayAccessCodeOnTicket = checkAccess[0].checked;
- }
+		var checkAccess = document.getElementsByName("individualAccess");
+		displayAccessCodeOnTicket = checkAccess[0].checked;
+ 	}
+ 
+ 
+	 function closeMsmPopUp(dailogId){
+	 	closePopUp(dailogId);
+	 	displayPopup("sessionStudRegId");
+	 }

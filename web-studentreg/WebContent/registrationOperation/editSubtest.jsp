@@ -206,7 +206,7 @@
 <center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
 	onclick=" javascript:validateAndScheduleStudent('modifyTestPopup');return false;" class="ui-widget-header" style="width: 60px">&nbsp;
 <input type="button" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/>
-	onclick="javascript:closePopUp('modifyTestPopup'); return false;" class="ui-widget-header" style="width: 60px">
+	onclick="javascript:closeMsmPopUp('modifyTestPopup'); return false;" class="ui-widget-header" style="width: 60px">
 </center>
 </div>
 </div>

@@ -581,7 +581,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	}
 	
 	function onBackFromShowBySessionPopUp(){
-		console.log("back button clicked...");
 		$('#secondaryJQGridDiv').hide();
 		$('#primaryJQGridDiv').show();
 		$('#list2').GridUnload();
@@ -595,7 +594,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		$("#studentListTitle").show();
 		
 		disableButton('backButtonSPFPopup');
-		enableButton('nextButtonStdPopup');
+		disableButton('nextButtonStdPopup');
 		isPopupOnFRAccept = false; // need to reset this flag
 		gridloadedStdFromSesInSecondaryDiv = false;
 	}
