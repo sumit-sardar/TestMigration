@@ -488,7 +488,7 @@ public interface TestSessionStatus
 
 	 com.ctb.bean.testAdmin.TestSessionData getCurrentFutureTestAdminsForOrgNode(String userName,Integer userId, Integer treeOrgNodeId) throws CTBBusinessException;
 	
-	com.ctb.bean.testAdmin.TestSessionData getRecommendedTestSessionsForOrgNode(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
+	com.ctb.bean.testAdmin.TestSessionData getRecommendedTestSessionsForOrgNodeWithStudentStatus(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId,  Integer studentId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
 
 	com.ctb.bean.testAdmin.TestSessionData getCurrentFutureTestAdminsForOrgNodeWithStudentStatus( String userName, Integer userId, Integer treeOrgNodeId,	Integer studentId) throws CTBBusinessException;
 	

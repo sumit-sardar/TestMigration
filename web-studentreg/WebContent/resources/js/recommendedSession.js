@@ -8,12 +8,14 @@ function populateSessionGridInPopupForFR(){
  		postDataObject.q = 2;
  		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInSecondaryDiv").val();
  		postDataObject.selectedProductId = $("#recommendedProductId").val();
+ 		postDataObject.studentId = selectedStudentId;
+ 		disableButton('nextButtonStdPopup');
         $("#list3").jqGrid({         
           url:'getRecommendedSessionForReportingGrid.do', 
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#grdGroup").val(), $("#sesGridMyRole").val() , $("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '', ''],
+          colNames:[$("#grdSessionName").val(),$("#grdTestName").val(), $("#grdGroup").val(), $("#sesGridMyRole").val() , $("#sesGridStatus").val(), $("#sesGridStartDate").val(), $("#sesGridEndDate").val(), '', '', '', '',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:160, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:160, editable: true, align:"left",sorttype:'text',search: true,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
@@ -25,7 +27,8 @@ function populateSessionGridInPopupForFR(){
 		   		{name:'productType',index:'productType',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
 		   	    {name:'isTabeProduct',index:'isTabeProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
 		   	    {name:'isTabeAdaptiveProduct',index:'isTabeAdaptiveProduct',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
-		   	    {name:'itemSetId',index:'itemSetId',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
+		   	    {name:'itemSetId',index:'itemSetId',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   	    {name:'isStudentsSession',index:'isStudentsSession',editable: true, hidden:true, width:80, align:"left",search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSession", id:"testAdminId",
 		   	records: function(obj) {} },
@@ -61,7 +64,6 @@ function populateSessionGridInPopupForFR(){
 				disableButton('nextButtonStdPopup');
 			},
 			onSelectRow: function (rowId) {
-					enableButton('nextButtonStdPopup');
 					$("#displayMessageMain").hide();
 					var selectedRowData = $("#list3").getRowData(rowId);
 					selectedTestAdminName = selectedRowData.testAdminName;
@@ -73,10 +75,18 @@ function populateSessionGridInPopupForFR(){
 					} else {
 						isTabeProduct = true;
 						isTabeAdaptiveProduct = false;
+					}
+					
+					if(selectedRowData.isStudentsSession=="T"){
+						disableButton('nextButtonStdPopup');
+					} else{
+						enableButton('nextButtonStdPopup');
 					} 
 
 				},
 			loadComplete: function () {
+				disableButton('nextButtonStdPopup');
+				$("#list3").jqGrid('resetSelection');
 				if ($('#list3').getGridParam('records') === 0) {
             		$('#sp_1_pager3').text("1");
             		$('#next_pager3').addClass('ui-state-disabled');
@@ -137,9 +147,10 @@ function populateSessionGridInPopupForFR(){
 		postDataObject.q = 2;
 		//postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInSecondaryDiv").val();// added for new changes
-			
+		postDataObject.studentId = selectedStudentId;	
         jQuery("#list3").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
   	   //var sortArrow = jQuery("#list3");
         jQuery("#list3").jqGrid('setGridParam', {url:'getRecommendedSessionForReportingGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
         jQuery("#list3").sortGrid($("#grdSessionName").val(),true,'asc');
+        disableButton('nextButtonStdPopup');
 	}

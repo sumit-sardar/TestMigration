@@ -82,6 +82,8 @@
 					
 				},
 			loadComplete: function () {
+				disableButton('nextButtonStdPopup');
+				$("#list2").jqGrid('resetSelection');
 				if ($('#list2').getGridParam('records') === 0) {
             		$('#sp_1_pager2').text("1");
             		$('#next_pager2').addClass('ui-state-disabled');

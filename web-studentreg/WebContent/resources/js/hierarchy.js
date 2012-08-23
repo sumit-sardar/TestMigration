@@ -640,6 +640,8 @@ function populateReportingStudentGrid() {
 					setAnchorButtonState('registerButton', false);
 			},
 			loadComplete: function () {
+				setAnchorButtonState('registerButton', true);
+				$("#studentRegistrationGrid").jqGrid('resetSelection');
 				if ($('#studentRegistrationGrid').getGridParam('records') === 0) {
             		$('#sp_1_studentRegistrationPager').text("1");
             		$('#next_studentRegistrationPager').addClass('ui-state-disabled');
@@ -789,6 +791,8 @@ function populateRegistrationSessionGrid() {
 					} 
 				},
 			loadComplete: function () {
+				setAnchorButtonState('registerButton', true);
+				$("#sessionRegistrationGrid").jqGrid('resetSelection');
 				if ($('#sessionRegistrationGrid').getGridParam('records') === 0) {
             		$('#sp_1_sessionRegistrationPager').text("1");
             		$('#next_sessionRegistrationPager').addClass('ui-state-disabled');

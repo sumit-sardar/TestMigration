@@ -825,7 +825,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }
     
-    public TestSessionData getRecommendedTestSessionsForOrgNode(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    public TestSessionData getRecommendedTestSessionsForOrgNodeWithStudentStatus(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId, Integer studentId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
         validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
         try {
@@ -836,7 +836,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             }
             TestSession [] sessions = null;
 
-           	sessions = testAdmin.getRecommendedTestSessionsForOrgNode(orgNodeId, userId, selectedProductId);	
+           	sessions = testAdmin.getRecommendedTestSessionsForOrgNodeWithStudentStatus(orgNodeId, userId, selectedProductId, studentId);	
             tsd.setTestSessions(sessions, pageSize);
             if(filter != null) tsd.applyFiltering(filter);
             if(sort != null) tsd.applySorting(sort);

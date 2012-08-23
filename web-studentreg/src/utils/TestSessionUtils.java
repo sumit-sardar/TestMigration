@@ -1441,12 +1441,12 @@ public class TestSessionUtils
 		
 	}
 
-	public static TestSessionData getRecommendedTestSessionsForOrgNode(	 String userName, Integer userId, TestSessionStatus testSessionStatus, Integer orgNodeId, Integer selectedProductId) {
+	public static TestSessionData getRecommendedTestSessionsForOrgNodeWithStudentStatus(	 String userName, Integer userId, TestSessionStatus testSessionStatus, Integer orgNodeId, Integer selectedProductId, Integer studentId) {
 
         TestSessionData tsd = new TestSessionData();                        
         try
         {     
-        	tsd = testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, userId, selectedProductId, orgNodeId, null, null, null);
+        	tsd = testSessionStatus.getRecommendedTestSessionsForOrgNodeWithStudentStatus(userName, userId, selectedProductId, orgNodeId,studentId, null, null, null);
         }
         catch (CTBBusinessException be)
         {

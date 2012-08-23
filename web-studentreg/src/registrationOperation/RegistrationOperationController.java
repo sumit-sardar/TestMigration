@@ -1073,7 +1073,7 @@ public class RegistrationOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String json = "";
 		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
-		//String studentId = (String)this.getRequest().getParameter("studentId");
+		Integer studentId = Integer.parseInt((String)this.getRequest().getParameter("studentId"));
 		Integer selectedProductId = Integer.parseInt( getRequest().getParameter("selectedProductId"));
 
 		try {
@@ -1082,7 +1082,7 @@ public class RegistrationOperationController extends PageFlowController {
 				getLoggedInUserPrincipal();		
 				getUserDetails();
 			}
-			TestSessionData tsd = TestSessionUtils.getRecommendedTestSessionsForOrgNode(this.userName, this.user.getUserId(), this.testSessionStatus, treeOrgNodeId, selectedProductId);
+			TestSessionData tsd = TestSessionUtils.getRecommendedTestSessionsForOrgNodeWithStudentStatus(this.userName, this.user.getUserId(), this.testSessionStatus, treeOrgNodeId, selectedProductId, studentId);
 	        Base base = new Base();
 			
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0)) {
