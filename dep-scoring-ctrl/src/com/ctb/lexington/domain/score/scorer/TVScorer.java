@@ -129,6 +129,14 @@ public class TVScorer extends STScorer {
                 prim.setLowMasteryRange(event.getLowMasteryRange());
             }
         }
+        if(getResultHolder().getAdminData().getProductId() == 3700) {
+        	if(event.getPValue() == null) {
+        		PrimaryObjective prim = getResultHolder().getCurriculumData().getPrimObjById(event.getObjectiveId());
+                if(prim != null) {
+                    prim.setNationalAverage(new BigDecimal(0));
+                }
+        	}
+        }
         StudentScoreSummaryData data = getResultHolder().getStudentScoreSummaryData();
         StudentScoreSummaryDetails details = data.get(event.getObjectiveId());
         details.setNationalScore(event.getPValue());

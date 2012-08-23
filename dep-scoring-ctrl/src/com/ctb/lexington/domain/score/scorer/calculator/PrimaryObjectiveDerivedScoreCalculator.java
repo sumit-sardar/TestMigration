@@ -49,15 +49,10 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
             	lowMR = getScoreLookupHelper().getObjectiveLMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
             	//System.out.println(event.getObjectiveId() + " - " + highMR + " - " + lowMR);
-            	if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))
-                		|| ("11".equals(pGrade) && "21".equals(pLevel)) || ("12".equals(pGrade) && "22".equals(pLevel))) {
-            		if(pGrade.length() == 1) {
-                    	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, pLevel, conn);
-                    } else {
-                    	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
-                    }
+            	if(pGrade.length() == 1) {
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, pLevel, conn);
                 } else {
-                	pValue = null;
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
                 }
             	System.out.println("pValue -> " + pValue);
             	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
