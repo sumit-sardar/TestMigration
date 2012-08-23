@@ -1,5 +1,6 @@
 package com.ctb.lexington.domain.score.controller.tvcontroller;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
+import com.ctb.lexington.db.irsdata.irstvdata.IrsTVContentAreaFactData;
 import com.ctb.lexington.domain.teststructure.MasteryLevel;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.CompositeScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ContentAreaScore;
@@ -180,10 +182,10 @@ public class TVWsAcuityDataController {
 				counter = 0;
 			}
 			newFact.setCompleteContArea(completeFlag);
-			//newFact.setSubtestNames((String[]) subtestNames.toArray());
-			System.out.println("newFact.getContentAreaName() -> " + newFact.getContentAreaName());
-			System.out.println("IncompleteFlag -> " + completeFlag);
-			System.out.println(subtestNames.size() + "-" + subtestNames.get(0).toString());
+			newFact.setSubtestNames((String[]) subtestNames.toArray(new String[0]));
+			//System.out.println("newFact.getContentAreaName() -> " + newFact.getContentAreaName());
+			//System.out.println("IncompleteFlag -> " + completeFlag);
+			//System.out.println(subtestNames.size() + "-" + subtestNames.get(0).toString());
 		}
 	}
 	
@@ -287,14 +289,11 @@ public class TVWsAcuityDataController {
                     "30".equals(adminData.getNormsGroup())?"SPRING":
                     "31".equals(adminData.getNormsGroup())?"SPRING":
                     adminData.getNormsGroup();
-				if( ("1" + contextData.getGradeId().toString()).equals(items[i].getSubtestLevel()) || 
-                		("19/20".equals(items[i].getSubtestLevel()) && ("9".equals(contextData.getGradeId().toString()) || "10".equals(contextData.getGradeId().toString()))) ||
-                		("21-22".equals(items[i].getSubtestLevel()) && ("11".equals(contextData.getGradeId().toString()) || "12".equals(contextData.getGradeId().toString()))) ||
-                		("21/22".equals(items[i].getSubtestLevel()) && ("11".equals(contextData.getGradeId().toString()) || "12".equals(contextData.getGradeId().toString())))) {
+				if(item.getNationalAverage(normGroup + String.valueOf(contextData.getGradeId().longValue())) != null) {
                     itemFact.setNationalAverage(item.getNationalAverage(normGroup + String.valueOf(contextData.getGradeId().longValue())).doubleValue());
-                } else {
-                    itemFact.setNationalAverage(new Double(-1.0));
-                }
+            	} else {
+            		itemFact.setNationalAverage(new Double(-1.0));
+            	}
 				PrimaryObjective [] prims = currData.getPrimaryObjectives();
                 for(int j=0;j<prims.length;j++) {
     				String contentAreaName = prims[j].getPrimaryObjectiveName();
