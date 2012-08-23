@@ -180,6 +180,8 @@
 
         // add the message contxt to the operation client
         _operationClient.addMessageContext(_messageContext);
+        
+        System.out.println("Request XML ******************" + _messageContext.getEnvelope().toString());
 
         //execute the operation client
         _operationClient.execute(true);
