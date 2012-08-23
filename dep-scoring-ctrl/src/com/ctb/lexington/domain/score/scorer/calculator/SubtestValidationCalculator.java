@@ -152,6 +152,30 @@ public class SubtestValidationCalculator extends Calculator {
         	else
         		return false;
         }
+        
+      //Added for Terra Nova For G for which subtest level invalidation need to be handled.
+        if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+        	String valid = "IN";
+        	Connection conn = null;
+            try {
+                conn = scorer.getOASConnection();
+                StudentItemSetStatusMapper mapper = new StudentItemSetStatusMapper(conn);
+                valid = mapper.getSubtestValidationStatusForTestRosterAndItemSetId(this.testRosterId, 
+                		DatabaseHelper.asLong(this.ItemSetId));
+                //System.out.println(this.ItemSetId + " ==== " + valid);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    scorer.close(true, conn);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        	if(!valid.equals("VA"))
+        		return false;
+        }
+        
         int attemptedItems = 0;
         int correctAnswers = 0;
 

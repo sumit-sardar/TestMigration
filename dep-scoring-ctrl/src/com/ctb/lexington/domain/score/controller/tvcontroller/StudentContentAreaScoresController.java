@@ -44,13 +44,16 @@ public class StudentContentAreaScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTVContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
-                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
-                if(adminData.getProductId() == 3700) {
-                	mapper.insertWithSem(newFact);
-                } else {
-                	mapper.insert(newFact);
-                }
+            if(adminData.getProductId() == 3700) {
+            	 if(new Long(1).equals(newFact.getCurrentResultid()))  {
+ 	                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
+ 	                mapper.insertWithSem(newFact);
+ 	            }
+            } else {
+	            if(new Long(1).equals(context.getCurrentResultId()))  {
+	                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
+	                mapper.insert(newFact);
+	            }
             }
         }
     }
@@ -134,6 +137,15 @@ public class StudentContentAreaScoresController {
                 	   }
                    }
                    facts.add(newFact);
+               } else {
+            	   if(adminData.getProductId() == 3700) {
+	            	   IrsTVContentAreaFactData newFact = new IrsTVContentAreaFactData();
+	            	   newFact.setSessionid(context.getSessionId());
+	                   newFact.setStudentid(context.getStudentId());
+	                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
+	                   newFact.setCurrentResultid(new Long (2));
+	                   facts.add(newFact);
+            	   }
                }
             }
         return (IrsTVContentAreaFactData []) facts.toArray(new IrsTVContentAreaFactData[0]);
