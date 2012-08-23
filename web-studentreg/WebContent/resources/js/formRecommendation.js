@@ -55,6 +55,11 @@ function onNextFromShowBySessionPopUp () {
 																			'</span></td></tr>');
 										}									
 	 
+	 									var toppos = ($(window).height() - 400) /2 + 'px';
+										var leftpos = ($(window).width() - $("#recommendedDialogID").height()) /2 + 'px';
+										$("#recommendedDialogID").parent().css("top",toppos);
+										$("#recommendedDialogID").parent().css("left",leftpos);
+										
 										if(currentView == "student"){
 										 	//$("#showBySessionFRButtonDiv").hide();
 										 	$("#showByStudentFRButtonDiv").show();									 	
