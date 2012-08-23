@@ -331,7 +331,9 @@ function populateSelectStudentGrid() {
 		   	}
 		   	else {  
 		   		licenseInfo = obj.rows[0].cell;
-		   		licenseInfo[3] = getNumberSelectedSubtests();
+		   		var numberSelectedSubtests = getNumberSelectedSubtests();
+		   		if (numberSelectedSubtests > 0)
+		   			licenseInfo[3] = numberSelectedSubtests;
 		   		licenseInfoMap.put(licenseInfo[0], licenseInfo[4]);
 		   	}
 		   	 

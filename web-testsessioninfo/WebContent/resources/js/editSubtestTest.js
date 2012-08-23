@@ -1184,5 +1184,8 @@
 	}
 	
 	function getNumberSelectedSubtests() {
-		return selectedSubtests.length;
+		if (selectedSubtests != null) && (selectedSubtests != undefined)) 
+			return selectedSubtests.length;
+		else
+			return 0;
 	}

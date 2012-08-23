@@ -218,6 +218,7 @@ public class SessionOperationController extends PageFlowController {
     public LinkedHashMap timeZoneOptions = null;	 
 	
 	private List<TestElement> subtestDetails = null;
+    private int numberSelectedSubtests = 0;
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -950,6 +951,9 @@ public class SessionOperationController extends PageFlowController {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
+    	    	
+    	    	this.numberSelectedSubtests = scheduledSession.getScheduledUnits().length;
+    	    	
     	    	//added for copy test session
     	    	if(action != null && action.equals("copySession")){
     	    		scheduledSession.setStudentsLoggedIn(new Integer(0));
@@ -2624,7 +2628,7 @@ public class SessionOperationController extends PageFlowController {
 					cells[0] = selectedOrgNodeId.toString();
 					cells[1] = n.getOrgNodeName();
 					cells[2] = cl.getSubtestModel();
-					cells[3] = "1";	
+					cells[3] = String.valueOf(this.numberSelectedSubtests);	
 					cells[4] = available.toString();
 					row.setCell(cells);			
 					rowList.add(row);
