@@ -45,10 +45,12 @@ public class StudentContentAreaScoresController {
             IrsTVContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
             if(adminData.getProductId() == 3700) {
-            	 if(new Long(1).equals(newFact.getCurrentResultid()))  {
- 	                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
- 	                mapper.insertWithSem(newFact);
- 	            }
+            	if(new Long(1).equals(context.getCurrentResultId())) {
+	            	if(new Long(1).equals(newFact.getCurrentResultid()))  {
+	 	                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
+	 	                mapper.insertWithSem(newFact);
+	 	            }
+            	}
             } else {
 	            if(new Long(1).equals(context.getCurrentResultId()))  {
 	                System.out.println("TNCAFact record currency: " + mapper.isTNCAFactCurrent(newFact));
