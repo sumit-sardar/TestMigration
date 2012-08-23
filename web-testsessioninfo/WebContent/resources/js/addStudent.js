@@ -1530,16 +1530,16 @@ function calculateLicenseUsedForOrgNode(orgNodeId) {
 	var licensePerStudent = 1; 
 	if (model == "T")
 		licensePerStudent = parseInt(numberSubtests);
-		
+
 	var usedLicenses = 0; 
-	var studentCount = 0;
 	var keys = studentTempMap.getKeys();
 	for(var i=0 ; i<keys.length; i++) {
 		var stdId = keys[i];
 		var objstr = studentTempMap.get(stdId);
 		if (objstr.orgNodeId == orgNodeId) {
-			studentCount++;
-			usedLicenses += licensePerStudent;
+			if (! studentInTest(stdId, orgNodeId)) {
+				usedLicenses += licensePerStudent;
+			}
 		}
 	}
 	return usedLicenses;
@@ -1593,3 +1593,16 @@ function validateLicenseUsed() {
 	}
 	return result;
 }	
+
+function studentInTest(stdId, orgNodeId) {
+	for (var i = 0; i < AddStudentLocaldata.length; i++) {
+		var stuObj = AddStudentLocaldata[i];
+		if (stuObj != null && stuObj != undefined) {
+			if ((stuObj.studentId == stdId) && (stuObj.orgNodeId == orgNodeId) &&
+				(stuObj.testCompletionStatus != null) && (stuObj.testCompletionStatus != undefined)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
