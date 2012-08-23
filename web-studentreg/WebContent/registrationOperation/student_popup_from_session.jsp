@@ -6,8 +6,7 @@
 
 
 <div id="sessionStudRegId"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<br>
-	  <div style=" background-color: #FFFFFF; padding: 10px 10px 5px;">
+	<div style=" background-color: #FFFFFF; padding-left: 10px; padding-top: 10px;">
 	  
 	  <div>
 	  	<table class="transparent" style="padding-left: 5px;">
@@ -78,13 +77,13 @@
 		</div>
 			
 	</div>		
-	<br>
-	<center>
+
+	<center style="padding-top: 15px; padding-bottom: 10px;">
 		<input type="button"  id="closeButtonSPF" value=<lb:label key="common.button.close" prefix="'" suffix="'" /> onclick="javascript:closePopUp('sessionStudRegId'); return false;" class="ui-widget-header" style="width:60px">
 		<input type="button"  disabled="disabled" id="backButtonSPFPopup" value=<lb:label key="common.button.back" prefix="'" suffix="'" /> onclick="javascript:onBackFromShowBySessionPopUp(); return false;" class="ui-widget-header" style="width:60px">
 		<input type="button" disabled="disabled" id="nextButtonStdPopup" value=<lb:label key="common.button.next" prefix="'" suffix="'" /> onclick="javascript:onNextFromShowBySessionPopUp(); return false;" class="ui-widget-header" style="width:60px">
 	</center>
-	<br>
+
 </div>
 <!--added on 30.07.2012  -->
 <div id="searchInSessionPopupByKeyword"

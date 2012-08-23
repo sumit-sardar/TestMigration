@@ -6,40 +6,28 @@
 <input type="hidden" id="dorgNodeId" name="orgNodeId" value="" />
 <div id="studentConfirmation" 
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="studRegInfo" style ="background-color: #FFFFFF; padding-left: 15px;">
+	<div id="studRegInfo" style ="background-color: #FFFFFF; padding-left: 15px; padding-top: 10px;">
 	 <table width="100%" cellpadding="0" cellspacing="0" class="transparent">
 	    <tr>
-	        <td nowrap="">
+	        <td>
 	            <h1>
 	            <lb:label key="register.stud.congrat.header.caption" />
 	            </h1>
 	        </td>
 	    
-	        <td width="65%" class="transparent"></td>
-	        <td width="100%" rowspan="2" align="right" valign="top">
-	        	&nbsp;
-	        </td>
-	    
-	        <td rowspan="2">
-	            <table width="25"><tr><td></td></tr></table>
-	        </td>
+	        <td width="30%" class="transparent"></td>
 	    </tr>
 	    
 	    <tr>   
-	        <td width="65%" class="transparent">
+	        <td  class="transparent">
 	            <p>
 	             <lb:label key="register.stud.congrat.header.info" />
 	              <br/>
 	            </p>
 	        </td>
-	        <td width="62%" class="transparent"></td> 
+	        <td width="30%" class="transparent"></td> 
 	    </tr>
 	</table> 
-<!--End of change for licnese-->
-
-<%-- message 
-<jsp:include page="/registration/show_message.jsp" /> --%>
-
 
 <!-- student section -->
 	<div id="subtestWarnMsg" style="clear: both; width: 900px; text-align: left; display: none;" class= "roundedMessage ui-corner-all">
@@ -56,7 +44,7 @@
 			</tr>
 		</table>
 	</div>
-	<p>
+
 	<div id="StudentDetail">
 		<table align="center" width="95%">
 			<tr>
@@ -98,11 +86,10 @@
 			</tr>
 		</table>
 	</div>
-	<p/>
 	
 	<!-- test section -->
-	<p>
-	<div id="StudentDetail">
+	<p>  </p>
+	<div id="StudentSessionDetail">
 	<table align="center" width="95%">
 		<tr>
 			<td>
@@ -165,10 +152,9 @@
 			</tr>
 		</table>
 	</div>
-	<p/>
 	
 	<!-- Test Structure Section -->
-	<p>
+	<p> </p> 
 		<div id="locatorDiv">
 		<table align="center" width="95%">
 			<tr>
@@ -200,7 +186,7 @@
 			</tr>
 		</table>
 		</div>
-	</p>
+	
 	<br/>
  <div>
 	
@@ -229,7 +215,7 @@
 
  </div> 
 	
-	<div id="StudConfClose" style="padding-top: 5px; padding-bottom: 15px; width: 100%;clear: both;">
+	<div id="StudConfClose" style="padding-top: 10px; padding-bottom: 10px; width: 100%;clear: both;">
 		<center>
 			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header"/>
 		</center>

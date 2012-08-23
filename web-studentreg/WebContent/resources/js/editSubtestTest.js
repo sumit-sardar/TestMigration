@@ -37,11 +37,11 @@
 	var displayAccessCodeOnTicket = false;
 	
 	function updateModifyTestSize(){
-		$("#modifyTestPopup").parent().height($("#sessionStudRegId").parent().height());
-		$("#modifyTestPopup").height($("#sessionStudRegId").parent().height()-30);
+		$("#modifyTestPopup").parent().height($("#sessionStudRegId").parent().height()-10);
+		$("#modifyTestPopup").height($("#sessionStudRegId").parent().height()-40);
 		$("#modifyTestPopup").parent().width($("#sessionStudRegId").parent().width());
 		$("#modifyTestPopup").width($("#sessionStudRegId").parent().width()-15);
-		$("#editSubtedtinnerDiv").height($("#sessionStudRegId").parent().height()-100);
+		$("#editSubtedtinnerDiv").height($("#sessionStudRegId").parent().height()-90);
 	}
 	
 
@@ -1317,7 +1317,10 @@
 							 	setPopupPosition("studentConfirmation");
 							 	$("#studentConfirmation").height($("#modifyTestPopup").height());
 							 	//$("#studRegInfo").height($("#studentConfirmation").height()-15);
-							 	$("#studRegInfo").height($("#studentConfirmation").parent().height()-15);
+							 	if($("#studentConfirmation").parent().height()-90>$("#studRegInfo").height()) {
+							 		$("#studRegInfo").height($("#studentConfirmation").parent().height()-90);
+							 	} 
+							 	//$("#studRegInfo").height($("#studentConfirmation").parent().height()-15);
 							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width());
 							 	
 							 } else {
