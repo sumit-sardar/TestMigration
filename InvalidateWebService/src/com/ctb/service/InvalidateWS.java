@@ -23,7 +23,7 @@ public class InvalidateWS implements Serializable {
 	@Control()
     private com.ctb.control.db.TestRoster rosters;
 	
-	private static final String AUTHENTICATE_USER_NAME = "sarmistha_abe";
+	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
 	
 	@WebMethod
@@ -36,7 +36,15 @@ public class InvalidateWS implements Serializable {
     		return message;
     	}
     	Long studentId = details.getStudentId();
+    	if(studentId == null || "".equals(studentId) || studentId <= 0) {
+    		message = "Error:Invalid studentId";
+    		return message;
+    	}
     	Long sessionId = details.getSessionId();
+    	if(sessionId == null || "".equals(sessionId) || sessionId <= 0) {
+    		message = "Error:Invalid sessionId";
+    		return message;
+    	}
 		Integer testRosterId = getRosterIdForStudentAndSession(studentId, sessionId);
 		Integer[] subtestIds = null;
 		if(testRosterId != null) {
