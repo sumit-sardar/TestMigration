@@ -588,6 +588,12 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		$('#innerOrgNodeHierarchyForStd').jstree('close_all', -1);
 		$('#list3').GridUnload();
 		$('#secondaryInnerOrgNodeHierarchy').jstree('close_all', -1);
+        // updated title for studnt on back
+		$("#sessionListSubTitle").hide();
+		$("#studentListSubTitle").show();
+		$("#sessionListTitle").hide();
+		$("#studentListTitle").show();
+		
 		disableButton('backButtonSPFPopup');
 		enableButton('nextButtonStdPopup');
 		isPopupOnFRAccept = false; // need to reset this flag
