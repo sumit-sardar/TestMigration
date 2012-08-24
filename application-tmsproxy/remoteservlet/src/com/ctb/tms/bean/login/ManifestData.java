@@ -47,6 +47,7 @@ public class ManifestData implements Serializable
     private String contentURI;
     private int subtestLastMseq = -1;
     private String blockDownload;
+    private String isSample;
     
     public ManifestData () {
     	
@@ -438,6 +439,14 @@ public class ManifestData implements Serializable
 		 */
 		public void setForwardOnly(String forwardOnly) {
 			this.forwardOnly = forwardOnly;
+		}
+
+		public String getIsSample() {
+			return isSample;
+		}
+
+		public void setIsSample(String isSample) {
+			this.isSample = isSample;
 		}
 
 } 
