@@ -19,6 +19,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_LL_PERFORMANCE_LEVEL = "findLasLinkPerformanceLevel";  // For Laslink Scoring
     private static final String FIND_HIGH_MODERATE_MASTERY = "findScoreLookupForHighMasteryRange";
     private static final String FIND_LOW_MODERATE_MASTERY = "findScoreLookupForLowMasteryRange";
+    private static final String FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SETTN3 = "findScoreLookupForItemSetAndUniqueKeyTN3";
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -161,7 +162,8 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue();
     }
     
-    public BigDecimal findObjectivePValueForTerrab3(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
+    public BigDecimal findObjectivePValueForTerrab3(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, 
+    		final String grade, final String level, Integer productId) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SCALED_SCORE.getCode(),
                 ScoreLookupCode.OBJECTIVE_P_VALUE.getCode(), new BigDecimal(0), null);
         template.setNormGroup(normGroup);
@@ -170,7 +172,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         template.setTestForm(testForm);
         template.setContentArea(contentArea);
 
-        List results = findMany(FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SET, template);
+        List results = findMany(FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SETTN3, template);
         if (results==null || results.isEmpty()) {
             StringBuffer buf = new StringBuffer("Unable to find Objective PValue value for: ");
             buf.append("\n\tparams: " + itemSetId);
@@ -186,8 +188,33 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             System.err.println(buf.toString());
             return null;
         }
-        else
+        else {
+        	
+        	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
+				//System.out.println(slr.getScoreLookupId() + " - " + productId);
+				if(slr != null && slr.getScoreLookupId() != null) {
+					if(productId == 3720) {
+						if(slr.getScoreLookupId().contains("CB")) {
+							return slr.getDestScoreValue();
+						} else {
+							continue;
+						}
+					} else if (productId == 3710) {
+						if(slr.getScoreLookupId().contains("SV")) {
+							return slr.getDestScoreValue();
+						} else {
+							continue;
+						}
+					}
+				} else {
+					return null;
+				}
+				
+			}
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue();
+        
+        }
     }
     
     public Integer findObjectiveHMR(final Long itemSetId, final String testForm, final String contentArea, 
@@ -218,12 +245,19 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
 				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
 				if(slr != null && slr.getScoreLookupId() != null) {
-					if(slr.getScoreLookupId().contains("CB") && productId == 3720) {
-						return slr.getDestScoreValue().intValue();
-					} else if(slr.getScoreLookupId().contains("SV") && productId == 3710) {
-						return slr.getDestScoreValue().intValue();
-					} else
-						return slr.getDestScoreValue().intValue();
+					if(productId == 3720) {
+						if(slr.getScoreLookupId().contains("CB")) {
+							return slr.getDestScoreValue().intValue();
+						} else {
+							continue;
+						}
+					} else if (productId == 3710) {
+						if(slr.getScoreLookupId().contains("SV")) {
+							return slr.getDestScoreValue().intValue();
+						} else {
+							continue;
+						}
+					}
 				} else {
 					return null;
 				}
@@ -263,12 +297,19 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
 				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
 				if(slr != null && slr.getScoreLookupId() != null) {
-					if(slr.getScoreLookupId().contains("CB") && productId == 3720) {
-						return slr.getDestScoreValue().intValue();
-					} else if(slr.getScoreLookupId().contains("SV") && productId == 3710) {
-						return slr.getDestScoreValue().intValue();
-					} else
-						return slr.getDestScoreValue().intValue();
+					if(productId == 3720) {
+						if(slr.getScoreLookupId().contains("CB")) {
+							return slr.getDestScoreValue().intValue();
+						} else {
+							continue;
+						}
+					} else if (productId == 3710) {
+						if(slr.getScoreLookupId().contains("SV")) {
+							return slr.getDestScoreValue().intValue();
+						} else {
+							continue;
+						}
+					}
 				} else {
 					return null;
 				}

@@ -470,4 +470,72 @@
              OR SL.AGE_CATEGORY IS NULL)
         </isNotNull>
     </select>
+    <select id="findScoreLookupForItemSetAndUniqueKeyTN3" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        SELECT DISTINCT
+            SL.SOURCE_SCORE_TYPE_CODE as sourceScoreTypeCode,
+            SL.SCORE_LOOKUP_ID as scoreLookupId,
+            SL.DEST_SCORE_TYPE_CODE as destScoreTypeCode,
+            SL.SOURCE_SCORE_VALUE as sourceScoreValue,
+            SL.DEST_SCORE_VALUE as destScoreValue,
+            SL.TEST_FORM as testForm,
+            SL.TEST_LEVEL as testLevel,
+            SL.GRADE as grade,
+            SL.CONTENT_AREA as contentArea,
+            SL.NORM_GROUP as normGroup,
+            SL.NORM_YEAR as normYear,
+            SL.AGE_CATEGORY as ageCategory,
+            SL.EXTENDED_FLAG as extendedFlag
+        FROM
+            SCORE_LOOKUP SL,
+            SCORE_LOOKUP_ITEM_SET SLIS
+        WHERE
+                SL.SCORE_LOOKUP_ID = SLIS.SCORE_LOOKUP_ID
+            AND SLIS.ITEM_SET_ID = #itemSetId:NUMERIC#
+            AND SL.SOURCE_SCORE_TYPE_CODE = #sourceScoreTypeCode:VARCHAR#
+            AND SL.DEST_SCORE_TYPE_CODE = #destScoreTypeCode:VARCHAR#
+            AND SL.SOURCE_SCORE_VALUE = #sourceScoreValue:NUMERIC#
+            AND
+        <isNull property="testForm">
+            SL.TEST_FORM IS NULL
+        </isNull>
+        <isNotNull property="testForm">
+            SL.TEST_FORM like #testForm:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="testLevel">
+            SL.TEST_LEVEL IS NULL
+        </isNull>
+        <isNotNull property="testLevel">
+            #testLevel:VARCHAR# like '%' || SL.TEST_LEVEL || '%'
+        </isNotNull>
+            AND
+        <isNull property="grade">
+            SL.GRADE IS NULL
+        </isNull>
+        <isNotNull property="grade">
+            SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="contentArea">
+            SL.CONTENT_AREA IS NULL
+        </isNull>
+        <isNotNull property="contentArea">
+            SL.CONTENT_AREA like '%' || #contentArea:VARCHAR# || '%'
+        </isNotNull>
+            AND
+        <isNull property="normGroup">
+            SL.NORM_GROUP IS NULL
+        </isNull>
+        <isNotNull property="normGroup">
+            SL.NORM_GROUP = #normGroup:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="ageCategory">
+            SL.AGE_CATEGORY IS NULL
+        </isNull>
+        <isNotNull property="ageCategory">
+            (SL.AGE_CATEGORY = #ageCategory:VARCHAR#
+             OR SL.AGE_CATEGORY IS NULL)
+        </isNotNull>
+    </select>
 </sqlMap>

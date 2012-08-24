@@ -50,11 +50,11 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             	lowMR = getScoreLookupHelper().getObjectiveLMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
             	//System.out.println(event.getObjectiveId() + " - " + highMR + " - " + lowMR);
             	if(pGrade.length() == 1) {
-                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, pLevel, conn);
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, pLevel, conn, scheduledProductId);
                 } else {
-                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn, scheduledProductId);
                 }
-            	System.out.println("pValue -> " + pValue);
+            	System.out.println(event.getObjectiveId() + " -> " + pValue);
             	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
             			.getObjectiveId(), pValue, event.getSubtestId(), highMR, lowMR));
             } else {
