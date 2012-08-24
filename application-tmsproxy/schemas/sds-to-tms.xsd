@@ -980,6 +980,11 @@ allowed values: not_attempted, completed, incomplete, and unknown</xs:documentat
 											<xs:documentation>SCO ID.</xs:documentation>
 										</xs:annotation>
 									</xs:attribute>
+									<xs:attribute name="isSample" type="xs:boolean" use="optional">
+										<xs:annotation>
+											<xs:documentation>is subtest a sample test.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>

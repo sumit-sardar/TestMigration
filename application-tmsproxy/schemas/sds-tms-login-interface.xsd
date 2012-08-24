@@ -549,6 +549,15 @@
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
+												<xs:attribute
+													name="isOK" type="xs:string">
+													<xs:annotation>
+														<xs:documentation>
+															This is to get the is 
+															customer Oklahoma.
+														</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 										<xs:element
@@ -943,6 +952,17 @@
 															unique subject of
 															the
 															sub-test.
+														</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="isSample"
+													type="xs:boolean" use="optional">
+													<xs:annotation>
+														<xs:documentation>
+															isSample. This
+															is to identify
+															if the 
+															sub-test is sample test.
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
