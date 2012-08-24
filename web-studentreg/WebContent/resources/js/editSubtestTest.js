@@ -1038,9 +1038,11 @@
 	     subtestWarningMsg = "";
 	     var validSubtest = validateSubtest(tmpSelectedSubtestsMsm);
 	     if(validSubtest){
-	        //closePopUp('modifyTestPopup');
-	    	//closePopUp('sessionStudRegId');
 	    	scheduleStudentAndOpenConfirmMationPopup(tmpSelectedSubtestsMsm);
+			//$("#deny").trigger('click');
+			$("#deny").attr('checked',true);
+			$("#allow").removeAttr('checked');
+			displayAccessCodeOnTicket=false;
 	     }
 
 	}
@@ -1357,7 +1359,7 @@
 	      	$("#enforceBreakNo").show();
 	      	$("#enforceBreakYes").hide();
 	     } else {
-	     $("#enforceBreakNo").text("");
+	     	$("#enforceBreakNo").text("");
 	     	$("#enforceBreakNo").hide();
 	     	$("#enforceBreakYes").show();
 	     }
@@ -1371,7 +1373,6 @@
 	     	$("#dDisplayAutolocator").hide();
 	     } else {
 	     	$("#dDisplayAutolocator").show();
-	     	 
 	     	 $("#dautoLocatorDisplay").text(data.autoLocatorDisplay);
 	     }
 	     $("#dtestAdminName").text(data.testAdminName);
@@ -1382,7 +1383,7 @@
 	     	$("#dShowHideAllowBreak").hide();
 	     } else {
 	     	$("#dShowHideAllowBreak").show();
-	     	 $("#denforceBreak").text(data.enforceBreak);
+	     	$("#denforceBreak").text(data.enforceBreak);
 	     }
 	     $("#dorgNodeId").val(data.studentOrgId);
 	     if(data.showAccessCode){

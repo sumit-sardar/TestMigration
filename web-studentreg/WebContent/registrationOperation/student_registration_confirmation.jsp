@@ -198,8 +198,8 @@
 		<p>
 		   <lb:label key="register.stud.congrat.testticket.instruction" />
 			<br/>
-			<input type="radio" id="allow" name="individualAccess" value="Yes" onclick=""><lb:label key="common.button.yes" /></input>
-			<input type="radio" id="deny" name="individualAccess" value="No"  onclick="" checked="checked"><lb:label key="common.button.no" /></input>
+			<input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()"><lb:label key="common.button.yes" /></input>
+			<input type="radio" id="deny" name="individualAccess" value="No"  onclick="accessCode()" checked="checked"><lb:label key="common.button.no" /></input>
 		</p>
 	</div>
 		<p align="right" style="padding-right: 15px">
