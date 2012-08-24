@@ -213,12 +213,23 @@ function studentDetailSubmit(){
 																										
 													if(showStudentInGrid) {
 														
+														var orgNodeNamesList ="";
+														var elm = $("#selectedOrgNode a");
+														for(var kk=elm.length ;kk>0; kk--){
+															if(kk!=elm.length){
+																orgNodeNamesList += "|";
+															}
+															orgNodeNamesList +=$(elm[kk-1]).text();
+														}
 														var dataToBeAdded = {studentName:initCap($("#studentRegLastName").val())+','+ initCap($("#studentRegFirstName").val()),
 																			grade:$("#gradeOptions").val(),
 																			orgNodeNamesStr:$.trim(assignedOrg),
 																			gender:$("#genderOptions").val(),
 																			userName:data.studentLoginId,
-																			studentNumber:$("#studentRegExtPin1").val()};
+																			studentNumber:$("#studentRegExtPin1").val(),
+																			orgNodeIdList:assignedOrgNodeIds.replace(/,/g,"|"),
+																			orgNodeNamesList:orgNodeNamesList
+																			};
 														
 														var sortOrd = jQuery("#studentRegistrationGrid").getGridParam("sortorder");
 														var sortCol = jQuery("#studentRegistrationGrid").getGridParam("sortname");	
