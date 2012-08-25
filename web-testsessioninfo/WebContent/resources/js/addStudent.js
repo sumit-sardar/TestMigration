@@ -326,7 +326,9 @@ function populateSelectStudentGrid() {
 		   	$('#gs_untimedTest').val("");
 
 		   	accomodationMapForAll = obj.accomodationMap;
-		   	if ((obj.rows == null) || (obj.rows == undefined)) {
+		   	var nonLicenseProduct = isTutorialOrLocatorProduct();
+		   	
+		   	if ((obj.rows == null) || (obj.rows == undefined) || nonLicenseProduct) {
 		   		licenseInfo = null;
 		   	}
 		   	else {  
@@ -336,7 +338,7 @@ function populateSelectStudentGrid() {
 		   			licenseInfo[3] = numberSelectedSubtests;
 		   		licenseInfoMap.put(licenseInfo[0], licenseInfo[4]);
 		   	}
-		   	 
+
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
@@ -700,6 +702,9 @@ function populateSelectStudentGrid() {
 				
 				if (licenseInfo != null) {	
 					showLicenseInformation();
+				}
+				else {
+					hideLicenseInformation();
 				}
 						
 			},
@@ -1449,6 +1454,11 @@ function getStudentListArray(studentArray) {
 		
 	}
 	
+
+function hideLicenseInformation() {
+	$("#licenseInfoDiv").css('display', 'none');
+}
+	
 	
 function showLicenseInformation() {
 	$("#licenseInfoDiv").css('display', 'block');
@@ -1538,7 +1548,23 @@ function calculateLicenseUsedForOrgNode(orgNodeId) {
 	for(var i=0 ; i<keys.length; i++) {
 		var stdId = keys[i];
 		var objstr = studentTempMap.get(stdId);
+		var orgNodeFound = false;
 		if (objstr.orgNodeId == orgNodeId) {
+			orgNodeFound = true;
+		}
+		else {
+	 	 	var orgArray = String(objstr.orgNodeId).split(",");
+	 	 	if (orgArray.length > 1) {
+		 	 	 for (var j=0; j<orgArray.length ; j++){
+					if (orgArray[j] == orgNodeId) {
+						orgNodeFound = true;
+						break;
+					}
+		 	 	 }
+	 	 	}
+		}
+				
+		if (orgNodeFound) {
 			if (! studentInTest(stdId, orgNodeId)) {
 				usedLicenses += licensePerStudent;
 			}
@@ -1558,8 +1584,12 @@ function calculateLicenseUsedPercentForOrgNode(usedLicenses, availableLicense) {
 
 function showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense) {
 	var licenseNeeded = licenseUsed - availableLicense; 
-	var licenseTitle = orgNodeName + " has insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
-	var licenseText = "Please reduce number of students and save the session and get more licenses then come back to add more students.";
+	var text = "license.";
+	if (licenseNeeded > 1)
+		text = "licenses.";
+	
+	var licenseTitle = orgNodeName + " has insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more " + text;
+	var licenseText = "Reduce the number of students selected to save the session. Contact your license administrator to get more licenses, and then add more students to the session.";
 	setMessage("Exceeds Licenses Available", licenseTitle, "errorMessage", licenseText);       
 	$('#displayMessage').show();
 }

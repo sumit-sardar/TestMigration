@@ -219,6 +219,7 @@ public class SessionOperationController extends PageFlowController {
 	
 	private List<TestElement> subtestDetails = null;
     private int numberSelectedSubtests = 0;
+    private String selectedProductType = "ST";
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -953,6 +954,7 @@ public class SessionOperationController extends PageFlowController {
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	
     	    	this.numberSelectedSubtests = scheduledSession.getScheduledUnits().length;
+    	    	this.selectedProductType = scheduledSession.getTestSession().getProductType();
     	    	
     	    	//added for copy test session
     	    	if(action != null && action.equals("copySession")){
@@ -2615,7 +2617,8 @@ public class SessionOperationController extends PageFlowController {
 			base.setAccomodationMap(accomodationMap);
 			
 			// get licenses
-			if (this.hasLicenseConfig) {
+			boolean licenseProduct = (this.selectedProductType.equals("TL") || this.selectedProductType.equals("PT")) ? false : true;
+			if (this.hasLicenseConfig && licenseProduct) {
 				CustomerLicense[] customerLicenses = getCustomerLicenses(); 
 				if ((customerLicenses != null) && (customerLicenses.length > 0)) {
 					CustomerLicense cl = customerLicenses[0];

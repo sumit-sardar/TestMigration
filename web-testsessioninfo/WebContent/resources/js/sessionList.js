@@ -96,6 +96,8 @@ var accomodationMap={};
 var accomodationMapExisting={};
 var firstTimeOpen = false;
 
+var selectProductId = null;
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1782,7 +1784,7 @@ function registerDelegate(tree){
 		selectedSubtestId = "";
 		selectedTestId = "";
 		var e = document.getElementById("testGroupList");  
-		var selectProductId = e.options[e.selectedIndex].value;
+		selectProductId = e.options[e.selectedIndex].value;
 		var optionList = ProductData.product
 		for(var i = 0; i < optionList.length; i++ ) {
 			if(selectProductId==optionList[i].productId) { 	     
@@ -2675,7 +2677,7 @@ function registerDelegate(tree){
 		var selectlevel = el.options[el.selectedIndex].value;
 		
 		var ep = document.getElementById("testGroupList");  
-		var selectProductId = ep.options[ep.selectedIndex].value;
+		selectProductId = ep.options[ep.selectedIndex].value;
 		var optionList = ProductData.product
 		hideSubtestWarningMessage();
 		document.getElementById("modifyTestDiv").style.display = "none";
@@ -4839,5 +4841,12 @@ function validNumber(str){
 							}
 			});
 		}
+	}
+	
+	function isTutorialOrLocatorProduct() {
+		if ((selectProductId == 4013) || (selectProductId == 4008))
+			return true;
+		else 
+			return false;			
 	}
 	
