@@ -170,14 +170,21 @@ clear: both;
 									$('#displayMessage').show();
 									e.stopPropagation();
 								}else{
-									$('#displayMessage').hide();
-									$('#studentAddDeleteInfo').hide();
-									$('#proctorAddDeleteInfo').hide();
-									isFirstAccordSelected = true;
-									isSecondAccordSelected = false;
-									isThirdAccordSelected = false;
-									isFourthAccordSelected = false;
-									wizard.accordion("activate", index);
+									if (isSelectingStudent) {
+										setMessage("Action required commit", "", "errorMessage", "Click OK to commit adding students to continue.");       
+										$('#displayMessage').show();
+										e.stopPropagation();
+									}
+									else {
+										$('#displayMessage').hide();
+										$('#studentAddDeleteInfo').hide();
+										$('#proctorAddDeleteInfo').hide();
+										isFirstAccordSelected = true;
+										isSecondAccordSelected = false;
+										isThirdAccordSelected = false;
+										isFourthAccordSelected = false;
+										wizard.accordion("activate", index);
+									} 
 								}
 						}else if(divID == "testDetailId"){
 								if(state =="EDIT"){
@@ -194,14 +201,21 @@ clear: both;
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else{
-									$('#displayMessage').hide();
-									$('#studentAddDeleteInfo').hide();
-									$('#proctorAddDeleteInfo').hide();
-									isFirstAccordSelected = false;
-									isSecondAccordSelected = true;
-									isThirdAccordSelected = false;
-									isFourthAccordSelected = false;
-									wizard.accordion("activate", index);
+									if (isSelectingStudent) {
+										setMessage("Action required commit", "", "errorMessage", "Click OK to commit adding students to continue.");       
+										$('#displayMessage').show();
+										e.stopPropagation();
+									}
+									else {								
+										$('#displayMessage').hide();
+										$('#studentAddDeleteInfo').hide();
+										$('#proctorAddDeleteInfo').hide();
+										isFirstAccordSelected = false;
+										isSecondAccordSelected = true;
+										isThirdAccordSelected = false;
+										isFourthAccordSelected = false;
+										wizard.accordion("activate", index);
+									}
 								}
 						}else if(divID == "addStudentId"){
 								if(state =="EDIT"){
@@ -258,14 +272,21 @@ clear: both;
 									$('#displayMessage').show();
 									e.stopPropagation();
 								}else{
-									$('#displayMessage').hide();
-									$('#studentAddDeleteInfo').hide();
-									$('#proctorAddDeleteInfo').hide();
-									isFirstAccordSelected = true;
-									isSecondAccordSelected = false;
-									isFourthAccordSelected = true;
-									isThirdAccordSelected = false;
-									wizard.accordion("activate", index);
+									if (isSelectingStudent) {
+										setMessage("Action required commit", "", "errorMessage", "Click OK to commit adding students to continue.");       
+										$('#displayMessage').show();
+										e.stopPropagation();
+									}
+									else {								
+										$('#displayMessage').hide();
+										$('#studentAddDeleteInfo').hide();
+										$('#proctorAddDeleteInfo').hide();
+										isFirstAccordSelected = true;
+										isSecondAccordSelected = false;
+										isFourthAccordSelected = true;
+										isThirdAccordSelected = false;
+										wizard.accordion("activate", index);
+									}
 								}
 						}
 						}	

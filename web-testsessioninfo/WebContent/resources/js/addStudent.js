@@ -48,6 +48,7 @@ var filterLoadFlag = false;
 var filterTimer = null;
 var licenseInfo = null;
 var licenseInfoMap = null;
+var isSelectingStudent = false;
 
 /// FOR FILTER
 
@@ -70,6 +71,7 @@ function showSelectStudent(){
 	visitedNodeTraverseCounter = new Map();
 	
 	licenseInfoMap = new Map();
+	isSelectingStudent = true;
 }
 // when back button invoked
 function hideSelectStudent(){
@@ -80,6 +82,7 @@ function hideSelectStudent(){
 	hideSelectStudentPopup();
 	allSelectOrg = allSelectOrgTmp.slice(0);
 	$("#stuOrgNodeHierarchy").undelegate();
+	isSelectingStudent = false;	
 }
 
 function hideSelectStudentPopup() {
@@ -90,6 +93,8 @@ function hideSelectStudentPopup() {
 	$("#Select_Student_Tab").css('display', 'none');
 	$("#selectStudentPager").css('display', 'none');
 	$("#licenseInfoDiv").css('display', 'none');
+	$('#displayMessage').hide();
+	isSelectingStudent = false;	
 }
 
 function loadInnerStuOrgTree() {
@@ -603,6 +608,9 @@ function populateSelectStudentGrid() {
 				if (licenseInfo != null) {				
 					showLicenseUsedForOrgNode();
 				}		
+				else {
+					hideLicenseInformation();
+				}
 				
 			},
 			onSelectRow: function (rowid, status) {
@@ -652,6 +660,9 @@ function populateSelectStudentGrid() {
 				if (licenseInfo != null) {				
 					showLicenseUsedForOrgNode();
 				}		
+				else {
+					hideLicenseInformation();
+				}
 				
 			},
 			loadComplete: function () {
@@ -1456,12 +1467,14 @@ function getStudentListArray(studentArray) {
 	
 
 function hideLicenseInformation() {
-	$("#licenseInfoDiv").css('display', 'none');
+	$('#displayMessage').hide();
+	$("#licenseInfoDiv").hide();
 }
 	
 	
 function showLicenseInformation() {
-	$("#licenseInfoDiv").css('display', 'block');
+	$('#displayMessage').hide();
+	$("#licenseInfoDiv").show();
 
 	var groupName = document.getElementById("groupName");
 	groupName.innerHTML = "Group: " + "<b>" + licenseInfo[1] + "</b>";
@@ -1603,7 +1616,16 @@ function validateLicenseUsed() {
 		for(var i=0 ; i<keys.length; i++) {
 			var stdId = keys[i];
 			var objstr = studentTempMap.get(stdId);
-			orgNodeMap.put(objstr.orgNodeId, objstr.orgNodeName);
+	 	 	var orgNameArray = String(objstr.orgNodeName).split(",");
+	 	 	var orgArray = String(objstr.orgNodeId).split(",");
+	 	 	if (orgArray.length > 1) {
+		 	 	 for (var j=0; j<orgArray.length ; j++){
+					orgNodeMap.put(orgArray[j], orgNameArray[j]);
+		 	 	 }
+	 	 	}
+			else {
+				orgNodeMap.put(objstr.orgNodeId, objstr.orgNodeName);
+			}
 		}
 	
 		var licenseInfoKeys = licenseInfoMap.getKeys();
