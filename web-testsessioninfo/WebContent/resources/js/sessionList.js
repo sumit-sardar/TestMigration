@@ -1512,6 +1512,8 @@ function registerDelegate(tree){
  	postDataObject.currentAction = 'init';
  	savedStudentMap = new Map();
  	isCopySession = false; //added  for copy test session
+ 	isSelectingStudent = false; 
+ 	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
