@@ -45,7 +45,13 @@ public class StudentObjectiveScoresController {
             IrsTVPrimObjFactData newFact = pfacts[i];
             poMapper.delete(newFact);
             if(new Long(1).equals(contextData.getCurrentResultId()))  {
-                poMapper.insert(newFact);
+            	if(adminData.getProductId() == 3700) { //Added for Form G as subtestINvalidation is possible
+            		if(new Long(1).equals(newFact.getCurrentResultid())) {
+            			poMapper.insert(newFact);
+            		}
+            	} else {
+            		poMapper.insert(newFact);
+            	}
             }
         }
         
@@ -54,7 +60,13 @@ public class StudentObjectiveScoresController {
             IrsTVSecObjFactData newFact = sfacts[i];
             soMapper.delete(newFact);
             if(new Long(1).equals(contextData.getCurrentResultId()))  {
-                soMapper.insert(newFact);
+            	if(adminData.getProductId() == 3700) { //Added for Form G as subtestINvalidation is possible
+            		if(new Long(1).equals(newFact.getCurrentResultid())) {
+            			soMapper.insert(newFact);
+            		}
+            	} else {
+            		soMapper.insert(newFact);
+            	}
             }
         }
     }
@@ -91,6 +103,10 @@ public class StudentObjectiveScoresController {
                 } 
                 if(details == null || "F".equals(details.getAtsArchive())) {
                     primObjFacts[i].setCurrentResultid(new Long(2));
+                } else {
+                	if(adminData.getProductId() == 3700) {
+                		 primObjFacts[i].setCurrentResultid(new Long(1));
+                	}
                 }
                 // dim ids from context
                 primObjFacts[i].setAssessmentid(contextData.getAssessmentId());
@@ -166,7 +182,11 @@ public class StudentObjectiveScoresController {
                 }
                 if(details == null || "F".equals(details.getAtsArchive())) {
                     secObjFacts[i].setCurrentResultid(new Long(2));
-                }
+                } else {
+                	if(adminData.getProductId() == 3700) {
+                		secObjFacts[i].setCurrentResultid(new Long(1));
+               	}
+               }
                 // dim ids from context
                 secObjFacts[i].setAssessmentid(contextData.getAssessmentId());
                 secObjFacts[i].setFormid(new Long(

@@ -121,6 +121,13 @@ public class StudentCompositeScoresController {
                    }
                    newFact.setCompositeIndex(new Long(1));
                    facts.add(newFact);
+               } else { //Added for form G as subtest invalidation is possible and it wont affect form B
+            	   IrsTVCompositeFactData newFact = new IrsTVCompositeFactData();
+            	   newFact.setCompositeid(composites[i].getCompositeId());
+            	   newFact.setSessionid(context.getSessionId());
+                   newFact.setStudentid(context.getStudentId());
+                   newFact.setCurrentResultid(new Long (2));
+                   facts.add(newFact);
                }
             }
             return (IrsTVCompositeFactData []) facts.toArray(new IrsTVCompositeFactData[0]);

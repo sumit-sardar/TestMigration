@@ -46,7 +46,13 @@ public class StudentItemScoresController {
             IrsTVItemFactData newFact = facts[i];
             ifMapper.delete(newFact);
             if(new Long(1).equals(contextData.getCurrentResultId()))  {
-                ifMapper.insert(newFact);
+            	if(adminData.getProductId() == 3700) { //Added for Form G as subtestINvalidation is possible
+            		if(new Long(1).equals(newFact.getCurrentResultid())) {
+            			ifMapper.insert(newFact);
+            		}
+            	} else {
+            		ifMapper.insert(newFact);
+            	}
             }
             //System.out.println("***** SCORING: StudentItemScoresController: Persisted item fact: " + newFact.getItemid());
         }
@@ -148,6 +154,9 @@ public class StudentItemScoresController {
 		                                            "C".equals(scoreDetails.getResponse())?3:
 		                                            "D".equals(scoreDetails.getResponse())?4:
 		                                            "E".equals(scoreDetails.getResponse())?5:6));
+		                if(adminData.getProductId() == 3700) {
+		                	itemFact.setCurrentResultid(new Long(1));
+		                }
 	                } else { // change for defect # 66542
 	                	itemFact.setItemResponseTimestamp(new Timestamp(System.currentTimeMillis()));
 		                itemFact.setPointsObtained(null);
