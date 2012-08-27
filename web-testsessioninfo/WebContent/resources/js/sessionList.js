@@ -1098,7 +1098,8 @@ function registerDelegate(tree){
 			$("#proctorOrgNodeHierarchy").undelegate();
 			onChangeHandler.reset();
 			isPopUp = false;
-
+			isTabeProduct = false;
+		    isTabeAdaptiveProduct = false; 
 		}
 		$("#"+dailogId).dialog("close");
 	}

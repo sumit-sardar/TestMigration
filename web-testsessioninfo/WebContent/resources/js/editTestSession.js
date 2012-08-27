@@ -24,6 +24,22 @@
 	var isSelectTestDetClicked = false; //added  for copy test session
 		
   function editTestSession(action){  
+  	var activeJQGrid;
+  	var rowID;
+  	var rowData;
+  	if($('#list2').is(':visible'))
+  		activeJQGrid = "list2";
+  	else if($('#list3').is(':visible'))
+  		activeJQGrid = "list3";
+  		
+  	rowID = $('#'+activeJQGrid).jqGrid('getGridParam', 'selrow');
+	rowData = $('#'+activeJQGrid).getRowData(rowID); 
+	
+	if(rowData.isSTabeProduct == "true")
+		isTabeProduct = true;
+	else if (rowData.isSTabeAdaptiveProduct == "true")		 		
+		isTabeAdaptiveProduct = true;	  		
+  
      resetEditSessionPopulatedData();
      $("#showSaveTestMessage").hide();
      $("#endTest").hide();
