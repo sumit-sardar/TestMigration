@@ -464,7 +464,9 @@ public class TestWebServiceController extends PageFlowController
         }) 
     protected Forward testProduction()
     {
-    	
+    
+      String resultText = "";
+      
       try {
     	  ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
     	  String endPointUrl = rb.getString("url");
@@ -481,13 +483,11 @@ public class TestWebServiceController extends PageFlowController
     	  user.setUsername("");
     	  
     	  pss.setUser(user);
-    	  String url = "http://192.168.14.136:8080/host/services/ScoringService";
-    	  //String url = "http://151.108.140.171/bredexsoap/services/ScoringService?wsdl";
+    	  //String url = "http://192.168.14.136:8080/host/services/ScoringService";
+    	  String url = "http://151.108.140.171/bredexsoap/services/ScoringService?wsdl";
     	  
     	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
-  		  //final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo",null);
-  		  final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("C:\\workspace\\dep-scoring-ctrl\\repo", null);
-    	  
+  		  final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo",null);
     	  /*
   		  final ConfigurationContext ctx = 
   			  ConfigurationContextFactory.createConfigurationContextFromFileSystem("C:\\workspace\\dep-scoring-ctrl\\repo", 
@@ -500,12 +500,17 @@ public class TestWebServiceController extends PageFlowController
     	  System.out.println("status.getSessionId() -> " + status.getSessionId());
     	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
     	  System.out.println("status.getStatus() -> " + status.getStatus());
+    	  
+    	  resultText = "status=" + status.getStatus() + " - error=" + status.getErrorMsg();
         } 
       	catch (Exception e) {
       		System.err.println(e.toString());
       		e.printStackTrace();
+      		resultText = e.toString();
       	}
     	
+    	this.getRequest().setAttribute("resultText", resultText);
+      	
         return new Forward("success");
     }
 

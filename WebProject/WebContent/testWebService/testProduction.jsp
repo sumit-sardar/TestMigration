@@ -5,7 +5,6 @@
 
 <%
 	String resultText = (String)request.getAttribute("resultText");
-	String infoText = (String)request.getAttribute("infoText");
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -75,6 +74,11 @@
 </tr>
 
 </table>
+
+		<div id="resultText">
+			<br/>
+			<h2><%= resultText %></h2>
+		</div>
 
 </netui:form>
 
