@@ -100,18 +100,10 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	function openPopupForSession(){
 		if(!gridloadedStdFromSes){
 			setAnchorButtonState('registerButton', false);
-	 		//if(isPopupOnFRAccept){
-	 		//populateSessionGridInPopupForFR();
-	 		//} else {
-	 			populateStudentGridInPopup();
-	 		// }
-				gridloadedStdFromSes = true;
+ 			populateStudentGridInPopup();
+			gridloadedStdFromSes = true;
  		} else {
-		 //if(isPopupOnFRAccept){
-		 	//reloadSessionGridFromStdOnFR();	
-		 //} else {
-		reloadStudentGridFromSes();
-		 //}
+			reloadStudentGridFromSes();
  		}
 	}
 
@@ -320,8 +312,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		 var grid = $("#list2"); 
 		 
 		 if (searchFiler.length === 0) {
-			 //grid[0].p.search = false; // uncommented to test search only w/o filters
-			 //grid[0].triggerToolbar();// to trigger previously applied filters
 			 var g = {groupOp:"AND",rules:[],groups:[]};
 			 g.rules.push({field:"grade",op:"bw",data:$("#gview_list2 select[id=gs_grade]").val()});
 			 g.rules.push({field:"gender",op:"bw",data:$("#gview_list2 select[id=gs_gender]").val()});			 grid[0].p.search = true;
@@ -411,46 +401,11 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 
 	    	//clear message before moving to pther node
 	    	clearMessage();
-	    	/* added for new changes: start */ 
-  			//selectedOrgNodeIdInPopup = $(this).parent().attr("id");
- 		    //$("#treeOrgNodeIdInPopup").val(selectedOrgNodeIdInPopup);
  		    selectedOrgNodeIdInSecondaryDiv = $(this).parent().attr("id");
  		    $("#treeOrgNodeIdInSecondaryDiv").val(selectedOrgNodeIdInSecondaryDiv);
- 		    /* added for new changes: end */
             stuForSelectedOrg = $(this).parent().attr("id");
             var topNodeSelected = $(this).parent().attr("cid");
- 		   /* 
-	 		if(parseInt(rootNodeId) == parseInt(selectedOrgNodeIdInSecondaryDiv)){
-	 			var postDataObject = {};
-	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInSecondaryDiv").val();
-	 		   $.ajax({
-					async:		true,
-					beforeSend:	function(){									
-									UIBlock();
-								},
-					url:		'getStudentCountForOrgNode.do', 
-					type:		'POST',
-					data:		 postDataObject,
-					dataType:	'json',
-					success:	function(data, textStatus, XMLHttpRequest){	
-									$.unblockUI();
-									topOrgNodeStuCount = data;
-									if(parseInt(topOrgNodeStuCount) > stuThreshold){
-										showPopup(topOrgNodeStuCount);
-									}else{
-										showGrid();
-									}
-								},
-					error  :    function(XMLHttpRequest, textStatus, errorThrown){
-									$.unblockUI();  
-									window.location.href="/SessionWeb/logout.do";
-									
-								}
-				});		
-	 		 }else{
-	 		    showGrid();
-	 		} 	*/	
-	 		//if(topNodeSelected == String(leafNodeCategoryId)) {
+ 		  	//if(topNodeSelected == String(leafNodeCategoryId)) {
 	 		    UIBlock();
 	 		    
 		 		
@@ -598,13 +553,8 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	}
 	
 	function populateSessionGridInPopupInSecondaryDiv(){
-		
-		/* added for new changes: start */ 
 		resetSearchCritInSecondaryDiv();
 		resetFiltersInSecondaryDiv();
-		//resetSearchCritInPopupFromStudentView();
- 		//resetFiltersInPopupFromStudentView();
- 		/* added for new changes: end */
 		var postDataObject = {};
  		postDataObject.q = 2;
  		//postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInPopup").val();
@@ -681,7 +631,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 					} else{
 						enableButton('nextButtonStdPopup');
 					}
-					
 				},
 			loadComplete: function () {
 				disableButton('nextButtonStdPopup');
@@ -709,10 +658,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	 });  
 	 jQuery("#list3").jqGrid('filterToolbar',{
 	 	afterSearch: function(){
-	 		/* added for new changes: start */ 
-	 		//searchStudentSessionByKeyword();
 	 		searchByKeywordInSecondaryDiv();
-	 		/* added for new changes: end */ 
 	 		setAnchorButtonState('registerButton', true);
 	 	}
 	 });
@@ -720,7 +666,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 				search: false,add:false,edit:false,del:false 	
 			}).jqGrid('navButtonAdd',"#pager3",{
 			    caption:"", buttonicon:"ui-icon-search", onClickButton:function(){
-			    	//$("#searchStudentSessionByKeyword").dialog({
 			    	$("#searchByKeywordInSecondaryDiv").dialog({ //added for new changes: start
 						title:$("#searchStudentSession").val(),  
 					 	resizable:false,
@@ -735,7 +680,6 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 			});
 			
 			jQuery(".ui-icon-refresh").bind("click",function(){
-				//$("#searchStudentSessionByKeywordInput").val('');
 				$("#searchByKeywordInSecondaryDivInput").val('');//added for new changes: start
 				setAnchorButtonState('registerButton', true);
 			}); 
@@ -743,20 +687,13 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 	}
 	
 	function reloadSessionGridFromStdInSecondaryDiv(){
-		//resetSearchCrit();
-		/* added for new changes: start */ 
 		resetSearchCritInSecondaryDiv();
 		resetFiltersInSecondaryDiv();
-		//resetSearchCritInPopupFromStudentView();
- 		//resetFiltersInPopupFromStudentView();
- 		/* added for new changes: end */
   	    var postDataObject = {};
 		postDataObject.q = 2;
-		//postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
 		postDataObject.treeOrgNodeId     = $("#treeOrgNodeIdInSecondaryDiv").val();// added for new changes	
         
         jQuery("#list3").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});     
-  	   //var sortArrow = jQuery("#list3");
         jQuery("#list3").jqGrid('setGridParam', {url:'getSessionForOrgNodeWithStudentStatus.do',postData:postDataObject,page:1}).trigger("reloadGrid");
         jQuery("#list3").sortGrid($("#grdSessionName").val(),true,'asc');
 	
