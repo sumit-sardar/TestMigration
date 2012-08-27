@@ -38,42 +38,8 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
  		    $("#treeOrgNodeIdInPopup").val(selectedOrgNodeIdInPopup);
             stuForSelectedOrg = $(this).parent().attr("id");
             var topNodeSelected = $(this).parent().attr("cid");
- 		   /* 
-	 		if(parseInt(rootNodeId) == parseInt(selectedOrgNodeIdInPopup)){
-	 			var postDataObject = {};
-	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
-	 		   $.ajax({
-					async:		true,
-					beforeSend:	function(){									
-									UIBlock();
-								},
-					url:		'getStudentCountForOrgNode.do', 
-					type:		'POST',
-					data:		 postDataObject,
-					dataType:	'json',
-					success:	function(data, textStatus, XMLHttpRequest){	
-									$.unblockUI();
-									topOrgNodeStuCount = data;
-									if(parseInt(topOrgNodeStuCount) > stuThreshold){
-										showPopup(topOrgNodeStuCount);
-									}else{
-										showGrid();
-									}
-								},
-					error  :    function(XMLHttpRequest, textStatus, errorThrown){
-									$.unblockUI();  
-									window.location.href="/SessionWeb/logout.do";
-									
-								}
-				});		
-	 		 }else{
-	 		    showGrid();
-	 		} 	*/	
 	 		//if(topNodeSelected == String(leafNodeCategoryId)) {
 	 		    UIBlock();
-	 		    
-		 		
-
 	 			if(currentView == "student"){
 		 			if(!gridloadedSessionFromStd){
 		 				if(isPopupOnFRNotAccept || isPopupOnByepassFR)
@@ -88,23 +54,36 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 							reloadSessionGridFromStdOnFR();		 					
 		 			}
 	 			} else {
-	 				if(!gridloadedStdFromSes){
-	 				    setAnchorButtonState('registerButton', false);
-	 				    //if(isPopupOnFRAccept){
-	 				    	//populateSessionGridInPopupForFR();
-	 				    //} else {
-	 				    	populateStudentGridInPopup();
-	 				   // }
-		 				
-		 				gridloadedStdFromSes = true;
-			 		} else {
-			 			 //if(isPopupOnFRAccept){
-			 			 	//reloadSessionGridFromStdOnFR();	
-			 			 //} else {
-			 			 	reloadStudentGridFromSes();
-			 			 //}
-			 			
-			 		}
+	 				if(parseInt(rootNodeId) == parseInt(selectedOrgNodeIdInPopup)){
+	 					var postDataObject = {};
+	 					postDataObject.treeOrgNodeId = $("#treeOrgNodeIdInPopup").val();
+	 					$.ajax({
+							async:		true,
+							beforeSend:	function(){									
+											UIBlock();
+										},
+							url:		'getStudentCountForOrgNode.do', 
+							type:		'POST',
+							data:		 postDataObject,
+							dataType:	'json',
+							success:	function(data, textStatus, XMLHttpRequest){	
+											$.unblockUI();
+											topOrgNodeStuCount = data;
+											if(parseInt(topOrgNodeStuCount) > stuThreshold){
+												showPopup(topOrgNodeStuCount);
+											}else{
+												openPopupForSession();
+											}
+										},
+							error  :    function(XMLHttpRequest, textStatus, errorThrown){
+											$.unblockUI();  
+											window.location.href="/SessionWeb/logout.do";
+										}
+						});	
+	 				} else {
+	 					openPopupForSession();
+	 				}
+
 	 			}
 
 	 		//} 
@@ -118,6 +97,23 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 }
 
 
+	function openPopupForSession(){
+		if(!gridloadedStdFromSes){
+			setAnchorButtonState('registerButton', false);
+	 		//if(isPopupOnFRAccept){
+	 		//populateSessionGridInPopupForFR();
+	 		//} else {
+	 			populateStudentGridInPopup();
+	 		// }
+				gridloadedStdFromSes = true;
+ 		} else {
+		 //if(isPopupOnFRAccept){
+		 	//reloadSessionGridFromStdOnFR();	
+		 //} else {
+		reloadStudentGridFromSes();
+		 //}
+ 		}
+	}
 
 
 	function populateStudentGridInPopup() {
