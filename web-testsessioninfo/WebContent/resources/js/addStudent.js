@@ -49,6 +49,7 @@ var filterTimer = null;
 var licenseInfo = null;
 var licenseInfoMap = null;
 var isSelectingStudent = false;
+var showLicenseInfo = false;
 
 /// FOR FILTER
 
@@ -333,6 +334,7 @@ function populateSelectStudentGrid() {
 		   	accomodationMapForAll = obj.accomodationMap;
 		   	var nonLicenseProduct = isTutorialOrLocatorProduct();
 		   	
+			showLicenseInfo = false;
 		   	if ((obj.rows == null) || (obj.rows == undefined) || nonLicenseProduct) {
 		   		licenseInfo = null;
 		   	}
@@ -515,13 +517,16 @@ function populateSelectStudentGrid() {
 			 
 			    /// update if any scenario exists
 
-			 }
-			 isNodeChanged = false;
-			 isSortingEvent = false;
-			 isPagingEvent  = false;
+			}
+			isNodeChanged = false;
+			isSortingEvent = false;
+			isPagingEvent  = false;
+			 
 			},
 			onSelectAll: function (rowIds, status) {
 			    UIBlock();
+			 	showLicenseInfo = false;
+			    
 				var isFilteredApplied = isDefaultFilterUpdated();
 				if(status) {
 					allRowSelected = true;
@@ -604,7 +609,8 @@ function populateSelectStudentGrid() {
 													
 				}
 				$.unblockUI(); 
-				
+			 	
+			 	showLicenseInfo = true;
 				if (licenseInfo != null) {				
 					showLicenseUsedForOrgNode();
 				}		
@@ -657,7 +663,7 @@ function populateSelectStudentGrid() {
 					$("#cb_selectStudent").attr("checked", false);
 				}
 				
-				if (licenseInfo != null) {				
+				if (licenseInfo != null) {		
 					showLicenseUsedForOrgNode();
 				}		
 				else {
@@ -666,6 +672,8 @@ function populateSelectStudentGrid() {
 				
 			},
 			loadComplete: function () {
+			 	showLicenseInfo = false;
+			
 				if ($('#selectStudent').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
             		$('#sp_1_selectStudentPager').text("1");
@@ -710,10 +718,11 @@ function populateSelectStudentGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				
-				if (licenseInfo != null) {	
+					
+			 	showLicenseInfo = true;
+				if (licenseInfo != null) {		
 					showLicenseInformation();
-				}
+				}		
 				else {
 					hideLicenseInformation();
 				}
@@ -1474,6 +1483,7 @@ function hideLicenseInformation() {
 	
 function showLicenseInformation() {
 	$('#displayMessage').hide();
+	
 	$("#licenseInfoDiv").show();
 
 	var groupName = document.getElementById("groupName");
@@ -1493,12 +1503,14 @@ function showLicenseInformation() {
 }
 
 function showLicenseUsedForOrgNode() {
-	var orgNodeId = licenseInfo[0];
-	var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
-	var availableLicense = licenseInfo[4];
-	var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
-	showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage, availableLicense);
-	showLicenseErrorMessage(licenseUsed, availableLicense);
+	if (showLicenseInfo) {
+		var orgNodeId = licenseInfo[0];
+		var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
+		var availableLicense = licenseInfo[4];
+		var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
+		showLicenseUsedPercentage(licenseUsed, licenseUsedPercentage, availableLicense);
+		showLicenseErrorMessage(licenseUsed, availableLicense);
+	}
 }
 	
 	
@@ -1649,6 +1661,9 @@ function validateLicenseUsed() {
 }	
 
 function studentInTest(stdId, orgNodeId) {
+	if (isCopySession)
+		return false;
+		
 	for (var i = 0; i < AddStudentLocaldata.length; i++) {
 		var stuObj = AddStudentLocaldata[i];
 		if (stuObj != null && stuObj != undefined) {
