@@ -3369,6 +3369,13 @@ function registerDelegate(tree){
         
         $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();
+	    
+		if (isSelectingStudent) {
+			setMessage("Action required commit", "", "errorMessage", "Click OK to commit adding students to continue.");       
+			$('#displayMessage').show();
+			return false;
+		}
+	    
 	    var param;
    	 if(state != "EDIT"){
 		
