@@ -155,11 +155,12 @@
 	
 	<!-- Test Structure Section -->
 	<p> </p> 
-		<div id="locatorDiv">
+		
 		<table align="center" width="95%">
 			<tr>
 				<td>
 					<div class="ui-widget-header"><lb:label key="stu.label.testStructure" /></div>
+					<div id="locatorDiv">
 						<table class="sortable">
 					    	<tr class="sortable">
 					        	<th class="sortable alignLeft" height="25" width="*">
@@ -185,9 +186,7 @@
 				</td>
 			</tr>
 		</table>
-		</div>
 	
-	<br/>
  <div>
 	
 <div id="SubtestDetails"> </div>
@@ -217,7 +216,7 @@
 	
 	<div id="StudConfClose" style="padding-top: 10px; padding-bottom: 10px; width: 100%;clear: both;">
 		<center>
-			<input type="button"  id="sData" value="Done" onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header"/>
+			<input type="button"  id="sData" value=<lb:label key="common.button.done" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUp('studentConfirmation'); return false;" class="ui-widget-header"/>
 		</center>
 	</div>	
 </div>
