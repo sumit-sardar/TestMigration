@@ -592,8 +592,8 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "select test_roster_id from test_roster where student_id = {studentId} and test_admin_id = {testAdminId} and activation_status = 'AC'")
     Integer findTestRosterId(Long studentId, Long testAdminId) throws SQLException;
     
-    @JdbcControl.SQL(statement = "select iset.item_set_id from item_set iset, student_item_set_status siss where siss.item_set_id = iset.item_set_id and siss.test_roster_id = {testRosterId} and iset.item_set_name = {itemSetName}")
-    Integer findSubtestIdFromTestRoster(Integer testRosterId, String itemSetName) throws SQLException;
+    @JdbcControl.SQL(statement = "SELECT ISET.ITEM_SET_ID FROM ITEM_SET ISET,  ITEM_SET ISETTS, ITEM_SET_PARENT ISP, TEST_ADMIN_ITEM_SET TAIS, TEST_ROSTER ROS WHERE ROS.TEST_ROSTER_ID = {testRosterId} AND ROS.TEST_ADMIN_ID = {sessionId} AND ROS.TEST_ADMIN_ID = TAIS.TEST_ADMIN_ID AND TAIS.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID AND ISP.PARENT_ITEM_SET_ID = ISETTS.ITEM_SET_ID AND ISETTS.ITEM_SET_NAME = {itemSetName} AND ISP.ITEM_SET_ID = ISET.ITEM_SET_ID")
+    Integer[] findSubtestIdFromTestRoster(Integer testRosterId, String itemSetName, Integer sessionId) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }
