@@ -13,6 +13,9 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-studentmgmt-ctrl/dep-studentmgmt-ctrl">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-scoring-ctrl/dep-scoring-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="WebProject"/>
         <property name="java-output-path" value="build/classes"/>
     </wb-module>

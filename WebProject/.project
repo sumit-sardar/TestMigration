@@ -4,8 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>dep-base-ctrl</project>
-		<project>dep-testadmin-ctrl</project>
+		<project>dep-scoring-ctrl</project>
 		<project>dep-studentmgmt-ctrl</project>
+		<project>dep-testadmin-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
