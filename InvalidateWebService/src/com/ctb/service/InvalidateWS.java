@@ -2,6 +2,8 @@ package com.ctb.service;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -48,7 +50,7 @@ public class InvalidateWS implements Serializable {
 		Integer testRosterId = getRosterIdForStudentAndSession(studentId, sessionId);
 		Integer[] subtestIds = null;
 		if(testRosterId != null) {
-			subtestIds = getSubtestIds(details.getSubtest(), testRosterId);
+			subtestIds = getSubtestIds(details.getSubtest(), testRosterId, sessionId.intValue());
 			try {
 			testSessionStatus.toggleSubtestValidationStatus(secureUser.getUserName(), testRosterId, subtestIds, "ValidationStatus");
 			message = "OK";
@@ -73,20 +75,23 @@ public class InvalidateWS implements Serializable {
 			return false;
 	}
 	
-	private Integer[] getSubtestIds(String[] subtestNames, Integer testRosterId) {
+	private Integer[] getSubtestIds(String[] subtestNames, Integer testRosterId, Integer sessionId) {
 		if(subtestNames != null && subtestNames.length > 0) {
 			try {
-			Integer[] subtestIds = new Integer[subtestNames.length];
-			Integer subtestId = null;
+			List<Integer> subtestIds = new ArrayList<Integer>();
+			Integer[] subtestId = null;
 			for(int i = 0; i < subtestNames.length; i++) {
-				subtestId = rosters.findSubtestIdFromTestRoster(testRosterId, subtestNames[i]);
+				subtestId = rosters.findSubtestIdFromTestRoster(testRosterId, subtestNames[i], sessionId);
 				if(subtestId != null) {
-					subtestIds[i] = subtestId;
+					for(int j = 0; j < subtestId.length; j++) {
+						subtestIds.add(subtestId[j]);
+					}
+					
 				} else {
 					return null;
 				}
 			}
-			return subtestIds;
+			return (Integer []) subtestIds.toArray(new Integer[0]);
 			} catch(SQLException se) {
 				se.printStackTrace();
 				return null;
