@@ -512,7 +512,10 @@ public class TestWebServiceController extends PageFlowController
       		//displayScoresInRequest(studentScore);
       	}
     	  
+  		if(status != null) {
     	  resultText = "status=" + status.getStatus() + " - error=" + status.getErrorMsg();
+  		}
+  		
         } 
       	catch (Exception e) {
       		System.err.println(e.toString());
