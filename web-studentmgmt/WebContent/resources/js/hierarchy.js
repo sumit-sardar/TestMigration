@@ -1885,7 +1885,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						organizationNodes = data.organizationNodes;
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						prepareCheckedList();
-						//setEditStudentDetail(rowid);
+						setEditStudentDetail(rowid);
 						if(profileEditable === "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
