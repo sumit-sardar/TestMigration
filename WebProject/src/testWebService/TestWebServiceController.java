@@ -11,6 +11,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.beehive.controls.api.bean.Control;
+import org.apache.commons.httpclient.protocol.Protocol;
 
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
@@ -468,8 +469,8 @@ public class TestWebServiceController extends PageFlowController
       String resultText = "";
       
       try {
-    	  ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
-    	  String endPointUrl = rb.getString("url");
+    	  //ResourceBundle rb = ResourceBundle.getBundle("webServiceUrls");
+    	  //String endPointUrl = rb.getString("url");
     	  
     	  StudentScore stuScore = new StudentScore();
     	  stuScore.setStudentId(1644566);
@@ -484,22 +485,32 @@ public class TestWebServiceController extends PageFlowController
     	  
     	  pss.setUser(user);
     	  //String url = "http://192.168.14.136:8080/host/services/ScoringService";
-    	  String url = "http://151.108.140.171/bredexsoap/services/ScoringService?wsdl";
+    	  String url = "https://151.108.140.171/bredexsoap/services/ScoringService?wsdl";
+    	  //String url = "https://172.16.80.131/bredexsoap/services/ScoringService?wsdl";    	  
+    	  ScoringStatus status = null;
+    	  ScoringServiceStub stub = null;
     	  
-    	  //ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContext("?wsdl", url);
-  		  final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo",null);
-    	  /*
-  		  final ConfigurationContext ctx = 
-  			  ConfigurationContextFactory.createConfigurationContextFromFileSystem("C:\\workspace\\dep-scoring-ctrl\\repo", 
-  					"C:\\workspace\\dep-scoring-ctrl\\repo\\axis2.xml");
-  					*/
-    	  ScoringServiceStub stub = new ScoringServiceStub(ctx, url);
-  		  stub._getServiceClient().engageModule("logging");
-    	  ScoringStatus status = stub.processStudentScore(user, stuScore);
-    	  System.out.println("status.getStudentId() -> " + status.getStudentId());
-    	  System.out.println("status.getSessionId() -> " + status.getSessionId());
-    	  System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
-    	  System.out.println("status.getStatus() -> " + status.getStatus());
+    	  try {
+      		// 1.) unregister the current https protocol.  
+	            org.apache.commons.httpclient.protocol.Protocol.unregisterProtocol("https");  
+	               
+	            // 2.) reregister the new https protocol to use the easy ssl protocol socked factory.  
+	            org.apache.commons.httpclient.protocol.Protocol.registerProtocol("https",  
+	             new Protocol("https", new org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory(), 443));  
+	           
+      		stub = new ScoringServiceStub(url);
+      		status = stub.processStudentScore(user, stuScore);
+		  	} catch (Exception e) {
+		  		e.printStackTrace();
+      	} finally {
+      		if(status != null) {
+      			System.out.println("status.getStudentId() -> " + status.getStudentId());
+  				System.out.println("status.getSessionId() -> " + status.getSessionId());
+  				System.out.println("status.getErrorMsg() -> " + status.getErrorMsg());
+  				System.out.println("status.getStatus() -> " + status.getStatus());
+      		}
+      		//displayScoresInRequest(studentScore);
+      	}
     	  
     	  resultText = "status=" + status.getStatus() + " - error=" + status.getErrorMsg();
         } 
