@@ -15,7 +15,7 @@
 	            </h1>
 	        </td>
 	    
-	        <td width="30%" class="transparent"></td>
+	       
 	    </tr>
 	    
 	    <tr>   
@@ -25,7 +25,7 @@
 	              <br/>
 	            </p>
 	        </td>
-	        <td width="30%" class="transparent"></td> 
+	        
 	    </tr>
 	</table> 
 
