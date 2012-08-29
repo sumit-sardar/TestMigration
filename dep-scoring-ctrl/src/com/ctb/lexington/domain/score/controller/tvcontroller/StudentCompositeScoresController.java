@@ -42,7 +42,9 @@ public class StudentCompositeScoresController {
             IrsTVCompositeFactData newFact = facts[i];
             mapper.delete(newFact);
             if(new Long(1).equals(context.getCurrentResultId()))  {
-                mapper.insert(newFact);
+            	if(newFact.getAssessmentid() != null) {
+            		mapper.insert(newFact);
+            	}
             }
         }
     }
@@ -127,6 +129,7 @@ public class StudentCompositeScoresController {
             	   newFact.setSessionid(context.getSessionId());
                    newFact.setStudentid(context.getStudentId());
                    newFact.setCurrentResultid(new Long (2));
+                   newFact.setAssessmentid(null);
                    facts.add(newFact);
                }
             }
