@@ -170,21 +170,26 @@ public class DBUtil {
 								ps.setString(3, pvalFileData.getGrade());
 								ps.setString(4, codeVal.getItemId());
 								ps.setDouble(5, codeVal.getValue());
-								ps.setString(6, pvalFileData.getNormsGroup());
-								ps.addBatch();
+								ps.setString(6, FileUtil.processNongroupName(pvalFileData.getNormsGroup()));
+								ps.setString(7, FileUtil.getProductIdFromType(pvalFileData.getOther()));
+								//ps.addBatch();
+								ps.executeUpdate();
+								con.commit();
 							}
 						}
+						//ps.executeBatch();
+						//con.commit();
 					}
 				}
 			}
-			ps.executeBatch();
-			con.commit();
+			
 			SqlUtil.close(ps);
 		} catch(SQLException e) {
 			try {
 				con.rollback();
 				System.out.println("Data are not saved in SCORE_LOOKUP table.");
 			} catch (SQLException e1) {
+				System.exit(0);
 				e1.printStackTrace();
 			}
 			e.printStackTrace();

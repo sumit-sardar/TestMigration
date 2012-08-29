@@ -10,7 +10,7 @@ public class Query {
 	
 	public static final String insertScoreLookupItemSet = "INSERT INTO SCORE_LOOKUP_ITEM_SET VALUES(?,?)";
 	
-	public static final String INSERT_ITEM_P_VALUE = "INSERT INTO item_p_value VALUES(?, ?, ?, ?, ?, ?)";
+	public static final String INSERT_ITEM_P_VALUE = "INSERT INTO item_p_value VALUES(?, ?, ?, ?, ?, ?, ?)";
 	
 	public static final String GET_ALL_ITEM_SET = "SELECT itemset.item_set_id " + 
 													"FROM test_catalog tc, item_set_ancestor isa, item_set itemset " +
