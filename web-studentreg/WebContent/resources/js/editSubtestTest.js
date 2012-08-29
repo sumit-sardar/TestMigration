@@ -1279,9 +1279,15 @@
 			var msmParam ="";
 			var locElement = document.getElementById("msmHasAutolocator");
 			var msmHasLocator = false;
+			var assessmentHasLocator = true;
 			if( subTestDetails.locatorSubtest != undefined  && locElement !=null && locElement.checked){
 				 msmHasLocator = true;
 			 } 
+			 
+			 if(subTestDetails.locatorSubtest == undefined || subTestDetails.locatorSubtest == null ){
+			 	assessmentHasLocator = false;
+			 }
+			 
 			 msmParam += "&hasAutolocator="+msmHasLocator;
 			 if(msmHasLocator){
 			 	msmParam += "&itemSetIdTD_l=" + subTestDetails.locatorSubtest.id;
@@ -1297,6 +1303,7 @@
 	        param += "testAdminId="+ selectedTestAdminId;
 			param += "&studentId=" + selectedStudentId;
 			param += "&studentOrgNodeId=" + $("#stdOrg").val();
+			param += "&assessmentHasLocator=" + assessmentHasLocator;
 			param += msmParam;
 			
 			
@@ -1440,7 +1447,7 @@
       		retString +='</th> '; 
       	}
       	           
-		if(!autolocator){
+		if(!autolocator && data.assessmentHasLocator){
 			retString +=' <th class="ui-widget-header alignLeft" height="25">&nbsp;&nbsp;';
 	      	retString +=  $("#subtestDisplayLevel").val();
 	      	retString +='</th> '; 
@@ -1460,7 +1467,7 @@
        		retString +=data.selectedSubtests[ii].testAccessCode;
        		retString +='</td>';
        	}
-       	if(!autolocator){
+       	if(!autolocator && data.assessmentHasLocator){
        		retString +='<td class="sortable">';
        		retString +=data.selectedSubtests[ii].itemSetForm;
        		retString +='</td>';

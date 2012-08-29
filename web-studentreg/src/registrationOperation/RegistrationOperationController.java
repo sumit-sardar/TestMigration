@@ -1147,6 +1147,8 @@ public class RegistrationOperationController extends PageFlowController {
 			String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
 			String[] subtestNames = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.SUB_TEST_NAME, true, new String[itemSetIds.length]);
 			String autoLocator	  =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.HAS_AUTOLOCATOR, true, "false");
+			String assessmentHasLocator = RequestUtil.getValueFromRequest(this.getRequest(), "assessmentHasLocator", true, "false");
+			vo.setAssessmentHasLocator(new Boolean(assessmentHasLocator));
 			int subtestSize       = itemSetIds.length;
 			int order             = 0;
 			boolean hasAutoLocator = false;

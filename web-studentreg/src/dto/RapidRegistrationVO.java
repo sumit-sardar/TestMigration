@@ -33,6 +33,7 @@ public class RapidRegistrationVO {
 	private boolean  autoLocator;
 	private TestElement locatorSubtest;
 	private String autoLocatorDisplay;
+	private boolean assessmentHasLocator;
 	//private String ;
 	
 
@@ -384,6 +385,20 @@ public class RapidRegistrationVO {
 	 */
 	public void setAutoLocatorDisplay(String autoLocatorDisplay) {
 		this.autoLocatorDisplay = autoLocatorDisplay;
+	}
+
+	/**
+	 * @return the assessmentHasLocator
+	 */
+	public boolean isAssessmentHasLocator() {
+		return assessmentHasLocator;
+	}
+
+	/**
+	 * @param assessmentHasLocator the assessmentHasLocator to set
+	 */
+	public void setAssessmentHasLocator(boolean assessmentHasLocator) {
+		this.assessmentHasLocator = assessmentHasLocator;
 	}
 	
 
