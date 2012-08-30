@@ -206,7 +206,11 @@ public class DBUtil {
 			ps = con.prepareStatement(Query.GET_ALL_ITEM_SET);
 			ps.setString(1, contentArea);
 			ps.setString(2, productId);
-			ps.setString(3, level);
+			if("21".equals(level)) {
+				ps.setString(3, "21-22");
+			} else {
+				ps.setString(3, level);
+			}
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
