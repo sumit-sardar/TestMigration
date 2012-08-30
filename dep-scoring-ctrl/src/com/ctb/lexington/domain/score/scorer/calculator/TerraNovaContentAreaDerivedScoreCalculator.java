@@ -41,8 +41,8 @@ public class TerraNovaContentAreaDerivedScoreCalculator extends AbstractDerivedS
       //Added for acuity students scheduled through web-service with IRT calculation logic.
         if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
         	if("21/22".equals(pTestLevel) || "21-22".equals(pTestLevel)) {
-                //QA indicates OAS 3.x uses level 20 norms for test level 19/20
-                pTestLevel = "22";
+                //FOr terra nova for G, there is only one set of lookups for level 21-22
+                pTestLevel = "21";
             }
         	try {
         	TVWSScaleScoreCalculator tvWSScaleScore = new TVWSScaleScoreCalculator();

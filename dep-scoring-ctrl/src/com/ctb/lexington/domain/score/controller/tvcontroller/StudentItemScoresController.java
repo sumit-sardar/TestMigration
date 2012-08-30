@@ -87,8 +87,8 @@ public class StudentItemScoresController {
                                         "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
                                         "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
                                         "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                        "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                        "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
+                                        "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                        "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:15));
                 itemFact.setOrgNodeid(contextData.getOrgNodeId());
                 itemFact.setProgramid(contextData.getProgramId());
                 itemFact.setSessionid(contextData.getSessionId());

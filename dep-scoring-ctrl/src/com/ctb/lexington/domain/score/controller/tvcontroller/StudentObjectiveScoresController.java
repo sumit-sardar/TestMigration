@@ -129,8 +129,8 @@ public class StudentObjectiveScoresController {
                                             "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
                                             "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
                                             "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
+                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:15));
                 primObjFacts[i].setOrgNodeid(contextData.getOrgNodeId());
                 primObjFacts[i].setProgramid(contextData.getProgramId());
                 primObjFacts[i].setSessionid(contextData.getSessionId());
@@ -208,8 +208,8 @@ public class StudentObjectiveScoresController {
                                             "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
                                             "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
                                             "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
+                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:15));
                 secObjFacts[i].setOrgNodeid(contextData.getOrgNodeId());
                 secObjFacts[i].setProgramid(contextData.getProgramId());
                 secObjFacts[i].setSessionid(contextData.getSessionId());

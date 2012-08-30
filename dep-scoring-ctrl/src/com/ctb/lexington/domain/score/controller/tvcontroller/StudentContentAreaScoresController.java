@@ -94,8 +94,8 @@ public class StudentContentAreaScoresController {
                                             "12".equals(currData.getContentAreas()[0].getSubtestLevel())?30:
                                             "21".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
                                             "22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:
-                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?32:15));
+                                            "21-22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:
+                                            "21/22".equals(currData.getContentAreas()[0].getSubtestLevel())?31:15));
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null:new Long(fact.getNationalPercentile().longValue()));
                    newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
