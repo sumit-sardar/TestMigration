@@ -88,14 +88,16 @@ public class TVWsAcuityDataController {
                         float gedec = new Float(df2.format(ge)).floatValue();
                         
                         newFact.setGradeEquivalent(new Float(gedec));
+                   } else {
+                	   newFact.setGradeEquivalent(-99f);
                    }
-					newFact.setNationalPercentile((total.getNationalPercentile()==null)?0l:new Long(total.getNationalPercentile().longValue()));
-	                newFact.setNationalStanine((total.getNationalStanine()==null)?0l:new Long(total.getNationalStanine().longValue()));
-	                newFact.setNormCurveEquivalent((total.getNormalCurveEquivalent()==null)?0l:new Long(total.getNormalCurveEquivalent().longValue()));
+					newFact.setNationalPercentile((total.getNationalPercentile()==null)?-99l:new Long(total.getNationalPercentile().longValue()));
+	                newFact.setNationalStanine((total.getNationalStanine()==null)?-99l:new Long(total.getNationalStanine().longValue()));
+	                newFact.setNormCurveEquivalent((total.getNormalCurveEquivalent()==null)?-99l:new Long(total.getNormalCurveEquivalent().longValue()));
 	                newFact.setPointsAttempted(total.getPointsAttempted());
 	                newFact.setPointsObtained(total.getPointsObtained());
 	                newFact.setPointsPossible(composites[i].getCompositePointsPossible());
-	                newFact.setScaleScore((total.getScaleScore()==null)?0l:new Long(total.getScaleScore().longValue()));
+	                newFact.setScaleScore((total.getScaleScore()==null)?-99l:new Long(total.getScaleScore().longValue()));
 	                facts.add(newFact);
 				}
 			}
@@ -123,12 +125,17 @@ public class TVWsAcuityDataController {
                    updateIncompleteFlag(caName, newFact);
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
+                   } else {
+                	   newFact.setGradeEquivalent(-99f);
                    }
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?-99l: fact.getNationalPercentile().longValue());
                    newFact.setNationalStanine((fact.getNationalStanine()==null)?-99l: fact.getNationalStanine().longValue());
                    newFact.setNormCurveEquivalent((fact.getNormalCurveEquivalent()==null)?-99l:new Long(fact.getNormalCurveEquivalent().longValue()));
-                   if(fact != null && fact.getPercentObjectiveMastery() != null)
+                   if(fact != null && fact.getPercentObjectiveMastery() != null) {
                 	   newFact.setPercentMastery((fact.getPercentObjectiveMastery()==null)?-99f:new Float(fact.getPercentObjectiveMastery().longValue()));
+                   } else {
+                	   newFact.setPercentMastery(-99f);
+                   }
                    newFact.setPercentObtained((fact.getPercentObtained()==null)? -99f : fact.getPercentObtained().floatValue());
                    newFact.setScaleScore((fact.getScaleScore()==null)?-99l:new Long(fact.getScaleScore().longValue()));
                    newFact.setSem((fact.getStandardErrorOfMeasurement() == null) ? -99l : new Long(fact.getStandardErrorOfMeasurement().longValue()));
