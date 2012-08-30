@@ -1648,10 +1648,12 @@ function validateLicenseUsed() {
 				var availableLicense = licenseInfoMap.get(orgNodeId);
 				var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId);
 				var licenseUsedPercentage = calculateLicenseUsedPercentForOrgNode(licenseUsed, availableLicense);
-				if ((licenseUsedPercentage < 0) || (licenseUsedPercentage > 100)) {
-					showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense);
-					result = false;
-					break;
+				if (licenseUsed > 0) {
+					if ((licenseUsedPercentage < 0) || (licenseUsedPercentage > 100)) {
+						showValidateLicenseExceed(orgNodeName, licenseUsed, availableLicense);
+						result = false;
+						break;
+					}
 				}
 			}
 		}

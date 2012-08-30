@@ -15,7 +15,7 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
     <netui-template:setAttribute name="title" value="${bundle.web['reports.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.generateReportFile']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.reports']}"/>
 <netui-template:section name="bodySection">
  
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/report_list.js"></script>  

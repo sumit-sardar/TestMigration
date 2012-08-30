@@ -531,7 +531,7 @@ function saveLicenses() {
 	});
 	
    	if ((editingId != null) || inputCtrlPresent) {
-   		alert("You are currently editing a license quantity. Click outside the edit box to confirm the change before saving.");
+   		alert("You are currently editing a license quantity. Press the Enter key to commit the value. Then click Save to save all your changes.");
    		return;
 	}
 	

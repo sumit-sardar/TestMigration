@@ -14,8 +14,8 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-	<netui-template:setAttribute name="title" value="Student Scoring"/>
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.studentScoring']}"/>
+	<netui-template:setAttribute name="title" value="${bundle.web['session.menu.studentScoring']}" />
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.studentScoring']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->
