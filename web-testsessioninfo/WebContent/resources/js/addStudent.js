@@ -1555,7 +1555,10 @@ function showLicenseErrorMessage(licenseUsed, availableLicense) {
 	$('#displayMessage').hide();
    	if (licenseUsed > availableLicense) { 
    		var licenseNeeded = licenseUsed - availableLicense; 
-   		licenseText = "There are insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more licenses.";
+		var text = "license.";
+		if (licenseNeeded > 1)
+			text = "licenses.";    		
+   		licenseText = "There are insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more "  + text;
 		setMessage("Exceeds Licenses Available", "", "errorMessage", licenseText);       
 		$('#displayMessage').show();
    	}
