@@ -247,7 +247,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -262,7 +262,7 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {/*
+				} else if (inFile.getName().substring(4,7).equals("OPI")) {/*
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -491,6 +491,9 @@ public class FileUtil {
 	{
 		List<String> itemSetIdList = new ArrayList<String>();
 		String name="";
+		if("21".equals(Test_Level)) {
+			Test_Level = "21-22";
+		}
 		try {
 			con=SqlUtil.openOASDBcon();
 			ps = con.prepareStatement(itemSetIDQuery);
