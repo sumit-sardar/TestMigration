@@ -46,13 +46,19 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
             	Integer highMR = null;
             	Integer lowMR = null;
-            	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
-            	lowMR = getScoreLookupHelper().getObjectiveLMR(event.getObjectiveId(), "%", "%", null, null, pLevel, conn, scheduledProductId);
+            	String currentLevel = null;
+            	if("21-22".equals(pLevel) || "21/22".equals(pLevel)) {
+            		currentLevel = "21";
+            	} else {
+            		currentLevel = pLevel;
+            	}
+            	highMR = getScoreLookupHelper().getObjectiveHMR(event.getObjectiveId(), "%", "%", null, null, currentLevel, conn, scheduledProductId);
+            	lowMR = getScoreLookupHelper().getObjectiveLMR(event.getObjectiveId(), "%", "%", null, null, currentLevel, conn, scheduledProductId);
             	//System.out.println(event.getObjectiveId() + " - " + highMR + " - " + lowMR);
             	if(pGrade.length() == 1) {
-                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, pLevel, conn, scheduledProductId);
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, "0"+pGrade, currentLevel, conn, scheduledProductId);
                 } else {
-                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn, scheduledProductId);
+                   	pValue = getScoreLookupHelper().getObjectivePValueTerrab3(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, currentLevel, conn, scheduledProductId);
                 }
             	System.out.println(event.getObjectiveId() + " -> " + pValue);
             	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
