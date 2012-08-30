@@ -1334,6 +1334,7 @@
 							 	
 							 } else {
 							  	setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
+							  	$("#editSubtedtinnerDiv").height($("#editSubtedtinnerDiv").height()-($("#displaySubtestValidationMsg").height()+2));
 							 
 							 }
 						  	$.unblockUI();
