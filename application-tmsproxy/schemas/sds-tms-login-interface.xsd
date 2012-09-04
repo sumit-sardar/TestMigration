@@ -549,15 +549,6 @@
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
-												<xs:attribute
-													name="isOK" type="xs:string">
-													<xs:annotation>
-														<xs:documentation>
-															This is to get the is 
-															customer Oklahoma.
-														</xs:documentation>
-													</xs:annotation>
-												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 										<xs:element

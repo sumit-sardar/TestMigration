@@ -113,8 +113,6 @@ public class OASOracleSource implements OASRDBSource
 	"					prepop.node_id = ?" +
 	"					and not exists (select * from test_roster where test_roster_id = prepop.test_roster_id)";
 	
-	private static final String GET_CUSTOMER_CONFIG_SQL = "SELECT cu.default_value AS isOK FROM customer_configuration cu, test_roster tr WHERE tr.test_roster_id=? AND tr.customer_id = cu.customer_id AND cu.customer_configuration_name = 'OK_Customer'";
-	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
 	}
@@ -235,7 +233,6 @@ public class OASOracleSource implements OASRDBSource
     	AuthenticationData authData = null;
         boolean authenticated = false;
         int testRosterId = -1;
-        String isOK = null;
         String lsid = null;
         ManifestData [] manifestData = null;
         for(int a=0;authDataArray != null && a<authDataArray.length && !authenticated;a++) {
@@ -244,7 +241,6 @@ public class OASOracleSource implements OASRDBSource
             lsid = String.valueOf(testRosterId) + ":" + accessCode;
             loginResponse.setLsid(lsid);
             manifestData = getManifest(conn, String.valueOf(testRosterId), accessCode);
-            isOK = getCustomerConfig(conn,testRosterId);
             if(manifestData != null && manifestData.length > 0) {
                 authenticated = true;
                 ScratchpadData [] scratchData = getScratchpadContent(conn, testRosterId);
@@ -323,7 +319,6 @@ public class OASOracleSource implements OASRDBSource
 	
 			 } */
 	        copyAuthenticationDataToResponse(loginResponse, authData);
-	        copyConfigDataToResponse(loginResponse,isOK);
 	        AccommodationsData accomData = getAccommodations(conn, testRosterId);
 	        
 	        if(accomData != null) {
@@ -395,12 +390,6 @@ public class OASOracleSource implements OASRDBSource
         response.getTestingSessionData().getCmiCore().setStudentLastName(authData.getStudentLastName());
         response.getTestingSessionData().getCmiCore().setStudentFirstName(authData.getStudentFirstName());
         response.getTestingSessionData().getCmiCore().setStudentMiddleName(authData.getStudentMiddleName());
-    }
-    
-    private static void copyConfigDataToResponse(LoginResponse response, String isOK) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
-        if(isOK != null){
-        	response.getTestingSessionData().getCmiCore().setIsOK(isOK);
-        }
     }
     
     private static void copyAccomodationsDataToResponse(LoginResponse response, AccommodationsData accomData) {
@@ -675,29 +664,6 @@ public class OASOracleSource implements OASRDBSource
 			}
 		}
 		return data;
-	}
-	
-	private static String getCustomerConfig(Connection con, int testRosterId) {
-		String isOk = null;
-		PreparedStatement stmt1 = null;
-    	try {
-			stmt1 = con.prepareStatement(GET_CUSTOMER_CONFIG_SQL);
-			stmt1.setInt(1, testRosterId);
-			ResultSet rs1 = stmt1.executeQuery();
-			while (rs1.next()) {
-				isOk = rs1.getString("isOK");
-			}
-			rs1.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(stmt1 != null) stmt1.close();
-			} catch (Exception e) {
-				// do nothing
-			}
-		}
-		return isOk;
 	}
 	
 	private static AuthenticationData authenticateStudentByRoster(Connection con, String testRosterId, String accessCode) {

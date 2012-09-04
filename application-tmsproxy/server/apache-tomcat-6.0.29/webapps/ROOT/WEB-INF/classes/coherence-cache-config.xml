@@ -25,7 +25,7 @@
         <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
 	        <cache-name>OASResponse*</cache-name>
-	        <scheme-name>DistributedScheme</scheme-name>
+	        <scheme-name>ResponseDistributedScheme</scheme-name>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASManifest*</cache-name>
@@ -39,10 +39,18 @@
     <caching-schemes>  
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
-   			<scheme-name>BackMemoryScheme</scheme-name>
+   			<scheme-name>TieredBackMemoryScheme</scheme-name>
    			<eviction-policy>LRU</eviction-policy>
    			<high-units>268435456</high-units>
    			<unit-calculator>BINARY</unit-calculator>
+		</local-scheme>
+    	<local-scheme>
+   			<scheme-name>ResponseBackMemoryScheme</scheme-name>
+   			<eviction-policy>LRU</eviction-policy>
+   			<high-units>268435456</high-units>
+   			<unit-calculator>BINARY</unit-calculator>
+   			<expiry-delay>12h</expiry-delay>
+   			<flush-delay>1h</flush-delay>
 		</local-scheme>
 		<local-scheme>
    			<scheme-name>FrontMemoryScheme</scheme-name>
@@ -52,10 +60,33 @@
 		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
         <read-write-backing-map-scheme>
-		  <scheme-name>DBScheme</scheme-name>
+		  <scheme-name>TieredDBScheme</scheme-name>
 		  <internal-cache-scheme>
 		    <local-scheme>
-		      <scheme-ref>BackMemoryScheme</scheme-ref>
+		      <scheme-ref>TieredBackMemoryScheme</scheme-ref>
+		    </local-scheme>
+		  </internal-cache-scheme>
+		  <write-max-batch-size>256</write-max-batch-size>
+		  <cachestore-scheme>
+		    <class-scheme>
+		      <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
+		      <init-params>
+		        <init-param>
+		          <param-type>java.lang.String</param-type>
+		          <param-value>{cache-name}</param-value>
+		        </init-param>
+		      </init-params>
+		    </class-scheme>
+		  </cachestore-scheme>
+		  <write-delay>1s</write-delay>
+		  <write-batch-factor>1</write-batch-factor>  
+		  <write-requeue-threshold>2147483647</write-requeue-threshold>
+		</read-write-backing-map-scheme>
+		<read-write-backing-map-scheme>
+		  <scheme-name>ResponseDBScheme</scheme-name>
+		  <internal-cache-scheme>
+		    <local-scheme>
+		      <scheme-ref>ResponseBackMemoryScheme</scheme-ref>
 		    </local-scheme>
 		  </internal-cache-scheme>
 		  <write-max-batch-size>256</write-max-batch-size>
@@ -76,13 +107,28 @@
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
-            <scheme-name>DistributedScheme</scheme-name>
+            <scheme-name>TieredDistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
             <local-storage>true</local-storage>
             <thread-count>60</thread-count>    
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
-                    <scheme-ref>DBScheme</scheme-ref>
+                    <scheme-ref>TieredDBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+            <partition-count>509</partition-count>
+            <backup-count>1</backup-count>
+            <backup-count-after-writebehind>0</backup-count-after-writebehind>
+            <autostart>true</autostart>
+        </distributed-scheme>
+        <distributed-scheme>            
+            <scheme-name>ResponseDistributedScheme</scheme-name>
+            <service-name>PartitionedCache</service-name> 
+            <local-storage>true</local-storage>
+            <thread-count>60</thread-count>    
+            <backing-map-scheme>                
+                <read-write-backing-map-scheme>                    
+                    <scheme-ref>ResponseDBScheme</scheme-ref>
                 </read-write-backing-map-scheme>
             </backing-map-scheme>
             <partition-count>509</partition-count>
@@ -100,7 +146,7 @@
         	</front-scheme>  
         	<back-scheme>
 				<distributed-scheme>
-					<scheme-ref>DistributedScheme</scheme-ref>
+					<scheme-ref>TieredDistributedScheme</scheme-ref>
 				</distributed-scheme>
 			</back-scheme>
 		</near-scheme> 
