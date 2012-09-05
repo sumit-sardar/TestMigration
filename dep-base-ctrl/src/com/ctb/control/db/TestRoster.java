@@ -594,6 +594,9 @@ public interface TestRoster extends JdbcControl
     
     @JdbcControl.SQL(statement = "SELECT ISET.ITEM_SET_ID FROM ITEM_SET ISET,  ITEM_SET ISETTS, ITEM_SET_PARENT ISP, TEST_ADMIN_ITEM_SET TAIS, TEST_ROSTER ROS WHERE ROS.TEST_ROSTER_ID = {testRosterId} AND ROS.TEST_ADMIN_ID = {sessionId} AND ROS.TEST_ADMIN_ID = TAIS.TEST_ADMIN_ID AND TAIS.ITEM_SET_ID = ISP.PARENT_ITEM_SET_ID AND ISP.PARENT_ITEM_SET_ID = ISETTS.ITEM_SET_ID AND ISETTS.ITEM_SET_NAME = {itemSetName} AND ISP.ITEM_SET_ID = ISET.ITEM_SET_ID")
     Integer[] findSubtestIdFromTestRoster(Integer testRosterId, String itemSetName, Integer sessionId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = " SELECT DISTINCT ISET.item_Set_name FROM STUDENT_ITEM_SET_STATUS SISS, ITEM_SET ISET, item_Set_parent isp WHERE SISS.TEST_ROSTER_ID = {testRosterId} AND SISS.ITEM_SET_ID = ISp.ITEM_SET_ID AND iset.item_Set_id = isp.parent_item_set_id AND ISET.ITEM_SET_NAME = {itemSetName}")
+    String verifySubtestPresence(Integer testRosterId, String itemSetName) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }
