@@ -16,6 +16,7 @@ public class ScheduleRosterDao {
 	private static String UPDATE_SCHEDULE_ROSTER_COUNT = " UPDATE SCHEDULED_SCORABLE_ROSTER   SET STATE  = 'SCHEDULED',  UPDATED_DATE_TIME = SYSDATE,  RETRY_COUNT  = (RETRY_COUNT + 1) WHERE TEST_ROSTER_ID IN ( <<ROSTER_LIST>> ) ";
 	private static String ADD_UPDATE_SCHEDULE_ROSTER = " MERGE INTO SCHEDULED_SCORABLE_ROSTER SSR USING (SELECT <<ROSTER_ID>> TEST_ROSTER_ID FROM DUAL) DEST ON (SSR.TEST_ROSTER_ID = DEST.TEST_ROSTER_ID) WHEN MATCHED THEN UPDATE SET SSR.updated_date_time = Sysdate, SSR.state = 'FAILED',  VALIDATION_STATUS = DECODE (sign( ? - RETRY_COUNT -1 )  , -1 , 'IN', 'VA') WHEN NOT MATCHED THEN INSERT(test_roster_id,state) VALUES(DEST.test_roster_id,'FAILED') ";
 	private static String DELETE_SCHEDULE_ROSTER = "DELETE FROM SCHEDULED_SCORABLE_ROSTER WHERE TEST_ROSTER_ID = ?";
+	private static String GET_ROSTER_FROM_SESSION = "SELECT TEST_ROSTER_ID FROM TEST_ROSTER WHERE TEST_ADMIN_ID = ? AND STUDENT_ID = ?";
 	
 	
 	
@@ -59,7 +60,7 @@ public class ScheduleRosterDao {
 	}
 	
 	
-	public void saveOrUpdateRosterForSchedule(int testRosterId){
+	public void saveOrUpdateRosterForSchedule(long testRosterId){
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -75,19 +76,60 @@ public class ScheduleRosterDao {
 		} finally {
 			ClosableHelper.close(con, pst, rs);
 		}	
+	}
+	
+	public void saveOrUpdateRosterForSchedule(long studentId, long sessionId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		try {
+			con = SqlUtil.openOASDBcon(false);
+			pst = con.prepareStatement(GET_ROSTER_FROM_SESSION);
+			pst.setLong(1, sessionId);
+			pst.setLong(2, studentId);
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				saveOrUpdateRosterForSchedule(rs.getLong("TEST_ROSTER_ID"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ClosableHelper.close(con, pst, rs);
+		}	
 		
 	}
 	
-	public void deleteScheduleRoster(int testRosterId){
+	public void deleteScheduleRoster(long testRosterId){
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
 		try {
 			con = SqlUtil.openOASDBcon(true);
 			pst = con.prepareStatement(DELETE_SCHEDULE_ROSTER);
-			pst.setInt(1, testRosterId);
+			pst.setLong(1, testRosterId);
 			pst.executeUpdate();
 			con.commit();		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			ClosableHelper.close(con, pst, rs);
+		}	
+		
+	}
+	
+	public void deleteScheduleRoster(long studentId, long sessionId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		try {
+			con = SqlUtil.openOASDBcon(false);
+			pst = con.prepareStatement(GET_ROSTER_FROM_SESSION);
+			pst.setLong(1, sessionId);
+			pst.setLong(2, studentId);
+			rs = pst.executeQuery();
+			if(rs.next()) {
+				deleteScheduleRoster(rs.getLong("TEST_ROSTER_ID"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
