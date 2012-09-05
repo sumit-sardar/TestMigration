@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
@@ -38,6 +39,7 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.teststructure.ValidationStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
+import com.ctb.schedular.ScheduleRosterDao;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.CompositeScore;
@@ -149,6 +151,7 @@ public class TVTestResultController implements TestResultController {
     		String endPointUrl = data.getUrlData().getWebserviceUrl();
 	    	ScoringStatus status = null;
 	    	ScoringServiceStub stub = null;
+	    	ScheduleRosterDao scheduleDAO = new ScheduleRosterDao();
 	    	try {
         		//final ConfigurationContext ctx = ConfigurationContextFactory.createConfigurationContextFromFileSystem("./repo", null);
         		// 1.) unregister the current https protocol.  
@@ -161,7 +164,15 @@ public class TVTestResultController implements TestResultController {
         		stub = new ScoringServiceStub(endPointUrl);
         		//stub._getServiceClient().engageModule("logging");
         		status = stub.processStudentScore(user_arg, studentScore);
-		  	} catch (Exception e) {
+        		if(!status.getStatus()) {
+        			scheduleDAO.saveOrUpdateRosterForSchedule(studentData.getOasStudentId(), adminData.getSessionId());
+        		} else {
+        			scheduleDAO.deleteScheduleRoster(studentData.getOasStudentId(), adminData.getSessionId());
+        		}
+		  	} catch (AxisFault af) {
+		  		scheduleDAO.saveOrUpdateRosterForSchedule(studentData.getOasStudentId(), adminData.getSessionId());
+		  		af.printStackTrace();
+        	} catch (Exception e) {
 		  		e.printStackTrace();
         	} finally {
         		if(status != null) {
