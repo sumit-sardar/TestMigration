@@ -198,7 +198,8 @@ public class SchedulingWS implements Serializable {
 	        	}
 	        	else {
 	        		System.out.println("Failed to create student = " + student.getLastName() + "," + student.getFirstName());
-	        		student.setStatusNonOverwritten("Error:Failed to add");
+	        		//student.setStatusNonOverwritten("Error:Failed to add");
+	        		student.setStatusNonOverwritten(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 	        		student.setStudentId(null);
 	        	}
 	    	}
@@ -229,7 +230,8 @@ public class SchedulingWS implements Serializable {
         else {
     		System.out.println("Failed to create session = " + session.getSessionName());
         	session.setSessionId(null);
-        	session.setStatusNonOverwritten("Error:Failed to create session");
+        	//session.setStatusNonOverwritten("Error:Failed to create session");
+        	session.setStatusNonOverwritten(SessionValidatorUtil.MESSAGE_CREATE_SESSION_FAILED);
         }
 		
 		return session;
@@ -299,7 +301,8 @@ public class SchedulingWS implements Serializable {
 	        		
 	        	} else if (studentId == null && !removedStudent){
 	        		System.out.println("Error:Failed to create student = " + student.getLastName() + "," + student.getFirstName());
-	        		student.setStatusNonOverwritten("Error:Failed to create.");
+	        		//student.setStatusNonOverwritten("Error:Failed to create.");
+	        		student.setStatusNonOverwritten(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 	        		student.setStudentId(null);
 	        	}
 	    	}
@@ -342,9 +345,10 @@ public class SchedulingWS implements Serializable {
         	
         }
         else {
-    		System.out.println("Failed to uypdate session = " + session.getSessionName());
+    		System.out.println("Failed to update session = " + session.getSessionName());
         	session.setSessionId(null);
-        	session.setStatusNonOverwritten("Error:Failed to create session");
+        	//session.setStatusNonOverwritten("Error:Failed to create session");
+        	session.setStatusNonOverwritten(SessionValidatorUtil.MESSAGE_CREATE_SESSION_FAILED);
         }
 		
 		return session;
@@ -1061,7 +1065,8 @@ public class SchedulingWS implements Serializable {
 		
 		if (isStudentAlreadyLoggedIn(session.getSessionId())) {
 			isValid = false;
-			session.setStatus("Error:One or more students have started this assessment. You can no longer delete this assignment.");
+			//session.setStatus("Error:One or more students have started this assessment. You can no longer delete this assignment.");
+			session.setStatus(SessionValidatorUtil.MESSAGE_DELETE_SESSION_WARNING);
 		}
 		
 		return isValid;
@@ -1079,7 +1084,7 @@ public class SchedulingWS implements Serializable {
 				|| savedSessionData.getTestSessions().length < 1
 				|| savedSessionData.getTestSessions()[0] == null) {
 			System.out.println("Session does not exists.");
-			session.setStatusNonOverwritten("Error:Session does not exists.");
+			//session.setStatusNonOverwritten("Error:Session does not exists.");//commented regarding OAS local validation
 			isValid = false;
 		} else if (isSessionExpired(savedSessionData)) {
 			boolean productUpdated = SessionValidatorUtil.isProductUpdated(
@@ -1101,8 +1106,9 @@ public class SchedulingWS implements Serializable {
 			boolean enforceBreakUpdated =  SessionValidatorUtil.isEnforceBreakUpdated(	session, savedSessionData.getTestSessions()[0]);
 			
 			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || endDateUpdated || startTimeUpdated || endTimeUpdated || timeZoneUpdated || enforceBreakUpdated) {
-				System.out.println("Modification of product, subtest , level, session, startDate, endDate, startTime, endTime and timeZone is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated,startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				System.out.println("Modification of product, subtest , level, session, startDate, startTime, endTime and timeZone is not allowed. ");
+				//session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated,startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				session.setStatus(SessionValidatorUtil.MESSAGE_SESSION_EXPIRED);
 				isValid = false;
 			}
 
@@ -1128,7 +1134,8 @@ public class SchedulingWS implements Serializable {
 
 			if (productUpdated || subtestUpdated || levelUpdated || sessionUpdated || startDateUpdated || enforceBreakUpdated) {
 				System.out.println("Modification of product, subtest , level, session and startDate is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				//session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				session.setStatus(SessionValidatorUtil.MESSAGE_STUDENT_ALREADY_LOGGED_IN);
 				isValid = false;
 			}
 		} else {
@@ -1152,7 +1159,8 @@ public class SchedulingWS implements Serializable {
 			
 			if (productUpdated || subtestUpdated || levelUpdated) {
 				System.out.println("Modification of product, subtest and level is not allowed. ");
-				session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
+				//commented regarding OAS local validation
+				//session.setStatus(SessionValidatorUtil.getInvalidField(productUpdated, subtestUpdated, levelUpdated, sessionUpdated, startDateUpdated, endDateUpdated, startTimeUpdated, endTimeUpdated, timeZoneUpdated, enforceBreakUpdated));
 				isValid = false;
 			}
 		}
@@ -1206,7 +1214,8 @@ public class SchedulingWS implements Serializable {
 		} catch (Exception e) {
 			System.out.println("Failed to remove student = " +  student.getStudentId());
 			e.printStackTrace();
-			student.setStatusNonOverwritten("Error:Failed to remove.");
+			//student.setStatusNonOverwritten("Error:Failed to remove.");
+			student.setStatusNonOverwritten(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 		}
 		return deleted;
 	}
@@ -1222,16 +1231,19 @@ public class SchedulingWS implements Serializable {
 					 validate = true; 
 				 } else {
 					 System.out.println("Failed to remove student = " +  student.getStudentId());
-		        	 student.setStatus("Error:Failed to remove.");
+		        	 //student.setStatus("Error:Failed to remove.");
+		        	 student.setStatus(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 				 }
 			 } else {
 				 System.out.println("Failed to remove student = " +  student.getStudentId());
-	        	 student.setStatus("Error:Failed to remove.");
+	        	 //student.setStatus("Error:Failed to remove.");
+	        	 student.setStatus(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 			 }
 		} catch(Exception e){
 			System.out.println("Failed to remove student = " +  student.getStudentId());
 			e.printStackTrace();
-			student.setStatus("Error:OAS System Error.");
+			//student.setStatus("Error:OAS System Error.");
+			student.setStatus(SessionValidatorUtil.MESSAGE_STUDENT_ASSIGNMENT_FAILED);
 		}
 		return validate;
 	}
