@@ -40,6 +40,29 @@ public class ItemMapper extends AbstractDBMapper {
         addConditionCodeIDs(result, itemSetId);
         return result;
     }
+    
+    public List findItemByItemSetIdForCA(String itemSetIds) {
+        ItemVO template = new ItemVO();
+        List result = null;
+
+        String[] individualItemSetIds = itemSetIds.split(",");
+        if(individualItemSetIds.length > 0) {
+        	for(int i = 0; i < individualItemSetIds.length; i++) {
+        		if(result == null) {
+        			template.setItemSetId(Long.parseLong(individualItemSetIds[i]));
+        			result = findMany(FIND_ITEM_BY_ITEM_SET_ID_NAME, template);
+            		addConditionCodeIDs(result, Long.parseLong(individualItemSetIds[i]));
+        		} else {
+        			template.setItemSetId(Long.parseLong(individualItemSetIds[i]));
+        			List tempResult = findMany(FIND_ITEM_BY_ITEM_SET_ID_NAME, template);
+        			result.addAll(tempResult);
+        			addConditionCodeIDs(result, Long.parseLong(individualItemSetIds[i]));
+        		}
+        		
+        	}
+        }
+        return result;
+    }
 
     public List findItemGroupByContentAreaForItemSetAndProduct(Long itemSetId, Long productId) {
         ItemContentArea template = new ItemContentArea();

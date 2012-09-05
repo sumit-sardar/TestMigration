@@ -1,6 +1,7 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +20,8 @@ import com.ctb.lexington.domain.score.scorer.Scorer;
 public class SubtestItemCollectionCalculator extends Calculator {
     private Integer productId;
     private String currentWsTvSubject;
+    private String subtestName = null;
+    private String subtestIdCA = null;
 
     /**
      * @param channel
@@ -43,8 +46,26 @@ public class SubtestItemCollectionCalculator extends Calculator {
         try {
             oasConnection = scorer.getOASConnection();
             oasWsTvConnection = scorer.getOASConnection();
-            items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
-                    .getItemSetId()));
+            if(scorer.getResultHolder().getAdminData().getProductId() == 3700 || 
+            		scorer.getResultHolder().getAdminData().getProductId() == 3500) {
+            	
+            	if(this.subtestName != null && (event.getItemSetName().replaceAll("Part 1", "").equals(this.subtestName.replaceAll("Part 2", "")) || 
+            	          event.getItemSetName().replaceAll("Part 2", "").equals(this.subtestName.replaceAll("Part 1", "")))) {
+            	            this.subtestIdCA = this.subtestIdCA + "," + event.getItemSetId().toString();
+            	            items = new ItemMapper(oasConnection).findItemByItemSetIdForCA(this.subtestIdCA); 	
+            	            
+            	 } else {
+            		 this.subtestName = event.getItemSetName();
+            		 this.subtestIdCA = event.getItemSetId().toString();
+            		 items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
+     	                    .getItemSetId()));
+            	 }
+            	
+            } else {
+            	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
+                        .getItemSetId()));
+            }
+            System.out.println("this.subtestIdCA -> " + this.subtestIdCA);
             
             //Added for webservice based terra nova third edition test
             //This will retrieve all the itemids and the corresponding peids for the content area.

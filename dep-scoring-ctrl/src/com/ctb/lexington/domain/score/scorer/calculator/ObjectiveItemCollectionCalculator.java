@@ -30,6 +30,9 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
     // TODO: HACK: without having to rework buildObjectiveContext
     private final Map cachedObjectives = new ObjectiveMap();
     private SubtestItemCollectionEvent sicEvent;
+    //Added for Terra nova products for handling content area level validation.
+    private String currentSubjectName = null;
+    private String itemSetIdValue = null;
 
     /**
      * @param channel
@@ -48,12 +51,43 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
         Connection oasConnection = null;
         try {
             oasConnection = scorer.getOASConnection();
-            String cacheKey = event.getProductId().toString() + "::" + event.getItemSetId().toString();
-            objectives = (Collection) SimpleCache.checkCache("ObjectivesBySubtestIdAndProductId", cacheKey, "scoringUser");
-            if(objectives == null) {
-	            objectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
-	                    DatabaseHelper.asLong(event.getItemSetId()), DatabaseHelper.asLong(event.getProductId()));
-	            SimpleCache.cacheResult("ObjectivesBySubtestIdAndProductId", cacheKey, objectives, "scoringUser");
+          //Added for current terra nova products where all validations must take place based 
+            //content area, not on individual subtests.
+            if(scorer.getResultHolder().getAdminData().getProductId() == 3700 ||
+            		scorer.getResultHolder().getAdminData().getProductId() == 3500) {
+            	objectives = null;
+            	if(currentSubjectName != null && currentSubjectName.equals(event.getContentArea())) {
+            		currentSubjectName = event.getContentArea();
+            		this.itemSetIdValue = this.itemSetIdValue + "," + event.getItemSetId().toString();
+            		String[] itemSetIdArray = this.itemSetIdValue.split(",");
+            		for(int i = 0; i < itemSetIdArray.length; i++) {
+            			Collection tempObjectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
+        	                    DatabaseHelper.asLong(Integer.parseInt(itemSetIdArray[i])), DatabaseHelper.asLong(event.getProductId()));
+            			if(objectives == null) {
+            				objectives = tempObjectives;
+            			} else {
+            				objectives.addAll(tempObjectives);
+            			}
+            		}
+            	} else {
+            		currentSubjectName = event.getContentArea();
+            		this.itemSetIdValue = event.getItemSetId().toString();
+                	String cacheKey = event.getProductId().toString() + "::" + event.getItemSetId().toString();
+                    objectives = (Collection) SimpleCache.checkCache("ObjectivesBySubtestIdAndProductId", cacheKey, "scoringUser");
+                    if(objectives == null) {
+        	            objectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
+        	                    DatabaseHelper.asLong(event.getItemSetId()), DatabaseHelper.asLong(event.getProductId()));
+        	            SimpleCache.cacheResult("ObjectivesBySubtestIdAndProductId", cacheKey, objectives, "scoringUser");
+                    }
+                }
+            } else {
+            	String cacheKey = event.getProductId().toString() + "::" + event.getItemSetId().toString();
+                objectives = (Collection) SimpleCache.checkCache("ObjectivesBySubtestIdAndProductId", cacheKey, "scoringUser");
+                if(objectives == null) {
+    	            objectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
+    	                    DatabaseHelper.asLong(event.getItemSetId()), DatabaseHelper.asLong(event.getProductId()));
+    	            SimpleCache.cacheResult("ObjectivesBySubtestIdAndProductId", cacheKey, objectives, "scoringUser");
+                }
             }
             buildObjectiveContext(objectives);
             for (Iterator iter = objectives.iterator(); iter.hasNext();) {
