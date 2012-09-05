@@ -13,7 +13,7 @@ import com.ctb.lexington.exception.CTBBusinessException;
  * @version 05/09/2012
  */
 public class SqlUtil {
-
+ 
 	private static String oasDtataSourceJndiName = "oasDataSource";
 	private static String irsDtataSourceJndiName = "irsDataSource";
 
