@@ -1,0 +1,38 @@
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<pre-processing-commands>
+		<delete-jobs-in-group>*</delete-jobs-in-group>
+		<delete-triggers-in-group>*</delete-triggers-in-group>
+	</pre-processing-commands>
+
+	<processing-directives>
+		<!-- if there are any jobs/trigger in scheduler of same name (as in this file), overwrite them -->
+		<overwrite-existing-data>true</overwrite-existing-data>
+		<!-- if there are any jobs/trigger in scheduler of same name (as in this file), and over-write is false, ignore them rather then generating an error -->
+		<ignore-duplicates>false</ignore-duplicates>
+	</processing-directives>
+
+	<schedule>
+		<job>
+			<name>RescoreJob</name>
+			<job-class>job.RescoreJob</job-class>
+			
+		</job>
+		<trigger>
+			<cron>
+				<name>RescoreJobCorn</name>
+				<job-name>RescoreJob</job-name>
+				<cron-expression>0 0/15 * * * ?</cron-expression> 
+			<!--<cron-expression>* * * * * ?</cron-expression> -->	
+			<!--<cron-expression>0 10 0 * * ?</cron-expression>-->
+			</cron>
+
+		</trigger>
+
+	</schedule>
+</job-scheduling-data>
+

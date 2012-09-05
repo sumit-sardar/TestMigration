@@ -2,6 +2,26 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <display-name>Workshop Application</display-name>
     <description/>
+     <servlet>
+    	<servlet-name>QuartzInitializer</servlet-name>
+
+    	<servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+    	
+    	<init-param>
+    		<param-name>config-file</param-name>
+    		<param-value>rescoreRosterSchedular.properties</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>shutdown-on-unload</param-name>
+    		<param-value>true</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>start-scheduler-on-load</param-name>
+    		<param-value>true</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+    
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -10,11 +30,6 @@
             <description/>
             <param-name>config</param-name>
             <param-value>/_pageflow/struts-config.xml</param-value>
-        </init-param>
-        <init-param>
-            <description/>
-            <param-name>config/-global</param-name>
-            <param-value>/_pageflow/struts-config--global.xml</param-value>
         </init-param>
         <init-param>
             <description/>
