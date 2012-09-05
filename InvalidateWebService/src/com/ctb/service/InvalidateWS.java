@@ -50,16 +50,22 @@ public class InvalidateWS implements Serializable {
 		Integer testRosterId = getRosterIdForStudentAndSession(studentId, sessionId);
 		Integer[] subtestIds = null;
 		if(testRosterId != null) {
-			subtestIds = getSubtestIds(details.getSubtest(), testRosterId, sessionId.intValue());
-			try {
-			testSessionStatus.toggleSubtestValidationStatus(secureUser.getUserName(), testRosterId, subtestIds, "ValidationStatus");
-			message = "OK";
-			} catch (Exception e) {
-				message = "ERROR : Could not invalidate the roster";
+			boolean validSubtests = validateSubtests(details.getSubtest(), testRosterId);
+			if(validSubtests) {
+				subtestIds = getSubtestIds(details.getSubtest(), testRosterId, sessionId.intValue());
+				try {
+				testSessionStatus.toggleSubtestValidationStatus(secureUser.getUserName(), testRosterId, subtestIds, "ValidationStatus");
+				message = "OK";
+				} catch (Exception e) {
+					message = "ERROR : Could not invalidate the roster";
+				}
+			} else {
+				message = "ERROR : Not all subtest names are valid in the list.";
 			}
 		} else {
 			message = "ERROR : No student found with the studentId : " + studentId + " for session : " + sessionId;
 		}
+		System.out.println("message -> " + message);
 		return message;
 	}
 	
@@ -117,6 +123,24 @@ public class InvalidateWS implements Serializable {
 			return null;
 		}
 		return rosterId;
+	}
+	
+	private boolean validateSubtests(String[] subtestNames, Integer testRosterId) {
+		boolean validListOfSubtests = true;
+		if(subtestNames != null && subtestNames.length > 0) {
+			for(int i = 0; i < subtestNames.length; i ++) {
+				try {
+					String subtestPresent = rosters.verifySubtestPresence(testRosterId, subtestNames[i]);
+					if(subtestPresent == null || "".equals(subtestPresent) || subtestPresent.length() == 0) {
+						validListOfSubtests = false;
+						return validListOfSubtests;
+					}
+				} catch (Exception e) {
+					validListOfSubtests = false;
+				}
+			}
+		}
+		return validListOfSubtests;
 	}
 
 }
