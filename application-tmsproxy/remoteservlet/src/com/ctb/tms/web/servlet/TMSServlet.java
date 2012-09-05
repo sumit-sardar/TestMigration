@@ -51,7 +51,6 @@ import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
-import com.ctb.tms.exception.testDelivery.InvalidCorrelationIdException;
 import com.ctb.tms.exception.testDelivery.InvalidItemSetIdException;
 import com.ctb.tms.exception.testDelivery.InvalidTestRosterIdException;
 import com.ctb.tms.nosql.ADSNoSQLSink;
@@ -275,10 +274,19 @@ public class TMSServlet extends HttpServlet {
         String testRosterId = lsid.substring(0, lsid.indexOf(":"));
         String accessCode = lsid.substring(lsid.indexOf(":") + 1, lsid.length());
         
-        Manifest manifest = oasSource.getManifest(testRosterId, accessCode);
-    	ManifestData[] feedback = manifest.getManifest();
+        ManifestWrapper wrapper = oasSource.getAllManifests(testRosterId);
+        Manifest[] manifests = wrapper.getManifests();
+        ArrayList<ManifestData> feedbackal = new ArrayList<ManifestData>();
+        for(int i = 0;i<manifests.length;i++) {
+        	ManifestData[] manifesta = manifests[i].getManifest();
+        	for(int j=0;j<manifesta.length;j++) {
+        		feedbackal.add(manifesta[j]);
+        	}
+        }
+    	
+        ManifestData[] feedback = (ManifestData[]) feedbackal.toArray(new ManifestData[0]);
 
-        feedbackResponse.addNewTestingSessionData().setStudentName(manifest.getStudentName());
+        feedbackResponse.addNewTestingSessionData().setStudentName(manifests[0].getStudentName());
         feedbackResponse.addNewTitle().setId(String.valueOf(feedback[0].getScoParentId()));
         feedbackResponse.getTitle().setName(feedback[0].getTestTitle());
         feedbackResponse.setLsid(lsid);

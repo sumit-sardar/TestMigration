@@ -24,19 +24,25 @@ public class StudentCredentials {
 		return username.toUpperCase();
 	}
 	public void setUsername(String username) {
-		this.username = username.toUpperCase();
+		if(username != null) {
+			this.username = username.toUpperCase();
+		}
 	}
 	public String getPassword() {
 		return password.toUpperCase();
 	}
 	public void setPassword(String password) {
-		this.password = password.toUpperCase();
+		if(password != null) {
+			this.password = password.toUpperCase();
+		}
 	}
 	public String getAccesscode() {
 		return accesscode.toUpperCase();
 	}
 	public void setAccesscode(String accesscode) {
-		this.accesscode = accesscode.toUpperCase();
+		if(accesscode != null) {
+			this.accesscode = accesscode.toUpperCase();
+		}
 	}
 	
 }
