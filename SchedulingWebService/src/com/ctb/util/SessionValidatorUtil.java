@@ -18,16 +18,16 @@ public class SessionValidatorUtil {
 	public static final String MESSAGE_START_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Date\" for this assignment.";
 	public static final String MESSAGE_END_DATE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Date\" for this assignment.";
 	public static final String MESSAGE_TIME_ZONE_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Time Zone\" for this assignment.";
-	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "One or more students have started this assessment. The changes you have made to the accommodations will be visible to students who begin this test <i>after</i> this change is saved.";
+	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_SESSION = "OK:One or more students have started this assessment. The changes you have made to the accommodations will be visible to students who begin this test <i>after</i> this change is saved.";
 	public static final String MESSAGE_UPDATE_ACCOMODATION_AT_STUDENT = "Error:You can no longer edit accomodation for this student.";
 	public static final String MESSAGE_START_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"Start Time\" for this assignment.";
 	public static final String MESSAGE_END_TIME_UNEDITABLE = "Error:One or more students have started this assessment. You can no longer edit \"End Time\" for this assignment.";
 	//User Story : TN on Acuity – OAS – 039 – OAS Error Messages : Start
-	public static final String MESSAGE_CREATE_SESSION_FAILED = "This assignment was not created successfully. Please try again later.";
-	public static final String MESSAGE_SESSION_EXPIRED = "This assignment has expired. Please adjust the end date before making any other changes to this assignment.";
-	public static final String MESSAGE_STUDENT_ASSIGNMENT_FAILED = "Some of your students were not successfully assigned/unassigned. Click on this link to see those students. Please edit the assignment at a later time to add/remove these students.";
-	public static final String MESSAGE_STUDENT_ALREADY_LOGGED_IN = "One or more students have started this assessment. You can no longer edit the following: Allow breaks, Assignment Name and Start Date. If you want to edit any value(s) apart from the ones noted, please only edit those value(s) and try again.";
-	public static final String MESSAGE_DELETE_SESSION_WARNING = "One or more students have started this assessment. You can no longer delete this assignment.";
+	public static final String MESSAGE_CREATE_SESSION_FAILED = "Error:This assignment was not created successfully. Please try again later.";
+	public static final String MESSAGE_SESSION_EXPIRED = "Error:This assignment has expired. Please adjust the end date before making any other changes to this assignment.";
+	public static final String MESSAGE_STUDENT_ASSIGNMENT_FAILED = "Error:Some of your students were not successfully assigned/unassigned. Click on this link to see those students. Please edit the assignment at a later time to add/remove these students.";
+	public static final String MESSAGE_STUDENT_ALREADY_LOGGED_IN = "Error:One or more students have started this assessment. You can no longer edit the following: Allow breaks, Assignment Name and Start Date. If you want to edit any value(s) apart from the ones noted, please only edit those value(s) and try again.";
+	public static final String MESSAGE_DELETE_SESSION_FAILED = "Error:One or more students have started this assessment. You can no longer delete this assignment.";
 	//User Story : TN on Acuity – OAS – 039 – OAS Error Messages : End
 	
 

@@ -1066,7 +1066,7 @@ public class SchedulingWS implements Serializable {
 		if (isStudentAlreadyLoggedIn(session.getSessionId())) {
 			isValid = false;
 			//session.setStatus("Error:One or more students have started this assessment. You can no longer delete this assignment.");
-			session.setStatus(SessionValidatorUtil.MESSAGE_DELETE_SESSION_WARNING);
+			session.setStatus(SessionValidatorUtil.MESSAGE_DELETE_SESSION_FAILED);
 		}
 		
 		return isValid;
