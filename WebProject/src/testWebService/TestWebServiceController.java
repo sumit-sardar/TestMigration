@@ -30,7 +30,7 @@ public class TestWebServiceController extends PageFlowController
     static final long serialVersionUID = 1L;
 	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
 	private static final String AUTHENTICATE_PASSWORD = "12345";
-	private static final String ACUITY_USER_TYPE = "ACUITY_QA";
+	private static final String ACUITY_USER_TYPE = "QA";
 	private static final String DELETE_SESSION = "DELETE";
 	
 	@Control
