@@ -68,7 +68,9 @@ public class TestResultDataCollector {
         	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
 			SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
         }
+        ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
         data.setCurriculumData(filterCurricula(cachedCurriculumData));
+        data.getCurriculumData().setAllContentAreas(allContentArea);
               
         data.setUserData(getUserData());
         data.setTestRosterData(getTestRosterData());

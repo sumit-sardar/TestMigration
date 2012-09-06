@@ -110,7 +110,7 @@ public class SubtestValidationCalculator extends Calculator {
     }
 
     private List extractContentAreaNames(Long subtestId) {
-        ContentArea [] contentAreas = scorer.getResultHolder().getCurriculumData().getContentAreas();
+        ContentArea [] contentAreas = scorer.getResultHolder().getCurriculumData().getAllContentAreas();
         if (contentAreas == null || contentAreas.length < 1) {
             return new ArrayList();
         }
@@ -178,6 +178,7 @@ public class SubtestValidationCalculator extends Calculator {
         
         int attemptedItems = 0;
         int correctAnswers = 0;
+        java.util.Set<String> attemptedSet = new java.util.HashSet<String>();
 
         for (Iterator iter = this.items.iterator(); iter.hasNext();) {
             final ItemVO item = (ItemVO) iter.next();
@@ -208,7 +209,8 @@ public class SubtestValidationCalculator extends Calculator {
             // regardless of whether or not the corresponding condition code has the 
             // attempted flag set.
             if (hasResponse(detail)) {
-                ++attemptedItems;
+            	attemptedSet.add(itemId);//++attemptedItems;
+            	attemptedItems = attemptedSet.size();
 
                 if (attemptedEnoughItems(attemptedItems))
                     return true;
@@ -248,6 +250,6 @@ public class SubtestValidationCalculator extends Calculator {
     }
 
     private static boolean hasResponse(final StudentItemScoreDetails detail) {
-        return detail.getResponse() != null;
+        return detail.getResponse() != null && !detail.getResponse().equals("-");
     }
 }

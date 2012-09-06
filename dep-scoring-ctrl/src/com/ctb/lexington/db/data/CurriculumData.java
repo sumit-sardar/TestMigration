@@ -776,6 +776,7 @@ public class CurriculumData {
     
     private Composite [] composites;
     private ContentArea [] contentAreas;
+    private ContentArea [] allContentAreas;
     private PrimaryObjective [] primaryObjectives;
     private SecondaryObjective [] secondaryObjectives;
     private Item [] items;
@@ -840,6 +841,18 @@ public class CurriculumData {
 	 */
 	public void setContentAreas(ContentArea[] contentAreas) {
 		this.contentAreas = contentAreas;
+	}
+	/**
+	 * @return Returns the contentAreas.
+	 */
+	public ContentArea[] getAllContentAreas() {
+		return allContentAreas;
+	}
+	/**
+	 * @param contentAreas The contentAreas to set.
+	 */
+	public void setAllContentAreas(ContentArea[] allContentAreas) {
+		this.allContentAreas = allContentAreas;
 	}
 	/**
 	 * @return Returns the items.
