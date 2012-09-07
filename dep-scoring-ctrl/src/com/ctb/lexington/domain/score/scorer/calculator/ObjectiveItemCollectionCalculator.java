@@ -2,8 +2,10 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.sql.Connection;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.ctb.lexington.db.data.ObjectiveData;
 import com.ctb.lexington.db.mapper.ObjectiveMapper;
@@ -29,6 +31,7 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
     private final Map objectiveContextMap = new ObjectiveMap();
     // TODO: HACK: without having to rework buildObjectiveContext
     private final Map cachedObjectives = new ObjectiveMap();
+    private final Set<String> cachedItem = new HashSet<String>();
     private SubtestItemCollectionEvent sicEvent;
     //Added for Terra nova products for handling content area level validation.
     private String currentSubjectName = null;
@@ -61,7 +64,7 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
             		this.itemSetIdValue = this.itemSetIdValue + "," + event.getItemSetId().toString();
             		String[] itemSetIdArray = this.itemSetIdValue.split(",");
             		for(int i = 0; i < itemSetIdArray.length; i++) {
-            			Collection tempObjectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
+        				Collection tempObjectives = new ObjectiveMapper(oasConnection).findObjectivesBySubtestIdAndProductId(
         	                    DatabaseHelper.asLong(Integer.parseInt(itemSetIdArray[i])), DatabaseHelper.asLong(event.getProductId()));
             			if(objectives == null) {
             				objectives = tempObjectives;
@@ -115,13 +118,15 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
     }
 
     private void buildObjectiveContext(final Collection objectives) {
-        for (final Iterator it = objectives.iterator(); it.hasNext();) {
+    	for (final Iterator it = objectives.iterator(); it.hasNext();) {
             final ObjectiveData objectiveData = (ObjectiveData) it.next();
             final Objective objective = getObjective(objectiveData);
             final String itemId = objectiveData.getItemId();
 
-            objective.incNumberOfItems();
-            objective.incPointsPossible(sicEvent.getMaxPoints(itemId).intValue());
+            if(cachedItem.add(itemId + objectiveData.getReportingLevel())) {
+            	objective.incNumberOfItems();
+                objective.incPointsPossible(sicEvent.getMaxPoints(itemId).intValue());
+            }
 
             objectiveContextMap.put(objectiveData.getItemSetId(), objective);
         }
