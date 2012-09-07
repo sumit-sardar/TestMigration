@@ -2,7 +2,6 @@ package job;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +14,12 @@ public class SchedulerServlet extends HttpServlet {
 	public static final long serialVersionUID = 1L;
 	
 	@Override
-	public void init(ServletConfig config) {
+	public void init() {
 		try {
-			super.init(config);
 			CronTriggerRunner.start();
+			System.out.println("Scheduler started successfully");
 		} catch(SchedulerException she) {
 			she.printStackTrace();
-		}catch(ServletException se) {
-			se.printStackTrace();
 		}
 	}
 	
