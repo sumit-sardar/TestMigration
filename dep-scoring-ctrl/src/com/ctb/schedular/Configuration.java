@@ -14,6 +14,7 @@ public class Configuration implements Serializable {
 	private int rescoreRetryInterval = 20;
 	private int rescoreRetryCount    = 5;
 	private int rescoreRosterLoadFactor  = 100;
+	private String cronExpression  = "0 0/5 * * * ?";
 	
 	private Configuration(){
 		load();
@@ -22,10 +23,7 @@ public class Configuration implements Serializable {
 	private void load() {
 		try{
 			ResourceBundle rb = ResourceBundle.getBundle("security");
-			
-			
-	
-			try{
+			try {
 				String  rescore_retry_interval= rb.getString("rescore.retry.interval");
 				rescoreRetryInterval = Integer.parseInt(rescore_retry_interval.trim());
 			} catch(Exception e){
@@ -39,13 +37,18 @@ public class Configuration implements Serializable {
 				System.err.println("Invalid configuration rescore.retry.count. Default value ["+rescoreRetryCount+"] is used.");
 			}
 	
-			try{
+			try {
 				String  rescore_roster_loadfactor= rb.getString("rescore.roster.load.factor");
 				rescoreRosterLoadFactor = Integer.parseInt(rescore_roster_loadfactor.trim());
 			} catch(Exception e){
 				System.err.println("Invalid configuration rescore.roster.load.factor. Default value ["+rescoreRosterLoadFactor+"] is used.");
 			}
 			
+			try {
+				cronExpression= rb.getString("rescore.cronExpression");
+			} catch(Exception e){
+				System.err.println("Invalid configuration rescore.cronExpression. Default value ["+cronExpression+"] is used.");
+			}
 			
 		} catch ( Exception e ){
 			e.printStackTrace();
@@ -83,9 +86,17 @@ public class Configuration implements Serializable {
 	public int getRescoreRosterLoadFactor() {
 		return rescoreRosterLoadFactor;
 	}
+	
+	/**
+	 * @return the cronExpression
+	 */
+	public String getCronExpression() {
+		return cronExpression;
+	}
+
 	@Override
 	public String toString() {
-		return "RetryInterval["+rescoreRetryInterval+"] RetryCount["+ rescoreRetryCount+"] RosterLoadFactor[" +rescoreRosterLoadFactor+"]";
+		return "RetryInterval["+rescoreRetryInterval+"] RetryCount["+ rescoreRetryCount+"] RosterLoadFactor[" +rescoreRosterLoadFactor+"] CronExpression["+cronExpression+"].";
 	}
 
 }

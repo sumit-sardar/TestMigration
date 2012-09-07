@@ -34,7 +34,7 @@ public class ScheduleRosterBO {
 			qs.init(ic, jmsFactory, jmsQueue);
 			
 			rosterList = dao.getSchedulableRosterList(conf);
-			System.out.println("Schedule will invoke scoring for Roster "+rosterList+".");
+			System.out.println("Schedular will invoke scoring for Roster "+rosterList+".");
 			for (Integer integer : rosterList) {
 				invokeScoring(qs, integer);
 			}
