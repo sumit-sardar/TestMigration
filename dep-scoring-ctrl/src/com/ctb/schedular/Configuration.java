@@ -11,8 +11,8 @@ public class Configuration implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Configuration conf = null;
-	private int rescoreRetryInterval = 20;
-	private int rescoreRetryCount    = 5;
+	private int rescoreRetryInterval = 5;
+	private int rescoreRetryCount    = 4;
 	private int rescoreRosterLoadFactor  = 100;
 	private String cronExpression  = "0 0/5 * * * ?";
 	
