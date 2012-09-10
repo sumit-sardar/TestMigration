@@ -132,10 +132,15 @@ public class SchedulingWS implements Serializable {
     	// SCHEDULE OR UPDATE SESSION
     	Integer sessionId = session.getSessionId(); 
     	if ((sessionId != null) && (sessionId.intValue() > 0)) {
+			System.out.println("Received test location : "+session.getTestLocation());
     		if ((session.getStatus() != null) && session.getStatus().equals(DELETE_SESSION))
     			session = deleteExistingSession(session);
-    		else
+    		else{
+    			if(session.getTestLocation() == null){ 
+    				session.setTestLocation(user.getUserType());    				
+    			}
     			session = updateExistingSession(session);
+    		}
     	}
     	else {
     		session.setTestLocation(user.getUserType());
