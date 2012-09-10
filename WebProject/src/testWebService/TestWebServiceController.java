@@ -28,8 +28,8 @@ import dto.Subtest;
 public class TestWebServiceController extends PageFlowController
 {
     static final long serialVersionUID = 1L;
-	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
-	private static final String AUTHENTICATE_PASSWORD = "12345";
+	private static final String AUTHENTICATE_USER_NAME = "tng_acuity";
+	private static final String AUTHENTICATE_PASSWORD = "acuity101";
 	private static final String ACUITY_USER_TYPE = "QA";
 	private static final String DELETE_SESSION = "DELETE";
 	

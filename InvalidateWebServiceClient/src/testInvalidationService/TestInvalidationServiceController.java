@@ -48,8 +48,8 @@ public class TestInvalidationServiceController extends PageFlowController {
     protected Forward callInvalidate()
     {
 		SecureUser secureUser = new SecureUser();
-		secureUser.setUserName("tai_ws");
-		secureUser.setPassword("12345");
+		secureUser.setUserName("tng_acuity");
+		secureUser.setPassword("acuity101");
 		Long student_id = Long.parseLong(getRequest().getParameter("studentId"));
 		Long session_id = Long.parseLong(getRequest().getParameter("sessionId"));
 		StudentValidationDetails detail = new StudentValidationDetails();

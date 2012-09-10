@@ -71,8 +71,8 @@ public class SchedulingWS implements Serializable {
     private Integer defaultTopNode = null;
     private Integer defaultClassNode = null;
 	
-	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
-	private static final String AUTHENTICATE_PASSWORD = "12345";
+	private static final String AUTHENTICATE_USER_NAME = "tng_acuity";
+	private static final String AUTHENTICATE_PASSWORD = "acuity101";
 	private static final String DELETE_SESSION = "DELETE";
     
 	

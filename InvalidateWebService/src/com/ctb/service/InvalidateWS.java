@@ -25,8 +25,8 @@ public class InvalidateWS implements Serializable {
 	@Control()
     private com.ctb.control.db.TestRoster rosters;
 	
-	private static final String AUTHENTICATE_USER_NAME = "tai_ws";
-	private static final String AUTHENTICATE_PASSWORD = "12345";
+	private static final String AUTHENTICATE_USER_NAME = "tng_acuity";
+	private static final String AUTHENTICATE_PASSWORD = "acuity101";
 	
 	@WebMethod
 	public String validateClass(StudentValidationDetails details, SecureUser secureUser) {
