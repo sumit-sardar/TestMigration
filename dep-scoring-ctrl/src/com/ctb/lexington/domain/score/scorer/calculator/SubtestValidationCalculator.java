@@ -187,41 +187,39 @@ public class SubtestValidationCalculator extends Calculator {
                 continue;
            
             final String itemId = item.getItemId();
-            try{
-            List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(itemId);
-            
-            for(Objective primary:primaryList){
-            if (!hasItemScoreDetails(studentData, itemId+primary.getName()))
-                throw new IllegalStateException("Missing item score details: " + itemId);
-
-            final StudentItemScoreDetails detail = studentData.get(itemId + primary.getName());
-            if (!hasResponse(detail))
-                continue;
-            if(ItemVO.ITEM_TYPE_SR.equals(item.getItemType())){
-            if (isCorrectAnswer(detail)) {
-                ++correctAnswers;
-            }
-                if (answeredEnoughCorrectly(correctAnswers))
-                    return true;
-            }
-
-            // for subtest validation, the existence of any response indicates an attempt,
-            // regardless of whether or not the corresponding condition code has the 
-            // attempted flag set.
-            if (hasResponse(detail)) {
-            	attemptedSet.add(itemId);//++attemptedItems;
-            	attemptedItems = attemptedSet.size();
-
-                if (attemptedEnoughItems(attemptedItems))
-                    return true;
-            }
-            }
+            try {
+	            List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(itemId);
+	            
+	            for(Objective primary:primaryList){
+		            if (!hasItemScoreDetails(studentData, itemId+primary.getName()))
+		                throw new IllegalStateException("Missing item score details: " + itemId);
+		
+		            final StudentItemScoreDetails detail = studentData.get(itemId + primary.getName());
+		            if (!hasResponse(detail))
+		                continue;
+		            if(ItemVO.ITEM_TYPE_SR.equals(item.getItemType())){
+			            if (isCorrectAnswer(detail)) {
+			                ++correctAnswers;
+			            }
+		                if (answeredEnoughCorrectly(correctAnswers))
+			                return true;
+		            }
+		
+		            // for subtest validation, the existence of any response indicates an attempt,
+		            // regardless of whether or not the corresponding condition code has the 
+		            // attempted flag set.
+		            if (hasResponse(detail)) {
+		            	attemptedSet.add(itemId);//++attemptedItems;
+		            	attemptedItems = attemptedSet.size();
+		
+		                if (attemptedEnoughItems(attemptedItems))
+		                    return true;
+		            }
+	            }
             } catch(CTBSystemException e){
             	
             }
-            
         }
-
         return false;
     }
 
@@ -250,6 +248,6 @@ public class SubtestValidationCalculator extends Calculator {
     }
 
     private static boolean hasResponse(final StudentItemScoreDetails detail) {
-        return detail.getResponse() != null && !detail.getResponse().equals("-");
+        return detail.getResponse() != null;
     }
 }

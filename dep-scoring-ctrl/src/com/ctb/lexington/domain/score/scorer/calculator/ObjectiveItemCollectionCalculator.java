@@ -123,11 +123,16 @@ public class ObjectiveItemCollectionCalculator extends Calculator {
             final Objective objective = getObjective(objectiveData);
             final String itemId = objectiveData.getItemId();
 
-            if(cachedItem.add(itemId + objectiveData.getReportingLevel())) {
+            if(scorer.getResultHolder().getAdminData().getProductId() == 3700 ||
+            		scorer.getResultHolder().getAdminData().getProductId() == 3500) {
+	            if(cachedItem.add(itemId + objectiveData.getReportingLevel())) {
+	            	objective.incNumberOfItems();
+	                objective.incPointsPossible(sicEvent.getMaxPoints(itemId).intValue());
+	            }
+            } else {
             	objective.incNumberOfItems();
                 objective.incPointsPossible(sicEvent.getMaxPoints(itemId).intValue());
             }
-
             objectiveContextMap.put(objectiveData.getItemSetId(), objective);
         }
     }
