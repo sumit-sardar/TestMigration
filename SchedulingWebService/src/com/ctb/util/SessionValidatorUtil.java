@@ -26,7 +26,7 @@ public class SessionValidatorUtil {
 	public static final String MESSAGE_CREATE_SESSION_FAILED = "Error:This assignment was not created successfully. Please try again later.";
 	public static final String MESSAGE_SESSION_EXPIRED = "Error:This assignment has expired. Please adjust the end date before making any other changes to this assignment.";
 	public static final String MESSAGE_STUDENT_ASSIGNMENT_FAILED = "Error:Some of your students were not successfully assigned/unassigned. Click on this link to see those students. Please edit the assignment at a later time to add/remove these students.";
-	public static final String MESSAGE_STUDENT_ALREADY_LOGGED_IN = "Error:One or more students have started this assessment. You can no longer edit the following: Allow breaks, Assignment Name and Start Date. If you want to edit any value(s) apart from the ones noted, please only edit those value(s) and try again.";
+	public static final String MESSAGE_STUDENT_ALREADY_LOGGED_IN = "Error:One or more students have started this assessment. You can no longer edit the following - Allow breaks, Assignment Name and Start Date. If you want to edit any value(s) apart from the ones noted, please only edit those value(s) and try again.";
 	public static final String MESSAGE_DELETE_SESSION_FAILED = "Error:One or more students have started this assessment. You can no longer delete this assignment.";
 	public static final String MESSAGE_INVALID_USER = "Error:Invalid user";
 	public static final String MESSAGE_INVALID_DATA = "Error:Invalid data";
