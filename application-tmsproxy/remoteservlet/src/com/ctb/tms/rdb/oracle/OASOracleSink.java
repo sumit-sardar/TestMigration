@@ -31,7 +31,7 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String SUBTEST_CLEANUP_SQL = "delete from student_item_set_status siss where siss.completion_status = 'SC' and siss.test_roster_id = ? and siss.item_set_id not in (itemSetIdList) and siss.item_set_id in (select isp.item_set_id from item_set_parent isp, test_admin_item_set tais, test_roster ros where ros.test_roster_id = siss.test_roster_id and tais.test_admin_id = ros.test_admin_id and isp.parent_item_set_id = tais.item_set_id and upper(tais.access_code) = upper(?))";
 	private static final String TUTORIAL_STATUS_SQL = "insert into student_tutorial_status  (product_id, student_id, completion_status) values (3510, (select student_id from test_roster where test_roster_id = ?), 'CO')";
 	private static final String TUTORIAL_DELETE_SQL = "delete from student_tutorial_status where student_id = (select student_id from test_roster where test_roster_id = ?)";
-	private static final String ROSTER_STATUS_SQL = "update  test_roster ros set tms_update = 'T', test_completion_Status = decode((select count(*) from student_item_set_status where test_roster_id = ros.test_roster_id and completion_Status != 'CO'), 0, 'CO', NVL(?, test_completion_status)),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ?, tts_speed_status = ? where  test_roster_id = ?";
+	private static final String ROSTER_STATUS_SQL = "update  test_roster ros set tms_update = 'T', test_completion_Status = decode((select count(*) from student_item_set_status where test_roster_id = ros.test_roster_id and completion_Status != 'CO'), 0, 'CO', NVL(?, test_completion_status)),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = NVL(?, random_distractor_seed), tts_speed_status = ? where  test_roster_id = ?";
 	private static final String CR_RESPONSE_EXISTS_SQL = "select COUNT(1) as responseCount from item_response_cr WHERE item_id = ? and test_roster_id = ?";
 	//private static final String ROSTER_MSEQ_CHECK = "select last_mseq from test_roster where test_roster_id = ?";
 	
@@ -223,7 +223,7 @@ public class OASOracleSink implements OASRDBSink {
 		    		if(subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
 		    			seed = new Integer(manifest.getRandomDistractorSeed());
 		    		}
-		    		if(seed != null) {
+		    		if(seed != null && !"".equals(seed)) {
 		    			stmt2.setInt(9, seed);
 		    		} else {
 		    			stmt2.setObject(9, null);

@@ -30,7 +30,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	private static RosterThread rosterThread;
 	private static ScoringThread scoringThread;
 	private static ConcurrentLinkedQueue<ScoringMessage> rosterQueue;
-	public static int nodeId;
+	private static Cluster cluster;
 	public static String clusterName;
 	static Logger logger = Logger.getLogger(TestDeliveryContextListener.class);
 	
@@ -95,10 +95,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
 			
-			Cluster cluster = com.tangosol.net.CacheFactory.ensureCluster();
+			cluster = com.tangosol.net.CacheFactory.ensureCluster();
 			clusterName = cluster.getClusterName();
-			Member localMember = cluster.getLocalMember();
-            nodeId = Integer.parseInt(localMember.getMemberName());
 
 			logger.info("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterThread = getRosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
@@ -142,6 +140,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					int errorCount = 0;
 					int storedCount = 0;
 					fetchedCount = 0;
+					
+					Member localMember = cluster.getLocalMember();
+					int nodeId = Integer.parseInt(localMember.getMemberName());
+					
 					oasDBSource.markActiveRosters(conn, clusterName, nodeId);
 					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn, clusterName, nodeId);
 					fetchedCount = creds.length;
@@ -184,6 +186,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					logger.info("Stored data in cache for " + storedCount + " rosters.");
 					creds = null;
 					oasDBSource.sweepActiveRosters(conn, clusterName, nodeId);
+					localMember = null;
 				} catch (Exception e) {
 					logger.error("Caught Exception during active roster check.", e);
 					e.printStackTrace();

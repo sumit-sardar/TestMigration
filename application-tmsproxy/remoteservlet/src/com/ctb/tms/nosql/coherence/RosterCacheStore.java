@@ -115,27 +115,7 @@ public class RosterCacheStore implements OASCacheStore {
 	}
 
     public Iterator keys() {
-    	Connection conn = null;
-    	ArrayList result = new ArrayList();
-    	try {
-    		OASRDBSource source = RDBStorageFactory.getOASSource();
-		    conn = source.getOASConnection();
-		    StudentCredentials [] credsa = source.getActiveRosters(conn, TestDeliveryContextListener.clusterName, TestDeliveryContextListener.nodeId);
-			for(int i=0;i<credsa.length;i++) {
-		    	StudentCredentials creds = credsa[i];
-		    	String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		    	result.add(key);
-		    }
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	} finally {
-    		try {
-    			if(conn != null) conn.close();
-    		} catch (SQLException sqe) {
-    			// do nothing
-    		}
-    	}
-    	return result.iterator();
+    	return null;
     }
 
 	public void storeAll(Set setBinEntries) {
