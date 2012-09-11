@@ -21,7 +21,7 @@ public class Manifest implements Serializable {
 	private boolean forceReplication;
 	private String ttsSpeedStatus;
 	
-	private boolean usable;
+	private boolean usable = true;
 	
 	public boolean isUsable() {
 		return usable;
