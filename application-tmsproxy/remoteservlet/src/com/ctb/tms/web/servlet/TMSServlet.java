@@ -665,7 +665,8 @@ public class TMSServlet extends HttpServlet {
 		}
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
 		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
-		if(manifest == null || manifest.getManifest().length < 1) {
+
+		if(manifest == null || manifest.getManifest().length < 1 || !manifest.isUsable()) {
 			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);

@@ -153,8 +153,14 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 								if(creds[i].getUsername() == null || creds[i].getPassword() == null || creds[i].getAccesscode() == null) {
 									if(creds[i].getTestRosterId() != null) {
-										logger.info("Invalid or deleted roster in pre-pop table, removing manifest data for roster: " + creds[i].getTestRosterId());
-										oasSink.deleteAllManifests(creds[i].getTestRosterId());
+										logger.info("Invalid or deleted roster in pre-pop table, marking manifest unusable for roster: " + creds[i].getTestRosterId());
+										ManifestWrapper wrapper = oasSource.getAllManifests(creds[i].getTestRosterId());
+										Manifest[] manifests = wrapper.getManifests();
+										for(int j=0;j<manifests.length;j++) {
+											manifests[j].setUsable(false);
+										}
+										wrapper.setManifests(manifests);
+										oasSink.putAllManifests(creds[i].getTestRosterId(), wrapper, false);
 									}
 								} else {
 									if(creds[i].getUsername().startsWith("pt-student") && creds[i].getAccesscode().startsWith("PTest")) {
