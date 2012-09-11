@@ -828,7 +828,12 @@ public class FileUtil {
 					} else {
 						ps.setString(2, currentLevel);
 					}
-					ps.setString(3, Content_area);
+					if("12".equals(currentLevel) && ("Reading".equals(Content_area) || "Language".equals(Content_area))){
+						ps.setString(3, "Reading and Language");
+					} else {
+						ps.setString(3, Content_area);
+					}
+					//ps.setString(3, Content_area);
 					rs=ps.executeQuery();
 					while(rs.next())
 					{
