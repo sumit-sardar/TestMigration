@@ -107,7 +107,7 @@ public class OASOracleSource implements OASRDBSource
 			"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
 			"                    and tr.activation_status = 'AC' " +  
 			"                    and ta.activation_status = 'AC' " + 
-			"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
+			"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT', 'CO') " +
 			"                    and stu.student_id = tr.student_id " +
 			"                    and tais.test_Admin_id = ta.test_admin_id " +
 			"			) OR not exists (select test_roster_id from test_roster where test_roster_id = prepop.test_roster_id))";
@@ -133,7 +133,7 @@ public class OASOracleSource implements OASRDBSource
 	"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
 	"                    and tr.activation_status = 'AC' " +  
 	"                    and ta.activation_status = 'AC' " + 
-	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
+	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT', 'CO') " +
 	"                    and stu.student_id = tr.student_id " +
 	"                    and tais.test_Admin_id = ta.test_admin_id " +
 	"				union select distinct " +
