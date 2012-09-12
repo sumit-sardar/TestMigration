@@ -69,7 +69,8 @@ public class SubtestItemCollectionCalculator extends Calculator {
             
             //Added for webservice based terra nova third edition test
             //This will retrieve all the itemids and the corresponding peids for the content area.
-            if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+            if(scorer.getResultHolder().getAdminData().getProductId() == 3700
+            		|| scorer.getResultHolder().getAdminData().getProductId() == 3500) {
             	
             	LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
             	System.out.println("event.getItemSetId() -> " + event.getItemSetId());
@@ -119,7 +120,8 @@ public class SubtestItemCollectionCalculator extends Calculator {
         }
         if(items != null && items.size() > 0) {
 	       
-	        if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
+	        if(scorer.getResultHolder().getAdminData().getProductId() == 3700
+	        		|| scorer.getResultHolder().getAdminData().getProductId() == 3500) {
 	        	SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
 		                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items, currentWsTvSubject);
 		        subtestItemsEvent.setProductId(productId);
