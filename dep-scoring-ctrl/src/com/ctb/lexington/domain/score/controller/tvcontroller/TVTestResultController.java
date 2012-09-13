@@ -98,6 +98,7 @@ public class TVTestResultController implements TestResultController {
         context.setSessionId(adminData.getSessionId());
         context.setCurrentResultId(new Long(rosterValidationStatus.isValid()?1:2));
         context.setGradeId(new Long(
+        				   studentData.getGrade().equals("2")?2:
                            studentData.getGrade().equals("3")?3:
                            studentData.getGrade().equals("4")?4:
                            studentData.getGrade().equals("5")?5:
@@ -129,7 +130,7 @@ public class TVTestResultController implements TestResultController {
         new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
     
-        new StudentResultStatusController(conn, context).run();
+        //new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
         // Added for TN Acuity webservice integration
