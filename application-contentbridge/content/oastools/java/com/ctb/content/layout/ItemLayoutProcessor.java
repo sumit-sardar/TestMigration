@@ -2752,6 +2752,8 @@ public class ItemLayoutProcessor
             manipulateMapping.put( "required", "required" );
             manipulateMapping.put( "accommodated", "accommodated" );
             manipulateMapping.put( "masking_ruler", "masking_ruler" );
+            manipulateMapping.put("ti_scientific_calculator", "ti_scientific_calculator");
+            manipulateMapping.put("ti_scientific_graphic_calculator","ti_scientific_graphic_calculator");
         }
         if ( allManipulateMapping == null )
         {
@@ -2772,6 +2774,8 @@ public class ItemLayoutProcessor
             allManipulateMapping.put( "straight_edge", "not provisioned" );
             allManipulateMapping.put( "scratchpad", "not provisioned" );
             allManipulateMapping.put( "masking_ruler", "required" );
+            allManipulateMapping.put("ti_scientific_calculator", "not provisioned");
+            allManipulateMapping.put("ti_scientific_graphic_calculator", "not provisioned");
         }
     }
     

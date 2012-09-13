@@ -335,7 +335,7 @@ answer -->
 
 <!ELEMENT Manipulative EMPTY>
 <!ATTLIST Manipulative
-    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad | masking_ruler) #REQUIRED
+    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad | masking_ruler | ti_scientific_calculator | ti_scientific_graphic_calculator) #REQUIRED
 	Provision 	(required | accommodated ) "required"
 >
 
