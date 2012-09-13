@@ -181,8 +181,8 @@ public class CurriculumCollector {
             	if(level != null && "12".equals(level)) {
 	                composites[0].setAssessmentId(new Long(87641));
 	                composites[0].setCompositeId(new Long(48));
-	                composites[0].setCompositeNumItems(new Long(47));
-	                composites[0].setCompositePointsPossible(new Long(47));
+	                composites[0].setCompositeNumItems(new Long(107));
+	                composites[0].setCompositePointsPossible(new Long(107));
 	            } else if(level != null && level.indexOf("22") > 0) {
 	                composites[0].setAssessmentId(new Long(87639));
 	                composites[0].setCompositeId(new Long(47));
