@@ -90,7 +90,14 @@ BEGIN
     and test_admin_id not in (81821,81822,81823,81824,81831,81832,81833);
 
     COMMIT;
- 
+
+    UPDATE TEST_ROSTER SET test_completion_status = 'IN'
+    where test_completion_status = 'IC' --in ('IN', 'IS')
+    and test_admin_id in
+        ( select test_Admin_id from test_admin where test_Admin_status = 'CU'
+          and product_id in (3710, 3720))
+    and test_admin_id not in (81821,81822,81823,81824,81831,81832,81833);
+    
     UPDATE test_roster
     SET test_completion_status = 'SC'
     where test_completion_status = 'NT'
