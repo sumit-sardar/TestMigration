@@ -73,10 +73,10 @@ public class SubtestItemCollectionCalculator extends Calculator {
             		|| scorer.getResultHolder().getAdminData().getProductId() == 3500) {
             	
             	LinkedHashMap<String,LinkedHashMap<String,String>> contentAreaItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+            	Map<String, String> itemsContentArea = scorer.getResultHolder().getCaResponseWsTv().getItemsContentArea();
             	System.out.println("event.getItemSetId() -> " + event.getItemSetId());
             	List<WsTvCaItemPeidVo> itemsPeids = new ItemMapper(oasWsTvConnection).findItemIdsAndPeidsByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));
-            	
             	if (itemsPeids != null && itemsPeids.size() > 0) {
             		String contentAreaName = "";
             		String itemIdVal = "";
@@ -84,11 +84,15 @@ public class SubtestItemCollectionCalculator extends Calculator {
             		//Consider all items as not attempted at first so these are populated as 0.
             		// No need to consider condition for F as this is online test and student cannot click
             		// more than one option at once.
+            		if(itemsContentArea == null) {
+        				itemsContentArea = new HashMap<String, String>();
+        			}
             		for(WsTvCaItemPeidVo caItemPeid : itemsPeids) {
             			contentAreaName = caItemPeid.getContentArea();
             			itemIdVal = caItemPeid.getItemId();
             			//System.out.println("itemIdVal -> " + itemIdVal);
-            			if(contentAreaItemMap != null && !contentAreaItemMap.isEmpty()) {
+            			itemsContentArea.put(itemIdVal, caItemPeid.getContentArea());
+                		if(contentAreaItemMap != null && !contentAreaItemMap.isEmpty()) {
             				if(contentAreaItemMap.containsKey(contentAreaName)) {
             					if(contentAreaItemMap.get(contentAreaName).containsKey(itemIdVal)) {
             						continue;
@@ -106,6 +110,7 @@ public class SubtestItemCollectionCalculator extends Calculator {
             			}
             		}
             		scorer.getResultHolder().getCaResponseWsTv().setContentAreaItems(contentAreaItemMap);
+            		scorer.getResultHolder().getCaResponseWsTv().setItemsContentArea(itemsContentArea);
             	}
             }
         } catch (Exception e) {

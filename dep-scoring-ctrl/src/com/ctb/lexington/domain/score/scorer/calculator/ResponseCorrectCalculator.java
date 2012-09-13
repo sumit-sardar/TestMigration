@@ -44,14 +44,18 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                 if (sicEvent.isCorrectResponse(itemId, response)) {
                 	if(scorer.getResultHolder().getAdminData().getProductId() == 3700) {
                 		LinkedHashMap<String, LinkedHashMap<String,String>> caItemMap = scorer.getResultHolder().getCaResponseWsTv().getContentAreaItems();
+                		Map<String, String> itemsContentArea = scorer.getResultHolder().getCaResponseWsTv().getItemsContentArea();
+                		String contentArea = itemsContentArea.get(itemId);
+                		contentArea = (contentArea == null)? sicEvent.getContentArea(): contentArea;
+                		
                 		LinkedHashMap<String,String> itemIdResp = new LinkedHashMap<String,String>();
-                		if(caItemMap.containsKey(sicEvent.getContentArea())) {
-                			itemIdResp = caItemMap.get(sicEvent.getContentArea());
+                		if(caItemMap.containsKey(contentArea)) {
+                			itemIdResp = caItemMap.get(contentArea);
                 			if(itemIdResp.containsKey(itemId)) {
                 				itemIdResp.put(itemId, "1");
                 			}
                 		}
-                		caItemMap.put(sicEvent.getContentArea(), itemIdResp);
+                		caItemMap.put(contentArea, itemIdResp);
                 	}
                     channel.send(new CorrectResponseEvent(event));
                 } else {
@@ -66,7 +70,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                  	if (pointsObtained > 0) {
                  		 channel.send(new CorrectResponseEvent(event));
                      } else {
-                     	channel.send(new IncorrectResponseEvent(event));
+                     	 channel.send(new IncorrectResponseEvent(event));
                      }
                  } else {
                      channel.send(new NoResponseEvent(event));
