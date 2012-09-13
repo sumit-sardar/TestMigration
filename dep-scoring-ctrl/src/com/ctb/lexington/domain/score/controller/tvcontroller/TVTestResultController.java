@@ -130,7 +130,7 @@ public class TVTestResultController implements TestResultController {
         new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted item fact data.");
     
-        //new StudentResultStatusController(conn, context).run();
+        new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
         // Added for TN Acuity webservice integration
