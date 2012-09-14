@@ -70,6 +70,7 @@ public class DBUtil {
 			SqlUtil.close(ps1);
 		} catch(SQLException e) {
 			try {
+				e.printStackTrace();
 				con.rollback();
 				System.out.println("Data are not saved in SCORE_LOOKUP table.");
 				System.exit(0);
@@ -259,6 +260,57 @@ public class DBUtil {
 					itemSetMap.put(String.valueOf(itemSortOrder), itemId);
 				} else {
 					itemSetMap.put(String.valueOf("0" + itemSortOrder), itemId);
+				}
+			}
+			pvalFileData.setObjItemCount(objectiveCountMap);
+			pvalFileData.setItemObjectiveMap(objItemMap);
+			pvalFileData.setObjectiveMap(objMap);
+			return itemSetMap;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Map<String, String> getAllItemsForItemSetLvl12(List<String> itemSetIdList, 
+	PVALFileData pvalFileData) {
+		
+		con = SqlUtil.openOASDBcon();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<String, String> itemSetMap = new HashMap<String, String>();
+		Map<String, Integer> objectiveCountMap = new HashMap<String, Integer>();
+		Map<String, String> objItemMap = new HashMap<String, String>();
+		Map<String, Integer> objMap = new HashMap<String, Integer>();
+		String objectiveName = "";
+		try {
+			String itemSetIds = "";
+			for(String itemSetId : itemSetIdList) {
+				itemSetIds += itemSetId + ",";
+			}
+			String itemQuery = Query.ITEMS_FROM_ITEM_SET_LVL_12.replaceAll("#", itemSetIds.substring(0, itemSetIds.length() - 1));
+			System.out.println(itemQuery);
+			ps = con.prepareStatement(itemQuery);
+			ps.setString(1, FileUtil.processContentAreaName(pvalFileData.getContent()));
+			rs = ps.executeQuery();
+			
+			int itemSortOrder = 1;
+			while(rs.next()) {
+				//int itemSortOrder = rs.getInt("ITEM_SORT_ORDER");
+				objectiveName = rs.getString("OBJECTIVE_NAME");
+				objMap.put(objectiveName, rs.getInt("OBJECTIVE_ID"));
+				if(objectiveCountMap.containsKey(objectiveName)) {
+					int currentCount = objectiveCountMap.get(objectiveName);
+					objectiveCountMap.put(objectiveName, ++currentCount);
+				} else {
+					objectiveCountMap.put(objectiveName, 1);
+				}
+				String itemId = rs.getString("ITEM_ID");
+				objItemMap.put(itemId, objectiveName);
+				if(itemSortOrder > 9) {
+					itemSetMap.put(String.valueOf(itemSortOrder++), itemId);
+				} else {
+					itemSetMap.put(String.valueOf("0" + itemSortOrder++), itemId);
 				}
 			}
 			pvalFileData.setObjItemCount(objectiveCountMap);

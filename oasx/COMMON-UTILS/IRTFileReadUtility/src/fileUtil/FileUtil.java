@@ -134,8 +134,8 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{/*
-					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+				{
+					/*File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
@@ -178,14 +178,17 @@ public class FileUtil {
 						}
 						matchingFileMap.put(matchingFile_location, tempList);
 						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-						
-						itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
+						if("12".equals(Test_Level) && ("Reading".equals(Content_area) || "Language".equals(Content_area))) {
+							itemSetIdList=getItemSetID(product_id,"Reading and Language",Test_Level);
+						} else {
+							itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
+						}
 						successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					}
+					*/
+				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
 					
-				*/} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {/*
-					
-					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+					/*File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
@@ -218,8 +221,8 @@ public class FileUtil {
 						contentOfFile=readFileDataSE(file_location,matchingFileMap);
 						
 						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-					}
-				*/} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+					}*/
+				} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -247,7 +250,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {/*
+				*/} else if (inFile.getName().substring(0,2).equals("GE")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -262,8 +265,8 @@ public class FileUtil {
 					writeInSCORE_LOOKUP_GE(contentOfFile,Source_score_type_code,dest_Score_type_code,
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
-				*/} else if (inFile.getName().substring(4,7).equals("OPI")) {
-					File_name = inFile.getName();
+				} else if (inFile.getName().substring(4,7).equals("OPI")) {
+/*					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(0,2);
@@ -278,7 +281,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
 							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
-							Integer.parseInt(product_id), Product_type);
+							Integer.parseInt(product_id), Product_type);*/
 				}
 				
 			}
@@ -431,7 +434,7 @@ public class FileUtil {
 		{  line++;		
 		   if(line > 1){
 			    String[] splitSt = strLine.split("    "); 
-				int first_column;
+			    int first_column;
 				first_column = Integer.parseInt(splitSt[0].trim());
 				if(first_column >= lowerLimit && first_column <= upperLimit){
 					list.add(strLine); 
@@ -737,7 +740,12 @@ public class FileUtil {
 	}finally {
 		SqlUtil.close(con,ps,rs);
 	}
-			itemSetIdList=getItemSetIDGE(Content_area);
+			if("Reading".equals(Content_area) || "Language".equals(Content_area)) {
+				itemSetIdList=getItemSetIDGE(Content_area);
+				itemSetIdList.addAll(getItemSetIDGE("Reading and Language"));
+			} else {
+				itemSetIdList=getItemSetIDGE(Content_area);
+			}
 			for (Map.Entry<String, String> entry : isetMap.entrySet()) {
 				save = writeInScore_lookup_item_set(entry.getKey(),itemSetIdList);
 			}
@@ -1033,10 +1041,23 @@ public class FileUtil {
 		for(PVALFileData pvalFileData: pvalFileDataList) {
 			if(!(pvalFileData.getContent() == null || pvalFileData.getGrade() == null || pvalFileData.getLevel() == null)) {
 				if(levels.contains(pvalFileData.getLevel().trim())) {
-					List<String> itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
-							pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+					List<String> itemSetList = null;
+					if("12".equals(pvalFileData.getLevel().trim()) &&
+							("LA".equals(pvalFileData.getContent()) || "RD".equals(pvalFileData.getContent()))) {
+						itemSetList = DBUtil.getAllItemSet("Reading and Language", 
+								pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+					} else {
+						itemSetList = DBUtil.getAllItemSet(processContentAreaName(pvalFileData.getContent()), 
+								pvalFileData.getLevel().trim(), getProductIdFromType(pvalFileData.getOther().trim()));
+					}
 					if(itemSetList != null && itemSetList.size() > 0) {
-						Map<String, String> itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+						Map<String, String> itemMap = null;
+						if("12".equals(pvalFileData.getLevel().trim()) &&
+								("LA".equals(pvalFileData.getContent()) || "RD".equals(pvalFileData.getContent()))) {
+							itemMap = DBUtil.getAllItemsForItemSetLvl12(itemSetList, pvalFileData);
+						} else {
+							itemMap = DBUtil.getAllItemForItemSet(itemSetList, pvalFileData);
+						}
 						Map<String, Double> objSumMap = new HashMap<String, Double>();
 						Map<String, String> itemObjMap = pvalFileData.getItemObjectiveMap();
 						for(CodeValue codeVal : pvalFileData.getDataList()) {
