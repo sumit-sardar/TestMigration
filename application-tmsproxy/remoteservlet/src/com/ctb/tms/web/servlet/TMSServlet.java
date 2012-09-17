@@ -294,7 +294,7 @@ public class TMSServlet extends HttpServlet {
         feedbackResponse.addNewLms();
         for(int i=0;i<feedback.length;i++) {
             feedbackResponse.getTitle().addNewSco().setId(String.valueOf(feedback[i].getId()));
-            feedbackResponse.getTitle().getScoArray()[i].setTitle(feedback[i].getTitle());
+            feedbackResponse.getTitle().getScoArray()[i].setTitle(feedback[i].getProduct() + "::" + feedback[i].getTestTitle() + "::" + feedback[i].getTitle() + "::" + feedback[i].getForm() + "::" + feedback[i].getLevel());
             feedbackResponse.getTitle().getScoArray()[i].setSeq(String.valueOf(i + 1));
             feedbackResponse.getTitle().getScoArray()[i].setIsSample("T".equals(feedback[i].getIsSample()) ? true : false);
             feedbackResponse.getLms().addNewSco().setScid(String.valueOf(feedback[i].getId()));
