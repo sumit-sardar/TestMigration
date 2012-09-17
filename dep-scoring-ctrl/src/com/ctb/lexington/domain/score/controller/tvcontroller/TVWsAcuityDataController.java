@@ -122,7 +122,7 @@ public class TVWsAcuityDataController {
                    newFact.setContentAreaId(contentAreas[i].getContentAreaId().toString().substring(4));
                    String caName = contentAreas[i].getContentAreaName();
                    newFact.setContentAreaName(caName);
-                   updateIncompleteFlag(caName, newFact);
+                   updateIncompleteFlag(caName, newFact, wsTvData.getLevelId());
                    if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replaceAll("13","12.9").replace('+', '9'))));
                    } else {
@@ -156,7 +156,7 @@ public class TVWsAcuityDataController {
         }
     }
 	
-	private void updateIncompleteFlag(String caName, ContentAreaScore newFact) {
+	private void updateIncompleteFlag(String caName, ContentAreaScore newFact, int level) {
 		boolean completeFlag = false;
 		List<String> subtestNames = new ArrayList<String>();
 		List<StudentTestDetails> studentTestDetails = new ArrayList<StudentTestDetails>();
@@ -164,8 +164,15 @@ public class TVWsAcuityDataController {
 		if(testData != null) {
 			for (int i = 0; i < testData.size(); i++) {
 				StudentTestDetails stuTestDetails = testData.get(i);
-				if(stuTestDetails.getSubject().equalsIgnoreCase(caName) && stuTestDetails.getSample().equalsIgnoreCase("F")) {
-					studentTestDetails.add(stuTestDetails);
+				if(adminData.getProductId() == 3700L && level == 12
+						&& ("Reading".equals(caName) || "Language".equals(caName))) {
+					if(stuTestDetails.getSubject().indexOf(caName) != -1 && stuTestDetails.getSample().equalsIgnoreCase("F")) {
+						studentTestDetails.add(stuTestDetails);
+					}
+				} else {
+					if(stuTestDetails.getSubject().equalsIgnoreCase(caName) && stuTestDetails.getSample().equalsIgnoreCase("F")) {
+						studentTestDetails.add(stuTestDetails);
+					}
 				}
 			}
 			if(studentTestDetails != null && studentTestDetails.size() > 0) {
