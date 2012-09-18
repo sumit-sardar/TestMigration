@@ -3,11 +3,11 @@ package com.tcs.upload;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 import com.tcs.dataaccess.AbstractConnectionManager;
 import com.tcs.dataaccess.ConnectionManager;
 import com.tcs.util.CSVFileReader;
-import com.tcs.util.ReadinessProgressUtil;
 
 public class MainUpload {
 	
@@ -67,6 +67,12 @@ public class MainUpload {
 			
 			List list = CSVFileReader.getFileContent(csv);
 			Integer siteSurverId = 0;
+			Boolean isSubject = false;
+			String customerId = null;
+			Map<String,String> properties = null;
+			String enrollmentTableName = "site_survey_enrollment";
+			String testSessionPerday = "3";
+			String noTestingDays = "10";
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println("Processing started for row==>"+(i+1));
 				String rowData[] = (String[])list.get(i);
@@ -78,15 +84,31 @@ public class MainUpload {
 					System.out.println("Given information combination does not matches in DB :district id [" +rowData[4]+"], school id ["+rowData[5]+"]. Skipping processing of this row.");
 				
 				} else {
-					
-					CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con);
-					
-					//Updating the readiness progress and check point status
-					ReadinessProgressUtil.updateReadinessStatus(siteSurverId, con);
-				}
-			
-			}
-			
+					customerId = CSVFileReader.getCustomerId(rowData[4], rowData[5], con);
+					if(null == customerId){
+						System.out.println("Given information combination does not matches in DB :district id [" +rowData[4]+"], school id ["+rowData[5]+"]. Skipping processing of this row.");
+						continue;
+					}
+					properties = CSVFileReader.getCustomerPropValuesById(customerId, con);
+					System.out.println("Properties for cusomerid["+customerId+"] are "+properties);
+					if(null == properties){
+						isSubject = false; //old corporation/district might not have properties
+					}else{
+						if(properties.get("ENROLLMENTBYSUBJECT") != null && 
+								properties.get("ENROLLMENTBYSUBJECT").equalsIgnoreCase("TRUE")){
+							isSubject = true;
+							enrollmentTableName = "site_survey_enrollment_subject";
+						}else						
+							isSubject = false;
+					}
+					testSessionPerday = properties.get("TESTSESSIONPERDAY") == null ? testSessionPerday : properties.get("TESTSESSIONPERDAY");
+					noTestingDays = properties.get("TOTALTESTINGDAYS") == null ? noTestingDays : properties.get("TOTALTESTINGDAYS") ;
+					if(!isSubject)
+						CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con,enrollmentTableName,false,testSessionPerday,noTestingDays);
+					else
+						CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con,enrollmentTableName,true,testSessionPerday,noTestingDays);
+				}			
+			}			
 			
 		} catch (Exception e) {
 			
