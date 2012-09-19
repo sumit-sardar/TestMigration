@@ -5,6 +5,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<lb:bundle baseName="organizationApplicationResource" />
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -15,6 +16,7 @@
 	<netui-template:setAttribute name="title" value="${bundle.web['findorg.window.title']}"/>
 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageOrganizations']}"/>
 <netui-template:section name="bodySection">
+ 
  
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->

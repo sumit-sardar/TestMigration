@@ -6,15 +6,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="organizationApplicationResource" />
-
-<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
-<netui-data:declareBundle bundlePath="webResources" name="web"/>
-<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
-<netui-data:declareBundle bundlePath="helpResources" name="help"/>
-
-<netui-template:setAttribute name="title" value="${bundle.web['findorg.window.title']}"/>
-<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.manageOrganizations']}"/>
 
 <!--[if IE]><![endif]-->
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6">    <![endif]-->

@@ -7,18 +7,16 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="organizationApplicationResource" />
-
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-<netui-template:setAttribute name="title" value="${bundle.web['download.window.title']}"/>
-<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.downloadData']}"/>
+    <netui-template:setAttribute name="title" value="${bundle.web['download.window.title']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.downloadData']}"/>
 <netui-template:section name="bodySection">
  
-
 <%
 	String errorMessage = (String)request.getAttribute("errorMessage");
 %>
