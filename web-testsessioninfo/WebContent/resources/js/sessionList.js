@@ -2109,6 +2109,10 @@ function registerDelegate(tree){
 					}
 					if(firstTimeOpen)
 						firstTimeOpen = false;
+					
+					// Force Test Breaks, Access Codes	
+					//setTestBreakForCustomer();
+						
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
@@ -2150,6 +2154,19 @@ function registerDelegate(tree){
 	 		
 	}
 	
+	function setTestBreakForCustomer(){
+		var testBreak = document.getElementById("testBreak");
+
+		if (! testBreak.disabled) {
+			testBreak.checked = true;
+			
+			toggleAccessCode();
+		
+			document.getElementById("aCode").style.visibility = "hidden";
+		
+			testBreak.disabled = true;
+		}
+	}
 	
 	function createSubtestGrid(){
 		//var subtestArr = new Array();
