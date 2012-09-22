@@ -51,6 +51,9 @@
 					<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><lb:label key="viewStatus.refreshList.button" /></a>
 					<input type="hidden" name="subtestValidationAllowed" id="subtestValidationAllowed" value="" />
 				</div> 
+			    <div id="profileReportStudentDiv" style="float:right;padding-left:5px;display:none;">
+					<a href="#" id="profileReportStudentButton" onclick="javascript:profileReportStudent(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.studentReport" /></a>
+			    </div>
 				<div id="toggleValidation" style="float:right;padding-left:5px;display:none;">
 					<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button" /></a>
 				</div>

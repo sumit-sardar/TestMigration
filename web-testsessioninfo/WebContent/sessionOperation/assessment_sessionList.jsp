@@ -6,7 +6,7 @@
 
 
 <%
-	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
+	 Boolean isTABECustomer = (Boolean) session.getAttribute("isTABECustomer");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
 	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
 	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
@@ -18,7 +18,7 @@
 	 Boolean showModifyManifest = (Boolean) session.getAttribute("showModifyManifest");
 %>
 	
-	<input type="hidden" id="canRegisterStudent" value='<%=canRegisterStudent %>'/>
+	<input type="hidden" id="isTABECustomer" value='<%=isTABECustomer %>'/>
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
 	<input type="hidden" id="studentIdLabelName" value='<%=studentIdLabelName %>'/>
 	<input type="hidden" id="supportAccommodations" value='<%=supportAccommodations %>'/>
@@ -38,9 +38,7 @@
 			<td>			
 				 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 						<p class="subtitle"><lb:label key="homepage.viewTestSessions.message" />
-							<%if(canRegisterStudent) { %>
-								<lb:label key="homepage.rapidRegister.message" />
-							<%} if (userScheduleAndFindSessionPermission) {%>
+							<% if (userScheduleAndFindSessionPermission) {%>
 								<lb:label key="homepage.OrgSearchInfo.message" />
 							<% } %>
 						</p>
@@ -81,35 +79,34 @@
 										<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
 									</div>  
 									<div id="ShowButtons" style="width:1000px; display:none; float:left;">
+									    <% if(isTABECustomer) { %>
+										    <div id="profileReportSessionDiv" style="float:right;padding-left:5px;">
+											<a href="#" id="profileReportSessionButton" onclick="javascript:profileReportSession(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.studentReport" /></a>
+										    </div>
+										<% } %>
 										<div id="viewStatus" style="float:right;padding-left:5px;">
 											<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>
 										</div> 
-										
-									    <%if(canRegisterStudent) { %>
-										    <div id="registerStudent" style="float:right;padding-left:5px;">
-											<a href="#" id="registerStudentButton" onclick="javascript:rapidRegistration(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.registerStudent" /></a>
-										    </div>
-									    <%} if (userScheduleAndFindSessionPermission) {%>
+									    <% if (userScheduleAndFindSessionPermission) {%>
 										    <div id="scSession" style="float:right;padding-left:5px;">
 											<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.scheduleSession" /></a>
 										    </div> 
-									    <%} %>	
+									    <% } %>	
 									    <div id="printTicket" style="float:right;padding-left:5px;">
 											<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><lb:label key="homepage.button.printTicket" /></a>
 										</div> 	
-									    <%if (userScheduleAndFindSessionPermission) {%>
+									    <% if (userScheduleAndFindSessionPermission) {%>
 										<div id="copySession" style="float:right;padding-left:5px;display: block;">
 											<a href="#" id="copySessionButton" onclick="javascript:copyTestSession(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.copySession" /></a>
 										</div>
-									    <%} %>	
+									    <% } %>	
 										<% if (showModifyManifest) {%>
 										    <div id="mStdManifest" style="float:right;padding-left:5px; display: block;">
 											    <a href="#" id="modifyStdManifestButton" onclick="javascript:openModifyStdManifestPopup(this); return false;" class="rounded {transparent} button" >
 											   		<lb:label key="homepage.button.modifyTest" />
 											    </a>
 											</div> 
-									    <%} %>	
-									    
+									    <% } %>	
 									</div>  
 								</div>
 				     	   </td>

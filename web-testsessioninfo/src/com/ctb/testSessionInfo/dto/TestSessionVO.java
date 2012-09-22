@@ -62,6 +62,24 @@ public class TestSessionVO implements java.io.Serializable
 	public void setLoginEndDateString(String loginEndDateString) {
 		this.loginEndDateString = loginEndDateString;
 	}
+	public String getProductType() {
+		return productType;
+	}
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+	public boolean isSTabeProduct() {
+		return isSTabeProduct;
+	}
+	public void setSTabeProduct(boolean isSTabeProduct) {
+		this.isSTabeProduct = isSTabeProduct;
+	}
+	public boolean isSTabeAdaptiveProduct() {
+		return isSTabeAdaptiveProduct;
+	}
+	public void setSTabeAdaptiveProduct(boolean isSTabeAdaptiveProduct) {
+		this.isSTabeAdaptiveProduct = isSTabeAdaptiveProduct;
+	}
 	/**
 	 * @return the assignedRole
 	 */

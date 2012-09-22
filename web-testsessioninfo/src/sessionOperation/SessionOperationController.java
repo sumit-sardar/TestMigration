@@ -3722,8 +3722,7 @@ public class SessionOperationController extends PageFlowController {
 	{
         setUpAllUserPermission(customerConfigs);
         
-        //this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
-        this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
+        this.getSession().setAttribute("isTABECustomer", isTABECustomer(customerConfigs));
        
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	

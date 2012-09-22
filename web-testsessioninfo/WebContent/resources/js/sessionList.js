@@ -4022,6 +4022,8 @@ function registerDelegate(tree){
 				 $("#rosterTestName").text(obj.testSession.testName);
 				 $("#testAdminName").text(obj.testSession.testAdminName);
 			 	 $("#subtestDetailTooltip").css('display', 'inline');
+			 	 
+			 	 isTabeProduct = JSON.stringify(obj.testSession.isSTabeProduct);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,
@@ -4062,6 +4064,10 @@ function registerDelegate(tree){
 				}
 			},
 			loadComplete: function () {
+				
+				if (isTabeProduct == 'true') {
+					$("#profileReportStudentDiv").show();
+				}
 				
 				if ($('#rosterList').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
@@ -4747,11 +4753,18 @@ function validNumber(str){
 		enableOrDisableAnchorButton('copySessionButton', 'copySession', isEnable);
 	}
 
-	function rapidRegistration(element){
+	function profileReportSession(element){
 	    if (isButtonDisabled(element) ) {
 			return true;
 		}
-	    alert("rapidRegistration");
+	    alert("profileReportSession");
+	}
+
+	function profileReportStudent(element){
+	    if (isButtonDisabled(element) ) {
+			return true;
+		}
+	    alert("profileReportStudent");
 	}
 	
 	function toggleExemtionValidationStatus(){
