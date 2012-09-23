@@ -6,7 +6,7 @@
 
 
 <%
-	 Boolean isTABECustomer = (Boolean) session.getAttribute("isTABECustomer");
+	 Boolean showStudentReportButton = (Boolean) session.getAttribute("showStudentReportButton");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
 	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
 	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
@@ -18,7 +18,6 @@
 	 Boolean showModifyManifest = (Boolean) session.getAttribute("showModifyManifest");
 %>
 	
-	<input type="hidden" id="isTABECustomer" value='<%=isTABECustomer %>'/>
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
 	<input type="hidden" id="studentIdLabelName" value='<%=studentIdLabelName %>'/>
 	<input type="hidden" id="supportAccommodations" value='<%=supportAccommodations %>'/>
@@ -79,7 +78,7 @@
 										<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><lb:label key="homepage.button.mySession" /></a> 
 									</div>  
 									<div id="ShowButtons" style="width:1000px; display:none; float:left;">
-									    <% if(isTABECustomer) { %>
+									    <% if (showStudentReportButton) { %>
 										    <div id="profileReportSessionDiv" style="float:right;padding-left:5px;">
 											<a href="#" id="profileReportSessionButton" onclick="javascript:profileReportSession(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.studentReport" /></a>
 										    </div>

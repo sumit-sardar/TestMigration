@@ -3722,7 +3722,7 @@ public class SessionOperationController extends PageFlowController {
 	{
         setUpAllUserPermission(customerConfigs);
         
-        this.getSession().setAttribute("isTABECustomer", isTABECustomer(customerConfigs));
+        this.getSession().setAttribute("showStudentReportButton", isTABECustomer(customerConfigs));
        
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	

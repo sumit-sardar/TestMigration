@@ -183,12 +183,12 @@ function populateSessionListGrid(homePageLoad) {
 				}				
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
@@ -202,20 +202,18 @@ function populateSessionListGrid(homePageLoad) {
 					initializeModifyTestPopup(rowId,'list2',selectedRData.isSTabeProduct, selectedRData.isSTabeAdaptiveProduct,selectedRData.productType, selectedRData.testName, selectedRData.testAdminName);	
 					selectedTestAdminId = rowId;						
 					$('#showSaveTestMessage').hide();
-					if($("#canRegisterStudent").val() == 'true'){
-						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
-						 var val = getDataFromJson(selectedTestSessionId, sessionListCUFU);
-						// var selectedTestname = getDataFromTestJson(selectedTestSessionId, testSessionlist);
-						 if(val == '"F"'){	
-			 				setAnchorButtonState('registerStudentButton', true);
-			 			 } else {
-			 			 	setAnchorButtonState('registerStudentButton', false);
-			 			 }
-			 		}
+					if (selectedRData.isSTabeProduct == "true") {
+	 					setAnchorButtonState('profileReportSessionButton', false);
+	 				}
+	 				else {
+	 					setAnchorButtonState('profileReportSessionButton', true);
+	 				}
 			},
 			loadComplete: function () {
  				updateModifyStdManifestButton(false);
  				updateCopySessionButton(false);
+ 				setAnchorButtonState('profileReportSessionButton', true);
+ 				
 				$("#list2").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list2').getGridParam('records') === 0) {
 				 	isGridEmpty = true;
@@ -328,7 +326,7 @@ function populateSessionListGrid(homePageLoad) {
 				$("#searchUserByKeywordInputList2").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 				selectedTestAdminId = null;
 			});
 }
@@ -493,36 +491,35 @@ function populateCompletedSessionListGrid() {
 				}
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 			},
 			onSortCol:function(){
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 			},
 			onSelectRow: function (rowId) {
 					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list3');					
 					$('#showSaveTestMessage').hide();
-					if($("#canRegisterStudent").val() == 'true'){
-			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
-						 var val = getDataFromJson(selectedTestSessionId, sessionListPA);
-						 if(val == '"F"'){	
-			 				setAnchorButtonState('registerStudentButton', true);
-			 			 } else {
-			 			 	setAnchorButtonState('registerStudentButton', false);
-			 			 }
-			 		}
 			 		var selectedRData = $("#list3").getRowData(rowId);
 					if(selectedRData.isSTabeProduct == "false" && selectedRData.isSTabeAdaptiveProduct == "false" && selectedRData.copyable == 'T'){
 						updateCopySessionButton(true);
 					}else{
 						updateCopySessionButton(false);
 					}
+					if (selectedRData.isSTabeProduct == "true") {
+	 					setAnchorButtonState('profileReportSessionButton', false);
+	 				}
+	 				else {
+	 					setAnchorButtonState('profileReportSessionButton', true);
+	 				}
 			},
 			loadComplete: function () {
 				updateModifyStdManifestButton(false);
 				updateCopySessionButton(false);
+ 				setAnchorButtonState('profileReportSessionButton', true);
+				
 				$("#list3").jqGrid("hideCol","creatorOrgNodeId");
 				$("#list3").jqGrid("hideCol","isSTabeAdaptiveProduct");
 				if ($('#list3').getGridParam('records') === 0) {
@@ -609,7 +606,7 @@ function populateCompletedSessionListGrid() {
 				$("#searchUserByKeywordInputList3").val('');
 				setAnchorButtonState('viewStatusButton', true);
 				setAnchorButtonState('printTicketButton', true);
- 				setAnchorButtonState('registerStudentButton', true);
+ 				setAnchorButtonState('profileReportSessionButton', true);
 				selectedTestAdminId = null;
 			});
 	 setupButtonPerUserPermission();
@@ -900,12 +897,7 @@ function registerDelegate(tree){
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		setAnchorButtonState('printTicketButton', true);
- 		
- 		 if($("#canRegisterStudent").val() == 'true'){
- 			setAnchorButtonState('registerStudentButton', true);
- 		}
- 		
- 		
+ 		setAnchorButtonState('profileReportSessionButton', true);
 	}
 	
 	 function gridReload(homePageLoad){ 
@@ -3365,7 +3357,6 @@ function registerDelegate(tree){
 		if(selectedId1 != null && $.trim(selectedId1) != '') {
 			setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('registerStudentButton', false);
 		}	
 		if (state == "EDIT"){
 			if (onChangeHandler.getData() == "T"){
@@ -3440,7 +3431,6 @@ function registerDelegate(tree){
 	 if(selectedId1 != null && $.trim(selectedId1) != '') {
 	 		setAnchorButtonState('viewStatusButton', false);
 			setAnchorButtonState('printTicketButton', false);
-			setAnchorButtonState('registerStudentButton', false);
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
@@ -3534,7 +3524,7 @@ function registerDelegate(tree){
 								  				jQuery("#list2").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
 								  				setAnchorButtonState('viewStatusButton', true);
 												setAnchorButtonState('printTicketButton', true);
-	 											setAnchorButtonState('registerStudentButton', true);
+	 											setAnchorButtonState('profileReportSessionButton', true);
 												updateModifyStdManifestButton(false);
 												updateCopySessionButton(false);
 								  			}
@@ -3550,7 +3540,7 @@ function registerDelegate(tree){
 								  				jQuery("#list3").addRowData(testSessionData.testAdminId, dataToBeAdded, "first");
 								  				setAnchorButtonState('viewStatusButton', true);
 												setAnchorButtonState('printTicketButton', true);
-	 											setAnchorButtonState('registerStudentButton', true);
+	 											setAnchorButtonState('profileReportSessionButton', true);
 												updateModifyStdManifestButton(false);
 												updateCopySessionButton(false);
 								  			}
@@ -4068,6 +4058,9 @@ function registerDelegate(tree){
 				if (isTabeProduct == 'true') {
 					$("#profileReportStudentDiv").show();
 				}
+				else {
+					$("#profileReportStudentDiv").hide();
+				}
 				
 				if ($('#rosterList').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
@@ -4513,7 +4506,7 @@ function registerDelegate(tree){
 									jQuery("#"+gridSelectedToDelete).delRowData(testAdminIdToDelete);
 									setAnchorButtonState('viewStatusButton', true);
 									setAnchorButtonState('printTicketButton', true);
- 									setAnchorButtonState('registerStudentButton', true);
+ 									setAnchorButtonState('profileReportSessionButton', true);
 									updateModifyStdManifestButton(false);
 									updateCopySessionButton(false);
 								} else {
