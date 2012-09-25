@@ -2316,6 +2316,7 @@ public class StudentOperationController extends PageFlowController {
      * SERVICES actions
      */    
     @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "resetTestSessionLink", path = "services_resetTestSession.do"),
     		@Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
     		@Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
     		@Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
@@ -2330,6 +2331,22 @@ public class StudentOperationController extends PageFlowController {
     	return new Forward(forwardName);
     }
 
+	
+    @Jpf.Action()
+    protected Forward services_resetTestSession()
+    {
+        try
+        {
+            String url = "/OrganizationWeb/resetOperation/services_resetTestSession.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
     @Jpf.Action()
     protected Forward services_manageLicenses()
     {

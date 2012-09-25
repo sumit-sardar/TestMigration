@@ -4746,20 +4746,6 @@ function validNumber(str){
 		enableOrDisableAnchorButton('copySessionButton', 'copySession', isEnable);
 	}
 
-	function profileReportSession(element){
-	    if (isButtonDisabled(element) ) {
-			return true;
-		}
-	    alert("profileReportSession");
-	}
-
-	function profileReportStudent(element){
-	    if (isButtonDisabled(element) ) {
-			return true;
-		}
-	    alert("profileReportStudent");
-	}
-	
 	function toggleExemtionValidationStatus(){
 		$("#displayMessageViewTestSubtest").hide();
 		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
@@ -4882,4 +4868,23 @@ function validNumber(str){
 		else 
 			return false;			
 	}
+	
+	function profileReportSession(element){
+	    if (isButtonDisabled(element) ) {
+			return true;
+		}
+		
+   		document.forms[0].action = "reports.do";
+		document.forms[0].submit();
+	}
+
+	function profileReportStudent(element){
+	    if (isButtonDisabled(element) ) {
+			return true;
+		}
+		
+   		document.forms[0].action = "reports.do";
+		document.forms[0].submit();
+	}
+	
 	

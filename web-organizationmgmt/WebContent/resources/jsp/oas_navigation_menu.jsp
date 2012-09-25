@@ -86,6 +86,11 @@
         				<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><lb:label key="org.menu.licenses" /></a>
         			 </li>
         			 </c:if>
+        			 <c:if test="${sessionScope.hasResetTestSession}">	
+        			 <li>
+        				<a href="#" id="resetTestSessionLink" onClick="gotoMenuAction('services.do', 'resetTestSessionLink');"><lb:label key="session.menu.resetTestSession" /></a>
+        			 </li>
+        			 </c:if>
         		</ul>
         	</li>
         </ul>		

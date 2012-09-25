@@ -3361,6 +3361,7 @@ public class SessionOperationController extends PageFlowController {
      * SERVICES actions
      */
     @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "resetTestSessionLink", path = "services_resetTestSession.do"),
 	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
 	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
 	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
@@ -3375,6 +3376,21 @@ public class SessionOperationController extends PageFlowController {
 	    return new Forward(forwardName);
 	}
 	
+    @Jpf.Action()
+    protected Forward services_resetTestSession()
+    {
+        try
+        {
+            String url = "/OrganizationWeb/resetOperation/services_resetTestSession.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
     @Jpf.Action()
     protected Forward services_manageLicenses()
     {
@@ -3643,6 +3659,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasUploadDownloadConfig = false;
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
+    	boolean hasResetTestSession = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -3701,6 +3718,10 @@ public class SessionOperationController extends PageFlowController {
 	            		cc.getDefaultValue().equals("T")	) {
 					this.hasLicenseConfig = true;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSession = true;
+	            }
 			}
 			
 		}
@@ -3716,6 +3737,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
     }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
