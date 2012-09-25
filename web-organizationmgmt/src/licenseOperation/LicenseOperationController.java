@@ -978,6 +978,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         boolean adminCoordinatorUser = isAdminCoordinatotUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
+    	boolean hasResetTestSession = false;
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1004,6 +1005,15 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
      	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
      	
      	this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));
+     	
+		for (int i=0; i < customerConfigs.length; i++) {
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+            		cc.getDefaultValue().equals("T")	) {
+				hasResetTestSession = true;
+            }
+		}        
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));     	
 	}
 
     private Boolean userHasReports() 
