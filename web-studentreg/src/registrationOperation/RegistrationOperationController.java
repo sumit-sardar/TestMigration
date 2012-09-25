@@ -1472,7 +1472,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	boolean mandatoryBirthdateValue = true;
     	boolean multiOrgAssociationValid = true;
-
+    	boolean hasResetTestSession = false;
     	
     	String roleName = this.user.getRole().getRoleName();
     	
@@ -1540,7 +1540,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					multiOrgAssociationValid = false;
 					continue;
 				}
-				
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSession = true;
+	            }				
 			}
 			
 		}
@@ -1558,7 +1561,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		this.getRequest().setAttribute("isMandatoryBirthDate", mandatoryBirthdateValue);
 		this.getSession().setAttribute("isClassReassignable",multiOrgAssociationValid);
-		
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));		
     }
 
 	private boolean isAdminCoordinatotUser() //For Student Registration

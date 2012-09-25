@@ -453,6 +453,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean TABECustomer = false;
     	String roleName = this.user.getRole().getRoleName();
     	boolean adminCoordinatorUser = isAdminCoordinatotUser();
+    	boolean hasResetTestSession = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -505,6 +506,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            	TABECustomer = true;
 	            	continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSession = true;
+	            }
 			}
 			
 		}
@@ -520,6 +525,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer &&(adminUser || adminCoordinatorUser) ));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
     }
     
 	private void setupUserPermission()

@@ -503,6 +503,7 @@ public class TestContentOperationController extends PageFlowController {
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         boolean adminCoordinatorUser = isAdminCoordinatotUser();
+    	boolean hasResetTestSession = false;
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -529,6 +530,15 @@ public class TestContentOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
      	this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
+     	
+		for (int i=0; i < customerConfigs.length; i++) {
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];     	
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+					cc.getDefaultValue().equals("T")	) {
+				hasResetTestSession = true;
+	        }
+		}
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
 	}
 	
 	private boolean isAdminCoordinatotUser() //For Student Registration

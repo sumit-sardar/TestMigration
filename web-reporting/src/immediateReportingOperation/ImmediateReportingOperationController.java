@@ -1035,6 +1035,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		boolean TABECustomer = false;
 		String roleName = this.user.getRole().getRoleName();
 		boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
+    	boolean hasResetTestSession = false;
 
 		if (customerConfigurations != null) {
 			for (int i = 0; i < customerConfigurations.length; i++) {
@@ -1095,6 +1096,10 @@ public class ImmediateReportingOperationController extends PageFlowController {
 					TABECustomer = true;
 					continue;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSession = true;
+	            }
 			}
 
 		}
@@ -1120,6 +1125,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				new Boolean(TABECustomer && validUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", 
 				new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
 	}
 	
 
