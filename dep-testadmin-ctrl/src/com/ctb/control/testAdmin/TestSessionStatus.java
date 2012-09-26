@@ -428,6 +428,16 @@ public interface TestSessionStatus
     /**
      * Retrieves the set of online reports available to a user's customer
      * @param userName - identifies the user
+     * @param testRosterId - identifies the test roster
+     * @return String
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+	
+    java.lang.String getIndividualReportUrlForSession(java.lang.String userName, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    /**
+     * Retrieves the set of online reports available to a user's customer
+     * @param userName - identifies the user
      * @param testRosterIds - list of the test rosters
      * @return String
      * @throws com.ctb.exception.CTBBusinessException

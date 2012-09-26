@@ -4885,23 +4885,16 @@ function validNumber(str){
 			return false;			
 	}
 	
-	function profileReportSession(element){
+	function viewIndividualReport(element, accessBy){
 	    if (isButtonDisabled(element) ) {
 			return true;
 		}
+		UIBlock();
 		
-   		document.forms[0].action = "reports.do";
-		document.forms[0].submit();
-	}
-
-	function profileReportStudent(element){
-	    if (isButtonDisabled(element) ) {
-			return true;
-		}
-		
-		var sessionParam = "sessionId=" + selectedTestAdminId;
+		var accessByParam = "accessBy=" + accessBy;
+		var sessionParam = "testAdminId=" + selectedTestAdminId;
 		var rosterParam = "rosterId=" + selectedTestRosterId;		
-   		document.forms[0].action = "viewIndividualReport.do" + "?" + sessionParam + "&" + rosterParam;   		
+   		document.forms[0].action = "viewIndividualReport.do" + "?" + accessByParam + "&" + sessionParam + "&" + rosterParam;   		
 		document.forms[0].submit();
 	}
 	

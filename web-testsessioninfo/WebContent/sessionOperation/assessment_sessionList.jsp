@@ -79,9 +79,11 @@
 									</div>  
 									<div id="ShowButtons" style="width:1000px; display:none; float:left;">
 									    <% if (showStudentReportButton) { %>
+									<!-- 
 										    <div id="profileReportSessionDiv" style="float:right;padding-left:5px;">
-											<a href="#" id="profileReportSessionButton" onclick="javascript:profileReportSession(this); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.studentReport" /></a>
+											<a href="#" id="profileReportSessionButton" onclick="javascript:viewIndividualReport(this, 'session'); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.studentReport" /></a>
 										    </div>
+									 -->
 										<% } %>
 										<div id="viewStatus" style="float:right;padding-left:5px;">
 											<a href="#" id="viewStatusButton" onclick="javascript:viewTestStatus(); return false;" class="rounded {transparent} button"><lb:label key="homepage.button.viewStatus" /></a>

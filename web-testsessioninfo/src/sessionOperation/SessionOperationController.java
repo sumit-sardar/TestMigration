@@ -220,6 +220,9 @@ public class SessionOperationController extends PageFlowController {
 	private List<TestElement> subtestDetails = null;
     private int numberSelectedSubtests = 0;
     private String selectedProductType = "ST";
+
+    private String currentReportUrl = "";
+    private String currentTestAdminId = "";
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -4796,13 +4799,9 @@ public class SessionOperationController extends PageFlowController {
 	    
 	    /**
 	     * @jpf:action
-	     * @jpf:forward name="done" path="from_view_subtests_detail.do"
-	     * @jpf:forward name="success" path="validate_subtests_detail.jsp"
 	     */ 
 	    @Jpf.Action(forwards = { 
-	         
-	        @Jpf.Forward(name = "success",
-	                     path = "validate_subtests_detail.jsp")
+	        @Jpf.Forward(name = "success", path = "validate_subtests_detail.jsp")
 	    })
 	    protected Forward to_validate_subtests_detail()
 	    {
@@ -4819,25 +4818,27 @@ public class SessionOperationController extends PageFlowController {
 	     * @jpf:action
 	     */
 		@Jpf.Action(
-			forwards = { 
-				@Jpf.Forward(name = "report", path = "turnleaf_reports.jsp")
-			}
-		)
+			forwards = {
+				@Jpf.Forward(name = "report", path = "individualReport.do", redirect=true)
+		})
 	    protected Forward viewIndividualReport()
 	    {			
 	        try {
-	        	// Defect 60476 
 	        	if (this.userName == null) {	        		
 	        		 java.security.Principal principal = getRequest().getUserPrincipal();
 	        	        if (principal != null) 
 	        	            this.userName = principal.toString();  
 	        	}
-	        	String sessionId = getRequest().getParameter("sessionId");
+
+	        	String accessBy = getRequest().getParameter("accessBy");
 	        	String rosterId = getRequest().getParameter("rosterId");
-	        	if (sessionId != null && rosterId != null) {
-		            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, Integer.valueOf(rosterId));           
-		            this.getRequest().setAttribute("reportUrl", reportUrl);
-		            this.getRequest().setAttribute("testAdminId", sessionId);	            
+	        	this.currentTestAdminId = getRequest().getParameter("testAdminId");
+	        	
+	        	if (accessBy.equals("student")) {
+        			this.currentReportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, Integer.valueOf(rosterId));
+	        	}
+	        	else {
+        			this.currentReportUrl = this.testSessionStatus.getIndividualReportUrlForSession(this.userName, Integer.valueOf(this.currentTestAdminId));	        		
 	        	}
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -4846,6 +4847,20 @@ public class SessionOperationController extends PageFlowController {
 	    }
 	    
 	    
+	    /**
+	     * @jpf:action
+	     */
+		@Jpf.Action(
+			forwards = {
+				@Jpf.Forward(name = "report", path = "turnleaf_reports.jsp")
+		})
+	    protected Forward individualReport()
+	    {			
+            this.getRequest().setAttribute("reportUrl", this.currentReportUrl);
+            this.getRequest().setAttribute("testAdminId", this.currentTestAdminId);	            
+	        return new Forward("report");
+	    }
+		
 	    
 	    private void prepareValidateButtons(String[] itemSetIds)
 	    {            
