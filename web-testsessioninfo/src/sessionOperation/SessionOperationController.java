@@ -4817,35 +4817,31 @@ public class SessionOperationController extends PageFlowController {
 	    
 	    /**
 	     * @jpf:action
-	     * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
-	     * @jpf:forward name="error" path="/error.jsp"
 	     */
 		@Jpf.Action(
 			forwards = { 
-				@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
-				@Jpf.Forward(name = "error", path = "/error.jsp")
+				@Jpf.Forward(name = "report", path = "turnleaf_reports.jsp")
 			}
 		)
 	    protected Forward viewIndividualReport()
-	    {
-			
+	    {			
 	        try {
 	        	// Defect 60476 
-	        	if (this.userName == null) {
-	        		
+	        	if (this.userName == null) {	        		
 	        		 java.security.Principal principal = getRequest().getUserPrincipal();
 	        	        if (principal != null) 
 	        	            this.userName = principal.toString();  
 	        	}
-	        	Integer testRosterID = Integer.valueOf(getRequest().getParameter("testRosterID"));
-	            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterID);           
-	            this.getRequest().setAttribute("reportUrl", reportUrl);
-	            this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
+	        	String sessionId = getRequest().getParameter("sessionId");
+	        	String rosterId = getRequest().getParameter("rosterId");
+	        	if (sessionId != null && rosterId != null) {
+		            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, Integer.valueOf(rosterId));           
+		            this.getRequest().setAttribute("reportUrl", reportUrl);
+		            this.getRequest().setAttribute("testAdminId", sessionId);	            
+	        	}
 	        } catch (Exception e) {
 	            e.printStackTrace();
-	            return new Forward("error");
-	        }
-	                    
+	        }	                    
 	        return new Forward("report");
 	    }
 	    

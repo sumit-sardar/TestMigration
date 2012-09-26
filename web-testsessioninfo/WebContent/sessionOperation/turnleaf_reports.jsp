@@ -42,6 +42,7 @@
 
 <table border="0" width="97%" style="margin:15px auto;">
 <!-- TURNLEAF REPORT LIST -->
+<% if (reportList != null) { %>
 <tr>
     <td>
         <table class="reportNavLayout">
@@ -53,6 +54,7 @@
         </table>
     </td>
 </tr>
+<% } %>
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>
     <td style="background-color: #fff; width: 100%; height: 100%; vertical-align: top; margin: 0px; padding: 0px;">

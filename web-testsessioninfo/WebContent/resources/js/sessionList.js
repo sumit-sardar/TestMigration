@@ -4052,6 +4052,13 @@ function registerDelegate(tree){
 				} else {
 					setAnchorButtonState('toggleValidationButton', true);
 				}
+				var testStatus = $('#rosterList').getCell(selectedTestRosterId, '6');
+				if ((testStatus == 'Scheduled') || (testStatus == 'Not taken') ||
+					(testStatus == 'In progress') || (testStatus == 'Test locked')) {
+					setAnchorButtonState('profileReportStudentButton', true);
+				} else {
+					setAnchorButtonState('profileReportStudentButton', false);
+				}
 			},
 			loadComplete: function () {
 				
@@ -4129,6 +4136,15 @@ function registerDelegate(tree){
 						$("#rosterList").setCell(gridIds[i], '7', 'N', "", "", true);
 					}
 				}
+				
+				var testStatus = $('#rosterList').getCell(selectedTestRosterId, '6');
+				if ((testStatus == 'Scheduled') || (testStatus == 'Not taken') ||
+					(testStatus == 'In progress') || (testStatus == 'Test locked')) {
+					setAnchorButtonState('profileReportStudentButton', true);
+				} else {
+					setAnchorButtonState('profileReportStudentButton', false);
+				}
+				
 				$.unblockUI();
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -4883,7 +4899,9 @@ function validNumber(str){
 			return true;
 		}
 		
-   		document.forms[0].action = "reports.do";
+		var sessionParam = "sessionId=" + selectedTestAdminId;
+		var rosterParam = "rosterId=" + selectedTestRosterId;		
+   		document.forms[0].action = "viewIndividualReport.do" + "?" + sessionParam + "&" + rosterParam;   		
 		document.forms[0].submit();
 	}
 	
