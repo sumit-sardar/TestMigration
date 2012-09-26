@@ -55,6 +55,7 @@
 <input type="hidden" id="itemGripViewQues" value=<lb:label key="scoring.itemGrid.viewQues" prefix="'" suffix="'"/>/>
 <input type="hidden" id="questionPopupTitle" value=<lb:label key="questionpopup.quesTitle" prefix="'" suffix="'"/>/>
 <input type="hidden" id="rubricPopupTitle" value=<lb:label key="questionpopup.rubricTitle" prefix="'" suffix="'"/>/>
+<input type="hidden" id="ScoringStatusTitleId" value=<lb:label key="scoring.stuGrid.scoringStatusTitle" prefix="'" suffix="'"/>/>
 
 
 <table class="transparent" width="97%" style="margin:15px auto;"> 

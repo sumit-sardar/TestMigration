@@ -89,6 +89,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String accessCode;
     private Integer itemSetIdTC;
     private Integer itemCountCRAI;
+    private String scoringStatus;
 
     /**
 	 * @return the hasAccommodations
@@ -119,6 +120,22 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setScreenMagnifier(String screenMagnifier) {
 		this.screenMagnifier = screenMagnifier;
+	}
+
+
+	/**
+	 * @return the scoringStatus
+	 */
+	public String getScoringStatus() {
+		return scoringStatus;
+	}
+
+
+	/**
+	 * @param scoringStatus the scoringStatus to set
+	 */
+	public void setScoringStatus(String scoringStatus) {
+		this.scoringStatus = scoringStatus;
 	}
 
 
@@ -535,6 +552,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.accessCode = student.getAccessCode();
         this.itemSetIdTC = student.getItemSetIdTC();
         this.itemCountCRAI = student.getItemCountCRAI();
+        this.scoringStatus = student.getScoringStatus();
     }
     
 

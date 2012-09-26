@@ -34,6 +34,7 @@ var genderOptions = ":Any;Male:Male;Female:Female;Unknown:Unknown";
 var testNameOptions = ":Any";
 var myRoleOptions = ":Any;Owner:Owner;Proctor:Proctor";
 var statusOptions = ":Any;Completed:Completed;Current:Current";
+var scoringStatusOptions = ":Any;Complete:Complete;Incomplete:Incomplete";
 var currentView = "session";
 var selectedRosterId;
 var selectedTestAdminName;
@@ -799,19 +800,20 @@ function populateScoringStudentGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), '', '',''],
+          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, $("#grdSessionName").val(), $("#grdTestName").val(), $("#ScoringStatusTitleId").val(), '', '',''],
 		   	colModel:[
 		   		{name:'userName',index:'userName', width:110, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentName',index:'studentName', width:100, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:100, editable: true, align:"left",sorttype:'text',search: false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade',editable: true, width:60, align:"left",search: true, sortable:true,sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: gradeOptions } },
-		   		{name:'gender',index:'gender', width:85, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
+		   		{name:'gender',index:'gender', width:90, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
 		   		{name:'studentNumber',index:'studentNumber', width:75, editable: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testSessionName',index:'testSessionName',editable: true, width:140, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testSessionName',index:'testSessionName',editable: true, width:155, align:"left",search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testCatalogName',index:'testCatalogName',editable: true, width:180, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: testNameOptions } },
-		   		{name:'accessCode',index:'accessCode', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemCountCRAI',index:'itemCountCRAI', width:10, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'scoringStatus',index:'scoringStatus',editable: true, width:105, align:"left",search: true, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: scoringStatusOptions } },
+		   		{name:'accessCode',index:'accessCode', width:1, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetIdTC',index:'itemSetIdTC', width:1, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemCountCRAI',index:'itemCountCRAI', width:1, editable: true, hidden: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"rosterId",
@@ -2100,6 +2102,7 @@ function searchStudentByKeyword(){
 			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
 			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
+			 g.rules.push({field:"scoringStatus",op:"bw",data:$("#gs_scoringStatus").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
@@ -2107,7 +2110,8 @@ function searchStudentByKeyword(){
 		 	 var g = {groupOp:"AND",rules:[],groups:[]};
 			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
-			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});			 
+			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
+			 g.rules.push({field:"scoringStatus",op:"bw",data:$("#gs_scoringStatus").val()});			 
 			 f = {groupOp:"OR",rules:[]};
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentName",op:"cn",data:searchFiler});
@@ -2116,7 +2120,8 @@ function searchStudentByKeyword(){
 			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
 			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
 			 f.rules.push({field:"testSessionName",op:"cn",data:searchFiler}); 
-			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});			   
+			 f.rules.push({field:"testCatalogName",op:"cn",data:searchFiler});	
+			 f.rules.push({field:"scoringStatus",op:"cn",data:searchFiler});		   
 		 	 g.groups.push(f);		 	
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;
@@ -2171,6 +2176,7 @@ function searchStudentByKeyword(){
 			 g.rules.push({field:"testCatalogName",op:"bw",data:$("#gs_testCatalogName").val()});
 			 g.rules.push({field:"gender",op:"bw",data:$("#gs_gender").val()});
 			 g.rules.push({field:"grade",op:"bw",data:$("#gs_grade").val()});
+			 g.rules.push({field:"scoringStatus",op:"bw",data:$("#gs_scoringStatus").val()});
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;			 
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(g)});
