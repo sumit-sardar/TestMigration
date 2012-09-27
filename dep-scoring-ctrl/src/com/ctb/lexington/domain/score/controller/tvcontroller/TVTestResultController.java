@@ -98,7 +98,7 @@ public class TVTestResultController implements TestResultController {
         context.setSessionId(adminData.getSessionId());
         context.setCurrentResultId(new Long(rosterValidationStatus.isValid()?1:2));
         context.setGradeId(new Long(
-        				   studentData.getGrade().equals("2")?2:
+        				   studentData.getGrade().equals("2")?30:
                            studentData.getGrade().equals("3")?3:
                            studentData.getGrade().equals("4")?4:
                            studentData.getGrade().equals("5")?5:
