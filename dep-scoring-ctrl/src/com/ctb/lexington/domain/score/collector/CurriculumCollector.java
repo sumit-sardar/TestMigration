@@ -178,57 +178,107 @@ public class CurriculumCollector {
             composites[0].setCompositeType("TERRANOVA COMPOSITE");
             composites[0].setSubject("TV Total Score");
             if("G".equalsIgnoreCase(form)) {
-            	if(level != null && "12".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87641));
-	                composites[0].setCompositeId(new Long(48));
-	                composites[0].setCompositeNumItems(new Long(107));
-	                composites[0].setCompositePointsPossible(new Long(107));
-	            } else if(level != null && level.indexOf("22") > 0) {
-	                composites[0].setAssessmentId(new Long(87639));
-	                composites[0].setCompositeId(new Long(47));
-	                composites[0].setCompositeNumItems(new Long(126));
-	                composites[0].setCompositePointsPossible(new Long(126));
-	            } else if(level != null && "20".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87637));
-	                composites[0].setCompositeId(new Long(46));
-	                composites[0].setCompositeNumItems(new Long(126));
-	                composites[0].setCompositePointsPossible(new Long(126));
-	            } else if(level != null && "19".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87635));
-	                composites[0].setCompositeId(new Long(45));
-	                composites[0].setCompositeNumItems(new Long(126));
-	                composites[0].setCompositePointsPossible(new Long(126));
-	            } else if(level != null && "18".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87633));
-	                composites[0].setCompositeId(new Long(44));
-	                composites[0].setCompositeNumItems(new Long(136));
-	                composites[0].setCompositePointsPossible(new Long(136));
-	            } else if(level != null && "17".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87627));
-	                composites[0].setCompositeId(new Long(43));
-	                composites[0].setCompositeNumItems(new Long(137));
-	                composites[0].setCompositePointsPossible(new Long(137));
-	            } else if(level != null && "16".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87625));
-	                composites[0].setCompositeId(new Long(42));
-	                composites[0].setCompositeNumItems(new Long(136));
-	                composites[0].setCompositePointsPossible(new Long(136));
-	            } else if(level != null && "15".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87623));
-	                composites[0].setCompositeId(new Long(41));
-	                composites[0].setCompositeNumItems(new Long(137));
-	                composites[0].setCompositePointsPossible(new Long(137));
-	            } else if(level != null && "14".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87605));
-	                composites[0].setCompositeId(new Long(40));
-	                composites[0].setCompositeNumItems(new Long(137));
-	                composites[0].setCompositePointsPossible(new Long(137));
-	            } else if(level != null && "13".equals(level)) {
-	                composites[0].setAssessmentId(new Long(87603));
-	                composites[0].setCompositeId(new Long(39));
-	                composites[0].setCompositeNumItems(new Long(120));
-	                composites[0].setCompositePointsPossible(new Long(120));
-	            }
+            	if("TERRA3 Survey".equals(assessmentType)) { // for product_id 3710
+            		if(level != null && level.indexOf("22") > 0) {
+    	                composites[0].setAssessmentId(new Long(87640));
+    	                composites[0].setCompositeId(new Long(57));
+    	                composites[0].setCompositeNumItems(new Long(85));
+    	                composites[0].setCompositePointsPossible(new Long(85));
+    	            } else if(level != null && "20".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87638));
+    	                composites[0].setCompositeId(new Long(56));
+    	                composites[0].setCompositeNumItems(new Long(85));
+    	                composites[0].setCompositePointsPossible(new Long(85));
+    	            } else if(level != null && "19".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87636));
+    	                composites[0].setCompositeId(new Long(55));
+    	                composites[0].setCompositeNumItems(new Long(85));
+    	                composites[0].setCompositePointsPossible(new Long(85));
+    	            } else if(level != null && "18".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87634));
+    	                composites[0].setCompositeId(new Long(54));
+    	                composites[0].setCompositeNumItems(new Long(91));
+    	                composites[0].setCompositePointsPossible(new Long(91));
+    	            } else if(level != null && "17".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87628));
+    	                composites[0].setCompositeId(new Long(53));
+    	                composites[0].setCompositeNumItems(new Long(92));
+    	                composites[0].setCompositePointsPossible(new Long(92));
+    	            } else if(level != null && "16".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87626));
+    	                composites[0].setCompositeId(new Long(52));
+    	                composites[0].setCompositeNumItems(new Long(91));
+    	                composites[0].setCompositePointsPossible(new Long(91));
+    	            } else if(level != null && "15".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87624));
+    	                composites[0].setCompositeId(new Long(51));
+    	                composites[0].setCompositeNumItems(new Long(92));
+    	                composites[0].setCompositePointsPossible(new Long(92));
+    	            } else if(level != null && "14".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87606));
+    	                composites[0].setCompositeId(new Long(50));
+    	                composites[0].setCompositeNumItems(new Long(92));
+    	                composites[0].setCompositePointsPossible(new Long(92));
+    	            } else if(level != null && "13".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87604));
+    	                composites[0].setCompositeId(new Long(49));
+    	                composites[0].setCompositeNumItems(new Long(80));
+    	                composites[0].setCompositePointsPossible(new Long(80));
+    	            }
+                } else { // For product_id 3720
+                	if(level != null && "12".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87641));
+    	                composites[0].setCompositeId(new Long(48));
+    	                composites[0].setCompositeNumItems(new Long(107));
+    	                composites[0].setCompositePointsPossible(new Long(107));
+    	            } else if(level != null && level.indexOf("22") > 0) {
+    	                composites[0].setAssessmentId(new Long(87639));
+    	                composites[0].setCompositeId(new Long(47));
+    	                composites[0].setCompositeNumItems(new Long(126));
+    	                composites[0].setCompositePointsPossible(new Long(126));
+    	            } else if(level != null && "20".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87637));
+    	                composites[0].setCompositeId(new Long(46));
+    	                composites[0].setCompositeNumItems(new Long(126));
+    	                composites[0].setCompositePointsPossible(new Long(126));
+    	            } else if(level != null && "19".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87635));
+    	                composites[0].setCompositeId(new Long(45));
+    	                composites[0].setCompositeNumItems(new Long(126));
+    	                composites[0].setCompositePointsPossible(new Long(126));
+    	            } else if(level != null && "18".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87633));
+    	                composites[0].setCompositeId(new Long(44));
+    	                composites[0].setCompositeNumItems(new Long(136));
+    	                composites[0].setCompositePointsPossible(new Long(136));
+    	            } else if(level != null && "17".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87627));
+    	                composites[0].setCompositeId(new Long(43));
+    	                composites[0].setCompositeNumItems(new Long(137));
+    	                composites[0].setCompositePointsPossible(new Long(137));
+    	            } else if(level != null && "16".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87625));
+    	                composites[0].setCompositeId(new Long(42));
+    	                composites[0].setCompositeNumItems(new Long(136));
+    	                composites[0].setCompositePointsPossible(new Long(136));
+    	            } else if(level != null && "15".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87623));
+    	                composites[0].setCompositeId(new Long(41));
+    	                composites[0].setCompositeNumItems(new Long(137));
+    	                composites[0].setCompositePointsPossible(new Long(137));
+    	            } else if(level != null && "14".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87605));
+    	                composites[0].setCompositeId(new Long(40));
+    	                composites[0].setCompositeNumItems(new Long(137));
+    	                composites[0].setCompositePointsPossible(new Long(137));
+    	            } else if(level != null && "13".equals(level)) {
+    	                composites[0].setAssessmentId(new Long(87603));
+    	                composites[0].setCompositeId(new Long(39));
+    	                composites[0].setCompositeNumItems(new Long(120));
+    	                composites[0].setCompositePointsPossible(new Long(120));
+    	            }
+                }
+            	
             } else {
 	            if(level != null && level.indexOf("19") >= 0) {
 	                composites[0].setAssessmentId(new Long(72153));
