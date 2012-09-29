@@ -304,6 +304,7 @@ function resetFilters() {
 	$("#gs_testName option:eq(0)").attr('selected','Any'); 
 	$("#gs_AssignedRole option:eq(0)").attr('selected','Any'); 
 	$("#gs_testAdminStatus option:eq(0)").attr('selected','Any'); 
+	$("#gs_scoringStatus option:eq(0)").attr('selected','Any');
 }
 
 function UIBlock(){
