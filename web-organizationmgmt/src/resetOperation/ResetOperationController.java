@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,13 +17,26 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.BroadcastUtils;
+import utils.CustomerServiceSearchUtils;
 import utils.PermissionsUtils;
 
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.ScheduleElementData;
+import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.OperationStatus;
+import com.ctb.util.SuccessInfo;
+import com.google.gson.Gson;
+
+import dto.Message;
+import dto.RestTestVO;
+import dto.ScheduleElementVO;
+import dto.StudentSessionStatusVO;
 
 @Jpf.Controller
 public class ResetOperationController extends PageFlowController {
@@ -42,11 +57,21 @@ public class ResetOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
     
+    @Control()
+	private com.ctb.control.customerServiceManagement.CustomerServiceManagement customerServiceManagement;
+    
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.studentManagement.StudentManagement studentManagement ;
+    
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
-
+    private String userTimeZone = null;
+ 
+    
     private CustomerLicense[] customerLicenses = null;
+    private Map<String, StudentSessionStatusVO> studentDetailsMap = null;
+    
     
     public static String CONTENT_TYPE_JSON = "application/json";
     
@@ -436,8 +461,227 @@ public class ResetOperationController extends PageFlowController {
         return null;
 	}
 
+    @Jpf.Action()
+	protected Forward findSubtestListBySession()
+	{
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		ScheduleElementData scheduleElementData = null;
+		StudentSessionStatusData sstData = null;
+		RestTestVO vo = new RestTestVO();
+		List<StudentSessionStatusVO> studentDetailsList = new ArrayList<StudentSessionStatusVO>();
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			getUserDetails();
+		}
+		try {
+			
+			String testAccessCode = getRequest().getParameter("testAccessCode");
+			scheduleElementData = CustomerServiceSearchUtils.getTestDeliveryDataInTestSession(
+					customerServiceManagement,this.userName,testAccessCode);
+			if (scheduleElementData != null && scheduleElementData.getFilteredCount().intValue() > 0) {
+				List<ScheduleElementVO> deliverableItemSetList = CustomerServiceSearchUtils.buildTestDeliveritemList(scheduleElementData);
+				Integer defTestAdminId = deliverableItemSetList.get(0).getTestAdminId();
+				Integer defItemSetId = scheduleElementData.getElements()[0].getItemSetId();
+				sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
+						customerServiceManagement, defTestAdminId, defItemSetId , null, null, null);
+				if((sstData != null) && (sstData.getFilteredCount().intValue() == 0)){
+					 studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+					 vo.getStatus().setSuccessInfo(new SuccessInfo());
+					 vo.getStatus().getSuccessInfo().setKey("FIND_NO_SUBTEST_DATA_RESULT");
+					 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_SUBTEST_DATA_RESULT);
+				 } else {
+					 studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
+					 prepareStudentDetailsMap(studentDetailsList);
+				 }
+				 				 
+				 vo.setDeliverableItemSetList(deliverableItemSetList);
+				 vo.setStudentDetailsList(studentDetailsList);
+				 vo.setSelectedTestAdmin(defTestAdminId);
+				 vo.setSelectedItemSetId(defItemSetId);
+				 vo.getStatus().setSuccess(true);
+				 
+			}else{
+				studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+				 vo.getStatus().setSuccess(true);
+				 vo.getStatus().setSuccessInfo(new SuccessInfo());
+				 vo.getStatus().getSuccessInfo().setKey("FIND_NO_TESTDATA_RESULT");
+				 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_TESTDATA_RESULT);
+			}
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
 
-    /////////////////////////////////////////////////////////////////////////////////////////////    
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+		}catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findSubtestListBySession.");
+			e.printStackTrace();
+		}
+    	return null;
+	}
+    
+    
+    private void prepareStudentDetailsMap(
+			List<StudentSessionStatusVO> studentDetailsList) {
+		studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+		if(studentDetailsList == null)
+			return;
+		for (StudentSessionStatusVO studentSessionStatusVO : studentDetailsList) {
+			studentDetailsMap.put(studentSessionStatusVO.getStudentItemId(), studentSessionStatusVO);
+		}
+		
+	}
+
+	@Jpf.Action()
+	protected Forward findSubtestListBySessionTD()
+	{
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		StudentSessionStatusData sstData = null;
+		RestTestVO vo = new RestTestVO();
+		List<StudentSessionStatusVO> studentDetailsList = new ArrayList<StudentSessionStatusVO>();
+	
+		if (this.userName == null) {
+			getLoggedInUserPrincipal();
+			getUserDetails();
+		}
+		try {
+			
+			/*String testAccessCode = getRequest().getParameter("testAccessCode");*/
+			Integer itemSetId = Integer.parseInt(getRequest().getParameter("itemSetId"));
+			Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
+					customerServiceManagement, testAdminId, itemSetId , null, null, null);
+			 if((sstData != null) && (sstData.getFilteredCount().intValue() == 0)){
+				 studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+				 vo.getStatus().setSuccessInfo(new SuccessInfo());
+				 vo.getStatus().getSuccessInfo().setKey("FIND_NO_SUBTEST_DATA_RESULT");
+				 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_SUBTEST_DATA_RESULT);
+			 } else {
+				 studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
+				 prepareStudentDetailsMap(studentDetailsList);
+			 }
+			 prepareStudentDetailsMap(studentDetailsList);
+			 vo.setStudentDetailsList(studentDetailsList);
+			
+			 vo.setSelectedTestAdmin(testAdminId);
+			 vo.setSelectedItemSetId(itemSetId);
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+		}catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findSubtestListBySessionTD.");
+			e.printStackTrace();
+		}
+    	return null;
+	}
+    
+	@Jpf.Action()
+	protected Forward resetSubtestForStudents(){
+		
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		StudentSessionStatusData sstData = null;
+		RestTestVO vo = new RestTestVO();
+		try {
+			Integer itemSetId = Integer.parseInt(getRequest().getParameter("itemSetId"));
+			Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+			String requestDescription = getRequest().getParameter("requestDescription");
+			String serviceRequestor = getRequest().getParameter("serviceRequestor");
+			String ticketId = getRequest().getParameter("ticketId");
+			
+			Integer customerID = Integer.parseInt(getRequest().getParameter("customerID"));
+			Integer creatorOrgId = Integer.parseInt(getRequest().getParameter("creatorOrgId"));
+			List<StudentSessionStatusVO> resetStudentDataList = prepareResetStudentDataList(getRequest().getParameter("resetStudentDataList"));
+			
+			CustomerServiceSearchUtils.reOpenSubtest( 
+					this.customerServiceManagement ,
+					this.user,
+					requestDescription,
+					serviceRequestor,
+					ticketId,
+					testAdminId,
+					customerID,
+					resetStudentDataList,
+					itemSetId,
+					creatorOrgId,
+					null);
+			
+			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
+					customerServiceManagement, testAdminId, itemSetId , null, null, null);
+			 List<StudentSessionStatusVO> studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
+			 prepareStudentDetailsMap(studentDetailsList);
+			 vo.setStudentDetailsList(studentDetailsList);
+			
+			 vo.setSelectedTestAdmin(testAdminId);
+			 vo.setSelectedItemSetId(itemSetId);
+			 try {
+					Gson gson = new Gson();
+					String json = gson.toJson(vo);
+					resp.setContentType(CONTENT_TYPE_JSON);
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes("UTF-8"));
+
+				} finally{
+					if (stream!=null){
+						stream.close();
+					}
+				}
+			
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findSubtestListBySessionTD.");
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+
+    private List<StudentSessionStatusVO> prepareResetStudentDataList(	String parameter) {
+    	List<StudentSessionStatusVO> resetStudentDataList = new ArrayList<StudentSessionStatusVO>();
+    	if(parameter !=null && parameter.trim().length()>0){
+    		parameter = parameter.trim();
+    		String[] values = parameter.split(",");
+    		for (String value : values) {
+    			if(studentDetailsMap.get(value)!=null){
+    				resetStudentDataList.add(studentDetailsMap.get(value));
+    			}
+				
+			}
+    		
+    	}
+
+		return resetStudentDataList;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
     private void getLoggedInUserPrincipal()
@@ -460,11 +704,13 @@ public class ResetOperationController extends PageFlowController {
             Customer customer = this.user.getCustomer();
             this.customerId = customer.getCustomerId();
             getSession().setAttribute("customerId", customerId); 
+            userTimeZone = this.user.getTimeZone();
         }
         catch (CTBBusinessException be)
         {
             be.printStackTrace();
         }
+        this.userTimeZone = userTimeZone;
     }
     
 	private void setupUserPermission()
@@ -509,7 +755,10 @@ public class ResetOperationController extends PageFlowController {
 				hasResetTestSession = true;
             }
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));     	
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));  
+		getConfigStudentLabel(customerConfigs);
+		
+		
 	}
 
     private Boolean userHasReports() 
@@ -635,7 +884,8 @@ public class ResetOperationController extends PageFlowController {
         CustomerConfiguration [] ccArray = null;
         try
         {      
-            ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);    
+           
         }
         catch (CTBBusinessException be)
         {
@@ -729,6 +979,55 @@ public class ResetOperationController extends PageFlowController {
 		return new Boolean(hasOOSConfigurable);           
 	}
 
+	
+	private void getConfigStudentLabel(CustomerConfiguration[] customerConfigurations) 
+	{     
+		boolean isStudentIdConfigurable = false;
+		Integer configId=0;
+		String []valueForStudentId = new String[8] ;
+		valueForStudentId[0] = "Student ID";
+		for (int i=0; i < customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				isStudentIdConfigurable = true; 
+				configId = cc.getId();
+				CustomerConfigurationValue[] customerConfigurationsValue = null;
+				if(cc.getCustomerConfigurationValues()== null) {
+					customerConfigurationsValue = customerConfigurationValues(configId);
+				} else {
+					customerConfigurationsValue = cc.getCustomerConfigurationValues();
+				}
+				
+				//By default there should be 3 entries for customer configurations
+				valueForStudentId = new String[8];
+				for(int j=0; j<customerConfigurationsValue.length; j++){
+					int sortOrder = customerConfigurationsValue[j].getSortOrder();
+					valueForStudentId[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
+				}	
+				valueForStudentId[0] = valueForStudentId[0]!= null ? valueForStudentId[0] : "Student ID" ;
+
+			}
+
+		}
+		this.getRequest().setAttribute("studentIdLabelName",valueForStudentId[0]);
+		
+	}
+	
+	private CustomerConfigurationValue[] customerConfigurationValues(Integer configId)
+	{	
+		CustomerConfigurationValue[] customerConfigurationsValue = null;
+		try {
+			customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
+
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		return customerConfigurationsValue;
+	}
+	
 	@Jpf.Action()
     protected Forward broadcastMessage()
     {
@@ -756,6 +1055,20 @@ public class ResetOperationController extends PageFlowController {
 					stream.close();
 				}
 			}
+			
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson("");
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -771,5 +1084,18 @@ public class ResetOperationController extends PageFlowController {
 	 {
 		 return new Forward("success");
 	 }
+	 
+	 @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "/error.jsp") })
+		protected Forward error() {
+			initialize();
+			return new Forward("success");
+		}
+	 
+	 private void initialize()
+		{     
+			getLoggedInUserPrincipal();
+			getUserDetails();
+			setupUserPermission();
+		}
 	
 }
