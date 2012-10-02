@@ -40,6 +40,10 @@
 <netui:form action="turnLeafReport">
 <input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 
+<script type="text/javascript">
+	UIBlock();
+</script>
+
 <table border="0" width="97%" style="margin:15px auto;">
 <!-- TURNLEAF REPORT LIST -->
 <% if (reportList != null) { %>
@@ -58,7 +62,7 @@
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>
     <td style="background-color: #fff; width: 100%; height: 100%; vertical-align: top; margin: 0px; padding: 0px;">
-        <iframe src="<%= reportUrl %>" frameborder="0" height="500px" width="100%" ></iframe>
+        <iframe name="turnleafReportIframe" id="turnleafReportIframe" src="<%= reportUrl %>" frameborder="0" height="500px" width="100%"></iframe>
     </td>
 </tr>
 
@@ -68,7 +72,8 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	setMenuActive("reports", null);
+	setMenuActive("reports", null);	
+	document.getElementById("turnleafReportIframe").onload = function() { $.unblockUI(); };	
 });
 </script>
 

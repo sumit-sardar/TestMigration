@@ -4894,7 +4894,7 @@ function validNumber(str){
 		var accessByParam = "accessBy=" + accessBy;
 		var sessionParam = "testAdminId=" + selectedTestAdminId;
 		var rosterParam = "rosterId=" + selectedTestRosterId;		
-   		document.forms[0].action = "viewIndividualReport.do" + "?" + accessByParam + "&" + sessionParam + "&" + rosterParam;   		
+   		document.forms[0].action = "viewIndividualReport.do" + "?" + accessByParam + "&" + sessionParam + "&" + rosterParam;   	
 		document.forms[0].submit();
 	}
 	
