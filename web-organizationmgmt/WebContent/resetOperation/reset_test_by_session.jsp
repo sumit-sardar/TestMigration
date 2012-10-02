@@ -90,12 +90,7 @@
 												<input type="text" tabindex="4" maxlength="32" id="reset_by_session_service_requestor" name="resetBySessionServiceRequestor">
 										</td>
 									</tr>
-									<tr class="transparent">
-										<td  class="transparent" width="100" align="left" valign="baseline">
-											<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
-										</td>
-										<td  class="transparent" width="*"></td>
-									</tr>
+									
 								</table>
 							</td>
 							<td  valign="top">
@@ -110,10 +105,13 @@
 									<tr class="transparent"><td class="tableFilter">&nbsp;</td></tr>
 								</table>
 							</td>
+							<td valign="bottom">
+								<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
+							</td>
 							
 						</tr>
 						<tr class="transparent">
-							<td class="transparent" colspan="2">
+							<td class="transparent" colspan="3">
 								<div id="reset_by_session_step4_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 									<table id="by_session_step4_student_list" class="gridTable"></table>
 									<div id="by_session_step4_student_list_pager" class="gridTable"></div>
