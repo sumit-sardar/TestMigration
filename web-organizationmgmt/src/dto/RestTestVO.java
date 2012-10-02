@@ -8,6 +8,8 @@ import com.ctb.util.OperationStatus;
 public class RestTestVO {
 	List<ScheduleElementVO> deliverableItemSetList = new ArrayList<ScheduleElementVO>();
 	List<StudentSessionStatusVO> studentDetailsList = new ArrayList<StudentSessionStatusVO>();
+	List<TestSessionVO> testSessionList  = new ArrayList<TestSessionVO>();
+	
 	Integer selectedTestAdmin = null;
 	Integer selectedItemSetId = null;
 	OperationStatus status = new OperationStatus();
@@ -37,6 +39,11 @@ public class RestTestVO {
 
 	public OperationStatus getStatus() {
 		return status;
+	}
+
+
+	public void setTestSessionList(List<TestSessionVO> testSessionList) {
+		this.testSessionList = testSessionList;
 	}
 
 }

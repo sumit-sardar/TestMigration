@@ -58,7 +58,7 @@
 					<table id="by_session_step3_student_list" class="gridTable"></table>
 					<div id="by_session_step3_student_list_pager" class="gridTable"></div>
 					<BR />
-					<input id="reset_by_session_step3_next"   type="button"  class="ui-widget-header" value="Next"	type="submit" onClick="populateAndDisplayStep4(); return false;" />
+					<input id="reset_by_session_step3_next"   type="button"  class="ui-widget-header" value="Next"	type="submit" onClick="populateAndDisplayStep4BySession(); return false;" />
 				</div>
 			<BR />
 		</td>

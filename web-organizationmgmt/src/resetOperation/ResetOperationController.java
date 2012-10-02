@@ -20,13 +20,19 @@ import utils.BroadcastUtils;
 import utils.CustomerServiceSearchUtils;
 import utils.PermissionsUtils;
 
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.ScheduleElementData;
+import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.StudentData;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.OperationStatus;
@@ -36,7 +42,9 @@ import com.google.gson.Gson;
 import dto.Message;
 import dto.RestTestVO;
 import dto.ScheduleElementVO;
+import dto.StudentProfileInformation;
 import dto.StudentSessionStatusVO;
+import dto.TestSessionVO;
 
 @Jpf.Controller
 public class ResetOperationController extends PageFlowController {
@@ -680,6 +688,123 @@ public class ResetOperationController extends PageFlowController {
 
 		return resetStudentDataList;
 	}
+    //	step 1 of STUDENT tab: find student search criteria
+    @Jpf.Action()
+	protected Forward findTestSessionListByStudent()
+	{
+
+    	HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		Student sData = null;
+		StudentData studentData = null;
+		TestSessionData tsData = null;
+		SortParams sort = null;
+		FilterParams filter = null;
+		PageParams page = null;
+		List<TestSessionVO> testSessionList = null;
+		RestTestVO vo = new RestTestVO();
+		try {
+			String studentLoginId = getRequest().getParameter("studentLoginId");
+			String testAccessCode = getRequest().getParameter("testAccessCode");
+			if (this.userName == null) {
+				getLoggedInUserPrincipal();
+				getUserDetails();
+			}
+			sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement,
+					this.userName, studentLoginId);
+			if (sData != null) {
+				Student[] students = new Student[1];
+				students[0] = sData;
+				studentData = new StudentData();
+				studentData.setStudents(students,1);
+				List<StudentProfileInformation> studentList = CustomerServiceSearchUtils.buildStudentList(studentData);
+				tsData = CustomerServiceSearchUtils.getStudentTestSessionData(customerServiceManagement,
+						this.userName, sData.getStudentId(),sData.getCustomerId(),testAccessCode ,filter,page,sort);
+			}
+			if (tsData != null && tsData.getFilteredCount().intValue() > 0) {
+				testSessionList = CustomerServiceSearchUtils.buildTestSessionList(tsData);
+				vo.setTestSessionList(testSessionList);
+				
+			} 
+			
+			
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+	    	
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findTestSessionListByStudent.");
+			e.printStackTrace();
+		}
+		
+		
+    	return null;
+	}
+    
+    //	step 2 of STUDENT tab: find subtest search criteria
+    @Jpf.Action()
+    protected Forward findSubtestByTestSessionId(){
+    	
+
+    	HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		RestTestVO vo = new RestTestVO();
+		StudentSessionStatusData sstData = null;
+		SortParams sort = null;
+		FilterParams filter = null;
+		PageParams page = null;
+		List<StudentSessionStatusVO> subtestList = new ArrayList<StudentSessionStatusVO>();
+		try{
+			//Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+			Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+			String testAccessCode = getRequest().getParameter("testAccessCode");
+			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
+					customerServiceManagement, testRosterId, testAccessCode,
+						filter, page, sort);
+			if (sstData != null && sstData.getFilteredCount().intValue() > 0) {
+				subtestList = CustomerServiceSearchUtils.buildSubtestList(sstData,this.userTimeZone);	
+			}
+				vo.setStudentDetailsList(subtestList);
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+			
+		}catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findSubtestByTestSessionId.");
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		return null;
+    }
+    
 
 	/////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////

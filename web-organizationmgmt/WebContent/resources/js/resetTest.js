@@ -1,6 +1,12 @@
 	
 	var isGridShowBySessionStep3Loaded = false;
 	var isGridShowBySessionStep4Loaded = false;
+	var isGridShowByStudentStep2Loaded = false;
+	var isGridShowByStudentStep3Loaded = false;
+	
+	var prevTestAdminId = -1;
+	var prevTestRosterId = -1;
+	
 	
 	var allTDAndStudentData = new Map();
 	var selectedTDAndStudentData =new Map();
@@ -10,9 +16,11 @@
 
 	
 	function updateView() {
+		showHideMessage(false, "", "");
 	  if($("#resetTestBy").val()=='ses'){
 	  	$("#reset_show_by_session").show();
 	  	$("#reset_show_by_student").hide();
+	  	hideStepsShowByStudent(true, true, true, true);
 	  } else {
 	  	hideStepsShowBySession(true, true, true, true);
 	  	$("#reset_show_by_student").show();
@@ -104,8 +112,8 @@
 		   		{name:'studentLoginName',	index:'studentLoginName', 	width:200, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'externalStudentId',	index:'externalStudentId', 	width:150, editable: true, align:"left", sortable:true,	sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'org_name',			index:'org_name', 			width:150, editable: true, align:"left", sortable:false, 				 search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetName',		index:'itemSetName',		width:400, editable: false,align:"left", sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'completionStatus',	index:'completionStatus',	width:100, editable: false,align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetName',		index:'itemSetName',		width:350, editable: false,align:"left", sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'completionStatus',	index:'completionStatus',	width:150, editable: false,align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetLevel',		index:'itemSetLevel', 		width:0,   editable: false, align:"left", sortable:false,hidden:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testRosterId',		index:'testRosterId', 		width:0,   editable: false, align:"left", sortable:false,hidden:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentItemId',		index:'studentItemId', 		width:0,   editable: false, align:"left", sortable:false,hidden:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
@@ -271,7 +279,7 @@
 		return status;
 	}
 	
-	function populateAndDisplayStep4(){
+	function populateAndDisplayStep4BySession(){
 		$("#reset_by_session_step4").show();
 		$("#reset_by_session_ticket_id").val("");
 		$("#reset_by_session_service_requestor").val("");
@@ -522,3 +530,307 @@
 	
 	}
 	
+	
+	function getTestSessionListByStudentStep2() { 
+		var postDataObject = {};
+		postDataObject.studentLoginId = $("#byStudentLoginnID").val();
+		postDataObject.testAccessCode = $("#byStudentTestAccessCode").val();
+		
+		hideStepsShowByStudent(false, true, true, true);
+		showHideMessage(false, "", "");
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'findTestSessionListByStudent.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		 postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+							if(data.testSessionList.length>0){
+								populate_reset_by_student_step2_session_grid(data.testSessionList);
+							} 
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();  
+							window.location.href="error.do";
+						},
+			complete :  function(){
+							 $.unblockUI();  
+						}
+		});
+	
+	}
+	
+	
+	function populate_reset_by_student_step2_session_grid(vSessionListToResetTest){
+		$("#reset_by_student_step2").show();
+		if(isGridShowByStudentStep2Loaded ){
+			reload_populate_reset_by_student_step2_session_grid(vSessionListToResetTest);
+		} else {
+			load_populate_reset_by_student_step2_session_grid(vSessionListToResetTest);
+		}
+	}
+	
+	
+	function load_populate_reset_by_student_step2_session_grid(vSessionListToResetTest){
+		isGridShowByStudentStep2Loaded = true;
+
+		 $("#by_student_step2_student_list").jqGrid({
+      	  data: vSessionListToResetTest,         
+          datatype: 'local',          
+          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','',''],
+		   	colModel:[
+		   		{name:'testAdminName',		index:'testAdminName', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'accessCode',			index:'accessCode', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testName',			index:'testName', 			width:300, editable: true, align:"left", sortable:true,	sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scheduler',			index:'scheduler', 			width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminId',		index:'testAdminId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testRosterId',		index:'testRosterId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	],
+		   		jsonReader: { repeatitems : false, root:"rows", id:"testAdminId",
+		   	records: function(obj) { 
+		   	 } },
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			sortname: 'testAdminName',
+			pager: '#by_student_step2_student_list_pager', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 165,  
+			onPaging: function() {
+				var reqestedPage = parseInt($('#by_student_step2_student_list').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_by_student_step2_student_list_pager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#by_student_step2_student_list').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#by_student_step2_student_list').setGridParam({"page": minPageSize});
+				}
+				
+			},onSelectRow: function (rowid, status) {
+				var selectedRowData = $("#by_student_step2_student_list").getRowData(rowid);
+				if(prevTestAdminId != selectedRowData.testAdminId  || prevTestRosterId != selectedRowData.testRosterId){
+					getSubTestListForBySessionStep3(selectedRowData.testRosterId, selectedRowData.accessCode);
+					prevTestAdminId = selectedRowData.testAdminId;
+					prevTestRosterId = selectedRowData.testRosterId;
+				}
+				
+
+			},loadComplete: function () {
+				if ($('#by_student_step2_student_list').getGridParam('records') === 0) {
+            		$('#sp_1_by_student_step2_student_list_pager').text("1");
+            		$('#next_by_student_step2_student_list_pager').addClass('ui-state-disabled');
+            	 	$('#last_by_student_step2_student_list_pager').addClass('ui-state-disabled');
+            	} 
+            	$.unblockUI();  
+				$("#by_student_step2_student_list").setGridParam({datatype:'local'});
+				var tdList = ("#by_student_step2_student_list_pager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+			}
+	 });
+	
+	
+	
+	}
+	
+	
+	function reload_populate_reset_by_student_step2_session_grid(vSessionListToResetTest){
+	 	$('#by_student_step2_student_list').jqGrid('clearGridData') ;
+      	jQuery("#by_student_step2_student_list").jqGrid('setGridParam',{ datatype: 'local'});    
+   	  	jQuery("#by_student_step2_student_list").jqGrid('setGridParam', {data: vSessionListToResetTest,page:1}).trigger("reloadGrid");
+      	jQuery("#by_student_step2_student_list").sortGrid('testAdminName',true,'asc');
+	}
+	
+	
+	function getSubTestListForBySessionStep3(testRosterId, testAccessCode) { 
+		var postDataObject = {};
+		postDataObject.testRosterId = testRosterId;
+		postDataObject.testAccessCode = testAccessCode;
+		
+		hideStepsShowByStudent(false, false, true, true);
+		showHideMessage(false, "", "");
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'findSubtestByTestSessionId.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		 postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+							if(data.studentDetailsList.length>0){
+								populate_reset_by_student_step3_session_grid(data.studentDetailsList);
+							}
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();  
+							window.location.href="error.do";
+						},
+			complete :  function(){
+							 $.unblockUI();  
+						}
+		});
+	
+	}
+	
+	
+	function populate_reset_by_student_step3_session_grid(vSubtestListToResetTest){
+		$("#reset_by_student_step3").show();
+		if(isGridShowByStudentStep3Loaded ){
+			reload_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest);
+		} else {
+			load_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest);
+		}
+	}
+	
+	function load_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest) {
+		
+		isGridShowByStudentStep3Loaded = true;
+		
+		var studentIdTitle = $("#studentIdLabelName").val();
+		
+		 $("#by_student_step3_student_subtest_list").jqGrid({
+      	  data: vSubtestListToResetTest,         
+          datatype: 'local',          
+          colNames:[ 'Subtest Name','Subtest Status', 'Start Date' , 'Completion Date', 'Items Answered','Time Spent', '',''],
+		   	colModel:[
+		   		{name:'itemSetName',		index:'itemSetName', 		width:350, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'completionStatus',	index:'completionStatus', 	width:175, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'startDateTime',		index:'startDateTime', 		width:150, editable: true, align:"center",sortable:true,sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'completionDateTime',	index:'completionDateTime',	width:200, editable: false,align:"center",sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemAnswered',		index:'itemAnswered',		width:175, editable: false,align:"center",sortable:false,				  search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'timeSpentForDisplay',index:'timeSpentForDisplay',width:150,   editable: false,align:"center",sortable:false,         		  search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetId',			index:'itemSetId', 			width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetLevel',		index:'itemSetLevel', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		
+		   	],
+		   		jsonReader: { repeatitems : false, root:"rows", id:"itemSetId",
+		   	records: function(obj) { 
+		   	 } },
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			sortname: 'itemSetName',
+			pager: '#by_student_step3_student_subtest_list_pager', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 165,  
+			onPaging: function() {
+				var reqestedPage = parseInt($('#by_student_step3_student_subtest_list').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_by_student_step3_student_subtest_list_pager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#by_student_step3_student_subtest_list').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#by_student_step3_student_subtest_list').setGridParam({"page": minPageSize});
+				}
+				
+			},onSelectRow: function (rowid, status) {
+				populateAndDisplayStep4ByStudent();
+				
+			},gridComplete: function() {
+				var allRowsInGridPresent = $('#by_student_step3_student_subtest_list').jqGrid('getDataIDs');
+				for(var k = 0; k < allRowsInGridPresent.length; k++) {
+					var selectedRowData = $("#by_student_step3_student_subtest_list").getRowData(allRowsInGridPresent[k]);
+					if(selectedRowData.completionStatus != 'Completed' && selectedRowData.completionStatus != 'In Progress'){
+						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
+						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
+					} else if (selectedRowData.itemSetLevel == 'L' && (selectedRowData.completionStatus != 'Completed' || selectedRowData.completionStatus != 'In Progress')){
+						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
+						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
+					} 
+				}
+			},loadComplete: function () {
+				if ($('#by_student_step3_student_subtest_list').getGridParam('records') === 0) {
+            		$('#sp_1_by_student_step3_student_subtest_list_pager').text("1");
+            		$('#next_by_student_step3_student_subtest_list_pager').addClass('ui-state-disabled');
+            	 	$('#last_by_student_step3_student_subtest_list_pager').addClass('ui-state-disabled');
+            	} else {
+            		
+            	}
+            	$.unblockUI();  
+				$("#by_student_step3_student_subtest_list").setGridParam({datatype:'local'});
+				var tdList = ("#by_student_step3_student_subtest_list_pager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+			}
+	 });
+	
+	}
+	
+	function reload_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest) {
+		$('#by_student_step3_student_subtest_list').jqGrid('clearGridData') ;
+      	jQuery("#by_student_step3_student_subtest_list").jqGrid('setGridParam',{ datatype: 'local'});    
+   	  	jQuery("#by_student_step3_student_subtest_list").jqGrid('setGridParam', {data: vSubtestListToResetTest,page:1}).trigger("reloadGrid");
+      	jQuery("#by_student_step3_student_subtest_list").sortGrid('itemSetName',true,'asc');
+	
+	}
+	
+	function populateAndDisplayStep4ByStudent (){
+		$("#reset_by_student_ticket_id").val("");
+		$("#reset_by_student_service_requestor").val("");
+		$("#reset_by_student_request_description").val("");
+		$("#reset_by_student_step4").show();
+		
+	}
+	
+	
+	
+	function hideStepsShowByStudent ( hideStep1, hideStep2, hideStep3, hideStep4){
+		if(hideStep1){
+			hideStep1ShowByStudent();
+		}
+		if (hideStep2){
+			hideStep2ShowByStudent();
+		}
+		if (hideStep3){
+			hideStep3ShowByStudent();
+		}
+		if (hideStep4){
+			hideStep4ShowByStudent();
+		}
+	}
+	
+	function hideStep1ShowByStudent(){
+		$("#byStudentLoginnID").val("");
+		$("#byStudentTestAccessCode").val("");
+	}
+	function hideStep2ShowByStudent(){
+		$("#reset_by_student_step2").hide();
+		$('#by_student_step2_student_list').jqGrid('clearGridData') ;
+	}
+	function hideStep3ShowByStudent(){
+		$("#reset_by_student_step3").hide();
+		$('#by_student_step3_student_list').jqGrid('clearGridData') ;
+	
+	
+	}
+	function hideStep4ShowByStudent(){
+		$("#reset_by_student_step4").hide();
+		$("#reset_by_student_ticket_id").val("");
+		$("#reset_by_student_service_requestor").val("");
+		$("#reset_by_student_request_description").val("");
+	}
