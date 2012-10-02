@@ -52,7 +52,7 @@
 	<!--  Steps 3 Starts Here -->
 	<tr id="reset_by_session_step3" style="display: none;">
 		<td width="10px;"> </td>
-		<td class="transparent"><b>Step3:</b>   Select one or more students to reset for the selected section. <BR />
+		<td class="transparent"><b>Step3:</b>   Select one or more students to reset for the selected subtest. <BR />
 			<BR />
 				<div id="reset_by_session_step3_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 					<table id="by_session_step3_student_list" class="gridTable"></table>
@@ -77,43 +77,43 @@
 					<table >
 						<tr >
 							<td >
-								<table  width="300">
-									<tr >
-										<td align="right" width="100">Ticket ID:</td>
-										<td  width="*">
+								<table  class="transparent" width="300">
+									<tr class="transparent">
+										<td class="transparent" align="right" width="100">Ticket ID:</td>
+										<td  class="transparent" width="*">
 											<input type="text" tabindex="3" maxlength="32" id="reset_by_session_ticket_id" name="resetBySessionTicketId">
 										</td>
 									</tr>
-									<tr >
-										<td  align="right" width="100">Requestor:</td>
-										<td  width="*">
+									<tr class="transparent">
+										<td  class="transparent" align="right" width="100">Requestor:</td>
+										<td  class="transparent" width="*">
 												<input type="text" tabindex="4" maxlength="32" id="reset_by_session_service_requestor" name="resetBySessionServiceRequestor">
 										</td>
 									</tr>
-									<tr >
-										<td  width="100" align="left" valign="baseline">
+									<tr class="transparent">
+										<td  class="transparent" width="100" align="left" valign="baseline">
 											<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
 										</td>
-										<td  width="*"></td>
+										<td  class="transparent" width="*"></td>
 									</tr>
 								</table>
 							</td>
 							<td  valign="top">
 								<table >
-									<tr >
-										<td  align="right" width="100">Reason for reset:</td>
-										<td  rowspan="3" width="*" valign="top">
+									<tr class="transparent">
+										<td  class="transparent"align="right" width="100">Reason for reset:</td>
+										<td  class="transparent" rowspan="3" width="*" valign="top">
 											<textarea onkeypress="return blockEventOnMaxLength(this,255)" onkeyup="checkAndTruncate(this,255)" 
 												onblur="return checkAndTruncate(this,255)" style="font-family: Arial; font-size: 10pt;" tabindex="5" cols="60" rows="4" id="reset_by_session_request_description" name="resetBySessionRequestDescription"></textarea>
 										</td>
 									</tr>
-									<tr><td class="tableFilter">&nbsp;</td></tr>
+									<tr class="transparent"><td class="tableFilter">&nbsp;</td></tr>
 								</table>
 							</td>
 							
 						</tr>
-						<tr>
-							<td colspan="2">
+						<tr class="transparent">
+							<td class="transparent" colspan="2">
 								<div id="reset_by_session_step4_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 									<table id="by_session_step4_student_list" class="gridTable"></table>
 									<div id="by_session_step4_student_list_pager" class="gridTable"></div>

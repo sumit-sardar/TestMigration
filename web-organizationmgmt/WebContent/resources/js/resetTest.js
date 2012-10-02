@@ -24,6 +24,7 @@
 		var postDataObject = {};
 		postDataObject.testAccessCode = $("#bySessionTestAccessCode").val();
 		hideStepsShowBySession(false, true, true, true);
+		showHideMessage(false, "", "");
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -45,10 +46,12 @@
 									populateAllTDAndStudentDataMap(data.studentDetailsList);
 									$("#reset_by_session_step3").show();
 								} else {
-									$("#reset_by_session_step3").hide();
+									showHideMessage(true,$("#resetTestSearchResultTitle").val(),$("#resetTestBySessionStudentNotFound").val());
 								}
 								
-							} 
+							} else {
+								showHideMessage(true,$("#resetTestSearchResultTitle").val(),$("#resetTestBySessionAccessCodeNotFound").val());
+							}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  
@@ -211,6 +214,7 @@
 	function updateStudentListBySession(){
 	 	var newVal = $("#reset_by_session_step2_subtest_drop_down").val();
 	 	hideStepsShowBySession(false, false, false, true);
+	 	showHideMessage(false, "", "");
 	 	var ids    = newVal.split("-");
 	 	var postDataObject = {};
 		postDataObject.testAdminId = ids[0];
@@ -232,6 +236,7 @@
 								$("#reset_by_session_step3").show();
 							} else {
 								hideStepsShowBySession(false,false,true,true);
+								showHideMessage(true,$("#resetTestSearchResultTitle").val(),$("#resetTestBySessionStudentNotFound").val());
 							}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -302,14 +307,14 @@
 		 $("#by_session_step4_student_list").jqGrid({
       	  data: vselectedStudentToResetTest,         
           datatype: 'local',       
-          colNames:[ 'Student','Subtest Name','Subtest Status' , 'Start Date' , 'Completion Date', 'Item Answered','Time Spent'],   
+          colNames:[ 'Student','Subtest Name','Subtest Status' , 'Start Date' , 'Completion Date', 'Items Answered','Time Spent'],   
 		   	colModel:[
 		   		{name:'studentLoginName',	index:'studentLoginName', 	width:200, editable: true, align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetName',		index:'itemSetName',		width:400, editable: false,align:"left", sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'completionStatus',	index:'completionStatus',	width:100, editable: false,align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetName',		index:'itemSetName',		width:300, editable: false,align:"left", sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'completionStatus',	index:'completionStatus',	width:150, editable: false,align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'startDateTime',		index:'startDateTime', 		width:150, editable: false, align:"center",sortable:true,	sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'completionDateTime',	index:'completionDateTime', width:150, editable: false, align:"center",sortable:true,	sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemAnswered',		index:'itemAnswered', 		width:100, editable: false, align:"center",sortable:false,				 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemAnswered',		index:'itemAnswered', 		width:150, editable: false, align:"center",sortable:false,				 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'timeSpentForDisplay',index:'timeSpentForDisplay',width:100, editable: false, align:"center",sortable:false,				 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		 
 		   	],
@@ -431,8 +436,34 @@
 		 var leftpos = ($(window).width() - 410) /2 + 'px';
 		 $("#confirmResetTestBySessionPopup").parent().css("top",toppos);
 		 $("#confirmResetTestBySessionPopup").parent().css("left",leftpos);	
+		 $(window).scrollTop(0);
 	}
 	
+	function showHideMessage(show, messageTitle, message){
+		 if(show ) {
+		 	$("#displayMessage").show();
+		 	if(messageTitle!=null && messageTitle != undefined && messageTitle.length>0){
+		 		$("#messageTitle").show();
+		 		$("#messageTitle").text(messageTitle);
+		 	} else {
+		 		$("#messageTitle").hide();
+		 	}
+		 	
+		 	if(message!=null && message != undefined && message.length>0){
+		 		$("#message").show();
+		 		$("#message").text(message);
+		 	} else {
+		 		$("#message").hide();
+		 	}
+		 	
+		 } else{
+			$("#displayMessage").hide();
+			$("#message").hide();
+			$("#messageTitle").hide();
+			$("#message").val("");
+			$("#messageTitle").val("");
+		 }
+	}
 	
 	function resetTestBySession (){ 
 		var newVal = $("#reset_by_session_step2_subtest_drop_down").val();
@@ -473,8 +504,9 @@
 								populateAllTDAndStudentDataMap(data.studentDetailsList);
 								$("#reset_by_session_step3").show();
 								hideStepsShowBySession(false,false,false,true);
+								showHideMessage(true, $("#resetTestTitle").val(), $("#resetTestBySessionSuccessMessage").val());
 							} else {
-								hideStepsShowBySession(false,false,true,true);
+								hideStepsShowBySession(false,false,false,false);
 							}
 							
 						},

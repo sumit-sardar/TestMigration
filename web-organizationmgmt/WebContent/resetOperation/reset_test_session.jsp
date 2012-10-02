@@ -29,6 +29,12 @@
 			<% String studentIdLabelName = (String)request.getAttribute("studentIdLabelName");%>
 			<input type="hidden" id="studentIdLabelName"  value = '<%=studentIdLabelName %>' />
 			<input type="hidden" id="confirmAlrt" value=<lb:label key="reset.test.by.session.confirmation.title" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestBySessionSuccessMessage" value=<lb:label key="reset.test.by.session.reset.test.success.message" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestBySessionStudentNotFound" value=<lb:label key="reset.test.by.session.find.no.student" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestBySessionAccessCodeNotFound" value=<lb:label key="reset.test.by.session.find.no.access.code" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestByStudentSuccessMessage" value=<lb:label key="reset.test.by.student.reset.test.success.message" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestTitle" value=<lb:label key="resetTestSession.title" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestSearchResultTitle" value=<lb:label key="reset.test.search.result" prefix="'" suffix="'"/>/>
 			
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
@@ -48,6 +54,23 @@
 
 			</table>
 
+			<div id = "displayMessage" 
+					style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; margin-bottom:5px; padding:2px 2px 2px 10px; color: black;">	
+				<table width="99.5%">
+					<tbody>
+						<tr>
+							<td valign="middle" width="18">
+								<img height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+							</td>
+							<td valign="middle" >
+								<div id="messageTitle" style="display:none;font-weight:bold;"></div>
+								<div id="message" style="display:none;"></div>
+								
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
 			<table width="99%" align="center" class="transparent"  style="margin: 15px auto;" >
 				<tr>
@@ -88,7 +111,7 @@
 			<div style="padding: 10px;">
 			<center><input type="button" value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/>
 				onclick="javascript:resetTestBySession(); return false;" class="ui-widget-header">&nbsp; <input
-				type="button" value=<lb:label key="common.button.no" prefix="'&nbsp;" suffix="&nbsp;'"/>
+				type="button" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/>
 				onclick="javascript:closePopUp('confirmResetTestBySessionPopup'); return false;" class="ui-widget-header"></center>
 			</div>
 			</div>
