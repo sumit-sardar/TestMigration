@@ -424,7 +424,7 @@
 	
 	function confirmAndResetTestBySession(){
 		$("#confirmResetTestBySessionPopup").dialog({  
-			title:$("#confirmAlrt").val(),  
+			title:$("#resetTestTitle").val(),  
 	 		resizable:false,
 	 		autoOpen: true,
 	 		width: '400px',
