@@ -6,6 +6,8 @@
 	
 	var prevTestAdminId = -1;
 	var prevTestRosterId = -1;
+	var selectedTestSessionData = {};
+	var selectedSubTestSessionData = {};
 	
 	
 	var allTDAndStudentData = new Map();
@@ -587,14 +589,15 @@
 		 $("#by_student_step2_student_list").jqGrid({
       	  data: vSessionListToResetTest,         
           datatype: 'local',          
-          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','',''],
+          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',		index:'testAdminName', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'accessCode',			index:'accessCode', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',			index:'testName', 			width:300, editable: true, align:"left", sortable:true,	sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'scheduler',			index:'scheduler', 			width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testAdminId',		index:'testAdminId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testRosterId',		index:'testRosterId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'testRosterId',		index:'testRosterId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'sessionNumber',		index:'sessionNumber', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"rows", id:"testAdminId",
 		   	records: function(obj) { 
@@ -621,6 +624,7 @@
 				
 			},onSelectRow: function (rowid, status) {
 				var selectedRowData = $("#by_student_step2_student_list").getRowData(rowid);
+				selectedTestSessionData = selectedRowData;
 				if(prevTestAdminId != selectedRowData.testAdminId  || prevTestRosterId != selectedRowData.testRosterId){
 					getSubTestListForBySessionStep3(selectedRowData.testRosterId, selectedRowData.accessCode);
 					prevTestAdminId = selectedRowData.testAdminId;
@@ -714,7 +718,7 @@
 		 $("#by_student_step3_student_subtest_list").jqGrid({
       	  data: vSubtestListToResetTest,         
           datatype: 'local',          
-          colNames:[ 'Subtest Name','Subtest Status', 'Start Date' , 'Completion Date', 'Items Answered','Time Spent', '',''],
+          colNames:[ 'Subtest Name','Subtest Status', 'Start Date' , 'Completion Date', 'Items Answered','Time Spent', '','','',''],
 		   	colModel:[
 		   		{name:'itemSetName',		index:'itemSetName', 		width:350, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'completionStatus',	index:'completionStatus', 	width:175, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -723,7 +727,9 @@
 		   		{name:'itemAnswered',		index:'itemAnswered',		width:175, editable: false,align:"center",sortable:false,				  search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'timeSpentForDisplay',index:'timeSpentForDisplay',width:150,   editable: false,align:"center",sortable:false,         		  search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetId',			index:'itemSetId', 			width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetLevel',		index:'itemSetLevel', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'itemSetLevel',		index:'itemSetLevel', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetOrder',		index:'itemSetOrder', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAccessCode',		index:'testAccessCode', 	width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
 		   		jsonReader: { repeatitems : false, root:"rows", id:"itemSetId",
@@ -750,7 +756,9 @@
 				}
 				
 			},onSelectRow: function (rowid, status) {
-				populateAndDisplayStep4ByStudent();
+				var selectedRowData = $("#by_student_step3_student_subtest_list").getRowData(rowid);
+				selectedSubTestSessionData = selectedRowData;
+				populateAndDisplayStep4ByStudent(selectedRowData);
 				
 			},gridComplete: function() {
 				var allRowsInGridPresent = $('#by_student_step3_student_subtest_list').jqGrid('getDataIDs');
@@ -795,13 +803,24 @@
 	
 	}
 	
-	function populateAndDisplayStep4ByStudent (){
+	function populateAndDisplayStep4ByStudent (vSelectedSubTestSessionData){
 		$("#reset_by_student_ticket_id").val("");
 		$("#reset_by_student_service_requestor").val("");
 		$("#reset_by_student_request_description").val("");
+		$("#byStudentConfIdStep4").text($("#studentIdLabelName").val()+":");
+		
+		$("#byStudentSessionNameStep4").text(selectedTestSessionData.testAdminName);
+		$("#byStudentSessionId").text(selectedTestSessionData.sessionNumber);
+		
+		$("#byStudentSubtestNameStep4").text(vSelectedSubTestSessionData.itemSetName);
+		$("#byStudentSubtestStatus").text(vSelectedSubTestSessionData.completionStatus);
+		$("#byStudentSubtestOrderStep4").text(vSelectedSubTestSessionData.itemSetOrder);
+		$("#byStudentSubtestAccessCodeStep4").text(vSelectedSubTestSessionData.testAccessCode);
+	
+		
+		
 		$("#reset_by_student_step4").show();
 		window.scroll(0,100000);
-		
 	}
 	
 	
@@ -842,4 +861,12 @@
 		$("#reset_by_student_ticket_id").val("");
 		$("#reset_by_student_service_requestor").val("");
 		$("#reset_by_student_request_description").val("");
+		
+		$("#byStudentSubtestNameStep4").text("");
+		$("#byStudentSubtestStatus").text("");
+		$("#byStudentSubtestOrderStep4").text("");
+		$("#byStudentSubtestAccessCodeStep4").text("");
+		
+		$("#byStudentSessionNameStep4").text("");
+		$("#byStudentSessionId").text("");
 	}

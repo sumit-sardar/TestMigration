@@ -138,11 +138,11 @@
 															<tbody>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span>Name:</span></td>
-																	<td class="transparent"><span id="byStudentStudentNameStep4" >Bzdn, ADGG </span></td>
+																	<td class="transparent"><span id="byStudentStudentNameStep4" > </span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span>Login:</span></td>
-																	<td class="transparent"><span id="byStudentStudentLogInNameStep4" >ADGG-BZDN-0405</span></td>
+																	<td class="transparent"><span id="byStudentStudentLogInNameStep4" ></span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 			
@@ -160,11 +160,11 @@
 															<tbody>
 																<tr class="transparent">
 																	<td valign="top" class="transparent"><span>Name:</span></td>
-																	<td nowrap="true" class="transparent"><span id="byStudentSessionNameStep4">TerraNova Online - TDC Timeout 1909</span></td>
+																	<td nowrap="true" class="transparent"><span id="byStudentSessionNameStep4"> </span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span>ID:</span></td>
-																	<td class="transparent"><span id="byStudentSessionId" >4390062</span></td>
+																	<td class="transparent"><span id="byStudentSessionId" > </span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 																	<td class="transparent">&nbsp;</td>
@@ -179,18 +179,17 @@
 															<tbody>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span>Name:</span></td>
-																	<td nowrap="true" colspan="3" class="transparent"><span id="byStudentSubtestNameStep4" >TerraNova Reading/Language Arts Survey
-																	- Part 1</span></td>
+																	<td nowrap="true" colspan="3" class="transparent"><span id="byStudentSubtestNameStep4" > </span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span>Status:</span></td>
-																	<td colspan="3" class="transparent"><span id="byStudentSubtestStatus">Completed</span></td>
+																	<td colspan="3" class="transparent"><span id="byStudentSubtestStatus"></span></td>
 																</tr>
 																<tr valign="top" class="transparent">
 																	<td nowrap="true" align="left" width="25%" class="transparent"><span>Access Code:</span></td>
-																	<td align="left" width="30%" class="transparent"><span id="byStudentSubtestAccessCodeStep4" >CALDERA306</span></td>
+																	<td align="left" width="30%" class="transparent"><span id="byStudentSubtestAccessCodeStep4" > </span></td>
 																	<td align="right" width="25%" class="transparent"><span>Order:</span></td>
-																	<td align="left" width="20%" class="transparent"><span id="byStudentSubtestOrderStep4">2</span></td>
+																	<td align="left" width="20%" class="transparent"><span id="byStudentSubtestOrderStep4"></span></td>
 																</tr>
 															</tbody>
 														</table>
