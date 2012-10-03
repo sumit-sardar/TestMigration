@@ -14,15 +14,15 @@
 	</tr>
 	<tr>
 		<td width="10px;"> </td>
-		<td class="transparent"><b>Step1:</b> Specify a test access code and click <b>Search</b>. <BR />
+		<td class="transparent"><lb:label key="reset.test.by.session.step1.message" />  <BR />
 			<BR />
 			<table class="transparent">
 				<tr class="transparent">
-					<td class="transparent alignRight"><span>*</span>&nbsp;Access Code:</td>
+					<td class="transparent alignRight"><span>*</span>&nbsp;<lb:label key="reset.test.title.access.code" /> </td>
 					<td class="transparent">
 						<input type="text" tabindex="1" maxlength="32" id="bySessionTestAccessCode"> </input> </td>
 						<td class="transparent" width="*">
-							<input type="button"  class="ui-widget-header" value="Search"	type="submit" onClick="getTDAndStudentList(); return false;" tabindex="2" />
+							<input type="button"  class="ui-widget-header" value=<lb:label key="reset.test.title.search" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>	type="submit" onClick="getTDAndStudentList(); return false;" tabindex="2" />
 						</td>
 				</tr>
 			</table>
@@ -32,12 +32,12 @@
 	<!--  Steps 2 Starts Here -->
 	<tr id="reset_by_session_step2" style="display: none;">
 		<td width="10px;"> </td>
-		<td class="transparent"><b>Step2:</b>  Select a subtest to reset. <BR />
+		<td class="transparent"><lb:label key="reset.test.by.session.step2.message" />  <BR />
 			<BR />
 			 <table class="transparent">
 				<tr class="transparent">
 					<td class="transparent alignRight">
-						<span> Subtest Name :</span>
+						<span> <lb:label key="reset.test.column.title.subtest.name" /></span>
 						
 					</td>
 					<td class="transparent" id="reset_by_session_step2_subtest_name">
@@ -52,13 +52,13 @@
 	<!--  Steps 3 Starts Here -->
 	<tr id="reset_by_session_step3" style="display: none;">
 		<td width="10px;"> </td>
-		<td class="transparent"><b>Step3:</b>   Select one or more students to reset for the selected subtest. <BR />
+		<td class="transparent"><lb:label key="reset.test.by.session.step3.message" /> <BR />
 			<BR />
 				<div id="reset_by_session_step3_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 					<table id="by_session_step3_student_list" class="gridTable"></table>
 					<div id="by_session_step3_student_list_pager" class="gridTable"></div>
 					<BR />
-					<input id="reset_by_session_step3_next"   type="button"  class="ui-widget-header" value="Next"	type="submit" onClick="populateAndDisplayStep4BySession(); return false;" />
+					<input id="reset_by_session_step3_next"   type="button"  class="ui-widget-header" value=<lb:label key="reset.test.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>	type="submit" onClick="populateAndDisplayStep4BySession(); return false;" />
 				</div>
 			<BR />
 		</td>
@@ -68,11 +68,11 @@
 	<!--  Steps 4 Starts Here -->
 	<tr id="reset_by_session_step4" style="display: none;">
 		<td width="10px;"> </td>
-		<td class="transparent"><b>Step4:</b>   Provide reset request information. Enter a brief description of the reason for the request to reset. <BR />
+		<td class="transparent"><lb:label key="reset.test.by.session.step4.message" />  <BR />
 			<table >
 				<tr>
 					<td align="right" style="padding-bottom: 5px">
-						<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
+						<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value=<lb:label key="reset.test.title.reset" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
 					</td>
 				</tr>
 				<tr>
@@ -83,13 +83,13 @@
 							<td >
 								<table  class="transparent" width="300">
 									<tr class="transparent">
-										<td class="transparent" align="right" width="100">Ticket ID:</td>
+										<td class="transparent" align="right" width="100"><lb:label key="reset.test.column.title.ticket.id" /> </td>
 										<td  class="transparent" width="*">
 											<input type="text" tabindex="3" maxlength="32" id="reset_by_session_ticket_id" name="resetBySessionTicketId">
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td  class="transparent" align="right" width="100">Requestor:</td>
+										<td  class="transparent" align="right" width="100"><lb:label key="reset.test.column.title.requester" /> </td>
 										<td  class="transparent" width="*">
 												<input type="text" tabindex="4" maxlength="32" id="reset_by_session_service_requestor" name="resetBySessionServiceRequestor">
 										</td>
@@ -100,7 +100,7 @@
 							<td  valign="top">
 								<table >
 									<tr class="transparent">
-										<td  class="transparent"align="right" width="100">Reason for reset:</td>
+										<td  class="transparent"align="right" width="100"><lb:label key="reset.test.column.title.requester" /> </td>
 										<td  class="transparent" rowspan="3" width="*" valign="top">
 											<textarea onkeypress="return blockEventOnMaxLength(this,255)" onkeyup="checkAndTruncate(this,255)" 
 												onblur="return checkAndTruncate(this,255)" style="font-family: Arial; font-size: 10pt;" tabindex="5" cols="60" rows="4" id="reset_by_session_request_description" name="resetBySessionRequestDescription"></textarea>

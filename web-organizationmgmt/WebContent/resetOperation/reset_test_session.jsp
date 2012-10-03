@@ -86,10 +86,10 @@
 								<tbody>
 									<tr>
 										<td align="right">
-											<span style="float: right;"><b>Show By&nbsp;</b>:&nbsp;&nbsp;
+											<span style="float: right;"><b><lb:label key="reset.test.row.title.show.by" />&nbsp;</b>:&nbsp;&nbsp;
 												<select onchange="updateView();"	id="resetTestBy">
-													<option value="ses">&nbsp;Session&nbsp;&nbsp;</option>
-													<option value="std">&nbsp;Student&nbsp;&nbsp;</option>
+													<option value="ses">&nbsp;<lb:label key="reset.test.row.title.session" />&nbsp;&nbsp;</option>
+													<option value="std">&nbsp;<lb:label key="reset.test.row.title.student" />&nbsp;&nbsp;</option>
 												</select>&nbsp;&nbsp;
 											</span>
 										</td>
