@@ -652,6 +652,7 @@
 				}
 				
 			},onSelectRow: function (rowid, status) {
+				showHideMessage(false, "", "");
 				var selectedRowData = $("#by_student_step2_student_list").getRowData(rowid);
 				selectedTestSessionData = selectedRowData;
 				if(prevTestAdminId != selectedRowData.testAdminId  || prevTestRosterId != selectedRowData.testRosterId){
@@ -786,6 +787,7 @@
 				}
 				
 			},onSelectRow: function (rowid, status) {
+				showHideMessage(false, "", "");
 				var selectedRowData = $("#by_student_step3_student_subtest_list").getRowData(rowid);
 				selectedSubTestSessionData = selectedRowData;
 				populateAndDisplayStep4ByStudent(selectedRowData);

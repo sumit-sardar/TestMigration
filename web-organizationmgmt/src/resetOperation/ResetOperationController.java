@@ -501,7 +501,7 @@ public class ResetOperationController extends PageFlowController {
 					 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_SUBTEST_DATA_RESULT);
 				 } else {
 					 studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
-					 prepareStudentDetailsMap(studentDetailsList);
+					 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
 				 }
 				 				 
 				 vo.setDeliverableItemSetList(deliverableItemSetList);
@@ -540,13 +540,23 @@ public class ResetOperationController extends PageFlowController {
 	}
     
     
-    private void prepareStudentDetailsMap(
+    private void prepareStudentDetailsMapForSessionFlow(
 			List<StudentSessionStatusVO> studentDetailsList) {
 		studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
 		if(studentDetailsList == null)
 			return;
 		for (StudentSessionStatusVO studentSessionStatusVO : studentDetailsList) {
 			studentDetailsMap.put(studentSessionStatusVO.getStudentItemId(), studentSessionStatusVO);
+		}
+		
+	}
+    
+    private void prepareStudentDetailsMapForStudentFlow(List<StudentSessionStatusVO> studentDetailsList) {
+		studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+		if(studentDetailsList == null)
+			return;
+		for (StudentSessionStatusVO studentSessionStatusVO : studentDetailsList) {
+			studentDetailsMap.put(studentSessionStatusVO.getItemSetId().toString(), studentSessionStatusVO);
 		}
 		
 	}
@@ -579,9 +589,9 @@ public class ResetOperationController extends PageFlowController {
 				 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_SUBTEST_DATA_RESULT);
 			 } else {
 				 studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
-				 prepareStudentDetailsMap(studentDetailsList);
+				 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
 			 }
-			 prepareStudentDetailsMap(studentDetailsList);
+			 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
 			 vo.setStudentDetailsList(studentDetailsList);
 			
 			 vo.setSelectedTestAdmin(testAdminId);
@@ -643,11 +653,91 @@ public class ResetOperationController extends PageFlowController {
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
 					customerServiceManagement, testAdminId, itemSetId , null, null, null);
 			 List<StudentSessionStatusVO> studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
-			 prepareStudentDetailsMap(studentDetailsList);
+			 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
 			 vo.setStudentDetailsList(studentDetailsList);
 			
 			 vo.setSelectedTestAdmin(testAdminId);
 			 vo.setSelectedItemSetId(itemSetId);
+			 try {
+					Gson gson = new Gson();
+					String json = gson.toJson(vo);
+					resp.setContentType(CONTENT_TYPE_JSON);
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes("UTF-8"));
+
+				} finally{
+					if (stream!=null){
+						stream.close();
+					}
+				}
+			
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while findSubtestListBySessionTD.");
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+	
+	
+	@Jpf.Action()
+	protected Forward resetSubtestForAStudent(){
+		
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+		OutputStream stream = null;
+		StudentSessionStatusData sstData = null;
+		RestTestVO vo = new RestTestVO();
+		SortParams sort = null;
+		FilterParams filter = null;
+		PageParams page = null;
+		List<StudentSessionStatusVO> subtestList = new ArrayList<StudentSessionStatusVO>();
+		
+		try {
+			Integer itemSetId = Integer.parseInt(getRequest().getParameter("itemSetId"));
+			Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
+			Integer studentId = Integer.parseInt(getRequest().getParameter("studentId"));
+			String requestDescription = getRequest().getParameter("requestDescription");
+			String serviceRequestor = getRequest().getParameter("serviceRequestor");
+			String ticketId = getRequest().getParameter("ticketId");
+			Integer customerID = Integer.parseInt(getRequest().getParameter("customerID"));
+			Integer creatorOrgId = Integer.parseInt(getRequest().getParameter("creatorOrgId"));
+			
+			Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+			String testAccessCode = getRequest().getParameter("testAccessCode");
+			
+			
+			List<StudentSessionStatusVO> studentTestStatusDetailsList = new ArrayList<StudentSessionStatusVO>();
+			if(studentDetailsMap.get(itemSetId.toString()) != null){
+				studentTestStatusDetailsList.add(studentDetailsMap.get(itemSetId.toString()));
+			} 
+			
+			
+			CustomerServiceSearchUtils.reOpenSubtest (
+					this.customerServiceManagement, 
+					this.user,
+					requestDescription,
+					serviceRequestor,
+					ticketId,
+					testAdminId,
+					customerID, 
+					studentTestStatusDetailsList,
+					itemSetId,
+					creatorOrgId,
+					studentId);
+			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
+					customerServiceManagement, testRosterId, testAccessCode,
+						filter, page, sort);
+			if (sstData != null && sstData.getFilteredCount().intValue() > 0) {
+				subtestList = CustomerServiceSearchUtils.buildSubtestList(sstData,this.userTimeZone);
+				prepareStudentDetailsMapForStudentFlow(subtestList);
+			} else {
+				studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
+			}
+				vo.setStudentDetailsList(subtestList);
 			 try {
 					Gson gson = new Gson();
 					String json = gson.toJson(vo);
@@ -777,6 +867,9 @@ public class ResetOperationController extends PageFlowController {
 						filter, page, sort);
 			if (sstData != null && sstData.getFilteredCount().intValue() > 0) {
 				subtestList = CustomerServiceSearchUtils.buildSubtestList(sstData,this.userTimeZone);	
+				prepareStudentDetailsMapForStudentFlow(subtestList);
+			} else {
+				studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
 			}
 				vo.setStudentDetailsList(subtestList);
 			try {
