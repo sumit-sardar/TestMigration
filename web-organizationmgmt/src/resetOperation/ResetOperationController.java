@@ -721,6 +721,7 @@ public class ResetOperationController extends PageFlowController {
 				List<StudentProfileInformation> studentList = CustomerServiceSearchUtils.buildStudentList(studentData);
 				tsData = CustomerServiceSearchUtils.getStudentTestSessionData(customerServiceManagement,
 						this.userName, sData.getStudentId(),sData.getCustomerId(),testAccessCode ,filter,page,sort);
+				vo.setStudentList(studentList);
 			}
 			if (tsData != null && tsData.getFilteredCount().intValue() > 0) {
 				testSessionList = CustomerServiceSearchUtils.buildTestSessionList(tsData);

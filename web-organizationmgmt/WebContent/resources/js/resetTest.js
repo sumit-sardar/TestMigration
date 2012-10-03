@@ -8,6 +8,7 @@
 	var prevTestRosterId = -1;
 	var selectedTestSessionData = {};
 	var selectedSubTestSessionData = {};
+	var selectedSudentData = {};
 	
 	
 	var allTDAndStudentData = new Map();
@@ -555,6 +556,11 @@
 			data:		 postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
 							$.unblockUI(); 
+							selectedSudentData = {};
+							 if(data.studentList.length>0){
+							 	selectedSudentData = data.studentList[0];
+							 }
+							 
 							if(data.testSessionList.length>0){
 								populate_reset_by_student_step2_session_grid(data.testSessionList);
 							} 
@@ -809,6 +815,13 @@
 		$("#reset_by_student_request_description").val("");
 		$("#byStudentConfIdStep4").text($("#studentIdLabelName").val()+":");
 		
+		$("#byStudentStudentNameStep4").text(selectedSudentData.studentPreferredName);
+		$("#byStudentStudentLogInNameStep4").text(selectedSudentData.studentLoginId);
+		if(selectedSudentData.studentExternalId!=undefined && selectedSudentData.studentExternalId!=null){
+			$("#byStudentStudentIdStep4").text(selectedSudentData.studentExternalId);
+		} else {
+			$("#byStudentStudentIdStep4").text("");
+		}
 		$("#byStudentSessionNameStep4").text(selectedTestSessionData.testAdminName);
 		$("#byStudentSessionId").text(selectedTestSessionData.sessionNumber);
 		

@@ -9,6 +9,7 @@ public class RestTestVO {
 	List<ScheduleElementVO> deliverableItemSetList = new ArrayList<ScheduleElementVO>();
 	List<StudentSessionStatusVO> studentDetailsList = new ArrayList<StudentSessionStatusVO>();
 	List<TestSessionVO> testSessionList  = new ArrayList<TestSessionVO>();
+	List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
 	
 	Integer selectedTestAdmin = null;
 	Integer selectedItemSetId = null;
@@ -44,6 +45,11 @@ public class RestTestVO {
 
 	public void setTestSessionList(List<TestSessionVO> testSessionList) {
 		this.testSessionList = testSessionList;
+	}
+
+
+	public void setStudentList(List<StudentProfileInformation> studentList) {
+		this.studentList = studentList;
 	}
 
 }
