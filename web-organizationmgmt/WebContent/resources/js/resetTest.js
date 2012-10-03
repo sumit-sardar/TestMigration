@@ -84,8 +84,11 @@
 	}
 	
 	function populate_reset_by_session_step2_dropdown( deliverableItemSetList, selectedTestAdmin , selectedItemSetId) {
-	    
-		var dropdown = '<select id="reset_by_session_step2_subtest_drop_down" onchange="updateStudentListBySession();">';
+	    var disabledtxt = "";
+	    if(deliverableItemSetList.length == 1) {
+	    disabledtxt = 'disabled="disabled"';
+	    }
+		var dropdown = '<select id="reset_by_session_step2_subtest_drop_down" '+disabledtxt+' onchange="updateStudentListBySession();">';
 		for (var kk=0, len=deliverableItemSetList.length; kk<len; kk++ ){
 			if(deliverableItemSetList[kk].testAdminId==selectedTestAdmin && deliverableItemSetList[kk].itemSetId == selectedItemSetId ){
 		  		dropdown += '<option value="'+deliverableItemSetList[kk].testAdminId+'-'+ deliverableItemSetList[kk].itemSetId+'" selected >&nbsp;'+deliverableItemSetList[kk].itemSetName+'&nbsp;&nbsp;</option>';
@@ -118,7 +121,7 @@
 		 $("#by_session_step3_student_list").jqGrid({
       	  data: studentDetailsList,         
           datatype: 'local',          
-          colNames:[ 'Student Name','Login Name', studentIdTitle , 'Group' , 'Subtest Name', 'Subtest Status','', '', ''],
+          colNames:[  $("#titleStudentName").val(),$("#titleLoginName").val() , studentIdTitle , $("#titleGroup").val() , $("#titleSubTestName").val(), $("#titleSubTestStstus").val(),'', '', ''],
 		   	colModel:[
 		   		{name:'studentName',		index:'studentName', 		width:200, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentLoginName',	index:'studentLoginName', 	width:200, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -331,7 +334,7 @@
 		 $("#by_session_step4_student_list").jqGrid({
       	  data: vselectedStudentToResetTest,         
           datatype: 'local',       
-          colNames:[ 'Student','Subtest Name','Subtest Status' , 'Start Date' , 'Completion Date', 'Items Answered','Time Spent'],   
+          colNames:[ $("#titleStudent").val(),$("#titleSubTestName").val(),$("#titleSubTestStstus").val(), $("#titleStartDate").val() , $("#titleCompletionDate").val(), $("#titleItemAnsWered").val(), $("#titleTimeSpent").val()],   
 		   	colModel:[
 		   		{name:'studentLoginName',	index:'studentLoginName', 	width:200, editable: true, align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetName',		index:'itemSetName',		width:300, editable: false,align:"left", sortable:true, sorttype:'text', search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -616,7 +619,7 @@
 		 $("#by_student_step2_student_list").jqGrid({
       	  data: vSessionListToResetTest,         
           datatype: 'local',          
-          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','','','','',''],
+          colNames:[ $("#titleSessionName").val() ,$("#titleAccessCode").val(), $("#titleTestName").val() , $("#titleSchedular").val(),'','','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',		index:'testAdminName', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'accessCode',			index:'accessCode', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -749,7 +752,7 @@
 		 $("#by_student_step3_student_subtest_list").jqGrid({
       	  data: vSubtestListToResetTest,         
           datatype: 'local',          
-          colNames:[ 'Subtest Name','Subtest Status', 'Start Date' , 'Completion Date', 'Items Answered','Time Spent', '','','',''],
+          colNames:[ $("#titleSubTestName").val(),$("#titleSubTestStstus").val(), $("#titleStartDate").val() , $("#titleCompletionDate").val(), $("#titleItemAnsWered").val(), $("#titleTimeSpent").val(), '','','',''],
 		   	colModel:[
 		   		{name:'itemSetName',		index:'itemSetName', 		width:350, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'completionStatus',	index:'completionStatus', 	width:175, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },

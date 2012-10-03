@@ -40,6 +40,21 @@
 			<input type="hidden" id="resetTestBySessionMissingFieldMsg" value=<lb:label key="reset.test.by.session.missing.field.msg" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestByStudentMissingFieldMsg" value=<lb:label key="reset.test.by.student.missing.field.msg" prefix="'" suffix="'"/>/>
 			
+			<input type="hidden" id="titleStudentName" value=<lb:label key="reset.test.row.title.student.name" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleStudent" value=<lb:label key="reset.test.row.title.student" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleLoginName" value=<lb:label key="reset.test.row.title.login.name" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleGroup" value=<lb:label key="reset.test.row.title.group" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleSubTestName" value=<lb:label key="reset.test.row.title.subtest.name" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleSubTestStstus" value=<lb:label key="reset.test.row.title.subtest.status" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleStartDate" value=<lb:label key="reset.test.row.title.start.date" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleCompletionDate" value=<lb:label key="reset.test.row.title.start.completion.date" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleItemAnsWered" value=<lb:label key="reset.test.row.title.start.items.answered" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleTimeSpent" value=<lb:label key="reset.test.row.title.start.time.spent" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleSessionName" value=<lb:label key="reset.test.row.title.start.session.name" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleTestName" value=<lb:label key="reset.test.row.title.start.test.name" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleSchedular" value=<lb:label key="reset.test.row.title.schedular" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleAccessCode" value=<lb:label key="reset.test.row.title.access.code" prefix="'" suffix="'"/>/>
+
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
 					<td>
