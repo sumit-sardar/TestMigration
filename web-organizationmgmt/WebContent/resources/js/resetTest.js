@@ -16,11 +16,13 @@
 	var selectedStudentToResetTest = new Array();
 	var customerID = "";
 	var creatorOrgId = "";
+	var bySession = true;
 
 	
 	function updateView() {
 		showHideMessage(false, "", "");
 	  if($("#resetTestBy").val()=='ses'){
+	  	bySession = true;
 	  	$("#reset_show_by_session").show();
 	  	$("#reset_show_by_student").hide();
 	  	hideStepsShowByStudent(true, true, true, true);
@@ -28,6 +30,7 @@
 	  	hideStepsShowBySession(true, true, true, true);
 	  	$("#reset_show_by_student").show();
 	  	$("#reset_show_by_session").hide();
+	  	bySession = false;
 	  }
 	}
 	
@@ -285,6 +288,7 @@
 	}
 	
 	function populateAndDisplayStep4BySession(){
+		bySession = true;
 		$("#reset_by_session_step4").show();
 		$("#reset_by_session_ticket_id").val("");
 		$("#reset_by_session_service_requestor").val("");
@@ -480,6 +484,15 @@
 		 }
 	}
 	
+	
+	function resetTest(){
+		if(bySession){
+			resetTestBySession();
+		} else {
+			//resetTestBySession();
+		}
+	
+	}
 	function resetTestBySession (){ 
 		var newVal = $("#reset_by_session_step2_subtest_drop_down").val();
 		var ids    = newVal.split("-");
@@ -557,13 +570,12 @@
 			success:	function(data, textStatus, XMLHttpRequest){	
 							$.unblockUI(); 
 							selectedSudentData = {};
-							 if(data.studentList.length>0){
-							 	selectedSudentData = data.studentList[0];
-							 }
-							 
-							if(data.testSessionList.length>0){
+							if(data.studentList.length>0 && data.testSessionList.length>0){
+								selectedSudentData = data.studentList[0];
 								populate_reset_by_student_step2_session_grid(data.testSessionList);
-							} 
+							} else {
+								showHideMessage(true,$("#resetTestSearchResultTitle").val(),$("#resetTestByStudentStudentNotFound").val());
+							}
 							
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -810,6 +822,7 @@
 	}
 	
 	function populateAndDisplayStep4ByStudent (vSelectedSubTestSessionData){
+		bySession = false;
 		$("#reset_by_student_ticket_id").val("");
 		$("#reset_by_student_service_requestor").val("");
 		$("#reset_by_student_request_description").val("");

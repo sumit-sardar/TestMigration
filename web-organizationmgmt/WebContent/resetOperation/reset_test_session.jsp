@@ -31,6 +31,7 @@
 			<input type="hidden" id="confirmAlrt" value=<lb:label key="reset.test.by.session.confirmation.title" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestBySessionSuccessMessage" value=<lb:label key="reset.test.by.session.reset.test.success.message" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestBySessionStudentNotFound" value=<lb:label key="reset.test.by.session.find.no.student" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestByStudentStudentNotFound" value=<lb:label key="reset.test.by.student.find.no.student" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestBySessionAccessCodeNotFound" value=<lb:label key="reset.test.by.session.find.no.access.code" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestByStudentSuccessMessage" value=<lb:label key="reset.test.by.student.reset.test.success.message" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestTitle" value=<lb:label key="resetTestSession.title" prefix="'" suffix="'"/>/>
@@ -110,7 +111,7 @@
 			</div>
 			<div style="padding: 10px;">
 			<center><input type="button" value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/>
-				onclick="javascript:resetTestBySession(); return false;" class="ui-widget-header">&nbsp; <input
+				onclick="javascript:resetTest(); return false;" class="ui-widget-header">&nbsp; <input
 				type="button" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/>
 				onclick="javascript:closePopUp('confirmResetTestBySessionPopup'); return false;" class="ui-widget-header"></center>
 			</div>
