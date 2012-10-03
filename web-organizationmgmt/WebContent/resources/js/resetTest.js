@@ -317,9 +317,10 @@
 	
 	function reload_populate_reset_by_session_step4_student_grid(vselectedStudentToResetTest) {
 	 	$('#by_session_step4_student_list').jqGrid('clearGridData') ;
-	      jQuery("#by_session_step4_student_list").jqGrid('setGridParam',{ datatype: 'local'});    
+	      jQuery("#by_session_step4_student_list").jqGrid('setGridParam',{ datatype: 'local'}); 
+	      jQuery("#by_session_step4_student_list").sortGrid('studentLoginName',true,'asc');   
      	  jQuery("#by_session_step4_student_list").jqGrid('setGridParam', {data: vselectedStudentToResetTest,page:1}).trigger("reloadGrid");
-          jQuery("#by_session_step4_student_list").sortGrid('studentLoginName',true,'asc');
+     	  jQuery("#by_session_step4_student_list").jqGrid().trigger("reloadGrid");
 	}
 	
 	function load_populate_reset_by_session_step4_student_grid(vselectedStudentToResetTest) {
@@ -493,7 +494,7 @@
 		if(bySession){
 			resetTestBySession();
 		} else {
-			//resetTestBySession();
+			resetTestByStudent();
 		}
 	
 	}
@@ -557,7 +558,7 @@
 	
 	function getTestSessionListByStudentStep2() { 
 		if($('#byStudentLoginnID').val() == ""){
-		showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestByStudentMissingFieldMsg').val());
+			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestByStudentMissingFieldMsg').val());
 			return false;
 		}
 		var postDataObject = {};
@@ -615,7 +616,7 @@
 		 $("#by_student_step2_student_list").jqGrid({
       	  data: vSessionListToResetTest,         
           datatype: 'local',          
-          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','','',''],
+          colNames:[ 'Session Name','Access Code', 'Test Name' , 'Schedular','','','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',		index:'testAdminName', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'accessCode',			index:'accessCode', 		width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -623,7 +624,9 @@
 		   		{name:'scheduler',			index:'scheduler', 			width:300, editable: true, align:"left", sortable:true, sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testAdminId',		index:'testAdminId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testRosterId',		index:'testRosterId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'sessionNumber',		index:'sessionNumber', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'sessionNumber',		index:'sessionNumber', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'customerId',			index:'customerId', 		width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'creatorOrgNodeId',	index:'creatorOrgNodeId', 	width:0,   editable: true, align:"left", sortable:false,hidden:true    ,search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"rows", id:"testAdminId",
 		   	records: function(obj) { 
@@ -659,6 +662,7 @@
 				
 
 			},loadComplete: function () {
+				showHideMessage(false, "", "");
 				if ($('#by_student_step2_student_list').getGridParam('records') === 0) {
             		$('#sp_1_by_student_step2_student_list_pager').text("1");
             		$('#next_by_student_step2_student_list_pager').addClass('ui-state-disabled');
@@ -799,13 +803,12 @@
 					} 
 				}
 			},loadComplete: function () {
+				showHideMessage(false, "", "");
 				if ($('#by_student_step3_student_subtest_list').getGridParam('records') === 0) {
             		$('#sp_1_by_student_step3_student_subtest_list_pager').text("1");
             		$('#next_by_student_step3_student_subtest_list_pager').addClass('ui-state-disabled');
             	 	$('#last_by_student_step3_student_subtest_list_pager').addClass('ui-state-disabled');
-            	} else {
-            		
-            	}
+            	} 
             	$.unblockUI();  
 				$("#by_student_step3_student_subtest_list").setGridParam({datatype:'local'});
 				var tdList = ("#by_student_step3_student_subtest_list_pager_left table.ui-pg-table  td");
@@ -903,4 +906,53 @@
 		
 		$("#byStudentSessionNameStep4").text("");
 		$("#byStudentSessionId").text("");
+	}
+	
+	
+	function resetTestByStudent (){ 
+
+		closePopUp('confirmResetTestBySessionPopup');
+	 	var postDataObject = {};
+	 	postDataObject.requestDescription = $("#reset_by_student_request_description").val();
+		postDataObject.serviceRequestor = $("#reset_by_student_service_requestor").val();
+		postDataObject.ticketId = $("#reset_by_student_ticket_id").val();
+	 	postDataObject.testAdminId = selectedTestSessionData.testAdminId;
+	 	postDataObject.itemSetId =   selectedSubTestSessionData.itemSetId;
+	 	postDataObject.customerID = selectedTestSessionData.customerId;
+	 	postDataObject.creatorOrgId = selectedTestSessionData.creatorOrgNodeId;
+	 	postDataObject.studentId  = selectedSudentData.studentId;
+	 	postDataObject.testRosterId = selectedTestSessionData.testRosterId;
+		postDataObject.testAccessCode = selectedTestSessionData.testAccessCode;
+
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'resetSubtestForAStudent.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		 postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+							if(data != undefined && data != null && data.studentDetailsList.length>0){
+								hideStepsShowByStudent(false,false,false,true);
+								$("#reset_by_session_step3").show();
+								populate_reset_by_student_step3_session_grid(data.studentDetailsList);
+								showHideMessage(true, $("#resetTestTitle").val(),  selectedSubTestSessionData.itemSetName+ " "+$("#resetTestByStudentSuccessMessage").val()+" "+selectedSudentData.studentLoginId+".");
+							}else {
+								hideStepsShowBySession(false,false,false,false);
+							}
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();  
+							window.location.href="error.do";
+						},
+			complete :  function(){
+							 $.unblockUI();  
+						}
+		});
+	
+	
 	}
