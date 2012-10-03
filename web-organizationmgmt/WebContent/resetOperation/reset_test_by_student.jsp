@@ -110,10 +110,10 @@
 							<td  valign="top">
 								<table >
 									<tr class="transparent">
-										<td  class="transparent"align="right" width="100"><lb:label key="reset.test.column.title.requester" /></td>
+										<td  class="transparent"align="right" width="100"><lb:label key="reset.test.column.title.reasonForReset" /></td>
 										<td  class="transparent" rowspan="3" width="*" valign="top">
 											<textarea onkeypress="return blockEventOnMaxLength(this,255)" onkeyup="checkAndTruncate(this,255)" 
-												onblur="return checkAndTruncate(this,255)" style="font-family: Arial; font-size: 10pt;" tabindex="5" cols="60" rows="4" id="reset_by_student_request_description" name="resetByStudentRequestDescription"></textarea>
+												onblur="return checkAndTruncate(this,255)" style="font-family: Arial; font-size: 10pt; width: 800px;" tabindex="5" cols="60" rows="3" id="reset_by_student_request_description" name="resetByStudentRequestDescription"></textarea>
 										</td>
 									</tr>
 									<tr class="transparent"><td class="tableFilter">&nbsp;</td></tr>
