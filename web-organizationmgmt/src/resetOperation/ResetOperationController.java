@@ -9,7 +9,6 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -24,7 +23,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerConfig;
+
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
@@ -35,7 +34,6 @@ import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.OperationStatus;
 import com.ctb.util.SuccessInfo;
 import com.google.gson.Gson;
 
@@ -496,9 +494,6 @@ public class ResetOperationController extends PageFlowController {
 						customerServiceManagement, defTestAdminId, defItemSetId , null, null, null);
 				if((sstData != null) && (sstData.getFilteredCount().intValue() == 0)){
 					 studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
-					 vo.getStatus().setSuccessInfo(new SuccessInfo());
-					 vo.getStatus().getSuccessInfo().setKey("FIND_NO_SUBTEST_DATA_RESULT");
-					 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_SUBTEST_DATA_RESULT);
 				 } else {
 					 studentDetailsList = CustomerServiceSearchUtils.buildSubtestList(sstData, this.userTimeZone);
 					 prepareStudentDetailsMapForSessionFlow(studentDetailsList);
@@ -513,9 +508,6 @@ public class ResetOperationController extends PageFlowController {
 			}else{
 				studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
 				 vo.getStatus().setSuccess(true);
-				 vo.getStatus().setSuccessInfo(new SuccessInfo());
-				 vo.getStatus().getSuccessInfo().setKey("FIND_NO_TESTDATA_RESULT");
-				 vo.getStatus().getSuccessInfo().setMessageHeader(Message.FIND_NO_TESTDATA_RESULT);
 			}
 			try {
 				Gson gson = new Gson();
