@@ -6,6 +6,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="organizationApplicationResource" />
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
     <netui-template:setAttribute name="title" value="Error"/>
