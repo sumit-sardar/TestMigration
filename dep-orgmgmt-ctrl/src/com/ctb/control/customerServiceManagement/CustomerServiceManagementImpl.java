@@ -133,7 +133,9 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 		TestSession[] testSessions = null;
 		TestSession[] filteredTestSessions = null;
 		searchCriteria = generateSearchCriteria(studentId,accessCode);
-		
+		if(searchCriteria == null)
+			searchCriteria = "";
+		searchCriteria += " ORDER BY testAdminName";
 		try {
 
 			testSessions = testAdmin.getTestSessionData(searchCriteria);
