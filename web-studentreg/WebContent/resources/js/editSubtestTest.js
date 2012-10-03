@@ -36,6 +36,9 @@
 	
 	var displayAccessCodeOnTicket = false;
 	
+	var licenseData = null;
+	var licenseDataMap = null;
+	
 	function updateModifyTestSize(){
 		$("#modifyTestPopup").parent().height($("#sessionStudRegId").parent().height()-10);
 		$("#modifyTestPopup").height($("#sessionStudRegId").parent().height()-40);
@@ -63,7 +66,8 @@
 		var param = "&testAdminId="+selectedTestAdminId;
 		 param += "&itemSetIdTc="+selectedItemSetIdTC;
 		 param += "&studentId="+selectedStudentId;
-		   
+		 param += "&selectedStudentOrgNodeid="+selectedStudentOrgNodeid;
+		 		   
     	UIBlock();
     	$.ajax({
 			async:		true,
@@ -80,6 +84,17 @@
 			                recomendedLevelMap = data.recomendedLevel;
 			                locatorSessionInfo = data.locatorSessionInfo;
 			                $("#numberOfRowsMsm").val(subTestDetails.subtests.length);
+
+			                if(data.licenseData != null || data.licenseData != undefined){
+			                	//licenseData = data.licenseData;
+			                	licenseDataMap = new Map();
+			                	for(i=0;i<data.licenseData.length;i++){
+			                		licenseDataMap.put(data.licenseData[i].cell[0],data.licenseData[i].cell);
+			                	}
+			                }
+			                if(licenseDataMap != null)
+			                	licenseData = licenseDataMap.get($('#stdOrg').val().trim());
+
 							openModifyManifestPopup();	
 							 $.unblockUI();		
 						},
@@ -969,7 +984,7 @@
 	    var ret = "";
 		var orgNameArray = selectedStudentOrgNodeName.split("|");
 		var orgIdArray   = selectedStudentOrgNodeid.split("|");
-        	ret = '<select id="stdOrg" > ';
+        	ret = '<select id="stdOrg" onchange="updateLicenseData();" > ';
 			for(var i=0;i<orgNameArray.length && i<orgIdArray.length ; i++){	
 				ret += '<option value="'+ orgIdArray[i] +'" >'+orgNameArray[i]+" "+'</option> ';
     		}
@@ -1037,12 +1052,30 @@
 	     var tmpSelectedSubtestsMsm = new Array();
 	     subtestWarningMsg = "";
 	     var validSubtest = validateSubtest(tmpSelectedSubtestsMsm);
+	     var isLicenseValidationReq = false;
 	     if(validSubtest){
-	    	scheduleStudentAndOpenConfirmMationPopup(tmpSelectedSubtestsMsm);
-			//$("#deny").trigger('click');
-			$("#deny").attr('checked',true);
-			$("#allow").removeAttr('checked');
-			displayAccessCodeOnTicket=false;
+
+	     	if(licenseData == null || licenseData == undefined)
+	     		isLicenseValidationReq = false;
+			else
+				isLicenseValidationReq = true;	
+			if(isLicenseValidationReq){				     		
+				if(validateLicenseData(tmpSelectedSubtestsMsm.length)){		
+			    	scheduleStudentAndOpenConfirmMationPopup(tmpSelectedSubtestsMsm);
+					//$("#deny").trigger('click');
+					$("#deny").attr('checked',true);
+					$("#allow").removeAttr('checked');
+					displayAccessCodeOnTicket=false;
+				}
+			}
+			else{
+				scheduleStudentAndOpenConfirmMationPopup(tmpSelectedSubtestsMsm);
+				//$("#deny").trigger('click');
+				$("#deny").attr('checked',true);
+				$("#allow").removeAttr('checked');
+				displayAccessCodeOnTicket=false;
+			}
+		
 	     }
 
 	}
@@ -1302,7 +1335,7 @@
 			}  
 	        param += "testAdminId="+ selectedTestAdminId;
 			param += "&studentId=" + selectedStudentId;
-			param += "&studentOrgNodeId=" + $("#stdOrg").val();
+			param += "&studentOrgNodeId=" + $("#stdOrg").val().trim();
 			param += "&assessmentHasLocator=" + assessmentHasLocator;
 			param += msmParam;
 			
@@ -1333,8 +1366,22 @@
 							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width());
 							 	
 							 } else {
-							  	setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
-							 
+
+								 	if(data.status.isLicenseError){
+								 		//TODO: Update client-side license data																			
+						                if(data.licenseData != null || data.licenseData != undefined){
+						                	//licenseData = data.licenseData;
+						                	licenseDataMap._removeItem(data.licenseData[0].cell[0]);
+						                	licenseDataMap.put(data.licenseData[0].cell[0],data.licenseData[0].cell);
+						                }
+						                if(licenseDataMap != null)
+						                	licenseData = licenseDataMap.get($('#stdOrg').val().trim());
+								 		
+								 		setSubtestValidationMessage($("#insufficientLicenseErrorHeader").val(),$("#insufficientLicenseErrorMsg").val());													                				                
+									}								 		
+								 	else
+								  		setSubtestValidationMessage($("#studentRegistrationFailed").val(),"");
+
 							 }
 						  	$.unblockUI();
 						  
@@ -1528,3 +1575,56 @@
 	 	closePopUp(dailogId);
 	 	displayPopup("sessionStudRegId");
 	 }
+	 
+	 function validateLicenseData(noOfSubtestSelected){
+		//TODO: license validation
+		var isValidLicense = true;
+		var orgNodeId = licenseData[0];
+		var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId,noOfSubtestSelected);
+		var availableLicense = licenseData[4];
+		if(licenseUsed > availableLicense){
+			isValidLicense = false;
+			showLicenseErrorMessage(licenseUsed, availableLicense);
+		}
+		return isValidLicense;
+	 }
+	 
+	 /*function showLicenseUsedForOrgNode(noOfSubtestSelected) {
+		var isValidLicense = true;
+		var orgNodeId = licenseData[0];
+		var licenseUsed = calculateLicenseUsedForOrgNode(orgNodeId,noOfSubtestSelected);
+		var availableLicense = licenseData[4];
+		isValidLicense = showLicenseErrorMessage(licenseUsed, availableLicense);
+		return isValidLicense;
+	}*/
+	
+	function calculateLicenseUsedForOrgNode(orgNodeId,noOfSubtestSelected) {
+		var usedLicenses = 0; 
+		var model = licenseData[2];
+		var licensePerStudent = 1; 
+		if (model == "T")
+			licensePerStudent = parseInt(noOfSubtestSelected);					
+		usedLicenses += licensePerStudent;		
+		return usedLicenses;
+	}
+	
+	function showLicenseErrorMessage(licenseUsed, availableLicense) {
+		var licenseText;
+   		var licenseNeeded = licenseUsed - availableLicense; 
+		var text = "license.";
+		if (licenseNeeded > 1)
+			text = "licenses.";    		
+   		licenseText = "There are insufficient licenses available to schedule selected students. You need " + licenseNeeded + " more "  + text;
+		//console.log(licenseText);
+		setSubtestValidationMessage("Exceeds Licenses Available",licenseText);
+	}	
+	
+	function updateLicenseData(){
+		if(licenseData == null || licenseData == undefined)
+			return false;
+		hideMessage();//reseting any previous messages
+		var selectedOrgNodeIdForLicense = $('#stdOrg').val().trim();
+		if(licenseDataMap != null || licenseDataMap != undefined)
+			licenseData = licenseDataMap.get(selectedOrgNodeIdForLicense);
+	}	
+	

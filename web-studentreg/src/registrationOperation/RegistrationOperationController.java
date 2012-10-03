@@ -20,6 +20,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import utils.MessageResourceBundle;
 import utils.RequestUtil;
 import utils.Base;
 import utils.BaseTree;
@@ -33,6 +34,7 @@ import utils.OptionList;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
+import utils.Row;
 import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
 import utils.TestSessionUtils;
@@ -49,6 +51,9 @@ import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
@@ -65,8 +70,10 @@ import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.db.OrgNode;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
+import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.util.OperationStatus;
 import com.ctb.util.ValidationFailedInfo;
 import com.google.gson.Gson;
@@ -106,6 +113,12 @@ public class RegistrationOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.db.TestAdmin admins;
     
+    @Control()
+    private com.ctb.control.licensing.Licensing licensing;
+    
+    @Control
+	private OrgNode orgNode; 
+    
 
 	private String userName = null;
 	private Integer customerId = null;
@@ -117,6 +130,8 @@ public class RegistrationOperationController extends PageFlowController {
 	public static String CONTENT_TYPE_JSON = "application/json";
 	private static final String ACTION_FIND_STUDENT      = "findStudent";
 	private static final String ACTION_ADD_STUDENT       = "addStudent";
+	private boolean hasLicenseConfiguration = false;
+	private String selectedProductType = "ST";
 	
 	
 	/**
@@ -988,7 +1003,38 @@ public class RegistrationOperationController extends PageFlowController {
 			 Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
 			 Integer itemSetIdTc = Integer.parseInt(getRequest().getParameter("itemSetIdTc"));
 			 Integer studentId = Integer.parseInt(getRequest().getParameter("studentId"));
+			 String selectedStudentOrgNodeid = getRequest().getParameter("selectedStudentOrgNodeid");
+			 String [] studentOrgNodeidList = selectedStudentOrgNodeid.split("\\|");
+			 			 
 			 TestSession session = admins.getTestAdminDetails(testAdminId);
+			 //Fetching License Information
+			 this.selectedProductType = session.getProductType();
+			 boolean isLicenseProduct = (this.selectedProductType.equals("TL") || this.selectedProductType.equals("PT")) ? false : true;
+			 if(this.hasLicenseConfiguration && isLicenseProduct){
+				 List<Row> licenseDataList = new ArrayList<Row>();
+				 int index = 0;
+				 for (String orgNodeId : studentOrgNodeidList) {
+						CustomerLicense[] customerLicenses = getCustomerLicenses(); 
+						if ((customerLicenses != null) && (customerLicenses.length > 0)) {
+							CustomerLicense cl = customerLicenses[0];
+						    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(Integer.parseInt(orgNodeId), cl.getProductId(), cl.getSubtestModel());
+						    Node n = this.orgNode.getOrgNodeById(Integer.parseInt(orgNodeId));
+						    Integer available = (onli.getLicPurchased() != null) ? onli.getLicPurchased() : new Integer(0);
+							Row row = new Row(index);
+							String[] cells = new String[5];
+							cells[0] = orgNodeId;
+							cells[1] = n.getOrgNodeName();
+							cells[2] = cl.getSubtestModel();
+							cells[3] = String.valueOf(new Integer(0));	
+							cells[4] = available.toString();
+							row.setCell(cells);			
+							licenseDataList.add(row);
+							System.out.println("orgNodeId : "+orgNodeId + ", License data: "+licenseDataList.get(index).getCell()[4]);
+						}
+					index++;				
+				 }
+				 vo.setLicenseData(licenseDataList);
+			 }
 			 //TestElement[] allSubtest = this.itemSet.getTestElementByTestAdmin(testAdminId);
 			 TestElement [] allSubtest = itemSet.getTestElementsForSession(testAdminId);
 			 //ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(scheduleTest, userName, testAdminId);
@@ -1027,15 +1073,46 @@ public class RegistrationOperationController extends PageFlowController {
 		}
 		 
 	    writeToOutPutStream(resp, vo);
-		 
 		
-		 
-		 
-		 
-		 
 		return null;
 	}
 	
+    /**
+     * getCustomerLicenses
+     */
+    @SuppressWarnings("unused")
+	private CustomerLicense[] getCustomerLicenses()
+    {
+        CustomerLicense[] cls = null;
+
+        try
+        {
+            cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
+        }    
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+     
+        return cls;
+    }
+    
+    /**
+     * getLicenseQuantitiesByOrg
+     */    
+    private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId, Integer productId, String subtestModel) {
+        OrgNodeLicenseInfo onli = null;
+        try {
+            onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+										                    orgNodeId, 
+										                    productId, 
+										                    subtestModel);
+        }    
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+        return onli;
+    }
 	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
@@ -1150,7 +1227,8 @@ public class RegistrationOperationController extends PageFlowController {
 		OperationStatus status = new OperationStatus();
 		RapidRegistrationVO vo = new RapidRegistrationVO();
 		vo.setStatus(status);
-		//boolean sessionHasDefaultLocatorSubtest = false; 
+		//boolean sessionHasDefaultLocatorSubtest = false;
+		String orgNodeId = null;
     
 		try{
 			String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, true, "-1");
@@ -1159,7 +1237,7 @@ public class RegistrationOperationController extends PageFlowController {
 			Integer testAdminId      = Integer.valueOf(testAdminIdString);
 			Integer studentId        = Integer.valueOf(studentIdString);	
 			Integer studentOrgNodeId = Integer.valueOf(studentOrgNodeIdString);
-			
+			orgNodeId = studentOrgNodeId.toString();
 			String[] itemSetIds   = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_ID_TD, true, new String[0]);
 			String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
 			String[] subtestNames = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.SUB_TEST_NAME, true, new String[itemSetIds.length]);
@@ -1174,6 +1252,7 @@ public class RegistrationOperationController extends PageFlowController {
 			ScheduledSession scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, testAdminId);
 			
 			String productType = TestSessionUtils.getProductType(tp.getProductType());
+			this.selectedProductType = productType;
 		    TestElement [] testElements = scheduledSession.getScheduledUnits();
 
 		    
@@ -1248,9 +1327,46 @@ public class RegistrationOperationController extends PageFlowController {
 			 status.setSuccess(true);
 			 prepareResultVo(vo, roster, studentId, testAdminId, studentOrgNodeId, productType, hasAutoLocator);
 
-		}catch(Exception e) {
+		}
+		catch (InsufficientLicenseQuantityException e)
+        {
+            e.printStackTrace();
+            status.setSuccess(false);
+            status.setLicenseError(true);  
+			try {
+				boolean isLicenseProduct = (this.selectedProductType.equals("TL") || this.selectedProductType.equals("PT")) ? false : true;
+				if(this.hasLicenseConfiguration && isLicenseProduct){
+					List<Row> licenseDataList = new ArrayList<Row>();
+					int index = 0;
+					CustomerLicense[] customerLicenses = getCustomerLicenses(); 
+					if ((customerLicenses != null) && (customerLicenses.length > 0)) {
+						CustomerLicense cl = customerLicenses[0];
+					    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(Integer.parseInt(orgNodeId), cl.getProductId(), cl.getSubtestModel());
+					    Node n = this.orgNode.getOrgNodeById(Integer.parseInt(orgNodeId));
+					    Integer available = (onli.getLicPurchased() != null) ? onli.getLicPurchased() : new Integer(0);
+						Row row = new Row(index);
+						String[] cells = new String[5];
+						cells[0] = orgNodeId;
+						cells[1] = n.getOrgNodeName();
+						cells[2] = cl.getSubtestModel();
+						cells[3] = String.valueOf(new Integer(0));	
+						cells[4] = available.toString();
+						row.setCell(cells);			
+						licenseDataList.add(row);
+					}
+					System.out.println("orgNodeId : "+orgNodeId + ", License available: "+licenseDataList.get(0).getCell()[4]);
+					vo.setLicenseData(licenseDataList);
+				}						
+			} catch (Exception ex) {
+				// TODO: handle exception
+				 ex.printStackTrace();
+			}			   
+          
+        }
+		catch(Exception e) {
 			 e.printStackTrace();
 			 status.setSuccess(false);
+			 status.setLicenseError(false);
 		}
 		
 		Gson gson = new Gson();
@@ -1467,7 +1583,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasUploadDownloadConfig = false;
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
-    	boolean hasLicenseConfiguration= false;
+    	//boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
     	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	boolean mandatoryBirthdateValue = true;
@@ -1519,7 +1635,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				//For License
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
 	            		cc.getDefaultValue().equals("T")	) {
-					hasLicenseConfiguration = true;
+					this.hasLicenseConfiguration = true;
 					continue;
 	            }
 				// For TABE Customer
@@ -1553,7 +1669,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));
-		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(hasLicenseConfiguration && adminUser));
+		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfiguration && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));

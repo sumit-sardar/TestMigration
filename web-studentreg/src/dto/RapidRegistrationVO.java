@@ -2,6 +2,8 @@ package dto;
 
 import java.util.List;
 
+import utils.Row;
+
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.util.OperationStatus;
 
@@ -34,6 +36,7 @@ public class RapidRegistrationVO {
 	private TestElement locatorSubtest;
 	private String autoLocatorDisplay;
 	private boolean assessmentHasLocator;
+	private List<Row> licenseData;
 	//private String ;
 	
 
@@ -63,6 +66,20 @@ public class RapidRegistrationVO {
 	 */
 	public void setStudentId(String studentId) {
 		this.studentId = studentId;
+	}
+
+	/**
+	 * @return the licenseData
+	 */
+	public List<Row> getLicenseData() {
+		return licenseData;
+	}
+
+	/**
+	 * @param licenseData the licenseData to set
+	 */
+	public void setLicenseData(List<Row> licenseData) {
+		this.licenseData = licenseData;
 	}
 
 	/**

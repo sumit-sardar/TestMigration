@@ -10,6 +10,7 @@ public class OperationStatus implements Serializable{
 	private String successMessage ;
 	private ValidationFailedInfo validationFailedInfo;
 	private SuccessInfo successInfo;
+	private boolean isLicenseError = false;
 	
 	/**
 	 * @return the isSuccess
@@ -83,6 +84,20 @@ public class OperationStatus implements Serializable{
 	 */
 	public void setSuccessInfo(SuccessInfo successInfo) {
 		this.successInfo = successInfo;
+	}
+
+	/**
+	 * @return the isLicenseError
+	 */
+	public boolean isLicenseError() {
+		return isLicenseError;
+	}
+
+	/**
+	 * @param isLicenseError the isLicenseError to set
+	 */
+	public void setLicenseError(boolean isLicenseError) {
+		this.isLicenseError = isLicenseError;
 	}
 	
 

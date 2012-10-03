@@ -452,6 +452,10 @@ function closePopUp(dailogId){
 			checkedListObject = {};
 			$('#orgInnerID').jstree('uncheck_all');
 		}
+	if(dailogId == 'modifyTestPopup'){
+		licenseData = null;
+	  	licenseDataMap =  null;
+	}	
 
 
 	$("#"+dailogId).dialog("close");

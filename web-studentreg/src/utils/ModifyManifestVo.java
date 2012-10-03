@@ -22,7 +22,7 @@ public class ModifyManifestVo {
 	boolean hasDefaultAutoLocator = false;
 	private String locatorSessionInfo ;
 	private Map<Integer, String> recomendedLevel =  new HashMap<Integer, String>();
-	
+	private List<Row> licenseData;
 	
 	
 	public void populateTestSession(TestElement[] usTes) {
@@ -117,6 +117,20 @@ public class ModifyManifestVo {
 		levelOptions.add("A");
 	}
 	
+	/**
+	 * @return the licenseData
+	 */
+	public List<Row> getLicenseData() {
+		return licenseData;
+	}
+
+	/**
+	 * @param licenseData the licenseData to set
+	 */
+	public void setLicenseData(List<Row> licenseData) {
+		this.licenseData = licenseData;
+	}
+
 	public void populateDefaultManifest(TestElement[] usTes) {
 
 		

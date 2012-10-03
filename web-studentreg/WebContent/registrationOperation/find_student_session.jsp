@@ -96,6 +96,8 @@
 <input type="hidden" id="subtestDisplayLevel" value=<lb:label key="session.modifySubtest.header.selectedSubtestlevel" prefix="'" suffix="'"/> />
 <input type="hidden" id="subtestDisplayAccessCode" value=<lb:label key="register.student.popup.accessCode" prefix="'" suffix="'"/> />
 <input type="hidden" id="studentRegistrationFailed" value=<lb:label key="register.student.save.failed.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="insufficientLicenseErrorHeader" value=<lb:label key="register.student.insufficient.license.header" prefix="'" suffix="'"/> />
+<input type="hidden" id="insufficientLicenseErrorMsg" value=<lb:label key="register.student.insufficient.license.message" prefix="'" suffix="'"/> />
 
 
 
