@@ -73,11 +73,12 @@
 		<td width="10px;"> </td>
 		<td class="transparent"><b>Step4:</b>   Provide reset request information. Enter a brief description of the reason for the request to reset. <BR />
 			<BR />
-			<table >
+
+			<table  width="98%;">
 				<tr>
 					<td  >
-					<div style="background-color: rgb(212, 236, 255); font-family: Arial,Verdana,Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: auto;" >
-					<table >
+					<div style="background-color: rgb(212, 236, 255); font-family: Arial,Verdana,Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width:100%;" >
+					<table  width="100%">
 						<tr >
 							<td >
 								<table  class="transparent" width="300">
@@ -93,8 +94,14 @@
 												<input type="text" tabindex="4" maxlength="32" id="reset_by_student_service_requestor" name="resetBySessionServiceRequestor">
 										</td>
 									</tr>
-									
-								</table>
+
+									<tr class="transparent">
+										<td class="transparent" colspan="3">
+										
+										</td>
+									</tr>
+						</table>
+								
 							</td>
 							<td  valign="top">
 								<table >
@@ -115,6 +122,86 @@
 						</tr>
 						<tr class="transparent">
 							<td class="transparent" colspan="3">
+								<!--  -->
+											<table class="sortable" width="100%">
+			
+												<tbody>
+													<tr class="transparent">
+														<th nowrap="" width="30%" style="height: 25px;" class="ui-state-default alignLeft">&nbsp;&nbsp;<span>Student</span></th>
+														<th nowrap="" width="30%" style="height: 25px;" class="ui-state-default alignLeft">&nbsp;&nbsp;<span>Test Session</span></th>
+														<th nowrap="" width="40%" style="height: 25px;" class="ui-state-default alignLeft">&nbsp;&nbsp;<span>Subtest</span></th>
+													</tr>
+			
+													<tr class="sortable">
+														<td width="30%" class="sortable">
+														<table class="transparent">
+															<tbody>
+																<tr valign="top" class="transparent">
+																	<td class="transparent"><span>Name:</span></td>
+																	<td class="transparent"><span id="byStudentStudentNameStep4" >Bzdn, ADGG </span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+																	<td class="transparent"><span>Login:</span></td>
+																	<td class="transparent"><span id="byStudentStudentLogInNameStep4" >ADGG-BZDN-0405</span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+			
+			
+																	<td class="transparent"><span id="byStudentConfIdStep4"> </span></td>
+			
+																	<td class="transparent"><span id="byStudentStudentIdStep4"></span></td>
+																</tr>
+															</tbody>
+														</table>
+														</td>
+			
+														<td width="30%" class="sortable">
+														<table class="transparent">
+															<tbody>
+																<tr class="transparent">
+																	<td valign="top" class="transparent"><span>Name:</span></td>
+																	<td nowrap="true" class="transparent"><span id="byStudentSessionNameStep4">TerraNova Online - TDC Timeout 1909</span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+																	<td class="transparent"><span>ID:</span></td>
+																	<td class="transparent"><span id="byStudentSessionId" >4390062</span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+																	<td class="transparent">&nbsp;</td>
+																	<td class="transparent">&nbsp;</td>
+																</tr>
+															</tbody>
+														</table>
+														</td>
+			
+														<td width="40%" class="sortable">
+														<table class="transparent">
+															<tbody>
+																<tr valign="top" class="transparent">
+																	<td class="transparent"><span>Name:</span></td>
+																	<td nowrap="true" colspan="3" class="transparent"><span id="byStudentSubtestNameStep4" >TerraNova Reading/Language Arts Survey
+																	- Part 1</span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+																	<td class="transparent"><span>Status:</span></td>
+																	<td colspan="3" class="transparent"><span id="byStudentSubtestStatus">Completed</span></td>
+																</tr>
+																<tr valign="top" class="transparent">
+																	<td nowrap="true" align="left" width="25%" class="transparent"><span>Access Code:</span></td>
+																	<td align="left" width="30%" class="transparent"><span id="byStudentSubtestAccessCodeStep4" >CALDERA306</span></td>
+																	<td align="right" width="25%" class="transparent"><span>Order:</span></td>
+																	<td align="left" width="20%" class="transparent"><span id="byStudentSubtestOrderStep4">2</span></td>
+																</tr>
+															</tbody>
+														</table>
+														</td>
+													</tr>
+			
+												</tbody>
+											</table>
+
+
+								<!--  -->
 								
 								
 								

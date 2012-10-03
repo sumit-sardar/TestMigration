@@ -821,6 +821,8 @@
 	function hideStep2ShowByStudent(){
 		$("#reset_by_student_step2").hide();
 		$('#by_student_step2_student_list').jqGrid('clearGridData') ;
+		prevTestAdminId = -1;
+		prevTestRosterId = -1;
 	}
 	function hideStep3ShowByStudent(){
 		$("#reset_by_student_step3").hide();
