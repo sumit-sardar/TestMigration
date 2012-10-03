@@ -53,6 +53,7 @@
 									populate_reset_by_session_step3_student_grid(data.studentDetailsList);
 									populateAllTDAndStudentDataMap(data.studentDetailsList);
 									$("#reset_by_session_step3").show();
+									window.scroll(0,100000);
 								} else {
 									showHideMessage(true,$("#resetTestSearchResultTitle").val(),$("#resetTestBySessionStudentNotFound").val());
 								}
@@ -96,6 +97,7 @@
 		} else {
 			load_populate_reset_by_session_step3_student_grid(studentDetailsList);
 		}
+		window.scroll(0,100000);
 		
 	}
 	function load_populate_reset_by_session_step3_student_grid(studentDetailsList){
@@ -290,6 +292,8 @@
 			selectedStudentToResetTest[i]=allTDAndStudentData.get(keys[i]);
 		}
 		populate_reset_by_session_step4_student_grid(selectedStudentToResetTest);
+		
+		window.scroll(0,100000);
 	}
 	
 	function populate_reset_by_session_step4_student_grid(vselectedStudentToResetTest){
@@ -573,6 +577,7 @@
 		} else {
 			load_populate_reset_by_student_step2_session_grid(vSessionListToResetTest);
 		}
+		window.scroll(0,100000);
 	}
 	
 	
@@ -697,6 +702,7 @@
 		} else {
 			load_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest);
 		}
+		window.scroll(0,100000);
 	}
 	
 	function load_populate_reset_by_student_step3_session_grid(vSubtestListToResetTest) {
@@ -794,6 +800,7 @@
 		$("#reset_by_student_service_requestor").val("");
 		$("#reset_by_student_request_description").val("");
 		$("#reset_by_student_step4").show();
+		window.scroll(0,100000);
 		
 	}
 	
