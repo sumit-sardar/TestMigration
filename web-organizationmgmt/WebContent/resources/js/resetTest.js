@@ -35,6 +35,10 @@
 	}
 	
 	function getTDAndStudentList() { 
+		if($('#bySessionTestAccessCode').val() == ""){
+			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestBySessionMissingFieldMsg').val());
+			return false;
+		}			
 		var postDataObject = {};
 		postDataObject.testAccessCode = $("#bySessionTestAccessCode").val();
 		hideStepsShowBySession(false, true, true, true);
@@ -470,7 +474,7 @@
 		 	
 		 	if(message!=null && message != undefined && message.length>0){
 		 		$("#message").show();
-		 		$("#message").text(message);
+		 		$("#message").html(message);
 		 	} else {
 		 		$("#message").hide();
 		 	}
@@ -552,6 +556,10 @@
 	
 	
 	function getTestSessionListByStudentStep2() { 
+		if($('#byStudentLoginnID').val() == ""){
+		showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestByStudentMissingFieldMsg').val());
+			return false;
+		}
 		var postDataObject = {};
 		postDataObject.studentLoginId = $("#byStudentLoginnID").val();
 		postDataObject.testAccessCode = $("#byStudentTestAccessCode").val();

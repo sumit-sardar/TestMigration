@@ -2,7 +2,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="label.tld" prefix="lb"%>
 <lb:bundle baseName="organizationApplicationResource" />
-<div id="reset_show_by_student" style="display: none; width: 99%;">
+<div id="reset_show_by_student" style="display: none;">
 
 
 <table class="sortable">
@@ -72,9 +72,13 @@
 	<tr id="reset_by_student_step4" style="display: none;">
 		<td width="10px;"> </td>
 		<td class="transparent"><b>Step4:</b>   Provide reset request information. Enter a brief description of the reason for the request to reset. <BR />
-			<BR />
 
-			<table  width="98%;">
+			<table  width="100%">
+				<tr>
+					<td align="right" style="padding-bottom: 5px">
+						<input id="reset_by_student_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
+					</td>
+				</tr>
 				<tr>
 					<td  >
 					<div style="background-color: rgb(212, 236, 255); font-family: Arial,Verdana,Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width:100%;" >
@@ -116,7 +120,7 @@
 								</table>
 							</td>
 							<td valign="bottom">
-								<input id="reset_by_student_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" />
+								<!-- input id="reset_by_student_step4_reset"   type="button"  class="ui-widget-header" value="Reset"	type="submit" onClick="confirmAndResetTestBySession(); return false;" /-->
 							</td>
 							
 						</tr>

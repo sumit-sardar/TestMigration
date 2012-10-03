@@ -36,6 +36,9 @@
 			<input type="hidden" id="resetTestByStudentSuccessMessage" value=<lb:label key="reset.test.by.student.reset.test.success.message" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestTitle" value=<lb:label key="resetTestSession.title" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="resetTestSearchResultTitle" value=<lb:label key="reset.test.search.result" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestMissingReqFieldTitle" value=<lb:label key="reset.test.missing.field.title" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestBySessionMissingFieldMsg" value=<lb:label key="reset.test.by.session.missing.field.msg" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="resetTestByStudentMissingFieldMsg" value=<lb:label key="reset.test.by.student.missing.field.msg" prefix="'" suffix="'"/>/>
 			
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
@@ -76,8 +79,8 @@
 			<table width="99%" align="center" class="transparent"  style="margin: 15px auto;" >
 				<tr>
 					<td width="100%">
-						<div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix"
-							style="width: 98%; padding-left: 5px; padding-right: 5px;">
+						<div id ="resetTestId" class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix"
+							style="padding-left: 5px; padding-right: 5px;">
 	
 							<table width="99%">
 								<tbody>
