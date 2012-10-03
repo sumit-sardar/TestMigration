@@ -3,6 +3,7 @@ package licenseOperation;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,6 +64,9 @@ public class LicenseOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
+    
+    @Control()
+	private com.ctb.control.db.OrgNode orgnode;
     
 	private String userName = null;
 	private Integer customerId = null;
@@ -979,6 +983,9 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
     	boolean hasResetTestSession = false;
+    	boolean isOKCustomer = false;
+    	boolean isGACustomer = false;
+    	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1012,8 +1019,28 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
             		cc.getDefaultValue().equals("T")	) {
 				hasResetTestSession = true;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	isOKCustomer = true;
+            }
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+				isGACustomer = true;
+			}
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));     	
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));     	
+	}
+	
+	private boolean isTopLevelUser(){
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserTopLevel;
 	}
 
     private Boolean userHasReports() 

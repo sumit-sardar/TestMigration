@@ -2,6 +2,7 @@ package resetOperation;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,9 @@ public class ResetOperationController extends PageFlowController {
     
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.studentManagement.StudentManagement studentManagement ;
+    
+	@Control()
+	private com.ctb.control.db.OrgNode orgnode;
     
 	private String userName = null;
 	private Integer customerId = null;
@@ -932,7 +936,10 @@ public class ResetOperationController extends PageFlowController {
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
     	boolean hasResetTestSession = false;
-        
+    	boolean isOKCustomer = false;
+    	boolean isGACustomer = false;
+    	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -965,13 +972,33 @@ public class ResetOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")	) {
 				hasResetTestSession = true;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	isOKCustomer = true;
+            }
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+				isGACustomer = true;
+			}
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));  
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));  
 		getConfigStudentLabel(customerConfigs);
 		
 		
 	}
-
+	
+	private boolean isTopLevelUser(){
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserTopLevel;
+	}
+	
     private Boolean userHasReports() 
     {
         boolean hasReports = false;

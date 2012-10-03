@@ -1589,7 +1589,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean mandatoryBirthdateValue = true;
     	boolean multiOrgAssociationValid = true;
     	boolean hasResetTestSession = false;
-    	
+    	boolean isOKCustomer = false;
+    	boolean isGACustomer = false;
+    	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	boolean laslinkCustomer = false;
+    	    	
     	String roleName = this.user.getRole().getRoleName();
     	
 		if( customerConfigurations != null ) {
@@ -1659,7 +1663,21 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
-	            }				
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	isOKCustomer = true;
+	            }
+				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+						(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+								&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+					isGACustomer = true;
+				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")) {
+	            	laslinkCustomer = true;
+	            	continue;
+	            }
 			}
 			
 		}
@@ -1677,7 +1695,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		this.getRequest().setAttribute("isMandatoryBirthDate", mandatoryBirthdateValue);
 		this.getSession().setAttribute("isClassReassignable",multiOrgAssociationValid);
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));		
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));		
     }
 
 	private boolean isAdminCoordinatotUser() //For Student Registration
@@ -1685,6 +1703,17 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		String roleName = this.user.getRole().getRoleName();        
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
 	}
+	
+	private boolean isTopLevelUser(){
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserTopLevel;
+	}
+	
 	private void setupUserPermission()
 	{
 		customerConfigurations = getCustomerConfigurations();

@@ -3,6 +3,7 @@ package uploadOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -1117,7 +1118,10 @@ public class UploadOperationController extends PageFlowController {
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	boolean hasResetTestSession = false;
-        
+    	boolean isOKCustomer = false;
+    	boolean isGACustomer = false;
+    	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -1149,8 +1153,28 @@ public class UploadOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")	) {
 				hasResetTestSession = true;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	isOKCustomer = true;
+            }
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+				isGACustomer = true;
+			}
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+	}
+	
+	private boolean isTopLevelUser(){
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserTopLevel;
 	}
 	
 	private boolean isAdminCoordinatotUser() //For Student Registration

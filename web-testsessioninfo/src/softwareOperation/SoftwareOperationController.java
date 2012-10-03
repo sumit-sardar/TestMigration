@@ -1,6 +1,7 @@
 package softwareOperation;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -32,6 +33,9 @@ public class SoftwareOperationController extends PageFlowController {
 	
     @Control()
     private com.ctb.control.db.BroadcastMessageLog message;
+    
+    @Control()
+	private com.ctb.control.db.OrgNode orgnode;
     
 	private String userName = null;
 	private Integer customerId = null;
@@ -514,6 +518,9 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	String roleName = this.user.getRole().getRoleName();
     	boolean hasResetTestSession = false;
+    	boolean isOKCustomer = false;
+    	boolean isGACustomer = false;
+    	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -576,6 +583,16 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	isOKCustomer = true;
+	            }
+				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+						(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+								&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+					isGACustomer = true;
+				}
 			}
 			
 		}
@@ -593,13 +610,23 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
     }
     
 	private boolean isAdminCoordinatotUser() //For Student Registration
 	{               
 		String roleName = this.user.getRole().getRoleName();        
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+	}
+	
+	private boolean isTopLevelUser(){
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserTopLevel;
 	}
 
 
