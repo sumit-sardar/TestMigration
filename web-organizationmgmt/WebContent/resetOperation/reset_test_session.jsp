@@ -128,7 +128,7 @@
 			<div style="text-align: left;"><lb:label key="reset.test.by.session.confirmation.message" /></div>
 			</div>
 			<div style="padding: 10px;">
-			<center><input type="button" value=<lb:label key="common.button.yes" prefix="'&nbsp;" suffix="&nbsp;'"/>
+			<center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
 				onclick="javascript:resetTest(); return false;" class="ui-widget-header">&nbsp; <input
 				type="button" value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/>
 				onclick="javascript:closePopUp('confirmResetTestBySessionPopup'); return false;" class="ui-widget-header"></center>
