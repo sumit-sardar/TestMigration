@@ -35,13 +35,13 @@
 	}
 	
 	function getTDAndStudentList() { 
+		hideStepsShowBySession(false, true, true, true);
 		if($('#bySessionTestAccessCode').val() == ""){
 			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestBySessionMissingFieldMsg').val());
 			return false;
 		}			
 		var postDataObject = {};
 		postDataObject.testAccessCode = $("#bySessionTestAccessCode").val();
-		hideStepsShowBySession(false, true, true, true);
 		showHideMessage(false, "", "");
 		$.ajax({
 			async:		true,
@@ -208,9 +208,7 @@
             		$('#sp_1_by_session_step3_student_list_pager').text("1");
             		$('#next_by_session_step3_student_list_pager').addClass('ui-state-disabled');
             	 	$('#last_by_session_step3_student_list_pager').addClass('ui-state-disabled');
-            	} else {
-            		
-            	}
+            	} 
             	$.unblockUI();  
 				$("#by_session_step3_student_list").setGridParam({datatype:'local'});
 				var tdList = ("#by_session_step3_student_list_pager_left table.ui-pg-table  td");
@@ -560,6 +558,7 @@
 	
 	
 	function getTestSessionListByStudentStep2() { 
+		hideStepsShowByStudent(false, true, true, true);
 		if($('#byStudentLoginnID').val() == ""){
 			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestByStudentMissingFieldMsg').val());
 			return false;
@@ -568,7 +567,6 @@
 		postDataObject.studentLoginId = $("#byStudentLoginnID").val();
 		postDataObject.testAccessCode = $("#byStudentTestAccessCode").val();
 		
-		hideStepsShowByStudent(false, true, true, true);
 		showHideMessage(false, "", "");
 		$.ajax({
 			async:		true,
