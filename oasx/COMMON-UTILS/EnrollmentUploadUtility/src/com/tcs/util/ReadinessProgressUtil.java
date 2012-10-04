@@ -8,15 +8,15 @@ import java.sql.ResultSet;
 public class ReadinessProgressUtil {
 
 
-	public static void updateReadinessStatus (Integer siteSurveyId, Connection con) throws Exception{
+	public static void updateReadinessStatus (Integer siteSurveyId, Connection con,boolean isSubject) throws Exception{
 		
 		PreparedStatement preStatement = con.prepareStatement(ReadinessProgressSQL.getSiteSurveyData(siteSurveyId), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet siteSurveyRS = preStatement.executeQuery();
 		
-		PreparedStatement preStatement1 = con.prepareStatement(ReadinessProgressSQL.getSiteEnrollmentData(siteSurveyId), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		PreparedStatement preStatement1 = con.prepareStatement(isSubject ? ReadinessProgressSQL.getSiteEnrollmentDataBySubject(siteSurveyId):ReadinessProgressSQL.getSiteEnrollmentData(siteSurveyId), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet enrollmentRS = preStatement1.executeQuery();
 		
-		String check12 = checkPoint1Part2(siteSurveyRS, enrollmentRS);
+		String check12 = checkPoint1Part2(siteSurveyRS, enrollmentRS,isSubject);
 		
 		PreparedStatement preStatement2 = con.prepareStatement(ReadinessProgressSQL.updateCheckPoint1Part2SQL(siteSurveyId));
 		preStatement2.setString(1, check12);
@@ -68,7 +68,7 @@ public class ReadinessProgressUtil {
 		
 	}
 
-	private static String checkPoint1Part2 (ResultSet siteSurveyRS, ResultSet enrollmentRS) throws Exception {
+	private static String checkPoint1Part2 (ResultSet siteSurveyRS, ResultSet enrollmentRS,boolean isSubject) throws Exception {
 		
 		int usableWorkstationCount = 0;
 		int workstationCapacityAvailable = 0;
@@ -81,7 +81,11 @@ public class ReadinessProgressUtil {
 			testSessionsPerDay = enrollmentRS.getInt("TESTSESSION_PER_DAY");
 			totalTestingDays = enrollmentRS.getInt("TOTAL_TESTING_DAYS");
 		}
-		workstationCapacityRequired = getWorkstationRequired(enrollmentRS);
+		if(!isSubject)
+			workstationCapacityRequired = getWorkstationRequired(enrollmentRS);
+		else
+			workstationCapacityRequired = getWorkstationRequiredBySubject(enrollmentRS);
+		
 		workstationCapacityAvailable = usableWorkstationCount * testSessionsPerDay * totalTestingDays;
 		
 		if(workstationCapacityRequired <= workstationCapacityAvailable)
@@ -132,11 +136,56 @@ public class ReadinessProgressUtil {
 		}
 		return totalStudentCount;
 	}
-
+	private static int getWorkstationRequiredBySubject(ResultSet enrollmentRS) throws Exception{
+		
+		enrollmentRS.beforeFirst();
+		int totalStudentCount = 0;
+		if(enrollmentRS.next()) {
+			String subjectAlg1Check = enrollmentRS.getString("SUB_ALG1_CHK");
+			String subjectAlg2Check = enrollmentRS.getString("SUB_ALG2_CHK");
+			String subjectUsHisCheck = enrollmentRS.getString("SUB_USHIS_CHK");
+			String subjectBioCheck = enrollmentRS.getString("SUB_BIO_CHK");
+			String subjectGeoCheck = enrollmentRS.getString("SUB_GEO_CHK");
+			String subjectEng2Check = enrollmentRS.getString("SUB_ENG2_CHK");
+			String subjectEng3Check = enrollmentRS.getString("SUB_ENG3_CHK");
+			
+			String subjectAlg1Data = enrollmentRS.getString("SUB_ALG1");
+			String subjectAlg2Data = enrollmentRS.getString("SUB_ALG2");
+			String subjectUsHisData = enrollmentRS.getString("SUB_USHIS");
+			String subjectBioData = enrollmentRS.getString("SUB_BIO");
+			String subjectGeoData = enrollmentRS.getString("SUB_GEO");
+			String subjectEng2Data = enrollmentRS.getString("SUB_ENG2");
+			String subjectEng3Data = enrollmentRS.getString("SUB_ENG3");
+		
+				if (subjectAlg1Check != null && subjectAlg1Check.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectAlg1Data != null && !("").equals(subjectAlg1Data) ? subjectAlg1Data : "0")
+							* getContentArea(1);
+				if (subjectAlg2Check != null && subjectAlg2Check.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectAlg2Data != null && !("").equals(subjectAlg2Data) ? subjectAlg2Data : "0") 
+							* getContentArea(1);
+				if (subjectUsHisCheck != null && subjectUsHisCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectUsHisData != null && !("").equals(subjectUsHisData) ? subjectUsHisData : "0")
+							* getContentArea(1);
+				if (subjectBioCheck != null && subjectBioCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectBioData != null && !("").equals(subjectBioData) ? subjectBioData : "0")
+							* getContentArea(1);
+				if (subjectGeoCheck != null && subjectGeoCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectGeoData != null && !("").equals(subjectGeoData) ? subjectGeoData : "0")
+							* getContentArea(1);
+				if (subjectEng2Check != null && subjectEng2Check.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectEng2Data != null && !("").equals(subjectEng2Data) ? subjectEng2Data : "0") 
+							* getContentArea(1);
+				if (subjectEng3Check != null && subjectEng3Check.equals("1"))
+					totalStudentCount += Integer.parseInt(subjectEng3Data != null && !("").equals(subjectEng3Data) ? subjectEng3Data : "0") 
+							* getContentArea(1);
+		}
+		return totalStudentCount;
+	}
 	private static int getContentArea(int grade) {
 		int numberContent = 0;
-	
-		if (grade == 3)
+		if(grade == 1)
+			return 1;//for Subject only
+		else if (grade == 3)
 			numberContent = 2;//considering TS level
 		else if (grade == 4)
 			numberContent = 3;
