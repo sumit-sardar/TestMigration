@@ -41,7 +41,7 @@
 			return false;
 		}			
 		var postDataObject = {};
-		postDataObject.testAccessCode = $("#bySessionTestAccessCode").val();
+		postDataObject.testAccessCode = $.trim($("#bySessionTestAccessCode").val());
 		showHideMessage(false, "", "");
 		$.ajax({
 			async:		true,
@@ -564,8 +564,8 @@
 			return false;
 		}
 		var postDataObject = {};
-		postDataObject.studentLoginId = $("#byStudentLoginnID").val();
-		postDataObject.testAccessCode = $("#byStudentTestAccessCode").val();
+		postDataObject.studentLoginId = $.trim($("#byStudentLoginnID").val());
+		postDataObject.testAccessCode = $.trim($("#byStudentTestAccessCode").val());
 		
 		showHideMessage(false, "", "");
 		$.ajax({
