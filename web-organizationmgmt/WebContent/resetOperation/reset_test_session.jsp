@@ -54,6 +54,9 @@
 			<input type="hidden" id="titleTestName" value=<lb:label key="reset.test.row.title.start.test.name" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="titleSchedular" value=<lb:label key="reset.test.row.title.schedular" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="titleAccessCode" value=<lb:label key="reset.test.row.title.access.code" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="titleStudentLogin" value=<lb:label key="reset.test.row.title.student.login" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="invalidFieldHeader" value=<lb:label key="reset.test.invalid.field.message.header" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="invalidFieldmessage" value=<lb:label key="reset.test.invalid.field.message.content" prefix='"' suffix='"'/>/>
 
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
