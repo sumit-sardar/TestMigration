@@ -93,7 +93,7 @@
 			                	}
 			                }
 			                if(licenseDataMap != null)
-			                	licenseData = licenseDataMap.get($('#stdOrg').val().trim());
+			                	licenseData = licenseDataMap.get($('#stdOrg').val());
 
 							openModifyManifestPopup();	
 							 $.unblockUI();		
@@ -1335,7 +1335,7 @@
 			}  
 	        param += "testAdminId="+ selectedTestAdminId;
 			param += "&studentId=" + selectedStudentId;
-			param += "&studentOrgNodeId=" + $("#stdOrg").val().trim();
+			param += "&studentOrgNodeId=" + $("#stdOrg").val();
 			param += "&assessmentHasLocator=" + assessmentHasLocator;
 			param += msmParam;
 			
@@ -1375,7 +1375,7 @@
 						                	licenseDataMap.put(data.licenseData[0].cell[0],data.licenseData[0].cell);
 						                }
 						                if(licenseDataMap != null)
-						                	licenseData = licenseDataMap.get($('#stdOrg').val().trim());
+						                	licenseData = licenseDataMap.get($('#stdOrg').val());
 								 		
 								 		setSubtestValidationMessage($("#insufficientLicenseErrorHeader").val(),$("#insufficientLicenseErrorMsg").val());													                				                
 									}								 		
@@ -1623,7 +1623,7 @@
 		if(licenseData == null || licenseData == undefined)
 			return false;
 		hideMessage();//reseting any previous messages
-		var selectedOrgNodeIdForLicense = $('#stdOrg').val().trim();
+		var selectedOrgNodeIdForLicense = $('#stdOrg').val();
 		if(licenseDataMap != null || licenseDataMap != undefined)
 			licenseData = licenseDataMap.get(selectedOrgNodeIdForLicense);
 	}	
