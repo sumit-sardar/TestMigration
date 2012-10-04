@@ -36,10 +36,12 @@
 	
 	function getTDAndStudentList() { 
 		hideStepsShowBySession(false, true, true, true);
-		if($('#bySessionTestAccessCode').val() == ""){
+		if($.trim($('#bySessionTestAccessCode').val()).length == 0){
 			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestBySessionMissingFieldMsg').val());
 			return false;
-		}			
+		}else if (!validationForBySession())	{
+			return false;
+		}
 		var postDataObject = {};
 		postDataObject.testAccessCode = $.trim($("#bySessionTestAccessCode").val());
 		showHideMessage(false, "", "");
@@ -559,8 +561,10 @@
 	
 	function getTestSessionListByStudentStep2() { 
 		hideStepsShowByStudent(false, true, true, true);
-		if($('#byStudentLoginnID').val() == ""){
+		if($.trim($('#byStudentLoginnID').val()).length == 0){
 			showHideMessage(true,$('#resetTestMissingReqFieldTitle').val(),$('#resetTestByStudentMissingFieldMsg').val());
+			return false;
+		} else if (!validationForByStudent()){
 			return false;
 		}
 		var postDataObject = {};
@@ -959,3 +963,87 @@
 	
 	
 	}
+	
+	function validationForBySession (){ 
+	 	var invalidCharFields = "";
+	    var invalidCharFieldCount = 0;
+	    var accesssCode = $('#bySessionTestAccessCode').val();
+	     if (!validNameString(accesssCode) ) {
+	        invalidCharFieldCount += 1;            
+	        invalidCharFields = buildErrorString($("#titleAccessCode").val(), invalidCharFieldCount, invalidCharFields);       
+	    }
+	    
+	    if (invalidCharFields.length > 0) {
+	    	showHideMessage(true,$('#invalidFieldHeader').val()+"  "+invalidCharFields,$('#invalidFieldmessage').val());
+			return false;
+		}
+		return true;
+	}
+	
+	function validationForByStudent (){ 
+	 	var invalidCharFields = "";
+	    var invalidCharFieldCount = 0;
+	    var invalidString = "";         
+	    
+	    var studentLoginId = $.trim($("#byStudentLoginnID").val());
+	    var testAccessCode = $.trim($("#byStudentTestAccessCode").val());
+    
+	    if (!validNameString(studentLoginId) ) {
+	        invalidCharFieldCount += 1;            
+	        invalidCharFields = buildErrorString($("#titleStudentLogin").val(), invalidCharFieldCount, invalidCharFields);       
+	    }
+	    
+	    if (testAccessCode.length>0 && !validNameString(testAccessCode) ) {
+	        invalidCharFieldCount += 1;            
+	        invalidCharFields = buildErrorString($("#titleAccessCode").val(), invalidCharFieldCount, invalidCharFields);       
+	    }
+	   
+	                   
+	    if (invalidCharFields.length > 0) {
+	      	showHideMessage(true,$('#invalidFieldHeader').val()+"  "+invalidCharFields,$('#invalidFieldmessage').val());
+			return false;
+		}
+		return true;
+	}
+
+	function validNameCharacter(str){
+	    var ch = toascii(str);
+	    var A_Z = ((ch >= 65) && (ch <= 90));
+	    var a_z = ((ch >= 97) && (ch <= 122));
+	    var zero_nine = ((ch >= 48) && (ch <= 57));
+	    var validChar = ((str == '/') || 
+	                     (str == '\'') || 
+	                     (str == '-') || 
+	                     (str == '_') ||
+	                     (str == '\\') || 
+	                     (str == '.') || 
+	                     (str == '(') || 
+	                     (str == ')') || 
+	                     (str == '&') || 
+	                     (str == '+') || 
+	                     (str == ',') || 
+	                     (str == ' '));
+	    
+	    return (zero_nine || A_Z || a_z || validChar);
+	}
+	
+	function validNameString(str){
+	    var characters = [];
+	    characters = toCharArray(str);
+	    for (var i=0 ; i<characters.length ; i++) {
+	        var character = characters[i];
+	        if (! validNameCharacter(character))
+	            return false;
+	    }
+	   return true;
+	}
+
+	function buildErrorString(field, count, str){
+        var result = str;
+        if (count == 1) {
+            result += field;
+        }else {
+            result += (", " + field);            
+        }        
+        return result;
+    }
