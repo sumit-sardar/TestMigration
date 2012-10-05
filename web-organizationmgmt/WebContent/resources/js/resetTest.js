@@ -9,7 +9,7 @@
 	var selectedTestSessionData = {};
 	var selectedSubTestSessionData = {};
 	var selectedSudentData = {};
-	
+	var searchedAccessCode = "";
 	
 	var allTDAndStudentData = new Map();
 	var selectedTDAndStudentData =new Map();
@@ -570,7 +570,7 @@
 		var postDataObject = {};
 		postDataObject.studentLoginId = $.trim($("#byStudentLoginnID").val());
 		postDataObject.testAccessCode = $.trim($("#byStudentTestAccessCode").val());
-		
+		searchedAccessCode = $.trim($("#byStudentTestAccessCode").val());
 		showHideMessage(false, "", "");
 		$.ajax({
 			async:		true,
@@ -703,7 +703,7 @@
 	function getSubTestListForBySessionStep3(testRosterId, testAccessCode) { 
 		var postDataObject = {};
 		postDataObject.testRosterId = testRosterId;
-		postDataObject.testAccessCode = testAccessCode;
+		postDataObject.testAccessCode = searchedAccessCode;
 		
 		hideStepsShowByStudent(false, false, true, true);
 		showHideMessage(false, "", "");
@@ -893,6 +893,7 @@
 		$('#by_student_step2_student_list').jqGrid('clearGridData') ;
 		prevTestAdminId = -1;
 		prevTestRosterId = -1;
+		searchedAccessCode = "";
 	}
 	function hideStep3ShowByStudent(){
 		$("#reset_by_student_step3").hide();
@@ -929,7 +930,7 @@
 	 	postDataObject.creatorOrgId = selectedTestSessionData.creatorOrgNodeId;
 	 	postDataObject.studentId  = selectedSudentData.studentId;
 	 	postDataObject.testRosterId = selectedTestSessionData.testRosterId;
-		postDataObject.testAccessCode = selectedTestSessionData.testAccessCode;
+		postDataObject.testAccessCode = searchedAccessCode;
 
 		$.ajax({
 			async:		true,
