@@ -3,6 +3,7 @@
 	var isGridShowBySessionStep4Loaded = false;
 	var isGridShowByStudentStep2Loaded = false;
 	var isGridShowByStudentStep3Loaded = false;
+	var showBySessionStep3Allselected = false;
 	
 	var prevTestAdminId = -1;
 	var prevTestRosterId = -1;
@@ -106,7 +107,7 @@
 	function populate_reset_by_session_step3_student_grid(studentDetailsList){
 		$("#reset_by_session_step3_next").addClass("ui-state-disabled");		
 		document.getElementById("reset_by_session_step3_next").disabled=true;	
-		
+		showBySessionStep3Allselected = false;
 		if(isGridShowBySessionStep3Loaded ){
 			reload_populate_reset_by_session_step3_student_grid(studentDetailsList);
 		} else {
@@ -168,6 +169,7 @@
 				} else {
 					selectedTDAndStudentData.remove(selectedRowData.studentItemId);
 					$("#cb_by_session_step3_student_list").attr("checked", false);
+					showBySessionStep3Allselected = false;
 				}
 				
 				disableEnableNextButtonShowBySession();
@@ -182,9 +184,10 @@
 				        selectedTDAndStudentData.put(keys[i], temp);
 					  }
 					}
-					
+					showBySessionStep3Allselected = true;
 				} else {
 					selectedTDAndStudentData = new Map();
+					showBySessionStep3Allselected = false;
 				}
 				disableEnableNextButtonShowBySession();
 			
@@ -216,6 +219,9 @@
 				var tdList = ("#by_session_step3_student_list_pager_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				if(showBySessionStep3Allselected){
+					$("#cb_by_session_step3_student_list").attr("checked", true);
 				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
