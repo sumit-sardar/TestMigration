@@ -22,6 +22,7 @@
 	var savedStudentMap = new Map();//used to track student is old or new
 	var isCopySession = false; //added  for copy test session
 	var isSelectTestDetClicked = false; //added  for copy test session
+	var isOKEQProduct = false; // Added for Oklahoma customer
 		
   function editTestSession(action){  
   	var activeJQGrid;
@@ -34,6 +35,10 @@
   		
   	rowID = $('#'+activeJQGrid).jqGrid('getGridParam', 'selrow');
 	rowData = $('#'+activeJQGrid).getRowData(rowID); 
+	
+	isOKEQActionPerformed = false; // Added for oklahoma customer Equivalent form
+	hideProctorDelButton = false;
+	hideStudentDelButton = false;
 	
 	if(rowData.isSTabeProduct == "true")
 		isTabeProduct = true;
@@ -68,7 +73,16 @@
 							}else{
 								isCopySession = false;
 							}
-							//		
+							//Added for Oklahoma customer
+							isOKAdmin = data.isOkAdmin;
+							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
+									parseInt(data.savedTestDetails.testSession.productId) == 9003) {
+								isOKEQProduct = true;
+								isOKEQActionPerformed = true;
+							} else {
+								isOKEQProduct = false;
+							}
+							
 							if(data.noTestExists == true){
 								noTestExist = true;
 								document.getElementById("testDiv").style.display = "none";
@@ -394,6 +408,44 @@
 	  	 	//processStudentAccordion();	   
 	  	 	wizard.accordion("activate", index);					
 	  }else{
+	  	// Added for Oklahoma customer
+		// All user roles except proctor who are associated with the test session should be able to add/remove student
+		if(isOKEQProduct && !isOKAdmin) {
+			var param = {};
+			param.selectedTestAdminId = selectedTestAdminId;
+			$.ajax({
+				async:		false,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'checkSameLevelNonProctor.do',
+				type:		'POST',
+				dataType:	'json',
+				data:		param,
+				success:	function(data, textStatus, XMLHttpRequest){
+								if(data != null && data != undefined && parseInt(data) > 0) {
+									$("#addStudent").show();
+									hideStudentDelButton = false;
+								} else if (data != null && data != undefined && parseInt(data) == 0) {
+									$("#addStudent").hide();
+									hideStudentDelButton = true;
+								} else {
+									$("#addStudent").show();
+									hideStudentDelButton = false;
+								}
+								//$.unblockUI(); 
+											
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+								
+							},
+				complete :  function(){
+								 //$.unblockUI(); 
+							}
+			}); 
+		}
 	  	if(!offGradeSubtestChanged) {
 	  		var param = {};
 	  		param.testAdminId = selectedTestAdminId;
@@ -463,10 +515,8 @@
 			cacheObjVal.indexValue = "studentDetails";
 			editDataCache.put(index,cacheObjVal);
 	  	}
-	   
-	   }
-    
-	  
+	   	
+	   }	  
 	        
     }
     
@@ -476,8 +526,48 @@
         	$("#addProctorButton").hide();
         	$("#addProcMsg2").hide();
         } else {
-        	$("#addProctorButton").show();
-        	$("#addProcMsg2").show();
+        	if(isOKEQProduct && !isOKAdmin) {
+        	  	if(editDataCache.get(index)== null || editDataCache.get(index)== undefined) {
+        		// Added for Oklahoma customer
+				// Only state level admin should able to add proctor
+					var param = {};
+					param.selectedTestAdminId = selectedTestAdminId;
+					$.ajax({
+						async:		false,
+						beforeSend:	function(){
+										UIBlock();
+									},
+						url:		'checkSameLevelNonProctor.do',
+						type:		'POST',
+						dataType:	'json',
+						data:		param,
+						success:	function(data, textStatus, XMLHttpRequest){
+										if(data != null && data != undefined && parseInt(data) >= 0) {
+											$("#addProctorButton").hide();
+											$("#addProcMsg2").hide();
+											hideProctorDelButton = true;
+										} else {
+											$("#addProctorButton").show();
+											$("#addProcMsg2").show();
+											hideProctorDelButton = false;
+										}
+										$.unblockUI(); 
+											
+									},
+						error  :    function(XMLHttpRequest, textStatus, errorThrown){
+										$.unblockUI();
+										window.location.href="/SessionWeb/logout.do";
+								
+									},
+						complete :  function(){
+								 		$.unblockUI(); 
+									}
+					});
+        		}
+        	} else {
+        		$("#addProctorButton").show();
+        		$("#addProcMsg2").show();
+        	}
         }
 	    if(editDataCache.get(index)!= null && editDataCache.get(index)!= undefined){
 	    		//processProctorAccordion();
@@ -489,6 +579,9 @@
 	    		//added for copy test session
 		  		if(isCopySession){
 		  			param.action = "copySession";
+		  		}
+		  		if(isOKEQProduct && isOKAdmin) {
+		  			param.okQEAdmin = 'true';
 		  		}
 		  		//
 			    $.ajax({
@@ -525,8 +618,9 @@
 					complete :  function(){
 									 $.unblockUI(); 
 								}
-				}); 
-			}    
+				});
+				
+			}
     }
         
     function endTestSession(){

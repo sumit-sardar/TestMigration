@@ -37,6 +37,7 @@ public class ScheduleTestVo implements Serializable{
 	private List<String> accessCodeList = new ArrayList<String>();
 	private boolean noTestExists = false;
 	private List<String> levelOptions = new ArrayList<String>();// level for subtest
+	private boolean isOkAdmin = false;
 	
 	
 	
@@ -470,6 +471,16 @@ public class ScheduleTestVo implements Serializable{
 
 	public void setLevelOptions(List<String> levelOptions) {
 		this.levelOptions = levelOptions;
+	}
+
+
+	public boolean isOkAdmin() {
+		return isOkAdmin;
+	}
+
+
+	public void setOkAdmin(boolean isOkAdmin) {
+		this.isOkAdmin = isOkAdmin;
 	}
 	
 	

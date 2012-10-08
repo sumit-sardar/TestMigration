@@ -165,10 +165,17 @@ clear: both;
 										}
 										else {
 									        $('#displayMessage').hide();
-									   		populateSelectTestGrid(wizard,index);
-									   		isFirstAccordSelected = true;
-											isSecondAccordSelected = false;
-											isSelectTestDetClicked = true;
+									        //Added for Oklahoma customer
+									        if(isOKEQProduct && !isOKAdmin) {
+									        	setMessage("", "", "errorMessage", "Equivalent form test sessions are restricted. Please contact the OK SDE for assistance in making changes to this session.");       
+												$('#displayMessage').show();
+									        	e.stopPropagation(); // Non state admins will not be able to click on select test accordion for EQ test
+									        } else {
+										   		populateSelectTestGrid(wizard,index);
+										   		isFirstAccordSelected = true;
+												isSecondAccordSelected = false;
+												isSelectTestDetClicked = true;
+											}
 										}
 								   }
 									

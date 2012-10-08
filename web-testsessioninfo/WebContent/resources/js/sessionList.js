@@ -98,6 +98,14 @@ var firstTimeOpen = false;
 
 var selectProductId = null;
 
+var isOKAdmin = false;
+var isOKEqTestSelected = false;
+var isOKProductChanged = false;
+var isOKEQDefaultSelected = false; // Needed to verify whether the default selection in select test dropdown is EQ test or not.
+var isOKEQActionPerformed = false; // As per new requirement, proctors will be added only the first time EQ test is selected.
+var hideProctorDelButton = false; // Only state level admin for oklahoma should be able to add/del proctors
+var hideStudentDelButton = false; // Only state level admin, admin coordinator, coordinator should be able to add/del students
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1437,7 +1445,11 @@ function registerDelegate(tree){
 			    	
 			    }, position: "first", title:"Remove Student", cursor: "pointer",id:"del_list6"
 			});
-	
+		if(hideStudentDelButton) {
+			$("#del_list6").hide();
+		} else {
+			$("#del_list6").show();
+		}
 	}
 	
 	function checkPresenceInDelStuIdObjArray(deleteId) {
@@ -1497,15 +1509,23 @@ function registerDelegate(tree){
 	document.getElementById("modifyTestDiv").style.display = "none";
 	$("#endTest").hide();
 	state = "ADD";
+	isOKEQActionPerformed = false;
 	isFirstAccordSelected = true; // As initially the first accordion will be displayed
 	isSecondAccordSelected = false;
 	isThirdAccordSelected = false;
 	isFourthAccordSelected = false;
+	OKPreviousProduct = undefined;
+	OKCurrentProduct = undefined;
 	var postDataObject = {};
  	postDataObject.currentAction = 'init';
  	savedStudentMap = new Map();
  	isCopySession = false; //added  for copy test session
- 	isSelectingStudent = false; 
+ 	isSelectingStudent = false;
+ 	hideProctorDelButton = false;
+	hideStudentDelButton = false;
+ 	if(orgDataInform != undefined) {
+ 		orgDataInform = {};
+ 	}
  	
 	$.ajax({
 		async:		true,
@@ -1519,7 +1539,7 @@ function registerDelegate(tree){
 		contentType: 'application/json; charset=UTF-8', 
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
-						
+						isOKAdmin = data.isOkAdmin;
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
 							document.getElementById("testDiv").style.display = "none";
@@ -1535,7 +1555,13 @@ function registerDelegate(tree){
 							fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.userTimeZone);
 							reloadGrids(data.product[0].testSessionList,data.product[0].showLevelOrGrade);
 							//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
-							fillDropDown("topOrgNode",data.topNodeDropDownList)
+							fillDropDown("topOrgNode",data.topNodeDropDownList);
+							var productSelected = $("#testGroupList").val();
+							if(productSelected == '9003') {
+								isOKEQDefaultSelected = true;
+							} else {
+								isOKEQDefaultSelected = false;
+							}
 							processStudentAccordion();
 							processProctorAccordion();
 							$("#productType").val(data.product[0].productType);
@@ -1588,6 +1614,9 @@ function registerDelegate(tree){
 			optionHtml += "<option  value='Select a product'>Show All</option>";
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {
+				if((optionList[i].productId == '9003') && !isOKAdmin) {
+					continue; // Only state level oklahoma admin should be able to see/schedule/edit 9003 product
+				}
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
@@ -1726,7 +1755,17 @@ function registerDelegate(tree){
 			 $("#productChangeConfirmationPopup").parent().css("top",toppos);
 			 $("#productChangeConfirmationPopup").parent().css("left",leftpos);
 		 } else {*/
-		 	changeGradeAndLevel();
+		 //Added for Oklahoma customer
+		 if(isOKAdmin) {
+			 isOKProductChanged = true;
+			 var productSelected = $("#testGroupList").val();
+			 if(productSelected == '9003') {
+			 	isOKEqTestSelected = true;
+			 } else {
+			 	isOKEqTestSelected = false;
+			 }
+		 }
+		  changeGradeAndLevel();
 		 //}
 		 hideSubtestWarningMessage();
 		 document.getElementById("modifyTestDiv").style.display = "none";
@@ -1782,6 +1821,9 @@ function registerDelegate(tree){
 		selectProductId = e.options[e.selectedIndex].value;
 		var optionList = ProductData.product
 		for(var i = 0; i < optionList.length; i++ ) {
+			if((optionList[i].productId == '9003') && !isOKAdmin) {
+				continue; // Only state level oklahoma admin should be able to see 9003 product
+			}
 			if(selectProductId==optionList[i].productId) { 	     
 				$("#productType").val(optionList[i].productType);
 				$("#showStudentFeedback").val(optionList[i].showStudentFeedback); 	     
@@ -2971,6 +3013,7 @@ function registerDelegate(tree){
 	      var postDataObject = {};
  		  postDataObject.q = 2;
  		  postDataObject.proctorOrgNodeId = $("#proctorOrgNodeId").val();
+ 		  postDataObject.isOKEqFormAdmin = isOKAdmin && isOKEqTestSelected; // Added for Oklahoma customer
 	      jQuery("#selectProctor").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
 	      var urlVal = 'getProctorList.do'; 
      	  jQuery("#selectProctor").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
@@ -2994,7 +3037,12 @@ function registerDelegate(tree){
 		var schedulerUserName = $("#schedulerUserName").val();
  		
  		proctorGridloaded = true;
-
+		var productSelected = $("#testGroupList").val();
+		if(productSelected == '9003') {
+			isOKEqTestSelected = true;
+		} else {
+			isOKEqTestSelected = false;
+		}
  		if(state != "EDIT" && noOfProctorAdded == 0) {
 	 		var jsondata = {};
 	 		jsondata['userId'] = schedulerUserId;
@@ -3008,8 +3056,25 @@ function registerDelegate(tree){
 		    proctorIdObjArray = {};	
 		    proctorIdObjArray[schedulerUserId] = jsondata;	 	
 		 	addProctorLocaldata = val;
-		
-			//alert(JSON.stringify(proctorIdObjArray));	
+	 		
+	 		//Changes for Oklahoma customer
+	 		productSelected = $("#testGroupList").val();
+	 		if(isOKAdmin && productSelected == '9003' && isOKProductChanged && !isOKEQActionPerformed) { // 9003 is the product id for Equivalent form
+	 			isOKEQActionPerformed = true;
+	 			isOKEqTestSelected = true;
+	 			addAllProcsForOklahoma(schedulerUserId);
+	 			isOKProductChanged = false;
+	 		} else if (isOKAdmin && productSelected != '9003' && isOKProductChanged) {
+	 			isOKEqTestSelected = false;
+	 			isOKProductChanged = false;
+	 		} else if (isOKEQDefaultSelected && isOKAdmin) {
+	 			isOKEqTestSelected = true;
+	 			addAllProcsForOklahoma(schedulerUserId);
+	 			isOKEQDefaultSelected = false;
+	 			isOKEQActionPerformed = true;
+	 			returnSelectedProctor(); // Need to update temp variables also
+	 		}
+	 	//alert(JSON.stringify(proctorIdObjArray));	
 		 	
 	 	}else if(state == "EDIT"){
 	 		var val=[] ;
@@ -3028,22 +3093,36 @@ function registerDelegate(tree){
 				for (var i = 0, j = val.length; i < j; i++){
 				 	proctorIdObjArray[val[i].userId] = val[i];
 				} 		
-			}else{ 
-				for (var i = 0, j = val.length; i < j; i++){
-				 		proctorIdObjArray[val[i].userId] = val[i];
-				 		if(proctorIdObjArray[val[i].userId].defaultScheduler == "T") {
-				 			schedulerFirstName = proctorIdObjArray[val[i].userId].firstName;
-							schedulerLastName = proctorIdObjArray[val[i].userId].lastName;
-							schedulerUserId = proctorIdObjArray[val[i].userId].userId;
-							schedulerUserName = proctorIdObjArray[val[i].userId].userName;
-							$("#schedulerFirstName").val(schedulerFirstName);
-							$("#schedulerLastName").val(schedulerLastName);
-							$("#schedulerUserId").val(schedulerUserId);
-							$("#schedulerUserName").val(schedulerUserName);
-				 		}
+			}else{
+				for (var i = 0, j = val.length; i < j; i++) {
+					proctorIdObjArray[val[i].userId] = val[i];
+					if(proctorIdObjArray[val[i].userId].defaultScheduler == "T") {
+						schedulerFirstName = proctorIdObjArray[val[i].userId].firstName;
+						schedulerLastName = proctorIdObjArray[val[i].userId].lastName;
+						schedulerUserId = proctorIdObjArray[val[i].userId].userId;
+						schedulerUserName = proctorIdObjArray[val[i].userId].userName;
+						$("#schedulerFirstName").val(schedulerFirstName);
+						$("#schedulerLastName").val(schedulerLastName);
+						$("#schedulerUserId").val(schedulerUserId);
+						$("#schedulerUserName").val(schedulerUserName);
+				 	}
 				}
 			}
 			 addProctorLocaldata = val;
+		 } else {
+		 	if (isOKAdmin && productSelected != '9003' && isOKProductChanged ) { 
+		 			// As per new requirement, need not perform any action
+		 		isOKEqTestSelected = false;
+		 		isOKProductChanged = false;
+		 	} else if (isOKAdmin && productSelected == '9003' && isOKProductChanged && !isOKEQActionPerformed) {
+		 		$("#Proctor_Tab").css('display', 'block');
+				$("#Select_Proctor_Tab").css('display', 'none');	
+				$("#proctorOrgNodeHierarchy").undelegate();
+		 		addAllProcsForOklahoma(schedulerUserId);
+		 		isOKProductChanged = false;
+		 		returnSelectedProctor(); // Need to update temp variables also
+		 		isOKEQActionPerformed = true; // Adding Proctors for equivalent form should happen only once.
+		 	}
 		 }
 	 	
 	 	noOfProctorAdded = addProctorLocaldata.length;
@@ -3273,6 +3352,61 @@ function registerDelegate(tree){
         }else{
         	$("#del_listProctor").removeClass('ui-state-disabled');	
         }
+        if(hideProctorDelButton || isProctor) {
+        	$("#del_listProctor").hide();
+        } else {
+        	$("#del_listProctor").show();
+        }
+	}	
+	
+	function addAllProcsForOklahoma(schedulerUserId) {
+		var param = {};
+		var jsondata = {};
+		var val = [];
+		val = addProctorLocaldata;
+	 		param.userId = 	schedulerUserId; // Assuming that only state can schedule EQ test.
+	 			
+	 		$.ajax({
+			async:		false,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'getAllBelowLevelUsers.do',
+			type:		'POST',
+			data:		 param,
+			dataType:	'json',
+			success:	function(vdata, textStatus, XMLHttpRequest){
+			
+						   if(vdata != null && vdata != undefined && vdata.length > 0) {
+						   		for(var i = 0; i < vdata.length; i++) {
+						   			// Previously added proctors should be taken care of
+						   			if(proctorIdObjArray[vdata[i].userId] == null || proctorIdObjArray[vdata[i].userId] == undefined) {
+							   			jsondata = {};
+							   			jsondata['userId'] = vdata[i].userId;
+		 								jsondata['lastName'] = vdata[i].lastName;
+		 								jsondata['firstName'] = vdata[i].firstName;
+		 								jsondata['defaultScheduler'] = vdata[i].defaultScheduler;
+		 								jsondata['userName'] = vdata[i].userName;
+		 								jsondata['editable'] = vdata[i].editable;
+		 								val.push(jsondata);
+		 								proctorIdObjArray[vdata[i].userId] = jsondata;
+	 								}
+						   		}
+						   		addProctorLocaldata = val;
+						   }
+						   
+						   
+					  	},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";
+							
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+		
 	}
 	
 	function removeSelectedProctor() {

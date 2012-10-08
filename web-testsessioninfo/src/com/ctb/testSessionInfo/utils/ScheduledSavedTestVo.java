@@ -36,6 +36,7 @@ public class ScheduledSavedTestVo implements Serializable {
     private String startDate;
 	private String endDate;
 	private TestSessionVO testSession;
+	private boolean isOkAdmin = false;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -242,6 +243,14 @@ public class ScheduledSavedTestVo implements Serializable {
 	public void setEndDate(String endDate) {
 		this.endDate=endDate;
 		
+	}
+
+	public boolean isOkAdmin() {
+		return isOkAdmin;
+	}
+
+	public void setOkAdmin(boolean isOkAdmin) {
+		this.isOkAdmin = isOkAdmin;
 	}
 
 	

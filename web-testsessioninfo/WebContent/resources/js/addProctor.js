@@ -183,6 +183,7 @@ function populateSelectProctorGrid() {
  		var postDataObject = {};
  		postDataObject.q = 2;
  		postDataObject.proctorOrgNodeId = $("#proctorOrgNodeId").val();
+ 		postDataObject.isOKEqFormAdmin = isOKAdmin && isOKEqTestSelected; // Added for Oklahoma customer
  		//reset();
        $("#selectProctor").jqGrid({         
           url: 'getProctorList.do', 
@@ -210,6 +211,16 @@ function populateSelectProctorGrid() {
 			   	 	if($("#schedulerUserId") != undefined) {
 			   	 		if(allProctorIds['dataList'][obj.userProfileInformation[i].userId].userId == $("#schedulerUserId").val()) {
 			   	 			allProctorIds['dataList'][obj.userProfileInformation[i].userId].defaultScheduler = "T";
+			   	 		}
+			   	 	}
+			   	 	if(isOKAdmin && isOKEqTestSelected) {
+			   	 		if(proctorIdObjArray[obj.userProfileInformation[i].userId] != undefined && 
+			   	 			proctorIdObjArray[obj.userProfileInformation[i].userId].editable != undefined &&
+			   	 			proctorIdObjArray[obj.userProfileInformation[i].userId].editable != null &&
+			   	 			proctorIdObjArray[obj.userProfileInformation[i].userId].editable == "F" &&
+			   	 			proctorIdObjArray[obj.userProfileInformation[i].userId].defaultScheduler == "F") {
+			   	 				obj.userProfileInformation[i].editable = 'F';
+			   	 				allProctorIds['dataList'][obj.userProfileInformation[i].userId].editable = "F";
 			   	 		}
 			   	 	}
 			   	 }
@@ -249,6 +260,7 @@ function populateSelectProctorGrid() {
 				 	var defaultUserId = $("#schedulerUserId").val();
 				 	$("#"+defaultUserId+" td input").attr('checked',true).attr("disabled", true);
 				 	$("#"+ defaultUserId).addClass('ui-state-disabled');
+				 	$("#"+ defaultUserId).removeClass('ui-state-highlight');
 				 	
 				 	var loggedInUserId = $("#loggedInUserId").val();
 			 		if(loggedInUserId != defaultUserId && state == 'EDIT'){
@@ -259,6 +271,18 @@ function populateSelectProctorGrid() {
 								$("#"+loggedInUserId+" td input").attr("disabled", true);
 							 	$("#"+ loggedInUserId).addClass('ui-state-disabled');
 							}
+						}
+					}
+					if(isOKAdmin && isOKEqTestSelected) { // Added for Oklahoma customer
+						var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
+						for(var i = 0; i < allRowsInGrid.length; i++) {
+							var selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
+							if(selectedRowData.editable != undefined && selectedRowData.editable != null 
+									&& selectedRowData.editable == "F") {
+			   	 				$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+			   	 				$("#"+ allRowsInGrid[i]).addClass('ui-state-disabled');
+			   	 				$("#"+ allRowsInGrid[i]).removeClass('ui-state-highlight');
+			   	 			}
 						}
 					}
 			 } 		 
@@ -286,6 +310,15 @@ function populateSelectProctorGrid() {
 						if(!($("#"+allRowsInGrid[i]+" td input").attr('checked'))){
 							$("#"+allRowsInGrid[i]+" td input").attr('checked', true).trigger('click').attr('checked', true);
 						}
+						if(isOKAdmin && isOKEqTestSelected) {
+							var selectedRowDataOK = $("#selectProctor").getRowData(allRowsInGrid[i]);
+							if(selectedRowDataOK.editable != undefined && selectedRowDataOK.editable != null 
+									&& selectedRowDataOK.editable == "F") {
+			   	 				$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+			   	 				$("#"+ allRowsInGrid[i]).addClass('ui-state-disabled');
+			   	 				$("#"+ allRowsInGrid[i]).removeClass('ui-state-highlight');
+			   	 			}
+						}
 			 		}else {
 			 			if($("#"+allRowsInGrid[i]+" td input").attr('checked')){
 							$("#"+allRowsInGrid[i]+" td input").attr('checked', false).trigger('click').attr('checked', false);
@@ -302,7 +335,13 @@ function populateSelectProctorGrid() {
 					if(status) {
 						for(var key in allProctorIds['dataList']) {
 							if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
-								proctorIdObjArray[key] = allProctorIds['dataList'][key];																							
+								if(isOKAdmin && isOKEqTestSelected) {
+									if(allProctorIds['dataList'][key].editable == undefined || allProctorIds['dataList'][key].editable != 'F') {
+										proctorIdObjArray[key] = allProctorIds['dataList'][key];
+									}
+								} else {
+									proctorIdObjArray[key] = allProctorIds['dataList'][key];
+								}																							
 								
 					 		}				
 						}						
@@ -352,7 +391,15 @@ function populateSelectProctorGrid() {
 							for(var key in allProctorIds['dataList']) {
 								if (allProctorIds['dataList'][key].defaultScheduler == 'F' || allProctorIds['dataList'][key].defaultScheduler == undefined) {
 									if(allProctorIds['dataList'][key].userId != loggedInUserId){
-										delete proctorIdObjArray[key];
+										if(isOKAdmin && isOKEqTestSelected) {
+											if(allProctorIds['dataList'][key].editable == undefined || allProctorIds['dataList'][key].editable != 'F') {
+												delete proctorIdObjArray[key];
+											} else {
+												orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+											}
+										} else {
+											delete proctorIdObjArray[key];
+										}
 									}
 									else if (allProctorIds['dataList'][key].userId == loggedInUserId){
 										orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;

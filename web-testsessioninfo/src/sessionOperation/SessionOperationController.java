@@ -190,6 +190,7 @@ public class SessionOperationController extends PageFlowController {
 	private String userEmail = null;
 	private List fileTypeOptions = null;
 	public boolean isLasLinkCustomer = false;
+	public boolean isOKCustomer = false;
 
 	
 	//Added for view/monitor test status
@@ -615,6 +616,12 @@ public class SessionOperationController extends PageFlowController {
                      if (!"".equals(acknowledgmentsURL))
                          this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
                  }
+            }
+            
+            if(isAdminUser() && this.isOKCustomer) {
+            	vo.setOkAdmin(true);
+            } else {
+            	vo.setOkAdmin(false);
             }
     
             Gson gson = new Gson();
@@ -1084,6 +1091,12 @@ public class SessionOperationController extends PageFlowController {
                 testSession.setDailyLoginStartTimeString(DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime()));
                 testSession.setDailyLoginEndTimeString(DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime()));
                 
+                if(isAdminUser() && this.isOKCustomer && isTopLevelUser()) {
+                	vo.setOkAdmin(true);
+                } else {
+                	vo.setOkAdmin(false);
+                }
+                
     	    	
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -1257,7 +1270,8 @@ public class SessionOperationController extends PageFlowController {
 	    OperationStatus status = new OperationStatus(); 
 	    vo.setOperationStatus(status) ;
 	    //added for copy test session
-	    String action = getRequest().getParameter("action"); 
+	    String action = getRequest().getParameter("action");
+	    String okQEAdmin = getRequest().getParameter("okQEAdmin");
 //	    System.out.println(">>>>>"+action);
 	    //
 	    try {
@@ -1395,6 +1409,93 @@ public class SessionOperationController extends PageFlowController {
 
 		return null;
   }
+    
+    
+    //Added for Oklahoma Customer for adding non state admin users
+    @Jpf.Action()
+    protected Forward getAllBelowLevelUsers(SessionOperationForm form)
+    {
+    	String jsonData = "";
+    	HttpServletResponse resp = getResponse();
+    	resp.setCharacterEncoding("UTF-8"); 
+    	OutputStream stream = null;
+        String stateOKUserId = this.getRequest().getParameter("userId");
+        
+        try
+        {
+            Integer schedulerUserId = Integer.parseInt(stateOKUserId);
+            
+        	try {
+        		User[] proctorList = userManagement.belowLevelUserList(schedulerUserId);
+    			resp.setContentType(CONTENT_TYPE_JSON);
+    			//resp.flushBuffer();
+    			Gson gson = new Gson();
+            	jsonData = gson.toJson(proctorList);
+    			stream = resp.getOutputStream();
+    			stream.write(jsonData.getBytes("UTF-8"));
+    			resp.flushBuffer();
+    		} catch (CTBBusinessException e) {
+    			
+    			e.printStackTrace();
+    		} 
+    	
+        } catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+    	return null;
+    }
+    
+  //Added for Oklahoma Customer for adding non state admin users
+    @Jpf.Action()
+    protected Forward checkSameLevelNonProctor(SessionOperationForm form)
+    {
+    	String jsonData = "";
+    	HttpServletResponse resp = getResponse();
+    	resp.setCharacterEncoding("UTF-8"); 
+    	OutputStream stream = null;
+        Integer loggedInUserId = this.user.getUserId();
+        String selectedTestAdminId = this.getRequest().getParameter("selectedTestAdminId");
+        
+        try
+        {
+            Integer testAdminId = Integer.parseInt(selectedTestAdminId);
+            users.checkTopLevelOkAdmin(loggedInUserId, testAdminId);
+            
+        	try {
+        		Integer proctorPermitted = users.checkTopLevelOkAdmin(loggedInUserId, testAdminId);
+    			resp.setContentType(CONTENT_TYPE_JSON);
+    			//resp.flushBuffer();
+    			Gson gson = new Gson();
+            	jsonData = gson.toJson(proctorPermitted);
+    			stream = resp.getOutputStream();
+    			stream.write(jsonData.getBytes("UTF-8"));
+    			resp.flushBuffer();
+    		} catch (SQLException e) {
+    			
+    			e.printStackTrace();
+    		} 
+    	
+        } catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+    	return null;
+    }
+    
+    
     
     private void removeRestrictedStudentsFromTest(ScheduledSession session) throws CTBBusinessException {
     	SessionStudent[] students = updateRestrictedStudentsForTest(session.getStudents(),session.getTestSession().getItemSetId(), session.getTestSession().getTestAdminId()  );
@@ -3666,7 +3767,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
     	boolean hasResetTestSession = false;
-    	boolean isOKCustomer = false;
+    	//boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	
@@ -3731,9 +3832,10 @@ public class SessionOperationController extends PageFlowController {
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
 	            }
+				//Added for oklahoma customer
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 						&& cc.getDefaultValue().equals("T")) {
-	            	isOKCustomer = true;
+	            	this.isOKCustomer = true;
 	            }
 				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
 						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
@@ -3756,7 +3858,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((this.isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
     }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
@@ -4614,6 +4716,7 @@ public class SessionOperationController extends PageFlowController {
 		
 		//String testId = getRequest().getParameter("selectedTestId");
 		String proctorOrgNodeId = getRequest().getParameter("proctorOrgNodeId");
+		String isOKEqFormAdmin = getRequest().getParameter("isOKEqFormAdmin");
 		Integer selectedOrgNodeId = null;
 		if(proctorOrgNodeId != null)
 			selectedOrgNodeId = Integer.parseInt(proctorOrgNodeId);
