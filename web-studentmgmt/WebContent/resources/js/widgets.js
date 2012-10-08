@@ -187,7 +187,7 @@ var policyWindow = null;
 
 function showHelpWindow(location_)
 {
-    var helpWindow = window.open(location_,"help",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
+    helpWindow = window.open(location_,location_,'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
     helpWindow.focus();
     return false;
 }
