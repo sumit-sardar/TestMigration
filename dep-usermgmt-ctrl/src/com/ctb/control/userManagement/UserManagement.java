@@ -342,4 +342,7 @@ public interface UserManagement
     com.ctb.bean.testAdmin.OrgNodeCategory getCustomerLeafNodeDetail(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
     
     public String getUserTimeZone(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+    
+    // Added for Oklahoma customer
+    com.ctb.bean.testAdmin.User[] belowLevelUserList(Integer userId) throws com.ctb.exception.CTBBusinessException;
 } 

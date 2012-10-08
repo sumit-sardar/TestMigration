@@ -925,5 +925,17 @@ public interface Users extends JdbcControl
 
     @JdbcControl.SQL(statement = "SELECT u.time_zone FROM users u WHERE u.user_name = {userName}")
     String getUserTimeZoneDetails(String userName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT DISTINCT us.user_id AS userid, us.user_name AS username, us.first_name AS firstname, us.middle_name AS middlename, us.last_name AS lastname, 'F' AS defaultScheduler FROM users, user_role ur, org_node org, org_node_ancestor ona, user_role ur1, users us WHERE users.user_id = {userId} AND users.user_id = ur.user_id AND ur.org_node_id = org.org_node_id AND org.org_node_id = ona.ancestor_org_node_id AND ona.number_of_levels > 0 AND org.activation_status = 'AC' AND ona.org_node_id = ur1.org_node_id AND ur1.user_id = us.user_id AND us.activation_status = 'AC' UNION SELECT DISTINCT us.user_id AS userid, us.user_name AS username, us.first_name AS firstname, us.middle_name AS middlename, us.last_name AS lastname, 'F' AS defaultScheduler FROM users, user_role ur, org_node org, user_role ur1, users us, ROLE WHERE users.user_id = {userId} AND users.user_id = ur.user_id AND ur.org_node_id = org.org_node_id AND org.activation_status = 'AC' AND ORg.org_node_id = ur1.org_node_id AND ur1.role_id = ROLE.role_id AND ROLE.role_name <> 'ADMINISTRATOR' AND ur1.user_id = us.user_id AND us.activation_status = 'AC'",
+            arrayMaxLength = 100000)
+    User [] getLowerUsersList(Integer userId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT COUNT(*) FROM users u, user_role urole, org_node orgnode, org_node_category onc, ROLE rol WHERE u.user_id = urole.user_id AND urole.org_node_id = orgnode.org_node_id AND orgnode.org_node_category_id = onc.org_node_category_id AND onc.category_level = 1 AND u.user_name = {userName} AND urole.role_id = rol.role_id AND rol.role_name = 'ADMINISTRATOR' and urole.activation_status = 'AC' and u.activation_status = 'AC'",
+            arrayMaxLength = 100000)
+    Integer checkTopLevelOkAdmin(String userName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT COUNT(urole.user_id) FROM test_admin adm, user_role urole, ROLE WHERE adm.test_admin_id = {testAdminId} AND adm.creator_org_node_id = urole.org_node_id AND urole.activation_status = 'AC' AND urole.user_id = {userId} AND urole.role_id = ROLE.role_id AND ROLE.role_name <> 'PROCTOR'",
+            arrayMaxLength = 100000)
+    Integer checkTopLevelOkAdmin(Integer userId, Integer testAdminId) throws SQLException;
 
 }

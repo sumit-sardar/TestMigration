@@ -2735,6 +2735,20 @@ public class UserManagementImpl implements UserManagement
     	}
     	return timeZoneInfo;
     }
+    
+    
+    //Added for oklahoma customer for adding all non state admin users
+    public User[] belowLevelUserList(Integer userId) {
+    	User[] usersList = null;
+    	try {
+    		usersList = users.getLowerUsersList(userId);
+    	} catch(SQLException se) {
+    		se.printStackTrace();
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return usersList;
+    }
 
 
 
