@@ -59,8 +59,17 @@ public class ReporNavigationTag extends CTBTag
 
                 if (this.selectedReport.equals(reportName)) {
                     displayCellStart("currentNav");
-                        //writeToPage("<a href=\"/SessionWeb/sessionOperation/turnLeafReport.do?report=" + reportName + "\">" + displayName + "</a>");
-                    	writeToPage(displayName);
+	                    String content = "";
+	                    content += "<a href=\"/SessionWeb/sessionOperation/turnLeafReport.do?report=" + reportName + "\">" + displayName + "</a>";
+	                    writeToPage(content);
+	                    
+	                    if (i < this.reportList.size()-1) {
+	                        cr = (CustomerReport)this.reportList.get(i+1);
+	                        reportName = cr.getReportName();
+	                        if (this.selectedReport.equals(reportName)) {
+	                            writeToPage("&nbsp;&nbsp;|");
+	                        }
+	                    }                        
                     displayCellEnd();
                 }
                 else {
@@ -75,8 +84,7 @@ public class ReporNavigationTag extends CTBTag
                             if (this.selectedReport.equals(reportName)) {
                                 writeToPage("&nbsp;&nbsp;|");
                             }
-                        }
-                        
+                        }                        
                     displayCellEnd();
                 }
     
