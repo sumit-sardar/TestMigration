@@ -3858,8 +3858,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((this.isOKCustomer && isTopLevelAdmin)||(laslinkCustomer  && isTopLevelAdmin)||(isGACustomer && adminUser))));
-		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && isTopLevelAdmin)));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((this.isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
     }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
