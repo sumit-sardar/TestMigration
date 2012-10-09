@@ -171,6 +171,7 @@ public class StudentSearchUtils {
                          studentDetail.setStudentNumber(student.getStudentIdNumber());
                          studentDetail.setOrgNodeNamesList(student.getOrgNameList());
                          studentDetail.setOrgNodeIdList(student.getOrgIdList());
+                         studentDetail.setOrgIdNameList(student.getOrgIdNameList());
                          
                          
                          studentList.add(studentDetail);                  		
@@ -225,6 +226,7 @@ public class StudentSearchUtils {
                          studentDetail.setStudentNumber(student.getStudentIdNumber());
                          studentDetail.setOrgNodeNamesList(student.getOrgNameList());
                          studentDetail.setOrgNodeIdList(student.getOrgIdList());
+                         studentDetail.setOrgIdNameList(student.getOrgIdNameList());
                          studentList.add(studentDetail);                  		
                      }
 					

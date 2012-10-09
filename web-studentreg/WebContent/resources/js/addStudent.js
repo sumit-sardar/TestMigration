@@ -214,6 +214,7 @@ function studentDetailSubmit(){
 													if(showStudentInGrid) {
 														
 														var orgNodeNamesList ="";
+														var orgNodeIDNameList ="";
 														var elm = $("#selectedOrgNode a");
 														for(var kk=elm.length ;kk>0; kk--){
 															if(kk!=elm.length){
@@ -221,6 +222,8 @@ function studentDetailSubmit(){
 															}
 															orgNodeNamesList +=$(elm[kk-1]).text();
 														}
+														orgNodeIDNameList = prepareOrgNodeIdNameStr(assignedOrgNodeIds, orgNodeNamesList);
+														
 														var dataToBeAdded = {studentName:initCap($("#studentRegLastName").val())+','+ initCap($("#studentRegFirstName").val()),
 																			grade:$("#gradeOptions").val(),
 																			orgNodeNamesStr:$.trim(assignedOrg),
@@ -228,7 +231,8 @@ function studentDetailSubmit(){
 																			userName:data.studentLoginId,
 																			studentNumber:$("#studentRegExtPin1").val(),
 																			orgNodeIdList:assignedOrgNodeIds.replace(/,/g,"|"),
-																			orgNodeNamesList:orgNodeNamesList
+																			orgNodeNamesList:orgNodeNamesList,
+																			orgIdNameList:orgNodeIDNameList
 																			};
 														
 														var sortOrd = jQuery("#studentRegistrationGrid").getGridParam("sortorder");
@@ -883,4 +887,25 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				}
 		
 			}
+		}
+
+		function prepareOrgNodeIdNameStr(orgNodeIdStr, orgNodeNameStr){
+			var orgNodeIdArray;
+			var orgNodeNameArray;
+			var orgNodeIdNameStr = "";
+			if(orgNodeIdStr != "" && orgNodeIdStr != undefined)
+				orgNodeIdArray = orgNodeIdStr.split(",");
+
+			if(orgNodeNameStr != "" && orgNodeNameStr != undefined)
+				orgNodeNameArray = orgNodeNameStr.split("|");
+			
+			if(orgNodeIdArray != null && orgNodeNameArray != null && (orgNodeIdArray.length == orgNodeNameArray.length)){
+				for(i=0; i<orgNodeIdArray.length; i++){
+					orgNodeIdNameStr += orgNodeIdArray[i]+'$'+orgNodeNameArray[i];
+					if(i != (orgNodeIdArray.length - 1))
+						orgNodeIdNameStr += "|";					
+				}			
+			}				
+			
+			return orgNodeIdNameStr;
 		}

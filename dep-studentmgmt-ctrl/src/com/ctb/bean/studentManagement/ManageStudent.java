@@ -90,7 +90,20 @@ public class ManageStudent extends CTBBean
     private Date administrationDate; // added for Immediate Report
     
     private String isSessionStudent;
+    private String orgIdNameList;
     
+	/**
+	 * @return the orgIdNameList
+	 */
+	public String getOrgIdNameList() {
+		return orgIdNameList;
+	}
+	/**
+	 * @param orgIdNameList the orgIdNameList to set
+	 */
+	public void setOrgIdNameList(String orgIdNameList) {
+		this.orgIdNameList = orgIdNameList;
+	}
 	/**
 	 * @return the testPurpose
 	 */

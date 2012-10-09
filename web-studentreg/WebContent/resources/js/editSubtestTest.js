@@ -22,6 +22,7 @@
 	var TABE_ADAPTIVE_LANGUAGE = "TABE Adaptive Language";
 	var selectedStudentOrgNodeName;
 	var selectedStudentOrgNodeid;
+	var selectedStudentOrgIdNameStr;
 	
 	var selectedSubtestsMsm = new Array();
 	var subTestDetails = {};

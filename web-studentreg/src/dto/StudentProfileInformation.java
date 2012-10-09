@@ -79,6 +79,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private Integer orgNodeId;
     private String orgIdList;
     private String orgNameList;
+    private String orgIdNameList;
     
     //Added for out of school
     private String outOfSchool;
@@ -127,6 +128,22 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setScreenMagnifier(String screenMagnifier) {
 		this.screenMagnifier = screenMagnifier;
+	}
+
+
+	/**
+	 * @return the orgIdNameList
+	 */
+	public String getOrgIdNameList() {
+		return orgIdNameList;
+	}
+
+
+	/**
+	 * @param orgIdNameList the orgIdNameList to set
+	 */
+	public void setOrgIdNameList(String orgIdNameList) {
+		this.orgIdNameList = orgIdNameList;
 	}
 
 

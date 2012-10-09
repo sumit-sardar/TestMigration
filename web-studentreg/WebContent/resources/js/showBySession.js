@@ -125,7 +125,7 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(), $("#stuGrdStdName").val(),$("#grdGroup").val(), $("#stuGrdGrade").val(), $("#stuGrdGender").val(), studentIdTitle,"","",""],
+          colNames:[$("#stuGrdLoginId").val(), $("#stuGrdStdName").val(),$("#grdGroup").val(), $("#stuGrdGrade").val(), $("#stuGrdGender").val(), studentIdTitle,"","","",""],
 		   	colModel:[
 		   		{name:'userName',index:'userName',editable: true, width:130, align:"left", sortable:true, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentName',index:'studentName', width:130, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -135,7 +135,8 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:110, align:"left", search: false, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'isSessionStudent',index:'isSessionStudent',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeIdList',index:'orgNodeIdList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesList',index:'orgNodeNamesList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'orgNodeNamesList',index:'orgNodeNamesList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgIdNameList',index:'orgIdNameList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
@@ -175,9 +176,23 @@ function createSingleNodeSelectionTreeForStudent(jsondata) {
 				enableButton('nextButtonStdPopup');
 				var selectedRData = $("#list2").getRowData(rowId);
 				selectedStudentId = rowId;
+				selectedStudentOrgIdNameStr = selectedRData.orgIdNameList;
+				var orgIdNameListArr = selectedStudentOrgIdNameStr.split("|");
+				var tempOrgNodeIdList = "";
+				var tempOrgNodeNamesList = "";
+				for(i=0; i< orgIdNameListArr.length; i++){
+					var delimeterPos = orgIdNameListArr[i].indexOf("$");
+					var tempLength = orgIdNameListArr[i].length;
+					tempOrgNodeIdList += orgIdNameListArr[i].substr(0, delimeterPos);
+					tempOrgNodeNamesList += orgIdNameListArr[i].substr(delimeterPos+1, tempLength);
+					if(i != (orgIdNameListArr.length -1)){
+						tempOrgNodeIdList += "|";
+						tempOrgNodeNamesList += "|";
+					}
+				}
+				selectedStudentOrgNodeName = tempOrgNodeNamesList;
+				selectedStudentOrgNodeid   = tempOrgNodeIdList;
 				selectedStudentNameFromSessionPopup = selectedRData.studentName;
-				selectedStudentOrgNodeName = selectedRData.orgNodeNamesList;
-				selectedStudentOrgNodeid   = selectedRData.orgNodeIdList;
 				if(selectedRData.isSessionStudent=='T'){
 					disableButton('nextButtonStdPopup');
 				}else {

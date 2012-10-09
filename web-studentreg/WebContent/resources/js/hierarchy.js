@@ -589,7 +589,7 @@ function populateReportingStudentGrid() {
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, "",""],
+          colNames:[$("#stuGrdLoginId").val(),$("#stuGrdStdName").val(), $("#grdGroup").val(), $("#stuGrdGrade").val(),$("#stuGrdGender").val(), studentIdTitle, "","",""],
 		   	colModel:[
 		   		{name:'userName',index:'userName', width:150, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentName',index:'studentName', width:150, editable: true, align:"left",sorttype:'text',search: false,sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -598,7 +598,8 @@ function populateReportingStudentGrid() {
 		   		{name:'gender',index:'gender', width:125, editable: true, align:"left",search: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: genderOptions } },
 		   		{name:'studentNumber',index:'studentNumber', width:125, editable: true, align:"left",sorttype:'text',search: false,sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeIdList',index:'orgNodeIdList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesList',index:'orgNodeNamesList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'orgNodeNamesList',index:'orgNodeNamesList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgIdNameList',index:'orgIdNameList',hidden: true, editable: false, width:5, align:"left", sortable:false,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   		
 		   	],
@@ -638,8 +639,22 @@ function populateReportingStudentGrid() {
 					osterId = rowId;
 					selectedRData = $("#studentRegistrationGrid").getRowData(rowId);
 					selectedStudentId = rowId;
-					selectedStudentOrgNodeName = selectedRData.orgNodeNamesList;
-					selectedStudentOrgNodeid   = selectedRData.orgNodeIdList;
+					selectedStudentOrgIdNameStr = selectedRData.orgIdNameList;
+					var orgIdNameListArr = selectedStudentOrgIdNameStr.split("|");
+					var tempOrgNodeIdList = "";
+					var tempOrgNodeNamesList = "";
+					for(i=0; i< orgIdNameListArr.length; i++){
+						var delimeterPos = orgIdNameListArr[i].indexOf("$");
+						var tempLength = orgIdNameListArr[i].length;
+						tempOrgNodeIdList += orgIdNameListArr[i].substr(0, delimeterPos);
+						tempOrgNodeNamesList += orgIdNameListArr[i].substr(delimeterPos+1, tempLength);
+						if(i != (orgIdNameListArr.length -1)){
+							tempOrgNodeIdList += "|";
+							tempOrgNodeNamesList += "|";
+						}
+					}
+					selectedStudentOrgNodeName = tempOrgNodeNamesList;
+					selectedStudentOrgNodeid   = tempOrgNodeIdList;
 					selectedStudentNameFromSessionPopup = selectedRData.studentName;
 					setAnchorButtonState('registerButton', false);
 			},
