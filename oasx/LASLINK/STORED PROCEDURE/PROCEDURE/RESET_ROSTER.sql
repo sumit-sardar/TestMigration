@@ -1,129 +1,187 @@
-create or replace PROCEDURE RESET_ROSTER ( ROSTERS_IN IN ROSTERARRAY, RESULTOUT OUT VARCHAR2 ) AS
+CREATE OR REPLACE PROCEDURE RESET_ROSTER(ROSTERS_IN IN ROSTERARRAY,
+                                         RESULTOUT  OUT VARCHAR2) AS
 
-V_SC_SUBTEST_COUNT NUMBER := 0;
-v_total_subtest number := 0;
-V_SEQ_VAL number := 0;
+  V_SEQ_VAL NUMBER := 0;
 
-begin
+BEGIN
+
+  SELECT SEQ_AUDIT_ID.NEXTVAL INTO V_SEQ_VAL FROM DUAL;
+
+  FOR I IN 1 .. ROSTERS_IN.COUNT LOOP
   
-  select seq_audit_id.nextval into V_SEQ_VAL from dual;
-  
-  FOR i IN 1..ROSTERS_IN.COUNT LOOP
-  
-    FOR j IN 1..ROSTERS_IN(I).SUBTEST_IDS.COUNT LOOP
-     
-    --FOR cur_student_item_status_rec IN cur_student_item_set_status (ROSTERS_IN(i).roster_id, V_ITEM_SET_ID) LOOP
-      INSERT 
-        into item_response_audit 
-             (item_response_id, item_set_id, test_roster_id, response
-             , response_method, response_elapsed_time, response_seq_num
-             , created_date_time, item_id, ext_answer_choice_id
-             , student_marked, created_by, audit_id)
-      select item_response_id, item_set_id, test_roster_id, response
-             , response_method, response_elapsed_time, response_seq_num
-             , created_date_time, item_id, ext_answer_choice_id
-             , student_marked, created_by, V_SEQ_VAL
-        FROM item_response 
-       WHERE test_roster_id = rosters_in(i).roster_id 
-         AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j);
-         
-      INSERT 
-        into item_response_points_audit 
-             (points, item_response_points_seq_num, datapoint_id, condition_code_id
-             , created_by, created_date_time, item_response_id, comments, audit_id)
-      select points, item_response_points_seq_num, datapoint_id, condition_code_id
-            , created_by, created_date_time, item_response_id, comments, V_SEQ_VAL
-        FROM item_response_points 
-       WHERE item_response_id IN (
-      SELECT item_response_id FROM item_response 
-       where test_roster_id = rosters_in(i).roster_id 
-          AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j));
-      
-      DELETE 
-        FROM item_response_points
-       WHERE item_response_id IN (
-      SELECT item_response_id FROM item_response 
-       where test_roster_id = rosters_in(i).roster_id 
-        AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j));
-      
-      DELETE 
-        FROM Item_Response 
-       WHERE test_roster_id = rosters_in(i).roster_id 
-         AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j);
-      
-      INSERT 
-        into item_response_cr_audit 
-             (test_roster_id, item_set_id, item_id, constructed_response, audit_id)
-      select test_roster_id, item_set_id, item_id, constructed_response, V_SEQ_VAL
-        FROM item_response_cr 
-       WHERE test_roster_id = rosters_in(i).roster_id 
-         AND item_set_id = ROSTERS_IN(I).SUBTEST_IDS(j);
-      
-      INSERT 
-        into item_response_points_audit 
-             (points, item_response_points_seq_num, datapoint_id, condition_code_id
-             , created_by, created_date_time, item_response_id, comments, audit_id)
-      select points, item_response_points_seq_num, datapoint_id, condition_code_id
-            , created_by, created_date_time, item_response_id, comments, V_SEQ_VAL
-        FROM item_response_points 
-       WHERE item_response_id IN (
-      SELECT item_response_id FROM item_response_cr
-       where test_roster_id = rosters_in(i).roster_id 
-          AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j));
-      
-      DELETE 
-        FROM item_response_points
-       WHERE item_response_id IN (
-      SELECT item_response_id FROM item_response_cr
-       WHERE test_roster_id = rosters_in(i).roster_id 
-         AND item_set_id = ROSTERS_IN(I).SUBTEST_IDS(j));
-       
-      DELETE 
-        FROM item_response_cr 
-       WHERE test_roster_id = rosters_in(i).roster_id 
-         AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j);
-          
-    UPDATE student_item_set_status 
-       SET completion_status = 'SC' 
-         , start_date_time = NULL 
-         , completion_date_time = NULL
-         , raw_score = NULL
-         , max_score = NULL
-         , unscored = NULL
-         , exemptions = NULL
-         , absent = NULL
-         , ability_score = NULL
-         , sem_score = NULL
-         , objective_score = NULL
-         , tms_update = NULL
-    WHERE test_roster_id = rosters_in(i).roster_id 
-      AND item_set_id = ROSTERS_IN(i).SUBTEST_IDS(j);
-       
-   -- END LOOP;
-   
+    FOR J IN 1 .. ROSTERS_IN(I).SUBTEST_IDS.COUNT LOOP
+    
+      --FOR cur_student_item_status_rec IN cur_student_item_set_status (ROSTERS_IN(i).roster_id, V_ITEM_SET_ID) LOOP
+      INSERT INTO ITEM_RESPONSE_AUDIT
+        (ITEM_RESPONSE_ID,
+         ITEM_SET_ID,
+         TEST_ROSTER_ID,
+         RESPONSE,
+         RESPONSE_METHOD,
+         RESPONSE_ELAPSED_TIME,
+         RESPONSE_SEQ_NUM,
+         CREATED_DATE_TIME,
+         ITEM_ID,
+         EXT_ANSWER_CHOICE_ID,
+         STUDENT_MARKED,
+         CREATED_BY,
+         AUDIT_ID)
+        SELECT ITEM_RESPONSE_ID,
+               ITEM_SET_ID,
+               TEST_ROSTER_ID,
+               RESPONSE,
+               RESPONSE_METHOD,
+               RESPONSE_ELAPSED_TIME,
+               RESPONSE_SEQ_NUM,
+               CREATED_DATE_TIME,
+               ITEM_ID,
+               EXT_ANSWER_CHOICE_ID,
+               STUDENT_MARKED,
+               CREATED_BY,
+               V_SEQ_VAL
+          FROM ITEM_RESPONSE
+         WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+        .ROSTER_ID
+           AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
+    
+      INSERT INTO ITEM_RESPONSE_POINTS_AUDIT
+        (POINTS,
+         ITEM_RESPONSE_POINTS_SEQ_NUM,
+         DATAPOINT_ID,
+         CONDITION_CODE_ID,
+         CREATED_BY,
+         CREATED_DATE_TIME,
+         ITEM_RESPONSE_ID,
+         COMMENTS,
+         AUDIT_ID)
+        SELECT POINTS,
+               ITEM_RESPONSE_POINTS_SEQ_NUM,
+               DATAPOINT_ID,
+               CONDITION_CODE_ID,
+               CREATED_BY,
+               CREATED_DATE_TIME,
+               ITEM_RESPONSE_ID,
+               COMMENTS,
+               V_SEQ_VAL
+          FROM ITEM_RESPONSE_POINTS
+         WHERE ITEM_RESPONSE_ID IN
+               (SELECT ITEM_RESPONSE_ID
+                  FROM ITEM_RESPONSE
+                 WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+                .ROSTER_ID
+                   AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J));
+    
+      DELETE FROM ITEM_RESPONSE_POINTS
+       WHERE ITEM_RESPONSE_ID IN
+             (SELECT ITEM_RESPONSE_ID
+                FROM ITEM_RESPONSE
+               WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+              .ROSTER_ID
+                 AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J));
+    
+      DELETE FROM ITEM_RESPONSE
+       WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+      .ROSTER_ID
+         AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
+    
+      INSERT INTO ITEM_RESPONSE_CR_AUDIT
+        (TEST_ROSTER_ID,
+         ITEM_SET_ID,
+         ITEM_ID,
+         CONSTRUCTED_RESPONSE,
+         AUDIT_ID)
+        SELECT TEST_ROSTER_ID,
+               ITEM_SET_ID,
+               ITEM_ID,
+               CONSTRUCTED_RESPONSE,
+               V_SEQ_VAL
+          FROM ITEM_RESPONSE_CR
+         WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+        .ROSTER_ID
+           AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
+    
+      INSERT INTO ITEM_RESPONSE_POINTS_AUDIT
+        (POINTS,
+         ITEM_RESPONSE_POINTS_SEQ_NUM,
+         DATAPOINT_ID,
+         CONDITION_CODE_ID,
+         CREATED_BY,
+         CREATED_DATE_TIME,
+         ITEM_RESPONSE_ID,
+         COMMENTS,
+         AUDIT_ID)
+        SELECT POINTS,
+               ITEM_RESPONSE_POINTS_SEQ_NUM,
+               DATAPOINT_ID,
+               CONDITION_CODE_ID,
+               CREATED_BY,
+               CREATED_DATE_TIME,
+               ITEM_RESPONSE_ID,
+               COMMENTS,
+               V_SEQ_VAL
+          FROM ITEM_RESPONSE_POINTS
+         WHERE ITEM_RESPONSE_ID IN
+               (SELECT ITEM_RESPONSE_ID
+                  FROM ITEM_RESPONSE_CR
+                 WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+                .ROSTER_ID
+                   AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J));
+    
+      DELETE FROM ITEM_RESPONSE_POINTS
+       WHERE ITEM_RESPONSE_ID IN
+             (SELECT ITEM_RESPONSE_ID
+                FROM ITEM_RESPONSE_CR
+               WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+              .ROSTER_ID
+                 AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J));
+    
+      DELETE FROM ITEM_RESPONSE_CR
+       WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+      .ROSTER_ID
+         AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
+    
+      UPDATE STUDENT_ITEM_SET_STATUS
+         SET COMPLETION_STATUS    = 'SC',
+             START_DATE_TIME      = NULL,
+             COMPLETION_DATE_TIME = NULL,
+             RAW_SCORE            = NULL,
+             MAX_SCORE            = NULL,
+             UNSCORED             = NULL,
+             EXEMPTIONS           = NULL,
+             ABSENT               = NULL,
+             ABILITY_SCORE        = NULL,
+             SEM_SCORE            = NULL,
+             OBJECTIVE_SCORE      = NULL,
+             TMS_UPDATE           = NULL
+       WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
+      .ROSTER_ID
+         AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
+    
+    -- END LOOP;
+    
     /* UPDATE test_roster 
-         SET test_completion_status = 'IS' 
-          -- , start_date_time = NULL 
-           --, completion_date_time = NULL
-          -- , updated_date_time = NULL
-          -- , last_login_date_time = NULL
-          -- , restart_number = NULL
-          -- , last_mseq = NULL
-           --, tms_update = NULL
-      WHERE test_roster_id = ROSTERS_IN(i).roster_id;*/
-   END LOOP;  
-   
-    UPDATE test_roster 
-       SET test_completion_status = 'IS' 
-     WHERE test_roster_id = rosters_in(i).roster_id ;
+                 SET test_completion_status = 'IS' 
+                  -- , start_date_time = NULL 
+                   --, completion_date_time = NULL
+                  -- , updated_date_time = NULL
+                  -- , last_login_date_time = NULL
+                  -- , restart_number = NULL
+                  -- , last_mseq = NULL
+                   --, tms_update = NULL
+              WHERE test_roster_id = ROSTERS_IN(i).roster_id;*/
+    END LOOP;
   
-  end loop;
-  resultout := 'Success:' || V_SEQ_VAL;
-  COMMIT;   
+    UPDATE TEST_ROSTER
+       SET TEST_COMPLETION_STATUS = 'IS', UPDATED_DATE_TIME = SYSDATE
+     WHERE TEST_ROSTER_ID = ROSTERS_IN(I).ROSTER_ID;
   
+  END LOOP;
+  RESULTOUT := 'Success:' || V_SEQ_VAL;
+  COMMIT;
+
 EXCEPTION
-  
+
   WHEN OTHERS THEN
-  RESULTOUT := SQLERRM;
+    RESULTOUT := SQLERRM;
   
 END RESET_ROSTER;
