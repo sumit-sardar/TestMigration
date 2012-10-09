@@ -632,19 +632,35 @@ public class ResetOperationController extends PageFlowController {
 			Integer customerID = Integer.parseInt(getRequest().getParameter("customerID"));
 			Integer creatorOrgId = Integer.parseInt(getRequest().getParameter("creatorOrgId"));
 			List<StudentSessionStatusVO> resetStudentDataList = prepareResetStudentDataList(getRequest().getParameter("resetStudentDataList"));
+			Boolean isWipeOut = new Boolean (getRequest().getParameter("isWipeOut"));
 			
-			CustomerServiceSearchUtils.reOpenSubtest( 
-					this.customerServiceManagement ,
-					this.user,
-					requestDescription,
-					serviceRequestor,
-					ticketId,
-					testAdminId,
-					customerID,
-					resetStudentDataList,
-					itemSetId,
-					creatorOrgId,
-					null);
+			if(isWipeOut){
+				CustomerServiceSearchUtils.wipeOutSubtest ( 
+						this.customerServiceManagement ,
+						this.user,
+						requestDescription,
+						serviceRequestor,
+						ticketId,
+						testAdminId,
+						customerID,
+						resetStudentDataList,
+						itemSetId,
+						creatorOrgId,
+						null);
+			} else {
+				CustomerServiceSearchUtils.reOpenSubtest( 
+						this.customerServiceManagement ,
+						this.user,
+						requestDescription,
+						serviceRequestor,
+						ticketId,
+						testAdminId,
+						customerID,
+						resetStudentDataList,
+						itemSetId,
+						creatorOrgId,
+						null);
+			}
 			
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
 					customerServiceManagement, testAdminId, itemSetId , null, null, null);
@@ -704,6 +720,7 @@ public class ResetOperationController extends PageFlowController {
 			
 			Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
 			String testAccessCode = getRequest().getParameter("testAccessCode");
+			Boolean isWipeOut = new Boolean (getRequest().getParameter("isWipeOut"));
 			
 			
 			List<StudentSessionStatusVO> studentTestStatusDetailsList = new ArrayList<StudentSessionStatusVO>();
@@ -711,19 +728,35 @@ public class ResetOperationController extends PageFlowController {
 				studentTestStatusDetailsList.add(studentDetailsMap.get(itemSetId.toString()));
 			} 
 			
+			if(isWipeOut){
+				
+				CustomerServiceSearchUtils.wipeOutSubtest (
+						this.customerServiceManagement, 
+						this.user,
+						requestDescription,
+						serviceRequestor,
+						ticketId,
+						testAdminId,
+						customerID, 
+						studentTestStatusDetailsList,
+						itemSetId,
+						creatorOrgId,
+						studentId);
+			} else {
+				CustomerServiceSearchUtils.reOpenSubtest (
+						this.customerServiceManagement, 
+						this.user,
+						requestDescription,
+						serviceRequestor,
+						ticketId,
+						testAdminId,
+						customerID, 
+						studentTestStatusDetailsList,
+						itemSetId,
+						creatorOrgId,
+						studentId);
+			}
 			
-			CustomerServiceSearchUtils.reOpenSubtest (
-					this.customerServiceManagement, 
-					this.user,
-					requestDescription,
-					serviceRequestor,
-					ticketId,
-					testAdminId,
-					customerID, 
-					studentTestStatusDetailsList,
-					itemSetId,
-					creatorOrgId,
-					studentId);
 			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
 					customerServiceManagement, testRosterId, testAccessCode,
 						filter, page, sort);
@@ -983,7 +1016,8 @@ public class ResetOperationController extends PageFlowController {
 				isGACustomer = true;
 			}
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));  
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && isTopLevelAdmin)));
 		getConfigStudentLabel(customerConfigs);
 		
 		

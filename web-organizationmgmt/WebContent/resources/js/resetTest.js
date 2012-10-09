@@ -18,6 +18,7 @@
 	var customerID = "";
 	var creatorOrgId = "";
 	var bySession = true;
+	var isWipeOut = false;
 
 	
 	function updateView() {
@@ -302,6 +303,8 @@
 	
 	function populateAndDisplayStep4BySession(){
 		bySession = true;
+		isWipeOut = false;
+		$("#wipeOutBySession1").attr("checked","checked");
 		$("#reset_by_session_step4").show();
 		$("#reset_by_session_ticket_id").val("");
 		$("#reset_by_session_service_requestor").val("");
@@ -528,6 +531,7 @@
 		postDataObject.ticketId = $("#reset_by_session_ticket_id").val();
 		postDataObject.customerID = customerID;
 		postDataObject.creatorOrgId = creatorOrgId;
+		postDataObject.isWipeOut = isWipeOut;
 		
 		$.ajax({
 			async:		true,
@@ -847,6 +851,8 @@
 	
 	function populateAndDisplayStep4ByStudent (vSelectedSubTestSessionData){
 		bySession = false;
+		isWipeOut = false;
+		$("#wipeOutByStudent1").attr("checked","checked");
 		$("#reset_by_student_ticket_id").val("");
 		$("#reset_by_student_service_requestor").val("");
 		$("#reset_by_student_request_description").val("");
@@ -937,6 +943,7 @@
 	 	postDataObject.studentId  = selectedSudentData.studentId;
 	 	postDataObject.testRosterId = selectedTestSessionData.testRosterId;
 		postDataObject.testAccessCode = searchedAccessCode;
+		postDataObject.isWipeOut = isWipeOut;
 
 		$.ajax({
 			async:		true,
@@ -1054,3 +1061,7 @@
         }        
         return result;
     }
+    
+   function setWipeOut(isWipeOutFlag) {
+   		isWipeOut = isWipeOutFlag;
+   }

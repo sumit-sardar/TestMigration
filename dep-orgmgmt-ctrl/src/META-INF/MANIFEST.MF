@@ -5,6 +5,7 @@ Class-Path: APP-INF/lib/commons-collections-2.1.jar
  APP-INF/lib/poi-contrib-3.1-FINAL-20080629.jar 
  APP-INF/lib/poi-scratchpad-3.1-FINAL-20080629.jar 
  APP-INF/lib/weblogic-jdbc-control.jar 
+APP-INF/lib/ojdbc14.jar
  dep-base-ctrl.jar 
  dep-studentmgmt-ctrl.jar 
  dep-usermgmt-ctrl.jar

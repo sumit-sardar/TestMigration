@@ -556,6 +556,7 @@ public class TestContentOperationController extends PageFlowController {
 			}
 		}
 		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && isTopLevelAdmin)));
 	}
 	
 	private boolean isAdminCoordinatotUser() //For Student Registration

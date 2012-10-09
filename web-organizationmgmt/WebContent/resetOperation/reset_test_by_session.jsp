@@ -1,5 +1,6 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="label.tld" prefix="lb"%>
 <lb:bundle baseName="organizationApplicationResource" />
 <div id="reset_show_by_session" style="">
@@ -70,6 +71,15 @@
 		<td width="10px;"> </td>
 		<td class="transparent"><lb:label key="reset.test.by.session.step4.message" />  <BR />
 			<table >
+				<c:if test="${sessionScope.hasAuditingResetTestSession}">
+					<tr>
+						<td align="left" style="padding-bottom: 5px; padding-top: 5px;">
+							<input type="radio" id = "wipeOutBySession1" name = "wipeOutBySession" value="systemStop" align="left" checked="checked" onchange="setWipeOut(false);"> <lb:label key="reset.test.system.stop.message" /> 
+							<br>
+							<input type="radio" id = "wipeOutBySession2" name = "wipeOutBySession" value="wipeOut" align="left" onchange="setWipeOut(true);"> <lb:label key="reset.test.schedule.messsage" /> 
+						</td>
+					</tr>
+				</c:if>
 				<tr>
 					<td align="right" style="padding-bottom: 5px">
 						<input id="reset_by_session_step4_reset"   type="button"  class="ui-widget-header" value=<lb:label key="reset.test.title.reset" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>	type="submit" onClick="confirmAndResetTestBySession(); return false;" />

@@ -1,9 +1,16 @@
 package com.ctb.control.customerServiceManagement;
 
-import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
@@ -16,11 +23,11 @@ import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
-import com.ctb.bean.testAdmin.TestElement; 
 import com.ctb.exception.validation.ValidationException;
 
 
@@ -443,6 +450,96 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 			findInColumn.append(studentIdCheck);
 		}
 		return findInColumn.toString();
+	}
+
+	@Override
+	public void wipeOutSubtest(AuditFileReopenSubtest[] auditFileReopenSubtest)
+			throws CTBBusinessException { 
+		
+		Connection oascon = null;
+		String msg = null;
+		long eventId = 0L;
+		String sql = "insert into AUDIT_FILE_WIPEOUT_SUBTEST ( AUDIT_ID , TEST_ROSTER_ID, ITEM_SET_TD_ID , CUSTOMER_ID, ORG_NODE_ID, TEST_ADMIN_ID, STUDENT_ID, ITEM_SET_TS_ID, OLD_ROSTER_COMPLETION_STATUS, NEW_ROSTER_COMPLETION_STATUS, OLD_SUBTEST_COMPLETION_STATUS, NEW_SUBTEST_COMPLETION_STATUS, TICKET_ID, REQUESTOR_NAME, REASON_FOR_REQUEST, CREATED_BY, CREATED_DATE_TIME, COMPLETION_DATE_TIME, START_DATE_TIME, ITEM_ANSWERED, TIME_SPENT ) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+		try {
+			List<Roster> rosList = new ArrayList<Roster>();
+			 oascon = studentItemSetStatus.getConnection();
+			for(int i=0;i<auditFileReopenSubtest.length;i++) {
+				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
+				Integer[] subtestArr = new Integer [1];
+				subtestArr[0] =	reopenSubtestInfo.getItemSetTDId();
+				java.sql.Array subtestIds = new ARRAY( ArrayDescriptor.createDescriptor("NUM_ARRAY", oascon), oascon, subtestArr);
+				Roster roster = new Roster(reopenSubtestInfo.getTestRosterId(), subtestIds);
+				rosList.add(roster);
+				RosterElement rosterElement = testRoster.getRosterElement(reopenSubtestInfo.getTestRosterId());
+				reopenSubtestInfo.setOldSRosterCompStatus(rosterElement.getTestCompletionStatus());
+			}
+			if(rosList.size()>0) {
+				java.sql.Array rosters = new ARRAY(ArrayDescriptor.createDescriptor("ROSTERARRAY", oascon), oascon, rosList.toArray());
+				CallableStatement ctmt = oascon.prepareCall("{ call RESET_ROSTER (?, ?) }");
+				ctmt.setArray(1, rosters);
+				ctmt.registerOutParameter(2, Types.VARCHAR);
+				ctmt.execute();
+				
+				msg = ctmt.getString(2);
+				if(msg.indexOf("Success") > -1) {
+					eventId = Long.valueOf(msg.split(":")[1]);
+					PreparedStatement prest = oascon.prepareStatement(sql);
+					for(int i=0;i<auditFileReopenSubtest.length;i++) {
+						AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
+						prest.setLong(1, eventId);
+						prest.setInt(2, reopenSubtestInfo.getTestRosterId());
+						prest.setInt(3, reopenSubtestInfo.getItemSetTDId());
+						prest.setInt(4, reopenSubtestInfo.getCustomerId());
+						prest.setInt(5, reopenSubtestInfo.getOrgNodeId());
+						prest.setInt(6, reopenSubtestInfo.getTestAdminId());
+						prest.setInt(7, reopenSubtestInfo.getTestAdminId());
+						prest.setInt(8, reopenSubtestInfo.getItemSetTSId());
+						prest.setString(9, reopenSubtestInfo.getOldSRosterCompStatus());
+						prest.setString(10, reopenSubtestInfo.getNewRosterCompStatus());
+						prest.setString(11, reopenSubtestInfo.getNewSubtestCompStatus());
+						prest.setString(12, reopenSubtestInfo.getOldSubtestCompStatus());
+						prest.setString(13, reopenSubtestInfo.getTicketId());
+						prest.setString(14, reopenSubtestInfo.getRequestorName());
+						prest.setString(15, reopenSubtestInfo.getReasonForRequest());
+						prest.setInt(16, reopenSubtestInfo.getCreatedBy());
+						prest.setDate(17,   new java.sql.Date(reopenSubtestInfo.getCreatedDateTime().getTime()) );//
+						if(reopenSubtestInfo.getCompletionDateTime()!=null){
+							prest.setDate(18,   new java.sql.Date(reopenSubtestInfo.getCompletionDateTime().getTime()) );
+						} else {
+							prest.setDate(18,   null );
+						}
+						if(reopenSubtestInfo.getStartDateTime()!=null){
+							prest.setDate(19,   new java.sql.Date(reopenSubtestInfo.getStartDateTime().getTime()) );
+						} else {
+							prest.setDate(19,  null);
+						}
+						
+						prest.setString(20,  reopenSubtestInfo.getItemAnswered());
+						prest.setString(21,  reopenSubtestInfo.getTimeSpent());
+						prest.addBatch();	
+					}
+					prest.executeBatch();
+					//studentItemSetStatus.insertAuditRecordForReopenSubtestData();
+				} else {
+					throw new SQLException(msg);
+				}
+			
+			}
+			
+		} catch(SQLException se){
+			se.printStackTrace();
+			StudentDataNotFoundException studentDataNotFoundException = 
+				new StudentDataNotFoundException
+				("UpdateStudentforTestSession.Failed");
+			throw studentDataNotFoundException;                                                
+		} catch (Exception e) {
+			StudentDataNotFoundException studentDataNotFoundException = 
+				new StudentDataNotFoundException
+				("UpdateStudentforTestSession.Failed");
+			studentDataNotFoundException.setStackTrace(e.getStackTrace());
+			throw studentDataNotFoundException;
+		} 
+		
 	}
 
 }

@@ -22,4 +22,5 @@ public interface CustomerServiceManagement {
 	com.ctb.bean.testAdmin.ScheduleElementData   getSubTestListForTestSession(java.lang.String loginUserName,java.lang.String accessCode) throws CTBBusinessException ;
 	com.ctb.bean.testAdmin.StudentSessionStatusData getStudentListForSubTest(java.lang.Integer testAdminId, java.lang.Integer itemSetId,FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
 	void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)	throws CTBBusinessException;
+	void wipeOutSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)	throws CTBBusinessException;
 }

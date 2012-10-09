@@ -543,7 +543,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer &&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));		
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && isTopLevelAdmin)));
     }
     
 	private boolean isTopLevelUser(){	

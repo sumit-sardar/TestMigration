@@ -301,6 +301,63 @@ public class CustomerServiceSearchUtils {
 		}
 	}
 
+	
+	public   static   void  wipeOutSubtest( CustomerServiceManagement customerServiceManagement,
+			User user, String requestDescription, String serviceRequestor, String ticketId,
+			Integer testAdminId, Integer customerId, List<StudentSessionStatusVO> studentTestStatusDetailsList, 
+			Integer itemTsSetId, Integer creatorOrgId, Integer studentId) 
+	throws  CTBBusinessException {
+
+		if  (studentTestStatusDetailsList != null  && studentTestStatusDetailsList.size() > 0) {
+			AuditFileReopenSubtest[] auditFileReopenSubtestArray = new  
+			AuditFileReopenSubtest[studentTestStatusDetailsList.size()];
+			for  ( int  i = 0 ; i < studentTestStatusDetailsList.size() ; i++) {
+
+				StudentSessionStatusVO studentSessionStatusVO = 
+					studentTestStatusDetailsList.get(i);
+				AuditFileReopenSubtest auditFileReopenSubtest = new  AuditFileReopenSubtest();
+
+				auditFileReopenSubtest.setTestRosterId(studentSessionStatusVO.getTestRosterId());
+				auditFileReopenSubtest.setNewRosterCompStatus( "SC" );
+				auditFileReopenSubtest.setNewRosterCompStatus( "SC" );
+				auditFileReopenSubtest.setNewSubtestCompStatus( "SC" );
+				//issue
+				/*auditFileReopenSubtest.
+				setOldSRosterCompStatus(FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
+				*/
+				auditFileReopenSubtest.setOldSubtestCompStatus(
+						FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
+
+				auditFileReopenSubtest.setItemSetTDId(studentSessionStatusVO.getItemSetId());
+				auditFileReopenSubtest.setItemSetTSId(Integer.valueOf(itemTsSetId));
+				auditFileReopenSubtest.setCreatedBy(user.getUserId());
+
+				auditFileReopenSubtest.setCreatedDateTime( new  Date());
+				auditFileReopenSubtest.setCustomerId(customerId);
+				auditFileReopenSubtest.setReasonForRequest(requestDescription);
+				auditFileReopenSubtest.setRequestorName(serviceRequestor);
+				auditFileReopenSubtest.setCompletionDateTime(studentSessionStatusVO.getTestEndDate());  // added for new requirement  # 63500
+				auditFileReopenSubtest.setStartDateTime(studentSessionStatusVO.getTestStartDate());
+				auditFileReopenSubtest.setItemAnswered(studentSessionStatusVO.getItemAnswered());
+				auditFileReopenSubtest.setTimeSpent(studentSessionStatusVO.getTimeSpentForDisplay());
+				
+				if (studentSessionStatusVO.getStudentId() != null) {//condition true for test session
+
+					auditFileReopenSubtest.setStudentId(studentSessionStatusVO.getStudentId());
+				} else {
+					auditFileReopenSubtest.setStudentId(studentId);
+				}
+
+				auditFileReopenSubtest.setTestAdminId(testAdminId);
+				auditFileReopenSubtest.setTicketId(ticketId);
+				auditFileReopenSubtest.setOrgNodeId(creatorOrgId);
+
+				auditFileReopenSubtestArray[i] = auditFileReopenSubtest;
+			}
+			customerServiceManagement.wipeOutSubtest(auditFileReopenSubtestArray);
+
+		}
+	}
 
 	public static String getAdjustedDateTime(Date getStartDateTime,String userTimeZone) {
 
