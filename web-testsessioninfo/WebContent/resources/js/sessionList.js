@@ -4422,17 +4422,17 @@ function registerDelegate(tree){
 										html += '<td class="sortable alignCenter"> <span>--</span></td>';
 									}
 									if(data.isShowScores) {
-										if(row.maxScore == null || row.maxScore == "") {
+										if(row.maxScore == null || row.maxScore === "" || row.maxScore == undefined) {
 											html += '<td class="sortable alignCenter"> <span>--</span></td>';
 										} else {
 											html += '<td class="sortable alignCenter"> <span>'+row.maxScore+'</span></td>';
 										}
-										if(row.rawScore == null || row.rawScore == "") {
+										if(row.rawScore == null || row.rawScore === "" || row.rawScore == undefined) {
 											html += '<td class="sortable alignCenter"> <span>--</span></td>';
 										} else {
 											html += '<td class="sortable alignCenter"> <span>'+row.rawScore+'</span></td>';
 										}
-										if(row.unScored == null || row.unScored == "") {
+										if(row.unScored == null || row.unScored === "" || row.unScored == undefined) {
 											html += '<td class="sortable alignCenter"> <span>--</span></td>';
 										} else {
 											html += '<td class="sortable alignCenter"> <span>'+row.unScored+'</span></td>';
