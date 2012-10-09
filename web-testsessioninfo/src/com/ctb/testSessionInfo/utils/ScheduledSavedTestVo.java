@@ -37,6 +37,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private String endDate;
 	private TestSessionVO testSession;
 	private boolean isOkAdmin = false;
+	private boolean forceTestBreak = false;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -253,6 +254,14 @@ public class ScheduledSavedTestVo implements Serializable {
 		this.isOkAdmin = isOkAdmin;
 	}
 
+	public boolean isForceTestBreak() {
+		return forceTestBreak;
+	}
+
+
+	public void setForceTestBreak(boolean forceTestBreak) {
+		this.forceTestBreak = forceTestBreak;
+	}
 	
 
 }

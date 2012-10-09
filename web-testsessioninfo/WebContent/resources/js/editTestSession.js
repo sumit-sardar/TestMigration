@@ -24,6 +24,8 @@
 	var isSelectTestDetClicked = false; //added  for copy test session
 	var isOKEQProduct = false; // Added for Oklahoma customer
 		
+	var forceTestBreak = false;
+		
   function editTestSession(action){  
   	var activeJQGrid;
   	var rowID;
@@ -73,6 +75,9 @@
 							}else{
 								isCopySession = false;
 							}
+							
+							forceTestBreak = data.forceTestBreak;
+							
 							//Added for Oklahoma customer
 							isOKAdmin = data.isOkAdmin;
 							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
@@ -384,6 +389,11 @@
 										$("#testBreak").attr('disabled', true);
 									}
 								}
+								
+								if (forceTestBreak) {
+									$("#testBreak").attr('disabled', true);	
+								}
+								
 								onChangeHandler.register("Select_Test");
 								isPopUp = true;
 								wizard.accordion("activate", index);					

@@ -191,6 +191,7 @@ public class SessionOperationController extends PageFlowController {
 	private List fileTypeOptions = null;
 	public boolean isLasLinkCustomer = false;
 	public boolean isOKCustomer = false;
+	private boolean forceTestBreak = false;
 
 	
 	//Added for view/monitor test status
@@ -624,6 +625,8 @@ public class SessionOperationController extends PageFlowController {
             	vo.setOkAdmin(false);
             }
     
+            vo.setForceTestBreak(this.forceTestBreak);
+            
             Gson gson = new Gson();
         	jsonData = gson.toJson(vo);
         	//System.out.println(jsonData);
@@ -1097,6 +1100,7 @@ public class SessionOperationController extends PageFlowController {
                 	vo.setOkAdmin(false);
                 }
                 
+                vo.setForceTestBreak(this.forceTestBreak);
     	    	
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -3843,6 +3847,10 @@ public class SessionOperationController extends PageFlowController {
 								&& cc.getDefaultValue().equalsIgnoreCase("T"))){
 					isGACustomer = true;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Force_Test_Break") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					this.forceTestBreak = true;
+	            }
 			}
 			
 		}

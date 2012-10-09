@@ -106,6 +106,8 @@ var isOKEQActionPerformed = false; // As per new requirement, proctors will be a
 var hideProctorDelButton = false; // Only state level admin for oklahoma should be able to add/del proctors
 var hideStudentDelButton = false; // Only state level admin, admin coordinator, coordinator should be able to add/del students
 
+var forceTestBreak = false;
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1540,6 +1542,8 @@ function registerDelegate(tree){
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
 						isOKAdmin = data.isOkAdmin;
+						forceTestBreak = data.forceTestBreak;
+						
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
 							document.getElementById("testDiv").style.display = "none";
@@ -2145,8 +2149,9 @@ function registerDelegate(tree){
 						firstTimeOpen = false;
 					
 					// Force Test Breaks, Access Codes	
-					//setTestBreakForCustomer();
-						
+					if (forceTestBreak) {
+						setTestBreakForCustomer();
+					}
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
@@ -2190,14 +2195,10 @@ function registerDelegate(tree){
 	
 	function setTestBreakForCustomer(){
 		var testBreak = document.getElementById("testBreak");
-
 		if (! testBreak.disabled) {
 			testBreak.checked = true;
-			
 			toggleAccessCode();
-		
 			document.getElementById("aCode").style.visibility = "hidden";
-		
 			testBreak.disabled = true;
 		}
 	}
