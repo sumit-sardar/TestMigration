@@ -7,7 +7,7 @@
       <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
       <array-member>
         <member-name>urls</member-name>
-        <member-value>http://nj09mhe5338.mhe.mhc:22611/SchedulingWebService/SchedulingWS</member-value>
+        <member-value>http://nj09mhe5381-mgt.edmz.mcgraw-hill.com:22611/SchedulingWebService/SchedulingWS</member-value>
       </array-member>
     </annotation>
   </annotated-class>
@@ -455,6 +455,31 @@
       <member>
         <member-name>jndiContextFactory</member-name>
       </member>
+    </annotation>
+  </annotated-class>
+  <annotated-class>
+    <annotated-class-name>com.ctb.control.db.OASDB</annotated-class-name>
+    <component-type>Control Extension (JCX)</component-type>
+    <annotation>
+      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
+      <member>
+        <member-name>jndiName</member-name>
+        <member-value>oasDataSource</member-value>
+      </member>
+      <member>
+        <member-name>jndiContextFactory</member-name>
+      </member>
+    </annotation>
+  </annotated-class>
+  <annotated-class>
+    <annotated-class-name>com.ctb.service.ScoringServiceControl</annotated-class-name>
+    <component-type>Control Extension (JCX)</component-type>
+    <annotation>
+      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
+      <array-member>
+        <member-name>urls</member-name>
+        <member-value>http://192.168.14.136:8080/host/services/ScoringService</member-value>
+      </array-member>
     </annotation>
   </annotated-class>
   <annotation-definition>

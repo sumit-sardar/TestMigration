@@ -13,16 +13,24 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.commons.httpclient.protocol.Protocol;
 
+import com.ctb.control.testAdmin.TestSessionStatus;
+import com.ctb.util.RosterUtil;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
+import com.ctb.bean.testAdmin.RosterElement;
+
 import dto.Accommodation;
 import dto.SecureUser;
 import dto.Session;
+import dto.SessionStatus;
+import dto.StudentStatus;
 import dto.Subtest;
+
+import com.ctb.util.RosterUtil;
 
 @Jpf.Controller()
 public class TestWebServiceController extends PageFlowController
@@ -35,7 +43,16 @@ public class TestWebServiceController extends PageFlowController
 	
 	@Control
 	private SchedulingWSServiceControl schedulingWSServiceControl;
+	
+	@Control
+	private RosterStatusWSServiceControl rosterStatusWSServiceControl;
 
+	@Control
+	private TestSessionStatus testSessionStatus;
+	
+    @Control()
+    private com.ctb.control.db.TestRoster rosters;
+	
 	
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -59,6 +76,42 @@ public class TestWebServiceController extends PageFlowController
         return new Forward("success");
     }
 	
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "testRosterStatus.jsp") 
+        }) 
+    protected Forward rosterStatusService()
+    {
+		// init user
+		SecureUser user = new SecureUser();
+		user.setUserName(AUTHENTICATE_USER_NAME);
+		user.setPassword(AUTHENTICATE_PASSWORD);
+		user.setUserType(ACUITY_USER_TYPE);
+
+		// populate session
+	    SessionStatus session = populateSessionStatus();
+	    
+		// call web service
+		session = rosterStatusWSServiceControl.getRosterStatus(user, session);
+
+		String resultText = "Web service returns with status = " + session.getStatus();
+    	this.getRequest().setAttribute("resultText", resultText);
+	    
+	    String infoText = "";
+	    StudentStatus[] students = session.getStudents();    
+    	for (int i=0 ; i<students.length ; i++) {
+    		StudentStatus student = students[i];
+    		String status = student.getRosterStatus(); 		
+    		String text = "studentId=" + student.getStudentId() + " - status= " + status;
+    		System.out.println(text);
+    		infoText += ("<br/>" + text);
+    	}
+    	
+
+    	this.getRequest().setAttribute("infoText", infoText);
+    	
+        return new Forward("success");
+    }
+    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "testWebService.jsp") 
         }) 
@@ -387,6 +440,23 @@ public class TestWebServiceController extends PageFlowController
 		
 		session.setAccom(accom);
 		
+		return session;
+    }
+
+	/**
+	 * populateSessionStatus
+	 */
+    private SessionStatus populateSessionStatus()
+    {
+		// init session
+    	Integer sessionId = new Integer(0);
+    	SessionStatus session = new SessionStatus();
+
+		if(this.getRequest().getParameter("sesionId") != null && (this.getRequest().getParameter("sesionId")).trim().length()>0){
+			String sessionIdString = (this.getRequest().getParameter("sesionId")).trim();
+			sessionId = Integer.valueOf(sessionIdString);
+		}
+		session.setSessionId(sessionId);
 		return session;
     }
     
