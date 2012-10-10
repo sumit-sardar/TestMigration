@@ -3388,7 +3388,7 @@ function registerDelegate(tree){
 		 								jsondata['firstName'] = vdata[i].firstName;
 		 								jsondata['defaultScheduler'] = vdata[i].defaultScheduler;
 		 								jsondata['userName'] = vdata[i].userName;
-		 								jsondata['editable'] = vdata[i].editable;
+		 								jsondata['editable'] = 'T'; // As per new requirement, need not make them disabled
 		 								val.push(jsondata);
 		 								proctorIdObjArray[vdata[i].userId] = jsondata;
 	 								}
