@@ -89,6 +89,8 @@ function populateTestTicketTree() {
 						//alert('in');
 						//$.unblockUI();  
 						//leafNodeCategoryId = data.leafNodeCategoryId;
+						initDisplayAccessCodeOnTicket();
+						
 						if(data.isStudentExist == "false"){
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
@@ -376,3 +378,10 @@ function accessCode() {
 	var checkAccess = document.getElementsByName("individualAccess");
 	displayAccessCodeOnTicket = checkAccess[0].checked;
 }
+
+function initDisplayAccessCodeOnTicket() {
+	displayAccessCodeOnTicket = false;
+	var checkAccess = document.getElementsByName("individualAccess");
+	checkAccess[1].checked = true;		
+}
+														
