@@ -75,7 +75,7 @@ public class ItemLayoutPublisher {
 			itemLml = itemProcessor.layoutItem();
 			DeliverableUnitProcessor.addSizeToContent(itemProcessor
 					.getDownloadSize());
-			//added by ranjt
+			//added by for NEW item
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId,adsConfig);
 			else
@@ -101,7 +101,7 @@ public class ItemLayoutPublisher {
 			if (assetList != null && assetList.size() > 0) {
 				
 				  if(adsConfig.isSftp()){ this.sendfiles_sftp(assetList); }
-				  else { this.sendfiles_ftp(assetList); }
+				 else { this.sendfiles_ftp(assetList); }
 				 
 				this.publishAssets(assetList);
 			}
@@ -211,7 +211,7 @@ public class ItemLayoutPublisher {
 			request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
 					+ "<publish_asset> <asset ident= \""
 					+ itemID
-					+ "\" pkgtype=\"zip/"					
+					+ "\" pkgtype=\"zip"					
 					+ "\">"
 					+ " <file_location uri=\""
 					+ destinationPkgPath
