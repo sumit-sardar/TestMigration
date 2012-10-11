@@ -42,6 +42,7 @@ public class TestSessionVO implements java.io.Serializable
     private String productType ;
     private boolean isSTabeProduct = false;
     private boolean isSTabeAdaptiveProduct = false;
+    private boolean isLasLinksProduct = false; //changes for LasLinksProduct subtest Modify
     private String copyable;
     
     public String getCopyable() {
@@ -79,6 +80,12 @@ public class TestSessionVO implements java.io.Serializable
 	}
 	public void setSTabeAdaptiveProduct(boolean isSTabeAdaptiveProduct) {
 		this.isSTabeAdaptiveProduct = isSTabeAdaptiveProduct;
+	}
+	public boolean isLasLinksProduct() {
+		return isLasLinksProduct;
+	}
+	public void setLasLinksProduct(boolean isLasLinksProduct) {
+		this.isLasLinksProduct = isLasLinksProduct;
 	}
 	/**
 	 * @return the assignedRole
@@ -126,6 +133,7 @@ public class TestSessionVO implements java.io.Serializable
         	 this.productType = TestSessionUtils.getProductType(ts.getProductType());
              this.isSTabeProduct         = TestSessionUtils.isTabeProduct(this.productType);
              this.isSTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
+             this.isLasLinksProduct = TestSessionUtils.isLasLinksProduct(this.productType); //Changes for modify Subtest
          }
          this.copyable = ts.getCopyable();
     }     

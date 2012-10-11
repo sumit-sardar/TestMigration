@@ -21,6 +21,10 @@
 	var TABE_ADAPTIVE_APPLIED_MATH = "TABE Adaptive Applied Mathematics";
 	var TABE_ADAPTIVE_LANGUAGE = "TABE Adaptive Language";
 	
+	var LASLINKS_SPEAKING = "Speaking";
+	var LASLINKS_LISTENING = "Listening";
+	var LASLINKS_READING = "Reading";
+	var LASLINKS_WRINTING = "Writing";
 	
 	
 	
@@ -45,6 +49,11 @@
 	    	isValidated = validateTABESubtest(tmpSelectedSubtests, validateLevels, false);
 	    } else if(isTabeAdaptiveProduct ) {
 	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests, false);
+	    }
+	    
+	    if(isLasLinksProduct){
+			isValidated = validateLASLINKSSubtest(tmpSelectedSubtests);
+			
 	    }
 	    
 	    if (isValidated) {
@@ -153,7 +162,27 @@
 	 return isValid;
 	}
 	
-
+	function validateLASLINKSSubtest(subtests) {
+		var isValid = true;
+		if (subtests == undefined || subtests == null || subtests.length == 0) {
+	        isValid = false;
+	        setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
+	    	  //Message = NO_SUBTEST_MSG;
+	    
+        }
+        
+        /**
+        else if (! comprehensionDependency(subtests)) {
+        	isValid = false;
+            setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#comprehensionDependencyMsg").val());
+        
+        }else if (! oralDependency(subtests)) {
+        	isValid = false;
+            setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#oralDependencyMsg").val());
+        }
+        **/
+     return isValid;
+	}
 	
 	function validateTABESubtest(subtests, validateLevels , isForStudentMsm) {
 	    var isValid = true;
@@ -353,6 +382,36 @@
 	    }
 	    return false;
 	}
+	/** Laslinks comprehensionDependency Validation (R and L together) **/
+	function comprehensionDependency(subtests) {
+        var isValid = true;
+        if (presented(LASLINKS_READING, subtests)) {
+            if (! presented(LASLINKS_LISTENING, subtests)) {
+                isValid = false;
+            }
+        }
+        if (presented(LASLINKS_LISTENING, subtests)) {
+            if (! presented(LASLINKS_READING, subtests)) {
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+	/** Laslinks oralDependency Validation (L and S together) **/
+    function oralDependency(subtests)
+    {
+        var isValid = true;
+   		if (presented(LASLINKS_LISTENING, subtests)) {
+            if (! presented(LASLINKS_SPEAKING, subtests)) {
+                isValid = false;
+            }
+        }
+        if (presented(LASLINKS_SPEAKING, subtests)) {
+            if (! presented(LASLINKS_LISTENING, subtests)) {
+                isValid = false;
+            }
+        }return isValid;
+    }
 	function prepareSelectedSubtests(tmpSelectedSubtests) {
 	     var setLevels = false;
 	     if(locatorSubtest!=null && locatorSubtest!= undefined && locatorSubtest.id!=undefined && !hasAutolocator) {
@@ -491,10 +550,14 @@
 	          $("#modifyTestLevel").hide();
 	   }
 	   if(isTabeProduct){ 
-	   		$("#modifySubtestMsg").html($("#tabeModifySubtestMsg").val())
+	   		$("#modifySubtestMsg").html($("#tabeModifySubtestMsg").val());
 	   } else {
-	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val())
+	   		$("#modifySubtestMsg").html($("#tabeAdaptiveModifySubtestMsg").val());
 	   }
+	   if(isLasLinksProduct){
+	   		$("#modifySubtestMsg").html($("#laslinksModifySubtestMsg").val());
+	   }
+	   
 	    displaySourceTable(allSubtests, selectedSubtests,'availableSubtestsTable');
 	    var isProductHasLocator = ( locatorSubtest != null && locatorSubtest != undefined && locatorSubtest.id != undefined) ? true : false ;
 	    var haslocator= (locatorSubtest!=null && locatorSubtest != undefined && locatorSubtest.id!=undefined && hasAutolocator);

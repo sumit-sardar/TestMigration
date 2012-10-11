@@ -247,6 +247,7 @@ public class ScheduleTestVo implements Serializable{
 				prod.setTabeProduct(TestSessionUtils.isTabeProduct(prod.getProductType()));
 				prod.setTabeLocatorProduct(TestSessionUtils.isTabeLocatorProduct(prod.getProductType()));
 				prod.setTabeAdaptiveProduct(TestSessionUtils.isTabeAdaptiveProduct(prod.getProductType()));
+				prod.setLasLinksProduct(TestSessionUtils.isLasLinksProduct(prod.getProductType()));
 				
 				
 				if (prod.getLevelDropDownList().size() > 0 ) {
@@ -528,6 +529,7 @@ class ProductBean implements Serializable{
 	
 	private Boolean showStudentFeedback = false;
 	
+	private boolean isLasLinksProduct = false;
 	
 	public ProductBean(Integer productId, String productName) {
 		this.productId = productId;
@@ -601,7 +603,12 @@ class ProductBean implements Serializable{
 		this.isTabeProduct = isTabeProduct;
 	}
 
-
+	/**
+	 * @param isLasLinksProduct the isLasLinksProduct to set
+	 */
+	public void setLasLinksProduct(boolean isLasLinksProduct) {
+		this.isLasLinksProduct = isLasLinksProduct;
+	}
 	
 	/**
 	 * @return the productType
@@ -665,8 +672,12 @@ class ProductBean implements Serializable{
 	}
 
 
-	
-
+	/**
+	 * @return the isLasLinksProduct
+	 */
+	public boolean isLasLinksProduct(){
+		return isLasLinksProduct;
+	}
 
 	
 	/**

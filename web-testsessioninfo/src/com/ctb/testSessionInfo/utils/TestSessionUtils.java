@@ -1087,8 +1087,8 @@ public class TestSessionUtils
             return TABE_LOCATOR_PRODUCT_TYPE;
         else if (productType.equals("TA"))
         	return TABE_ADAPTIVE_PRODUCT_TYPE;
-        /*else if (productType.equals("LL")) // commented to remove laslink support
-        	return LASLINKS_PRODUCT_TYPE;*/
+        else if (productType.equals("LL"))
+        	return LASLINKS_PRODUCT_TYPE;
         else
             return GENERIC_PRODUCT_TYPE;
     }

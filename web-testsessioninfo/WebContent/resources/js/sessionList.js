@@ -108,6 +108,8 @@ var hideStudentDelButton = false; // Only state level admin, admin coordinator, 
 
 var forceTestBreak = false;
 
+var isLasLinksProduct = false; // add for laslink modification
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1102,6 +1104,7 @@ function registerDelegate(tree){
 			isPopUp = false;
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
+		    isLasLinksProduct = false;
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1624,6 +1627,9 @@ function registerDelegate(tree){
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
+					if(optionList[i].isLasLinksProduct){
+					 	isLasLinksProduct = true;
+					 }
 					if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 						isTabeProduct = false;
 						isTabeLocatorProduct=false;
@@ -1830,7 +1836,12 @@ function registerDelegate(tree){
 			}
 			if(selectProductId==optionList[i].productId) { 	     
 				$("#productType").val(optionList[i].productType);
-				$("#showStudentFeedback").val(optionList[i].showStudentFeedback); 	     
+				$("#showStudentFeedback").val(optionList[i].showStudentFeedback); 
+				if(optionList[i].isLasLinksProduct){ 
+					   isLasLinksProduct = true;
+				} else {
+					    isLasLinksProduct = false;
+					 }	     
 				if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 					isTabeProduct = false;
 					isTabeLocatorProduct=false;
@@ -2024,6 +2035,13 @@ function registerDelegate(tree){
  		var levelOrGradeTitle = "None";
  		var istabe = false;
 		var istabeadaptive = false;
+		var islasLinksProduct = false;
+		
+		if(isLasLinksProduct == undefined || isLasLinksProduct =='undefined') {
+ 			islasLinksProduct = false;
+ 		} else {
+ 			islasLinksProduct = isLasLinksProduct;
+ 		}
 
  		if(isTabeProduct == undefined || isTabeProduct =='undefined') {
  			istabe = false;
@@ -2321,7 +2339,7 @@ function registerDelegate(tree){
 			
 		}
 		
-		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct )){
+		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct)){
 		   document.getElementById("modifyTestDiv").style.display = "";
 		} else {
 		 	document.getElementById("modifyTestDiv").style.display = "none";
