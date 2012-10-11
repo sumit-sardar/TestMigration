@@ -3082,9 +3082,9 @@ public class ItemLayoutProcessor {
 		Properties prop = new Properties();
 		prop.load(new FileInputStream(adsConfig.getFile()));
 		
-		String sourcs=prop.getProperty("pakagePath")+"\\"+itemID;
+		String sourcs=prop.getProperty("te.package.path")+"\\"+itemID;
 		//String destination=prop.getProperty("pakagePath")+"\\"+itemID;
-		String destination=prop.getProperty("pakagePath")+"\\"+itemID+"zip";
+		String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
 		//String destination="/mappingdata/InnovativeItems/"+itemID+"zip";
 	
 		zipFolder(sourcs, destination);
