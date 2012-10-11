@@ -267,6 +267,7 @@ public class ItemLayoutProcessor {
 		if ("IN".equals(itemElement.getAttributeValue("ItemType"))) {			
 			html = new Element("html_widget");			
 			html.setAttribute("src", itemElement.getAttributeValue("ID"));
+			html.setAttribute("id", getUniqueId());			
 			html.setAttribute("width", "784");
 			html.setAttribute("height", "443");
 			html.setAttribute("x", "0");
