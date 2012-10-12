@@ -479,9 +479,9 @@ public class ItemLayoutProcessor {
 		if (html != null) {
 			Element panel = new Element("panel");
 			panel.setAttribute("stereotype","stimulus");
-			panel.setAttribute("id","sd1");
+			panel.setAttribute("id",getUniqueId());
 			panel.setAttribute("left_padding","12");
-			panel.setAttribute("height","422");
+			panel.setAttribute("height","453");
 			
 			panel.setAttribute("layout","vertical");
 			panel.setAttribute("spacing","12");
