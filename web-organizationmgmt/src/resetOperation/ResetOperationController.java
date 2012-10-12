@@ -488,14 +488,22 @@ public class ResetOperationController extends PageFlowController {
 		try {
 			
 			String testAccessCode = getRequest().getParameter("testAccessCode");
-			scheduleElementData = CustomerServiceSearchUtils.getTestDeliveryDataInTestSession(
-					customerServiceManagement,this.userName,testAccessCode);
+			try {
+				scheduleElementData = CustomerServiceSearchUtils.getTestDeliveryDataInTestSession(
+						customerServiceManagement,this.userName,testAccessCode);
+			} catch (CTBBusinessException cbe) {
+				cbe.printStackTrace();
+			}
 			if (scheduleElementData != null && scheduleElementData.getFilteredCount().intValue() > 0) {
 				List<ScheduleElementVO> deliverableItemSetList = CustomerServiceSearchUtils.buildTestDeliveritemList(scheduleElementData);
 				Integer defTestAdminId = deliverableItemSetList.get(0).getTestAdminId();
 				Integer defItemSetId = scheduleElementData.getElements()[0].getItemSetId();
-				sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
-						customerServiceManagement, defTestAdminId, defItemSetId , null, null, null);
+				try {
+					sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
+							customerServiceManagement, defTestAdminId, defItemSetId , null, null, null);
+				}catch (CTBBusinessException cbe) {
+					cbe.printStackTrace();
+				}
 				if((sstData != null) && (sstData.getFilteredCount().intValue() == 0)){
 					 studentDetailsMap = new TreeMap<String, StudentSessionStatusVO>();
 				 } else {
@@ -821,7 +829,8 @@ public class ResetOperationController extends PageFlowController {
 		SortParams sort = null;
 		FilterParams filter = null;
 		PageParams page = null;
-		List<TestSessionVO> testSessionList = null;
+		List<TestSessionVO> testSessionList = new ArrayList<TestSessionVO>();
+		List<StudentProfileInformation> studentList =  new ArrayList<StudentProfileInformation>();
 		RestTestVO vo = new RestTestVO();
 		try {
 			String studentLoginId = getRequest().getParameter("studentLoginId");
@@ -830,24 +839,29 @@ public class ResetOperationController extends PageFlowController {
 				getLoggedInUserPrincipal();
 				getUserDetails();
 			}
-			sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement,
-					this.userName, studentLoginId);
-			if (sData != null) {
-				Student[] students = new Student[1];
-				students[0] = sData;
-				studentData = new StudentData();
-				studentData.setStudents(students,1);
-				List<StudentProfileInformation> studentList = CustomerServiceSearchUtils.buildStudentList(studentData);
-				tsData = CustomerServiceSearchUtils.getStudentTestSessionData(customerServiceManagement,
-						this.userName, sData.getStudentId(),sData.getCustomerId(),testAccessCode ,filter,page,sort);
-				vo.setStudentList(studentList);
+			try {
+				sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement,
+							this.userName, studentLoginId);
+				if (sData != null) {
+					Student[] students = new Student[1];
+					students[0] = sData;
+					studentData = new StudentData();
+					studentData.setStudents(students,1);
+					studentList = CustomerServiceSearchUtils.buildStudentList(studentData);
+					tsData = CustomerServiceSearchUtils.getStudentTestSessionData(customerServiceManagement,
+								this.userName, sData.getStudentId(),sData.getCustomerId(),testAccessCode ,filter,page,sort);
+
+				}
+			} catch (CTBBusinessException cbe){
+				cbe.printStackTrace();
 			}
+			
 			if (tsData != null && tsData.getFilteredCount().intValue() > 0) {
 				testSessionList = CustomerServiceSearchUtils.buildTestSessionList(tsData);
-				vo.setTestSessionList(testSessionList);
-				
 			} 
 			
+			vo.setStudentList(studentList);
+			vo.setTestSessionList(testSessionList);
 			
 			try {
 				Gson gson = new Gson();
@@ -891,9 +905,14 @@ public class ResetOperationController extends PageFlowController {
 			//Integer testAdminId = Integer.parseInt(getRequest().getParameter("testAdminId"));
 			Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
 			String testAccessCode = getRequest().getParameter("testAccessCode");
-			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
-					customerServiceManagement, testRosterId, testAccessCode,
-						filter, page, sort);
+			try{
+				sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
+						customerServiceManagement, testRosterId, testAccessCode,
+							filter, page, sort);
+			}catch (CTBBusinessException cbe){
+				cbe.printStackTrace();
+			}
+			
 			if (sstData != null && sstData.getFilteredCount().intValue() > 0) {
 				subtestList = CustomerServiceSearchUtils.buildSubtestList(sstData,this.userTimeZone);	
 				prepareStudentDetailsMapForStudentFlow(subtestList);
@@ -1357,7 +1376,7 @@ public class ResetOperationController extends PageFlowController {
 		 return new Forward("success");
 	 }
 	 
-	 @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "/error.jsp") })
+	 @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "/errorPage.jsp") })
 		protected Forward error() {
 			initialize();
 			return new Forward("success");

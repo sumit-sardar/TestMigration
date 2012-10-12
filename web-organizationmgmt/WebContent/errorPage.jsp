@@ -43,8 +43,7 @@
 	</table>
     <script type="text/javascript">
 		$(document).ready(function(){
-			if(document.getElementById("organizations") != null)
-				setMenuActive("organizations", "organizationsLink");
+				setMenuActive("services", "resetTestSessionLink");
 			}
 		);
 	</script>  
