@@ -619,7 +619,7 @@ public class SessionOperationController extends PageFlowController {
                  }
             }
             
-            if(isAdminUser() && this.isOKCustomer) {
+            if(isAdminUser() && this.isOKCustomer && isTopLevelUser()) {
             	vo.setOkAdmin(true);
             } else {
             	vo.setOkAdmin(false);
