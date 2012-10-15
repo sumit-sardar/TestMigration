@@ -492,12 +492,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 						prest.setInt(4, reopenSubtestInfo.getCustomerId());
 						prest.setInt(5, reopenSubtestInfo.getOrgNodeId());
 						prest.setInt(6, reopenSubtestInfo.getTestAdminId());
-						prest.setInt(7, reopenSubtestInfo.getTestAdminId());
+						prest.setInt(7, reopenSubtestInfo.getStudentId());
 						prest.setInt(8, reopenSubtestInfo.getItemSetTSId());
 						prest.setString(9, reopenSubtestInfo.getOldSRosterCompStatus());
 						prest.setString(10, reopenSubtestInfo.getNewRosterCompStatus());
-						prest.setString(11, reopenSubtestInfo.getNewSubtestCompStatus());
-						prest.setString(12, reopenSubtestInfo.getOldSubtestCompStatus());
+						prest.setString(11, reopenSubtestInfo.getOldSubtestCompStatus());
+						prest.setString(12, reopenSubtestInfo.getNewSubtestCompStatus());
 						prest.setString(13, reopenSubtestInfo.getTicketId());
 						prest.setString(14, reopenSubtestInfo.getRequestorName());
 						prest.setString(15, reopenSubtestInfo.getReasonForRequest());
