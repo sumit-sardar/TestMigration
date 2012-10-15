@@ -2170,6 +2170,16 @@ function registerDelegate(tree){
 					if (forceTestBreak) {
 						setTestBreakForCustomer();
 					}
+					if(state != 'EDIT' && previousValue == '9003' && !isOKEQActionPerformed && isOKAdmin) {
+						isOKEQActionPerformed = true;
+						isOKEqTestSelected = true;
+						$("#Proctor_Tab").css('display', 'block');
+						$("#Select_Proctor_Tab").css('display', 'none');	
+						$("#proctorOrgNodeHierarchy").undelegate();
+						var schedulerId = $("#schedulerUserId").val();
+		 				addAllProcsForOklahoma(schedulerId);
+						returnSelectedProctor(); // Need to update temp variables also
+					}
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
@@ -3078,21 +3088,6 @@ function registerDelegate(tree){
 	 		
 	 		//Changes for Oklahoma customer
 	 		productSelected = $("#testGroupList").val();
-	 		if(isOKAdmin && productSelected == '9003' && isOKProductChanged && !isOKEQActionPerformed) { // 9003 is the product id for Equivalent form
-	 			isOKEQActionPerformed = true;
-	 			isOKEqTestSelected = true;
-	 			addAllProcsForOklahoma(schedulerUserId);
-	 			isOKProductChanged = false;
-	 		} else if (isOKAdmin && productSelected != '9003' && isOKProductChanged) {
-	 			isOKEqTestSelected = false;
-	 			isOKProductChanged = false;
-	 		} else if (isOKEQDefaultSelected && isOKAdmin) {
-	 			isOKEqTestSelected = true;
-	 			addAllProcsForOklahoma(schedulerUserId);
-	 			isOKEQDefaultSelected = false;
-	 			isOKEQActionPerformed = true;
-	 			returnSelectedProctor(); // Need to update temp variables also
-	 		}
 	 	//alert(JSON.stringify(proctorIdObjArray));	
 		 	
 	 	}else if(state == "EDIT"){
@@ -3128,20 +3123,6 @@ function registerDelegate(tree){
 				}
 			}
 			 addProctorLocaldata = val;
-		 } else {
-		 	if (isOKAdmin && productSelected != '9003' && isOKProductChanged ) { 
-		 			// As per new requirement, need not perform any action
-		 		isOKEqTestSelected = false;
-		 		isOKProductChanged = false;
-		 	} else if (isOKAdmin && productSelected == '9003' && isOKProductChanged && !isOKEQActionPerformed) {
-		 		$("#Proctor_Tab").css('display', 'block');
-				$("#Select_Proctor_Tab").css('display', 'none');	
-				$("#proctorOrgNodeHierarchy").undelegate();
-		 		addAllProcsForOklahoma(schedulerUserId);
-		 		isOKProductChanged = false;
-		 		returnSelectedProctor(); // Need to update temp variables also
-		 		isOKEQActionPerformed = true; // Adding Proctors for equivalent form should happen only once.
-		 	}
 		 }
 	 	
 	 	noOfProctorAdded = addProctorLocaldata.length;
