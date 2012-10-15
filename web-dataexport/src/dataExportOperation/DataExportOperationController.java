@@ -274,7 +274,7 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		try
 		{
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(customerId);
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement,this.customerId,null,null,null);
 			if ((mtsData != null) && (mtsData.getFilteredCount().intValue() > 0)) {
 				List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
 				vo.setTestSessionList(testSessionList);
