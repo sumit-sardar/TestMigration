@@ -222,9 +222,13 @@ var termsWindow  = null;
 var coppaWindow  = null;
 var policyWindow = null;
 
-function showHelpWindow(location_)
+function showHelpWindow(location)
 {
-    var helpWindow = window.open(location_,location_,'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
+	if (location.indexOf("https://localhost:7002") >= 0) {
+		location = location.replace("https://localhost:7002", "https://oastest.ctb.com");
+	}
+	var title = location.substring(location.indexOf("#")+1, location.length-4);
+   	var helpWindow = window.open(location, title, 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
     helpWindow.focus();
     return false;
 }
