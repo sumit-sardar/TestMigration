@@ -318,8 +318,7 @@ public class CustomerServiceSearchUtils {
 				AuditFileReopenSubtest auditFileReopenSubtest = new  AuditFileReopenSubtest();
 
 				auditFileReopenSubtest.setTestRosterId(studentSessionStatusVO.getTestRosterId());
-				auditFileReopenSubtest.setNewRosterCompStatus( "SC" );
-				auditFileReopenSubtest.setNewRosterCompStatus( "SC" );
+				auditFileReopenSubtest.setNewRosterCompStatus( "IS" );
 				auditFileReopenSubtest.setNewSubtestCompStatus( "SC" );
 				//issue
 				/*auditFileReopenSubtest.
