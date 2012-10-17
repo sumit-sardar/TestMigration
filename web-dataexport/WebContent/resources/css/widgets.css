@@ -334,6 +334,13 @@ table.simple {
     width: 100%;
 }
 
+table.simpleSmall {    
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+}
+
 tr.simple { 
 }
 
@@ -350,8 +357,33 @@ th.simple {
     padding: 5px; 
 } 
 
+td.simpleHeader { 
+    background-color: #cc9; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+} 
+
 td.simple { 
     background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+}
+
+td.simpleColored { 
     border-color: #996; 
     border-style: solid; 
     border-width: 1px; 
@@ -388,6 +420,18 @@ hr.simpleControls {
     margin: 0px 5px 0px 5px;
 }
 
+td.simpleHighlight { 
+    background-color: #ff0000; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #fff;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+} 
 
 
 
@@ -461,6 +505,64 @@ td.sortable {
     padding: 5px; 
 } 
 
+td.sortableRed { 
+    background-color: #cc3300; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #fff;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
+td.sortableGrey { 
+    background-color: #cc9; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
+tr.normal { 
+    border-style: none; 
+    border-width: 0px; 
+}
+
+
+td.normal { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: none; 
+    border-width: 0px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 4px; 
+} 
+
+td.normal2 { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: none; 
+    border-width: 0px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px; 
+} 
+
 td.sortableControls {
     background-color: #cc9;
     color: #333;
@@ -488,6 +590,61 @@ td.sortable a:hover {
 
 
 
+/** SIMPLETABLE **************************************************************/
+
+
+table.simpletable {    
+    border-collapse: collapse; 
+    border-color: #999999; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+tr.simpletable { 
+}
+
+th.simpletable { 
+    background-color: #d0e5f5;
+    border-color: #999999; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #2E6E9E;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+} 
+
+td.simpletable { 
+    background-color: #fff; 
+    border-color: #999999; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
+td.simpletable a {
+    color: #00f;
+    text-decoration: none;
+}
+
+td.simpletable a:hover {
+    color: #00f;
+    text-decoration: underline;
+}
+
+.messageheader {
+	background-color: #f00; 
+	color: #ffffff; 
+	padding: 0px 5px 0px 5px;
+}
 
 
 /** COMPLEX TABLE *************************************************************/

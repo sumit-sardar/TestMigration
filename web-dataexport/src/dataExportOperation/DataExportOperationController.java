@@ -18,6 +18,7 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import utils.Base;
 import utils.DataExportSearchUtils;
 import utils.FilterSortPageUtils;
 import utils.MessageResourceBundle;
@@ -26,23 +27,32 @@ import utils.BroadcastUtils;
 
 import com.ctb.bean.dataExportManagement.ManageStudent;
 import com.ctb.bean.dataExportManagement.ManageStudentData;
+import com.ctb.bean.dataExportManagement.ManageJobData;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.CustomerReport;
+import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.ManageTestSession;
 import com.ctb.bean.testAdmin.ManageTestSessionData;
+import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentData;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.SuccessInfo;
 import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
+
+import dataExportPageFlow.DataExportPageFlowController.DataExportForm;
 import dto.DataExportVO;
 
 
@@ -64,6 +74,13 @@ public class DataExportOperationController extends PageFlowController {
 	private Integer customerId = null;
     private User user = null;
     private String userTimeZone = null;
+    public String pageTitle = null;
+	public String pageMessage = null;
+	private Integer totalStudentCount = 0;
+	private DataExportForm savedForm;
+	private boolean islaslinkCustomer = false;
+	
+	
     
     public static String CONTENT_TYPE_JSON = "application/json";
 
@@ -111,8 +128,37 @@ public class DataExportOperationController extends PageFlowController {
 	}
 	
 	
+	
+   
+    
+    /**
+     * STUDENT REGISTRATION actions
+     */
+    @Jpf.Action()
+    protected Forward assessments_studentRegistrationLink()
+    {
+        try
+        {
+        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+        	getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
+    
+
+
+    /**Services 
+     * Actions
+     */
+   
 	@Jpf.Action(forwards = { 
 			 @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
+			 @Jpf.Forward(name = "viewStatusLink", path="beginViewStatus.do"),
 			 @Jpf.Forward(name = "resetTestSessionLink", path = "services_resetTestSession.do"),
 			 @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
 			 @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
@@ -438,6 +484,10 @@ public class DataExportOperationController extends PageFlowController {
        return null;
    }
    
+   /**
+    * Data Export
+    * 
+    */
    
 	@Jpf.Action(forwards = { 
 			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
@@ -499,7 +549,7 @@ public class DataExportOperationController extends PageFlowController {
 				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 
 			}catch(IOException ioe){
 				ioe.printStackTrace();
@@ -519,7 +569,18 @@ public class DataExportOperationController extends PageFlowController {
 		return null;
 	}
 	
+	
+	
+	/**
+	 * View Status
+	 * 
+	 */
 
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "view_status.jsp") })
+	protected Forward beginViewStatus() {
+		initialize();
+		return new Forward("success");
+	}
 	
 	@Jpf.Action()
 	public Forward getUnscoredStudentDetails() {
@@ -570,17 +631,261 @@ public class DataExportOperationController extends PageFlowController {
 	}
 	
 	
+	 private void initialize()
+		{     
+			getLoggedInUserPrincipal();
+			getUserDetails();
+			setupUserPermission();
+			this.getRequest().setAttribute("viewOnly", Boolean.FALSE); 
+			String roleName = this.user.getRole().getRoleName();
+			
+			List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
+	        this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
+			
+		}
+	 
+	 
+	 @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") }, 
+				validationErrorForward = @Jpf.Forward(name = "failure", path = "logout.do"))
+		public Forward getExportStatus() throws IOException {
+	    	String json ="";
+	    	HttpServletResponse resp = getResponse();
+			OutputStream stream = null;
+			retrieveInfoFromSession();
+			DataExportForm form = initialize(ACTION_FIND_STUDENT);
+			//customerHasBulkAccommodation(); //added for defect #66784
+			//customerHasResetTestSessions();
+			//customerHasScoring();
+			isTopLevelLaslinkUser();
+	    	form.validateValues();
+
+			String currentAction = form.getCurrentAction();
+			String actionElement = form.getActionElement();
+			form.resetValuesForAction(actionElement); 
+			ManageJobData msData = null;
+			
+			msData = getDataExportJobStatus(form);
+			
+			if ((msData != null) && (msData.getFilteredCount().intValue() == 0)) {
+				this.getRequest().setAttribute("searchResultEmpty",	MessageResourceBundle.getMessage("jobSearchResultEmpty"));
+			}else{
+				this.getRequest().removeAttribute("searchResultEmpty");
+				
+			}
+			List jobList = null;
+			
+			if ((msData != null) && (msData.getFilteredCount().intValue() > 0)) {
+				//1
+				jobList = DataExportSearchUtils.buildExportJobList(msData);
+				
+				PagerSummary jobPagerSummary = DataExportSearchUtils.buildJobPagerSummary(msData, form.getJobPageRequested());
+				form.setJobMaxPage(msData.getFilteredPages());
+				this.pageMessage = MessageResourceBundle.getMessage("viewStatusPageMessage");
+				this.setTotalStudentCount(msData.getTotalCount());
+			}
+			/*
+			 * this.pageTitle = "Export Data: View Status";
+			this.savedForm = form.createClone();
+			form.setCurrentAction(ACTION_DEFAULT);
+			*/
+			Base base = new Base();
+			base.setPage("1");
+			base.setRecords("10");
+			base.setTotal("2");
+			Gson gson = new Gson();
+			base.setManageJobData(jobList);
+			json = gson.toJson(base);
+			System.out.println("json -> " + json);
+			//return new Forward("success",json);
+			
+			try{
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+
+			}
+
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+
+			
+		return null;
+			
+			
+		}
+	 
+	 
+	 
+	 private boolean retrieveInfoFromSession() {
+			boolean success = true;
+			this.userName = (String) getSession().getAttribute("userName");
+			if (this.userName == null)
+				success = false;
+			return success;
+		}
+
+		public DataExportForm initialize(String action) {
+			getUserDetails();
+			this.savedForm = new DataExportForm();
+			this.savedForm.init();
+			this.getSession().setAttribute("userHasReports", userHasReports());
+
+			return this.savedForm;
+
+		}
+
 	
 	
 	
 	
 	
+	 private ManageJobData getDataExportJobStatus(DataExportForm form) {
+			String actionElement = form.getActionElement();
+			Integer userId = user.getUserId();
+			PageParams page = FilterSortPageUtils.buildPageParams(form.getJobPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+			SortParams sort = FilterSortPageUtils.buildJobSortParams(form.getJobSortColumn(), form.getJobSortOrderBy());
+			FilterParams filter = FilterSortPageUtils.buildFilterParams(null);
+
+			ManageJobData msData = null;		
+			
+			msData = DataExportSearchUtils.getDataExportJobStatus(
+					this.dataexportManagement, userId, filter,
+					page, sort);
+			
+			return msData;
+		}
 	
 	
 	
 	
+	 /**
+		 * @param totalStudentCount the totalStudentCount to set
+		 */
+		public void setTotalStudentCount(Integer totalStudentCount) {
+			this.totalStudentCount = totalStudentCount;
+		}
 	
 	
+		private Boolean customerHasBulkAccommodation() 
+		{
+			boolean hasBulkStudentConfigurable = false;
+				 //Bulk Accommodation
+			 for (int i=0; i < this.customerConfigurations.length; i++) {
+				 
+		           CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+		    	        		cc.getDefaultValue().equals("T")) {
+		                	hasBulkStudentConfigurable = true; 
+		                	break;
+		             }
+		      }
+				
+		    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+		            
+		 	
+			return new Boolean(hasBulkStudentConfigurable);           
+		}
+		
+		
+		/**
+		 * Reset Test Session
+		 */
+		private Boolean customerHasResetTestSessions() 
+		{
+			boolean hasResetTestSessionsConfigurable = false;
+			//Bulk Accommodation
+			for (int i=0; i < this.customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+						cc.getDefaultValue().equals("T")) {
+					hasResetTestSessionsConfigurable = true; 
+					break;
+				}
+			}
+
+			getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+			return new Boolean(hasResetTestSessionsConfigurable);           
+		}
+		
+		private Boolean customerHasScoring() {
+			getCustomerConfigurations();
+			boolean hasScoringConfigurable = false;
+			boolean isLaslinkCustomer = false;
+			for (CustomerConfiguration cc : customerConfigurations) {
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+						"Configurable_Hand_Scoring")
+						&& cc.getDefaultValue().equals("T")) {
+					hasScoringConfigurable = true;
+					//break;
+				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+						"Laslink_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+					isLaslinkCustomer = true;
+					//break;
+				}
+			}
+
+			getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+			this.setIslaslinkCustomer(isLaslinkCustomer);
+			getSession().setAttribute("isLaslinkCustomer", isLaslinkCustomer);
+			return new Boolean(hasScoringConfigurable);
+		}
+		
+		
+		private void isTopLevelLaslinkUser(){
+			
+			boolean isUserTopLevel = false;
+			boolean isLaslinkUserTopLevel = false;
+			boolean isLaslinkUser = false;
+			isLaslinkUser = this.islaslinkCustomer;
+			try {
+				if(isLaslinkUser) {
+					isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+					if(isUserTopLevel){
+						isLaslinkUserTopLevel = true;				
+					}
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+			
+		}
+		
+		
+		
+		/**
+		 * Changes For cr hand scoring score by student getCustomerConfigurations
+		 */
+		private void getCustomerConfigurations() {
+			try {
+				User user = this.testSessionStatus.getUserDetails(this.userName,
+						this.userName);
+				Customer customer = user.getCustomer();
+				Integer customerId = customer.getCustomerId();
+				this.customerConfigurations = this.testSessionStatus
+						.getCustomerConfigurations(this.userName, customerId);
+			} catch (CTBBusinessException be) {
+				be.printStackTrace();
+			}
+		}
+		
+		/**
+		 * @param islaslinkCustomer the islaslinkCustomer to set
+		 */
+		public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+			this.islaslinkCustomer = islaslinkCustomer;
+		}
 	
 	
 	
@@ -659,6 +964,9 @@ public class DataExportOperationController extends PageFlowController {
     	this.getSession().setAttribute("isOOSConfigured",customerHasOOS(customerConfigs));	// Changes for Out Of School
      	
      	this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));
+     	
+    
+     	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
      	
 		for (int i=0; i < customerConfigs.length; i++) {
 			CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];

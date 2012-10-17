@@ -8,7 +8,7 @@
 	<tr>
 		<td align="left" width="70%" style="padding: 3px 0px 0px 3px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
 		<td align="left" width="30%">
-			<table border="0" cellpadding="0" cellspacing="0">
+			<table border="0" cellpadding="0" cellspacing="0" class = "headerLayout">
 			<tr height="22">
 				<td align="center">
 					<b>You are logged in as <%=session.getAttribute("userName")%></b>

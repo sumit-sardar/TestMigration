@@ -7,12 +7,10 @@ function submitPage()
 
 function gotoAction(action)
 {
-	//UIBlock();
 	showLoading();
     if (action != null) {
     	document.forms[0].action = action;
 	}
-	//document.location = location;
 	document.forms[0].submit();
 }
 
@@ -50,18 +48,9 @@ function openWindow(location)
 }
 
 function UIBlock(){
-
-
 	$(document).ajaxStop($.unblockUI); 
-	
-	$.blockUI({ message: '<img src="/ExportWeb/resources/images/loading.gif" />',
-				css: {
-				border: '0px',
-				//backgroundColor: '#ff00ff', 
-				//opacity:  0.5, 
-				width:'0px',  
-				top:  ($(window).height() - 0) /2 + 'px', 
-				left: ($(window).width() - 0) /2 + 'px'}}); 
+	$.blockUI({ message: '<img src="/ExportWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 
 

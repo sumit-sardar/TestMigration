@@ -3,7 +3,7 @@
 	<tlib-version>1.0</tlib-version>
   	<jsp-version>1.2</jsp-version>
 	<short-name>lb</short-name>
-	<description>CTB Tag Library for UserManagementWeb</description>
+	<description>CTB Tag Library for DataExportWeb</description>
 	<tag>
 		<name>label</name>
 		<tag-class>taglib.LabelTag</tag-class>

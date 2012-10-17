@@ -69,12 +69,12 @@ function viewMyProfile() {
 				beforeSend:	function(){
 								UIBlock();
 							},
-				url:		'myProfile.do',
+				url:		'/UserWeb/userOperation/myProfile.do',
 				type:		'POST',
 				data:		param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){
-								$.unblockUI(); 
+								$.unblockUI();
 								resetProfile();
 								setUserDetails(data);															
 								$('#myProfileDialog').dialog({
@@ -83,6 +83,7 @@ function viewMyProfile() {
 									title:$("#mpDialogID").val(), 
 									modal: true,
 									width: 840,
+									resizable: false,
 									open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 								});
 								$('#myProfileDialog').bind('keydown', function(event) {
@@ -106,6 +107,7 @@ function viewMyProfile() {
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
+								$.unblockUI();
 							}
 				}
 			);
@@ -250,7 +252,7 @@ function saveLoginUserDetail(){
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'saveUserProfile.do',
+		url:		'/UserWeb/userOperation/saveUserProfile.do',
 		type:		'POST',
 		data:		param,
 		dataType:	'json',
@@ -262,6 +264,7 @@ function saveLoginUserDetail(){
 							closeProfilePopup('myProfileDialog');
 							//setMessageMain(data.title, data.content, data.type, "");
 							$("#contentMain").text(data.content);
+							$("#contentMain").show();
 							$('#errorIcon').hide();
 							$('#infoIcon').show();
 							document.getElementById('displayMessageMain').style.display = "block";
@@ -269,7 +272,8 @@ function saveLoginUserDetail(){
 						}
   						else{
   							setMessageProfile(data.title, data.content, data.type, "");    
-  							$("#contentMain").text(data.content);
+  							$("#contentMain").html(data.content);
+							$("#contentMain").show();
 							$('#errorIcon').show();
 							$('#infoIcon').hide();
   							document.getElementById('displayMessageMyProfile').style.display = "block";					
@@ -289,10 +293,12 @@ function saveLoginUserDetail(){
 }
 
 function resetErrorMessages(){
-	$("#contentMain").text("");
-	$('#errorIcon').hide();
-	$('#infoIcon').hide();
-	document.getElementById('displayMessageMain').style.display = "none";										
+	if (document.getElementById('displayMessageMain') != null) {
+		$("#contentMain").text("");
+		$('#errorIcon').hide();
+		$('#infoIcon').hide();
+		document.getElementById('displayMessageMain').style.display = "none";
+	}										
 }
 
  function resetProfile() {
