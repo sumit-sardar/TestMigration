@@ -52,7 +52,6 @@ import com.ctb.util.SuccessInfo;
 import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
-import dataExportPageFlow.DataExportPageFlowController.DataExportForm;
 import dto.DataExportVO;
 
 
@@ -77,7 +76,6 @@ public class DataExportOperationController extends PageFlowController {
     public String pageTitle = null;
 	public String pageMessage = null;
 	private Integer totalStudentCount = 0;
-	private DataExportForm savedForm;
 	private boolean islaslinkCustomer = false;
 	
 	
@@ -652,19 +650,13 @@ public class DataExportOperationController extends PageFlowController {
 	    	HttpServletResponse resp = getResponse();
 			OutputStream stream = null;
 			retrieveInfoFromSession();
-			DataExportForm form = initialize(ACTION_FIND_STUDENT);
 			//customerHasBulkAccommodation(); //added for defect #66784
 			//customerHasResetTestSessions();
 			//customerHasScoring();
 			isTopLevelLaslinkUser();
-	    	form.validateValues();
-
-			String currentAction = form.getCurrentAction();
-			String actionElement = form.getActionElement();
-			form.resetValuesForAction(actionElement); 
 			ManageJobData msData = null;
 			
-			msData = getDataExportJobStatus(form);
+			msData = getDataExportJobStatus();
 			
 			if ((msData != null) && (msData.getFilteredCount().intValue() == 0)) {
 				this.getRequest().setAttribute("searchResultEmpty",	MessageResourceBundle.getMessage("jobSearchResultEmpty"));
@@ -678,8 +670,6 @@ public class DataExportOperationController extends PageFlowController {
 				//1
 				jobList = DataExportSearchUtils.buildExportJobList(msData);
 				
-				PagerSummary jobPagerSummary = DataExportSearchUtils.buildJobPagerSummary(msData, form.getJobPageRequested());
-				form.setJobMaxPage(msData.getFilteredPages());
 				this.pageMessage = MessageResourceBundle.getMessage("viewStatusPageMessage");
 				this.setTotalStudentCount(msData.getTotalCount());
 			}
@@ -728,33 +718,15 @@ public class DataExportOperationController extends PageFlowController {
 			return success;
 		}
 
-		public DataExportForm initialize(String action) {
-			getUserDetails();
-			this.savedForm = new DataExportForm();
-			this.savedForm.init();
-			this.getSession().setAttribute("userHasReports", userHasReports());
-
-			return this.savedForm;
-
-		}
-
 	
-	
-	
-	
-	
-	 private ManageJobData getDataExportJobStatus(DataExportForm form) {
-			String actionElement = form.getActionElement();
+	private ManageJobData getDataExportJobStatus() {
 			Integer userId = user.getUserId();
-			PageParams page = FilterSortPageUtils.buildPageParams(form.getJobPageRequested(), FilterSortPageUtils.PAGESIZE_10);
-			SortParams sort = FilterSortPageUtils.buildJobSortParams(form.getJobSortColumn(), form.getJobSortOrderBy());
-			FilterParams filter = FilterSortPageUtils.buildFilterParams(null);
 
 			ManageJobData msData = null;		
 			
 			msData = DataExportSearchUtils.getDataExportJobStatus(
-					this.dataexportManagement, userId, filter,
-					page, sort);
+					this.dataexportManagement, userId, null,
+					null, null);
 			
 			return msData;
 		}
