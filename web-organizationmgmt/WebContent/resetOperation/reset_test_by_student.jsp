@@ -189,7 +189,7 @@
 														</td>
 			
 														<td width="40%" class="sortable">
-														<table class="transparent">
+														<table width="99%" class="transparent">
 															<tbody>
 																<tr valign="top" class="transparent">
 																	<td class="transparent"><span><lb:label key="reset.test.column.title.name" /></span></td>
