@@ -2,7 +2,7 @@
 <%@ taglib uri="label.tld" prefix="lb" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
-<lb:bundle baseName="testsessionApplicationResource" />
+<lb:bundle baseName="dataExportApplicationResource" />
 
 	<div id="page-wrap">
         <ul class="dropdown">

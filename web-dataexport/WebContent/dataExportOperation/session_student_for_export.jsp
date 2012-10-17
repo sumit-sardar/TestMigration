@@ -6,9 +6,9 @@
 
 <div id="session_student_for_export" style="">
 
-	<table class="sortable" id="reset_show_by_session_table">
+	<table class="sortable" id="session_student_for_export_table">
 	<!--  Steps 1 Starts Here -->
-	<tr id="dataExportStep1" style="">
+	<tr id="data_export_step1" style="">
 		<td width="10px;"> </td>
 		<td class="transparent"><lb:label key="data.export.step1.message" /> <BR />
 			<BR />
@@ -16,12 +16,44 @@
 					<table id="to_be_export_student_list" class="gridTable"></table>
 					<div id="to_be_export_student_list_pager" class="gridTable"></div>
 					<BR />
-					<input id="data_export_step1_next"   type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'"/>/>
+					<input id ="dataExportNextButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="getUnscoredStudentDetails(); return false;"/>
 				</div>
-				<script>getStudentList(true);</script>
 			<BR />
 		</td>
 	</tr>
+	<!--  Steps 1 ends Here -->
+	
+	<!--  Steps 2 Starts Here -->
+	<tr height="30px" id="data_export_step2" style="display: none;>
+	
+	</tr>
+	<tr id="data_export_step2" style="display: none;">
+		<td width="10px;"> </td>
+		
+		<td class="transparent"><lb:label key="data.export.step2.message" /> <BR />
+			<BR />
+				<div id="dataExportDetailsLbl">
+					<table style="margin-bottom: 10px; width: 924px;">
+						<tr>
+							<td width="135"><lb:label key="student.being.exported" /></td>
+							<td><span id="studentBeingExptd"></span></td>
+						</tr>
+						<tr>
+							<td width="135"><lb:label key="incomeple.scored.student" /></td>
+							<td><span id="incScoredStudent"></span></td>
+						</tr>
+					</table>
+				</div>
+				<div id="data_export_scoring_incomplete_student_list_div" style=" background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
+					<table id="data_export_scoring_incomplete_student_list" class="gridTable"></table>
+					<div id="data_export_scoring_incomplete_student_list_pager" class="gridTable"></div>
+					<BR />
+				</div>
+			<BR />
+		</td>
+	</tr>
+	<!--  Steps 2 ends Here -->
+	
 	</table>
 </div>
-	<!--  Steps 1 ends Here -->
+	

@@ -2,7 +2,7 @@
 <div id="legacyFooter">
 
     <span>
-        Copyright &copy; 2008 by CTB/McGraw-Hill LLC. All rights reserved.   
+        Copyright &copy; 2012 by CTB/McGraw-Hill LLC. All rights reserved.   
     </span>
 
     <span>
@@ -16,6 +16,5 @@
     <span>
         Review <a href="/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
     </span>
-
  
 </div>

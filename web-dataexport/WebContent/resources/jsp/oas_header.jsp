@@ -1,14 +1,8 @@
-<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
-<%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="testsessionApplicationResource" />
-
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
 	if (broadcastMessages == null) broadcastMessages = new Integer(0);		
 %>
+
 
 <table class="headerLayout">
 	<tr>
@@ -42,6 +36,7 @@
 		</td>
 	</tr>
 </table>
+
  
 <!-- Broadcast Message Dialog -->
 <div id="broadcastMsgDialogId"
@@ -59,11 +54,12 @@
 		</table>
 	</div>	
 </div>
- 
+
+
 <!-- My profile Dialog -->
 <div id="myProfileDialog"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="displayMessageMyProfile" class="roundedMessage" style="width:802px;margin-bottom:2px;">
+	<div id="displayMessageMyProfile" class="roundedMessage" style="width:802px; margin-bottom:2px;">
 			<table>
 				<tr>
 					<td rowspan="3" valign="top">
@@ -84,7 +80,7 @@
 				<h3><a href="#" ><lb:label key="dialog.myProfile.userInfo" /></a></h3>
 				<div id="User_Info" style="background-color: #FFFFFF;">					
 					<div id="infoDiv" style="display:inline;">
-						<jsp:include page="oas_user_info.jsp" />
+						<%@include file="oas_user_info.jsp" %>
 					</div>
 				</div>
 			</div>
@@ -92,7 +88,7 @@
 				<h3><a href="#" ><lb:label key="dialog.myProfile.contactInfo" /></a></h3>
 				<div id="Contact_Info" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div>
-						<jsp:include page="oas_contact_info.jsp" />
+						<%@include file="oas_contact_info.jsp" %>
 					</div>
 				</div>
 			</div>
@@ -187,8 +183,8 @@
 						<tr id="Act_Buttons" align="center">
 							<td  width="100%">
 								<center>
-								<input type="button"  value=<lb:label key="common.button.save" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:verifyUserDetails(); return false;" class="ui-widget-header">
-								<input type="button"  value=<lb:label key="common.button.cancel" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:onCancelProfile(); return false;" class="ui-widget-header">
+								<input type="button"  id="sData" value=<lb:label key="common.button.save" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:verifyUserDetails(); return false;" class="ui-widget-header">
+								<input type="button"  id="cData" value=<lb:label key="common.button.cancel" prefix="&nbsp;" suffix="&nbsp;"/> onclick="javascript:onCancelProfile(); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>
@@ -221,13 +217,15 @@
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div style="padding:10px;text-align:center;">
 		<div style="text-align: left;">
-			<lb:label key="dialog.myProfile.msg.emailprovide" />
-		</div>
-	</div>
-	<div style="padding:10px;">		
+		  <lb:label key="dialog.myProfile.msg.emailprovide" />
+		 </div>
+	</div>	
+	<div style="padding:10px;">  
 		<center>
 			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeProfilePopup('profileEmailWarning'); return false;" class="ui-widget-header">&nbsp;
 			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeProfileEmailWarning(); return false;" class="ui-widget-header">
 		</center>
 	</div>	
 </div>
+
+

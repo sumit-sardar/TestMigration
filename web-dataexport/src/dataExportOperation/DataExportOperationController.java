@@ -3,6 +3,10 @@ package dataExportOperation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +24,8 @@ import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
 import utils.BroadcastUtils;
 
+import com.ctb.bean.dataExportManagement.ManageStudent;
+import com.ctb.bean.dataExportManagement.ManageStudentData;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
@@ -43,12 +49,14 @@ import dto.DataExportVO;
 
 
 
-@Jpf.Controller
+@Jpf.Controller()
 public class DataExportOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
 	private static final String ACTION_DEFAULT = "defaultAction";
 	private static final String ACTION_FIND_STUDENT = "findStudent";
 	private static final String ACTION_VIEW_STATUS = "getExportStatus";
+	private static final String STUDENT_STATUS = "Incomplete";
+	private List<Integer> toBeExportedRosterList = null;
 	private CustomerLicense[] customerLicenses = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
@@ -211,7 +219,69 @@ public class DataExportOperationController extends PageFlowController {
 		 return null;
 	 }  
   
-   
+	 /**
+	     * ASSESSMENTS actions
+	     */    
+	    @Jpf.Action(forwards = { 
+	    		@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
+	    		@Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoringLink.do"),
+	    		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do"),
+	    		@Jpf.Forward(name = "studentRegistrationLink", path = "assessments_studentRegistrationLink.do")
+	    })   
+	    protected Forward assessments()
+	    {
+
+	    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+	    	String forwardName = (menuId != null) ? menuId : "sessionsLink";
+
+	    	return new Forward(forwardName);	    
+	    }
+
+
+	    @Jpf.Action()
+	    protected Forward assessments_sessionsLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
+
+	    @Jpf.Action()
+	    protected Forward assessments_studentScoringLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/sessionOperation/assessments_studentScoring.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
+
+	    @Jpf.Action()
+	    protected Forward assessments_programStatusLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
 	/**
     * STUDENT SCORING actions
     */    
@@ -241,8 +311,136 @@ public class DataExportOperationController extends PageFlowController {
        return null;
 	}
    
+   /**
+	 * ORGANIZATIONS actions
+	 */    
 	@Jpf.Action(forwards = { 
-			 @Jpf.Forward(name = "success", path = "index.jsp") 
+	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
+	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
+	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
+	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
+	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
+	    }) 
+	protected Forward organizations()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");
+		String forwardName = (menuId != null) ? menuId : "OOSLink";
+		
+	    return new Forward(forwardName);
+	}
+	
+   @Jpf.Action()
+	protected Forward organizations_manageOrganizations()
+	{
+       try
+       {
+           String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+	}
+	
+   @Jpf.Action()
+	protected Forward organizations_manageStudents()
+	{
+       try
+       {
+           String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+	}
+	
+   @Jpf.Action()
+	protected Forward organizations_manageUsers()
+	{
+       try
+       {
+           String url = "/UserWeb/userOperation/organizations_manageUsers.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+	}
+   
+   @Jpf.Action()
+	protected Forward organizations_manageBulkAccommodation()
+	{
+       try
+       {
+           String url = "/StudentWeb/bulkOperation/organizations_manageBulkAccommodation.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+	}
+   
+   @Jpf.Action() 
+	protected Forward organizations_manageBulkMove()
+	{
+       try
+       {
+           String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+	}
+   
+   @Jpf.Action() 
+	protected Forward organizations_manageOutOfSchool()
+	{
+   	 try
+        {
+            String url = "/StudentWeb/outOfSchoolOperation/organizations_manageOutOfSchool.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+
+   /**
+    * REPORTS actions
+    */    
+   @Jpf.Action()
+   protected Forward reports()
+   {
+       try
+       {
+           String url = "/SessionWeb/sessionOperation/reports.do";
+           getResponse().sendRedirect(url);
+       } 
+       catch (IOException ioe)
+       {
+           System.err.print(ioe.getStackTrace());
+       }
+       return null;
+   }
+   
+   
+	@Jpf.Action(forwards = { 
+			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
 	 }) 
 	 protected Forward services_dataExport()
 	 {
@@ -259,35 +457,54 @@ public class DataExportOperationController extends PageFlowController {
 		 
 		 return new Forward("success");
 	 }
-	
+	@Jpf.Action(forwards = { 
+			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
+	 }) 
+	 protected Forward dataExport()
+	 {
+		 return new Forward("success");
+	 }
 	@Jpf.Action()
 	public Forward getStudentForExport() {
 
 		HttpServletResponse resp = getResponse();
-		resp.setCharacterEncoding("UTF-8"); 
+		//resp.setCharacterEncoding("UTF-8"); 
 		OutputStream stream = null;
 		ManageTestSessionData mtsData = null;
-		DataExportVO vo = new DataExportVO(); 
+		DataExportVO vo = new DataExportVO();
 		if (this.userName == null) {
 			getLoggedInUserPrincipal();
 			getUserDetails();
 		}
 		try
-		{
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement,this.customerId,null,null,null);
+		{	
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ms"); 
+			Date date = new Date();  
+		        System.out.println(dateFormat.format(date));  
+			
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement,customerId,null,null,null);
+			Date date1 = new Date();  
+	        System.out.println(dateFormat.format(date1));  
 			if ((mtsData != null) && (mtsData.getFilteredCount().intValue() > 0)) {
 				List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
+				this.toBeExportedRosterList = mtsData.getToBeExportedStudentRosterList();
 				vo.setTestSessionList(testSessionList);
+				
+				
 			}
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(vo);
+				System.out.println("Jason value"+ json );
 				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
-				stream.write(json.getBytes("UTF-8"));
+				stream.write(json.getBytes());
 
-			} finally{
+			}catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+			finally{
 				if (stream!=null){
 					stream.close();
 				}
@@ -304,7 +521,53 @@ public class DataExportOperationController extends PageFlowController {
 	
 
 	
-	
+	@Jpf.Action()
+	public Forward getUnscoredStudentDetails() {
+		
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		ManageStudentData msData = null;
+		ManageStudent student = null;
+		List<ManageStudent> studentList=null;
+		DataExportVO vo = new DataExportVO();
+		System.out.println("......"+this.toBeExportedRosterList);
+		try {
+			
+			msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(this.toBeExportedRosterList,this.dataexportManagement, customerId, null, null, null);
+			if ((msData != null) && (msData.getFilteredCount().intValue() > 0)) {
+				studentList = DataExportSearchUtils.buildExportStudentList(msData);
+				for (int index = 0; index <studentList.size(); index++ ){
+					student = (ManageStudent)studentList.get(index);
+					student.setScoringStatus(STUDENT_STATUS);
+				}
+			}
+			vo.setStudentList(studentList);
+			vo.setUnscoredStudentCount(msData.getTotalCount());
+			vo.setStudentBeingExportCount(msData.getScheduledStudentCount());
+		
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(vo);
+				System.out.println("Json value"+ json );
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			}catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 	
