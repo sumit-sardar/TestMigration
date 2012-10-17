@@ -5,25 +5,26 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="dataExportApplicationResource" />
-<input type="hidden" id="jqgJobID" name="jqgJobID" value=<lb:label key="dataexport.info.jobid" prefix="'" suffix="'"/>/>
-<input type="hidden" id="jqgJobSubmissionDate" name="jqgJobSubmissionDate" value=<lb:label key="dataexport.info.jobsubmissiondate" prefix="'" suffix="'"/>/>
-<input type="hidden" id="jqgStudentCount" name="jqgStudentCount" value=<lb:label key="dataexport.info.studentcount" prefix="'" suffix="'"/>/>
-<input type="hidden" id="jqgJobStatus" name="jqgJobStatus" value=<lb:label key="dataexport.info.jobstatus" prefix="'" suffix="'"/>/>
-<input type="hidden" id="statusListID" name="statusListID" value=<lb:label key="dataexport.info.statusListID" prefix="'" suffix="'"/>/>
 
-
-
-<netui:form action="beginViewStatus">
-<input type="hidden" id="menuId" name="menuId" value="viewStatusLink" />
-</netui:form>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 
 <netui-template:section name="bodySection">
+	<%@ taglib uri="label.tld" prefix="lb" %>
+	<lb:bundle baseName="dataExportApplicationResource" />
+		
+	<netui:form action="beginViewStatus">
+			
+	
+	<input type="hidden" id="jqgJobID" name="jqgJobID" value=<lb:label key="dataexport.info.jobid" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="jqgJobSubmissionDate" name="jqgJobSubmissionDate" value=<lb:label key="dataexport.info.jobsubmissiondate" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="jqgStudentCount" name="jqgStudentCount" value=<lb:label key="dataexport.info.studentcount" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="jqgJobStatus" name="jqgJobStatus" value=<lb:label key="dataexport.info.jobstatus" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="statusListID" name="statusListID" value=<lb:label key="dataexport.info.statusListID" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="menuId" name="menuId" value="viewStatusLink" />
 
-
+			
+			
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
 					<td>
@@ -79,7 +80,7 @@
 
 
 
-
+</netui:form>
  
 <script type="text/javascript">
 $(document).ready(function(){
