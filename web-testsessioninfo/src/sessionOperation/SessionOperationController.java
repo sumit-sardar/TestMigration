@@ -3477,7 +3477,10 @@ public class SessionOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
 	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+	        @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
+	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do")
+	        
 	    }) 
 	protected Forward services()
 	{
@@ -3486,6 +3489,21 @@ public class SessionOperationController extends PageFlowController {
 		
 	    return new Forward(forwardName);
 	}
+    
+    @Jpf.Action()
+    protected Forward services_dataExport()
+    {
+    	try
+    	{
+    		String url = "/ExportWeb/dataExportOperation/services_dataExport.do";
+    		getResponse().sendRedirect(url);
+    	}
+    	catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+    	return null;
+    }
 	
     @Jpf.Action()
     protected Forward services_resetTestSession()
@@ -3576,6 +3594,24 @@ public class SessionOperationController extends PageFlowController {
         }
         return null;
 	}
+    
+    
+  
+    @Jpf.Action()
+	protected Forward services_viewStatus()
+	{
+        try
+        {
+            String url = "/ExportWeb/dataExportOperation/beginViewStatus.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
     
     
 	@Jpf.Action()
@@ -3866,7 +3902,11 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((this.isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		
+
+     	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		
     }
    
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)

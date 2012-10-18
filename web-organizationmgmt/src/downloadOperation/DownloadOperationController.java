@@ -760,6 +760,7 @@ public class DownloadOperationController extends PageFlowController {
 			}
 		}        
 		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 	}
 	
 	private boolean isTopLevelUserForResetTest(){

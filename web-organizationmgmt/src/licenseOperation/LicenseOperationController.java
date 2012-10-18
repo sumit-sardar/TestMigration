@@ -1064,7 +1064,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 				isGACustomer = true;
 			}
 		}        
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));     	
+		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 	}
 	
 	private boolean isTopLevelUser(){

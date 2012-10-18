@@ -2321,7 +2321,9 @@ public class StudentOperationController extends PageFlowController {
     		@Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
     		@Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
     		@Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-    		@Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
+    		@Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+    		@Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do"),
+    		@Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do")
     }) 
     protected Forward services()
     {
@@ -2329,6 +2331,21 @@ public class StudentOperationController extends PageFlowController {
     	String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
 
     	return new Forward(forwardName);
+    }
+    
+    @Jpf.Action()
+    protected Forward services_dataExport()
+    {
+    	try
+    	{
+    		String url = "/ExportWeb/dataExportOperation/services_dataExport.do";
+    		getResponse().sendRedirect(url);
+    	}
+    	catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+    	return null;
     }
 
 	
@@ -2347,6 +2364,22 @@ public class StudentOperationController extends PageFlowController {
         return null;
     }
     
+    @Jpf.Action()
+	protected Forward services_viewStatus()
+	{
+        try
+        {
+            String url = "/ExportWeb/dataExportOperation/beginViewStatus.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
+
     @Jpf.Action()
     protected Forward services_manageLicenses()
     {
@@ -2595,8 +2628,14 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("deleteStudentEnable", addDeleteStudentEnabled);
 		this.getSession().setAttribute("isClassReassignable",multiOrgAssociationValid);	// Changes for defect #67959 imported student's organization
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
-    }
+		
+		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+		System.out.println(laslinkCustomer);
+     	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		
+
+
+}
 
 	private boolean isAdminCoordinatotUser() //For Student Registration
 	{               
@@ -2632,7 +2671,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		isGeorgiaCustomer(customerConfigurations);
 		
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);
-		
+
+
+	
+		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+
 	}
 
 

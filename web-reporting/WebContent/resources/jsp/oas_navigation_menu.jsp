@@ -90,6 +90,15 @@
         				<a href="#" id="resetTestSessionLink" onClick="gotoMenuAction('services.do', 'resetTestSessionLink');"><lb:label key="session.menu.resetTestSession" /></a>
         			 </li>
         			 </c:if>
+        			 <c:if test="${sessionScope.showDataExportTab}">		
+	        			 <li>
+	        			 	<a href="#" style="float:left;"><lb:label key="session.menu.dataExport" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
+	        				<ul>
+	        				<li><a href="#" id="exportDataLink" onClick="gotoMenuAction('services.do', 'exportDataLink');"><lb:label key="session.menu.dataExport.1" /></a></li>
+	        				<li><a href="#" id="viewStatusLink" onClick="gotoMenuAction('services.do', 'viewStatusLink');"><lb:label key="session.menu.dataExport.2" /></a></li>
+	        				</ul>
+	        			 </li>
+        			 </c:if>
         		</ul>
         	</li>
         </ul>		
