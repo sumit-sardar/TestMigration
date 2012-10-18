@@ -11,5 +11,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/dep-base-ctrl"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-dataexportprocessor"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-dataexport"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

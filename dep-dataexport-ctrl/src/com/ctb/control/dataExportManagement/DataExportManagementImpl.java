@@ -484,6 +484,9 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
 		}
+         catch(Exception ex){
+        	 ex.printStackTrace();
+         }
        
 
         return mtsd;

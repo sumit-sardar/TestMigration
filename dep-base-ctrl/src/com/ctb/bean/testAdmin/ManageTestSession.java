@@ -24,6 +24,8 @@ public class ManageTestSession extends CTBBean{
 	    private Date dailyLoginStartTime;
 	    private Date dailyLoginEndTime;
 	    private String timeZone;
+	    private String endDateString;
+	    private String startDateString;
 	   
 		/**
 		 * @return the dailyLoginStartTime
@@ -205,6 +207,18 @@ public class ManageTestSession extends CTBBean{
 		 */
 		public void setStatus(String status) {
 			this.status = status;
+		}
+		public String getEndDateString() {
+			return endDateString;
+		}
+		public void setEndDateString(String endDateString) {
+			this.endDateString = endDateString;
+		}
+		public String getStartDateString() {
+			return startDateString;
+		}
+		public void setStartDateString(String startDateString) {
+			this.startDateString = startDateString;
 		}
 		
 }

@@ -39,6 +39,11 @@ public class ManageStudent extends CTBBean
     private String testCompletionStatus;
     
     
+    
+    private Boolean isSuccess;
+    private String completionStatus;
+    private String completionStatusTD;
+    
     private String testPurpose;
     
     
@@ -336,6 +341,24 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setTestCompletionStatus(String testCompletionStatus) {
 		this.testCompletionStatus = testCompletionStatus;
+	}
+	public Boolean getIsSuccess() {
+		return isSuccess;
+	}
+	public void setIsSuccess(Boolean isSuccess) {
+		this.isSuccess = isSuccess;
+	}
+	public String getCompletionStatus() {
+		return completionStatus;
+	}
+	public void setCompletionStatus(String completionStatus) {
+		this.completionStatus = completionStatus;
+	}
+	public String getCompletionStatusTD() {
+		return completionStatusTD;
+	}
+	public void setCompletionStatusTD(String completionStatusTD) {
+		this.completionStatusTD = completionStatusTD;
 	}
     
 } 

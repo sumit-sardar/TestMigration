@@ -43,6 +43,29 @@
 			<input type="hidden" id="titleGrade" value=<lb:label key="data.export.column.title.grade" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="titleStudentId" value=<lb:label key="data.export.column.title.student.id" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="titleStatus" value=<lb:label key="data.export.column.title.status" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="scoringPopupTitle" value=<lb:label key="scoring.page.title" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemListGripCap" value=<lb:label key="scoring.itemGrid.caption" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripItemNo" value=<lb:label key="scoring.itemGrid.ItemNo" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripSubtest" value=<lb:label key="scoring.itemGrid.subtestName" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripScoreItm" value=<lb:label key="scoring.itemGrid.scoreItem" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripManual" value=<lb:label key="scoring.itemGrid.manualStatus" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripMaxScr" value=<lb:label key="scoring.itemGrid.maxScore" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripObtained" value=<lb:label key="scoring.itemGrid.scorObtn" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbsGridFirstName" value=<lb:label key="dialog.myProfile.firstName" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbsGridLastName" value=<lb:label key="dialog.myProfile.lastName" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbsGridOnStatus" value=<lb:label key="scoring.itemGrid.onTestStatus" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbsEmptyGrid" value=<lb:label key="scoring.sbs.noStuFound.message" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbiItemEmptyGrid" value=<lb:label key="scoring.sbi.itemSearchEmpty" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbiItemEmptyGridTitle" value=<lb:label key="scoring.noItems.title" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbiGridItemType" value=<lb:label key="scoring.itemGrid.itemType" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sbsGridItemEmpty" value=<lb:label key="scoring.sbs.noItemsFoundMessage" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="responsePopupTitl" value=<lb:label key="questionpopup.header" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripViewRubric" value=<lb:label key="scoring.itemGrid.viewRubric" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="itemGripViewQues" value=<lb:label key="scoring.itemGrid.viewQues" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="questionPopupTitle" value=<lb:label key="questionpopup.quesTitle" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="rubricPopupTitle" value=<lb:label key="questionpopup.rubricTitle" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="ScoringStatusTitleId" value=<lb:label key="scoring.stuGrid.scoringStatusTitle" prefix="'" suffix="'"/>/>
+			<input type="hidden" id="sesGridStatus" value=<lb:label key="scoring.stuGrid.status" prefix="'" suffix="'"/>/>
 			
 			
 			<table class="transparent" width="97%" style="margin: 15px auto;">
@@ -81,13 +104,14 @@
 				</table>
 			</div>
 			<table width="99%" align="center" class="transparent"  style="margin: 15px auto;" >
-				<tr>
+				<!--<tr>
 					<td width="100%">
 						<div id ="resetTestId" class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix"
 							style="padding-left: 5px; padding-right: 5px;">
 						</div>
 					</td>
 				</tr>
+				-->
 			<tr > 
 					<td>
 						<div id = 'jqGrid-content-section'>
@@ -98,6 +122,8 @@
 				</tr>
 				
 			</table> 
+			
+			<jsp:include page="score_by_item_details.jsp" />
 		</netui:form>
 		
 		<script type="text/javascript">

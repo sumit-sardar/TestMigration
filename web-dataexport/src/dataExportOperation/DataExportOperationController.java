@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.Base;
 import utils.DataExportSearchUtils;
 import utils.FilterSortPageUtils;
+import utils.JsonUtils;
 import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
 import utils.BroadcastUtils;
@@ -40,15 +42,22 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.ManageTestSession;
 import com.ctb.bean.testAdmin.ManageTestSessionData;
 import com.ctb.bean.testAdmin.ProgramData;
+import com.ctb.bean.testAdmin.QuestionAnswerData;
+import com.ctb.bean.testAdmin.RubricViewData;
 import com.ctb.bean.testAdmin.ScheduleElementData;
+import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
+import com.ctb.bean.testAdmin.ScorableItem;
+import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentData;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.crscoring.TestScoring;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.SuccessInfo;
+import com.ctb.util.jmsutils.ExportDataJMSUtil;
 import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
@@ -69,6 +78,7 @@ public class DataExportOperationController extends PageFlowController {
 	private CustomerLicense[] customerLicenses = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private Integer totalExportedStudentCount = null;
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
@@ -105,6 +115,12 @@ public class DataExportOperationController extends PageFlowController {
 	 */
 	@Control()
 	private com.ctb.control.dataExportManagement.DataExportManagement dataexportManagement;
+	
+	@Control()
+	private com.ctb.control.crscoring.TestScoring testScoring;
+	
+	@Control()
+    private com.ctb.control.db.CRScoring scoring;
 	
 	@Control()
     private com.ctb.control.licensing.Licensing licensing;
@@ -526,7 +542,7 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		try
 		{	
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ms"); 
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
 			Date date = new Date();  
 		        System.out.println(dateFormat.format(date));  
 			
@@ -536,10 +552,13 @@ public class DataExportOperationController extends PageFlowController {
 			if ((mtsData != null) && (mtsData.getFilteredCount().intValue() > 0)) {
 				List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
 				this.toBeExportedRosterList = mtsData.getToBeExportedStudentRosterList();
+				this.totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
 				vo.setTestSessionList(testSessionList);
-				
-				
 			}
+			else {
+				vo.setTestSessionList(null);
+			}
+			
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(vo);
@@ -602,7 +621,10 @@ public class DataExportOperationController extends PageFlowController {
 			}
 			vo.setStudentList(studentList);
 			vo.setUnscoredStudentCount(msData.getTotalCount());
-			vo.setStudentBeingExportCount(msData.getScheduledStudentCount());
+			vo.setStudentBeingExportCount(this.totalExportedStudentCount);
+			vo.setScheduledStudentCount(msData.getScheduledStudentCount());
+			vo.setNotTakenStudentCount(msData.getNotTakenStudentCount());
+			vo.setNotCompletedStudentCount(msData.getNotCompletedStudentCount());
 		
 			try {
 				Gson gson = new Gson();
@@ -629,6 +651,320 @@ public class DataExportOperationController extends PageFlowController {
 	}
 	
 	
+	@Jpf.Action()
+	protected Forward beginDisplayStudItemList()
+	{ 
+
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String json = "";
+		Integer rosterId = Integer.parseInt(getRequest().getParameter("rosterId"));
+		Integer itemSetIdTC = Integer.parseInt(getRequest().getParameter("itemSetIdTC"));
+		HashMap<Integer,ScorableItem> incompleteItemSetIdMap = new HashMap<Integer, ScorableItem>();
+		HashMap<Integer,ScorableItem> totalItemSetIdMap = new HashMap<Integer, ScorableItem>();
+		DataExportVO vo = new DataExportVO();
+		try {
+
+			//can be used for immediate report button
+			ScorableItemData sid = getTestItemForStudent(rosterId, itemSetIdTC, null, null);
+			List<ScorableItem> itemList = buildItemList(sid);
+			String status = "T";
+			for (ScorableItem si : itemList){
+
+				if(si.getScoreStatus().equalsIgnoreCase("incomplete") && si.getAnswered().equalsIgnoreCase("answered")){
+					incompleteItemSetIdMap.put(si.getItemSetId(),si);
+				}
+				totalItemSetIdMap.put(si.getItemSetId(),si);
+			}
+
+			for (Integer id : totalItemSetIdMap.keySet()){
+				if(incompleteItemSetIdMap.get(id) == null){
+					System.out.println("status true");
+					status = "T";
+					break;
+				}else{
+					status ="F";
+					System.out.println("status false");
+				}
+
+			}
+
+
+			
+			try{
+				
+				String completionStatus = scoring.getScoringStatus(rosterId,itemSetIdTC);
+				Boolean scoringButton = false;
+				if(completionStatus.equals("CO")){
+					 scoringButton = true;
+				}else{
+					 scoringButton = false;
+				}
+				
+				vo.setScorableItems(itemList);
+				
+				vo.setPage("1");
+				vo.setRecords("10");
+				vo.setTotal("2");
+				vo.setProcessScoreBtn(scoringButton.toString());
+				
+				Gson gson = new Gson();
+				json = gson.toJson(vo);
+
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+
+			}
+
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing populateGridDropDowns.");
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="")
+	})
+	protected Forward showQuestionAnswer(){
+			
+		String jsonResponse = "";
+		String itemId = getRequest().getParameter("itemId");
+		Integer testRosterId = new Integer(getRequest().getParameter("testRosterId"));
+		Integer itemSetId = new Integer(getRequest().getParameter("itemSetId"));
+		String itemType = getRequest().getParameter("itemType");
+
+		System.out.println("item id" + itemId);
+		System.out.println("testRosterId id" + testRosterId);
+		System.out.println("itemSetId id" + itemSetId);
+		System.out.println("itemType id" + itemType);
+
+	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
+		RubricViewData[] scr =  getRubricDetails(itemId);
+		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
+				userName, testRosterId, itemSetId, itemId, itemType);
+		QuestionAnswerData qad = new QuestionAnswerData();
+		qad.setRubricData(scr);
+		qad.setScrContent(scrArea);
+		
+		try {
+			jsonResponse = JsonUtils.getJson(qad, "questionAnswer",qad.getClass());
+
+			System.out.println("jsonresponse" + jsonResponse);
+		   HttpServletResponse resp = this.getResponse();     
+		   resp.setContentType("application/json");
+           resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+		
+	}
+	
+	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
+	protected Forward saveDetails() {
+		System.out.println("Save details");
+		String jsonMessageResponse = "";
+		if (user == null) {
+			getUserDetails();
+		}
+		String itemId = getRequest().getParameter("itemId");
+		Integer itemSetId = Integer.valueOf(getRequest().getParameter(
+		"itemSetId"));
+		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
+		"rosterId"));
+		Integer score = Integer.valueOf(getRequest().getParameter("score"));
+		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
+		try {
+			String completeTD = null;
+			Boolean isSuccess = this.testScoring.saveOrUpdateScore(user
+					.getUserId(), itemId, itemSetId, testRosterId, score);
+			// start- added for  Process Scores   button changes
+			String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
+			if (completionStatus.equals("CO")) {
+				this.testSessionStatus.rescoreStudent(testRosterId);
+			} else { // Change for immediate reporting requirements
+				String completionStatusRosterAndTD = scoring.getStatusForRosterAndTD(testRosterId,itemSetId);
+				if (completionStatusRosterAndTD.equals("CO")) {
+					this.testSessionStatus.rescoreStudent(testRosterId);
+					completeTD = "CO";
+				} else {
+					completeTD = "IN";
+				}
+			}
+
+
+			ManageStudent ms = new ManageStudent();
+			ms.setIsSuccess(isSuccess);
+			ms.setCompletionStatus(completionStatus);
+			ms.setCompletionStatusTD(completeTD);
+			jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+			// end - added for  Process Scores   button changes
+
+			HttpServletResponse resp = this.getResponse();
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+			OutputStream stream = resp.getOutputStream();
+			stream.write(jsonMessageResponse.getBytes());
+			stream.close();
+
+		} catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "")
+	})
+public Forward rescoreStudent() {
+		String jsonMessageResponse = "";
+		if (user == null) {
+			getUserDetails();
+		}
+		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
+		"rosterId"));
+
+		System.out.println("rescore Student" + testRosterId);
+        try {    
+            this.testSessionStatus.rescoreStudent(testRosterId);
+        	
+        	ManageStudent ms = new ManageStudent();
+			ms.setIsSuccess(true);
+			jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+            HttpServletResponse resp = this.getResponse();
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+			OutputStream stream = resp.getOutputStream();
+			stream.write(jsonMessageResponse.getBytes());
+			stream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+			try {
+	        	ManageStudent ms = new ManageStudent();
+				ms.setIsSuccess(false);
+				jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+	            HttpServletResponse resp = this.getResponse();
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				OutputStream stream = resp.getOutputStream();
+				stream.write(jsonMessageResponse.getBytes());
+				stream.close();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+        }                
+        return null;
+}
+	
+	private RubricViewData[] getRubricDetails(String itemId){
+
+    	RubricViewData[] rubricDetailsData = null;
+    	try {	
+    		rubricDetailsData =  this.testScoring.getRubricDetailsData(itemId);
+    		System.out.println("rubricdetails data");
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	return rubricDetailsData;
+    }
+	
+	private static ScorableCRAnswerContent getIndividualCRResponse(
+			TestScoring testScoring, String userName, Integer testRosterId,
+			Integer deliverableItemSetId, String itemId, String itemType) {
+		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
+		try {
+
+			answerArea = testScoring.getCRItemResponseForScoring(userName,
+					testRosterId, deliverableItemSetId, itemId, itemType);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+
+		return answerArea;
+	}
+	
+	private ScorableItemData getTestItemForStudent(Integer testRostorId,Integer itemSetId, PageParams page, SortParams sort) 
+    {
+	 ScorableItemData sid = new ScorableItemData();                        
+        try
+        {      
+            sid = this.testScoring.getAllScorableCRItemsForTestRoster(testRostorId, itemSetId, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return sid;
+    }
+	
+	private List<ScorableItem> buildItemList(ScorableItemData tid) 
+    {
+        ArrayList<ScorableItem> itemList = new ArrayList<ScorableItem>();
+        if (tid != null) {
+        	 ScorableItem[] testItemDetails = tid.getScorableItems();    
+            for (int i=0 ; i<testItemDetails.length ; i++) {
+            	ScorableItem itemDetail = (ScorableItem)testItemDetails[i];
+                if (itemDetail != null) {
+                	if(itemDetail.getAnswered().equals("A")) {
+                		itemDetail.setAnswered("Answered");
+                		if(itemDetail.getScoreStatus().equalsIgnoreCase("Incomplete")) {
+                			itemDetail.setScorePoint("-");
+                		}
+                	} else {
+                		itemDetail.setAnswered("Not Answered");
+                	}
+                    itemList.add(itemDetail);
+                }
+            }
+        }
+        return itemList;
+    }
+	
+	@Jpf.Action()
+	protected Forward submitJob() {
+	   
+	   Integer userId = user.getUserId();
+	   Integer studentCount = this.toBeExportedRosterList.size();
+	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
+	   
+	   ExportDataJMSUtil exportDataJMSUtil = null;
+		 try {
+			 exportDataJMSUtil = new ExportDataJMSUtil ();
+		     exportDataJMSUtil.initGenerateReportTask (userName, customerId, userId, jobId, this.toBeExportedRosterList);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+
+	   return null;
+	
+	}
 	 private void initialize()
 		{     
 			getLoggedInUserPrincipal();
@@ -643,8 +979,8 @@ public class DataExportOperationController extends PageFlowController {
 		}
 	 
 	 
-	 @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") }, 
-				validationErrorForward = @Jpf.Forward(name = "failure", path = "logout.do"))
+	 @Jpf.Action() 
+				
 		public Forward getExportStatus() throws IOException {
 	    	String json ="";
 	    	HttpServletResponse resp = getResponse();
