@@ -152,7 +152,7 @@ BEGIN
              ABILITY_SCORE        = NULL,
              SEM_SCORE            = NULL,
              OBJECTIVE_SCORE      = NULL,
-             TMS_UPDATE           = NULL
+             TMS_UPDATE           = 'F'
        WHERE TEST_ROSTER_ID = ROSTERS_IN(I)
       .ROSTER_ID
          AND ITEM_SET_ID = ROSTERS_IN(I).SUBTEST_IDS(J);
