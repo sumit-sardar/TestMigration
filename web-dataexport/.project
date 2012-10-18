@@ -9,6 +9,7 @@
 		<project>dep-weblib-taglib</project>
 		<project>dep-weblib-webutils</project>
 		<project>dep-jmsdataexport-ctrl</project>
+		<project>dep-licensing-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

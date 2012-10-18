@@ -22,9 +22,9 @@
 	<input type="hidden" id="jqgJobStatus" name="jqgJobStatus" value=<lb:label key="dataexport.info.jobstatus" prefix="'" suffix="'"/>/>
 	<input type="hidden" id="statusListID" name="statusListID" value=<lb:label key="dataexport.info.statusListID" prefix="'" suffix="'"/>/>
 	<input type="hidden" id="menuId" name="menuId" value="viewStatusLink" />
-
-			
-			
+    <input type="hidden" id="searchStudentID" name = "searchStudentID" value=<lb:label key="stu.label.searchStudentID" prefix="'" suffix="'"/>/>
+	<input type="hidden" id="noStudentExportTitle" name = "noStudentExportTitle" value=<lb:label key="dataexport.info.noExportTitle" prefix="'" suffix="'"/>/>		
+	<input type="hidden" id="noStudentExportMsg" name = "noStudentExportMsg" value=<lb:label key="dataexport.info.noExportMessage" prefix="'" suffix="'"/>/>
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
 					<td>
@@ -64,7 +64,7 @@
 				<tr height = "25px;">
 				</tr>
 				<tr>
-					<td width="100%">
+					<td width="97%">
 						<p id="viewStstusDesc"><lb:label key="data.export.viewStatus.message" /></p>
 						<table id="list2"></table>
 						<div id="pager2"></div>
@@ -74,8 +74,23 @@
 
 
 
-
-
+<div id="searchUserByKeyword"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div>
+		<p><lb:label key="stu.search.info.message"/></p>
+	</div>
+	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
+		<center>
+			<input type="text" name="searchUserByKeywordInput" id="searchUserByKeywordInput" onkeypress="trapEnterKey(event);"/>
+		</center>	
+	</div>
+	<div style="padding-bottom:20px;"> 
+		<center>
+			<input type="button"  value="Clear" onclick="javascript:resetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="Search" onclick="javascript:searchUserByKeyword(); return false;" class="ui-widget-header">
+		</center>
+	</div>
+</div>
 
 
 

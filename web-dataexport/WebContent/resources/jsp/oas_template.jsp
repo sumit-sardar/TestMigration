@@ -59,7 +59,6 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/tabs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dynamic_table.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
     
  
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
