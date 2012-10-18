@@ -75,7 +75,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script> 
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/viewStatus.js"></script>  
 
-  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyuserinfo.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dataexport.js"></script>
   	

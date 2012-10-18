@@ -112,9 +112,11 @@
 		        
         jQuery(".ui-icon-refresh").bind("click",function(){
 				gridReload();
+				$("#displayMessageMain").hide();
 			});
       }
   function searchUserByKeyword(){
+  	$("#displayMessageMain").hide();
 	 var searchFiler = $.trim($("#searchUserByKeywordInput").val()), f;
 	 var grid = $("#list2"); 
 		 
@@ -162,7 +164,7 @@
 	  	   resetSearchCrit();
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json',mtype:'POST'}); 
            jQuery("#list2").jqGrid('setGridParam', {url:'getExportStatus.do',page:1}).trigger("reloadGrid");
-           jQuery("#list2").sortGrid('jobStatus',true,'desc');
+           jQuery("#list2").sortGrid('createdDateTime',true,'desc');
 
       }
       function resetSearchCrit(){
@@ -171,6 +173,7 @@
 	    grid.jqGrid('setGridParam',{search:false});	
 	    var postData = grid.jqGrid('getGridParam','postData');
 	    $.extend(postData,{filters:""});
+	    UIBlock()
 
 	}
       

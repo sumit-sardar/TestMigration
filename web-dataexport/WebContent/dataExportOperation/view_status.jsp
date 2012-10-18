@@ -43,7 +43,7 @@
 
 			</table>
 
-			<div id = "displayMessage" 
+			<div id = "displayMessageMain" 
 					style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; margin-bottom:5px; padding:2px 2px 2px 10px; color: black;">	
 				<table width="99.5%">
 					<tbody>
@@ -52,7 +52,7 @@
 								<img height="16" src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
 							</td>
 							<td valign="middle" >
-								<div id="messageTitle" style="display:none;font-weight:bold;"></div>
+								<div id="contentMain" style="display:none;font-weight:bold;"></div>
 								<div id="message" style="display:none;"></div>
 								
 							</td>
