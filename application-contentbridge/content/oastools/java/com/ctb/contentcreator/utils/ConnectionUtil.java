@@ -74,7 +74,7 @@ public class ConnectionUtil {
 
 		if (conf.isUseThin()) {
 			url = "jdbc:oracle:thin:@" + conf.getAdsDbHost() + ":1521:"
-					+ conf.getSid();
+					+ conf.getAdsDbSid();
 		} else {
 			url = "jdbc:oracle:oci:@" + conf.getAdsDbSid();
 		}
