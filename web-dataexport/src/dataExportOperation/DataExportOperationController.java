@@ -1245,8 +1245,35 @@ public Forward rescoreStudent() {
     	boolean hasResetTestSession = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean hasLicenseConfigured = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
-    	        
+    	
+    	if( customerConfigs != null ) {
+    	for (int i=0; i < customerConfigs.length; i++) {
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
+            		cc.getDefaultValue().equals("T")	) {
+				hasResetTestSession = true;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	isOKCustomer = true;
+            }
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
+					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
+							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+				isGACustomer = true;
+			}
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+	        		cc.getDefaultValue().equals("T")	) {
+				hasLicenseConfigured = true;
+	        }
+		  }
+    	getConfigStudentLabel(customerConfigs);
+    	}
+    	
+    	
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -1263,7 +1290,7 @@ public Forward rescoreStudent() {
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration() && adminUser);
+     	this.getSession().setAttribute("hasLicenseConfigured", new Boolean(hasLicenseConfigured && adminUser));
 
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
 		
@@ -1275,28 +1302,10 @@ public Forward rescoreStudent() {
      	
     
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
-     	
-		for (int i=0; i < customerConfigs.length; i++) {
-			CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
-            		cc.getDefaultValue().equals("T")	) {
-				hasResetTestSession = true;
-            }
-			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
-					&& cc.getDefaultValue().equals("T")) {
-            	isOKCustomer = true;
-            }
-			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
-					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
-					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
-				isGACustomer = true;
-			}
-		}        
+     
 		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
-		this.getSession().setAttribute("hasAuditingResetTestSession", new Boolean(hasResetTestSession && (laslinkCustomer && isTopLevelAdmin)));
+		
 		this.getSession().setAttribute("hasDataExportConfigured", new Boolean(laslinkCustomer)); // add for Data Export
-		getConfigStudentLabel(customerConfigs);
 		
 		
 	}
