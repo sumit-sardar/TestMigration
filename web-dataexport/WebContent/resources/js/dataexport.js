@@ -162,13 +162,13 @@ function getUnscoredStudentDetails() {
 							$("#studentBeingExptd").text(data.studentBeingExportCount);
 							$("#incScoredStudent").text(data.unscoredStudentCount);
 							if(data.studentList.length>0) {
-							//	if(data.unscoredStudentCount>0)
-							/*	{
+								if(data.unscoredStudentCount>0)
+								{
 									populate_unscored_student_grid(data.studentList);
 									$("#data_export_step2").show();
 									$("#data_export_step3").hide();
 									window.scroll(0,100000);
-								} else { */
+								} else { 
 									$("#studentBeingExptd").text(data.studentBeingExportCount);
 									$("#scheduledStudent").text(data.scheduledStudentCount);
 									$("#notTakenStudent").text(data.notTakenStudentCount);
@@ -176,7 +176,7 @@ function getUnscoredStudentDetails() {
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
 									window.scroll(0,100000);
-						//		}		
+								}		
 							}
 							else {
 								showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportUnscoredStudentSearchResultEmpty").val());
