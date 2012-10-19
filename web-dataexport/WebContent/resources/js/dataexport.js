@@ -164,7 +164,7 @@ function getUnscoredStudentDetails() {
 							$.unblockUI(); 
 							$("#studentBeingExptd").text(data.studentBeingExportCount);
 							$("#incScoredStudent").text(data.unscoredStudentCount);
-							if(data.studentList.length>0) {
+							if(data.studentList.length>0 || (data.studentBeingExportCount != undefined && data.studentBeingExportCount > 0)) {
 								if(data.unscoredStudentCount>0)
 								{
 									populate_unscored_student_grid(data.studentList);
@@ -172,12 +172,19 @@ function getUnscoredStudentDetails() {
 									$("#data_export_step3").hide();
 									window.scroll(0,100000);
 								} else { 
-									$("#studentBeingExptd").text(data.studentBeingExportCount);
+									$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
 									$("#scheduledStudent").text(data.scheduledStudentCount);
 									$("#notTakenStudent").text(data.notTakenStudentCount);
 									$("#notCompleteStudent").text(data.notCompletedStudentCount);
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
+									if(parseInt(data.studentBeingExportCount) > 0) {
+										$("#dataExportSubmitButton").removeClass('ui-state-disabled');
+										$("#dataExportNextButton").attr('disabled','false');
+									} else {
+										$("#dataExportSubmitButton").addClass('ui-state-disabled');
+										$("#dataExportNextButton").attr('disabled','true');
+									}
 									window.scroll(0,100000);
 								}		
 							}
@@ -999,6 +1006,10 @@ function processScore(element){
 			}
 		}
 		//selectedRowObjectScoring = {};
+	}
+	
+	if (dailogId == 'studentScoringId') {
+		getUnscoredStudentDetails(); // Currently if the scoring popup is closed, grid reload function will be called and it will be a server side call
 	}
 	
 	$("#"+dailogId).dialog("close");

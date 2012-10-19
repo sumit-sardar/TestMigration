@@ -77,7 +77,7 @@
 							<td class="transparent"><lb:label key="student.being.exported" /></td>
 							<td class="transparent">
 							<div class="formValueLarge">
-							<span class="formValueLarge" id="studentBeingExptd">1</span>
+							<span class="formValueLarge" id="studentBeingExptdStep3">1</span>
 							</div>
 							</td>
 						</tr>
