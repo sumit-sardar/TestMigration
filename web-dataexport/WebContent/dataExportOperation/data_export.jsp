@@ -124,6 +124,7 @@
 			</table> 
 			
 			<jsp:include page="score_by_item_details.jsp" />
+			<jsp:include page="question_answer.jsp" />
 		</netui:form>
 		
 		<script type="text/javascript">

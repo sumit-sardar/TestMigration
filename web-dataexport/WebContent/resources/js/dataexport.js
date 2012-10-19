@@ -12,6 +12,9 @@ var testRosterIdRub = 0;
 var itemSetIdRub = 0;
 var parentDivId = '';
 var data1 = null;
+var selectedRosterId;
+var selectedRData = {};
+var selectedItemSetTCVal;
 
 
 function getStudentList() { 
@@ -312,7 +315,7 @@ function showHideMessage(show, messageTitle, message){
 	function updateFieldFormat (cellvalue, options, rowObject){
 		var val = cellvalue;
 			val = "<a href='#' style='color:blue; text-decoration:underline;' onClick = 'javascript:showStudnedItemList(\""+rowObject.loginId+"\",\""+
-						rowObject.testAdminId+"\",\""+rowObject.itemSetIdTC+"\",\""+rowObject.rosterId+"\"); return false;'>"+cellvalue+"</a>";
+						rowObject.testAdminId+"\",\""+rowObject.itemSetIdTC+"\",\""+rowObject.accessCode+"\",\""+rowObject.testSessionName+"\",\""+rowObject.studentName+"\",\""+rowObject.rosterId+"\"); return false;'>"+cellvalue+"</a>";
 	return val;	
 	
 	}
@@ -323,12 +326,27 @@ function showHideMessage(show, messageTitle, message){
 		$("#"+popupId).parent().css("left",leftpos);	
 	}
 	
-	function showStudnedItemList(loginId, testAdminId, itemSetIdTC, rosterId) {
+	function showStudnedItemList(loginId, testAdminId, itemSetIdTC, accessCode, testSessionName, studentName, rosterId) {
 		selectedRowData.loginId = loginId;
 		selectedRowData.testAdminId = testAdminId;
 		selectedRowData.itemSetIdTC = itemSetIdTC;
 		selectedRowData.rosterId = rosterId;
+		selectedRosterId = rosterId;
+		selectedRData = {};
+		selectedRData.userName = loginId;
+		selectedRData.studentName = studentName;
+		selectedRData.testSessionName = testSessionName;
+		selectedRData.accessCode = accessCode;
+		selectedItemSetTCVal = itemSetIdTC;
+		fillStudentFields();
 		openHandScorePopup(rosterId,itemSetIdTC);
+	}
+	
+	function fillStudentFields(){
+		$("#studentNameScr").text(selectedRData.studentName);
+		$("#loginNameScr").text(selectedRData.userName);
+		$("#sessionNameScr").text(selectedRData.testSessionName);
+		$("#accessCodeScr").text(selectedRData.accessCode);
 	}
 	
 	
@@ -696,6 +714,73 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 		 	
 }
 
+function getScorePoints(){
+				var rowElement = document.getElementById(selectedRowObjectScoring.id);
+				var pointStatus = [];
+				if(rowElement){				
+					
+					var score = rowElement.lastChild.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
+					if ( isNaN(status)){
+						score = trim(score);
+						status = trim(status);
+						pointStatus[0] = score;
+						pointStatus[1] = status;
+						}else{
+							rowElement = $('#'+selectedRowObjectScoring.testRosterId,'#studentItemListGrid');
+							rowElement = rowElement[0];
+							
+							if(rowElement){
+								score = rowElement.lastChild.innerHTML;
+								status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+								score = trim(score);
+								status = trim(status);
+								pointStatus[0] = score;
+								pointStatus[1] = status;							
+							}
+					}
+				}else{
+					rowElement = $('#'+selectedRowObjectScoring.testRosterId,'#studentItemListGrid');
+					rowElement = rowElement[0];
+
+					if(rowElement){
+					var score = rowElement.lastChild.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+					score = trim(score);
+					status = trim(status);
+					pointStatus[0] = score;
+					pointStatus[1] = status;					
+					}
+				}
+				
+				return pointStatus;
+			}
+
+function updateScore(score,status){
+		
+			var complete = trim(status);
+			if(complete =="Complete"){
+		
+				var select = document.getElementById('pointsDropDown');
+				
+				for(var i=0; i< select.options.length; i++){
+				if(select.options[i].value == trim(score)){
+						select.options[i].selected = 'true';
+						break;
+					}
+				
+				}
+			}
+		}
+	
+		function addOption(selectbox,text,value )
+		{
+			var optn = document.createElement("OPTION");
+			optn.text = text;
+			optn.value = value;
+			selectbox.options.add(optn);
+		}
+
 
 	
  function formSave() {
@@ -843,8 +928,7 @@ function processScore(element){
 		
  function clearMessage(){
  document.getElementById('displayMessageForQues').style.display = "none";	
- document.getElementById('displayMessageStudent').style.display = "none";	
- document.getElementById('displayMessageSession').style.display = "none";	 
+ document.getElementById('displayMessageStudent').style.display = "none";	 
  }
  
  function closePopUp(dailogId){
@@ -1046,4 +1130,131 @@ function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId
 											}										
 								  		  isRubricPopulated = true;
 		$.unblockUI();
+	}
+	
+	
+	function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
+	UIBlock();
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
+	var itemId = itemIdRubric; 
+	var itemNumber = itemNumber;
+	
+
+	$.ajax(
+		{
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+								$("#audioPlayer").hide();
+								$("#crText").hide();
+							},
+				url:		'showQuestionAnswer.do',
+				type:		'POST',
+				data:		param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){									
+								 var questionNumber = itemNumber;
+								 data1 = data.questionAnswer;
+								 
+								var crTextResponse = "";
+								var isAudioItem = data1.scrContent.isAudioItem;
+								var linebreak ="\n\n";
+								
+								if(isAudioItem){
+								$("#crText").hide();
+								document.getElementById("itemType").value = "AI";
+								var audioResponseString = data1.scrContent.audioItemContent;
+								audioResponseString = audioResponseString.substr(13);
+								audioResponseString = audioResponseString.split("%3C%2F");
+								document.getElementById("audioResponseString").value = audioResponseString[0];
+								document.getElementById("pointsDropDown").setAttribute("disabled",true);								
+								$('#Question').addClass('ui-state-disabled');
+								$("#audioPlayer").hide();
+								$("#iframeDiv").show();
+								var iframe = $("#iframeAudio");
+								$(iframe).attr('src', "audioPlayer.jsp");
+							
+								
+								}else{
+								document.getElementById("itemType").value = "CR";								
+								var crResponses =data1.scrContent.cRItemContent.string.length;
+								for(var i = 0; i < crResponses; i++){
+									if( i == (crResponses-1)){
+										linebreak ="";
+										document.getElementById("pointsDropDown").removeAttribute("disabled");
+										document.getElementById("Question").removeAttribute("disabled");
+										$('#Question').removeClass('ui-state-disabled'); 
+									}
+									var crResponseToShow = data1.scrContent.cRItemContent.string[i];
+									if(isObject(crResponseToShow))
+										crResponseToShow = "";
+									crTextResponse = crTextResponse + crResponseToShow + linebreak;
+								  }
+								$("#crText").show();
+								$("#crText").val(crTextResponse);
+								}
+								
+
+								
+								 populateTableNew();
+									// $.unblockUI(); 
+								 //$("#rubricDialogID").dialog("open");
+								
+
+								 						 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								//$.unblockUI(); 
+							}
+				}
+			);
+			
+	
+	}
+	
+	function isObject (obj){
+			return obj.toString() === '[object Object]';
+	}
+	
+	
+	function handleSpecialCharactersNewUI(s) {
+		s= s.replace(/&nbsp;/g,' ').split('');
+		var k;
+		for(var i= 0; i<s.length; i++){
+			k= s[i];
+			c= k.charCodeAt(0);
+			s[i]= (function(){
+				switch(c){
+					case 60: return "&lt;";
+					case 62: return "&gt;";
+					case 34: return "&quot;";
+					case 38: return "&amp;";
+					case 39: return "&#39;";
+					//For IE
+					case 65535: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					//For Mozila and Safari
+					case 65533: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					default: return k;
+				}
+			})();
+		}
+		return s.join('');
+	}
+	
+	function hideMessage(){
+		clearMessage();
 	}

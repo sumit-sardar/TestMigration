@@ -201,7 +201,7 @@ function stopAudio(){
 										<td class="transparent" style="width: 10%;"><span><b><lb:label key="questionpopup.answer" /> :</b></span></td>
 										<TD rowspan=4>
 										<div id='outerdiv' style="width:545px;height:440px; overflow-x: hidden;"><iframe id="rubricIframe"
-											src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
+											src="<%=request.getContextPath() %>/dataExportOperation/rubricNew.jsp"
 											style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 99%; height: 98%;"
 											frameborder="1" scrollable="yes"></iframe></div>
 										</TD>
