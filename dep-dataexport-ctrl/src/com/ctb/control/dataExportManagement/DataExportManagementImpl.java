@@ -2,6 +2,7 @@ package com.ctb.control.dataExportManagement;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.ctb.exception.dataExportManagement.JobDataNotFoundException;
 import com.ctb.exception.dataExportManagement.StudentDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
+import com.ctb.util.DateUtils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 /**
  * @author John_Wang
@@ -463,8 +465,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 				testSessions[i].setStudentStop(rosterStudentStopValue);
 				testSessions[i].setSystemStop(systemStopValue);
 				testSessions[i].setToBeExported(toBeExportedValue);
-				
-					
+				testSessions[i].setStartDateString(DateUtils.formatDateToDateString(testSessions[i].getStartDate()));
+				testSessions[i].setEndDateString(DateUtils.formatDateToDateString(testSessions[i].getEndDate()));
 			}
 			mtsd.setTotalExportedStudentCount(totalExportedStudentCount);
 			mtsd.setScheduledStudentCount(scheduledStudentCount);
