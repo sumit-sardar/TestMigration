@@ -68,7 +68,7 @@
 </td></tr>
 <tr><td>Session Id:</td>
 <td>
-	<input type="text" id="sesionId" name="sesionId" value=""  />&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="text" id="sesionId" name="sesionId" value="165636"  />&nbsp;&nbsp;&nbsp;&nbsp;
 	Remove:<input type="checkbox"  id="removeSession" name="removeSession"/>&nbsp;
 </td>
 </tr>
@@ -82,11 +82,11 @@
 </td>
 </tr>
 <tr><td>Session Name:</td>
-<td><input type="text" id="sessionName" name="sessionName" value="TNG Level 13 Session One" size="64"/>&nbsp;</td>
+<td><input type="text" id="sessionName" name="sessionName" value="TNG Level 13 9_07 NO ALLOW BREAKS" size="64"/>&nbsp;</td>
 </tr>
 
 <tr><td>Has Break</td>
-<td><input checked type="checkbox" id="hasBreak" name="hasBreak"/>&nbsp;</td>
+<td><input type="checkbox" id="hasBreak" name="hasBreak"/>&nbsp;</td>
 </tr>
 
 <tr><td>Time Zone:</td>
@@ -104,8 +104,8 @@
 </select>
 </td></tr>
 
-<tr><td>Start Date:</td><td><input type="text" id="startDate" name="startDate" value="06/04/12" /></td></tr>
-<tr><td>End Date:</td><td><input type="text" id="endDate" name="endDate" value="07/04/13" /></td></tr>
+<tr><td>Start Date:</td><td><input type="text" id="startDate" name="startDate" value="09/07/12" /></td></tr>
+<tr><td>End Date:</td><td><input type="text" id="endDate" name="endDate" value="10/28/12" /></td></tr>
 <tr><td>Start Time:</td><td><input type="text" id="startTime" name="startTime" value="8:00 AM" /></td></tr>
 <tr><td>End Time:</td><td><input type="text" id="endTime" name="endTime" value="5:00 PM" /></td></tr>
 </table>

@@ -115,7 +115,7 @@ public class SchedulingWS implements Serializable {
     		return session;
     	}
 
-    	
+    	 
     	// VALIDATE SESSION INPUT
     	if (! validateInput(session)) {
     		return session;

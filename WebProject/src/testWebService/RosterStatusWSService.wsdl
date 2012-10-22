@@ -22,7 +22,7 @@
       <xs:complexType name="SessionStatus">
         <xs:annotation>
           <xs:documentation>/** 
- * This is the second object which passed into scheduling web service
+ * This is the second object which passed into test roster status web service
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
@@ -35,25 +35,14 @@
       <xs:complexType name="StudentStatus">
         <xs:annotation>
           <xs:documentation>/** 
- * This object contains information for students who will be created in OAS for an administration
- * The values which required from ACUITY through input are: 
- * assignmentId, firstName, lastName, gender, grade   
- * The values which OAS platform populated in return are:  
- * status, studentId, loginName, password
+ * This object contains test roster status for student
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="1" name="AssignmentId" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="Birthdate" nillable="true" type="xs:dateTime"/>
-          <xs:element minOccurs="1" name="FirstName" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="Gender" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="Grade" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="LastName" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="LoginName" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="MiddleName" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="Password" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="AcuityQueueKey" nillable="false" type="xs:long"/>
           <xs:element minOccurs="1" name="RosterStatus" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="StudentId" nillable="true" type="xs:int"/>
         </xs:sequence>
       </xs:complexType>
@@ -103,7 +92,7 @@
   </s0:binding>
   <s0:service name="RosterStatusWSService">
     <s0:port binding="s1:RosterStatusWSServiceSoapBinding" name="RosterStatusWSSoapPort">
-      <s2:address location="http://localhost:7001/RosterStatusWebService/RosterStatusWS"/>
+      <s2:address location="http://nj09mhe5381-mgt.edmz.mcgraw-hill.com:22611/RosterStatusWebService/RosterStatusWS"/>
     </s0:port>
   </s0:service>
 </s0:definitions>

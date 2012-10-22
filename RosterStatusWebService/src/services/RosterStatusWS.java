@@ -53,22 +53,33 @@ public class RosterStatusWS {
 	    	StudentStatus[] students = session.getStudents();
 	    	
 	    	if (students == null) {
+	    		/*
+	    		session.setStatus(RosterUtil.MESSAGE_INVALID_DATA);    
+	    		return session;
+	    		*/
+	    		
+	    		// do this to test from OAS side 
 	    		students = populateStudents(res);
 	    		session.setStudents(students);
+	    		
 	    	}
 	    	
-	    	for (int i=0 ; i<res.length ; i++) {
-	    		RosterElement re = res[i];
-	    		String status = RosterUtil.convertStatus(re.getTestCompletionStatus());
-	    		for (int j=0 ; j<students.length ; j++) {
-	    			StudentStatus student = students[j];
+    		for (int i=0 ; i<students.length ; i++) {
+    			StudentStatus student = students[i];
+    			student.setStatus(RosterUtil.MESSAGE_STUDENT_NOT_FOUND);
+    			student.setRosterStatus(RosterUtil.ROSTER_STATUS_UNKNOWN);
+    	    	for (int j=0 ; j<res.length ; j++) {
+    	    		RosterElement re = res[i];    			
 	    			if (student.getStudentId().intValue() == re.getStudentId().intValue()) {
+	    	    		String status = RosterUtil.convertStatus(re.getTestCompletionStatus());
 	    				student.setRosterStatus(status);
+	        			student.setStatus(RosterUtil.MESSAGE_STATUS_OK);
 	    			}
-	    		}
-	    	}
+    	    	}
+    		}
 	    	
 			session.setStatus(RosterUtil.MESSAGE_STATUS_OK);
+			
     	}
     	else {
     		session.setStatus(RosterUtil.MESSAGE_STATUS_ROSTER_ERROR);    		

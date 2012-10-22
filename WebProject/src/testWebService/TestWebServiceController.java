@@ -97,15 +97,17 @@ public class TestWebServiceController extends PageFlowController
     	this.getRequest().setAttribute("resultText", resultText);
 	    
 	    String infoText = "";
-	    StudentStatus[] students = session.getStudents();    
-    	for (int i=0 ; i<students.length ; i++) {
-    		StudentStatus student = students[i];
-    		String status = student.getRosterStatus(); 		
-    		String text = "studentId=" + student.getStudentId() + " - status= " + status;
-    		System.out.println(text);
-    		infoText += ("<br/>" + text);
-    	}
-    	
+	    
+	    if (session.getStatus().equals("OK")) {
+		    StudentStatus[] students = session.getStudents();    
+	    	for (int i=0 ; i<students.length ; i++) {
+	    		StudentStatus student = students[i];
+	    		String status = student.getRosterStatus(); 		
+	    		String text = "studentId=" + student.getStudentId() + " - status= " + status;
+	    		System.out.println(text);
+	    		infoText += ("<br/>" + text);
+	    	}
+	    }    	
 
     	this.getRequest().setAttribute("infoText", infoText);
     	
@@ -125,7 +127,7 @@ public class TestWebServiceController extends PageFlowController
 
 		// populate session
 	    Session session = populateSessionData();
-		
+		 
 	    long startTime = System.currentTimeMillis();
 	    
 		// call web service
