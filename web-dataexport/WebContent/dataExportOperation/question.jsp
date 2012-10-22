@@ -1,8 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="scoring.successful" />
+<lb:bundle baseName="dataExportApplicationResource" />
 <script>
 
 	function showScoreSelect(disableStatus){
@@ -36,7 +35,7 @@
 	</div>
 	<br>
 	<center>
-		<input type="button"  id="popupCancelBtnSBS" value=<lb:label key="common.button.cancel" prefix="'" suffix="'" /> onclick="javascript:closePopUp('questionDetail'); return false;" class="ui-widget-header" style="width:60px">
+		<input type="button"  id="popupCancelBtnSBS" value="Cancel" onclick="javascript:closePopUp('questionDetail'); return false;" class="ui-widget-header" style="width:60px">
 	</center>
 	<br>
 		

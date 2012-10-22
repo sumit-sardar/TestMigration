@@ -1,9 +1,5 @@
 <html>
 <head>
-<script type="text/javascript" src="/ScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="/ScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script type="text/javascript" src="/ScoringWeb/resources/js/map.js"></script>
-<script type="text/javascript" src="/ScoringWeb/resources/js/hierarchy.js"></script>
 <style type="text/css">
 table.gridtable {
 	font-family: verdana,arial,sans-serif;

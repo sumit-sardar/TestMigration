@@ -215,7 +215,7 @@ function reload_load_populate_unscored_student_grid(studentList){
       $('#data_export_scoring_incomplete_student_list').jqGrid('clearGridData') ;
       jQuery("#data_export_scoring_incomplete_student_list").jqGrid('setGridParam',{ datatype: 'local'});    
    	  jQuery("#data_export_scoring_incomplete_student_list").jqGrid('setGridParam', {data: studentList,page:1}).trigger("reloadGrid");
-      jQuery("#data_export_scoring_incomplete_student_list").sortGrid('loginId',true,'asc');
+      jQuery("#data_export_scoring_incomplete_student_list").sortGrid('testSessionName',true,'asc');
 }
 function load_populate_unscored_student_grid(studentList) {
 		isUnscoredStudentListLoaded = true;
@@ -241,7 +241,7 @@ function load_populate_unscored_student_grid(studentList) {
 		   	loadui: "disable",
 			rowNum:10,
 			loadonce:true, 
-			sortname: 'studentName',
+			sortname: 'testSessionName',
 			pager: '#data_export_scoring_incomplete_student_list_pager', 
 			viewrecords: true, 
 			sortorder: "asc",
@@ -327,7 +327,7 @@ function showHideMessage(show, messageTitle, message){
 	
 	}
 	function setPopupPosition(popupId){
-		var toppos = ($(window).height() - 650) /2 + 'px';
+		var toppos = ($(window).height() - 145) /2 + 'px';
 		var leftpos = ($(window).width() - 1024) /2 + 'px';
 		$("#"+popupId).parent().css("top",toppos);
 		$("#"+popupId).parent().css("left",leftpos);	
@@ -372,10 +372,6 @@ function showHideMessage(show, messageTitle, message){
 				}
 			});	
 		setPopupPosition('studentScoringId');		
-		var toppos = ($(window).height() - 650) /2 + 'px';
-		var leftpos = ($(window).width() - 1024) /2 + 'px';
-		$("#studentScoringId").parent().css("top",toppos);
-		$("#studentScoringId").parent().css("left",leftpos);	
 		populateStudentItemList(rosterId,itemSetIdTC);
 	}
 	
@@ -910,12 +906,10 @@ function processScore(element){
 													if(data.SaveStatus.isSuccess){
 																			
 													buildMessage(messageObject,"processSuccessful", true);
-													buildMessage(messageObject1,"processSuccessful", true);
+													
 													}else{
 													//Message
 													buildMessage(messageObject,"processError", false);
-													buildMessage(messageObject1,"processError", false);
-													
 													}
 																			
 													$.unblockUI(); 
@@ -1033,7 +1027,7 @@ function showAnswerPopup(id,itemSetOrder,itemType,testRosterId,itemSetId){
 		 	viewRubric(id,itemSetOrder, itemType, testRosterId, itemSetId);
 }
 
-function viewRubric (itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
+function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId) {
 	UIBlock();
 	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber+"&itemType="+itemType+"&testRosterId="+testRosterId+"&itemSetId="+itemSetId;
 	var itemId = itemIdRubric; 

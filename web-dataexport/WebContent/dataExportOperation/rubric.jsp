@@ -1,8 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="label.tld" prefix="lb" %>
-<lb:bundle baseName="studentScoringResources" />
+<lb:bundle baseName="dataExportApplicationResource" />
 <script>
 	
 	 //This Function  will be called by javafx at runtime
@@ -32,7 +31,7 @@
 				<TABLE>
 					<TR>
 						<div id='outerdiv' style="width:750px;height:380px; overflow-x: hidden;"><iframe id="rubricIframe"
-							src="<%=request.getContextPath() %>/studentScoringOperation/rubricNew.jsp"
+							src="<%=request.getContextPath() %>/dataExportOperation/rubricNew.jsp"
 							style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 99%; height: 98%;"
 							frameborder="1" scrollable="yes"></iframe></div>
 						</TD>
@@ -43,7 +42,8 @@
 	</div>
 	<br>
 	<center>
-		<input type="button"  id="popupCancelBtnSBS" value=<lb:label key="common.button.cancel" prefix="'" suffix="'" /> onclick="javascript:closePopUp('answerDetail'); return false;" class="ui-widget-header" style="width:60px">
+		<input type="button"  id="popupCancelBtnSBS" value="Cancel" onclick="javascript:closePopUp('answerDetail'); return false;" class="ui-widget-header" style="width:60px">
+	
 	</center>
 	<br>
 		
