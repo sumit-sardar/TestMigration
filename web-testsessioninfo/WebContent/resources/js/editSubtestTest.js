@@ -821,7 +821,7 @@
 	    	moveDown = document.getElementById("moveDownMsm");
 	    } else {
 	    	removeRow = document.getElementById("removeRow");
-	    	removeAllRows = document.getElementById("removeRow");
+	    	removeAllRows = document.getElementById("removeAllRows");
 	    	moveUp = document.getElementById("moveUp");
 	    	moveDown = document.getElementById("moveDown");
 	    }
@@ -888,7 +888,7 @@
 	    	moveDown = document.getElementById("moveDownMsm");
 	    } else {
 	    	removeRow = document.getElementById("removeRow");
-	    	removeAllRows = document.getElementById("removeRow");
+	    	removeAllRows = document.getElementById("removeAllRows");
 	    	moveUp = document.getElementById("moveUp");
 	    	moveDown = document.getElementById("moveDown");
 	    }
