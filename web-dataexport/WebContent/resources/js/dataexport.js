@@ -162,7 +162,7 @@ function getUnscoredStudentDetails() {
 			data:		 postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
 							$.unblockUI(); 
-							if(data.studentList.length>0 || (data.studentBeingExportCount != undefined && data.studentBeingExportCount > 0)) {
+							if(data.studentList != undefined && data.studentList.length>0 || (data.studentBeingExportCount != undefined && data.studentBeingExportCount > 0)) {
 								if(data.unscoredStudentCount != undefined && data.unscoredStudentCount>0)
 								{
 									$("#studentBeingExptd").text(data.studentBeingExportCount);
@@ -189,7 +189,16 @@ function getUnscoredStudentDetails() {
 								}		
 							}
 							else {
-								showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportUnscoredStudentSearchResultEmpty").val());
+								//showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportUnscoredStudentSearchResultEmpty").val());
+								$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
+									$("#scheduledStudent").text(data.scheduledStudentCount);
+									$("#notTakenStudent").text(data.notTakenStudentCount);
+									$("#notCompleteStudent").text(data.notCompletedStudentCount);
+									$("#data_export_step3").show();
+									$("#data_export_step2").hide();
+										$("#dataExportSubmitButton").addClass('ui-state-disabled');
+										$("#dataExportNextButton").attr('disabled','true');
+									window.scroll(0,100000);
 							}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){

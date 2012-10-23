@@ -606,13 +606,13 @@ public class DataExportOperationController extends PageFlowController {
 		OutputStream stream = null;
 		ManageStudentData msData = null;
 		ManageStudent student = null;
-		List<ManageStudent> studentList=null;
+		List<ManageStudent> studentList=new ArrayList<ManageStudent>();
 		DataExportVO vo = new DataExportVO();
 		System.out.println("......"+this.toBeExportedRosterList);
 		try {
 			
 			msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(this.toBeExportedRosterList,this.dataexportManagement, customerId, null, null, null);
-			if ((msData != null) && (msData.getFilteredCount().intValue() > 0)) {
+			if (msData != null && (msData.getFilteredCount() !=null && msData.getFilteredCount().intValue() > 0)) {
 				studentList = DataExportSearchUtils.buildExportStudentList(msData);
 				for (int index = 0; index <studentList.size(); index++ ){
 					student = (ManageStudent)studentList.get(index);
