@@ -163,7 +163,7 @@ function getUnscoredStudentDetails() {
 			success:	function(data, textStatus, XMLHttpRequest){	
 							$.unblockUI(); 
 							if(data.studentList.length>0 || (data.studentBeingExportCount != undefined && data.studentBeingExportCount > 0)) {
-								if(data.unscoredStudentCount>0)
+								if(data.unscoredStudentCount != undefined && data.unscoredStudentCount>0)
 								{
 									$("#studentBeingExptd").text(data.studentBeingExportCount);
 									$("#incScoredStudent").text(data.unscoredStudentCount);
@@ -178,7 +178,7 @@ function getUnscoredStudentDetails() {
 									$("#notCompleteStudent").text(data.notCompletedStudentCount);
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
-									if(parseInt(data.studentBeingExportCount) > 0) {
+									if(data.studentBeingExportCount != undefined && parseInt(data.studentBeingExportCount) > 0) {
 										$("#dataExportSubmitButton").removeClass('ui-state-disabled');
 										$("#dataExportNextButton").attr('disabled','false');
 									} else {
@@ -248,7 +248,7 @@ function load_populate_unscored_student_grid(studentList) {
 			height: 165,
 			hoverrows: false,
 			width:$("#gbox_to_be_export_student_list").width(),
-			caption : 'Unscored Students',
+			caption : $('#incStudentCaption').val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#data_export_scoring_incomplete_student_list').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_data_export_scoring_incomplete_student_list_pager').text());
