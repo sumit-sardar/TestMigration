@@ -8,9 +8,11 @@ import dto.StudentStatus;
 public class RosterUtil {
 	
 	public static final String MESSAGE_STATUS_OK = "OK";
+	public static final String MESSAGE_SESSION_HAS_NO_STUDENTS = "OK: Session has no students";
 	public static final String MESSAGE_INVALID_USER = "Error:Invalid user";
 	public static final String MESSAGE_INVALID_DATA = "Error:Invalid data";
 	public static final String MESSAGE_STATUS_ROSTER_ERROR = "Error:Failed to get rosters";
+	public static final String MESSAGE_SESSION_NOT_FOUND = "Error: Session not found";
 	public static final String MESSAGE_STUDENT_NOT_FOUND = "Error: Student not found";
 
 	public static final String ROSTER_STATUS_COMPLETE = "Complete";

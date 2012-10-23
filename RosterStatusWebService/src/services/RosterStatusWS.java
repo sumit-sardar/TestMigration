@@ -4,12 +4,9 @@ import javax.jws.*;
 
 import org.apache.beehive.controls.api.bean.Control;
 
-import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.util.RosterUtil;
 
 
@@ -23,10 +20,9 @@ public class RosterStatusWS {
 	private static final long serialVersionUID = 1L;
 	
     private User defaultUser = null;
-    private String defaultUserName = null;
-    private Integer defaultTopNode = null;
-    private Integer defaultClassNode = null;
 	
+    @Control()
+    private com.ctb.control.db.TestAdmin admins;
 	
     @Control()
     private com.ctb.control.db.TestRoster rosters;
@@ -44,12 +40,22 @@ public class RosterStatusWS {
     		return session;
     	}
     	
-    	String userName = user.getUserName();
+    	// VERIFY TEST SESSION
     	Integer testAdminId = session.getSessionId();
+    	TestSession testAdmin = getTestAdminDetails(testAdminId);
+    	if (testAdmin == null) {
+    		session.setStatus(RosterUtil.MESSAGE_SESSION_NOT_FOUND);    		
+    		return session;    		
+    	}
+    	   	
+    	RosterElement[] res = getRosterForTestSession(testAdminId);
+
+    	if (res == null) {
+    		session.setStatus(RosterUtil.MESSAGE_STATUS_ROSTER_ERROR);    		
+    		return session;    		
+    	}
     	
-    	RosterElement[] res = getRosterForTestSession(userName, testAdminId);
-    	
-    	if (res != null) {
+    	if (res.length > 0) {
 	    	StudentStatus[] students = session.getStudents();
 	    	
 	    	if (students == null) {
@@ -59,6 +65,7 @@ public class RosterStatusWS {
 	    		*/
 	    		
 	    		// do this to test from OAS side 
+	    		// comment this when go live
 	    		students = populateStudents(res);
 	    		session.setStudents(students);
 	    		
@@ -82,16 +89,35 @@ public class RosterStatusWS {
 			
     	}
     	else {
-    		session.setStatus(RosterUtil.MESSAGE_STATUS_ROSTER_ERROR);    		
+    		session.setStatus(RosterUtil.MESSAGE_SESSION_HAS_NO_STUDENTS);    		
     	}
+    	
 		return session;
 	}
 
 
 	/**
+	 * getTestAdminDetails
+	 */
+	private TestSession getTestAdminDetails(Integer testAdminId)
+	{
+		TestSession session = null;
+		try
+		{
+			session = this.admins.getTestAdminDetails(testAdminId);        
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}                    
+
+		return session;
+	}
+	
+	/**
 	 * getRosterForTestSession
 	 */
-	private RosterElement[] getRosterForTestSession(String userName, Integer testAdminId)
+	private RosterElement[] getRosterForTestSession(Integer testAdminId)
 	{
 		RosterElement[] res = null;
 		try
