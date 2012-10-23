@@ -66,7 +66,7 @@
 			<input type="hidden" id="rubricPopupTitle" value=<lb:label key="questionpopup.rubricTitle" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="ScoringStatusTitleId" value=<lb:label key="scoring.stuGrid.scoringStatusTitle" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="sesGridStatus" value=<lb:label key="scoring.stuGrid.status" prefix="'" suffix="'"/>/>
-			
+			<input type="hidden" id="confirmAlrt" value=<lb:label key="scoring.alert.confirm" prefix="'" suffix="'"/>/>
 			
 			<table class="transparent" width="97%" style="margin: 15px auto;">
 				<tr class="transparent">
