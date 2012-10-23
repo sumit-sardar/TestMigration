@@ -618,13 +618,14 @@ public class DataExportOperationController extends PageFlowController {
 					student = (ManageStudent)studentList.get(index);
 					student.setScoringStatus(STUDENT_STATUS);
 				}
+				vo.setUnscoredStudentCount(msData.getTotalCount());
+				vo.setScheduledStudentCount(msData.getScheduledStudentCount());
+				vo.setNotTakenStudentCount(msData.getNotTakenStudentCount());
+				vo.setNotCompletedStudentCount(msData.getNotCompletedStudentCount());
 			}
-			vo.setStudentList(studentList);
-			vo.setUnscoredStudentCount(msData.getTotalCount());
 			vo.setStudentBeingExportCount(this.totalExportedStudentCount);
-			vo.setScheduledStudentCount(msData.getScheduledStudentCount());
-			vo.setNotTakenStudentCount(msData.getNotTakenStudentCount());
-			vo.setNotCompletedStudentCount(msData.getNotCompletedStudentCount());
+			vo.setStudentList(studentList);
+			
 		
 			try {
 				Gson gson = new Gson();
