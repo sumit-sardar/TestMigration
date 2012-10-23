@@ -59,18 +59,20 @@ public class RosterStatusWS {
 	    	StudentStatus[] students = session.getStudents();
 	    	
 	    	if (students == null) {
+	    		
 	    		/*
+	    		// use this for STAGING & PROD 
 	    		session.setStatus(RosterUtil.MESSAGE_INVALID_DATA);    
 	    		return session;
 	    		*/
 	    		
-	    		// do this to test from OAS side 
-	    		// comment this when go live
+	    		// use this for QA 
 	    		students = populateStudents(res);
 	    		session.setStudents(students);
 	    		
 	    	}
 	    	
+	    	// copy roster status to result data
     		for (int i=0 ; i<students.length ; i++) {
     			StudentStatus student = students[i];
     			student.setStatus(RosterUtil.MESSAGE_STUDENT_NOT_FOUND);
