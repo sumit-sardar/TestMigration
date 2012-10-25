@@ -15,6 +15,10 @@ var data1 = null;
 var selectedRosterId;
 var selectedRData = {};
 var selectedItemSetTCVal;
+var notCompletedStudentCountVal = 0;
+var notTakenStudentCountVal = 0;
+var scheduledStudentCountVal = 0;
+var totalExportedStudentCountVal = 0;
 
 
 function getStudentList() { 
@@ -35,6 +39,10 @@ function getStudentList() {
 							if(data.testSessionList.length>0){
 								populate_to_be_export_student_grid(data.testSessionList);
 								$('#data_export_step1').show();
+								notCompletedStudentCountVal = data.notCompletedStudentCount;
+								notTakenStudentCountVal = data.notTakenStudentCount;
+								scheduledStudentCountVal = data.scheduledStudentCount;
+								totalExportedStudentCountVal = data.studentBeingExportCount;
 							} else {
 								showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportStudentTestSessionSearchResultEmpty").val());
 								$('#data_export_step1').hide();
@@ -172,10 +180,10 @@ function getUnscoredStudentDetails() {
 									$("#data_export_step3").hide();
 									window.scroll(0,100000);
 								} else { 
-									$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
-									$("#scheduledStudent").text(data.scheduledStudentCount);
-									$("#notTakenStudent").text(data.notTakenStudentCount);
-									$("#notCompleteStudent").text(data.notCompletedStudentCount);
+									$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
+									$("#scheduledStudent").text(scheduledStudentCountVal);
+									$("#notTakenStudent").text(notTakenStudentCountVal);
+									$("#notCompleteStudent").text(notCompletedStudentCountVal);
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
 									if(data.studentBeingExportCount != undefined && parseInt(data.studentBeingExportCount) > 0) {
@@ -190,10 +198,10 @@ function getUnscoredStudentDetails() {
 							}
 							else {
 								//showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportUnscoredStudentSearchResultEmpty").val());
-								$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
-									$("#scheduledStudent").text(data.scheduledStudentCount);
-									$("#notTakenStudent").text(data.notTakenStudentCount);
-									$("#notCompleteStudent").text(data.notCompletedStudentCount);
+									$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
+									$("#scheduledStudent").text(scheduledStudentCountVal);
+									$("#notTakenStudent").text(notTakenStudentCountVal);
+									$("#notCompleteStudent").text(notCompletedStudentCountVal);
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
 										$("#dataExportSubmitButton").addClass('ui-state-disabled');
@@ -563,12 +571,16 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 						},
 			url:		'submitJob.do',
 			type:		'POST',
+			dataType:	'json',
+			data:		 postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
-							$.unblockUI();  
+							$.unblockUI();
+						 	$("#jobId").text(data.jobId);
 							$('#dataExportSubmitButton').hide();
 							$('#dataExportViewButton').show();
 							$('#submitJobTop').show();
 							$('#submitJobBottom').show();
+							$('#jobIdDisplay').show();
 							$('#dataExportViewButton').click(function() {
             					$("html,body").animate({scrollTop:0},100);
        							 });

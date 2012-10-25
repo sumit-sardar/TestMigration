@@ -19,6 +19,7 @@ public class DataExportVO {
 	private Integer notCompletedStudentCount = 0;
 	private List<ScorableItem> scorableItems;
 	private String processScoreBtn;
+	private Integer jobId = 0;
 	
 	public void setTestSessionList(List<ManageTestSession> testSessionList) {
 		
@@ -100,6 +101,20 @@ public class DataExportVO {
 
 	public void setRecords(String records) {
 		this.records = records;
+	}
+
+	/**
+	 * @return the jobId
+	 */
+	public Integer getJobId() {
+		return jobId;
+	}
+
+	/**
+	 * @param jobId the jobId to set
+	 */
+	public void setJobId(Integer jobId) {
+		this.jobId = jobId;
 	}
 	
 }

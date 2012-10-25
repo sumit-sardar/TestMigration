@@ -77,7 +77,7 @@
 							<td class="transparent"><lb:label key="student.being.exported" /></td>
 							<td class="transparent">
 							<div class="formValueLarge">
-							<span class="formValueLarge" id="studentBeingExptdStep3">1</span>
+							<span class="formValueLarge" id="studentBeingExptdStep3"></span>
 							</div>
 							</td>
 						</tr>
@@ -86,7 +86,7 @@
 							<td class="transparent"><lb:label key="total.student.scheduled" /></td>
 							<td class="transparent">
 							<div class="formValueLarge">
-							<span class="formValueLarge" id="scheduledStudent">2</span>
+							<span class="formValueLarge" id="scheduledStudent"></span>
 							</div>
 							</td>
 						</tr>
@@ -95,7 +95,7 @@
 							<td class="transparent"><lb:label key="total.student.not.taken" /></td>
 							<td class="transparent">
 							<div class="formValueLarge">
-							<span class="formValueLarge" id="notTakenStudent">2</span>
+							<span class="formValueLarge" id="notTakenStudent"></span>
 							</div>
 							</td>
 						</tr>
@@ -104,10 +104,20 @@
 							<td class="transparent"><lb:label key="total.student.not.complete" /></td>
 							<td class="transparent">
 							<div class="formValueLarge">
-							<span class="formValueLarge" id="notCompleteStudent">2</span>
+							<span class="formValueLarge" id="notCompleteStudent"></span>
 							</div>
 							</td>
 						</tr>
+						<BR />
+						<tr id="jobIdDisplay" style="display: none;">
+								<td class="transparent"><lb:label key="dataexport.info.jobid" /></td>
+								<td class="transparent">
+								<div class="formValueLarge">
+								<span class="formValueLarge" id="jobId"></span>
+								</div>
+								</td>
+						</tr>
+						
 					</table>
 			</div>
 			<BR />

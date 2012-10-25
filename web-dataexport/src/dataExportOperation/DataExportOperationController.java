@@ -549,11 +549,17 @@ public class DataExportOperationController extends PageFlowController {
 			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement,customerId,null,null,null);
 			Date date1 = new Date();  
 	        System.out.println(dateFormat.format(date1));  
-			if ((mtsData != null) && (mtsData.getFilteredCount().intValue() > 0)) {
-				List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
-				this.toBeExportedRosterList = mtsData.getToBeExportedStudentRosterList();
-				this.totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
-				vo.setTestSessionList(testSessionList);
+			if ((mtsData != null)) {
+				if( (mtsData.getFilteredCount().intValue() > 0)) {
+					List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
+					this.toBeExportedRosterList = mtsData.getToBeExportedStudentRosterList();
+					this.totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
+					vo.setTestSessionList(testSessionList);
+				}
+				vo.setNotCompletedStudentCount(mtsData.getNotCompletedStudentCount());
+				vo.setNotTakenStudentCount(mtsData.getNotTakenStudentCount());
+				vo.setScheduledStudentCount(mtsData.getScheduledStudentCount());
+				vo.setStudentBeingExportCount(mtsData.getTotalExportedStudentCount());
 			}
 			else {
 				vo.setTestSessionList(null);
@@ -619,9 +625,6 @@ public class DataExportOperationController extends PageFlowController {
 					student.setScoringStatus(STUDENT_STATUS);
 				}
 				vo.setUnscoredStudentCount(msData.getTotalCount());
-				vo.setScheduledStudentCount(msData.getScheduledStudentCount());
-				vo.setNotTakenStudentCount(msData.getNotTakenStudentCount());
-				vo.setNotCompletedStudentCount(msData.getNotCompletedStudentCount());
 			}
 			vo.setStudentBeingExportCount(this.totalExportedStudentCount);
 			vo.setStudentList(studentList);
@@ -951,7 +954,10 @@ public Forward rescoreStudent() {
 	@Jpf.Action()
 	protected Forward submitJob() {
 	   
-	   Integer userId = user.getUserId();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+	   DataExportVO vo = new DataExportVO();
+		Integer userId = user.getUserId();
 	   Integer studentCount = this.toBeExportedRosterList.size();
 	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
 	   
@@ -962,9 +968,32 @@ public Forward rescoreStudent() {
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
-
-	   return null;
 	
+		vo.setJobId(jobId);
+
+		try {
+			Gson gson = new Gson();
+			String json = gson.toJson(vo);
+			System.out.println("Json value"+ json );
+			resp.setContentType(CONTENT_TYPE_JSON);
+			resp.flushBuffer();
+			stream = resp.getOutputStream();
+			stream.write(json.getBytes());
+
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}
+		finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	   
 	}
 	 private void initialize()
 		{     
