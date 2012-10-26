@@ -81,7 +81,6 @@
 							</div>
 							</td>
 						</tr>
-						<BR />
 						<tr>
 							<td class="transparent"><lb:label key="total.student.scheduled" /></td>
 							<td class="transparent">
@@ -90,7 +89,6 @@
 							</div>
 							</td>
 						</tr>
-						<BR />
 						<tr>
 							<td class="transparent"><lb:label key="total.student.not.taken" /></td>
 							<td class="transparent">
