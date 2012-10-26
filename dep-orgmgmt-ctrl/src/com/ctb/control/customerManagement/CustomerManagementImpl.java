@@ -301,7 +301,6 @@ public class CustomerManagementImpl implements CustomerManagement
                 
                 // create customer configuration based on product type selected
                 String[] selectedProducts = customer.getProductList();
-                System.out.println(" ++++++++++++++ "+selectedProducts);
                 List<String> tempProductList = Arrays.asList(selectedProducts);
                 uniqueProductType = true;
                 
