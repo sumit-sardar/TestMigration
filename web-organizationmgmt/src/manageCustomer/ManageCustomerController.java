@@ -1,6 +1,26 @@
 package manageCustomer;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
+import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
+import utils.CustomerFormUtils;
+import utils.CustomerSearchUtils;
+import utils.FilterSortPageUtils;
+import utils.LicenseFormUtils;
+import utils.MessageResourceBundle;
+import utils.PermissionsUtils;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -13,37 +33,15 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
+
 import dto.CustomerProfileInformation;
-//added for LM12
-import dto.LicenseNode;
 import dto.Level;
+import dto.LicenseNode;
 import dto.Message;
 import dto.NavigationPath;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.beehive.controls.api.bean.Control;
-import org.apache.beehive.netui.pageflow.annotations.Jpf;
-import utils.CustomerFormUtils;
-import utils.CustomerSearchUtils;
-import utils.FilterSortPageUtils;
-import utils.MessageResourceBundle;
-import utils.PermissionsUtils;
-import utils.WebUtils;
-
-import com.ctb.util.CTBConstants;
-import global.Global;
-import java.io.IOException;
-import utils.LicenseFormUtils;
 
 /**
  * @jpf:controller
@@ -132,6 +130,7 @@ public class ManageCustomerController extends PageFlowController
 	 // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+
    
 
     /**
@@ -1215,7 +1214,7 @@ public class ManageCustomerController extends PageFlowController
             form.setByCustomerProfileVisible(Boolean.TRUE);
         
         }
-        
+        System.out.println("============================="+form.getCustomerProfile().getUserSelections().length);
         Customer customer = saveCustomerProfileInformation(isCreateNew, form, this.userName, orgNodeCategories);                                                        
         
         customerId = customer.getCustomerId();
@@ -1670,13 +1669,16 @@ public class ManageCustomerController extends PageFlowController
         //END - Changes for LASLINK PRODUCT 
         
         //START - Changes for LLESPANOL PRODUCT 
-        customerOptions.put(CTBConstants.LLESPANOL_CUSTOMER,CTBConstants.LLESPANOL_CUSTOMER);
+        //Sprint 46--LAS Online 2012 - 066 
+        //customerOptions.put(CTBConstants.LLESPANOL_CUSTOMER,CTBConstants.LLESPANOL_CUSTOMER);
         //END - Changes for LLESPANOL PRODUCT
         
         //START - Changes for TABE ADAPTIVE PRODUCT
         customerOptions.put(CTBConstants.TABE_ADAPTIVE_CUSTOMER,CTBConstants.TABE_ADAPTIVE_CUSTOMER);
         //END - Changes for TABE ADAPTIVE PRODUCT
-        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
+        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);
+        
+       
         
     }
     
@@ -2664,6 +2666,6 @@ public class ManageCustomerController extends PageFlowController
         return new Boolean(hasScoringConfigurable);
     }
 	
+	 
 
-    
 }

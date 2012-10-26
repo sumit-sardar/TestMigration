@@ -218,11 +218,10 @@ public class CustomerManagementImpl implements CustomerManagement
         Integer loginUserId = null;
         Integer customerId = null;
         StringBuffer customerNameBuff = new StringBuffer();
-        String customerName = null;
-        
+        String customerName = null;        
         Integer billingAddressId = null;
         Integer mailingAddressId = null;
-        
+        boolean uniqueProductType = false;        
         try {
             validator.validateUser(loginUserName, 
                                    loginUserName,
@@ -299,19 +298,42 @@ public class CustomerManagementImpl implements CustomerManagement
             else if(CTBConstants.LASLINK_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                
-                customers.createLasLinkCustomerConfiguration(customerId);
-                    
+                
+                // create customer configuration based on product type selected
+                String[] selectedProducts = customer.getProductList();
+                System.out.println(" ++++++++++++++ "+selectedProducts);
+                List<String> tempProductList = Arrays.asList(selectedProducts);
+                uniqueProductType = true;
+                
+                if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL)){
+                	if(tempProductList.size() > 1){
+                		uniqueProductType = false;                		
+                	}
+                	else
+                		uniqueProductType  = true;
+                }
+                  
+                if(uniqueProductType){
+                	if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL))
+                		customers.createLLEspanolCustomerConfiguration(customerId);
+                	else
+                		customers.createLasLinkCustomerConfiguration(customerId);   //For Form A&B type product
+                }
+                else{
+                	//call both
+                	customers.createLasLinkEspanolCustomerConfiguration(customerId);
+                }
             }
             //END - Changes for LASLINK PRODUCT 
             
-            //START - Changes for LLESPANOL PRODUCT 
-            else if(CTBConstants.LLESPANOL_CUSTOMER.equalsIgnoreCase
-                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
-               
-                customers.createLLEspanolCustomerConfiguration(customerId);
-                    
-            }
-            //END - Changes for LLESPANOL PRODUCT 
+//            //START - Changes for LLESPANOL PRODUCT 
+//            else if(CTBConstants.LLESPANOL_CUSTOMER.equalsIgnoreCase
+//                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+//               
+//                customers.createLLEspanolCustomerConfiguration(customerId);
+//                    
+//            }
+//            //END - Changes for LLESPANOL PRODUCT 
             
           //START - Changes for TABE ADAPTIVE PRODUCT 
             else if(CTBConstants.TABE_ADAPTIVE_CUSTOMER.equalsIgnoreCase
@@ -712,7 +734,26 @@ public class CustomerManagementImpl implements CustomerManagement
                   customer.setMailingAddress(mailingAddress);
                   
             }
-           
+           //update for Products
+           Integer[] productTestCatalogIds =  customers.getCustomerTestCatalogs(selectedCustomerId);
+           ArrayList products = new ArrayList();          
+           if(null != productTestCatalogIds && productTestCatalogIds.length > 0){
+	           if(Arrays.asList(productTestCatalogIds).contains(13196)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMA);
+	           }
+	           if(Arrays.asList(productTestCatalogIds).contains(13216)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMB);
+	           }
+	           if(Arrays.asList(productTestCatalogIds).contains(13217)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOL);
+	           }
+           }
+           String[] customerSelectedProducts = new String[products.size()];
+           int counter = 0;
+           for(Object product : products){
+        	   customerSelectedProducts[counter++] = (String)product;
+           }
+           customer.setProductList(customerSelectedProducts);
            return customer;
             
         } catch (SQLException se) {

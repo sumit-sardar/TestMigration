@@ -563,10 +563,16 @@ function toogleMDRNoTextBox(elementId)
     //alert(dropDown);
 	//alert("..."+dropDown.options[dropDown.selectedIndex].value);
 	var selectedCustomerType = dropDown.options[dropDown.selectedIndex].value;
-	 if (selectedCustomerType == "LasLink Customer" || selectedCustomerType == "LLEspanol Customer") 
+	 if (selectedCustomerType == "LasLink Customer" || selectedCustomerType == "LLEspanol Customer")
+	 { 
 		enableMDRNoTextBox("true");
-	else 
+		}
+	else
+	{ 
 		enableMDRNoTextBox("false"); 
+	}
+toogleProductGroup(elementId);
+		
 }
 
 function enableMDRNoTextBox(enabled){
@@ -585,6 +591,34 @@ function enableMDRNoTextBox(enabled){
 	        MDRNoTextBox.value = ""; //Change for defect - 66235
 	    }
 	   	return true;
+}
+
+function toogleProductGroup(elementId)
+{
+ 
+	var dropDown = document.getElementById(elementId);
+	var selectedCustomerType = dropDown.options[dropDown.selectedIndex].value;
+	var LaslinkProductChecboxGroup1 = document.getElementById('LaslinkProductChecboxGroup');
+	var LLProductTypeAsterisk = document.getElementById('LLProductTypeAsterisk');
+	var LLProductTypeLabel = document.getElementById('LLProductTypeLabel');
+	var LLProductTypeTD = document.getElementById('LLProductTypeTD');
+	 if (selectedCustomerType == "LasLink Customer" || selectedCustomerType == "LLEspanol Customer") 
+	 
+	 {
+		LaslinkProductChecboxGroup1.style.display="block";
+		LLProductTypeAsterisk.style.display="inline";
+		LLProductTypeLabel.style.display="inline";
+		LLProductTypeTD.style.display="inline";
+
+	 }
+	else 
+	{
+		LaslinkProductChecboxGroup1.style.display="none";
+		LLProductTypeAsterisk.style.display="none";
+		LLProductTypeLabel.style.display="none";
+		LLProductTypeTD.style.display="none";
+
+	}
 }
 
 

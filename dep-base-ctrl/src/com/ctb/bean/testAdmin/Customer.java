@@ -52,7 +52,7 @@ public class Customer extends CTBBean
     private String mdrNumber;
 	//END - Changes for MDR Number
     
-   
+   private String[] productList;
 
     
     public Customer(){
@@ -571,6 +571,14 @@ public class Customer extends CTBBean
 	 */
 	public void setEditable(String editable) {
 		this.editable = editable;
+	}
+
+	public String[] getProductList() {
+		return productList;
+	}
+
+	public void setProductList(String[] productList) {
+		this.productList = productList;
 	}
     
     

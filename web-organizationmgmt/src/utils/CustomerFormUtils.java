@@ -157,11 +157,18 @@ public class CustomerFormUtils
         //START- Changed For LASLINK Product
         if(customerProfile.getCustomerTypeId().equals("LasLink Customer") ||  customerProfile.getCustomerType().equals("LasLink Customer") || customerProfile.getCustomerTypeId().equals("LLEspanol Customer") ||  customerProfile.getCustomerType().equals("LLEspanol Customer")) {
 	        String mDRNumber = customerProfile.getMdrNumber().trim();
+	        String[] lasLinkCheckbox = customerProfile.getUserSelections();
 	        if ( mDRNumber == null || mDRNumber.length() == 0 ) {
 	                
 	                requiredFieldCount += 1;            
 	                requiredFields = Message.buildErrorString(Message.FIELD_MDRNUMBER, 
 	                                        requiredFieldCount, requiredFields);       
+	        }
+	        if (lasLinkCheckbox==null || lasLinkCheckbox.length==0)
+	        {
+	        	requiredFieldCount += 1;            
+                requiredFields = Message.buildErrorString(Message.FIELD_LASLINKPRODUCTCHECKBOXES, 
+                                        requiredFieldCount, requiredFields);
 	        }
         }
         //END- Changed For LASLINK Product

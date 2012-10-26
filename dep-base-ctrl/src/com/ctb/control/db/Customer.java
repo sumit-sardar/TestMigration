@@ -304,10 +304,19 @@ public interface Customer extends JdbcControl
     void createLLEspanolCustomerConfiguration(Integer CustomerId) throws SQLException;
     //END - Changes for LLESPANOL Product
     
+  //START - Changes for LASLINK and LLESPANOL Product
+    @JdbcControl.SQL(statement = "call setup_lasespanol_customer({CustomerId})")
+    void createLasLinkEspanolCustomerConfiguration(Integer CustomerId) throws SQLException;
+    //END - Changes for LASLINK and LLESPANOL Product
     
     //START - Changes for TABE ADAPTIVE Product
     @JdbcControl.SQL(statement = "call setup_tabe_adaptive_customer({CustomerId})")
     void createTABEAdaptiveCustomerConfiguration(Integer CustomerId) throws SQLException;
+    //END - Changes for TABE ADAPTIVE Product
+    
+    //START - Changes for Product asociation to customer
+    @JdbcControl.SQL(statement = "select TEST_CATALOG_ID from ORG_NODE_TEST_CATALOG where customer_id={CustomerId}")
+    java.lang.Integer[] getCustomerTestCatalogs(Integer CustomerId) throws SQLException;
     //END - Changes for TABE ADAPTIVE Product
     
 }

@@ -49,6 +49,7 @@ public class CustomerProfileInformation extends SanitizedFormField
     private String mdrNumber = "";
     private String dbMdrNumber = "";
     //END - Changes for LASLINK PRODUCT 
+   public String[] userSelections; 
     
 	/*
      * default construnctor
@@ -140,6 +141,9 @@ public class CustomerProfileInformation extends SanitizedFormField
         this.mdrNumber = customer.getMdrNumber();
         this.dbMdrNumber = customer.getMdrNumber();
         //END - Changes for LASLINK PRODUCT 
+        
+        //add products
+        this.userSelections = customer.getProductList();
     }
 
     
@@ -277,7 +281,7 @@ public class CustomerProfileInformation extends SanitizedFormField
         //START - Changes for LASLINK PRODUCT 
         copied.setMdrNumber(this.mdrNumber.trim());
         //END - Changes for LASLINK PRODUCT 
-                 
+        copied.setProductList(this.getUserSelections())  ;
         return copied;       
     }
     
@@ -506,5 +510,16 @@ public class CustomerProfileInformation extends SanitizedFormField
 	public void setDbMdrNumber(String dbMdrNumber) {
 		this.dbMdrNumber = dbMdrNumber;
 	}
-    
+
+	public String[] getUserSelections() {
+		return userSelections;
+	}
+
+	public void setUserSelections(String[] userSelections) {
+		this.userSelections = userSelections;
+	}
+
+	
+
+	
 } 

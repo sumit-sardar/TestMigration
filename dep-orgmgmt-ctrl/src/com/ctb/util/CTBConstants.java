@@ -215,5 +215,8 @@ public final class CTBConstants {
   //For GACRCT2010CR007 --  	Configuration for Birth Date mandatory and Non mandatory field. 
     public static final String DISABLE_MANDATORY_BIRTH_DATE  =  "Disable_Mandatory_Birth_Date";
 
+    public static final String CUSTOMER_PRODUCT_FORMA 	= "Form A";
+    public static final String CUSTOMER_PRODUCT_FORMB 	= "Form B";
+    public static final String CUSTOMER_PRODUCT_ESPANOL = "Espanol";
     
  } 

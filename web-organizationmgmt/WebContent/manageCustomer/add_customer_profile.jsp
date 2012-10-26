@@ -28,6 +28,43 @@
                 <td class="transparent"><netui:label value="${customerProfileData.customerType}"/></td>
               </c:if> 
             </tr>
+            <!-- //For checkbox Start Sprint -46 --Laslink 66 -->
+			<tr class="transparent">
+				<c:if test="${!isLasLinkProduct}">
+					<td class="transparent alignRight" width="130" valign="top" nowrap id="LLProductTypeTD" style="display: none;"><span class="asterisk"
+						style="display: none;"  id="LLProductTypeAsterisk">*</span>&nbsp;<span style="display: none;"
+						id="LLProductTypeLabel">Laslink Product Type:</span></td>
+				</c:if>
+				
+				</div>
+				<c:if test="${isLasLinkProduct}">
+					
+					<td class="transparent alignRight" width="130" valign="top" nowrap id="LLProductTypeTD" style="display: inline;"><span class="asterisk"
+						style="display: inline;" id="LLProductTypeAsterisk">*</span>&nbsp;<span style="display: inline;"
+						id="LLProductTypeLabel">Laslink Product Type:</span></td>
+				</c:if>
+
+				<td class="transparent">
+				<c:if test="${!isLasLinkProduct}">
+					<div id="LaslinkProductChecboxGroup" style="display: none;"><netui:checkBoxGroup
+						dataSource="actionForm.customerProfile.userSelections">
+						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
+						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
+						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+					</netui:checkBoxGroup></div>
+				</c:if>
+				<c:if test="${isLasLinkProduct}">
+					<div id="LaslinkProductChecboxGroup" style="display: block;"><netui:checkBoxGroup
+						dataSource="actionForm.customerProfile.userSelections">
+						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
+						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
+						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+					</netui:checkBoxGroup></div>
+				</c:if>
+				</td>
+			</tr>
+
+			<!-- //For checkbox End Sprint -46 --Laslink 66 -->
             <tr class="transparent">
                 <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Name:</td>
                 <td class="transparent"><netui:textBox tagId="CustomerName" dataSource="actionForm.customerProfile.name" style="width:200px" tabindex="0" maxlength="32"/></td>        
