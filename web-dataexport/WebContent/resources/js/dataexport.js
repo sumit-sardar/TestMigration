@@ -188,10 +188,10 @@ function getUnscoredStudentDetails() {
 									$("#data_export_step2").hide();
 									if(data.studentBeingExportCount != undefined && parseInt(data.studentBeingExportCount) > 0) {
 										$("#dataExportSubmitButton").removeClass('ui-state-disabled');
-										$("#dataExportNextButton").attr('disabled','false');
+										$("#dataExportSubmitButton").removeAttr('disabled');
 									} else {
 										$("#dataExportSubmitButton").addClass('ui-state-disabled');
-										$("#dataExportNextButton").attr('disabled','true');
+										$("#dataExportSubmitButton").attr('disabled','true');
 									}
 									window.scroll(0,100000);
 								}		
@@ -204,8 +204,13 @@ function getUnscoredStudentDetails() {
 									$("#notCompleteStudent").text(notCompletedStudentCountVal);
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
-										$("#dataExportSubmitButton").addClass('ui-state-disabled');
-										$("#dataExportNextButton").attr('disabled','true');
+									$('#dataExportSubmitButton').show();
+									$('#dataExportViewButton').hide();
+									$('#submitJobTop').hide();
+									$('#submitJobBottom').hide();
+									$('#jobIdDisplay').hide();
+									$("#dataExportSubmitButton").addClass('ui-state-disabled');
+									$("#dataExportSubmitButton").attr('disabled','true');
 									window.scroll(0,100000);
 							}
 						},
