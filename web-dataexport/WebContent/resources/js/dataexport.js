@@ -244,7 +244,7 @@ function load_populate_unscored_student_grid(studentList) {
 		$("#data_export_scoring_incomplete_student_list").jqGrid({
       	  data: studentList,         
           datatype: 'local',          
-          colNames:[  $("#titleLoginId").val(), $("#titleStudentName").val(), $("#titleSessionName").val(), $("#titleGrade").val(), $("#titleStudentId").val(), $("#titleStatus").val(),'','',''],
+          colNames:[  $("#titleLoginId").val(), $("#titleStudentName").val(), $("#titleSessionName").val(), $("#titleGrade").val(), $("#titleStudentId").val(), $("#titleStatus").val(),'','','','',''],
 		   	colModel:[
 		   		{name:'loginId',		index:'loginId',		width:350, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:updateFieldFormat },
 		   		{name:'studentName',	index:'studentName', 	width:150, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -254,10 +254,12 @@ function load_populate_unscored_student_grid(studentList) {
 		   		{name:'scoringStatus',	index:'scheduled', 		width:150,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testAdminId',	index:'testAdminId', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'rosterId',	index:'rosterId', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetIdTC',	index:'itemSetIdTC', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'itemSetIdTC',	index:'itemSetIdTC', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'id',	index:'id', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'accessCode',	index:'accessCode', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
-		   		jsonReader: { repeatitems : false, root:"rows", id:"loginId",
+		   		jsonReader: { repeatitems : false, root:"rows", id:"rosterId",
 		   	records: function(obj) { 
 		   	 } },
 		   	loadui: "disable",
