@@ -255,7 +255,7 @@ function load_populate_unscored_student_grid(studentList) {
 		   		{name:'testAdminId',	index:'testAdminId', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'rosterId',	index:'rosterId', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetIdTC',	index:'itemSetIdTC', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'id',	index:'id', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentId',	index:'studentId', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'accessCode',	index:'accessCode', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],

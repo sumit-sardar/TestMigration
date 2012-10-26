@@ -13,7 +13,7 @@ import java.util.List;
 public class ManageStudent extends CTBBean
 { 
     static final long serialVersionUID = 1L;
-    private Integer id;
+    private Integer studentId;
     private String loginId;
     private String firstName;
     private String middleName;
@@ -85,16 +85,16 @@ public class ManageStudent extends CTBBean
 		this.testSessionName = testSessionName;
 	}
 	/**
-	 * @return the id
+	 * @return the studentId
 	 */
-	public Integer getId() {
-		return id;
+	public Integer getStudentId() {
+		return studentId;
 	}
 	/**
-	 * @param id the id to set
+	 * @param studentId the studentId to set
 	 */
-	public void setId(Integer id) {
-		this.id = id;
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
 	}
 	/**
 	 * @return the loginId
