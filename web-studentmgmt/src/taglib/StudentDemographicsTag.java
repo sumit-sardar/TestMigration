@@ -18,6 +18,7 @@ public class StudentDemographicsTag extends CTBTag
 	private Boolean viewOnly = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
 	private int tabIndex = 1;
+	private boolean  selectedEthnicityHispanicOrLatino = false;
 	
     public void setDemographics(List demographics) {
         this.demographics= demographics;
@@ -124,13 +125,17 @@ public class StudentDemographicsTag extends CTBTag
         
     	displayRowStart();
             displayCellStart("transparent");
-		        writeToPage("<b>" + displayName + "</b>");
+            	if(!displayName.equals("Sub_Ethnicity"))
+            		writeToPage("<b>" + displayName + "</b>");
     		displayCellEnd();
     	displayRowEnd();  
     	
 	    StudentDemographicValue[] values = sdd.getStudentDemographicValues();
 	    if( multipleAllowed ) {
-	        displayValues_CheckBoxes(displayName, values, editable);
+	    	if(displayName.equals("Sub_Ethnicity"))
+	    		displayEthnicity_CheckBoxes(displayName, values, true,"none");
+	    	else
+	    		displayValues_CheckBoxes(displayName, values, editable);
 	    } 
         else { 
 		    if ( values.length == 1 ) {  
@@ -174,6 +179,43 @@ public class StudentDemographicsTag extends CTBTag
 	    }
 	}
 
+	private void displayEthnicity_CheckBoxes(String name, StudentDemographicValue[] values, boolean editable,String displayStyle) throws IOException 
+    {
+		if(selectedEthnicityHispanicOrLatino)
+			displayStyle = "block";
+		 writeToPage("<div id=\"SubEthnicityDiv\" style=\"display:"+displayStyle+";\"><br/>");
+		 for (int i=0 ; i<values.length ; i++) {
+		        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
+			    String value = sdv.getValueName().trim();
+			    boolean selected = sdv.getSelectedFlag().equals("true");	
+				displayRowStart();
+	    			displayCellStart("transparent-small");
+	                
+	                //displayTableStart();
+	    			StringBuffer buff = new StringBuffer();
+	    			buff.append("<table name=\"Sub_Ethnicity_Table"+ i +"\"");	    			
+	    			buff.append(" class=\"transparent\" style=\"display:"+displayStyle+";\"");	    			
+	    			buff.append(">");
+	    			writeToPage(buff.toString());
+	                    displayRowStart();
+	                    displayCellStart("transparent-small", "12", null);                    
+	                        writeToPage(getSpaces(1));	
+	                    displayCellEnd();
+	                    displayCellStart("transparent-small", "20", null);                    
+	                        writeToPage(checkBoxWithStyle(name, value, selected, editable,displayStyle));	
+	                    displayCellEnd();
+	                    displayCellStart("transparent-small", "*", null);                    
+	                        writeToPage(createSpanWithDisplayStyle(name,value,displayStyle));
+	                    displayCellEnd();
+	                    displayRowEnd();
+	                    displayTableEnd();
+	                    
+			        displayCellEnd();
+				displayRowEnd();  
+		    }
+		 writeToPage("</div>");
+	}
+	
 	private void displayValues_RadioButtons(String name, StudentDemographicValue[] values, boolean editable) throws IOException 
     {
 	    int i;
@@ -238,15 +280,28 @@ public class StudentDemographicsTag extends CTBTag
 	    displayRowStart();
             displayCellStart("transparent-small");
                 writeToPage(getSpaces(8));
-				writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+                if(name.equals("Ethnicity"))
+                	writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" id=\"selectedStudentEthnicity"+ (this.tabIndex) +"\" onChange=toogleHispanicEhtnicityOptions('selectedStudentEthnicity"+ (this.tabIndex)+"');"+ " >");                	
+                else
+                	writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" >");
 		        writeToPage(option("Please Select", true));
 			    for (i=0 ; i<values.length ; i++) {
 			        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
 				    value = sdv.getValueName().trim();
 				    selected = sdv.getSelectedFlag().equals("true");
    			        writeToPage(option(value, selected));
+   			        if(name.equals("Ethnicity") && value.equals("Hispanic or Latino") && selected){
+   			        	selectedEthnicityHispanicOrLatino = true;
+   			        }
 			    }
 		        writeToPage("</select>");
+//		        if(name.equals("Ethnicity")){
+//		        	//create div with check boxes
+//                	writeToPage("<div id=\"SubEthnicityDiv\" style=\"display:none;\"><br/>");
+//                	String[] tempValues = new String[]{"Cuban","DominicanRepub"};
+//                	displayEthnicity_CheckBoxes("SubEthnicityCheckbox", tempValues, true,"none");                	
+//                	writeToPage("</div>");
+//		        }
 	        displayCellEnd();
 		displayRowEnd();  
 	}
@@ -266,7 +321,22 @@ public class StudentDemographicsTag extends CTBTag
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
 				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
-    
+	private String checkBoxWithStyle(String name, String value, boolean isChecked, boolean editable,String displayStyle) 
+    {
+	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+	    String nameId = name + "_" + value;
+		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
+				" value=\""+ value + "\" " + 
+				" tabindex=\"" + (this.tabIndex++) + "\" " +
+				(isChecked?"checked=\"true\" ":" ") + disabled + 
+				" style=\"display:"+displayStyle+";\""+
+				"/>";
+	}
+	
+	private String createSpanWithDisplayStyle(String name,String value,String displayStyle){
+		 String nameId = name + "_" + value + "_span";
+		return "<span name=\"" + nameId + "\" style=\"display:"+ displayStyle+"\" >"+value+"</span>";
+	}
 	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";

@@ -315,8 +315,33 @@ public interface Customer extends JdbcControl
     //END - Changes for TABE ADAPTIVE Product
     
     //START - Changes for Product asociation to customer
-    @JdbcControl.SQL(statement = "select TEST_CATALOG_ID from ORG_NODE_TEST_CATALOG where customer_id={CustomerId}")
+    @JdbcControl.SQL(statement = "select product_id from org_node_test_catalog where customer_id={CustomerId}")
     java.lang.Integer[] getCustomerTestCatalogs(Integer CustomerId) throws SQLException;
     //END - Changes for TABE ADAPTIVE Product
+   
+    @JdbcControl.SQL(statement = "call delete_customer_data({CustomerId})")
+    void cleanCustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+     @JdbcControl.SQL(statement = "call setup_customer_base({CustomerId})")
+    void createBaseCustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call setup_laslinkforma_customer({CustomerId})")
+    void setupLaslinkFormACustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call setup_laslinkformb_customer({CustomerId})")
+    void setupLaslinkFormBCustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call setup_espanol_customer({CustomerId})")
+    void setupEspanolCustomerConfiguration(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call  assign_common_demographics({CustomerId})")
+    void setupCustomerBaseDemographic(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call  assign_laslink_demographics({CustomerId})")
+    void setupLaslinkCustomerDemographic(Integer CustomerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call  assign_llespanol_demographics({CustomerId})")
+    void setupEspanolCustomerDemographic(Integer CustomerId) throws SQLException;
+      
     
 }

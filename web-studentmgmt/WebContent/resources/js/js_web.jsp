@@ -712,3 +712,59 @@ function enableAudioFiles() {
 		audioFiles.selectedIndex=0;
 	}
 }
+
+
+function toogleHispanicEhtnicityOptions(elementId){	
+	var dropDown = document.getElementById(elementId);	
+	var subEthnicityDiv = document.getElementById('SubEthnicityDiv');
+	var selectedData = dropDown.options[dropDown.selectedIndex].text;
+	var eles = [];
+	var inputs = document.getElementsByTagName("input");
+	for(var i = 0; i < inputs.length; i++) {
+	    if(inputs[i].name.indexOf('Sub_Ethnicity_') == 0) {
+	        eles.push(inputs[i]);
+	    }
+	}
+	var spanElements = []; 
+	inputs = document.getElementsByTagName("span");
+	for(var i = 0; i < inputs.length; i++) {
+	    if(inputs[i].name != null && inputs[i].name.indexOf('Sub_Ethnicity_') == 0) {
+	        spanElements.push(inputs[i]);
+	    }
+	}
+	var tableEles = [];
+	var tableElements = document.getElementsByTagName("table");
+	for(var i = 0; i < tableElements.length; i++) {
+	    if(tableElements[i].name != null && tableElements[i].name.indexOf('Sub_Ethnicity_Table') == 0) {
+	        tableEles.push(tableElements[i]);
+	    }
+	}
+	//alert("Inputs :: "+inputs.length + "  span:: "+spanElements.length + " tableElements" + tableElements.type);
+	if(selectedData == "Hispanic or Latino"){
+		subEthnicityDiv.style.display = "block";		
+		for(var i = 0; i < eles.length; i++) {
+	    	eles[i].style.display = "block";
+		}
+		for(var i = 0; i < spanElements.length; i++) {
+	    	spanElements[i].style.display = "block";
+		}
+		for(var i = 0; i < tableEles.length; i++) {
+	    	tableEles[i].style.display = "block";
+		}
+	}
+	else{
+		subEthnicityDiv.style.display = "none";		
+		for(var i = 0; i < eles.length; i++) {
+	    	eles[i].style.display = "none";
+	    	if(eles[i].type = "checkbox")
+	    		eles[i].checked=false
+		}
+		for(var i = 0; i < spanElements.length; i++) {
+	    	spanElements[i].style.display = "none";
+		}
+		for(var i = 0; i < tableEles.length; i++) {
+	    	tableEles[i].style.display = "none";
+		}
+	}
+	
+}

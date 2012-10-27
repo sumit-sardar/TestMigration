@@ -8,7 +8,7 @@
 <% String currentAction = (String)request.getParameter("currentAction"); 
 	Boolean isLasLinkProduct = new Boolean((String)request.getParameter("isLasLinkProduct")); 
 	pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
-	
+	Boolean isCheckBoxDisabled = ("editCustomer".equals(currentAction)) ? true:false;
 %>
 
 <table class="simple">
@@ -18,7 +18,7 @@
             <tr class="transparent">
             <netui-data:getData resultId="currentAction" value= "<%= currentAction %>" />
             
-                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:</td>
+                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:<%= isCheckBoxDisabled %></td>
               <c:if test="${currentAction == 'defaultAction'}">
                <td class="transparent">	
                <netui:select tagId="selectedCustomerTypeId" optionsDataSource="${pageFlow.customerOptions}" dataSource="actionForm.customerProfile.customerTypeId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.customerTypeId}" onChange="toogleMDRNoTextBox('selectedCustomerTypeId');"/>
@@ -38,30 +38,29 @@
 				
 				</div>
 				<c:if test="${isLasLinkProduct}">
-					
+					 
 					<td class="transparent alignRight" width="130" valign="top" nowrap id="LLProductTypeTD" style="display: inline;"><span class="asterisk"
 						style="display: inline;" id="LLProductTypeAsterisk">*</span>&nbsp;<span style="display: inline;"
 						id="LLProductTypeLabel">Laslink Product Type:</span></td>
-				</c:if>
-
-				<td class="transparent">
-				<c:if test="${!isLasLinkProduct}">
-					<div id="LaslinkProductChecboxGroup" style="display: none;"><netui:checkBoxGroup
-						dataSource="actionForm.customerProfile.userSelections">
-						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
-						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
-						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
-					</netui:checkBoxGroup></div>
-				</c:if>
-				<c:if test="${isLasLinkProduct}">
-					<div id="LaslinkProductChecboxGroup" style="display: block;"><netui:checkBoxGroup
-						dataSource="actionForm.customerProfile.userSelections">
-						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
-						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
-						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
-					</netui:checkBoxGroup></div>
-				</c:if>
-				</td>
+				</c:if>			
+					<td class="transparent">
+					<c:if test="${!isLasLinkProduct}">
+						<div id="LaslinkProductChecboxGroup" style="display: none;" >
+						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections" disabled="<%=isCheckBoxDisabled %>">
+							<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
+							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
+							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+						</netui:checkBoxGroup></div>
+					</c:if>
+					<c:if test="${isLasLinkProduct}">
+						<div id="LaslinkProductChecboxGroup" style="display: block;" >
+						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections"  disabled="<%=isCheckBoxDisabled %>">
+							<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
+							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
+							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+						</netui:checkBoxGroup></div>
+					</c:if>
+					</td>							
 			</tr>
 
 			<!-- //For checkbox End Sprint -46 --Laslink 66 -->

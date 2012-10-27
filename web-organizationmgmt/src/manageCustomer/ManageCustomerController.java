@@ -1214,7 +1214,6 @@ public class ManageCustomerController extends PageFlowController
             form.setByCustomerProfileVisible(Boolean.TRUE);
         
         }
-        System.out.println("============================="+form.getCustomerProfile().getUserSelections().length);
         Customer customer = saveCustomerProfileInformation(isCreateNew, form, this.userName, orgNodeCategories);                                                        
         
         customerId = customer.getCustomerId();

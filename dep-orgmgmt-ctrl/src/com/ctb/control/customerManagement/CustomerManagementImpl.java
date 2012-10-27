@@ -221,7 +221,8 @@ public class CustomerManagementImpl implements CustomerManagement
         String customerName = null;        
         Integer billingAddressId = null;
         Integer mailingAddressId = null;
-        boolean uniqueProductType = false;        
+        boolean laslinkFormAOrFormBSelected = false;  
+        boolean laslinkEspanolSelected = false; 
         try {
             validator.validateUser(loginUserName, 
                                    loginUserName,
@@ -302,26 +303,55 @@ public class CustomerManagementImpl implements CustomerManagement
                 // create customer configuration based on product type selected
                 String[] selectedProducts = customer.getProductList();
                 List<String> tempProductList = Arrays.asList(selectedProducts);
-                uniqueProductType = true;
                 
-                if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL)){
-                	if(tempProductList.size() > 1){
-                		uniqueProductType = false;                		
+                // logic:
+                // 1. clean customer configuration data
+                // 2. clean customer demographic data
+                // 3. insert common configuration data               
+                customers.cleanCustomerConfiguration(customerId);
+                //create base configuration for all types
+                customers.createBaseCustomerConfiguration(customerId);
+                for(String selectedProduct:tempProductList){
+                	if(CTBConstants.CUSTOMER_PRODUCT_FORMA.equals(selectedProduct)){
+                    	customers.setupLaslinkFormACustomerConfiguration(customerId);
+                    	laslinkFormAOrFormBSelected =  true;
                 	}
-                	else
-                		uniqueProductType  = true;
+                    else if(CTBConstants.CUSTOMER_PRODUCT_FORMB.equals(selectedProduct)){
+                    	customers.setupLaslinkFormBCustomerConfiguration(customerId);
+                    	laslinkFormAOrFormBSelected =  true;
+                    }
+                    else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOL.equals(selectedProduct)){
+                    	customers.setupEspanolCustomerConfiguration(customerId);
+                    	laslinkEspanolSelected = true;
+                    }
                 }
-                  
-                if(uniqueProductType){
-                	if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL))
-                		customers.createLLEspanolCustomerConfiguration(customerId);
-                	else
-                		customers.createLasLinkCustomerConfiguration(customerId);   //For Form A&B type product
-                }
-                else{
-                	//call both
-                	customers.createLasLinkEspanolCustomerConfiguration(customerId);
-                }
+                //create demographic data
+                //create common demographicdata
+                customers.setupCustomerBaseDemographic(customerId);
+                if(laslinkFormAOrFormBSelected)
+                	customers.setupLaslinkCustomerDemographic(customerId);
+                if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
+                	customers.setupEspanolCustomerDemographic(customerId);
+              
+                
+//                if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL)){
+//                	if(tempProductList.size() > 1){
+//                		uniqueProductType = false;                		
+//                	}
+//                	else
+//                		uniqueProductType  = true;
+//                }
+//                  
+//                if(uniqueProductType){
+//                	if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL))
+//                		customers.createLLEspanolCustomerConfiguration(customerId);
+//                	else
+//                		customers.createLasLinkCustomerConfiguration(customerId);   //For Form A&B type product
+//                }
+//                else{
+//                	//call both
+//                	customers.createLasLinkEspanolCustomerConfiguration(customerId);
+//                }
             }
             //END - Changes for LASLINK PRODUCT 
             
@@ -737,13 +767,13 @@ public class CustomerManagementImpl implements CustomerManagement
            Integer[] productTestCatalogIds =  customers.getCustomerTestCatalogs(selectedCustomerId);
            ArrayList products = new ArrayList();          
            if(null != productTestCatalogIds && productTestCatalogIds.length > 0){
-	           if(Arrays.asList(productTestCatalogIds).contains(13196)){
+	           if(Arrays.asList(productTestCatalogIds).contains(7001)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMA);
 	           }
-	           if(Arrays.asList(productTestCatalogIds).contains(13216)){
+	           if(Arrays.asList(productTestCatalogIds).contains(7002)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMB);
 	           }
-	           if(Arrays.asList(productTestCatalogIds).contains(13217)){
+	           if(Arrays.asList(productTestCatalogIds).contains(7001)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOL);
 	           }
            }
