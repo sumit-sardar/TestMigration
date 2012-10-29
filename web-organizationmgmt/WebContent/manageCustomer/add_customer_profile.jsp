@@ -18,7 +18,7 @@
             <tr class="transparent">
             <netui-data:getData resultId="currentAction" value= "<%= currentAction %>" />
             
-                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:<%= isCheckBoxDisabled %></td>
+                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:</td>
               <c:if test="${currentAction == 'defaultAction'}">
                <td class="transparent">	
                <netui:select tagId="selectedCustomerTypeId" optionsDataSource="${pageFlow.customerOptions}" dataSource="actionForm.customerProfile.customerTypeId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.customerTypeId}" onChange="toogleMDRNoTextBox('selectedCustomerTypeId');"/>
