@@ -641,6 +641,11 @@ public class StudentOperationController extends PageFlowController {
 			optionList.setProfileEditable(profileEditable);
 			
 			studentProfileData.setOptionList(optionList);
+			if(studentProfileData.getCreateBy() != null && studentProfileData.getCreateBy() == 1) {
+				studentProfileData.setStudentImported(true);
+			} else {
+				studentProfileData.setStudentImported(false);
+			}
 			
 			try {
 				Gson gson = new Gson();

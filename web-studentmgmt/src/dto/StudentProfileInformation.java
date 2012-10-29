@@ -80,6 +80,8 @@ public class StudentProfileInformation extends SanitizedFormField
     //Added for out of school
     private String outOfSchool;
     
+    private boolean isStudentImported;
+    
 
     /**
 	 * @return the hasAccommodations
@@ -1120,5 +1122,15 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setMiddleInitial(String middleInitial) {
 		this.middleInitial = middleInitial;
+	}
+
+
+	public boolean isStudentImported() {
+		return isStudentImported;
+	}
+
+
+	public void setStudentImported(boolean isStudentImported) {
+		this.isStudentImported = isStudentImported;
 	}
 } 

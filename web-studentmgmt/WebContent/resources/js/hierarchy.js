@@ -58,6 +58,7 @@ var leafNodePathMap = {};
 var leafNodeTextMap = {};		
 var editingStudentId = null;
 var isSetEditStudentDetail = false;
+var isEditStudentImported = false;// Need to be used as imported student's profile can also be editable.
 
 
 $(document).bind('keydown', function(event) {
@@ -1531,7 +1532,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	var showStudentInGrid = false;
 	updateAccomodationMap = {};
 		
-	if(profileEditable === "false") {
+	if(profileEditable === "false" || isEditStudentImported) {
 		resetDisabledFields();
 	}
 	
@@ -1665,7 +1666,7 @@ function fillselectedOrgNode( elementId, orgList) {
         											$('#errorIcon').show();
 													$('#infoIcon').hide();
         											document.getElementById('displayMessage').style.display = "block";
-        											if(profileEditable === "false") {
+        											if(profileEditable === "false" || isEditStudentImported) {
 														disableAllNonEdFlds();
 													} else {
 														resetDisabledFields();
@@ -1686,7 +1687,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	} else {
 			document.getElementById('displayMessage').style.display = "block";
-			if(profileEditable === "false") {
+			if(profileEditable === "false" || isEditStudentImported) {
 				disableAllNonEdFlds();
 			} else {
 				resetDisabledFields();
@@ -1857,6 +1858,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						yearOptions = data.optionList.yearOptions; 
 						testPurposeOptions = data.optionList.testPurposeOptions;
 						loginId = data.userName;
+						isEditStudentImported = data.isStudentImported;
 						fillDropDown("gradeOptions", gradeOptions);
 						fillDropDown("genderOptions", genderOptions);
 						fillDropDown("dayOptions", dayOptions);
@@ -1892,7 +1894,15 @@ function fillselectedOrgNode( elementId, orgList) {
 							$('#Student_Information select').attr('disabled', true);
 							$('#Student_Information :input').attr('disabled', true);
 						} else {
-							resetDisabledFields();
+							if(isEditStudentImported) {
+								disableAllNonEdFlds();
+								$('#Student_Information :checkbox').attr('disabled', false); 
+								$('#Student_Information :radio').attr('disabled', false); 
+								$('#Student_Information select').attr('disabled', false);
+								$('#Student_Information :input').attr('disabled', false);
+							} else {
+								resetDisabledFields();
+							}
 						}
 						$.unblockUI();  
 						$("#addEditStudentDetail").dialog({  
@@ -2399,7 +2409,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			     }else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
 			     }
-			     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false") {
+			     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
 			     } else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
@@ -2427,7 +2437,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     		}
 				     	}
-						if(profileEditable === "false" && stuDemographic[count].importEditable == 'F') {
+						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
 			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
 			     			var selectArray = $("#Student_Additional_Information select");
 			     			for(var k = 0; k < selectArray.length; k++) {
@@ -2465,7 +2475,7 @@ function fillselectedOrgNode( elementId, orgList) {
 					     }else {
 					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
 					     }
-					     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false"){
+					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
 					     }else {
 					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
@@ -2929,7 +2939,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		
 		if(stuDemographic[count]['studentDemographicValues'].length == 1){
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
-			     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false") {
+			     if(stuDemographic[count].importEditable == 'F' && (isEditStudentImported || profileEditable === "false")) {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
 			     } else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
@@ -2937,7 +2947,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		     }else {
 				var valueCardinality = stuDemographic[count]['valueCardinality'];
 				if(valueCardinality == 'SINGLE'){
-						if(profileEditable === "false" && stuDemographic[count].importEditable == 'F') {
+						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
 			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
 			     			var selectArray = $("#Student_Additional_Information select");
 			     			for(var k = 0; k < selectArray.length; k++) {
@@ -2970,7 +2980,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				if(valueCardinality == 'MULTIPLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
-					     if(stuDemographic[count].importEditable == 'F' && profileEditable === "false"){
+					     if(stuDemographic[count].importEditable == 'F' && (isEditStudentImported || profileEditable === "false")){
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
 					     }else {
 					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
