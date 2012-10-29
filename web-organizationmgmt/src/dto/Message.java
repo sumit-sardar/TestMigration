@@ -124,7 +124,7 @@ public class Message implements java.io.Serializable
     public static final String FIELD_STATE = "State";
     //START - Changes for LASLINK PRODUCT 
     public static final String FIELD_MDRNUMBER = "MDR Number";
-    public static final String FIELD_LASLINKPRODUCTCHECKBOXES="Please check atleast one of the Laslink Product Type- Form A&B or Espanol checkbox";
+    public static final String FIELD_LASLINKPRODUCTCHECKBOXES="Please select at-least one of the Laslink Product Types";
     //LLO-099 MDR Validation
 
     public static final String INVALID__MDRNUMBER_FORMAT  = "Please re-enter your information with a unique 8-digit combination of 0-9.";
