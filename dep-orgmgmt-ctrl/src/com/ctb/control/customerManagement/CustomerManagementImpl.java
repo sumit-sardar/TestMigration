@@ -773,7 +773,7 @@ public class CustomerManagementImpl implements CustomerManagement
 	           if(Arrays.asList(productTestCatalogIds).contains(7002)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMB);
 	           }
-	           if(Arrays.asList(productTestCatalogIds).contains(7001)){
+	           if(Arrays.asList(productTestCatalogIds).contains(7003)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOL);
 	           }
            }
