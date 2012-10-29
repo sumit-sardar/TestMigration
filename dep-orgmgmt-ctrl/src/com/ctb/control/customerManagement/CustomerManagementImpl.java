@@ -109,13 +109,15 @@ public class CustomerManagementImpl implements CustomerManagement
     public void updateCustomer(String loginName, Customer customer)
                                 throws CTBBusinessException {   
         Integer loginUserId = null;
-        Integer customerId = null;
+        Integer customerId = customer.getCustomerId();
         Integer billingAddressId = customer.getBillingAddressId();
         Integer mailingAddressId = customer.getMailingAddressId();
         Integer newBillingAddressId = null;
         Integer newMailingAddressId = null;
         StringBuffer customerNameBuff = new StringBuffer();
         String customerName = null;
+        boolean laslinkFormAOrFormBSelected = false;  
+        boolean laslinkEspanolSelected = false; 
         
         try {
             validator.validateUser(loginName, loginName,
@@ -186,7 +188,41 @@ public class CustomerManagementImpl implements CustomerManagement
             customers.updateCustomer(customer);
             //START - Changes For LASLINK Product
             customers.updateCustomerTopNodeMdrNumber(customer);
-            //END - Changes For LASLINK Product              
+            //END - Changes For LASLINK Product  
+            
+            // create customer configuration based on product type selected
+            String[] selectedProducts = customer.getProductList();
+            List<String> tempProductList = Arrays.asList(selectedProducts);
+            
+            // logic:
+            // 1. clean customer configuration data
+            // 2. clean customer demographic data
+            // 3. insert common configuration data               
+            customers.cleanCustomerConfiguration(customerId);
+            //create base configuration for all types
+            customers.createBaseCustomerConfiguration(customerId);
+            for(String selectedProduct:tempProductList){
+            	if(CTBConstants.CUSTOMER_PRODUCT_FORMA.equals(selectedProduct)){
+                	customers.setupLaslinkFormACustomerConfiguration(customerId);
+                	laslinkFormAOrFormBSelected =  true;
+            	}
+                else if(CTBConstants.CUSTOMER_PRODUCT_FORMB.equals(selectedProduct)){
+                	customers.setupLaslinkFormBCustomerConfiguration(customerId);
+                	laslinkFormAOrFormBSelected =  true;
+                }
+                else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOL.equals(selectedProduct)){
+                	customers.setupEspanolCustomerConfiguration(customerId);
+                	laslinkEspanolSelected = true;
+                }
+            }
+            //create demographic data
+            //create common demographicdata
+            customers.setupCustomerBaseDemographic(customerId);
+            if(laslinkFormAOrFormBSelected)
+            	customers.setupLaslinkCustomerDemographic(customerId);
+            if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
+            	customers.setupEspanolCustomerDemographic(customerId);
+            
         }  catch (SQLException se) {
                CustomerUpdationException dataUpdationException = 
                                             new CustomerUpdationException(
