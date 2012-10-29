@@ -621,4 +621,10 @@ function toogleProductGroup(elementId)
 	}
 }
 
+function makeCheckboxDisable(obj,action){
+	if(obj.type = "checkbox" && obj.checked == true && action == 'editCustomer'){
+		obj.disabled = true;
+	}
+}
+
 

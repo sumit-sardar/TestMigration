@@ -533,6 +533,7 @@ public class ManageCustomerController extends PageFlowController
         form.setActionElement(globalApp.ACTION_EDIT_CUSTOMER);
         form.setSelectedCustomerId(this.savedForm.getSelectedCustomerId());
         setFormInfoOnRequest(form);
+        this.getRequest().setAttribute("customerSelectedProducts",form.customerProfile.userSelections );
         return new Forward("success", form);
     }
 

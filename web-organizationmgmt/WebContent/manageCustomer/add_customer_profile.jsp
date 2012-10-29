@@ -9,6 +9,21 @@
 	Boolean isLasLinkProduct = new Boolean((String)request.getParameter("isLasLinkProduct")); 
 	pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
 	Boolean isCheckBoxDisabled = ("editCustomer".equals(currentAction)) ? true:false;
+	String[] selectedList = request.getAttribute("customerSelectedProducts") != null ? (String[])request.getAttribute("customerSelectedProducts") : null;
+	Boolean formAEnabled = false;
+	Boolean formBEnabled = false;
+	Boolean espanolEnabled = false;
+	if(("editCustomer".equals(currentAction))){
+		for(String selection : selectedList){
+			if(selection.equals("Form A"))
+				formAEnabled = true;
+			else if(selection.equals("Form B"))
+				formBEnabled = true;
+			else if(selection.equals("Espanol"))
+				espanolEnabled = true;
+		}
+	}
+	
 %>
 
 <table class="simple">
@@ -46,7 +61,7 @@
 					<td class="transparent">
 					<c:if test="${!isLasLinkProduct}">
 						<div id="LaslinkProductChecboxGroup" style="display: none;" >
-						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections" disabled="<%=isCheckBoxDisabled %>">
+						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections" >
 							<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
 							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
 							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
@@ -54,10 +69,10 @@
 					</c:if>
 					<c:if test="${isLasLinkProduct}">
 						<div id="LaslinkProductChecboxGroup" style="display: block;" >
-						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections"  disabled="<%=isCheckBoxDisabled %>">
-							<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
-							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
-							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+						<netui:checkBoxGroup dataSource="actionForm.customerProfile.userSelections" >
+							<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" disabled="<%=formAEnabled %>" />
+							<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" disabled="<%=formBEnabled %>"/>
+							<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" disabled="<%=espanolEnabled %>"/>
 						</netui:checkBoxGroup></div>
 					</c:if>
 					</td>							
@@ -135,3 +150,4 @@
         </td>
     </tr>
 </table>
+
