@@ -196,10 +196,10 @@
 				var allRowsInGridPresent = $('#by_session_step3_student_list').jqGrid('getDataIDs');
 				for(var k = 0; k < allRowsInGridPresent.length; k++) {
 					var selectedRowData = $("#by_session_step3_student_list").getRowData(allRowsInGridPresent[k]);
-					if(selectedRowData.completionStatus != 'Completed' && selectedRowData.completionStatus != 'In Progress'){
+					if(selectedRowData.completionStatus != 'Completed'/* && selectedRowData.completionStatus != 'In Progress'*/){
 						$("#"+(k+1)+" td input","#by_session_step3_student_list").attr("disabled", true);
 						$("#"+(k+1), "#by_session_step3_student_list").addClass('ui-state-disabled');
-					} else if (selectedRowData.itemSetLevel == 'L' && (selectedRowData.completionStatus != 'Completed' || selectedRowData.completionStatus != 'In Progress')){
+					} else if (selectedRowData.itemSetLevel == 'L' && (selectedRowData.completionStatus != 'Completed'/* || selectedRowData.completionStatus != 'In Progress'*/)){
 						$("#"+(k+1)+" td input","#by_session_step3_student_list").attr("disabled", true);
 						$("#"+(k+1), "#by_session_step3_student_list").addClass('ui-state-disabled');
 					} else if (selectedTDAndStudentData.get(selectedRowData.studentItemId) != null){
@@ -291,9 +291,9 @@
 		var status = false;
 		if(rowData == null){
 			status = false;
-		} else if(rowData.completionStatus != 'Completed' && rowData.completionStatus != 'In Progress'){
+		} else if(rowData.completionStatus != 'Completed'/* && rowData.completionStatus != 'In Progress'*/){
 			status = false;
-		} else if (rowData.itemSetLevel == 'L' && (rowData.completionStatus != 'Completed' || rowData.completionStatus != 'In Progress')){
+		} else if (rowData.itemSetLevel == 'L' && (rowData.completionStatus != 'Completed' /*|| rowData.completionStatus != 'In Progress'*/)){
 			status = false;
 		} else {
 			status = true;
@@ -811,10 +811,10 @@
 				var allRowsInGridPresent = $('#by_student_step3_student_subtest_list').jqGrid('getDataIDs');
 				for(var k = 0; k < allRowsInGridPresent.length; k++) {
 					var selectedRowData = $("#by_student_step3_student_subtest_list").getRowData(allRowsInGridPresent[k]);
-					if(selectedRowData.completionStatus != 'Completed' && selectedRowData.completionStatus != 'In Progress'){
+					if(selectedRowData.completionStatus != 'Completed'/* && selectedRowData.completionStatus != 'In Progress'*/){
 						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
 						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
-					} else if (selectedRowData.itemSetLevel == 'L' && (selectedRowData.completionStatus != 'Completed' || selectedRowData.completionStatus != 'In Progress')){
+					} else if (selectedRowData.itemSetLevel == 'L' && (selectedRowData.completionStatus != 'Completed'/* || selectedRowData.completionStatus != 'In Progress'*/)){
 						$("#"+(k+1)+" td input","#by_student_step3_student_subtest_list").attr("disabled", true);
 						$("#"+(k+1), "#by_student_step3_student_subtest_list").addClass('ui-state-disabled');
 					} 
