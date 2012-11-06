@@ -2,6 +2,7 @@ package manageCustomer;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1187,6 +1188,28 @@ public class ManageCustomerController extends PageFlowController
         else
         { 
         	form.isLasLinkProduct = this.savedForm.isLasLinkProduct;
+        	if(this.savedForm.isLasLinkProduct){
+	            //update previous selected Products
+	            String previousSelectedProducts = this.getRequest().getParameter("userPreviousSelections");	
+	            List<String> newSelections = new ArrayList<String>();
+	            String[] currentSelections = form.getCustomerProfile().getUserSelections();
+	            for(String str : currentSelections){
+	            	newSelections.add(str);
+	            }
+	            
+	            if(previousSelectedProducts != null && previousSelectedProducts.length() > 0){
+	            	String[] previousSelectedProductArray = previousSelectedProducts.split("~");
+	            	for(String str : previousSelectedProductArray){
+	            		newSelections.add(str);
+	            	}
+	            }
+	            String[] modifiedCollection = new String[newSelections.size()];
+	            int i = 0;
+	            for(String newStr : newSelections ){
+	            	modifiedCollection[i++] = newStr;
+	            }
+	            form.getCustomerProfile().setUserSelections(modifiedCollection);
+            }
             //validation for edit only as add validation already done
             boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, customerId);
           //START- LLO-099 MDR Validation

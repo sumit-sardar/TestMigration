@@ -627,4 +627,18 @@ function makeCheckboxDisable(obj,action){
 	}
 }
 
+function enableLLProductTypeCheckboxes(elementId){
+	var previousSelectionValueObject = document.getElementById('userPreviousSelections');
+	var previousSelectionValue = 	previousSelectionValueObject.value.split('~');		
+<!--	for(var i =0; i<previousSelectionValue.length; i++){-->
+<!--		alert(previousSelectionValue[i]);-->
+<!--		if(previousSelectionValue[i] != null && previousSelectionValue[i].length > 0){-->
+<!--			if("Form A" == previousSelectionValue[i] ){-->
+<!--				document.getElementById('').-->
+<!--			}-->
+<!--		}-->
+<!--	}	-->
+	
+}
+
 

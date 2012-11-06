@@ -14,7 +14,15 @@
 <netui-template:setAttribute name="title" value="${bundle.web['editcustomer.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.editCustomer']}"/>
 <netui-template:section name="bodySection">
-
+<% 
+	String previousSelectionList = "";
+	String[] selectedList = request.getAttribute("customerSelectedProducts") != null ? (String[])request.getAttribute("customerSelectedProducts") : null;
+	for(String str : selectedList){
+		previousSelectionList += str;
+		previousSelectionList +="~";
+	}
+	
+%>
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
@@ -24,6 +32,7 @@
 <netui-data:getData resultId="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.customerProfile.name}" />
+<input type="hidden" name ="userPreviousSelections" id="userPreviousSelections" value="<%=previousSelectionList%>" />
 
 <netui:hidden dataSource="actionForm.selectedCustomerId"/>
 <netui:hidden dataSource="actionForm.customerMaxPage"/>
@@ -69,6 +78,7 @@
         
         	<jsp:param name="currentAction" value="${actionForm.currentAction}" />
         	<jsp:param name="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
+        	<jsp:param name="customerSelectedProducts" value="${actionForm.customerProfile.userSelections}" />        	
         </jsp:include>
     </ctb:showHideSection>
 </p>
