@@ -183,7 +183,6 @@ public class StudentDemographicsTag extends CTBTag
     {
 		if(selectedEthnicityHispanicOrLatino)
 			displayStyle = "block";
-		 writeToPage("<div id=\"SubEthnicityDiv\" style=\"display:"+displayStyle+";\"><br/>");
 		 for (int i=0 ; i<values.length ; i++) {
 		        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
 			    String value = sdv.getValueName().trim();
@@ -213,7 +212,6 @@ public class StudentDemographicsTag extends CTBTag
 			        displayCellEnd();
 				displayRowEnd();  
 		    }
-		 writeToPage("</div>");
 	}
 	
 	private void displayValues_RadioButtons(String name, StudentDemographicValue[] values, boolean editable) throws IOException 
@@ -295,13 +293,6 @@ public class StudentDemographicsTag extends CTBTag
    			        }
 			    }
 		        writeToPage("</select>");
-//		        if(name.equals("Ethnicity")){
-//		        	//create div with check boxes
-//                	writeToPage("<div id=\"SubEthnicityDiv\" style=\"display:none;\"><br/>");
-//                	String[] tempValues = new String[]{"Cuban","DominicanRepub"};
-//                	displayEthnicity_CheckBoxes("SubEthnicityCheckbox", tempValues, true,"none");                	
-//                	writeToPage("</div>");
-//		        }
 	        displayCellEnd();
 		displayRowEnd();  
 	}

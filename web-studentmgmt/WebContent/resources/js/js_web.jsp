@@ -714,9 +714,9 @@ function enableAudioFiles() {
 }
 
 
-function toogleHispanicEhtnicityOptions(elementId){	
+function toogleHispanicEhtnicityOptions(elementId){
+
 	var dropDown = document.getElementById(elementId);	
-	var subEthnicityDiv = document.getElementById('SubEthnicityDiv');
 	var selectedData = dropDown.options[dropDown.selectedIndex].text;
 	var eles = [];
 	var inputs = document.getElementsByTagName("input");
@@ -728,20 +728,19 @@ function toogleHispanicEhtnicityOptions(elementId){
 	var spanElements = []; 
 	inputs = document.getElementsByTagName("span");
 	for(var i = 0; i < inputs.length; i++) {
-	    if(inputs[i].name != null && inputs[i].name.indexOf('Sub_Ethnicity_') == 0) {
+	    if(inputs[i].getAttribute("name") != null && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_') == 0) {
 	        spanElements.push(inputs[i]);
 	    }
 	}
 	var tableEles = [];
 	var tableElements = document.getElementsByTagName("table");
 	for(var i = 0; i < tableElements.length; i++) {
-	    if(tableElements[i].name != null && tableElements[i].name.indexOf('Sub_Ethnicity_Table') == 0) {
+	    if(tableElements[i].getAttribute("name") != null && tableElements[i].getAttribute("name").indexOf('Sub_Ethnicity_Table') == 0) {
 	        tableEles.push(tableElements[i]);
 	    }
 	}
-	//alert("Inputs :: "+inputs.length + "  span:: "+spanElements.length + " tableElements" + tableElements.type);
-	if(selectedData == "Hispanic or Latino"){
-		subEthnicityDiv.style.display = "block";		
+	//alert("Inputs :: "+eles.length + "  span:: "+spanElements.length + " tableElements" + tableEles.length);
+	if(selectedData == "Hispanic or Latino"){		
 		for(var i = 0; i < eles.length; i++) {
 	    	eles[i].style.display = "block";
 		}
@@ -752,8 +751,7 @@ function toogleHispanicEhtnicityOptions(elementId){
 	    	tableEles[i].style.display = "block";
 		}
 	}
-	else{
-		subEthnicityDiv.style.display = "none";		
+	else{	
 		for(var i = 0; i < eles.length; i++) {
 	    	eles[i].style.display = "none";
 	    	if(eles[i].type = "checkbox")
