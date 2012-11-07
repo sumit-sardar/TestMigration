@@ -6,6 +6,10 @@
  */
 package com.ctb.content.layout;
 
+import Exception;
+import Integer;
+import String;
+
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -2077,16 +2081,29 @@ public class ItemLayoutProcessor
             boolean isJPGorBMP = false;
             boolean isSWF = false;
             String ext = filePath.substring( filePath.length() - 3 ).toLowerCase();
-            if ( ext.equals( "bmp" ) || ext.equals( "jpg" ))
+            if ( ext.equals( "bmp" ) || ext.equals( "jpg" ) || ext.equals("png"))
                 isJPGorBMP = true;
-            else if ( ext.equals( "swf" ))
+            else if ( ext.equals( "swf" )) {
                 isSWF = true;
+                // see if .png image replacement exists for .swf
+                try {
+                	String pngPath = filePath.replaceAll(".swf", ".png");
+	                PlainTextInputStream asset = (PlainTextInputStream) new URL(pngPath).getContent();
+	                BufferedImage image = ImageIO.read( asset );
+	                //png exists
+	                filePath = pngPath;
+	                lml.setAttribute("src", pngPath);
+	                isJPGorBMP = true;
+                } catch (Exception e) {
+                	//png does not exist
+                }
+            }
             if ( isJPGorBMP )
             {
                 PlainTextInputStream asset = (PlainTextInputStream) new URL(filePath).getContent();
                 BufferedImage image = ImageIO.read( asset );
-                Integer widthINT = new Integer( image.getWidth() );
-                Integer heightINT = new Integer( image.getHeight() );
+                Integer widthINT = new Integer( ext.equals("png")?image.getWidth()/2:image.getWidth() );
+                Integer heightINT = new Integer( ext.equals("png")?image.getHeight()/2:image.getHeight() );
                 lml.setAttribute( "height", heightINT.toString() );
                 lml.setAttribute( "width", widthINT.toString() );
                 asset.close();
