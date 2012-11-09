@@ -106,7 +106,7 @@ CHANGE HISTORY:
 	Grade		(K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Adult | EOC) "3"
 	DisplayID 	CDATA #IMPLIED
 	Author 		CDATA #IMPLIED
-	ItemType 	(SR | CR | NI) "SR"
+	ItemType 	(SR | CR | NI | IN) "SR"
 	ExternalID 	CDATA #IMPLIED 
 	ExternalSystem  (PEID | Monarch| na) "na"
 	AllowRevisit (true | false) "true"
@@ -124,6 +124,12 @@ CHANGE HISTORY:
 	height		CDATA #IMPLIED
 	widgetlayout 	(vertical | horizontal) "vertical"
 	widgetspacing	CDATA #IMPLIED
+>
+
+<!-- entry has been added for TE Item -->
+<!ELEMENT TEAsset EMPTY>
+<!ATTLIST TEAsset
+    path	      CDATA #REQUIRED	
 >
 
 <!-- a component that is necessary to answer a given set of items -->
