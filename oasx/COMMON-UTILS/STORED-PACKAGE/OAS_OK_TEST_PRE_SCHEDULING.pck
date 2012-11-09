@@ -28,7 +28,11 @@ WORDS1 CONSTANT VARCHAR2(32726) :=
 
 
 
+
+
 ,arisen,ark,arm,armada,armament,armature,armchair,armful,armload,armoire,army,aroma,aromatic,arose,around,arpeggio,arraign,arrange,array,arrival,arrive,arrogant,arrogate,arrow,arroyo,art,arterial,artery,artful,article,artifact,artifice,artisan,artistry,artwork,as,ascend,ascent,ascribe,aseptic,ash,ashame,ashamed,ashen,ashore,aside,ask,askance,askew,asleep,aspect,aspen,asperity,aspirate,aspire,aspirin,assemble,assent,assert,assessor,asset,assign,assist,assume,assure,asteria,asterisk,asteroid,asthma,astonish,astound,astral,astride,astute,asunder,at,atavism,ate,athle,athletic,athwart,atlantic,atlas,atom,atomic,atonal,atone,atop,atrium,atrophic,atrophy,attach,attache,attain,attempt,attend,attendee,attest,attic,attire,attitude,attorney,attract,attune,auburn,auction,audacity,audible,audience,audio,audit,audition,auditor,auditory,auger,augment,august,auk,aunt,auntie,aura,aural,auric,aurochs,aurora,auspices,austere,author,auto,autocrat,automate,autonomy,autumn,autumnal,avail,avarice,avenue,aver,average,averred,averring,averse,aviary,aviate,avid,avionic,avocado,await,awake,awaken,award,aware,awash,away,awe,awesome,awhile,awkward,awl,awn,awoke,awry,ax,axe,axes,axial,axiology,axiom,axis,axle,axon,azalea,azimuth,azimuthal,azure,babble,baboon,baby,babyhood,babysat,babysit,bacilli,bacillus,back,backboard,backbone,backdrop,backfill,backhand,backlash,backorder,backpack,backplane,backstage,backstop,backtrack,backup,backward,backwood,backyard,bacon,bacteria,bacterial,bacterium,bade,badge,badinage,badland,badminton,baffle,bag,bagatelle,bagel,baggage,bagpipe,bait,bake,bakery,balance,balcony,bald,baldy,bale,baleen,baleful,balk,balky,ball,ballad,ballast,ballerina,ballet,balletic,ballfield,balloon,ballot,ballroom,balm,balmy,balsa,balsam,bamboo,ban,banal,banana,band,bandage,bandgap,bandit,bandpass,bandstand,bandstop,bandwagon,bandwidth,bandy,bane,baneberry,baneful,bangle,banish,banister,banjo,bank,bankrupt,banquet,bantam,banter,barb,barbaric,barbecue,barbell,barber,barberry,bard,barefoot,bargain,barge,baritone,barium,bark,barley,barn,barnacle,barnyard,baron,baroness,baronet,baronial,barony,baroque,barrack,barrage,barre,barrel,barren,barrette,barrier,barrow,barter,basal,basalt,base,baseball,baseband,baseline,baseman,basemen,bash,bashaw,bashful,basic,basil,basilar,basilisk,basin,basis,bask,basket,bass,bassi,bassinet,basso,basswood,baste,bastion,bat,batch,bate,bateau,bath,bathe,bathos,bathrobe,bathroom,bathtub,batik,baton,batt,batten,battery,battle,batwing,bauble,baud,bauxite,bawl,bay,bayed,bayonet,bayou,bazaar,be,beach,beacon,bead,beadle,beady,beak,beam,bean,bear,beard,bearish,beatific,beatify,beautify,beauty,becalm,became,because,beck,becket,beckon,becloud,become,bed,bedazzle,bedbug,bedevil,bedfast,bedim,bedimmed,bedlam,bedpost,bedrock,bedroom,bedside,bedstraw,bedtime,bee,beebread,beech,beef,beehive,been,beep,beet,beetle,befall,befallen,befell,befit,befog,before,befuddle,beg,began,beggar,beggary,begging,begin,beginner,begonia,begotten,begrudge,beguile,begun,behalf,behave,beheld,behest,behind,behold,beige,being,bel,belate,belfry,belie,belief,belies,believe,bell,bellboy,belle,bellhop,bellman,bellmen,bellow,bellum,belly,belong,belove,below,belt,belying,bemadden,beman,bemoan,bemuse,bench,bend,beneath,benefice,benefit,benight,benign,bent,benzene,bequeath,bequest,beret,berg,bergamot,beribbon,beriberi,berne,berry,berth,beryl,beseech,beset,beside,besiege,besmirch,besotte,bespeak,bespoke,best,bestir,bestow,bestowal,bet,beta,betatron,betroth,bettor,between,betwixt,bevel,beverage,bevy,bewail,beware,bewilder,bey,beyond,bias,biaxial,bib,bicep,biceps,bicker,bicycle,bid,biddable,bidden,bide,biennial,biennium,bifocal,big,bike,bilayer,bilinear,bilk,bill,billet,billfold,billiard,billion,billow,bimodal,bin,binary,binaural,bind,bindery,bindle,binomial,biopsy,biota,biotic,biotite,biplane,bipolar,birch,bird,birdbath,birdie,birdlike,birdseed,birth,birthday,biscuit,bisect,bishop,bismuth,bison,bisque,bistable,bistate,bit,bite,bitten,bitumen,bitwise,bivalve,bivouac,biz,bizarre,
+
+
 
 
 
@@ -74,6 +78,8 @@ WORDS2 CONSTANT VARCHAR2(32726) := 'cab,cabana,cabaret,cabbage,cabin,cabinet,cab
 
 
 
+
+
 coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cogent,cogitate,cognate,cohere,coherent,cohesion,cohesive,cohort,cohosh,coiffure,coil,coin,coinage,coincide,colander,cold,coleus,coliform,coliseum,collage,collagen,collapse,collar,collard,collate,collect,college,collet,collide,collie,colloquy,collude,colonel,colonial,colonist,colony,colorate,colossal,colossi,colossus,colt,coltish,column,columnar,colza,comb,combine,comeback,comedian,comedy,comet,cometary,comfort,comic,comma,command,commend,comment,commerce,commit,common,commute,compact,company,compare,compass,compel,compete,compile,complain,compleat,complete,complex,compline,comply,comport,compose,compote,compound,compress,comprise,compute,comrade,concave,conceal,concede,conceit,concept,concern,concert,concerti,concerto,conch,concise,conclave,conclude,concoct,concord,concrete,concur,condemn,condense,condone,conduce,conduct,conduit,cone,confect,confer,conferee,confess,confide,confine,confirm,confocal,conform,confound,confrere,confront,confute,congeal,congener,congest,congress,conic,conifer,conjunct,conjure,connect,connive,connote,conquer,conquest,consent,conserve,consider,consign,consist,console,conspire,constant,construe,consul,consular,consult,consume,contact,contain,contend,content,context,continua,continue,continuo,contort,contour,contract,contrary,contrast,contribu,contrite,contrive,control,convect,convene,convent,converge,converse,convert,convex,convey,conveyor,convict,convince,convoke,convolve,convoy,convulse,cook,cookbook,cookery,cookie,coolant,coop,coot,cop,cope,copious,coplanar,copperas,coppery,copra,coprinus,copy,copybook,coquette,coquina,coral,corbel,cord,cordage,cordial,cordite,cordon,corduroy,core,cork,corn,cornea,cornet,cornish,cornmeal,corny,corona,coronary,coronate,coroner,coronet,corpora,corporal,corps,corpsman,corpsmen,corpus,corral,correct,corridor,corrode,corsage,cortege,cortex,cortical,corundum,corvette,cosmetic,cosmic,cosmos,cost,costume,cosy,cot,cotman,cotta,cottage,cotton,couch,cougar,cough,could,coulomb,council,counsel,count,country,county,coup,coupe,couple,coupon,courage,courier,course,court,courtesy,courtier,couscous,cousin,covalent,covary,cove,covenant,cover,coverage,coverall,coverlet,cowbell,cowbird,cowboy,cowgirl,cowhand,cowherd,cowhide,cowl,coworker,cowpox,coy,coyote,cozy,crab,crabmeat,cradle,craft,crafty,cramp,crane,crania,cranium,cranny,crass,crate,crater,cravat,crave,craw,crawl,crayfish,crayon,craze,crazy,creak,creaky,crease,create,creating,creature,creche,credent,credenza,credible,credit,creditor,credo,creed,creedal,creek,creosote,crepe,crept,crescent,cress,crest,crevice,crew,crewcut,crewel,crewman,crewmen,crib,cricket,cried,crime,crimson,crinkle,crisp,criss,criteria,critic,critique,critter,croak,crochet,croft,crone,crony,crook,croon,crop,croquet,cross,crossarm,crossbar,crossbow,crosscut,crossway,crouch,crow,crowd,crowfoot,crown,crucial,crucible,cruise,crumb,crumble,crumple,crunch,crupper,crusade,crush,crust,cry,cryptic,crystal,cub,cube,cubic,cuckoo,cucumber,cud,cuddle,cuddly,cudgel,cue,cuff,cufflink,cuisine,culinary,cull,culpable,culprit,cultural,culture,culvert,cumin,cumulate,cumulus,cunning,cup,cupboard,cupful,cupidity,cupric,cuprous,cur,curate,curb,curbside,curd,curdle,cure,curfew,curia,curie,curio,curious,curium,curl,curlew,curlicue,currant,current,curry,cursive,cursor,cursory,curt,curtail,curtain,curtsey,curve,cushion,cusp,custody,custom,cut,cutback,cute,cutesy,cutlass,cutler,cutlet,cut,cutout,cutover,cutset,cutworm,cycad,cycle,cyclic,cyclist,cyclone,cylinder,cynic,cypress,cyst,cysteine,cytology,dab,dabble,dactyl,dactylic,dad,daddy,daffodil,daffy,dagger,dahlia,dainty,dairy,dairyman,dairymen,daisy,dale,dally,damp,dampen,dance,dandy,dapper,dapple,dare,dark,darken,darkle,darling,dart,dash,data,database,date,dateline,dater,datum,daub,daughter,daunt,dauphin,dauphine,davit,dawn,day,daybreak,daydream,daylight,daytime,daze,dazzle,deadline,deadlock,deal,dealt,dean,dear,dearie,dearth,debar,debate,debater,debility,debit,de
 
 
@@ -95,7 +101,11 @@ coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cog
 
 
 
+
+
 bonair,debrief,debris,debt,debtor,debug,debugged,debunk,debut,decade,decadent,decal,decant,decay,decedent,deceit,decent,decibel,decide,decile,decimal,decipher,decision,decisive,deck,declaim,declare,decline,decode,decor,decorate,decorous,decorum,decouple,decoy,decrease,decree,decry,dedicate,deduce,deed,deem,deep,deepen,deer,deerskin,deface,default,defeat,defector,defend,defer,deferent,deferred,define,definite,deflect,deforest,deft,degree,delay,delegate,delicacy,delicate,delight,delimit,delirium,deliver,delivery,dell,delphine,delta,deltoid,delude,deluge,delusion,delusive,deluxe,delve,demand,demark,demitted,demo,den,denature,dendrite,denizen,denote,dense,dent,dental,denture,depart,depend,depict,deplete,deploy,depose,deposit,depot,depth,depute,deputy,derby,derivate,derive,dervish,descant,descend,descent,describe,desert,deserve,design,desist,desk,despite,dessert,destine,destiny,detach,detail,detain,detect,detector,deter,detour,deuce,develop,device,devote,devotee,devotion,dew,dewar,dewdrop,dextrose,dextrous,diadem,diagnose,diagonal,diagram,dial,dialect,dialogue,diameter,diamond,diary,diatom,diatomic,diatonic,dice,did,didactic,diesel,diet,dietary,dietetic,differ,diffract,diffuse,dig,digest,digging,digit,digital,dignify,dignity,digram,digress,dihedral,dilemma,diligent,dill,diluent,dilute,dilution,dim,dime,dimethyl,diminish,dimple,dine,dinosaur,diode,diopter,diorama,diorite,dioxide,dip,diploid,diploidy,diplo,diplomat,direct,director,disburse,disc,discern,disco,discreet,discrete,discus,discuss,dish,dishes,dishevel,disjunct,disk,dispel,dispense,disperse,dissuade,distaff,distal,distant,distinct,district,dither,ditto,dive,diverge,diverse,divert,divest,divide,dividend,division,divisor,divulge,do,doberman,dock,docket,dockside,dockyard,doctor,doctoral,doctrine,document,dodge,doe,dog,doghouse,dogwood,doldrum,doldrums,dole,doleful,doll,dollar,dollop,dolly,dolomite,dolphin,domain,dome,domestic,domicile,domino,donate,done,door,doorbell,doorkeep,doorknob,doorman,doormen,doorstep,doorway,dormant,dossier,dot,dote,double,doublet,doubt,doubtful,dough,doughnut,dour,douse,dove,dovetail,dowel,down,downplay,downpour,downtown,downward,downwind,dowry,doze,dozen,drab,draft,drag,dragging,dragnet,dragon,dragoon,drain,drainage,drake,dram,drama,dramatic,drape,drapery,drastic,draw,drawback,drawl,drawn,dream,dreamt,dreamy,dredge,dreg,drench,dress,dressy,drew,drib,dried,drier,drift,drill,drink,drive,driven,driveway,drizzle,drizzly,droll,drone,drop,droplet,dross,drought,drove,drowse,drowsy,drub,druid,drum,drumhead,drumlin,dry,dryad,dual,dualism,dub,ducat,duchess,duck,duckling,duct,ductile,ductwork,dud,due,duel,duet,duff,duffel,dug,dugout,duke,dukedom,dulcet,dull,dully,dulse,duly,dune,dunk,duopoly,duplex,durable,durance,duration,during,dusk,dust,dustbin,dusty,dutchess,dutiable,dutiful,duty,dwindle,dyad,dyadic,dye,dyeing,dyer,dynamic,dynamism,dynasty,each,eager,eagle,ear,eardrum,earl,earmark,earn,earnest,earphone,earring,earth,earthy,ease,easel,east,eastern,eastward,easy,eave,ebb,ebony,echelon,echo,echoes,eclectic,eclipse,ecliptic,eclogue,ecology,economic,economy,ectoderm,ectopic,ecumenic,eddy,edge,edgewise,edging,edgy,edict,edifice,edify,edit,edition,editor,educable,educate,eel,eerie,eerily,efface,effect,efferent,efficacy,effort,effusion,effusive,egg,eggplant,eggshell,egress,egret,eider,eidetic,eight,eighteen,eighth,eighty,either,elapse,elastic,elate,elbow,elder,eldest,elect,elector,electret,electric,electro,electron,elegant,elegiac,elegy,element,elephant,elevate,eleven,eleventh,elfin,elicit,elide,eligible,elision,elite,elk,ellipse,ellipsis,elliptic,elm,eloquent,else,eluate,elute,elution,elves,elysian,emaciate,emanate,embank,embargo,embark,embassy,ember,embezzle,emblazon,emblem,embody,embolden,emboss,embower,embrace,emcee,emerald,emerge,emergent,emeriti,emeritus,emigrant,emigrate,eminent,emirate,emissary,emotion,empathy,emperor,emphases,emphasis,emphatic,empire,empiric,emplace,employ,employed,employee,employer,emporium,empower,empress,empty,emulate,emulsify,emulsion,
+
+
 
 
 
@@ -141,6 +151,8 @@ WORDS3 CONSTANT VARCHAR2(32726) := 'fable,fabric,fabulous,facade,face,facet,faci
 
 
 
+
+
 lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gatekeep,gateway,gather,gator,gauche,gaudy,gauge,gaunt,gauntlet,gauss,gauze,gave,gavel,gavotte,gawk,gaze,gazelle,gazette,gear,gecko,geese,gel,gelable,gelatin,gelatine,gem,geminate,gemlike,gemstone,gene,genera,general,generate,generic,generous,genesis,genetic,genial,genie,genius,genotype,genre,gent,genteel,gentian,gentile,gentle,gentry,genuine,genus,geometer,geranium,germ,germane,germinal,gerund,gestalt,gesture,get,getaway,geyser,ghastly,ghost,ghostly,ghoul,ghoulish,giant,giantess,gibbet,gibbon,giblet,giddy,gift,gig,gigaherz,gigantic,gigavolt,gigawatt,giggle,gila,gild,gill,gilt,gimmick,ginger,gingham,gingko,ginseng,giraffe,girl,girth,gist,give,giveaway,given,giveth,glacial,glaciate,glacier,glad,gladden,glade,glamor,glamour,glance,gland,glare,glass,glassy,glaucoma,glaucous,glaze,gleam,glean,glee,gleeful,glen,glib,glide,glimmer,glimpse,glint,glissade,glisten,glitch,glitter,gloat,glob,global,globe,globular,globule,globulin,gloom,gloomy,glorify,glorious,glory,gloss,glossary,glossed,glossy,glottal,glottis,glove,glow,glucose,glue,glued,gluey,gluing,glum,glut,glutamic,glutton,glycerin,glycerol,glycine,glycogen,glycol,glyph,gnarl,gnash,gnat,gnaw,gnome,gnu,go,goad,goal,goat,gobble,goblet,goes,gold,golden,goldfish,golf,gondola,gone,good,goodbye,goodwill,goose,gopher,gore,gorge,gorgeous,gorgon,gorilla,gorse,gory,gosling,gossamer,gossip,got,gouge,gourd,gourmet,gout,govern,governor,gown,grab,grace,graceful,gracious,grackle,grad,gradate,grade,gradient,gradual,graduate,graft,graham,grail,grain,grainy,grammar,granary,grand,grandeur,grandma,grandpa,grandson,granite,granitic,granny,granola,grant,grantee,grantor,granular,granule,grape,graph,graphic,graphite,grapple,grasp,grass,grassy,grate,grateful,grater,gratify,gratuity,grave,gravel,graven,gravid,gravy,gray,grayish,graze,grease,greasy,great,greater,grebe,greed,greedy,green,greenery,greenish,greet,grew,grey,grid,griddle,gridiron,grief,grieve,grievous,griffin,grill,grille,grilled,grim,grimace,grime,grin,grind,grip,gripe,grisly,grist,grit,gritty,grizzle,grizzly,groan,groat,grocer,grocery,groggy,groom,groove,gross,ground,group,grout,grove,grovel,grow,growl,grown,grownup,growth,grudge,gruesome,gruff,grumble,grunt,gryphon,guanine,guard,guardian,guerdon,guernsey,guess,guest,guffaw,guidance,guide,guiding,guignol,guild,guile,guinea,guise,guitar,gulf,gull,gullet,gullible,gully,gulp,gum,gumbo,gumdrop,gummy,gumption,gumshoe,gurgle,guru,gush,gusset,gust,gusto,gusty,gut,gutsy,guttural,guy,guzzle,gym,gymnast,gypsite,gypsum,gypsy,habit,habitant,habitat,habitual,hacksaw,had,haddock,hadron,haggard,haggle,haiku,hail,hair,haircut,hairdo,hairpin,hale,half,halfback,halfway,halibut,halide,halite,hall,hallmark,hallow,hallway,halo,halogen,halt,halve,ham,hamlet,hammock,hamper,hamster,hand,handbag,handbook,handcuff,handful,handle,handmade,handout,handset,handsome,handy,handyman,handymen,hang,hangar,hansom,happen,happy,harass,hardbake,harden,hardhat,hardtack,hardtop,hardware,hardwood,hardy,hare,hark,harm,harmful,harmonic,harmony,harness,harp,harpoon,harrow,harsh,harshen,hart,harvest,hassle,hast,haste,hasten,hasty,hat,hatch,hatchet,hath,haul,haulage,haunch,haunt,have,haven,havoc,hawk,hay,hayfield,haystack,hayward,hazard,haze,hazel,hazelnut,hazy,he,head,headache,headland,headline,headroom,headset,headsman,headsmen,headwall,headway,headwind,heal,health,healthy,heap,hear,heard,hearken,heart,hearten,hearth,hearty,heat,heater,heath,heathen,heave,heaven,heavy,hectic,hector,hedge,hedgehog,heed,heel,heft,hefty,hegemony,height,heighten,heir,heiress,held,helical,helium,helix,hello,helm,helmet,helmsman,helmsmen,help,helpful,helpmate,hem,hematite,hemlock,hen,hence,henpeck,heptane,her,herald,herb,herd,herdsman,here,hereby,heredity,heretic,hereto,hereunto,herewith,heritage,hero,heroes,heroic,heroism,heron,herself,hertz,hesitant,hesitate,hewn,hex,hexagon,hexane,hey,heyday,hi,hiatus,hibachi,hickory,hid,hidden,hide,hideaway,hideous,hideout,hieratic,highest,highland,h
 
 
@@ -162,7 +174,11 @@ lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gateke
 
 
 
+
+
 ighroad,hightail,highway,hike,hilarity,hill,hillside,hilltop,hilly,him,himself,hindmost,hinge,hint,hip,hippo,hire,hireling,his,hiss,historic,history,hit,hitch,hither,hitherto,hive,hoard,hoarse,hobble,hobby,hockey,hodge,hold,holden,holiday,holler,hollow,holly,hologram,holster,holt,homage,home,homeland,homemade,homesick,homeward,homework,homology,homonym,hone,honest,honesty,honey,honeybee,honeydew,honorary,honoree,hoof,hoofmark,hook,hookworm,hoop,hoot,hooves,hop,hope,hopeful,horde,horizon,horn,hornet,horse,horsedom,horsefly,horseman,horsemen,hose,hosiery,hospice,hospital,host,hostage,hostess,hostile,hotel,hotelman,hound,hour,house,housefly,hove,hovel,hover,how,howdy,however,howl,hub,hubris,huddle,hue,hued,huff,hug,huge,hugging,hull,hum,human,humane,humanoid,humble,humerus,humid,humidify,humility,hummock,humorous,humus,hunch,hundred,hungry,hunt,hurdle,hurl,hurley,hurrah,hurray,hurry,hurt,hurtle,husband,hush,husky,hustle,hut,hutch,hyacinth,hyaline,hybrid,hydra,hydrant,hydrate,hydride,hydro,hydrogen,hydrous,hydroxy,hydroxyl,hyena,hygiene,hymn,hymnal,hyphen,hypnosis,hypnotic,iambic,ice,iceberg,icebox,iceland,icicle,icon,iconic,icy,idea,ideal,identify,identity,ideology,idiom,idle,idyll,idyllic,if,igloo,igneous,ignite,ignition,ileum,iliac,illogic,illume,illumine,illusion,illusive,illusory,image,imagery,imagine,imbibe,imbrue,imbue,imitable,imitate,immanent,immature,immense,immerse,imminent,immobile,immune,impact,impair,impale,impart,impasse,impeach,impede,impel,impelled,impeller,impend,imperate,imperial,imperil,impetus,impiety,impinge,implicit,implore,import,impose,impost,impound,impress,imprint,improve,impudent,impugn,impulse,impunity,impute,inaction,inactive,incant,incense,inceptor,inch,incident,incise,incisive,incite,incline,inclose,include,income,increase,incubate,incur,incurred,incurrer,indebted,indeed,indent,index,indicant,indicate,indices,indict,indigene,indigent,indigo,indirect,indoor,indorse,induce,induct,inductee,inductor,industry,inequity,inert,inertia,inertial,inexact,inexpert,infancy,infant,infantry,infer,inferred,infield,infight,infinite,infinity,infirm,inflate,inflater,inflect,inflict,inflow,influent,influx,inform,informal,infract,infrared,infringe,infuse,infusion,ingather,ingest,ingrown,inhabit,inhale,inhere,inherent,inherit,inhibit,inhuman,inimical,iniquity,initial,initiate,inject,injunct,injure,injury,ink,inkling,inlaid,inland,inlay,inlet,inmate,inn,innate,inner,innocent,innovate,innuendo,input,inquest,inquire,inquiry,inroad,inscribe,insect,insecure,insert,inset,inshore,inside,insight,insignia,insist,insomnia,inspect,inspire,install,instance,instant,instead,instep,instill,instinct,instruct,insular,insulate,insulin,insult,insure,intact,intake,integer,integral,intend,intense,intent,inter,intercom,interest,interim,interior,intermit,intern,internal,interval,into,intonate,intone,intrepid,intrigue,introit,intrude,intuit,inundate,inure,invade,invasion,invasive,inveigh,inveigle,invent,inventor,inverse,invert,invest,investor,inviable,invite,invitee,invocate,invoice,invoke,involve,inward,iodide,iodine,ion,ionic,irate,iridium,iris,iron,ironic,ironside,ironwood,is,island,isle,isolate,isomer,isomorph,isotherm,isotope,isotopic,isotropy,issuance,issuant,issue,it,italic,item,iterate,itself,ivory,ivy,jacket,jackpot,jade,jag,jaguar,jamboree,jangle,janitor,jar,jargon,jasper,jaundice,jaunty,javelin,jaw,jawbone,jawbreak,jazz,jazzy,jelly,jersey,jest,jet,jetliner,jettison,jewel,jewelry,jig,jigsaw,jilt,jingle,jittery,jive,job,jockey,jog,jogging,joggle,join,jolly,jolt,jostle,jot,joule,jounce,journal,journey,joust,jovial,jowl,jowly,joy,joyful,joyous,jubilant,jubilate,jubilee,judge,judicial,judo,jug,jugate,jugging,juggle,juice,jumble,jumbo,jump,junction,junctor,juncture,jungle,junior,juniper,juror,jury,just,justice,justify,jut,juvenile,kaiser,kale,kangaroo,keel,keen,keep,kept,kerchief,kern,kernel,kerosene,ketch,ketchup,ketone,ketosis,kettle,key,keyboard,keyed,keyhole,keynote,keys,keystone,khaki,kickoff,kid,kidney,kilo,kilohm,kimono,kin,kind,kin
+
+
 
 
 
@@ -209,7 +225,11 @@ WORDS4 CONSTANT VARCHAR2(32726) :=
 
 
 
+
+
 ging,naiad,nail,name,nameable,namesake,nap,nape,napkin,narrate,narrow,nary,nasal,nascent,natal,nation,native,natural,nature,nautical,nautilus,naval,nave,navel,navigate,navy,neap,near,nearby,nearest,neat,neater,neath,nebula,nebulae,nebular,nebulous,neck,necklace,neckline,necktie,nectar,nectary,need,needful,needham,needle,neither,nemesis,neon,neonatal,neonate,neophyte,neoprene,nepenthe,nephew,nerve,nest,nestle,net,nether,nettle,network,neural,neuritis,neuron,neuronal,neutral,neutrino,neutron,never,new,newborn,newcomer,newel,newfound,newline,newlywed,newsboy,newscast,newsman,newsmen,newsreel,newt,newton,next,niacin,nibble,nice,nicety,niche,nick,nickel,nickname,niece,nigh,night,nimble,nimbus,nine,ninebark,ninefold,nineteen,ninety,ninth,nitrate,nitric,nitride,nitrite,nitrogen,no,nob,nobelium,noble,nobleman,noblemen,noblesse,nobody,nocturne,nod,nodal,node,nodular,nodule,noise,noisy,nomad,nomadic,nominal,nominate,nominee,none,noodle,nook,noon,noontime,nor,north,northern,nose,nostril,not,notary,notch,note,notebook,notice,notify,notion,noun,nourish,nouveau,nova,novel,novelty,novice,now,nowaday,nowadays,nowhere,nozzle,nuance,nucleate,nuclei,nucleic,nucleoli,nucleus,nuclide,nudge,nugget,numb,numeral,numerate,numeric,numerous,numinous,nurse,nursery,nurture,nutmeg,nutrient,nutshell,nuzzle,nylon,oak,oaken,oakwood,oar,oasis,oat,oath,oatmeal,obduracy,obdurate,obelisk,obey,object,objector,objet,oblate,obligate,oblige,oblique,oblong,oboe,oboist,observe,obsidian,obsolete,obstacle,obstruct,obtain,obtrude,obverse,obviate,obvious,occasion,occident,occlude,occupant,occupy,occur,occurred,ocean,oceanic,ocelot,octagon,octal,octane,octant,octave,octet,octile,octopus,ocular,ode,odious,odium,odometer,oersted,of,off,offal,offbeat,offend,offer,offhand,office,official,officio,offload,offset,offshoot,offshore,offstage,oft,often,ogle,ohm,ohmic,ohmmeter,oil,oilcloth,oilman,oilmen,oilseed,oily,oint,ointment,okay,old,olden,oldster,oldy,oleander,olefin,olive,olivine,omelet,omicron,ominous,omnibus,on,once,oncology,oncoming,one,onerous,oneself,onetime,ongoing,onion,only,onrush,onset,onto,ontogeny,ontology,onus,onward,onyx,oocyte,ooze,opacity,opal,opaque,open,opera,operable,operand,operant,operate,operatic,operetta,operon,opine,opinion,opossum,opponent,oppose,opposite,opt,optic,optima,optimal,optimism,optimist,optimum,option,opulent,or,oracle,oracular,orange,orate,oratoric,oratorio,oratory,orb,orbit,orbital,orchard,orchid,ordain,ordeal,order,orderly,ordinal,ordinary,ordinate,ordnance,ore,oregano,organic,origin,original,oriole,ornament,ornate,ornately,orthant,orthicon,orthodox,osier,osmium,osmosis,osmotic,osprey,osseous,ossify,ostrich,other,otiose,otter,ought,ounce,our,oust,out,outlawry,oval,oven,over,overhang,overt,overture,owl,owly,own,ox,oxalate,oxalic,oxcart,oxen,oxeye,oxidant,oxidate,oxide,oxygen,oyster,ozone,pace,pacemake,pacific,pacifism,pacifist,pacify,pack,package,packet,pact,pad,paddock,paddy,padlock,page,pageant,paginate,paid,pail,paint,pair,pairwise,pal,palace,palate,palazzi,palazzo,pale,palette,palfrey,palisade,pall,palladia,pallet,palliate,pallid,palm,palmate,palmetto,palpable,palsy,pamper,pamphlet,pan,panacea,panama,pancake,pancreas,panda,pane,panel,panorama,pant,pantheon,panther,pantry,papa,papery,paprika,papyrus,par,parabola,parade,paradigm,paradise,paradox,paraffin,paragon,parakeet,parallax,parallel,parasite,parasol,paraxial,parboil,parcel,parch,pardon,pare,parent,parental,pariah,park,parkish,parkland,parkway,parody,parquet,parrot,parry,parse,parsley,parsnip,parson,part,partake,partial,particle,partisan,partner,partook,party,paschal,pass,passage,passband,passe,passer,passerby,passion,passive,passport,past,paste,pastel,pastime,pastoral,pastry,pasture,pat,patch,patchy,pate,patent,patentee,pater,paternal,path,pathfind,pathogen,pathway,patient,patio,patriot,patrol,patron,pattern,pause,pave,paw,pawn,pawnshop,pax,pay,paycheck,payday,payoff,payroll,pea,peace,peaceful,peach,peacock,peak,peal,peanut,pear,pearl,peat,pebble,pecan,peccary,peck,pectoral,peculate,
+
+
 
 
 
@@ -251,7 +271,11 @@ peculiar,pedagogy,pedal,pedant,pedantic,pedantry,peddle,pedestal,pedigree,pedime
 
 
 
+
+
 ,pulse,puma,pumice,pump,pumpkin,pun,punctual,puncture,pundit,punditry,pungent,punster,punt,pup,pupate,pupil,puppet,puppy,puppyish,purchase,pure,purge,purify,purl,purple,purport,purpose,purse,purslane,pursuant,pursue,pursuer,pursuit,purvey,purveyor,purview,push,pushout,pushpin,put,putative,putt,putty,puzzle,pygmy,pyknotic,pyramid,python,quad,quadrant,quadric,quaff,quagmire,quail,quaint,quake,qualify,quality,qualm,quandary,quanta,qu,quantile,quantity,quantum,quark,quarrel,quarry,quart,quartet,quartic,quartile,quartz,quasar,quash,quasi,quatrain,quaver,quay,quell,quench,quest,question,quetzal,queue,quibble,quick,quicken,quiet,quietus,quill,quilt,quince,quinine,quint,quintet,quintic,quintus,quip,quipping,quirk,quirt,quite,quitting,quiver,quixotic,quiz,quizzes,quonset,quorum,quota,quote,quotient,rabbit,rabble,raccoon,race,raceway,racket,rackety,radar,radial,radian,radiant,radiate,radical,radices,radii,radio,radish,radium,radius,radon,raffle,raft,ragout,raid,rail,railbird,railhead,raillery,railroad,railway,rain,rainbow,raincoat,raindrop,rainfall,rainy,raise,raisin,raj,rajah,rake,rakish,rally,ram,ramble,ramify,ramp,rampage,rampant,rampart,ran,ranch,rancho,random,rang,range,rank,rankle,ransack,ransom,rapid,rapier,rapport,rapture,rare,rarefy,rascal,rash,rasp,rate,rater,rather,ratify,ratio,rattail,rattle,ratty,raucous,ravage,rave,ravel,raven,ravenous,ravine,raw,rawhide,ray,raze,razor,razzle,reach,reactant,read,readout,ready,real,realm,realtor,realty,ream,reap,reason,reave,reb,receipt,receive,recent,receptor,recess,recipe,recital,reckon,recline,recluse,recovery,recruit,rectify,rector,rectory,recur,recurred,recusant,recuse,red,redact,redactor,redbird,redcoat,redden,reddish,redhead,reduce,redwood,reed,reef,reek,reel,refer,referee,referent,referral,referred,refinery,reflect,refract,refrain,refuge,refugee,refusal,refute,regal,regale,regalia,regard,regatta,regent,regime,regimen,regiment,region,regional,registry,regular,regulate,rehearse,reign,rein,reindeer,rejoice,relate,relayed,relevant,reliant,relic,relict,relief,relieve,religion,relish,remark,remedy,remember,remiss,remit,remitted,remnant,remorse,remote,removal,rend,render,renewal,renounce,renovate,renown,rent,rental,repartee,repeal,repeat,repeater,repel,repelled,repent,replete,replica,report,reprieve,reprisal,reprise,reproach,reptile,republic,repute,request,require,requited,rerouted,rescind,rescue,resemble,resent,reserve,reside,resident,residual,residue,residuum,resign,resin,resist,resistor,resolute,resolve,resonant,resonate,resort,respect,respire,respite,respond,response,rest,restful,restive,restrain,restrict,result,resume,resuming,retail,retain,reticent,retina,retinal,retinue,retire,retiree,retort,retract,retrieve,retrofit,return,reveal,revel,revelry,revenue,rever,revere,reverend,reverent,reverie,reversal,reverse,revert,revery,revile,revisal,revise,revision,revival,revive,revoke,revolt,revolve,revved,revving,reward,rhapsody,rhenium,rheology,rheostat,rhesus,rhetoric,rheum,rhino,rhodium,rhombic,rhombus,rhubarb,rhyme,rhythm,rhythmic,rib,ribald,ribbon,ribose,ribosome,rice,rich,ricochet,rid,riddance,ridden,riddle,ride,ridge,riffle,rift,rig,rigging,right,rightful,rigid,rigorous,rim,ring,ringlet,ringside,rink,rinse,rip,ripen,ripple,rise,risen,risible,rite,ritual,rival,rivalry,riven,river,riverine,rivet,rivulet,road,roadbed,roadside,roadster,roadway,roam,roar,roast,robe,robin,robot,robotic,robotics,robust,rock,rockabye,rockaway,rocket,rocky,rode,rodent,rodeo,roe,roebuck,rogue,roil,roister,role,roll,rollback,rollick,romance,romp,roof,rooftop,rook,rookie,room,roomful,roommate,roomy,roost,root,rope,rose,rosebud,rosebush,rosemary,rosette,roster,rosy,rotary,rotate,rote,rotor,rotunda,rouge,roughen,round,roundoff,roundup,rout,route,routine,rove,row,rowboat,royal,royalty,rubble,rubdown,rubicund,rubidium,rubric,ruby,ruckus,rudder,ruddy,rudiment,ruff,ruffle,rufous,rug,rule,rumble,rumen,ruminant,ruminate,rummage,run,runabout,runaway,rundown,rune,rung,runic,runneth,runoff,runway,rupee,rupture,rural,ruse,rush
+
+
 
 
 
@@ -299,7 +323,11 @@ WORDS5 CONSTANT VARCHAR2(32726) := 'sable,sabotage,saccade,sachem,sack,saddle,sa
 
 
 
+
+
 skat,skate,skater,skeet,skeletal,skeleton,skeptic,sketch,sketchy,skew,ski,skid,skiddy,skied,skiff,skill,skillet,skillful,skim,skimp,skinny,skip,skirmish,skirt,skit,skittle,skulk,skull,skullcap,skunk,sky,skyhook,skylark,skylight,skyline,skyward,skywave,skyway,slab,slag,slam,slander,slant,slap,slash,slat,slate,slater,sled,sledge,sleek,sleep,sleet,sleeve,sleigh,sleight,slender,slept,sleuth,slew,slice,slick,slid,slide,slight,slim,slime,sling,slip,slippage,slippery,slither,sliver,slivery,slob,sloe,slog,slogan,slop,slope,slosh,slot,sloth,slouch,slough,sloven,slow,slowdown,sludge,slumber,small,smaller,smallpox,smart,smash,smatter,smear,smelt,smile,smirk,smith,smithy,smitten,smog,smoke,smoky,smolder,smooth,smother,smudge,snack,snag,snagging,snail,snake,snap,snapback,snappish,snappy,snapshot,snare,snark,snarl,snatch,snazzy,sneak,sneaky,sneer,sneeze,snell,snick,snippet,snippy,snivel,snook,snoop,snoopy,snore,snorkel,snort,snout,snow,snowball,snowfall,snowshoe,snowy,snub,snuffer,snuffle,snuffly,snug,snuggle,snuggly,snyaptic,so,soak,soap,soapsud,soapy,soar,sob,soccer,sociable,social,societal,society,sock,socket,sockeye,sod,soda,sodden,sodium,sofa,soffit,soft,softball,soften,software,softwood,soggy,soil,soiree,sojourn,solace,solar,sold,solder,soldier,soldiery,sole,solecism,solemn,solenoid,solicit,solid,solidify,solidus,solitary,soliton,solitude,solo,solstice,soluble,solute,solution,solvate,solve,solvent,soma,somal,somatic,somber,sombre,some,somebody,someday,somehow,someone,sometime,somewhat,son,sonant,sonar,sonata,song,songbag,songbook,songful,sonic,sonnet,sonogram,sonority,sonorous,soon,soot,sooth,soothe,soothsay,sop,soprano,sorcery,sordid,sore,sorption,sorrel,sorrow,sorry,sort,souffle,sough,sought,soul,soulful,sound,soup,sour,source,sourwood,soutane,south,southern,souvenir,sow,sown,soy,soybean,spa,space,spacious,spade,spalding,span,spandrel,spangle,spaniel,spar,spare,sparge,spark,sparkle,sparky,sparling,sparrow,sparse,spasm,spat,spate,spatial,spatlum,spatula,spavin,spawn,speak,spear,spec,special,species,specific,specify,specimen,specious,speck,speckle,spectra,spectral,spectrum,specular,sped,speech,speed,speedup,speedy,spell,spend,spent,sphere,spheric,spheroid,spherule,sphinx,spice,spicy,spider,spidery,spigot,spike,spiky,spill,spilt,spin,spinach,spinal,spindle,spine,spinoff,spinster,spiny,spiral,spire,spirit,spite,spiteful,splash,splashy,splat,splay,splayed,spleen,splendid,splice,spline,splint,split,splotch,splotchy,splurge,splutter,spoil,spoilage,spoke,spoken,sponge,spongy,sponsor,spoof,spooky,spool,spoon,spoonful,sporadic,spore,sport,sporty,spot,spotty,spouse,spout,sprain,sprang,sprawl,spray,spread,spree,sprig,spring,springe,springy,sprinkle,sprint,sprite,sprocket,sprout,spruce,sprue,sprung,spumoni,spun,spur,spurge,spurious,spurn,spurt,sputnik,sputter,spy,spyglass,squabble,squad,squadron,squalid,squall,squamous,squander,square,squash,squawk,squeak,squeaky,squeal,squeegee,squeeze,squelch,squid,squill,squint,squire,squirm,squirmy,squirrel,squirt,squishy,stab,stabile,stable,staccato,stack,stadia,stadium,staff,stag,stage,stagnant,stagnate,stagy,staid,stain,stair,stairway,stake,stale,stalk,stall,stallion,stalwart,stamen,stamina,stammer,stamp,stampede,stance,stanch,stand,standard,standby,standeth,standoff,stannic,stannous,stanza,staph,staple,star,starch,starchy,stardom,stare,starfish,stargaze,stark,starlet,starling,start,startle,startup,stash,state,stater,static,stator,statuary,statue,stature,status,statute,staunch,stave,stay,stayed,stead,steady,steak,stealth,stealthy,steam,steamy,stearate,stearic,steed,steel,steely,steep,steepen,steeple,steer,stein,stellar,stem,stencil,step,stepson,stepwise,stereo,sterile,sterling,stern,sternal,sternum,steroid,stew,steward,stick,stickle,stickpin,sticky,stifle,stigma,stigmata,stile,stiletto,still,stilt,stimuli,stimulus,sting,stingy,stint,stipend,stipple,stir,stirrup,stitch,stock,stockade,stocky,stodgy,stoic,stoke,stolid,stomach,stone,stony,stood,stoop,stop,stopband,stopgap,stopover,stoppage,storage,store,stork
+
+
 
 
 
@@ -341,6 +369,8 @@ skat,skate,skater,skeet,skeletal,skeleton,skeptic,sketch,sketchy,skew,ski,skid,s
 
 
 
+
+
 ,thousand,thrall,thread,three,thresh,threw,thrice,thrift,thrifty,thrill,thrive,throes,throne,throng,throttle,through,throw,thrown,thrum,thrush,thud,thulium,thumb,thump,thunder,thus,thwart,thy,thyme,thymine,thymus,thyroid,tibia,tick,ticket,tickle,ticklish,tidal,tidbit,tide,tideland,tidy,tie,tied,tier,tift,tiger,tight,tighten,tigress,til,tilde,tile,till,tilt,tilth,timber,timbre,time,timeworn,timid,tin,tinder,tine,tinfoil,tinge,tingle,tinker,tinkle,tinsel,tint,tintype,tiny,tip,tipoff,tippy,tiptoe,tirade,tire,tiresome,tissue,titanate,titanic,titanium,tithe,titian,title,to,toad,toady,toast,today,toe,toenail,toffee,tofu,together,togging,toggle,toil,toilsome,token,told,tolerant,tolerate,toll,tollgate,toluene,tomato,tomatoes,tome,tomorrow,ton,tonal,tone,tong,tonic,tonight,tonnage,tonsil,too,took,tool,toolkit,toolmake,toot,tooth,top,topaz,topcoat,topic,topmost,topnotch,topology,topple,topsoil,torch,tore,torn,tornado,toroid,toroidal,torpedo,torpid,torpor,torque,torrent,torrid,torsion,torso,tort,tortoise,toss,tot,total,tote,totem,totemic,touch,tough,tour,tousle,tout,tow,toward,towboat,towel,tower,town,townsman,townsmen,toxic,toxin,toy,trace,tracery,trachea,track,trackage,tract,tractor,trade,tradeoff,traffic,tragedy,tragic,trail,train,trainee,trainman,trainmen,traipse,trait,traitor,tram,trammel,trample,tramway,trance,tranquil,transact,transect,transept,transfer,transfix,transit,transmit,transom,travail,travel,traverse,travesty,trawl,tray,tread,treadle,treason,treasure,treasury,treat,treatise,treaty,treble,tree,treetop,trefoil,trek,trellis,tremble,tremor,trench,trend,trendy,trespass,tress,trestle,triad,trial,triangle,tribal,tribe,tribunal,tribune,tribute,trick,trickery,trickle,tricky,trident,tried,trifle,trig,trigonal,trigram,trill,trillion,trilogy,trim,trimer,trinity,trinket,trio,triode,trioxide,trip,tripe,triple,triplet,triplex,tripod,tripoli,triptych,tristate,trite,tritium,triton,triumph,triune,trivia,trivial,trivium,trod,trodden,troika,troll,trolley,trollop,trombone,trompe,troop,trophic,trophy,tropic,trot,trough,trounce,troupe,trouser,trout,troy,truancy,truant,truce,truck,trudge,truism,truly,trump,trumpery,trumpet,truncate,trundle,trunk,truss,trust,trustee,trustful,truth,truthful,try,trypsin,tsunami,tub,tuba,tube,tubular,tubule,tuck,tuff,tuft,tug,tugging,tuition,tulip,tulle,tumble,tumbrel,tumult,tuna,tundra,tune,tuneful,tungsten,tunic,tunnel,tupelo,tuple,turban,turbid,turbine,turbofan,turbojet,turf,turgid,turk,turkey,turmoil,turn,turnery,turnip,turnkey,turnoff,turnout,turnpike,turret,turtle,turvy,tusk,tussle,tutelage,tutor,tutorial,tutu,tuxedo,twain,tweak,tweed,tweedy,tweeze,twelfth,twelve,twenty,twice,twiddle,twig,twigging,twilight,twill,twin,twine,twinge,twinkle,twirl,twirly,twist,twisty,twitch,twitchy,two,twofold,twosome,tycoon,tying,type,typeface,typeset,typhoid,typhoon,typhus,typic,typify,typo,typology,tyrannic,tyranny,tyrosine,ubiquity,ulterior,ultimate,ultra,umber,umbra,umbrage,umbrella,umlaut,umpire,unary,unbidden,uncle,unction,under,undulate,uniaxial,unicorn,uniform,unify,unimodal,union,uniplex,unipolar,unique,unison,unitary,unite,unity,universe,until,unwieldy,up,upbeat,upbraid,upbring,upcome,update,updraft,upend,upgrade,upheaval,upheld,uphill,uphold,upkeep,upland,uplift,upon,upper,uppercut,upraise,upright,uprise,upriver,uproar,uproot,upset,upshot,upside,upsilon,upslope,upstair,upstand,upstart,upstate,upstater,upstream,upsurge,upswing,uptake,uptown,uptrend,upturn,upward,upwind,uranium,urban,urbane,urbanite,urchin,urge,urgency,urgent,urging,us,usable,usage,use,useful,usher,usual,usurer,usurious,usurp,usury,utensil,utility,utmost,utopia,utopian,utter,vacant,vacate,vaccine,vacua,vacuo,vacuole,vacuous,vacuum,vade,vagabond,vagary,vagrant,vague,vain,vale,valent,valet,valeur,valiant,valid,validate,valine,valley,valuate,value,valve,vamp,vampire,van,vanadium,vandal,vane,vanguard,vanilla,vanish,vanity,vanquish,vantage,vapid,vaporous,variable,variac,variant,variate,variety,various,varistor,varnish,varsity,vary,vascular,vase,vassal,vast,v
 
 
@@ -362,7 +392,11 @@ skat,skate,skater,skeet,skeletal,skeleton,skeptic,sketch,sketchy,skew,ski,skid,s
 
 
 
+
+
 at,vault,vaunt,veal,vector,vee,veer,veery,vegetate,vehicle,veil,vein,velar,veldt,vellum,velocity,velours,velvet,velvety,venal,vend,vendetta,vendible,vendor,veneer,venerate,venial,venous,vent,venture,venturi,veracity,veranda,verandah,verb,verbal,verbatim,verbena,verbiage,verbose,verdant,verdict,verge,veridic,verify,verity,vermeil,vermin,vermouth,vernal,vernier,versa,versatec,verse,version,versus,vertebra,vertex,vertical,vertices,vertigo,verve,very,vesper,vessel,vest,vestal,vestige,vestry,vet,vetch,veteran,veto,via,viaduct,vial,vibrant,vibrate,vibrato,viburnum,vicar,viceroy,vicinal,vicinity,vicious,victor,victory,victrola,victual,vide,video,vie,view,vigil,vigilant,vignette,vigorous,villa,village,villain,villein,vine,vinegar,vineyard,vintage,vintner,vinyl,viola,violate,violent,violet,violin,virgule,virtual,virtue,virtuosi,virtuoso,virtuous,virulent,virus,vis,visa,visage,viscount,viscous,vise,visible,vision,visit,visitor,visor,vista,visual,vita,vitae,vital,vitamin,vitiate,vitreous,vitrify,vitriol,vitro,viva,vivace,vivacity,vivid,vivify,vivo,vixen,viz,vocable,vocal,vocalic,vocate,vogue,voice,void,volatile,volcanic,volcano,volition,volley,volt,voltage,voltaic,voluble,volume,voracity,vortex,vortices,votary,vote,votive,vouch,vow,vowel,voyage,vulgar,vulpi,vulture,vying,wacky,wad,waddle,wade,wafer,waffle,wag,wage,wagging,waggle,wagoneer,wail,waist,wait,waitress,waive,wake,wakeful,waken,wakeup,wale,walk,walkout,walkover,walkway,wall,wallaby,wallet,wallop,wallow,wally,walnut,walrus,waltz,waltzing,wan,wand,wander,wane,wangle,want,wanton,wapato,wapiti,war,warble,ward,warden,wardrobe,wardroom,ware,warm,warmth,warmup,warn,warp,warplane,warrant,warranty,warren,warrior,wary,was,wash,washbowl,washout,washy,wasp,waspish,wast,wastage,wasteful,wastrel,watch,watchdog,watchful,watchman,watchmen,water,waterway,watery,watt,wattage,wattle,wave,waveform,wavelet,wavy,wax,waxen,waxwork,waxy,way,waybill,waylaid,waylay,wayside,wayward,we,weak,weaken,weal,wealth,wealthy,wean,wear,wearied,weary,weasel,weather,weave,web,weber,wed,wedge,wedlock,wee,weed,weedy,week,weekday,weekend,weep,weigh,weight,weighty,weir,weird,welcome,weld,welfare,well,welsh,welt,went,wept,were,wert,west,westerly,western,westward,wet,wetland,whale,wharf,wharves,what,whatever,whatnot,wheat,wheedle,wheel,wheeze,wheezy,whelk,whelm,when,whence,whenever,where,whereas,whereby,wherein,whereof,whereon,wherever,whet,whether,which,whiff,whig,while,whim,whimper,whimsey,whimsic,whiplash,whipsaw,whir,whirl,whish,whisk,whisper,whistle,whit,white,whiten,whither,whittle,who,whoever,whole,wholly,whom,whomever,whose,why,wick,wicket,wide,widen,widgeon,widget,widow,width,wield,wig,wigging,wiggle,wild,wildcat,wildfire,wildlife,wile,wilful,will,willful,willow,willowy,wilt,wily,win,wince,wind,windbag,windfall,windmill,window,windsurf,windup,windward,windy,wing,wingback,wingman,wingmen,wingspan,wingtip,wink,winkle,winnow,winsome,winter,wintry,winy,wipe,wire,wireman,wiremen,wiretap,wiry,wisdom,wise,wish,wishbone,wishful,wisp,wispy,wistful,wit,with,withal,withdraw,withdrew,withe,wither,withheld,withhold,within,without,withy,witness,witty,wizard,wobble,woe,woeful,wok,woke,wold,wolf,wolfish,wolves,woman,wombat,women,won,wonder,wondrous,wont,woo,wood,woodcut,wooden,woodhen,woodland,woodlot,woodpeck,woodrow,woodruff,woodshed,woodside,woodward,woodwind,woodwork,wool,word,wordy,wore,work,workaday,workbook,workday,workload,workman,workmen,workout,workshop,world,worm,worn,worth,worthy,would,wound,wove,woven,wow,wrack,wraith,wrangle,wrap,wrapup,wrath,wrathful,wreak,wreath,wreathe,wreck,wreckage,wrench,wrest,wrestle,wretch,wriggle,wright,wring,wrinkle,wrist,writ,write,writeup,writhe,written,wrote,wrought,wry,xenon,xylem,xylene,yacht,yak,yam,yap,yapping,yard,yardage,yarmulke,yarn,yarrow,yawn,yea,yeah,year,yearbook,yearn,yeast,yell,yellow,yelp,yen,yeoman,yeomanry,yet,yield,yip,yipping,yodel,yoga,yoghurt,yogi,yogurt,yoke,yolk,yon,yond,yore,you,young,youngish,your,yourself,youth,youthful,yule,zag,zagging,zap,zazen,zeal,zealot,ze
+
+
 
 
 
@@ -406,9 +440,13 @@ alous,zebra,zenith,zero,zeroes,zeroth,zest';
 
 
 
+
+
 ,a
 
 postrophe,apothecary,apothegm,apotheosis,appall,appanage,apparatus,apparel,apparent,apparition,appeal,appear,appease,append,appendix,appetite,applaud,applause,apple,applied,applique,apply,appoint,apposite,appraise,apprise,approach,approval,approve,apricot,apron,apropos,apt,aptitude,aqua,aquarium,aquatic,aqueduct,aqueous,arachnid,arbiter,arboreal,arc,arcade,arcane,arch,archaic,archaism,archery,arching,arcing,arctic,ardency,ardent,arduous,are,area,areaway,arena,argon,argue,argument,arid,arise,arisen,ark,arm,armada,armament,armature,armchair,armful,armload,armoire,army,aroma,aromatic,arose,around,arpeggio,arraign,arrange,array,arrival,arrive,arrogant,arrogate,arrow,arroyo,art,arterial,artery,artful,article,artifact,artifice,artisan,artistry,artwork,as,ascend,ascent,ascribe,aseptic,ash,ashame,ashamed,ashen,ashore,aside,ask,askance,askew,asleep,aspect,aspen,asperity,aspirate,aspire,aspirin,assemble,assent,assert,assessor,asset,assign,assist,assume,assure,asteria,asterisk,asteroid,asthma,astonish,astound,astral,astride,astute,asunder,at,atavism,ate,athle,athletic,athwart,atlantic,atlas,atom,atomic,atonal,atone,atop,atrium,atrophic,atrophy,attach,attache,attain,attempt,attend,attendee,attest,attic,attire,attitude,attorney,attract,attune,auburn,auction,audacity,audible,audience,audio,audit,audition,auditor,auditory,auger,augment,august,auk,aunt,auntie,aura,aural,auric,aurochs,aurora,auspices,austere,author,auto,autocrat,automate,autonomy,autumn,autumnal,avail,avarice,avenue,aver,average,averred,averring,averse,aviary,aviate,avid,avionic,avocado,await,awake,awaken,award,aware,awash,away,awe,awesome,awhile,awkward,awl,awn,awoke,awry,ax,axe,axes,axial,axiology,axiom,axis,axle,axon,azalea,azimuth,azimuthal,azure,babble,baboon,baby,babyhood,babysat,babysit,babysitter,babysitting,baccalaureate,bacilli,bacillus,back,backboard,backbone,backdrop,backfill,backgammon,background,backhand,backlash,backorder,backpack,backplane,backstage,backstitch,backstop,backtrack,backup,backward,backwood,backyard,bacon,bacteria,bacterial,bacterium,bade,badge,badinage,badland,badminton,baffle,bag,bagatelle,bagel,baggage,bagpipe,bait,bake,bakery,balance,balcony,bald,baldy,bale,baleen,baleful,balk,balky,ball,ballad,ballast,ballerina,ballet,balletic,ballfield,balloon,ballot,ballroom,balm,balmy,balsa,balsam,balustrade,bamboo,ban,banal,banana,band,bandage,bandgap,bandit,bandpass,bandstand,bandstop,bandwagon,bandwidth,bandy,bane,baneberry,baneful,bangle,banish,banister,banjo,bank,bankrupt,banquet,bantam,banter,barb,barbaric,barbecue,barbell,barber,barberry,bard,barefoot,bargain,barge,baritone,barium,bark,barley,barn,barnacle,barnyard,baron,baroness,baronet,baronial,barony,baroque,barrack,barrage,barre,barrel,barren,barrette,barrier,barrow,barter,basal,basalt,base,baseball,baseband,baseline,baseman,basemen,bash,bashaw,bashful,basic,basil,basilar,basilisk,basin,basis,bask,basket,bass,bassi,bassinet,basso,basswood,baste,bastion,bat,batch,bate,bateau,bath,bathe,bathos,bathrobe,bathroom,bathtub,batik,baton,batt,batten,battery,battle,batwing,bauble,baud,bauxite,bawl,bay,bayed,bayonet,bayou,bazaar,be,beach,beacon,bead,beadle,beady,beak,beam,bean,bear,beard,bearish,beatific,beatify,beautify,beauty,becalm,became,because,beck,becket,beckon,becloud,become,bed,bedazzle,bedbug,bedevil,bedfast,bedim,bedimmed,bedlam,bedpost,bedrock,bedroom,bedside,bedstraw,bedtime,bee,beebread,beech,beef,beehive,been,beep,beet,beetle,befall,befallen,befell,befit,befog,before,befuddle,beg,began,beggar,beggary,begging,begin,beginner,begonia,begotten,begrudge,beguile,begun,behalf,behave,beheld,behest,behind,behold,beige,being,bel,belate,belfry,belie,belief,belies,believe,bell,bellboy,belle,bellhop,bellman,bellmen,bellow,bellum,belly,belong,belove,below,belt,belying,bemadden,beman,bemoan,bemuse,bench,bend,beneath,benefice,benefit,benight,benign,bent,benzene,bequeath,bequest,beret,berg,bergamot,beribbon,beriberi,berne,berry,berth,beryl,beseech,beset,beside,besiege,besmirch,besotte,d,bespeak,bespoke,best,b
+
+
 
 
 
@@ -456,6 +494,8 @@ WORDS2 CONSTANT VARCHAR2(32726) := 'cab,cabana,cabaret,cabbage,cabin,cabinet,cab
 
 
 
+
+
 coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cogent,cogitate,cognate,cohere,coherent,cohesion,cohesive,cohort,cohosh,coiffure,coil,coin,coinage,coincide,colander,cold,coleus,coliform,coliseum,collage,collagen,collapse,collar,collard,collate,collect,college,collet,collide,collie,colloquy,collude,colonel,colonial,colonist,colony,colorate,colossal,colossi,colossus,colt,coltish,column,columnar,colza,comb,combine,comeback,comedian,comedy,comet,cometary,comfort,comic,comma,command,commend,comment,commerce,commit,common,commute,compact,company,compare,compass,compel,compete,compile,complain,compleat,complete,complex,compline,comply,comport,compose,compote,compound,compress,comprise,compute,comrade,concave,conceal,concede,conceit,concept,concern,concert,concerti,concerto,conch,concise,conclave,conclude,concoct,concord,concrete,concur,condemn,condense,condone,conduce,conduct,conduit,cone,confect,confer,conferee,confess,confide,confine,confirm,confocal,conform,confound,confrere,confront,confute,congeal,congener,congest,congress,conic,conifer,conjunct,conjure,connect,connive,connote,conquer,conquest,consent,conserve,consider,consign,consist,console,conspire,constant,construe,consul,consular,consult,consume,contact,contain,contend,content,context,continua,continue,continuo,contort,contour,contract,contrary,contrast,contribu,contrite,contrive,control,convect,convene,convent,converge,converse,convert,convex,convey,conveyor,convict,convince,convoke,convolve,convoy,convulse,cook,cookbook,cookery,cookie,coolant,coop,coot,cop,cope,copious,coplanar,copperas,coppery,copra,coprinus,copy,copybook,coquette,coquina,coral,corbel,cord,cordage,cordial,cordite,cordon,corduroy,core,cork,corn,cornea,cornet,cornish,cornmeal,corny,corona,coronary,coronate,coroner,coronet,corpora,corporal,corps,corpsman,corpsmen,corpus,corral,correct,corridor,corrode,corsage,cortege,cortex,cortical,corundum,corvette,cosmetic,cosmic,cosmos,cost,costume,cosy,cot,cotman,cotta,cottage,cotton,couch,cougar,cough,could,coulomb,council,counsel,count,country,county,coup,coupe,couple,coupon,courage,courier,course,court,courtesy,courtier,couscous,cousin,covalent,covary,cove,covenant,cover,coverage,coverall,coverlet,cowbell,cowbird,cowboy,cowgirl,cowhand,cowherd,cowhide,cowl,coworker,cowpox,coy,coyote,cozy,crab,crabmeat,cradle,craft,crafty,cramp,crane,crania,cranium,cranny,crass,crate,crater,cravat,crave,craw,crawl,crayfish,crayon,craze,crazy,creak,creaky,crease,create,creating,creature,creche,credent,credenza,credible,credit,creditor,credo,creed,creedal,creek,creosote,crepe,crept,crescent,cress,crest,crevice,crew,crewcut,crewel,crewman,crewmen,crib,cricket,cried,crime,crimson,crinkle,crisp,criss,criteria,critic,critique,critter,croak,crochet,croft,crone,crony,crook,croon,crop,croquet,cross,crossarm,crossbar,crossbow,crosscut,crossway,crouch,crow,crowd,crowfoot,crown,crucial,crucible,cruise,crumb,crumble,crumple,crunch,crupper,crusade,crush,crust,cry,cryptic,crystal,cub,cube,cubic,cuckoo,cucumber,cud,cuddle,cuddly,cudgel,cue,cuff,cufflink,cuisine,culinary,cull,culpable,culprit,cultural,culture,culvert,cumin,cumulate,cumulus,cunning,cup,cupboard,cupful,cupidity,cupric,cuprous,cur,curate,curb,curbside,curd,curdle,cure,curfew,curia,curie,curio,curious,curium,curl,curlew,curlicue,currant,current,curry,cursive,cursor,cursory,curt,curtail,curtain,curtsey,curve,cushion,cusp,custody,custom,cut,cutback,cute,cutesy,cutlass,cutler,cutlet,cut,cutout,cutover,cutset,cutworm,cycad,cycle,cyclic,cyclist,cyclone,cylinder,cynic,cypress,cyst,cysteine,cytology,dab,dabble,dactyl,dactylic,dad,daddy,daffodil,daffy,dagger,dahlia,dainty,dairy,dairyman,dairymen,daisy,dale,dally,damp,dampen,dance,dandy,dapper,dapple,dare,dark,darken,darkle,darling,dart,dash,data,database,date,dateline,dater,datum,daub,daughter,daunt,dauphin,dauphine,davit,dawn,day,daybreak,daydream,daylight,daytime,daze,dazzle,deadline,deadlock,deal,dealt,dean,dear,dearie,dearth,debar,debate,debater,debility,debit,de
 
 
@@ -478,7 +518,11 @@ coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cog
 
 
 
+
+
 bonair,debrief,debris,debt,debtor,debug,debugged,debunk,debut,decade,decadent,decal,decant,decay,decedent,deceit,decent,decibel,decide,decile,decimal,decipher,decision,decisive,deck,declaim,declare,decline,decode,decor,decorate,decorous,decorum,decouple,decoy,decrease,decree,decry,dedicate,deduce,deed,deem,deep,deepen,deer,deerskin,deface,default,defeat,defector,defend,defer,deferent,deferred,define,definite,deflect,deforest,deft,degree,delay,delegate,delicacy,delicate,delight,delimit,delirium,deliver,delivery,dell,delphine,delta,deltoid,delude,deluge,delusion,delusive,deluxe,delve,demand,demark,demitted,demo,den,denature,dendrite,denizen,denote,dense,dent,dental,denture,depart,depend,depict,deplete,deploy,depose,deposit,depot,depth,depute,deputy,derby,derivate,derive,dervish,descant,descend,descent,describe,desert,deserve,design,desist,desk,despite,dessert,destine,destiny,detach,detail,detain,detect,detector,deter,detour,deuce,develop,device,devote,devotee,devotion,dew,dewar,dewdrop,dextrose,dextrous,diadem,diagnose,diagonal,diagram,dial,dialect,dialogue,diameter,diamond,diary,diatom,diatomic,diatonic,dice,did,didactic,diesel,diet,dietary,dietetic,differ,diffract,diffuse,dig,digest,digging,digit,digital,dignify,dignity,digram,digress,dihedral,dilemma,diligent,dill,diluent,dilute,dilution,dim,dime,dimethyl,diminish,dimple,dine,dinosaur,diode,diopter,diorama,diorite,dioxide,dip,diploid,diploidy,diplo,diplomat,direct,director,disburse,disc,discern,disco,discreet,discrete,discus,discuss,dish,dishes,dishevel,disjunct,disk,dispel,dispense,disperse,dissuade,distaff,distal,distant,distinct,district,dither,ditto,dive,diverge,diverse,divert,divest,divide,dividend,division,divisor,divulge,do,doberman,dock,docket,dockside,dockyard,doctor,doctoral,doctrine,document,dodge,doe,dog,doghouse,dogwood,doldrum,doldrums,dole,doleful,doll,dollar,dollop,dolly,dolomite,dolphin,domain,dome,domestic,domicile,domino,donate,done,door,doorbell,doorkeep,doorknob,doorman,doormen,doorstep,doorway,dormant,dossier,dot,dote,double,doublet,doubt,doubtful,dough,doughnut,dour,douse,dove,dovetail,dowel,down,downplay,downpour,downtown,downward,downwind,dowry,doze,dozen,drab,draft,drag,dragging,dragnet,dragon,dragoon,drain,drainage,drake,dram,drama,dramatic,drape,drapery,drastic,draw,drawback,drawl,drawn,dream,dreamt,dreamy,dredge,dreg,drench,dress,dressy,drew,drib,dried,drier,drift,drill,drink,drive,driven,driveway,drizzle,drizzly,droll,drone,drop,droplet,dross,drought,drove,drowse,drowsy,drub,druid,drum,drumhead,drumlin,dry,dryad,dual,dualism,dub,ducat,duchess,duck,duckling,duct,ductile,ductwork,dud,due,duel,duet,duff,duffel,dug,dugout,duke,dukedom,dulcet,dull,dully,dulse,duly,dune,dunk,duopoly,duplex,durable,durance,duration,during,dusk,dust,dustbin,dusty,dutchess,dutiable,dutiful,duty,dwindle,dyad,dyadic,dye,dyeing,dyer,dynamic,dynamism,dynasty,each,eager,eagle,ear,eardrum,earl,earmark,earn,earnest,earphone,earring,earth,earthy,ease,easel,east,eastern,eastward,easy,eave,ebb,ebony,echelon,echo,echoes,eclectic,eclipse,ecliptic,eclogue,ecology,economic,economy,ectoderm,ectopic,ecumenic,eddy,edge,edgewise,edging,edgy,edict,edifice,edify,edit,edition,editor,educable,educate,eel,eerie,eerily,efface,effect,efferent,efficacy,effort,effusion,effusive,egg,eggplant,eggshell,egress,egret,eider,eidetic,eight,eighteen,eighth,eighty,either,elapse,elastic,elate,elbow,elder,eldest,elect,elector,electret,electric,electro,electron,elegant,elegiac,elegy,element,elephant,elevate,eleven,eleventh,elfin,elicit,elide,eligible,elision,elite,elk,ellipse,ellipsis,elliptic,elm,eloquent,else,eluate,elute,elution,elves,elysian,emaciate,emanate,embank,embargo,embark,embassy,ember,embezzle,emblazon,emblem,embody,embolden,emboss,embower,embrace,emcee,emerald,emerge,emergent,emeriti,emeritus,emigrant,emigrate,eminent,emirate,emissary,emotion,empathy,emperor,emphases,emphasis,emphatic,empire,empiric,emplace,employ,employed,employee,employer,emporium,empower,empress,empty,emulate,emulsify,emulsion,
+
+
 
 
 
@@ -526,6 +570,8 @@ WORDS3 CONSTANT VARCHAR2(32726) := 'fable,fabric,fabulous,facade,face,facet,faci
 
 
 
+
+
 lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gatekeep,gateway,gather,gator,gauche,gaudy,gauge,gaunt,gauntlet,gauss,gauze,gave,gavel,gavotte,gawk,gaze,gazelle,gazette,gear,gecko,geese,gel,gelable,gelatin,gelatine,gem,geminate,gemlike,gemstone,gene,genera,general,generate,generic,generous,genesis,genetic,genial,genie,genius,genotype,genre,gent,genteel,gentian,gentile,gentle,gentry,genuine,genus,geometer,geranium,germ,germane,germinal,gerund,gestalt,gesture,get,getaway,geyser,ghastly,ghost,ghostly,ghoul,ghoulish,giant,giantess,gibbet,gibbon,giblet,giddy,gift,gig,gigaherz,gigantic,gigavolt,gigawatt,giggle,gila,gild,gill,gilt,gimmick,ginger,gingham,gingko,ginseng,giraffe,girl,girth,gist,give,giveaway,given,giveth,glacial,glaciate,glacier,glad,gladden,glade,glamor,glamour,glance,gland,glare,glass,glassy,glaucoma,glaucous,glaze,gleam,glean,glee,gleeful,glen,glib,glide,glimmer,glimpse,glint,glissade,glisten,glitch,glitter,gloat,glob,global,globe,globular,globule,globulin,gloom,gloomy,glorify,glorious,glory,gloss,glossary,glossed,glossy,glottal,glottis,glove,glow,glucose,glue,glued,gluey,gluing,glum,glut,glutamic,glutton,glycerin,glycerol,glycine,glycogen,glycol,glyph,gnarl,gnash,gnat,gnaw,gnome,gnu,go,goad,goal,goat,gobble,goblet,goes,gold,golden,goldfish,golf,gondola,gone,good,goodbye,goodwill,goose,gopher,gore,gorge,gorgeous,gorgon,gorilla,gorse,gory,gosling,gossamer,gossip,got,gouge,gourd,gourmet,gout,govern,governor,gown,grab,grace,graceful,gracious,grackle,grad,gradate,grade,gradient,gradual,graduate,graft,graham,grail,grain,grainy,grammar,granary,grand,grandeur,grandma,grandpa,grandson,granite,granitic,granny,granola,grant,grantee,grantor,granular,granule,grape,graph,graphic,graphite,grapple,grasp,grass,grassy,grate,grateful,grater,gratify,gratuity,grave,gravel,graven,gravid,gravy,gray,grayish,graze,grease,greasy,great,greater,grebe,greed,greedy,green,greenery,greenish,greet,grew,grey,grid,griddle,gridiron,grief,grieve,grievous,griffin,grill,grille,grilled,grim,grimace,grime,grin,grind,grip,gripe,grisly,grist,grit,gritty,grizzle,grizzly,groan,groat,grocer,grocery,groggy,groom,groove,gross,ground,group,grout,grove,grovel,grow,growl,grown,grownup,growth,grudge,gruesome,gruff,grumble,grunt,gryphon,guanine,guard,guardian,guerdon,guernsey,guess,guest,guffaw,guidance,guide,guiding,guignol,guild,guile,guinea,guise,guitar,gulf,gull,gullet,gullible,gully,gulp,gum,gumbo,gumdrop,gummy,gumption,gumshoe,gurgle,guru,gush,gusset,gust,gusto,gusty,gut,gutsy,guttural,guy,guzzle,gym,gymnast,gypsite,gypsum,gypsy,habit,habitant,habitat,habitual,hacksaw,had,haddock,hadron,haggard,haggle,haiku,hail,hair,haircut,hairdo,hairpin,hale,half,halfback,halfway,halibut,halide,halite,hall,hallmark,hallow,hallway,halo,halogen,halt,halve,ham,hamlet,hammock,hamper,hamster,hand,handbag,handbook,handcuff,handful,handle,handmade,handout,handset,handsome,handy,handyman,handymen,hang,hangar,hansom,happen,happy,harass,hardbake,harden,hardhat,hardtack,hardtop,hardware,hardwood,hardy,hare,hark,harm,harmful,harmonic,harmony,harness,harp,harpoon,harrow,harsh,harshen,hart,harvest,hassle,hast,haste,hasten,hasty,hat,hatch,hatchet,hath,haul,haulage,haunch,haunt,have,haven,havoc,hawk,hay,hayfield,haystack,hayward,hazard,haze,hazel,hazelnut,hazy,he,head,headache,headland,headline,headroom,headset,headsman,headsmen,headwall,headway,headwind,heal,health,healthy,heap,hear,heard,hearken,heart,hearten,hearth,hearty,heat,heater,heath,heathen,heave,heaven,heavy,hectic,hector,hedge,hedgehog,heed,heel,heft,hefty,hegemony,height,heighten,heir,heiress,held,helical,helium,helix,hello,helm,helmet,helmsman,helmsmen,help,helpful,helpmate,hem,hematite,hemlock,hen,hence,henpeck,heptane,her,herald,herb,herd,herdsman,here,hereby,heredity,heretic,hereto,hereunto,herewith,heritage,hero,heroes,heroic,heroism,heron,herself,hertz,hesitant,hesitate,hewn,hex,hexagon,hexane,hey,heyday,hi,hiatus,hibachi,hickory,hid,hidden,hide,hideaway,hideous,hideout,hieratic,highest,highland,h
 
 
@@ -548,7 +594,11 @@ lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gateke
 
 
 
+
+
 ighroad,hightail,highway,hike,hilarity,hill,hillside,hilltop,hilly,him,himself,hindmost,hinge,hint,hip,hippo,hire,hireling,his,hiss,historic,history,hit,hitch,hither,hitherto,hive,hoard,hoarse,hobble,hobby,hockey,hodge,hold,holden,holiday,holler,hollow,holly,hologram,holster,holt,homage,home,homeland,homemade,homesick,homeward,homework,homology,homonym,hone,honest,honesty,honey,honeybee,honeydew,honorary,honoree,hoof,hoofmark,hook,hookworm,hoop,hoot,hooves,hop,hope,hopeful,horde,horizon,horn,hornet,horse,horsedom,horsefly,horseman,horsemen,hose,hosiery,hospice,hospital,host,hostage,hostess,hostile,hotel,hotelman,hound,hour,house,housefly,hove,hovel,hover,how,howdy,however,howl,hub,hubris,huddle,hue,hued,huff,hug,huge,hugging,hull,hum,human,humane,humanoid,humble,humerus,humid,humidify,humility,hummock,humorous,humus,hunch,hundred,hungry,hunt,hurdle,hurl,hurley,hurrah,hurray,hurry,hurt,hurtle,husband,hush,husky,hustle,hut,hutch,hyacinth,hyaline,hybrid,hydra,hydrant,hydrate,hydride,hydro,hydrogen,hydrous,hydroxy,hydroxyl,hyena,hygiene,hymn,hymnal,hyphen,hypnosis,hypnotic,iambic,ice,iceberg,icebox,iceland,icicle,icon,iconic,icy,idea,ideal,identify,identity,ideology,idiom,idle,idyll,idyllic,if,igloo,igneous,ignite,ignition,ileum,iliac,illogic,illume,illumine,illusion,illusive,illusory,image,imagery,imagine,imbibe,imbrue,imbue,imitable,imitate,immanent,immature,immense,immerse,imminent,immobile,immune,impact,impair,impale,impart,impasse,impeach,impede,impel,impelled,impeller,impend,imperate,imperial,imperil,impetus,impiety,impinge,implicit,implore,import,impose,impost,impound,impress,imprint,improve,impudent,impugn,impulse,impunity,impute,inaction,inactive,incant,incense,inceptor,inch,incident,incise,incisive,incite,incline,inclose,include,income,increase,incubate,incur,incurred,incurrer,indebted,indeed,indent,index,indicant,indicate,indices,indict,indigene,indigent,indigo,indirect,indoor,indorse,induce,induct,inductee,inductor,industry,inequity,inert,inertia,inertial,inexact,inexpert,infancy,infant,infantry,infer,inferred,infield,infight,infinite,infinity,infirm,inflate,inflater,inflect,inflict,inflow,influent,influx,inform,informal,infract,infrared,infringe,infuse,infusion,ingather,ingest,ingrown,inhabit,inhale,inhere,inherent,inherit,inhibit,inhuman,inimical,iniquity,initial,initiate,inject,injunct,injure,injury,ink,inkling,inlaid,inland,inlay,inlet,inmate,inn,innate,inner,innocent,innovate,innuendo,input,inquest,inquire,inquiry,inroad,inscribe,insect,insecure,insert,inset,inshore,inside,insight,insignia,insist,insomnia,inspect,inspire,install,instance,instant,instead,instep,instill,instinct,instruct,insular,insulate,insulin,insult,insure,intact,intake,integer,integral,intend,intense,intent,inter,intercom,interest,interim,interior,intermit,intern,internal,interval,into,intonate,intone,intrepid,intrigue,introit,intrude,intuit,inundate,inure,invade,invasion,invasive,inveigh,inveigle,invent,inventor,inverse,invert,invest,investor,inviable,invite,invitee,invocate,invoice,invoke,involve,inward,iodide,iodine,ion,ionic,irate,iridium,iris,iron,ironic,ironside,ironwood,is,island,isle,isolate,isomer,isomorph,isotherm,isotope,isotopic,isotropy,issuance,issuant,issue,it,italic,item,iterate,itself,ivory,ivy,jacket,jackpot,jade,jag,jaguar,jamboree,jangle,janitor,jar,jargon,jasper,jaundice,jaunty,javelin,jaw,jawbone,jawbreak,jazz,jazzy,jelly,jersey,jest,jet,jetliner,jettison,jewel,jewelry,jig,jigsaw,jilt,jingle,jittery,jive,job,jockey,jog,jogging,joggle,join,jolly,jolt,jostle,jot,joule,jounce,journal,journey,joust,jovial,jowl,jowly,joy,joyful,joyous,jubilant,jubilate,jubilee,judge,judicial,judo,jug,jugate,jugging,juggle,juice,jumble,jumbo,jump,junction,junctor,juncture,jungle,junior,juniper,juror,jury,just,justice,justify,jut,juvenile,kaiser,kale,kangaroo,keel,keen,keep,kept,kerchief,kern,kernel,kerosene,ketch,ketchup,ketone,ketosis,kettle,key,keyboard,keyed,keyhole,keynote,keys,keystone,khaki,kickoff,kid,kidney,kilo,kilohm,kimono,kin,kind,kin
+
+
 
 
 
@@ -596,7 +646,11 @@ WORDS4 CONSTANT VARCHAR2(32726) := 'machination,machine,mackerel,macro,madam,mad
 
 
 
+
+
 mystic,mystify,mystique,myth,mythic,nab,nag,nagging,naiad,nail,name,nameable,namesake,nap,nape,napkin,narrate,narrow,nary,nasal,nascent,natal,nation,native,natural,nature,nautical,nautilus,naval,nave,navel,navigate,navy,neap,near,nearby,nearest,neat,neater,neath,nebula,nebulae,nebular,nebulous,neck,necklace,neckline,necktie,nectar,nectary,need,needful,needham,needle,neither,nemesis,neon,neonatal,neonate,neophyte,neoprene,nepenthe,nephew,nerve,nest,nestle,net,nether,nettle,network,neural,neuritis,neuron,neuronal,neutral,neutrino,neutron,never,new,newborn,newcomer,newel,newfound,newline,newlywed,newsboy,newscast,newsman,newsmen,newsreel,newt,newton,next,niacin,nibble,nice,nicety,niche,nick,nickel,nickname,niece,nigh,night,nimble,nimbus,nine,ninebark,ninefold,nineteen,ninety,ninth,nitrate,nitric,nitride,nitrite,nitrogen,no,nob,nobelium,noble,nobleman,noblemen,noblesse,nobody,nocturne,nod,nodal,node,nodular,nodule,noise,noisy,nomad,nomadic,nominal,nominate,nominee,none,noodle,nook,noon,noontime,nor,north,northern,nose,nostril,not,notary,notch,note,notebook,notice,notify,notion,noun,nourish,nouveau,nova,novel,novelty,novice,now,nowaday,nowadays,nowhere,nozzle,nuance,nucleate,nuclei,nucleic,nucleoli,nucleus,nuclide,nudge,nugget,numb,numeral,numerate,numeric,numerous,numinous,nurse,nursery,nurture,nutmeg,nutrient,nutshell,nuzzle,nylon,oak,oaken,oakwood,oar,oasis,oat,oath,oatmeal,obduracy,obdurate,obelisk,obey,object,objector,objet,oblate,obligate,oblige,oblique,oblong,oboe,oboist,observe,obsidian,obsolete,obstacle,obstruct,obtain,obtrude,obverse,obviate,obvious,occasion,occident,occlude,occupant,occupy,occur,occurred,ocean,oceanic,ocelot,octagon,octal,octane,octant,octave,octet,octile,octopus,ocular,ode,odious,odium,odometer,oersted,of,off,offal,offbeat,offend,offer,offhand,office,official,officio,offload,offset,offshoot,offshore,offstage,oft,often,ogle,ohm,ohmic,ohmmeter,oil,oilcloth,oilman,oilmen,oilseed,oily,oint,ointment,okay,old,olden,oldster,oldy,oleander,olefin,olive,olivine,omelet,omicron,ominous,omnibus,on,once,oncology,oncoming,one,onerous,oneself,onetime,ongoing,onion,only,onrush,onset,onto,ontogeny,ontology,onus,onward,onyx,oocyte,ooze,opacity,opal,opaque,open,opera,operable,operand,operant,operate,operatic,operetta,operon,opine,opinion,opossum,opponent,oppose,opposite,opt,optic,optima,optimal,optimism,optimist,optimum,option,opulent,or,oracle,oracular,orange,orate,oratoric,oratorio,oratory,orb,orbit,orbital,orchard,orchid,ordain,ordeal,order,orderly,ordinal,ordinary,ordinate,ordnance,ore,oregano,organic,origin,original,oriole,ornament,ornate,ornately,orthant,orthicon,orthodox,osier,osmium,osmosis,osmotic,osprey,osseous,ossify,ostrich,other,otiose,otter,ought,ounce,our,oust,out,outlawry,oval,oven,over,overhang,overt,overture,owl,owly,own,ox,oxalate,oxalic,oxcart,oxen,oxeye,oxidant,oxidate,oxide,oxygen,oyster,ozone,pace,pacemake,pacific,pacifism,pacifist,pacify,pack,package,packet,pact,pad,paddock,paddy,padlock,page,pageant,paginate,paid,pail,paint,pair,pairwise,pal,palace,palate,palazzi,palazzo,pale,palette,palfrey,palisade,pall,palladia,pallet,palliate,pallid,palm,palmate,palmetto,palpable,palsy,pamper,pamphlet,pan,panacea,panama,pancake,pancreas,panda,pane,panel,panorama,pant,pantheon,panther,pantry,papa,papery,paprika,papyrus,par,parabola,parade,paradigm,paradise,paradox,paraffin,paragon,parakeet,parallax,parallel,parasite,parasol,paraxial,parboil,parcel,parch,pardon,pare,parent,parental,pariah,park,parkish,parkland,parkway,parody,parquet,parrot,parry,parse,parsley,parsnip,parson,part,partake,partial,particle,partisan,partner,partook,party,paschal,pass,passage,passband,passe,passer,passerby,passion,passive,passport,past,paste,pastel,pastime,pastoral,pastry,pasture,pat,patch,patchy,pate,patent,patentee,pater,paternal,path,pathfind,pathogen,pathway,patient,patio,patriot,patrol,patron,pattern,pause,pave,paw,pawn,pawnshop,pax,pay,paycheck,payday,payoff,payroll,pea,peace,peaceful,peach,peacock,peak,peal,peanut,pear,pearl,pe
+
+
 
 
 
@@ -640,7 +694,11 @@ at,pebble,pecan,peccary,peck,pectoral,peculate,peculiar,pedagogy,pedal,pedant,pe
 
 
 
+
+
 pull,pulley,pullover,pulp,pulpit,pulsar,pulsate,pulse,puma,pumice,pump,pumpkin,pun,punctual,puncture,pundit,punditry,pungent,punster,punt,pup,pupate,pupil,puppet,puppy,puppyish,purchase,pure,purge,purify,purl,purple,purport,purpose,purse,purslane,pursuant,pursue,pursuer,pursuit,purvey,purveyor,purview,push,pushout,pushpin,put,putative,putt,putty,puzzle,pygmy,pyknotic,pyramid,python,quad,quadrant,quadric,quaff,quagmire,quail,quaint,quake,qualify,quality,qualm,quandary,quanta,qu,quantile,quantity,quantum,quark,quarrel,quarry,quart,quartet,quartic,quartile,quartz,quasar,quash,quasi,quatrain,quaver,quay,quell,quench,quest,question,quetzal,queue,quibble,quick,quicken,quiet,quietus,quill,quilt,quince,quinine,quint,quintet,quintic,quintus,quip,quipping,quirk,quirt,quite,quitting,quiver,quixotic,quiz,quizzes,quonset,quorum,quota,quote,quotient,rabbit,rabble,raccoon,race,raceway,racket,rackety,radar,radial,radian,radiant,radiate,radical,radices,radii,radio,radish,radium,radius,radon,raffle,raft,ragout,raid,rail,railbird,railhead,raillery,railroad,railway,rain,rainbow,raincoat,raindrop,rainfall,rainy,raise,raisin,raj,rajah,rake,rakish,rally,ram,ramble,ramify,ramp,rampage,rampant,rampart,ran,ranch,rancho,random,rang,range,rank,rankle,ransack,ransom,rapid,rapier,rapport,rapture,rare,rarefy,rascal,rash,rasp,rate,rater,rather,ratify,ratio,rattail,rattle,ratty,raucous,ravage,rave,ravel,raven,ravenous,ravine,raw,rawhide,ray,raze,razor,razzle,reach,reactant,read,readout,ready,real,realm,realtor,realty,ream,reap,reason,reave,reb,receipt,receive,recent,receptor,recess,recipe,recital,reckon,recline,recluse,recovery,recruit,rectify,rector,rectory,recur,recurred,recusant,recuse,red,redact,redactor,redbird,redcoat,redden,reddish,redhead,reduce,redwood,reed,reef,reek,reel,refer,referee,referent,referral,referred,refinery,reflect,refract,refrain,refuge,refugee,refusal,refute,regal,regale,regalia,regard,regatta,regent,regime,regimen,regiment,region,regional,registry,regular,regulate,rehearse,reign,rein,reindeer,rejoice,relate,relayed,relevant,reliant,relic,relict,relief,relieve,religion,relish,remark,remedy,remember,remiss,remit,remitted,remnant,remorse,remote,removal,rend,render,renewal,renounce,renovate,renown,rent,rental,repartee,repeal,repeat,repeater,repel,repelled,repent,replete,replica,report,reprieve,reprisal,reprise,reproach,reptile,republic,repute,request,require,requited,rerouted,rescind,rescue,resemble,resent,reserve,reside,resident,residual,residue,residuum,resign,resin,resist,resistor,resolute,resolve,resonant,resonate,resort,respect,respire,respite,respond,response,rest,restful,restive,restrain,restrict,result,resume,resuming,retail,retain,reticent,retina,retinal,retinue,retire,retiree,retort,retract,retrieve,retrofit,return,reveal,revel,revelry,revenue,rever,revere,reverend,reverent,reverie,reversal,reverse,revert,revery,revile,revisal,revise,revision,revival,revive,revoke,revolt,revolve,revved,revving,reward,rhapsody,rhenium,rheology,rheostat,rhesus,rhetoric,rheum,rhino,rhodium,rhombic,rhombus,rhubarb,rhyme,rhythm,rhythmic,rib,ribald,ribbon,ribose,ribosome,rice,rich,ricochet,rid,riddance,ridden,riddle,ride,ridge,riffle,rift,rig,rigging,right,rightful,rigid,rigorous,rim,ring,ringlet,ringside,rink,rinse,rip,ripen,ripple,rise,risen,risible,rite,ritual,rival,rivalry,riven,river,riverine,rivet,rivulet,road,roadbed,roadside,roadster,roadway,roam,roar,roast,robe,robin,robot,robotic,robotics,robust,rock,rockabye,rockaway,rocket,rocky,rode,rodent,rodeo,roe,roebuck,rogue,roil,roister,role,roll,rollback,rollick,romance,romp,roof,rooftop,rook,rookie,room,roomful,roommate,roomy,roost,root,rope,rose,rosebud,rosebush,rosemary,rosette,roster,rosy,rotary,rotate,rote,rotor,rotunda,rouge,roughen,round,roundoff,roundup,rout,route,routine,rove,row,rowboat,royal,royalty,rubble,rubdown,rubicund,rubidium,rubric,ruby,ruckus,rudder,ruddy,rudiment,ruff,ruffle,rufous,rug,rule,rumble,rumen,ruminant,ruminate,rummage,run,runabout,runaway,rundown,rune,rung,runic,runn
+
+
 
 
 
@@ -688,7 +746,11 @@ WORDS5 CONSTANT VARCHAR2(32726) := 'sabbatical,sable,sabotage,saccade,sachem,sac
 
 
 
+
+
 ize,sizzle,skat,skate,skater,skeet,skeletal,skeleton,skeptic,sketch,sketchy,skew,ski,skid,skiddy,skied,skiff,skill,skillet,skillful,skim,skimp,skinny,skip,skirmish,skirt,skit,skittle,skulk,skull,skullcap,skunk,sky,skyhook,skylark,skylight,skyline,skyward,skywave,skyway,slab,slag,slam,slander,slant,slap,slash,slat,slate,slater,sled,sledge,sleek,sleep,sleet,sleeve,sleigh,sleight,slender,slept,sleuth,slew,slice,slick,slid,slide,slight,slim,slime,sling,slip,slippage,slippery,slither,sliver,slivery,slob,sloe,slog,slogan,slop,slope,slosh,slot,sloth,slouch,slough,sloven,slow,slowdown,sludge,slumber,small,smaller,smallpox,smart,smash,smatter,smear,smelt,smile,smirk,smith,smithy,smitten,smog,smoke,smoky,smolder,smooth,smother,smudge,snack,snag,snagging,snail,snake,snap,snapback,snappish,snappy,snapshot,snare,snark,snarl,snatch,snazzy,sneak,sneaky,sneer,sneeze,snell,snick,snippet,snippy,snivel,snook,snoop,snoopy,snore,snorkel,snort,snout,snow,snowball,snowfall,snowshoe,snowy,snub,snuffer,snuffle,snuffly,snug,snuggle,snuggly,snyaptic,so,soak,soap,soapsud,soapy,soar,sob,soccer,sociable,social,societal,society,sock,socket,sockeye,sod,soda,sodden,sodium,sofa,soffit,soft,softball,soften,software,softwood,soggy,soil,soiree,sojourn,solace,solar,sold,solder,soldier,soldiery,sole,solecism,solemn,solenoid,solicit,solid,solidify,solidus,solitary,soliton,solitude,solo,solstice,soluble,solute,solution,solvate,solve,solvent,soma,somal,somatic,somber,sombre,some,somebody,someday,somehow,someone,sometime,somewhat,son,sonant,sonar,sonata,song,songbag,songbook,songful,sonic,sonnet,sonogram,sonority,sonorous,soon,soot,sooth,soothe,soothsay,sop,soprano,sorcery,sordid,sore,sorption,sorrel,sorrow,sorry,sort,souffle,sough,sought,soul,soulful,sound,soup,sour,source,sourwood,soutane,south,southern,souvenir,sow,sown,soy,soybean,spa,space,spacious,spade,spalding,span,spandrel,spangle,spaniel,spar,spare,sparge,spark,sparkle,sparky,sparling,sparrow,sparse,spasm,spat,spate,spatial,spatlum,spatula,spavin,spawn,speak,spear,spec,special,species,specific,specify,specimen,specious,speck,speckle,spectra,spectral,spectrum,specular,sped,speech,speed,speedup,speedy,spell,spend,spent,sphere,spheric,spheroid,spherule,sphinx,spice,spicy,spider,spidery,spigot,spike,spiky,spill,spilt,spin,spinach,spinal,spindle,spine,spinoff,spinster,spiny,spiral,spire,spirit,spite,spiteful,splash,splashy,splat,splay,splayed,spleen,splendid,splice,spline,splint,split,splotch,splotchy,splurge,splutter,spoil,spoilage,spoke,spoken,sponge,spongy,sponsor,spoof,spooky,spool,spoon,spoonful,sporadic,spore,sport,sporty,spot,spotty,spouse,spout,sprain,sprang,sprawl,spray,spread,spree,sprig,spring,springe,springy,sprinkle,sprint,sprite,sprocket,sprout,spruce,sprue,sprung,spumoni,spun,spur,spurge,spurious,spurn,spurt,sputnik,sputter,spy,spyglass,squabble,squad,squadron,squalid,squall,squamous,squander,square,squash,squawk,squeak,squeaky,squeal,squeegee,squeeze,squelch,squid,squill,squint,squire,squirm,squirmy,squirrel,squirt,squishy,stab,stabile,stable,staccato,stack,stadia,stadium,staff,stag,stage,stagnant,stagnate,stagy,staid,stain,stair,stairway,stake,stale,stalk,stall,stallion,stalwart,stamen,stamina,stammer,stamp,stampede,stance,stanch,stand,standard,standby,standeth,standoff,stannic,stannous,stanza,staph,staple,star,starch,starchy,stardom,stare,starfish,stargaze,stark,starlet,starling,start,startle,startup,stash,state,stater,static,stator,statuary,statue,stature,status,statute,staunch,stave,stay,stayed,stead,steady,steak,stealth,stealthy,steam,steamy,stearate,stearic,steed,steel,steely,steep,steepen,steeple,steer,stein,stellar,stem,stencil,step,stepson,stepwise,stereo,sterile,sterling,stern,sternal,sternum,steroid,stew,steward,stick,stickle,stickpin,sticky,stifle,stigma,stigmata,stile,stiletto,still,stilt,stimuli,stimulus,sting,stingy,stint,stipend,stipple,stir,stirrup,stitch,stock,stockade,stocky,stodgy,stoic,stoke,stolid,stomach,stone,stony,stood,stoop,stop,stopband,stopgap,stopover,stoppage,storage,
+
+
 
 
 
@@ -732,6 +794,8 @@ store,stork,storm,stormy,story,stout,stove,stow,stowage,stowaway,straddle,strafe
 
 
 
+
+
 ugh,thought,thousand,thrall,thread,three,thresh,threw,thrice,thrift,thrifty,thrill,thrive,throes,throne,throng,throttle,through,throw,thrown,thrum,thrush,thud,thulium,thumb,thump,thunder,thus,thwart,thy,thyme,thymine,thymus,thyroid,tibia,tick,ticket,tickle,ticklish,tidal,tidbit,tide,tideland,tidy,tie,tied,tier,tift,tiger,tight,tighten,tigress,til,tilde,tile,till,tilt,tilth,timber,timbre,time,timeworn,timid,tin,tinder,tine,tinfoil,tinge,tingle,tinker,tinkle,tinsel,tint,tintype,tiny,tip,tipoff,tippy,tiptoe,tirade,tire,tiresome,tissue,titanate,titanic,titanium,tithe,titian,title,to,toad,toady,toast,today,toe,toenail,toffee,tofu,together,togging,toggle,toil,toilsome,token,told,tolerant,tolerate,toll,tollgate,toluene,tomato,tomatoes,tome,tomorrow,ton,tonal,tone,tong,tonic,tonight,tonnage,tonsil,too,took,tool,toolkit,toolmake,toot,tooth,top,topaz,topcoat,topic,topmost,topnotch,topology,topple,topsoil,torch,tore,torn,tornado,toroid,toroidal,torpedo,torpid,torpor,torque,torrent,torrid,torsion,torso,tort,tortoise,toss,tot,total,tote,totem,totemic,touch,tough,tour,tousle,tout,tow,toward,towboat,towel,tower,town,townsman,townsmen,toxic,toxin,toy,trace,tracery,trachea,track,trackage,tract,tractor,trade,tradeoff,traffic,tragedy,tragic,trail,train,trainee,trainman,trainmen,traipse,trait,traitor,tram,trammel,trample,tramway,trance,tranquil,transact,transect,transept,transfer,transfix,transit,transmit,transom,travail,travel,traverse,travesty,trawl,tray,tread,treadle,treason,treasure,treasury,treat,treatise,treaty,treble,tree,treetop,trefoil,trek,trellis,tremble,tremor,trench,trend,trendy,trespass,tress,trestle,triad,trial,triangle,tribal,tribe,tribunal,tribune,tribute,trick,trickery,trickle,tricky,trident,tried,trifle,trig,trigonal,trigram,trill,trillion,trilogy,trim,trimer,trinity,trinket,trio,triode,trioxide,trip,tripe,triple,triplet,triplex,tripod,tripoli,triptych,tristate,trite,tritium,triton,triumph,triune,trivia,trivial,trivium,trod,trodden,troika,troll,trolley,trollop,trombone,trompe,troop,trophic,trophy,tropic,trot,trough,trounce,troupe,trouser,trout,troy,truancy,truant,truce,truck,trudge,truism,truly,trump,trumpery,trumpet,truncate,trundle,trunk,truss,trust,trustee,trustful,truth,truthful,try,trypsin,tsunami,tub,tuba,tube,tubular,tubule,tuck,tuff,tuft,tug,tugging,tuition,tulip,tulle,tumble,tumbrel,tumult,tuna,tundra,tune,tuneful,tungsten,tunic,tunnel,tupelo,tuple,turban,turbid,turbine,turbofan,turbojet,turf,turgid,turk,turkey,turmoil,turn,turnery,turnip,turnkey,turnoff,turnout,turnpike,turret,turtle,turvy,tusk,tussle,tutelage,tutor,tutorial,tutu,tuxedo,twain,tweak,tweed,tweedy,tweeze,twelfth,twelve,twenty,twice,twiddle,twig,twigging,twilight,twill,twin,twine,twinge,twinkle,twirl,twirly,twist,twisty,twitch,twitchy,two,twofold,twosome,tycoon,tying,type,typeface,typeset,typhoid,typhoon,typhus,typic,typify,typo,typology,tyrannic,tyranny,tyrosine,ubiquity,ulterior,ultimate,ultra,umber,umbra,umbrage,umbrella,umlaut,umpire,unary,unbidden,uncle,unction,under,undulate,uniaxial,unicorn,uniform,unify,unimodal,union,uniplex,unipolar,unique,unison,unitary,unite,unity,universe,until,unwieldy,up,upbeat,upbraid,upbring,upcome,update,updraft,upend,upgrade,upheaval,upheld,uphill,uphold,upkeep,upland,uplift,upon,upper,uppercut,upraise,upright,uprise,upriver,uproar,uproot,upset,upshot,upside,upsilon,upslope,upstair,upstand,upstart,upstate,upstater,upstream,upsurge,upswing,uptake,uptown,uptrend,upturn,upward,upwind,uranium,urban,urbane,urbanite,urchin,urge,urgency,urgent,urging,us,usable,usage,use,useful,usher,usual,usurer,usurious,usurp,usury,utensil,utility,utmost,utopia,utopian,utter,vacant,vacate,vaccine,vacua,vacuo,vacuole,vacuous,vacuum,vade,vagabond,vagary,vagrant,vague,vain,vale,valent,valet,valeur,valiant,valid,validate,valine,valley,valuate,value,valve,vamp,vampire,van,vanadium,vandal,vane,vanguard,vanilla,vanish,vanity,vanquish,vantage,vapid,vaporous,variable,variac,variant,variate,variety,various,varistor,varnish,varsity,vary,vascular,vase,va
 
 
@@ -754,7 +818,11 @@ ugh,thought,thousand,thrall,thread,three,thresh,threw,thrice,thrift,thrifty,thri
 
 
 
+
+
 ssal,vast,vat,vault,vaunt,veal,vector,vee,veer,veery,vegetate,vehicle,veil,vein,velar,veldt,vellum,velocity,velours,velvet,velvety,venal,vend,vendetta,vendible,vendor,veneer,venerate,venial,venous,vent,venture,venturi,veracity,veranda,verandah,verb,verbal,verbatim,verbena,verbiage,verbose,verdant,verdict,verge,veridic,verify,verity,vermeil,vermin,vermouth,vernal,vernier,versa,versatec,verse,version,versus,vertebra,vertex,vertical,vertices,vertigo,verve,very,vesper,vessel,vest,vestal,vestige,vestry,vet,vetch,veteran,veto,via,viaduct,vial,vibrant,vibrate,vibrato,viburnum,vicar,viceroy,vicinal,vicinity,vicious,victor,victory,victrola,victual,vide,video,vie,view,vigil,vigilant,vignette,vigorous,villa,village,villain,villein,vine,vinegar,vineyard,vintage,vintner,vinyl,viola,violate,violent,violet,violin,virgule,virtual,virtue,virtuosi,virtuoso,virtuous,virulent,virus,vis,visa,visage,viscount,viscous,vise,visible,vision,visit,visitor,visor,vista,visual,vita,vitae,vital,vitamin,vitiate,vitreous,vitrify,vitriol,vitro,viva,vivace,vivacity,vivid,vivify,vivo,vixen,viz,vocable,vocal,vocalic,vocate,vogue,voice,void,volatile,volcanic,volcano,volition,volley,volt,voltage,voltaic,voluble,volume,voracity,vortex,vortices,votary,vote,votive,vouch,vow,vowel,voyage,vulgar,vulpi,vulture,vying,wacky,wad,waddle,wade,wafer,waffle,wag,wage,wagging,waggle,wagoneer,wail,waist,wait,waitress,waive,wake,wakeful,waken,wakeup,wale,walk,walkout,walkover,walkway,wall,wallaby,wallet,wallop,wallow,wally,walnut,walrus,waltz,waltzing,wan,wand,wander,wane,wangle,want,wanton,wapato,wapiti,war,warble,ward,warden,wardrobe,wardroom,ware,warm,warmth,warmup,warn,warp,warplane,warrant,warranty,warren,warrior,wary,was,wash,washbowl,washout,washy,wasp,waspish,wast,wastage,wasteful,wastrel,watch,watchdog,watchful,watchman,watchmen,water,waterway,watery,watt,wattage,wattle,wave,waveform,wavelet,wavy,wax,waxen,waxwork,waxy,way,waybill,waylaid,waylay,wayside,wayward,we,weak,weaken,weal,wealth,wealthy,wean,wear,wearied,weary,weasel,weather,weave,web,weber,wed,wedge,wedlock,wee,weed,weedy,week,weekday,weekend,weep,weigh,weight,weighty,weir,weird,welcome,weld,welfare,well,welsh,welt,went,wept,were,wert,west,westerly,western,westward,wet,wetland,whale,wharf,wharves,what,whatever,whatnot,wheat,wheedle,wheel,wheeze,wheezy,whelk,whelm,when,whence,whenever,where,whereas,whereby,wherein,whereof,whereon,wherever,whet,whether,which,whiff,whig,while,whim,whimper,whimsey,whimsic,whiplash,whipsaw,whir,whirl,whish,whisk,whisper,whistle,whit,white,whiten,whither,whittle,who,whoever,whole,wholly,whom,whomever,whose,why,wick,wicket,wide,widen,widgeon,widget,widow,width,wield,wig,wigging,wiggle,wild,wildcat,wildfire,wildlife,wile,wilful,will,willful,willow,willowy,wilt,wily,win,wince,wind,windbag,windfall,windmill,window,windsurf,windup,windward,windy,wing,wingback,wingman,wingmen,wingspan,wingtip,wink,winkle,winnow,winsome,winter,wintry,winy,wipe,wire,wireman,wiremen,wiretap,wiry,wisdom,wise,wish,wishbone,wishful,wisp,wispy,wistful,wit,with,withal,withdraw,withdrew,withe,wither,withheld,withhold,within,without,withy,witness,witty,wizard,wobble,woe,woeful,wok,woke,wold,wolf,wolfish,wolves,woman,wombat,women,won,wonder,wondrous,wont,woo,wood,woodcut,wooden,woodhen,woodland,woodlot,woodpeck,woodrow,woodruff,woodshed,woodside,woodward,woodwind,woodwork,wool,word,wordy,wore,work,workaday,workbook,workday,workload,workman,workmen,workout,workshop,world,worm,worn,worth,worthy,would,wound,wove,woven,wow,wrack,wraith,wrangle,wrap,wrapup,wrath,wrathful,wreak,wreath,wreathe,wreck,wreckage,wrench,wrest,wrestle,wretch,wriggle,wright,wring,wrinkle,wrist,writ,write,writeup,writhe,written,wrote,wrought,wry,xenon,xylem,xylene,yacht,yak,yam,yap,yapping,yard,yardage,yarmulke,yarn,yarrow,yawn,yea,yeah,year,yearbook,yearn,yeast,yell,yellow,yelp,yen,yeoman,yeomanry,yet,yield,yip,yipping,yodel,yoga,yoghurt,yogi,yogurt,yoke,yolk,yon,yond,yore,you,young,youngish,your,yourself,youth,youthful,yule,zag,zagging,zap,zazen,zea
+
+
 
 
 
@@ -802,12 +870,16 @@ l,zealot,zealous,zebra,zenith,zero,zeroes,zeroth,zest';
 
 
 
+
+
 ,a
 
 
 
 
 postrophe,apothecary,apothegm,apotheosis,appall,appanage,apparatus,apparel,apparent,apparition,appeal,appear,appease,append,appendix,appetite,applaud,applause,apple,applied,applique,apply,appoint,apposite,appraise,apprise,approach,approval,approve,apricot,apron,apropos,apt,aptitude,aqua,aquarium,aquatic,aqueduct,aqueous,arachnid,arbiter,arboreal,arc,arcade,arcane,arch,archaic,archaism,archery,arching,arcing,arctic,ardency,ardent,arduous,are,area,areaway,arena,argon,argue,argument,arid,arise,arisen,ark,arm,armada,armament,armature,armchair,armful,armload,armoire,army,aroma,aromatic,arose,around,arpeggio,arraign,arrange,array,arrival,arrive,arrogant,arrogate,arrow,arroyo,art,arterial,artery,artful,article,artifact,artifice,artisan,artistry,artwork,as,ascend,ascent,ascribe,aseptic,ash,ashame,ashamed,ashen,ashore,aside,ask,askance,askew,asleep,aspect,aspen,asperity,aspirate,aspire,aspirin,assemble,assent,assert,assessor,asset,assign,assist,assume,assure,asteria,asterisk,asteroid,asthma,astonish,astound,astral,astride,astute,asunder,at,atavism,ate,athle,athletic,athwart,atlantic,atlas,atom,atomic,atonal,atone,atop,atrium,atrophic,atrophy,attach,attache,attain,attempt,attend,attendee,attest,attic,attire,attitude,attorney,attract,attune,auburn,auction,audacity,audible,audience,audio,audit,audition,auditor,auditory,auger,augment,august,auk,aunt,auntie,aura,aural,auric,aurochs,aurora,auspices,austere,author,auto,autocrat,automate,autonomy,autumn,autumnal,avail,avarice,avenue,aver,average,averred,averring,averse,aviary,aviate,avid,avionic,avocado,await,awake,awaken,award,aware,awash,away,awe,awesome,awhile,awkward,awl,awn,awoke,awry,ax,axe,axes,axial,axiology,axiom,axis,axle,axon,azalea,azimuth,azimuthal,azure,babble,baboon,baby,babyhood,babysat,babysit,babysitter,babysitting,baccalaureate,bacilli,bacillus,back,backboard,backbone,backdrop,backfill,backgammon,background,backhand,backlash,backorder,backpack,backplane,backstage,backstitch,backstop,backtrack,backup,backward,backwood,backyard,bacon,bacteria,bacterial,bacterium,bade,badge,badinage,badland,badminton,baffle,bag,bagatelle,bagel,baggage,bagpipe,bait,bake,bakery,balance,balcony,bald,baldy,bale,baleen,baleful,balk,balky,ball,ballad,ballast,ballerina,ballet,balletic,ballfield,balloon,ballot,ballroom,balm,balmy,balsa,balsam,balustrade,bamboo,ban,banal,banana,band,bandage,bandgap,bandit,bandpass,bandstand,bandstop,bandwagon,bandwidth,bandy,bane,baneberry,baneful,bangle,banish,banister,banjo,bank,bankrupt,banquet,bantam,banter,barb,barbaric,barbecue,barbell,barber,barberry,bard,barefoot,bargain,barge,baritone,barium,bark,barley,barn,barnacle,barnyard,baron,baroness,baronet,baronial,barony,baroque,barrack,barrage,barre,barrel,barren,barrette,barrier,barrow,barter,basal,basalt,base,baseball,baseband,baseline,baseman,basemen,bash,bashaw,bashful,basic,basil,basilar,basilisk,basin,basis,bask,basket,bass,bassi,bassinet,basso,basswood,baste,bastion,bat,batch,bate,bateau,bath,bathe,bathos,bathrobe,bathroom,bathtub,batik,baton,batt,batten,battery,battle,batwing,bauble,baud,bauxite,bawl,bay,bayed,bayonet,bayou,bazaar,be,beach,beacon,bead,beadle,beady,beak,beam,bean,bear,beard,bearish,beatific,beatify,beautify,beauty,becalm,became,because,beck,becket,beckon,becloud,become,bed,bedazzle,bedbug,bedevil,bedfast,bedim,bedimmed,bedlam,bedpost,bedrock,bedroom,bedside,bedstraw,bedtime,bee,beebread,beech,beef,beehive,been,beep,beet,beetle,befall,befallen,befell,befit,befog,before,befuddle,beg,began,beggar,beggary,begging,begin,beginner,begonia,begotten,begrudge,beguile,begun,behalf,behave,beheld,behest,behind,behold,beige,being,bel,belate,belfry,belie,belief,belies,believe,bell,bellboy,belle,bellhop,bellman,bellmen,bellow,bellum,belly,belong,belove,below,belt,belying,bemadden,beman,bemoan,bemuse,bench,bend,beneath,benefice,benefit,benight,benign,bent,benzene,bequeath,bequest,beret,berg,bergamot,beribbon,beriberi,berne,berry,berth,beryl,beseech,beset,beside,besiege,besmirch,besotte,d,bespeak,bespoke,best,b
+
+
 
 
 
@@ -863,6 +935,8 @@ WORDS2 CONSTANT VARCHAR2(32726) := 'cab,cabana,cabaret,cabbage,cabin,cabinet,cab
 
 
 
+
+
 coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cogent,cogitate,cognate,cohere,coherent,cohesion,cohesive,cohort,cohosh,coiffure,coil,coin,coinage,coincide,colander,cold,coleus,coliform,coliseum,collage,collagen,collapse,collar,collard,collate,collect,college,collet,collide,collie,colloquy,collude,colonel,colonial,colonist,colony,colorate,colossal,colossi,colossus,colt,coltish,column,columnar,colza,comb,combine,comeback,comedian,comedy,comet,cometary,comfort,comic,comma,command,commend,comment,commerce,commit,common,commute,compact,company,compare,compass,compel,compete,compile,complain,compleat,complete,complex,compline,comply,comport,compose,compote,compound,compress,comprise,compute,comrade,concave,conceal,concede,conceit,concept,concern,concert,concerti,concerto,conch,concise,conclave,conclude,concoct,concord,concrete,concur,condemn,condense,condone,conduce,conduct,conduit,cone,confect,confer,conferee,confess,confide,confine,confirm,confocal,conform,confound,confrere,confront,confute,congeal,congener,congest,congress,conic,conifer,conjunct,conjure,connect,connive,connote,conquer,conquest,consent,conserve,consider,consign,consist,console,conspire,constant,construe,consul,consular,consult,consume,contact,contain,contend,content,context,continua,continue,continuo,contort,contour,contract,contrary,contrast,contribu,contrite,contrive,control,convect,convene,convent,converge,converse,convert,convex,convey,conveyor,convict,convince,convoke,convolve,convoy,convulse,cook,cookbook,cookery,cookie,coolant,coop,coot,cop,cope,copious,coplanar,copperas,coppery,copra,coprinus,copy,copybook,coquette,coquina,coral,corbel,cord,cordage,cordial,cordite,cordon,corduroy,core,cork,corn,cornea,cornet,cornish,cornmeal,corny,corona,coronary,coronate,coroner,coronet,corpora,corporal,corps,corpsman,corpsmen,corpus,corral,correct,corridor,corrode,corsage,cortege,cortex,cortical,corundum,corvette,cosmetic,cosmic,cosmos,cost,costume,cosy,cot,cotman,cotta,cottage,cotton,couch,cougar,cough,could,coulomb,council,counsel,count,country,county,coup,coupe,couple,coupon,courage,courier,course,court,courtesy,courtier,couscous,cousin,covalent,covary,cove,covenant,cover,coverage,coverall,coverlet,cowbell,cowbird,cowboy,cowgirl,cowhand,cowherd,cowhide,cowl,coworker,cowpox,coy,coyote,cozy,crab,crabmeat,cradle,craft,crafty,cramp,crane,crania,cranium,cranny,crass,crate,crater,cravat,crave,craw,crawl,crayfish,crayon,craze,crazy,creak,creaky,crease,create,creating,creature,creche,credent,credenza,credible,credit,creditor,credo,creed,creedal,creek,creosote,crepe,crept,crescent,cress,crest,crevice,crew,crewcut,crewel,crewman,crewmen,crib,cricket,cried,crime,crimson,crinkle,crisp,criss,criteria,critic,critique,critter,croak,crochet,croft,crone,crony,crook,croon,crop,croquet,cross,crossarm,crossbar,crossbow,crosscut,crossway,crouch,crow,crowd,crowfoot,crown,crucial,crucible,cruise,crumb,crumble,crumple,crunch,crupper,crusade,crush,crust,cry,cryptic,crystal,cub,cube,cubic,cuckoo,cucumber,cud,cuddle,cuddly,cudgel,cue,cuff,cufflink,cuisine,culinary,cull,culpable,culprit,cultural,culture,culvert,cumin,cumulate,cumulus,cunning,cup,cupboard,cupful,cupidity,cupric,cuprous,cur,curate,curb,curbside,curd,curdle,cure,curfew,curia,curie,curio,curious,curium,curl,curlew,curlicue,currant,current,curry,cursive,cursor,cursory,curt,curtail,curtain,curtsey,curve,cushion,cusp,custody,custom,cut,cutback,cute,cutesy,cutlass,cutler,cutlet,cut,cutout,cutover,cutset,cutworm,cycad,cycle,cyclic,cyclist,cyclone,cylinder,cynic,cypress,cyst,cysteine,cytology,dab,dabble,dactyl,dactylic,dad,daddy,daffodil,daffy,dagger,dahlia,dainty,dairy,dairyman,dairymen,daisy,dale,dally,damp,dampen,dance,dandy,dapper,dapple,dare,dark,darken,darkle,darling,dart,dash,data,database,date,dateline,dater,datum,daub,daughter,daunt,dauphin,dauphine,davit,dawn,day,daybreak,daydream,daylight,daytime,daze,dazzle,deadline,deadlock,deal,dealt,dean,dear,dearie,dearth,debar,debate,debater,debility,debit,de
 
 
@@ -890,7 +964,11 @@ coeditor,coequal,coerce,coercion,coercive,coexist,cofactor,coffee,coffer,cog,cog
 
 
 
+
+
 bonair,debrief,debris,debt,debtor,debug,debugged,debunk,debut,decade,decadent,decal,decant,decay,decedent,deceit,decent,decibel,decide,decile,decimal,decipher,decision,decisive,deck,declaim,declare,decline,decode,decor,decorate,decorous,decorum,decouple,decoy,decrease,decree,decry,dedicate,deduce,deed,deem,deep,deepen,deer,deerskin,deface,default,defeat,defector,defend,defer,deferent,deferred,define,definite,deflect,deforest,deft,degree,delay,delegate,delicacy,delicate,delight,delimit,delirium,deliver,delivery,dell,delphine,delta,deltoid,delude,deluge,delusion,delusive,deluxe,delve,demand,demark,demitted,demo,den,denature,dendrite,denizen,denote,dense,dent,dental,denture,depart,depend,depict,deplete,deploy,depose,deposit,depot,depth,depute,deputy,derby,derivate,derive,dervish,descant,descend,descent,describe,desert,deserve,design,desist,desk,despite,dessert,destine,destiny,detach,detail,detain,detect,detector,deter,detour,deuce,develop,device,devote,devotee,devotion,dew,dewar,dewdrop,dextrose,dextrous,diadem,diagnose,diagonal,diagram,dial,dialect,dialogue,diameter,diamond,diary,diatom,diatomic,diatonic,dice,did,didactic,diesel,diet,dietary,dietetic,differ,diffract,diffuse,dig,digest,digging,digit,digital,dignify,dignity,digram,digress,dihedral,dilemma,diligent,dill,diluent,dilute,dilution,dim,dime,dimethyl,diminish,dimple,dine,dinosaur,diode,diopter,diorama,diorite,dioxide,dip,diploid,diploidy,diplo,diplomat,direct,director,disburse,disc,discern,disco,discreet,discrete,discus,discuss,dish,dishes,dishevel,disjunct,disk,dispel,dispense,disperse,dissuade,distaff,distal,distant,distinct,district,dither,ditto,dive,diverge,diverse,divert,divest,divide,dividend,division,divisor,divulge,do,doberman,dock,docket,dockside,dockyard,doctor,doctoral,doctrine,document,dodge,doe,dog,doghouse,dogwood,doldrum,doldrums,dole,doleful,doll,dollar,dollop,dolly,dolomite,dolphin,domain,dome,domestic,domicile,domino,donate,done,door,doorbell,doorkeep,doorknob,doorman,doormen,doorstep,doorway,dormant,dossier,dot,dote,double,doublet,doubt,doubtful,dough,doughnut,dour,douse,dove,dovetail,dowel,down,downplay,downpour,downtown,downward,downwind,dowry,doze,dozen,drab,draft,drag,dragging,dragnet,dragon,dragoon,drain,drainage,drake,dram,drama,dramatic,drape,drapery,drastic,draw,drawback,drawl,drawn,dream,dreamt,dreamy,dredge,dreg,drench,dress,dressy,drew,drib,dried,drier,drift,drill,drink,drive,driven,driveway,drizzle,drizzly,droll,drone,drop,droplet,dross,drought,drove,drowse,drowsy,drub,druid,drum,drumhead,drumlin,dry,dryad,dual,dualism,dub,ducat,duchess,duck,duckling,duct,ductile,ductwork,dud,due,duel,duet,duff,duffel,dug,dugout,duke,dukedom,dulcet,dull,dully,dulse,duly,dune,dunk,duopoly,duplex,durable,durance,duration,during,dusk,dust,dustbin,dusty,dutchess,dutiable,dutiful,duty,dwindle,dyad,dyadic,dye,dyeing,dyer,dynamic,dynamism,dynasty,each,eager,eagle,ear,eardrum,earl,earmark,earn,earnest,earphone,earring,earth,earthy,ease,easel,east,eastern,eastward,easy,eave,ebb,ebony,echelon,echo,echoes,eclectic,eclipse,ecliptic,eclogue,ecology,economic,economy,ectoderm,ectopic,ecumenic,eddy,edge,edgewise,edging,edgy,edict,edifice,edify,edit,edition,editor,educable,educate,eel,eerie,eerily,efface,effect,efferent,efficacy,effort,effusion,effusive,egg,eggplant,eggshell,egress,egret,eider,eidetic,eight,eighteen,eighth,eighty,either,elapse,elastic,elate,elbow,elder,eldest,elect,elector,electret,electric,electro,electron,elegant,elegiac,elegy,element,elephant,elevate,eleven,eleventh,elfin,elicit,elide,eligible,elision,elite,elk,ellipse,ellipsis,elliptic,elm,eloquent,else,eluate,elute,elution,elves,elysian,emaciate,emanate,embank,embargo,embark,embassy,ember,embezzle,emblazon,emblem,embody,embolden,emboss,embower,embrace,emcee,emerald,emerge,emergent,emeriti,emeritus,emigrant,emigrate,eminent,emirate,emissary,emotion,empathy,emperor,emphases,emphasis,emphatic,empire,empiric,emplace,employ,employed,employee,employer,emporium,empower,empress,empty,emulate,emulsify,emulsion,
+
+
 
 
 
@@ -946,6 +1024,8 @@ WORDS3 CONSTANT VARCHAR2(32726) := 'fable,fabric,fabulous,facade,face,facet,faci
 
 
 
+
+
 lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gatekeep,gateway,gather,gator,gauche,gaudy,gauge,gaunt,gauntlet,gauss,gauze,gave,gavel,gavotte,gawk,gaze,gazelle,gazette,gear,gecko,geese,gel,gelable,gelatin,gelatine,gem,geminate,gemlike,gemstone,gene,genera,general,generate,generic,generous,genesis,genetic,genial,genie,genius,genotype,genre,gent,genteel,gentian,gentile,gentle,gentry,genuine,genus,geometer,geranium,germ,germane,germinal,gerund,gestalt,gesture,get,getaway,geyser,ghastly,ghost,ghostly,ghoul,ghoulish,giant,giantess,gibbet,gibbon,giblet,giddy,gift,gig,gigaherz,gigantic,gigavolt,gigawatt,giggle,gila,gild,gill,gilt,gimmick,ginger,gingham,gingko,ginseng,giraffe,girl,girth,gist,give,giveaway,given,giveth,glacial,glaciate,glacier,glad,gladden,glade,glamor,glamour,glance,gland,glare,glass,glassy,glaucoma,glaucous,glaze,gleam,glean,glee,gleeful,glen,glib,glide,glimmer,glimpse,glint,glissade,glisten,glitch,glitter,gloat,glob,global,globe,globular,globule,globulin,gloom,gloomy,glorify,glorious,glory,gloss,glossary,glossed,glossy,glottal,glottis,glove,glow,glucose,glue,glued,gluey,gluing,glum,glut,glutamic,glutton,glycerin,glycerol,glycine,glycogen,glycol,glyph,gnarl,gnash,gnat,gnaw,gnome,gnu,go,goad,goal,goat,gobble,goblet,goes,gold,golden,goldfish,golf,gondola,gone,good,goodbye,goodwill,goose,gopher,gore,gorge,gorgeous,gorgon,gorilla,gorse,gory,gosling,gossamer,gossip,got,gouge,gourd,gourmet,gout,govern,governor,gown,grab,grace,graceful,gracious,grackle,grad,gradate,grade,gradient,gradual,graduate,graft,graham,grail,grain,grainy,grammar,granary,grand,grandeur,grandma,grandpa,grandson,granite,granitic,granny,granola,grant,grantee,grantor,granular,granule,grape,graph,graphic,graphite,grapple,grasp,grass,grassy,grate,grateful,grater,gratify,gratuity,grave,gravel,graven,gravid,gravy,gray,grayish,graze,grease,greasy,great,greater,grebe,greed,greedy,green,greenery,greenish,greet,grew,grey,grid,griddle,gridiron,grief,grieve,grievous,griffin,grill,grille,grilled,grim,grimace,grime,grin,grind,grip,gripe,grisly,grist,grit,gritty,grizzle,grizzly,groan,groat,grocer,grocery,groggy,groom,groove,gross,ground,group,grout,grove,grovel,grow,growl,grown,grownup,growth,grudge,gruesome,gruff,grumble,grunt,gryphon,guanine,guard,guardian,guerdon,guernsey,guess,guest,guffaw,guidance,guide,guiding,guignol,guild,guile,guinea,guise,guitar,gulf,gull,gullet,gullible,gully,gulp,gum,gumbo,gumdrop,gummy,gumption,gumshoe,gurgle,guru,gush,gusset,gust,gusto,gusty,gut,gutsy,guttural,guy,guzzle,gym,gymnast,gypsite,gypsum,gypsy,habit,habitant,habitat,habitual,hacksaw,had,haddock,hadron,haggard,haggle,haiku,hail,hair,haircut,hairdo,hairpin,hale,half,halfback,halfway,halibut,halide,halite,hall,hallmark,hallow,hallway,halo,halogen,halt,halve,ham,hamlet,hammock,hamper,hamster,hand,handbag,handbook,handcuff,handful,handle,handmade,handout,handset,handsome,handy,handyman,handymen,hang,hangar,hansom,happen,happy,harass,hardbake,harden,hardhat,hardtack,hardtop,hardware,hardwood,hardy,hare,hark,harm,harmful,harmonic,harmony,harness,harp,harpoon,harrow,harsh,harshen,hart,harvest,hassle,hast,haste,hasten,hasty,hat,hatch,hatchet,hath,haul,haulage,haunch,haunt,have,haven,havoc,hawk,hay,hayfield,haystack,hayward,hazard,haze,hazel,hazelnut,hazy,he,head,headache,headland,headline,headroom,headset,headsman,headsmen,headwall,headway,headwind,heal,health,healthy,heap,hear,heard,hearken,heart,hearten,hearth,hearty,heat,heater,heath,heathen,heave,heaven,heavy,hectic,hector,hedge,hedgehog,heed,heel,heft,hefty,hegemony,height,heighten,heir,heiress,held,helical,helium,helix,hello,helm,helmet,helmsman,helmsmen,help,helpful,helpmate,hem,hematite,hemlock,hen,hence,henpeck,heptane,her,herald,herb,herd,herdsman,here,hereby,heredity,heretic,hereto,hereunto,herewith,heritage,hero,heroes,heroic,heroism,heron,herself,hertz,hesitant,hesitate,hewn,hex,hexagon,hexane,hey,heyday,hi,hiatus,hibachi,hickory,hid,hidden,hide,hideaway,hideous,hideout,hieratic,highest,highland,h
 
 
@@ -973,7 +1053,11 @@ lic,garner,garnet,garrison,garter,gash,gasket,gaslight,gasoline,gasp,gate,gateke
 
 
 
+
+
 ighroad,hightail,highway,hike,hilarity,hill,hillside,hilltop,hilly,him,himself,hindmost,hinge,hint,hip,hippo,hire,hireling,his,hiss,historic,history,hit,hitch,hither,hitherto,hive,hoard,hoarse,hobble,hobby,hockey,hodge,hold,holden,holiday,holler,hollow,holly,hologram,holster,holt,homage,home,homeland,homemade,homesick,homeward,homework,homology,homonym,hone,honest,honesty,honey,honeybee,honeydew,honorary,honoree,hoof,hoofmark,hook,hookworm,hoop,hoot,hooves,hop,hope,hopeful,horde,horizon,horn,hornet,horse,horsedom,horsefly,horseman,horsemen,hose,hosiery,hospice,hospital,host,hostage,hostess,hostile,hotel,hotelman,hound,hour,house,housefly,hove,hovel,hover,how,howdy,however,howl,hub,hubris,huddle,hue,hued,huff,hug,huge,hugging,hull,hum,human,humane,humanoid,humble,humerus,humid,humidify,humility,hummock,humorous,humus,hunch,hundred,hungry,hunt,hurdle,hurl,hurley,hurrah,hurray,hurry,hurt,hurtle,husband,hush,husky,hustle,hut,hutch,hyacinth,hyaline,hybrid,hydra,hydrant,hydrate,hydride,hydro,hydrogen,hydrous,hydroxy,hydroxyl,hyena,hygiene,hymn,hymnal,hyphen,hypnosis,hypnotic,iambic,ice,iceberg,icebox,iceland,icicle,icon,iconic,icy,idea,ideal,identify,identity,ideology,idiom,idle,idyll,idyllic,if,igloo,igneous,ignite,ignition,ileum,iliac,illogic,illume,illumine,illusion,illusive,illusory,image,imagery,imagine,imbibe,imbrue,imbue,imitable,imitate,immanent,immature,immense,immerse,imminent,immobile,immune,impact,impair,impale,impart,impasse,impeach,impede,impel,impelled,impeller,impend,imperate,imperial,imperil,impetus,impiety,impinge,implicit,implore,import,impose,impost,impound,impress,imprint,improve,impudent,impugn,impulse,impunity,impute,inaction,inactive,incant,incense,inceptor,inch,incident,incise,incisive,incite,incline,inclose,include,income,increase,incubate,incur,incurred,incurrer,indebted,indeed,indent,index,indicant,indicate,indices,indict,indigene,indigent,indigo,indirect,indoor,indorse,induce,induct,inductee,inductor,industry,inequity,inert,inertia,inertial,inexact,inexpert,infancy,infant,infantry,infer,inferred,infield,infight,infinite,infinity,infirm,inflate,inflater,inflect,inflict,inflow,influent,influx,inform,informal,infract,infrared,infringe,infuse,infusion,ingather,ingest,ingrown,inhabit,inhale,inhere,inherent,inherit,inhibit,inhuman,inimical,iniquity,initial,initiate,inject,injunct,injure,injury,ink,inkling,inlaid,inland,inlay,inlet,inmate,inn,innate,inner,innocent,innovate,innuendo,input,inquest,inquire,inquiry,inroad,inscribe,insect,insecure,insert,inset,inshore,inside,insight,insignia,insist,insomnia,inspect,inspire,install,instance,instant,instead,instep,instill,instinct,instruct,insular,insulate,insulin,insult,insure,intact,intake,integer,integral,intend,intense,intent,inter,intercom,interest,interim,interior,intermit,intern,internal,interval,into,intonate,intone,intrepid,intrigue,introit,intrude,intuit,inundate,inure,invade,invasion,invasive,inveigh,inveigle,invent,inventor,inverse,invert,invest,investor,inviable,invite,invitee,invocate,invoice,invoke,involve,inward,iodide,iodine,ion,ionic,irate,iridium,iris,iron,ironic,ironside,ironwood,is,island,isle,isolate,isomer,isomorph,isotherm,isotope,isotopic,isotropy,issuance,issuant,issue,it,italic,item,iterate,itself,ivory,ivy,jacket,jackpot,jade,jag,jaguar,jamboree,jangle,janitor,jar,jargon,jasper,jaundice,jaunty,javelin,jaw,jawbone,jawbreak,jazz,jazzy,jelly,jersey,jest,jet,jetliner,jettison,jewel,jewelry,jig,jigsaw,jilt,jingle,jittery,jive,job,jockey,jog,jogging,joggle,join,jolly,jolt,jostle,jot,joule,jounce,journal,journey,joust,jovial,jowl,jowly,joy,joyful,joyous,jubilant,jubilate,jubilee,judge,judicial,judo,jug,jugate,jugging,juggle,juice,jumble,jumbo,jump,junction,junctor,juncture,jungle,junior,juniper,juror,jury,just,justice,justify,jut,juvenile,kaiser,kale,kangaroo,keel,keen,keep,kept,kerchief,kern,kernel,kerosene,ketch,ketchup,ketone,ketosis,kettle,key,keyboard,keyed,keyhole,keynote,keys,keystone,khaki,kickoff,kid,kidney,kilo,kilohm,kimono,kin,kind,kin
+
+
 
 
 
@@ -1029,7 +1113,11 @@ WORDS4 CONSTANT VARCHAR2(32726) := 'machination,machine,mackerel,macro,madam,mad
 
 
 
+
+
 mystic,mystify,mystique,myth,mythic,nab,nag,nagging,naiad,nail,name,nameable,namesake,nap,nape,napkin,narrate,narrow,nary,nasal,nascent,natal,nation,native,natural,nature,nautical,nautilus,naval,nave,navel,navigate,navy,neap,near,nearby,nearest,neat,neater,neath,nebula,nebulae,nebular,nebulous,neck,necklace,neckline,necktie,nectar,nectary,need,needful,needham,needle,neither,nemesis,neon,neonatal,neonate,neophyte,neoprene,nepenthe,nephew,nerve,nest,nestle,net,nether,nettle,network,neural,neuritis,neuron,neuronal,neutral,neutrino,neutron,never,new,newborn,newcomer,newel,newfound,newline,newlywed,newsboy,newscast,newsman,newsmen,newsreel,newt,newton,next,niacin,nibble,nice,nicety,niche,nick,nickel,nickname,niece,nigh,night,nimble,nimbus,nine,ninebark,ninefold,nineteen,ninety,ninth,nitrate,nitric,nitride,nitrite,nitrogen,no,nob,nobelium,noble,nobleman,noblemen,noblesse,nobody,nocturne,nod,nodal,node,nodular,nodule,noise,noisy,nomad,nomadic,nominal,nominate,nominee,none,noodle,nook,noon,noontime,nor,north,northern,nose,nostril,not,notary,notch,note,notebook,notice,notify,notion,noun,nourish,nouveau,nova,novel,novelty,novice,now,nowaday,nowadays,nowhere,nozzle,nuance,nucleate,nuclei,nucleic,nucleoli,nucleus,nuclide,nudge,nugget,numb,numeral,numerate,numeric,numerous,numinous,nurse,nursery,nurture,nutmeg,nutrient,nutshell,nuzzle,nylon,oak,oaken,oakwood,oar,oasis,oat,oath,oatmeal,obduracy,obdurate,obelisk,obey,object,objector,objet,oblate,obligate,oblige,oblique,oblong,oboe,oboist,observe,obsidian,obsolete,obstacle,obstruct,obtain,obtrude,obverse,obviate,obvious,occasion,occident,occlude,occupant,occupy,occur,occurred,ocean,oceanic,ocelot,octagon,octal,octane,octant,octave,octet,octile,octopus,ocular,ode,odious,odium,odometer,oersted,of,off,offal,offbeat,offend,offer,offhand,office,official,officio,offload,offset,offshoot,offshore,offstage,oft,often,ogle,ohm,ohmic,ohmmeter,oil,oilcloth,oilman,oilmen,oilseed,oily,oint,ointment,okay,old,olden,oldster,oldy,oleander,olefin,olive,olivine,omelet,omicron,ominous,omnibus,on,once,oncology,oncoming,one,onerous,oneself,onetime,ongoing,onion,only,onrush,onset,onto,ontogeny,ontology,onus,onward,onyx,oocyte,ooze,opacity,opal,opaque,open,opera,operable,operand,operant,operate,operatic,operetta,operon,opine,opinion,opossum,opponent,oppose,opposite,opt,optic,optima,optimal,optimism,optimist,optimum,option,opulent,or,oracle,oracular,orange,orate,oratoric,oratorio,oratory,orb,orbit,orbital,orchard,orchid,ordain,ordeal,order,orderly,ordinal,ordinary,ordinate,ordnance,ore,oregano,organic,origin,original,oriole,ornament,ornate,ornately,orthant,orthicon,orthodox,osier,osmium,osmosis,osmotic,osprey,osseous,ossify,ostrich,other,otiose,otter,ought,ounce,our,oust,out,outlawry,oval,oven,over,overhang,overt,overture,owl,owly,own,ox,oxalate,oxalic,oxcart,oxen,oxeye,oxidant,oxidate,oxide,oxygen,oyster,ozone,pace,pacemake,pacific,pacifism,pacifist,pacify,pack,package,packet,pact,pad,paddock,paddy,padlock,page,pageant,paginate,paid,pail,paint,pair,pairwise,pal,palace,palate,palazzi,palazzo,pale,palette,palfrey,palisade,pall,palladia,pallet,palliate,pallid,palm,palmate,palmetto,palpable,palsy,pamper,pamphlet,pan,panacea,panama,pancake,pancreas,panda,pane,panel,panorama,pant,pantheon,panther,pantry,papa,papery,paprika,papyrus,par,parabola,parade,paradigm,paradise,paradox,paraffin,paragon,parakeet,parallax,parallel,parasite,parasol,paraxial,parboil,parcel,parch,pardon,pare,parent,parental,pariah,park,parkish,parkland,parkway,parody,parquet,parrot,parry,parse,parsley,parsnip,parson,part,partake,partial,particle,partisan,partner,partook,party,paschal,pass,passage,passband,passe,passer,passerby,passion,passive,passport,past,paste,pastel,pastime,pastoral,pastry,pasture,pat,patch,patchy,pate,patent,patentee,pater,paternal,path,pathfind,pathogen,pathway,patient,patio,patriot,patrol,patron,pattern,pause,pave,paw,pawn,pawnshop,pax,pay,paycheck,payday,payoff,payroll,pea,peace,peaceful,peach,peacock,peak,peal,peanut,pear,pearl,pe
+
+
 
 
 
@@ -1083,7 +1171,11 @@ at,pebble,pecan,peccary,peck,pectoral,peculate,peculiar,pedagogy,pedal,pedant,pe
 
 
 
+
+
 pull,pulley,pullover,pulp,pulpit,pulsar,pulsate,pulse,puma,pumice,pump,pumpkin,pun,punctual,puncture,pundit,punditry,pungent,punster,punt,pup,pupate,pupil,puppet,puppy,puppyish,purchase,pure,purge,purify,purl,purple,purport,purpose,purse,purslane,pursuant,pursue,pursuer,pursuit,purvey,purveyor,purview,push,pushout,pushpin,put,putative,putt,putty,puzzle,pygmy,pyknotic,pyramid,python,quad,quadrant,quadric,quaff,quagmire,quail,quaint,quake,qualify,quality,qualm,quandary,quanta,qu,quantile,quantity,quantum,quark,quarrel,quarry,quart,quartet,quartic,quartile,quartz,quasar,quash,quasi,quatrain,quaver,quay,quell,quench,quest,question,quetzal,queue,quibble,quick,quicken,quiet,quietus,quill,quilt,quince,quinine,quint,quintet,quintic,quintus,quip,quipping,quirk,quirt,quite,quitting,quiver,quixotic,quiz,quizzes,quonset,quorum,quota,quote,quotient,rabbit,rabble,raccoon,race,raceway,racket,rackety,radar,radial,radian,radiant,radiate,radical,radices,radii,radio,radish,radium,radius,radon,raffle,raft,ragout,raid,rail,railbird,railhead,raillery,railroad,railway,rain,rainbow,raincoat,raindrop,rainfall,rainy,raise,raisin,raj,rajah,rake,rakish,rally,ram,ramble,ramify,ramp,rampage,rampant,rampart,ran,ranch,rancho,random,rang,range,rank,rankle,ransack,ransom,rapid,rapier,rapport,rapture,rare,rarefy,rascal,rash,rasp,rate,rater,rather,ratify,ratio,rattail,rattle,ratty,raucous,ravage,rave,ravel,raven,ravenous,ravine,raw,rawhide,ray,raze,razor,razzle,reach,reactant,read,readout,ready,real,realm,realtor,realty,ream,reap,reason,reave,reb,receipt,receive,recent,receptor,recess,recipe,recital,reckon,recline,recluse,recovery,recruit,rectify,rector,rectory,recur,recurred,recusant,recuse,red,redact,redactor,redbird,redcoat,redden,reddish,redhead,reduce,redwood,reed,reef,reek,reel,refer,referee,referent,referral,referred,refinery,reflect,refract,refrain,refuge,refugee,refusal,refute,regal,regale,regalia,regard,regatta,regent,regime,regimen,regiment,region,regional,registry,regular,regulate,rehearse,reign,rein,reindeer,rejoice,relate,relayed,relevant,reliant,relic,relict,relief,relieve,religion,relish,remark,remedy,remember,remiss,remit,remitted,remnant,remorse,remote,removal,rend,render,renewal,renounce,renovate,renown,rent,rental,repartee,repeal,repeat,repeater,repel,repelled,repent,replete,replica,report,reprieve,reprisal,reprise,reproach,reptile,republic,repute,request,require,requited,rerouted,rescind,rescue,resemble,resent,reserve,reside,resident,residual,residue,residuum,resign,resin,resist,resistor,resolute,resolve,resonant,resonate,resort,respect,respire,respite,respond,response,rest,restful,restive,restrain,restrict,result,resume,resuming,retail,retain,reticent,retina,retinal,retinue,retire,retiree,retort,retract,retrieve,retrofit,return,reveal,revel,revelry,revenue,rever,revere,reverend,reverent,reverie,reversal,reverse,revert,revery,revile,revisal,revise,revision,revival,revive,revoke,revolt,revolve,revved,revving,reward,rhapsody,rhenium,rheology,rheostat,rhesus,rhetoric,rheum,rhino,rhodium,rhombic,rhombus,rhubarb,rhyme,rhythm,rhythmic,rib,ribald,ribbon,ribose,ribosome,rice,rich,ricochet,rid,riddance,ridden,riddle,ride,ridge,riffle,rift,rig,rigging,right,rightful,rigid,rigorous,rim,ring,ringlet,ringside,rink,rinse,rip,ripen,ripple,rise,risen,risible,rite,ritual,rival,rivalry,riven,river,riverine,rivet,rivulet,road,roadbed,roadside,roadster,roadway,roam,roar,roast,robe,robin,robot,robotic,robotics,robust,rock,rockabye,rockaway,rocket,rocky,rode,rodent,rodeo,roe,roebuck,rogue,roil,roister,role,roll,rollback,rollick,romance,romp,roof,rooftop,rook,rookie,room,roomful,roommate,roomy,roost,root,rope,rose,rosebud,rosebush,rosemary,rosette,roster,rosy,rotary,rotate,rote,rotor,rotunda,rouge,roughen,round,roundoff,roundup,rout,route,routine,rove,row,rowboat,royal,royalty,rubble,rubdown,rubicund,rubidium,rubric,ruby,ruckus,rudder,ruddy,rudiment,ruff,ruffle,rufous,rug,rule,rumble,rumen,ruminant,ruminate,rummage,run,runabout,runaway,rundown,rune,rung,runic,runn
+
+
 
 
 
@@ -1139,7 +1231,11 @@ WORDS5 CONSTANT VARCHAR2(32726) := 'sabbatical,sable,sabotage,saccade,sachem,sac
 
 
 
+
+
 ize,sizzle,skat,skate,skater,skeet,skeletal,skeleton,skeptic,sketch,sketchy,skew,ski,skid,skiddy,skied,skiff,skill,skillet,skillful,skim,skimp,skinny,skip,skirmish,skirt,skit,skittle,skulk,skull,skullcap,skunk,sky,skyhook,skylark,skylight,skyline,skyward,skywave,skyway,slab,slag,slam,slander,slant,slap,slash,slat,slate,slater,sled,sledge,sleek,sleep,sleet,sleeve,sleigh,sleight,slender,slept,sleuth,slew,slice,slick,slid,slide,slight,slim,slime,sling,slip,slippage,slippery,slither,sliver,slivery,slob,sloe,slog,slogan,slop,slope,slosh,slot,sloth,slouch,slough,sloven,slow,slowdown,sludge,slumber,small,smaller,smallpox,smart,smash,smatter,smear,smelt,smile,smirk,smith,smithy,smitten,smog,smoke,smoky,smolder,smooth,smother,smudge,snack,snag,snagging,snail,snake,snap,snapback,snappish,snappy,snapshot,snare,snark,snarl,snatch,snazzy,sneak,sneaky,sneer,sneeze,snell,snick,snippet,snippy,snivel,snook,snoop,snoopy,snore,snorkel,snort,snout,snow,snowball,snowfall,snowshoe,snowy,snub,snuffer,snuffle,snuffly,snug,snuggle,snuggly,snyaptic,so,soak,soap,soapsud,soapy,soar,sob,soccer,sociable,social,societal,society,sock,socket,sockeye,sod,soda,sodden,sodium,sofa,soffit,soft,softball,soften,software,softwood,soggy,soil,soiree,sojourn,solace,solar,sold,solder,soldier,soldiery,sole,solecism,solemn,solenoid,solicit,solid,solidify,solidus,solitary,soliton,solitude,solo,solstice,soluble,solute,solution,solvate,solve,solvent,soma,somal,somatic,somber,sombre,some,somebody,someday,somehow,someone,sometime,somewhat,son,sonant,sonar,sonata,song,songbag,songbook,songful,sonic,sonnet,sonogram,sonority,sonorous,soon,soot,sooth,soothe,soothsay,sop,soprano,sorcery,sordid,sore,sorption,sorrel,sorrow,sorry,sort,souffle,sough,sought,soul,soulful,sound,soup,sour,source,sourwood,soutane,south,southern,souvenir,sow,sown,soy,soybean,spa,space,spacious,spade,spalding,span,spandrel,spangle,spaniel,spar,spare,sparge,spark,sparkle,sparky,sparling,sparrow,sparse,spasm,spat,spate,spatial,spatlum,spatula,spavin,spawn,speak,spear,spec,special,species,specific,specify,specimen,specious,speck,speckle,spectra,spectral,spectrum,specular,sped,speech,speed,speedup,speedy,spell,spend,spent,sphere,spheric,spheroid,spherule,sphinx,spice,spicy,spider,spidery,spigot,spike,spiky,spill,spilt,spin,spinach,spinal,spindle,spine,spinoff,spinster,spiny,spiral,spire,spirit,spite,spiteful,splash,splashy,splat,splay,splayed,spleen,splendid,splice,spline,splint,split,splotch,splotchy,splurge,splutter,spoil,spoilage,spoke,spoken,sponge,spongy,sponsor,spoof,spooky,spool,spoon,spoonful,sporadic,spore,sport,sporty,spot,spotty,spouse,spout,sprain,sprang,sprawl,spray,spread,spree,sprig,spring,springe,springy,sprinkle,sprint,sprite,sprocket,sprout,spruce,sprue,sprung,spumoni,spun,spur,spurge,spurious,spurn,spurt,sputnik,sputter,spy,spyglass,squabble,squad,squadron,squalid,squall,squamous,squander,square,squash,squawk,squeak,squeaky,squeal,squeegee,squeeze,squelch,squid,squill,squint,squire,squirm,squirmy,squirrel,squirt,squishy,stab,stabile,stable,staccato,stack,stadia,stadium,staff,stag,stage,stagnant,stagnate,stagy,staid,stain,stair,stairway,stake,stale,stalk,stall,stallion,stalwart,stamen,stamina,stammer,stamp,stampede,stance,stanch,stand,standard,standby,standeth,standoff,stannic,stannous,stanza,staph,staple,star,starch,starchy,stardom,stare,starfish,stargaze,stark,starlet,starling,start,startle,startup,stash,state,stater,static,stator,statuary,statue,stature,status,statute,staunch,stave,stay,stayed,stead,steady,steak,stealth,stealthy,steam,steamy,stearate,stearic,steed,steel,steely,steep,steepen,steeple,steer,stein,stellar,stem,stencil,step,stepson,stepwise,stereo,sterile,sterling,stern,sternal,sternum,steroid,stew,steward,stick,stickle,stickpin,sticky,stifle,stigma,stigmata,stile,stiletto,still,stilt,stimuli,stimulus,sting,stingy,stint,stipend,stipple,stir,stirrup,stitch,stock,stockade,stocky,stodgy,stoic,stoke,stolid,stomach,stone,stony,stood,stoop,stop,stopband,stopgap,stopover,stoppage,storage,
+
+
 
 
 
@@ -1193,6 +1289,8 @@ store,stork,storm,stormy,story,stout,stove,stow,stowage,stowaway,straddle,strafe
 
 
 
+
+
 ugh,thought,thousand,thrall,thread,three,thresh,threw,thrice,thrift,thrifty,thrill,thrive,throes,throne,throng,throttle,through,throw,thrown,thrum,thrush,thud,thulium,thumb,thump,thunder,thus,thwart,thy,thyme,thymine,thymus,thyroid,tibia,tick,ticket,tickle,ticklish,tidal,tidbit,tide,tideland,tidy,tie,tied,tier,tift,tiger,tight,tighten,tigress,til,tilde,tile,till,tilt,tilth,timber,timbre,time,timeworn,timid,tin,tinder,tine,tinfoil,tinge,tingle,tinker,tinkle,tinsel,tint,tintype,tiny,tip,tipoff,tippy,tiptoe,tirade,tire,tiresome,tissue,titanate,titanic,titanium,tithe,titian,title,to,toad,toady,toast,today,toe,toenail,toffee,tofu,together,togging,toggle,toil,toilsome,token,told,tolerant,tolerate,toll,tollgate,toluene,tomato,tomatoes,tome,tomorrow,ton,tonal,tone,tong,tonic,tonight,tonnage,tonsil,too,took,tool,toolkit,toolmake,toot,tooth,top,topaz,topcoat,topic,topmost,topnotch,topology,topple,topsoil,torch,tore,torn,tornado,toroid,toroidal,torpedo,torpid,torpor,torque,torrent,torrid,torsion,torso,tort,tortoise,toss,tot,total,tote,totem,totemic,touch,tough,tour,tousle,tout,tow,toward,towboat,towel,tower,town,townsman,townsmen,toxic,toxin,toy,trace,tracery,trachea,track,trackage,tract,tractor,trade,tradeoff,traffic,tragedy,tragic,trail,train,trainee,trainman,trainmen,traipse,trait,traitor,tram,trammel,trample,tramway,trance,tranquil,transact,transect,transept,transfer,transfix,transit,transmit,transom,travail,travel,traverse,travesty,trawl,tray,tread,treadle,treason,treasure,treasury,treat,treatise,treaty,treble,tree,treetop,trefoil,trek,trellis,tremble,tremor,trench,trend,trendy,trespass,tress,trestle,triad,trial,triangle,tribal,tribe,tribunal,tribune,tribute,trick,trickery,trickle,tricky,trident,tried,trifle,trig,trigonal,trigram,trill,trillion,trilogy,trim,trimer,trinity,trinket,trio,triode,trioxide,trip,tripe,triple,triplet,triplex,tripod,tripoli,triptych,tristate,trite,tritium,triton,triumph,triune,trivia,trivial,trivium,trod,trodden,troika,troll,trolley,trollop,trombone,trompe,troop,trophic,trophy,tropic,trot,trough,trounce,troupe,trouser,trout,troy,truancy,truant,truce,truck,trudge,truism,truly,trump,trumpery,trumpet,truncate,trundle,trunk,truss,trust,trustee,trustful,truth,truthful,try,trypsin,tsunami,tub,tuba,tube,tubular,tubule,tuck,tuff,tuft,tug,tugging,tuition,tulip,tulle,tumble,tumbrel,tumult,tuna,tundra,tune,tuneful,tungsten,tunic,tunnel,tupelo,tuple,turban,turbid,turbine,turbofan,turbojet,turf,turgid,turk,turkey,turmoil,turn,turnery,turnip,turnkey,turnoff,turnout,turnpike,turret,turtle,turvy,tusk,tussle,tutelage,tutor,tutorial,tutu,tuxedo,twain,tweak,tweed,tweedy,tweeze,twelfth,twelve,twenty,twice,twiddle,twig,twigging,twilight,twill,twin,twine,twinge,twinkle,twirl,twirly,twist,twisty,twitch,twitchy,two,twofold,twosome,tycoon,tying,type,typeface,typeset,typhoid,typhoon,typhus,typic,typify,typo,typology,tyrannic,tyranny,tyrosine,ubiquity,ulterior,ultimate,ultra,umber,umbra,umbrage,umbrella,umlaut,umpire,unary,unbidden,uncle,unction,under,undulate,uniaxial,unicorn,uniform,unify,unimodal,union,uniplex,unipolar,unique,unison,unitary,unite,unity,universe,until,unwieldy,up,upbeat,upbraid,upbring,upcome,update,updraft,upend,upgrade,upheaval,upheld,uphill,uphold,upkeep,upland,uplift,upon,upper,uppercut,upraise,upright,uprise,upriver,uproar,uproot,upset,upshot,upside,upsilon,upslope,upstair,upstand,upstart,upstate,upstater,upstream,upsurge,upswing,uptake,uptown,uptrend,upturn,upward,upwind,uranium,urban,urbane,urbanite,urchin,urge,urgency,urgent,urging,us,usable,usage,use,useful,usher,usual,usurer,usurious,usurp,usury,utensil,utility,utmost,utopia,utopian,utter,vacant,vacate,vaccine,vacua,vacuo,vacuole,vacuous,vacuum,vade,vagabond,vagary,vagrant,vague,vain,vale,valent,valet,valeur,valiant,valid,validate,valine,valley,valuate,value,valve,vamp,vampire,van,vanadium,vandal,vane,vanguard,vanilla,vanish,vanity,vanquish,vantage,vapid,vaporous,variable,variac,variant,variate,variety,various,varistor,varnish,varsity,vary,vascular,vase,va
 
 
@@ -1220,7 +1318,11 @@ ugh,thought,thousand,thrall,thread,three,thresh,threw,thrice,thrift,thrifty,thri
 
 
 
+
+
 ssal,vast,vat,vault,vaunt,veal,vector,vee,veer,veery,vegetate,vehicle,veil,vein,velar,veldt,vellum,velocity,velours,velvet,velvety,venal,vend,vendetta,vendible,vendor,veneer,venerate,venial,venous,vent,venture,venturi,veracity,veranda,verandah,verb,verbal,verbatim,verbena,verbiage,verbose,verdant,verdict,verge,veridic,verify,verity,vermeil,vermin,vermouth,vernal,vernier,versa,versatec,verse,version,versus,vertebra,vertex,vertical,vertices,vertigo,verve,very,vesper,vessel,vest,vestal,vestige,vestry,vet,vetch,veteran,veto,via,viaduct,vial,vibrant,vibrate,vibrato,viburnum,vicar,viceroy,vicinal,vicinity,vicious,victor,victory,victrola,victual,vide,video,vie,view,vigil,vigilant,vignette,vigorous,villa,village,villain,villein,vine,vinegar,vineyard,vintage,vintner,vinyl,viola,violate,violent,violet,violin,virgule,virtual,virtue,virtuosi,virtuoso,virtuous,virulent,virus,vis,visa,visage,viscount,viscous,vise,visible,vision,visit,visitor,visor,vista,visual,vita,vitae,vital,vitamin,vitiate,vitreous,vitrify,vitriol,vitro,viva,vivace,vivacity,vivid,vivify,vivo,vixen,viz,vocable,vocal,vocalic,vocate,vogue,voice,void,volatile,volcanic,volcano,volition,volley,volt,voltage,voltaic,voluble,volume,voracity,vortex,vortices,votary,vote,votive,vouch,vow,vowel,voyage,vulgar,vulpi,vulture,vying,wacky,wad,waddle,wade,wafer,waffle,wag,wage,wagging,waggle,wagoneer,wail,waist,wait,waitress,waive,wake,wakeful,waken,wakeup,wale,walk,walkout,walkover,walkway,wall,wallaby,wallet,wallop,wallow,wally,walnut,walrus,waltz,waltzing,wan,wand,wander,wane,wangle,want,wanton,wapato,wapiti,war,warble,ward,warden,wardrobe,wardroom,ware,warm,warmth,warmup,warn,warp,warplane,warrant,warranty,warren,warrior,wary,was,wash,washbowl,washout,washy,wasp,waspish,wast,wastage,wasteful,wastrel,watch,watchdog,watchful,watchman,watchmen,water,waterway,watery,watt,wattage,wattle,wave,waveform,wavelet,wavy,wax,waxen,waxwork,waxy,way,waybill,waylaid,waylay,wayside,wayward,we,weak,weaken,weal,wealth,wealthy,wean,wear,wearied,weary,weasel,weather,weave,web,weber,wed,wedge,wedlock,wee,weed,weedy,week,weekday,weekend,weep,weigh,weight,weighty,weir,weird,welcome,weld,welfare,well,welsh,welt,went,wept,were,wert,west,westerly,western,westward,wet,wetland,whale,wharf,wharves,what,whatever,whatnot,wheat,wheedle,wheel,wheeze,wheezy,whelk,whelm,when,whence,whenever,where,whereas,whereby,wherein,whereof,whereon,wherever,whet,whether,which,whiff,whig,while,whim,whimper,whimsey,whimsic,whiplash,whipsaw,whir,whirl,whish,whisk,whisper,whistle,whit,white,whiten,whither,whittle,who,whoever,whole,wholly,whom,whomever,whose,why,wick,wicket,wide,widen,widgeon,widget,widow,width,wield,wig,wigging,wiggle,wild,wildcat,wildfire,wildlife,wile,wilful,will,willful,willow,willowy,wilt,wily,win,wince,wind,windbag,windfall,windmill,window,windsurf,windup,windward,windy,wing,wingback,wingman,wingmen,wingspan,wingtip,wink,winkle,winnow,winsome,winter,wintry,winy,wipe,wire,wireman,wiremen,wiretap,wiry,wisdom,wise,wish,wishbone,wishful,wisp,wispy,wistful,wit,with,withal,withdraw,withdrew,withe,wither,withheld,withhold,within,without,withy,witness,witty,wizard,wobble,woe,woeful,wok,woke,wold,wolf,wolfish,wolves,woman,wombat,women,won,wonder,wondrous,wont,woo,wood,woodcut,wooden,woodhen,woodland,woodlot,woodpeck,woodrow,woodruff,woodshed,woodside,woodward,woodwind,woodwork,wool,word,wordy,wore,work,workaday,workbook,workday,workload,workman,workmen,workout,workshop,world,worm,worn,worth,worthy,would,wound,wove,woven,wow,wrack,wraith,wrangle,wrap,wrapup,wrath,wrathful,wreak,wreath,wreathe,wreck,wreckage,wrench,wrest,wrestle,wretch,wriggle,wright,wring,wrinkle,wrist,writ,write,writeup,writhe,written,wrote,wrought,wry,xenon,xylem,xylene,yacht,yak,yam,yap,yapping,yard,yardage,yarmulke,yarn,yarrow,yawn,yea,yeah,year,yearbook,yearn,yeast,yell,yellow,yelp,yen,yeoman,yeomanry,yet,yield,yip,yipping,yodel,yoga,yoghurt,yogi,yogurt,yoke,yolk,yon,yond,yore,you,young,youngish,your,yourself,youth,youthful,yule,zag,zagging,zap,zazen,zea
+
+
 
 
 
@@ -1314,6 +1416,9 @@ ne,vulture,vying,wacky,wad,waddle,wade,wafer,waffle,wag,wage,wagging,waggle,wago
                                           
   PROCEDURE SCHEDULE_SESSIONS_FOR_OK(INPUT_CUSTOMER_ID     INTEGER,
                                      INPUT_TESTING_WINDOW  VARCHAR2);
+  
+  PROCEDURE SCHEDULE_NOT_TESTED_STUDENTS(INPUT_CUSTOMER_ID INTEGER);                                   
+                                     
 END OAS_OK_TEST_PRE_SCHEDULING;
 /
 CREATE OR REPLACE PACKAGE BODY OAS_OK_TEST_PRE_SCHEDULING IS
@@ -1558,7 +1663,43 @@ CREATE OR REPLACE PACKAGE BODY OAS_OK_TEST_PRE_SCHEDULING IS
               STU.USER_NAME,
               STU.GRADE;
 
-
+  /** Added for User Story : Place not tested into next session **/
+    CURSOR CUR_NOT_TESTED_STUDENTS(V_DEPTT_NODE_ID    ORG_NODE_ANCESTOR.ORG_NODE_ID%TYPE, 
+                                   V_PRODUCT_ID       INTEGER,
+                                   V_TESTING_SUBJECT  STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE,
+                                   V_TEST_WINDOW      STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE,
+                                   V_TEST_NAME        TEST_CATALOG.TEST_NAME%TYPE) IS
+    SELECT STU.STUDENT_ID,
+           STU.USER_NAME,
+           STU.ACTIVATION_STATUS,
+           STU.GRADE,
+           MAX(ONS.ORG_NODE_ID) AS ORG_NODE_ID
+      FROM ORG_NODE_STUDENT ONS, STUDENT STU, ORG_NODE NODE
+     WHERE ONS.STUDENT_ID = STU.STUDENT_ID
+       AND ONS.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+       AND STU.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+          --AND STU.PRECODE_ID IS NOT NULL -- Can be commented to use procedure for scheduling all type of student(UI and Informatica)
+       AND NVL(STU.OUT_OF_SCHOOL, 'No') <> 'Yes'
+       AND ONS.ORG_NODE_ID = NODE.ORG_NODE_ID
+       AND ONS.ORG_NODE_ID IN
+           (SELECT ORG_NODE_ID
+              FROM ORG_NODE_ANCESTOR ONS
+             WHERE ANCESTOR_ORG_NODE_ID = V_DEPTT_NODE_ID
+               AND NUMBER_OF_LEVELS IN (0, 1))
+       AND (SELECT DECODE(COUNT(1), 0, 0, 1, 1, 2)
+              FROM TEST_ADMIN ADM, TEST_ROSTER ROS, TEST_CATALOG CAT
+             WHERE ROS.STUDENT_ID = STU.STUDENT_ID
+               AND ROS.TEST_ADMIN_ID = ADM.TEST_ADMIN_ID
+               AND ADM.TEST_CATALOG_ID = CAT.TEST_CATALOG_ID
+               AND CAT.TEST_NAME = V_TEST_NAME
+               AND ROS.TEST_COMPLETION_STATUS IN ('SC', 'NT')
+               AND ADM.ACTIVATION_STATUS = 'AC'
+               AND ADM.PRODUCT_ID = V_PRODUCT_ID) = 1
+     GROUP BY STU.STUDENT_ID,
+              STU.ACTIVATION_STATUS,
+              STU.USER_NAME,
+              STU.GRADE;
+     
   CURSOR CRSGETSCHEDULABLEUNITSFORTEST(VPARENTITEMSETID ITEM_SET.ITEM_SET_ID%TYPE) IS
     SELECT ISET.ITEM_SET_ID
       FROM ITEM_SET ISET, ITEM_SET_PARENT ISP
@@ -2139,7 +2280,102 @@ CREATE OR REPLACE PACKAGE BODY OAS_OK_TEST_PRE_SCHEDULING IS
 
   END INSERT_TEST_ROSTER_WINTER;
 
-  
+  /** Added for User Story : Place not tested into next session **/  
+  PROCEDURE INSERT_TEST_ROSTER_NOT_TESTED(VPRODUCTID          INTEGER,
+                                          VCUSTOMERID         INTEGER,
+                                          VCREATEDBY          USERS.USER_ID%TYPE,
+                                          VTESTADMINID        TEST_ADMIN.TEST_ADMIN_ID%TYPE,
+                                          ORG_NODE_ID         ORG_NODE.ORG_NODE_ID%TYPE,
+                                          V_STUDENT_LIST      IN OUT VARCHAR2,
+                                          VCUSTOMERFLAGSTATUS CUSTOMER_CONFIGURATION.DEFAULT_VALUE%TYPE,
+                                          V_TESTING_SUBJECT   STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE,
+                                          V_TEST_WINDOW       STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE,
+                                          V_TEST_NAME         TEST_CATALOG.TEST_NAME%TYPE) AS
+
+    V_IS_CURSOR_RETURNS_VALUE BOOLEAN := FALSE;
+
+  BEGIN
+
+    OPEN CUR_NOT_TESTED_STUDENTS(ORG_NODE_ID, VPRODUCTID,V_TESTING_SUBJECT,V_TEST_WINDOW,V_TEST_NAME);
+    LOOP
+      FETCH CUR_NOT_TESTED_STUDENTS BULK COLLECT
+        INTO V_ARRAY_OF_STUDENT LIMIT 500;
+
+      EXIT WHEN(V_ARRAY_OF_STUDENT.COUNT = 0);
+
+      FOR I IN 1 .. V_ARRAY_OF_STUDENT.COUNT LOOP
+
+        --- ACTUAL CODE START HERE
+        V_IS_CURSOR_RETURNS_VALUE := TRUE;
+
+        IF ((V_STUDENT_LIST IS NOT NULL) AND (LENGTH(TRIM(V_STUDENT_LIST)) > 0)) THEN
+          V_STUDENT_LIST := V_STUDENT_LIST || ',' || V_ARRAY_OF_STUDENT(I)
+                         .STUDENT_ID;
+        ELSE
+          V_STUDENT_LIST := V_ARRAY_OF_STUDENT(I).STUDENT_ID;
+        END IF;
+
+        /*  DBMS_OUTPUT.put_line('Admin'||V_RESTRICTED_ADMIN);*/
+        BEGIN
+          INSERT INTO TEST_ROSTER
+            (TEST_ROSTER_ID,
+             TEST_ADMIN_ID,
+             TEST_COMPLETION_STATUS,
+             VALIDATION_STATUS,
+             OVERRIDE_TEST_WINDOW,
+             PASSWORD,
+             STUDENT_ID,
+             CREATED_BY,
+             ACTIVATION_STATUS,
+             CUSTOMER_ID,
+             SCORING_STATUS,
+             ORG_NODE_ID,
+             FORM_ASSIGNMENT,
+             CUSTOMER_FLAG_STATUS)
+          VALUES
+            (SEQ_TEST_ROSTER_ID.NEXTVAL,
+             VTESTADMINID,
+             TEST_COMPLETION_STATUS,
+             VALIDATION_STATUS,
+             OVERRIDE_TEST_WINDOW,
+             GENERATEPASSWORD(V_GEN_STD_PASS_LENGTH, 0),
+             V_ARRAY_OF_STUDENT(I).STUDENT_ID,
+             VCREATEDBY,
+             V_ACTIVATION_STATUS,
+             VCUSTOMERID,
+             SCORING_STATUS,
+             V_ARRAY_OF_STUDENT(I).ORG_NODE_ID,
+             V_FORM_ASSIGNMENT,
+             VCUSTOMERFLAGSTATUS);
+
+        EXCEPTION
+          WHEN OTHERS THEN
+            LOG_MESSAGE(V_LOG_ID,
+                        V_STATUS_ERROR,
+                        'Insert into table test_roster fails' ||
+                        DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+            RAISE;
+        END;
+
+      --- ACTUAL CODE END HERE
+
+      END LOOP;
+      EXIT WHEN CUR_NOT_TESTED_STUDENTS%NOTFOUND;
+    END LOOP;
+
+    CLOSE CUR_NOT_TESTED_STUDENTS;
+
+    IF (NOT V_IS_CURSOR_RETURNS_VALUE) THEN
+      -- LOGGING ONLY, WHEN CURSOR "crsGetStuForAllGradeAtSchool" DOES NOT RETURNS ANY VALUE
+      LOG_MESSAGE(V_LOG_ID,
+                  V_STATUS_WARN,
+                  'No student found for school id [' || ORG_NODE_ID ||
+                  '] FOR WINTER/TRIMESTER');
+      -- RAISE_APPLICATION_ERROR(-20000,'No student found for school id ['||recSchoolNode.org_node_id || '] with grade ['||recTCItemSetId.grade||'].');
+    END IF;
+
+  END INSERT_TEST_ROSTER_NOT_TESTED;
+
 
   --------------------------------------------
   ----------- Procedure for         ----------
@@ -2864,6 +3100,539 @@ CREATE OR REPLACE PACKAGE BODY OAS_OK_TEST_PRE_SCHEDULING IS
       RAISE;         
                   
   END SCHEDULE_SESSIONS_FOR_OK;
+  
+  
+  /** Added for User Story : Place not tested into next session **/
+  
+  PROCEDURE SCHEDULE_NOT_TESTED_STUDENTS(INPUT_CUSTOMER_ID INTEGER) IS
+  
+    V_TEST_ADMIN_ID              TEST_ADMIN.TEST_ADMIN_ID%TYPE := NULL;
+    V_TEST_ACCESS_CODE           TEST_ADMIN.ACCESS_CODE%TYPE := NULL;
+    V_CREATEDBY                  USERS.USER_ID%TYPE := DEFAULT_CREATED_BY;
+    V_PRODUCTNAME                PRODUCT.PRODUCT_NAME%TYPE := NULL;
+    V_PRODUCT_ID                 PRODUCT.PRODUCT_ID%TYPE;
+    V_SHOW_STUDENT_FEEDBACK      PRODUCT.SHOW_STUDENT_FEEDBACK%TYPE := NULL;
+    V_CONFIG_DATA                TEST_SCHEDULE_CONFIG%ROWTYPE;
+    V_TEST_CATALOG_ID            TEST_CATALOG.TEST_CATALOG_ID%TYPE := NULL;
+    V_TEST_NAME                  TEST_CATALOG.TEST_NAME%TYPE := NULL;
+    V_CUSTOMER_FLAG_STATUS       CUSTOMER_CONFIGURATION.DEFAULT_VALUE%TYPE;
+    V_DIFF_START_DATE            NUMBER(8);
+    V_DIFF_END_DATE              NUMBER(8);
+    V_DIFF_STSRT_END_DATE        NUMBER(8);
+    V_STUDENT_LIST               VARCHAR2(32767) := '';
+    V_REC_COUNT                  NUMBER(10) := 0;
+    V_IS_CURSOR_RETURNS_VALUE    BOOLEAN := FALSE;
+    V_CORPORATE_CODE             ORG_NODE.ORG_NODE_CODE%TYPE := NULL;
+    V_ITEM_SET_ID                ITEM_SET.ITEM_SET_ID%TYPE := '';
+    V_ROLE_ID                    USER_ROLE.ROLE_ID%TYPE;
+    V_SUBJECT_NAME               VARCHAR2(50);
+    V_TESTING_SUBJECT            STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE;
+    V_TEST_WINDOW                STUDENT_DEMOGRAPHIC_DATA.VALUE_NAME%TYPE;
+    V_CHAR_LENGTH                NUMBER;
+    V_PATTERN_STR                VARCHAR2(10) := 'II';
+  
+    /* Retrieve all school level org_node_ids for Okhlahoma customer */
+    CURSOR CUR_FETCH_ALL_SCHOOL_NODES(V_CUSTOMERID INTEGER) IS
+      SELECT NODE.ORG_NODE_ID,
+             NODE.ORG_NODE_NAME,
+             ONC.CATEGORY_NAME,
+             NODE.ORG_NODE_CODE
+        FROM ORG_NODE NODE, ORG_NODE_CATEGORY ONC
+       WHERE ONC.ORG_NODE_CATEGORY_ID = NODE.ORG_NODE_CATEGORY_ID
+         AND ONC.CATEGORY_LEVEL = SCHOOL_CATEGORY_LEVEL
+         AND NODE.CUSTOMER_ID = V_CUSTOMERID
+         AND EXISTS
+       (SELECT *
+                FROM ORG_NODE_PARENT
+               WHERE PARENT_ORG_NODE_ID = NODE.ORG_NODE_ID);
+  
+    /* Retrieves admin user for a particular school node */
+    CURSOR CUR_GET_ADMIN_USER(V_SCHOOL_NODE_ID ORG_NODE.ORG_NODE_ID%TYPE) IS
+      SELECT USERS.USER_ID, UROLE.ROLE_ID
+        FROM USERS, USER_ROLE UROLE, ROLE R
+       WHERE UROLE.USER_ID = USERS.USER_ID
+         AND UROLE.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+         AND UROLE.ROLE_ID = R.ROLE_ID
+         AND R.ROLE_NAME IN ('ADMINISTRATOR', 'ADMINISTRATIVE COORDINATOR')
+         AND UROLE.ORG_NODE_ID = V_SCHOOL_NODE_ID
+         AND USERS.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+       ORDER BY UROLE.ROLE_ID;
+  
+    /* Retrieves coordinator user for a particular school node */
+    CURSOR CUR_GET_COORDINATOR_USER(V_SCHOOL_NODE_ID ORG_NODE.ORG_NODE_ID%TYPE) IS
+      SELECT USERS.USER_ID, UROLE.ROLE_ID
+        FROM USERS, USER_ROLE UROLE, ROLE R
+       WHERE UROLE.USER_ID = USERS.USER_ID
+         AND UROLE.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+         AND UROLE.ROLE_ID = R.ROLE_ID
+         AND R.ROLE_NAME = ('COORDINATOR')
+         AND UROLE.ORG_NODE_ID = V_SCHOOL_NODE_ID
+         AND USERS.ACTIVATION_STATUS = V_ACTIVATION_STATUS
+       ORDER BY UROLE.ROLE_ID;
+       
+    /* Retrieve all department nodes for a particular school node*/
+    CURSOR CUR_GET_DEPARTMENT_NODES(V_SCHOOL_NODE_ID ORG_NODE.ORG_NODE_ID%TYPE) IS
+      SELECT ORG.*
+        FROM ORG_NODE ORG, ORG_NODE_PARENT ONP
+       WHERE ORG.ORG_NODE_ID = ONP.ORG_NODE_ID
+         AND ONP.PARENT_ORG_NODE_ID = V_SCHOOL_NODE_ID
+         AND EXISTS
+       (SELECT *
+                FROM ORG_NODE_PARENT
+               WHERE PARENT_ORG_NODE_ID = ORG.ORG_NODE_ID);
+
+  BEGIN
+       
+    --DBMS_OUTPUT.PUT_LINE('TODO:: Initial Logging');
+    /* Initial Logging :: */
+    LOG_MESSAGE(V_LOG_ID,
+                V_STATUS_START,
+                'Procedure started for Customer Id [' || INPUT_CUSTOMER_ID || '].');
+    
+    INITIALIZE_SUBJECT_ARRAY; -- Initialize the global array for subject_codes
+              
+    /* Setting product_id and test_window to  WINTER_TRIMESTER_PRODUCT_ID and WINTER_TRIMESTER_TEST_WINDOW respectively*/
+
+    V_PRODUCT_ID := WINTER_TRIMESTER_PRODUCT_ID;
+    V_TEST_WINDOW := WINTER_TRIMESTER_TEST_WINDOW;
+         
+    
+    /* Basic Validations :: Start */  
+    
+    --- (1) Validation of customer_id
+    BEGIN
+      SELECT 1
+        INTO V_REC_COUNT
+        FROM CUSTOMER
+       WHERE CUSTOMER.CUSTOMER_ID = INPUT_CUSTOMER_ID;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Customer id [' || INPUT_CUSTOMER_ID ||
+                    '] is not valid. Give Existing Id.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Customer id [' || INPUT_CUSTOMER_ID ||
+                                '] is not valid. Give Existing Id.');
+    END;
+    
+    --- (2) Validation of product_id
+    BEGIN      
+      SELECT PRO.PRODUCT_NAME, PRO.SHOW_STUDENT_FEEDBACK
+        INTO V_PRODUCTNAME, V_SHOW_STUDENT_FEEDBACK
+        FROM PRODUCT PRO
+       WHERE PRO.PRODUCT_ID = V_PRODUCT_ID;
+
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Product id [' || V_PRODUCT_ID ||
+                    '] is not valid for the input Testing Window.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Product id [' || V_PRODUCT_ID ||
+                                '] is not valid for the input Testing Window.');
+    END;
+    
+    --- (3) Validation of config data :: 
+    BEGIN
+      SELECT *
+        INTO V_CONFIG_DATA
+        FROM TEST_SCHEDULE_CONFIG TSC
+       WHERE CUSTOMER_ID = INPUT_CUSTOMER_ID;
+      V_DIFF_START_DATE     := (TO_DATE(TO_CHAR(V_CONFIG_DATA.LOGIN_START_DATE,
+                                                'YYYY-MM-DD'),
+                                        'YYYY-MM-DD') -
+                               TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+                                        'YYYY-MM-DD'));
+      V_DIFF_END_DATE       := (TO_DATE(TO_CHAR(V_CONFIG_DATA.LOGIN_END_DATE,
+                                                'YYYY-MM-DD'),
+                                        'YYYY-MM-DD') -
+                               TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+                                        'YYYY-MM-DD'));
+      V_DIFF_STSRT_END_DATE := (V_CONFIG_DATA.LOGIN_END_DATE -
+                               V_CONFIG_DATA.LOGIN_START_DATE);
+
+      IF (V_DIFF_START_DATE IS NULL OR V_DIFF_END_DATE IS NULL) THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Schedule start date or end date can not be null.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Schedule start date or end date can not be null.');
+      ELSIF (V_DIFF_START_DATE < 0) THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Schedule start date can not be earlier than now.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Schedule start date can not be earlier than now.');
+      ELSIF (V_DIFF_END_DATE < 0) THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Schedule end date can not be earlier than now.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Schedule end date can not be earlier than now.');
+      ELSIF (V_DIFF_STSRT_END_DATE < 0) THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Schedule  end date can not be earlier than Schedule start date.');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Schedule  end date can not be earlier than Schedule start date.');
+      ELSIF (V_DIFF_STSRT_END_DATE = 0) THEN
+        IF ((TO_DATE(TO_CHAR(V_CONFIG_DATA.DAILY_LOGIN_END_TIME, 'HH24:MI'),
+                     'HH24:MI')) -
+           (TO_DATE(TO_CHAR(V_CONFIG_DATA.DAILY_LOGIN_START_TIME, 'HH24:MI'),
+                     'HH24:MI')) <= 0) THEN
+
+          LOG_MESSAGE(V_LOG_ID,
+                      V_STATUS_ERROR,
+                      'Schedule  end time can not be earlier than Schedule start time.');
+          RAISE_APPLICATION_ERROR(-20000,
+                                  'Schedule  end time can not be earlier than Schedule start time.');
+        END IF;
+
+      END IF;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'No record exist in configuration table for customer id [' ||
+                    INPUT_CUSTOMER_ID || '] ');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'No record exist in configuration table for customer id [' ||
+                                INPUT_CUSTOMER_ID || '] ');
+      WHEN TOO_MANY_ROWS THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'More than one record exists in configuration table for customer id [' ||
+                    INPUT_CUSTOMER_ID || '] ');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'More than one record exists in configuration table for customer id [' ||
+                                INPUT_CUSTOMER_ID || '] ');
+    END;
+
+    --- (4) Validation for customer configuration 'Roster_Status_Flag'
+    BEGIN
+      SELECT CC.DEFAULT_VALUE
+        INTO V_CUSTOMER_FLAG_STATUS
+        FROM CUSTOMER_CONFIGURATION CC
+       WHERE CC.CUSTOMER_ID = INPUT_CUSTOMER_ID
+         AND CC.CUSTOMER_CONFIGURATION_NAME = 'Roster_Status_Flag';
+
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_WARN,
+                    'CustomerFlagStatus not found for customer[' ||
+                    INPUT_CUSTOMER_ID ||
+                    '] with configuration name- Roster_Status_Flag  ');
+
+      WHEN TOO_MANY_ROWS THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Too many CustomerFlagStatus found for customer [' ||
+                    INPUT_CUSTOMER_ID ||
+                    '] with configuration name- Roster_Status_Flag .');
+        RAISE_APPLICATION_ERROR(-20000,
+                                'Too many CustomerFlagStatus found for customer [' ||
+                                INPUT_CUSTOMER_ID ||
+                                '] with configuration name- Roster_Status_Flag .');
+      WHEN OTHERS THEN
+        LOG_MESSAGE(V_LOG_ID,
+                    V_STATUS_ERROR,
+                    'Exception occurred while retrieving CustomerFlagStatus of customer [' ||
+                    INPUT_CUSTOMER_ID || '].');
+
+        RAISE;
+    END;
+        
+    /* Basic Validations :: End */   
+    
+    /* Pre-scheduling Process :: Start*/
+    V_IS_CURSOR_RETURNS_VALUE := FALSE;
+    
+    --- 1.0 :: Loop for all school level org_node_ids 
+    FOR REC_SCHOOL_NODE IN CUR_FETCH_ALL_SCHOOL_NODES(INPUT_CUSTOMER_ID) LOOP
+        V_IS_CURSOR_RETURNS_VALUE := TRUE;
+        V_CREATEDBY               := NULL;
+        
+        /* Checking for admin user or coordinator for the school node */
+        IF REC_SCHOOL_NODE.ORG_NODE_ID IS NOT NULL THEN
+        BEGIN
+
+          OPEN CUR_GET_ADMIN_USER(REC_SCHOOL_NODE.ORG_NODE_ID);
+
+          FETCH CUR_GET_ADMIN_USER
+            INTO V_CREATEDBY, V_ROLE_ID;
+
+          IF CUR_GET_ADMIN_USER%NOTFOUND THEN
+
+            OPEN CUR_GET_COORDINATOR_USER(REC_SCHOOL_NODE.ORG_NODE_ID);
+            FETCH CUR_GET_COORDINATOR_USER
+              INTO V_CREATEDBY, V_ROLE_ID;
+
+            IF CUR_GET_COORDINATOR_USER%NOTFOUND THEN
+
+              RAISE NO_DATA_FOUND;
+
+            END IF;
+
+            CLOSE CUR_GET_COORDINATOR_USER;
+          END IF;
+
+          CLOSE CUR_GET_ADMIN_USER;
+
+        EXCEPTION
+          -- OTHER THAN NO_DATA_FOUND EXCEPTION IS THROWN
+          WHEN NO_DATA_FOUND THEN
+            LOG_MESSAGE(V_LOG_ID,
+                        V_STATUS_WARN,
+                        'No Administrator is found for school node id [' ||
+                        REC_SCHOOL_NODE.ORG_NODE_ID || '].');
+                        
+            IF CUR_GET_COORDINATOR_USER%ISOPEN THEN
+              CLOSE CUR_GET_COORDINATOR_USER;
+            END IF;
+
+            IF CUR_GET_ADMIN_USER%ISOPEN THEN
+              CLOSE CUR_GET_ADMIN_USER;
+            END IF;
+
+          WHEN OTHERS THEN
+            LOG_MESSAGE(V_LOG_ID,
+                        V_STATUS_ERROR,
+                        'Exception occurred while retrieving Administrator information for school node id [' ||
+                        REC_SCHOOL_NODE.ORG_NODE_ID || '].');
+
+            IF CUR_GET_COORDINATOR_USER%ISOPEN THEN
+              CLOSE CUR_GET_COORDINATOR_USER;
+            END IF;
+
+            IF CUR_GET_ADMIN_USER%ISOPEN THEN
+              CLOSE CUR_GET_ADMIN_USER;
+            END IF;
+
+            RAISE;
+        END;
+      END IF;
+      
+      IF V_CREATEDBY IS NOT NULL THEN
+         --DBMS_OUTPUT.PUT_LINE('TODO:: Pre-scheduling');
+/*         DBMS_OUTPUT.PUT_LINE('REC_SCHOOL_NODE NAME........' || 
+                                               REC_SCHOOL_NODE.ORG_NODE_NAME || 
+                                               '     SCHOOL ORG_NODE_ID' || REC_SCHOOL_NODE.ORG_NODE_ID);
+                                               */
+         --- 1.1 :: Loop for all Department level org_node_ids
+         FOR REC_DEPTT_NODE IN CUR_GET_DEPARTMENT_NODES(REC_SCHOOL_NODE.ORG_NODE_ID) LOOP
+             --DBMS_OUTPUT.PUT_LINE('In Loop 1.1.... ');
+             ---1.1.1 :: Loop for all 'TC' level
+             V_IS_CURSOR_RETURNS_VALUE := FALSE;
+
+             FOR REC_TC_ITEMSETID IN CUR_GET_TCTEST_FOR_PRODUCT(V_PRODUCT_ID, V_CREATEDBY) LOOP
+                 V_IS_CURSOR_RETURNS_VALUE := TRUE;
+                 
+                 /* Getting test_catalog details */
+                 BEGIN
+                    SELECT DISTINCT CAT.TEST_CATALOG_ID, CAT.TEST_NAME
+                      INTO V_TEST_CATALOG_ID, V_TEST_NAME
+                      FROM TEST_CATALOG CAT
+                     WHERE ACTIVATION_STATUS = V_ACTIVATION_STATUS
+                       AND ITEM_SET_ID = REC_TC_ITEMSETID.ITEM_SET_ID;
+                 EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                      LOG_MESSAGE(V_LOG_ID,
+                                  V_STATUS_ERROR,
+                                  'Catalog does not exists with item set id [' ||
+                                  REC_TC_ITEMSETID.ITEM_SET_ID || '].');
+                      RAISE_APPLICATION_ERROR(-20000,
+                                              'Catalog does not exists with item set id [' ||
+                                              REC_TC_ITEMSETID.ITEM_SET_ID || '].');
+                    WHEN TOO_MANY_ROWS THEN
+                      LOG_MESSAGE(V_LOG_ID,
+                                  V_STATUS_ERROR,
+                                  'Too many catalog associated with item set id [' ||
+                                  REC_TC_ITEMSETID.ITEM_SET_ID || '].');
+                      RAISE_APPLICATION_ERROR(-20000,
+                                              'Too many catalog associated with item set id [' ||
+                                              REC_TC_ITEMSETID.ITEM_SET_ID || '].');
+                    WHEN OTHERS THEN
+                      LOG_MESSAGE(V_LOG_ID,
+                                  V_STATUS_ERROR,
+                                  'Exception occurred while retrieving catalog id [' ||
+                                  REC_TC_ITEMSETID.ITEM_SET_ID || '].');
+
+                    RAISE;
+                 END;
+                 --DBMS_OUTPUT.PUT_LINE(REC_DEPTT_NODE.ORG_NODE_CODE);
+                 BEGIN
+                      V_SUBJECT_NAME := V_SUBJECT_ARR(REC_DEPTT_NODE.ORG_NODE_CODE);
+                 EXCEPTION
+                 WHEN NO_DATA_FOUND THEN
+                      LOG_MESSAGE(V_LOG_ID,
+                                  V_STATUS_ERROR,
+                                  'Not a valid subject code [' ||
+                                  REC_DEPTT_NODE.ORG_NODE_CODE || '].');
+                      V_SUBJECT_NAME := '-1';            
+                 END;
+                 IF V_SUBJECT_NAME IS NULL THEN
+                    V_SUBJECT_NAME := '-1';
+                 END IF;
+                /* DBMS_OUTPUT.PUT_LINE(V_SUBJECT_NAME);*/
+                
+                 V_CHAR_LENGTH := LENGTH(V_TEST_NAME) - LENGTH(REPLACE(V_TEST_NAME,'I'));
+                 IF V_CHAR_LENGTH = 3 THEN 
+                    V_PATTERN_STR := 'III';
+                 ELSE
+                    V_PATTERN_STR := 'II';    
+                 END IF;
+                                  
+                 /* Department code value i.e subject name matched with test :: will schedule session for students of this deptt. */
+                
+                 IF INSTR(V_TEST_NAME, V_SUBJECT_NAME) != 0 THEN
+                    IF NOT((INSTR(V_TEST_NAME,V_PATTERN_STR) != 0) AND (INSTR(V_SUBJECT_NAME,V_PATTERN_STR) = 0)) THEN
+                    /*DBMS_OUTPUT.PUT_LINE(V_TEST_NAME);*/
+                      BEGIN                    
+                        SELECT CDV.VALUE_NAME
+                          INTO V_TESTING_SUBJECT
+                          FROM CUSTOMER_DEMOGRAPHIC       CD,
+                               CUSTOMER_DEMOGRAPHIC_VALUE CDV
+                         WHERE CD.CUSTOMER_DEMOGRAPHIC_ID =
+                               CDV.CUSTOMER_DEMOGRAPHIC_ID
+                           AND CDV.VALUE_CODE = REC_DEPTT_NODE.ORG_NODE_CODE
+                           AND CD.CUSTOMER_ID = INPUT_CUSTOMER_ID;
+                      EXCEPTION
+                         WHEN NO_DATA_FOUND THEN
+                              LOG_MESSAGE(V_LOG_ID,
+                                          V_STATUS_ERROR,
+                                          'No record found in customer_demographic_value for the code [' ||
+                                          REC_DEPTT_NODE.ORG_NODE_CODE || '].');
+                              V_TESTING_SUBJECT := '';            
+                      END;                 
+                                         
+                     /* SELECT CDV.VALUE_NAME
+                        INTO V_TEST_WINDOW
+                        FROM CUSTOMER_DEMOGRAPHIC       CD,
+                             CUSTOMER_DEMOGRAPHIC_VALUE CDV
+                       WHERE CD.CUSTOMER_DEMOGRAPHIC_ID =
+                             CDV.CUSTOMER_DEMOGRAPHIC_ID
+                         AND CDV.VALUE_CODE = INPUT_TESTING_WINDOW
+                         AND CD.CUSTOMER_ID = INPUT_CUSTOMER_ID;*/                    
+
+                      IF V_PRODUCT_ID = WINTER_TRIMESTER_PRODUCT_ID THEN
+                          --DBMS_OUTPUT.PUT_LINE('Schedule students for Winter/Trimester...');
+                          PREFERRED_FORM := '1';
+                          V_FORM_ASSIGNMENT := '1';
+                         
+                          OPEN CUR_NOT_TESTED_STUDENTS(REC_DEPTT_NODE.ORG_NODE_ID,
+                                                       V_PRODUCT_ID,
+                                                       V_TESTING_SUBJECT,
+                                                       V_TEST_WINDOW,
+                                                       V_TEST_NAME);
+                          FETCH CUR_NOT_TESTED_STUDENTS INTO V_STUDENT;
+                        
+                          IF (CUR_NOT_TESTED_STUDENTS%FOUND) THEN
+        
+                            CLOSE CUR_NOT_TESTED_STUDENTS;
+        
+                            V_TEST_ACCESS_CODE := GENERATEPASSWORD(V_GENERATED_ACCESS_CODE_LENGTH,
+                                                                    1);
+        
+                            SELECT SEQ_TEST_ADMIN_ID.NEXTVAL
+                              INTO V_TEST_ADMIN_ID
+                              FROM DUAL;   
+      
+    
+                            INSERT_TEST_ADMIN(V_PRODUCT_ID,
+                                              INPUT_CUSTOMER_ID,
+                                              REC_TC_ITEMSETID,
+                                              V_CONFIG_DATA,
+                                              V_SHOW_STUDENT_FEEDBACK,
+                                              V_TEST_CATALOG_ID,
+                                              V_CREATEDBY,
+                                              V_TEST_ACCESS_CODE,
+                                              REC_SCHOOL_NODE.ORG_NODE_ID,
+                                              V_TEST_ADMIN_ID);
+      
+                            V_REC_COUNT := 0;
+                            INSERT_TEST_ROSTER_NOT_TESTED(V_PRODUCT_ID,
+                                                          INPUT_CUSTOMER_ID,
+                                                          V_CREATEDBY,
+                                                          V_TEST_ADMIN_ID,
+                                                          REC_DEPTT_NODE.ORG_NODE_ID,
+                                                          V_STUDENT_LIST,
+                                                          V_CUSTOMER_FLAG_STATUS,
+                                                          V_TESTING_SUBJECT,
+                                                          V_TEST_WINDOW,
+                                                          V_TEST_NAME);
+      
+                            INSERT_SCHEDULABLE_UNITS(INPUT_CUSTOMER_ID,
+                                                     REC_TC_ITEMSETID,
+                                                     REC_SCHOOL_NODE.ORG_NODE_NAME,
+                                                     V_TEST_ADMIN_ID,
+                                                     V_TEST_ACCESS_CODE,
+                                                     V_STUDENT_LIST);
+    
+                            V_STUDENT_LIST := '';
+        
+                          ELSE
+                            CLOSE CUR_NOT_TESTED_STUDENTS;
+                          END IF;
+                         
+                        END IF;
+                   ELSE
+                       V_TEST_NAME := NULL; 
+                   END IF; 
+                 END IF;
+                  
+             END LOOP;
+             
+             IF (NOT V_IS_CURSOR_RETURNS_VALUE) THEN
+                -- LOGGING ONLY, WHEN CURSOR "crsGetTCTestForProduct" DOES NOT RETURNS ANY VALUE
+                LOG_MESSAGE(V_LOG_ID,
+                            V_STATUS_ERROR,
+                            'No valid catalog found for product id [' ||
+                            V_PRODUCT_ID || '] and user id [' || V_CREATEDBY || '].');
+                -- IF YOU DO NOT WISH THROW ERROR THEN SET TO  TRUE "V_IS_CURSOR_RETURNS_VALUE" AS PREVIOUS LOOP IS EXECUTING
+                RAISE_APPLICATION_ERROR(-20000,
+                                        'No valid catalog found for product id [' ||
+                                        V_PRODUCT_ID || '] and user id [' ||
+                                        V_CREATEDBY || '].');
+            END IF;                 
+             
+         END LOOP;
+
+         /* COMMIT Point :: At Department level*/
+         COMMIT; -- need to remove comment before QA delivery
+                  
+      END IF;      
+      
+      /* COMMIT Point :: At School level*/
+      --COMMIT; -- need to remove comment before QA delivery 
+      
+    END LOOP;
+    
+    IF (NOT V_IS_CURSOR_RETURNS_VALUE) THEN
+      -- LOGGING ONLY, WHEN CURSOR "CUR_FETCH_ALL_SCHOOL_NODES" DOES NOT RETURNS ANY VALUE
+      LOG_MESSAGE(V_LOG_ID,
+                  V_STATUS_ERROR,
+                  'No valid school level org_node_id is found for Customer id [' ||
+                  INPUT_CUSTOMER_ID || '].');
+      RAISE_APPLICATION_ERROR(-20000,
+                              'No valid school level org_node_id is found for Customer id [' ||
+                              INPUT_CUSTOMER_ID || '].');
+    END IF;
+
+    LOG_MESSAGE(V_LOG_ID,
+                V_STATUS_COMPLETE,
+                'Procedure completed successfully.');
+  EXCEPTION
+    WHEN OTHERS THEN
+      LOG_MESSAGE(V_LOG_ID,
+                  V_STATUS_COMPLETE,
+                  'Procedure completed with error:' ||
+                  DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+      ROLLBACK; -- ROLLBACK ALL DATA MODIFIED EXPLICITELY
+      RAISE;         
+  END SCHEDULE_NOT_TESTED_STUDENTS;
 
 END OAS_OK_TEST_PRE_SCHEDULING;
 /
