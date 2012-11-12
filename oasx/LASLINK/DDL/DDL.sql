@@ -154,3 +154,6 @@ foreign key ( INVALIDATION_REASON_ID )
 references INVALIDATION_REASON_CODE ( INVALIDATION_REASON_ID )
 /
 
+alter table student_accommodation
+add MICROPHONE_HEADPHONE VARCHAR2(2)
+/
