@@ -656,6 +656,7 @@ public interface TestAdmin extends JdbcControl
      *          FORM_ASSIGNMENT_METHOD,
      *          SHOW_STUDENT_FEEDBACK,
      *          PROGRAM_ID,
+     *          LEXINGTON_VERSION,
      *          RANDOM_DISTRACTOR_STATUS
      *      ) values (
      *          {session.testAdminId},
@@ -684,10 +685,11 @@ public interface TestAdmin extends JdbcControl
      *          {session.formAssignmentMethod},
      *          {session.showStudentFeedback},
      *          {session.programId},
+     *          {session.lexingtonVersion},
      *          {session.isRandomize}
      *      )::
      */
-    @JdbcControl.SQL(statement = "insert into  test_admin (  TEST_ADMIN_ID,  CUSTOMER_ID,  TEST_ADMIN_NAME,  PRODUCT_ID,  CREATOR_ORG_NODE_ID,  ACCESS_CODE,  LOCATION,  LOGIN_START_DATE,  LOGIN_END_DATE,  DAILY_LOGIN_START_TIME,  DAILY_LOGIN_END_TIME,  CREATED_BY,  CREATED_DATE_TIME,  ACTIVATION_STATUS,  ITEM_SET_ID,  TEST_ADMIN_STATUS,  SESSION_NUMBER,  TEST_ADMIN_TYPE,  ENFORCE_TIME_LIMIT,  ENFORCE_BREAK,  TIME_ZONE,  TEST_CATALOG_ID,  PREFERRED_FORM,  FORM_ASSIGNMENT_METHOD,  SHOW_STUDENT_FEEDBACK,  PROGRAM_ID,  RANDOM_DISTRACTOR_STATUS  ) values (  {session.testAdminId},  {session.customerId},  {session.testAdminName},  {session.productId},  {session.creatorOrgNodeId},  {session.accessCode},  {session.location},  {session.loginStartDate},  {session.loginEndDate},  {session.dailyLoginStartTime},  {session.dailyLoginEndTime},  {session.createdBy},  {session.createdDateTime},  {session.activationStatus},  {session.itemSetId},  {session.testAdminStatus},  {session.sessionNumber},  {session.testAdminType},  {session.enforceTimeLimit},  {session.enforceBreak},  {session.timeZone},  (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {session.itemSetId}),  {session.preferredForm},  {session.formAssignmentMethod},  {session.showStudentFeedback},  {session.programId},  {session.isRandomize}  )")
+    @JdbcControl.SQL(statement = "insert into  test_admin (  TEST_ADMIN_ID,  CUSTOMER_ID,  TEST_ADMIN_NAME,  PRODUCT_ID,  CREATOR_ORG_NODE_ID,  ACCESS_CODE,  LOCATION,  LOGIN_START_DATE,  LOGIN_END_DATE,  DAILY_LOGIN_START_TIME,  DAILY_LOGIN_END_TIME,  CREATED_BY,  CREATED_DATE_TIME,  ACTIVATION_STATUS,  ITEM_SET_ID,  TEST_ADMIN_STATUS,  SESSION_NUMBER,  TEST_ADMIN_TYPE,  ENFORCE_TIME_LIMIT,  ENFORCE_BREAK,  TIME_ZONE,  TEST_CATALOG_ID,  PREFERRED_FORM,  FORM_ASSIGNMENT_METHOD,  SHOW_STUDENT_FEEDBACK,  PROGRAM_ID, LEXINGTON_VERSION, RANDOM_DISTRACTOR_STATUS  ) values (  {session.testAdminId},  {session.customerId},  {session.testAdminName},  {session.productId},  {session.creatorOrgNodeId},  {session.accessCode},  {session.location},  {session.loginStartDate},  {session.loginEndDate},  {session.dailyLoginStartTime},  {session.dailyLoginEndTime},  {session.createdBy},  {session.createdDateTime},  {session.activationStatus},  {session.itemSetId},  {session.testAdminStatus},  {session.sessionNumber},  {session.testAdminType},  {session.enforceTimeLimit},  {session.enforceBreak},  {session.timeZone},  (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {session.itemSetId}),  {session.preferredForm},  {session.formAssignmentMethod},  {session.showStudentFeedback},  {session.programId}, {session.lexingtonVersion}, {session.isRandomize}  )")
     void createNewTestAdmin(TestSession session) throws SQLException;
     
     /**
@@ -717,12 +719,13 @@ public interface TestAdmin extends JdbcControl
      *          SHOW_STUDENT_FEEDBACK = {session.showStudentFeedback},
      *          CREATOR_ORG_NODE_ID = {session.creatorOrgNodeId},
      *          PROGRAM_ID = {session.programId},
+     * 		    LEXINGTON_VERSION = {session.lexingtonVersion},
      * 		    RANDOM_DISTRACTOR_STATUS = {session.isRandomize}
      *          
      * where
      *      test_admin_id = {session.testAdminId}::
      */
-    @JdbcControl.SQL(statement = "update  test_admin set  TEST_ADMIN_NAME = {session.testAdminName},  PRODUCT_ID = {session.productId},  ACCESS_CODE = {session.accessCode},  LOCATION = {session.location},  LOGIN_START_DATE = {session.loginStartDate},  LOGIN_END_DATE = {session.loginEndDate},  DAILY_LOGIN_START_TIME = {session.dailyLoginStartTime},  DAILY_LOGIN_END_TIME = {session.dailyLoginEndTime},  UPDATED_BY = {session.updatedBy},  UPDATED_DATE_TIME = {session.updatedDateTime},  ITEM_SET_ID = {session.itemSetId},  TEST_ADMIN_STATUS = {session.testAdminStatus},  SESSION_NUMBER = {session.sessionNumber},  TEST_ADMIN_TYPE = {session.testAdminType},  ENFORCE_TIME_LIMIT = {session.enforceTimeLimit},  ENFORCE_BREAK = {session.enforceBreak},  TIME_ZONE = {session.timeZone},  TEST_CATALOG_ID = (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {session.itemSetId}),  PREFERRED_FORM = {session.preferredForm},  FORM_ASSIGNMENT_METHOD = {session.formAssignmentMethod},  SHOW_STUDENT_FEEDBACK = {session.showStudentFeedback},  CREATOR_ORG_NODE_ID = {session.creatorOrgNodeId},  PROGRAM_ID = {session.programId}, \t\t  RANDOM_DISTRACTOR_STATUS = {session.isRandomize}  where  test_admin_id = {session.testAdminId}")
+    @JdbcControl.SQL(statement = "update  test_admin set  TEST_ADMIN_NAME = {session.testAdminName},  PRODUCT_ID = {session.productId},  ACCESS_CODE = {session.accessCode},  LOCATION = {session.location},  LOGIN_START_DATE = {session.loginStartDate},  LOGIN_END_DATE = {session.loginEndDate},  DAILY_LOGIN_START_TIME = {session.dailyLoginStartTime},  DAILY_LOGIN_END_TIME = {session.dailyLoginEndTime},  UPDATED_BY = {session.updatedBy},  UPDATED_DATE_TIME = {session.updatedDateTime},  ITEM_SET_ID = {session.itemSetId},  TEST_ADMIN_STATUS = {session.testAdminStatus},  SESSION_NUMBER = {session.sessionNumber},  TEST_ADMIN_TYPE = {session.testAdminType},  ENFORCE_TIME_LIMIT = {session.enforceTimeLimit},  ENFORCE_BREAK = {session.enforceBreak},  TIME_ZONE = {session.timeZone},  TEST_CATALOG_ID = (select distinct test_catalog_id from test_catalog where activation_status = 'AC' and item_set_id = {session.itemSetId}),  PREFERRED_FORM = {session.preferredForm},  FORM_ASSIGNMENT_METHOD = {session.formAssignmentMethod},  SHOW_STUDENT_FEEDBACK = {session.showStudentFeedback},  CREATOR_ORG_NODE_ID = {session.creatorOrgNodeId},  PROGRAM_ID = {session.programId}, LEXINGTON_VERSION = {session.lexingtonVersion}, \t\t  RANDOM_DISTRACTOR_STATUS = {session.isRandomize}  where  test_admin_id = {session.testAdminId}")
     void updateTestAdmin(TestSession session) throws SQLException;
 
     

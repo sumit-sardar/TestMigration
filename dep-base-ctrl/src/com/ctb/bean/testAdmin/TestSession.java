@@ -81,6 +81,7 @@ public class TestSession extends CTBBean
     private String testLevel;
     private String isStudentsSession;
    
+    private String lexingtonVersion;
    
     /**
 	 * @return the isStudentInTestSession
@@ -718,4 +719,14 @@ public class TestSession extends CTBBean
 	public void setIsStudentsSession(String isStudentsSession) {
 		this.isStudentsSession = isStudentsSession;
 	}
+
+	public String getLexingtonVersion() {
+		return lexingtonVersion;
+	}
+
+	public void setLexingtonVersion(String lexingtonVersion) {
+		this.lexingtonVersion = lexingtonVersion;
+	}
+	
+	
 } 
