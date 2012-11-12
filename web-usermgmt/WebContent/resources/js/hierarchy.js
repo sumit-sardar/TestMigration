@@ -1300,7 +1300,8 @@ function fillselectedOrgNode( elementId, orgList) {
 		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds;
 	}
 	else{
-		var userName =  getColValueJson(rowid,'userName');
+		//var userName =  getColValueJson(rowid,'userName');
+		var userName = $('#list2').jqGrid('getCell',rowid,'loginId');
 		var addressId = getColValueJson(rowid,'addressId');
 		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+"&selectedUserName="+userName+"&userId="+rowid+"&addressId"+addressId;
 	}
