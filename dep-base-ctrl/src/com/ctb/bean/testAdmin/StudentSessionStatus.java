@@ -45,7 +45,8 @@ public class StudentSessionStatus extends CTBBean
 	//START- ADDED for LLO -109
 	private String testExemptions;
 	private String absent;
-    
+	private String invalidationReason;
+	
 	//START - TABE BAUM 020 Form Recommendation 
 	private String testSessionName;
 	private String productName;
@@ -504,5 +505,11 @@ public class StudentSessionStatus extends CTBBean
 	public void setCompletionDate(String completionDate) {
 		this.completionDate = completionDate;
 	}
-
+	public String getInvalidationReason() {
+		return invalidationReason;
+	}
+	public void setInvalidationReason(String invalidationReason) {
+		this.invalidationReason = invalidationReason;
+	}
+	
 } 

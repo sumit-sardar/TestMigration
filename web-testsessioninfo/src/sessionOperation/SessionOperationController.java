@@ -30,7 +30,6 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import util.BroadcastUtils;
 import util.MessageResourceBundle;
 import util.RequestUtil;
-import viewmonitorstatus.ViewMonitorStatusController.ViewMonitorStatusForm;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -5675,6 +5674,18 @@ public class SessionOperationController extends PageFlowController {
 		        this.fileTypeOptions.add("One file per student");
 		    	setFileType((String)this.fileTypeOptions.get(0));
 		 }
+		 
+		 private List getInvalidateReasonList(){
+			 List ivrc = null;
+			 try{
+				 ivrc = this.testSessionStatus.getInvalidationReasonList();
+			 }catch (CTBBusinessException e) {
+					e.printStackTrace();
+			 }
+			 return ivrc;			 
+		 }
+		 
+		 
 		 @Jpf.Action(forwards = { 
 		        @Jpf.Forward(name = "success",
 		                     path = "view_test_session.jsp")
@@ -5682,6 +5693,7 @@ public class SessionOperationController extends PageFlowController {
 		    protected Forward getRosterDetails()
 		    {	
 				List rosterList = null;
+				List invalidateReasonList= null;
 		        String testAdminId = getRequest().getParameter("testAdminId");
 		        initializeTestSession();
 		        
@@ -5689,7 +5701,7 @@ public class SessionOperationController extends PageFlowController {
 		            this.sessionId = Integer.valueOf(testAdminId);
 		        RosterElementData red = getRosterForViewTestSession(this.sessionId);
 		        rosterList = buildRosterList(red);   
-		        
+		        invalidateReasonList = getInvalidateReasonList();
 		        populateSubtestDetails(this.sessionId);
 		        
 		        Base base = new Base();
@@ -5700,6 +5712,7 @@ public class SessionOperationController extends PageFlowController {
 				base.setRosterElement(rosterList);
 				base.setSubtestValidationAllowed(this.subtestValidationAllowed);
 				base.setDonotScoreAllowed(isDonotScoreAllowed());
+				base.setInvalidateReasonList(invalidateReasonList);
 				base.setOkCustomer(this.isOKCustomer);
 				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
 				/*Integer breakCount = ted.getBreakCount();
@@ -5826,7 +5839,7 @@ public class SessionOperationController extends PageFlowController {
 		        if (isShowScores)
 		            numberColumn += 3;
 		        if (isLaslinkSession)
-		        	numberColumn += 2;
+		        	numberColumn += 3;
 		        	
 		       // END- Added for LLO-109 
 		        if (validation) {
@@ -5943,13 +5956,14 @@ public class SessionOperationController extends PageFlowController {
 		                            sd_TD.setRawScore(sss.getRawScore());
 		                            sd_TD.setUnScored(sss.getUnscored());
 		                            String tdSubtestName = sd_TD.getSubtestName();
-		                            String sn = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+		                            String sn = "&nbsp;&nbsp;" +
 		                                        tdSubtestName;
 		                            sd_TD.setSubtestName(sn);
 		                               
 		                            // START- Added for LLO-109 
 		                            if(isLaslinkSession)
 		                            {
+		                            	sd_TD.setInvalidationReason(sss.getInvalidationReason());
 		                               	sd_TD.setTestExemptions(sss.getTestExemptions());
 		                            	sd_TD.setAbsent(sss.getAbsent());
 		                             }
@@ -6036,7 +6050,7 @@ public class SessionOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "success",
 	                     path = "view_subtest_details.jsp")
 	     })
-		 protected Forward toggleValidationStatus(ViewMonitorStatusForm form) {
+		 protected Forward toggleValidationStatus() {
 	        Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
 			try {      
 	            this.testSessionStatus.toggleRosterValidationStatus(this.userName, testRosterId);
@@ -6051,9 +6065,15 @@ public class SessionOperationController extends PageFlowController {
 		    @Jpf.Forward(name = "success",
 	                     path = "view_subtest_details.jsp")
 	    })
-		 protected Forward toggleSubtestValidationStatus(ViewMonitorStatusForm form)  {       
+		 protected Forward toggleSubtestValidationStatus()  {       
 			String strItemSetIds = null;
 			String[] itemSetIdsList = null;
+			String subtestIdAndReasonStr = null;
+			String [] subtestIdAndReasonList = null;
+			if(getRequest().getParameter("subtestIdAndReasonList") != null){
+				subtestIdAndReasonStr = getRequest().getParameter("subtestIdAndReasonList");
+				subtestIdAndReasonList = subtestIdAndReasonStr.split("\\|");
+			}
 			Base base = new Base();
             TestProduct testProduct = getProductForTestAdmin(this.sessionId);
             boolean isTabeSession = isTabeSession(testProduct.getProductType());
@@ -6068,7 +6088,7 @@ public class SessionOperationController extends PageFlowController {
 	        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
 	        }
 	        try {
-	        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ValidationStatus" );
+	        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, subtestIdAndReasonList, "ValidationStatus" );
 	        }
 	        catch (Exception e) {
 	            e.printStackTrace();
@@ -7084,7 +7104,7 @@ public class SessionOperationController extends PageFlowController {
 			    @Jpf.Forward(name = "success",
 		                     path = "view_subtest_details.jsp")
 		    })
-			 protected Forward toggleExemtionValidationStatus(ViewMonitorStatusForm form)  {       
+			 protected Forward toggleExemtionValidationStatus()  {       
 				String strItemSetIds = null;
 				String[] itemSetIdsList = null;
 				Base base = new Base();
@@ -7093,9 +7113,9 @@ public class SessionOperationController extends PageFlowController {
 		        	strItemSetIds = getRequest().getParameter("itemSetIds");
 		        	itemSetIdsList = strItemSetIds.split("\\|");
 		        }
-		        Integer[] itemSetIds = new Integer[itemSetIdsList.length];
+		        String[] itemSetIds = new String[itemSetIdsList.length];
 		        for(int i=0; i<itemSetIdsList.length; i++){
-		        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
+		        	itemSetIds[i] = itemSetIdsList[i];
 		        }
 		        try {
 		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ExemptionStatus" );
@@ -7111,7 +7131,7 @@ public class SessionOperationController extends PageFlowController {
 			    @Jpf.Forward(name = "success",
 		                     path = "view_subtest_details.jsp")
 		    })
-			 protected Forward toggleAbsentValidationStatus(ViewMonitorStatusForm form)  {       
+			 protected Forward toggleAbsentValidationStatus()  {       
 				String strItemSetIds = null;
 				String[] itemSetIdsList = null;
 				Base base = new Base();
@@ -7120,9 +7140,9 @@ public class SessionOperationController extends PageFlowController {
 		        	strItemSetIds = getRequest().getParameter("itemSetIds");
 		        	itemSetIdsList = strItemSetIds.split("\\|");
 		        }
-		        Integer[] itemSetIds = new Integer[itemSetIdsList.length];
+		        String[] itemSetIds = new String[itemSetIdsList.length];
 		        for(int i=0; i<itemSetIdsList.length; i++){
-		        	itemSetIds[i] = Integer.valueOf(itemSetIdsList[i]);
+		        	itemSetIds[i] = itemSetIdsList[i];
 		        }
 		        try {
 		        	this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "AbsentStatus" );

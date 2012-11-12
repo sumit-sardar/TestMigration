@@ -23,6 +23,7 @@ public class Base {
 	private List gradeList;
 	private List rosterElement;
 	private List testElement;
+	private List invalidateReasonList;
 	private String hasBreak;
 	private TestSessionVO testSession;
 	private String loginName;
@@ -274,6 +275,12 @@ public class Base {
 	}
 	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
 		this.accomodationMap = accomodationMap;
+	}
+	public List getInvalidateReasonList() {
+		return invalidateReasonList;
+	}
+	public void setInvalidateReasonList(List invalidateReasonList) {
+		this.invalidateReasonList = invalidateReasonList;
 	}
 	public boolean isOkCustomer() {
 		return isOkCustomer;

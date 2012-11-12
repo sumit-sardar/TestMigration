@@ -53,7 +53,7 @@
 	<tr>
 		<td>
 			<div id="toggleValidationSubTest" style="float:left;padding-top:5px;display:none">
-				<a href="#" id="toggleValidationSubtestButton" onclick="javascript:toggleSubtestValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button"/></a>
+				<a href="#" id="toggleValidationSubtestButton" onclick="javascript:showReasonPopup(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button"/></a>
 			</div> 
 		</td>
 		<td>
@@ -69,6 +69,20 @@
 	</tr>
 </table>
 
+<div id="invalidationReason"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="subtest.invalidationReason.message" />
+		</div>
+	</div>
+	<div style="padding:10px;">		
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeReasonPopup(); return false;" class="ui-widget-header">
+		</center>
+	</div>	
+</div> 
+
 <table id="subtestList" class="rosterSubtestTable"></table>
 <div>
 	<input type="hidden" name="itemsSelectLbl" id="itemsSelectLbl" value=<lb:label key="common.column.select" prefix="'" suffix="'"/>/>
@@ -83,5 +97,7 @@
 	<input type="hidden" name="totalItemsLbl" id="totalItemsLbl" value=<lb:label key="ViewSubtestDetails.text.totalItems" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="itemsCorrectLbl" id="itemsCorrectLbl" value=<lb:label key="ViewSubtestDetails.text.itemCorrect" prefix="'" suffix="'"/>/>
 	<input type="hidden" name="itemsScoredLbl" id="itemsScoredLbl" value=<lb:label key="ViewSubtestDetails.text.itemToBeScored" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="invalidationReasonLbl" id="invalidationReasonLbl" value=<lb:label key="ViewSubtestDetails.text.invalidationReason" prefix="'" suffix="'"/>/>
+	<input type="hidden" name="invalidationReasonPopupLbl" id="invalidationReasonPopupLbl" value=<lb:label key="ViewSubtestDetails.text.invalidationReasonPopup" prefix="'" suffix="'"/>/>
 </div>
 <div id="subtestPager" class="gridTable"></div>

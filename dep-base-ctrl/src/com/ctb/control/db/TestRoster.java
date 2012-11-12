@@ -1,6 +1,7 @@
 package com.ctb.control.db; 
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
@@ -602,4 +603,7 @@ public interface TestRoster extends JdbcControl
     RosterElement[] getTestRosterFromTestAdmin(Integer testAdminId) throws SQLException;
     
     static final long serialVersionUID = 1L;
+    
+    @JdbcControl.SQL(statement ="select IRC.INVALIDATION_REASON_ID||'_'||IRC.INVALIDATION_REASON_DETAILS as invalidReason from invalidation_reason_code IRC order by INVALIDATION_REASON_ID" )
+	String[] getInvalidReasonCodeList() throws SQLException;
 }

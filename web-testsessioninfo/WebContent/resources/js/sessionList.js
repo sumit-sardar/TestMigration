@@ -95,7 +95,9 @@ var isPrintTicket = false;
 var accomodationMap={};
 var accomodationMapExisting={};
 var firstTimeOpen = false;
-
+var invalidationReasonList = [];
+var invalidationReasonIDList = [];
+var invalidationReasonCodeDetails = [];
 var selectProductId = null;
 
 var isOKAdmin = false;
@@ -4169,6 +4171,18 @@ function registerDelegate(tree){
 			 	 $("#subtestDetailTooltip").css('display', 'inline');
 			 	 
 			 	 isTabeProduct = JSON.stringify(obj.testSession.isSTabeProduct);
+			 	 invalidationReasonCodeDetails =obj.invalidateReasonList;
+			 	 //console.log(invalidationReasonCodeDetails);
+			 	 invalidationReasonIDList[0] = 'PS';
+			 	 invalidationReasonList[0] = 'Please Select';
+			 	 for(i=0;i<invalidationReasonCodeDetails.length;i++){
+					var tempArr = [];
+					tempArr = invalidationReasonCodeDetails[i].split("_");
+					invalidationReasonList[i+1]=tempArr[1] ;
+					invalidationReasonIDList[i+1]=tempArr[0];
+				}
+		//console.log(invalidationReasonList);
+		//console.log(invalidationReasonIDList);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,
@@ -4389,6 +4403,11 @@ function registerDelegate(tree){
                 				html += '&nbsp;&nbsp;<span>'+$("#itemsScoredLbl").val()+'</span>';
             					html += '</th>';
            					}
+           					if(data.subtestValidationAllowed && data.isLaslinkSession) {
+           						html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+               					html += '&nbsp;&nbsp;<span>'+$("#invalidationReasonLbl").val()+'</span>';
+           						html += '</th>';
+           					}
            					html += '</tr>';
             				var row = "";
 							for(var i=0; i<data.testElement.length; i++) {
@@ -4414,9 +4433,9 @@ function registerDelegate(tree){
 									}
 									if(data.subtestValidationAllowed) {
 										if(row.validationStatus != 'Invalid') {
-											html += '<td class="sortable alignCenter">'+row.validationStatus+'</td>';
+											html += '<td class="sortable alignCenter" id ="'+row.itemSetId+'_validationStatus">'+row.validationStatus+'</td>';
 										} else{
-											html += '<td class="sortable alignCenter"> <font color="red">'+row.validationStatus+'</font></td>';
+											html += '<td class="sortable alignCenter" id ="'+row.itemSetId+'_validationStatus"> <font color="red">'+row.validationStatus+'</font></td>';
 										}
 									}
 									if(data.isLaslinkSession) {
@@ -4459,6 +4478,46 @@ function registerDelegate(tree){
 											html += '<td class="sortable alignCenter"> <span>'+row.unScored+'</span></td>';
 										}
 									}
+									
+									if(data.subtestValidationAllowed && data.isLaslinkSession) {
+										if(row.invalidationReason == undefined || row.invalidationReason == null ) {
+											var temp = 'PS';
+											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;">';
+										
+												for(j=0;j<invalidationReasonIDList.length;j++){
+													if(temp === invalidationReasonIDList[j]){
+													html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+													}
+													else{
+													html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+													}
+												//x += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+												}
+											html +='</select></font></td>';	
+											
+										}
+										else{
+											var temp = row.invalidationReason;
+											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;">';
+												
+												for(j=0;j<invalidationReasonIDList.length;j++){
+													
+													if(temp === invalidationReasonIDList[j]){
+													html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+													}
+													else{
+													html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+													}
+												//y += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+												
+												//	html += '<option value="null">Please Select</option>'+((temp === 'Absent')?'<option selected ="selected" value="Absent">Absent</option>':'<option value="Absent">Absent</option>')+((temp ==='Exempt')?'<option selected ="selected" value="Exempt">Exempt</option>':'<option value="Exempt">Exempt</option>')+''+((temp === 'Cheating')?'<option selected ="selected" value="Cheating">Cheating</option>':'<option value="Cheating">Cheating</option>')+''+((temp === 'Sound_Quality')?'<option selected ="selected" value="Sound_Quality">Sound Quality</option>':'<option value="Sound_Quality">Sound Quality</option>')+
+												}
+											html +='</select></font></td>';
+										
+										
+										}
+									}
+									
 								}
 								html += '</tr>';
 							}
@@ -4541,15 +4600,73 @@ function registerDelegate(tree){
 		}
 	}
 	
+	function showReasonPopup(){
+		var count=0;
+		if (data.isLaslinkSession){
+			$("input[name=toggleSubtest]").each(function(idx) {
+				var rowId = $(this).val();
+				var cell = null;
+				//cell = $("#" + rowId).children('td').eq(2);								
+				if(this.checked) {
+					if($("#"+rowId+"_validationStatus").text()== 'Valid' && $("#"+rowId+"_select").val() == 'PS'){
+					count++;
+					}
+				}
+			});
+		}
+		if(count > 0 ) {
+	    $("#invalidationReason").show();	    
+		$("#invalidationReason").dialog({  
+					title:$("#invalidationReasonPopupLbl").val(),  
+				 	resizable:false,
+				 	autoOpen: true,
+				 	width: '400px',
+				 	modal: true,
+				 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+					});	
+		$("#invalidationReason").css('height',120);
+		var toppos = ($(window).height() - 290) /2 + 'px';
+		var leftpos = ($(window).width() - 410) /2 + 'px';
+		$("#invalidationReason").parent().css("top",toppos);
+		$("#invalidationReason").parent().css("left",leftpos);
+		
+		}
+		else{
+		toggleSubtestValidationStatus();
+		}
+		
+	}
+		function closeReasonPopup(){
+	 		$("#invalidationReason").hide();	    
+			$("#invalidationReason").dialog('close');
+			$.unblockUI(); 	
+		}
+	
+	
 	function toggleSubtestValidationStatus(){
+		closeReasonPopup();
 		$("#displayMessageViewTestSubtest").hide();
 		var invalidCount = 0;
 		var subTestCount = 0;
 		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		var reasons ="";
 		var itemSetIds = "";
+		var subtestIdAndReasonList = "";
 		$("input[name=toggleSubtest]").each(function(idx) {
+			var rowId = $(this).val();
+			var cell = null;
+			var sel_comment=null;								
+			cell = $("#" + rowId).children('td').eq(2);								
+			if(this.checked) {
+				if ($.trim($(cell).text()) == 'Valid') {											
+					$("#InvalidationText").append(","+rowId);
+				}
+			}
 			if($(this).attr("checked")) {
+				reasons=$("#"+rowId+"_select").val();			
 				itemSetIds += $(this).val() + "|";
+				subtestIdAndReasonList += $(this).val() + "$"+reasons+"|"; 
+			
 			}
         });
 		if(itemSetIds.length > 1) {
@@ -4557,6 +4674,8 @@ function registerDelegate(tree){
 			var postDataObject = {};
  			postDataObject.testRosterId = selectedTestRosterId;
  			postDataObject.itemSetIds = itemSetIds;
+ 			postDataObject.subtestIdAndReasonList = subtestIdAndReasonList.substr(0,subtestIdAndReasonList.length -1);
+ 			//postDataObject.reason = reasons;
  			
 			$.ajax({
 				async:		true,
@@ -4582,8 +4701,15 @@ function registerDelegate(tree){
 											$(cell).html('<font color="red">Invalid</font>');
 										} else if ($.trim($(cell).text()) == 'Invalid') {
 											$(cell).html('Valid');
+												if(data.isLaslinkSession){
+												$("#"+rowId+"_select").val('PS');
+												}
 										}
-									}
+									} else {
+											 if($.trim($(cell).text()) == 'Valid' && data.isLaslinkSession){
+												$("#"+rowId+"_select").val('PS');
+									  			}
+									  	}
 									if($.trim($(cell).text()) == 'Invalid') {
 										invalidCount++;
 									}
@@ -4605,7 +4731,8 @@ function registerDelegate(tree){
 								window.location.href="/SessionWeb/logout.do";
 							},
 				complete :  function(){
-								 $.unblockUI(); 
+				
+							 $.unblockUI(); 
 							}
 			});
 		}

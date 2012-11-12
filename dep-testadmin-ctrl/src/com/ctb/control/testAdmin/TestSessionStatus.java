@@ -1,6 +1,8 @@
 package com.ctb.control.testAdmin; 
 
 
+import java.util.List;
+
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 import com.ctb.bean.request.FilterParams;
@@ -384,7 +386,7 @@ public interface TestSessionStatus
      * @throws com.ctb.exception.CTBBusinessException
      */
     
-    void toggleSubtestValidationStatus(java.lang.String userName, java.lang.Integer testRosterId, java.lang.Integer[] itemSetIds, java.lang.String status) throws com.ctb.exception.CTBBusinessException;
+    void toggleSubtestValidationStatus(java.lang.String userName, java.lang.Integer testRosterId, java.lang.String[] itemSetIds, java.lang.String status) throws com.ctb.exception.CTBBusinessException;
     
     //added for Process Scores  button 
     void rescoreStudent(java.lang.Integer testRosterId)throws com.ctb.exception.CTBBusinessException;
@@ -501,5 +503,9 @@ public interface TestSessionStatus
 	com.ctb.bean.testAdmin.TestSessionData getRecommendedTestSessionsForOrgNodeWithStudentStatus(String userName,  Integer userId, Integer selectedProductId, Integer orgNodeId,  Integer studentId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
 
 	com.ctb.bean.testAdmin.TestSessionData getCurrentFutureTestAdminsForOrgNodeWithStudentStatus( String userName, Integer userId, Integer treeOrgNodeId,	Integer studentId) throws CTBBusinessException;
+
+	List getInvalidationReasonList() throws com.ctb.exception.CTBBusinessException;
+
+
 	
 } 

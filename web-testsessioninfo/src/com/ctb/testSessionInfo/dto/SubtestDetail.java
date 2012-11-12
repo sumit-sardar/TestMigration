@@ -30,8 +30,18 @@ public class SubtestDetail implements java.io.Serializable
     //START- ADDED for LLO-109
     private String testExemptions = null;
     private String absent = null;
+    private String invalidationReason = null;
     
-    /**
+    
+    public String getInvalidationReason() {
+		return invalidationReason;
+	}
+
+	public void setInvalidationReason(String invalidationReason) {
+		this.invalidationReason = invalidationReason;
+	}
+
+	/**
 	 * @return the testExemptions
 	 */
 	public String getTestExemptions() {
