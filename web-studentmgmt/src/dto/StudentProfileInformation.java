@@ -69,6 +69,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String magnifyingGlass;//Added for magnifier
     private String extendedTime; // Added for student pacing
     private String maskingTool;
+    private String microphoneHeadphone; //Added for microphone and headphone
     
     private String hasAccommodations = "No";
     
@@ -419,6 +420,16 @@ public class StudentProfileInformation extends SanitizedFormField
 	}
 
 
+	public String getMicrophoneHeadphone() {
+		return microphoneHeadphone;
+	}
+
+
+	public void setMicrophoneHeadphone(String microphoneHeadphone) {
+		this.microphoneHeadphone = microphoneHeadphone;
+	}
+
+
 	public StudentProfileInformation() {
         this.studentId = new Integer(0);
         this.userName = "";
@@ -511,6 +522,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.magnifyingGlass = student.getMagnifyingGlass();
         this.extendedTime = student.getExtendedTime();
         this.maskingTool = student.getMaskingTool();
+        this.microphoneHeadphone = student.getMicrophoneHeadphone();
         this.hasAccommodations = studentHasAccommodation();
         this.orgNodeId = student.getOrgNodeId();
         this.orgNodeName = student.getOrgNodeName();
@@ -592,6 +604,7 @@ public class StudentProfileInformation extends SanitizedFormField
         }else {
         	this.auditoryCalming = "T";
         }
+        this.microphoneHeadphone = student.getMicrophoneHeadphone();
         this.magnifyingGlass = student.getMagnifyingGlass();
         this.extendedTime = student.getExtendedTime();
         this.maskingTool = student.getMaskingTool();
@@ -612,6 +625,7 @@ public class StudentProfileInformation extends SanitizedFormField
         innerMap.put("extendedTime", this.extendedTime);
         innerMap.put("highlighter", this.highlighter);
         innerMap.put("auditoryCalming", this.auditoryCalming);
+        innerMap.put("microphoneHeadphone", this.microphoneHeadphone);
 	    if(StringUtils.isNullEmpty(this.questionBackgroundColor) 
 	    			&& StringUtils.isNullEmpty(this.questionFontColor)
 	    			&& StringUtils.isNullEmpty(this.questionFontSize)
@@ -940,7 +954,8 @@ public class StudentProfileInformation extends SanitizedFormField
 	            (this.extendedTime != null && !this.extendedTime.equals("") && !this.extendedTime.equals("F")) || 
 	            (this.auditoryCalming != null && !this.auditoryCalming.equals("") && !this.auditoryCalming.equals("F")) || 
 	            (this.magnifyingGlass != null && !this.magnifyingGlass.equals("") && !this.magnifyingGlass.equals("F")) || 
-	            (this.maskingTool != null && !this.maskingTool.equals("") && !this.maskingTool.equals("F")) || 
+	            (this.maskingTool != null && !this.maskingTool.equals("") && !this.maskingTool.equals("F")) ||
+	            (this.microphoneHeadphone != null && !this.microphoneHeadphone.equals("") && !this.microphoneHeadphone.equals("F")) ||
 	            this.questionBackgroundColor != null ||
 	            this.questionFontColor != null ||
 	            this.questionFontSize != null ||

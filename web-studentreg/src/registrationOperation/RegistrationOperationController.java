@@ -2379,6 +2379,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		String magnifyingGlass = getRequest().getParameter("MagnifyingGlass"); //Added for Magnifying Glass
 		String extendedTime = getRequest().getParameter("ExtendedTime"); //Added for Student Pacing
 		String maskingTool = getRequest().getParameter("MaskingTool"); // Added for Masking Answers
+		String microphoneHeadphone = getRequest().getParameter("MicrophoneHeadphone");
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));
@@ -2391,6 +2392,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
 		this.accommodations.setMaskingTool(new Boolean(maskingTool != null)); // Added for Masking Answers
+		this.accommodations.setMicrophoneHeadphone(new Boolean(microphoneHeadphone != null));
 		
 		setCustomerAccommodations(this.accommodations, false, customerConfigurations);
 
@@ -2505,6 +2507,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				{
 					sad.setMaskingTool(Boolean.TRUE);
 				}
+				if(ccName.equalsIgnoreCase("Microphone_Headphone"))
+				{
+					sad.setMicrophoneHeadphone(Boolean.TRUE);
+				}
+				
 			}
 		}
 }
@@ -2901,6 +2908,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.accommodations.setMagnifyingGlass(Boolean.FALSE);//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(Boolean.FALSE); //Added for Student Pacing
 		this.accommodations.setMaskingTool(Boolean.FALSE); // Added for Masking Answers
+		this.accommodations.setMicrophoneHeadphone(Boolean.FALSE);
 
 		setCustomerAccommodations(this.accommodations, true, customerConfigurations);
 	}

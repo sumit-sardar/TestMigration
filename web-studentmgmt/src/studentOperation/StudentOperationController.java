@@ -1850,6 +1850,11 @@ public class StudentOperationController extends PageFlowController {
 				{
 					sad.setMaskingTool(Boolean.TRUE);
 				}
+				//Added for microphone and headphone
+				if (ccName.equalsIgnoreCase("Microphone_Headphone"))
+				{
+					sad.setMicrophoneHeadphone(Boolean.TRUE);
+				}
 			}
 		}
 		  
@@ -1903,7 +1908,8 @@ public class StudentOperationController extends PageFlowController {
 	            (sa.getExtendedTime() != null && !sa.getExtendedTime().equals("") && !sa.getExtendedTime().equals("F")) || 
 	            (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
 	            (sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
-	            (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
+	            (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) ||
+	            (sa.getMicrophoneHeadphone() != null && !sa.getMicrophoneHeadphone().equals("") && !sa.getMicrophoneHeadphone().equals("F")) || 
 	            sa.getQuestionBackgroundColor() != null ||
 	            sa.getQuestionFontColor() != null ||
 	            sa.getQuestionFontSize() != null ||
@@ -1991,6 +1997,7 @@ public class StudentOperationController extends PageFlowController {
 		String magnifyingGlass = getRequest().getParameter("MagnifyingGlass"); //Added for Magnifying Glass
 		String extendedTime = getRequest().getParameter("ExtendedTime"); //Added for Student Pacing
 		String maskingTool = getRequest().getParameter("MaskingTool"); // Added for Masking Answers
+		String microphoneHeadphone = getRequest().getParameter("MicrophoneHeadphone");//Added for Microphone and Headphone
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));
@@ -2003,6 +2010,7 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
 		this.accommodations.setMaskingTool(new Boolean(maskingTool != null)); // Added for Masking Answers
+		this.accommodations.setMicrophoneHeadphone(new Boolean(microphoneHeadphone != null));
 		
 		setCustomerAccommodations(this.accommodations, false, customerConfigurations);
 
@@ -2065,7 +2073,8 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations.setMagnifyingGlass(Boolean.FALSE);//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(Boolean.FALSE); //Added for Student Pacing
 		this.accommodations.setMaskingTool(Boolean.FALSE); // Added for Masking Answers
-
+		this.accommodations.setMicrophoneHeadphone(Boolean.FALSE); // Added for microphone and headphone
+		
 		setCustomerAccommodations(this.accommodations, true, customerConfigurations);
 	}
 

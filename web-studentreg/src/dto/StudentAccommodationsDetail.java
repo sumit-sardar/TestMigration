@@ -47,7 +47,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     private Boolean magnifyingGlass = Boolean.FALSE; // Added for Magnifying Glass
     private Boolean extendedTime = Boolean.FALSE; // Added for Student Pacing
     private Boolean maskingTool = Boolean.FALSE; // Added for Masking Answers
-    
+    private Boolean microphoneHeadphone = Boolean.FALSE; //Added for microphone and headphone
     public StudentAccommodationsDetail() {
     }
 
@@ -117,6 +117,9 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (sa.getMaskingTool() != null)
             this.maskingTool = new Boolean(sa.getMaskingTool().equals("T"));
+        
+        if (sa.getMicrophoneHeadphone() != null)
+        	this.microphoneHeadphone = new Boolean (sa.getMicrophoneHeadphone().equals("T"));
     }
 
     public StudentAccommodations makeCopy(Integer studentId) 
@@ -246,7 +249,13 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
             copied.setMaskingTool("F");
         }
       //END - Added for Magnifier, Auditory Calming and Masking Ruler and student pacing and masking answer
-        
+        if (this.microphoneHeadphone.booleanValue()) {
+        	copied.setMicrophoneHeadphone("T");
+        	hasData = true;
+        }
+        else {
+        	copied.setMicrophoneHeadphone("F");
+        }
         return copied;
     }
 
@@ -274,6 +283,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setMagnifyingGlass(this.magnifyingGlass);
         copied.setExtendedTime(this.extendedTime);//Added for student pacing
         copied.setMaskingTool(this.maskingTool);// Added for masking answers
+        copied.setMicrophoneHeadphone(this.microphoneHeadphone);
 
         return copied;
     }
@@ -582,6 +592,14 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 	 */
 	public void setExtendedTime(Boolean extendedTime) {
 		this.extendedTime = extendedTime;
+	}
+
+	public Boolean getMicrophoneHeadphone() {
+		return microphoneHeadphone;
+	}
+
+	public void setMicrophoneHeadphone(Boolean microphoneHeadphone) {
+		this.microphoneHeadphone = microphoneHeadphone;
 	}
 
 	

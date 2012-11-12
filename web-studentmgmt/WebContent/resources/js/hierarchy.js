@@ -2962,6 +2962,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			return 'AuditoryCalming';
 		if(keyVal == 'maskingTool')
 			return 'MaskingTool';
+		if(keyVal == 'microphoneHeadphone')
+			return 'MicrophoneHeadphone';
+			
 		return keyVal;
 	}
 			 

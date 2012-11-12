@@ -57,7 +57,9 @@ public class ManageStudent extends CTBBean
     private String magnifyingGlass;//Added for magnifier
     private String extendedTime; // Added for student pacing
     private String maskingTool;
-    //END-Added for HandScoring  
+    //END-Added for HandScoring
+    
+    private String microphoneHeadphone; // Added for microphone and headphone
     
     //Start- added for  Process Scores  button
     private Boolean isSuccess;
@@ -803,6 +805,12 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setIsSessionStudent(String isSessionStudent) {
 		this.isSessionStudent = isSessionStudent;
+	}
+	public String getMicrophoneHeadphone() {
+		return microphoneHeadphone;
+	}
+	public void setMicrophoneHeadphone(String microphoneHeadphone) {
+		this.microphoneHeadphone = microphoneHeadphone;
 	}
 	
     

@@ -227,6 +227,9 @@
 		<tr align="center" id="maskingToolStatus" style="display: none;">
 			<td align="left"><lb:label key="student.accommodationToolTip.maskingTool" /></td>
 		</tr>
+		<tr align="center" id="microphoneHeadphoneStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.microphoneHeadphone" /></td>
+		</tr>
 	</tbody>
 </table>  
 </div>

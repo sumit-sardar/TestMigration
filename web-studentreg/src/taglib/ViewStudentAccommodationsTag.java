@@ -180,7 +180,17 @@ public class ViewStudentAccommodationsTag extends CTBTag
 	           displayControlRow(field, description, checked, disabled, null);                        
 	           displayTextRow("Allow student to use a magnifier to enlarge selected portion of the screen.", "20");
 
-        
+	       displayEmptyRow("2");
+		   displayEmptyRow("2");
+		     
+		   //Microphone and Headphone
+		       		field = "MicrophoneHeadphone";
+		       		description = "<b>Audio Calibration</b>:";
+		       		checked = this.accommodations.getMicrophoneHeadphone().booleanValue();
+		       		disabled = isDisabled(field);
+		       		displayControlRow(field, description, checked, disabled, null);
+		       		displayTextRow("Use audio calibration to check microphone and headset levels prior to taking the test.", "20");
+	                      
             displayEmptyRow("2");
                         
         displayTableEnd();
