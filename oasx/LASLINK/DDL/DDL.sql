@@ -135,3 +135,22 @@ start with 1
 increment by 1
 cache 20
 /
+
+
+alter table student_item_set_status
+add invalidation_reason_id varchar2(10)
+/
+
+
+CREATE TABLE INVALIDATION_REASON_CODE
+( INVALIDATION_REASON_ID VARCHAR2(10) PRIMARY KEY,
+INVALIDATION_REASON_DETAILS VARCHAR2(20)
+)
+/
+
+alter table STUDENT_ITEM_SET_STATUS
+add constraint INVALIDATION_REASON_ID_FK
+foreign key ( INVALIDATION_REASON_ID )
+references INVALIDATION_REASON_CODE ( INVALIDATION_REASON_ID )
+/
+

@@ -72,3 +72,25 @@ insert into product_resource values (15, 'TDCINSTMAC', 'http://oas.ctb.com/downl
 /
 insert into product_resource values (15, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
 /
+
+insert into invalidation_reason_code values ( 'ABS','Absent')
+/
+insert into invalidation_reason_code values ( 'ACS','Accidental Stop')
+/
+insert into invalidation_reason_code values ( 'FID','Fire drill')
+/
+insert into invalidation_reason_code values ( 'ILL','Illness')
+/
+insert into invalidation_reason_code values ( 'IRR','Irregularity')
+/
+insert into invalidation_reason_code values ( 'OOT','Out of time')
+/
+insert into invalidation_reason_code values ( 'NWO','Network outage')
+/
+insert into invalidation_reason_code values ( 'PWO','Power outage')
+/
+insert into invalidation_reason_code values ( 'SOQ','Sound Quality')
+/
+insert into invalidation_reason_code values ( 'OTH','Other')
+/
+
