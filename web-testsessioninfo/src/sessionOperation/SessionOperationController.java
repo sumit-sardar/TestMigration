@@ -3807,6 +3807,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
     	boolean hasResetTestSession = false;
+    	boolean hasResetTestSessionForAdmin = false;
     	//boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
@@ -3867,25 +3868,37 @@ public class SessionOperationController extends PageFlowController {
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					this.hasLicenseConfig = true;
+					continue;
 	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
+					continue;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest_For_Admin") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSessionForAdmin = true;
+					continue;
 	            }
 				//Added for oklahoma customer
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 						&& cc.getDefaultValue().equals("T")) {
 	            	this.isOKCustomer = true;
+	            	continue;
 	            }
-				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T")) && 
+						((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
 						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
 						(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-								&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+								&& cc.getDefaultValue().equalsIgnoreCase("T")))){
 					isGACustomer = true;
+					continue;
 				}
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Force_Test_Break") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					this.forceTestBreak = true;
+					continue;
 	            }
 			}
 			
@@ -3902,7 +3915,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		
 
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
@@ -5687,6 +5700,8 @@ public class SessionOperationController extends PageFlowController {
 				base.setRosterElement(rosterList);
 				base.setSubtestValidationAllowed(this.subtestValidationAllowed);
 				base.setDonotScoreAllowed(isDonotScoreAllowed());
+				base.setOkCustomer(this.isOKCustomer);
+				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
 				/*Integer breakCount = ted.getBreakCount();
 		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
 		            if (isSameAccessCode(subtestList)) 
