@@ -331,6 +331,14 @@ function populateSelectStudentGrid() {
 		   	$('#gs_screenReader').val("");
 		   	$('#gs_untimedTest').val("");
 
+			if (isCopySession){
+		   	 	if (obj.studentNode != null && obj.studentNode.length > 0) {			
+					for(var i=0; i<obj.studentNode.length; i++) {
+						obj.studentNode[i].statusEditable = "T";
+					}		
+				}		
+			} 
+
 		   	accomodationMapForAll = obj.accomodationMap;
 		   	var nonLicenseProduct = isTutorialOrLocatorProduct();
 		   	
@@ -362,8 +370,8 @@ function populateSelectStudentGrid() {
 		   	 	}
 		   	 	studentEditStatusMap = new Map(); //changes for ie issue
 		   	 	for(var ii=0; ii<obj.studentNode.length;ii++){
-		   	 	   var data1= obj.studentNode[ii];
-		   	 	   studentEditStatusMap.put(data1.studentId,data1.statusEditable );
+		   	 	   	var data1= obj.studentNode[ii];
+	   	 	   		studentEditStatusMap.put(data1.studentId,data1.statusEditable );
 		   	 	}
 
 		   	 if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {

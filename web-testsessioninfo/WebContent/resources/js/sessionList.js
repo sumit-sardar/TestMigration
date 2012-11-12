@@ -110,6 +110,7 @@ var hideProctorDelButton = false; // Only state level admin for oklahoma should 
 var hideStudentDelButton = false; // Only state level admin, admin coordinator, coordinator should be able to add/del students
 
 var forceTestBreak = false;
+var selectGE = false;
 
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
@@ -997,7 +998,15 @@ function registerDelegate(tree){
 		document.getElementById("testSessionName_lbl").innerHTML = sessionListData.testName;
 		if(state != "EDIT")
 			document.getElementById("testSessionName").value = sessionListData.testName;
-			
+
+		if (selectGE) {
+			if (isTabeProduct && (! isTabeLocatorProduct)) { 
+				$("#selectGE").show();	
+				$("#selectGELbl").show();		
+				document.getElementById("selectGE").checked = true;
+			}
+		}
+		
 		str = sessionListData.subtests;
 					if(sessionListData.isRandomize == "Y" ){
 						$("#randomDis").show();	
@@ -1169,6 +1178,10 @@ function registerDelegate(tree){
 	
 	
 	function reloadHomePage(){
+		
+	 	var grid = $("#list2"); 
+	 	grid[0].p.search = false;
+		$("#searchUserByKeywordInputList2").val('');
 		
 		selectedTestAdminId = null;
 		reset();
@@ -1550,6 +1563,7 @@ function registerDelegate(tree){
 						ProductData = data;
 						isOKAdmin = data.isOkAdmin;
 						forceTestBreak = data.forceTestBreak;
+						selectGE = data.selectGE;
 						
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
@@ -2526,6 +2540,8 @@ function registerDelegate(tree){
 		$("#randDisLbl").hide();		
 		$("#randomDis").val("");		
 		//$("#randomDistDiv").hide();								
+		$("#selectGE").hide();	
+		$("#selectGELbl").hide();		
 					
 	}
 	
@@ -2557,6 +2573,9 @@ function registerDelegate(tree){
 		$("#randDisLbl").hide();
 		$("#randomDis").val("");
 		//$("#randomDistDiv").hide();
+		$("#selectGE").hide();	
+		$("#selectGELbl").hide();		
+		
 		document.getElementById("locatorSubtestGridHeading").style.display = "none";
  		
  		
@@ -3572,6 +3591,7 @@ function registerDelegate(tree){
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
+	 param = param+"&includeGE=" + document.getElementById("selectGE").checked;
 	 
 		$.ajax({
 			async:		true,
@@ -3629,11 +3649,17 @@ function registerDelegate(tree){
 								var sortCol1 = jQuery("#list3").getGridParam("sortname");
 								if(vdata.testSession != null) {
 							  		var testSessionData = vdata.testSession;
+							  		
+							  		var assignedRole = testSessionData.AssignedRole;
+								 	if ((state == "EDIT") && (savedAssignedRole != undefined)) {
+								 		assignedRole = savedAssignedRole;
+								 	}
+							  		
 							  		var dataToBeAdded = {testAdminName:testSessionData.testAdminName,
 							  							 testName:testSessionData.testName,
 							  							 creatorOrgNodeName:testSessionData.creatorOrgNodeName,
 							  							 creatorOrgNodeId:testSessionData.creatorOrgNodeId,
-							  							 AssignedRole:testSessionData.AssignedRole,
+							  							 AssignedRole:assignedRole,
 							  							 loginStartDate:$.datepicker.formatDate('mm/dd/y', new Date(testSessionData.loginStartDate)),
 							  							 loginEndDate:$.datepicker.formatDate('mm/dd/y', new Date(testSessionData.loginEndDate)),
 							  							 loginStartDateString:testSessionData.loginStartDateString,

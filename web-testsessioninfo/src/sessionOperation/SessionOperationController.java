@@ -191,6 +191,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isLasLinkCustomer = false;
 	public boolean isOKCustomer = false;
 	private boolean forceTestBreak = false;
+	private boolean selectGE = false;
 
 	
 	//Added for view/monitor test status
@@ -625,6 +626,7 @@ public class SessionOperationController extends PageFlowController {
             }
     
             vo.setForceTestBreak(this.forceTestBreak);
+            vo.setSelectGE(this.selectGE);
             
             Gson gson = new Gson();
         	jsonData = gson.toJson(vo);
@@ -683,7 +685,9 @@ public class SessionOperationController extends PageFlowController {
         	String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
         	String currentAction = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.ACTION, true, "");
         	String checkRestrictedStr = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.REMOVE_RESTRICTED_STD_AND_SAVE, true, "true");
-        	Boolean checkRestricted = Boolean.valueOf(checkRestrictedStr.trim().toLowerCase());
+        	Boolean checkRestricted = Boolean.valueOf(checkRestrictedStr.trim().toLowerCase());       	
+        	String includeGEStr = RequestUtil.getValueFromRequest(this.getRequest(), "includeGE", false, null);
+        	
         	SessionStudent[] restStudent = null;
         	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
         	TestSessionVO testSessionVO = null;
@@ -708,6 +712,10 @@ public class SessionOperationController extends PageFlowController {
             try
             {
             	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation, currentAction); //modified for copy test sesssion
+            	
+            	if (includeGEStr != null) {
+            		session.getTestSession().setLexingtonVersion(includeGEStr);
+            	}
             	
             	if(!validationFailedInfo.isValidationFailed()) {
             		isValidationFailed = false;
@@ -1100,6 +1108,7 @@ public class SessionOperationController extends PageFlowController {
                 }
                 
                 vo.setForceTestBreak(this.forceTestBreak);
+                vo.setSelectGE(this.selectGE);
     	    	
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -3897,6 +3906,11 @@ public class SessionOperationController extends PageFlowController {
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Force_Test_Break") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					this.forceTestBreak = true;
+					continue;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("GE_Selection") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					this.selectGE = true;
 					continue;
 	            }
 			}

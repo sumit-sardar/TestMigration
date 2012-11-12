@@ -39,6 +39,7 @@ public class ScheduleTestVo implements Serializable{
 	private List<String> levelOptions = new ArrayList<String>();// level for subtest
 	private boolean isOkAdmin = false;
 	private boolean forceTestBreak = false;
+	private boolean selectGE = false;
 	
 	
 	
@@ -494,8 +495,14 @@ public class ScheduleTestVo implements Serializable{
 	public void setForceTestBreak(boolean forceTestBreak) {
 		this.forceTestBreak = forceTestBreak;
 	}
-	
-	
+
+	public boolean isSelectGE() {
+		return selectGE;
+	}
+
+	public void setSelectGE(boolean selectGE) {
+		this.selectGE = selectGE;
+	}
 }
 
 @SuppressWarnings( "all")

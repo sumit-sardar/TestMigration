@@ -25,6 +25,7 @@
 	var isOKEQProduct = false; // Added for Oklahoma customer
 		
 	var forceTestBreak = false;
+	var savedAssignedRole = "Owner";
 		
   function editTestSession(action){  
   	var activeJQGrid;
@@ -37,6 +38,8 @@
   		
   	rowID = $('#'+activeJQGrid).jqGrid('getGridParam', 'selrow');
 	rowData = $('#'+activeJQGrid).getRowData(rowID); 
+	
+	savedAssignedRole = rowData.AssignedRole;
 	
 	isOKEQActionPerformed = false; // Added for oklahoma customer Equivalent form
 	hideProctorDelButton = false;

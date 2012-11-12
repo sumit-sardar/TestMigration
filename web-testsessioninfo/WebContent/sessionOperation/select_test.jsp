@@ -81,14 +81,22 @@
 						<tr>
 							<td height="5" colspan="4"></td>
 						</tr>
-						<tr>
-							<td width="0" height="20" align="left" valign="middle">
-								<input type="checkbox" id="testBreak" value="1" disabled="disabled" onClick="toggleAccessCode();"/>							</td>
-							<td width="294" height="20" valign="middle" class="transparent"><lb:label key="selectTest.label.allowTestBreak" />
+						<tr height="20" valign="middle">
+							<td colspan="2">
+								<input type="checkbox" id="testBreak" value="1" disabled="disabled" onClick="toggleAccessCode();"/>	
+								<lb:label key="selectTest.label.allowTestBreak" />						
 								<span style="padding-left:5px;">
-						  <input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" onblur="javascript:trimTextValue(this); return false;"/></span>							</td>
-					      <td width="0" height="20" valign="middle"><input type="checkbox" id="randomDis" name="randomDis" value="" onClick="toggleRandomDisVal();"></td>
-						    <td width="200" height="20" valign="middle" class="transparent"><span id="randDisLbl"><lb:label key="selectTest.label.randomDist" /></span></td>
+						  		<input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" onblur="javascript:trimTextValue(this); return false;"/>
+						  		</span>							
+						  	</td>
+							<td>
+					      		<input type="checkbox" id="randomDis" name="randomDis" value="" onClick="toggleRandomDisVal();">
+						    	<span id="randDisLbl"><lb:label key="selectTest.label.randomDist" /></span>
+					      	</td>
+							<td>
+					      		<input type="checkbox" id="selectGE" name="selectGE" >
+						    	<span id="selectGELbl"><lb:label key="selectTest.label.selectGE" /></span>
+					      	</td>
 						</tr>
                           </table></td>
 					  </tr>
