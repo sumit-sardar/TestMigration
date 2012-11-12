@@ -1110,6 +1110,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	String roleName = this.user.getRole().getRoleName();
     	boolean hasResetTestSession = false;
+    	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
@@ -1169,6 +1170,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
+					continue;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest_For_Admin") && 
+	            		cc.getDefaultValue().equals("T")	) {
+					hasResetTestSessionForAdmin = true;
+					continue;
 	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 						&& cc.getDefaultValue().equals("T")) {
@@ -1199,7 +1206,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer&&(adminUser || adminCoordinatorUser) )); //For Student Registration
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
     }
 	

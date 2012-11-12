@@ -1128,30 +1128,6 @@ public Forward rescoreStudent() {
 			return new Boolean(hasBulkStudentConfigurable);           
 		}
 		
-		
-		/**
-		 * Reset Test Session
-		 */
-		private Boolean customerHasResetTestSessions() 
-		{
-			boolean hasResetTestSessionsConfigurable = false;
-			//Bulk Accommodation
-			for (int i=0; i < this.customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
-						cc.getDefaultValue().equals("T")) {
-					hasResetTestSessionsConfigurable = true; 
-					break;
-				}
-			}
-
-			getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
-
-
-			return new Boolean(hasResetTestSessionsConfigurable);           
-		}
-		
 		private Boolean customerHasScoring() {
 			getCustomerConfigurations();
 			boolean hasScoringConfigurable = false;
@@ -1273,6 +1249,7 @@ public Forward rescoreStudent() {
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
     	boolean hasResetTestSession = false;
+    	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean hasLicenseConfigured = false;
@@ -1285,15 +1262,23 @@ public Forward rescoreStudent() {
             		cc.getDefaultValue().equals("T")	) {
 				hasResetTestSession = true;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest_For_Admin") && 
+            		cc.getDefaultValue().equals("T")	) {
+				hasResetTestSessionForAdmin = true;
+				continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 					&& cc.getDefaultValue().equals("T")) {
             	isOKCustomer = true;
             }
-			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T")) && 
+					((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
 					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
 					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+							&& cc.getDefaultValue().equalsIgnoreCase("T")))){
 				isGACustomer = true;
+				continue;
 			}
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
 	        		cc.getDefaultValue().equals("T")	) {
@@ -1333,7 +1318,7 @@ public Forward rescoreStudent() {
     
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
      
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		
 		this.getSession().setAttribute("hasDataExportConfigured", new Boolean(laslinkCustomer)); // add for Data Export
 		

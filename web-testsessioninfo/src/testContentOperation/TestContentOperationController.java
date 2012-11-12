@@ -541,6 +541,7 @@ public class TestContentOperationController extends PageFlowController {
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	boolean hasResetTestSession = false;
+    	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
@@ -580,18 +581,26 @@ public class TestContentOperationController extends PageFlowController {
 					cc.getDefaultValue().equals("T")	) {
 				hasResetTestSession = true;
 	        }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest_For_Admin") && 
+            		cc.getDefaultValue().equals("T")	) {
+				hasResetTestSessionForAdmin = true;
+				continue;
+            }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 					&& cc.getDefaultValue().equals("T")) {
             	isOKCustomer = true;
             }
-			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
+			if ((cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T")) && 
+					((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
 					&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
 					(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-							&& cc.getDefaultValue().equalsIgnoreCase("T"))){
+							&& cc.getDefaultValue().equalsIgnoreCase("T")))){
 				isGACustomer = true;
+				continue;
 			}
 		}
-		this.getSession().setAttribute("hasResetTestSession", new Boolean(hasResetTestSession && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 	}
 	
 	private boolean isAdminCoordinatotUser() //For Student Registration
