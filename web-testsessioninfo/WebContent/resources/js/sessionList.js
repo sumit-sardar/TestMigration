@@ -112,6 +112,7 @@ var hideStudentDelButton = false; // Only state level admin, admin coordinator, 
 var forceTestBreak = false;
 
 var isLasLinksProduct = false; // add for laslink modification
+var isLaslinkCustomer = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -4344,6 +4345,9 @@ function registerDelegate(tree){
 							$("#testAdminName_acco").text(data.testSession.testAdminName);
 							$("#subTestName").text(data.testSession.testName);
 							$("#testStatus").text(data.testStatus);
+							if(data.isLaslinkSession) {
+							 isLaslinkCustomer = true;
+							}
 							if(data.testGrade != null) {
 								$("#testGradeRow").show();
 								$("#testGrade").text(data.testGrade);
@@ -4602,7 +4606,7 @@ function registerDelegate(tree){
 	
 	function showReasonPopup(){
 		var count=0;
-		if (data.isLaslinkSession){
+		if (isLaslinkCustomer){
 			$("input[name=toggleSubtest]").each(function(idx) {
 				var rowId = $(this).val();
 				var cell = null;
