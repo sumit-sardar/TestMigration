@@ -1,4 +1,4 @@
-package viewmonitorstatus;
+/*package viewmonitorstatus;
 
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -56,23 +56,23 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 
-/**
+*//**
  * @jpf:controller
- *  */
+ *  *//*
 @Jpf.Controller()
 public class ViewMonitorStatusController extends PageFlowController
 {
     static final long serialVersionUID = 1L;
     
-    /**
+    *//**
      * @common:control
-     */
+     *//*
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
     
-    /**
+    *//**
      * @common:control
-     */
+     *//*
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
 
@@ -112,11 +112,11 @@ public class ViewMonitorStatusController extends PageFlowController
     private String userEmail = null;
     private List fileTypeOptions = null;    
 	
-    /**
+    *//**
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="view_monitor_status.do"
-     */ 
+     *//* 
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "viewStatus",
                      path = "view_monitor_status.do"),
@@ -149,13 +149,13 @@ public class ViewMonitorStatusController extends PageFlowController
         }
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="viewDetails" path="to_view_subtests_detail.do"
      * @jpf:forward name="validationDetails" path="to_validate_subtests_detail.do"
      * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
      * @jpf:forward name="success" path="view_monitor_status.jsp"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "viewDetails",
                      path = "to_view_subtests_detail.do"), 
@@ -221,11 +221,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
     
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
      * @jpf:forward name="success" path="generate_report_file.jsp"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "generateReportFile",
                      path = "generateReportFile.do"), 
@@ -404,11 +404,11 @@ public class ViewMonitorStatusController extends PageFlowController
     	}
     }
     
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="report" path="multiple_student_IPR.jsp"
      * @jpf:forward name="error" path="/error.jsp"
-     */
+     *//*
 	@Jpf.Action(
 		forwards = { 
 			@Jpf.Forward(name = "success", path = "report_queue.jsp"), 
@@ -465,10 +465,10 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="report_queue.jsp"
-     */
+     *//*
 	@Jpf.Action(
 		forwards = { 
 			@Jpf.Forward(name = "success", path = "report_queue.jsp")
@@ -502,10 +502,10 @@ public class ViewMonitorStatusController extends PageFlowController
     }
 
 	
-    /**
+    *//**
 	 * New method added for CR - GA2011CR001
 	 * isGeorgiaCustomer
-	 */
+	 *//*
     private void isGeorgiaCustomer(ViewMonitorStatusForm form) 
     {     
 		 boolean isStudentIdConfigurable = false;
@@ -542,10 +542,10 @@ public class ViewMonitorStatusController extends PageFlowController
 		 
     }
    
-    /**
+    *//**
 	 * New method added for CR - GA2011CR001
 	 * getCustomerConfigurations
-	 */
+	 *//*
 	private void getCustomerConfigurations()
 	{
 		try {
@@ -559,10 +559,10 @@ public class ViewMonitorStatusController extends PageFlowController
 		}
 	}
 	
-	/*
+	
 	 * New method added for CR - GA2011CR001
 	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 */
+	 
 	private void customerConfigurationValues(Integer configId)
 	{
 		try {
@@ -574,11 +574,11 @@ public class ViewMonitorStatusController extends PageFlowController
 		}
 	}
 	
-	/*
+	
 	 * New method added for CR - GA2011CR001
 	 * this method can be used in future for setting default value of configurable_StudentId configuration.
 	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 */
+	 
 	private String[] getDefaultValue(String [] arrValue, String labelName, ViewMonitorStatusForm form)
 	{
 		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
@@ -701,8 +701,8 @@ public class ViewMonitorStatusController extends PageFlowController
     {
     }
 
-    /**
-     */ 
+    *//**
+     *//* 
     protected boolean prepareSubtestsDetailInformation(ViewMonitorStatusForm form, boolean validation)
     {
         RosterElement re = getTestRosterDetails(form.getTestRosterId());
@@ -776,10 +776,10 @@ public class ViewMonitorStatusController extends PageFlowController
         return true;
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="view_subtests_detail.jsp"
-     */ 
+     *//* 
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "view_subtests_detail.jsp")
@@ -791,11 +791,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success", form);
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="done" path="from_view_subtests_detail.do"
      * @jpf:forward name="success" path="validate_subtests_detail.jsp"
-     */ 
+     *//* 
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "done",
                      path = "from_view_subtests_detail.do"), 
@@ -896,10 +896,10 @@ public class ViewMonitorStatusController extends PageFlowController
             this.getRequest().setAttribute("disableToogleButton", "true");
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="view_monitor_status.do"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "view_monitor_status.do")
@@ -1490,10 +1490,10 @@ public class ViewMonitorStatusController extends PageFlowController
         form.setSelectedTestRosterIds(rosterIdStrs);
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="/homepage/HomePageController.jpf"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "goto_homepage.do")
@@ -1504,10 +1504,10 @@ public class ViewMonitorStatusController extends PageFlowController
     }
     
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="/homepage/HomePageController.jpf"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "/homepage/HomePageController.jpf")
@@ -1517,10 +1517,10 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="success" path="/viewtestsessions/ViewTestSessionsController.jpf"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "/viewtestsessions/ViewTestSessionsController.jpf")
@@ -1530,11 +1530,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="goto_homepage" path="goto_homepage.do"
      * @jpf:forward name="goto_viewtestsessions" path="goto_viewtestsessions.do"
-     */
+     *//*
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "goto_homepage",
                      path = "goto_homepage.do"), 
@@ -1552,9 +1552,9 @@ public class ViewMonitorStatusController extends PageFlowController
             return new Forward("goto_viewtestsessions");
     }
 
-    /**
+    *//**
      * @jpf:action
-     */
+     *//*
 	@Jpf.Action()
     protected Forward goto_session_information()
     {
@@ -1577,11 +1577,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return null;
     }
     
-    /**
+    *//**
      * @jpf:action
      * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
      * @jpf:forward name="error" path="/error.jsp"
-     */
+     *//*
 	@Jpf.Action(
 		forwards = { 
 			@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
@@ -1804,9 +1804,9 @@ public class ViewMonitorStatusController extends PageFlowController
         }
     }
     
-    /**
+    *//**
      * FormData get and set methods may be overwritten by the Form Bean editor.
-     */
+     *//*
     public static class ViewMonitorStatusForm extends SanitizedFormData
     {
 		private static final long serialVersionUID = 1L;
@@ -2044,16 +2044,16 @@ public class ViewMonitorStatusController extends PageFlowController
             return this.selectedTestRosterIds;
         }
 
-		/**
+		*//**
 		 * @return the studentIdLabelName
-		 */
+		 *//*
 		public String getStudentIdLabelName() {
 			return studentIdLabelName;
 		}
 
-		/**
+		*//**
 		 * @param studentIdLabelName the studentIdLabelName to set
-		 */
+		 *//*
 		public void setStudentIdLabelName(String studentIdLabelName) {
 			this.studentIdLabelName = studentIdLabelName;
 		}
@@ -2161,38 +2161,38 @@ public class ViewMonitorStatusController extends PageFlowController
 		this.sessionDetailsShowScores = sessionDetailsShowScores;
 	}
 
-	/**
+	*//**
 	 * @return the customerConfigurationsValue
-	 */
+	 *//*
 	public CustomerConfigurationValue[] getCustomerConfigurationsValue() {
 		return customerConfigurationsValue;
 	}
 
-	/**
+	*//**
 	 * @param customerConfigurationsValue the customerConfigurationsValue to set
-	 */
+	 *//*
 	public void setCustomerConfigurationsValue(
 			CustomerConfigurationValue[] customerConfigurationsValue) {
 		this.customerConfigurationsValue = customerConfigurationsValue;
 	}
 
-	/**
+	*//**
 	 * @return the studentIdLabelName
-	 */
+	 *//*
 	public String getStudentIdLabelName() {
 		return studentIdLabelName;
 	}
 
-	/**
+	*//**
 	 * @param studentIdLabelName the studentIdLabelName to set
-	 */
+	 *//*
 	public void setStudentIdLabelName(String studentIdLabelName) {
 		this.studentIdLabelName = studentIdLabelName;
 	}
 
-	/**
+	*//**
 	 * @param customerConfigurations the customerConfigurations to set
-	 */
+	 *//*
 	public void setCustomerConfigurations(
 			CustomerConfiguration[] customerConfigurations) {
 		this.customerConfigurations = customerConfigurations;
@@ -2235,3 +2235,4 @@ public class ViewMonitorStatusController extends PageFlowController
 	
 }
  
+*/
