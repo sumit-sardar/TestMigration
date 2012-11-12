@@ -4704,8 +4704,8 @@ function registerDelegate(tree){
 										if($.trim($(cell).text()) == 'Valid') {
 											$(cell).html('<font color="red">Invalid</font>');
 										} else if ($.trim($(cell).text()) == 'Invalid') {
-											$(cell).html('Valid');
-												if(data.isLaslinkSession){
+												$(cell).html('Valid');
+												if(isLaslinkCustomer){
 												$("#"+rowId+"_select").val('PS');
 												}
 										}
