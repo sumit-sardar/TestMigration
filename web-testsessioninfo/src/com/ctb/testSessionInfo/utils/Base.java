@@ -43,6 +43,8 @@ public class Base {
 	Map<Integer,Map> sessionListPAMap;
 	Map<Integer,Map> sessionListCUFUMap;
 	Map<Integer,Map> accomodationMap;
+	private boolean isOkCustomer; // Added for OAS – OK – 2013 – 014 – invalidate test
+	private boolean isTopLevelAdmin; // Added for OAS – OK – 2013 – 014 – invalidate test
 	
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
@@ -272,6 +274,18 @@ public class Base {
 	}
 	public void setAccomodationMap(Map<Integer, Map> accomodationMap) {
 		this.accomodationMap = accomodationMap;
+	}
+	public boolean isOkCustomer() {
+		return isOkCustomer;
+	}
+	public void setOkCustomer(boolean isOkCustomer) {
+		this.isOkCustomer = isOkCustomer;
+	}
+	public boolean isTopLevelAdmin() {
+		return isTopLevelAdmin;
+	}
+	public void setTopLevelAdmin(boolean isTopLevelAdmin) {
+		this.isTopLevelAdmin = isTopLevelAdmin;
 	}
 
 }

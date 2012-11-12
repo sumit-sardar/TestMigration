@@ -99,6 +99,7 @@ var firstTimeOpen = false;
 var selectProductId = null;
 
 var isOKAdmin = false;
+var isOkCustomer = false;
 var isOKEqTestSelected = false;
 var isOKProductChanged = false;
 var isOKEQDefaultSelected = false; // Needed to verify whether the default selection in select test dropdown is EQ test or not.
@@ -4128,8 +4129,28 @@ function registerDelegate(tree){
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
 		   		 var subtestValAllowed = JSON.stringify(obj.subtestValidationAllowed);
+		   		 var toggleIsOkCustomer = JSON.stringify(obj.isOkCustomer);
+		   		 if(toggleIsOkCustomer == 'true') {
+		   		 	isOkCustomer = true;
+		   		 } else {
+		   		 	isOkCustomer = false;
+		   		 }
+		   		 var toggleIsTopLevelAdmin = JSON.stringify(obj.isTopLevelAdmin);
+		   		 if(toggleIsTopLevelAdmin == 'true') {
+		   		 	isOKAdmin = true;
+		   		 } else {
+		   		 	isOKAdmin = false;
+		   		 }
 		   		 if(subtestValAllowed == 'false') {
-					$("#toggleValidation").show();
+		   		 	if(isOkCustomer) { // Added for Oklahoma customer as only top level admin can toggle validation for a student.
+		   		 		if(isOKAdmin) {
+		   		 			$("#toggleValidation").show();
+		   		 		} else {
+		   		 			$("#toggleValidation").hide();
+		   		 		}
+		   		 	} else {
+						$("#toggleValidation").show();
+					}
 				 } else {
 					$("#toggleValidation").hide();
 				 }
@@ -4443,8 +4464,17 @@ function registerDelegate(tree){
 							}
 							$("#subtestList").html(html);
 							if(data.subtestValidationAllowed) {
-								$("#toggleValidationSubTest").show();
-								setAnchorButtonState('toggleValidationSubtestButton', true);
+								if(isOkCustomer) { // Added for Oklahoma customer as only state level admin can invalidate a student.
+									if(isOKAdmin) {
+										$("#toggleValidationSubTest").show();
+										setAnchorButtonState('toggleValidationSubtestButton', true);
+									} else {
+										$("#toggleValidationSubTest").hide();
+									}
+								} else {
+									$("#toggleValidationSubTest").show();
+									setAnchorButtonState('toggleValidationSubtestButton', true);
+								}
 							} else {
 								$("#toggleValidationSubTest").hide();
 							}
