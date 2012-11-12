@@ -608,7 +608,7 @@ public class StudentAccommodationsTag extends CTBTag
         }        
         if(counter == 0 && (field.equals("MaskingRuler") || field.equals("AuditoryCalming")
         		|| field.equals("MagnifyingGlass") || field.equals("ExtendedTime") 
-        		|| field.equals("MaskingTool")))
+        		|| field.equals("MaskingTool") || field.equals("MicrophoneHeadphone")))
         	disabled=true;
         
         return disabled;
