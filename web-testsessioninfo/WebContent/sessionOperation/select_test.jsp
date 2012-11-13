@@ -94,8 +94,12 @@
 						    	<span id="randDisLbl"><lb:label key="selectTest.label.randomDist" /></span>
 					      	</td>
 							<td>
+							<!-- 
 					      		<input type="checkbox" id="selectGE" name="selectGE" >
 						    	<span id="selectGELbl"><lb:label key="selectTest.label.selectGE" /></span>
+							 -->
+					      		<input type="hidden" id="selectGE" name="selectGE" >
+					      		<input type="hidden" id="selectGELbl" name="selectGELbl" >
 					      	</td>
 						</tr>
                           </table></td>
