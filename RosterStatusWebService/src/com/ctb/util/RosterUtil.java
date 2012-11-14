@@ -37,6 +37,7 @@ public class RosterUtil {
 	 */
 	public static String convertStatus(String status) 
     {
+		/*
     	if (status.equals("SC") || status.equals("NT")) 
     		status = ROSTER_STATUS_NOT_STARTED;
     	else
@@ -47,6 +48,7 @@ public class RosterUtil {
        		status = ROSTER_STATUS_COMPLETE;
        	else
     		status = ROSTER_STATUS_UNKNOWN;
+    	*/
     	return status;
     }
 
