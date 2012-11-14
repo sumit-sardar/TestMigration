@@ -107,6 +107,14 @@ public class ImmediateReportingOperationController extends PageFlowController {
 
 
 	
+	
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "organization_immediate_scoring_report_main.jsp") })
+	public Forward organizationImmediateReporting(){
+		initialize();
+		Forward forward = new Forward("success");
+		return forward;
+	}
+	
 	@Jpf.Action()
 	public Forward getOrgNodeHierarchy() {
 
@@ -655,7 +663,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
-	} 
+	}
 	@Jpf.Action()
     protected Forward services_dataExport()
     {
