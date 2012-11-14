@@ -1,4 +1,4 @@
-/*package viewmonitorstatus;
+package viewmonitorstatus;
 
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -56,12 +56,12 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 
-*//**
+/**
  * @jpf:controller
- *  *//*
-@Jpf.Controller()
+ *  */
+@Jpf.Controller(simpleActions = { @Jpf.SimpleAction(name = "begin", path = "index.jsp") })
 public class ViewMonitorStatusController extends PageFlowController
-{
+{/*
     static final long serialVersionUID = 1L;
     
     *//**
@@ -2233,6 +2233,5 @@ public class ViewMonitorStatusController extends PageFlowController
 	
 	
 	
-}
+*/}
  
-*/
