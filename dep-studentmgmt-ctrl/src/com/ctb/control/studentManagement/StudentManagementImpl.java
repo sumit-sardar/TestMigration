@@ -1489,18 +1489,33 @@ public class StudentManagementImpl implements StudentManagement
 
 			//insert new org nodes remaining in hash                
 			Iterator iterator = newOrgNodeHash.values().iterator();
+			boolean foundInNewOrgNodes1 = false;
+			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStudentStatus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodesInactive(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			while (iterator.hasNext()) {
-				OrganizationNode newOrganizationNode = (OrganizationNode) iterator.next();
-				Node node = orgNode.getOrgNodeById(newOrganizationNode.getOrgNodeId());                
-				OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
-				orgNodeStudent.setActivationStatus("AC");
-				orgNodeStudent.setCreatedBy(userId);
-				orgNodeStudent.setCreatedDateTime(new Date());
-				orgNodeStudent.setCustomerId(node.getCustomerId());
-				orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
-				orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
-				orgNodeStudent.setStudentId(studentId);
-				orgNodeStudents.createOrgNodeStudent(orgNodeStudent);                                
+					OrganizationNode newOrganizationNode = (OrganizationNode) iterator.next();
+					Node node = orgNode.getOrgNodeById(newOrganizationNode.getOrgNodeId());
+					OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
+					orgNodeStudent.setActivationStatus("AC");
+					orgNodeStudent.setCreatedBy(userId);
+					orgNodeStudent.setCreatedDateTime(new Date());
+					orgNodeStudent.setCustomerId(node.getCustomerId());
+					orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
+					orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
+					orgNodeStudent.setStudentId(studentId);
+					for (int i=0; orgNodeStudentStatus!=null && i< orgNodeStudentStatus.length; i++) {
+						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDataBase = orgNodeStudentStatus[i];
+						foundInNewOrgNodes1 = newOrgNodeHash.containsKey(oldOrgNodeInDataBase.getOrgNodeId());
+						if(foundInNewOrgNodes1) {
+							//if db class inactive that will be added
+							orgNodeStudents.updateOrgNodeStudent(orgNodeStudent);
+							//remove from hash and again set to iterator
+							newOrgNodeHash.remove(oldOrgNodeInDataBase.getOrgNodeId());
+							iterator = newOrgNodeHash.values().iterator();
+						}                              
+					}
+					if(!foundInNewOrgNodes1) {
+					orgNodeStudents.createOrgNodeStudent(orgNodeStudent); 
+					}
 			}
 
 		} catch (SQLException se) {
