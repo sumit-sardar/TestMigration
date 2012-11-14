@@ -60,10 +60,31 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 		);
 		
 		$("#"+node_id).delegate("a","click", function(e) {
+			var isRootNode = false;
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    $("#displayMessageMain").hide();
- 		    processStudentTable();
+ 		    var gridOrg = $("#orgImmdRptGrid");
+			var grid = $("#immdRptGrid");
+ 		    if(gridOrg[0] != undefined)
+ 		    {
+	 		    alert("we are in Organization grid block");
+				for(var i = 0; i < rootNode.length; i++)
+				{
+					if (rootNode[i].attr.id == SelectedOrgNodeId)
+					{
+						isRootNode = true;
+			    			//processStudentTable();
+					}
+				}
+				if(!isRootNode)
+					processStudentTable();
+ 		    }
+ 		    else if (grid[0] != undefined)
+ 		    {
+ 		    	processStudentTable();
+ 		    }
+ 		    //processStudentTable();
 		});
 		
 		registerDelegate(node_id);

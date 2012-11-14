@@ -60,7 +60,14 @@ function populateUserOrgHierarchy() {
 								$.unblockUI();
 								showPopup(topOrgNodeStuCount);
 							}else{
+								var grid = $("#immdRptGrid"); 
+								var gridOrg = $("#orgImmdRptGrid"); 
+								if(grid[0] != undefined){
 								processGrid();
+								}
+								else if(gridOrg[0] != undefined){
+								processGridOrg();
+								}
 							}
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -69,7 +76,15 @@ function populateUserOrgHierarchy() {
 						}
 			});		
 	}else{
-	    processGrid();
+		var grid = $("#immdRptGrid"); 
+		var gridOrg = $("#orgImmdRptGrid");
+	    if(grid[0] != undefined){
+		processGrid();
+		}
+		else if(gridOrg[0] != undefined){
+		
+		processGridOrg();
+		}
 	} 
  }
   

@@ -66,7 +66,7 @@
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/org_tree.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyLoginUser.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
-  	
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/orgImmediateReporting.js"></script>
 	<script type="text/javascript">
 	var SelectedUserId;
 	
