@@ -2617,12 +2617,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 						&& cc.getDefaultValue().equals("T")) {
 	            	isOKCustomer = true;
 	            }
-				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
-						&& cc.getDefaultValue().equalsIgnoreCase("T")) && 
-						((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
-						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
-						(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-								&& cc.getDefaultValue().equalsIgnoreCase("T")))){
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 					isGACustomer = true;
 					continue;
 				}

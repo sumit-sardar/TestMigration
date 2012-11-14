@@ -3894,12 +3894,8 @@ public class SessionOperationController extends PageFlowController {
 	            	this.isOKCustomer = true;
 	            	continue;
 	            }
-				if ((cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
-						&& cc.getDefaultValue().equalsIgnoreCase("T")) && 
-						((cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") 
-						&& cc.getDefaultValue().equalsIgnoreCase("T"))	|| 
-						(cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") 
-								&& cc.getDefaultValue().equalsIgnoreCase("T")))){
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 					isGACustomer = true;
 					continue;
 				}
