@@ -413,7 +413,8 @@ public class RegistrationOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
 	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
 	        @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
-	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do")
+	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do"),
+	        @Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	    }) 
 	protected Forward services()
 	{
@@ -422,6 +423,20 @@ public class RegistrationOperationController extends PageFlowController {
 		
 	    return new Forward(forwardName);
 	}
+    @Jpf.Action()
+	protected Forward eMetric_user_accounts_detail()
+	{
+        try
+        {
+            String url = "/SessionWeb/userAccountFileOperation/accountFiles.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	} 
     
     @Jpf.Action()
     protected Forward services_dataExport()
@@ -1738,6 +1753,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		
+     	//show Account file download link      	
+     	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
     }
 
 	private boolean isAdminCoordinatotUser() //For Student Registration

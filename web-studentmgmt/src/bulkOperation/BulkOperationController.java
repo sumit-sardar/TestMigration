@@ -987,6 +987,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		System.out.println(laslinkCustomer);
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+     	//show Account file download link      	
+     	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 	}
 	
 	private boolean isTopLevelUser(){	
@@ -1231,7 +1233,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
 	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
-	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
+	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do"),
+	        @Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	    }) 
 	protected Forward organizations()
 	{
@@ -1241,6 +1244,22 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	    return new Forward(forwardName);
 	}
 	
+	@Jpf.Action()
+	protected Forward eMetric_user_accounts_detail()
+	{
+        try
+        {
+            String url = "/SessionWeb/userAccountFileOperation/accountFiles.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	} 
+
+
     @Jpf.Action()
 	protected Forward organizations_manageOrganizations()
 	{

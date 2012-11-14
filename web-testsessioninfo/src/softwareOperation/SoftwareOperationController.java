@@ -651,7 +651,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	
 		System.out.println(laslinkCustomer);
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
-		
+     	//show Account file download link      	
+     	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
     }
     
 	private boolean isAdminCoordinatotUser() //For Student Registration

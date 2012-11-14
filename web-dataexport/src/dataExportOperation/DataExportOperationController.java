@@ -178,7 +178,8 @@ public class DataExportOperationController extends PageFlowController {
 			 @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
 			 @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
 			 @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-			 @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
+			 @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+			 @Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	 })
 	protected Forward services()
 	 {
@@ -187,7 +188,22 @@ public class DataExportOperationController extends PageFlowController {
 
 		 return new Forward(forwardName);
 	 }
-	
+
+	 @Jpf.Action()
+		protected Forward eMetric_user_accounts_detail()
+		{
+	        try
+	        {
+	            String url = "/SessionWeb/userAccountFileOperation/accountFiles.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+		} 
+
 	@Jpf.Action()
 	protected Forward services_resetTestSession()
 	{
@@ -1317,7 +1333,8 @@ public Forward rescoreStudent() {
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		
 		this.getSession().setAttribute("hasDataExportConfigured", new Boolean(laslinkCustomer)); // add for Data Export
-		
+		//show Account file download link      	
+     	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 		
 	}
 	

@@ -100,7 +100,12 @@
         				<a href="#" id="resetTestSessionLink" onClick="gotoMenuAction('services.do', 'resetTestSessionLink');"><lb:label key="session.menu.resetTestSession" /></a>
         			 </li>
         			 </c:if>
-
+					<c:if test="${sessionScope.isAccountFileDownloadVisible}">	
+        			 <li>
+        				<a href="#" id="showAccountFileDownloadLink" onClick="gotoMenuAction('services.do', 'showAccountFileDownloadLink');"><lb:label key="session.menu.userAccountsFiles" /></a>
+        			 </li>
+        			 </c:if>
+						
 					
         		</ul>
         	</li>

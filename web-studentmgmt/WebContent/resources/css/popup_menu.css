@@ -42,7 +42,7 @@ ul.dropdown li.simpleMenu:hover, ul.dropdown li.simpleMenu:hover div:first-child
 */
 
 ul.dropdown ul 	{ 
-	width: 152px;
+	width: 210px;
 	display:none;
 	position: absolute; 
 	top: 100%;
@@ -73,7 +73,7 @@ ul.sub_menu li {
 }
 
 ul.sub_menu li a {
-	width:120px !important;
+	width:180px !important;
 	font-size:13px !important;
 }
 

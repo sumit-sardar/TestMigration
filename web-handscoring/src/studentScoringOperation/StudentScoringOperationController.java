@@ -1207,6 +1207,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer&&(adminUser || adminCoordinatorUser) )); //For Student Registration
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		//show Account file download link      	
+     	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
     }
 	
 	private boolean isTopLevelUser(){
@@ -1465,6 +1467,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
 	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do"),
 	        @Jpf.Forward(name = "OOSLink", path = "organizations_manageOutOfSchool.do")
+	        
 	    }) 
 	protected Forward organizations()
 	{
@@ -1473,7 +1476,21 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		
 	    return new Forward(forwardName);
 	}
-	
+	 @Jpf.Action()
+		protected Forward eMetric_user_accounts_detail()
+		{
+	        try
+	        {
+	            String url = "/SessionWeb/userAccountFileOperation/accountFiles.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+		} 
+
     @Jpf.Action()
 	protected Forward organizations_manageOrganizations()
 	{
@@ -1594,7 +1611,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
 	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
 	        @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
-			@Jpf.Forward(name = "viewStatusLink", path="services_viewStatus.do")   
+			@Jpf.Forward(name = "viewStatusLink", path="services_viewStatus.do"),
+			@Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	    }) 
 	protected Forward services()
 	{
