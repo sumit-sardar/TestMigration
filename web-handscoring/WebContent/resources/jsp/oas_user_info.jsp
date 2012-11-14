@@ -24,12 +24,12 @@
 <input type="hidden" id="mpAddrID2" name = "mpAddrID2" value=<lb:label key="dialog.myProfile.addressLine2" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpMidNameID" name = "mpMidNameID" value=<lb:label key="dialog.myProfile.midName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpCityID" name = "mpCityID" value=<lb:label key="dialog.myProfile.city" prefix="'" suffix="'"/>/>
-<input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="myProfile.invalidNameChars" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="myProfile.invalidNameChars" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="mpSRequiredID" name = "mpSRequiredID" value=<lb:label key="myProfile.requiredField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpInCharID" name = "mpInCharID" value=<lb:label key="myProfile.invalid.chars" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpInEmailID" name = "mpInEmailID" value=<lb:label key="myProfile.invalid.email" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mpInFormatID" name = "mpInFormatID" value=<lb:label key="myProfile.invalid.format" prefix="'" suffix="'"/>/>
-<input type="hidden" id="mpInAddressID" name = "mpInAddressID" value=<lb:label key="myProfile.invalid.address" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mpInAddressID" name = "mpInAddressID" value=<lb:label key="myProfile.invalid.address" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="mpInNemericFormatID" name = "mpInNemericFormatID" value=<lb:label key="myProfile.invalid.numericFormat" prefix="'" suffix="'"/>/>
 </div>
 <table>

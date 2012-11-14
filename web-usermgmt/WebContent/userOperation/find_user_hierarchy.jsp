@@ -28,13 +28,13 @@
 <input type="hidden" id="addrID2" name = "addrID2" value=<lb:label key="user.addressLine2" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mNameID" name = "mNameID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="cityID" name = "cityID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
-<input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="user.msg.invalidNameChars" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="user.msg.invalidNameChars" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="sRequiredID" name = "sRequiredID" value=<lb:label key="user.msg.requiredField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="user.msg.multiple.requiredField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inCharID" name = "inCharID" value=<lb:label key="user.msg.invalid.chars" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inEmailID" name = "inEmailID" value=<lb:label key="user.msg.invalid.email" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inFormatID" name = "inFormatID" value=<lb:label key="user.msg.invalid.format" prefix="'" suffix="'"/>/>
-<input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
 <input type="hidden" id="deleteUserEnable" name="deleteUserEnable" value='<%=session.getAttribute("isDeleteUserEnable") %>'/>
 <input type="hidden" id="delUserTitleID" name = "delUserTitleID" value=<lb:label key="user.label.titleDelete" prefix="'" suffix="'"/>/>

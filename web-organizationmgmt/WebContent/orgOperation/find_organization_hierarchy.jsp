@@ -12,7 +12,7 @@
 <input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="org.msg.multiple.requiredText" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mdrNumberID" name = "mdrNumberID" value=<lb:label key="org.msg.invalidMDRNumber" prefix="'" suffix="'"/>/>
 <input type="hidden" id="dupFormatID" name = "dupFormatID" value=<lb:label key="org.msg.invalidDupFormatTitle" prefix="'" suffix="'"/>/>
-<input type="hidden" id="invalidNameCharsID" name = "invalidNameCharsID" value=<lb:label key="org.msg.invalidNameCharsOrg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNameCharsID" name = "invalidNameCharsID" value=<lb:label key="org.msg.invalidNameCharsOrg" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="invalidFormatID" name = "invalidFormatID" value=<lb:label key="org.msg.invalidFormatTitle" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mdrID" name = "mdrID" value=<lb:label key="org.mdrNumber" prefix="'" suffix="'"/>/>
 <input type="hidden" id="layerID" name = "layerID" value=<lb:label key="org.layer" prefix="'" suffix="'"/>/>

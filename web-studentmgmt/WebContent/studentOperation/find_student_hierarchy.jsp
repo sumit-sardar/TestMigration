@@ -25,7 +25,7 @@
 <input type="hidden" id="mprofileID" name="mprofileID" value=<lb:label key="stu.label.mprofile" prefix="'" suffix="'"/>/>
 <input type="hidden" id="bcastMsgID" name="bcastMsgID" value=<lb:label key="stu.label.bcastMsg" prefix="'" suffix="'"/>/>
 <input type="hidden" id="invalidNumCharID" name="invalidNumCharID" value=<lb:label key="stu.msg.invalidNumChar" prefix="'" suffix="'"/>/>
-<input type="hidden" id="invalidNameID" name="invalidNameID" value=<lb:label key="stu.msg.invalidName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNameID" name="invalidNameID" value=<lb:label key="stu.msg.invalidName" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="reqTextID" name="reqTextID" value=<lb:label key="stu.msg.reqText" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mReqTextID" name="mReqTextID" value=<lb:label key="stu.msg.mReqText" prefix="'" suffix="'"/>/>
 <input type="hidden" id="alphaNumericCharsID" name="alphaNumericCharsID" value=<lb:label key="stu.msg.alphaNumericChars" prefix="'" suffix="'"/>/>
