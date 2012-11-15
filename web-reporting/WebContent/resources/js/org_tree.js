@@ -66,16 +66,23 @@ function createSingleNodeScoringTree(node_id,jsondata) {
  		    $("#displayMessageMain").hide();
  		    var gridOrg = $("#orgImmdRptGrid");
 			var grid = $("#immdRptGrid");
- 		    if(gridOrg[0] != undefined)
+ 		    if(gridOrg[0] != undefined){
 				for(var i = 0; i < rootNode.length; i++)
 				{
 					if (rootNode[i].attr.id == SelectedOrgNodeId)
 					{
 						isRootNode = true;
+						$("#orgImmdRptGrid").hide();
+						enableDisableImmediateReportButtonOrg(false);
+						
 					}
+					
 				}
 				if(!isRootNode)
+				{
+					$("#orgImmdRptGrid").show();
 					processStudentTable();
+				}
  		    }
  		    else if (grid[0] != undefined)
  		    {
