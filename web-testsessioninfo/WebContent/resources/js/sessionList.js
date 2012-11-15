@@ -4512,7 +4512,7 @@ function registerDelegate(tree){
 									if(data.subtestValidationAllowed && data.isLaslinkSession) {
 										if(row.invalidationReason == undefined || row.invalidationReason == null ) {
 											var temp = 'PS';
-											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;">';
+											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
 										
 												for(j=0;j<invalidationReasonIDList.length;j++){
 													if(temp === invalidationReasonIDList[j]){
@@ -4528,7 +4528,7 @@ function registerDelegate(tree){
 										}
 										else{
 											var temp = row.invalidationReason;
-											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;">';
+											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
 												
 												for(j=0;j<invalidationReasonIDList.length;j++){
 													
@@ -4774,6 +4774,9 @@ function registerDelegate(tree){
 		$("input[name=toggleSubtest]").each(function(idx) {
 			if(this.checked) {
 				statusFlag = true;
+				 $("#"+this.value+"_select").removeAttr("disabled");
+			} else {
+				$("#"+this.value+"_select").attr("disabled","disabled");
 			}
 		});
 		if(statusFlag) {
