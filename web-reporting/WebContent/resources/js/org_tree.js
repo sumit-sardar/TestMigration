@@ -73,7 +73,8 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 					{
 						isRootNode = true;
 						$("#orgImmdRptGrid").hide();
-						enableDisableImmediateReportButtonOrg(false);
+						document.getElementById('generateCSVButtonOrg').style.visibility = "hidden";
+						document.getElementById('generatePDFButtonOrg').style.visibility = "hidden";
 						
 					}
 					
@@ -81,6 +82,8 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 				if(!isRootNode)
 				{
 					$("#orgImmdRptGrid").show();
+					document.getElementById('generateCSVButtonOrg').style.visibility = "visible";
+					document.getElementById('generatePDFButtonOrg').style.visibility = "visible";
 					processStudentTable();
 				}
  		    }
