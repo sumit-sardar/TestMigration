@@ -5746,6 +5746,7 @@ public class SessionOperationController extends PageFlowController {
 				base.setInvalidateReasonList(invalidateReasonList);
 				base.setOkCustomer(this.isOKCustomer);
 				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
+				base.setTopLevelAdminCord(isAdminCoordinatotUser() && isTopLevelUser());
 				/*Integer breakCount = ted.getBreakCount();
 		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
 		            if (isSameAccessCode(subtestList)) 

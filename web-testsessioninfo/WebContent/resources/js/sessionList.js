@@ -102,6 +102,7 @@ var selectProductId = null;
 
 var isOKAdmin = false;
 var isOkCustomer = false;
+var isOKAdminCord = false;
 var isOKEqTestSelected = false;
 var isOKProductChanged = false;
 var isOKEQDefaultSelected = false; // Needed to verify whether the default selection in select test dropdown is EQ test or not.
@@ -4170,9 +4171,15 @@ function registerDelegate(tree){
 		   		 } else {
 		   		 	isOKAdmin = false;
 		   		 }
+		   		 var toggleIsTopLevelAdminCord = JSON.stringify(obj.isTopLevelAdminCord);
+		   		 if(toggleIsTopLevelAdminCord == 'true') {
+		   		 	isOKAdminCord = true;
+		   		 } else {
+		   		 	isOKAdminCord = false;
+		   		 }
 		   		 if(subtestValAllowed == 'false') {
 		   		 	if(isOkCustomer) { // Added for Oklahoma customer as only top level admin can toggle validation for a student.
-		   		 		if(isOKAdmin) {
+		   		 		if(isOKAdmin || isOKAdminCord) {
 		   		 			$("#toggleValidation").show();
 		   		 		} else {
 		   		 			$("#toggleValidation").hide();
@@ -4554,7 +4561,7 @@ function registerDelegate(tree){
 							$("#subtestList").html(html);
 							if(data.subtestValidationAllowed) {
 								if(isOkCustomer) { // Added for Oklahoma customer as only state level admin can invalidate a student.
-									if(isOKAdmin) {
+									if(isOKAdmin || isOKAdminCord) {
 										$("#toggleValidationSubTest").show();
 										setAnchorButtonState('toggleValidationSubtestButton', true);
 									} else {
