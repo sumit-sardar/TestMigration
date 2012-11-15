@@ -8,7 +8,7 @@
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 	<netui-template:section name="bodySection">
 
-		<netui:form action="organizationImmediateReporting">
+		<netui:form action="groupImmediateReporting">
 			<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
 			<input type="hidden" id="treeOrgNodeId" />
 			<input id="downloadImmediateReport" type="hidden" value="userFile" name="downloadImmediateReport">

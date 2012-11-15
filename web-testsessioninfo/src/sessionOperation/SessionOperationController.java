@@ -3307,8 +3307,8 @@ public class SessionOperationController extends PageFlowController {
             	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/ImmediateReportingOperationController.jpf";
             	cr.setReportUrl(reportUrl);
             }
-            if ("OrganizationImmediateScores".equalsIgnoreCase(cr.getReportName())) {
-            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/organizationImmediateReporting.do";
+            if ("GroupImmediateScores".equalsIgnoreCase(cr.getReportName())) {
+            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/groupImmediateReporting.do";
             	cr.setReportUrl(reportUrl);
             }
         }

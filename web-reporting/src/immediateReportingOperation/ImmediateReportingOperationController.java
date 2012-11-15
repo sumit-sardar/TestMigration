@@ -109,7 +109,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	
 	
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "organization_immediate_scoring_report_main.jsp") })
-	public Forward organizationImmediateReporting(){
+	public Forward groupImmediateReporting(){
 		initialize();
 		Forward forward = new Forward("success");
 		return forward;
