@@ -1498,15 +1498,15 @@ public class StudentManagementImpl implements StudentManagement
 					orgNodeStudent.setActivationStatus("AC");
 					orgNodeStudent.setCreatedBy(userId);
 					orgNodeStudent.setCreatedDateTime(new Date());
-					orgNodeStudent.setCustomerId(node.getCustomerId());
-					orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
-					orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
 					orgNodeStudent.setStudentId(studentId);
 					for (int i=0; orgNodeStudentStatus!=null && i< orgNodeStudentStatus.length; i++) {
 						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDataBase = orgNodeStudentStatus[i];
 						foundInNewOrgNodes1 = newOrgNodeHash.containsKey(oldOrgNodeInDataBase.getOrgNodeId());
 						if(foundInNewOrgNodes1) {
 							//if db class inactive that will be added
+							orgNodeStudent.setCustomerId(oldOrgNodeInDataBase.getCustomerId());
+							orgNodeStudent.setDataImportHistoryId(oldOrgNodeInDataBase.getDataImportHistoryId());
+							orgNodeStudent.setOrgNodeId(oldOrgNodeInDataBase.getOrgNodeId());
 							orgNodeStudents.updateOrgNodeStudent(orgNodeStudent);
 							//remove from hash and again set to iterator
 							newOrgNodeHash.remove(oldOrgNodeInDataBase.getOrgNodeId());
@@ -1514,7 +1514,10 @@ public class StudentManagementImpl implements StudentManagement
 						}                              
 					}
 					if(!foundInNewOrgNodes1) {
-					orgNodeStudents.createOrgNodeStudent(orgNodeStudent); 
+						orgNodeStudent.setCustomerId(node.getCustomerId());
+						orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
+						orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
+						orgNodeStudents.createOrgNodeStudent(orgNodeStudent); 
 					}
 			}
 
