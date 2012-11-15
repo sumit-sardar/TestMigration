@@ -67,14 +67,11 @@ function createSingleNodeScoringTree(node_id,jsondata) {
  		    var gridOrg = $("#orgImmdRptGrid");
 			var grid = $("#immdRptGrid");
  		    if(gridOrg[0] != undefined)
- 		    {
-	 		    alert("we are in Organization grid block");
 				for(var i = 0; i < rootNode.length; i++)
 				{
 					if (rootNode[i].attr.id == SelectedOrgNodeId)
 					{
 						isRootNode = true;
-			    			//processStudentTable();
 					}
 				}
 				if(!isRootNode)
@@ -83,8 +80,7 @@ function createSingleNodeScoringTree(node_id,jsondata) {
  		    else if (grid[0] != undefined)
  		    {
  		    	processStudentTable();
- 		    }
- 		    //processStudentTable();
+ 		    }		    
 		});
 		
 		registerDelegate(node_id);
