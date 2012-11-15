@@ -101,7 +101,7 @@ function load_populate_to_be_export_student_grid(accountFileList){
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 220,
-			hoverrows: true,
+			hoverrows: false,
 			caption:"eMetric Account Files",			
 			
 			onPaging: function() {

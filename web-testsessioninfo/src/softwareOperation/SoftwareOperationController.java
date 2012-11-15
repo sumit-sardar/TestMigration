@@ -336,7 +336,8 @@ public class SoftwareOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
 	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
 	        @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
-	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do")
+	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do"),
+	        @Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	    }) 
 	protected Forward services()
 	{
@@ -344,6 +345,21 @@ public class SoftwareOperationController extends PageFlowController {
 		String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
 		
 	    return new Forward(forwardName);
+	}
+	
+	@Jpf.Action()
+	protected Forward eMetric_user_accounts_detail()
+	{
+        try
+        {
+            String url = "/SessionWeb/userAccountFileOperation/accountFiles.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
 	
 	 @Jpf.Action()
@@ -649,7 +665,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 	
-		System.out.println(laslinkCustomer);
+		//System.out.println(laslinkCustomer);
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
