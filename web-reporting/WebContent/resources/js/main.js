@@ -51,10 +51,6 @@ $().ready(function(){
 	        if( $("#immdRptGrid").length > 0){
 	         	$("#immdRptGrid").setGridWidth($("#jqGrid-content-section").width());
 	         }
-	         //For organization immediate reporting prototype --preetam
-	          if( $("#orgImmdRptGrid").length > 0){
-	         	$("#orgImmdRptGrid").setGridWidth($("#jqGrid-content-section").width());
-	         }
 	        if($('.ui-dialog').length > 0){
 				var left = (lastWindowWidth - $('.ui-dialog').outerWidth())/2 ;
 				$('.ui-dialog').css({top:parseInt(lastWindowHeight*.1) + 'px',left:left + 'px'});

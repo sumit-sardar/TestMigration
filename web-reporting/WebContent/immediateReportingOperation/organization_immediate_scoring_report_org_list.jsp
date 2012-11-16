@@ -119,19 +119,19 @@
 	</div>
 </div>
 
-<div id="immdRptGridSearhPopup"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+<div id="orgImmdRptGridSearhPopup"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<div>
 		<p><lb:label key="immediate.report.search.info.message"/></p>
 	</div>
 	<div class="searchInputBoxContainer" id="searchInputBoxContainer">
 		<center>
-			<input type="text" name="immdRptGridSearhInputParam" id="immdRptGridSearhInputParam" onkeypress="trapEnterKey(event);"/>
+			<input type="text" name="orgImmdRptGridSearhInputParam" id="orgImmdRptGridSearhInputParam" onkeypress="trapEnterKey(event);"/>
 		</center>	
 	</div>
 	<div style="padding-bottom:20px;"> 
 		<center>
-			<input type="button"  value=<lb:label key="common.button.clear" prefix="'" suffix="'"/> onclick="javascript:immdRptGridresetSearch(); return false;" class="ui-widget-header">&nbsp;
-			<input type="button"  value=<lb:label key="common.button.search" prefix="'" suffix="'"/> onclick="javascript:immdRptGridSearh(); return false;" class="ui-widget-header">
+			<input type="button"  value=<lb:label key="common.button.clear" prefix="'" suffix="'"/> onclick="javascript:orgImmdRptGridresetSearch(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.search" prefix="'" suffix="'"/> onclick="javascript:orgImmdRptGridSearh(); return false;" class="ui-widget-header">
 		</center>
 	</div>
 </div>

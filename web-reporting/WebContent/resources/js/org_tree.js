@@ -73,6 +73,12 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 					{
 						isRootNode = true;
 						$("#orgImmdRptGrid").hide();
+						$("#gview_orgImmdRptGrid").hide();
+						$("#orgImmdRptGridPager_left").hide();
+						$("#orgImmdRptGridPager_center").hide();
+						$("#orgImmdRptGridPager_right").hide();
+						$("#orgImmdRptGridPager").hide();
+						$("#gbox_orgImmdRptGrid").hide();
 						document.getElementById('generateCSVButtonOrg').style.visibility = "hidden";
 						document.getElementById('generatePDFButtonOrg').style.visibility = "hidden";
 						
@@ -82,6 +88,12 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 				if(!isRootNode)
 				{
 					$("#orgImmdRptGrid").show();
+					$("#gview_orgImmdRptGrid").show();
+					$("#orgImmdRptGridPager_left").show();
+					$("#orgImmdRptGridPager_center").show();;
+					$("#orgImmdRptGridPager_right").show();
+					$("#orgImmdRptGridPager").show();
+					$("#gbox_orgImmdRptGrid").show();
 					document.getElementById('generateCSVButtonOrg').style.visibility = "visible";
 					document.getElementById('generatePDFButtonOrg').style.visibility = "visible";
 					processStudentTable();
