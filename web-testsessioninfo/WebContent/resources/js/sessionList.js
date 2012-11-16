@@ -4736,10 +4736,15 @@ function registerDelegate(tree){
 									if(this.checked) {
 										if($.trim($(cell).text()) == 'Valid') {
 											$(cell).html('<font color="red">Invalid</font>');
+											if(isLaslinkCustomer)
+											{
+											  $("#"+rowId+"_select").attr("disabled","disabled");
+											}
 										} else if ($.trim($(cell).text()) == 'Invalid') {
 												$(cell).html('Valid');
 												if(isLaslinkCustomer){
 												$("#"+rowId+"_select").val('PS');
+												$("#"+this.value+"_select").removeAttr("disabled");
 												}
 										}
 									} else {
@@ -4781,7 +4786,10 @@ function registerDelegate(tree){
 		$("input[name=toggleSubtest]").each(function(idx) {
 			if(this.checked) {
 				statusFlag = true;
+				var a=$("#"+this.value+"_validationStatus").text();
+				if(a==='Valid'){
 				 $("#"+this.value+"_select").removeAttr("disabled");
+				 }
 			} else {
 				$("#"+this.value+"_select").attr("disabled","disabled");
 			}
