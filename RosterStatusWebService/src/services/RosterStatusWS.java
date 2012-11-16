@@ -78,7 +78,7 @@ public class RosterStatusWS {
     			student.setStatus(RosterUtil.MESSAGE_STUDENT_NOT_FOUND);
     			student.setRosterStatus(RosterUtil.ROSTER_STATUS_UNKNOWN);
     	    	for (int j=0 ; j<res.length ; j++) {
-    	    		RosterElement re = res[i];    			
+    	    		RosterElement re = res[j];    			
 	    			if (student.getStudentId().intValue() == re.getStudentId().intValue()) {
 	    	    		String status = RosterUtil.convertStatus(re.getTestCompletionStatus());
 	    				student.setRosterStatus(status);
