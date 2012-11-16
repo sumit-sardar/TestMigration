@@ -1,11 +1,14 @@
 package com.ctb.control.testAdmin; 
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -2630,8 +2633,13 @@ public class ScheduleTestImpl implements ScheduleTest
     
     private void createStudentItemSetStatusRecords(Integer customerId, ArrayList manifests) throws SessionCreationException {
         try {
-            HashMap subtestMap = new HashMap();
+        	Connection conn = siss.getConnection();
+        	conn.setAutoCommit(false);
+        	Statement stmt = conn.createStatement();
+    		
+        	LinkedHashMap subtestMap = new LinkedHashMap();
             Iterator manifestIterator = manifests.iterator();
+            //System.out.println("manifestIterator.hasNext() -> " + manifestIterator.hasNext());
             while(manifestIterator.hasNext()) {
                 StudentSubtestAssignment manifest = (StudentSubtestAssignment) manifestIterator.next();
                 if(manifest.getSubtests().size() < 1) {
@@ -2644,9 +2652,9 @@ public class ScheduleTestImpl implements ScheduleTest
                     if(manifest.getForm() == null 
                         || subtest.getItemSetForm().equals(manifest.getForm())) { //null form is wildcard
                         Integer order = new Integer(sub);
-                        HashMap orderMap = (HashMap) subtestMap.get(subtest.getItemSetId());
+                        LinkedHashMap orderMap = (LinkedHashMap) subtestMap.get(subtest.getItemSetId());
                         if(orderMap == null) {
-                            orderMap = new HashMap();
+                            orderMap = new LinkedHashMap();
                         }
                         ArrayList rosterList = (ArrayList) orderMap.get(order);
                         if(rosterList == null) {
@@ -2660,10 +2668,12 @@ public class ScheduleTestImpl implements ScheduleTest
                 }
             }
             Iterator subtestIter = subtestMap.keySet().iterator();
+            int subtestCount = 0;
             while(subtestIter.hasNext()) {
                 Integer subtestId = (Integer) subtestIter.next();
-                HashMap orderMap = (HashMap) subtestMap.get(subtestId);
+                LinkedHashMap orderMap = (LinkedHashMap) subtestMap.get(subtestId);
                 Iterator orderIter = orderMap.keySet().iterator();
+                int orderCount = 0;
                 while(orderIter.hasNext()) {
                     Integer order = (Integer) orderIter.next();
                     ArrayList rosterList = (ArrayList) orderMap.get(order);
@@ -2684,23 +2694,92 @@ public class ScheduleTestImpl implements ScheduleTest
                         //START -added for LLO-109 change
                         if(rosterCount >= 999) {
                         	//siss.getConnection().setAutoCommit(false);
-                            siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
+                            //siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
+                        	StringBuilder str = new StringBuilder();
+                			str.append("insert into student_item_set_status ");
+                			str.append("(TEST_ROSTER_ID,ITEM_SET_ID,COMPLETION_STATUS, ");
+                			str.append("START_DATE_TIME,COMPLETION_DATE_TIME, ");
+                			str.append("VALIDATION_STATUS,VALIDATION_UPDATED_BY, ");
+                			str.append("VALIDATION_UPDATED_DATE_TIME,VALIDATION_UPDATED_NOTE, ");
+                			str.append("TIME_EXPIRED,ITEM_SET_ORDER, ");
+                			str.append("RAW_SCORE,MAX_SCORE,UNSCORED, ");
+                			str.append("RECOMMENDED_LEVEL,SCRATCHPAD_CONTENT, ");
+                			str.append("CUSTOMER_FLAG_STATUS,EXEMPTIONS,ABSENT)  "); 
+                			str.append("(select distinct  test_roster_id, "+ subtestId +","); 
+                			str.append("'SC', null, null, "); 
+                			str.append("'VA', null, null, null, ");
+                			str.append("'F', " + order + ", null, null, null, null, null, ");
+                			str.append("max(default_value) as default_value, 'N', 'N' "); 
+                			str.append("from (  select distinct  test_roster_id, cc.default_value ");
+                			str.append("from  test_roster,  customer_configuration cc  ");
+                			str.append("where  cc.customer_id = " + customerId);
+                			str.append(" and cc.customer_configuration_name = 'Roster_Status_Flag' "); 
+                			str.append(" and test_admin_id in (" + admins + ")" );  
+                			str.append("and student_id in (" + students + ")" ); 
+                			str.append("union  select distinct  test_roster_id, null as default_value  ");
+                			str.append("from  test_roster  where  test_admin_id in (" + admins + ")" ); 
+                			str.append("and student_id in (" + students + "))  group by test_roster_id)");
+                        	//stmt.executeUpdate(str.toString());
+                        	stmt.addBatch(str.toString());
                             rosterCount = 0;
                             admins = "";
                             students = "";
                         }
                     }
+                    //System.out.println("rostercount***********"+rosterCount);
                     if(!"".equals(admins) && !"".equals(students)) {
                     	//siss.getConnection().setAutoCommit(false);
-                        siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
+                    	StringBuilder str = new StringBuilder();
+            			str.append("insert into student_item_set_status ");
+            			str.append("(TEST_ROSTER_ID,ITEM_SET_ID,COMPLETION_STATUS, ");
+            			str.append("START_DATE_TIME,COMPLETION_DATE_TIME, ");
+            			str.append("VALIDATION_STATUS,VALIDATION_UPDATED_BY, ");
+            			str.append("VALIDATION_UPDATED_DATE_TIME,VALIDATION_UPDATED_NOTE, ");
+            			str.append("TIME_EXPIRED,ITEM_SET_ORDER, ");
+            			str.append("RAW_SCORE,MAX_SCORE,UNSCORED, ");
+            			str.append("RECOMMENDED_LEVEL,SCRATCHPAD_CONTENT, ");
+            			str.append("CUSTOMER_FLAG_STATUS,EXEMPTIONS,ABSENT)  "); 
+            			str.append("(select distinct  test_roster_id, "+ subtestId +","); 
+            			str.append("'SC', null, null, "); 
+            			str.append("'VA', null, null, null, ");
+            			str.append("'F', " + order + ", null, null, null, null, null, ");
+            			str.append("max(default_value) as default_value, 'N', 'N' "); 
+            			str.append("from (  select distinct  test_roster_id, cc.default_value ");
+            			str.append("from  test_roster,  customer_configuration cc  ");
+            			str.append("where  cc.customer_id = " + customerId);
+            			str.append(" and cc.customer_configuration_name = 'Roster_Status_Flag' "); 
+            			str.append(" and test_admin_id in (" + admins + ")" );  
+            			str.append("and student_id in (" + students + ")" ); 
+            			str.append("union  select distinct  test_roster_id, null as default_value  ");
+            			str.append("from  test_roster  where  test_admin_id in (" + admins + ")" ); 
+            			str.append("and student_id in (" + students + "))  group by test_roster_id)");
+                    	//stmt.executeUpdate(str.toString());
+                    	stmt.addBatch(str.toString());
+                	
+                        //siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
                     }
                     //END - added for LLO-109 change
+                    orderCount++;
                 }
+                //System.out.println("OrderCount ******************"+orderCount + " for subtest*******"+subtestId);
+                subtestCount++;
             }
+            try {
+            	stmt.executeBatch();
+            	conn.commit();
+            } catch(SQLException sqle) {
+            	sqle.printStackTrace();
+            } finally {
+            	stmt.close();
+            	conn.close();
+            }
+            //System.out.println("subtestCount****************************"+subtestCount);
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: createStudentItemSetStatusRecords: " + se.getMessage());
             sce.setStackTrace(se.getStackTrace());
             throw sce;
+        } catch (Exception ee) {
+        	ee.printStackTrace();
         }
     }
     
