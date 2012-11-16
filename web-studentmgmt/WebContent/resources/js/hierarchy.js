@@ -1888,7 +1888,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						prepareCheckedList();
 						setEditStudentDetail(rowid);
-						if(profileEditable === "false") {
+						/*if(profileEditable === "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
 							$('#Student_Information select').attr('disabled', true);
@@ -1918,7 +1918,7 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	 
 						setPopupPosition(isAddStudent);
 						checkOpenNode(organizationNodes);
-						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();
+						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();*/
 
 						
 				/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -1938,7 +1938,44 @@ function fillselectedOrgNode( elementId, orgList) {
 						$.unblockUI();  
 						window.location.href="/SessionWeb/logout.do";
 						
-					}
+					},
+		complete : function(XMLHttpRequest, textStatus){//added for script error change
+   						if(textStatus == "success"){
+	  						populateStuDemographics();
+	  						if(profileEditable === "false") {
+							$('#Student_Information :checkbox').attr('disabled', true); 
+							$('#Student_Information :radio').attr('disabled', true); 
+							$('#Student_Information select').attr('disabled', true);
+							$('#Student_Information :input').attr('disabled', true);
+							} else {
+								if(isEditStudentImported) {
+									disableAllNonEdFlds();
+									$('#Student_Information :checkbox').attr('disabled', false); 
+									$('#Student_Information :radio').attr('disabled', false); 
+									$('#Student_Information select').attr('disabled', false);
+									$('#Student_Information :input').attr('disabled', false);
+								} else {
+									resetDisabledFields();
+								}
+							}
+							//$.unblockUI();  
+							$("#addEditStudentDetail").dialog({  
+														title:$("#editStuID").val(),  
+													 	resizable:false,
+													 	autoOpen: true,
+													 	width: '800px',
+													 	modal: true,
+														closeOnEscape: false,												 	
+													 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			 	
+													 	});	
+													 	 
+							setPopupPosition(isAddStudent);
+							checkOpenNode(organizationNodes);
+	  						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();
+  						}
+  						$.unblockUI(); 
+  				}					
 		
 	});
 	
@@ -2418,7 +2455,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 
 		
-		for(var count=0; count< stuDemographic.length; count++) {
+		/*for(var count=0; count< stuDemographic.length; count++) {
 		
 		if(stuDemographic[count]['studentDemographicValues'].length == 1){
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
@@ -2520,7 +2557,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			     	}
 			    }
 		   }
-		}
+		}*/
 		
 		
   }
@@ -3033,39 +3070,151 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	
 	
 	function toogleHispanicEhtnicityOptions(){
-	var currenValue = $("#Ethnicity").val();
-	if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
-		displaySubEthnicityFunc();
-	} else {
-		hideSubEthnicityFunc();
+		var currenValue = $("#Ethnicity").val();
+		if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+			displaySubEthnicityFunc();
+		} else {
+			hideSubEthnicityFunc();
+		}	
 	}
+
+	function displaySubEthnicityFunc() {
+		//$("#sub_Ethnicity_Label").hide();
+		$("#SubEthnicityDiv").show();
+		var checkBoxes = $("table");
+		if(checkBoxes != undefined && checkBoxes.length > 0) {
+			for(var i = 0; i < checkBoxes.length; i++) {
+				var displayValueId = checkBoxes[i].id;
+				if(displayValueId.indexOf('Sub_Ethnicity_Table') == 0) {
+					$("#"+displayValueId).show();
+				}
+			}
+		}
+	}
+
+	function hideSubEthnicityFunc() {
+		//$("#sub_Ethnicity_Label").hide();
+		$("#SubEthnicityDiv").hide();
+		var checkBoxes = $("table");
+		if(checkBoxes != undefined && checkBoxes.length > 0) {
+			for(var i = 0; i < checkBoxes.length; i++) {
+				var displayValueId = checkBoxes[i].id;
+				if(displayValueId.indexOf('Sub_Ethnicity_Table') == 0) {
+					$("#"+displayValueId).hide();
+				}
+			}
+		}
+	}
+
+	function populateStuDemographics(){
+		var noRadioData = true;
+		var alreadyExecuted = false;
 	
-}
-
-function displaySubEthnicityFunc() {
-	//$("#sub_Ethnicity_Label").hide();
-	$("#SubEthnicityDiv").show();
-	var checkBoxes = $("table");
-	if(checkBoxes != undefined && checkBoxes.length > 0) {
-		for(var i = 0; i < checkBoxes.length; i++) {
-			var displayValueId = checkBoxes[i].id;
-			if(displayValueId.indexOf('Sub_Ethnicity_Table') == 0) {
-				$("#"+displayValueId).show();
-			}
+		for(var count=0; count< stuDemographic.length; count++) {
+		
+			if(stuDemographic[count]['studentDemographicValues'].length == 1){
+		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
+		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     }else {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     }
+			     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     } else {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     }
+			     
+			     var currenValue = $("#Ethnicity").val();
+					if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+						displaySubEthnicityFunc();
+					} else {
+						hideSubEthnicityFunc();
+					}
+		     }else {
+				var valueCardinality = stuDemographic[count]['valueCardinality'];
+				if(valueCardinality == 'SINGLE'){
+					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+				     			//$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
+				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
+				     			
+				     		    if(selectElement!=null && String(selectElement.options) !="undefined"){
+			     			     	setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
+			     			     }else {
+			     			     	$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			    	noRadioData = false;
+			     			    	 var currenValue = $("#Ethnicity").val();
+									if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+										displaySubEthnicityFunc();
+									} else {
+										hideSubEthnicityFunc();
+									}
+			     			     }
+			     			  	break;
+				     		} else {
+				     			//The following line is setting none for all the radio values even once it comes to the else block
+				     			if(noRadioData && !alreadyExecuted){
+				     				$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
+				     				alreadyExecuted = true;
+				     			}
+				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+				     		}
+				     	}
+						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', true);
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", true);
+			     				} 
+			     			}
+			     		} else {
+			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', false);
+			     			var selectArray = $("#Student_Additional_Information select");
+			     			for(var k = 0; k < selectArray.length; k++) {
+			     				if($(selectArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(selectArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     			var radioArray = $("#Student_Additional_Information :radio");
+			     			for(var k = 0; k < radioArray.length; k++) {
+			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
+			     					$(radioArray).eq(k).attr("disabled", false);
+			     				} 
+			     			}
+			     		}
+				}
+				if(valueCardinality == 'MULTIPLE'){
+					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+						if(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueno'){
+							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueño';
+						}	
+			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
+			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+					     }else {
+					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+					     }
+					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
+			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+					     }else {
+					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     }
+					     var currenValue = $("#Ethnicity").val();
+							if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+								displaySubEthnicityFunc();
+							} else {
+								hideSubEthnicityFunc();
+							}
+			     	}
+			    }
+		   }
 		}
 	}
-}
-
-function hideSubEthnicityFunc() {
-	//$("#sub_Ethnicity_Label").hide();
-	$("#SubEthnicityDiv").hide();
-	var checkBoxes = $("table");
-	if(checkBoxes != undefined && checkBoxes.length > 0) {
-		for(var i = 0; i < checkBoxes.length; i++) {
-			var displayValueId = checkBoxes[i].id;
-			if(displayValueId.indexOf('Sub_Ethnicity_Table') == 0) {
-				$("#"+displayValueId).hide();
-			}
-		}
-	}
-}

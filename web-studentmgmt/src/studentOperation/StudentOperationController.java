@@ -948,6 +948,8 @@ public class StudentOperationController extends PageFlowController {
 				{
 					if (! sdv.getVisible().equals("false"))
 						sdv.setSelectedFlag("false");
+					if(sdv.getValueName().equals("puertorriqueno"))
+						sdv.setValueName("puertorriqueño");
 					param = sdd.getLabelName() + "_" + sdv.getValueName();
 					if (getRequest().getParameter(param) != null)
 					{
@@ -961,6 +963,8 @@ public class StudentOperationController extends PageFlowController {
 					{
 						if (! sdv.getVisible().equals("false"))
 							sdv.setSelectedFlag("false");
+						if(sdv.getValueName().equals("puertorriqueno"))
+							sdv.setValueName("puertorriqueño");
 						param = sdd.getLabelName() + "_" + sdv.getValueName();
 						if (getRequest().getParameter(param) != null)
 						{
@@ -1153,6 +1157,16 @@ public class StudentOperationController extends PageFlowController {
 				for (int i=0; i < studentDemoList.length; i++)
 				{
 					StudentDemographic sd = studentDemoList[i];
+					if(sd.getStudentDemographicValues() != null && sd.getStudentDemographicValues().length > 0){
+						for (int j = 0; j < sd.getStudentDemographicValues().length; j++) {
+							if("puertorriqueño".equals(sd.getStudentDemographicValues()[j].getValueCode())){
+								sd.getStudentDemographicValues()[j].setValueCode("puertorriqueno");
+							}
+							if("puertorriqueño".equals(sd.getStudentDemographicValues()[j].getValueName())){
+								sd.getStudentDemographicValues()[j].setValueName("puertorriqueno");
+							}
+						}
+					}
 					demographics.add(sd);                
 				}                        
 			}

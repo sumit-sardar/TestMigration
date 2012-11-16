@@ -303,6 +303,9 @@ public class StudentDemographicsTag extends CTBTag
 		 for (int i=0 ; i<values.length ; i++) {
 		        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
 			    String value = sdv.getValueName().trim();
+			    if("puertorriqueno".equals(value)) {
+			    	value = "puertorriqueño";
+			    }
 			    boolean selected = sdv.getSelectedFlag().equals("true");	
 				displayRowStart();
 	    			displayCellStart("transparent-small");
