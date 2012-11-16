@@ -41,11 +41,13 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 		String sitePath=null;
 		for(int i=0; i< surveyList.size(); i++)
 		{
+			
 			siteId=surveyList.get(i).getSiteId();
 			//System.out.println(" Site_Id= "+siteId);
 			sitePath=surveyList.get(i).getSitePath();
 			//System.out.println(" Site_Path = "+sitePath);
 			grade=surveyList.get(i).getGrade();
+			try{
 			ps = con.prepareStatement(GET_SITE_SURVEY_ID);
 			ps.setString(1, siteId);
 			ps.setString(2, sitePath);
@@ -54,12 +56,17 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 			if (rs.next()) {
 				siteEnrollment = new SiteSurveyEnrollment();
 				siteEnrollment.setSiteSurveyId(rs.getLong("SITE_SURVEY_ID"));
-				System.out.println(" SITE_SURVEY_ID = "+rs.getLong("SITE_SURVEY_ID") + " and  Grade = "+grade);
+				//System.out.println(" SITE_SURVEY_ID = "+rs.getLong("SITE_SURVEY_ID") + " and  Grade = "+grade);
 				siteEnrollment.setGrade(grade);
 				
 				list.add(siteEnrollment);
 			}
+			}finally{
+			rs.close();
+			ps.close();
+			}
 		}
+		
 		return list;
 	}
 	
@@ -92,7 +99,7 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 				seventh="T";
 			else if(grade.equals("08"))
 				eight="T";
-				
+			try{	
 			ps = con.prepareStatement(UPDATE_SITE_SURVEY_ENROLLMENT);
 			ps.setString(1, third);
 			ps.setString(2, fourth);
@@ -108,6 +115,10 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 				con.commit();
 				System.out.println("Following Site_Survey_ID  "+siteSurveyId + "  is updated for Grade "+grade +".");
 				
+			}
+			}finally{
+			rs.close();
+			ps.close();
 			}
 		}
 	}
