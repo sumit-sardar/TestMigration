@@ -1,0 +1,3 @@
+--Insert sample query for the new group report link
+
+INSERT INTO "OAS"."CUSTOMER_REPORT_BRIDGE" (CUSTOMER_ID, REPORT_NAME, DISPLAY_NAME, DESCRIPTION, SYSTEM_KEY, CUSTOMER_KEY, REPORT_URL, PRODUCT_ID) VALUES ('33863', 'GroupImmediateScores', 'Group Immediate Scores', 'Provides a file with immediate language proficiency scores for all students in a group (usually for a school or district) in roster format', '30341822', '84275032', '/ImmediateReportWeb/immediateReportByStudent/beginIndivStudentScoring.do', '7000');
