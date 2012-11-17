@@ -3,14 +3,14 @@ package dto;
 import java.util.Date;
 
 /**
- * This is the second object which passed into scheduling web service
+ * This is the second object which passed into test roster status web service
  * @author Tai_Truong
  */
 public class SessionStatus implements java.io.Serializable {
     static final long serialVersionUID = 1L;
  
-    private Integer sessionId = null;		
-    private StudentStatus[] students = null;
+    private Integer sessionId = null;			// required		
+    private StudentStatus[] students = null;	// required		
     private String status = null;			
     
     
