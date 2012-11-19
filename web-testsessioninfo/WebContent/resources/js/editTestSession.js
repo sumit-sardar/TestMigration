@@ -25,6 +25,7 @@
 	var isOKEQProduct = false; // Added for Oklahoma customer
 		
 	var forceTestBreak = false;
+	var selectGE = null;
 	var savedAssignedRole = "Owner";
 		
   function editTestSession(action){  
@@ -80,6 +81,7 @@
 							}
 							
 							forceTestBreak = data.forceTestBreak;
+							selectGE = data.selectGE;
 							
 							//Added for Oklahoma customer
 							isOKAdmin = data.isOkAdmin;

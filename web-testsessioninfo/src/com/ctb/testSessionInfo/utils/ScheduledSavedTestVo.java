@@ -38,7 +38,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private TestSessionVO testSession;
 	private boolean isOkAdmin = false;
 	private boolean forceTestBreak = false;
-	private boolean selectGE = false;
+	private Boolean selectGE = false;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -264,11 +264,11 @@ public class ScheduledSavedTestVo implements Serializable {
 		this.forceTestBreak = forceTestBreak;
 	}
 	
-	public boolean isSelectGE() {
+	public Boolean isSelectGE() {
 		return selectGE;
 	}
 
-	public void setSelectGE(boolean selectGE) {
+	public void setSelectGE(Boolean selectGE) {
 		this.selectGE = selectGE;
 	}
 

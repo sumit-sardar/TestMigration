@@ -626,7 +626,10 @@ public class SessionOperationController extends PageFlowController {
             }
     
             vo.setForceTestBreak(this.forceTestBreak);
-            vo.setSelectGE(this.selectGE);
+            if (this.selectGE)
+            	vo.setSelectGE(Boolean.TRUE);
+            else
+            	vo.setSelectGE(null);
             
             Gson gson = new Gson();
         	jsonData = gson.toJson(vo);
@@ -1108,7 +1111,13 @@ public class SessionOperationController extends PageFlowController {
                 }
                 
                 vo.setForceTestBreak(this.forceTestBreak);
-                vo.setSelectGE(this.selectGE);
+                if ((testSession.getLexingtonVersion() != null) && testSession.getLexingtonVersion().equals("GE-Yes"))               	
+                	vo.setSelectGE(Boolean.TRUE);
+                else
+                if ((testSession.getLexingtonVersion() != null) && testSession.getLexingtonVersion().equals("GE-No"))               	
+                	vo.setSelectGE(Boolean.FALSE);
+                else
+                	vo.setSelectGE(null);
     	    	
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 

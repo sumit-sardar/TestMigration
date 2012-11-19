@@ -111,7 +111,7 @@ var hideProctorDelButton = false; // Only state level admin for oklahoma should 
 var hideStudentDelButton = false; // Only state level admin, admin coordinator, coordinator should be able to add/del students
 
 var forceTestBreak = false;
-var selectGE = false;
+var selectGE = null;
 
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
@@ -1000,11 +1000,14 @@ function registerDelegate(tree){
 		if(state != "EDIT")
 			document.getElementById("testSessionName").value = sessionListData.testName;
 
-		if (selectGE) {
+		if (selectGE != null) {
 			if (isTabeProduct && (! isTabeLocatorProduct)) { 
 				$("#selectGE").show();	
 				$("#selectGELbl").show();		
-				document.getElementById("selectGE").checked = true;
+				document.getElementById("selectGE").checked = selectGE;
+				if (state == "EDIT") {
+					$("#selectGE").attr("disabled", true);
+				}
 			}
 		}
 		
@@ -3592,7 +3595,12 @@ function registerDelegate(tree){
 	 }
 	 param = param+"&randomDis="+$('#randomDis').val();
 	 param = param+"&checkRestricted="+checkRestricted;
-	 param = param+"&includeGE=" + document.getElementById("selectGE").checked;
+	 if (selectGE != null) {
+	 	if (document.getElementById("selectGE").checked)
+	 		param = param+"&includeGE=GE-Yes";
+	 	else
+	 		param = param+"&includeGE=GE-No";
+	 }
 	 
 		$.ajax({
 			async:		true,
