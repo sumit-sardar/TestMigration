@@ -214,7 +214,13 @@ function orgImmdRptGridSearh(){
 		 }
 		grid.trigger("reloadGrid",[{page:1,current:true}]);
 		$("#orgImmdRptGrid").resetSelection(); 
+		if ($('#orgImmdRptGrid').getGridParam('records') === 0) {
 		enableDisableImmediateReportButtonOrg(false);
+		}
+		else 
+		{
+		enableDisableImmediateReportButtonOrg(true);
+		}
 		closePopUp('orgImmdRptGridSearhPopup');
 }
 
