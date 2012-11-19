@@ -4211,12 +4211,11 @@ function registerDelegate(tree){
 			 	 invalidationReasonList[0] = 'Please Select';
 			 	 for(i=0;i<invalidationReasonCodeDetails.length;i++){
 					var tempArr = [];
-					tempArr = invalidationReasonCodeDetails[i].split("_");
-					invalidationReasonList[i+1]=tempArr[1] ;
-					invalidationReasonIDList[i+1]=tempArr[0];
+					var n=invalidationReasonCodeDetails[i].indexOf("_"); 
+					invalidationReasonIDList[i+1]=invalidationReasonCodeDetails[i].substr(0,n);
+					invalidationReasonList[i+1]	=invalidationReasonCodeDetails[i].substr(n+1);
+					
 				}
-		//console.log(invalidationReasonList);
-		//console.log(invalidationReasonIDList);
 		   	}},
 		   	loadui: "disable",
 			rowNum:10,
