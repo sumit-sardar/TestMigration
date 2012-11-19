@@ -1076,10 +1076,15 @@ document.getElementById('displayMessageMain').style.display = "none";
  							if(code == 27){
 		  				  	onCancel();
 		  				 	return false;
-		 				 }
-		 				
+		 				 }		 				
 						});
 						setPopupPosition(isAddStudent);	
+						var currenValue = $("#Ethnicity").val();
+						if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+							displaySubEthnicityFunc();
+						} else {
+							hideSubEthnicityFunc();
+						}
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -1123,6 +1128,12 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 				
 						});
 		setPopupPosition(isAddStudent);	
+		 var currenValue = $("#Ethnicity").val();
+		if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
+			displaySubEthnicityFunc();
+		} else {
+			hideSubEthnicityFunc();
+		}
 	}	
 	
 }
