@@ -59,6 +59,7 @@ var leafNodeTextMap = {};
 var editingStudentId = null;
 var isSetEditStudentDetail = false;
 var isEditStudentImported = false;// Need to be used as imported student's profile can also be editable.
+var customerConfiguration = [];
 
 
 $(document).bind('keydown', function(event) {
@@ -101,8 +102,9 @@ function populateTree() {
 						getRootNodeDetails();
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
-						$("#orgNodeHierarchy").css("visibility","visible");	
-												
+						$("#orgNodeHierarchy").css("visibility","visible");
+						customerConfiguration = data.customerConfiguration;
+													
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -1134,9 +1136,34 @@ document.getElementById('displayMessageMain').style.display = "none";
 		} else {
 			hideSubEthnicityFunc();
 		}
+		//TODO::
+		setCheckboxStatus();
 	}	
 	
 }
+
+function setCheckboxStatus() {
+		for(var i=0; i< customerConfiguration.length; i++) {
+			if (customerConfiguration[i].editable == 'F' && customerConfiguration[i].defaultValue == 'T'){
+	    		var key = customerConfiguration[i].customerConfigurationName;
+	    		var keyInUI = getValue(key);
+	    		$("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").removeAttr('disabled')
+			    $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked',true);
+			    $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('disabled',true)
+		    }
+		}
+}
+
+function getValue(keyVal) {
+	
+		if(keyVal == 'Microphone_Headphone')
+			return 'MicrophoneHeadphone';
+		
+		return keyVal;
+}
+
+
+
 
 	function setPopupPosition(isAddStudent){
 				var toppos = ($(window).height() - 610) /2 + 'px';

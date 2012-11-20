@@ -201,6 +201,8 @@ public class StudentOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
+		CustomerConfiguration[] customerConfigurations = getCustomerConfigurations();
+		
 		try {
 			BaseTree baseTree = new BaseTree ();
 
@@ -248,6 +250,7 @@ public class StudentOperationController extends PageFlowController {
 
 			Gson gson = new Gson();
 			baseTree.setData(data);
+			baseTree.setCustomerConfiguration(customerConfigurations);
 			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
 
 				public int compare(TreeData t1, TreeData t2) {

@@ -3,6 +3,7 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 
 public class BaseTree {
@@ -11,6 +12,7 @@ public class BaseTree {
 	private Integer leafNodeCategoryId;
 	public String[] gradeOptions = null;
 	private List<CustomerDemographic> customerDemographicList;
+	public CustomerConfiguration [] customerConfiguration = null;
 	/**
 	 * @return the gradeOptions
 	 */
@@ -62,6 +64,12 @@ public class BaseTree {
 		this.customerDemographicList = customerDemographicList;
 	}
 
+	public CustomerConfiguration[] getCustomerConfiguration() {
+		return customerConfiguration;
+	}
+	public void setCustomerConfiguration(CustomerConfiguration[] customerConfiguration) {
+		this.customerConfiguration = customerConfiguration;
+	}
 	
 	
 
