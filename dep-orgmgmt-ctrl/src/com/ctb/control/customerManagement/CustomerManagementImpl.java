@@ -192,16 +192,13 @@ public class CustomerManagementImpl implements CustomerManagement
             
             // create customer configuration based on product type selected
             String[] selectedProducts = customer.getProductList();
-            List<String> tempProductList = Arrays.asList(selectedProducts);
-            
+           
             // logic:
-            // 1. clean customer configuration data
-            // 2. clean customer demographic data
-            // 3. insert common configuration data               
+            // 1. clean customer demographic data
+            // 2. insert common configuration data               
             customers.cleanCustomerConfiguration(customerId);
-            //create base configuration for all types
-            customers.createBaseCustomerConfiguration(customerId);
-            for(String selectedProduct:tempProductList){
+           
+            for(String selectedProduct:selectedProducts){
             	if(CTBConstants.CUSTOMER_PRODUCT_FORMA.equals(selectedProduct)){
                 	customers.setupLaslinkFormACustomerConfiguration(customerId);
                 	laslinkFormAOrFormBSelected =  true;
@@ -338,7 +335,6 @@ public class CustomerManagementImpl implements CustomerManagement
                 
                 // create customer configuration based on product type selected
                 String[] selectedProducts = customer.getProductList();
-                List<String> tempProductList = Arrays.asList(selectedProducts);
                 
                 // logic:
                 // 1. clean customer configuration data
@@ -347,7 +343,7 @@ public class CustomerManagementImpl implements CustomerManagement
                 customers.cleanCustomerConfiguration(customerId);
                 //create base configuration for all types
                 customers.createBaseCustomerConfiguration(customerId);
-                for(String selectedProduct:tempProductList){
+                for(String selectedProduct:selectedProducts){
                 	if(CTBConstants.CUSTOMER_PRODUCT_FORMA.equals(selectedProduct)){
                     	customers.setupLaslinkFormACustomerConfiguration(customerId);
                     	laslinkFormAOrFormBSelected =  true;
