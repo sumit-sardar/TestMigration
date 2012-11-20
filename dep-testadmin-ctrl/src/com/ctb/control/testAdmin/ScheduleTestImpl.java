@@ -2767,11 +2767,13 @@ public class ScheduleTestImpl implements ScheduleTest
             try {
             	stmt.executeBatch();
             	conn.commit();
+            	
             } catch(SQLException sqle) {
             	sqle.printStackTrace();
             } finally {
             	stmt.close();
-            	conn.close();
+            	conn.setAutoCommit(true);
+            	//conn.close();
             }
             //System.out.println("subtestCount****************************"+subtestCount);
         } catch (SQLException se) {
