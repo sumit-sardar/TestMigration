@@ -491,7 +491,7 @@ public class ManageCustomerController extends PageFlowController
                                                             customerProfile.getName()); 
         }
             
-        
+        this.savedForm = form.createClone();
         
         initCustomerTypeOptions(globalApp.ACTION_EDIT_CUSTOMER);
         initStateOptions(globalApp.ACTION_EDIT_CUSTOMER);
