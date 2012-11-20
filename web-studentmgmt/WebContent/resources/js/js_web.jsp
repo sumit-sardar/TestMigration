@@ -754,7 +754,7 @@ function toogleHispanicEhtnicityOptions(elementId){
 	else{	
 		for(var i = 0; i < eles.length; i++) {
 	    	eles[i].style.display = "none";
-	    	if(eles[i].type = "checkbox")
+	    	if(eles[i].type = "radio")
 	    		eles[i].checked=false
 		}
 		for(var i = 0; i < spanElements.length; i++) {
@@ -764,5 +764,15 @@ function toogleHispanicEhtnicityOptions(elementId){
 	    	tableEles[i].style.display = "none";
 		}
 	}
+
+}
+function adjustRadioSelection(value){
 	
+	    var inputs=document.getElementsByTagName("input");
+	    for(var i=0; i < inputs.length; i++) {
+	        if(inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 && inputs[i].getAttribute("type") == "radio" &&
+	        	value != inputs[i].getAttribute("name")){	        
+	          inputs[i].checked=false;
+	        }
+	    }
 }

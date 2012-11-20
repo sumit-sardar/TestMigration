@@ -201,7 +201,7 @@ public class StudentDemographicsTag extends CTBTag
 	                        writeToPage(getSpaces(1));	
 	                    displayCellEnd();
 	                    displayCellStart("transparent-small", "20", null);                    
-	                        writeToPage(checkBoxWithStyle(name, value, selected, editable,displayStyle));	
+	                        writeToPage(radioButtonWithStyle(name, value, selected, editable,displayStyle));	
 	                    displayCellEnd();
 	                    displayCellStart("transparent-small", "*", null);                    
 	                        writeToPage(createSpanWithDisplayStyle(name,value,displayStyle));
@@ -323,7 +323,16 @@ public class StudentDemographicsTag extends CTBTag
 				" style=\"display:"+displayStyle+";\""+
 				"/>";
 	}
-	
+	private String radioButtonWithStyle(String name, String value, boolean isChecked, boolean editable,String displayStyle) 
+    {
+	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+	    String nameId = name + "_" + value;
+		return "<input type=\"radio\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
+				" value=\"" + value + "\" " + 
+				" onClick=adjustRadioSelection(this.name);"+
+				" tabindex=\"" + (this.tabIndex++) + "\" " +
+				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
+	}
 	private String createSpanWithDisplayStyle(String name,String value,String displayStyle){
 		 String nameId = name + "_" + value + "_span";
 		return "<span name=\"" + nameId + "\" style=\"display:"+ displayStyle+"\" >"+value+"</span>";
