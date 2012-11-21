@@ -3259,9 +3259,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 	function adjustRadioSelection(value){
 	
-	    var inputs=document.getElementsByTagName("input");
+	    var inputs=$("input");
 	    for(var i=0; i < inputs.length; i++) {
-	        if(inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 && inputs[i].getAttribute("type") == "radio" &&
+	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 && inputs[i].getAttribute("type") == "radio" &&
 	        	value != inputs[i].getAttribute("name")){	        
 	          inputs[i].checked=false;
 	        }
