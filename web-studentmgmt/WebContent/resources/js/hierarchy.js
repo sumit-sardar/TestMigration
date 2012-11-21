@@ -1022,6 +1022,7 @@ isAddStudent = true;
 isPopUp = true;
 profileEditable = "true";//to see fields enabled if a new student is added after editing a imported student.
 resetDisabledFields();
+resetSubEthnicityRadioButtons();
 document.getElementById('displayMessage').style.display = "none";	
 document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
@@ -3232,13 +3233,15 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				if(valueCardinality == 'MULTIPLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
 						if(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueno'){
-							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueño';
+							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] = 'puertorriqueño';
 						}	
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
-			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 					     }else {
-					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+						     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+						     $("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 					     }
 					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
@@ -3267,3 +3270,15 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	        }
 	    }
 	}
+	
+	
+	function resetSubEthnicityRadioButtons() {
+		var inputs = $("input");
+		 for(var i=0; i < inputs.length; i++) {
+	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 
+	        	&& inputs[i].getAttribute("type") == "radio" ){	        
+	          inputs[i].checked=false;
+	        }
+	    }
+}
+		
