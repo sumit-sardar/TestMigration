@@ -3174,6 +3174,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				var valueCardinality = stuDemographic[count]['valueCardinality'];
 				if(valueCardinality == 'SINGLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+						if(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueno'){
+							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] = 'puertorriqueño';
+						}
 				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 				     			//$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
@@ -3198,6 +3201,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     				alreadyExecuted = true;
 				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+				     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 				     		}
 				     	}
 						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
@@ -3231,17 +3235,12 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     		}
 				}
 				if(valueCardinality == 'MULTIPLE'){
-					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
-						if(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueno'){
-							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] = 'puertorriqueño';
-						}	
+					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){	
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
-			     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 					     }else {
 						     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
-						     $("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 					     }
 					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);

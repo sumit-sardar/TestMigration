@@ -953,6 +953,8 @@ public class StudentOperationController extends PageFlowController {
 						sdv.setSelectedFlag("false");
 					if(sdv.getValueName().equals("puertorriqueno"))
 						sdv.setValueName("puertorriqueño");
+					if(sdv.getValueCode().equals("puertorriqueno"))
+						sdv.setValueCode("puertorriqueño");
 					param = sdd.getLabelName() + "_" + sdv.getValueName();
 					if (getRequest().getParameter(param) != null)
 					{
@@ -962,41 +964,58 @@ public class StudentOperationController extends PageFlowController {
 				} 
 				else
 				{
-					if (values.length == 1)
-					{
+					if(sdd.getLabelName().equals("Sub_Ethnicity")) {
 						if (! sdv.getVisible().equals("false"))
 							sdv.setSelectedFlag("false");
 						if(sdv.getValueName().equals("puertorriqueno"))
 							sdv.setValueName("puertorriqueño");
+						if(sdv.getValueCode().equals("puertorriqueno"))
+							sdv.setValueCode("puertorriqueño");
 						param = sdd.getLabelName() + "_" + sdv.getValueName();
 						if (getRequest().getParameter(param) != null)
 						{
 							paramValue = getRequest().getParameter(param);
 							sdv.setSelectedFlag("true");
 						}
-					}
-					else
-					{
-						param = sdd.getLabelName();
-						if (getRequest().getParameter(param) != null)
+					} else {
+						if (values.length == 1)
 						{
-							paramValue = getRequest().getParameter(param);
-
-							for (int k=0; k < values.length; k++)
+							if (! sdv.getVisible().equals("false"))
+								sdv.setSelectedFlag("false");
+							if(sdv.getValueName().equals("puertorriqueno"))
+								sdv.setValueName("puertorriqueño");
+							if(sdv.getValueCode().equals("puertorriqueno"))
+								sdv.setValueCode("puertorriqueño");
+							param = sdd.getLabelName() + "_" + sdv.getValueName();
+							if (getRequest().getParameter(param) != null)
 							{
-								StudentDemographicValue sdv1 = (StudentDemographicValue)values[k];
-								if (! sdv1.getVisible().equals("false"))
-									sdv1.setSelectedFlag("false");
-								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								paramValue = getRequest().getParameter(param);
+								sdv.setSelectedFlag("true");
+							}
+						}
+						else
+						{
+							param = sdd.getLabelName();
+							if (getRequest().getParameter(param) != null)
+							{
+								paramValue = getRequest().getParameter(param);
+	
+								for (int k=0; k < values.length; k++)
 								{
-									if (paramValue.equals(sdv1.getValueName()))
+									StudentDemographicValue sdv1 = (StudentDemographicValue)values[k];
+									if (! sdv1.getVisible().equals("false"))
+										sdv1.setSelectedFlag("false");
+									if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 									{
-										sdv1.setSelectedFlag("true");
+										if (paramValue.equals(sdv1.getValueName()))
+										{
+											sdv1.setSelectedFlag("true");
+										}
 									}
 								}
+	
+								break;
 							}
-
-							break;
 						}
 					}
 				}

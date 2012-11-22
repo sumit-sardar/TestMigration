@@ -133,22 +133,23 @@ public class StudentDemographicsTag extends CTBTag
     	
 	    StudentDemographicValue[] values = sdd.getStudentDemographicValues();
 	    if( multipleAllowed ) {
-	    	if(displayName.equals("Sub_Ethnicity"))
-	    		displayEthnicity_CheckBoxes(displayName, values, true,"none");
-	    	else
 	    		displayValues_CheckBoxes(displayName, values, editable);
 	    } 
         else { 
-		    if ( values.length == 1 ) {  
-                displayValues_CheckBoxes(displayName, values, editable);
-            }
-            else
-		    if ( values.length < 5 ) {  
-	            displayValues_RadioButtons(displayName, values, editable);
-		    } 
-            else { 
-		        displayValues_Dropdown(displayName, values, editable);
-		    }
+        	if(displayName.equals("Sub_Ethnicity"))
+	    		displayEthnicity_CheckBoxes(displayName, values, true,"none");
+        	else {
+			    if ( values.length == 1 ) {  
+	                displayValues_CheckBoxes(displayName, values, editable);
+	            }
+	            else
+			    if ( values.length < 5 ) {  
+		            displayValues_RadioButtons(displayName, values, editable);
+			    } 
+	            else { 
+			        displayValues_Dropdown(displayName, values, editable);
+			    }
+        	}
 	    }
 	}
 
