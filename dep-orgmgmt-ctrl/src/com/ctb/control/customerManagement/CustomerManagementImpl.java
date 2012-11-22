@@ -196,7 +196,7 @@ public class CustomerManagementImpl implements CustomerManagement
             // logic:
             // 1. clean customer demographic data
             // 2. insert common configuration data               
-            customers.cleanCustomerConfiguration(customerId);
+           // customers.cleanCustomerConfiguration(customerId);
            
             for(String selectedProduct:selectedProducts){
             	if(CTBConstants.CUSTOMER_PRODUCT_FORMA.equals(selectedProduct)){
@@ -214,11 +214,11 @@ public class CustomerManagementImpl implements CustomerManagement
             }
             //create demographic data
             //create common demographicdata
-            customers.setupCustomerBaseDemographic(customerId);
-            if(laslinkFormAOrFormBSelected)
-            	customers.setupLaslinkCustomerDemographic(customerId);
-            if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
-            	customers.setupEspanolCustomerDemographic(customerId);
+//            customers.setupCustomerBaseDemographic(customerId);
+//            if(laslinkFormAOrFormBSelected)
+//            	customers.setupLaslinkCustomerDemographic(customerId);
+//            if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
+//            	customers.setupEspanolCustomerDemographic(customerId);
             
         }  catch (SQLException se) {
                CustomerUpdationException dataUpdationException = 
@@ -360,10 +360,10 @@ public class CustomerManagementImpl implements CustomerManagement
                 //create demographic data
                 //create common demographicdata
                 customers.setupCustomerBaseDemographic(customerId);
-                if(laslinkFormAOrFormBSelected)
-                	customers.setupLaslinkCustomerDemographic(customerId);
-                if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
-                	customers.setupEspanolCustomerDemographic(customerId);
+//                if(laslinkFormAOrFormBSelected)
+//                	customers.setupLaslinkCustomerDemographic(customerId);
+//                if(laslinkEspanolSelected && !laslinkFormAOrFormBSelected)
+//                	customers.setupEspanolCustomerDemographic(customerId);
               
                 
 //                if(tempProductList.contains(CTBConstants.CUSTOMER_PRODUCT_ESPANOL)){
