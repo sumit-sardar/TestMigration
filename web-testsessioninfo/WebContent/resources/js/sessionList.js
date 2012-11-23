@@ -2551,7 +2551,7 @@ function registerDelegate(tree){
 	
 	function resetPopup() { 
 		$("#sessionListDiv").hide();
-		$('#testList').GridUnload();
+		//$('#testList').GridUnload();
 		$('#displayMessage').hide();		
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
