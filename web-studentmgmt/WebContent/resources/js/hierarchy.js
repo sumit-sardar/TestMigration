@@ -1864,6 +1864,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	isPopUp = true;
 	var rowid;
 	isAddStudent = false;
+	resetSubEthnicityRadioButtons();
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
 	if(SelectedStudentId == undefined){
@@ -3201,7 +3202,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     				alreadyExecuted = true;
 				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
-				     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+				     			var radioButtonId = stuDemographic[count]['labelName'] +'_' + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'];
+				     			$("#"+radioButtonId).attr('checked',false);
+				     			//$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 				     		}
 				     	}
 						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
