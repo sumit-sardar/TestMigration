@@ -522,6 +522,10 @@ public class TestTicketController extends PageFlowController
         String location = testSession.getLocation();
         //ISTEP2010CR005 to retrieve accesscode in upper case
         String accessCode = testSession.getAccessCode().toUpperCase();
+    	boolean printCredentialLowerCase = isPrintCredentialLowerCase();
+    	if (printCredentialLowerCase)
+    		accessCode.toLowerCase();
+    	
         String sessionName = testSession.getTestAdminName();
         String level = null;
         Date startDate = testSession.getLoginStartDate();
@@ -548,7 +552,10 @@ public class TestTicketController extends PageFlowController
                 duration = durationMinutes +" minutes";
             String subtestTAC = accessCode;
             if("t".equals(enforceBreaks.toLowerCase())){
-                subtestTAC = testElements[i].getAccessCode().toUpperCase(); //Defect- 62682 ISTEP2010CR005 to retrieve accesscode in upper case
+            	if (printCredentialLowerCase)
+            		subtestTAC = testElements[i].getAccessCode().toLowerCase(); 
+            	else
+            		subtestTAC = testElements[i].getAccessCode().toUpperCase(); 
             }
             SubtestVO subtestVO = new SubtestVO(testElements[i].getItemSetId(),
                                                 i+1+"", 
@@ -707,14 +714,21 @@ public class TestTicketController extends PageFlowController
     
     private Collection buildRosterList(RosterElementData red, SessionStudent[] students)
     {
+    	boolean printCredentialLowerCase = isPrintCredentialLowerCase();
         HashMap map = new HashMap();
         RosterElement[] rosterElements = red.getRosterElements();
         for (int i=0 ; i<rosterElements.length ; i++) {
             RosterElement rosterElt = rosterElements[i];
             if (rosterElt != null) {
             	//ISTEP2010CR005 - to reset username, roster password in upper case
-            	rosterElt.setUserName(rosterElt.getUserName().toUpperCase());
-            	rosterElt.setPassword(rosterElt.getPassword().toUpperCase());
+            	if (printCredentialLowerCase) {
+            		rosterElt.setUserName(rosterElt.getUserName().toLowerCase());
+            		rosterElt.setPassword(rosterElt.getPassword().toLowerCase());
+            	}
+            	else {
+            		rosterElt.setUserName(rosterElt.getUserName().toUpperCase());
+            		rosterElt.setPassword(rosterElt.getPassword().toUpperCase());            		
+            	}
                 TestRosterVO vo = new TestRosterVO(rosterElt);
                 vo.setSeq(i);
                 map.put(vo.getStudentId(), vo);
@@ -739,6 +753,17 @@ public class TestTicketController extends PageFlowController
             result.add(rosters[i]);
         }
         return result;
+    }
+    
+    private boolean isPrintCredentialLowerCase() 
+    {     
+		for (int i=0; i<this.customerConfigurations.length; i++) {
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Print_Credential_LowerCase") && cc.getDefaultValue().equalsIgnoreCase("T")) {
+				return true;
+			}
+		}
+		return false;
     }
     
     private void setAccommodations(TestRosterVO roster, SessionStudent student){
