@@ -16,7 +16,7 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 		List<SiteSurvey> list = new ArrayList<SiteSurvey>();
 		SiteSurvey siteSurvey = null;
 		String sitePath=null;
-		
+		try{
 		ps = con.prepareStatement(GET_SCHOOL_DETAILS_FROM_OAS);
 		ps.setInt(1,productId );
 		ps.setInt(2, customerId);
@@ -29,6 +29,11 @@ public class SiteEnrollmentDao implements SiteEnrollmentSQL {
 			sitePath=path+rs.getString("DISTRICT_NAME")+"/"+rs.getString("SCHOOL_NAME");
 			siteSurvey.setSitePath(sitePath);
 			list.add(siteSurvey);
+		}
+		}
+		finally{
+			rs.close();
+			ps.close();
 		}
 	return list;
 	}
