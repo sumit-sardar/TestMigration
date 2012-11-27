@@ -58,14 +58,29 @@
 					<a href="#" id="toggleValidationButton" onclick="javascript:toggleValidationStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.toggleValidation.button" /></a>
 				</div>
 				<div id="doNotScore" style="float:right;padding-left:5px;display:none;">
-					<a href="#" id="doNotScoreButton" onclick="javascript:toggleDonotScoreStatus(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.doNotScore.button" /></a>
+					<a href="#" id="doNotScoreButton" onclick="javascript:showDNSConfirmationPopup(); return false;" class="rounded {transparent} button"><lb:label key="viewStatus.doNotScore.button" /></a>
 				</div>
 			</td>
 		</tr>
 	</table>
 	<table id="rosterList" class="gridTable"></table>
 	<div id="rosterPager" class="gridTable"></div>
-	
+	<div id="dNSconfirmationPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+		<div style="padding:10px;text-align:center;">
+			<div style="text-align: left;">
+				<lb:label key="viewStatus.doNotScore.confirmation.message" />
+			</div>
+		</div>
+		<div style="padding:10px;">		
+			<center>
+				<br>
+				<br>
+				<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:toggleDonotScoreStatus(); return false;" class="ui-widget-header">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeDNSConfirmationPopup(); return false;" class="ui-widget-header">
+			</center>
+		</div>	
+	</div> 
 	<div>
 		<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="firstNameLbl" id="firstNameLbl" value=<lb:label key="viewStatus.text.firstNameLbl" prefix="'" suffix="'"/>/>
@@ -75,6 +90,7 @@
 		<input type="hidden" name="validationStatusLbl" id="validationStatusLbl" value=<lb:label key="viewStatus.text.validationStatus" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value=<lb:label key="viewStatus.text.onlineTestStatus" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="dnsLbl" id="dnsLbl" value=<lb:label key="viewStatus.text.dnsLbl" prefix="'" suffix="'"/>/>
+		<input type="hidden" name="dNSConfirmationPopupLbl" id="dNSConfirmationPopupLbl" value=<lb:label key="viewStatus.text.dNSConfirmationPopupLbl" prefix="'" suffix="'"/>/>
 	</div>
 </td>
 </tr>

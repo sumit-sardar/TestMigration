@@ -4891,7 +4891,37 @@ function registerDelegate(tree){
 		);
 	}
 	
+	function showDNSConfirmationPopup(){
+	
+	    $("#dNSconfirmationPopup").show();	    
+		$("#dNSconfirmationPopup").dialog({  
+					title:$("#dNSConfirmationPopupLbl").val(),  
+				 	resizable:false,
+				 	autoOpen: true,
+				 	width: '400px',
+				 	modal: true,
+				 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+					});	
+		$("#dNSconfirmationPopup").css('height',120);
+		var toppos = ($(window).height() - 290) /2 + 'px';
+		var leftpos = ($(window).width() - 410) /2 + 'px';
+		$("#dNSconfirmationPopup").parent().css("top",toppos);
+		$("#dNSconfirmationPopup").parent().css("left",leftpos);		
+	}
+		
+		function closeDNSConfirmationPopup(){
+	 		$("#dNSconfirmationPopup").hide();	    
+			$("#dNSconfirmationPopup").dialog('close');
+			$.unblockUI(); 	
+		}
+	
+	
+	
+	
+	
+	
 	function toggleDonotScoreStatus(){
+		closeDNSConfirmationPopup();
 		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
 		if(selectedTestRosterId != null && $.trim(selectedTestRosterId) != "") {
 			var dnsStatus = $('#rosterList').getCell(selectedTestRosterId, 7);
