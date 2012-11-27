@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2568,6 +2569,7 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getSessionForUserHomeGrid(SessionOperationForm form){
     	//System.out.println("getSessionForUserHomeGrid START....."+new Date());
+		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -2630,11 +2632,19 @@ public class SessionOperationController extends PageFlowController {
 
 			
 			try{
-				resp.setContentType("application/json");
-				stream = resp.getOutputStream();
-				resp.flushBuffer();
-				stream.write(json.getBytes("UTF-8"));
+				resp.setContentType(CONTENT_TYPE_JSON);
+	    		stream = resp.getOutputStream();
 
+	    		String acceptEncoding = req.getHeader("Accept-Encoding");
+	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+	    		    resp.setHeader("Content-Encoding", "gzip");
+	    		    stream = new GZIPOutputStream(stream);
+	    		}
+	    		
+				resp.flushBuffer();
+	    		stream.write(json.getBytes());				
 			}
 
 			finally{
@@ -2660,6 +2670,7 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getCompletedSessionForGrid(SessionOperationForm form){
     	System.out.println("completed");
+		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -2676,10 +2687,20 @@ public class SessionOperationController extends PageFlowController {
 			json = gson.toJson(base);
 			//System.out.println ("Json process time End:"+new Date() +".."+json);
 			try{
-				resp.setContentType("application/json");
-				stream = resp.getOutputStream();
+				resp.setContentType(CONTENT_TYPE_JSON);
+	    		stream = resp.getOutputStream();
+
+	    		String acceptEncoding = req.getHeader("Accept-Encoding");
+	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+	    		    resp.setHeader("Content-Encoding", "gzip");
+	    		    stream = new GZIPOutputStream(stream);
+	    		}
+	    		
 				resp.flushBuffer();
-				stream.write(json.getBytes("UTF-8"));
+	    		stream.write(json.getBytes());				
+				
 			}
 			finally{
 				if (stream!=null){
@@ -2814,6 +2835,7 @@ public class SessionOperationController extends PageFlowController {
 	protected Forward userOrgNodeHierarchyList(SessionOperationForm form){
 
 		String jsonTree = "";
+		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		//String contentType = CONTENT_TYPE_JSON;
@@ -2875,11 +2897,20 @@ public class SessionOperationController extends PageFlowController {
 			jsonTree = jsonTree.replace(pattern, "");
 			//System.out.println(jsonTree);
 			try {
-
 				resp.setContentType(CONTENT_TYPE_JSON);
+	    		stream = resp.getOutputStream();
+
+	    		String acceptEncoding = req.getHeader("Accept-Encoding");
+	    		System.out.println("acceptEncoding..."+acceptEncoding.toString());
+
+	    		if (acceptEncoding != null && acceptEncoding.contains("gzip")) {
+	    		    resp.setHeader("Content-Encoding", "gzip");
+	    		    stream = new GZIPOutputStream(stream);
+	    		}
+	    		
 				resp.flushBuffer();
-				stream = resp.getOutputStream();
-				stream.write(jsonTree.getBytes("UTF-8"));
+	    		stream.write(jsonTree.getBytes());
+				
 			} finally{
 				if (stream!=null){
 					stream.close();
