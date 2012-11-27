@@ -278,6 +278,8 @@ function populateSessionListGrid(homePageLoad) {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				$('#showSaveTestMessage').hide();
+				
+				$("#showTreeSliderID").trigger('click');				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
