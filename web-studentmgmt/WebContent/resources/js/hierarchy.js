@@ -60,6 +60,7 @@ var editingStudentId = null;
 var isSetEditStudentDetail = false;
 var isEditStudentImported = false;// Need to be used as imported student's profile can also be editable.
 var customerConfiguration = [];
+var isOOSConfigured = false; // added for OOSConfigurable
 
 
 $(document).bind('keydown', function(event) {
@@ -104,6 +105,7 @@ function populateTree() {
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");
 						customerConfiguration = data.customerConfiguration;
+						isOOSConfigured = data.isOOSConfigured;  
 													
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -674,14 +676,14 @@ function updateOrganization(element, isChecked){
 		 mtype:   'POST',
 		 postData: postDataObject,
 		 datatype: "json",         
-          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle, $("#jqgNotTesting").val()],
 		   	colModel:[
-		   		{name:'lastName',index:'lastName', width:110, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:110, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'lastName',index:'lastName', width:105, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:105, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'middleInitial',index:'middleInitial', width:30, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade',editable: true, width:50, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'gender',index:'gender', width:75, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:95, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'gender',index:'gender', width:70, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'hasAccommodations',index:'hasAccommodations', width:120, editable: true, align:"left", sortable:true, title:false,
 		   							cellattr: function (rowId, tv, rawObject, cm, rdata) {
 		   									var returnStr = '';
@@ -690,8 +692,10 @@ function updateOrganization(element, isChecked){
 		   									} else { returnStr = 'style="white-space: normal;"' ;}  
 		   									return returnStr;
 		   							}},
-		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentNumber',index:'studentNumber',editable: true, width:150, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'userName',index:'userName',editable: true, width:130, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'outOfSchool',index:'outOfSchool', editable: true, hidden: true, width:90, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
@@ -754,6 +758,12 @@ function updateOrganization(element, isChecked){
 					document.getElementById('registerStudentDiv').style.visibility = "visible";
 				setAnchorButtonState('registerStudentButton', true);
 				
+				if(isOOSConfigured) {
+					
+					$("#list2").jqGrid("showCol","outOfSchool");
+				} else {
+					$("#list2").jqGrid("hideCol","outOfSchool");
+				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -846,7 +856,8 @@ function updateOrganization(element, isChecked){
 			 f.rules.push({field:"gender",op:"cn",data:searchFiler});
 			 f.rules.push({field:"hasAccommodations",op:"cn",data:searchFiler}); 
 			 f.rules.push({field:"userName",op:"cn",data:searchFiler});
-			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});  
+			 f.rules.push({field:"studentNumber",op:"cn",data:searchFiler});
+			 f.rules.push({field:"outOfSchool",op:"cn",data:searchFiler});  
 			 grid[0].p.search = true;
 			 grid[0].p.ignoreCase = true;
 			 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
@@ -887,17 +898,17 @@ function updateOrganization(element, isChecked){
 		 mtype:   'POST',
 		 datatype: "json",
 		 postData:	postDataObject,
-          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgLoginID").val(), studentIdTitle, $("#jqgNotTesting").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:120, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:120, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'middleInitial',index:'middleInitial', width:30, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade',editable: true, width:50, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:130, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'userName',index:'userName',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentNumber',index:'studentNumber',editable: true, width:170, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } }
-		   	
+		   		{name:'userName',index:'userName',editable: true, width:130, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:120, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } },
+		   		{name:'outOfSchool',index:'outOfSchool', editable: true, hidden: true, width:90, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
@@ -941,7 +952,12 @@ function updateOrganization(element, isChecked){
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				 
+				if(isOOSConfigured) {
+					
+					$("#list2").jqGrid("showCol","outOfSchool");
+				} else {
+					$("#list2").jqGrid("hideCol","outOfSchool");
+				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  

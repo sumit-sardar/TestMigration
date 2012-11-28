@@ -251,6 +251,8 @@ public class StudentOperationController extends PageFlowController {
 			Gson gson = new Gson();
 			baseTree.setData(data);
 			baseTree.setCustomerConfiguration(customerConfigurations);
+			Boolean hasOOSConfigured = customerHasOOS(customerConfigurations);
+			baseTree.setIsOOSConfigured(hasOOSConfigured);
 			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
 
 				public int compare(TreeData t1, TreeData t2) {
@@ -1631,7 +1633,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * Out Of School
 	 */
-	/*private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
+	private Boolean customerHasOOS(CustomerConfiguration[] customerConfigurations) 
 	{
 		boolean hasOOSConfigurable = false;
 		if( customerConfigurations != null ) {
@@ -1645,8 +1647,8 @@ public class StudentOperationController extends PageFlowController {
 				}
 			}
 		}
-		return new Boolean(hasOOSConfigurable);           
-	}*/
+		return hasOOSConfigurable;           
+	}
 
 	private boolean isTopLevelUser(boolean isLasLinkCustomerVal){
 

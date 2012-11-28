@@ -13,6 +13,7 @@ public class BaseTree {
 	public String[] gradeOptions = null;
 	private List<CustomerDemographic> customerDemographicList;
 	public CustomerConfiguration [] customerConfiguration = null;
+	public Boolean isOOSConfigured = false;
 	/**
 	 * @return the gradeOptions
 	 */
@@ -69,6 +70,14 @@ public class BaseTree {
 	}
 	public void setCustomerConfiguration(CustomerConfiguration[] customerConfiguration) {
 		this.customerConfiguration = customerConfiguration;
+	}
+
+	public Boolean getIsOOSConfigured() {
+		return isOOSConfigured;
+	}
+
+	public void setIsOOSConfigured(Boolean isOOSConfigured) {
+		this.isOOSConfigured = isOOSConfigured;
 	}
 	
 	

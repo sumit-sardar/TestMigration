@@ -46,6 +46,7 @@
 <input type="hidden" id="noStudentTitle" name = "noStudentTitle" value=<lb:label key="student.noStuSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value=<lb:label key="student.noStuSelected.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value=<lb:label key="student.filterNoStuSelected.message" prefix="'" suffix="'"/>/> 
+<input type="hidden" id="jqgNotTesting" name = "jqgNotTesting" value=<lb:label key="student.info.outOfSchool" prefix="'" suffix="'"/>/>
 
 <%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
