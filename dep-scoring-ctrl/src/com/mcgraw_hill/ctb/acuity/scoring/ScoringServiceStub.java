@@ -98,7 +98,8 @@
             //Set the soap version
             _serviceClient.getOptions().setSoapVersionURI(org.apache.axiom.soap.SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
         
-    
+            long soTimeout = 2 * 60 * 1000; // Two minutes
+            _serviceClient.getOptions().setTimeOutInMilliSeconds(soTimeout);
     }
 
     /**
