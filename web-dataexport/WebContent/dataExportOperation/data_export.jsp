@@ -5,6 +5,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="dataExportApplicationResource" />
 
 <netui-data:declareBundle bundlePath="oasResources" name="oas" />
 <netui-data:declareBundle bundlePath="webResources" name="web" />
@@ -13,10 +15,8 @@
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 	<netui-template:setAttribute name="title" value="${bundle.web['data.exports.window.title']}" /> 
-<%-- 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.dataExport']}" />		--%>
-	<netui-template:section name="bodySection">
-		<%@ taglib uri="label.tld" prefix="lb"%>
-		<lb:bundle baseName="dataExportApplicationResource" />
+ 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.dataExport']}" />		
+<netui-template:section name="bodySection">
 		
 		<!-- ********************************************************************************************************************* -->
 		<!-- Start Page Content -->
@@ -130,7 +130,7 @@
 			
 		</netui:form>
 		
-		<script type="text/javascript">
+<script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("services", "exportDataLink");
 }); 

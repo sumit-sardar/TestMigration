@@ -1,3 +1,10 @@
+<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<%@ page import="java.io.*, java.util.*"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="dataExportApplicationResource" />
+
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
 	if (broadcastMessages == null) broadcastMessages = new Integer(0);		
@@ -8,7 +15,7 @@
 	<tr>
 		<td align="left" width="70%" style="padding: 3px 0px 0px 3px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
 		<td align="left" width="30%">
-			<table border="0" cellpadding="0" cellspacing="0" class = "headerLayout">
+			<table border="0" cellpadding="0" cellspacing="0">
 			<tr height="22">
 				<td align="center">
 					<b>You are logged in as <%=session.getAttribute("userName")%></b>
