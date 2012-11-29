@@ -14,9 +14,8 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help" />
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-	<netui-template:setAttribute name="title" value="${bundle.web['installClient.window.title']}" />
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.installSoftware']}" />
-	<netui-template:setAttribute name="helpLinkLinux" value="${bundle.help['help.topic.installClientLinux']}" />
+	<netui-template:setAttribute name="title" value="${bundle.web['userAccounts.window.title']}" />
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.userAccounts']}" />
 	<netui-template:section name="bodySection">
 
 <netui:form action="eMetric_user_accounts_detail">
