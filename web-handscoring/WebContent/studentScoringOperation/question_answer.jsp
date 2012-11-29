@@ -231,7 +231,7 @@ function stopAudio(){
 	</div>
 	<br>
 	<center>
-		<input type="button"  id="popupCancelBtnSBS" value=<lb:label key="common.button.cancel" prefix="'" suffix="'" /> onclick="javascript:closePopUp('questionAnswerDetail'); return false;" class="ui-widget-header" style="width:60px">
+		<input type="button"  id="popupCancelBtnSBS" value=<lb:label key="common.button.close" prefix="'" suffix="'" /> onclick="javascript:closePopUp('questionAnswerDetail'); return false;" class="ui-widget-header" style="width:60px">
 	</center>
 	<br>
 		
