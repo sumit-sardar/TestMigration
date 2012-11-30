@@ -112,6 +112,7 @@ var hideStudentDelButton = false; // Only state level admin, admin coordinator, 
 
 var forceTestBreak = false;
 var selectGE = null;
+var autoShowTreeSlider = true;
 
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
@@ -278,7 +279,10 @@ function populateSessionListGrid(homePageLoad) {
 				}
 				$('#showSaveTestMessage').hide();
 				
-				$("#showTreeSliderID").trigger('click');
+				if (autoShowTreeSlider) {
+					autoShowTreeSlider = false;
+					$("#showTreeSliderID").trigger('click');
+				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
