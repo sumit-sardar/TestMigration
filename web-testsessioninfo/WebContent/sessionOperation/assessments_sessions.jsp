@@ -53,6 +53,8 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("assessments", "sessionsLink");
+	console.log("autoShowTreeSlider(page loaded)");
+	setTimeout("showTreeSlider()",500); 	
 });
 </script>
 

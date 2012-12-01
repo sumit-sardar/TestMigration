@@ -279,7 +279,8 @@ function populateSessionListGrid(homePageLoad) {
 				}
 				$('#showSaveTestMessage').hide();
 				
-				if (autoShowTreeSlider) {
+				if (autoShowTreeSlider && isTreePopulated) {
+					console.log("autoShowTreeSlider(getSessionForUserHomeGrid)");
 					autoShowTreeSlider = false;
 					$("#showTreeSliderID").trigger('click');
 				}
@@ -566,6 +567,13 @@ function populateCompletedSessionListGrid() {
 				}
 				
 				$('#showSaveTestMessage').hide();
+				
+				if (autoShowTreeSlider && isTreePopulated) {
+					console.log("autoShowTreeSlider(getCompletedSessionForGrid)");
+					autoShowTreeSlider = false;
+					$("#showTreeSliderID").trigger('click');
+				}
+				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -690,6 +698,7 @@ function populateCompletedSessionListGrid() {
 		openTreeRequested = true;
 		$('#showSaveTestMessage').hide();
 		 if(isTreePopulated) {
+			 console.log("isTreePopulated");
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
 			 $("#gap").width("3%");
@@ -705,10 +714,12 @@ function populateCompletedSessionListGrid() {
 		    jQuery("#list3").setGridWidth(916);
 	    } else {
 	    	if(orgTreeHierarchy){
+			 	console.log("orgTreeHierarchy");
 	    		createSingleNodeSelectedTree(orgTreeHierarchy);
 	    		$("#searchheader").css("visibility","visible");	
 				$("#orgNodeHierarchy").css("visibility","visible");	
 	    	}else{
+			 	console.log("populateTree");
 	    		populateTree();
 	    	}
 	    }	    
