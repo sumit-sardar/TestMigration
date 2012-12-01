@@ -41,7 +41,6 @@
 <td>
 	<jsp:include page="/sessionOperation/assessment_sessionList.jsp" />
 	<script>populateSessionListGrid(true);</script>
-    
 </td>    
 </tr>
 </table>
@@ -53,8 +52,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("assessments", "sessionsLink");
-	console.log("autoShowTreeSlider(page loaded)");
-	setTimeout("showTreeSlider()",500); 	
+	autoShowTreeSliderPageLoaded();
 });
 </script>
 

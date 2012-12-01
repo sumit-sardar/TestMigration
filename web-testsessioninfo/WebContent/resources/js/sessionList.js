@@ -112,7 +112,6 @@ var hideStudentDelButton = false; // Only state level admin, admin coordinator, 
 
 var forceTestBreak = false;
 var selectGE = null;
-var autoShowTreeSlider = true;
 
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
@@ -136,7 +135,6 @@ function UIBlock(){
 function populateSessionListGrid(homePageLoad) {
 		ishomepageload  = homePageLoad;
  		UIBlock();
- 		//populateTree();
  		resetSearchCrit();
  		reset();
  		$("#list2").jqGrid({         
@@ -279,11 +277,10 @@ function populateSessionListGrid(homePageLoad) {
 				}
 				$('#showSaveTestMessage').hide();
 				
-				if (autoShowTreeSlider && isTreePopulated) {
-					console.log("autoShowTreeSlider(getSessionForUserHomeGrid)");
-					autoShowTreeSlider = false;
-					$("#showTreeSliderID").trigger('click');
+				if (! isTreePopulated) {
+ 					populateTree();
 				}
+				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -461,7 +458,6 @@ function trapEnterKeyList3(e){
 
 function populateCompletedSessionListGrid() {
  		//UIBlock();
- 		gridloaded = true;
  		reset();
  		resetSearchCritList3();
        $("#list3").jqGrid({         
@@ -568,12 +564,7 @@ function populateCompletedSessionListGrid() {
 				
 				$('#showSaveTestMessage').hide();
 				
-				if (autoShowTreeSlider && isTreePopulated) {
-					console.log("autoShowTreeSlider(getCompletedSessionForGrid)");
-					autoShowTreeSlider = false;
-					$("#showTreeSliderID").trigger('click');
-				}
-				
+ 				gridloaded = true;
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -693,6 +684,18 @@ function populateCompletedSessionListGrid() {
 			element2.style.display = 'none';
 		}
 	}
+
+	function autoShowTreeSliderPageLoaded() {
+	
+		if (isTreePopulated && gridloaded) {
+			showTreeSlider();
+			$.unblockUI();  
+		}
+		else {
+			UIBlock();
+			setTimeout("autoShowTreeSliderPageLoaded()",1000); 
+		}
+	}
 	
 	function showTreeSlider() {
 		openTreeRequested = true;
@@ -722,7 +725,7 @@ function populateCompletedSessionListGrid() {
 			 	console.log("populateTree");
 	    		populateTree();
 	    	}
-	    }	    
+	    }
 	}
 	
 	function hideTreeSlider() {
