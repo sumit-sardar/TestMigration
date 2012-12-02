@@ -277,10 +277,6 @@ function populateSessionListGrid(homePageLoad) {
 				}
 				$('#showSaveTestMessage').hide();
 				
-				if (! isTreePopulated) {
- 					populateTree();
-				}
-				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -458,6 +454,7 @@ function trapEnterKeyList3(e){
 
 function populateCompletedSessionListGrid() {
  		//UIBlock();
+ 		gridloaded = true;
  		reset();
  		resetSearchCritList3();
        $("#list3").jqGrid({         
@@ -564,7 +561,12 @@ function populateCompletedSessionListGrid() {
 				
 				$('#showSaveTestMessage').hide();
 				
- 				gridloaded = true;
+				if (! isTreePopulated) {
+		 			console.log("populateTree");
+		 			openTreeRequested = true;
+ 					populateTree();
+				}				
+				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -685,23 +687,10 @@ function populateCompletedSessionListGrid() {
 		}
 	}
 
-	function autoShowTreeSliderPageLoaded() {
-	
-		if (isTreePopulated && gridloaded) {
-			showTreeSlider();
-			$.unblockUI();  
-		}
-		else {
-			UIBlock();
-			setTimeout("autoShowTreeSliderPageLoaded()",1000); 
-		}
-	}
-	
 	function showTreeSlider() {
 		openTreeRequested = true;
 		$('#showSaveTestMessage').hide();
 		 if(isTreePopulated) {
-			 console.log("isTreePopulated");
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
 			 $("#gap").width("3%");
@@ -717,12 +706,10 @@ function populateCompletedSessionListGrid() {
 		    jQuery("#list3").setGridWidth(916);
 	    } else {
 	    	if(orgTreeHierarchy){
-			 	console.log("orgTreeHierarchy");
 	    		createSingleNodeSelectedTree(orgTreeHierarchy);
 	    		$("#searchheader").css("visibility","visible");	
 				$("#orgNodeHierarchy").css("visibility","visible");	
 	    	}else{
-			 	console.log("populateTree");
 	    		populateTree();
 	    	}
 	    }
@@ -829,6 +816,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 		 	    isTreePopulated = true; 
 				if(openTreeRequested){
+		 			console.log("showTreeSlider");
 					showTreeSlider();
 				}
 			}

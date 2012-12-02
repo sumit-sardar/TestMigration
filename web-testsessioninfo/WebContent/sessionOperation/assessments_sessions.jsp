@@ -52,7 +52,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("assessments", "sessionsLink");
-	autoShowTreeSliderPageLoaded();
 });
 </script>
 
