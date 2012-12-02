@@ -141,7 +141,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 mtype:   'POST',
 		 datatype: "json",         
-          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), 'creatorOrgNodeId', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'','','','','',''],
+          colNames:[$("#sessionName").val(),$("#testName").val(), $("#organization").val(), '', $("#myRole").val(),$("#startDateGrid").val(), $("#endDateGrid").val(),'','','','','',''],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
@@ -562,7 +562,6 @@ function populateCompletedSessionListGrid() {
 				$('#showSaveTestMessage').hide();
 				
 				if (! isTreePopulated) {
-		 			console.log("populateTree");
 		 			openTreeRequested = true;
  					populateTree();
 				}				
@@ -816,7 +815,6 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 		 	    isTreePopulated = true; 
 				if(openTreeRequested){
-		 			console.log("showTreeSlider");
 					showTreeSlider();
 				}
 			}
@@ -2047,8 +2045,6 @@ function registerDelegate(tree){
 	    }
 	}
 	function add() {
-	    //console.log(startTime);
-	    //console.log(endTime);
 	    $('#Schedule tbody').append('<tr>' +
 	        '<td>' + startTime + '</td>' +
 	        '<td>' + endTime + '</td>' +
