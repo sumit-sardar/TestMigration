@@ -36,6 +36,7 @@
 <input type="hidden" id="showEditButton" value = '<%=showEditButton %>' />
 <input type="hidden" id="showDeleteButton" value = '<%=showDeleteButton %>' />
 <input type="hidden" id="stuCreatedBy" value = '<%=stuCreatedBy %>' />
+<input type="hidden" id="notTestingDefaultValue" value=<lb:label key="default.not.testing.value" prefix="'" suffix="'"/> />
 </div>
 
 <div id="addEditStudentDetail"

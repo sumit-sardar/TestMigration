@@ -1690,7 +1690,8 @@ function fillselectedOrgNode( elementId, orgList) {
 																			gender:$("#genderOptions").val(),
 																			hasAccommodations:data.hasAccommodation,
 																			userName:data.studentLoginId,
-																			studentNumber:$("#studentExternalId").val()};
+																			studentNumber:$("#studentExternalId").val(),
+																			outOfSchool:$("#notTestingDefaultValue").val()};
 														
 														var sortOrd = jQuery("#list2").getGridParam("sortorder");
 														var sortCol = jQuery("#list2").getGridParam("sortname");	
