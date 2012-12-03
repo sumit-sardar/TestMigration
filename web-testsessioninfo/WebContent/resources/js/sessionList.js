@@ -115,6 +115,9 @@ var selectGE = null;
 
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
+var isPagesizeLabelpopulated = false;
+var isForRefreshRoster = false;
+var pageSizeSelected = 10;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -4114,11 +4117,12 @@ function registerDelegate(tree){
 	
 	function refreshRosterList() {
 		$("#displayMessageViewTestRoster").hide();
+		setRetainedRowListValue();
 		$('#rosterList').GridUnload();
     	if(selectedTestAdminId != "") {
 			$('#displayMessageViewTestSession').hide();
-			populateRosterList();
 			isForRefreshRoster = true;
+			populateRosterList();
 		}
 	}
 	
@@ -4142,7 +4146,9 @@ function registerDelegate(tree){
 		$("#labelTbl").width(924);
 		$("#buttonTbl").width(924);
 		$("#subtestSectionHeader").unbind("click");
-		$("#viewTestSessionAccordion").accordion("destroy");	
+		$("#viewTestSessionAccordion").accordion("destroy");
+		pageSizeSelected = 10;	
+		isPagesizeLabelpopulated = false;
 	}
 	
 	function populateRosterList() {
@@ -4227,7 +4233,8 @@ function registerDelegate(tree){
 				}
 		   	}},
 		   	loadui: "disable",
-			rowNum:10,
+			rowNum:pageSizeSelected,
+			rowList:[10,50,200,500],
 			loadonce:true, 
 			//multiselect:true,
 			pager: '#rosterPager', 
@@ -4355,7 +4362,15 @@ function registerDelegate(tree){
 				} else {
 					setAnchorButtonState('profileReportStudentButton', false);
 				}
-				
+				//$("option[value=10000]").text('All');
+				if (!isPagesizeLabelpopulated || isForRefreshRoster)
+				{
+				$('.ui-pg-selbox').closest("td").before("<td dir='ltr' style='width:75px'>Page size</td>");
+				$("#rosterPager .ui-pg-selbox").val(pageSizeSelected);
+				//$("#rosterRowList").val(pageSizeSelected);
+				isPagesizeLabelpopulated=true;
+				isForRefreshRoster=false;
+				}
 				$.unblockUI();
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -5275,4 +5290,6 @@ function validNumber(str){
 		document.forms[0].submit();
 	}
 	
-	
+	function setRetainedRowListValue() {
+		pageSizeSelected = $("#rosterPager .ui-pg-selbox").val(); 
+	}
