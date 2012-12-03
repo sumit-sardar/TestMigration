@@ -272,16 +272,22 @@ public class TableUtils
                                        float x,
                                        float y,
                                        float borderWidth,
-                                       boolean isTabeProduct) throws DocumentException {
+                                       boolean isTabeProduct,
+                                       String printClassName) throws DocumentException {
         ArrayList cells = new ArrayList();
+        int halign = 0;
         for(int i=0; i<headings.length; i++){
-            int halign = getHalignForStudentTable(i);
+            //int halign = getHalignForStudentTable(i);
+        	if(printClassName.equals("true"))
+        		halign = this.getHalignForStudentTableWithClassName(i);
+        	else
+        		halign = this.getHalignForStudentTable(i);
             cells.add(getTableCell(headings[i],
                                    getTenBoldBlueFont(),
                                    getAllBorder(i, headings.length, 1), 
                                    borderWidth,
                                    getGreyColor(),
-                                   this.getHalignForStudentTable(i))); 
+                                   halign)); 
         }
         int cols = headings.length;
         int rows = 1;
@@ -292,7 +298,7 @@ public class TableUtils
             if(numAccommodations >0){
                 rows+= student.getAccommodations().length;
                 Color color = getStudentColor(colorIndex);
-                addStudentCells(cells, student, borderWidth, color, isTabeProduct);
+                addStudentCells(cells, student, borderWidth, color, isTabeProduct, printClassName);
                 colorIndex++;
             }
         }
@@ -403,9 +409,10 @@ public class TableUtils
                                  TestRosterVO student,
                                  float borderWidth, 
                                  Color color,
-                                 boolean isTabeProduct) throws DocumentException {
+                                 boolean isTabeProduct,
+                                 String printClassName) throws DocumentException {
         for(int i=0; i<student.getAccommodations().length; i++){
-            addStudentCellsForRow(i, cells, student, borderWidth, color, isTabeProduct);
+            addStudentCellsForRow(i, cells, student, borderWidth, color, isTabeProduct, printClassName);
         }
     }
     
@@ -414,9 +421,11 @@ public class TableUtils
                                        TestRosterVO student,
                                        float borderWidth, 
                                        Color color,
-                                       boolean isTabeProduct) throws DocumentException{
+                                       boolean isTabeProduct,
+                                       String printClassName) throws DocumentException{
         String studentName = " ";
         String studentId = " ";
+        String className = " ";
         String loginId = " ";
         String password = " ";
         String form = " ";
@@ -425,6 +434,7 @@ public class TableUtils
         if(rowIndex == 0){
             studentName = getStudentName(student);
             studentId = getStudentId(student);
+            className = getClassName(student);
             loginId = getLoginId(student);
             password = getPassword(student);
             form = getForm(student);
@@ -451,6 +461,18 @@ public class TableUtils
                                color,
                                STUDENT_CELL_PADDING,
                                Element.ALIGN_CENTER));
+        if(printClassName.equals("true")){
+	        cells.add(getTableCell(className,
+					               getTenFont(),
+					               true,
+					               false,
+					               false,
+					               false,
+					               borderWidth,
+					               color,
+					               STUDENT_CELL_PADDING,
+					               Element.ALIGN_LEFT ));
+        }
         cells.add(getTableCell(loginId,
                                getDataEntryTenFont(),
                                true,
@@ -508,6 +530,9 @@ public class TableUtils
    private int getHalignForStudentTable(int colIndex){
         return (colIndex == 0 || colIndex == 2 || colIndex == 3) ? Element.ALIGN_LEFT : Element.ALIGN_CENTER;
    }
+   private int getHalignForStudentTableWithClassName(int colIndex){
+       return (colIndex == 0 || colIndex == 2 || colIndex == 3 || colIndex == 4) ? Element.ALIGN_LEFT : Element.ALIGN_CENTER;
+   }
     String getStudentName(TestRosterVO student){
         String name = student.getLastName() + ", " + student.getFirstName();
         String middleName = student.getMiddleName();
@@ -522,6 +547,11 @@ public class TableUtils
         studentId = studentId == null ? " " : studentId;
         return infoEllipsis(studentId, STUDENT_ID_WIDTH);
     }
+    private String getClassName(TestRosterVO student){
+        String className = student.getClassName();        
+        return className == null ? " " : className;
+    }
+    
     private String getLoginId(TestRosterVO student){
         String loginId = student.getLoginName();
         loginId = loginId == null ? " " : loginId;
