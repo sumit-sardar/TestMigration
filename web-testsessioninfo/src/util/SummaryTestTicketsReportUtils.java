@@ -118,6 +118,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float[] FOUR_COLUMN_TAC_WIDTHS = new float[] {1.5f, 6f, 2f, 3f};
     private static final float[] STUDENT_WIDTHS = new float[] {50f, 32f, 72f, 21f, 13f, 21f, 31f};
     private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {50f, 32f, 72f, 21f, 21f, 44f};
+    private static final float[] STUDENT_WIDTHS_WITH_CLASSNAME = new float[] {40f, 29f, 25f, 60f, 21f, 13f, 21f, 31f};
+    private static final float[] STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME = new float[] {45f, 30f, 30f, 62f, 21f, 21f, 31f};
 
     private static final float SESSION_VALUE_WIDTH = 170f;
     // maximum number of student lines on a page
@@ -154,6 +156,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final String UNTIMED_LABEL = "Untimed:";
     private static final String STUDENT_LABEL = "Student";
     private static final String STUDENT_ID_LABEL = "Student ID";
+    private static final String CLASS_NAME_LABEL = "Class Name";
     private static final String LOGIN_ID_LABEL = "Login ID";
     private static final String PASSWORD_LABEL = "Password";
     private static final String FORM_LABEL = "Form";
@@ -204,6 +207,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private String studentIdLabelName = "Student ID";
     private TreeMap<Integer,String> rosterHeaderMap ;
     //END - Changed for CR GA2011CR001 
+    private String printClassName = null;
     /**
      * initialize globals passed into method
      * create static tables
@@ -223,6 +227,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.isStudentIdConfigurable = (Boolean)args[11];
         this.studentIdLabelName = (String)args[12];
         //END - Changed for CR GA2011CR001
+        this.printClassName = (String)args[13];
         addStaticTables();
         createPages();
     }
@@ -282,7 +287,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
                                        LEFT_X,
                                        studentTableY,
                                        STUDENT_BORDER,
-                                       this.isTabeProduct.booleanValue()));
+                                       this.isTabeProduct.booleanValue(),
+                                       this.printClassName));
         return result;
     }
     
@@ -876,13 +882,19 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
                 lines += currentStudentLines;
             }
             else{
-                this.pages.add(getStudentTable(pageStudents));
+            	if(this.printClassName.equals("true"))
+            		this.pages.add(getStudentTableToPrintClassName(pageStudents));
+            	else
+            		this.pages.add(getStudentTable(pageStudents));
                 pageStudents = new ArrayList();
                 lines = currentStudentLines;
             }
             pageStudents.add(student);
         }
-        this.pages.add(getStudentTable(pageStudents));
+        if(this.printClassName.equals("true"))
+        	this.pages.add(getStudentTableToPrintClassName(pageStudents));
+        else
+        	this.pages.add(getStudentTable(pageStudents));
     }
     
     private void addTitle() throws DocumentException{
@@ -938,6 +950,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         return tableUtils.infoEllipsis(getNonBlankString(testAdmin.getLocation()), SESSION_VALUE_WIDTH);
     }
      
+    private String getClassName(TestRosterVO student){
+        return getNonBlankString(student.getClassName());
+    }
+    
      private String getStudentId(TestRosterVO student){
         return getNonBlankString(student.getStudentNumber());
     }
@@ -1182,6 +1198,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.testProduct = (TestProduct)args[10];
         this.isStudentIdConfigurable = (Boolean)args[11];
         this.studentIdLabelName = (String)args[12];
+        this.printClassName = (String)args[13];
         populateRosterHeader();
     }
     
@@ -1361,7 +1378,11 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
 
 	public void prepareRosterSheet(Sheet rosterSheet) throws IOException {
 		int rowno = 0;
-		String[] headings = getStudentHeadings();
+		String[] headings;
+		if(this.printClassName.equals("true"))
+			headings = getStudentHeadingsToPrintClassName();
+		else
+			headings = getStudentHeadings();
 		Row row = null;
 		TableUtils tableUtils = new TableUtils();
 		// Header
@@ -1395,6 +1416,7 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
 			TestRosterVO student = (TestRosterVO) it.next();
 			String studentName = tableUtils.getStudentName(student);
 			String studentId = getStudentId(student);
+			String className = getClassName(student);
 			String loginId = getLoginId(student);
 			String password = getPassword(student);
 			String form = tableUtils.getForm(student);
@@ -1410,6 +1432,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
 			row = rosterSheet.createRow(rowno++);
 			PoiUtils.addCell(row,cellno++, studentName);
 			PoiUtils.addCell(row,cellno++, studentId);
+			if(this.printClassName.equals("true"))
+				PoiUtils.addCell(row,cellno++, className);
 			PoiUtils.addCell(row,cellno++, loginId);
 			PoiUtils.addCell(row,cellno++, password);
 			if (!isTabeProduct){
@@ -1481,5 +1505,63 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
 		rosterHeaderMap.put(11, TestTicketConstents.TEST_TICKET_ACCOM_MUSIC_PLAYER);
 			
 	}
+	
+	protected ArrayList getStudentTableToPrintClassName(ArrayList pageStudents) throws DocumentException{
+        ArrayList result = new ArrayList();
+        result.add(
+            tableUtils.getStudentTable(pageStudents,
+            						   getStudentHeadingsToPrintClassName(),
+                                       PAGE_WIDTH,
+                                       getStudentWidthsToPrintClassName(),
+                                       LEFT_X,
+                                       studentTableY,
+                                       STUDENT_BORDER,
+                                       this.isTabeProduct.booleanValue(),
+                                       this.printClassName));
+        return result;
+    }
+    
+    private float[] getStudentWidthsToPrintClassName() {
+        if (this.isTabeProduct.booleanValue()) 
+            return STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME;
+        else
+            return STUDENT_WIDTHS_WITH_CLASSNAME;
+    }
+    
+    private String[] getStudentHeadingsToPrintClassName(){
+        String[] result = null;
+        if (this.isTabeProduct.booleanValue()) {
+            result =  new String[7];
+            result[0] = STUDENT_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
+            result[2] = CLASS_NAME_LABEL;
+            result[3] = LOGIN_ID_LABEL;
+            result[4] = PASSWORD_LABEL;
+            result[5] = STATUS_LABEL;
+            result[6] = ACCOMMODATION_LABEL;
+        }            
+        else {
+            result =  new String[8];
+            result[0] = STUDENT_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
+            result[2] = CLASS_NAME_LABEL;
+            result[3] = LOGIN_ID_LABEL;
+            result[4] = PASSWORD_LABEL;
+            result[5] = FORM_LABEL;
+            result[6] = STATUS_LABEL;
+            result[7] = ACCOMMODATION_LABEL;
+        }
+        return result;
+    }
     
 } 

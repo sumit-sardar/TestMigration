@@ -48,6 +48,7 @@ public class RosterElement extends CTBBean
   private String dnsStatus;
   private String studentName;
   private String studentUserName;
+  private String className;
   
 
 	public String getDnsStatus() {
@@ -483,6 +484,18 @@ public class RosterElement extends CTBBean
 	}
 	public void setStudentUserName(String studentUserName) {
 		this.studentUserName = studentUserName;
+	}
+	/**
+	 * @return the className
+	 */
+	public String getClassName() {
+		return className;
+	}
+	/**
+	 * @param className the className to set
+	 */
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	
 } 

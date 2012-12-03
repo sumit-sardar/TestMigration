@@ -2940,6 +2940,7 @@ public class SessionOperationController extends PageFlowController {
 		Integer orgNodeId = Integer.valueOf(this.getRequest().getParameter("orgNodeId"));
 		Integer orgNodeIdTemp;
 		int studentCount = getRosterForTestSession(testAdminId);
+		initializeCustomerConfigurations();
 		
 		try {
 			BaseTree baseTree = new BaseTree ();
@@ -2994,6 +2995,7 @@ public class SessionOperationController extends PageFlowController {
 					
 			});
 			baseTree.setShowAccessCode(customerHasAccessCode(testAdminId));
+			baseTree.setHasPrintClassName(customerHasPrintClassName());
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
@@ -3768,21 +3770,21 @@ public class SessionOperationController extends PageFlowController {
         {  
         	hasBreak = users.hasMultipleAccessCode(testAdminId);
         	
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			/*CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
 			if (customerConfigurations == null || customerConfigurations.length == 0) {
 				customerConfigurations = users.getCustomerConfigurations(2);
-			}
-        
-
-        for (int i=0; i < customerConfigurations.length; i++)
-        {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
-            		cc.getDefaultValue().equals("T")	) {
-            	hasAccessCodeConfigurable = true;
-                break;
-            } 
-        }
+			}*/
+	
+	
+	        for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
+	            		cc.getDefaultValue().equals("T")	) {
+	            	hasAccessCodeConfigurable = true;
+	                break;
+	            } 
+	        }
        }
         
         catch (SQLException se) {
@@ -7225,5 +7227,44 @@ public class SessionOperationController extends PageFlowController {
 		        createGson(base);
 	 		    return null;
 			}
-////		
+////	
+			
+			/**
+			 * This method checks whether customer is configured to display class name in individual, multiple 
+			 * and summary testTicket or not.
+			 * @return Return Boolean 
+			 */
+			
+			private Boolean customerHasPrintClassName()
+		    {               
+				Integer customerId = this.user.getCustomer().getCustomerId();
+		        boolean hasPrintClassName = false;
+		        
+		        for (int i=0; i < this.customerConfigurations.length; i++)
+		        {
+		        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_ClassName") && 
+		            		cc.getDefaultValue().equals("T")) {
+		            	hasPrintClassName = true;
+		                break;
+		            } 
+		        }
+		       
+		        return hasPrintClassName;
+		    }
+			
+			private void initializeCustomerConfigurations()
+			{
+				Integer customerId = this.user.getCustomer().getCustomerId();
+		        try
+		        {  
+					this.customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+					if (this.customerConfigurations == null || this.customerConfigurations.length == 0) {
+						this.customerConfigurations = users.getCustomerConfigurations(2);
+					}
+		        }
+		        catch (SQLException se) {
+		    	   se.printStackTrace();
+			    }
+			}
 }

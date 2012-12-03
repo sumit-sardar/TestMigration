@@ -9,6 +9,7 @@ public class BaseTree {
 	private Integer leafNodeCategoryId;
 	private String isStudentExist;
 	private boolean showAccessCode;
+	private boolean hasPrintClassName;
 	
 
 	public String getIsStudentExist() {
@@ -47,6 +48,20 @@ public class BaseTree {
 
 	public void setShowAccessCode(boolean showAccessCode) {
 		this.showAccessCode = showAccessCode;
+	}
+
+	/**
+	 * @return the hasPrintClassName
+	 */
+	public boolean isHasPrintClassName() {
+		return hasPrintClassName;
+	}
+
+	/**
+	 * @param hasPrintClassName the hasPrintClassName to set
+	 */
+	public void setHasPrintClassName(boolean hasPrintClassName) {
+		this.hasPrintClassName = hasPrintClassName;
 	}
 
 	

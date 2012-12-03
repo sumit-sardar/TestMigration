@@ -48,6 +48,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final float LINE_Y = 726f;
     private static final float STUDENT_NAME_Y = 715f;
     private static final float STUDENT_ID_Y = 700f;
+    private static final float CLASS_NAME_Y = 685f;
     private static final float TEST_NAME_Y = 667f;
     private static final float LOCATION_Y = 635f;
     private static final float LOGIN_INFO_Y = 607f;
@@ -88,6 +89,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final String PAGE_NAME_LABEL = "Individual Test Ticket";
 	private static final String STUDENT_NAME_LABEL = "Student Name:";
 	private static final String STUDENT_ID_LABEL = "Student ID:";
+	private static final String CLASS_NAME_LABEL = "Class Name:";
 	private static final String TEST_NAME_LABEL = "Test Name:";
     private static final String LOGIN_INFORMATION = "Your login information";
 	private static final String LOCATION_LABEL = "Location:";
@@ -133,6 +135,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     
     private String accessAllow = null; // Changed for TABE BAUM - 028
+    private String printClassName = null;
     
     //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     protected boolean createStaticAboveTables() throws DocumentException, IOException {
@@ -174,6 +177,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         this.studentIdLabelName = (String)args[9];
         //END - Changed for CR GA2011CR001
         this.accessAllow = (String)args[10]; // Added for TABE BAUM - 028
+        this.printClassName = (String)args[11];
       //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
       	this.isMultiIndividualTkt = (Boolean)args[2];
         
@@ -206,6 +210,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
             ArrayList tables = new ArrayList();
             tables.add(getStudentNameValue(student, yValue));
             tables.add(getStudentIdValue(student, yValue));
+            if(this.printClassName.equals("true"))
+            	tables.add(getClassNameValue(student, yValue));
             tables.add(getLoginTable(student, yValue));
             tables.add(getKeyboardShortcutsTable(student));
             this.pages.add(tables);
@@ -223,6 +229,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
             ArrayList tables = new ArrayList();
             tables.add(getStudentNameValue(student, yValue));
             tables.add(getStudentIdValue(student, yValue));
+            if(this.printClassName.equals("true"))
+            	tables.add(getClassNameValue(student, yValue));
             tables.add(getLoginTable(student, yValue));
            if(flag){
             	//this.createStaticAboveTables();
@@ -289,6 +297,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private void addStaticGeneralInformation(float yValue) throws DocumentException{
         addStudentNameLabel(yValue);
         addStudentIdLabel(yValue);
+        if(this.printClassName.equals("true"))
+        	addClassNameLabel(yValue);
         addTestNameLabel(yValue);
         addTestNameValue(yValue);
         addLocationLabel(yValue);
@@ -561,5 +571,24 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    }
    private boolean hasPauseAccommodation(TestRosterVO student){
         return student.getHasPause();
+   }
+   
+   private void addClassNameLabel(float yValue) throws DocumentException{
+       this.staticTables.add( 
+            tableUtils.getLabelTable(CLASS_NAME_LABEL,
+                                     INFO_LABEL_WIDTH,
+                                     LEFT_X,
+                                    (CLASS_NAME_Y-yValue)));
+  }
+   
+   private TableVO getClassNameValue(TestRosterVO student, float yValue) throws DocumentException{
+       return tableUtils.getInfoTable(getClassName(student),
+                                      INFO_VALUE_WIDTH,
+                                      INFO_X,
+                                      (CLASS_NAME_Y-yValue));
+  }
+  
+   private String getClassName(TestRosterVO student){
+       return getNonBlankString(student.getClassName());
    }
 } 

@@ -21,6 +21,7 @@ var typePrint;
 var asyncOverPrint = 0;
 var leafParentOrgNodeIdPrint = "";
 var displayAccessCodeOnTicket = false;	//Changes for access code display in test ticket
+var printClassNameOnTicket = false;
 
 function printTTicket(element){
 	if (isButtonDisabled(element))
@@ -67,6 +68,7 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
 	url += "&orgNodeId=" + orgNodeId;
 	url += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 	url += "&displayAccess=" + displayAccessCodeOnTicket;
+	url += "&printClassName=" + printClassNameOnTicket;
 	anchor.href = url;
 	return anchor;
 }
@@ -90,7 +92,7 @@ function populateTestTicketTree() {
 						//$.unblockUI();  
 						//leafNodeCategoryId = data.leafNodeCategoryId;
 						initDisplayAccessCodeOnTicket();
-						
+						initializePrintClassName();
 						if(data.isStudentExist == "false"){
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
@@ -113,6 +115,11 @@ function populateTestTicketTree() {
 							} else {
 								$("#displayAccessCodes").hide();
 							}
+							var hasPrintClassName = data.hasPrintClassName;
+							if(hasPrintClassName != undefined && hasPrintClassName == true)
+								$('#printClassNameMsg').show();
+							else
+								$('#printClassNameMsg').hide();	
 						}
 						$("#ticktSearchheader").css("visibility","visible");	
 						$("#printTestTicket").dialog({
@@ -384,4 +391,13 @@ function initDisplayAccessCodeOnTicket() {
 	var checkAccess = document.getElementsByName("individualAccess");
 	checkAccess[1].checked = true;		
 }
-														
+
+function setPrintClassNameAttr(){
+	printClassNameOnTicket = $('#printClassNameMsg input[name=printClassName]')[0].checked;	
+}
+
+function initializePrintClassName(){
+	printClassNameOnTicket = false;
+	$('#printClassNameMsg input[name=printClassName]')[1].checked = true;
+}
+

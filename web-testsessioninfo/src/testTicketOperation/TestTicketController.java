@@ -149,7 +149,9 @@ public class TestTicketController extends PageFlowController
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
             String ticketType = (String)getRequest().getParameter("ticketType");  //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
             String accessAllow = (String)getRequest().getParameter("displayAccess"); // changed for TABE BAUM - 028
-          
+            String printClassName = (String)getRequest().getParameter("printClassName");
+            //System.out.println("printClassName >> "+printClassName);
+            
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
             ScheduledSession session = this.getScheduledSession(sessionId);
@@ -206,7 +208,8 @@ public class TestTicketController extends PageFlowController
                                 Boolean.FALSE,
                                 this.isStudentIdConfigurable,
                                 this.studentIdLabelName,
-                                accessAllow}); // Changed for TABE BAUM - 028
+                                accessAllow,
+                                printClassName}); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)
         {
@@ -285,6 +288,8 @@ public class TestTicketController extends PageFlowController
             
             String testAdminId = (String)getRequest().getParameter("testAdminId");
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
+            String printClassName = (String)getRequest().getParameter("printClassName");
+            //System.out.println("printClassName >> "+printClassName);
            
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
@@ -351,7 +356,8 @@ public class TestTicketController extends PageFlowController
                                 isTabeProduct | isTabeAdaptiveProduct,
                                 testproduct,
                                 this.isStudentIdConfigurable,
-                                this.studentIdLabelName});
+                                this.studentIdLabelName,
+                                printClassName});
         }
         catch(IOException ie){
             ie.printStackTrace();
@@ -375,6 +381,8 @@ public class TestTicketController extends PageFlowController
             
             String testAdminId = (String)getRequest().getParameter("testAdminId");
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
+            String printClassName = (String)getRequest().getParameter("printClassName");
+            //System.out.println("printClassName >> "+printClassName);
            
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
@@ -441,7 +449,8 @@ public class TestTicketController extends PageFlowController
                                 isTabeProduct | isTabeAdaptiveProduct,
                                 testproduct,
                                 this.isStudentIdConfigurable,
-                                this.studentIdLabelName});
+                                this.studentIdLabelName,
+                                printClassName});
         }
         catch(IOException ie){
             ie.printStackTrace();

@@ -36,6 +36,7 @@ public class TestRosterVO implements java.io.Serializable
     private String magnifyingGlass = null;
     private String musicFileId = null;
     private TreeSet<String>   accommodationsSet = new TreeSet<String>();
+    private String className = null;
     
     //End: For MQC defect 66844
     
@@ -55,6 +56,7 @@ public class TestRosterVO implements java.io.Serializable
         this.validationStatus = rElt.getValidationStatus();
         this.testStatus = rElt.getTestCompletionStatus();
         this.form = rElt.getFormAssignment();
+        this.className = rElt.getClassName();
     }  
     public String getForm(){
         return this.form;
@@ -233,6 +235,18 @@ public class TestRosterVO implements java.io.Serializable
 			this.accommodationsSet =  new TreeSet<String>();
 		}
 		return accommodationsSet;
+	}
+	/**
+	 * @return the className
+	 */
+	public String getClassName() {
+		return className;
+	}
+	/**
+	 * @param className the className to set
+	 */
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	
 	

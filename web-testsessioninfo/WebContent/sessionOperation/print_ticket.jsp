@@ -48,6 +48,13 @@
 		<br>
 		<br>
 	</div>
+	<div id = "printClassNameMsg">
+		<lb:label key="testTicket.message.printClassName"/>
+		<input type="radio" id="allow" name="printClassName" value="Yes" onclick="setPrintClassNameAttr()">Yes</input>
+		<input type="radio" id="deny" name="printClassName" value="No" onclick="setPrintClassNameAttr()" checked="checked">No</input>
+		<br>
+		<br>
+	</div>
 	<p>	
 	<lb:label key="testTicket.sessionDocs.message"/><br>
 	</p>
