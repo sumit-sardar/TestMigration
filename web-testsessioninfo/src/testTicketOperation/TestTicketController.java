@@ -532,8 +532,9 @@ public class TestTicketController extends PageFlowController
         //ISTEP2010CR005 to retrieve accesscode in upper case
         String accessCode = testSession.getAccessCode().toUpperCase();
     	boolean printCredentialLowerCase = isPrintCredentialLowerCase();
-    	if (printCredentialLowerCase)
-    		accessCode.toLowerCase();
+    	if (printCredentialLowerCase) {
+    		accessCode = accessCode.toLowerCase();
+    	}
     	
         String sessionName = testSession.getTestAdminName();
         String level = null;
