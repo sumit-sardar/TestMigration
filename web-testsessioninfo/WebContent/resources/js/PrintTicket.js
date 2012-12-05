@@ -64,6 +64,7 @@ function openTestTicketSummaryInExcel( anchor, testAdminId, orgNodeId ) {
 
 
 function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
+	UIBlockForReport(3000);
 	url += "?testAdminId=" + testAdminId;
 	url += "&orgNodeId=" + orgNodeId;
 	url += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
@@ -399,5 +400,10 @@ function setPrintClassNameAttr(){
 function initializePrintClassName(){
 	printClassNameOnTicket = false;
 	$('#printClassNameMsg input[name=printClassName]')[1].checked = true;
+}
+
+function UIBlockForReport(ms){
+	UIBlock();
+	setTimeout("$.unblockUI();", ms);	
 }
 
