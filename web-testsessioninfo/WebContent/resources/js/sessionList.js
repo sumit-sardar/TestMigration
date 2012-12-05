@@ -5281,8 +5281,6 @@ function validNumber(str){
 	    if (isButtonDisabled(element) ) {
 			return true;
 		}
-		UIBlock();
-		
 		var accessByParam = "accessBy=" + accessBy;
 		var sessionParam = "testAdminId=" + selectedTestAdminId;
 		var rosterParam = "rosterId=" + selectedTestRosterId;		

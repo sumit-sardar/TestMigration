@@ -74,6 +74,7 @@
 $(document).ready(function(){
 	setMenuActive("reports", null);	
 	document.getElementById("turnleafReportIframe").onload = function() { $.unblockUI(); };	
+	$.unblockUI();	
 });
 </script>
 
