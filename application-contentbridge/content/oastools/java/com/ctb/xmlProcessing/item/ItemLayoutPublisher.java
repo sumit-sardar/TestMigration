@@ -334,10 +334,11 @@ public class ItemLayoutPublisher {
 		
 				try {
 					
-					inputFile = "/default/main/OAS/WORKAREA/highwire/html/"
+					/*inputFile = "/default/main/OAS/WORKAREA/highwire/html/"+inputFile;
 							+ inputFile.substring(inputFile
-									.indexOf("/html/") + 8);
-					inputFile = inputFile.replaceAll("%20", " ");
+									.indexOf("/html/") + 8);*/
+					String sourceFile = "/default/main/OAS/WORKAREA/highwire/images/TEAsset/"+inputFile;
+//					inputFile = inputFile.replaceAll("%20", " ");
 					// sourceFile = "c:\\mappingdata\\images\\" + img;
 					String destination = destinationPkgPath + inputFile;
 					// sftpChannel.cd(destinationPath);
@@ -402,13 +403,14 @@ public class ItemLayoutPublisher {
 			ftpClient.setType(FTPTransferType.BINARY);
 			String sourceFile=null;
 			try{
-					inputFile = "/default/main/OAS/WORKAREA/highwire/html/"
-							+ inputFile.substring(inputFile
-									.indexOf("/html/") + 8);
+				/*inputFile = "/default/main/OAS/WORKAREA/highwire/html/"+inputFile;
+				+ inputFile.substring(inputFile
+						.indexOf("/html/") + 8);*/
+					sourceFile = "/default/main/OAS/WORKAREA/highwire/images/TEAsset/"+inputFile;
 					// //sourceFile = "c:/images/" +
 					// sourceFile.substring(sourceFile.indexOf("/images/") + 8);
 					// sourceFile = "c:\\mappingdata\\images\\" + img;
-					sourceFile = inputFile.replaceAll("%20", " ");
+					//sourceFile = inputFile.replaceAll("%20", " ");
 					String destination = destinationPkgPath + inputFile;
 					destination = destination.replaceAll("%20", " ");
 					ftpClient.put(sourceFile, destination);
