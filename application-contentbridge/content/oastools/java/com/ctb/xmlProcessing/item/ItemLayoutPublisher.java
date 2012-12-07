@@ -63,6 +63,7 @@ public class ItemLayoutPublisher {
 	}
 
 	public Element publishLayout(Element rootElement) {
+		logger.info("Inside publishLayout() ....");
 		String itemType = rootElement.getAttributeValue("ItemType");
 		String itemId = rootElement.getAttributeValue("ID");
 		Element itemLml;
@@ -78,12 +79,14 @@ public class ItemLayoutPublisher {
 			itemLml = itemProcessor.layoutItem();
 			DeliverableUnitProcessor.addSizeToContent(itemProcessor
 					.getDownloadSize());
+			logger.info("Before zipfile creation ....");
 			//added by for NEW item
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId,adsConfig);
 			else
 				ItemLayoutProcessor.getAsset(itemLml, assetList);
 			//end
+			logger.info("After zipfile creation ....");
 			ItemLayoutProcessor.modifyItemLMLForADS_Puslishing(itemLml,
 					itemType);
 
@@ -150,7 +153,7 @@ public class ItemLayoutPublisher {
 			return itemLml;
 		} catch (Exception e) {
 			throw new SystemException("Error in ItemLayoutPublisher "
-					+ e.getStackTrace());
+					+ e.getMessage());
 		}
 
 	}

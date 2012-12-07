@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+
+import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -48,6 +50,7 @@ import com.ctb.common.tools.ADSConfig;
  * Preferences - Java - Code Style - Code Templates
  */
 public class ItemLayoutProcessor {
+	private static Logger logger = Logger.getLogger(ItemLayoutProcessor.class); 
 	public static boolean developement = true;
 	public static final int LAYOUT_MAX_WIDTH = 786;
 	public Element itemElement;
@@ -3072,6 +3075,7 @@ public class ItemLayoutProcessor {
 
 	public static void getPackageAsset(Element layoutItem, List assetPkgList,
 			String itemID,ADSConfig adsConfig) throws Exception {
+		logger.info("Inside getPackageAsset()...");
 		List localAssetList = extractAllElement(".//" + html_widget, layoutItem);
 		for (int i = 0; i < localAssetList.size(); i++) {
 			Element image_widget = (Element) localAssetList.get(i);
@@ -3086,9 +3090,11 @@ public class ItemLayoutProcessor {
 		//String destination=prop.getProperty("pakagePath")+"\\"+itemID;
 		String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
 		//String destination="/mappingdata/InnovativeItems/"+itemID+"zip";
+		logger.info("source > "+sourcs);
+		logger.info("destination > "+destination);
 	
 		zipFolder(sourcs, destination);
-	
+		logger.info("Zip Folder created....");
 
 	}
 
