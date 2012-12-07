@@ -350,7 +350,7 @@ public class ItemLayoutPublisher {
 					// sourceFile = "c:\\mappingdata\\images\\" + img;
 					String destination = destinationPkgPath + inputFile;
 					// sftpChannel.cd(destinationPath);
-					sftpChannel.put(inputFile, destination);
+					sftpChannel.put(sourceFile, destination);
 
 				} catch (SftpException e) {
 					System.err.println("Exception : " + e.getMessage());
