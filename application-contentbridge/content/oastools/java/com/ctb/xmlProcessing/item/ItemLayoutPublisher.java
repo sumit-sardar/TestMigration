@@ -97,7 +97,8 @@ public class ItemLayoutPublisher {
 			xmlStr = xmlStr.replaceAll("&nbsp;", "&#160;");
 			xmlStr = xmlStr.replaceAll(" & ", " &amp; ");
 			String xmlStr2 = xmlStr;
-
+			
+			System.out.println("xmlStr >> "+xmlStr);
 			if (assetList != null && assetList.size() > 0) {
 				
 				  if(adsConfig.isSftp()){ this.sendfiles_sftp(assetList); }
@@ -110,11 +111,13 @@ public class ItemLayoutPublisher {
 				  if(adsConfig.isSftp()){ this.sendPkgfiles_sftp(itemId+"zip"); }
 				  else { this.sendPkgfiles_ftp(itemId+"zip"); }
 				 this.publishPkgAssets(htmlList,itemId);
+				 System.out.println("after publishPkgAssets for TE Items...");
 			}
 			
 			// Publish Item to ADS - publish "xml"
 			CommonClient client = clientLocator.getCommonClient();
 			String responseStr = client.callUploadItem(xmlStr);
+			System.out.println("responseStr >> "+responseStr);
 			if (responseStr == null) {
 				throw new SystemException(
 						"Error in Publishing Item. Response is null. XML :"
@@ -130,6 +133,7 @@ public class ItemLayoutPublisher {
 					".//response", responseElm);
 			Attribute status = response.getAttribute("status");
 			String statusStr = status.getValue();
+			System.out.println("statusStr : "+statusStr);
 			if (!statusStr.equals(statusOk)) {
 				Element msg = ItemLayoutProcessor.extractSingleElement(
 						".//msg", response);
@@ -320,7 +324,11 @@ public class ItemLayoutPublisher {
 		String ftpPass = adsConfig.getFtpPassword();
 		int port = adsConfig.getPort();
 
-		System.out.println("Connecting to server:" + ftpHost);
+		System.out.println("Connecting to server: " + ftpHost);
+		System.out.println("Inside sftp block....");
+		System.out.println("ftpHost: "+ftpHost);
+		System.out.println("ftpUser: "+ftpUser);
+		System.out.println("ftpPass: "+ftpPass);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, port);
 			session.setConfig(properties);
@@ -396,6 +404,9 @@ public class ItemLayoutPublisher {
 	public void sendPkgfiles_ftp(String inputFile) throws Exception {
 
 		FTPClient ftpClient = new FTPClient();
+		System.out.println("Inside ftp block....");
+		System.out.println("ftpHost: "+adsConfig.getFtpHost());
+		System.out.println("ftpHost: "+adsConfig.getFtpPassword());
 		ftpClient.setRemoteHost(adsConfig.getFtpHost());
 		ftpClient.connect();
 		if (ftpClient.connected()) {
