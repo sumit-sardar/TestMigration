@@ -15,6 +15,7 @@ import java.io.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
+import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
@@ -36,6 +37,8 @@ import com.jcraft.jsch.*;
  * Preferences - Java - Code Style - Code Templates
  */
 public class ItemLayoutPublisher {
+	
+	private static Logger logger = Logger.getLogger(ItemLayoutPublisher.class);
 
 	String destinationPath = "/local/apps/oas/ads/assets/";
 	String destinationPkgPath = "/local/apps/oas/ads/assets/html/";
@@ -98,7 +101,7 @@ public class ItemLayoutPublisher {
 			xmlStr = xmlStr.replaceAll(" & ", " &amp; ");
 			String xmlStr2 = xmlStr;
 			
-			System.out.println("xmlStr >> "+xmlStr);
+			logger.info("xmlStr >> "+xmlStr);
 			if (assetList != null && assetList.size() > 0) {
 				
 				  if(adsConfig.isSftp()){ this.sendfiles_sftp(assetList); }
@@ -111,13 +114,13 @@ public class ItemLayoutPublisher {
 				  if(adsConfig.isSftp()){ this.sendPkgfiles_sftp(itemId+"zip"); }
 				  else { this.sendPkgfiles_ftp(itemId+"zip"); }
 				 this.publishPkgAssets(htmlList,itemId);
-				 System.out.println("after publishPkgAssets for TE Items...");
+				 logger.info("after publishPkgAssets for TE Items...");
 			}
 			
 			// Publish Item to ADS - publish "xml"
 			CommonClient client = clientLocator.getCommonClient();
 			String responseStr = client.callUploadItem(xmlStr);
-			System.out.println("responseStr >> "+responseStr);
+			logger.info("responseStr >> "+responseStr);
 			if (responseStr == null) {
 				throw new SystemException(
 						"Error in Publishing Item. Response is null. XML :"
@@ -133,7 +136,7 @@ public class ItemLayoutPublisher {
 					".//response", responseElm);
 			Attribute status = response.getAttribute("status");
 			String statusStr = status.getValue();
-			System.out.println("statusStr : "+statusStr);
+			logger.info("statusStr : "+statusStr);
 			if (!statusStr.equals(statusOk)) {
 				Element msg = ItemLayoutProcessor.extractSingleElement(
 						".//msg", response);
@@ -147,7 +150,7 @@ public class ItemLayoutPublisher {
 			return itemLml;
 		} catch (Exception e) {
 			throw new SystemException("Error in ItemLayoutPublisher "
-					+ e.getMessage());
+					+ e.getStackTrace());
 		}
 
 	}
@@ -266,7 +269,7 @@ public class ItemLayoutPublisher {
 		String ftpPass = adsConfig.getFtpPassword();
 		int port = adsConfig.getPort();
 
-		System.out.println("Connecting to server:" + ftpHost);
+		logger.info("Connecting to server:" + ftpHost);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, port);
 			session.setConfig(properties);
@@ -324,11 +327,11 @@ public class ItemLayoutPublisher {
 		String ftpPass = adsConfig.getFtpPassword();
 		int port = adsConfig.getPort();
 
-		System.out.println("Connecting to server: " + ftpHost);
-		System.out.println("Inside sftp block....");
-		System.out.println("ftpHost: "+ftpHost);
-		System.out.println("ftpUser: "+ftpUser);
-		System.out.println("ftpPass: "+ftpPass);
+		logger.info("Connecting to server: " + ftpHost);
+		logger.info("Inside sftp block....");
+		logger.info("ftpHost: "+ftpHost);
+		logger.info("ftpUser: "+ftpUser);
+		logger.info("ftpPass: "+ftpPass);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, port);
 			session.setConfig(properties);
@@ -404,9 +407,9 @@ public class ItemLayoutPublisher {
 	public void sendPkgfiles_ftp(String inputFile) throws Exception {
 
 		FTPClient ftpClient = new FTPClient();
-		System.out.println("Inside ftp block....");
-		System.out.println("ftpHost: "+adsConfig.getFtpHost());
-		System.out.println("ftpHost: "+adsConfig.getFtpPassword());
+		logger.info("Inside ftp block....");
+		logger.info("ftpHost: "+adsConfig.getFtpHost());
+		logger.info("ftpHost: "+adsConfig.getFtpPassword());
 		ftpClient.setRemoteHost(adsConfig.getFtpHost());
 		ftpClient.connect();
 		if (ftpClient.connected()) {
