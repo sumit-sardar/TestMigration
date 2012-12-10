@@ -4156,7 +4156,7 @@ function registerDelegate(tree){
  	  	var postDataObject = {};
  		postDataObject.testAdminId = selectedTestAdminId;
  		var rowListValue = $("#pageSize").val();
-		if (rowListValue!=undefined && rowListValue!=null)
+		if (rowListValue!=undefined && rowListValue!=null && !isForRefreshRoster)
 		{
 			pageSizeSelected=rowListValue;
 		}
