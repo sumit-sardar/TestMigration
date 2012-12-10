@@ -1862,6 +1862,7 @@ public class ItemLayoutProcessor {
 					Element crElement = null;
 					if (isMultiLine) {
 						crElement = new Element(multi_line_answer_widget);
+						String ID = thisElement.getAttributeValue("ID");
 						String width = thisElement.getAttributeValue("width");
 						String height = thisElement.getAttributeValue("height");
 						String accommodatedWidth = thisElement
@@ -1870,7 +1871,10 @@ public class ItemLayoutProcessor {
 								.getAttributeValue("accommodatedHeight");
 						String charLimit = thisElement
 								.getAttributeValue("charLimit");
-
+						if(ID != null){
+							ID = ID + "$" + getUniqueId();
+							crElement.setAttribute("id",ID);
+						}
 						if (width != null)
 							crElement.setAttribute("width", width);
 						if (height != null)
@@ -1884,6 +1888,7 @@ public class ItemLayoutProcessor {
 						if (charLimit != null)
 							crElement.setAttribute("char_limit", charLimit);
 					} else {
+						String ID = thisElement.getAttributeValue("ID");
 						String width = thisElement.getAttributeValue("width");
 						String height = thisElement.getAttributeValue("height");
 						if (height == null)
@@ -1897,7 +1902,10 @@ public class ItemLayoutProcessor {
 						if (!inline) {
 							crElement = new Element(single_line_answer_widget);
 							crElement.setAttribute("type", "standalone");
-
+							if(ID != null){
+								ID = ID + "$" + getUniqueId();
+								crElement.setAttribute("id",ID);
+							}
 							if (width != null)
 								crElement.setAttribute("width", width);
 							if (height != null)
@@ -1910,9 +1918,15 @@ public class ItemLayoutProcessor {
 										accommodatedHeight);
 							if (charLimit != null)
 								crElement.setAttribute("char_limit", charLimit);
-						} else {
-							String crId = "widget"
-									+ Math.round(Math.random() * 89999 + 10000);
+						} else {							
+							String crId = null;
+							if(ID != null){
+								crId = ID + "$" + getUniqueId();
+							}
+							else{
+								crId = "widget"
+										+ Math.round(Math.random() * 89999 + 10000);
+							}
 							textBuffer.append(" <single_line_answer id=\"")
 									.append(crId).append("\" type=\"inline\" ");
 							if (width != null)
