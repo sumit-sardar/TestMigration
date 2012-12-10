@@ -4155,6 +4155,11 @@ function registerDelegate(tree){
  	   UIBlock();
  	  	var postDataObject = {};
  		postDataObject.testAdminId = selectedTestAdminId;
+ 		var rowListValue = $("#pageSize").val();
+		if (rowListValue!=undefined && rowListValue!=null)
+		{
+			pageSizeSelected=rowListValue;
+		}
        $("#rosterList").jqGrid({   
        	  url:	  'getRosterDetails.do',   
           mtype:   "POST",
