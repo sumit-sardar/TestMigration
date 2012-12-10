@@ -4156,7 +4156,8 @@ function registerDelegate(tree){
  	  	var postDataObject = {};
  		postDataObject.testAdminId = selectedTestAdminId;
  		var rowListValue = $("#pageSize").val();
-		if (rowListValue!=undefined && rowListValue!=null && !isForRefreshRoster)
+ 		var pageConfigval = $("#pageConfig").val();
+		if (rowListValue!=undefined && rowListValue!=null && !isForRefreshRoster && pageConfigval==="true")
 		{
 			pageSizeSelected=rowListValue;
 		}
@@ -4368,13 +4369,17 @@ function registerDelegate(tree){
 					setAnchorButtonState('profileReportStudentButton', false);
 				}
 				//$("option[value=10000]").text('All');
-				if (!isPagesizeLabelpopulated || isForRefreshRoster)
+				if ((!isPagesizeLabelpopulated || isForRefreshRoster) && pageConfigval ==="true")
 				{
-				$('.ui-pg-selbox').closest("td").before("<td dir='ltr' style='width:75px'>Page size</td>");
+				$('.ui-pg-selbox').closest("td").before("<td id='rosterPageSize' dir='ltr' style='width:75px'>Page size</td>");
 				$("#rosterPager .ui-pg-selbox").val(pageSizeSelected);
 				//$("#rosterRowList").val(pageSizeSelected);
 				isPagesizeLabelpopulated=true;
 				isForRefreshRoster=false;
+				}
+				else if (pageConfigval==="false")
+				{
+				$('.ui-pg-selbox').hide();
 				}
 				$.unblockUI();
 			},

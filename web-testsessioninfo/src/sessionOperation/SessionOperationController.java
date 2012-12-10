@@ -230,6 +230,7 @@ public class SessionOperationController extends PageFlowController {
     private String currentReportUrl = "";
     private String currentTestAdminId = "";
    private String pageSize=null;
+   private boolean pageSizeconfig = false;
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -4007,6 +4008,8 @@ public class SessionOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("pageSize",pageSizevalue(customerConfigs));
      	
+     	this.getSession().setAttribute("pageConfigPresent",pageConfigPresent(customerConfigs));
+     	
      	getConfigStudentLabel(customerConfigs);
      	
      	getStudentGrades(customerConfigs);     	
@@ -5286,6 +5289,23 @@ public class SessionOperationController extends PageFlowController {
 	        	
             }
 	    	return pageSize;
+	    }
+	    
+	    private boolean pageConfigPresent(CustomerConfiguration[] customerConfigurations)
+	    {
+	    	boolean pageSizeconfig = false;
+	    	for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                
+	        	if (cc.getCustomerConfigurationName().equalsIgnoreCase("Page_Sizeconfig") && cc.getDefaultValue().equals("T") )
+	            {
+	        		pageSizeconfig = true;
+	            break;
+	            }
+	        	
+            }
+	    	return pageSizeconfig;
 	    }
 	    
 	    private boolean isTabeLocatorSession(String productType)

@@ -17,6 +17,8 @@
 	 Boolean isDeleteSessionEnable = (Boolean)session.getAttribute("isDeleteSessionEnable");
 	 Boolean showModifyManifest = (Boolean) session.getAttribute("showModifyManifest");
 	 String pageSize = (String)session.getAttribute("pageSize");
+	 Boolean pageConfigPresent = (Boolean) session.getAttribute("pageConfigPresent");
+	 
 %>
 	
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -33,6 +35,7 @@
 	<input type="hidden" id="loggedInFirstName" name = "loggedInFirstName" value='<%=schedulerFirstName %>'/>
 	<input type="hidden" id="loggedInLastName" name = "loggedInLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="pageSize" name = "pageSize" value='<%=pageSize %>'/>
+	<input type="hidden" id="pageConfig" name = "pageConfig" value='<%=pageConfigPresent%>'/>
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>
