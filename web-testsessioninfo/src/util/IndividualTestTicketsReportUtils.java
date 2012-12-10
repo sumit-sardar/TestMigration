@@ -324,8 +324,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     	//START - Changed for CR GA2011CR001
     	String studentIdLabel = STUDENT_ID_LABEL;
     	if(isStudentIdConfigurable) {
-    		if(studentIdLabelName.toCharArray().length > 15)
-    			studentIdLabel = studentIdLabelName.substring(0, 15);
+    		if(studentIdLabelName.toCharArray().length > 20)
+    			studentIdLabel = studentIdLabelName.substring(0, 20);
     		else
     			studentIdLabel = studentIdLabelName;
     		studentIdLabel = studentIdLabel.trim() + ":";
