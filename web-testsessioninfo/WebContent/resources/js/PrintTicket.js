@@ -117,8 +117,10 @@ function populateTestTicketTree() {
 								$("#displayAccessCodes").hide();
 							}
 							var hasPrintClassName = data.hasPrintClassName;
-							if(hasPrintClassName != undefined && hasPrintClassName == true)
-								$('#printClassNameMsg').show();
+							if(hasPrintClassName != undefined && hasPrintClassName == true){
+								//$('#printClassNameMsg').show();
+								printClassNameOnTicket = true;
+							}	
 							else
 								$('#printClassNameMsg').hide();	
 						}
