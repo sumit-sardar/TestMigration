@@ -2476,11 +2476,12 @@ function fillselectedOrgNode( elementId, orgList) {
 		     $("#Student_Accommodation_Information :checkbox[name='" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
 		     $("#Student_Accommodation_Information select[name='" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
-		
-		if(isAudioCalmEnabled){
-			$("#Student_Accommodation_Information #music_files").attr('disabled',false);
-		}else{
-			$("#Student_Accommodation_Information #music_files").attr('disabled',true);
+		if(isAudioCalmEnabled!= undefined) {
+			if(isAudioCalmEnabled){
+				$("#Student_Accommodation_Information #music_files").attr('disabled',false);
+			}else{
+				$("#Student_Accommodation_Information #music_files").attr('disabled',true);
+			}
 		}
 		
 		
