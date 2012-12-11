@@ -118,6 +118,7 @@ var isLaslinkCustomer = false;
 var isPagesizeLabelpopulated = false;
 var isForRefreshRoster = false;
 var pageSizeSelected = 10;
+var scrollPosition=0;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -4096,6 +4097,7 @@ function registerDelegate(tree){
 					}
 				  } else {
 					statusWizard.accordion("activate", index);
+					$("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop(scrollPosition);
 				  }
 				  $("#displayMessageViewTestRoster").hide();
 				  $("#displayMessageViewTestSubtest").hide();
@@ -4136,6 +4138,8 @@ function registerDelegate(tree){
 	}
 	
 	function closeViewStatusPopup() {
+		scrollPosition=0;
+		$("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop(scrollPosition);
 		closePopUp('viewTestSessionId');
 		$("#rosterTestName").text('');
 		$("#testAdminName").text('');
@@ -4159,6 +4163,7 @@ function registerDelegate(tree){
  		var pageConfigval = $("#pageConfig").val();
 		if (rowListValue!=undefined && rowListValue!=null && !isForRefreshRoster && pageConfigval==="true")
 		{
+		  if (rowListValue==="10" || rowListValue==="50" || rowListValue==="200" || rowListValue==="500")
 			pageSizeSelected=rowListValue;
 		}
        $("#rosterList").jqGrid({   
@@ -4283,6 +4288,7 @@ function registerDelegate(tree){
 				} else {
 					setAnchorButtonState('profileReportStudentButton', false);
 				}
+				scrollPosition = $("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop();            
 			},
 			loadComplete: function () {
 				
