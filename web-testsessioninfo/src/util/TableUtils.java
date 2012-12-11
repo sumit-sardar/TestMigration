@@ -603,7 +603,7 @@ public class TableUtils
             return getNormalBlueFont();
         }
         else{
-            return getDataEntryFont();
+            return getNormalFont();
         }
     }
     
