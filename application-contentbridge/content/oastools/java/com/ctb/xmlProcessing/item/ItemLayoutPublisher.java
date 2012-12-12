@@ -42,6 +42,7 @@ public class ItemLayoutPublisher {
 
 	String destinationPath = "/local/apps/oas/ads/assets/";
 	String destinationPkgPath = "/local/apps/oas/ads/assets/html/";
+	String sourcePackagePath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/";
 	String statusOk = "ok";
 	String status_republish = "Item cannot be re-published as state is locked.";
 	String status_republish_asset = "Asset cannot be re-published as it is being used and its state is locked.";
@@ -63,7 +64,7 @@ public class ItemLayoutPublisher {
 	}
 
 	public Element publishLayout(Element rootElement) {
-		logger.info("Inside publishLayout() ....");
+		//logger.info("Inside publishLayout() ....");
 		String itemType = rootElement.getAttributeValue("ItemType");
 		String itemId = rootElement.getAttributeValue("ID");
 		Element itemLml;
@@ -79,14 +80,14 @@ public class ItemLayoutPublisher {
 			itemLml = itemProcessor.layoutItem();
 			DeliverableUnitProcessor.addSizeToContent(itemProcessor
 					.getDownloadSize());
-			logger.info("Before zipfile creation ....");
+			//logger.info("Before zipfile creation ....");
 			//added by for NEW item
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId,adsConfig);
 			else
 				ItemLayoutProcessor.getAsset(itemLml, assetList);
 			//end
-			logger.info("After zipfile creation ....");
+			//logger.info("After zipfile creation ....");
 			ItemLayoutProcessor.modifyItemLMLForADS_Puslishing(itemLml,
 					itemType);
 
@@ -104,7 +105,7 @@ public class ItemLayoutPublisher {
 			xmlStr = xmlStr.replaceAll(" & ", " &amp; ");
 			String xmlStr2 = xmlStr;
 			
-			logger.info("xmlStr >> "+xmlStr);
+			//logger.info("xmlStr >> "+xmlStr);
 			if (assetList != null && assetList.size() > 0) {
 				
 				  if(adsConfig.isSftp()){ this.sendfiles_sftp(assetList); }
@@ -117,13 +118,14 @@ public class ItemLayoutPublisher {
 				  if(adsConfig.isSftp()){ this.sendPkgfiles_sftp(itemId+"zip"); }
 				  else { this.sendPkgfiles_ftp(itemId+"zip"); }
 				 this.publishPkgAssets(htmlList,itemId);
-				 logger.info("after publishPkgAssets for TE Items...");
+				 //logger.info("after publishPkgAssets for TE Items...");
 			}
 			
 			// Publish Item to ADS - publish "xml"
 			CommonClient client = clientLocator.getCommonClient();
+			//logger.info("before client.callUploadItem(xmlStr)....");
 			String responseStr = client.callUploadItem(xmlStr);
-			logger.info("responseStr >> "+responseStr);
+			//logger.info("responseStr >> "+responseStr);
 			if (responseStr == null) {
 				throw new SystemException(
 						"Error in Publishing Item. Response is null. XML :"
@@ -139,7 +141,7 @@ public class ItemLayoutPublisher {
 					".//response", responseElm);
 			Attribute status = response.getAttribute("status");
 			String statusStr = status.getValue();
-			logger.info("statusStr : "+statusStr);
+			//logger.info("statusStr : "+statusStr);
 			if (!statusStr.equals(statusOk)) {
 				Element msg = ItemLayoutProcessor.extractSingleElement(
 						".//msg", response);
@@ -209,7 +211,7 @@ public class ItemLayoutPublisher {
 		}
 	}
 	public void publishPkgAssets(List inputFiles,String itemID) throws Exception {
-
+		//logger.info("Inside publishPkgAssets method...");
 		CommonClient client = clientLocator.getCommonClient();
 
 		String request = "";
@@ -227,9 +229,9 @@ public class ItemLayoutPublisher {
 					+ destinationPkgPath
 					+ "\" />"
 					+ "</asset> </publish_asset> </ads_publish_request>";
-
+			//logger.info("request"+request);
 			String responseStr = client.callUploadAsset(request);
-
+			//logger.info("responseStr >> "+responseStr);
 			if (responseStr == null) {
 				throw new SystemException(
 						"Error in Publishing Asset. Response is null. ");
@@ -245,6 +247,7 @@ public class ItemLayoutPublisher {
 					".//response", responseElm);
 			Attribute status = response.getAttribute("status");
 			String statusStr = status.getValue();
+			//logger.info("statusStr >> "+statusStr);
 			if (!statusStr.equals(statusOk)) {
 				Element msg = ItemLayoutProcessor.extractSingleElement(
 						".//msg", response);
@@ -299,6 +302,7 @@ public class ItemLayoutPublisher {
 
 				} catch (SftpException e) {
 					System.err.println("Exception : " + e.getMessage());
+					logger.error("Exception : " + e.getMessage());
 					e.printStackTrace();
 				}
 
@@ -331,10 +335,11 @@ public class ItemLayoutPublisher {
 		int port = adsConfig.getPort();
 
 		logger.info("Connecting to server: " + ftpHost);
-		logger.info("Inside sftp block....");
-		logger.info("ftpHost: "+ftpHost);
-		logger.info("ftpUser: "+ftpUser);
-		logger.info("ftpPass: "+ftpPass);
+		//logger.info("Inside sftp block....");
+		//logger.info("ftpHost: "+ftpHost);
+		//logger.info("ftpUser: "+ftpUser);
+		//logger.info("ftpPass: "+ftpPass);
+		//logger.info("inputFile: "+inputFile);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, port);
 			session.setConfig(properties);
@@ -346,20 +351,26 @@ public class ItemLayoutPublisher {
 			sftpChannel = (ChannelSftp) channel;
 
 		
-				try {
-					
+				try {					
+					//logger.info("Current Local Path: "+sftpChannel.lpwd());
+					//logger.info("Current Remote Path: "+sftpChannel.pwd());
+					sftpChannel.lcd(sourcePackagePath);
+					sftpChannel.cd(destinationPkgPath);
 					/*inputFile = "/default/main/OAS/WORKAREA/highwire/html/"+inputFile;
 							+ inputFile.substring(inputFile
 									.indexOf("/html/") + 8);*/
-					String sourceFile = "/default/main/OAS/WORKAREA/highwire/images/TEAsset/"+inputFile;
+					String sourceFile = sourcePackagePath + inputFile;
+					//logger.info("sourceFile >>"+sourceFile);
 //					inputFile = inputFile.replaceAll("%20", " ");
 					// sourceFile = "c:\\mappingdata\\images\\" + img;
 					String destination = destinationPkgPath + inputFile;
+					//logger.info("destination >>"+destination);
 					// sftpChannel.cd(destinationPath);
 					sftpChannel.put(sourceFile, destination);
 
 				} catch (SftpException e) {
 					System.err.println("Exception : " + e.getMessage());
+					logger.error("Exception : " + e.getMessage());
 					e.printStackTrace();
 				}
 
@@ -410,9 +421,9 @@ public class ItemLayoutPublisher {
 	public void sendPkgfiles_ftp(String inputFile) throws Exception {
 
 		FTPClient ftpClient = new FTPClient();
-		logger.info("Inside ftp block....");
-		logger.info("ftpHost: "+adsConfig.getFtpHost());
-		logger.info("ftpHost: "+adsConfig.getFtpPassword());
+		//logger.info("Inside ftp block....");
+		//logger.info("ftpHost: "+adsConfig.getFtpHost());
+		//logger.info("ftpHost: "+adsConfig.getFtpPassword());
 		ftpClient.setRemoteHost(adsConfig.getFtpHost());
 		ftpClient.connect();
 		if (ftpClient.connected()) {
@@ -423,7 +434,8 @@ public class ItemLayoutPublisher {
 				/*inputFile = "/default/main/OAS/WORKAREA/highwire/html/"+inputFile;
 				+ inputFile.substring(inputFile
 						.indexOf("/html/") + 8);*/
-					sourceFile = "/default/main/OAS/WORKAREA/highwire/images/TEAsset/"+inputFile;
+					//sourceFile = "/default/main/OAS/WORKAREA/highwire/images/TEAsset/"+inputFile;
+					sourceFile = sourcePackagePath + inputFile;
 					// //sourceFile = "c:/images/" +
 					// sourceFile.substring(sourceFile.indexOf("/images/") + 8);
 					// sourceFile = "c:\\mappingdata\\images\\" + img;

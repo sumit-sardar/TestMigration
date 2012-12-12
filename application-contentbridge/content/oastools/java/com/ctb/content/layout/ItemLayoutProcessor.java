@@ -3089,7 +3089,7 @@ public class ItemLayoutProcessor {
 
 	public static void getPackageAsset(Element layoutItem, List assetPkgList,
 			String itemID,ADSConfig adsConfig) throws Exception {
-		logger.info("Inside getPackageAsset()...");
+		//logger.info("Inside getPackageAsset()...");
 		List localAssetList = extractAllElement(".//" + html_widget, layoutItem);
 		for (int i = 0; i < localAssetList.size(); i++) {
 			Element image_widget = (Element) localAssetList.get(i);
@@ -3099,16 +3099,19 @@ public class ItemLayoutProcessor {
 		
 		Properties prop = new Properties();
 		prop.load(new FileInputStream(adsConfig.getFile()));
+		String tePackagePath ="/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/";
 		
-		String sourcs=prop.getProperty("te.package.path")+"\\"+itemID;
+		//String sourcs=prop.getProperty("te.package.path")+"\\"+itemID;
 		//String destination=prop.getProperty("pakagePath")+"\\"+itemID;
-		String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
+		//String destination=prop.getProperty("te.package.path")+"\\"+itemID+"zip";
 		//String destination="/mappingdata/InnovativeItems/"+itemID+"zip";
-		logger.info("source > "+sourcs);
-		logger.info("destination > "+destination);
+		String sourcs = tePackagePath + itemID;
+		String destination = tePackagePath + itemID + "zip";
+		//logger.info("source > "+sourcs);
+		//logger.info("destination > "+destination);
 	
 		zipFolder(sourcs, destination);
-		logger.info("Zip Folder created....");
+		//logger.info("Zip Folder created....");
 
 	}
 
