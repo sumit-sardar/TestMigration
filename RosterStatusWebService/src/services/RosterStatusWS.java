@@ -34,6 +34,7 @@ public class RosterStatusWS {
 	@WebMethod
 	public SessionStatus getRosterStatus(SecureUser user, SessionStatus session) 
 	{
+		System.out.println("User authenicating....");
 		// AUTHENTICATE USER
     	if (! RosterUtil.authenticateUser(user)) {
     		session.setStatus(RosterUtil.MESSAGE_INVALID_USER);
@@ -47,14 +48,14 @@ public class RosterStatusWS {
     		session.setStatus(RosterUtil.MESSAGE_SESSION_NOT_FOUND);    		
     		return session;    		
     	}
-    	   	
+    	System.out.println("Test Session found....");
     	RosterElement[] res = getRosterForTestSession(testAdminId);
 
     	if (res == null) {
     		session.setStatus(RosterUtil.MESSAGE_STATUS_ROSTER_ERROR);    		
     		return session;    		
     	}
-    	
+    	System.out.println("RosterElement found.... of sise "+res.length);
     	if (res.length > 0) {
 	    	StudentStatus[] students = session.getStudents();
 	    	
