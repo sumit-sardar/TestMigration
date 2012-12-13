@@ -242,3 +242,23 @@ function orgImmdRptGridresetSearch(){
 	 $("#orgImmdRptGrid").resetSelection(); 
 	 enableDisableImmediateReportButtonOrg(false);
 }
+
+function downloadCSVReport(element) {
+ 	if (isButtonDisabled(element)) 
+		return true;
+    var element = document.getElementById("downloadGroupImmediateReport");
+    element.form.action="groupImmediateScoreReportInCSV.do";
+    element.form.submit();
+    $("#displayMessageMain").hide();
+	return false;
+ }
+ 
+ function downloadPDFReport(element) {
+ 	if (isButtonDisabled(element)) 
+		return true;
+    var element = document.getElementById("downloadGroupImmediateReport");
+    element.form.action="groupImmediateScoreReportInPDF.do";
+    element.form.submit();
+    $("#displayMessageMain").hide();
+	return false;
+ }

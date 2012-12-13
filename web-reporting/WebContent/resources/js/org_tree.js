@@ -18,6 +18,7 @@ var rootNode = [];
 var type;
 var asyncOver = 0;
 var isPopUp = false;
+var SelectedOrgName;
 
 function getRootNodeDetails(){
 	var noOfRoots = jsonData.length;
@@ -62,7 +63,9 @@ function createSingleNodeScoringTree(node_id,jsondata) {
 		$("#"+node_id).delegate("a","click", function(e) {
 			var isRootNode = false;
   			SelectedOrgNodeId = $(this).parent().attr("id");
- 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+  			var SelectedOrgname = $("#"+SelectedOrgNodeId).text();
+  			$("#treeOrgNodeId").val(SelectedOrgNodeId);
+  			$("#treeOrgName").val(SelectedOrgname);
  		    $("#displayMessageMain").hide();
  		    var gridOrg = $("#orgImmdRptGrid");
 			var grid = $("#immdRptGrid");
