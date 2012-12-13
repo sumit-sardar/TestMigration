@@ -247,7 +247,7 @@ public class StudentDemographicsTag extends CTBTag
                 writeToPage(getSpaces(8));
                 if(name.equals("Ethnicity"))
                 	writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) +
-					"\" id=\""+name+"\" onChange=toogleHispanicEhtnicityOptions();"+ " >");                	
+					"\" id=\""+name+"\" onChange=toogleHispanicEhtnicityOptions('true');"+ " >");                	
                 else
                 	writeToPage("<select name=\"" + name + "\" id=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 		        writeToPage(option("Please Select", true));
