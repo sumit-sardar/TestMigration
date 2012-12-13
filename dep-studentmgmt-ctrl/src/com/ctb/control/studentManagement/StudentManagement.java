@@ -2,6 +2,7 @@
 package com.ctb.control.studentManagement;
 
 
+import java.util.List;
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 import com.ctb.bean.request.FilterParams;
@@ -530,6 +531,8 @@ public interface StudentManagement
 
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsAtAndBelowForSelectedOrgNode(String userName,	Integer orgNodeId)throws com.ctb.exception.CTBBusinessException;
 	
+	List<com.ctb.bean.studentManagement.StudentScoreReport> getStudentReportByGroup(Integer [] testRosterId) throws com.ctb.exception.CTBBusinessException;
+
 } 	
 
 

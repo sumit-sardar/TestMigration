@@ -1,12 +1,15 @@
 package com.ctb.control.studentManagement; 
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
@@ -1064,12 +1067,12 @@ public class StudentManagementImpl implements StudentManagement
 			
 			//searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
-            
-           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId,searchCriteria);
-           for(ManageStudent student : students) {
-        	   student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
-           }
-			
+
+			students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId,searchCriteria);
+			for(ManageStudent student : students) {
+				student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
+			}
+
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
 			if(statusFilter != null) std.applyFiltering(statusFilter);
@@ -1492,33 +1495,33 @@ public class StudentManagementImpl implements StudentManagement
 			boolean foundInNewOrgNodes1 = false;
 			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStudentStatus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodesInactive(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			while (iterator.hasNext()) {
-					OrganizationNode newOrganizationNode = (OrganizationNode) iterator.next();
-					Node node = orgNode.getOrgNodeById(newOrganizationNode.getOrgNodeId());
-					OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
-					orgNodeStudent.setActivationStatus("AC");
-					orgNodeStudent.setCreatedBy(userId);
-					orgNodeStudent.setCreatedDateTime(new Date());
-					orgNodeStudent.setStudentId(studentId);
-					for (int i=0; orgNodeStudentStatus!=null && i< orgNodeStudentStatus.length; i++) {
-						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDataBase = orgNodeStudentStatus[i];
-						foundInNewOrgNodes1 = newOrgNodeHash.containsKey(oldOrgNodeInDataBase.getOrgNodeId());
-						if(foundInNewOrgNodes1) {
-							//if db class inactive that will be added
-							orgNodeStudent.setCustomerId(oldOrgNodeInDataBase.getCustomerId());
-							orgNodeStudent.setDataImportHistoryId(oldOrgNodeInDataBase.getDataImportHistoryId());
-							orgNodeStudent.setOrgNodeId(oldOrgNodeInDataBase.getOrgNodeId());
-							orgNodeStudents.updateOrgNodeStudent(orgNodeStudent);
-							//remove from hash and again set to iterator
-							newOrgNodeHash.remove(oldOrgNodeInDataBase.getOrgNodeId());
-							iterator = newOrgNodeHash.values().iterator();
-						}                              
-					}
-					if(!foundInNewOrgNodes1) {
-						orgNodeStudent.setCustomerId(node.getCustomerId());
-						orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
-						orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
-						orgNodeStudents.createOrgNodeStudent(orgNodeStudent); 
-					}
+				OrganizationNode newOrganizationNode = (OrganizationNode) iterator.next();
+				Node node = orgNode.getOrgNodeById(newOrganizationNode.getOrgNodeId());
+				OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
+				orgNodeStudent.setActivationStatus("AC");
+				orgNodeStudent.setCreatedBy(userId);
+				orgNodeStudent.setCreatedDateTime(new Date());
+				orgNodeStudent.setStudentId(studentId);
+				for (int i=0; orgNodeStudentStatus!=null && i< orgNodeStudentStatus.length; i++) {
+					com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDataBase = orgNodeStudentStatus[i];
+					foundInNewOrgNodes1 = newOrgNodeHash.containsKey(oldOrgNodeInDataBase.getOrgNodeId());
+					if(foundInNewOrgNodes1) {
+						//if db class inactive that will be added
+						orgNodeStudent.setCustomerId(oldOrgNodeInDataBase.getCustomerId());
+						orgNodeStudent.setDataImportHistoryId(oldOrgNodeInDataBase.getDataImportHistoryId());
+						orgNodeStudent.setOrgNodeId(oldOrgNodeInDataBase.getOrgNodeId());
+						orgNodeStudents.updateOrgNodeStudent(orgNodeStudent);
+						//remove from hash and again set to iterator
+						newOrgNodeHash.remove(oldOrgNodeInDataBase.getOrgNodeId());
+						iterator = newOrgNodeHash.values().iterator();
+					}                              
+				}
+				if(!foundInNewOrgNodes1) {
+					orgNodeStudent.setCustomerId(node.getCustomerId());
+					orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
+					orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
+					orgNodeStudents.createOrgNodeStudent(orgNodeStudent); 
+				}
 			}
 
 		} catch (SQLException se) {
@@ -1976,13 +1979,13 @@ public class StudentManagementImpl implements StudentManagement
 					studentMapData.put(selectedStudentid[i], std.getManageStudents()[i]);
 
 				}
-				
+
 				//Start -Inclause changes
 				int inClauselimit = 999;
-				
-				
+
+
 				List sdgvsGlobal = new ArrayList();
-				
+
 				int loopCounters = selectedStudentid.length / inClauselimit;
 				if((selectedStudentid.length % inClauselimit) > 0){
 					loopCounters = loopCounters + 1;
@@ -2015,7 +2018,7 @@ public class StudentManagementImpl implements StudentManagement
 						}
 					}
 				}
-				
+
 				//end -Inclause changes
 				for(int i = 0 ; i < selectedStudentid.length ; i++){
 					SessionStudent sst = studentMapData.get(selectedStudentid[i]);
@@ -2043,7 +2046,7 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
-    }
+			}
 
 	private String generateUniqueStudentUserName(Student student, String studentLoginIdSequence) throws SQLException{
 
@@ -2304,124 +2307,124 @@ public class StudentManagementImpl implements StudentManagement
 				/*StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.
 				checkCache("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
 				// copy cached data to new object before filtering
-				 
-*/				StudentAccommodationsData cachedAccommData = null;
-				StudentAccommodationsData newAccommData = new StudentAccommodationsData();
-				if(cachedAccommData == null) {
-					StudentAccommodations[] accommData = accommodation.getStudentAccommodationsByAncestorNode(studentNodes[i].getOrgNodeId());
-					HashMap accommsByOrg = new HashMap(studentNodes.length);
-					for(int j=0;j<accommData.length;j++) {
-						StudentAccommodations sa = accommData[j];
-						ArrayList thisOrgAccoms = (ArrayList) accommsByOrg.get(sa.getOrgNodeId());
-						if(thisOrgAccoms == null) thisOrgAccoms = new ArrayList();
-						thisOrgAccoms.add(sa);
-						accommsByOrg.put(sa.getOrgNodeId(), thisOrgAccoms);
-					}
-					Object[] keys = accommsByOrg.keySet().toArray();
-					for(int j=0;j<keys.length;j++) {
-						ArrayList accomms = (ArrayList) accommsByOrg.get(keys[j]);
-						cachedAccommData = new StudentAccommodationsData();
-						cachedAccommData.setStudentAccommodations((StudentAccommodations[]) accomms.toArray(new StudentAccommodations[0]), null);
-						SimpleCache.cacheResult("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf((Integer)keys[j]), cachedAccommData);
-					}
-					cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf(studentNodes[i].getOrgNodeId()));
-				}
-				
-				
 
-				StudentDemographicDataBean newDemoData = new StudentDemographicDataBean();
-				ArrayList<Integer> demosByOrgStudent = new ArrayList();
-
-				//StudentDemographicDataBean cachedDemoData = (StudentDemographicDataBean) SimpleCache.checkCache5min("STUDENT_DEMOGRAPHICS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
-				StudentDemographicDataBean cachedDemoData = null;
-				if(cachedDemoData == null && demoFilter!= null && demoFilter.getFilterParams().length > 0) {
-					StudentDemoGraphics[] studentDemographicData = studentManagement.getStudentDemographicDataValues(studentNodes[i].getOrgNodeId(),customerId);
-					HashMap<Integer , StudentDemoGraphics>  thisOrgDemos = new HashMap(studentNodes.length);
-
-					for(StudentDemoGraphics stdDemo:studentDemographicData ) {
-						StudentDemoGraphics thisStudDemos = thisOrgDemos.get(stdDemo.getStudentId());
-						if(thisStudDemos != null) {								
-
-
-							String[] demoValueMap = new String[2];
-							demoValueMap[0] = stdDemo.getLabelName();
-							demoValueMap[1] = stdDemo.getValueName();
-							thisStudDemos.setValueMap(demoValueMap);
-						} else {
-							String[] demoValueMap = new String[2];
-							demoValueMap[0] = stdDemo.getLabelName();
-							demoValueMap[1] = stdDemo.getValueName();
-							stdDemo.setValueMap(demoValueMap);
-							thisOrgDemos.put(stdDemo.getStudentId(),stdDemo);
-
-						}
-					}
-					Object[] keys = thisOrgDemos.keySet().toArray();
-					ArrayList demographs = new ArrayList();
-					cachedDemoData = new StudentDemographicDataBean();
-
-					for(int k=0;k<keys.length;k++) {
-						StudentDemoGraphics stg = (StudentDemoGraphics)thisOrgDemos.get(keys[k]);
-						demographs.add(stg);
-					}
-					cachedDemoData.setStudentDemographics((StudentDemoGraphics[]) demographs.toArray(new StudentDemoGraphics[0]), null);
-
-				}
-
-				if(cachedDemoData != null && cachedDemoData.getStudentDemographics() != null) {
-					StudentDemoGraphics[] saArray = new StudentDemoGraphics[cachedDemoData.getStudentDemographics().length];
-					for(int j=0;j<saArray.length;j++) {
-
-						saArray[j] = cachedDemoData.getStudentDemographics()[j];
-					}
-					newDemoData.setStudentDemographics(saArray, null);
-				}
-				if(newDemoData.getStudentDemographics() != null && newDemoData.getStudentDemographics().length > 0) {
-					if(demoFilter != null) 
-						newDemoData.applyDemoFiltering(demoFilter);
-
-					for(int j=0 ; j < newDemoData.getStudentDemographics().length ; j++) {
-						demosByOrgStudent.add(newDemoData.getStudentDemographics()[j].getStudentId());
-					}
-
-				} 
+				 */				StudentAccommodationsData cachedAccommData = null;
+				 StudentAccommodationsData newAccommData = new StudentAccommodationsData();
+				 if(cachedAccommData == null) {
+					 StudentAccommodations[] accommData = accommodation.getStudentAccommodationsByAncestorNode(studentNodes[i].getOrgNodeId());
+					 HashMap accommsByOrg = new HashMap(studentNodes.length);
+					 for(int j=0;j<accommData.length;j++) {
+						 StudentAccommodations sa = accommData[j];
+						 ArrayList thisOrgAccoms = (ArrayList) accommsByOrg.get(sa.getOrgNodeId());
+						 if(thisOrgAccoms == null) thisOrgAccoms = new ArrayList();
+						 thisOrgAccoms.add(sa);
+						 accommsByOrg.put(sa.getOrgNodeId(), thisOrgAccoms);
+					 }
+					 Object[] keys = accommsByOrg.keySet().toArray();
+					 for(int j=0;j<keys.length;j++) {
+						 ArrayList accomms = (ArrayList) accommsByOrg.get(keys[j]);
+						 cachedAccommData = new StudentAccommodationsData();
+						 cachedAccommData.setStudentAccommodations((StudentAccommodations[]) accomms.toArray(new StudentAccommodations[0]), null);
+						 SimpleCache.cacheResult("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf((Integer)keys[j]), cachedAccommData);
+					 }
+					 cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf(studentNodes[i].getOrgNodeId()));
+				 }
 
 
 
-				if(cachedAccommData != null && cachedAccommData.getStudentAccommodations() != null) {
-					StudentAccommodations[] saArray = new StudentAccommodations
-					[cachedAccommData.getStudentAccommodations().length];
-					for(int j=0;j<saArray.length;j++) {
-						saArray[j] = cachedAccommData.getStudentAccommodations()[j];
-					}
-					newAccommData.setStudentAccommodations(saArray, null);
-					if(filter != null) 
-						newAccommData.applyFiltering(filter);
-					if(demoFilter != null && demoFilter.getFilterParams().length > 0) {
-						if(demosByOrgStudent != null && demosByOrgStudent.size() > 0 ){
-							int filteredCount=0;
-							for(int k=0 ; k < newAccommData.getStudentAccommodations().length ; k++) {
-								if(demosByOrgStudent.contains(newAccommData.getStudentAccommodations()[k].getStudentId())){
+				 StudentDemographicDataBean newDemoData = new StudentDemographicDataBean();
+				 ArrayList<Integer> demosByOrgStudent = new ArrayList();
 
-									filteredCount = filteredCount + 1;
-								}
-							}
-							studentNodes[i].setStudentCount(filteredCount);
-						} else {
+				 //StudentDemographicDataBean cachedDemoData = (StudentDemographicDataBean) SimpleCache.checkCache5min("STUDENT_DEMOGRAPHICS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
+				 StudentDemographicDataBean cachedDemoData = null;
+				 if(cachedDemoData == null && demoFilter!= null && demoFilter.getFilterParams().length > 0) {
+					 StudentDemoGraphics[] studentDemographicData = studentManagement.getStudentDemographicDataValues(studentNodes[i].getOrgNodeId(),customerId);
+					 HashMap<Integer , StudentDemoGraphics>  thisOrgDemos = new HashMap(studentNodes.length);
 
-							studentNodes[i].setStudentCount(0);
-						}
-					}else {
-						studentNodes[i].setStudentCount(newAccommData.getFilteredCount());
-					}
+					 for(StudentDemoGraphics stdDemo:studentDemographicData ) {
+						 StudentDemoGraphics thisStudDemos = thisOrgDemos.get(stdDemo.getStudentId());
+						 if(thisStudDemos != null) {								
 
 
+							 String[] demoValueMap = new String[2];
+							 demoValueMap[0] = stdDemo.getLabelName();
+							 demoValueMap[1] = stdDemo.getValueName();
+							 thisStudDemos.setValueMap(demoValueMap);
+						 } else {
+							 String[] demoValueMap = new String[2];
+							 demoValueMap[0] = stdDemo.getLabelName();
+							 demoValueMap[1] = stdDemo.getValueName();
+							 stdDemo.setValueMap(demoValueMap);
+							 thisOrgDemos.put(stdDemo.getStudentId(),stdDemo);
 
-				}  else  if(demosByOrgStudent != null && demosByOrgStudent.size() > 0 ){
-					studentNodes[i].setStudentCount(newDemoData.getFilteredCount());
-				}else {
-					studentNodes[i].setStudentCount(0);
-				}
+						 }
+					 }
+					 Object[] keys = thisOrgDemos.keySet().toArray();
+					 ArrayList demographs = new ArrayList();
+					 cachedDemoData = new StudentDemographicDataBean();
+
+					 for(int k=0;k<keys.length;k++) {
+						 StudentDemoGraphics stg = (StudentDemoGraphics)thisOrgDemos.get(keys[k]);
+						 demographs.add(stg);
+					 }
+					 cachedDemoData.setStudentDemographics((StudentDemoGraphics[]) demographs.toArray(new StudentDemoGraphics[0]), null);
+
+				 }
+
+				 if(cachedDemoData != null && cachedDemoData.getStudentDemographics() != null) {
+					 StudentDemoGraphics[] saArray = new StudentDemoGraphics[cachedDemoData.getStudentDemographics().length];
+					 for(int j=0;j<saArray.length;j++) {
+
+						 saArray[j] = cachedDemoData.getStudentDemographics()[j];
+					 }
+					 newDemoData.setStudentDemographics(saArray, null);
+				 }
+				 if(newDemoData.getStudentDemographics() != null && newDemoData.getStudentDemographics().length > 0) {
+					 if(demoFilter != null) 
+						 newDemoData.applyDemoFiltering(demoFilter);
+
+					 for(int j=0 ; j < newDemoData.getStudentDemographics().length ; j++) {
+						 demosByOrgStudent.add(newDemoData.getStudentDemographics()[j].getStudentId());
+					 }
+
+				 } 
+
+
+
+				 if(cachedAccommData != null && cachedAccommData.getStudentAccommodations() != null) {
+					 StudentAccommodations[] saArray = new StudentAccommodations
+					 [cachedAccommData.getStudentAccommodations().length];
+					 for(int j=0;j<saArray.length;j++) {
+						 saArray[j] = cachedAccommData.getStudentAccommodations()[j];
+					 }
+					 newAccommData.setStudentAccommodations(saArray, null);
+					 if(filter != null) 
+						 newAccommData.applyFiltering(filter);
+					 if(demoFilter != null && demoFilter.getFilterParams().length > 0) {
+						 if(demosByOrgStudent != null && demosByOrgStudent.size() > 0 ){
+							 int filteredCount=0;
+							 for(int k=0 ; k < newAccommData.getStudentAccommodations().length ; k++) {
+								 if(demosByOrgStudent.contains(newAccommData.getStudentAccommodations()[k].getStudentId())){
+
+									 filteredCount = filteredCount + 1;
+								 }
+							 }
+							 studentNodes[i].setStudentCount(filteredCount);
+						 } else {
+
+							 studentNodes[i].setStudentCount(0);
+						 }
+					 }else {
+						 studentNodes[i].setStudentCount(newAccommData.getFilteredCount());
+					 }
+
+
+
+				 }  else  if(demosByOrgStudent != null && demosByOrgStudent.size() > 0 ){
+					 studentNodes[i].setStudentCount(newDemoData.getFilteredCount());
+				 }else {
+					 studentNodes[i].setStudentCount(0);
+				 }
 
 			}
 			return ond;
@@ -2441,20 +2444,20 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 
 			if (studentAccommodations != null)	{	
-				
+
 				StringBuffer strBuffer = new StringBuffer();
 
 				if(studentAccommodations.getScreenMagnifier()!= null) {
 					strBuffer.append("SCREEN_MAGNIFIER='"+ studentAccommodations.getScreenMagnifier()+"',");
 				}
-				
+
 				if(studentAccommodations.getCalculator()!= null) {
 					strBuffer.append("CALCULATOR='" + studentAccommodations.getCalculator()+"',");
 				}
 				if(studentAccommodations.getHighlighter()!= null) {
 					strBuffer.append("HIGHLIGHTER='" + studentAccommodations.getHighlighter()+"',");
 				}
-				
+
 				if(studentAccommodations.getScreenReader()!= null) {
 					strBuffer.append("SCREEN_READER='"+studentAccommodations.getScreenReader()+"',");
 				}
@@ -2493,61 +2496,61 @@ public class StudentManagementImpl implements StudentManagement
 					strBuffer.append("QUESTION_BACKGROUND_COLOR=null" +",");
 					strBuffer.append("QUESTION_FONT_COLOR=null" +",");
 					strBuffer.append("QUESTION_FONT_SIZE=null" +",");
-					
+
 				}
-				
-				
-				
-				
+
+
+
+
 				if (strBuffer != null && strBuffer.length() > 0) {
 					String sqlUpdateStr = strBuffer.substring(0, strBuffer.length() - 1);
 					//System.out.println("sqlUpdateStr.."+ sqlUpdateStr);
-					
-						//Start -Inclause changes
-						int inClauselimit = 999;
-						int loopCounters = studentId.length / inClauselimit;
-						if((studentId.length % inClauselimit) > 0){
-							loopCounters = loopCounters + 1;
+
+					//Start -Inclause changes
+					int inClauselimit = 999;
+					int loopCounters = studentId.length / inClauselimit;
+					if((studentId.length % inClauselimit) > 0){
+						loopCounters = loopCounters + 1;
+					}
+					for(int counter=0; counter<loopCounters; counter++){
+						Integer[] newStudentid = null;
+						String searchbyStudentIds="";
+						if((counter+1)!=loopCounters){
+							newStudentid = new Integer [inClauselimit];
+							System.arraycopy(studentId, (counter*inClauselimit) , newStudentid, 0, inClauselimit);
+						} else {
+							int count = studentId.length % inClauselimit;
+							newStudentid = new Integer [count];
+							System.arraycopy(studentId, ((loopCounters-1)*inClauselimit) , newStudentid, 0, count);
+
 						}
-						for(int counter=0; counter<loopCounters; counter++){
-							Integer[] newStudentid = null;
-							String searchbyStudentIds="";
-							if((counter+1)!=loopCounters){
-								newStudentid = new Integer [inClauselimit];
-								System.arraycopy(studentId, (counter*inClauselimit) , newStudentid, 0, inClauselimit);
-							} else {
-								int count = studentId.length % inClauselimit;
-								newStudentid = new Integer [count];
-								System.arraycopy(studentId, ((loopCounters-1)*inClauselimit) , newStudentid, 0, count);
-								
-							}
-							searchbyStudentIds = SQLutils.generateSQLCriteria("student_id in  ",newStudentid);
-							accommodation.updateBulkStudentAccommodations(searchbyStudentIds,sqlUpdateStr);
-							studentManagement.setRosterUpdateFlagInClause(searchbyStudentIds);
-						}
-						//END -Inclause changes
+						searchbyStudentIds = SQLutils.generateSQLCriteria("student_id in  ",newStudentid);
+						accommodation.updateBulkStudentAccommodations(searchbyStudentIds,sqlUpdateStr);
+						studentManagement.setRosterUpdateFlagInClause(searchbyStudentIds);
+					}
+					//END -Inclause changes
 				}
 			}
-			
-		
-	} catch (SQLException se) {
-		StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateStudentAccommodations: " + se.getMessage());
-		tee.setStackTrace(se.getStackTrace());
-		throw tee;
-	}
-}    
+
+
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateStudentAccommodations: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}    
 	// Temporary change for audio CR RESPONSE
 	public ItemResponseData getStudentCrResponse(Integer testRosterId,String itemId) throws CTBBusinessException
 	{
-	
+
 		try{
 			ItemResponseData itemResponse = null;
-			
+
 			itemResponse = studentManagement.getCrResponse(testRosterId,itemId);
 			return itemResponse;
 		}
 		catch(Exception e){
-			
+
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentEduAndInstr: " );
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
@@ -2555,53 +2558,53 @@ public class StudentManagementImpl implements StudentManagement
 	}
 	//START- TABE BAUM 20 Fprm Recommendation
 	public StudentSessionStatus[] getStudentMostResentSessionDetail(Integer studentId) throws CTBBusinessException{
-		
+
 		try{
 			StudentSessionStatus [] StudentSessionStatus = null;
-			
+
 			StudentSessionStatus = studentManagement.getStudentMostResentSessionDetail(studentId);
-			
+
 			return StudentSessionStatus;
 		}
 		catch(Exception e){
-			
+
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentMostResentSessionDetail: " );
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
 		}
-		
+
 	}
-		//END- TABE BAUM 20 Form Recommendation
-	
-	
+	//END- TABE BAUM 20 Form Recommendation
+
+
 	//Added for Auditory Calming
 	public MusicFiles[] getMusicFiles() throws CTBBusinessException {
-		
+
 		try{
 			MusicFiles [] musicFileList = null;
-			
+
 			musicFileList = studentManagement.getMusicFilesList();
-			
+
 			return musicFileList;
 		}
 		catch(Exception e){
-			
+
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getMusicFiles: " );
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
 		}
 	}
-	
+
 	// Added for TABE BAUM - 028
 	public String hasMultipleAccessCode(int testAdminId) throws CTBBusinessException {
-		
+
 		try{
 			String hasbreak = studentManagement.hasMultipleAccessCode(testAdminId);
-			
+
 			return hasbreak;
 		}
 		catch(Exception e){
-			
+
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: hasMultipleAccessCode: " );
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
@@ -2614,8 +2617,8 @@ public class StudentManagementImpl implements StudentManagement
 	 */
 	@Override
 	public boolean validateUniqueStudentId(Boolean isCreateNew, Integer customerId ,
-					Integer studentId, String studentIDNumber) throws CTBBusinessException {
-		
+			Integer studentId, String studentIDNumber) throws CTBBusinessException {
+
 		boolean isIDUnique = false;
 		Integer totalStudent = 0;
 		String searchCriteria = "";
@@ -2629,10 +2632,10 @@ public class StudentManagementImpl implements StudentManagement
 			if( totalStudent==0){
 				isIDUnique = true;
 			} 
-			
+
 		}
 		catch(Exception e){
-			
+
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: validateUniqueStudentId: " );
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
@@ -2640,54 +2643,54 @@ public class StudentManagementImpl implements StudentManagement
 		return isIDUnique;
 	}
 
-	
-	 public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
-	    throws CTBBusinessException {                                                         
+
+	public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
+	throws CTBBusinessException {                                                         
 
 
-			try {
-				validator.validateUser(userName, userName, "UserManagementImpl.OrgNodehierarchy");
-			} catch (ValidationException ve) {
-			 
-				throw ve;
-			 
-			}
-			
-			try {
-				UserNodeData usnd = new UserNodeData();
-				Integer pageSize = null;
-			
-				UserNode[] usernodes = orgNode.OrgNodehierarchy(associatedNodeId);
-				usnd.setUserNodes(usernodes,pageSize);
-			 
-			
-			 return usnd;
-			} catch (SQLException se) {
-			 OrgNodeDataNotFoundException dataNotFound = 
-			                             new OrgNodeDataNotFoundException
-			                                     ("FindUser.Failed");
-			                                                            
-			 dataNotFound.setStackTrace(se.getStackTrace());
-			 throw dataNotFound;
-			} catch (Exception e) {
-			 OrgNodeDataNotFoundException dataNotFound = 
-			                             new OrgNodeDataNotFoundException
-			                                     ("FindUser.Failed");
-			                                                            
-			 dataNotFound.setStackTrace(e.getStackTrace());
-			 throw dataNotFound;
-			}
+		try {
+			validator.validateUser(userName, userName, "UserManagementImpl.OrgNodehierarchy");
+		} catch (ValidationException ve) {
+
+			throw ve;
+
 		}
-		
-		
-			
-	 public UserNodeData getTopUserNodesForUser(String userName,
+
+		try {
+			UserNodeData usnd = new UserNodeData();
+			Integer pageSize = null;
+
+			UserNode[] usernodes = orgNode.OrgNodehierarchy(associatedNodeId);
+			usnd.setUserNodes(usernodes,pageSize);
+
+
+			return usnd;
+		} catch (SQLException se) {
+			OrgNodeDataNotFoundException dataNotFound = 
+				new OrgNodeDataNotFoundException
+				("FindUser.Failed");
+
+			dataNotFound.setStackTrace(se.getStackTrace());
+			throw dataNotFound;
+		} catch (Exception e) {
+			OrgNodeDataNotFoundException dataNotFound = 
+				new OrgNodeDataNotFoundException
+				("FindUser.Failed");
+
+			dataNotFound.setStackTrace(e.getStackTrace());
+			throw dataNotFound;
+		}
+	}
+
+
+
+	public UserNodeData getTopUserNodesForUser(String userName,
 			FilterParams filter, PageParams page, SortParams sort)
-			throws CTBBusinessException {
+	throws CTBBusinessException {
 
 		try {
 			validator.validateUser(userName, userName,
-					"StudentManagementImpl.getTopUserNodesForUser");
+			"StudentManagementImpl.getTopUserNodesForUser");
 		} catch (ValidationException ve) {
 
 			throw ve;
@@ -2716,19 +2719,19 @@ public class StudentManagementImpl implements StudentManagement
 			return usnd;
 		} catch (SQLException se) {
 			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
-					"FindUser.Failed");
+			"FindUser.Failed");
 
 			dataNotFound.setStackTrace(se.getStackTrace());
 			throw dataNotFound;
 		} catch (CTBBusinessException be) {
 			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
-					"FindUser.Failed");
+			"FindUser.Failed");
 
 			dataNotFound.setStackTrace(be.getStackTrace());
 			throw dataNotFound;
 		} catch (Exception e) {
 			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
-					"FindUser.Failed");
+			"FindUser.Failed");
 
 			dataNotFound.setStackTrace(e.getStackTrace());
 			throw dataNotFound;
@@ -2741,11 +2744,11 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 			ManageStudentData std = new ManageStudentData();
 			Integer pageSize = null;
-			
+
 			ManageStudent [] students = studentManagement.getStudentsForSelectedOrgNode(userName, orgNodeId);
 			std.setManageStudents(students, pageSize);
 			if(sort != null) std.applySorting(sort);
-			
+
 			students = std.getManageStudents();
 			for (int i=0; i <students.length; i++) {
 				if (students[i] != null) {
@@ -2773,8 +2776,8 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return leafNodeCategoryId;
 	}
-	
-	
+
+
 	//Added for bulk move students
 	/**
 	 * Retrieves a sorted, filtered, paged list of students at the specified org node.
@@ -2809,7 +2812,7 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-		
+
 	//Added for updating the organization node for bulk move student
 	public void updateBulkMoveOperation(String userName, Integer destOrgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
 		try {
@@ -2826,7 +2829,7 @@ public class StudentManagementImpl implements StudentManagement
 						if ((orgId != null) && (oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue())) {
 							foundInNewOrgNodes = true;
 							orgId = null;
-							
+
 						} else
 							foundInNewOrgNodes = false;
 						if (foundInNewOrgNodes) { //activate 
@@ -2867,7 +2870,7 @@ public class StudentManagementImpl implements StudentManagement
 					if((k+1) != totLenDiv) {
 						newselectedStudentid = new Integer [inClauselimit];
 						System.arraycopy(studentIds, (k*inClauselimit) , newselectedStudentid, 0, inClauselimit);
-						
+
 					} else {
 						int count = studentIds.length % inClauselimit;
 						newselectedStudentid = new Integer [count];
@@ -2901,14 +2904,14 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-	
+
 	public Integer getStudentsCountForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
 	{
 		//validator.validateNode(userName, orgNodeId, "StudentManagementImpl.findStudentsForOrgNode");
 		try {
 			Integer studentCount = null;
 			studentCount = studentManagement.getStudentsCountForOrgNode(orgNodeId);
-			
+
 			return studentCount;
 		} catch (SQLException se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
@@ -2916,7 +2919,7 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-	
+
 	/**
 	 * Retrieves a sorted, filtered, paged list of students at the specified org node.
 	 * @common:operation
@@ -2950,7 +2953,7 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-	
+
 	//Added to toggle out of school status
 	public void updateOOSOperation(Integer[] updatedOOSData) throws com.ctb.exception.CTBBusinessException {
 		try {
@@ -2968,7 +2971,7 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-	
+
 	//Added for new UI hand scoring
 	public ManageStudentData getStudentsMinimalInfoForScoring(String userName, Integer orgNodeId, SortParams sort) throws CTBBusinessException
 	{
@@ -2986,7 +2989,7 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-	
+
 	public ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
 	{
 		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAllCompletedStudentForOrgNode");
@@ -3001,10 +3004,10 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
-		
+
 	}
-	
-	
+
+
 	public Integer getCompletedStudentCountForOrgNode(String userName,	Integer orgNodeId) throws com.ctb.exception.CTBBusinessException
 	{
 		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getCompletedStudentCountForOrgNode");
@@ -3017,11 +3020,11 @@ public class StudentManagementImpl implements StudentManagement
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
-		
+
 	}
-	
-public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
-		
+
+	public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
+
 		try {
 			StudentScoreReport stuScrReport = new StudentScoreReport();
 			StudentReportIrsScore[] stuScoreData = null;
@@ -3054,19 +3057,129 @@ public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdm
 			}
 			if(stuScoreDataComp != null)
 				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
-			
+
 			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
-			
+
 			return stuScrReport;
-			
+
 		} catch (SQLException se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentReport: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
 		}
-		
+
 	}
 
+
+	public List<StudentScoreReport> getStudentReportByGroup(Integer [] testRosterIdArr) throws CTBBusinessException 
+	{
+
+		StudentScoreReport [] stuDataListTemp = null;
+		StudentReportIrsScore [] stuScoreListTemp = null;
+		List<StudentScoreReport> finalList = new ArrayList<StudentScoreReport>();
+		//Start -Inclause changes
+		int inClauselimit = 999;
+
+		int loopCounters = testRosterIdArr.length / inClauselimit;
+		if((testRosterIdArr.length % inClauselimit) > 0){
+			loopCounters = loopCounters + 1;
+		}
+		for(int counter=0; counter<loopCounters; counter++){
+			Integer[] newselectedRosterid = null;
+			String searchByRosterIds = "";
+			if((counter+1)!=loopCounters){
+				newselectedRosterid = new Integer [inClauselimit];
+				System.arraycopy(testRosterIdArr, (counter*inClauselimit) , newselectedRosterid, 0, inClauselimit);
+			} else {
+				int count = testRosterIdArr.length % inClauselimit;
+				newselectedRosterid = new Integer [count];
+				System.arraycopy(testRosterIdArr, ((loopCounters-1)*inClauselimit) , newselectedRosterid, 0, count);
+			}
+			searchByRosterIds = SQLutils.generateSQLCriteria("ROS.TEST_ROSTER_ID IN ",newselectedRosterid);
+			try {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				Date date = new Date();  
+			    System.out.println("Start Time :" + dateFormat.format(date));  
+				stuDataListTemp = this.studentManagement.getStudentDataForReportByGroup(searchByRosterIds);
+				Date date1 = new Date();  
+			    System.out.println("Start fetching from IRS :"+dateFormat.format(date1)); 
+				stuScoreListTemp = this.immediateReportingIrs.getScoreDataForReportByGroup(searchByRosterIds);
+				Date date3 = new Date();  
+			    System.out.println("End Time :"+dateFormat.format(date3)); 
+			} catch (SQLException e) {
+				StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentReportByGroup: " + e.getMessage());
+				tee.setStackTrace(e.getStackTrace());
+				throw tee;
+			}		
+		}
+
+		//merger two list to get a single array of StudentScoreReport
+		StudentReportIrsScore[] stuFinalScoreData = null;
+		StudentReportIrsScore[] studentScoreIrsData = null;
+		StudentReportIrsScore stuScoreDataComp = null;
+		for(StudentScoreReport reportData : stuDataListTemp ) {
+			studentScoreIrsData = getStudentReportIrsScore(stuScoreListTemp,reportData.getTestRosterId());
+			stuScoreDataComp = getOverallScore(studentScoreIrsData);
+			reportData.setStudentReportIrsScore(studentScoreIrsData);
+			//now stuDataListTemp is populated fully.
+			
+			stuFinalScoreData = new StudentReportIrsScore[7];
+			setContentAreaValues(stuFinalScoreData, new Integer(reportData.getProductId()));
+			if(reportData.getStudentReportIrsScore() != null && 
+					reportData.getContentAreaNameString() != null) {
+				for(int i = 0; i < studentScoreIrsData.length; i++) {
+					if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 0, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Speaking")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 1, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Oral")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 2, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Reading")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 3, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Writing")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 4, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 5, reportData.getContentAreaNameString());
+					}
+				}
+			}
+			if(stuScoreDataComp != null)
+				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, reportData.getContentAreaNameString());
+
+			reportData.setStudentReportIrsScore(stuFinalScoreData);
+			finalList.add(reportData);
+		}
+
+
+		return ((List<StudentScoreReport>) finalList);
+	}
+	private StudentReportIrsScore[] getStudentReportIrsScore(StudentReportIrsScore [] stuScoreListTemp,
+			String testRosterId) {
+		List<StudentReportIrsScore> newList = new ArrayList<StudentReportIrsScore>();
+		if(null == stuScoreListTemp || stuScoreListTemp.length == 0) {
+			return null;
+		}
+		int c = 0;
+			for(StudentReportIrsScore score : stuScoreListTemp) {
+				
+				if(testRosterId.equalsIgnoreCase(score.getTestRosterId())) {
+					newList.add(score);
+				}
+			}
+
+		return newList.toArray(new StudentReportIrsScore[0]);
+	}
+
+	private StudentReportIrsScore getOverallScore(  StudentReportIrsScore[] allScores) {
+		if(null == allScores)
+			return null;
+		for (StudentReportIrsScore score : allScores ) {
+			if("Overall".equals(score.getContentAreaName())) {
+				return score;
+			}
+		}
+		return null;
+	}
 	private void setContentAreaValues(
 			StudentReportIrsScore[] stuFinalScoreData, Integer productId) {
 		for (int i = 0; i < 7; i++) {
