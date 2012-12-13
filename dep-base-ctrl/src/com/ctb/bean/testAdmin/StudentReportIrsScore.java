@@ -18,7 +18,7 @@ public class StudentReportIrsScore extends CTBBean{
 	private String scaleScore = "N/A";
 	private String proficiencyLevel = "N/A";
 	
-	
+	private String testRosterId;
 	/**
 	 * @return the contentAreaName
 	 */
@@ -67,5 +67,14 @@ public class StudentReportIrsScore extends CTBBean{
 	public void setProficiencyLevel(String proficiencyLevel) {
 		this.proficiencyLevel = proficiencyLevel;
 	}
+	
+	public String getTestRosterId() {
+		return testRosterId;
+	}
+	public void setTestRosterId(String testRosterId) {
+		this.testRosterId = testRosterId;
+	}
+	
+	
 
 }

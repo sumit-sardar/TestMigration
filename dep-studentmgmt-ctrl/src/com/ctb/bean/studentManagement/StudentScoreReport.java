@@ -32,6 +32,8 @@ public class StudentScoreReport extends CTBBean{
 	private String contentAreaNameString;
 	private String testName;
 	private String testAdminStartDateString;
+	private String testRosterId;
+	private String productId;
 	
 	
 	/**
@@ -213,5 +215,20 @@ public class StudentScoreReport extends CTBBean{
 	public String getTestAdminStartDateString() {
 		return testAdminStartDateString;
 	}
+	public String getTestRosterId() {
+		return testRosterId;
+	}
+	public void setTestRosterId(String testRosterId) {
+		this.testRosterId = testRosterId;
+	}
+	public String getProductId() {
+		return productId;
+	}
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	
+	
+	
 
 }
