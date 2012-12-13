@@ -10,10 +10,12 @@
 
 		<netui:form action="groupImmediateReporting">
 			<input type="hidden" id="menuId" name="menuId" value="reportsLink" />
-			<input type="hidden" id="treeOrgNodeId" />
-			<input id="downloadImmediateReport" type="hidden" value="userFile" name="downloadImmediateReport">
-			<input type="hidden" id="rosterId"  name="rosterId"/>
+			<input type="hidden" id="treeOrgNodeId" name="treeOrgNodeId"/>
+			<input type="hidden" id="treeOrgName" name="treeOrgName" />
+			<input id="downloadGroupImmediateReport" type="hidden" value="userFile" name="downloadGroupImmediateReport">
+			<!--<input type="hidden" id="rosterId"  name="rosterId"/>
 			<input type="hidden" id="testAdminId" name="testAdminId"/>
+			-->
 			<jsp:include page="/immediateReportingOperation/organization_immediate_scoring_report_org_list.jsp" />
 		</netui:form>
 		

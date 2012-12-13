@@ -27,6 +27,8 @@ import utils.BaseTree;
 import utils.BroadcastUtils;
 import utils.DateUtils;
 import utils.GridDropLists;
+import utils.GroupImmediateCSVReportUtils;
+import utils.GroupImmediatePDFReportUtils;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
@@ -70,7 +72,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-
+	private Integer [] testRosterList = null;
 	/**
 	 * Callback that is invoked when this controller instance is created.
 	 */
@@ -238,11 +240,19 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		resp.setCharacterEncoding("UTF-8"); 
 		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>(0);
+		Integer [] testRosterList = null;
 		try {
 			ManageStudentData msData = null;
 			Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 			msData = StudentSearchUtils.getAllCompletedStudentForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
 			studentList = StudentSearchUtils.buildStudentList(msData);
+			//populate student roster list
+			testRosterList = new Integer [msData.getManageStudents().length]; 
+			for(int i=0; i<msData.getManageStudents().length; i++){
+				testRosterList[i] = msData.getManageStudents()[i].getRosterId();
+			}
+			this.testRosterList = testRosterList;
+			System.out.println("Total Roster Present :"+ msData.getManageStudents().length );
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
@@ -405,6 +415,86 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			writer.flush();
 			writer.close();
 		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	@Jpf.Action()
+    protected Forward groupImmediateScoreReportInCSV()
+    {
+		List<StudentProfileInformation> allStudentList = new ArrayList<StudentProfileInformation>();
+		try {
+			Integer treeOrgNodeId = Integer.valueOf(this.getRequest().getParameter("treeOrgNodeId"));
+			String treeOrgName = this.getRequest().getParameter("treeOrgName");
+			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
+			Integer [] testRosterList = this.testRosterList;
+			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
+			GroupImmediateCSVReportUtils utilsCSV = new GroupImmediateCSVReportUtils();
+			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
+			getResponse().setContentType("text/csv");
+	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
+	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+	        getResponse().setHeader("Pragma", "public");
+	        getResponse().setCharacterEncoding("UTF-8");
+			OutputStream os = getResponse().getOutputStream();
+			os.write(239);     
+			os.write(187);     
+			os.write(191);    
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
+			utilsCSV.writeHeaderRow(writer);
+			if(allStudentList != null){
+				for(StudentScoreReport spi : stuReportList)
+				{
+					utilsCSV.setupCSV(writer, spi,  DateUtils.formatDateToDateString(spi.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+			        utilsCSV.generateReport();
+				}
+			}
+			writer.flush();
+			writer.close();
+		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	@Jpf.Action()
+    protected Forward groupImmediateScoreReportInPDF()
+    {
+		try {
+			Integer treeOrgNodeId = Integer.valueOf(this.getRequest().getParameter("treeOrgNodeId"));
+			String treeOrgName = this.getRequest().getParameter("treeOrgName");
+			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
+			Integer [] testRosterList = this.testRosterList;
+			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
+			GroupImmediatePDFReportUtils utilsPDF = new GroupImmediatePDFReportUtils();
+			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
+			getResponse().setContentType("application/pdf");
+	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".pdf");
+	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+	        getResponse().setHeader("Pragma", "public"); 
+	        OutputStream outstream = getResponse().getOutputStream();
+	        if(stuReportList != null){
+	        	utilsPDF.openDocument(outstream);
+	        	int pageCount = 0;
+				for(StudentScoreReport spi : stuReportList)
+				{
+					utilsPDF.setup(outstream, spi,  DateUtils.formatDateToDateString(spi.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY));
+					utilsPDF.generateReport(pageCount);
+					pageCount++;
+				}
+				utilsPDF.close();
+			}
+	        
+	    } catch (CTBBusinessException ce){
 			ce.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();

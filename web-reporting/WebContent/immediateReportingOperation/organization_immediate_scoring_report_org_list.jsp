@@ -70,10 +70,10 @@
 						</table>				
 					</div>
 					<div id="generate_pdforg" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
-						<a href="#" id="generatePDFButtonOrg" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
+						<a href="#" id="generatePDFButtonOrg" onclick="javascript:downloadPDFReport(this);return false;" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 					</div>
 					<div id="generate_csvorg" style="float:right;visibility:hidden;  padding-right: 5px; padding-top: 5px;">
-						<a href="#" id="generateCSVButtonOrg" class="rounded {transparent} button"><lb:label key="immediate.report.generate.csv.button.value" /></a>
+						<a href="#" id="generateCSVButtonOrg" onclick="javascript:downloadCSVReport(this);return false;" class="rounded {transparent} button"><lb:label key="immediate.report.generate.csv.button.value" /></a>
 					</div>
 <!--					<div id="view_report" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">-->
 <!--						<a href="#" id="viewReportButton" onclick="javascript:viewHtmlReport(this); return false;" class="rounded {transparent} button"><lb:label key="immediate.report.view.report.button.value" /></a>-->
