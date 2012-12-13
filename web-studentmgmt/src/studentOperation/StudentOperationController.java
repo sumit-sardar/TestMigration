@@ -896,11 +896,54 @@ public class StudentOperationController extends PageFlowController {
 	 * createStudentDemographics
 	 */
 	private void createStudentDemographics(Integer studentId)
-	{
+	{	
+		String valueName=null;
+		String value=null;
+		String demoLabel = null;
+		String selected = null;
+		int demoCount=0;
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.demographics != null))
 		{
+			
 			try
-			{    
+			{ 
+				for (int j=0; j < demographics.size(); j++)
+				{
+					StudentDemographic sdd1 = (StudentDemographic)demographics.get(j);
+					StudentDemographicValue[] sdv0 = sdd1.getStudentDemographicValues();
+					//demographics.
+					demoLabel = sdd1.getLabelName();
+					for (int l=0; l < sdv0.length; l++){
+						StudentDemographicValue sdv3 = (StudentDemographicValue)sdv0[l];
+						 valueName = sdv3.getValueName().trim();
+						 //value =sdv2.getValueCode().trim();
+						 selected = sdv3.getSelectedFlag();
+						if ((demoLabel.equals("Sub_Ethnicity") || demoLabel.equals("Ethnicity")) && selected.equals("true") )
+						{
+							demoCount++;
+						}
+					}
+					
+				}
+				if (demoCount == 2)
+				{
+					for (int i=0; i < demographics.size(); i++)
+					{
+						StudentDemographic sdd2 = (StudentDemographic)demographics.get(i);
+						StudentDemographicValue[] sdv = sdd2.getStudentDemographicValues();
+						for (int k=0; k < sdv.length; k++){
+							 StudentDemographicValue sdv2 = (StudentDemographicValue)sdv[k];
+							 valueName = sdv2.getValueName().trim();
+							 //value =sdv2.getValueCode().trim();
+							 selected = sdv2.getSelectedFlag();
+							 if (valueName.equals("Hispanic or Latino") && selected.equals("true"))
+							 {
+								 sdv[k].setSelectedFlag("false");
+							 }
+						}
+						
+					}
+				}
 				StudentDemographic[] studentDemoList = (StudentDemographic[])this.demographics.toArray( new StudentDemographic[0] );
 				this.studentManagement.createStudentDemographics(this.userName, studentId, studentDemoList);
 			}
@@ -918,8 +961,51 @@ public class StudentOperationController extends PageFlowController {
 	{
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.demographics != null))
 		{
+			String valueName=null;
+			String value=null;
+			String demoLabel = null;
+			String selected = null;
+			int demoCount=0;
 			try
-			{    
+			{  
+				for (int j=0; j < demographics.size(); j++)
+				{
+					StudentDemographic sdd1 = (StudentDemographic)demographics.get(j);
+					StudentDemographicValue[] sdv0 = sdd1.getStudentDemographicValues();
+					//demographics.
+					demoLabel = sdd1.getLabelName();
+					for (int l=0; l < sdv0.length; l++){
+						StudentDemographicValue sdv3 = (StudentDemographicValue)sdv0[l];
+						 valueName = sdv3.getValueName().trim();
+						 //value =sdv2.getValueCode().trim();
+						 selected = sdv3.getSelectedFlag();
+						if ((demoLabel.equals("Sub_Ethnicity") || demoLabel.equals("Ethnicity")) && selected.equals("true") )
+						{
+							demoCount++;
+						}
+					}
+					
+				}
+				if (demoCount == 2)
+				{
+					for (int i=0; i < demographics.size(); i++)
+					{
+						StudentDemographic sdd2 = (StudentDemographic)demographics.get(i);
+						StudentDemographicValue[] sdv = sdd2.getStudentDemographicValues();
+						for (int k=0; k < sdv.length; k++){
+							 StudentDemographicValue sdv2 = (StudentDemographicValue)sdv[k];
+							 valueName = sdv2.getValueName().trim();
+							 //value =sdv2.getValueCode().trim();
+							 selected = sdv2.getSelectedFlag();
+							 if (valueName.equals("Hispanic or Latino") && selected.equals("true"))
+							 {
+								 sdv[k].setSelectedFlag("false");
+							 }
+						}
+						
+					}
+				}
+				
 				StudentDemographic[] studentDemoList = (StudentDemographic[])this.demographics.toArray( new StudentDemographic[0] );
 				this.studentManagement.updateStudentDemographics(this.userName, studentId, studentDemoList);
 			}

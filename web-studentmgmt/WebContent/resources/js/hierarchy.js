@@ -2000,6 +2000,20 @@ function fillselectedOrgNode( elementId, orgList) {
 		complete : function(XMLHttpRequest, textStatus){//added for script error change
    						if(textStatus == "success"){
 	  						populateStuDemographics();
+	  						var inputs = $('#Student_Additional_Information input');
+	  						//var currEthnicity = $('#Ethnicity').val();
+							 for(var i=0; i < inputs.length; i++) {
+						        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 
+						        	&& inputs[i].getAttribute("type") == "radio" )
+						        	{
+						        		if (inputs[i].checked==true)
+						        		{
+						        		$('#Ethnicity').val("Hispanic or Latino");
+						        		//$('#Ethnicity').trigger('onchange');
+						        		toogleHispanicEhtnicityOptions('false');
+						        		}
+						        	}
+						        }
 	  						if(profileEditable === "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
@@ -3128,7 +3142,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	}
 	
 	
-	function toogleHispanicEhtnicityOptions(){
+	function toogleHispanicEhtnicityOptions(boolonchangeEthnicty){
+		if(boolonchangeEthnicty == "true")
+		resetSubEthnicityRadioButtons();
 		var currenValue = $("#Ethnicity").val();
 		if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
 			displaySubEthnicityFunc();
@@ -3283,7 +3299,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 	function adjustRadioSelection(value){
 	
-	    var inputs=$("input");
+	    var inputs= $('#Student_Additional_Information input');
 	    for(var i=0; i < inputs.length; i++) {
 	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 && inputs[i].getAttribute("type") == "radio" &&
 	        	value != inputs[i].getAttribute("name")){	        
@@ -3294,7 +3310,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	
 	
 	function resetSubEthnicityRadioButtons() {
-		var inputs = $("input");
+		var inputs = $('#Student_Additional_Information input');
 		 for(var i=0; i < inputs.length; i++) {
 	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 
 	        	&& inputs[i].getAttribute("type") == "radio" ){	        
