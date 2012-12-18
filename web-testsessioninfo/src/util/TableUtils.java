@@ -474,7 +474,7 @@ public class TableUtils
 					               Element.ALIGN_LEFT ));
         }
         cells.add(getTableCell(loginId,
-                               getDataEntryTenFont(),
+        					   getTenFont(),
                                true,
                                false,
                                false,
@@ -484,7 +484,7 @@ public class TableUtils
                                STUDENT_CELL_PADDING,
                                Element.ALIGN_LEFT));
         cells.add(getTableCell(password,
-        					   getDataEntryTenFont(),
+        					   getTenFont(),
                                true,
                                false,
                                false,
@@ -631,7 +631,8 @@ public class TableUtils
             return getNormalBoldBlueFont();
         }
         else if ((cell+1)%cols == 0){  // tac 
-            return getDataEntryFont();
+            //return getDataEntryFont();
+        	return getNormalFont();
         }
         else{
             return getNormalFont();
