@@ -61,6 +61,7 @@ var isSetEditStudentDetail = false;
 var isEditStudentImported = false;// Need to be used as imported student's profile can also be editable.
 var customerConfiguration = [];
 var isOOSConfigured = false; // added for OOSConfigurable
+var outOfSchoolValue = null;
 
 
 $(document).bind('keydown', function(event) {
@@ -1596,6 +1597,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
 		 "&isAddStudent=" + isAddStudent +"&createBy="+createBy ;
+		 outOfSchoolValue = $("#notTestingDefaultValue").val();
 	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 		createBy = getCreatedBy();
@@ -1691,8 +1693,8 @@ function fillselectedOrgNode( elementId, orgList) {
 																			hasAccommodations:data.hasAccommodation,
 																			userName:data.studentLoginId,
 																			studentNumber:$("#studentExternalId").val(),
-																			outOfSchool:$("#notTestingDefaultValue").val()};
-														
+																			outOfSchool : outOfSchoolValue};
+																			
 														var sortOrd = jQuery("#list2").getGridParam("sortorder");
 														var sortCol = jQuery("#list2").getGridParam("sortname");	
 														if(!isAddStudent) {
@@ -1937,7 +1939,8 @@ function fillselectedOrgNode( elementId, orgList) {
 						$("#studentExternalId2").val(data.studentSecondNumber);
 						if($("#isLasLinkCustomer").val() == "true")
 							$("#testPurposeOptions").val(data.testPurpose);
-							
+						
+						outOfSchoolValue = data.outOfSchool;
 						profileEditable = String(data.optionList.profileEditable);
 						
 						stuDemographic = data.stuDemographic;

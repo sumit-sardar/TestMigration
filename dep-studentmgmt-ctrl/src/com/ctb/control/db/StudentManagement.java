@@ -117,7 +117,7 @@ public interface StudentManagement extends JdbcControl
      * 	 stu.student_id = {studentId}::
      */
      // (LLO82) StudentManagement Changes For LasLink product
-    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2, stu.test_purpose as testPurpose , stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
+    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2, stu.test_purpose as testPurpose , stu.created_by as createdBy, NVL(stu.out_of_school, 'No') as outOfSchool from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
     ManageStudent getManageStudent(int studentId) throws SQLException;
     
 
