@@ -385,6 +385,7 @@ public interface TestSessionStatus
      * @param itemSetIds - identifies the TD item sets (subtests)
      * @throws com.ctb.exception.CTBBusinessException
      */
+    void toggleSubtestValidationStatus(java.lang.String userName, java.lang.Integer testRosterId, java.lang.Integer[] itemSetIds, java.lang.String status) throws com.ctb.exception.CTBBusinessException;
     
     void toggleSubtestValidationStatus(java.lang.String userName, java.lang.Integer testRosterId, java.lang.String[] itemSetIds, java.lang.String status) throws com.ctb.exception.CTBBusinessException;
     

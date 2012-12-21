@@ -500,6 +500,9 @@ public interface StudentItemSetStatus extends JdbcControl
      *      test_roster_id = {testRosterId}
      *      and item_set_id = {itemSetId} ::
      */
+    @JdbcControl.SQL(statement = "update student_item_set_status set validation_status =  decode((select validation_status from student_item_set_status where test_roster_id = {testRosterId} and item_set_id = {itemSetId} ),'VA','IN','VA') where test_roster_id = {testRosterId} and item_set_id = {itemSetId}")
+    void toggleSubtestValidationStatus(Integer testRosterId, Integer itemSetId) throws SQLException;
+    
     @JdbcControl.SQL(statement = "update  student_item_set_status set  validation_status =  decode(  (select  validation_status  from  student_item_set_status  where  test_roster_id = {testRosterId}  and item_set_id = {itemSetId}  ),'VA','IN','VA'),  invalidation_reason_id = decode((select validation_status from student_item_set_status where test_roster_id = {testRosterId} and item_set_id = {itemSetId}), 'VA', {reason}, '') where  test_roster_id = {testRosterId}  and item_set_id = {itemSetId} ")
     void toggleSubtestValidationStatus(Integer testRosterId, Integer itemSetId,String reason) throws SQLException;
 
