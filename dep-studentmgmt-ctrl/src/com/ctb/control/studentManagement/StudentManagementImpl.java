@@ -484,6 +484,8 @@ public class StudentManagementImpl implements StudentManagement
 
 			if (customerDemographics != null && customerDemographics.length > 0) 
 			{
+				//update SubEntnicity properly.
+				String studentDemoGraphicDataValue = studentManagement.studentEthnicityValue(studentId == null? -1: studentId.intValue());
 				studentDemographics = new StudentDemographic[customerDemographics.length];
 				for (int i = 0; i < customerDemographics.length; i++) {
 					studentDemographics[i] = new StudentDemographic(customerDemographics[i]);
@@ -494,7 +496,14 @@ public class StudentManagementImpl implements StudentManagement
 						studentDemographicValues = studentManagement.getStudentDemographicValues(studentDemographics[i].getId().intValue(), studentId == null? -1: studentId.intValue());
 					else
 						studentDemographicValues = studentManagement.getVisibleStudentDemographicValues(studentDemographics[i].getId().intValue(), studentId == null? -1: studentId.intValue());
-
+					
+					if(null != studentDemoGraphicDataValue && studentDemoGraphicDataValue.trim().length() > 0 
+							&& "Sub_Ethnicity".equals(studentDemographics[i].getLabelName())) {
+						for(StudentDemographicValue demographic : studentDemographicValues){
+							if(demographic.getValueName().equals(studentDemoGraphicDataValue))
+								demographic.setSelectedFlag("true");
+						}
+					}
 					studentDemographics[i].setStudentDemographicValues(studentDemographicValues);
 				}
 			}

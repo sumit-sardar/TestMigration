@@ -1168,4 +1168,7 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement ="SELECT ADM.PRODUCT_ID FROM TEST_ROSTER ROS, TEST_ADMIN ADM WHERE {sql: testRosterIds} AND ROS.TEST_ADMIN_ID = ADM.TEST_ADMIN_ID",
     		arrayMaxLength = 500000)
     Integer [] getProductIdFromRosterByGroup(String testRosterIds) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select sdd.value_name from student_demographic_data sdd where sdd.student_id = {studentId}")
+    String studentEthnicityValue (int studentId) throws SQLException;
 }

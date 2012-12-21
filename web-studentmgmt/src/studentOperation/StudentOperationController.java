@@ -902,6 +902,7 @@ public class StudentOperationController extends PageFlowController {
 		String demoLabel = null;
 		String selected = null;
 		int demoCount=0;
+		String subEthnicity=null;
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.demographics != null))
 		{
 			
@@ -922,6 +923,11 @@ public class StudentOperationController extends PageFlowController {
 						{
 							demoCount++;
 						}
+						if (demoLabel.equals("Sub_Ethnicity")&& selected.equals("true"))
+						 {
+							 subEthnicity = sdv3.getValueName(); 
+							 sdv3.setSelectedFlag("false");
+						 }
 					}
 					
 				}
@@ -934,11 +940,14 @@ public class StudentOperationController extends PageFlowController {
 						for (int k=0; k < sdv.length; k++){
 							 StudentDemographicValue sdv2 = (StudentDemographicValue)sdv[k];
 							 valueName = sdv2.getValueName().trim();
+							 
 							 //value =sdv2.getValueCode().trim();
-							 selected = sdv2.getSelectedFlag();
+							 //selected = sdv2.getSelectedFlag();
 							 if (valueName.equals("Hispanic or Latino") && selected.equals("true"))
 							 {
-								 sdv[k].setSelectedFlag("false");
+								 //sdv[k].setSelectedFlag("false");
+								 sdv[k].setValueName(subEthnicity);
+								 sdv[k].setValueCode(subEthnicity);
 							 }
 						}
 						
@@ -966,6 +975,7 @@ public class StudentOperationController extends PageFlowController {
 			String demoLabel = null;
 			String selected = null;
 			int demoCount=0;
+			String subEthnicity = null;
 			try
 			{  
 				for (int j=0; j < demographics.size(); j++)
@@ -983,6 +993,11 @@ public class StudentOperationController extends PageFlowController {
 						{
 							demoCount++;
 						}
+						if (demoLabel.equals("Sub_Ethnicity")&& selected.equals("true"))
+						 {
+							 subEthnicity = sdv3.getValueName(); 
+							 sdv3.setSelectedFlag("false");
+						 }
 					}
 					
 				}
@@ -999,7 +1014,9 @@ public class StudentOperationController extends PageFlowController {
 							 selected = sdv2.getSelectedFlag();
 							 if (valueName.equals("Hispanic or Latino") && selected.equals("true"))
 							 {
-								 sdv[k].setSelectedFlag("false");
+								 //sdv[k].setSelectedFlag("false");
+								 sdv[k].setValueName(subEthnicity);
+								 sdv[k].setValueCode(subEthnicity);
 							 }
 						}
 						
