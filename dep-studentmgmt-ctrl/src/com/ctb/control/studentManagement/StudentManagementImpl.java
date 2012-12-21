@@ -485,7 +485,14 @@ public class StudentManagementImpl implements StudentManagement
 			if (customerDemographics != null && customerDemographics.length > 0) 
 			{
 				//update SubEntnicity properly.
-				String studentDemoGraphicDataValue = studentManagement.studentEthnicityValue(studentId == null? -1: studentId.intValue());
+				CustomerDemographic enthnicityDemographic = null;
+				for(CustomerDemographic demographic : customerDemographics) {
+					if("Ethnicity".equals(demographic.getLabelName())){
+						enthnicityDemographic = demographic;
+						break;
+					}
+				}
+				String studentDemoGraphicDataValue = studentManagement.studentEthnicityValue(enthnicityDemographic == null ? -1 : enthnicityDemographic.getCustomerId(),studentId == null? -1: studentId.intValue());
 				studentDemographics = new StudentDemographic[customerDemographics.length];
 				for (int i = 0; i < customerDemographics.length; i++) {
 					studentDemographics[i] = new StudentDemographic(customerDemographics[i]);

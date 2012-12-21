@@ -1169,6 +1169,6 @@ public interface StudentManagement extends JdbcControl
     		arrayMaxLength = 500000)
     Integer [] getProductIdFromRosterByGroup(String testRosterIds) throws SQLException;
     
-    @JdbcControl.SQL(statement = "select sdd.value_name from student_demographic_data sdd where sdd.student_id = {studentId}")
-    String studentEthnicityValue (int studentId) throws SQLException;
+    @JdbcControl.SQL(statement = "select sdd.value_name from student_demographic_data sdd, customer_demographic cd where sdd.student_id = {studentId} and sdd.customer_demographic_id= cd.customer_demographic_id and cd.customer_id = {customerId} and cd.label_name = 'Ethnicity'")
+    String studentEthnicityValue (int customerId,int studentId) throws SQLException;
 }
