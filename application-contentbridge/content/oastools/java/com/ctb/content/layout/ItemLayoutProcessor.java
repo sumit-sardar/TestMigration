@@ -8,6 +8,7 @@ package com.ctb.content.layout;
 
 import Exception;
 import Integer;
+import SWFImageSizeDeterminer;
 import String;
 
 import java.awt.Font;
@@ -19,7 +20,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -2080,28 +2083,41 @@ public class ItemLayoutProcessor
         {
             boolean isJPGorBMP = false;
             boolean isSWF = false;
+            boolean useLocalFile = false;
             String ext = filePath.substring( filePath.length() - 3 ).toLowerCase();
-            if ( ext.equals( "bmp" ) || ext.equals( "jpg" ) || ext.equals("png"))
+            if (ext.equalsIgnoreCase( "png" )) {
+            	isJPGorBMP = true;
+            	useLocalFile = true;
+            } else if ( ext.equalsIgnoreCase( "bmp" ) || ext.equalsIgnoreCase( "jpg" )) {
                 isJPGorBMP = true;
-            else if ( ext.equals( "swf" )) {
-                isSWF = true;
-                // see if .png image replacement exists for .swf
-                try {
-                	String pngPath = filePath.replaceAll(".swf", ".png");
-	                PlainTextInputStream asset = (PlainTextInputStream) new URL(pngPath).getContent();
-	                BufferedImage image = ImageIO.read( asset );
+        	} else if ( ext.equalsIgnoreCase( "swf" )) {
+                String pngPath = filePath.replaceAll(".swf", ".png");
+            	pngPath = pngPath.replaceAll(".SWF", ".PNG");
+            	if(checkFileExists(pngPath)) {
 	                //png exists
 	                filePath = pngPath;
 	                lml.setAttribute("src", pngPath);
 	                isJPGorBMP = true;
-                } catch (Exception e) {
-                	//png does not exist
-                }
+	                useLocalFile = true;
+	                isSWF = false;
+	                ext = "png";
+            	} else {
+            		isSWF = true;
+                	isJPGorBMP = false;
+            	}
             }
+            
             if ( isJPGorBMP )
             {
-                PlainTextInputStream asset = (PlainTextInputStream) new URL(filePath).getContent();
-                BufferedImage image = ImageIO.read( asset );
+            	InputStream asset = null;
+            	BufferedImage image = null;
+            	if(useLocalFile) {
+            		asset = new FileInputStream(new File(filePath));
+            		image = ImageIO.read( asset );
+            	} else {
+            		asset = (PlainTextInputStream) new URL(filePath).getContent();
+            		image = ImageIO.read( asset );
+            	}
                 Integer widthINT = new Integer( ext.equals("png")?image.getWidth()/2:image.getWidth() );
                 Integer heightINT = new Integer( ext.equals("png")?image.getHeight()/2:image.getHeight() );
                 lml.setAttribute( "height", heightINT.toString() );
@@ -2111,11 +2127,35 @@ public class ItemLayoutProcessor
             else if ( isSWF )
             {
                 SWFImageSizeDeterminer aImageDeterminer = new SWFImageSizeDeterminer( filePath );
-               aImageDeterminer.checkSize();
+                aImageDeterminer.checkSize();
                 lml.setAttribute( "height", String.valueOf( aImageDeterminer.getHeight() ) );
                 lml.setAttribute( "width", String.valueOf( aImageDeterminer.getWidth() ) );                   
             }
         }  
+    }
+    
+    public boolean checkFileExists(String filePathString) {
+    	File file = new File(filePathString);
+    	return file.exists();
+    	
+    	/*int indx = filePathString.lastIndexOf( File.separator );
+    	String path = filePathString.substring( 0, indx-1);
+    	String fname = filePathString.substring( indx+1 );
+    	File directory = new File( path );
+    	File[] files = directory.listFiles();
+    	if(files == null || files.length < 1) {
+    		return false;
+    	} else {
+	    	boolean found = false;
+	    	for(int i=0;i<files.length;i++) {
+	    	  File f = files[i];
+	    	  if( f.getName().equals( fname ) ) {
+	    	    found = true;
+	    	    break;
+	    	  }
+	    	}
+	    	return found;
+    	}*/
     }
     
     public void handleParaAttributes( Element para, Element lml ) throws Exception
