@@ -6,11 +6,6 @@
  */
 package com.ctb.content.layout;
 
-import Exception;
-import Integer;
-import SWFImageSizeDeterminer;
-import String;
-
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
