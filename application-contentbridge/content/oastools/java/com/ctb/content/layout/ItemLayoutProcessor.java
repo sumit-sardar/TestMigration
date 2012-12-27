@@ -2179,23 +2179,36 @@ public class ItemLayoutProcessor {
             String ext = filePath.substring( filePath.length() - 3 ).toLowerCase();
             if (ext.equalsIgnoreCase( "png" )) {
             	isJPGorBMP = true;
-            	useLocalFile = true;
+            	if(filePath.startsWith("http")) {
+            		useLocalFile = false;
+            	} else {
+            		useLocalFile = true;
+            	}
             } else if ( ext.equalsIgnoreCase( "bmp" ) || ext.equalsIgnoreCase( "jpg" )) {
                 isJPGorBMP = true;
         	} else if ( ext.equalsIgnoreCase( "swf" )) {
                 String pngPath = filePath.replaceAll(".swf", ".png");
             	pngPath = pngPath.replaceAll(".SWF", ".PNG");
-            	if(checkFileExists(pngPath)) {
-	                //png exists
-	                filePath = pngPath;
+            	if(filePath.startsWith("http")) {
+            		filePath = pngPath;
 	                lml.setAttribute("src", pngPath);
 	                isJPGorBMP = true;
-	                useLocalFile = true;
+	                useLocalFile = false;
 	                isSWF = false;
 	                ext = "png";
             	} else {
-            		isSWF = true;
-                	isJPGorBMP = false;
+	            	if(checkFileExists(pngPath)) {
+		                //png exists
+		                filePath = pngPath;
+		                lml.setAttribute("src", pngPath);
+		                isJPGorBMP = true;
+		                useLocalFile = true;
+		                isSWF = false;
+		                ext = "png";
+	            	} else {
+	            		isSWF = true;
+	                	isJPGorBMP = false;
+	            	}
             	}
             }
             
