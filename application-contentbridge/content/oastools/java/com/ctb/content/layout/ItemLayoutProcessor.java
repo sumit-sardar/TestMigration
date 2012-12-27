@@ -2190,12 +2190,17 @@ public class ItemLayoutProcessor {
                 String pngPath = filePath.replaceAll(".swf", ".png");
             	pngPath = pngPath.replaceAll(".SWF", ".PNG");
             	if(filePath.startsWith("http")) {
-            		filePath = pngPath;
-	                lml.setAttribute("src", pngPath);
-	                isJPGorBMP = true;
-	                useLocalFile = false;
-	                isSWF = false;
-	                ext = "png";
+            		if(checkWebFileExists(pngPath)) {
+	            		filePath = pngPath;
+		                lml.setAttribute("src", pngPath);
+		                isJPGorBMP = true;
+		                useLocalFile = false;
+		                isSWF = false;
+		                ext = "png";
+	            	} else {
+	            		isSWF = true;
+	                	isJPGorBMP = false;
+	            	}
             	} else {
 	            	if(checkFileExists(pngPath)) {
 		                //png exists
@@ -2242,25 +2247,16 @@ public class ItemLayoutProcessor {
     public boolean checkFileExists(String filePathString) {
     	File file = new File(filePathString);
     	return file.exists();
-    	
-    	/*int indx = filePathString.lastIndexOf( File.separator );
-    	String path = filePathString.substring( 0, indx-1);
-    	String fname = filePathString.substring( indx+1 );
-    	File directory = new File( path );
-    	File[] files = directory.listFiles();
-    	if(files == null || files.length < 1) {
+    }
+    
+    public boolean checkWebFileExists(String filePathString) {
+    	try {
+    		PlainTextInputStream asset = (PlainTextInputStream) new URL(filePathString).getContent();
+			BufferedImage image = ImageIO.read( asset );
+			return true;
+    	} catch (Exception e) {
     		return false;
-    	} else {
-	    	boolean found = false;
-	    	for(int i=0;i<files.length;i++) {
-	    	  File f = files[i];
-	    	  if( f.getName().equals( fname ) ) {
-	    	    found = true;
-	    	    break;
-	    	  }
-	    	}
-	    	return found;
-    	}*/
+    	}
     }
 
 	public void handleParaAttributes(Element para, Element lml)
