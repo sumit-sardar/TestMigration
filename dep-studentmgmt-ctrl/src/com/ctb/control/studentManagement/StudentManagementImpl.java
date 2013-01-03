@@ -1347,6 +1347,7 @@ public class StudentManagementImpl implements StudentManagement
 			student.setBirthdate(manageStudent.getBirthDate());
 			student.setGender(manageStudent.getGender());
 			student.setGrade(manageStudent.getGrade());
+			student.setOutOfSchool(manageStudent.getNotTesting());
 
 			student.setExtPin1(manageStudent.getStudentIdNumber());
 			student.setExtPin2(manageStudent.getStudentIdNumber2());

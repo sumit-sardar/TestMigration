@@ -25,6 +25,7 @@ public class ManageStudent extends CTBBean
     private String grade;
     private String productNameList;
     private String gender;
+	private String notTesting;	
     private String scoringStatus;
     private Date birthDate;
     private Integer createdBy;
@@ -811,6 +812,12 @@ public class ManageStudent extends CTBBean
 	}
 	public void setMicrophoneHeadphone(String microphoneHeadphone) {
 		this.microphoneHeadphone = microphoneHeadphone;
+	}
+	public String getNotTesting() {
+		return notTesting;
+	}
+	public void setNotTesting(String notTesting) {
+		this.notTesting = notTesting;
 	}
 	
     

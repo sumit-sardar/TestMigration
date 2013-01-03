@@ -755,7 +755,7 @@ public interface StudentManagement extends JdbcControl
      * where student_id = {student.id}::
      */
      // (LLO82) StudentManagement Changes For LasLink product
-    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2},test_purpose = {student.testPurpose}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime} where student_id = {student.id}")
+    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2},test_purpose = {student.testPurpose}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime},out_of_school={student.notTesting} where student_id = {student.id}")
     void updateStudent(ManageStudent student, Integer updatedBy, Date updatedDateTime) throws SQLException;
 
     /**

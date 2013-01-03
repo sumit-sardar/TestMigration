@@ -1085,12 +1085,14 @@ document.getElementById('displayMessageMain').style.display = "none";
 						dayOptions = data.dayOptions; 
 						monthOptions = data.monthOptions;
 						yearOptions = data.yearOptions; 
+						notTestingOption = data.notTestingOption;
 						testPurposeOptions = data.testPurposeOptions;
 						fillDropDown("gradeOptions", gradeOptions);
 						fillDropDown("genderOptions", genderOptions);
 						fillDropDown("dayOptions", dayOptions);
 						fillDropDown("monthOptions", monthOptions);
 						fillDropDown("yearOptions", yearOptions);
+						fillDropDown("notTestingOptions", notTestingOption);
 						if($("#isLasLinkCustomer").val() =="true")
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
@@ -1709,7 +1711,7 @@ function fillselectedOrgNode( elementId, orgList) {
 																			hasAccommodations:data.hasAccommodation,
 																			userName:data.studentLoginId,
 																			studentNumber:$("#studentExternalId").val(),
-																			outOfSchool : outOfSchoolValue};
+																			outOfSchool : (($("#notTestingOptions").val()==("Please Select"))?"No":$("#notTestingOptions").val()) };
 																			
 														var sortOrd = jQuery("#list2").getGridParam("sortorder");
 														var sortCol = jQuery("#list2").getGridParam("sortname");	
@@ -2005,6 +2007,7 @@ function openNode(orgNodeId) {
 						monthOptions = data.optionList.monthOptions;
 						yearOptions = data.optionList.yearOptions; 
 						testPurposeOptions = data.optionList.testPurposeOptions;
+						notTestingOption = data.optionList.notTestingOption;
 						loginId = data.userName;
 						isEditStudentImported = data.isStudentImported;
 						fillDropDown("gradeOptions", gradeOptions);
@@ -2012,6 +2015,7 @@ function openNode(orgNodeId) {
 						fillDropDown("dayOptions", dayOptions);
 						fillDropDown("monthOptions", monthOptions);
 						fillDropDown("yearOptions", yearOptions);
+						fillDropDown("notTestingOptions", notTestingOption);
 						if($("#isLasLinkCustomer").val() =="true")
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 							
@@ -2023,6 +2027,7 @@ function openNode(orgNodeId) {
 						$("#yearOptions").val(data.year);
 						$("#genderOptions").val(data.gender);
 						$("#gradeOptions").val(data.grade);
+						$("#notTestingOptions").val(data.outOfSchool);
 						$("#studentExternalId").val(data.studentNumber);
 						$("#studentExternalId2").val(data.studentSecondNumber);
 						if($("#isLasLinkCustomer").val() == "true")

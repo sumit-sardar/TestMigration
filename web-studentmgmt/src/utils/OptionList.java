@@ -10,6 +10,7 @@ public class OptionList {
 	public String[] dayOptions = null;
 	public String[] yearOptions = null;
 	public String[] testPurposeOptions = null;
+	public String[] notTestingOption = null;
 	
 	private boolean profileEditable = true;
 	/**
@@ -95,6 +96,12 @@ public class OptionList {
 	 */
 	public void setTestPurposeOptions(String[] testPurposeOptions) {
 		this.testPurposeOptions = testPurposeOptions;
+	}
+	public String[] getNotTestingOption() {
+		return notTestingOption;
+	}
+	public void setNotTestingOption(String[] notTestingOption) {
+		this.notTestingOption = notTestingOption;
 	}
 	
 	

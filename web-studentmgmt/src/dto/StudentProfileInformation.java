@@ -28,6 +28,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String middleInitial;
     private String lastName;
     private String gender;
+    private String notTesting;
     private String grade;
     private String studentNumber;
     private String studentSecondNumber;
@@ -690,6 +691,10 @@ public class StudentProfileInformation extends SanitizedFormField
         if (this.gender.equals("Male")) copied.setGender("M");
         else if (this.gender.equals("Female")) copied.setGender("F");
         else copied.setGender("U");
+        
+        if (this.notTesting==null) copied.setNotTesting("No");
+        else if(this.notTesting.equals("Please Select")) copied.setNotTesting("No");
+        else copied.setNotTesting(this.notTesting);
 
         /*OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
@@ -1147,5 +1152,15 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setStudentImported(boolean isStudentImported) {
 		this.isStudentImported = isStudentImported;
+	}
+
+
+	public String getNotTesting() {
+		return notTesting;
+	}
+
+
+	public void setNotTesting(String notTesting) {
+		this.notTesting = notTesting;
 	}
 } 

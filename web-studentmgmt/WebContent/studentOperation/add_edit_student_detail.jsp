@@ -4,7 +4,8 @@
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
-	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable"); 
+	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable");
+	Boolean isOOSConfigured = (Boolean)session.getAttribute("isOOSConfigured");
 	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
 	String []studentId2ArrValue = (String[])request.getAttribute("studentId2ArrValue");
 	boolean isMandatoryStudentId = false;
@@ -22,6 +23,7 @@
 %>
 <div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
+<input type="hidden" id="isOOSConfigured"  value = '<%=isOOSConfigured %>' />
 <input type="hidden" id="isMandatoryBirthDate"  value = '<%=isMandatoryBirthDate %>' />
 <input type="hidden" id="isMandatoryStudentId" value = '<%=isMandatoryStudentId %>' />
 <input type="hidden" id="isStudentIdConfigurable" value = '<%=isStudentIdConfigurable %>' />
@@ -164,6 +166,18 @@
 										</td>       					   
 									</tr>
 								   <%} %>
+								
+										<%if(isOOSConfigured) { %>
+									 <tr class="transparent">
+										<td nowrap="" width="110" class="transparent alignRight"><lb:label key="stu.info.notTesting" suffix=":"/></td>
+										
+										<td nowrap="" class="transparent">    
+											<select style="width: 200px;"   id="notTestingOptions" name="notTestingOptions">		
+											</select>
+										</td>       					   
+									</tr>
+								   <%} %>
+								  
 								   	<tr style="display: table-row;" id="message" class="transparent">
 								   		<td width="110" class="transparent alignRight"  style="vertical-align: top;"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.org" suffix=":"/></td>
 										<td class="transparent-small" style="padding: 5px 5px 0 0">

@@ -425,6 +425,7 @@ public class StudentOperationController extends PageFlowController {
 			OptionList optionList = new OptionList();
 			optionList.setGradeOptions(getGradeOptions(ACTION_ADD_STUDENT));
 			optionList.setGenderOptions(getGenderOptions(ACTION_ADD_STUDENT));
+			optionList.setNotTestingOption(getNotTestingOptions(ACTION_ADD_STUDENT));
 			optionList.setMonthOptions( DateUtils.getMonthOptions());
 			optionList.setDayOptions(DateUtils.getDayOptions());
 			optionList.setYearOptions(DateUtils.getYearOptions());
@@ -474,6 +475,7 @@ public class StudentOperationController extends PageFlowController {
 		studentProfile.setDay(getRequest().getParameter("dayOptions"));
 		studentProfile.setYear(getRequest().getParameter("yearOptions"));
 		studentProfile.setGender(getRequest().getParameter("genderOptions"));
+		studentProfile.setNotTesting(getRequest().getParameter("notTestingOptions"));
 		studentProfile.setGrade(getRequest().getParameter("gradeOptions"));
 		studentProfile.setTestPurpose(getRequest().getParameter("testPurposeOptions"));
 		studentProfile.setStudentNumber(getRequest().getParameter("studentExternalId"));
@@ -638,6 +640,7 @@ public class StudentOperationController extends PageFlowController {
 			OptionList optionList = new OptionList();
 			optionList.setGradeOptions(getGradeOptions(ACTION_ADD_STUDENT));
 			optionList.setGenderOptions(getGenderOptions(ACTION_ADD_STUDENT));
+			optionList.setNotTestingOption(getNotTestingOptions(ACTION_ADD_STUDENT));
 			optionList.setMonthOptions( DateUtils.getMonthOptions());
 			optionList.setDayOptions(DateUtils.getDayOptions());
 			optionList.setYearOptions(DateUtils.getYearOptions());
@@ -1460,6 +1463,19 @@ public class StudentOperationController extends PageFlowController {
 		options.add("Male");
 		options.add("Female");
 		options.add("Unknown");
+
+		return (String [])options.toArray(new String[0]);        
+	}
+
+	/**
+	 * getNotTestingOptions
+	 */
+	private String [] getNotTestingOptions(String action)
+	{
+		List options = new ArrayList();
+		options.add("Please Select");
+		options.add("No");
+		options.add("Yes");
 
 		return (String [])options.toArray(new String[0]);        
 	}
