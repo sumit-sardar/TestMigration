@@ -163,6 +163,19 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			}
 		);
+		/*
+		//Uncomment this for auto open organizaion node when add new student
+		$("#orgNodeHierarchy").bind("select_node.jstree", function (event, data) {  
+		    //data.rslt.obj is the jquery extended node that was clicked      
+		    var node = data.rslt.obj;
+	    	leafOrgNodePath = node.attr("id");	     
+			var parentNode = data.inst._get_parent(node);		    
+		    while (parentNode !== -1) { 
+	    		leafOrgNodePath = parentNode.attr("id") + "," + leafOrgNodePath;
+		    	parentNode = data.inst._get_parent(parentNode);
+		    }
+		 });
+ 		*/
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	//SelectedOrgNode = $(this).parent();
 	    	//SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
@@ -170,7 +183,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    	clearMessage();
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
- 		    
+
 	 		if(parseInt(rootNodeId) == parseInt(SelectedOrgNodeId)){
 	 			var postDataObject = {};
 	 			postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
@@ -1159,6 +1172,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 		setCheckboxStatus();
 	}	
 	
+	//Uncomment this for auto open organizaion node when add new student	
+	//autoShowSelectedNode();
+	
 }
 
 function setCheckboxStatus() {
@@ -1774,7 +1790,79 @@ function fillselectedOrgNode( elementId, orgList) {
 		$('#Student_Additional_Information :input').attr('disabled', false);
 	}
 	
+
+/*
+//Uncomment this for auto open organizaion node when add new student	
+function autoShowSelectedNode() {
+	var orgNodeIdArray = leafOrgNodePath.split(",");
+	if (orgNodeIdArray.length > 1) {
+		orgNodeId = orgNodeIdArray[0]; 
+		assignedOrgNodeIds = orgNodeId;
+		
+		var obj = new Object();
+		obj.orgNodeId = orgNodeId;
+		obj.leafNodePath = leafOrgNodePath;
+		organizationNodes[0] = obj;
+			
+		openNode(orgNodeId);
+	}
+}
+
 	
+function openNode(orgNodeId) {
+	var isopened = false;
+	asyncOver = 0;
+	leafParentOrgNodeId = "";
+	var par = null;
+	var correctId;
+	$('#innerID').jstree('close_all');
+	
+	leafParentOrgNodeId = "";
+	for(var i=0; i< organizationNodes.length; i++){
+		if(orgNodeId == organizationNodes[i].orgNodeId){
+			var leafOrgNodePath = organizationNodes[i].leafNodePath;
+			 leafParentOrgNodeId = leafOrgNodePath.split(",");
+			break;
+		}
+	}
+		
+	type = "innerID";
+		
+	outerLoop: for(var key in rootMap){
+		for(var i =0; i < leafParentOrgNodeId.length; i++ ){
+			if (key == leafParentOrgNodeId[i]){
+				correctId = i;
+				break outerLoop;
+			}
+		}
+	}
+	
+	leafParentOrgNodeId = leafParentOrgNodeId.slice(correctId,leafParentOrgNodeId.length);
+	
+	if(leafParentOrgNodeId.length > 0) {
+		for(var count = 0; count < leafParentOrgNodeId.length - 1; count++) {
+  		 	var tmpNode = leafParentOrgNodeId[count];
+
+  		 	currentCategoryLevel = String(count+1);
+  		 	currentNodeId = tmpNode;
+  		 	if(count != 0) { 
+  		 		par = leafParentOrgNodeId[count-1];		 						  		 			
+  		 	} else {
+  		 		par = leafParentOrgNodeId[count];
+  		 	}
+  		 	prepareData(false,currentCategoryLevel,currentNodeId,par);
+  		 }	 			
+
+  		 var tmpNode = leafParentOrgNodeId[0];	
+		 currentCategoryLevel = "1";
+		 currentNodeId = tmpNode;
+		 currentTreeArray = map.get(currentNodeId); 		 
+   		 $('#innerID').jstree('open_node', "#"+currentNodeId); 
+  		 isopened = true; 
+ 	}
+		
+}
+*/
 	
 	function openTreeNodes(orgNodeId) {
 	var isopened = false;
