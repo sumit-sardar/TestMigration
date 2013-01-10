@@ -26,6 +26,7 @@ public class AdminCollector{
         								"a.test_admin_id, " + 
         								"a.LOGIN_START_DATE, " + 
         								"a.LOGIN_END_DATE, " + 
+        								"a.lexington_version, " +
         								"prog.PRODUCT_ID, " +
         								"pp.product_name, " + 
         								"p.product_type, " + 
@@ -75,6 +76,7 @@ public class AdminCollector{
         					   			"a.test_admin_id, " + 
         					   			"a.LOGIN_START_DATE, " + 
         					   			"a.LOGIN_END_DATE, " +  
+        					   			"a.lexington_version, " +
         					   			"prog.PRODUCT_ID, " + 
         					   			"pp.product_name, " + 
         					   			"p.product_type, " + 
@@ -117,6 +119,11 @@ public class AdminCollector{
 	        	details.setWindowStartDate(loginStartDate);
 	        	details.setWindowEndDate(SQLUtil.getTimestamp(rs,"login_end_date"));
 	        	
+        		details.setShowGE(new Long(1));
+	        	String showGE = SQLUtil.getString(rs, "lexington_version");
+	        	if ("GE-No".equals(showGE))
+	        		details.setShowGE(new Long(0));
+	        		
 	        	details.setProductId(SQLUtil.getLong(rs, "product_id"));
 	        	details.setproductName(SQLUtil.getString(rs, "product_name"));
 	        	

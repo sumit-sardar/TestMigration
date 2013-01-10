@@ -40,6 +40,7 @@ public class AdminData{
 	 private Timestamp windowStartDate;
 	 private Timestamp windowEndDate;
 	 //private Long schedulerId;
+	 private Long showGE;
      
      private String timeZone;
 	 
@@ -301,6 +302,14 @@ public class AdminData{
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
 	}
+	public Long getShowGE() {
+		return showGE;
+	}
+	public void setShowGE(Long showGE) {
+		this.showGE = showGE;
+	}
+	
+	
 }
 
 	

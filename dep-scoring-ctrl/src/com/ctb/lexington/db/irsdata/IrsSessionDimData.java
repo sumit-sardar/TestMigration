@@ -14,6 +14,7 @@ public class IrsSessionDimData implements Persistent {
     private Date windowStartDate;
     private Date windowEndDate;
     private Long schedulerid;
+    private Long showGE;
 
     
 
@@ -64,7 +65,16 @@ public class IrsSessionDimData implements Persistent {
     public void setSchedulerid(Long schedulerid) {
         this.schedulerid = schedulerid;
     }
-    public boolean equals(Object other) {
+       
+    public Long getShowGE() {
+		return showGE;
+	}
+
+	public void setShowGE(Long showGE) {
+		this.showGE = showGE;
+	}
+
+	public boolean equals(Object other) {
         return
             this.getSchedulerid().equals(((IrsSessionDimData) other).getSchedulerid()) &&
             this.getProgramid().equals(((IrsSessionDimData) other).getProgramid()) &&

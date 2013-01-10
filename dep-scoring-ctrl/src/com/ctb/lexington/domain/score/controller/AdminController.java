@@ -191,6 +191,7 @@ public class AdminController {
     	sessionData.setWindowStartDate(data.getWindowStartDate());
     	sessionData.setWindowEndDate(data.getWindowEndDate());
         sessionData.setSchedulerid(data.getSchedulerId());
+        sessionData.setShowGE(data.getShowGE());
     	return sessionData;
     } 
     
