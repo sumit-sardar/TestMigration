@@ -467,6 +467,16 @@
 	 		modal: true,
 	 		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
+		
+		if (isWipeOut) {
+			$("#confirmMessage").hide();
+			$("#confirmHardMessage").show();
+		}	
+		else {
+			$("#confirmHardMessage").hide();
+			$("#confirmMessage").show();
+		}
+			
 		 $("#confirmResetTestBySessionPopup").css('height',120);
 		 var toppos = ($(window).height() - 290) /2 + 'px';
 		 var leftpos = ($(window).width() - 410) /2 + 'px';

@@ -128,7 +128,8 @@
 			<div id="confirmResetTestBySessionPopup"
 				style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 			<div style="padding: 10px; text-align: center;">
-			<div style="text-align: left;"><lb:label key="reset.test.by.session.confirmation.message" /></div>
+			<div id="confirmMessage" style="text-align: left; display: none;"><lb:label key="reset.test.by.session.confirmation.message" /></div>
+			<div id="confirmHardMessage" style="text-align: left; display: none;"><lb:label key="reset.test.by.session.confirmation.hardMessage" /></div>
 			</div>
 			<div style="padding: 10px;">
 			<center><input type="button" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/>
