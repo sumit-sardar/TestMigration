@@ -1939,6 +1939,8 @@ public interface OrgNode extends JdbcControl
 	@JdbcControl.SQL(statement = "SELECT MAX(ONC.CATEGORY_LEVEL) FROM ORG_NODE_CATEGORY ONC WHERE ONC.CUSTOMER_ID = {customerId} AND ONC.ACTIVATION_STATUS = 'AC'")
 	Integer getLeafNodeCategoryId(Integer customerId) throws SQLException;
 	
+	@JdbcControl.SQL(statement = "SELECT ORG_NODE_ID FROM ORG_NODE_CATEGORY ONC, ORG_NODE ORG WHERE ONC.CUSTOMER_ID = {customerId} AND ONC.ACTIVATION_STATUS = 'AC' AND ORG.ORG_NODE_CATEGORY_ID = ONC.ORG_NODE_CATEGORY_ID AND ONC.CATEGORY_LEVEL IN (SELECT MIN(ONGC.CATEGORY_LEVEL) FROM ORG_NODE_CATEGORY ONGC WHERE ONGC.CUSTOMER_ID = {customerId} AND ONGC.ACTIVATION_STATUS = 'AC') AND ORG.ACTIVATION_STATUS = 'AC'")
+	Integer[] getStateLevelNodeId(Integer customerId) throws SQLException;
 	//Changes for new UI
 	
 	 /**

@@ -2793,6 +2793,21 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return leafNodeCategoryId;
 	}
+	
+	public Integer[] getStateLevelNodeId(Integer customerId) throws CTBBusinessException
+	{
+		Integer [] stateLevelNodeId = null;
+		try  {
+			stateLevelNodeId = orgNode.getStateLevelNodeId(customerId);
+		}
+		catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStateLevelNodeId: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		
+		return stateLevelNodeId;
+	}
 
 
 	//Added for bulk move students

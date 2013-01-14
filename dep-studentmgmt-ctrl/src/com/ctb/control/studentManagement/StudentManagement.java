@@ -505,6 +505,8 @@ public interface StudentManagement
 	
 	java.lang.Integer getLeafNodeCategoryId(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
 	
+	java.lang.Integer [] getStateLevelNodeId(Integer customerId) throws com.ctb.exception.CTBBusinessException;
+	
 	//Bulk Move
 	com.ctb.bean.studentManagement.ManageStudentData getBulkMoveStudent(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	

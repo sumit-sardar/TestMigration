@@ -11,6 +11,7 @@ public class BaseTree {
 	private Integer leafNodeCategoryId;
 	public String[] gradeOptions = null;
 	private List<CustomerDemographic> customerDemographicList;
+	private Integer[] stateLevelNodeId= null;
 	/**
 	 * @return the gradeOptions
 	 */
@@ -60,6 +61,20 @@ public class BaseTree {
 	public void setCustomerDemographicList(
 			List<CustomerDemographic> customerDemographicList) {
 		this.customerDemographicList = customerDemographicList;
+	}
+
+	/**
+	 * @return the stateLevelNodeId
+	 */
+	public Integer[] getStateLevelNodeId() {
+		return stateLevelNodeId;
+	}
+
+	/**
+	 * @param stateLevelNodeId the stateLevelNodeId to set
+	 */
+	public void setStateLevelNodeId(Integer[] stateLevelNodeId) {
+		this.stateLevelNodeId = stateLevelNodeId;
 	}
 
 	

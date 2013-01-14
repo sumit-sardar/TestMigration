@@ -160,7 +160,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 					}
 				}
 			}
-
+			Integer [] stateLevelNodeId = StudentPathListUtils.getStateLevelNodeId(this.customerId, this.studentManagement);
+			baseTree.setStateLevelNodeId(stateLevelNodeId);
 			Gson gson = new Gson();
 			baseTree.setData(data);
 			Collections.sort(baseTree.getData(), new Comparator<TreeData>() {

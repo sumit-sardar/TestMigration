@@ -597,5 +597,12 @@ public class StudentPathListUtils
         return leafNodeCategoryId;
     }
     
+    public static Integer [] getStateLevelNodeId(Integer customerId, StudentManagement studentManagement) throws CTBBusinessException {
+    	
+    	Integer [] stateLevelNodeId = null;
+    	stateLevelNodeId = studentManagement.getStateLevelNodeId(customerId);
+    	
+    	return stateLevelNodeId;
+    }
     
 } 

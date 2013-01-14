@@ -12,7 +12,7 @@ var prvGrade 		= "";
 var prvCatalog 		= "";
 var prvContentArea	= "";
 var prvForm	= "";
-
+var stateLevelNodeIds = [];
 
 function populateUserOrgHierarchy() {
 	$.ajax({
@@ -26,6 +26,7 @@ function populateUserOrgHierarchy() {
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI(); 
 						leafNodeCategoryId = data.leafNodeCategoryId;
+						stateLevelNodeIds = data.stateLevelNodeId;
 						jsonData = data.data;
 						getRootNodeDetails();
 						createSingleNodeScoringTree("imdRptOrgTree", data);
