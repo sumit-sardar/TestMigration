@@ -1013,7 +1013,7 @@ function registerDelegate(tree){
 				$("#selectGELbl").show();		
 				document.getElementById("selectGE").checked = selectGE;
 				if (state == "EDIT") {
-					$("#selectGE").attr("disabled", true);
+					$("#selectGE").attr("disabled", stdsLogIn);
 				}
 			}
 		}
