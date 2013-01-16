@@ -27,6 +27,7 @@ import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.testAdmin.Address;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.FindUserData;
@@ -2307,12 +2308,20 @@ public class UserManagementImpl implements UserManagement
                                 String userId, String password) {
         try {
             CustomerEmail emailData = new CustomerEmail();
+            boolean isLaslinkCustomer = false;
             if(userName != null){ 
               emailData = users.getCustomerEmailByUserName(userName, emailType);
             }
             else if (orgNodeId != null){
               emailData = users.getCustomerEmailByOrgId(orgNodeId, emailType);
             }
+            CustomerConfiguration [] cc = users.getCustomerConfigurations(emailData.getCustomerId());
+            for (int i = 0; i < cc.length; i++) {
+				if(cc[i].getCustomerConfigurationName().equals("LASLINK_Customer") ||
+						cc[i].getCustomerConfigurationName().equals("LL_Customer")){
+					isLaslinkCustomer = true;
+				}
+			}
             String content = emailData.getEmailBodyStr().replaceAll(
                                 CTBConstants.EMAIL_CONTENT_PLACEHOLDER_USERID, userId);
             content = content.replaceAll(CTBConstants.EMAIL_CONTENT_PLACEHOLDER_PASSWORD
@@ -2329,7 +2338,10 @@ public class UserManagementImpl implements UserManagement
             if(replyTo == null || replyTo.length() < 1) {
                 replyTo = CTBConstants.EMAIL_FROM;
             }
-            msg.setFrom(new InternetAddress(replyTo));
+            if(isLaslinkCustomer)
+            	msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
+            else
+            	msg.setFrom(new InternetAddress(replyTo));
             
             //emailTo could be a comma separated list of addresses
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));

@@ -1997,6 +1997,7 @@ public final class CTBConstants
   
   //User Management Email constants
   public static final String EMAIL_FROM = "oas_account_management@ctb.com";
+  public static final String EMAIL_FROM_ALIAS_LASLINKS = "LAS Links – OAS Account Management";
   public static final Integer EMAIL_TYPE_WELCOME = new Integer(1);
   public static final Integer EMAIL_TYPE_PASSWORD = new Integer(2);
   public static final Integer EMAIL_TYPE_NOTIFICATION = new Integer(3);

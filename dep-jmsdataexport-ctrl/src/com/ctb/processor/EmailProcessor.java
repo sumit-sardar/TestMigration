@@ -91,7 +91,8 @@ public class EmailProcessor {
 			  }
 			 
 
-			msg.setFrom(new InternetAddress(replyTo));
+			//msg.setFrom(new InternetAddress(replyTo));
+			msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
 
 			// emailTo could be a comma separated list of addresses
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
@@ -148,7 +149,8 @@ public class EmailProcessor {
 			Session session = (Session) ic.lookup("UserManagementMail");
 			Message msg = new MimeMessage(session);
 
-			msg.setFrom(new InternetAddress(replyTo));
+			//msg.setFrom(new InternetAddress(replyTo));
+			msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
 					to, false));
 			msg.setSubject(subject);
