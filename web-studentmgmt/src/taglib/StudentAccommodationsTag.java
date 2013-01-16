@@ -66,7 +66,7 @@ public class StudentAccommodationsTag extends CTBTag
         
 			displayRowStart("transparent");
 				displayCellStartColspan("transparent", null, "3");
-					writeToPage("Select the accommodation(s) the student requires while testing. These settings can be adjusted for each test.");
+					writeToPage("Select the accommodation(s)/tool(s) the student requires while testing. These settings can be adjusted for each test.");
 				displayCellEnd();
 			displayRowEnd();
 
@@ -144,7 +144,7 @@ public class StudentAccommodationsTag extends CTBTag
             checked = this.accommodations.getUntimedTest().booleanValue();
             disabled = isDisabled(field);
             displayControlRow(field, description, checked, disabled, null);                        
-            displayTextRow("Eliminate time limits.", "20");
+            displayTextRow("Eliminate automated time limits. Test untimed or timed locally.", "20");
 
             displayEmptyRow("2");
             displayEmptyRow("2");
