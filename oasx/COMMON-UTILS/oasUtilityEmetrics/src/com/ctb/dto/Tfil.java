@@ -198,11 +198,11 @@ public class Tfil {
 	public void setElementNameA(String elementNameA) {
 		this.elementNameA = elementNameA;
 	}
-	
-	@PositionalField(initialPosition = 42, finalPosition = 56)
+		
 	/**
 	 * @return the elementALabel
 	 */
+	@PositionalField(initialPosition = 42, finalPosition = 56)
 	public String getElementALabel() {
 		return elementALabel;
 	}
