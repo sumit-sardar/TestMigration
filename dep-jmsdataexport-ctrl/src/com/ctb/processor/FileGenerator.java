@@ -152,11 +152,16 @@ public class FileGenerator {
 	"  from item_response , item where test_roster_id = ?   and item_response.item_id =item.item_id and item.item_type = 'CR' and item.ACTIVATION_STATUS = 'AC' " +
 	"  group by item_response.item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
 
-	
+	private String subtestIndicator = "SELECT CONL.SUBTEST_MODEL  FROM TEST_ROSTER              TR, TEST_ADMIN               TA, CUSTOMER_CONFIGURATION   CC, CUSTOMER_ORGNODE_LICENSE CONL, PRODUCT                  PROD WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND " +
+	"TA.CUSTOMER_ID = CC.CUSTOMER_ID AND CC.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription' AND CC.DEFAULT_VALUE = 'T' AND TA.PRODUCT_ID = PROD.PRODUCT_ID AND CONL.CUSTOMER_ID = CC.CUSTOMER_ID AND CONL.ORG_NODE_ID = TR.ORG_NODE_ID AND CONL.PRODUCT_ID = PROD.PARENT_PRODUCT_ID ";
 	
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
 	private int classElementNumber = 0;
+	private int sectionElementNumber = 0;
+	private int groupElementNumber = 0;
+	private int divisionElementNumber = 0;
+	private int levelElementNumber = 0;
 	private int studentElementNumber = 0;
 	private String customerModelLevelValue = null;
 	private String customerState = null;
@@ -296,6 +301,10 @@ public class FileGenerator {
 		HashMap<String, Integer> districtMap = new HashMap<String, Integer>();
 		HashMap<String, Integer> schoolMap = new HashMap<String, Integer>();
 		HashMap<String, Integer> classMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> sectionMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> groupMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> divisionMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> levelMap = new HashMap<String, Integer>();
 		HashMap<Integer, String> customerDemographic = new HashMap<Integer, String>();
 		Integer studentCount = 0;
 		Connection oascon = null;
@@ -344,7 +353,7 @@ public class FileGenerator {
 					// +" : : "+ roster.getTestAdminId());
 					// org node
 					createOrganization(oascon, tfil, roster.getStudentId(),
-							districtMap, schoolMap, classMap, orderFile);
+							districtMap, schoolMap, classMap, sectionMap, groupMap, divisionMap, levelMap, orderFile);
 					// create test Session
 					createTestSessionDetails(oascon, tfil, roster
 							.getTestRosterId(), orderFile);
@@ -359,6 +368,7 @@ public class FileGenerator {
 							roster);
 					// createItemResponseInformation(oascon, roster,tfil); //
 					// for emetric research analysis
+					createSubtestIndicatorFlag(oascon, roster.getTestRosterId(), tfil);
 					tfilList.add(tfil);
 					studentCount++;
 					System.out.println("Processing completed for roster:"+roster);
@@ -1221,12 +1231,17 @@ public class FileGenerator {
 	private void createOrganization(Connection con, Tfil tfil,
 			Integer studentId, HashMap<String, Integer> districtMap,
 			HashMap<String, Integer> schoolMap,
-			HashMap<String, Integer> classMap, OrderFile orderFile) throws CTBBusinessException {
+			HashMap<String, Integer> classMap,
+			HashMap<String, Integer> sectionMap,
+			HashMap<String, Integer> groupMap,
+			HashMap<String, Integer> divisionMap,
+			HashMap<String, Integer> levelMap, OrderFile orderFile) throws CTBBusinessException {
 
 		TreeMap<Integer, String> organizationMap = new TreeMap<Integer, String>();
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		//Integer count= null;
 		try {
 			ps = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -1252,18 +1267,18 @@ public class FileGenerator {
 						|| rs.getString(4).equalsIgnoreCase("CTB")) {
 					// do nothing
 				} else if (rs.getString(5) != null
-						&& new Integer(organizationMapSize - 2).toString() != null
+						&& new Integer(organizationMapSize - 6).toString() != null
 						&& rs.getString(5)
 						.equalsIgnoreCase(
-								new Integer(organizationMapSize - 2)
+								new Integer(organizationMapSize - 6)
 								.toString())) {
 					tfil.setElementNameA(rs.getString(4).toString());
-
+					tfil.setElementALabel(rs.getString(2));
 					Integer integer = districtMap.get(rs.getString(4));
 					if (integer == null) {
 						integer = ++districtElementNumber;
 						districtMap.put(rs.getString(4), integer);
-
+	
 					}
 					tfil.setElementNumberA(String.valueOf(districtMap.get(rs
 							.getString(4))));
@@ -1274,20 +1289,20 @@ public class FileGenerator {
 					tfil.setElementStructureLevelA("01");
 					if (orderFile.getCustomerId() == null)
 						orderFile.setCustomerId(rs.getString(1));
-
+	
 				} else if (rs.getString(5) != null
-						&& new Integer(organizationMapSize - 1).toString() != null
+						&& new Integer(organizationMapSize - 5).toString() != null
 						&& rs.getString(5).toString()
 						.equalsIgnoreCase(
-								Integer.valueOf(organizationMapSize - 1)
+								Integer.valueOf(organizationMapSize - 5)
 								.toString())) {
 					tfil.setElementNameB(rs.getString(4));
-
+					tfil.setElementBLabel(rs.getString(2));
 					Integer integer = schoolMap.get(rs.getString(4));
 					if (integer == null) {
 						integer = ++schoolElementNumber;
 						schoolMap.put(rs.getString(4), integer);
-
+	
 					}
 					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs
 							.getString(4))));
@@ -1296,17 +1311,20 @@ public class FileGenerator {
 					tfil.setElementStructureLevelB("02");
 					tfil.setSchoolId(rs.getString(1));
 				}
-
+	
 				else if (rs.getString(5) != null
-						&& rs.getString(5).equalsIgnoreCase(
-								organizationMapSize.toString())) {
+						&& new Integer(organizationMapSize - 4).toString() != null
+						&& rs.getString(5)
+						.equalsIgnoreCase(
+								new Integer(organizationMapSize - 4)
+								.toString())) {
 					tfil.setElementNameC(rs.getString(4));
-
+					tfil.setElementCLabel(rs.getString(2));
 					Integer integer = classMap.get(rs.getString(4));
 					if (integer == null) {
 						integer = ++classElementNumber;
 						classMap.put(rs.getString(4), integer);
-
+	
 					}
 					tfil.setElementNumberC(String.valueOf(classMap.get(rs
 							.getString(4))));
@@ -1314,9 +1332,92 @@ public class FileGenerator {
 						tfil.setElementSpecialCodesC(rs.getString(3));
 					tfil.setElementStructureLevelC("03");
 					tfil.setClassId(rs.getString(1));
-
+	
 				}
-			}
+				else if (rs.getString(5) != null
+						&& new Integer(organizationMapSize - 3).toString() != null
+						&& rs.getString(5)
+						.equalsIgnoreCase(
+								new Integer(organizationMapSize - 3)
+								.toString())) {
+					tfil.setElementNameD(rs.getString(4));
+					tfil.setElementDLabel(rs.getString(2));
+					Integer integer = sectionMap.get(rs.getString(4));
+					if (integer == null) {
+						integer = ++sectionElementNumber;
+						sectionMap.put(rs.getString(4), integer);
+	
+					}
+					tfil.setElementNumberD(String.valueOf(sectionMap.get(rs
+							.getString(4))));
+					if (rs.getString(3) != null)
+						tfil.setElementSpecialCodesD(rs.getString(3));
+					tfil.setElementStructureLevelD("04");
+					tfil.setSectionId(rs.getString(1));
+	
+				}
+				else if (rs.getString(5) != null
+						&& new Integer(organizationMapSize - 2).toString() != null
+						&& rs.getString(5)
+						.equalsIgnoreCase(
+								new Integer(organizationMapSize - 2)
+								.toString())) {
+					tfil.setElementNameE(rs.getString(4));
+					tfil.setElementELabel(rs.getString(2));
+					Integer integer = groupMap.get(rs.getString(4));
+					if (integer == null) {
+						integer = ++groupElementNumber;
+						groupMap.put(rs.getString(4), integer);
+	
+					}
+					tfil.setElementNumberE(String.valueOf(groupMap.get(rs
+							.getString(4))));
+					if (rs.getString(3) != null)
+						tfil.setElementSpecialCodesE(rs.getString(3));
+					tfil.setElementStructureLevelE("05");
+					tfil.setGroupId(rs.getString(1));
+	
+				}
+				else if (rs.getString(5) != null
+						&& new Integer(organizationMapSize - 1).toString() != null
+						&& rs.getString(5).equalsIgnoreCase(
+								new Integer(organizationMapSize - 1)
+								.toString())) {
+					tfil.setElementNameF(rs.getString(4));
+					tfil.setElementFLabel(rs.getString(2));
+					Integer integer = divisionMap.get(rs.getString(4));
+					if (integer == null) {
+						integer = ++divisionElementNumber;
+						divisionMap.put(rs.getString(4), integer);
+	
+					}
+					tfil.setElementNumberF(String.valueOf(divisionMap.get(rs
+							.getString(4))));
+					if (rs.getString(3) != null)
+						tfil.setElementSpecialCodesF(rs.getString(3));
+					tfil.setElementStructureLevelF("06");
+					tfil.setDivisionId(rs.getString(1));
+	
+				}
+				else if (rs.getString(5) != null
+						&& rs.getString(5).equalsIgnoreCase(
+								organizationMapSize.toString())) {
+					tfil.setElementNameG(rs.getString(4));
+					tfil.setElementGLabel(rs.getString(2));
+					Integer integer = levelMap.get(rs.getString(4));
+					if (integer == null) {
+						integer = ++levelElementNumber;
+						levelMap.put(rs.getString(4), integer);
+	
+					}
+					tfil.setElementNumberG(String.valueOf(levelMap.get(rs
+							.getString(4))));
+					if (rs.getString(3) != null)
+						tfil.setElementSpecialCodesG(rs.getString(3));
+					tfil.setElementStructureLevelG("07");
+					tfil.setLeafLevelId(rs.getString(1));
+				}
+		}
 
 			// System.out.println("createOrganization");
 		} catch (SQLException e) {
@@ -1327,7 +1428,7 @@ public class FileGenerator {
 		}
 
 		// For defect Fix 66410
-		if (tfil.getElementNameB() == null) {
+		/*if (tfil.getElementNameB() == null) {
 			tfil.setElementNameB(tfil.getElementNameC());
 			tfil.setElementNumberB(tfil.getElementNumberC());
 			tfil.setElementSpecialCodesB(tfil.getElementSpecialCodesC());
@@ -1352,7 +1453,57 @@ public class FileGenerator {
 			tfil.setElementStructureLevelA("01");
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getSchoolId());
-		}
+		}*/
+		//Added for expand to 7 level.
+		if (tfil.getElementNameF() == null) {
+			tfil.setOrganizationId("XX" + tfil.getLeafLevelId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getLeafLevelId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameG(), 30));
+			
+		}else if (tfil.getElementNameE() == null) {
+			tfil.setOrganizationId("XX" + tfil.getDivisionId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getDivisionId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameF(), 30));
+			
+		}else if (tfil.getElementNameD() == null) {
+			tfil.setOrganizationId("XX" + tfil.getGroupId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getGroupId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameE(), 30));
+			
+		}else if (tfil.getElementNameC() == null) {
+			tfil.setOrganizationId("XX" + tfil.getSectionId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getSectionId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameD(), 30));
+			
+		}else if (tfil.getElementNameB() == null) {
+			tfil.setOrganizationId("XX" + tfil.getClassId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getClassId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameC(), 30));
+			
+		}else if (tfil.getElementNameA() == null) {
+			tfil.setOrganizationId("XX" + tfil.getSchoolId());
+			if (orderFile.getCustomerId() == null)
+				orderFile.setCustomerId(tfil.getSchoolId());
+			if (orderFile.getCustomerName() == null)
+				orderFile.setCustomerName(EmetricUtil.truncate(tfil
+						.getElementNameB(), 30));
+			
+		}		
 
 		if (orderFile.getOrgTestingProgram() == null)
 			orderFile.setOrgTestingProgram(tfil.getOrganizationId());
@@ -2091,6 +2242,33 @@ public class FileGenerator {
 			}
 		}
 
+	}
+	
+
+	private void createSubtestIndicatorFlag (Connection con,
+			Integer rosterId, Tfil tfil) throws CTBBusinessException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(subtestIndicator);
+			ps.setInt(1, rosterId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				if(rs.getString(1) != null && rs.getString(1).equals("T")) {
+					tfil.setSubtestIndicatorFlag(rs.getString(1));
+				}else {
+					tfil.setSubtestIndicatorFlag("");
+				}
+			} else {
+				tfil.setSubtestIndicatorFlag("");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createSubtestIndicatorFlag:"+e.getMessage());
+		}finally {
+			SqlUtil.close(ps, rs);
+		}
 	}
 
 }
