@@ -8,6 +8,7 @@ public class CTBConstants {
 	public static final String EMAIL_CONTENT_PLACEHOLDER_ORDERFILE = "<#orderfile#>";
 	
 	public static final String EMAIL_FROM = "oas_account_management@ctb.com";
+	public static final String EMAIL_FROM_ALIAS_LASLINKS = "LAS Links – OAS Account Management";
 	public static final int JOB_STATUS_PENDING = 1;
 	public static final int JOB_STATUS_COMPLETE = 2;
 	public static final int JOB_STATUS_FAILED = 3;

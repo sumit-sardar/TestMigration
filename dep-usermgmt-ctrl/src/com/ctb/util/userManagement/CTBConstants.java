@@ -2002,6 +2002,7 @@ public final class CTBConstants
   public static final Integer EMAIL_TYPE_NOTIFICATION = new Integer(3);
   public static final String EMAIL_CONTENT_PLACEHOLDER_USERID = "<#userid#>";
   public static final String EMAIL_CONTENT_PLACEHOLDER_PASSWORD = "<#password#>";
+  public static final String EMAIL_FROM_ALIAS_LASLINKS = "LAS Links – OAS Account Management"; 
   
     /* Changed/Added for DEx Phase 2 on 22-Apr-09 by TCS -- Start*/
   public static final String DEX_CONFIGURATION                   = "DEx_Indicator";
