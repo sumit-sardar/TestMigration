@@ -133,7 +133,7 @@ public class LASLicenseNode implements java.io.Serializable
         } 
         else {
             if (expDate.compareTo(today60) < 0) {
-	        	this.expiryStatus = "ABOUT EXPIRED";        		        	
+	        	this.expiryStatus = "ABOUT_EXPIRED";        		        	
 	        }
 	        else {
 	        	this.expiryStatus = "VALID";        	
@@ -155,7 +155,8 @@ public class LASLicenseNode implements java.io.Serializable
          copied.setCustomerId(customerId);
          copied.setProductId(productId);
        
-         copied.setAvailable(Integer.valueOf(available.trim()));
+         if (available != null && available.length() > 0)
+        	 copied.setAvailable(Integer.valueOf(available.trim()));
          copied.setReservedLicense(new Integer(0));  
          copied.setConsumedLicense(new Integer(0));     
                 

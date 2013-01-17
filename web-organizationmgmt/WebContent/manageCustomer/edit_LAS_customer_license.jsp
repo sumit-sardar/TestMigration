@@ -30,7 +30,7 @@
 
 
 
-<netui:form action="cancelCurrentAction">
+<netui:form action="addLASCustomerLicense">
 
 <netui:hidden dataSource="actionForm.actionElement"/>
 <netui:hidden dataSource="actionForm.currentAction"/>
@@ -138,24 +138,13 @@
         <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Order Number</div></th>
         <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Available</div></th>
         <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Date Purchase</div></th>
-        <th class="sortable alignLeft" width="20%" align="left"><div class="notCurrentSort">Expired Date</div></th>
-        <th class="sortable alignLeft" width="35%" align="left"><div class="notCurrentSort">PO</div></th>
+        <th class="sortable alignLeft" width="25%" align="left"><div class="notCurrentSort">Expired Date</div></th>
+        <th class="sortable alignLeft" width="30%" align="left"><div class="notCurrentSort">PO</div></th>
     </tr>
     
     </netui-data:repeaterHeader>
     
     <netui-data:repeaterItem>
-    
-<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
-<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");  
-System.out.println("expiryStatus = " + expiryStatus);
-
-   if (expiryStatus.equals("EXPIRED")) {	 
-%>
-    <tr class="sortableRed">
-<% } else {%>
-    <tr class="sortable">
-<% } %>
     
         <td class="sortable alignLeft">
               <netui:span value="${container.item.orderNumber}" defaultValue="&nbsp;"/>
@@ -165,10 +154,33 @@ System.out.println("expiryStatus = " + expiryStatus);
          </td>    
         <td class="sortable alignLeft">
               <netui:span value="${container.item.purchaseDate}" defaultValue="&nbsp;"/>
-         </td>    
-        <td class="sortable alignLeft">
+         </td>   
+          
+<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
+<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");  
+   System.out.println("expiryStatus = " + expiryStatus);
+   if (expiryStatus.equals("EXPIRED")) {	 
+%>
+    <td class="sortableRed alignLeft">
+<% } else 
+   if (expiryStatus.equals("ABOUT_EXPIRED")) {	 
+%>
+    <td class="sortableYellow alignLeft">
+<% } else { %>
+    <td class="sortable alignLeft">
+<% } %>
             <netui:textBox tagId="expiryDate" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
             <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('overrideEndDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+<% 
+   if (expiryStatus.equals("EXPIRED")) {	 
+%>
+    <span>&nbsp;&nbsp;Expired</span>
+<% } else 
+   if (expiryStatus.equals("ABOUT_EXPIRED")) {	 
+%>
+    <span>&nbsp;&nbsp;Expired in 60 days</span>
+<% } %>
+            
          </td>    
         <td class="sortable alignLeft">
               <netui:span value="${container.item.purchaseOrder}" defaultValue="&nbsp;"/>

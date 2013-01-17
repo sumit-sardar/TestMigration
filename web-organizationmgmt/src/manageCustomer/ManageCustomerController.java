@@ -1661,7 +1661,6 @@ public class ManageCustomerController extends PageFlowController
          
         try {
         	//licensevalue = license.addCustomerProductLicense(customerLicense);
-            //licensevalue = license.saveOrUpdateCustomerLicenses(customerLicense);  
         	licensevalue = true;
             
         } catch (Exception e) { 

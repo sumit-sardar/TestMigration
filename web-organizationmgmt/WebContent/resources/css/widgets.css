@@ -478,6 +478,19 @@ td.sortableRed {
     padding: 5px; 
 } 
 
+td.sortableYellow { 
+    background-color: #ffff00; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
 td.sortableGrey { 
     background-color: #cc9; 
     border-color: #996; 
