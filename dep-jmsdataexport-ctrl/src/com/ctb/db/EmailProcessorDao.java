@@ -97,6 +97,29 @@ public class EmailProcessorDao implements EmailProcessorSQL {
 		
 	}
 	
+	public boolean checkForLaslinkCustomer(String userName) throws CTBBusinessException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean isLaslinkCustomer = false;
+		try {
+			con = SqlUtil.openOASDBcon();
+			ps = con.prepareStatement(CHECK_FOR_LASLINK_CUSTOMER);
+			ps.setString(1, userName);
+			rs = ps.executeQuery();
+			if (rs.next()) { 
+				isLaslinkCustomer = new Boolean(rs.getString(1));
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("EmailProcessorDao:getCustomerEmailByUserName failed");
+		} finally {
+			SqlUtil.close(con, ps, rs);
+		}
+		return isLaslinkCustomer;
+		
+	}
+	
 	public User getUserDetails(Integer userId) throws CTBBusinessException {
 
 		Connection con = null;
