@@ -51,6 +51,8 @@ public class EmailProcessor {
 	public void processEmail(String userName, int jobid, String message) {
 
 		String to = null;
+		boolean isLasLinkCustomer = false;
+		String aliasName = null;
 		 //User user = null;
 		 String content = Configuration.getUserEmailBody();
 		 String subject = Configuration.getUserEmailSubject();
@@ -63,6 +65,7 @@ public class EmailProcessor {
 			 to = user.getEmail();*/
 			 to = emailProcessorDao.getCustomerEmailByUserName(userName);
              System.out.println("Sending job status mail to ["+to+"].");
+             isLasLinkCustomer = emailProcessorDao.checkForLaslinkCustomer(userName);
 			// System.out.println("to:"+to+", userId:"+userId);
 
 			//System.out.println("content0:" + content);
@@ -72,6 +75,11 @@ public class EmailProcessor {
 							CTBConstants.EMAIL_CONTENT_PLACEHOLDER_JOB_STATUS,
 							message);
 			subject = subject.replaceAll(CTBConstants.EMAIL_PLACEHOLDER_JOB_ID, String.valueOf(jobid) );
+			 if(isLasLinkCustomer){
+				 subject = "LAS Links - "+ subject;
+				 aliasName = "LAS Links - "+ replyTo;
+			 }
+			
 			InitialContext ic = new InitialContext();
 			// the properties were configured in WebLogic through the console
 			Session session = (Session) ic.lookup("UserManagementMail");
@@ -86,13 +94,16 @@ public class EmailProcessor {
 			Message msg = new MimeMessage(session);
 			
 			  if (replyTo == null ||  replyTo.trim().length() < 1) { 
-				  replyTo = CTBConstants.EMAIL_FROM; 
-				  
+				  replyTo = CTBConstants.EMAIL_FROM;
+				  if(isLasLinkCustomer)
+					  aliasName = CTBConstants.EMAIL_FROM_ALIAS_LASLINKS;
 			  }
-			 
-
-			//msg.setFrom(new InternetAddress(replyTo));
-			msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
+			  System.out.println("replyTo >>"+replyTo);
+			  if(isLasLinkCustomer)
+				  msg.setFrom(new InternetAddress(replyTo,aliasName));
+			  else
+				  msg.setFrom(new InternetAddress(replyTo));
+			
 
 			// emailTo could be a comma separated list of addresses
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
@@ -148,7 +159,7 @@ public class EmailProcessor {
 			// the properties were configured in WebLogic through the console
 			Session session = (Session) ic.lookup("UserManagementMail");
 			Message msg = new MimeMessage(session);
-
+			System.out.println("replyTo >>"+replyTo);
 			//msg.setFrom(new InternetAddress(replyTo));
 			msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
