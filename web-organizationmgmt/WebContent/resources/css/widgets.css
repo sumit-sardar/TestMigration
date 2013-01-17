@@ -404,6 +404,10 @@ table.sortable {
 tr.sortable { 
 }
 
+tr.sortableRed { 
+    background-color: #cc3300; 
+}
+
 th.sortable { 
     background-color: #ffc; 
     border-color: #996; 

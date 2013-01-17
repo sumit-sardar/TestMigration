@@ -3,7 +3,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +20,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.CustomerFormUtils;
 import utils.CustomerSearchUtils;
+import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.LicenseFormUtils;
 import utils.MessageResourceBundle;
@@ -35,12 +39,14 @@ import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.CTBConstants;
+import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 
 import dto.CustomerProfileInformation;
 import dto.Level;
 import dto.LicenseNode;
+import dto.LASLicenseNode;
 import dto.Message;
 import dto.NavigationPath;
 
@@ -131,8 +137,9 @@ public class ManageCustomerController extends PageFlowController
 	 // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+	private Boolean isLASManageLicense = null;
 
-   
+	CustomerConfiguration [] customerConfigurations = null;   
 
     /**
 	 * @return the islaslinkCustomer
@@ -390,7 +397,6 @@ public class ManageCustomerController extends PageFlowController
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
@@ -1496,19 +1502,176 @@ public class ManageCustomerController extends PageFlowController
      */
 	@Jpf.Action(
 		forwards = { 
+			@Jpf.Forward(name = "editLASLicenseManagement", path = "edit_LAS_customer_license.jsp"),
 			@Jpf.Forward(name = "success", path = "edit_customer_license.jsp")
 		}
 	)
     protected Forward manageLicense(ManageCustomerForm form)
     {   
+        Integer customerId = form.getSelectedCustomerId();
+        if ( isLASLicenseManagement(customerId) ) {        	
+            setLASLicenseNodeToForm(form);
+        	List licenses = getLASLicenses(customerId);       	
+            this.getRequest().setAttribute("licenses", licenses);        
+            this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+        	return new Forward("editLASLicenseManagement", form);
+        }
+        else {
+            setLicenseNodeToForm(form);
+            this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+            setFormInfoOnRequest(form);
+        	return new Forward("success", form);
+        }
         
-        setLicenseNodeToForm(form);
+    }
+
+    private void setLASLicenseNodeToForm(ManageCustomerForm form) {
+                                                               
+        Integer selectedCustomerId = form.getSelectedCustomerId();
+        CustomerLicense customerLicense = new CustomerLicense();
+        
+        try {   
+              
+            customerLicense = license.getCustomerLicenses(selectedCustomerId);
+        	LASLicenseNode node = new LASLicenseNode(selectedCustomerId);
+        	node.setCustomerName(customerLicense.getCustomerName());
+            node.setProductId(customerLicense.getProductId());
+            node.setProductName(customerLicense.getProductName());
+        	
+            Date startDate = new Date();
+            node.setPurchaseDate(DateUtils.formatDateToDateString(startDate, "MM/dd/yyyy"));
+            Date endDate = new Date();
+            endDate.setYear(startDate.getYear() + 3);
+            node.setExpiryDate(DateUtils.formatDateToDateString(endDate, "MM/dd/yyyy"));
+            
+        	form.setLASLicenseNode(node);            
+            
+        } catch(CTBBusinessException be){
+            be.printStackTrace();
+            String msg = MessageResourceBundle.getMessage(be.getMessage());                                        
+            form.setMessage(Message.ADD_UPDATED_LICENSE, msg, Message.ERROR);
+        }                     
+       
+    }        
+	
+    private List getLASLicenses(Integer customerId)
+    {   
+    	//CustomerLicense[] customerLicenses  = license.getCustomerProductLicenses(customerId);
+    	
+    	LASLicenseNode node = null;
+    	ArrayList licenses = new ArrayList();
+    	
+    	node = new LASLicenseNode(customerId);
+    	node.setOrderNumber("123");
+    	node.setLicenseQuantity("200");
+    	node.setPurchaseDate("01/08/2011");
+    	node.setExpiryDate("01/08/2012");
+    	node.setPurchaseOrder("This order is expired");   	
+    	licenses.add(node);
+
+    	node = new LASLicenseNode(customerId);
+    	node.setOrderNumber("456");
+    	node.setLicenseQuantity("300");
+    	node.setPurchaseDate("01/08/2012");
+    	node.setExpiryDate("03/16/2013");
+    	node.setPurchaseOrder("About expired in 60 days");   	
+    	licenses.add(node);
+
+    	node = new LASLicenseNode(customerId);
+    	node.setOrderNumber("789");
+    	node.setLicenseQuantity("400");
+    	node.setPurchaseDate("01/08/2013");
+    	node.setExpiryDate("01/08/2016");
+    	node.setPurchaseOrder("Text with 30 chars");   	
+    	licenses.add(node);
+    	
+    	return licenses;
+    }
+    
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "edit_LAS_customer_license.jsp")
+    })
+    protected Forward addLASCustomerLicense(ManageCustomerForm form)
+    {   
+       // check for required fields
+        boolean validInfo = true;
+        //validInfo = LicenseFormUtils.verifyLicenseInformation(form);
+        if (!validInfo)
+        {           
+                //validation failed
+        	setFormInfoOnRequest(form);
+            return new Forward("success", form);
+        }
+         
+        LASLicenseNode LASLicenseNode = form.getLASLicenseNode();
+        Integer customerId = form.getSelectedCustomerId();
+        
+        boolean result = saveOrUpdateLASCustomerLicenses(LASLicenseNode, form);
+        if (result)
+        {            
+            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateSuccessfully");
+            String title = Message.ADD_UPDATED_LICENSE;
+            form.setMessage(title, msg, Message.INFORMATION); 
+            //setLicenseNodeToForm(form);
+        }
+        else
+        {
+            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateError");
+            String title = Message.ADD_UPDATED_LICENSE;
+            form.setMessage(title, msg, Message.ERROR);
+        }
+
+    	List licenses = getLASLicenses(customerId);       	
+        this.getRequest().setAttribute("licenses", licenses);        
+    	
         this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
-        setFormInfoOnRequest(form);
+        
         return new Forward("success", form);
     }
 
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success",
+                         path = "edit_LAS_customer_license.jsp")
+    })
+    protected Forward editLASCustomerLicense(ManageCustomerForm form)
+    {   
+
+    	Integer customerId = form.getSelectedCustomerId();
+	
+    	//boolean ret = license.updateCustomerProductLicense(customerId, order_index, customerLicense);
+    	
+    	List licenses = getLASLicenses(customerId);       	
+        this.getRequest().setAttribute("licenses", licenses);        
+    	
+        this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+        
+        return new Forward("success", form);
+    }
     
+    private boolean saveOrUpdateLASCustomerLicenses(LASLicenseNode licenseNode, ManageCustomerForm form)
+    {
+        CustomerLicense customerLicense = null;
+        boolean licensevalue = false;
+        Integer customerId = licenseNode.getCustomerId();
+        Integer productId = licenseNode.getProductId();
+        String available = licenseNode.getLicenseQuantity();
+        
+        customerLicense = licenseNode.makeCopy(customerId, productId, available);
+         
+        try {
+        	//licensevalue = license.addCustomerProductLicense(customerLicense);
+            //licensevalue = license.saveOrUpdateCustomerLicenses(customerLicense);  
+        	licensevalue = true;
+            
+        } catch (Exception e) { 
+            e.printStackTrace();
+            String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
+            form.setMessage(Message.ADD_UPDATED_LICENSE, msg, Message.ERROR);
+        }
+        
+        return licensevalue;
+    }
     
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** Private methods ************* ///////////////////////////////    
@@ -2209,6 +2372,10 @@ public class ManageCustomerController extends PageFlowController
         private  LicenseNode licenseNode;
         private String enableLicense;
 
+        private  LASLicenseNode LASLicenseNode;
+        private String startDate;
+        private String endDate;
+        
         public ManageCustomerForm()
         {
         }
@@ -2548,7 +2715,37 @@ public class ManageCustomerController extends PageFlowController
 		 */
 		public void setIsLasLinkProduct(Boolean isLasLinkProduct) {
 			this.isLasLinkProduct = isLasLinkProduct;
-		}                 
+		}        
+		
+        public void setStartDate(String startDate)
+        {
+            this.startDate = startDate;
+        }
+
+        public String getStartDate()
+        {
+            return this.startDate;
+        }
+
+		public String getEndDate() {
+			return endDate;
+		}
+
+		public void setEndDate(String endDate) {
+			this.endDate = endDate;
+		}
+
+		public LASLicenseNode getLASLicenseNode() {
+            if (this.LASLicenseNode == null) {
+            	this.LASLicenseNode = new LASLicenseNode();
+            }
+			return this.LASLicenseNode;
+		}
+ 
+		public void setLASLicenseNode(LASLicenseNode LASLicenseNode) {
+			this.LASLicenseNode = LASLicenseNode;
+		}
+		
     }
 
 
@@ -2586,14 +2783,16 @@ public class ManageCustomerController extends PageFlowController
 
         try
         {      
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
+        	if (this.customerConfigurations == null) {
+        		this.customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+        	}        	
+			if (this.customerConfigurations == null || this.customerConfigurations.length == 0) {
+				this.customerConfigurations = users.getCustomerConfigurations(2);
 			}
             
-            for (int i=0; i < customerConfigurations.length; i++)
+            for (int i=0; i < this.customerConfigurations.length; i++)
             {
-            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
                 //Bulk Accommodation
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
                 {
@@ -2620,14 +2819,16 @@ public class ManageCustomerController extends PageFlowController
 		boolean hasResetTestSessionsConfigurable = false;
 		try
         {
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
+        	if (this.customerConfigurations == null) {
+        		this.customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+        	}        	
+			if (this.customerConfigurations == null || this.customerConfigurations.length == 0) {
+				this.customerConfigurations = users.getCustomerConfigurations(2);
 			}
 			
-			for (int i=0; i < customerConfigurations.length; i++) {
+			for (int i=0; i < this.customerConfigurations.length; i++) {
 	
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
 						cc.getDefaultValue().equals("T")) {
 					hasResetTestSessionsConfigurable = true; 
@@ -2659,15 +2860,17 @@ public class ManageCustomerController extends PageFlowController
         boolean isLaslinkCustomer = false;
         try
         {      
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
+        	if (this.customerConfigurations == null) {
+        		this.customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+        	}        	
+			if (this.customerConfigurations == null || this.customerConfigurations.length == 0) {
+				this.customerConfigurations = users.getCustomerConfigurations(2);
 			}
         
 
-        for (int i=0; i < customerConfigurations.length; i++)
+        for (int i=0; i < this.customerConfigurations.length; i++)
         {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+        	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
             		cc.getDefaultValue().equals("T")	) {
             	hasScoringConfigurable = true;
@@ -2689,6 +2892,30 @@ public class ManageCustomerController extends PageFlowController
         return new Boolean(hasScoringConfigurable);
     }
 	
+	private boolean isLASLicenseManagement(Integer customerId)
+    {        
+		this.isLASManageLicense = new Boolean(false);
+
+        try
+        {    
+        	CustomerConfiguration[] customerConfs = users.getCustomerConfigurations(customerId.intValue());
+        	
+            for (int i=0; i < customerConfs.length; i++)
+            {
+            	CustomerConfiguration cc = (CustomerConfiguration)customerConfs[i];
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Yearly_Expiry")) {
+            		this.isLASManageLicense = new Boolean(true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return this.isLASManageLicense.booleanValue();
+    }
 	 
 
 }
