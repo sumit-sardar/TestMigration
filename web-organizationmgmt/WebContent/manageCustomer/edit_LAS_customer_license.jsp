@@ -135,11 +135,11 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Order Number</div></th>
-        <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Available</div></th>
-        <th class="sortable alignLeft" width="15%" align="left"><div class="notCurrentSort">Date Purchase</div></th>
-        <th class="sortable alignLeft" width="25%" align="left"><div class="notCurrentSort">Expired Date</div></th>
-        <th class="sortable alignLeft" width="30%" align="left"><div class="notCurrentSort">PO</div></th>
+        <th class="sortable alignLeft" width="10%" align="left"><div class="notCurrentSort">Order Number</div></th>
+        <th class="sortable alignLeft" width="10%" align="left"><div class="notCurrentSort">Available</div></th>
+        <th class="sortable alignLeft" width="10%" align="left"><div class="notCurrentSort">Purchase Date</div></th>
+        <th class="sortable alignLeft" width="35%" align="left"><div class="notCurrentSort">Expiry Date</div></th>
+        <th class="sortable alignLeft" width="35%" align="left"><div class="notCurrentSort">Purchase Order</div></th>
     </tr>
     
     </netui-data:repeaterHeader>
@@ -178,7 +178,7 @@
 <% } else 
    if (expiryStatus.equals("ABOUT_EXPIRED")) {	 
 %>
-    <span>&nbsp;&nbsp;Expired in 60 days</span>
+    <span>&nbsp;&nbsp;About expired in 60 days</span>
 <% } %>
             
          </td>    

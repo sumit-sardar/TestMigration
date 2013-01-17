@@ -1566,7 +1566,7 @@ public class ManageCustomerController extends PageFlowController
     	node.setLicenseQuantity("200");
     	node.setPurchaseDate("01/08/2011");
     	node.setExpiryDate("01/08/2012");
-    	node.setPurchaseOrder("This order is expired");   	
+    	node.setPurchaseOrder("This is the first order");   	
     	licenses.add(node);
 
     	node = new LASLicenseNode(customerId);
@@ -1574,7 +1574,7 @@ public class ManageCustomerController extends PageFlowController
     	node.setLicenseQuantity("300");
     	node.setPurchaseDate("01/08/2012");
     	node.setExpiryDate("03/16/2013");
-    	node.setPurchaseOrder("About expired in 60 days");   	
+    	node.setPurchaseOrder("This order is for Reading");   	
     	licenses.add(node);
 
     	node = new LASLicenseNode(customerId);
@@ -1582,7 +1582,7 @@ public class ManageCustomerController extends PageFlowController
     	node.setLicenseQuantity("400");
     	node.setPurchaseDate("01/08/2013");
     	node.setExpiryDate("01/08/2016");
-    	node.setPurchaseOrder("Text with 30 chars");   	
+    	node.setPurchaseOrder("Corporation order");   	
     	licenses.add(node);
     	
     	return licenses;
