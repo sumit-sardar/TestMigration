@@ -1012,6 +1012,7 @@ function registerDelegate(tree){
 				$("#selectGE").show();	
 				$("#selectGELbl").show();		
 				document.getElementById("selectGE").checked = selectGE;
+				document.getElementById("selectGE").removeAttribute("disabled");
 				if (state == "EDIT") {
 					$("#selectGE").attr("disabled", stdsLogIn);
 				}
@@ -1575,6 +1576,7 @@ function registerDelegate(tree){
 						isOKAdmin = data.isOkAdmin;
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
+						state = "SCHEDULE";
 						
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
