@@ -53,6 +53,10 @@
         <servlet-name>speech</servlet-name>
         <url-pattern>/TestClientPageFlow/SpeechServlet.do</url-pattern>
     </servlet-mapping>
+   <servlet-mapping>
+      <servlet-name>speech</servlet-name>
+      <url-pattern>/TestClientPageFlow/speech.mp3</url-pattern>
+   </servlet-mapping>    
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
