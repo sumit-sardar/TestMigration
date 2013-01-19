@@ -110,6 +110,10 @@ public class Message implements java.io.Serializable
     public static final String FIELD_PARENT_ID = "Parent ID";
     
     // field For License
+    public static final String FIELD_LICENSE_QUANTITY = "License Quantity";
+    public static final String FIELD_LICENSE_PO = " Purchase Order";
+    public static final String FIELD_LICENSE_PURCHASE_DATE = "Purchase Date";
+    public static final String FIELD_LICENSE_EXPIRY_DATE = "Expiry Date";
     public static final String FIELD_LICENSE_AVALIABLE = "Avaliable";
     public static final String FIELD_LICENSE_CONSUME = "Consume";
     public static final String REQUIRED_LICENSE_TEXT   = "Please enter this value to continue.";

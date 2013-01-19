@@ -15,6 +15,7 @@ import com.ctb.bean.testAdmin.CustomerLicense;
 public class LASLicenseNode implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
+	private Integer index = null;
 	private Integer customerId = null;
     private String customerName = null;
     private Integer productId = null;
@@ -28,7 +29,7 @@ public class LASLicenseNode implements java.io.Serializable
 
     private String expiryStatus = null;
     
-    public LASLicenseNode() {
+    public LASLicenseNode() {    	
     	this.orderNumber = "";
     	this.licenseQuantity = "";
     	this.purchaseOrder = "";
@@ -44,6 +45,12 @@ public class LASLicenseNode implements java.io.Serializable
     	this.expiryDate = "";
     }
 
+	public Integer getIndex() {
+		return index;
+	}
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 	public Integer getCustomerId() {
 		return customerId;
 	}
@@ -117,7 +124,7 @@ public class LASLicenseNode implements java.io.Serializable
 	}
 
 	public String getExpiryStatus() {
-        Date expDate = DateUtils.getDateFromDateString(this.expiryDate);
+        Date expDate = DateUtils.getDateFromDateShortString(this.expiryDate);
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getDefault());

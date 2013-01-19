@@ -99,14 +99,14 @@
         <td class="transparent"><span class="asterisk">*</span>&nbsp;Purchase Date:</td>
         <td class="transparent">
             <netui:textBox tagId="purchaseDate" dataSource="actionForm.LASLicenseNode.purchaseDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-            <a href="#" onclick="showCalendar(document.getElementById('purchaseDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+            <a href="#" onclick="showCalendar(document.getElementById('purchaseDate'), document.getElementById('purchaseDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent"><span class="asterisk">*</span>&nbsp;Expiry Date:</td>
         <td class="transparent">
             <netui:textBox tagId="expiryDate" dataSource="actionForm.LASLicenseNode.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-            <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('overrideEndDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+            <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('expiryDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
         </td>
     </tr>
         <td class="transparent"><span class="asterisk">*</span>&nbsp;Purchase Order:</td>
@@ -156,9 +156,11 @@
               <netui:span value="${container.item.purchaseDate}" defaultValue="&nbsp;"/>
          </td>   
           
+<netui-data:getData resultId="itemIndex" value="${container.item.index}" />
 <netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
-<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");  
-   System.out.println("expiryStatus = " + expiryStatus);
+<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
+   Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
+   String expiryDateIndex = "expiryDate" + itemIndex.toString();	
    if (expiryStatus.equals("EXPIRED")) {	 
 %>
     <td class="sortableRed alignLeft">
@@ -169,7 +171,7 @@
 <% } else { %>
     <td class="sortable alignLeft">
 <% } %>
-            <netui:textBox tagId="expiryDate" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
+            <netui:textBox tagId="<%= expiryDateIndex %>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
             <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('overrideEndDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
 <% 
    if (expiryStatus.equals("EXPIRED")) {	 
@@ -180,7 +182,7 @@
 %>
     <span>&nbsp;&nbsp;About expired in 60 days</span>
 <% } %>
-            
+             
          </td>    
         <td class="sortable alignLeft">
               <netui:span value="${container.item.purchaseOrder}" defaultValue="&nbsp;"/>

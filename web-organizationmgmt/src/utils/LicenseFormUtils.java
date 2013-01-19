@@ -23,7 +23,7 @@ public class LicenseFormUtils
     }
     
     
-     public static boolean isRequiredfieldMissing(ManageCustomerForm form )
+    public static boolean isRequiredfieldMissing(ManageCustomerForm form )
     {
         // check for required fields
         String requiredFields = "";
@@ -47,7 +47,7 @@ public class LicenseFormUtils
         return false;
     }
     
-     public static boolean isInvalidLicInfo(ManageCustomerForm form)
+    public static boolean isInvalidLicInfo(ManageCustomerForm form)
     {
                 
         String invalidCharFields = verifyLicInfo(form);
@@ -111,6 +111,93 @@ public class LicenseFormUtils
         return result;
     }
     
+    public static boolean verifyLASLicenseInformation(ManageCustomerForm form)	    
+    {                    
+        
+        if ( isLASRequiredfieldMissing(form) ) {
+            
+            return false;
+            
+        }
+        if (isLASInvalidLicInfo(form)){
+            
+            return false;
+            
+        }
+       
+        return true;
+    }
     
+    public static boolean isLASInvalidLicInfo(ManageCustomerForm form)
+    {
+                
+        String invalidCharFields = verifyLASLicInfo(form);
+        String invalidString = "";                        
+        if ( invalidCharFields.length() > 0 ) {
+            
+            invalidString =invalidCharFields + ("<br/>" + Message.INVALID_LICENSE_VALUE )  ;
+            
+        }																									   
+                   
+        if ( invalidString != null && invalidString.length() > 0 ) {    
+            
+            form.setMessage(Message.INVALID_LICENSE_TEXT, invalidString, Message.ERROR);
+            return true;
+        
+        } 
+        return false;   
+    }
+  
+    public static String verifyLASLicInfo(ManageCustomerForm form)
+    {
+        String invalidCharFields = "";
+        int invalidCharFieldCount = 0;
+
+        if ( !WebUtils.validNameStringForLic(form.getLASLicenseNode().getLicenseQuantity())) {
+        
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString(Message.FIELD_LICENSE_QUANTITY, invalidCharFieldCount, invalidCharFields);       
+        
+        }
+        
+        return invalidCharFields;
+    }
+    
+    public static boolean isLASRequiredfieldMissing(ManageCustomerForm form )
+    {
+        // check for required fields
+        String requiredFields = "";
+        int requiredFieldCount = 0;
+        
+        String licenseQuantity = form.getLASLicenseNode().getLicenseQuantity();
+        if ( "".equals(licenseQuantity.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_QUANTITY, requiredFieldCount, requiredFields);       
+        }
+        String PO = form.getLASLicenseNode().getPurchaseOrder();
+        if ( "".equals(PO.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_PO, requiredFieldCount, requiredFields);       
+        }
+        String PDate = form.getLASLicenseNode().getPurchaseDate();
+        if ( "".equals(PDate.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_PURCHASE_DATE, requiredFieldCount, requiredFields);       
+        }
+        String ExpDate = form.getLASLicenseNode().getPurchaseDate();
+        if ( "".equals(ExpDate.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_EXPIRY_DATE, requiredFieldCount, requiredFields);       
+        }
+
+        if (requiredFieldCount > 0) {
+            
+            requiredFields += ("<br/>" + Message.REQUIRED_LICENSE_TEXT);
+            form.setMessage(Message.MISSING_REQUIRED_FIELD, requiredFields, Message.ERROR);
+            
+            return true;
+        }
+        return false;
+    }
     
 } 
