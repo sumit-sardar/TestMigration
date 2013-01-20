@@ -171,8 +171,8 @@
 <% } else { %>
     <td class="sortable alignLeft">
 <% } %>
-            <netui:textBox tagId="<%= expiryDateIndex %>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-            <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('overrideEndDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+            <netui:textBox tagId="<%=expiryDateIndex%>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
+            <a href="#" onclick="showCalendar(document.getElementById('<%=expiryDateIndex%>'), document.getElementById('<%=expiryDateIndex%>')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
 <% 
    if (expiryStatus.equals("EXPIRED")) {	 
 %>

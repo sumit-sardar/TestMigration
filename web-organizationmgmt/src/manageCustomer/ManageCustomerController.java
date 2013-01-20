@@ -144,7 +144,7 @@ public class ManageCustomerController extends PageFlowController
 	private CustomerConfiguration [] customerConfigurations = null;   
 
 	private List LASLicenses = null;
-	
+	private String purchasePeriod = "3";
     /**
 	 * @return the islaslinkCustomer
 	 */
@@ -1543,7 +1543,10 @@ public class ManageCustomerController extends PageFlowController
         	this.getRequest().setAttribute("pageMessage", form.getMessage());               
             return new Forward("success", form);
         }
-         
+        
+        Integer index = this.LASLicenses.size() + 1;
+        LASLicenseNode.setIndex(index);
+        
         boolean result = saveOrUpdateLASCustomerLicenses(LASLicenseNode);
         if (result) {
             String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateSuccessfully");
@@ -1595,7 +1598,9 @@ public class ManageCustomerController extends PageFlowController
         		updateNeeded = true;
         	}
         	if (updateNeeded) {
-            	//boolean ret = license.updateCustomerProductLicense(customerId, order_index, customerLicense);            		
+        		CustomerLicense customerLicense = node.makeCopy();
+System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());        		
+            	//boolean ret = license.updateCustomerProductLicense(customerId, customerLicense);            		
         	}
         	
         }
@@ -1610,19 +1615,16 @@ public class ManageCustomerController extends PageFlowController
 	
     private void setLASLicenseNodeToForm(ManageCustomerForm form, Integer customerId) {
                                                                
-        CustomerLicense customerLicense = new CustomerLicense();
-        
         try {   
-            customerLicense = license.getCustomerLicenses(customerId);
-        	LASLicenseNode node = new LASLicenseNode(customerId);
-        	node.setCustomerName(customerLicense.getCustomerName());
-            node.setProductId(customerLicense.getProductId());
-            node.setProductName(customerLicense.getProductName());
-        	
+        	CustomerLicense customerLicense = license.getCustomerLicenses(customerId);
+        	LASLicenseNode node = new LASLicenseNode();
+        	node.initData(customerLicense); 
+
             Date startDate = new Date();
             node.setPurchaseDate(DateUtils.formatDateToDateString(startDate, "MM/dd/yy"));
             Date endDate = new Date();
-            endDate.setYear(startDate.getYear() + 3);
+            Integer period = Integer.valueOf(this.purchasePeriod);
+            endDate.setYear(startDate.getYear() + period.intValue());
             node.setExpiryDate(DateUtils.formatDateToDateString(endDate, "MM/dd/yy"));
             
         	form.setLASLicenseNode(node);            
@@ -1675,13 +1677,9 @@ public class ManageCustomerController extends PageFlowController
     
     private boolean saveOrUpdateLASCustomerLicenses(LASLicenseNode licenseNode)
     {
-        CustomerLicense customerLicense = null;
         boolean licensevalue = false;
-        Integer customerId = licenseNode.getCustomerId();
-        Integer productId = licenseNode.getProductId();
-        String available = licenseNode.getLicenseQuantity();
         
-        customerLicense = licenseNode.makeCopy(customerId, productId, available);
+        CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
         	//licensevalue = license.addCustomerProductLicense(customerLicense);
@@ -2927,6 +2925,7 @@ public class ManageCustomerController extends PageFlowController
             	CustomerConfiguration cc = (CustomerConfiguration)customerConfs[i];
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Yearly_Expiry")) {
             		this.isLASManageLicense = new Boolean(true);
+            		this.purchasePeriod = cc.getDefaultValue();
                     break;
                 } 
             }

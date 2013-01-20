@@ -20,6 +20,8 @@ public class LASLicenseNode implements java.io.Serializable
     private String customerName = null;
     private Integer productId = null;
     private String productName = null;
+	private String subtestModel;  
+    private String emailNotify;
 	
     private String orderNumber = null;
     private String licenseQuantity = null;
@@ -35,6 +37,8 @@ public class LASLicenseNode implements java.io.Serializable
     	this.purchaseOrder = "";
     	this.purchaseDate = "";
     	this.expiryDate = "";
+    	this.emailNotify = "T";
+    	this.subtestModel = "T";
     }
     public LASLicenseNode(Integer customerId) {
     	this.customerId = customerId;
@@ -83,6 +87,21 @@ public class LASLicenseNode implements java.io.Serializable
 		this.customerId = customerId;
 	}
 
+	public String getSubtestModel() {
+		return subtestModel;
+	}
+	
+	public void setSubtestModel(String subtestModel) {
+		this.subtestModel = subtestModel;
+	}
+	
+	
+	public String getEmailNotify() {
+		return emailNotify;
+	}
+	public void setEmailNotify(String emailNotify) {
+		this.emailNotify = emailNotify;
+	}
 	public String getOrderNumber() {
 		return orderNumber;
 	}
@@ -154,21 +173,38 @@ public class LASLicenseNode implements java.io.Serializable
 	}
 	    
 	
-	public CustomerLicense makeCopy(Integer customerId, Integer productId, String available) 
+	public CustomerLicense makeCopy() 
 	{
          CustomerLicense copied = new CustomerLicense();
        
-         copied.setAvailableLicenseChange(true);
-         copied.setCustomerId(customerId);
-         copied.setProductId(productId);
-       
-         if (available != null && available.length() > 0)
-        	 copied.setAvailable(Integer.valueOf(available.trim()));
+         copied.setCustomerId(this.customerId);
+         copied.setProductId(this.productId);
+         copied.setSubtestModel(this.subtestModel);
+         copied.setEmailNotify(this.emailNotify);
+         
+         if (this.licenseQuantity != null && this.licenseQuantity.length() > 0) {
+        	 copied.setAvailable(Integer.valueOf(this.licenseQuantity.trim()));
+             copied.setLicenseAfterLastPurchase(Integer.valueOf(this.licenseQuantity.trim()));
+         }
          copied.setReservedLicense(new Integer(0));  
          copied.setConsumedLicense(new Integer(0));     
-                
+         
+         copied.setLicenseperiodStartdate(DateUtils.getDateFromDateShortString(this.purchaseDate));
+         copied.setLicenseperiodEnd(DateUtils.getDateFromDateShortString(this.expiryDate));
+
+         copied.setIndex(this.index);
+         copied.setOrderNumber(this.orderNumber);
+         copied.setPurchaseOrder(this.purchaseOrder);
+         
         return copied;       
     }
      
+	public void initData(CustomerLicense src) 
+	{
+         this.customerId = src.getCustomerId();
+         this.customerName = src.getCustomerName();
+         this.productId = src.getProductId();
+         this.productName = src.getProductName();
+    }
     
 } 
