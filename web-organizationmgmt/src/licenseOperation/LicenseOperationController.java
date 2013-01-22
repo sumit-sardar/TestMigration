@@ -43,6 +43,7 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.google.gson.Gson;
 
+import dto.LASLicenseNode;
 import dto.LicenseNode;
 import dto.OrganizationProfileInformation;
 
@@ -75,6 +76,7 @@ public class LicenseOperationController extends PageFlowController {
     private CustomerLicense[] customerLicenses = null;
     
     private List licenseNodes = null;
+    private Boolean isLASManageLicense = Boolean.FALSE;
     
     public static String CONTENT_TYPE_JSON = "application/json";
     
@@ -897,6 +899,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		 this.licenseNodes = new ArrayList();
 
 		 this.getRequest().setAttribute("licenseModel", this.customerLicenses[0].getSubtestModel());
+		 this.getRequest().setAttribute("isLASManageLicense", this.isLASManageLicense);
 		 
 		 return new Forward("success");
 	 }
@@ -993,6 +996,41 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 	}
 
 
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "license_details.jsp") 
+        })
+    protected Forward showLicenseDetails()
+    {
+    	ArrayList licenseDetails = new ArrayList();
+    	LASLicenseNode node = new LASLicenseNode();
+    	node.setOrderNumber("123");
+    	node.setLicenseQuantity("200");
+    	node.setPurchaseDate("01/08/11");
+    	node.setExpiryDate("01/08/12");
+    	node.setPurchaseOrder("This is the first order");
+    	licenseDetails.add(node);
+    	
+    	node = new LASLicenseNode();
+    	node.setOrderNumber("456");
+    	node.setLicenseQuantity("300");
+    	node.setPurchaseDate("01/08/12");
+    	node.setExpiryDate("03/16/13");
+    	node.setPurchaseOrder("This order is for Reading");
+    	licenseDetails.add(node);
+
+    	node = new LASLicenseNode();
+    	node.setOrderNumber("789");
+    	node.setLicenseQuantity("400");
+    	node.setPurchaseDate("01/08/13");
+    	node.setExpiryDate("01/08/16");
+    	node.setPurchaseOrder("Corporation order");
+    	licenseDetails.add(node);
+    	
+        this.getSession().setAttribute("licenseDetails", licenseDetails);
+    	
+        return new Forward("success");
+    }
+    
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -1071,7 +1109,6 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest_For_Admin") && 
             		cc.getDefaultValue().equals("T")	) {
 				hasResetTestSessionForAdmin = true;
-				continue;
             }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 					&& cc.getDefaultValue().equals("T")) {
@@ -1080,8 +1117,11 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
 					&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 				isGACustomer = true;
-				continue;
 			}
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Yearly_Expiry")) {
+        		this.isLASManageLicense = new Boolean(true);
+            } 
+			
 		}        
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);

@@ -22,6 +22,10 @@ public class CustomerLicense extends CTBBean
     private boolean availableLicenseChange;
     private String customerName;
     private Boolean isLicenseAvailable; 
+    private String emailNotify;
+    private String orderNumber = null;
+    private String purchaseOrder = null;
+	private Integer index = null;
 
 
     //changes for LM12
@@ -181,4 +185,38 @@ public class CustomerLicense extends CTBBean
 	public void setIsLicenseAvailable(boolean isLicenseAvailable) {
 		this.isLicenseAvailable = isLicenseAvailable;
 	}
+	
+	public String getEmailNotify() {
+		return emailNotify;
+	}
+
+	public void setEmailNotify(String emailNotify) {
+		this.emailNotify = emailNotify;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	public String getPurchaseOrder() {
+		return purchaseOrder;
+	}
+
+	public void setPurchaseOrder(String purchaseOrder) {
+		this.purchaseOrder = purchaseOrder;
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+	
+	
 } 

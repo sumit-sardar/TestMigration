@@ -23,6 +23,7 @@ public class DateUtils
     public final static String DATETIME_FORMAT = "MM/dd/yyyy hh:mm a";
     public final static String DATE_FORMAT_CHAR = "MMM/dd/yyyy";
     public final static String DATE_FORMAT_DISPLAY = "MMM dd, yyyy";
+    public final static String DATE_FORMAT_SHORT = "MM/dd/yy";
     
     private static Hashtable timeZoneHashtable;
     
@@ -68,6 +69,25 @@ public class DateUtils
         return result;
     }    
 
+    public static Date getDateFromDateShortString(String date){
+        Date result = null;
+        if (date == null) {
+            
+            return result;
+        
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern(DATE_FORMAT_SHORT);
+        try{
+            result = sdf.parse(date);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }    
+    
      /**
      * fetch Date from Date String
      * @param date String

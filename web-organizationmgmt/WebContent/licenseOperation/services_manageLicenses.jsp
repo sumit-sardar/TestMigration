@@ -18,6 +18,9 @@
 <%@ taglib uri="label.tld" prefix="lb" %>
 <lb:bundle baseName="organizationApplicationResource" />
 
+<link href="<%=request.getContextPath()%>/resources/css/jtip.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jtip.js"></script>
+
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/licenses.js"></script>
 
 <input type="hidden" id="orgNodeName" name = "orgNodeName" value=<lb:label key="license.orgNodeName" prefix="'" suffix="'"/>/>
@@ -40,6 +43,7 @@
 		licenseModel = "Subtest";
 	else
 		licenseModel = "Session";
+	Boolean isLASManageLicense = (Boolean)request.getAttribute("isLASManageLicense");
 %>
 
 <netui:form action="services_manageLicenses">
@@ -90,6 +94,11 @@
 	<tr class="transparent" valign="bottom">
 		<td align="right" valign="bottom">
 				<p id="licenseModelDiv" class="subtitle" style="padding-right: 12px">
+
+<% if (isLASManageLicense.booleanValue()) { %>				
+<span id="showLicenseDetailsTooltip" style="display: inline"><a href="showLicenseDetails.do?width=700" class="jTip" id="tooltip" name="License Details">License Details</a>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+<% } %>		
+		
 					License model: <b><%= licenseModel %></b>
 				</p> 
 		</td>
