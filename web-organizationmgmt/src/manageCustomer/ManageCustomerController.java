@@ -19,6 +19,7 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import org.apache.struts.action.ActionError;
 
 import utils.CustomerFormUtils;
 import utils.CustomerSearchUtils;
@@ -1534,28 +1535,28 @@ public class ManageCustomerController extends PageFlowController
         })
     protected Forward addLASCustomerLicense(ManageCustomerForm form)
     {
+    	 
     	LASLicenseNode LASLicenseNode = form.getLASLicenseNode();
         Integer customerId = LASLicenseNode.getCustomerId();        
-	
         boolean validInfo = LicenseFormUtils.verifyLASLicenseInformation(form);
         if (!validInfo) {
             setLASLicenseNodeToForm(form, customerId);
-        	this.getRequest().setAttribute("pageMessage", form.getMessage());               
+        	this.getRequest().setAttribute("pageMessage", form.getMessage());
+        	this.LASLicenses = getLASLicenses(customerId);       	
+            this.getRequest().setAttribute("licenses", this.LASLicenses);        
+            this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
             return new Forward("success", form);
         }
         
-        Integer index = this.LASLicenses.size() + 1;
-        LASLicenseNode.setIndex(index);
-        
-        boolean result = saveOrUpdateLASCustomerLicenses(LASLicenseNode);
+        boolean result = saveLASCustomerLicenses(LASLicenseNode);
         if (result) {
-            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateSuccessfully");
+            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddSuccessfully");
             String title = Message.ADD_UPDATED_LICENSE;
             form.setMessage(title, msg, Message.INFORMATION); 
         	this.getRequest().setAttribute("pageMessage", form.getMessage());               
         }
         else {
-            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateError");
+            String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddError");
             String title = Message.ADD_UPDATED_LICENSE;
             form.setMessage(title, msg, Message.ERROR);
         	this.getRequest().setAttribute("pageMessage", form.getMessage());               
@@ -1582,6 +1583,8 @@ public class ManageCustomerController extends PageFlowController
         String paramStr = null;
         String paramValue = null;
         
+        
+        
         for (int i=0 ; i<this.LASLicenses.size() ; i++) {
         	LASLicenseNode node = (LASLicenseNode)this.LASLicenses.get(i);
         	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";           	
@@ -1598,9 +1601,31 @@ public class ManageCustomerController extends PageFlowController
         		updateNeeded = true;
         	}
         	if (updateNeeded) {
+        		boolean validInfo = LicenseFormUtils.verifyLASLicenseEditInformation(form, node);
+                if (!validInfo) {
+                    setLASLicenseNodeToForm(form, customerId);
+                	this.getRequest().setAttribute("pageMessage", form.getMessage());
+                	this.LASLicenses = getLASLicenses(customerId);       	
+                    this.getRequest().setAttribute("licenses", this.LASLicenses);        
+                    this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+                    return new Forward("success", form);
+                }
         		CustomerLicense customerLicense = node.makeCopy();
-System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());        		
-            	//boolean ret = license.updateCustomerProductLicense(customerId, customerLicense);            		
+        		boolean result = updateLASCustomerLicenses(node);
+        		System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());        		
+            	//boolean ret = license.updateCustomerProductLicense(customerId, customerLicense);
+        		if (result) {
+                    String msg = MessageResourceBundle.getMessage("ManageLicense.license.UpdateSuccessfully");
+                    String title = Message.ADD_UPDATED_LICENSE;
+                    form.setMessage(title, msg, Message.INFORMATION); 
+                	this.getRequest().setAttribute("pageMessage", form.getMessage());               
+                }
+                else {
+                    String msg = MessageResourceBundle.getMessage("ManageLicense.license.UpdateError");
+                    String title = Message.ADD_UPDATED_LICENSE;
+                    form.setMessage(title, msg, Message.ERROR);
+                	this.getRequest().setAttribute("pageMessage", form.getMessage());               
+                }
         	}
         	
         }
@@ -1636,53 +1661,86 @@ System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());
         }                     
        
     }        
-	
-    private List getLASLicenses(Integer customerId)
+    public LASLicenseNode cloneCustomerLicense(CustomerLicense custLicense) 
+	{
+		LASLicenseNode copied = new LASLicenseNode();
+       
+         copied.setCustomerId(custLicense.getCustomerId());
+         copied.setProductId(custLicense.getProductId());
+         copied.setSubtestModel(custLicense.getSubtestModel());
+         copied.setEmailNotify(custLicense.getEmailNotify());
+         
+         if (custLicense.getLicenseAfterLastPurchase() != null) {
+        	 copied.setLicenseQuantity(custLicense.getLicenseAfterLastPurchase().toString());             
+         }        
+         
+         copied.setPurchaseDate(DateUtils.formatDateToDateString(custLicense.getLicenseperiodStartdate(), "MM/dd/yy"));
+         copied.setExpiryDate(DateUtils.formatDateToDateString(custLicense.getLicenseperiodEnd(),"MM/dd/yy"));
+
+         copied.setOrderIndex(custLicense.getOrderIndex());
+         copied.setOrderNumber(custLicense.getOrderNumber());
+         copied.setPurchaseOrder(custLicense.getPurchaseOrder());
+         
+        return copied;       
+    }
+    private List<LASLicenseNode> getLASLicenses(Integer customerId)
     {   
-    	//CustomerLicense[] customerLicenses  = license.getCustomerProductLicenses(customerId);
-    	
-    	LASLicenseNode node = null;
-    	ArrayList licenses = new ArrayList();
-    	
-    	node = new LASLicenseNode(customerId);
-    	node.setIndex(new Integer(1));
-    	node.setOrderNumber("123");
-    	node.setLicenseQuantity("200");
-    	node.setPurchaseDate("01/08/11");
-    	node.setExpiryDate("01/08/12");
-    	node.setPurchaseOrder("This is the first order");   	
-    	licenses.add(node);
-
-    	node = new LASLicenseNode(customerId);
-    	node.setIndex(new Integer(2));
-    	node.setOrderNumber("456");
-    	node.setLicenseQuantity("300");
-    	node.setPurchaseDate("01/08/12");
-    	node.setExpiryDate("03/16/13");
-    	node.setPurchaseOrder("This order is for Reading");   	
-    	licenses.add(node);
-
-    	node = new LASLicenseNode(customerId);
-    	node.setIndex(new Integer(3));
-    	node.setOrderNumber("789");
-    	node.setLicenseQuantity("400");
-    	node.setPurchaseDate("01/08/13");
-    	node.setExpiryDate("01/08/16");
-    	node.setPurchaseOrder("Corporation order");   	
-    	licenses.add(node);
-    	
+    	CustomerLicense[] customerLicenses;
+    	ArrayList<LASLicenseNode> licenses = new ArrayList<LASLicenseNode>();
+		try {
+			customerLicenses = license.getCustomerProductLicenses(customerId);
+			
+	    	for(CustomerLicense node: customerLicenses){
+	    		licenses.add(cloneCustomerLicense(node));
+	    	}
+		} catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    	}
     	return licenses;
+//    	
+//    	LASLicenseNode node = null;
+//    	ArrayList licenses = new ArrayList();
+//    	
+//    	node = new LASLicenseNode(customerId);
+//    	node.setIndex(new Integer(1));
+//    	node.setOrderNumber("123");
+//    	node.setLicenseQuantity("200");
+//    	node.setPurchaseDate("01/08/11");
+//    	node.setExpiryDate("01/08/12");
+//    	node.setPurchaseOrder("This is the first order");   	
+//    	licenses.add(node);
+//
+//    	node = new LASLicenseNode(customerId);
+//    	node.setIndex(new Integer(2));
+//    	node.setOrderNumber("456");
+//    	node.setLicenseQuantity("300");
+//    	node.setPurchaseDate("01/08/12");
+//    	node.setExpiryDate("03/16/13");
+//    	node.setPurchaseOrder("This order is for Reading");   	
+//    	licenses.add(node);
+//
+//    	node = new LASLicenseNode(customerId);
+//    	node.setIndex(new Integer(3));
+//    	node.setOrderNumber("789");
+//    	node.setLicenseQuantity("400");
+//    	node.setPurchaseDate("01/08/13");
+//    	node.setExpiryDate("01/08/16");
+//    	node.setPurchaseOrder("Corporation order");   	
+//    	licenses.add(node);
+//    	
+//    	return licenses;
     }
     
     
-    private boolean saveOrUpdateLASCustomerLicenses(LASLicenseNode licenseNode)
+    private boolean saveLASCustomerLicenses(LASLicenseNode licenseNode)
     {
         boolean licensevalue = false;
         
         CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
-        	//licensevalue = license.addCustomerProductLicense(customerLicense);
+        	licensevalue = license.addCustomerProductLicense(customerLicense);
         	licensevalue = true;
             
         } catch (Exception e) { 
@@ -1693,6 +1751,23 @@ System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());
         return licensevalue;
     }
     
+    private boolean updateLASCustomerLicenses(LASLicenseNode licenseNode)
+    {
+        boolean licensevalue = false;
+        
+        CustomerLicense customerLicense = licenseNode.makeCopy();
+         
+        try {
+        	licensevalue = license.updateCustomerProductLicense(customerLicense);
+        	licensevalue = true;
+            
+        } catch (Exception e) { 
+            e.printStackTrace();
+            String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
+        }
+        
+        return licensevalue;
+    }
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** Private methods ************* ///////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////   

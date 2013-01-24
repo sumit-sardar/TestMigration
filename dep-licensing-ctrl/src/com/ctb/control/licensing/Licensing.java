@@ -3,6 +3,7 @@ package com.ctb.control.licensing;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
+import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.exception.CTBBusinessException;
 
 @ControlInterface()
@@ -96,4 +97,9 @@ public interface Licensing
    
     boolean saveOrUpdateOrgNodeLicenseDetail(com.ctb.bean.testAdmin.LicenseNodeData [] licenseNodeData) throws com.ctb.exception.CTBBusinessException;
 
+    boolean addCustomerProductLicense(CustomerLicense customerLicense) throws com.ctb.exception.CTBBusinessException;
+    
+    boolean updateCustomerProductLicense(CustomerLicense customerLicense) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.CustomerLicense[] getCustomerProductLicenses(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
 } 

@@ -514,7 +514,52 @@ public class LicensingImpl implements Licensing
     return true;
 }
 
-    
+   public  boolean addCustomerProductLicense(CustomerLicense customerLicense) throws com.ctb.exception.CTBBusinessException {
+        
+        try {
+            this.license.addCustomerProductLicense(customerLicense);
+            
+         } catch (SQLException se) {
+            
+            LicenseCreationException lce = 
+                    new LicenseCreationException("platformlicence.addCustomerLicenses.E0014");
+                    
+            throw lce;
+            
+         }
+         
+         return true;  
+    }
+   public CustomerLicense[] getCustomerProductLicenses(Integer customerId) throws CTBBusinessException {
+	   try {   
+		     CustomerLicense[] customerLicense  = license.getCustomerProductLicenses(customerId);  
+		  
+		    return customerLicense;  
+		              
+		} catch (SQLException e ) {
+		    
+		    OrgLicenseDataNotFoundException lde = 
+		            new OrgLicenseDataNotFoundException("platformlicence.getCustomerLicenseData.E001");
+		            
+		    throw lde;
+		    
+		}
+   }
+   public boolean updateCustomerProductLicense(CustomerLicense customerLicense) throws CTBBusinessException {
+	   try {
+           this.license.updateCustomerProductLicense(customerLicense);
+           
+        } catch (SQLException se) {
+           
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.updateCustomerProductLicense.E0014");
+                   
+           throw lce;
+           
+        }
+        
+        return true;    
+   }
      // END - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
      
 } 

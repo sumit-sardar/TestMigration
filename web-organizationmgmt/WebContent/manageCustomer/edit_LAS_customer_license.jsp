@@ -39,6 +39,7 @@
 <netui:hidden dataSource="actionForm.LASLicenseNode.customerId"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.customerName"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.productName"/>
+<netui:hidden dataSource="actionForm.LASLicenseNode.productId"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.orderNumber"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.licenseQuantity"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.purchaseOrder"/>
@@ -150,13 +151,13 @@
               <netui:span value="${container.item.orderNumber}" defaultValue="&nbsp;"/>
          </td>    
         <td class="sortable alignLeft">
-            <netui:textBox tagId="orderNumber" dataSource="container.item.licenseQuantity" maxlength="9" style="width:100px" />
+            <netui:textBox tagId="orderNumber" dataSource="container.item.licenseQuantity" maxlength="9" style="width:100px" onKeyPress="return constrainNumericChar(event);" />
          </td>    
         <td class="sortable alignLeft">
               <netui:span value="${container.item.purchaseDate}" defaultValue="&nbsp;"/>
          </td>   
           
-<netui-data:getData resultId="itemIndex" value="${container.item.index}" />
+<netui-data:getData resultId="itemIndex" value="${container.item.orderIndex}" />
 <netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
 <% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
    Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
@@ -171,7 +172,7 @@
 <% } else { %>
     <td class="sortable alignLeft">
 <% } %>
-            <netui:textBox tagId="<%=expiryDateIndex%>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
+            <netui:textBox tagId="<%=expiryDateIndex%>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);" />
             <a href="#" onclick="showCalendar(document.getElementById('<%=expiryDateIndex%>'), document.getElementById('<%=expiryDateIndex%>')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
 <% 
    if (expiryStatus.equals("EXPIRED")) {	 

@@ -350,5 +350,36 @@ public interface License extends JdbcControl
      @JdbcControl.SQL(arrayMaxLength = 100000,statement = " select decode(sum(nvl(col.available, 0)),0,0,1) as isLicenseAvailable , prd.product_id as productId from customer_orgnode_license col,product prd,org_node node,user_role role,users, org_node_ancestor ans where prd.product_id = col.product_id and role.org_node_id = ans.ancestor_org_node_id  and col.org_node_id = ans.org_node_id and role.org_node_id = node.org_node_id and role.activation_status = 'AC' and node.activation_status = 'AC' and role.user_id = users.user_id and users.user_name = {userName} group by prd.product_id, prd.product_name, col.subtest_model ")
      CustomerLicense[] isLicenseAvailable(String userName);
 
+     /**
+      * @jc:sql statement:: 
+      * insert into customer_product_license
+      *    (customer_id,
+      *    product_id,
+      *    available,
+      *    reserved,
+      *    consumed,
+      *    email_notify_flag,
+      *    license_after_last_purchase
+      *    ) values (
+      *    {customerLicense.customerId},
+      *    {customerLicense.productId},
+      *    {customerLicense.available},
+      *    {customerLicense.reservedLicense},
+      *    {customerLicense.consumedLicense},
+      *    'T',
+      *    {customerLicense.available}
+      *    )::
+      */
+       //CustomerLicense change
+     @JdbcControl.SQL(statement = "insert into customer_product_license     (customer_id,  product_id,  available, reserved,  consumed,   email_notify_flag,  license_after_last_purchase,order_index,order_number,po_text,license_period_start,license_period_end ) values ( {customerLicense.customerId},  {customerLicense.productId}, {customerLicense.available}, {customerLicense.reservedLicense}, {customerLicense.consumedLicense},  'T',  {customerLicense.available},seq_license_po_index.nextval,{customerLicense.orderNumber},{customerLicense.purchaseOrder},{customerLicense.licenseperiodStartdate},{customerLicense.licenseperiodEnd} )")
+     void addCustomerProductLicense(CustomerLicense customerLicense) throws SQLException;
+
+     @JdbcControl.SQL(arrayMaxLength = 100000,statement = " select customer_id as customerId,  product_id as productId,  available as available, reserved as reservedLicense,  consumed as consumedLicense,   email_notify_flag as emailNotify,  license_after_last_purchase as licenseAfterLastPurchase,order_index as orderIndex,order_number as orderNumber ,po_text as purchaseOrder,license_period_start as licenseperiodStartdate,license_period_end as licenseperiodEnd from customer_product_license  where customer_id = {customerId}")
+     CustomerLicense[] getCustomerProductLicenses(Integer customerId) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "update customer_product_license set available  = {customerLicense.available},license_after_last_purchase = {customerLicense.licenseAfterLastPurchase},license_period_end = {customerLicense.licenseperiodEnd} where customer_id = {customerLicense.customerId} and  product_id  = {customerLicense.productId} and order_index = {customerLicense.orderIndex}")
+     void updateCustomerProductLicense(CustomerLicense customerLicense) throws SQLException;
+
+
 }
 

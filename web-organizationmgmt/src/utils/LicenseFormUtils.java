@@ -1,5 +1,6 @@
 package utils; 
 
+import dto.LASLicenseNode;
 import dto.Message;
 import manageCustomer.ManageCustomerController.ManageCustomerForm;
 
@@ -130,7 +131,7 @@ public class LicenseFormUtils
     
     public static boolean isLASInvalidLicInfo(ManageCustomerForm form)
     {
-                
+          
         String invalidCharFields = verifyLASLicInfo(form);
         String invalidString = "";                        
         if ( invalidCharFields.length() > 0 ) {
@@ -144,7 +145,20 @@ public class LicenseFormUtils
             form.setMessage(Message.INVALID_LICENSE_TEXT, invalidString, Message.ERROR);
             return true;
         
-        } 
+        }
+        boolean purchaseDate = false;
+        boolean expiryDate = false;
+        int validateResult = DateUtils.validateDateString(form.getLASLicenseNode().getPurchaseDate());
+        if (validateResult != DateUtils.DATE_VALID)
+        	purchaseDate = true;
+        validateResult = DateUtils.validateDateString(form.getLASLicenseNode().getExpiryDate());
+        if (validateResult != DateUtils.DATE_VALID)
+        	expiryDate = true;
+        if (purchaseDate || expiryDate)
+        {
+        	form.setMessage(Message.INVALID_LICENSE_DATE_FORMAT, invalidString, Message.ERROR);
+            return true;
+        }
         return false;   
     }
   
@@ -184,7 +198,7 @@ public class LicenseFormUtils
             requiredFieldCount += 1;            
             requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_PURCHASE_DATE, requiredFieldCount, requiredFields);       
         }
-        String ExpDate = form.getLASLicenseNode().getPurchaseDate();
+        String ExpDate = form.getLASLicenseNode().getExpiryDate();
         if ( "".equals(ExpDate.trim())) {
             requiredFieldCount += 1;            
             requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_EXPIRY_DATE, requiredFieldCount, requiredFields);       
@@ -199,5 +213,80 @@ public class LicenseFormUtils
         }
         return false;
     }
+    
+    public static boolean  verifyLASLicenseEditInformation (ManageCustomerForm form, LASLicenseNode node )
+    {
+    	if (isLASRequiredEditFieldMissing(form, node)) {
+            
+            return false;
+            
+        }
+        if (isLASInvalidLicInfoEdit(form, node)){
+            
+            return false;
+            
+        }
+        
+        return true;
+    }
+    
+    public static boolean isLASRequiredEditFieldMissing(ManageCustomerForm form, LASLicenseNode node)
+    {
+        // check for required fields
+        String requiredFields = "";
+        int requiredFieldCount = 0;
+        
+        String licenseQuantity = node.getLicenseQuantity();
+        if ( "".equals(licenseQuantity.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_AVALIABLE, requiredFieldCount, requiredFields);       
+        }
+        
+        String ExpDate = node.getExpiryDate();
+        if ( "".equals(ExpDate.trim())) {
+            requiredFieldCount += 1;            
+            requiredFields = Message.buildErrorString(Message.FIELD_LICENSE_EXPIRY_DATE, requiredFieldCount, requiredFields);       
+        }
+
+        if (requiredFieldCount > 0) {
+            
+            requiredFields += ("<br/>" + Message.REQUIRED_LICENSE_TEXT);
+            form.setMessage(Message.MISSING_REQUIRED_FIELD, requiredFields, Message.ERROR);
+            
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isLASInvalidLicInfoEdit(ManageCustomerForm form, LASLicenseNode node)
+    {
+          
+        //String invalidCharFields = verifyLASLicInfo(form);
+        String invalidString = "";                        
+//        if ( invalidCharFields.length() > 0 ) {
+//            
+//            invalidString =invalidCharFields + ("<br/>" + Message.INVALID_LICENSE_VALUE )  ;
+//            
+//        }																									   
+//                   
+//        if ( invalidString != null && invalidString.length() > 0 ) {    
+//            
+//            form.setMessage(Message.INVALID_LICENSE_TEXT, invalidString, Message.ERROR);
+//            return true;
+//        
+//        }
+        boolean expiryDate = false;
+        int validateResult = DateUtils.validateDateString(node.getExpiryDate());
+        if (validateResult != DateUtils.DATE_VALID)
+        	expiryDate = true;
+        
+        if (expiryDate)
+        {
+        	form.setMessage(Message.INVALID_LICENSE_DATE_FORMAT, invalidString, Message.ERROR);
+            return true;
+        }
+        return false;   
+    }
+    
     
 } 

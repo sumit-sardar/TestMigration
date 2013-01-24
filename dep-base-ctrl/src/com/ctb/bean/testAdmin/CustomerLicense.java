@@ -26,7 +26,7 @@ public class CustomerLicense extends CTBBean
     private String emailNotify;
     private String orderNumber = null;
     private String purchaseOrder = null;
-	private Integer index = null;
+	private Integer orderIndex = null;
 
 
     //changes for LM12
@@ -214,12 +214,12 @@ public class CustomerLicense extends CTBBean
 		this.purchaseOrder = purchaseOrder;
 	}
 
-	public Integer getIndex() {
-		return index;
+	public Integer getOrderIndex() {
+		return orderIndex;
 	}
 
-	public void setIndex(Integer index) {
-		this.index = index;
+	public void setOrderIndex(Integer orderIndex) {
+		this.orderIndex = orderIndex;
 	}
 	
 	
