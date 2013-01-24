@@ -32,7 +32,7 @@
         </tr>
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
-        <tr class="tableHeader">
+        <tr class="simpletable">
             <td class="simpletable">
             	<netui:content value="${container.item.orderNumber}" defaultValue="&nbsp;"/>
             </td>
