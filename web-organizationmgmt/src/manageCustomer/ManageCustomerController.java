@@ -41,6 +41,7 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.licensing.OrgLicenseDataNotFoundException;
 import com.ctb.util.CTBConstants;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -1693,10 +1694,12 @@ public class ManageCustomerController extends PageFlowController
 	    	for(CustomerLicense node: customerLicenses){
 	    		licenses.add(cloneCustomerLicense(node));
 	    	}
-		} catch (CTBBusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (OrgLicenseDataNotFoundException e) {
+			// do nothing
     	}
+		catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
     	return licenses;
 //    	
 //    	LASLicenseNode node = null;
@@ -1741,8 +1744,6 @@ public class ManageCustomerController extends PageFlowController
          
         try {
         	licensevalue = license.addCustomerProductLicense(customerLicense);
-        	licensevalue = true;
-            
         } catch (Exception e) { 
             e.printStackTrace();
             String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
