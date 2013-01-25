@@ -1739,37 +1739,43 @@ public class ManageCustomerController extends PageFlowController
     private boolean saveLASCustomerLicenses(LASLicenseNode licenseNode)
     {
         boolean licensevalue = false;
+        boolean isAddOrgLice = false;
+        boolean result = false;
         
         CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
         	licensevalue = license.addCustomerProductLicense(customerLicense);
-        	addLASCustomerOrgnodeEntry(licenseNode);
+        	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode);
+        	if (licensevalue && isAddOrgLice)
+        		result = true;
         } catch (Exception e) { 
             e.printStackTrace();
             String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
         }
         
-        return licensevalue;
+        return result;
     }
     
     private boolean updateLASCustomerLicenses(LASLicenseNode licenseNode)
     {
         boolean licensevalue = false;
+        boolean isAddOrgLice = false;
         boolean result = false;
+        
         CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
         	licensevalue = license.updateCustomerProductLicense(customerLicense);
-        	addLASCustomerOrgnodeEntry(licenseNode);
-        	licensevalue = true;
-            
+        	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode);
+        	if (licensevalue && isAddOrgLice)
+        		result = true;
         } catch (Exception e) { 
             e.printStackTrace();
             String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
         }
         
-        return licensevalue;
+        return result;
     }
     
     private boolean addLASCustomerOrgnodeEntry (LASLicenseNode licenseNode)
