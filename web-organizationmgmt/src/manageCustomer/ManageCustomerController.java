@@ -1744,6 +1744,7 @@ public class ManageCustomerController extends PageFlowController
          
         try {
         	licensevalue = license.addCustomerProductLicense(customerLicense);
+        	addLASCustomerOrgnodeEntry(licenseNode);
         } catch (Exception e) { 
             e.printStackTrace();
             String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
@@ -1755,11 +1756,12 @@ public class ManageCustomerController extends PageFlowController
     private boolean updateLASCustomerLicenses(LASLicenseNode licenseNode)
     {
         boolean licensevalue = false;
-        
+        boolean result = false;
         CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
         	licensevalue = license.updateCustomerProductLicense(customerLicense);
+        	addLASCustomerOrgnodeEntry(licenseNode);
         	licensevalue = true;
             
         } catch (Exception e) { 
@@ -1768,6 +1770,36 @@ public class ManageCustomerController extends PageFlowController
         }
         
         return licensevalue;
+    }
+    
+    private boolean addLASCustomerOrgnodeEntry (LASLicenseNode licenseNode)
+    {
+    	CustomerLicense orgNodeLicenseData=null;
+    	boolean result = false;
+    	try {
+    	
+    	orgNodeLicenseData = license.getLASCustomerTopNodeData(licenseNode.getCustomerId(),licenseNode.getProductId());
+    	if (orgNodeLicenseData!= null) {
+    		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ Integer.valueOf(licenseNode.getLicenseQuantity());
+    		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getLicenseQuantity());
+    		orgNodeLicenseData.setAvailable(availableLicense);
+    		orgNodeLicenseData.setLicenseAfterLastPurchase(licenseAfterLastPurchase);
+    		result = license.updateLASCustomerTopNodeLicense(orgNodeLicenseData);
+    		result = true;
+    	}
+    	else {
+    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
+    		orgNodeLicenseData = licenseNode.makeCopy();
+    		orgNodeLicenseData.setOrgNodeId(orgNodeId);
+    		result = license.addLASCustomerTopNodeLicense(orgNodeLicenseData);
+    		result = true;
+    	}
+    	}catch (Exception e) {
+    		e.printStackTrace();
+    		String msg = MessageResourceBundle.getMessage(e.getMessage());      
+    	}
+    	
+    	return result;
     }
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** Private methods ************* ///////////////////////////////    

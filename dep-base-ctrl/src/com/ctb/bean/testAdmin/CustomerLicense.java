@@ -27,6 +27,7 @@ public class CustomerLicense extends CTBBean
     private String orderNumber = null;
     private String purchaseOrder = null;
 	private Integer orderIndex = null;
+	private Integer orgNodeId = null;
 
 
     //changes for LM12
@@ -221,6 +222,14 @@ public class CustomerLicense extends CTBBean
 	public void setOrderIndex(Integer orderIndex) {
 		this.orderIndex = orderIndex;
 	}
-	
-	
+
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
+	}
+
+
 } 

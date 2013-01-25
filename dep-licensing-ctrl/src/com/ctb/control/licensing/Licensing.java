@@ -102,4 +102,13 @@ public interface Licensing
     boolean updateCustomerProductLicense(CustomerLicense customerLicense) throws com.ctb.exception.CTBBusinessException;
     
     com.ctb.bean.testAdmin.CustomerLicense[] getCustomerProductLicenses(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.CustomerLicense getLASCustomerTopNodeData (java.lang.Integer customerId, java.lang.Integer productId)throws com.ctb.exception.CTBBusinessException;
+    
+    boolean updateLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
+    
+    boolean addLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
+    
+    int getTopNodeId(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
+    
 } 

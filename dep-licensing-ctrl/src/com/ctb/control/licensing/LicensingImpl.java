@@ -561,6 +561,61 @@ public class LicensingImpl implements Licensing
         return true;    
    }
      // END - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
-     
+    
+   public CustomerLicense getLASCustomerTopNodeData (Integer customerId, Integer productId) throws CTBBusinessException {
+	   try {   
+		     CustomerLicense customerLicense  = null;
+		     customerLicense = license.getLASCustomerTopNodeData(customerId, productId);  
+		  
+		    return customerLicense;  
+		              
+		} catch (SQLException e ) {
+		    
+		    OrgLicenseDataNotFoundException lde = 
+		            new OrgLicenseDataNotFoundException("platformlicence.getLASCustomerTopNodeData.E001");
+		            
+		    throw lde;
+		    
+		}
+	   
+   }
+   
+   public boolean updateLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws CTBBusinessException {
+	   
+	   try {
+           this.license.updateLASCustomerTopNodeLicense(customerLicense.getOrgNodeId(),customerLicense.getProductId(),customerLicense.getCustomerId(), customerLicense.getAvailable(), customerLicense.getLicenseAfterLastPurchase());
+
+	   } catch (SQLException se) {
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.updateLASCustomerTopNodeLicense.E0014");
+           throw lce;
+        }
+        return true; 
+   }
+   
+   public boolean addLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws CTBBusinessException {
+	   
+	   try {
+           this.license.addLASCustomerTopNodeLicense(customerLicense);
+	   } catch (SQLException se) {
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.addLASCustomerTopNodeLicense.E0014");
+           throw lce;
+        }
+        return true; 
+   }
+   
+   public int getTopNodeId(Integer customerId) throws CTBBusinessException{
+	   Integer orgNodeId = null;
+	   try {
+		   orgNodeId = this.license.getTopNodeId(customerId);
+
+	   } catch (SQLException se) {
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.getTopNodeId");
+           throw lce;
+        }
+	   return orgNodeId;
+   }
 } 
   

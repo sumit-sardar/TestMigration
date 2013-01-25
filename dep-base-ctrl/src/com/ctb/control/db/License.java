@@ -380,6 +380,16 @@ public interface License extends JdbcControl
      @JdbcControl.SQL(statement = "update customer_product_license set available  = {customerLicense.available},license_after_last_purchase = {customerLicense.licenseAfterLastPurchase},license_period_end = {customerLicense.licenseperiodEnd} where customer_id = {customerLicense.customerId} and  product_id  = {customerLicense.productId} and order_index = {customerLicense.orderIndex}")
      void updateCustomerProductLicense(CustomerLicense customerLicense) throws SQLException;
 
-
+     @JdbcControl.SQL(statement = "SELECT CONL.CUSTOMER_ID  AS customerId,  CONL.PRODUCT_ID    AS productId, CONL.ORG_NODE_ID   AS orgNodeId,  CONL.AVAILABLE   AS available, CONL.RESERVED   AS reservedLicense,  CONL.CONSUMED  AS consumedLicense,  CONL.EMAIL_NOTIFY_FLAG  AS emailNotify,  CONL.SUBTEST_MODEL  AS subtestModel, CONL.LICENSE_AFTER_LAST_PURCHASE AS licenseAfterLastPurchase  FROM CUSTOMER_ORGNODE_LICENSE CONL, ORG_NODE_CATEGORY ONC, ORG_NODE ORG WHERE CONL.CUSTOMER_ID = {customerId}  AND CONL.PRODUCT_ID = {productId} AND CONL.ORG_NODE_ID = ORG.ORG_NODE_ID AND ORG.ORG_NODE_CATEGORY_ID = ONC.ORG_NODE_CATEGORY_ID  AND ONC.CATEGORY_LEVEL IN (SELECT MIN(CATEGORY_LEVEL) FROM ORG_NODE_CATEGORY WHERE CUSTOMER_ID = {customerId})")
+     CustomerLicense getLASCustomerTopNodeData(Integer customerId, Integer productId) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "UPDATE CUSTOMER_ORGNODE_LICENSE CONL SET CONL.LICENSE_AFTER_LAST_PURCHASE = {afterLastPurchase} , CONL.AVAILABLE = {available} WHERE CONL.CUSTOMER_ID = {customerId}  AND CONL.PRODUCT_ID = {productId}  AND CONL.ORG_NODE_ID = {orgNodeId}")
+     void updateLASCustomerTopNodeLicense(Integer orgNodeId, Integer productId, Integer customerId, Integer available, Integer afterLastPurchase) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "INSERT INTO CUSTOMER_ORGNODE_LICENSE (ORG_NODE_ID, CUSTOMER_ID, PRODUCT_ID, AVAILABLE, RESERVED, CONSUMED, SUBTEST_MODEL, LICENSE_AFTER_LAST_PURCHASE, EMAIL_NOTIFY_FLAG) VALUES ( {customerLicense.orgNodeId}, {customerLicense.customerId}, {customerLicense.productId}, {customerLicense.available}, {customerLicense.reservedLicense}, {customerLicense.consumedLicense}, {customerLicense.subtestModel}, {customerLicense.licenseAfterLastPurchase}, 'T')")
+     void addLASCustomerTopNodeLicense(CustomerLicense customerLicense) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "SELECT ORG.ORG_NODE_ID FROM ORG_NODE ORG, ORG_NODE_CATEGORY ONC WHERE ORG.ORG_NODE_CATEGORY_ID = ONC.ORG_NODE_CATEGORY_ID AND ORG.CUSTOMER_ID = {customerId} AND ONC.CATEGORY_LEVEL IN (SELECT MIN(CATEGORY_LEVEL) FROM ORG_NODE_CATEGORY WHERE CUSTOMER_ID = {customerId})")
+     Integer getTopNodeId(Integer customerId) throws SQLException;
 }
 
