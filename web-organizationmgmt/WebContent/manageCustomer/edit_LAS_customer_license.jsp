@@ -1,3 +1,4 @@
+<%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -193,9 +194,24 @@
     
 </netui-data:repeater>
     
+    <ctb:tableNoResults dataSource="requestScope.licenses">
+        <tr class="sortable">
+            <td class="sortable" colspan="2">
+                 <ctb:message title="${bundle.web['common.message.noOrder.title']}" style="tableMessage">
+                     <netui:content value="${bundle.web['common.message.noOrder.message']}"/>
+                 </ctb:message>
+            </td>
+       </tr>
+	</ctb:tableNoResults>
+    
 </table>
-<br/>
-    		<netui:button type="submit" value="Save" action="editLASCustomerLicense"/>
+
+<% List licenses = (List)request.getAttribute("licenses");
+   if (licenses.size() > 0) {	 
+%>
+	<br/>
+    <netui:button type="submit" value="Save" action="editLASCustomerLicense"/>
+<% } %> 
 
 </td></tr></table>
 

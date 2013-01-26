@@ -1541,9 +1541,7 @@ public class ManageCustomerController extends PageFlowController
         Integer customerId = LASLicenseNode.getCustomerId();        
         boolean validInfo = LicenseFormUtils.verifyLASLicenseInformation(form);
         if (!validInfo) {
-            setLASLicenseNodeToForm(form, customerId);
         	this.getRequest().setAttribute("pageMessage", form.getMessage());
-        	this.LASLicenses = getLASLicenses(customerId);       	
             this.getRequest().setAttribute("licenses", this.LASLicenses);        
             this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
             return new Forward("success", form);
@@ -1700,39 +1698,20 @@ public class ManageCustomerController extends PageFlowController
 		catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
+		
+		/*
+    	LASLicenseNode node = null;
+    	node = new LASLicenseNode(customerId);
+    	node.setOrderNumber("123");
+    	node.setLicenseQuantity("200");
+    	node.setPurchaseDate("01/08/11");
+    	node.setExpiryDate("01/08/12");
+    	node.setPurchaseOrder("This is the first order");   	
+    	node.setOrderIndex(1);
+    	licenses.add(node);
+		*/
+		
     	return licenses;
-//    	
-//    	LASLicenseNode node = null;
-//    	ArrayList licenses = new ArrayList();
-//    	
-//    	node = new LASLicenseNode(customerId);
-//    	node.setIndex(new Integer(1));
-//    	node.setOrderNumber("123");
-//    	node.setLicenseQuantity("200");
-//    	node.setPurchaseDate("01/08/11");
-//    	node.setExpiryDate("01/08/12");
-//    	node.setPurchaseOrder("This is the first order");   	
-//    	licenses.add(node);
-//
-//    	node = new LASLicenseNode(customerId);
-//    	node.setIndex(new Integer(2));
-//    	node.setOrderNumber("456");
-//    	node.setLicenseQuantity("300");
-//    	node.setPurchaseDate("01/08/12");
-//    	node.setExpiryDate("03/16/13");
-//    	node.setPurchaseOrder("This order is for Reading");   	
-//    	licenses.add(node);
-//
-//    	node = new LASLicenseNode(customerId);
-//    	node.setIndex(new Integer(3));
-//    	node.setOrderNumber("789");
-//    	node.setLicenseQuantity("400");
-//    	node.setPurchaseDate("01/08/13");
-//    	node.setExpiryDate("01/08/16");
-//    	node.setPurchaseOrder("Corporation order");   	
-//    	licenses.add(node);
-//    	
-//    	return licenses;
     }
     
     
@@ -1772,7 +1751,6 @@ public class ManageCustomerController extends PageFlowController
         		result = true;
         } catch (Exception e) { 
             e.printStackTrace();
-            String msg = MessageResourceBundle.getMessage(e.getMessage());                                        
         }
         
         return result;
