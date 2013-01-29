@@ -1589,6 +1589,8 @@ public class ManageCustomerController extends PageFlowController
         	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";           	
         	paramValue = (String)this.getRequest().getParameter(paramStr);
         	boolean updateNeeded = false;
+        	int balanceLicense = 0;
+        	node.setBalanceLicense(Integer.valueOf(balanceLicense));
         	if(Integer.valueOf(paramValue) < Integer.valueOf(node.getLicenseQuantity())) {
         		String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
         		String title = Message.ADD_UPDATED_LICENSE;
