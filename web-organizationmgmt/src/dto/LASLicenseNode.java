@@ -28,6 +28,7 @@ public class LASLicenseNode implements java.io.Serializable
     private String purchaseOrder = null;
     private String purchaseDate = null;
     private String expiryDate = null;
+    private Integer balanceLicense = null;
 
     private String expiryStatus = null;
     
@@ -143,6 +144,13 @@ public class LASLicenseNode implements java.io.Serializable
 		this.expiryDate = expiryDate;
 	}
 
+	public Integer getBalanceLicense() {
+		return balanceLicense;
+	}
+	public void setBalanceLicense(Integer balanceLicense) {
+		this.balanceLicense = balanceLicense;
+	}
+	
 	public String getExpiryStatus() {
         Date expDate = DateUtils.getDateFromDateShortString(this.expiryDate);
         Date today = new Date();

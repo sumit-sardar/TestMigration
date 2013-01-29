@@ -1589,7 +1589,15 @@ public class ManageCustomerController extends PageFlowController
         	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";           	
         	paramValue = (String)this.getRequest().getParameter(paramStr);
         	boolean updateNeeded = false;
+        	if(Integer.valueOf(paramValue) < Integer.valueOf(node.getLicenseQuantity())) {
+        		String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
+        		String title = Message.ADD_UPDATED_LICENSE;
+        		form.setMessage(title, msg, Message.INFORMATION);
+        		this.getRequest().setAttribute("pageMessage", form.getMessage());  
+        		break;
+        	}
         	if (! paramValue.equals(node.getLicenseQuantity())) {
+        		node.setBalanceLicense(Integer.valueOf(paramValue) - Integer.valueOf(node.getLicenseQuantity()));
         		node.setLicenseQuantity(paramValue);
         		updateNeeded = true;
         	}
@@ -1764,7 +1772,7 @@ public class ManageCustomerController extends PageFlowController
     	
     	orgNodeLicenseData = license.getLASCustomerTopNodeData(licenseNode.getCustomerId(),licenseNode.getProductId());
     	if (orgNodeLicenseData!= null) {
-    		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ Integer.valueOf(licenseNode.getLicenseQuantity());
+    		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ (Integer.valueOf(licenseNode.getBalanceLicense()));
     		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getLicenseQuantity());
     		orgNodeLicenseData.setAvailable(availableLicense);
     		orgNodeLicenseData.setLicenseAfterLastPurchase(licenseAfterLastPurchase);
