@@ -1773,7 +1773,7 @@ public class ManageCustomerController extends PageFlowController
     	orgNodeLicenseData = license.getLASCustomerTopNodeData(licenseNode.getCustomerId(),licenseNode.getProductId());
     	if (orgNodeLicenseData!= null) {
     		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ (Integer.valueOf(licenseNode.getBalanceLicense()));
-    		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getLicenseQuantity());
+    		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getBalanceLicense());
     		orgNodeLicenseData.setAvailable(availableLicense);
     		orgNodeLicenseData.setLicenseAfterLastPurchase(licenseAfterLastPurchase);
     		result = license.updateLASCustomerTopNodeLicense(orgNodeLicenseData);
