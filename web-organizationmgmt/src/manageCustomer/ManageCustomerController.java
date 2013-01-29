@@ -1735,6 +1735,7 @@ public class ManageCustomerController extends PageFlowController
          
         try {
         	licensevalue = license.addCustomerProductLicense(customerLicense);
+        	licenseNode.setBalanceLicense(customerLicense.getAvailable());
         	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode);
         	if (licensevalue && isAddOrgLice)
         		result = true;
