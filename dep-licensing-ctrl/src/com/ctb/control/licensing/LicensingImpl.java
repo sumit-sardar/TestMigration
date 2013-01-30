@@ -562,23 +562,23 @@ public class LicensingImpl implements Licensing
    }
      // END - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
     
-   public CustomerLicense getLASCustomerTopNodeData (Integer customerId, Integer productId) throws CTBBusinessException {
-	   try {   
-		     CustomerLicense customerLicense  = null;
-		     customerLicense = license.getLASCustomerTopNodeData(customerId, productId);  
-		  
-		    return customerLicense;  
-		              
-		} catch (SQLException e ) {
-		    
-		    OrgLicenseDataNotFoundException lde = 
-		            new OrgLicenseDataNotFoundException("platformlicence.getLASCustomerTopNodeData.E001");
-		            
-		    throw lde;
-		    
-		}
-	   
-   }
+//   public CustomerLicense getLASCustomerTopNodeData (Integer customerId, Integer productId) throws CTBBusinessException {
+//	   try {   
+//		     CustomerLicense customerLicense  = null;
+//		     customerLicense = license.getLASCustomerTopNodeData(customerId, productId);  
+//		  
+//		    return customerLicense;  
+//		              
+//		} catch (SQLException e ) {
+//		    
+//		    OrgLicenseDataNotFoundException lde = 
+//		            new OrgLicenseDataNotFoundException("platformlicence.getLASCustomerTopNodeData.E001");
+//		            
+//		    throw lde;
+//		    
+//		}
+//	   
+//   }
    
    public boolean updateLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws CTBBusinessException {
 	   
@@ -616,6 +616,23 @@ public class LicensingImpl implements Licensing
            throw lce;
         }
 	   return orgNodeId;
+   }
+   
+   public CustomerLicense getTopOrgnodeLicenseDetails(Integer orgNodeId, Integer productId) throws CTBBusinessException {
+	   try {   
+		     CustomerLicense customerLicense  = null;
+		     customerLicense = license.getTopOrgnodeLicenseDetails(orgNodeId, productId);  
+		  
+		    return customerLicense;  
+		              
+		} catch (SQLException e ) {
+		    
+		    OrgLicenseDataNotFoundException lde = 
+		            new OrgLicenseDataNotFoundException("platformlicence.getTopOrgnodeLicenseDetails.E001");
+		            
+		    throw lde;
+		    
+		}
    }
 } 
   

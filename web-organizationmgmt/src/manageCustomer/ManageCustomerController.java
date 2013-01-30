@@ -144,7 +144,7 @@ public class ManageCustomerController extends PageFlowController
 	private Boolean isLASManageLicense = null;
 
 	private CustomerConfiguration [] customerConfigurations = null;   
-
+	CustomerLicense topNodeLicenseDetail = null; // added for laslink License management
 	private List LASLicenses = null;
 	private String purchasePeriod = "3";
     /**
@@ -1582,7 +1582,7 @@ public class ManageCustomerController extends PageFlowController
         String paramStr = null;
         String paramValue = null;
         boolean validInfo = true;
-        
+        Integer orgNodeId = null;
         for (int i=0 ; i<this.LASLicenses.size() ; i++) {
         	LASLicenseNode node = (LASLicenseNode)this.LASLicenses.get(i);
         	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";    
@@ -1608,17 +1608,27 @@ public class ManageCustomerController extends PageFlowController
         	boolean updateNeeded = false;
         	int balanceLicense = 0;
         	node.setBalanceLicense(Integer.valueOf(balanceLicense));
-        	if(Integer.valueOf(paramValue) < Integer.valueOf(node.getLicenseQuantity())) {
-        		String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
-        		String title = Message.ADD_UPDATED_LICENSE;
-        		form.setMessage(title, msg, Message.ERROR);
-        		this.getRequest().setAttribute("pageMessage", form.getMessage());  
-        		break;
+        	try {
+        		orgNodeId = license.getTopNodeId(node.getCustomerId());
+        		this.topNodeLicenseDetail = license.getTopOrgnodeLicenseDetails(orgNodeId, node.getProductId());
+        	}catch(CTBBusinessException be){
+        		be.printStackTrace();
+                String msg = MessageResourceBundle.getMessage(be.getMessage());                                        
+                form.setMessage(Message.ADD_UPDATED_LICENSE, msg, Message.ERROR);
         	}
         	if (! paramValue.equals(node.getLicenseQuantity())) {
         		node.setBalanceLicense(Integer.valueOf(paramValue) - Integer.valueOf(node.getLicenseQuantity()));
         		node.setLicenseQuantity(paramValue);
-        		updateNeeded = true;
+        		if (Math.abs(Integer.valueOf(node.getBalanceLicense())) > Integer.valueOf(this.topNodeLicenseDetail.getAvailable())) 
+        		{        			
+        			String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
+            		String title = Message.ADD_UPDATED_LICENSE;
+            		form.setMessage(title, msg, Message.INFORMATION);
+            		this.getRequest().setAttribute("pageMessage", form.getMessage());  
+           			break;
+        		}
+        		else 
+        			updateNeeded = true;
         	}
         	paramStr = "{requestScope.licenses[" + i + "].expiryDate}";           	
         	paramValue = (String)this.getRequest().getParameter(paramStr);
@@ -1636,8 +1646,7 @@ public class ManageCustomerController extends PageFlowController
                     this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
                     return new Forward("success", form);
                 }
-        		CustomerLicense customerLicense = node.makeCopy();
-        		boolean result = updateLASCustomerLicenses(node);
+        		boolean result = updateLASCustomerLicenses(node, orgNodeId);
         		System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());        		
         		if (result) {
                     String msg = MessageResourceBundle.getMessage("ManageLicense.license.UpdateSuccessfully");
@@ -1739,7 +1748,9 @@ public class ManageCustomerController extends PageFlowController
         try {
         	licensevalue = license.addCustomerProductLicense(customerLicense);
         	licenseNode.setBalanceLicense(customerLicense.getAvailable());
-        	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode);
+        	Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
+        	this.topNodeLicenseDetail = license.getTopOrgnodeLicenseDetails(orgNodeId, licenseNode.getProductId());
+    		isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode, orgNodeId);
         	if (licensevalue && isAddOrgLice)
         		result = true;
         } catch (Exception e) { 
@@ -1750,7 +1761,7 @@ public class ManageCustomerController extends PageFlowController
         return result;
     }
     
-    private boolean updateLASCustomerLicenses(LASLicenseNode licenseNode)
+    private boolean updateLASCustomerLicenses(LASLicenseNode licenseNode, Integer orgNodeId)
     {
         boolean licensevalue = false;
         boolean isAddOrgLice = false;
@@ -1760,7 +1771,7 @@ public class ManageCustomerController extends PageFlowController
          
         try {
         	licensevalue = license.updateCustomerProductLicense(customerLicense);
-        	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode);
+        	isAddOrgLice = addLASCustomerOrgnodeEntry(licenseNode, orgNodeId);
         	if (licensevalue && isAddOrgLice)
         		result = true;
         } catch (Exception e) { 
@@ -1770,13 +1781,13 @@ public class ManageCustomerController extends PageFlowController
         return result;
     }
     
-    private boolean addLASCustomerOrgnodeEntry (LASLicenseNode licenseNode)
+    private boolean addLASCustomerOrgnodeEntry (LASLicenseNode licenseNode, Integer orgNodeId)
     {
     	CustomerLicense orgNodeLicenseData=null;
     	boolean result = false;
     	try {
     	
-    	orgNodeLicenseData = license.getLASCustomerTopNodeData(licenseNode.getCustomerId(),licenseNode.getProductId());
+	   	orgNodeLicenseData = this.topNodeLicenseDetail;
     	if (orgNodeLicenseData!= null) {
     		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ (Integer.valueOf(licenseNode.getBalanceLicense()));
     		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getBalanceLicense());
@@ -1786,7 +1797,7 @@ public class ManageCustomerController extends PageFlowController
     		result = true;
     	}
     	else {
-    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
+//    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
     		orgNodeLicenseData = licenseNode.makeCopy();
     		orgNodeLicenseData.setOrgNodeId(orgNodeId);
     		result = license.addLASCustomerTopNodeLicense(orgNodeLicenseData);

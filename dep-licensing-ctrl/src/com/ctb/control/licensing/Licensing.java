@@ -103,7 +103,7 @@ public interface Licensing
     
     com.ctb.bean.testAdmin.CustomerLicense[] getCustomerProductLicenses(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
     
-    com.ctb.bean.testAdmin.CustomerLicense getLASCustomerTopNodeData (java.lang.Integer customerId, java.lang.Integer productId)throws com.ctb.exception.CTBBusinessException;
+//    com.ctb.bean.testAdmin.CustomerLicense getLASCustomerTopNodeData (java.lang.Integer customerId, java.lang.Integer productId)throws com.ctb.exception.CTBBusinessException;
     
     boolean updateLASCustomerTopNodeLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
     
@@ -111,4 +111,5 @@ public interface Licensing
     
     int getTopNodeId(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
     
+    com.ctb.bean.testAdmin.CustomerLicense getTopOrgnodeLicenseDetails(java.lang.Integer orgNodeId, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
 } 
