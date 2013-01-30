@@ -261,20 +261,7 @@ public class LicenseFormUtils
     public static boolean isLASInvalidLicInfoEdit(ManageCustomerForm form, LASLicenseNode node)
     {
           
-        //String invalidCharFields = verifyLASLicInfo(form);
         String invalidString = "";                        
-//        if ( invalidCharFields.length() > 0 ) {
-//            
-//            invalidString =invalidCharFields + ("<br/>" + Message.INVALID_LICENSE_VALUE )  ;
-//            
-//        }																									   
-//                   
-//        if ( invalidString != null && invalidString.length() > 0 ) {    
-//            
-//            form.setMessage(Message.INVALID_LICENSE_TEXT, invalidString, Message.ERROR);
-//            return true;
-//        
-//        }
         boolean expiryDate = false;
         int validateResult = DateUtils.validateDateString(node.getExpiryDate());
         if (validateResult != DateUtils.DATE_VALID)
@@ -288,5 +275,16 @@ public class LicenseFormUtils
         return false;   
     }
     
+    public static boolean isValidNumber(String value)
+    {
+    	if (value == null) 
+    		return false;
+    	try {
+    		int intvalue = Integer.valueOf(value);
+    	} catch (Exception e) {
+    		return false;
+    	}
+    	return true;
+    }
     
 } 

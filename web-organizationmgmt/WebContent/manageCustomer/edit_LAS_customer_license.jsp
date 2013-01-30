@@ -163,11 +163,11 @@
 <% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
    Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
    String expiryDateIndex = "expiryDate" + itemIndex.toString();	
-   if (expiryStatus.equals("EXPIRED")) {	 
+   if (expiryStatus.equals("Expired")) {	 
 %>
     <td class="sortableRed alignLeft">
 <% } else 
-   if (expiryStatus.equals("ABOUT_EXPIRED")) {	 
+   if (expiryStatus.indexOf("About expired") == 0) {	 
 %>
     <td class="sortableYellow alignLeft">
 <% } else { %>
@@ -176,13 +176,13 @@
             <netui:textBox tagId="<%=expiryDateIndex%>" dataSource="container.item.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);" />
             <a href="#" onclick="showCalendar(document.getElementById('<%=expiryDateIndex%>'), document.getElementById('<%=expiryDateIndex%>')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
 <% 
-   if (expiryStatus.equals("EXPIRED")) {	 
+   if (expiryStatus.equals("Expired")) {	 
 %>
     <span>&nbsp;&nbsp;Expired</span>
 <% } else 
-   if (expiryStatus.equals("ABOUT_EXPIRED")) {	 
+   if (expiryStatus.indexOf("About expired") == 0) {	 
 %>
-    <span>&nbsp;&nbsp;About expired in 60 days</span>
+    <span>&nbsp;&nbsp;<%= expiryStatus %></span>
 <% } %>
              
          </td>    

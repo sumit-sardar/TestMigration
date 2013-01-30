@@ -1572,8 +1572,8 @@ public class ManageCustomerController extends PageFlowController
 
     
     @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success",
-                         path = "edit_LAS_customer_license.jsp")
+            @Jpf.Forward(name = "success", path = "edit_LAS_customer_license.jsp"),
+            @Jpf.Forward(name = "error", path = "edit_LAS_customer_license.jsp")
     })
     protected Forward editLASCustomerLicense(ManageCustomerForm form)
     {   
@@ -1581,20 +1581,37 @@ public class ManageCustomerController extends PageFlowController
         Integer customerId = LASLicenseNode.getCustomerId();        
         String paramStr = null;
         String paramValue = null;
-        
-        
+        boolean validInfo = true;
         
         for (int i=0 ; i<this.LASLicenses.size() ; i++) {
         	LASLicenseNode node = (LASLicenseNode)this.LASLicenses.get(i);
-        	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";           	
+        	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";    
+        	if (paramStr == null) paramStr = "";
         	paramValue = (String)this.getRequest().getParameter(paramStr);
+        	
+        	if (! LicenseFormUtils.isValidNumber(paramValue)) {
+                setLASLicenseNodeToForm(form, customerId);
+                String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateError");
+                String title = Message.ADD_UPDATED_LICENSE;
+                form.setMessage(title, msg, Message.ERROR);                
+            	this.getRequest().setAttribute("pageMessage", form.getMessage());
+            	this.LASLicenses = getLASLicenses(customerId);       	
+                this.getRequest().setAttribute("licenses", this.LASLicenses);        
+                this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+                return new Forward("error", form);        		
+        	}
+        	
+        	if (paramValue == null) paramValue = "";
+        	paramValue = paramValue.trim();
+        	if (paramValue.length() == 0) paramValue = "0";
+        	
         	boolean updateNeeded = false;
         	int balanceLicense = 0;
         	node.setBalanceLicense(Integer.valueOf(balanceLicense));
         	if(Integer.valueOf(paramValue) < Integer.valueOf(node.getLicenseQuantity())) {
         		String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
         		String title = Message.ADD_UPDATED_LICENSE;
-        		form.setMessage(title, msg, Message.INFORMATION);
+        		form.setMessage(title, msg, Message.ERROR);
         		this.getRequest().setAttribute("pageMessage", form.getMessage());  
         		break;
         	}
@@ -1610,7 +1627,7 @@ public class ManageCustomerController extends PageFlowController
         		updateNeeded = true;
         	}
         	if (updateNeeded) {
-        		boolean validInfo = LicenseFormUtils.verifyLASLicenseEditInformation(form, node);
+        		validInfo = LicenseFormUtils.verifyLASLicenseEditInformation(form, node);
                 if (!validInfo) {
                     setLASLicenseNodeToForm(form, customerId);
                 	this.getRequest().setAttribute("pageMessage", form.getMessage());
@@ -1622,7 +1639,6 @@ public class ManageCustomerController extends PageFlowController
         		CustomerLicense customerLicense = node.makeCopy();
         		boolean result = updateLASCustomerLicenses(node);
         		System.out.println(node.getLicenseQuantity() + " - " + node.getExpiryDate());        		
-            	//boolean ret = license.updateCustomerProductLicense(customerId, customerLicense);
         		if (result) {
                     String msg = MessageResourceBundle.getMessage("ManageLicense.license.UpdateSuccessfully");
                     String title = Message.ADD_UPDATED_LICENSE;
@@ -1708,19 +1724,6 @@ public class ManageCustomerController extends PageFlowController
 		catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
-		
-		/*
-    	LASLicenseNode node = null;
-    	node = new LASLicenseNode(customerId);
-    	node.setOrderNumber("123");
-    	node.setLicenseQuantity("200");
-    	node.setPurchaseDate("01/08/11");
-    	node.setExpiryDate("01/08/12");
-    	node.setPurchaseOrder("This is the first order");   	
-    	node.setOrderIndex(1);
-    	licenses.add(node);
-		*/
-		
     	return licenses;
     }
     
@@ -1796,6 +1799,8 @@ public class ManageCustomerController extends PageFlowController
     	
     	return result;
     }
+    
+    
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** Private methods ************* ///////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////   
