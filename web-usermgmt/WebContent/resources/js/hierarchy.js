@@ -513,12 +513,14 @@ function populateGrid() {
 				var actionPermission = getColValueJson(rowid,'actionPermission');
 				if(actionPermission != "" && actionPermission != undefined){
 					var changePwdFlag = actionPermission.substr(3, 1);
+					var deleteUsrFlag = actionPermission.substr(2, 1);//get the delete flag					
 					if(changePwdFlag == 'T'){
 						setAnchorButtonState('changePWButton', false);
 					}
 					else{
 						setAnchorButtonState('changePWButton', true);
 					}
+					setupButtonDeleteUserButton(deleteUsrFlag); 
 				}
 				else{
 					if ($("#roleNameID").val() == 'Administrator') {
@@ -2299,6 +2301,16 @@ function openTreeNodes(orgNodeId) {
 		if (deleteUserEnable == 'false') {	
 			var element = document.getElementById('del_list2');
 			element.style.display = 'none';
+		}
+	}
+	
+	function setupButtonDeleteUserButton(deleteUsrFlag) {
+		var element = document.getElementById('del_list2');
+		if (deleteUsrFlag == 'F') {	
+			element.style.display = 'none';
+		}
+		else {
+			element.style.display = '';
 		}
 	}
 	

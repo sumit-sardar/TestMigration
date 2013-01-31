@@ -27,7 +27,7 @@
 <input type="hidden" id="addrID1" name = "addrID1" value=<lb:label key="user.addressLine1" prefix="'" suffix="'"/>/>
 <input type="hidden" id="addrID2" name = "addrID2" value=<lb:label key="user.addressLine2" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mNameID" name = "mNameID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
-<input type="hidden" id="cityID" name = "cityID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="cityID" name = "cityID" value=<lb:label key="user.city" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="user.msg.invalidNameChars" prefix="\"" suffix="\""/>/>
 <input type="hidden" id="sRequiredID" name = "sRequiredID" value=<lb:label key="user.msg.requiredField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="user.msg.multiple.requiredField" prefix="'" suffix="'"/>/>
