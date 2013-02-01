@@ -1500,6 +1500,43 @@ public class ItemLayoutProcessor {
 					} else {
 						childSrcList.add(widgetElement);
 					}
+				} else if (name.equals("HtmlAsset")){
+					Element widgetElement = null;
+					widgetElement = new Element("asset_widget");
+					/* 
+					if(thisElement.getAttributeValue("ID") != null)
+						widgetElement.setAttribute("id", thisElement.getAttributeValue("ID"));
+					else 
+						widgetElement.setAttribute("id", getUniqueId());*/
+					widgetElement.setAttribute("x", thisElement.getAttributeValue("x"));
+					widgetElement.setAttribute("y", thisElement.getAttributeValue("y"));
+					widgetElement.setAttribute("height", thisElement.getAttributeValue("height"));
+					widgetElement.setAttribute("width", thisElement.getAttributeValue("width"));
+					widgetElement.setAttribute("isMP4", thisElement.getAttributeValue("isMP4"));
+					widgetElement.setAttribute("autoplay", thisElement.getAttributeValue("autoplay"));
+					widgetElement.setAttribute("playorder", thisElement.getAttributeValue("playorder"));
+					widgetElement.setAttribute("playonce", thisElement.getAttributeValue("playonce"));
+					widgetElement.setAttribute("nonstop", thisElement.getAttributeValue("nonstop"));
+					widgetElement.setAttribute("playIfAnswered", thisElement.getAttributeValue("playIfAnswered"));
+					widgetElement.setAttribute("responseAreaLocker", thisElement.getAttributeValue("responseAreaLocker"));
+					Boolean isMP4 = new Boolean(thisElement.getAttributeValue("isMP4"));
+					if(isMP4.booleanValue()){
+						String srcMP4 = thisElement.getAttributeValue("FileName");
+						widgetElement.setAttribute("id", getImageId(srcMP4));
+						srcMP4 = "http://mcsdoas15.mhe.mhc:9000/images/"
+								+ srcMP4.substring(
+										srcMP4.indexOf("/images/") + 8)
+										.replaceAll(" ", "%20");
+						//srcMP4 = "/local/apps/oas/ads/assets/formula2.mp4";
+						/*srcMP4 = "/local/apps/oas/ads/assets/"+ srcMP4.substring(
+								srcMP4.indexOf("/images/") + 8)
+								.replaceAll(" ", "%20");*/
+						widgetElement.setAttribute("src", srcMP4);						
+					}else{
+						widgetElement.setAttribute("id", getUniqueId());
+						widgetElement.setAttribute("src", thisElement.getAttributeValue("FileName"));
+					}
+					childSrcList.add(widgetElement);
 				} else if (name.equals("Table")) {
 					this.insideTable = true;
 					Element tableElement = new Element(table_widget);
@@ -3067,7 +3104,7 @@ public class ItemLayoutProcessor {
 		return value;
 	}
 
-	public static void getAsset(Element layoutItem, List assetList)
+	public static void getAsset(Element layoutItem, List assetList, ADSConfig adsConfig, List htmlAssetList)
 			throws Exception {
 		List localAssetList = extractAllElement(".//" + image_widget,
 				layoutItem);
@@ -3099,6 +3136,24 @@ public class ItemLayoutProcessor {
 			Element image_widget = (Element) localAssetList.get(i);
 			String path = image_widget.getAttributeValue("src");
 			assetList.add(path);
+		}
+
+		localAssetList = extractAllElement(".//asset_widget", layoutItem);
+		for (int i = 0; i < localAssetList.size(); i++) {
+			Element asset_widget = (Element) localAssetList.get(i);
+			String filePath = asset_widget.getAttributeValue("src");
+			htmlAssetList.add(filePath);
+			
+			//String fileExt = filePath.substring(filePath.length() - 3).toLowerCase();			
+			//if (!fileExt.equalsIgnoreCase("mp4")){
+			if (asset_widget.getAttributeValue("isMP4").equalsIgnoreCase("false")){
+				Properties prop = new Properties();
+				prop.load(new FileInputStream(adsConfig.getFile()));
+				String htmlAssetPkgPath = prop.getProperty("html.asset.package.path");	
+				String source = htmlAssetPkgPath + "\\" + filePath;
+				String destination = htmlAssetPkgPath + "\\" + filePath + "zip";			
+				zipFolder(source, destination);
+			}
 		}
 	}
 
@@ -3218,7 +3273,15 @@ public class ItemLayoutProcessor {
 				text_widget.addContent(textContent);
 			}
 		}
-
+		
+		List assetList = extractAllElement(".//asset_widget", itemLML);
+		for (int i = 0; i < assetList.size(); i++) {
+			Element asset_widget = (Element) assetList.get(i);		
+			String id = asset_widget.getAttributeValue("id");
+			if (asset_widget.getAttributeValue("isMP4").equalsIgnoreCase("true"))				
+				asset_widget.setAttribute("src",id);			
+		}
+		
 		Element item_model = ItemLayoutProcessor.extractSingleElement(
 				".//item_model", itemLML);
 		if (item_model != null) {

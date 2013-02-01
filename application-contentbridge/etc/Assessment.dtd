@@ -100,7 +100,7 @@ CHANGE HISTORY:
 	Author 		CDATA #IMPLIED
 >
 
-<!ELEMENT Item (StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?)>
+<!ELEMENT Item (TEAsset?, StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?)>
 <!ATTLIST Item
 	ID 		CDATA #REQUIRED
 	Grade		(K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Adult | EOC) "3"
@@ -300,16 +300,16 @@ answer -->
 >
 
 <!-- Graphic Component -->
-<!ELEMENT Graphic (Flash | EPSPrint | Acknowledgment)*>
+<!ELEMENT Graphic (Flash | EPSPrint | Acknowledgment | HtmlAsset)*>
 <!ATTLIST Graphic
-	ID 		CDATA #IMPLIED
-	Alt 		CDATA #IMPLIED
-	TabTitle	CDATA #IMPLIED
+	ID 				CDATA #IMPLIED
+	Alt 			CDATA #IMPLIED
+	TabTitle		CDATA #IMPLIED
 	width           CDATA #IMPLIED
 	height          CDATA #IMPLIED
-	inlineAlign	(top | middle | bottom | left | right) "bottom"
-	valign 		(top | middle | bottom) "top"
-	halign		(left | center | right) "left"
+	inlineAlign		(top | middle | bottom | left | right) "bottom"
+	valign 			(top | middle | bottom) "top"
+	halign			(left | center | right) "left"
 >
 
 <!ELEMENT Flash EMPTY>
@@ -324,6 +324,22 @@ answer -->
 	autoplay			(true | false) "true"
 	playorder			CDATA          "1" 
 	playonce			(true | false) "false"
+>
+<!ELEMENT HtmlAsset EMPTY>
+<!ATTLIST HtmlAsset
+	ID 					CDATA #IMPLIED
+	FileName 			CDATA #REQUIRED
+	x					CDATA #IMPLIED
+	y					CDATA #IMPLIED
+	height 				CDATA #IMPLIED
+	width 				CDATA #IMPLIED
+	isMP4				(true | false)	"false"
+	autoplay			(true | false) 	"true"
+	playorder			CDATA          	"1" 
+	playonce			(true | false) 	"false"
+	nonstop				(true | false) 	"false"
+	playIfAnswered 		(true | false) 	"false"
+	responseAreaLocker	(true | false) 	"false"
 >
 <!ELEMENT EPSPrint EMPTY>
 <!ATTLIST EPSPrint

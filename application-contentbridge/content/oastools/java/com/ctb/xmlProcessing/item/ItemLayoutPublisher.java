@@ -70,6 +70,7 @@ public class ItemLayoutPublisher {
 		Element itemLml;
 		ArrayList assetList = new ArrayList();
 		ArrayList htmlList = new ArrayList();
+		ArrayList htmlAssetList = new ArrayList();
 		try {
 			// Call layout
 
@@ -85,7 +86,7 @@ public class ItemLayoutPublisher {
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId,adsConfig);
 			else
-				ItemLayoutProcessor.getAsset(itemLml, assetList);
+				ItemLayoutProcessor.getAsset(itemLml, assetList, adsConfig, htmlAssetList);
 			//end
 			//logger.info("After zipfile creation ....");
 			ItemLayoutProcessor.modifyItemLMLForADS_Puslishing(itemLml,
@@ -113,12 +114,21 @@ public class ItemLayoutPublisher {
 				 
 				this.publishAssets(assetList);
 			}
+			
 			if (htmlList != null && htmlList.size() > 0) {
 				
 				  if(adsConfig.isSftp()){ this.sendPkgfiles_sftp(itemId+"zip"); }
 				  else { this.sendPkgfiles_ftp(itemId+"zip"); }
 				 this.publishPkgAssets(htmlList,itemId);
 				 //logger.info("after publishPkgAssets for TE Items...");
+			}
+			
+			
+			if (htmlAssetList != null && htmlAssetList.size() > 0) {
+				
+				  if(adsConfig.isSftp()){ this.sendHtmlAssetfiles_sftp(htmlAssetList); }
+				  else { this.sendHtmlAssetfiles_ftp(htmlAssetList); }
+				 this.publishHtmlAssets(htmlAssetList);
 			}
 			
 			// Publish Item to ADS - publish "xml"
@@ -386,6 +396,190 @@ public class ItemLayoutPublisher {
 
 		}
 
+	}
+	
+	
+	public void sendHtmlAssetfiles_sftp(List inputFiles) throws Exception {
+		
+		String destinationPkgPath = "/local/apps/oas/ads/assets/html_assets/";
+		String sourcePackagePath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/HtmlAssets/";
+		JSch jsch = new JSch();
+		Session session = null;
+		ChannelSftp sftpChannel = null;
+		Properties properties = new Properties();
+		properties.put("StrictHostKeyChecking", "no");
+		properties.put("compression.s2c", "none");
+		properties.put("compression.c2s", "none");
+
+		String ftpHost = adsConfig.getFtpHost();
+		String ftpUser = adsConfig.getFtpUser();
+		String ftpPass = adsConfig.getFtpPassword();
+		int port = adsConfig.getPort();
+
+		logger.info("Connecting to server:" + ftpHost);
+		try {
+			session = jsch.getSession(ftpUser, ftpHost, port);
+			session.setConfig(properties);
+			session.setPassword(ftpPass);
+			// jsch.setKnownHosts("/export/home/iwuser/.ssh/known_hosts");
+			session.connect();
+			Channel channel = session.openChannel("sftp");
+			channel.connect();
+			sftpChannel = (ChannelSftp) channel;
+
+			Iterator iter = inputFiles.iterator();
+			while (iter.hasNext()) {
+				String sourceFile = (String) (iter.next());	
+				String ext = sourceFile.substring(sourceFile.length() - 3).toLowerCase();
+				try {
+					if(ext.equalsIgnoreCase("mp4")){
+						String mp4 = getImage(sourceFile);
+						sourceFile = "/default/main/OAS/WORKAREA/highwire/images/"
+								+ sourceFile.substring(sourceFile
+										.indexOf("/images/") + 8);
+						sourceFile = sourceFile.replaceAll("%20", " ");
+						// sourceFile = "c:\\mappingdata\\images\\" + img;
+						String destination = destinationPath + mp4;
+						// sftpChannel.cd(destinationPath);
+						sftpChannel.put(sourceFile, destination);
+						/*sftpChannel.lcd(sourcePkgPathMP4);
+						sftpChannel.cd(destPkgPathMP4);
+						sourceFile = sourcePackagePath + sourceFile;
+						String destination = destinationPkgPath + sourceFile;
+						sftpChannel.put(sourceFile, destination);*/
+					}else{
+						sftpChannel.lcd(sourcePackagePath);
+						sftpChannel.cd(destinationPkgPath);
+						sourceFile = sourcePackagePath + sourceFile + "zip";
+						String destination = destinationPkgPath + sourceFile + "zip";
+						sftpChannel.put(sourceFile, destination);
+					}
+					
+
+				} catch (SftpException e) {
+					System.err.println("Exception : " + e.getMessage());
+					logger.error("Exception : " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		} finally {
+			if (sftpChannel != null) {
+				sftpChannel.exit();
+			}
+			if (session != null) {
+				session.disconnect();
+			}
+
+		}
+
+	}
+	
+	public void sendHtmlAssetfiles_ftp(List inputFiles) throws Exception {		
+		String destinationPkgPath = "/local/apps/oas/ads/assets/html_assets/";
+		String sourcePackagePath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/HtmlAssets/";
+		FTPClient ftpClient = new FTPClient();
+		ftpClient.setRemoteHost(adsConfig.getFtpHost());
+		ftpClient.connect();
+		if (ftpClient.connected()) {
+			ftpClient.login(adsConfig.getFtpUser(), adsConfig.getFtpPassword());
+			ftpClient.setType(FTPTransferType.BINARY);
+			Iterator iter = inputFiles.iterator();
+			while (iter.hasNext()) {
+				String sourceFile = (String) (iter.next());
+				String ext = sourceFile.substring(sourceFile.length() - 3).toLowerCase();
+				try {
+					if(ext.equalsIgnoreCase("mp4")){
+						String mp4 = getImage(sourceFile);
+						sourceFile = "/default/main/OAS/WORKAREA/highwire/images/"
+								+ sourceFile.substring(sourceFile
+										.indexOf("/images/") + 8);
+						// //sourceFile = "c:/images/" +
+						// sourceFile.substring(sourceFile.indexOf("/images/") + 8);
+						// sourceFile = "c:\\mappingdata\\images\\" + img;
+						sourceFile = sourceFile.replaceAll("%20", " ");
+						String destination = destinationPath + mp4;
+						destination = destination.replaceAll("%20", " ");
+						ftpClient.put(sourceFile, destination);
+					}else{
+						sourceFile = sourcePackagePath + sourceFile + "zip";
+						String destination = destinationPkgPath + sourceFile + "zip";
+						destination = destination.replaceAll("%20", " ");
+						ftpClient.put(sourceFile, destination);						
+					}									
+				} catch (Exception e) {
+					System.err.println("Exception : " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void publishHtmlAssets(List inputFiles) throws Exception {
+		//logger.info("Inside publishPkgAssets method...");
+		CommonClient client = clientLocator.getCommonClient();
+		String request = "";
+		//request="<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request><publish_asset> <asset ident= \"formula2\" videotype=\"mp4\"> <file_location uri=\"/local/apps/oas/ads/assets/formula2.mp4\" /></asset> </publish_asset> </ads_publish_request>";
+		Iterator iter = inputFiles.iterator();
+		
+		while (iter.hasNext()) {
+			String fileName = (String) iter.next();
+			String ext = fileName.substring(fileName.length() - 3).toLowerCase();
+			if(ext.equalsIgnoreCase("mp4")){
+				String mp4 = getImage(fileName);
+				String destination = destinationPath + mp4;
+				request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
+						+ "<publish_asset> <asset ident= \""
+						+ getImageId(mp4)
+						+ "\" videotype=\""
+						+ getImageType(mp4)
+						+ "\">"
+						+ " <file_location uri=\""
+						+ destination
+						+ "\" />"
+						+ "</asset> </publish_asset> </ads_publish_request>";
+			} else{
+				String destinationPkgPath = "/local/apps/oas/ads/assets/html_assets/" + fileName+"zip";
+				request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
+						+ "<publish_asset> <asset ident= \""
+						+ fileName
+						+ "\" pkgtype=\"zip"					
+						+ "\">"
+						+ " <file_location uri=\""
+						+ destinationPkgPath
+						+ "\" />"
+						+ "</asset> </publish_asset> </ads_publish_request>";
+				
+			}
+			//logger.info("request"+request);
+			String responseStr = client.callUploadAsset(request);
+			//logger.info("responseStr >> "+responseStr);
+			if (responseStr == null) {
+				throw new SystemException(
+						"Error in Publishing Asset. Response is null. ");
+			}
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(responseStr
+					.toString().getBytes());
+			org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
+			org.jdom.Document itemDoc = saxBuilder.build(bais);
+			Element responseElm = itemDoc.getRootElement();
+
+			Element response = ItemLayoutProcessor.extractSingleElement(
+					".//response", responseElm);
+			Attribute status = response.getAttribute("status");
+			String statusStr = status.getValue();
+			//logger.info("statusStr >> "+statusStr);
+			if (!statusStr.equals(statusOk)) {
+				Element msg = ItemLayoutProcessor.extractSingleElement(
+						".//msg", response);
+				if (!(msg.getText()).equals(status_republish_asset)) {
+					throw new SystemException(
+							"Error in Publishing Asset. Status = " + statusStr
+									+ " Error message: " + msg.getText());
+				}
+			}
+		}	
+		
 	}
 
 	public void sendfiles_ftp(List inputFiles) throws Exception {
