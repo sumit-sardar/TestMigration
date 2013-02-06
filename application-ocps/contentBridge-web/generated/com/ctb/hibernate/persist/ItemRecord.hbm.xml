@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ItemRecord"
+        table="ITEM"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="itemId"
+            column="ITEM_ID"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="answerArea"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ANSWER_AREA"
+            not-null="false"
+        />
+
+        <property
+            name="griddedColumns"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="GRIDDED_COLUMNS"
+            not-null="false"
+        />
+
+        <property
+            name="activationStatus"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ACTIVATION_STATUS"
+            not-null="true"
+        />
+
+        <property
+            name="correctAnswer"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="CORRECT_ANSWER"
+            not-null="false"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="false"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="true"
+        />
+
+        <property
+            name="description"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="DESCRIPTION"
+            not-null="false"
+        />
+
+        <property
+            name="extStimulusId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_STIMULUS_ID"
+            not-null="false"
+        />
+
+        <property
+            name="extStimulusTitle"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_STIMULUS_TITLE"
+            not-null="false"
+        />
+
+        <property
+            name="itemDisplayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_DISPLAY_NAME"
+            not-null="false"
+        />
+
+        <property
+            name="itemType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_TYPE"
+            not-null="true"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="NAME"
+            not-null="false"
+        />
+
+        <property
+            name="templateId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEMPLATE_ID"
+            not-null="false"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <property
+            name="version"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="VERSION"
+            not-null="false"
+        />
+
+        <property
+            name="thinkID"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="THINK_CODE"
+            not-null="false"
+        />
+
+        <property
+            name="externalID"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="External_ID"
+            not-null="false"
+        />
+
+        <property
+            name="externalSystem"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="External_System"
+            not-null="false"
+        />
+
+        <property
+            name="onlineCR"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ONLINE_CR"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

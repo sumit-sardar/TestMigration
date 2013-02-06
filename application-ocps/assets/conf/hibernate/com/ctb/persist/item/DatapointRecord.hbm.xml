@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.DatapointRecord"
+        table="DATAPOINT"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="datapointId"
+            column="DATAPOINT_ID"
+            type="java.lang.Long"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="true"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="true"
+        />
+
+        <property
+            name="itemId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_ID"
+            not-null="true"
+        />
+
+        <property
+            name="itemSetId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ITEM_SET_ID"
+            not-null="true"
+        />
+
+        <property
+            name="maxPoints"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="MAX_POINTS"
+            not-null="false"
+        />
+
+        <property
+            name="minPoints"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="MIN_POINTS"
+            not-null="false"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-DatapointRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

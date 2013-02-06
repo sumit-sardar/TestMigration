@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ScoreLookupRecord"
+        table="SCORE_LOOKUP"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="scoreLookupId"
+            column="SCORE_LOOKUP_ID"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="sourceScoreTypeCode"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SOURCE_SCORE_TYPE_CODE"
+            not-null="true"
+        />
+
+        <property
+            name="destScoreTypeCode"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="DEST_SCORE_TYPE_CODE"
+            not-null="true"
+        />
+
+        <property
+            name="sourceScoreValue"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="SOURCE_SCORE_VALUE"
+            not-null="true"
+        />
+
+        <property
+            name="destScoreValue"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="DEST_SCORE_VALUE"
+            not-null="true"
+        />
+
+        <property
+            name="testForm"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_FORM"
+            not-null="false"
+        />
+
+        <property
+            name="testLevel"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_LEVEL"
+            not-null="false"
+        />
+
+        <property
+            name="grade"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="GRADE"
+            not-null="false"
+        />
+
+        <property
+            name="contentArea"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="CONTENT_AREA"
+            not-null="false"
+        />
+
+        <property
+            name="normGroup"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="NORM_GROUP"
+            not-null="false"
+        />
+
+        <property
+            name="quarterMonth"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="QUARTER_MONTH"
+            not-null="false"
+        />
+
+        <property
+            name="normYear"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="NORM_YEAR"
+            not-null="false"
+        />
+
+        <property
+            name="frameworkCode"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="FRAMEWORK_CODE"
+            not-null="false"
+        />
+
+        <property
+            name="productInternalDisplayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PRODUCT_INTERNAL_DISPLAY_NAME"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ScoreLookupRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

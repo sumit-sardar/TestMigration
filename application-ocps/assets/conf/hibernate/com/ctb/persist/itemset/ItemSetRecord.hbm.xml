@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetRecord"
+        table="ITEM_SET"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="itemSetId"
+            column="ITEM_SET_ID"
+            type="java.lang.Long"
+        >
+            <generator class="sequence">
+                <param name="sequence">SEQ_ITEM_SET_ID</param>
+            </generator>
+        </id>
+
+        <property
+            name="activationStatus"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ACTIVATION_STATUS"
+            not-null="true"
+        />
+
+        <property
+            name="breakTime"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="BREAK_TIME"
+            not-null="true"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="true"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="false"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="true"
+        />
+
+        <property
+            name="extCmsItemSetId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_CMS_ITEM_SET_ID"
+            not-null="false"
+        />
+
+        <property
+            name="extEmsItemSetId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_EMS_ITEM_SET_ID"
+            not-null="false"
+        />
+
+        <property
+            name="extTstItemSetId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_TST_ITEM_SET_ID"
+            not-null="false"
+        />
+
+        <property
+            name="grade"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="GRADE"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetCategoryId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ITEM_SET_CATEGORY_ID"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetDescription"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_DESCRIPTION"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetDisplayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_DISPLAY_NAME"
+            not-null="true"
+        />
+
+        <property
+            name="itemSetForm"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_FORM"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetLevel"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_LEVEL"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_NAME"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetRuleId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ITEM_SET_RULE_ID"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_TYPE"
+            not-null="true"
+        />
+
+        <property
+            name="maxGrade"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="MAX_GRADE"
+            not-null="false"
+        />
+
+        <property
+            name="mediaPath"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="MEDIA_PATH"
+            not-null="false"
+        />
+
+        <property
+            name="minGrade"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="MIN_GRADE"
+            not-null="false"
+        />
+
+        <property
+            name="originalCreatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ORIGINAL_CREATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="ownerCustomerId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="OWNER_CUSTOMER_ID"
+            not-null="false"
+        />
+
+        <property
+            name="publishStatus"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PUBLISH_STATUS"
+            not-null="false"
+        />
+
+        <property
+            name="sample"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SAMPLE"
+            not-null="true"
+        />
+
+        <property
+            name="subject"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SUBJECT"
+            not-null="false"
+        />
+
+        <property
+            name="timeLimit"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="TIME_LIMIT"
+            not-null="true"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <property
+            name="version"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="VERSION"
+            not-null="false"
+        />
+        
+        <property
+            name="contentSize"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="COTENT_SIZE"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemSetRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>
