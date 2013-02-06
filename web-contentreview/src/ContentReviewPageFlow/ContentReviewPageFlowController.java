@@ -58,7 +58,8 @@ public class ContentReviewPageFlowController extends PageFlowController
     public String testTitle;
     public TestBean[] tests;
     public HashMap userMap;
-    protected global.Global globalApp;   
+    protected global.Global globalApp; 
+    public String currentProductType;
     
     /**
      * @jpf:action
@@ -320,6 +321,8 @@ public class ContentReviewPageFlowController extends PageFlowController
     protected Forward preview(OptionsForm form)
     {
         Forward result = null;
+        HttpServletRequest request = getRequest();
+        HttpSession session = request.getSession();
         
         if (globalApp.userLogined.equals("false"))
             try
@@ -389,7 +392,11 @@ public class ContentReviewPageFlowController extends PageFlowController
                 
             setCurrentSubtest(this.subtestTitle);
             getRequest().setAttribute("eliminatorResource", form.eliminatorResource);
-            
+            //String productType1 = this.getRequest().getParameter( "pname" );
+            //System.out.println("productType ==> "+ form.currentProductType);
+            session.setAttribute( "productType",form.currentProductType );
+            if(!"".equals(form.currentProductType)) this.currentProductType = form.currentProductType;
+            //System.out.println("productType ==> "+ currentProductType);
             String preview = this.getRequest().getParameter( "preview" );
             if (preview == null)
             {
@@ -593,6 +600,7 @@ public class ContentReviewPageFlowController extends PageFlowController
         private String maskingRuler    	= "false";
         private String magnifyingGlass  = "false";
         private String extendedTime     = "false";
+        private String currentProductType;
         
 
         /**
@@ -842,6 +850,12 @@ public class ContentReviewPageFlowController extends PageFlowController
          */
 		public void setExtendedTime(String extendedTime) {
 			this.extendedTime = extendedTime;
+		}
+		public String getCurrentProductType() {
+			return currentProductType;
+		}
+		public void setCurrentProductType(String currentProductType) {
+			this.currentProductType = currentProductType;
 		}
                      
     }

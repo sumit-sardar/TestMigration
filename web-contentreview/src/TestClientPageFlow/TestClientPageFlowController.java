@@ -6,17 +6,39 @@ import com.ctb.bean.content.ItemBean;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import global.Global;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.beehive.netui.pageflow.Forward;
+import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.jdom.Element;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import com.ctb.bean.content.ItemBean;
+import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 
 /**
  * @jpf:controller
@@ -46,6 +68,11 @@ public class TestClientPageFlowController extends PageFlowController
     })
     protected Forward begin()
     {
+    	HttpServletRequest request = getRequest();
+        HttpSession session = request.getSession();
+        String productType = (String) session.getAttribute( "productType" );
+        //System.out.print(productType+"--Product Type--"+productType);
+        session.setAttribute( "productType",productType );
         return new Forward("success");
     }
   
@@ -304,7 +331,34 @@ public class TestClientPageFlowController extends PageFlowController
 		// For hexcode issue
 		//Start
         itemLML = item.getLml();
-
+        
+        //Changes for Laslink Item
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(itemLML));
+        Document doc = builder.parse(is);
+        //optional, but recommended
+    	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+    	doc.getDocumentElement().normalize();
+    	//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+    	NodeList nList = doc.getElementsByTagName("asset_widget");
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+    		 
+    		Node nNode = nList.item(temp);
+    		NamedNodeMap abcd = nNode.getAttributes();
+    		String imageRef=(abcd.getNamedItem("image_ref")).toString();
+    		int i = imageRef.lastIndexOf('"');
+    		String folderId=imageRef.substring(11,i);
+    		String userFolderPath = null;
+    	    if ( forReal )
+    	    	userFolderPath = "/export/data/contentdemo/Asset";
+    	    else
+    	    	userFolderPath = "c:/contentdemo/assets";
+    	    
+    	    String zipLocation=userFolderPath+"/" + folderId + ".zip";
+    	    String unzipLocation=getSession().getServletContext().getRealPath("ContentReviewPageFlow")+"/items";
+            unzip(zipLocation,unzipLocation);    
+    	}
         //itemLML = itemLML.replaceAll("&amp;", "&");
         //itemLML = itemLML.replaceAll(" & ", " &amp; ");
         item.setLml(itemLML);
@@ -313,6 +367,62 @@ public class TestClientPageFlowController extends PageFlowController
         getRequest().setAttribute("item", item.getLml());
         
     }
+    
+    private  void unzip(String zipFolderLocation,String unZipFolderLocation) throws Exception{
+		
+    	final int BUFFER_SIZE = 1024;
+		String filePath = zipFolderLocation;
+		/*FileOutputStream outStream = null;
+		try {
+			outStream = new FileOutputStream(filePath);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		try {
+			outStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+        BufferedOutputStream dest = null;
+        FileInputStream fis = new FileInputStream(filePath);
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+        ZipEntry entry;
+        File destFile;
+        while((entry = zis.getNextEntry()) != null) {               
+
+           // destFile = FilesystemUtils.combineFileNames(destinationDir, entry.getName());
+        	destFile = new File(unZipFolderLocation,entry.getName());
+            if (entry.isDirectory()) {
+                destFile.mkdirs();
+                continue;
+            } else {
+                int count;
+                byte data[] = new byte[BUFFER_SIZE];
+
+                destFile.getParentFile().mkdirs();
+
+                FileOutputStream fos = new FileOutputStream(destFile);
+                dest = new BufferedOutputStream(fos, BUFFER_SIZE);
+                while ((count = zis.read(data, 0, BUFFER_SIZE)) != -1) {
+                    dest.write(data, 0, count);
+                }
+
+                dest.flush();
+                dest.close();
+                fos.close();
+            }
+        }
+        zis.close();
+        fis.close();          
+        File tempFile = new File(unZipFolderLocation + ".zip");
+        if (tempFile.exists()) {
+        	tempFile.delete();
+        }        
+        
+	}
     
     protected Forward getLocalResource() throws IOException {
     	String filename = getRequest().getParameter("resourcePath");

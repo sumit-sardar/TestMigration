@@ -37,6 +37,19 @@
         <netui:form target="previewWindow" method="post" action="preview">
         <netui-data:getData resultId="questionBgColor" value="${actionForm.questionBgColor}"/>
         <netui-data:getData resultId="answerBgColor" value="${actionForm.answerBgColor}"/>
+        <netui-data:getData resultId="answerBgColor" value="${actionForm.answerBgColor}"/>
+        <table>
+                <tr valign="top">
+                    <td>Product Type:</td>
+                    <td>
+                        <netui:select dataSource="actionForm.currentProductType">
+                        	<netui:selectOption value="Others">OTHERS</netui:selectOption>
+                            <netui:selectOption value="Laslinks">LASLINKS</netui:selectOption>
+                        </netui:select>
+                    </td>
+                    <td width="10">&nbsp;</td>
+                </tr>
+            </table>
 
             <div><strong>Subtest:</strong></div>
             <netui-data:repeater dataSource="globalApp.SchedulableUnits">

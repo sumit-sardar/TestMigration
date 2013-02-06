@@ -1,6 +1,8 @@
 
 <%@ page import="java.io.*"%>
 <%@ page import=" java.util.*"%>
+<%@ page import=" javax.servlet.http.HttpSession"%>
+<%@ page import=" javax.servlet.http.HttpServletRequest"%>
 
 <%
     String eliminatorResource = "eliminator.swf";
@@ -23,6 +25,7 @@
 <title>Online Assessment System</title>
 <script type="text/javascript" src="../includes/embed-compressed.js"></script>
 <script type="text/javascript" src="../includes/manipulative_manager.js"></script>
+<script type="text/javascript" src="../lps/includes/laslinks_utils.js"></script>
 <style type="text/css">
 html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	height: 100%;
@@ -30,14 +33,43 @@ html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	margin: 0;
 	padding: 0;
 	border: 0 none;
+	text-rendering: optimizeLegibility;
 }
 
 body {
 	background-color: #ffffff;
+	-webkit-font-smoothing: antialiased;
+	/* -moz-font-smoothing: antialiased; - No longer available in FF */
+	font-smoothing: antialiased; //
+	text-rendering: optimizeLegibility;
 }
 
 img {
 	border: 0 none;
+}
+
+@font-face {
+	font-family: "CTB";
+	src: url("ctbmodules/resources/fonts/OASmathv3.ttf");
+}
+
+@font-face {
+	font-family: "CTB";
+	src: url("ctbmodules/resources/fonts/OASmathv3 Bold.ttf");
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: "CTB";
+	src: url("ctbmodules/resources/fonts/OASmathv3 Italic.ttf");
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "CTB";
+	src: url("ctbmodules/resources/fonts/OASmathv3 BoldItalic.ttf");
+	font-weight: bold;
+	font-style: italic;
 }
 </style>
 <!--[if IE]>
@@ -54,6 +86,8 @@ var fontAccom;
 var backColorString;
 var xscalefactor = 1;
 var yscalefactor = 1;
+var currentLasAssetItemId;
+var autoPlayEvent = "false";
 
 //This is to revert the change for the header group in javascript side. Because this is not going to be parsed by Flash.
 String.prototype.replaceAll = function(stringToFind,stringToReplace){
@@ -69,6 +103,21 @@ function showFootnote(header)
 {
     header = header.replaceAll("&amp;","&");
 	lz.embed.setCanvasAttribute("footnotedata", header);
+}
+function load() {
+    <%
+    String productType = (String) session.getAttribute( "productType" );
+    %>
+     var productTypeVal = "<%=productType%>";
+     if(productTypeVal == 'Laslinks'){
+        loadJsApplication();
+     }else {
+        loadSwfApplication();
+     }
+}
+
+function setCurLasItemId(id) {
+	currentLasAssetItemId = id;
 }
 
 function isMac(){
@@ -223,6 +272,55 @@ function setFootnoteText(arg){
 function setFocusOnScratchpad(){
 document.getElementById('__lz0').contentWindow.setFocus();
 }
+
+function setCurLasItemId(id) {
+	currentLasAssetItemId = id;
+	assetCount = 0;
+}
+
+
+function eventMonitor(id,event) {
+
+	var currIframeId = frameFolderObject[id];
+ 	if(event == 'play' || event == 'jsplay') {
+ 		setPlayingAttr('true');
+ 		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = true;
+ 		//console.log("Is Playing :",iframeObject[currentLasAssetItemId][currIframeId]['playEvent']);
+ 		playSingleAsset(currIframeId);
+ 		if(iframeObject[currentLasAssetItemId]) {
+ 			if(iframeObject[currentLasAssetItemId][currIframeId]['folder'] == id) {
+ 				iframeObject[currentLasAssetItemId][currIframeId]['clickedOnce'] = true;	// To know whether it is clicked once or not.
+ 				 getCurrentPlayOrder(currIframeId);
+ 			}
+ 		}
+ 		
+ 		
+ 	} else if(event == 'finished' || event == 'endTrack' || event == 'pause') {
+ 		if( event == 'endTrack' || event == 'pause'){
+ 			setPlayingAttr('false');
+ 		}
+ 		if(autoPlayEvent == 'false') { // play is for autoPlay
+	 		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = false;
+	 		//console.log("event -- ",event);
+	 		if(iframeObject[currentLasAssetItemId]) {
+	 			if(iframeObject[currentLasAssetItemId][currIframeId]['folder'] == id) {
+	 				if(iframeObject[currentLasAssetItemId][currIframeId]['clickedOnce']) {
+	 					iframeObject[currentLasAssetItemId][currIframeId]['playedOnce'] = true; // To know whether the asset is atleast played once or not.
+	 				}
+	 			}
+	 		}
+	 		unlockResponseArea(currIframeId);
+	 		enableNextButton(id);
+ 		}
+ 		else{
+ 		autoPlayEvent = "false";
+ 		}
+ 		
+ 	} else if (event == 'reset') {
+ 		//setPlayingAttr('false');
+ 	}
+ 	//lz.embed.setCanvasAttribute("bringBackFocus", 'true');
+}
 //-->
 </script>
 <style type="text/css">
@@ -236,7 +334,7 @@ body {
 
 <!--SA041005 start -->
 
-<BODY>
+<BODY onload="load()">
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
 	<tr>
@@ -295,7 +393,56 @@ body {
 </p>
 </div>
 <script type="text/javascript" defer>
-                  lz.embed.resizeWindow('100%', '100%');
+ function loadJsApplication(){
+ 						try {
+	                  lz.embed.dhtml({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.js?servletUrl=<%=url%>', lfcurl: '/ContentReviewWeb/TestClientPageFlow/lps/includes/lfc/LFCdhtml.js', serverroot: '/ContentReviewWeb/TestClientPageFlow/lps/resources/', bgcolor: '#6691b4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, cancelkeyboardcontrol: false, skipchromeinstall: false, usemastersprite: false, approot: '', appenddivid: 'appcontainer'});
+                       setTimeout(function(){
+                    	removeStatusDiv();
+                        }, 500);
+	                  lz.embed.applications.lzapp.onload = function loaded() {
+	                    // called when this application is done loading
+	                    //removeStatusDiv();
+	                  }
+	                  } catch (exception) {
+	                  	//alert("Exception"+ exception.message);
+	                  }
+                  }
+                  function loadSwfApplication(){
+                      lz.embed.resizeWindow('100%', '100%');
+	                  lz.embed.swf({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?&lzr=swf10&servletUrl=<%=url%>&eliminatorResource=<%=eliminatorResource%>', allowfullscreen: 'true', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer', wmode: 'transparent'});
+					  //lz.embed.swf({url: 'TestClient.lzx.swf?&lzr=swf10&folder=calif&servletUrl=http://192.168.2.2:12345/servlet/fixed&eliminatorResource=resources/eliminator.swf', allowfullscreen: 'false', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer'});
+					  	
+	                  lz.embed.applications.lzapp.onloadstatus = function loadstatus(p) {
+	                    // called with a percentage (0-100) indicating load progress
+	                    var el = document.getElementById('lzsplashtext');
+	                    if (el) {
+	                        if (p == 100) {
+	                            var splash = document.getElementById('lzsplash');
+	                            if (splash) {
+	                                splash.parentNode.removeChild(splash);
+	                            }
+	                        } else {
+	                            el.innerHTML = p + '% loaded'
+	                        }
+	                    }
+	                  }
+	
+	                  lz.embed.applications.lzapp.onload = function loaded() {
+	                    // called when this application is done loading and the 
+	                    // canvas has initted
+	                  }
+	              }
+                  
+                  function removeStatusDiv() {
+                    var el = document.getElementById('lzsplashtext');
+                        if (el) {
+                            var splash = document.getElementById('lzsplash');
+                            if (splash) {
+                                splash.parentNode.removeChild(splash);
+                            }
+	                    }
+                  }
+   /*               lz.embed.resizeWindow('100%', '100%');
                   lz.embed.swf({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?&lzr=swf10&servletUrl=<%=url%>&eliminatorResource=<%=eliminatorResource%>', allowfullscreen: 'true', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer', wmode: 'transparent'});
 				  //lz.embed.swf({url: 'TestClient.lzx.swf?&lzr=swf10&folder=calif&servletUrl=http://192.168.2.2:12345/servlet/fixed&eliminatorResource=resources/eliminator.swf', allowfullscreen: 'false', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer'});
 				  	
@@ -318,6 +465,8 @@ body {
                     // called when this application is done loading and the 
                     // canvas has initted
                   }
+                  
+      */            
                 </script>
 <noscript>Please enable JavaScript in order to use this
 application.</noscript>
