@@ -359,8 +359,8 @@ public class TestClientPageFlowController extends PageFlowController
     	    String unzipLocation=getSession().getServletContext().getRealPath("ContentReviewPageFlow")+"/items";
             unzip(zipLocation,unzipLocation);    
     	}
-        //itemLML = itemLML.replaceAll("&amp;", "&");
-        //itemLML = itemLML.replaceAll(" & ", " &amp; ");
+        itemLML = itemLML.replaceAll("&amp;", "&");
+        itemLML = itemLML.replaceAll(" & ", " &amp; ");
         item.setLml(itemLML);
         //End
 
