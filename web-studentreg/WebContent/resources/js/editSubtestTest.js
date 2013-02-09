@@ -1563,6 +1563,7 @@
 	    anchor.href += "&studentId=" + studentId;
 	    anchor.href += "&ticketType=" + ticketType; 
 	    anchor.href += "&displayAccess=" + displayAccessCodeOnTicket;   
+		anchor.href += "&printClassName=" + "false";
 	    return true;
 	}
 	

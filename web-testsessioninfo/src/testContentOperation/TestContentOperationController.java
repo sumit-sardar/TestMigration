@@ -561,15 +561,14 @@ public class TestContentOperationController extends PageFlowController {
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	boolean hasUploadConfig = false;
+    	boolean hasDownloadConfig = false;
+    	boolean hasUploadDownloadConfig = false;
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
         
-        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));
-    	
-        
-        this.getSession().setAttribute("hasUploadDownloadConfigured", 
-        		new Boolean( hasUploadDownloadConfig().booleanValue() && adminUser));
+        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));   	
         
         this.getSession().setAttribute("hasProgramStatusConfigured", 
         		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
@@ -605,13 +604,43 @@ public class TestContentOperationController extends PageFlowController {
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 					&& cc.getDefaultValue().equals("T")) {
             	isOKCustomer = true;
+				continue;
             }
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
 					&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 				isGACustomer = true;
 				continue;
 			}
+			// For Upload Download
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
+					&& cc.getDefaultValue().equals("T")) {
+				hasUploadConfig = true;
+				continue;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Download")
+					&& cc.getDefaultValue().equals("T")) {
+				hasDownloadConfig = true;
+				continue;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
+					&& cc.getDefaultValue().equals("T")) {
+				hasUploadDownloadConfig = true;
+				continue;
+            }			
 		}
+		
+		if (hasUploadConfig && hasDownloadConfig) {
+			hasUploadDownloadConfig = true;
+		}
+		if (hasUploadDownloadConfig) {
+			hasUploadConfig = false;
+			hasDownloadConfig = false;
+		}
+		
+		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
+		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 	}

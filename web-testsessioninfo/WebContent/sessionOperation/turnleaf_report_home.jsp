@@ -95,9 +95,7 @@ $(document).ready(function(){
 });
 </script>
 
-<!-- 
 <img width="0" height="0" border="0" id="TLLogout"  src="< %= System.getProperty("TLLogoutURL") %>?fncv=< %= System.currentTimeMillis() %>" />
--->
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->

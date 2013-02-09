@@ -199,6 +199,8 @@ function showHelpWindow(location)
 		location = location.replace("https://localhost:7002", "https://oastest.ctb.com");
 	}
 	var title = location.substring(location.indexOf("#")+1, location.length-4);
+	if (title == "registering_students_on-the-fly")
+		tile = "RegisterStudent";
    	var helpWindow = window.open(location, title, 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
     helpWindow.focus();
     return false;

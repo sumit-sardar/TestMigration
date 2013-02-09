@@ -71,6 +71,22 @@
         					<li><a href="#" id="downloadTestLink" onClick="verifyEditLicenseAndGotoMenuAction('services.do', 'downloadTestLink');"><lb:label key="org.menu.downloadTest" /></a></li>
         				</ul>
         			 </li>
+        			 <c:if test="${sessionScope.hasUploadConfigured}">	
+	        			 <li>
+	        			 	<a href="#" style="float:left;"><lb:label key="org.menu.studentLoad" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
+	        				<ul>
+	        					<li><a href="#" id="uploadDataLink" onClick="verifyEditLicenseAndGotoMenuAction('services.do', 'uploadDataLink');"><lb:label key="org.menu.import" /></a></li>
+	        				</ul>
+	        			 </li>
+        			 </c:if>
+        			 <c:if test="${sessionScope.hasDownloadConfigured}">	
+	        			 <li>
+	        			 	<a href="#" style="float:left;"><lb:label key="org.menu.studentLoad" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
+	        				<ul>
+	        					<li><a href="#" id="downloadDataLink" onClick="verifyEditLicenseAndGotoMenuAction('services.do', 'downloadDataLink');"><lb:label key="org.menu.export" /></a></li>
+	        				</ul>
+	        			 </li>
+        			 </c:if>
         			 <c:if test="${sessionScope.hasUploadDownloadConfigured}">	
 	        			 <li>
 	        			 	<a href="#" style="float:left;"><lb:label key="org.menu.studentLoad" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	

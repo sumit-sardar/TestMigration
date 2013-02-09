@@ -1270,6 +1270,9 @@ public Forward rescoreStudent() {
     	boolean isGACustomer = false;
     	boolean hasLicenseConfigured = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	boolean hasUploadConfig = false;
+    	boolean hasDownloadConfig = false;
+    	boolean hasUploadDownloadConfig = false;
     	
     	if( customerConfigs != null ) {
     	for (int i=0; i < customerConfigs.length; i++) {
@@ -1296,18 +1299,43 @@ public Forward rescoreStudent() {
 	        		cc.getDefaultValue().equals("T")	) {
 				hasLicenseConfigured = true;
 	        }
-		  }
+			// For Upload Download
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
+					&& cc.getDefaultValue().equals("T")) {
+				hasUploadConfig = true;
+				continue;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Download")
+					&& cc.getDefaultValue().equals("T")) {
+				hasDownloadConfig = true;
+				continue;
+            }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
+					&& cc.getDefaultValue().equals("T")) {
+				hasUploadDownloadConfig = true;
+				continue;
+            }
+		}
     	getConfigStudentLabel(customerConfigs);
     	}
     	
+		if (hasUploadConfig && hasDownloadConfig) {
+			hasUploadDownloadConfig = true;
+		}
+		if (hasUploadDownloadConfig) {
+			hasUploadConfig = false;
+			hasDownloadConfig = false;
+		}
     	
+		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
+		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
+		
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
         this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
     	
-        this.getSession().setAttribute("hasUploadDownloadConfigured", 
-        		new Boolean( hasUploadDownloadConfig().booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasProgramStatusConfigured", 
         		new Boolean( hasProgramStatusConfig().booleanValue() && adminUser));

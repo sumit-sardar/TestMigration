@@ -558,6 +558,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasOOSConfigurable = false;
     	boolean laslinkCustomer = false;
     	boolean adminUser = isAdminUser();
+    	boolean hasUploadConfig = false;
+    	boolean hasDownloadConfig = false;
     	boolean hasUploadDownloadConfig = false;
     	boolean hasProgramStatusConfig = false;
     	boolean hasScoringConfigurable = false;
@@ -600,6 +602,16 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            	continue;
 	            }
 				// For Upload Download
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
+						&& cc.getDefaultValue().equals("T")) {
+					hasUploadConfig = true;
+					continue;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Download")
+						&& cc.getDefaultValue().equals("T")) {
+					hasDownloadConfig = true;
+					continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download")
 						&& cc.getDefaultValue().equals("T")) {
 					hasUploadDownloadConfig = true;
@@ -649,10 +661,21 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 			}
 			
 		}
+		
+		if (hasUploadConfig && hasDownloadConfig) {
+			hasUploadDownloadConfig = true;
+		}
+		if (hasUploadDownloadConfig) {
+			hasUploadConfig = false;
+			hasDownloadConfig = false;
+		}
+		
 		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
+		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",new Boolean(hasProgramStatusConfig && adminUser));
 		this.getSession().setAttribute("hasScoringConfigured",new Boolean(hasScoringConfigurable));

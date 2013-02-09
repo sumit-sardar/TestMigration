@@ -1177,6 +1177,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		boolean hasBulkStudentMoveConfigurable = false;
 		boolean hasOOSConfigurable = false;
 		boolean adminUser = isAdminUser();
+    	boolean hasUploadConfig = false;
+    	boolean hasDownloadConfig = false;
 		boolean hasUploadDownloadConfig = false;
 		boolean hasProgramStatusConfig = false;
 		boolean hasScoringConfigurable = false;
@@ -1217,6 +1219,16 @@ public class ImmediateReportingOperationController extends PageFlowController {
 					continue;
 				}
 				// For Upload Download
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
+						&& cc.getDefaultValue().equals("T")) {
+					hasUploadConfig = true;
+					continue;
+	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Download")
+						&& cc.getDefaultValue().equals("T")) {
+					hasDownloadConfig = true;
+					continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 						"Allow_Upload_Download")
 						&& cc.getDefaultValue().equals("T")) {
@@ -1275,12 +1287,23 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			}
 
 		}
+		
+		if (hasUploadConfig && hasDownloadConfig) {
+			hasUploadDownloadConfig = true;
+		}
+		if (hasUploadDownloadConfig) {
+			hasUploadConfig = false;
+			hasDownloadConfig = false;
+		}
+		
 		this.getSession().setAttribute("isBulkAccommodationConfigured",
 				new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",
 				new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",
 				new Boolean(hasOOSConfigurable));
+		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
+		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasUploadDownloadConfigured",
 				new Boolean(hasUploadDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasProgramStatusConfigured",
