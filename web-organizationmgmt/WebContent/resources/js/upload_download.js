@@ -226,7 +226,9 @@ function uploadFile(element)
 
 function showLoadingProgress(msg)
 {	
-	$.blockUI({ message: msg, css: { height: '50px'} }); 		 
+	$.blockUI({ message: msg, css: { height: '50px'} }); 	
+	
+	setTimeout("$.unblockUI();", 3000);	 
 }
 
 function handleUploadMessages(uploadMsg){
