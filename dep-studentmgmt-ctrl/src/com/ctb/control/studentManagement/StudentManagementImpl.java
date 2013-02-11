@@ -3444,5 +3444,20 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
-
+	
+	public boolean getIsStudentExtracted(Integer studentId) throws CTBBusinessException {
+		
+		boolean result = false;
+		String value = null;
+		try {
+			value = studentManagement.getIsStudentExtracted(studentId);
+			if (value != null && value.length() > 0)
+				result = true;
+		}catch(SQLException sqe){
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getIsStudentExtracted: " + sqe.getMessage());
+			tee.setStackTrace(sqe.getStackTrace());
+			throw tee;
+		}
+		return result;
+	}
 } 

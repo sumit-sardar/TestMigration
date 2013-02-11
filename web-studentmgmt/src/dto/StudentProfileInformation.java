@@ -84,6 +84,8 @@ public class StudentProfileInformation extends SanitizedFormField
     
     private boolean isStudentImported;
     
+    private boolean isStudentExtracted; // Added For OK - 3-8 - 2013 - 005 - No Student bio edits after extract
+    
 
     /**
 	 * @return the hasAccommodations
@@ -1163,4 +1165,22 @@ public class StudentProfileInformation extends SanitizedFormField
 	public void setNotTesting(String notTesting) {
 		this.notTesting = notTesting;
 	}
+
+
+	/**
+	 * @return the isStudentExtracted
+	 */
+	public boolean isStudentExtracted() {
+		return isStudentExtracted;
+	}
+
+
+	/**
+	 * @param isStudentExtracted the isStudentExtracted to set
+	 */
+	public void setStudentExtracted(boolean isStudentExtracted) {
+		this.isStudentExtracted = isStudentExtracted;
+	}
+	
+	
 } 

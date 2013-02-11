@@ -538,6 +538,8 @@ public interface StudentManagement
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsAtAndBelowForSelectedOrgNode(String userName,	Integer orgNodeId)throws com.ctb.exception.CTBBusinessException;
 	
 	List<com.ctb.bean.studentManagement.StudentScoreReport> getStudentReportByGroup(Integer [] testRosterId) throws com.ctb.exception.CTBBusinessException;
+	
+	boolean getIsStudentExtracted (java.lang.Integer studentId) throws com.ctb.exception.CTBBusinessException;
 
 } 	
 

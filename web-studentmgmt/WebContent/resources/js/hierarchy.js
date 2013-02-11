@@ -62,6 +62,7 @@ var isEditStudentImported = false;// Need to be used as imported student's profi
 var customerConfiguration = [];
 var isOOSConfigured = false; // added for OOSConfigurable
 var outOfSchoolValue = null;
+var studentExtracted = false;
 
 
 $(document).bind('keydown', function(event) {
@@ -389,7 +390,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		    		} else {
 		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
 		    		}
-		    		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
+		    		if((profileEditable === "false"  && $("#classReassignable").val() === "true") || studentExtracted) {
 		    			$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
 		    		}
 				}
@@ -399,7 +400,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 		$("#innerID").delegate("li a","click", 
 			function(e) {
-				if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
+				if((profileEditable === "false"  && $("#classReassignable").val() === "true") || studentExtracted) {
 					return true;
 				}
 				styleClass = $(this.parentNode).attr('class');
@@ -451,6 +452,16 @@ function createMultiNodeSelectedTree(jsondata) {
 			    	var currentlySelectedNode="";
 					var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
 					//console.log("isChecked" + isChecked);
+					if(isChecked && studentExtracted) {
+						$(d.rslt[0]).removeClass("jstree-checked").addClass("jstree-unchecked");
+						checkedListObject[d.rslt[0].getAttribute("id")] = "unchecked";
+						return true;
+					}
+					else if (studentExtracted){
+						$(d.rslt[0]).removeClass("jstree-unchecked").addClass("jstree-checked");
+						checkedListObject[d.rslt[0].getAttribute("id")] = "checked";
+						return true;
+					}
 					if (isChecked){
 					checkedListObject[elementId] = "checked" ;
 					}else{					
@@ -1073,6 +1084,7 @@ function updateOrganization(element, isChecked){
 function AddStudentDetail(){
 isAddStudent = true;
 isPopUp = true;
+studentExtracted=false;
 profileEditable = "true";//to see fields enabled if a new student is added after editing a imported student.
 resetDisabledFields();
 resetSubEthnicityRadioButtons();
@@ -1629,7 +1641,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	var showStudentInGrid = false;
 	updateAccomodationMap = {};
 		
-	if(profileEditable === "false" || isEditStudentImported) {
+	if(profileEditable === "false" || isEditStudentImported || studentExtracted) {
 		resetDisabledFields();
 	}
 	
@@ -1768,7 +1780,14 @@ function fillselectedOrgNode( elementId, orgList) {
         											if(profileEditable === "false" || isEditStudentImported) {
 														disableAllNonEdFlds();
 													} else {
-														resetDisabledFields();
+														if(studentExtracted) {
+															$('#Student_Information :checkbox').attr('disabled', true); 
+															$('#Student_Information :radio').attr('disabled', true); 
+															$('#Student_Information select').attr('disabled', true);
+															$('#Student_Information :input').attr('disabled', true);
+														} else {
+															resetDisabledFields();
+														}
 													}
         											$.unblockUI();
         										}
@@ -1789,7 +1808,14 @@ function fillselectedOrgNode( elementId, orgList) {
 			if(profileEditable === "false" || isEditStudentImported) {
 				disableAllNonEdFlds();
 			} else {
-				resetDisabledFields();
+				if(studentExtracted) {
+					$('#Student_Information :checkbox').attr('disabled', true); 
+					$('#Student_Information :radio').attr('disabled', true); 
+					$('#Student_Information select').attr('disabled', true);
+					$('#Student_Information :input').attr('disabled', true);
+				} else {
+					resetDisabledFields();
+				}
 			}
 	}
 	}
@@ -2057,6 +2083,12 @@ function openNode(orgNodeId) {
 						
 						outOfSchoolValue = data.outOfSchool;
 						profileEditable = String(data.optionList.profileEditable);
+						if(data.isStudentExtracted) {
+							profileEditable = "false";
+							studentExtracted = true;
+						} else {
+							studentExtracted = false;
+						}
 						
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;

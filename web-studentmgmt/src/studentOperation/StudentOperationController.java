@@ -52,6 +52,7 @@ import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.db.Students;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
@@ -87,6 +88,7 @@ public class StudentOperationController extends PageFlowController {
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
+	boolean hasBioUneditable = false;
 
 
 
@@ -653,6 +655,12 @@ public class StudentOperationController extends PageFlowController {
 				studentProfileData.setStudentImported(true);
 			} else {
 				studentProfileData.setStudentImported(false);
+			}
+			
+			if(this.hasBioUneditable) {
+				boolean tobeDisabled = isStudentExtracted(studentId);
+				//System.out.println("org_node_id -->" + tobeDisabled);
+				studentProfileData.setStudentExtracted(tobeDisabled);
 			}
 			
 			try {
@@ -2289,6 +2297,18 @@ public class StudentOperationController extends PageFlowController {
 		}    
 		return null;
 	}
+	
+	private boolean isStudentExtracted (Integer studentId) {
+		boolean flag = false;
+		
+		try {
+			flag = this.studentManagement.getIsStudentExtracted(studentId);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		
+		return flag;
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
@@ -2816,6 +2836,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            	hasLockHierarchyEdit = true;
 	            	hierarchyLockLevel = cc.getDefaultValue();
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_StudentBio_On_Export") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
+					this.hasBioUneditable = true;
+					continue;
+				}
 			}
 			
 		}
@@ -2859,6 +2884,9 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
      	this.getRequest().setAttribute("hasLockHierarchyEditConfigured", hasLockHierarchyEdit);
      	this.getRequest().setAttribute("hierarchyLockLevel", hierarchyLockLevel);
+     	
+     	//Disable student bio if exported once from a org
+     	this.getSession().setAttribute("hasBioUneditable", this.hasBioUneditable);
 
 }
 
