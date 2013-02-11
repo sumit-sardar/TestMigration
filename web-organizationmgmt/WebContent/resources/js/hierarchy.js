@@ -52,6 +52,10 @@ var prevOrgNodeParent;
 var prevElementLeafNodePath;
 var currentClickedId;
 var currentClickedTcl;
+var hasLockHierarchyEditConfigured = false;
+var hierarchyLockLevel;
+var isViewMode = false;
+
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -69,6 +73,11 @@ $(document).bind('keydown', function(event) {
 
 
 function populateTree() {
+	var hasLockHierarchyVal = $('#hasLockHierarchyEditConfigured').val();
+	if(hasLockHierarchyVal == "true" && hasLockHierarchyVal != undefined) {
+		hasLockHierarchyEditConfigured = true;
+	}
+	hierarchyLockLevel = parseInt($('#hierarchyLockLevel').val());
 	
 	$.ajax({
 		async:		true,
@@ -272,7 +281,7 @@ var styleClass;
 		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
     });
     
-    $("#innerID").bind("loaded.jstree", 
+    /*$("#innerID").bind("loaded.jstree", 
 		 	function (event, data) {
 				for(var i = 0; i < rootNode.length; i++) {
 					var orgcatlevel = rootNode[i].attr.cid;
@@ -282,10 +291,29 @@ var styleClass;
 		    		}
 				}
 			}
-		);
+		);*/
+		
+		if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+			//if(isAddOrganization){
+				//$("#innerID").bind("loaded.jstree",handlerForAddEditOrg);
+				//registerDelegate("innerID");
+				//$("#innerID").delegate("li a","click",delegateHandlerForAddEditOrg);
+			//}	
+			//else{
+				$("#innerID").bind("loaded.jstree",hierarchyLockInEditHandler);
+				registerDelegate("innerID");
+				$("#innerID").delegate("li a","click",delegateHandlerForHierarchyLockInEdit);
+			//}	
+		}
+		else{
+			$("#innerID").bind("loaded.jstree",handlerForAddEditOrg);
 			registerDelegate("innerID");
-    
-    	$("#innerID").delegate("li a","click",
+			$("#innerID").delegate("li a","click",delegateHandlerForAddEditOrg);
+		}
+		
+		//registerDelegate("innerID");
+  
+    	/*$("#innerID").delegate("li a","click",
     		 function(e) {
     		 
     				styleClass = $(this.parentNode).attr('class');
@@ -311,7 +339,7 @@ var styleClass;
 					} 
 						
 			   	 }
-			  );
+			  );*/
     
    		 $("#innerID").bind("change_state.jstree",
    		 	 function (e, d) {
@@ -328,19 +356,97 @@ var styleClass;
 					}else{					
 						checkedListObject[elementId] = "unchecked" ;
 					}
-					updateOrganizationAndLayer(d.rslt[0],isChecked);
+					//if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined && !isAddOrganization){
+					if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+						if(orgcategorylevel == hierarchyLockLevel)
+							updateOrganizationAndLayer(d.rslt[0],isChecked,e);
+					}
+					else
+						updateOrganizationAndLayer(d.rslt[0],isChecked,e);
     			}
         		}
         	);
-}
-
+	}
+	
+	function hierarchyLockInEditHandler(event, data){
+		for(var i = 0; i < rootNode.length; i++) {
+			var orgcatlevel = rootNode[i].attr.cid;
+			if(orgcatlevel < hierarchyLockLevel)
+				$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+			else if(orgcatlevel == leafNodeCategoryId){
+				$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+				$("#innerID ul li").eq(i).find('.jstree-icon').hide();
+			}		
+		
+		}
+	}
+	
+	function handlerForAddEditOrg(event, data){
+		for(var i = 0; i < rootNode.length; i++) {
+			var orgcatlevel = rootNode[i].attr.cid;
+			if(orgcatlevel == leafNodeCategoryId) {
+				$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+				$("#innerID ul li").eq(i).find('.jstree-icon').hide();
+    		}
+		}
+	}
+	
+	function delegateHandlerForAddEditOrg(e){
+		styleClass = $(this.parentNode).attr('class');
+ 		var orgcategorylevel = $(this.parentNode).attr("cid");
+		var elementId = $(this.parentNode).attr('id');
+		var currentlySelectedNode ="";
+ 				var element = this.parentNode;
+ 				currentId = $(this.parentNode).attr("id");
+ 				var orgcategorylevel = $(element).attr("cid");
+		if(styleClass.indexOf("unchecked") > 0){
+			$('#innerID').jstree('uncheck_all');
+			$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+		}else {
+			$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+		}
+		
+		var isChecked = $(element).hasClass("jstree-checked");
+		checkedListObject = {};
+		checkedListObject[elementId] = 'checked';
+		
+		if(currentCategoryLevel != leafNodeCategoryId) {
+			updateOrganizationAndLayer(element,isChecked,e);							
+		} 
+	}
+	
+	function delegateHandlerForHierarchyLockInEdit(e){
+		//console.log(e);
+		styleClass = $(this.parentNode).attr('class');
+ 		var orgcategorylevel = $(this.parentNode).attr("cid");
+		var elementId = $(this.parentNode).attr('id');
+		var currentlySelectedNode ="";
+ 				var element = this.parentNode;
+ 				currentId = $(this.parentNode).attr("id");
+ 				var orgcategorylevel = $(element).attr("cid");
+		if(styleClass.indexOf("unchecked") > 0){
+			$('#innerID').jstree('uncheck_all');
+			$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+		}else {
+			$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+		}
+		
+		var isChecked = $(element).hasClass("jstree-checked");
+		checkedListObject = {};
+		checkedListObject[elementId] = 'checked';
+		
+		if(orgcategorylevel == hierarchyLockLevel) {
+			updateOrganizationAndLayer(element,isChecked,e);							
+		} 
+	}
+	
 	function getText(element){
 		var elementText  = element.childNodes[1].lastChild.data;
 		return elementText;
 	}
 
 
-	function updateOrganizationAndLayer(element,isChecked){
+	function updateOrganizationAndLayer(element,isChecked,e){
 		layerOptions=[];
 		categoryIds=[];
 		var currentlySelectedNode ="";
@@ -459,7 +565,7 @@ function populateGrid() {
 			height: 370,
 			width: $("#jqGrid-content-section").width(), 
 			editurl: 'OrgNodeHierarchyGrid.do',
-			ondblClickRow: function(rowid) {EditOrganizationDetail();},
+			ondblClickRow: function(rowid) {preEditOrgDetail(); /*EditOrganizationDetail();*/},
 			caption:$("#orgListID").val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
@@ -548,7 +654,8 @@ function populateGrid() {
 						 	});
 			    	}else {
 			    		 requetForOrganization = "";
-		    			 EditOrganizationDetail();
+		    			 preEditOrgDetail();
+		    			 //EditOrganizationDetail();
 			    	}
 			    	 
 			    }, position: "first", title:"View/Edit Group", cursor: "pointer",id:"edit_list2"
@@ -656,6 +763,15 @@ function fillDropDown( elementId, optionList) {
 /*
 *Added on 08.11.2011 for editOrganizationDetail functionality
 */
+function preEditOrgDetail(selectedOrgId){	
+	EditOrganizationDetail(selectedOrgId);
+	/*if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+		$('#innerID').jstree('close_all');
+		checkedListObject = {};
+		populateTreeSelect();// need to call only when the org is editable and not view mode
+	}*/
+}
+
 function EditOrganizationDetail(selectedOrgId){
 	isPopUp	= true;
 	isAddOrganization = false;
@@ -663,6 +779,7 @@ function EditOrganizationDetail(selectedOrgId){
 	isLasLinkCustomer = $("#isLasLinkCustomer").val();
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";
+	
 	var parentNodeId ;
 	if(selectedOrgId == undefined){
 		rowId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -685,89 +802,184 @@ function EditOrganizationDetail(selectedOrgId){
 		dataType:	'json',
 		data:		postDataObject,
 		success:	function(data, textStatus, XMLHttpRequest){	
-						
-						$.unblockUI();
-						organizationNodes = data.organizationNodes;
-						originalParentOrgId = data.organizationDetail.parentOrgNodeId;
-						$("#orgName").val(data.organizationDetail.orgNodeName);
-						$("#orgCode").val(data.organizationDetail.orgNodeCode);
-						if(isLasLinkCustomer){
-							$("#mdrNumber").val(data.organizationDetail.mdrNumber);
+						if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+							if(data.organizationDetail.categoryLevel <= hierarchyLockLevel)
+								populateDataInViewMode(data, rowId);
+							else
+								populateDataInEditMode(data, rowId);
 						}
-						//alert(data.organizationDetail.orgNodeCategoryName);
-						//$("#layerOptions").val(data.organizationDetail.orgNodeCategoryName);
-						$("#layerOptions").html("<option  value='"+ data.organizationDetail.orgNodeCategoryId+"'>"+ data.organizationDetail.orgNodeCategoryName+"</option>");
-						if(assignedOrgNodeIds == "") {
-							//assignedOrgNodeIds = data.organizationDetail.parentOrgNodeId ;
-							assignedOrgNodeIds = originalParentOrgId;
-						} else if (isParentChange) {
-							
-							assignedOrgNodeIds = originalParentOrgId;
-							isParentChange = false;
-						}
-						prevOrgNodeParentId = originalParentOrgId;
-						//console.log("prevOrgNodeElement" + prevOrgNodeParentId);
-						prevOrgNodeElement = document.getElementById(assignedOrgNodeIds);
-						var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.organizationDetail.parentOrgNodeId+"');>"+trim(data.organizationDetail.parentOrgNodeName)+"</a>";	
-						$("#parentOrgName").html(innerHtml);
-						
-					// for enable next and prev			
-						var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
-						var str = pageDataIds;
-						//var indexOfId = str.indexOf(selectedUserId);
-						var indexOfId = -1;
-						if(!Array.indexOf) {
-							indexOfId = findIndexFromArray (str , rowId);
-						} else {
-							indexOfId = str.indexOf(rowId);
-						}
-						disablenextprev (indexOfId,(str.length) - 1);
-					// for enable next and prev
-						
-						$("#addEditOrganizationDetail").dialog({  
-								title:$("#editOrgID").val(),  
-							 	resizable:false,
-							 	autoOpen: true,
-							 	width: '800px',
-							 	modal: true,
-								closeOnEscape: false,
-							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
-							 	});
-						$('#addEditOrganizationDetail').bind('keydown', function(event) {
-			 				  var code = (event.keyCode ? event.keyCode : event.which);
-  							  if(code == 27){
-			  				  onCancel();
-			  				  return false;
-			 				 }
-			 				
-							});	
-							
-							parentNodeId = data.organizationDetail.parentOrgNodeId;
-							setPopupPosition(isAddOrganization);
-							hideLeafAdminCheckBox();
-							checkOpenNode(parentNodeId);
-							dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
-							prepareCheckedList(); //added on 12.12.2011	
-							currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem						
+						else{						
+							populateDataInEditMode(data, rowId);
+						}						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
 						window.location.href="/TestSessionInfoWeb/logout.do";
 						
-					}
+					},
+		complete: function(XMLHttpRequest, textStatus){
+						/*if(textStatus == "success"){
+							if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+								$('#innerID').jstree('close_all');
+								checkedListObject = {};
+								populateTreeSelect();// need to call only when the org is editable and not view mode
+							}
+						}*/
+				}					
 		
 	});
 }
 
+	function populateDataInViewMode(data, rowId){
+		$.unblockUI();
+		isViewMode = true;
+		$('#Organization_Information_View').show();
+		$('#Organization_Information').hide();
+		organizationNodes = data.organizationNodes;
+		originalParentOrgId = data.organizationDetail.parentOrgNodeId;
+		$("#orgNameView").text(data.organizationDetail.orgNodeName);
+		$("#orgCodeView").text(data.organizationDetail.orgNodeCode);
+		if(isLasLinkCustomer){
+			$("#mdrNumberView").val(data.organizationDetail.mdrNumber);
+		}
+		$("#layerOptionsView").text(data.organizationDetail.orgNodeCategoryName);
+		if(assignedOrgNodeIds == "") {
+			//assignedOrgNodeIds = data.organizationDetail.parentOrgNodeId ;
+			assignedOrgNodeIds = originalParentOrgId;
+		} else if (isParentChange) {
+			assignedOrgNodeIds = originalParentOrgId;
+			isParentChange = false;
+		}
+		prevOrgNodeParentId = originalParentOrgId;
+		
+		prevOrgNodeElement = document.getElementById(assignedOrgNodeIds);
+		
+		$('#parentOrgNameView').text(trim(data.organizationDetail.parentOrgNodeName));
+		$('#buttonInAddEditMode').hide();
+		$('#buttonInViewMode').show();		
+	// for enable next and prev			
+		var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+		var str = pageDataIds;
+		//var indexOfId = str.indexOf(selectedUserId);
+		var indexOfId = -1;
+		if(!Array.indexOf) {
+			indexOfId = findIndexFromArray (str , rowId);
+		} else {
+			indexOfId = str.indexOf(rowId);
+		}
+		disablenextprev (indexOfId,(str.length) - 1);
+	// for enable next and prev
+
+		$("#addEditOrganizationDetail").dialog({  
+				title:'View Group',  
+			 	resizable:false,
+			 	autoOpen: true,
+			 	width: '800px',
+			 	modal: true,
+				closeOnEscape: false,
+			 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
+			 	});
+		$('#addEditOrganizationDetail').bind('keydown', function(event) {
+				  var code = (event.keyCode ? event.keyCode : event.which);
+					  if(code == 27){
+					  onCancel();
+					  return false;
+				 }
+				
+			});	
+			
+		//parentNodeId = data.organizationDetail.parentOrgNodeId;
+		setPopupPosition(isAddOrganization);
+		//dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
+		//currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem
+						
+	}
+	
+	function populateDataInEditMode(data, rowId){
+		$.unblockUI();
+		isViewMode = false;
+		$('#Organization_Information_View').hide();
+		$('#Organization_Information').show();
+		organizationNodes = data.organizationNodes;
+		originalParentOrgId = data.organizationDetail.parentOrgNodeId;
+		$("#orgName").val(data.organizationDetail.orgNodeName);
+		$("#orgCode").val(data.organizationDetail.orgNodeCode);
+		if(isLasLinkCustomer){
+			$("#mdrNumber").val(data.organizationDetail.mdrNumber);
+		}
+		//alert(data.organizationDetail.orgNodeCategoryName);
+		//$("#layerOptions").val(data.organizationDetail.orgNodeCategoryName);
+		$("#layerOptions").html("<option  value='"+ data.organizationDetail.orgNodeCategoryId+"'>"+ data.organizationDetail.orgNodeCategoryName+"</option>");
+		if(assignedOrgNodeIds == "") {
+			//assignedOrgNodeIds = data.organizationDetail.parentOrgNodeId ;
+			assignedOrgNodeIds = originalParentOrgId;
+		} else if (isParentChange) {
+			
+			assignedOrgNodeIds = originalParentOrgId;
+			isParentChange = false;
+		}
+		prevOrgNodeParentId = originalParentOrgId;
+		//console.log("prevOrgNodeElement" + prevOrgNodeParentId);
+		prevOrgNodeElement = document.getElementById(assignedOrgNodeIds);
+		var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.organizationDetail.parentOrgNodeId+"');>"+trim(data.organizationDetail.parentOrgNodeName)+"</a>";	
+		$("#parentOrgName").html(innerHtml);
+		$('#buttonInAddEditMode').show();
+		$('#buttonInViewMode').hide();
+	// for enable next and prev			
+		var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+		var str = pageDataIds;
+		//var indexOfId = str.indexOf(selectedUserId);
+		var indexOfId = -1;
+		if(!Array.indexOf) {
+			indexOfId = findIndexFromArray (str , rowId);
+		} else {
+			indexOfId = str.indexOf(rowId);
+		}
+		disablenextprev (indexOfId,(str.length) - 1);
+	// for enable next and prev
+		
+		$("#addEditOrganizationDetail").dialog({  
+				title:$("#editOrgID").val(),  
+			 	resizable:false,
+			 	autoOpen: true,
+			 	width: '800px',
+			 	modal: true,
+				closeOnEscape: false,
+			 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
+			 	});
+		$('#addEditOrganizationDetail').bind('keydown', function(event) {
+				  var code = (event.keyCode ? event.keyCode : event.which);
+					  if(code == 27){
+					  onCancel();
+					  return false;
+				 }
+				
+			});	
+			
+		parentNodeId = data.organizationDetail.parentOrgNodeId;
+		setPopupPosition(isAddOrganization);
+		hideLeafAdminCheckBox();
+		checkOpenNode(parentNodeId);
+		dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
+		prepareCheckedList(); //added on 12.12.2011	
+		currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem
+	}
 //upto this on 08.11.2011
 
-function AddOrganizationDetail() {
-
+function AddOrganizationDetail() {	
 	isPopUp	= true;
 	isAddOrganization = true;
+	isViewMode = false;
+	$('#Organization_Information_View').hide();
+	$('#Organization_Information').show();
+	$('#buttonInViewMode').hide();
+	$('#buttonInAddEditMode').show();
 	isLasLinkCustomer = $("#isLasLinkCustomer").val();
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";
+	//if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+		//populateTreeSelect();
+	//}
 	
 						$("#addEditOrganizationDetail").dialog({  
 								title:$("#addOrgID").val(),  
@@ -808,11 +1020,15 @@ function AddOrganizationDetail() {
 			}
 		}
 		else {
-		  	isValueChanged = isEditOrgDataChanged();
-	      	if(isValueChanged) {
-				openConfirmationPopup();	
-			} else {
+			if(isViewMode)
 				closePopUp('addEditOrganizationDetail');
+			else{	
+			  	isValueChanged = isEditOrgDataChanged();
+		      	if(isValueChanged) {
+					openConfirmationPopup();	
+				} else {
+					closePopUp('addEditOrganizationDetail');
+				}
 			}
 		}
 
@@ -877,11 +1093,17 @@ function openTreeNodes(orgNodeId) {
 	}
 	
 	function reset() {
-	
+		
 		$("#orgName").val("");
 		$("#orgCode").val("");
 		$("#layerOptions").html("<option  value='Select a layer'>Select a layer</option>");
 		$("#parentOrgName").html(defaultParent);
+		if(isViewMode){
+			$("#orgNameView").text("");
+			$("#orgCodeView").text("");
+			$("#layerOptionsView").text("");
+			$("#parentOrgNameView").text("");
+		}
 		if(isLasLinkCustomer == true || isLasLinkCustomer == "true")
 			$("#mdrNumber").val("");
 		assignedOrgNodeIds = "";
@@ -931,7 +1153,7 @@ function openTreeNodes(orgNodeId) {
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditOrganizationDetail') {
 			isPopUp = false;
-				reset();			
+			reset();			
 		}
 		$("#"+dailogId).dialog("close");
 		prevOrgNodeParentId = "";
@@ -974,9 +1196,15 @@ function openTreeNodes(orgNodeId) {
 				var toppos = ($(window).height() - 610) /2 + 'px';
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditOrganizationDetail").parent().css("top",toppos);
-				$("#addEditOrganizationDetail").parent().css("left",leftpos);		 	 
-				$("#Organization_Information").css("height",'300px');
-				$("#Organization_Information").css("overflow",'auto');
+				$("#addEditOrganizationDetail").parent().css("left",leftpos);
+				if(isViewMode){
+					$("#Organization_Information_View").css("height",'300px');
+					$("#Organization_Information_View").css("overflow",'auto');
+				}
+				else{		 	 
+					$("#Organization_Information").css("height",'300px');
+					$("#Organization_Information").css("overflow",'auto');
+				}
 				if(isAddOrganization) {
 					$("#preButton").css("visibility","hidden");	
 					$("#nextButton").css("visibility","hidden");
@@ -1109,7 +1337,7 @@ function openTreeNodes(orgNodeId) {
 			}); 
 		}
 	}
-	
+		
 	function hideCheckBox(){
 		$("#innerID li").each(function() {
     			var orgcategorylevel = $(this).attr("cid");
@@ -1174,32 +1402,40 @@ function isEditOrgDataChanged(){
 function nDataClick(popupname) {
 	requetForOrganization = "Next";
 	var isValueChanged = false;
-		if(popupname == 'Edit') {
-			isValueChanged = isEditOrgDataChanged();
-			if(isValueChanged) {
-				//UIBlock();
-				openConfirmationPopup('alternateMessage');
-				} 
-		}
-		if(!isValueChanged) {
-			fetchNextData(popupname);							
+		if(isViewMode)
+			fetchNextData(popupname);
+		else{
+			if(popupname == 'Edit') {
+				isValueChanged = isEditOrgDataChanged();
+				if(isValueChanged) {
+					//UIBlock();
+					openConfirmationPopup('alternateMessage');
+					} 
+			}		
+			if(!isValueChanged) {
+				fetchNextData(popupname);							
+			}
 		}
 }
 
 function pDataClick(popupname) {
-           	requetForOrganization = "Previous";
-           		var isValueChanged = false;
-	if(popupname == 'Edit') {
-		isValueChanged = isEditOrgDataChanged();
-		if(isValueChanged) {
-			//UIBlock();
-			openConfirmationPopup('alternateMessage');	
-			
-			} 
-	}
-	if(!isValueChanged) {
-		fetchPreviousData(popupname);
-  }
+   	requetForOrganization = "Previous";
+    var isValueChanged = false;
+    if(isViewMode)
+    	fetchPreviousData(popupname);
+	else{    	
+		if(popupname == 'Edit') {
+			isValueChanged = isEditOrgDataChanged();
+			if(isValueChanged) {
+				//UIBlock();
+				openConfirmationPopup('alternateMessage');	
+				
+				} 
+		}
+		if(!isValueChanged) {
+			fetchPreviousData(popupname);
+	    }
+    }
 }
 
 function fetchNextData(popupname){
@@ -1519,11 +1755,27 @@ function deleteOrganizationDetail(){
 							}
 						  break;
 		
-		}	
-		if (objArray.attr.cid != leafNodeCategoryId){
-		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
-		}else{
-		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		}
+		if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+			//if(isAddOrganization){
+				//if (objArray.attr.cid != leafNodeCategoryId)
+					//liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+				//else
+					//liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+			//}
+			//else{
+				if(objArray.attr.cid < hierarchyLockLevel || objArray.attr.cid == leafNodeCategoryId)
+					liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+				else
+					liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";				
+			//}			
+		}
+		else{	
+			if (objArray.attr.cid != leafNodeCategoryId){
+				liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+			}else{
+				liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+			}
 		}
 		ulElement.appendChild(liElement);
 		fragment.appendChild(ulElement);

@@ -125,7 +125,57 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 
 
 					</div>
-				
+					<div id="Organization_Information_View" style="background-color: #FFFFFF;">
+	
+						<table class="transparent">
+							<tbody>
+								<tr class="transparent">
+								<td style ="vertical-align: top;">
+								<table class="transparent" width="350">
+								<tbody>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><lb:label key="org.name" suffix=":"/></td>
+										<td class="transparent">
+										<label style="width: 200px;" maxlength="32" id="orgNameView" name="orgNameView">
+										</td>
+									</tr>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><lb:label key="org.Code" suffix=":"/></td>
+										<td class="transparent">
+										<label style="width: 200px;" maxlength="32" id="orgCodeView" name="orgCodeView">
+										</td>
+									</tr>
+									<%if(isLasLinkCustomer) { %>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><lb:label key="org.mdrNumber" suffix=":"/></td>
+										<td class="transparent">
+										<label style="width: 200px;" maxlength="32" id="mdrNumberView" name="mdrNumberView">
+										</td>
+									</tr>
+									<%} %>
+									
+
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><lb:label key="org.layer" suffix=":"/></td>
+										<td class="transparent">
+										 <label style="width: 200px;" maxlength="32" id="layerOptionsView" name="layerOptionsView">
+										</td>
+									</tr>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><lb:label key="org.parentOrg" suffix=":"/></td>
+										<td class="transparent">
+										<label style="width: 200px;" maxlength="32" id="parentOrgNameView" name="parentOrgNameView">
+										</td>
+									</tr>
+								</tbody>
+								</table>
+								</td>								
+								</tr>
+							</tbody>
+						</table>
+
+
+					</div>
 			</div>
 
 
@@ -147,8 +197,14 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 					href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 					<td style="width:1%;">&nbsp;</td>
 				<td  style="width:96%; text-align: left;">
-					<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:orgDetailSubmit(); return false;" class="ui-widget-header" style="width:60px; margin-right: 10px; margin-left: 250px">
-					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px;">
+					<div id="buttonInAddEditMode">
+						<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:orgDetailSubmit(); return false;" class="ui-widget-header" style="width:60px; margin-right: 10px; margin-left: 250px">
+						<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px;">
+					</div>	
+					<div id="buttonInViewMode">
+						<input type="button"  id="cDataView" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px;margin-left: 260px">
+					</div>
+										
 					<br>
 				</td>
 			</tr>

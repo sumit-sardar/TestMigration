@@ -1186,6 +1186,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	boolean hasLockHierarchyEdit = false;
+    	String hierarchyLockLevel = "-1";
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -1272,6 +1274,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					isGACustomer = true;
 					continue;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Lock_Hierarchy_Edit")) {
+	            	hasLockHierarchyEdit = true;
+	            	hierarchyLockLevel = cc.getDefaultValue();
+	            }
+
 			}
 			
 		}
@@ -1304,6 +1311,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	this.getRequest().setAttribute("hasLockHierarchyEditConfigured", hasLockHierarchyEdit);
+     	this.getRequest().setAttribute("hierarchyLockLevel", hierarchyLockLevel);
     }
 
 	private boolean isTopLevelUser(){

@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 
+<%
+	Boolean hasLockHierarchyEditConfigured = (Boolean) request.getAttribute("hasLockHierarchyEditConfigured");
+	String hierarchyLockLevel = (String)request.getAttribute("hierarchyLockLevel");	
+%>
 <input type="hidden" id="orgNameID" name = "orgNameID" value=<lb:label key="org.name" prefix="'" suffix="'"/>/>
 <input type="hidden" id="orgCodeID" name = "orgCodeID" value=<lb:label key="org.Code" prefix="'" suffix="'"/>/>
 <input type="hidden" id="orgLayerID" name = "orgLayerID" value=<lb:label key="org.layer" prefix="'" suffix="'"/>/>
@@ -24,6 +28,8 @@
 <input type="hidden" id="deleteOrgTitleMsg" name = "deleteOrgTitleMsg" value=<lb:label key="org.msg.delete" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noOrgTitleGrd" name = "noOrgTitleGrd" value=<lb:label key="org.noOrgSelected.title" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noOrgMsgGrd" name = "noOrgMsgGrd" value=<lb:label key="org.noOrgSelected.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="hasLockHierarchyEditConfigured" name = "hasLockHierarchyEditConfigured" value='<%=hasLockHierarchyEditConfigured %>' />
+<input type="hidden" id="hierarchyLockLevel" name = "hierarchyLockLevel" value='<%=Integer.parseInt(hierarchyLockLevel) %>' />
 
 <table class="transparent" width="97%" style="margin:15px auto;">  
 	<tr class="transparent">
