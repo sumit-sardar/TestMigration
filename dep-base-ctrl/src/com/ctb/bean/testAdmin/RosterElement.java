@@ -50,6 +50,7 @@ public class RosterElement extends CTBBean
   private String studentUserName;
   private String className;
   
+  private String assignedForm; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 
 	public String getDnsStatus() {
 		return dnsStatus;
@@ -496,6 +497,18 @@ public class RosterElement extends CTBBean
 	 */
 	public void setClassName(String className) {
 		this.className = className;
+	}
+	/**
+	 * @return the assignedForm
+	 */
+	public String getAssignedForm() {
+		return assignedForm;
+	}
+	/**
+	 * @param assignedForm the assignedForm to set
+	 */
+	public void setAssignedForm(String assignedForm) {
+		this.assignedForm = assignedForm;
 	}
 	
 } 

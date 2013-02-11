@@ -5820,6 +5820,41 @@ public class SessionOperationController extends PageFlowController {
 			 return ivrc;			 
 		 }
 		 
+		 private boolean hasAssignFormRosterConfig()  {               
+		        for (int i=0; i < this.customerConfigurations.length; i++)  {
+	                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Assign_Roster_Form") && cc.getDefaultValue().equalsIgnoreCase("T")) {	                
+	                	return true;	                    
+	                }
+	            }     
+		        return false;
+		 }
+		 
+		 private List getRosterFormList(String testAdminId){
+			 List formList = null;
+			 try{
+				 formList = this.testSessionStatus.getRosterFormList(testAdminId);
+			 }catch (CTBBusinessException e) {
+					e.printStackTrace();
+			 }
+			 return formList;			 
+		 }
+		 
+		 @Jpf.Action(forwards = { 
+			        @Jpf.Forward(name = "success",
+			                     path = "view_test_session.jsp")
+			    })
+		 protected Forward updateRosterForm()
+		 {
+			 Integer testRosterId = Integer.parseInt(getRequest().getParameter("testRosterId"));
+			 String assignedForm = getRequest().getParameter("assignedForm");
+			 try {      
+		            this.testSessionStatus.updateRosterForm(this.userName, testRosterId, assignedForm);
+			 }catch (Exception e) {
+		            e.printStackTrace();
+		     }
+			 return null;
+		 }
 		 
 		 @Jpf.Action(forwards = { 
 		        @Jpf.Forward(name = "success",
@@ -5851,6 +5886,10 @@ public class SessionOperationController extends PageFlowController {
 				base.setOkCustomer(this.isOKCustomer);
 				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
 				base.setTopLevelAdminCord(isAdminCoordinatotUser() && isTopLevelUser());
+				base.setHasAssignFormRosterConfig(hasAssignFormRosterConfig());
+				if (hasAssignFormRosterConfig()) {
+					base.setAssignFormList(getRosterFormList(testAdminId));
+				}
 				/*Integer breakCount = ted.getBreakCount();
 		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
 		            if (isSameAccessCode(subtestList)) 
@@ -5867,7 +5906,7 @@ public class SessionOperationController extends PageFlowController {
 		        return null;
 		    }
 
-		 
+		 	
 			private void populateSubtestDetails(Integer testAdminId) {
 				
 				this.subtestDetails = new ArrayList(); 

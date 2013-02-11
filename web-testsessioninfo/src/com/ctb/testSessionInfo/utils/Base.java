@@ -47,6 +47,8 @@ public class Base {
 	private boolean isOkCustomer; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean isTopLevelAdmin; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean isTopLevelAdminCord; // Added for OAS – OK – 2013 – 014 – invalidate test
+	private boolean hasAssignFormRosterConfig; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
+	private List assignFormList; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 	
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
@@ -301,5 +303,29 @@ public class Base {
 	public void setTopLevelAdminCord(boolean isTopLevelAdminCord) {
 		this.isTopLevelAdminCord = isTopLevelAdminCord;
 	}
-
+	/**
+	 * @return the hasAssignFormRosterConfig
+	 */
+	public boolean isHasAssignFormRosterConfig() {
+		return hasAssignFormRosterConfig;
+	}
+	/**
+	 * @param hasAssignFormRosterConfig the hasAssignFormRosterConfig to set
+	 */
+	public void setHasAssignFormRosterConfig(boolean hasAssignFormRosterConfig) {
+		this.hasAssignFormRosterConfig = hasAssignFormRosterConfig;
+	}
+	/**
+	 * @return the assignFormList
+	 */
+	public List getAssignFormList() {
+		return assignFormList;
+	}
+	/**
+	 * @param assignFormList the assignFormList to set
+	 */
+	public void setAssignFormList(List assignFormList) {
+		this.assignFormList = assignFormList;
+	}
+	
 }

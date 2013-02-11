@@ -120,3 +120,6 @@
 
 <input type="hidden" id="msmTabeSelectStudentIns"  value=<lb:label key="midify.student.manifest.tabe.select.student.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="msmNonTabeSelectStudentIns" value=<lb:label key="midify.student.manifest.nontabe.select.student.message" prefix="'" suffix="'"/> />
+
+<input type="hidden" id="assignFormUpdateMsg" name="assignFormUpdateMsg" value=<lb:label key="viewStatus.assignForm.message" prefix="'" suffix="'"/> />
+

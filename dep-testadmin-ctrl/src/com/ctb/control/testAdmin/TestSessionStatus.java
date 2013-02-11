@@ -507,6 +507,7 @@ public interface TestSessionStatus
 
 	List getInvalidationReasonList() throws com.ctb.exception.CTBBusinessException;
 
-
+	List<String> getRosterFormList(java.lang.String testAdminId) throws com.ctb.exception.CTBBusinessException;
 	
+	void updateRosterForm(java.lang.String userName, java.lang.Integer testRosterId, java.lang.String assignedForm) throws com.ctb.exception.CTBBusinessException;
 } 

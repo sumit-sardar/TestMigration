@@ -2359,7 +2359,31 @@ public class TestSessionStatusImpl implements TestSessionStatus
 		return ivrcList;
      }
 
-	
+     public List<String> getRosterFormList(String testAdminId) throws CTBBusinessException {
+    	 String [] rosFormListStr = null;
+    	 List<String> rosFormListList = null;
+    	 try{
+    		 rosFormListStr= roster.getRosterFormList(testAdminId);
+    		 if(rosFormListStr != null){
+    			 rosFormListList = new ArrayList<String>();
+	    		 for (int i = 0; i < rosFormListStr.length; i++) {
+	    			 rosFormListList.add(rosFormListStr[i]);
+	    		 	}
+    		 	}
+			} catch(SQLException se) {
+				se.printStackTrace();	
+				}
+		return rosFormListList;
+     }
 
-	
+     public void updateRosterForm(String userName, Integer testRosterId, String assignedForm) throws CTBBusinessException {
+//    	 validator.validate(userName, null, "testAdmin.updateRosterForm");
+         try {
+      		this.roster.updateRosterForm(userName, testRosterId, assignedForm);
+      	 } catch (SQLException se) {
+      		CTBBusinessException rde = new CTBBusinessException("TestSessionStatusImpl: updateRosterForm: " + se.getMessage());
+      		rde.setStackTrace(se.getStackTrace());
+  	        throw rde;
+  	    }
+     }
 } 

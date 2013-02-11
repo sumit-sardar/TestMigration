@@ -120,6 +120,12 @@ var isForRefreshRoster = false;
 var pageSizeSelected = 10;
 var scrollPosition=0;
 
+var assignedFormList = [];
+var hasAssignFormConfig = false;
+var rosterFormMapOld = new Map();
+var selectedForm = "";
+var updateSuccess = false;
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -4173,21 +4179,23 @@ function registerDelegate(tree){
           mtype:   "POST",
 		  datatype: "json",
 		  postData:	postDataObject,
-          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val()],
+          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val(), $("#rosterFormLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentNumber',index:'studentNumber', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'loginName',index:'loginName', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'dnsStatus',index:'dnsStatus', width:74, hidden: true, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'password',index:'password', width:120, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'validationStatus',index:'validationStatus', width:120, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testStatus',index:'testStatus', width:120, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'dnsStatus',index:'dnsStatus', width:70, hidden: true, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'assignedForm',index:'assignedForm', width:70, hidden: true, eidtable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
 		   		 var subtestValAllowed = JSON.stringify(obj.subtestValidationAllowed);
 		   		 var toggleIsOkCustomer = JSON.stringify(obj.isOkCustomer);
+		   		 hasAssignFormConfig = obj.hasAssignFormRosterConfig;
 		   		 if(toggleIsOkCustomer == 'true') {
 		   		 	isOkCustomer = true;
 		   		 } else {
@@ -4218,6 +4226,14 @@ function registerDelegate(tree){
 				 } else {
 					$("#toggleValidation").hide();
 				 }
+				 if(hasAssignFormConfig && hasAssignFormConfig!=undefined) {
+					$("#rosterList").jqGrid("showCol","assignedForm");
+					$("#assignFormButton").show();
+					$("#assignFormMsg").show();
+				 } else {
+					$("#rosterList").jqGrid("hideCol","assignedForm"); 
+					$("#assignFormButton").hide(); 
+				 }
 				 var donotScoreAllowed = JSON.stringify(obj.donotScoreAllowed);
 				 if(donotScoreAllowed == 'true') {
 					$("#doNotScore").show();
@@ -4234,6 +4250,7 @@ function registerDelegate(tree){
 			 	 
 			 	 isTabeProduct = JSON.stringify(obj.testSession.isSTabeProduct);
 			 	 invalidationReasonCodeDetails =obj.invalidateReasonList;
+			 	 assignedFormList = obj.assignFormList;
 			 	 //console.log(invalidationReasonCodeDetails);
 			 	 invalidationReasonIDList[0] = 'PS';
 			 	 invalidationReasonList[0] = 'Please Select';
@@ -4243,7 +4260,12 @@ function registerDelegate(tree){
 					invalidationReasonIDList[i+1]=invalidationReasonCodeDetails[i].substr(0,n);
 					invalidationReasonList[i+1]	=invalidationReasonCodeDetails[i].substr(n+1);
 					
-				}
+				 }
+				 for(var i=0; i<obj.rosterElement.length; i++) {
+				 	var testRosterId = obj.rosterElement[i].testRosterId;
+				 	var assignedForm = obj.rosterElement[i].assignedForm;
+				 	rosterFormMapOld.put(testRosterId,assignedForm);
+				 }
 		   	}},
 		   	loadui: "disable",
 			rowNum:pageSizeSelected,
@@ -4254,6 +4276,7 @@ function registerDelegate(tree){
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
+			shrinkToFit: false,
 			height: 162,
 			width: 920,
 			caption:$("#stuRos").val(),
@@ -4315,7 +4338,6 @@ function registerDelegate(tree){
 				var topRowid = $('#rosterList tr:nth-child(2)').attr('id');
             	$("#rosterList").setSelection(topRowid, true);
             	selectedTestRosterId = topRowid;
-            	
             	var status = $('#rosterList').getCell(selectedTestRosterId, '5');
 				if($.trim($(status).text()) != 'PI') {
 					setAnchorButtonState('toggleValidationButton', false);
@@ -4392,13 +4414,88 @@ function registerDelegate(tree){
 				$.unblockUI();
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unblockUI();  
+				//$.unblockUI();  
 				window.location.href="/SessionWeb/logout.do";
 			}
 	 });
 	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	}
 	
+	function openAssignFormPopup(){
+		var optionHtml = "";
+		$("#assignFormPopup").dialog({  
+			title:$("#assignFormPopupLbl").val(),  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#assignFormPopup").css('height',120);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#assignFormPopup").parent().css("top",toppos);
+			 $("#assignFormPopup").parent().css("left",leftpos);
+		if ( assignedFormList != null || assignedFormList != undefined ) {
+			for (var i=0; i<assignedFormList.length; i++) {
+		            //optionHtml += '<option value="'+ assignedFormList[i] +'" selected ="selected">'+ assignedFormList[i] +'</option>';
+			}
+		}
+		optionHtml += '<option value="EQ" selected ="selected">EQ</option>';
+		optionHtml += '<option value="Form A" selected ="selected">Form A</option>';
+		optionHtml += '<option value="Form B" selected ="selected">Form B</option>'
+		optionHtml += '<option value="Form C" selected ="selected">Form C</option>'
+		optionHtml += '<option value="Form D" selected ="selected">Form D</option>'
+		$("#testFormList").html(optionHtml);
+		selectedForm = rosterFormMapOld.get(selectedTestRosterId);
+		$("#testFormList").val(selectedForm);
+	}
+	
+	function closeAssignFormPopup() {
+		$("#assignFormPopup").hide();	    
+		$("#assignFormPopup").dialog('close');
+		$.unblockUI(); 	
+	}
+	
+	function assignRosterForm() {
+		UIBlock();
+    	var postDataObject = {};
+    	newAssignedForm = $("#testFormList").val();
+    	oldAssignedForm = selectedForm;
+    	var rowid = $("#rosterList").jqGrid('getGridParam', 'selrow');
+    	if (newAssignedForm != oldAssignedForm && newAssignedForm != null) {
+   	    	postDataObject.testRosterId = selectedTestRosterId;
+   			postDataObject.assignedForm = newAssignedForm;
+		   	$.ajax({
+						async:		true,
+						beforeSend:	function(){
+										UIBlock();
+									},
+						url:		'updateRosterForm.do',
+						type:		'POST',
+						dataType:	'json',
+						data:		postDataObject,
+						success:	function(data, textStatus, XMLHttpRequest) {
+										$.unblockUI();
+										updateSuccess = true;
+ 										$("#displayMessageViewTestRoster").show();
+										$("#rosterMessage").html($("#assignFormUpdateMsg").val());
+										jQuery('#rosterList').setCell(rowid,'assignedForm',newAssignedForm);
+									},
+						error  :    function(XMLHttpRequest, textStatus, errorThrown){
+										$.unblockUI();
+										window.location.href="/SessionWeb/logout.do";
+									},
+						complete :  function(){
+										 $.unblockUI();
+										 closeAssignFormPopup();
+									}
+					});
+		}else {
+			closeAssignFormPopup();
+		}
+    }
+
 	function viewSubtestDetails(index) {
 		var postDataObject = {};
  		postDataObject.testRosterId = selectedTestRosterId;

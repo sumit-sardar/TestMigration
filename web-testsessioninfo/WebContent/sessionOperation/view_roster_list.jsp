@@ -10,7 +10,7 @@
 <table width="100%" border="0">
 <tr><td>
 	<div style="margin-bottom: 2px;width:920px;" class="subtitle">
-		<lb:label key="viewStatus.rosterList.instText" />
+		<lb:label key="viewStatus.rosterList.instText" /><div id="assignFormMsg" style="display: none"><lb:label key="viewStatus.rosterList.assignForm"/></div>	
 	</div>
 	<div id = "displayMessageViewTestRoster" 
 			style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; border:1px solid #D4ECFF; margin-bottom:5px; padding:2px;">	
@@ -47,6 +47,9 @@
 			<td align="left" width="10%"><lb:label key="viewStatus.totalStudents" /></td>
 			<td width="12%"><span id = "rosterTotalStudents"></span></td>
 			<td width="45%" class="buttonsRow">
+				<div id="assignFormButton" style="float:right;padding-left:5px;display:none;">
+					<a href="#" id="assignRosterForm" onclick="javascript:openAssignFormPopup()" class="rounded {transparent} button"><lb:label key="viewStatus.assignRosterForm.text" /></a>
+				</div>
 				<div id="refreshList" style="float:right;padding-left:5px;">
 					<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><lb:label key="viewStatus.refreshList.button" /></a>
 					<input type="hidden" name="subtestValidationAllowed" id="subtestValidationAllowed" value="" />
@@ -80,6 +83,29 @@
 				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeDNSConfirmationPopup(); return false;" class="ui-widget-header">
 			</center>
 		</div>	
+	</div>
+	<div id="assignFormPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+		<div style="padding:10px;text-align:left;">
+			<div style="margin-bottom: 5px;width:265px;" class="subtitle">
+				<lb:label key="viewStatus.assignRosterForm.message" />
+			</div>
+			<div style="text-align: left; font-size: 12px; font-style: normal; font-weight: normal; border:1px solid #D4ECFF;">
+				<table width="100%" border="0" style= "margin-top: 5px">
+					<tr class="transparent">
+						<td width="35%" height="20" valign="top" class="transparent" align="left"><lb:label key="viewStatus.label.form" /></td>
+						<td width="65%" height="20" valign="middle" align="left"><select name="testFormList" id="testFormList">
+					  </select></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div style="padding:10px;">		
+			<center>
+				<input type="button"  value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:assignRosterForm(); return false;" class="ui-widget-header">&nbsp;
+				<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeAssignFormPopup(); return false;" class="ui-widget-header">
+			</center>
+		</div>	
 	</div> 
 	<div>
 		<input type="hidden" name="lastNameLbl" id="lastNameLbl" value=<lb:label key="viewStatus.text.lastNameLbl" prefix="'" suffix="'"/>/>
@@ -91,6 +117,8 @@
 		<input type="hidden" name="onlineTestStausLbl" id="onlineTestStausLbl" value=<lb:label key="viewStatus.text.onlineTestStatus" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="dnsLbl" id="dnsLbl" value=<lb:label key="viewStatus.text.dnsLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="dNSConfirmationPopupLbl" id="dNSConfirmationPopupLbl" value=<lb:label key="viewStatus.text.dNSConfirmationPopupLbl" prefix="'" suffix="'"/>/>
+		<input type="hidden" name="rosterFormLbl" id="rosterFormLbl" value=<lb:label key="viewStatus.text.formLbl" prefix="'" suffix="'"/>/>		
+		<input type="hidden" name="assignFormPopupLbl" id="assignFormPopupLbl" value=<lb:label key="viewStatus.assignRosterForm.text" prefix="'" suffix="'"/>/>
 	</div>
 </td>
 </tr>
