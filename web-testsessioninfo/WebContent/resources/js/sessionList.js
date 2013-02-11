@@ -4438,14 +4438,9 @@ function registerDelegate(tree){
 			 $("#assignFormPopup").parent().css("left",leftpos);
 		if ( assignedFormList != null || assignedFormList != undefined ) {
 			for (var i=0; i<assignedFormList.length; i++) {
-		            //optionHtml += '<option value="'+ assignedFormList[i] +'" selected ="selected">'+ assignedFormList[i] +'</option>';
+		            optionHtml += '<option value="'+ assignedFormList[i] +'" selected ="selected">'+ assignedFormList[i] +'</option>';
 			}
 		}
-		optionHtml += '<option value="EQ" selected ="selected">EQ</option>';
-		optionHtml += '<option value="Form A" selected ="selected">Form A</option>';
-		optionHtml += '<option value="Form B" selected ="selected">Form B</option>'
-		optionHtml += '<option value="Form C" selected ="selected">Form C</option>'
-		optionHtml += '<option value="Form D" selected ="selected">Form D</option>'
 		$("#testFormList").html(optionHtml);
 		selectedForm = rosterFormMapOld.get(selectedTestRosterId);
 		$("#testFormList").val(selectedForm);
