@@ -86,6 +86,8 @@ function UIBlock(){
 
 			
 function populateTree() {
+	hasLockHierarchyEditConfigured = $('#hasLockHierarchyEditConfigured').val();
+	hierarchyLockLevel = parseInt($('#hierarchyLockLevel').val());
 	isBulkMove = false;
 	$.ajax({
 		async:		true,
@@ -415,19 +417,27 @@ function createMultiNodeSelectedTree(jsondata) {
 						$(element).removeClass("jstree-unchecked").addClass("jstree-checked");
 						checkedListObject[element.id] = "checked" ;
 						}
-				var isChecked = $(element).hasClass("jstree-checked");
-				if(isChecked){
-					var completePath = $("#innerID").jstree("get_path",$("#"+elementId),true);
-					if(completePath){
-						leafNodePathMap[elementId] = completePath.toString();
-						leafNodeTextMap[elementId] = trim($("#"+elementId).text());
+					var isChecked = $(element).hasClass("jstree-checked");
+					if(isChecked){
+						var completePath = $("#innerID").jstree("get_path",$("#"+elementId),true);
+						if(completePath){
+							leafNodePathMap[elementId] = completePath.toString();
+							leafNodeTextMap[elementId] = trim($("#"+elementId).text());
+						}
+					}else {					
+						delete leafNodePathMap[elementId];
+						delete leafNodeTextMap[elementId];			
 					}
-				}else {					
-					delete leafNodePathMap[elementId];
-					delete leafNodeTextMap[elementId];			
-				}
-				
-    			updateOrganization(this.parentNode,isChecked);
+					if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+						if($(this.parentNode).attr("tcl") == leafNodeCategoryId){
+							updateOrganization(this.parentNode,isChecked);
+						}else{
+							$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+							checkedListObject[$(this.parentNode).attr('id')] = "unchecked";
+						}							
+					}
+					else
+	    				updateOrganization(this.parentNode,isChecked);
     			}
 			}
 			);
@@ -457,7 +467,19 @@ function createMultiNodeSelectedTree(jsondata) {
 							delete leafNodePathMap[elementId];
 							delete leafNodeTextMap[elementId];
 						}
-						updateOrganization(d.rslt[0],isChecked);
+						if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
+							if(d.rslt[0].getAttribute("tcl") == leafNodeCategoryId){
+								updateOrganization(d.rslt[0],isChecked);
+							}else{
+								$(d.rslt[0]).removeClass("jstree-checked").addClass("jstree-unchecked");
+								if(!isChecked){
+									updateOrganization(d.rslt[0],isChecked);
+								}
+								checkedListObject[d.rslt[0].getAttribute("id")] = "unchecked";
+							}	
+						}
+						else
+							updateOrganization(d.rslt[0],isChecked);
 					}
     			}
 			}
