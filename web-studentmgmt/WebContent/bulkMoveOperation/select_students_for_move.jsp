@@ -3,7 +3,11 @@
 <%
     String studentIdLabelName = (String)request.getAttribute("studentIdLabelName");
 	Boolean supportAccommodations = (Boolean)request.getAttribute("supportAccommodations");
+	Boolean isShowRosterStudents = false;
+	if(null != request.getSession().getAttribute("isRosterStudents"))
+		isShowRosterStudents = (Boolean)request.getSession().getAttribute("isRosterStudents");
 	
+		
 %>
 
 <input type="hidden" id="studentIdLabelName"  value = '<%=studentIdLabelName %>' />
@@ -49,6 +53,9 @@
 						</table>	
 					</div>	       			
 					<div id="viewStatus" style="float:right;visibility:hidden;">
+						<% if(isShowRosterStudents) {%>
+					    	<a href="#" id="bulkRosterButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.roster" /></a>
+					    <% }%>
 						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.move" /></a>
 					</div> 
 					<div style="clear:both;">
@@ -105,16 +112,27 @@
 		</tr>
 		<tr>
 		<td >
+			<div id="moveStudentPopupButtonID"  style="display: none;">
 				<center>
 					<input type="button"  value=<lb:label key="common.button.save" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:saveBulkMoveData(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeBulkMovePopup(); return false;" class="ui-widget-header">
 				</center>
+			</div>
+			<div id="moveStudentRosterPopupButtonID"  style="display: none;">
+				<center>
+					<input type="button"  value=<lb:label key="stu.label.assignRoster" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:assignRosterData(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="stu.label.removeRoster" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeFromClass(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeBulkMovePopup(); return false;" class="ui-widget-header">
+				</center>
+			</div>
 		</td>
 		
 		</tr>
 		
 	</table>
 </div>
+
+
 
 <div id="unSaveBulkConfirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
@@ -130,3 +148,5 @@
 		</center>
 	</div>	
 </div>
+
+

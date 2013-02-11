@@ -4,6 +4,11 @@ var allStudentInGrid = [];
 var selectedStudentForMove = [];
 var finalSelectedNode;
 var isPopUp = false;
+var isbulkMoveRoster = null;
+var checkedNodeListObject = null;
+var leafNodePathMap = {};
+var leafNodeTextMap = {};
+
 
 
 function populateBulkMoveTree() {
@@ -74,6 +79,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
 	    	submittedSuccesfully = "";
 	    	$("#displayMessageMain").hide();
 	    	determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
+	    	determineStudentSel(selectedStudentForMove, 'bulkRosterButton');
 			SelectedOrgNodeId = $(this).parent().attr("id");
 			var topNodeSelected = $(this).parent().attr("cid");
 			if(topNodeSelected == leafNodeCategoryId || topNodeSelected == (leafNodeCategoryId -1)) {
@@ -201,7 +207,7 @@ function populateBulkMoveStudentGrid() {
 					//onNodechange = false;
 				}
 				determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
-				
+				determineStudentSel(selectedStudentForMove, 'bulkRosterButton');
 				 if(bulkMoveStuCounterPage == allStudentInGrid.length ) {
 				 	$('#cb_studentBulkMoveGrid').attr('checked', true);
 				 } else {
@@ -237,6 +243,7 @@ function populateBulkMoveStudentGrid() {
 						}
 					}
 					determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
+					determineStudentSel(selectedStudentForMove, 'bulkRosterButton');
 			},
 			onSelectRow: function (rowid, status) {
 				$("#displayMessageMain").hide();
@@ -256,6 +263,7 @@ function populateBulkMoveStudentGrid() {
 				 	$('#cb_studentBulkMoveGrid').attr('checked', false);
 				 }
 				 determineStudentSel(selectedStudentForMove, 'bulkMoveButton');
+				 determineStudentSel(selectedStudentForMove, 'bulkRosterButton');
 			},
 			loadComplete: function () {
 				var isSAGridEmpty = false;
@@ -288,17 +296,52 @@ function populateBulkMoveStudentGrid() {
 
 
 function openBulkMovePopup(element) {
+	var title;
 	if (isButtonDisabled(element))
 		return true;
+	if(element.id == "bulkRosterButton") {
+	    isRosterStudents = true;
+		isbulkMoveRoster = element.id;
+		title = $("#changeClassAssgmntTitle").val();
+		$("#moveStudentPopupButtonID").hide();
+		$("#moveStudentRosterPopupButtonID").show();
 		
-	removeBulkPopupMessage();
-	if($("#innerID ul li") == undefined || $("#innerID ul li").length <= 0) {
-		createMultiNodeBulkMoveTree(orgTreeHierarchy);
 	}
+	else if(element.id == "bulkMoveButton") {
+	isRosterStudents = false;
+		isbulkMoveRoster = element.id;
+		title = $("#moveStuDialogTitle").val();
+		$("#moveStudentPopupButtonID").show();
+		$("#moveStudentRosterPopupButtonID").hide();
+	}
+	
+	removeBulkPopupMessage();
+	if($("#innerIDForMS ul li") == undefined || $("#innerIDForMS ul li").length <= 0) {
+		if(element.id == "bulkRosterButton") {
+			createMultiNodeBulkMoveRosterTree(orgTreeHierarchy);
+			//bind click action
+				
+			}
+		else if(element.id == "bulkMoveButton") {
+			createMultiNodeBulkMoveTree(orgTreeHierarchy);
+			//bind click action
+		}
+	}
+	else {
+		if(element.id == "bulkRosterButton"){
+			$('#innerIDForMS').delegate("li a", "click", bulkMoveStudentRosterHandler);
+			$("#innerIDForMS").bind("change_state.jstree", changeStateHandlerForStudentRoster);
+		}	
+		else if(element.id == "bulkMoveButton"){
+			$('#innerIDForMS').delegate("li a", "click", bulkMoveStudentActionHandler);
+			$("#innerIDForMS").bind("change_state.jstree",changeStateHandlerForMoveStudent);
+		}	
+	}
+	checkedNodeListObject = new Map();
 	finalSelectedNode = undefined;
 	isPopUp = true;
 	$("#moveStudentPopup").dialog({  
-		title:$("#moveStuDialogTitle").val(),  
+		title:title,//$("#moveStuDialogTitle").val(),  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '480px',
@@ -314,19 +357,92 @@ function openBulkMovePopup(element) {
 		 $("#displayMessageMain").hide();	
   }
 
+function createMultiNodeBulkMoveRosterTree(jsondata) {
+	var styleClass;
+	
+	$("#innerIDForMS").jstree({
+        "json_data" : {	             
+            "data" : rootNode,
+			"progressive_render" : true,
+			"progressive_unload" : true
+        },
+         "ui" : {  
+	           "select_limit" : -1
+         	},
+        "checkbox" : {
+        "two_state" : true
+        }, 
+        	
+			"themes" : {
+			"theme" : "apple",
+			"dots" : false,
+			"icons" : false
+			},         	
+         	
+		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
+    });
+	   	$("#innerIDForMS").bind("loaded.jstree", 
+		 	function (event, data) {
+				for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel != leafNodeCategoryId) {
+						$("#innerIDForMS ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+		    		} else {
+		    			$("#innerIDForMS ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
+			registerDelegate("innerIDForMS");
+		$("#innerIDForMS").delegate("li a","click",bulkMoveStudentRosterHandler);		
+		$("#innerIDForMS").bind("change_state.jstree", changeStateHandlerForStudentRoster);	
+			/*$("#innerIDForMS").bind("change_state.jstree",
+		  		function (e, d) {
+			  		if(isAction){
+			  			removeBulkPopupMessage();
+				    	var elementId = d.rslt[0].getAttribute("id");
+						var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+						if (isChecked){
+							checkedNodeListObject.put(elementId,elementId);
+							$(d.rslt[0]).find('a').addClass("jstree-clicked");
+						} 
+						else {
+						    checkedNodeListObject._removeItem(elementId);
+							$(d.rslt[0]).find('a').removeClass("jstree-clicked");
+						}
+    				}
+				}
+			);*/	
+			
+}
 
 
+function changeStateHandlerForStudentRoster(e, d) {
+ 	if(isAction){
+ 		removeBulkPopupMessage();
+    	var elementId = d.rslt[0].getAttribute("id");
+		var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+		if (isChecked){
+			checkedNodeListObject.put(elementId,elementId);
+			$(d.rslt[0]).find('a').addClass("jstree-clicked");
+		} 
+		else {
+		    checkedNodeListObject._removeItem(elementId);
+			$(d.rslt[0]).find('a').removeClass("jstree-clicked");
+		}
+	}
+}
 function createMultiNodeBulkMoveTree(jsondata) {
 	var styleClass;
 	
-	$("#innerID").jstree({
+	$("#innerIDForMS").jstree({
         "json_data" : {	             
             "data" : rootNode,
 			"progressive_render" : true,
 			"progressive_unload" : true
         },
         "ui" : {
-        	"select_limit" : 1
+        	"select_limit" : -1
         },
         "checkbox" : {
         "two_state" : true
@@ -340,40 +456,23 @@ function createMultiNodeBulkMoveTree(jsondata) {
          	
 		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
     });
-	   	$("#innerID").bind("loaded.jstree", 
+	   	$("#innerIDForMS").bind("loaded.jstree", 
 		 	function (event, data) {
 				for(var i = 0; i < rootNode.length; i++) {
 					var orgcatlevel = rootNode[i].attr.cid;
 					if(orgcatlevel != leafNodeCategoryId) {
-						$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+						$("#innerIDForMS ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
 		    		} else {
-		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
+		    			$("#innerIDForMS ul li").eq(i).find('.jstree-icon').hide();
 		    		}
 				}
 			}
 		);
-			registerDelegate("innerID");
-		$("#innerID").delegate("li a","click", 
-			function(e) {
-				styleClass = $(this.parentNode).attr('class');
-				var orgcategorylevel = $(this.parentNode).attr("cid");
-				if(orgcategorylevel == leafNodeCategoryId) {
-					if(styleClass.indexOf("unchecked") > 0){
-						$('#innerID').jstree('uncheck_all');
-						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
-						$(this.parentNode).find('a').addClass("jstree-clicked");
-						finalSelectedNode = $(this.parentNode).attr('id');
-					}else {
-						$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
-						finalSelectedNode = undefined;
-						$(this.parentNode).find('a').removeClass("jstree-clicked");
-					}
-				} else 
-					return false;
-			}
-			);			
-			
-			$("#innerID").bind("change_state.jstree",
+			registerDelegate("innerIDForMS");
+		$("#innerIDForMS").delegate("li a","click",bulkMoveStudentActionHandler);			
+		
+		$("#innerIDForMS").bind("change_state.jstree",changeStateHandlerForMoveStudent);	
+			/*$("#innerIDForMS").bind("change_state.jstree",
 		  		function (e, d) {
 			  		if(isAction){
 			  			removeBulkPopupMessage();
@@ -387,7 +486,59 @@ function createMultiNodeBulkMoveTree(jsondata) {
 						}
     				}
 				}
-			);		
+			);*/		
+}
+
+function changeStateHandlerForMoveStudent(e, d) {
+ 	if(isAction){
+ 		removeBulkPopupMessage();
+    	var elementId = d.rslt[0].getAttribute("id");
+		var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+		if (isChecked){
+			finalSelectedNode = elementId;
+			$(d.rslt[0]).find('a').addClass("jstree-clicked");
+		} else {
+			$(d.rslt[0]).find('a').removeClass("jstree-clicked");
+		}
+	}
+}
+function bulkMoveStudentActionHandler(e) {
+	
+		styleClass = $(this.parentNode).attr('class');
+		var orgcategorylevel = $(this.parentNode).attr("cid");
+		if(orgcategorylevel == leafNodeCategoryId) {
+			if(styleClass.indexOf("unchecked") > 0){
+				$('#innerIDForMS').jstree('uncheck_all');
+				$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+				$(this.parentNode).find('a').addClass("jstree-clicked");
+				finalSelectedNode = $(this.parentNode).attr('id');
+			}else {
+				$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+				finalSelectedNode = undefined;
+				$(this.parentNode).find('a').removeClass("jstree-clicked");
+			}
+		} else 
+			return false;
+}
+function bulkMoveStudentRosterHandler(e) {
+
+			styleClass = $(this.parentNode).attr('class');
+				var orgcategorylevel = $(this.parentNode).attr("cid");
+				if(orgcategorylevel == leafNodeCategoryId) {
+					if(styleClass.indexOf("unchecked") > 0){
+						//$('#innerIDForMS').jstree('uncheck_all');
+						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+						$(this.parentNode).find('a').addClass("jstree-clicked");
+						//finalSelectedNode = $(this.parentNode).attr('id');
+						checkedNodeListObject.put($(this.parentNode).attr('id'),$(this.parentNode).attr('id'));
+					}else {
+						$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+						if(checkedNodeListObject.get($(this.parentNode).attr('id')) != undefined)
+							checkedNodeListObject._removeItem($(this.parentNode).attr('id'));
+						$(this.parentNode).find('a').removeClass("jstree-clicked");
+					}
+				} else 
+					return false;
 }
 
 function closeBulkMovePopup() {
@@ -410,24 +561,36 @@ function closeBulkMovePopup() {
 	}
 }
 
+
 function closeUnsaveBulkConfirmationPopup() {
-	$('#innerID').jstree('close_all', -1);
+	$('#innerIDForMS').jstree('close_all', -1);
 	closePopUp('unSaveBulkConfirmationPopup');
 	hideBulkMovePopup();
 }
 
+
 function hideBulkMovePopup() {
-	$('#innerID').jstree('close_all', -1);
+	$('#innerIDForMS').jstree('close_all', -1);
+	if(isRosterStudents == true){
+		$('#innerIDForMS').undelegate("li a", "click", bulkMoveStudentRosterHandler);
+		$("#innerIDForMS").unbind("change_state.jstree", changeStateHandlerForStudentRoster);
+	}	
+	else{
+		$('#innerIDForMS').undelegate("li a", "click", bulkMoveStudentActionHandler);
+		$("#innerIDForMS").bind("change_state.jstree",changeStateHandlerForMoveStudent);
+	}
 	isPopUp = false;
 	$("#moveStudentPopup").dialog("close");
 	removeBulkPopupMessage();	
 }
+
 
 function removeBulkPopupMessage() {
 	$("#contentBulkMovePopup").text("");
 	$("#errorImgPopup").hide();
 	$('#displayBMPopupMessage').attr("style",'');
 }
+
 
 function saveBulkMoveData() {
 
@@ -453,9 +616,9 @@ function saveBulkMoveData() {
 				success:	function(data, textStatus, XMLHttpRequest){
 									selectedStudentForMove = [];
 									bulkMoveStuCounterPage = 0;
-									//$("#innerID").undelegate();
-									//$("#innerID").unbind();
-									$('#innerID').jstree('close_all', -1);
+									//$("#innerIDForMS").undelegate();
+									//$("#innerIDForMS").unbind();
+									$('#innerIDForMS').jstree('close_all', -1);
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayMessageMain").show();
@@ -476,6 +639,122 @@ function saveBulkMoveData() {
 		
 	}
 }
+
+function assignRosterData() {
+
+	var param = {};
+	var studentIds = "";
+	var selectedOrgIds="";
+	for(var key in selectedStudentForMove){
+		studentIds =  selectedStudentForMove[key] + "," + studentIds;
+	}
+	studentIds = studentIds.substring(0,studentIds.length-1);
+	param.studentIds = studentIds;
+	
+	for (var key1 in checkedNodeListObject.items){
+		selectedOrgIds = checkedNodeListObject.get(key1)+"," +selectedOrgIds;
+	}
+	selectedOrgIds = selectedOrgIds.substring(0,selectedOrgIds.length-1);
+	param.selectedOrgIds = selectedOrgIds;
+	if(selectedOrgIds != undefined && selectedOrgIds.length > 0) {
+		$.ajax(
+		{
+				async:		false,//asynchronous calls do not sent post data in MAC safari
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'assignRosterData.do',
+				type:		'POST',
+				data:		 param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+									selectedStudentForMove = [];
+									bulkMoveStuCounterPage = 0;
+									$('#innerIDForMS').jstree('close_all', -1);
+									gridReloadForBulkMoveStudent();
+									hideBulkMovePopup();
+									$("#displayMessageMain").show();
+									$("#contentMain").text($("#stuAssignRosterID").val());
+									setAnchorButtonState('bulkRosterButton', true);
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								//$.unblockUI();  
+							}
+		});
+	} else {
+		setBulkPopupMessage();
+		$('#displayBMPopupMessage').attr("style",'border:2px solid #D4ECFF');
+		
+	}
+}
+
+
+function removeFromClass() {
+
+	var param = {};
+	var studentIds = "";
+	var selectedOrgIds="";
+	for(var key in selectedStudentForMove){
+		studentIds =  selectedStudentForMove[key] + "," + studentIds;
+	}
+	studentIds = studentIds.substring(0,studentIds.length-1);
+	param.studentIds = studentIds;
+	
+	for (var key1 in checkedNodeListObject.items){
+		selectedOrgIds = checkedNodeListObject.get(key1)+"," +selectedOrgIds;
+	}
+	selectedOrgIds = selectedOrgIds.substring(0,selectedOrgIds.length-1);
+	param.selectedOrgIds = selectedOrgIds;
+	if(selectedOrgIds != undefined && selectedOrgIds.length > 0) {
+		$.ajax(
+		{
+				async:		false,//asynchronous calls do not sent post data in MAC safari
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'removeFromClass.do',
+				type:		'POST',
+				data:		 param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+									selectedStudentForMove = [];
+									bulkMoveStuCounterPage = 0;
+									var status = data.status;
+									$('#innerIDForMS').jstree('close_all', -1);
+									gridReloadForBulkMoveStudent();
+									hideBulkMovePopup();
+									$("#displayMessageMain").show();
+									if (status == 2){
+									 $("#contentMain").text($("#stuRemoveRosterOrphanedID").val());
+									}
+									else if (status == 1){
+									 $("#contentMain").text($("#stuRemoveRosterSuccessID").val());
+									}
+									else {
+									 $("#contentMain").text($("#stuRemoveRosterSuccessOrphanedID").val());
+									}
+									
+									setAnchorButtonState('bulkRosterButton', true);
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();  
+								window.location.href="/SessionWeb/logout.do";
+							},
+				complete :  function(){
+								//$.unblockUI();  
+							}
+		});
+	} else {
+		setBulkPopupMessage();
+		$('#displayBMPopupMessage').attr("style",'border:2px solid #D4ECFF');
+		
+	}
+}
+
 
 function setBulkPopupMessage(){
 	$("#contentBulkMovePopup").text($("#noBulkMoveID").val());

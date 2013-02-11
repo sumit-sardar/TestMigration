@@ -37,7 +37,11 @@
 <input type="hidden" id="confirmMoveAlert" name="confirmMoveAlert" value=<lb:label key="stu.label.confirmAlert" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noBulkMoveID" name="noBulkMoveID" value=<lb:label key="stu.msg.bulkMoveNotSelected" prefix="'" suffix="'"/>/>
 <input type="hidden" id="stuBulkMovedID" name="stuBulkMovedID" value=<lb:label key="stu.msg.bulkStuMoved" prefix="'" suffix="'"/>/>
-
+<input type="hidden" id="stuAssignRosterID" name="stuAssignRosterID" value=<lb:label key="stu.msg.studentRosterAssigned" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuRemoveRosterSuccessID" name="stuRemoveRosterSuccessID" value=<lb:label key="stu.msg.studentRosterRemoved" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuRemoveRosterOrphanedID" name="stuRemoveRosterOrphanedID" value=<lb:label key="stu.msg.studentRosterOrphaned" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuRemoveRosterSuccessOrphanedID" name="stuRemoveRosterSuccessOrphanedID" value=<lb:label key="stu.msg.studentRosterRemovedOrphaned" prefix="'" suffix="'"/>/>
+<input type="hidden" id="changeClassAssgmntTitle" name="changeClassAssgmntTitle" value=<lb:label key="stu.label.changeClassDialogTitle" prefix="'" suffix="'"/>/>
 
 <!-- start form -->
 <netui:form action="beginBulkMoveStudent">

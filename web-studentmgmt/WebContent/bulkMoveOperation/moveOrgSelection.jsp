@@ -7,9 +7,9 @@
 		</tr>
 		<tr>
 			<td>
-				<div  id="innerID" 
+				<div  id="innerIDForMS" 
 					style="overflow:auto; height: 270px;  width: 400px;position: relative;" class="treeCtrl">
-				</div>															
+				</div>																		
 			</td>
 		</tr>
 	</tbody>

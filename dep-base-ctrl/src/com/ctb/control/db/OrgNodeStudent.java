@@ -68,6 +68,23 @@ public interface OrgNodeStudent extends JdbcControl
     @JdbcControl.SQL(statement = "insert into  org_node_student ( \t\tstudent_id, \t\torg_node_id, \t\tcreated_date_time, \t\tcreated_by, \t\tcustomer_id, \t\tupdated_by, \t\tupdated_date_time, \t\tactivation_status, \t\tdata_import_history_id  ) values ( \t\t{ons.studentId}, \t\t{ons.orgNodeId}, \t\t{ons.createdDateTime}, \t\t{ons.createdBy}, \t\t{ons.customerId}, \t\t{ons.updatedBy}, \t\t{ons.updatedDateTime}, \t\t{ons.activationStatus}, \t\t{ons.dataImportHistoryId} \t  )")
     void createOrgNodeStudent(com.ctb.bean.testAdmin.OrgNodeStudent ons) throws SQLException;
 
+    
+    /** 
+     * @jc:sql statement::
+     * select  
+     *     count(1) 
+     * from 	
+     * 		org_node_student
+     * 		
+     * where
+     * 		customer_id={customerId} 
+     * 		and org_node_id={orgNodeId}
+     * 		and student_id={studentId} ::
+    */ 
+    @JdbcControl.SQL(statement = "select count(1) from org_node_student where customer_id={customerId} and org_node_id={orgNodeId} and student_id={studentId}")
+    int getAlreadyExistsStatus(Integer customerId,Integer orgNodeId,Integer studentId) throws SQLException;
+
+    
     /** 
      * @jc:sql statement::
      * update 
@@ -223,5 +240,10 @@ public interface OrgNodeStudent extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  ons.student_id as studentId,  ons.org_node_id as orgNodeId,  ons.created_date_time as createdDateTime,  ons.created_by as createdBy,  ons.customer_id as customerId,  ons.updated_by as updatedBy,  ons.updated_date_time as updatedDateTime,  ons.activation_status as activationStatus,  ons.data_import_history_id as dataImportHistoryId from  org_node_student ons where  ons.student_id = {studentId}  and ons.org_node_id = {orgNodeId}  and ons.activation_status = 'AC'")
     com.ctb.bean.testAdmin.OrgNodeStudent getValidStudentOrgNode(Integer studentId, Integer orgNodeId) throws SQLException;
-
+    
+    @JdbcControl.SQL(statement = "select org_node_id from org_node_student where customer_id = {customerId} and student_id = {studentId} and activation_status = 'AC'")
+    Integer [] getAssociateOrgIds(Integer customerId, Integer studentId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "delete from org_node_student where customer_id = {customerId} and student_id = {studentId} and activation_status = 'AC' and org_node_id = {orgNodeId}")
+    void removeStudentFromClass(Integer customerId, Integer studentId, Integer orgNodeId) throws SQLException;
 }

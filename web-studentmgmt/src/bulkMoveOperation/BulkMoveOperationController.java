@@ -246,6 +246,115 @@ public class BulkMoveOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path = "")
 	})
+	protected Forward assignRosterData()
+	{   
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String studentIds = getRequest().getParameter("studentIds");
+		String organizationIds = getRequest().getParameter("selectedOrgIds");
+		String[] selectedStudents = null;
+		String[] selectedOrgIds = null;
+		if(studentIds != null)
+			selectedStudents = studentIds.split(",");
+		
+		if(organizationIds != null)
+			selectedOrgIds = organizationIds.split(",");
+		
+		 MessageInfo messageInfo = new MessageInfo();
+		
+			boolean successFlag=true;
+			if(selectedStudents != null && selectedStudents.length > 0 && selectedOrgIds !=null && selectedOrgIds.length >0) {
+				Integer[] studentId = new Integer[selectedStudents.length];
+				Integer[] orgId = new Integer [selectedOrgIds.length];
+				
+				for(int i=0;i< selectedStudents.length;i++)
+				{
+					studentId[i] = Integer.parseInt(selectedStudents[i]);
+				}
+				
+				for(int i=0;i< selectedOrgIds.length;i++)
+				{
+					orgId[i] = Integer.parseInt(selectedOrgIds[i]);
+				}
+			
+				if(studentId != null && studentId.length > 0 && orgId != null && orgId.length >0 ) {
+					try {
+						
+						this.studentManagement.updateStudentRosterOperation(this.userName, orgId,studentId);
+					} catch (CTBBusinessException e) {
+						// TODO Auto-generated catch block
+						successFlag=false;
+					}
+					
+				}
+			}
+		
+
+			creatGson(req, resp, stream, messageInfo);
+			return null;
+
+	}
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success", 
+					path = "")
+	})
+	protected Forward removeFromClass()
+	{   
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String studentIds = getRequest().getParameter("studentIds");
+		String organizationIds = getRequest().getParameter("selectedOrgIds");
+		String[] selectedStudents = null;
+		String[] selectedOrgIds = null;
+		if(studentIds != null)
+			selectedStudents = studentIds.split(",");
+		
+		if(organizationIds != null)
+			selectedOrgIds = organizationIds.split(",");
+		
+		 MessageInfo messageInfo = new MessageInfo();
+		
+			boolean successFlag=true;
+			int status = 0;
+			if(selectedStudents != null && selectedStudents.length > 0 && selectedOrgIds !=null && selectedOrgIds.length >0) {
+				Integer[] studentId = new Integer[selectedStudents.length];
+				Integer[] orgId = new Integer [selectedOrgIds.length];
+				
+				for(int i=0;i< selectedStudents.length;i++)
+				{
+					studentId[i] = Integer.parseInt(selectedStudents[i]);
+				}
+				
+				for(int i=0;i< selectedOrgIds.length;i++)
+				{
+					orgId[i] = Integer.parseInt(selectedOrgIds[i]);
+				}
+			
+				if(studentId != null && studentId.length > 0 && orgId != null && orgId.length >0 ) {
+					try {
+						 status= this.studentManagement.removeFromClassOperation(this.userName, orgId,studentId);
+						 messageInfo.setStatus(status);
+					} catch (CTBBusinessException e) {
+						// TODO Auto-generated catch block
+						successFlag=false;
+					}
+					
+				}
+			}
+		
+
+			creatGson(req, resp, stream, messageInfo);
+			return null;
+
+	}
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success", 
+					path = "")
+	})
 	protected Forward saveBulkStudentData()
 	{   
 		HttpServletRequest req = getRequest();
@@ -282,6 +391,8 @@ public class BulkMoveOperationController extends PageFlowController {
 			return null;
 
 	}
+	
+	
 	
 	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList, ArrayList<Organization> selectedList) {
 
@@ -444,6 +555,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	
     	boolean hasBulkStudentConfigurable = false;
     	boolean hasBulkStudentMoveConfigurable = false;
+    	boolean hasRosterStudents = false;
     	boolean hasOOSConfigurable = false;
     	boolean adminUser = isAdminUser();
     	boolean hasUploadConfig = false;
@@ -478,6 +590,14 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					hasBulkStudentMoveConfigurable = true;
 					continue;
 				}
+				
+				//For Roster Students
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Roster_Students") && 
+						cc.getDefaultValue().equals("T")) {
+					hasRosterStudents = true;
+					continue;
+				}
+				
 				// For Out Of School Student
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OOS_Configurable") && 
 						cc.getDefaultValue().equals("T")) {
@@ -561,6 +681,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
+		this.getSession().setAttribute("isRosterStudents", new Boolean(hasRosterStudents && isOKCustomer));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
 		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));

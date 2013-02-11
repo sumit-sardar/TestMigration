@@ -2919,7 +2919,119 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	
+	
+	//Added for updating roster student data 
+	public void updateStudentRosterOperation(String userName, Integer[] destOrgIds, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
+		try {
+			if(studentIds != null) {
+				User user = getUserDetails(userName, userName);
+				Integer userId = user.getUserId();
+				Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
+				boolean foundInNewOrgNodes = false;
+				for(int i = 0; i < studentIds.length; i++) {
+				  for (int j=0; j<destOrgIds.length; j++ ){							 
+					com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentWithoutActivationStatus(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+					Integer orgId = destOrgIds[j];
+					for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
+						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
+						if ((orgId != null) && (oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue())) {
+							foundInNewOrgNodes = true;
+							orgId = null;
 
+						} else
+							foundInNewOrgNodes = false;
+						if (foundInNewOrgNodes) { //activate 
+						    orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
+						}
+			
+					  }
+						if(orgId != null) {
+							Node node = orgNode.getOrgNodeById(orgId);                
+							OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
+							orgNodeStudent.setActivationStatus("AC");
+							orgNodeStudent.setCreatedBy(userId);
+							orgNodeStudent.setCreatedDateTime(new Date());
+							orgNodeStudent.setCustomerId(node.getCustomerId());
+							orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
+							orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
+							orgNodeStudent.setStudentId(studentIds[i]);
+							orgNodeStudents.createOrgNodeStudent(orgNodeStudent);
+						}
+					}
+			   }
+			}
+		
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateStuentRosterOperation: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			se.printStackTrace();
+			throw tee;
+		}
+	}
+
+	
+	/*Returns 1 if successful
+	 * 		  2 if unsuccessful
+	 * 		  3 if succesful but unsuccessful in some case at the same time*/
+	public int removeFromClassOperation(String userName, Integer[] orgnodeIds, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
+		
+		boolean orphan = false;
+		boolean success = false;
+		int result = 0;
+		try {
+			if(studentIds != null) {
+				User user = getUserDetails(userName, userName);
+				Integer userId = user.getUserId();
+				Integer  customerId  = user.getCustomer().getCustomerId();
+				for(int i = 0; i < studentIds.length; i++) {
+					HashMap<Integer, Integer> oldOrgNodeIdMap = new HashMap<Integer, Integer>();
+					HashMap<Integer, Integer> newOrgNodeIdMap = new HashMap<Integer, Integer>();
+					Integer studentId = studentIds[i];
+					Integer [] presentOrgNodeId = orgNodeStudents.getAssociateOrgIds(customerId, studentId);
+					for (int j=0; j<presentOrgNodeId.length; j++ ){
+						oldOrgNodeIdMap.put(presentOrgNodeId[j], presentOrgNodeId[j]);
+					}
+					for (int z=0; z<orgnodeIds.length; z++) {
+						if (oldOrgNodeIdMap.get(orgnodeIds[z]) != null) {
+							newOrgNodeIdMap.put(oldOrgNodeIdMap.get(orgnodeIds[z]), oldOrgNodeIdMap.get(orgnodeIds[z]));
+						}
+					}
+					if((newOrgNodeIdMap.size() == oldOrgNodeIdMap.size()) && newOrgNodeIdMap != null) {
+						orphan = true;
+					}else {
+						 Iterator iterator = newOrgNodeIdMap.values().iterator();
+						 while (iterator.hasNext()) {
+							Integer newOrgNodeId = (Integer) iterator.next();
+							Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentId , newOrgNodeId);
+							  if (rosterCount.intValue() >0) {
+								orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentId, newOrgNodeId);
+							   }
+							  else {
+								this.orgNodeStudents.removeStudentFromClass(customerId, studentId, newOrgNodeId);
+							   }
+					     }
+						 success =  true;;
+					 }
+			    }
+			}
+		
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateStuentRosterOperation: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			se.printStackTrace();
+			throw tee;
+		}
+		
+		if (orphan && success)
+			 result = 3;
+		else if (success)
+			 result = 1;
+		else 
+			 result = 2;
+		return result;
+	}
+	
 	public ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(String userName, Integer orgNodeId, SortParams sort) throws CTBBusinessException
 	{
 		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.findStudentsForOrgNode");

@@ -507,10 +507,14 @@ public interface StudentManagement
 	
 	java.lang.Integer [] getStateLevelNodeId(Integer customerId) throws com.ctb.exception.CTBBusinessException;
 	
-	//Bulk Move
+	//Bulk Move & RosterStudents
 	com.ctb.bean.studentManagement.ManageStudentData getBulkMoveStudent(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
 	void updateBulkMoveOperation(String userName, Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException;
+	
+	void updateStudentRosterOperation(String userName, Integer[] orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException;
+	
+	int removeFromClassOperation(String userName, Integer[] orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException;
 	
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsMinimalInfoForSelectedOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	

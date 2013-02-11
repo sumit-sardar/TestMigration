@@ -2945,7 +2945,11 @@
 			},
 			check_node : function (obj) {
 				if(isBulkMove != undefined && isBulkMove) { // Added for making jstree in bulk move student single selection
-					this.uncheck_all();
+					if(isRosterStudents && isRosterStudents != undefined){
+					//do nothing
+					}else{
+						this.uncheck_all();
+					}
 				}
 				if(this.change_state(obj, false)) { 
 					obj = this._get_node(obj);
