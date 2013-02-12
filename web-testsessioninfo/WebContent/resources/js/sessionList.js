@@ -125,6 +125,8 @@ var hasAssignFormConfig = false;
 var rosterFormMapOld = new Map();
 var selectedForm = "";
 var updateSuccess = false;
+var testStatusMap = new Map();
+var testStatus = "";
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -944,6 +946,9 @@ function registerDelegate(tree){
  				urlVal = 'getSessionForSelectedOrgNodeGrid.do';
 	 		}
      	   	jQuery("#list2").jqGrid('setGridParam', {url:urlVal,postData:postDataObject,page:1}).trigger("reloadGrid");
+     	   	$("#searchUserByKeywordInputList2").val('');
+			var grid = $("#list2"); 
+			grid.jqGrid('setGridParam',{search:false});	
 			jQuery("#list2").sortGrid('loginEndDate',true,'asc');
       }
       
@@ -4264,7 +4269,9 @@ function registerDelegate(tree){
 				 for(var i=0; i<obj.rosterElement.length; i++) {
 				 	var testRosterId = obj.rosterElement[i].testRosterId;
 				 	var assignedForm = obj.rosterElement[i].assignedForm;
+				 	var testStatus = obj.rosterElement[i].testStatus;
 				 	rosterFormMapOld.put(testRosterId,assignedForm);
+				 	testStatusMap.put(testRosterId, testStatus);
 				 }
 		   	}},
 		   	loadui: "disable",
@@ -4299,6 +4306,7 @@ function registerDelegate(tree){
 			},
 			onSelectRow: function (rowid) {
 				selectedTestRosterId = rowid;
+				testStatus = testStatusMap.get(selectedTestRosterId);
 				$("#displayMessageViewTestRoster").hide();
 				var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
 				if($.trim($(cellData).text()) != 'Partially Invalid') {
@@ -4313,7 +4321,16 @@ function registerDelegate(tree){
 				} else {
 					setAnchorButtonState('profileReportStudentButton', false);
 				}
-				scrollPosition = $("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop();            
+				scrollPosition = $("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop();
+				if(testStatus != undefined && testStatus != "Scheduled") {
+					$("#assignRosterForm").addClass('ui-state-disabled');
+					$("#assignRosterForm").attr('disabled','true');
+					$("#assignRosterForm").attr('onClick','false');
+				}else {
+					$("#assignRosterForm").removeClass('ui-state-disabled');
+					$("#assignRosterForm").attr('disabled','false');
+					$("#assignRosterForm").attr('onClick','javascript:openAssignFormPopup()');
+				}
 			},
 			loadComplete: function () {
 				
@@ -4410,6 +4427,16 @@ function registerDelegate(tree){
 				else if (pageConfigval==="false")
 				{
 				$('.ui-pg-selbox').hide();
+				}
+				testStatus = testStatusMap.get(selectedTestRosterId);
+				if(testStatus != undefined && testStatus != "SC") {
+					$("#assignRosterForm").addClass('ui-state-disabled');
+					$("#assignRosterForm").attr('disabled','true');
+					$("#assignRosterForm").attr('onClick','false');
+				}else {
+					$("#assignRosterForm").removeClass('ui-state-disabled');
+					$("#assignRosterForm").attr('disabled','false');
+					$("#assignRosterForm").attr('onClick','javascript:openAssignFormPopup()');
 				}
 				$.unblockUI();
 			},
