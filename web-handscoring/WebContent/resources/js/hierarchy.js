@@ -357,6 +357,7 @@ function closePopUp(dailogId){
 	$('.ui-widget-overlay').css('height', '100%');
 	if(dailogId == 'sessionScoringId') {
 		isScoreByItemClicked = false;
+		gridScoringSessionReload();
 	}
 	if (dailogId == 'questionAnswerDetail'){
 		if(isRubricPopulated) {
@@ -422,7 +423,9 @@ function closePopUp(dailogId){
 		}
 		//selectedRowObjectScoring = {};
 	}
-	
+	if (dailogId == 'studentScoringId') {
+		gridScoringStudentReload();
+	}	
 	$("#"+dailogId).dialog("close");
 }
 
@@ -924,6 +927,7 @@ function gridScoringStudentReload(){
 	jQuery("#studentScoringGrid").jqGrid('setGridParam', {url:'getStudentForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#studentScoringGrid").sortGrid('userName',true,'asc');
 	$("#displayMessageMain").hide();
+	UIBlock();
 
 }
 
@@ -1060,6 +1064,7 @@ function gridScoringSessionReload(){
 	jQuery("#sessionScoringGrid").jqGrid('setGridParam', {url:'getSessionForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#sessionScoringGrid").sortGrid('studentNumber',true,'asc');
 	$("#displayMessageMain").hide();
+	UIBlock();
 }
 
 
