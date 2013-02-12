@@ -833,6 +833,7 @@ function EditOrganizationDetail(selectedOrgId){
 	function populateDataInViewMode(data, rowId){
 		$.unblockUI();
 		isViewMode = true;
+		$('#editOrgDisplayId').hide();
 		$('#Organization_Information_View').show();
 		$('#Organization_Information').hide();
 		organizationNodes = data.organizationNodes;
@@ -898,6 +899,7 @@ function EditOrganizationDetail(selectedOrgId){
 	function populateDataInEditMode(data, rowId){
 		$.unblockUI();
 		isViewMode = false;
+		$('#editOrgDisplayId').show();
 		$('#Organization_Information_View').hide();
 		$('#Organization_Information').show();
 		organizationNodes = data.organizationNodes;

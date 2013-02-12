@@ -125,7 +125,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 
 
 					</div>
-					<div id="Organization_Information_View" style="background-color: #FFFFFF;">
+					<div id="Organization_Information_View" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="background-color: #FFFFFF;">
 	
 						<table class="transparent">
 							<tbody>
