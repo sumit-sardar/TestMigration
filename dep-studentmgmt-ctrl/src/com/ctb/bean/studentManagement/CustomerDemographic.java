@@ -20,6 +20,7 @@ public class CustomerDemographic extends CTBBean
     private Integer sortOrder;
     private String importEditable;
     private String visible;
+    private String demoCategory;
     private CustomerDemographicValue [] customerDemographicValues;
     
 	/**
@@ -149,6 +150,12 @@ public class CustomerDemographic extends CTBBean
     public void setMultipleAllowedFlag(String multipleAllowedFlag) {
         //have settter just to avoid compile error (marshall/unmarshall XML)
     }
+	public String getDemoCategory() {
+		return demoCategory;
+	}
+	public void setDemoCategory(String demoCategory) {
+		this.demoCategory = demoCategory;
+	}
     
 } 
 

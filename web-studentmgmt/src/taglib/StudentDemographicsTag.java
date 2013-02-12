@@ -18,6 +18,7 @@ public class StudentDemographicsTag extends CTBTag
 	private Boolean viewOnly = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
 	private int tabIndex = 1;
+	private String demoCategory = "";
 	private boolean  selectedEthnicityHispanicOrLatino = false;
 	
     public void setDemographics(List demographics) {
@@ -274,7 +275,7 @@ public class StudentDemographicsTag extends CTBTag
 	private String checkBox(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-	    String nameId = name + "_" + value;
+	    String nameId = name + "_" + value + demoCategory;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 				" value=\""+ value + "\" " + 
 				/*" tabindex=\"" + (this.tabIndex++) + "\" " +*/
@@ -284,7 +285,7 @@ public class StudentDemographicsTag extends CTBTag
 	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
+		return "<input type=\"radio\" name=\"" + name + demoCategory + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				/*" tabindex=\"" + (this.tabIndex++) + "\" " +*/
 				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
@@ -337,7 +338,7 @@ public class StudentDemographicsTag extends CTBTag
     private String checkBoxWithStyle(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-	    String nameId = name + "_" + value;
+	    String nameId = name + "_" + value + demoCategory;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 				" value=\""+ value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
@@ -347,7 +348,7 @@ public class StudentDemographicsTag extends CTBTag
     private String radioButtonWithStyle(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-	    String nameId = name + "_" + value;
+	    String nameId = name + "_" + value + demoCategory;
 		return "<input type=\"radio\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 				" value=\"" + value + "\" " + 
 				" onClick=adjustRadioSelection(this.name);"+
@@ -357,6 +358,14 @@ public class StudentDemographicsTag extends CTBTag
 	private String createSpanWithDisplayStyle(String name,String value){
 		 String nameId = name + "_" + value + "_span";
 		return "<span name=\"" + nameId + "\" >"+value+"</span>";
+	}
+
+	public String getDemoCategory() {
+		return demoCategory;
+	}
+
+	public void setDemoCategory(String demoCategory) {
+		this.demoCategory = demoCategory;
 	}
 }
 

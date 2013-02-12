@@ -28,6 +28,7 @@ public class StudentDemographic extends CustomerDemographic
         this.setSortOrder(cd.getSortOrder());
         this.setValueCardinality(cd.getValueCardinality());
         this.setVisible(cd.getVisible());
+        this.setDemoCategory(cd.getDemoCategory());
         this.setCustomerDemographicValues(cd.getCustomerDemographicValues());
     }
 

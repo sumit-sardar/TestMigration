@@ -50,6 +50,7 @@ var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
 var isBulkMove = false;
+var isRosterStudents = false;
 var rootNodeId;
 var stuThreshold = 10000;	
 var topOrgNodeStuCount = 0;	
@@ -62,6 +63,7 @@ var isEditStudentImported = false;// Need to be used as imported student's profi
 var customerConfiguration = [];
 var isOOSConfigured = false; // added for OOSConfigurable
 var outOfSchoolValue = null;
+var demographicGroupIds = ["additional_info_div","geography_div","reading_div","mathematics_div"];
 var studentExtracted = false;
 
 
@@ -1838,6 +1840,14 @@ function fillselectedOrgNode( elementId, orgList) {
 		$('#Student_Additional_Information :radio').attr('disabled', false); 
 		$('#Student_Additional_Information select').attr('disabled', false);
 		$('#Student_Additional_Information :input').attr('disabled', false);
+		
+		for(var counter = 0; counter < demographicGroupIds.length;counter++) {
+			$('#'+demographicGroupIds[counter]+' :checkbox').attr('disabled', false); 
+			$('#'+demographicGroupIds[counter]+' :radio').attr('disabled', false); 
+			$('#'+demographicGroupIds[counter]+' select').attr('disabled', false);
+			$('#'+demographicGroupIds[counter]+' :input').attr('disabled', false);
+		}
+		
 	}
 	
 
@@ -3334,20 +3344,46 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	function populateStuDemographics(){
 		var noRadioData = true;
 		var alreadyExecuted = false;
-	
+		var demoGroup = "";
+		var groupDiv = "";
 		for(var count=0; count< stuDemographic.length; count++) {
-		
+			if(stuDemographic[count]['demoCategory'] != undefined) {
+					demoGroup = "_" + stuDemographic[count]['demoCategory'];
+										
+						if("ADDITIONAL INFO" == stuDemographic[count]['demoCategory']){
+							groupDiv = "additional_info_div";
+						}
+						else if("GEOGRAPHY(Grade 7)" == stuDemographic[count]['demoCategory']){
+							groupDiv = "geography_div";
+						}
+						else if("READING" == stuDemographic[count]['demoCategory']){
+							groupDiv = "reading_div";
+						}
+						else if("MATHEMATICS" == stuDemographic[count]['demoCategory']){
+							groupDiv = "mathematics_div";
+						}
+				}
 			if(stuDemographic[count]['studentDemographicValues'].length == 1){
-		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
+				
+		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] + demoGroup ;
 		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
-			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);	
+			     	if(demoGroup != "")
+			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);			     	
 			     }else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     	if(demoGroup != "")	
+			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);			     	 
 			     }
 			     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     	if(demoGroup != "")
+			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     	
 			     } else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     	if(demoGroup != "")
+			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
 			     }
 			     
 			     var currenValue = $("#Ethnicity").val();
@@ -3371,6 +3407,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     			     	setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 			     			     }else {
 			     			     	$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			     	if(demoGroup != "")
+			     			     		$("#"+groupDiv + " :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			     	
 			     			    	noRadioData = false;
 			     			    	 var currenValue = $("#Ethnicity").val();
 									if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
@@ -3384,9 +3423,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     			//The following line is setting none for all the radio values even once it comes to the else block
 				     			if(noRadioData && !alreadyExecuted){
 				     				$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
+				     				if(demoGroup != "")
+				     					$("#"+groupDiv + " :radio[value='None']").attr('checked',true);
 				     				alreadyExecuted = true;
 				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+				     			if(demoGroup != "")
+				     				$("#"+groupDiv + " select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+				     			
 				     			var radioButtonId = stuDemographic[count]['labelName'] +'_' + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'];
 				     			$("#"+radioButtonId).attr('checked',false);
 				     			//$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
@@ -3400,12 +3444,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     					$(selectArray).eq(k).attr("disabled", true);
 			     				} 
 			     			}
+				     		
 			     			var radioArray = $("#Student_Additional_Information :radio");
 			     			for(var k = 0; k < radioArray.length; k++) {
 			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
 			     					$(radioArray).eq(k).attr("disabled", true);
 			     				} 
 			     			}
+				     		
 			     		} else {
 			     			$("#"+stuDemographic[count]['labelName']).attr('disabled', false);
 			     			var selectArray = $("#Student_Additional_Information select");
@@ -3414,12 +3460,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     					$(selectArray).eq(k).attr("disabled", false);
 			     				} 
 			     			}
+				     		 
 			     			var radioArray = $("#Student_Additional_Information :radio");
 			     			for(var k = 0; k < radioArray.length; k++) {
 			     				if($(radioArray).eq(k).attr('id') == stuDemographic[count]['labelName']) {
 			     					$(radioArray).eq(k).attr("disabled", false);
 			     				} 
 			     			}
+				     		 
 			     		}
 				}
 				if(valueCardinality == 'MULTIPLE'){
@@ -3427,13 +3475,21 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     			if(demoGroup != "")
+			     			$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
 					     }else {
 						     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+						     if(demoGroup != "")
+						     $("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
 					     }
 					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
-			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     			if(demoGroup != "")
+			     			 $("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
 					     }else {
-					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     	if(demoGroup != "")
+					     	$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
 					     }
 					     var currenValue = $("#Ethnicity").val();
 							if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
@@ -3456,6 +3512,15 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	          inputs[i].checked=false;
 	        }
 	    }
+	     for(var counter = 0; counter < demographicGroupIds.length;counter++) {
+	     var inputs= $('#'+demographicGroupIds[counter] +' input');
+	    for(var i=0; i < inputs.length; i++) {
+	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 && inputs[i].getAttribute("type") == "radio" &&
+	        	value != inputs[i].getAttribute("name")){	        
+	          inputs[i].checked=false;
+	        }
+	    }
+	   }
 	}
 	
 	
@@ -3467,5 +3532,14 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	          inputs[i].checked=false;
 	        }
 	    }
+	    for(var counter = 0; counter < demographicGroupIds.length;counter++) {
+	    var inputs = $('#'+demographicGroupIds[counter] +' input');
+		 for(var i=0; i < inputs.length; i++) {
+	        if(inputs[i].getAttribute("name") != undefined && inputs[i].getAttribute("name").indexOf('Sub_Ethnicity_')== 0 
+	        	&& inputs[i].getAttribute("type") == "radio" ){	        
+	          inputs[i].checked=false;
+	        }
+	    }
+	   }
 }
 		

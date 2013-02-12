@@ -85,6 +85,7 @@ public class StudentOperationController extends PageFlowController {
 	private Integer customerId = null;
 	private User user = null;
 	List demographics = null;
+	Map<String, List> demographicMap = null;
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
@@ -778,6 +779,7 @@ public class StudentOperationController extends PageFlowController {
 		
 		StudentOperationForm  form = new StudentOperationForm();
 		demographics = null;
+		demographicMap = null;
 		accommodations = null;
 		addEditDemographics(new Integer(0), null);
 		addEditAccommodations(customerConfigurations, null); 
@@ -898,7 +900,7 @@ public class StudentOperationController extends PageFlowController {
 			updateStudentDemographics(studentId);
 		}
 		this.demographics = null;
-
+		this.demographicMap = null;
 		return true;
 	}
 	
@@ -1050,14 +1052,19 @@ public class StudentOperationController extends PageFlowController {
 	private void getStudentDemographicsFromRequest() 
 	{
 		String param = null, paramValue = null;
+		String groupName = "";
 		if(this.demographics == null)
 			addEditDemographics(new Integer(0), null);
 		
 		for (int i=0; i < this.demographics.size(); i++)
 		{
 			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			if(null != sdd.getDemoCategory())
+				groupName = "_" + sdd.getDemoCategory();
+			else
+				groupName = "";
 			StudentDemographicValue[] values = sdd.getStudentDemographicValues();
-
+			
 			for (int j=0; j < values.length; j++)
 			{
 				StudentDemographicValue sdv = (StudentDemographicValue)values[j];
@@ -1071,7 +1078,7 @@ public class StudentOperationController extends PageFlowController {
 						sdv.setValueName("puertorriqueño");
 					if(sdv.getValueCode().equals("puertorriqueno"))
 						sdv.setValueCode("puertorriqueño");
-					param = sdd.getLabelName() + "_" + sdv.getValueName();
+					param = sdd.getLabelName() + "_" + sdv.getValueName() + groupName ;
 					if (getRequest().getParameter(param) != null)
 					{
 						paramValue = getRequest().getParameter(param);
@@ -1087,7 +1094,7 @@ public class StudentOperationController extends PageFlowController {
 							sdv.setValueName("puertorriqueño");
 						if(sdv.getValueCode().equals("puertorriqueno"))
 							sdv.setValueCode("puertorriqueño");
-						param = sdd.getLabelName() + "_" + sdv.getValueName();
+						param = sdd.getLabelName() + "_" + sdv.getValueName() + groupName;
 						if (getRequest().getParameter(param) != null)
 						{
 							paramValue = getRequest().getParameter(param);
@@ -1102,7 +1109,7 @@ public class StudentOperationController extends PageFlowController {
 								sdv.setValueName("puertorriqueño");
 							if(sdv.getValueCode().equals("puertorriqueno"))
 								sdv.setValueCode("puertorriqueño");
-							param = sdd.getLabelName() + "_" + sdv.getValueName();
+							param = sdd.getLabelName() + "_" + sdv.getValueName() + groupName;
 							if (getRequest().getParameter(param) != null)
 							{
 								paramValue = getRequest().getParameter(param);
@@ -1111,7 +1118,7 @@ public class StudentOperationController extends PageFlowController {
 						}
 						else
 						{
-							param = sdd.getLabelName();
+							param = sdd.getLabelName() + groupName;
 							if (getRequest().getParameter(param) != null)
 							{
 								paramValue = getRequest().getParameter(param);
@@ -1229,6 +1236,7 @@ public class StudentOperationController extends PageFlowController {
 	{	
 		//List demographics = null;
 		boolean studentImported = false;
+		boolean customerDemographicGroupingEnable = false;
 		 if(createBy != null)
 			 studentImported = (createBy.intValue() == 1);
 		
@@ -1248,11 +1256,108 @@ public class StudentOperationController extends PageFlowController {
 		}
 		//this.demographics = demographics;
 		this.getRequest().setAttribute("demographics", demographics);       
-		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));  
-		
+		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
+		customerDemographicGroupingEnable = isCustomerDemographicGroupingEnable();
+		this.getRequest().setAttribute("customerDemographicGroupingEnable", customerDemographicGroupingEnable); 
+		if(customerDemographicGroupingEnable){
+			this.getRequest().setAttribute("okDemographicMap", populateOKDemographics(demographics));
+		}
 		return demographics;
 	}
 	
+	private Map<String,List> populateOKDemographics(List<StudentDemographic> demographics) {
+		
+		Map<String,List> tempDemographicMap = new HashMap<String,List>();
+		demographicMap = new HashMap<String,List>();
+		String demographicCategoryName = null;
+		for(StudentDemographic demographic : demographics) {
+			demographicCategoryName = demographic.getDemoCategory();
+			if(null == tempDemographicMap.get(demographicCategoryName)){
+				List dempgraphicsList = new ArrayList();
+				dempgraphicsList.add(demographic);
+				tempDemographicMap.put(demographicCategoryName, dempgraphicsList);
+			}
+			else {
+				tempDemographicMap.get(demographicCategoryName).add(demographic);
+			}
+			//convert arraylist to array
+			List dempgraphicsList = null;
+			for(String studentDemographicCategoryName : tempDemographicMap.keySet()){
+				dempgraphicsList = tempDemographicMap.get(studentDemographicCategoryName);				
+				demographicMap.put(studentDemographicCategoryName, dempgraphicsList);
+			}
+			
+		}
+//		for(StudentDemographic demographic : demographics) {
+//			if("Ethnicity".equals(demographic.getLabelName())
+//					||"Race".equals(demographic.getLabelName())
+//					||"NFAY".equals(demographic.getLabelName())
+//					||"Alt Ed Academy".equals(demographic.getLabelName())
+//					||"Migrant".equals(demographic.getLabelName())
+//					||"Title X, Part C".equals(demographic.getLabelName())
+//					||"Free/Reduced Lunch".equals(demographic.getLabelName())
+//					||"Distance Learning".equals(demographic.getLabelName())
+//					||"Grade Level Repeat Test Taker".equals(demographic.getLabelName())
+//					||"504".equals(demographic.getLabelName())
+//					||"IEP".equals(demographic.getLabelName())
+//					||"ELL 1st or 2nd year proficient".equals(demographic.getLabelName())
+//					||"ELL".equals(demographic.getLabelName())){
+//				additionalInfoList.add(demographic);
+//			}
+//			if("ELL Accommodation - Translator".equals(demographic.getLabelName())
+//					||"ELL Accommodation - Transcribe".equals(demographic.getLabelName())
+//					||"ELL Accommodation – Clarification/Read Aloud".equals(demographic.getLabelName())
+//					||"ELL Accommodation – Grouping/Sessions".equals(demographic.getLabelName())
+//					||"ELL Accommodation - W/W Dictionary".equals(demographic.getLabelName())
+//					||"Paper Tester Gr 6-8 OCCT READING".equals(demographic.getLabelName())
+//					||"OMAAP Reading".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation - Setting".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation – Timing/Scheduling".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation – Response".equals(demographic.getLabelName())
+//					||"IEP".equals(demographic.getLabelName())
+//					||"ELL 1st or 2nd year proficient".equals(demographic.getLabelName())
+//					||"ELL".equals(demographic.getLabelName())){
+//				readingInfoList.add(demographic);
+//			}
+//			if("ELL Accommodation - Translator".equals(demographic.getLabelName())
+//					||"ELL Accommodation - Transcribe".equals(demographic.getLabelName())
+//					||"ELL Accommodation – Clarification/Read Aloud".equals(demographic.getLabelName())
+//					||"ELL Accommodation – Grouping/Sessions".equals(demographic.getLabelName())
+//					||"ELL Accommodation - W/W Dictionary".equals(demographic.getLabelName())
+//					||"Paper Tester Gr 6-8 OCCT MATH".equals(demographic.getLabelName())
+//					||"OMAAP Mathematics".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation - Setting".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation – Timing/Scheduling".equals(demographic.getLabelName())
+//					||"IEP or 504 Accommodation – Response".equals(demographic.getLabelName())
+//					||"IEP".equals(demographic.getLabelName())
+//					||"ELL 1st or 2nd year proficient".equals(demographic.getLabelName())
+//					||"ELL".equals(demographic.getLabelName())){
+//				mathematicsInfoList.add(demographic);
+//			}
+//			
+//		}
+//		demographicMap.put("Additional Info", additionalInfoList);
+//		demographicMap.put("Reading", readingInfoList);
+//		demographicMap.put("Mathematics", mathematicsInfoList);
+		
+		return demographicMap;
+	}
+	//is demographic group config enable for customer
+	private boolean isCustomerDemographicGroupingEnable()
+    {    
+        boolean demographicGrouping = false;
+		for (int i=0; i < this.customerConfigurations.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];        	
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("demographic_grouping") && cc.getDefaultValue().equals("T")	)
+            {
+            	demographicGrouping = true;
+                break;
+            } 
+        }
+       
+       return demographicGrouping;
+    }
 	
 	/**
 	 * prepareStudentDemographicForCustomerConfiguration
@@ -1295,6 +1400,7 @@ public class StudentOperationController extends PageFlowController {
 				for (int i=0; i < studentDemoList.length; i++)
 				{
 					StudentDemographic sd = studentDemoList[i];
+					
 					if(sd.getStudentDemographicValues() != null && sd.getStudentDemographicValues().length > 0){
 						for (int j = 0; j < sd.getStudentDemographicValues().length; j++) {
 							if("puertorriqueño".equals(sd.getStudentDemographicValues()[j].getValueCode())){

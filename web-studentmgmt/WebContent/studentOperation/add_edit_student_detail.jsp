@@ -1,4 +1,7 @@
 <%@ page import="com.ctb.bean.studentManagement.CustomerConfiguration"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
@@ -18,8 +21,27 @@
 	String showEditButton = (String)request.getAttribute("showEditButton"); 
 	String showDeleteButton = (String)request.getAttribute("showDeleteButton"); 
 	Integer stuCreatedBy = (Integer)session.getAttribute("createdBy"); 
+	//OK 3-8 customer Demographic Map
+	Boolean customerDemographicGroupingEnable = (Boolean)request.getAttribute("customerDemographicGroupingEnable");
+	Map<String,List> dempgraphicMap = (Map<String,List>)request.getAttribute("okDemographicMap");
 	
-
+%>
+<%!
+	private String getDevId(String key) {
+		if("ADDITIONAL INFO".equalsIgnoreCase(key)){
+			return "additional_info_div";
+		}
+		else if("GEOGRAPHY(Grade 7)".equalsIgnoreCase(key)){
+			return "geography_div";
+		}
+		else if("READING".equalsIgnoreCase(key)){
+			return "reading_div";
+		}
+		else if("MATHEMATICS".equalsIgnoreCase(key)){
+			return "mathematics_div";
+		}
+		return "";
+	}
 %>
 <div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
@@ -231,19 +253,34 @@
 							</div>
 				
 			</div>
+			
+			<% 
+				if(customerDemographicGroupingEnable){
+					for(String key : dempgraphicMap.keySet()) {	
+					request.setAttribute("currentKey",key);
+			%>
+			<div>
+				<h3><a href="#" onclick="doSetEditStudentDetail();"><%=key %></a></h3>
+				<div id="<%= getDevId(key) %>" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
+					<%@include file="/studentOperation/add_edit_student_by_demographic.jsp" %>
+				</div>
+			</div>
+			<%} 
+			}
+			else {%>
 			<div>
 				<h3><a href="#" onclick="doSetEditStudentDetail();"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
-					<%@include file="/studentOperation/add_edit_student_by_demographic.jsp" %>				
+					<%@include file="/studentOperation/add_edit_student_by_demographic.jsp" %>
 				</div>
 			</div>
+			<%} %>
 			<div>
 				<h3><a href="#" onclick="doSetEditStudentDetail();"><lb:label key="stu.label.specificAccoInfo" /></a></h3>
 				<div id="Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<%@include file="/studentOperation/add_edit_student_by_accommodation.jsp" %>
 				</div>
-			</div>
-			
+			</div>			
 			<div>
 	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 		<tbody>

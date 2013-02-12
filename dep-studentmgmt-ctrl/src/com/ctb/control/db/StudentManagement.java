@@ -181,7 +181,7 @@ public interface StudentManagement extends JdbcControl
      * where customer_id = {customerId}
      * order by sort_order, label_name::
      */
-    @JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible from customer_demographic where customer_id = {customerId} order by sort_order, label_name")
+    @JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible, demo_category as demoCategory from customer_demographic where customer_id = {customerId} order by sort_order, label_name")
     CustomerDemographic [] getCustomerDemographics(int customerId) throws SQLException;
 	
 	@JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible from customer_demographic where customer_id = {customerId}  and value_cardinality = {cardinality} order by sort_order, label_name")
@@ -238,7 +238,7 @@ public interface StudentManagement extends JdbcControl
      *   and visible = 'T'
      * order by sort_order, label_name::
      */
-    @JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible from customer_demographic where customer_id = {customerId}  and visible = 'T' order by sort_order, label_name")
+    @JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible,demo_category AS demoCategory from customer_demographic where customer_id = {customerId}  and visible = 'T' order by sort_order, label_name")
     CustomerDemographic [] getVisibleCustomerDemographics(int customerId) throws SQLException;
 
     /**
