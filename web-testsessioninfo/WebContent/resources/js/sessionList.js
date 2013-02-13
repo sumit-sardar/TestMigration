@@ -4200,6 +4200,7 @@ function registerDelegate(tree){
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
 		   		 var subtestValAllowed = JSON.stringify(obj.subtestValidationAllowed);
 		   		 var toggleIsOkCustomer = JSON.stringify(obj.isOkCustomer);
+		   		 assignedFormList = obj.assignFormList;
 		   		 hasAssignFormConfig = obj.hasAssignFormRosterConfig;
 		   		 if(toggleIsOkCustomer == 'true') {
 		   		 	isOkCustomer = true;
@@ -4233,8 +4234,13 @@ function registerDelegate(tree){
 				 }
 				 if(hasAssignFormConfig && hasAssignFormConfig!=undefined) {
 					$("#rosterList").jqGrid("showCol","assignedForm");
-					$("#assignFormButton").show();
-					$("#assignFormMsg").show();
+					if (assignedFormList.length > 1) {
+						$("#assignFormButton").show();
+						$("#assignFormMsg").show();					
+					}else {
+						$("#assignFormButton").hide();
+						$("#assignFormMsg").hide();
+					}
 				 } else {
 					$("#rosterList").jqGrid("hideCol","assignedForm"); 
 					$("#assignFormButton").hide(); 
@@ -4255,7 +4261,7 @@ function registerDelegate(tree){
 			 	 
 			 	 isTabeProduct = JSON.stringify(obj.testSession.isSTabeProduct);
 			 	 invalidationReasonCodeDetails =obj.invalidateReasonList;
-			 	 assignedFormList = obj.assignFormList;
+			 	 
 			 	 //console.log(invalidationReasonCodeDetails);
 			 	 invalidationReasonIDList[0] = 'PS';
 			 	 invalidationReasonList[0] = 'Please Select';
@@ -4306,7 +4312,7 @@ function registerDelegate(tree){
 			},
 			onSelectRow: function (rowid) {
 				selectedTestRosterId = rowid;
-				testStatus = testStatusMap.get(selectedTestRosterId);
+				//testStatus = testStatusMap.get(selectedTestRosterId);
 				$("#displayMessageViewTestRoster").hide();
 				var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
 				if($.trim($(cellData).text()) != 'Partially Invalid') {
@@ -4322,14 +4328,12 @@ function registerDelegate(tree){
 					setAnchorButtonState('profileReportStudentButton', false);
 				}
 				scrollPosition = $("#rosterList").closest(".ui-jqgrid-bdiv").scrollTop();
-				if(testStatus != undefined && testStatus != "Scheduled") {
-					$("#assignRosterForm").addClass('ui-state-disabled');
-					$("#assignRosterForm").attr('disabled','true');
-					$("#assignRosterForm").attr('onClick','false');
+				if(testStatus == "Scheduled")
+					testStatus = "SC";
+				if(testStatus != undefined && testStatus != "SC") {
+					setAnchorButtonState('assignRosterForm', true);
 				}else {
-					$("#assignRosterForm").removeClass('ui-state-disabled');
-					$("#assignRosterForm").attr('disabled','false');
-					$("#assignRosterForm").attr('onClick','javascript:openAssignFormPopup()');
+					setAnchorButtonState('assignRosterForm', false);
 				}
 			},
 			loadComplete: function () {
@@ -4428,15 +4432,13 @@ function registerDelegate(tree){
 				{
 				$('.ui-pg-selbox').hide();
 				}
-				testStatus = testStatusMap.get(selectedTestRosterId);
-				if(testStatus != undefined && testStatus != "SC") {
-					$("#assignRosterForm").addClass('ui-state-disabled');
-					$("#assignRosterForm").attr('disabled','true');
-					$("#assignRosterForm").attr('onClick','false');
+				var testRosterStatus = testStatusMap.get(selectedTestRosterId);
+				if(testRosterStatus == "Scheduled")
+					testRosterStatus = "SC"
+				if(testRosterStatus != undefined && testRosterStatus != "SC") {
+					setAnchorButtonState('assignRosterForm', true);
 				}else {
-					$("#assignRosterForm").removeClass('ui-state-disabled');
-					$("#assignRosterForm").attr('disabled','false');
-					$("#assignRosterForm").attr('onClick','javascript:openAssignFormPopup()');
+					setAnchorButtonState('assignRosterForm', false);
 				}
 				$.unblockUI();
 			},
@@ -4448,7 +4450,10 @@ function registerDelegate(tree){
 	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	}
 	
-	function openAssignFormPopup(){
+	function openAssignFormPopup(element){
+		if (isButtonDisabled(element) ) {
+			return true;
+		} 
 		var optionHtml = "";
 		$("#assignFormPopup").dialog({  
 			title:$("#assignFormPopupLbl").val(),  
