@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerDemographic;
@@ -14,6 +15,21 @@ public class BaseTree {
 	private List<CustomerDemographic> customerDemographicList;
 	public CustomerConfiguration [] customerConfiguration = null;
 	public Boolean isOOSConfigured = false;
+	public List<String> demoCategory;
+	/**
+	 * @return the demoCategory
+	 */
+	public List<String> getDemoCategory() {
+		return demoCategory;
+	}
+
+	/**
+	 * @param demoCategory the demoCategory to set
+	 */
+	public void setDemoCategory(List<String> demoCategory) {
+		this.demoCategory = demoCategory;
+	}
+
 	/**
 	 * @return the gradeOptions
 	 */

@@ -28,19 +28,14 @@
 %>
 <%!
 	private String getDevId(String key) {
-		if("ADDITIONAL INFO".equalsIgnoreCase(key)){
-			return "additional_info_div";
-		}
-		else if("GEOGRAPHY(Grade 7)".equalsIgnoreCase(key)){
-			return "geography_div";
-		}
-		else if("READING".equalsIgnoreCase(key)){
-			return "reading_div";
-		}
-		else if("MATHEMATICS".equalsIgnoreCase(key)){
-			return "mathematics_div";
-		}
-		return "";
+		String divID = "";		
+		if(key != ""|| key != null){
+			divID = key;
+			divID = divID.trim();
+			divID = divID.replaceAll(" ","_");
+		   	System.out.println("this is div id: "+divID);		  
+		}		
+		return divID;
 	}
 %>
 <div>

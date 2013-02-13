@@ -8,8 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +93,7 @@ public class StudentOperationController extends PageFlowController {
 	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	boolean hasBioUneditable = false;
+	Set<String> demoGraphicCategoryNames = null;
 
 
 
@@ -205,6 +209,7 @@ public class StudentOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
 		CustomerConfiguration[] customerConfigurations = getCustomerConfigurations();
+		List<String> demoCategoryNames = new ArrayList<String>();
 		
 		try {
 			BaseTree baseTree = new BaseTree ();
@@ -264,6 +269,12 @@ public class StudentOperationController extends PageFlowController {
 					
 			});
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
+			for (Iterator iterator = this.demoGraphicCategoryNames.iterator(); iterator
+					.hasNext();) {
+				demoCategoryNames.add(iterator.next().toString());
+				
+			}
+			baseTree.setDemoCategory(demoCategoryNames);
 			jsonTree = gson.toJson(baseTree);
 			//System.out.println(jsonTree);
 			String pattern = ",\"children\":[]";
@@ -317,6 +328,7 @@ public class StudentOperationController extends PageFlowController {
 				studentArray = buffer.toString();
 				System.out.println ("List process time End:"+new Date());
 			}
+			
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
@@ -1265,10 +1277,22 @@ public class StudentOperationController extends PageFlowController {
 		return demographics;
 	}
 	
+	private void populateDemoCategory(String key){
+		String divID = "";
+		if(key != ""|| key != null){
+			divID = key;
+			divID = divID.trim();
+			divID = divID.replaceAll(" ","_");  
+		}		
+		demoGraphicCategoryNames.add(divID);
+	}
+	
+	
 	private Map<String,List> populateOKDemographics(List<StudentDemographic> demographics) {
 		
 		Map<String,List> tempDemographicMap = new HashMap<String,List>();
 		demographicMap = new HashMap<String,List>();
+		demoGraphicCategoryNames = new TreeSet<String>();
 		String demographicCategoryName = null;
 		for(StudentDemographic demographic : demographics) {
 			demographicCategoryName = demographic.getDemoCategory();
@@ -1280,11 +1304,12 @@ public class StudentOperationController extends PageFlowController {
 			else {
 				tempDemographicMap.get(demographicCategoryName).add(demographic);
 			}
-			//convert arraylist to array
+	
 			List dempgraphicsList = null;
 			for(String studentDemographicCategoryName : tempDemographicMap.keySet()){
 				dempgraphicsList = tempDemographicMap.get(studentDemographicCategoryName);				
 				demographicMap.put(studentDemographicCategoryName, dempgraphicsList);
+				populateDemoCategory(studentDemographicCategoryName);
 			}
 			
 		}

@@ -63,7 +63,7 @@ var isEditStudentImported = false;// Need to be used as imported student's profi
 var customerConfiguration = [];
 var isOOSConfigured = false; // added for OOSConfigurable
 var outOfSchoolValue = null;
-var demographicGroupIds = ["additional_info_div","geography_div","reading_div","mathematics_div"];
+var demographicGroupIds = {};
 var studentExtracted = false;
 
 
@@ -111,7 +111,8 @@ function populateTree() {
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");
 						customerConfiguration = data.customerConfiguration;
-						isOOSConfigured = data.isOOSConfigured;  
+						isOOSConfigured = data.isOOSConfigured;
+						demographicGroupIds = data.demoCategory;  
 													
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -3349,19 +3350,12 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		for(var count=0; count< stuDemographic.length; count++) {
 			if(stuDemographic[count]['demoCategory'] != undefined) {
 					demoGroup = "_" + stuDemographic[count]['demoCategory'];
+																
+					var x = stuDemographic[count]['demoCategory'];
+				 	var y = $.trim(x);
+				    y = y.replace(/ /g,'_');
+				    groupDiv = y; 
 										
-						if("ADDITIONAL INFO" == stuDemographic[count]['demoCategory']){
-							groupDiv = "additional_info_div";
-						}
-						else if("GEOGRAPHY(Grade 7)" == stuDemographic[count]['demoCategory']){
-							groupDiv = "geography_div";
-						}
-						else if("READING" == stuDemographic[count]['demoCategory']){
-							groupDiv = "reading_div";
-						}
-						else if("MATHEMATICS" == stuDemographic[count]['demoCategory']){
-							groupDiv = "mathematics_div";
-						}
 				}
 			if(stuDemographic[count]['studentDemographicValues'].length == 1){
 				
