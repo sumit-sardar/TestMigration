@@ -48,7 +48,7 @@
 			<td width="12%"><span id = "rosterTotalStudents"></span></td>
 			<td width="45%" class="buttonsRow">
 				<div id="assignFormButton" style="float:right;padding-left:5px;display:none;">
-					<a href="#" id="assignRosterForm" onclick="javascript:openAssignFormPopup()" class="rounded {transparent} button"><lb:label key="viewStatus.assignRosterForm.text" /></a>
+					<a href="#" id="assignRosterForm" onclick="javascript:openAssignFormPopup(this);return false;" class="rounded {transparent} button"><lb:label key="viewStatus.assignRosterForm.text" /></a>
 				</div>
 				<div id="refreshList" style="float:right;padding-left:5px;">
 					<a href="#" id="refreshListButton" onclick="refreshRosterList()" class="rounded {transparent} button"><lb:label key="viewStatus.refreshList.button" /></a>
