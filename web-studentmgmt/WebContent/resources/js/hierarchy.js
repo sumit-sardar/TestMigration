@@ -393,7 +393,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		    		} else {
 		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
 		    		}
-		    		if((profileEditable === "false"  && $("#classReassignable").val() === "true") || studentExtracted) {
+		    		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
 		    			$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
 		    		}
 				}
@@ -1992,7 +1992,8 @@ function openNode(orgNodeId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
 	    		  if(profileEditable === "false" && $("#classReassignable").val() === "true") {
-		    			$("a ins.jstree-checkbox", this).first().hide();
+		    			if(!studentExtracted)
+		    				$("a ins.jstree-checkbox", this).first().hide();
 		    		}
 	  	});
 	
@@ -3023,7 +3024,8 @@ function setSelectedValue(selectObj, valueToSet) {
 		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
-			liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+			if(!studentExtracted)
+				liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		ulElement.appendChild(liElement);
 		fragment.appendChild(ulElement);
