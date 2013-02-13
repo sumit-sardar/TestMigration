@@ -32,8 +32,7 @@
 		if(key != ""|| key != null){
 			divID = key;
 			divID = divID.trim();
-			divID = divID.replaceAll(" ","_");
-		   	System.out.println("this is div id: "+divID);		  
+			divID = divID.replaceAll(" ","_");		  
 		}		
 		return divID;
 	}

@@ -269,10 +269,12 @@ public class StudentOperationController extends PageFlowController {
 					
 			});
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
-			for (Iterator iterator = this.demoGraphicCategoryNames.iterator(); iterator
-					.hasNext();) {
-				demoCategoryNames.add(iterator.next().toString());
-				
+			if(this.demoGraphicCategoryNames != null){
+				for (Iterator iterator = this.demoGraphicCategoryNames.iterator(); iterator
+						.hasNext();) {
+					demoCategoryNames.add(iterator.next().toString());
+					
+				}
 			}
 			baseTree.setDemoCategory(demoCategoryNames);
 			jsonTree = gson.toJson(baseTree);
