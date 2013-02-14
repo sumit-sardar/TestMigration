@@ -188,6 +188,21 @@ public class TestClientPageFlowController extends PageFlowController
         return loginXML;
     
     }
+    
+    /**
+     * @jpf:action
+     * @jpf:forward path="/error.jsp" name="error"
+      */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(path = "/error.jsp",
+                     name = "error")
+    })
+    protected Forward UtilityServlet()
+    {
+        String result = this.OK; 
+        this.writeResponse(result);
+        return null;
+    }
    
     /**
      * @jpf:action
