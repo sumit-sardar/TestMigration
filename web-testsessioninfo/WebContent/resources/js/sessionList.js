@@ -4234,7 +4234,7 @@ function registerDelegate(tree){
 				 }
 				 if(hasAssignFormConfig && hasAssignFormConfig!=undefined) {
 					$("#rosterList").jqGrid("showCol","assignedForm");
-					if (assignedFormList.length > 1) {
+					if ((assignedFormList.length > 1) && obj.rosterElement.length > 0) {
 						$("#assignFormButton").show();
 						$("#assignFormMsg").show();					
 					}else {
