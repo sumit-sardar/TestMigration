@@ -358,7 +358,7 @@ var styleClass;
 					}
 					//if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined && !isAddOrganization){
 					if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
-						if(orgcategorylevel == hierarchyLockLevel)
+						if(orgcategorylevel >= hierarchyLockLevel)
 							updateOrganizationAndLayer(d.rslt[0],isChecked,e);
 					}
 					else
@@ -435,7 +435,7 @@ var styleClass;
 		checkedListObject = {};
 		checkedListObject[elementId] = 'checked';
 		
-		if(orgcategorylevel == hierarchyLockLevel) {
+		if(orgcategorylevel >= hierarchyLockLevel && orgcategorylevel !=leafNodeCategoryId) {
 			updateOrganizationAndLayer(element,isChecked,e);							
 		} 
 	}
