@@ -4166,6 +4166,7 @@ function registerDelegate(tree){
 		$("#viewTestSessionAccordion").accordion("destroy");
 		pageSizeSelected = 10;	
 		isPagesizeLabelpopulated = false;
+		rosterFormMapOld.clear();
 	}
 	
 	function populateRosterList() {
@@ -4455,6 +4456,7 @@ function registerDelegate(tree){
 			return true;
 		} 
 		var optionHtml = "";
+		$("#displayMessageViewTestRoster").hide();
 		$("#assignFormPopup").dialog({  
 			title:$("#assignFormPopupLbl").val(),  
 		 	resizable:false,
@@ -4505,6 +4507,8 @@ function registerDelegate(tree){
 						success:	function(data, textStatus, XMLHttpRequest) {
 										$.unblockUI();
 										updateSuccess = true;
+										rosterFormMapOld.remove(selectedTestRosterId);
+										rosterFormMapOld.put(selectedTestRosterId,newAssignedForm);
  										$("#displayMessageViewTestRoster").show();
 										$("#rosterMessage").html($("#assignFormUpdateMsg").val());
 										jQuery('#rosterList').setCell(rowid,'assignedForm',newAssignedForm);
