@@ -65,6 +65,8 @@ var isOOSConfigured = false; // added for OOSConfigurable
 var outOfSchoolValue = null;
 var demographicGroupIds = {};
 var studentExtracted = false;
+var hasLockHierarchyEditConfigured = false;
+var hierarchyLockLevel;
 
 
 $(document).bind('keydown', function(event) {
@@ -89,7 +91,10 @@ function UIBlock(){
 
 			
 function populateTree() {
-	hasLockHierarchyEditConfigured = $('#hasLockHierarchyEditConfigured').val();
+	var hasLockHierarchyVal = $('#hasLockHierarchyEditConfigured').val();
+	if(hasLockHierarchyVal == "true" && hasLockHierarchyVal != undefined) {
+		hasLockHierarchyEditConfigured = true;
+	}
 	hierarchyLockLevel = parseInt($('#hierarchyLockLevel').val());
 	isBulkMove = false;
 	$.ajax({
