@@ -200,8 +200,23 @@ public class TestClientPageFlowController extends PageFlowController
     protected Forward UtilityServlet()
     {
         String result = this.OK; 
-        this.writeResponse(result);
-        return null;
+        try{
+            // return response to client
+            this.writeResponse(result);
+        }
+        catch(IOException e) 
+       {
+                StackTraceElement [] trace = e.getStackTrace();
+                StringBuffer sb = new StringBuffer();
+                sb.append("\n" + e.getMessage() + "\n");
+                for( int i = 0; i < trace.length; i++ ) 
+                {
+                    sb.append( trace[i].getClassName() + "." + trace[i].getMethodName() + "()  " + trace[i].getFileName() + " line " + trace[i].getLineNumber() + "\n");
+                }
+                getRequest().setAttribute( "errorMessage", JavaScriptSanitizer.sanitizeString(sb.toString()) );
+                return new Forward("error");
+        }
+        return null; 
     }
    
     /**
