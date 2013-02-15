@@ -2106,28 +2106,41 @@ public class ItemLayoutProcessor
         {
             boolean isJPGorBMP = false;
             boolean isSWF = false;
+            boolean useLocalFile = false;
             String ext = filePath.substring( filePath.length() - 3 ).toLowerCase();
-            if ( ext.equals( "bmp" ) || ext.equals( "jpg" ))
+            if (ext.equalsIgnoreCase( "png" )) {
+            	isJPGorBMP = true;
+            	if(filePath.startsWith("http")) {
+            		useLocalFile = false;
+            	} else {
+            		useLocalFile = true;
+            	}
+            } else if ( ext.equalsIgnoreCase( "bmp" ) || ext.equalsIgnoreCase( "jpg" )) {
                 isJPGorBMP = true;
-            else if ( ext.equals( "swf" ))
-                isSWF = true;
             if ( isJPGorBMP )
             {
-                PlainTextInputStream asset = (PlainTextInputStream) new URL(filePath).getContent();
-                BufferedImage image = ImageIO.read( asset );
-                Integer widthINT = new Integer( image.getWidth() );
-                Integer heightINT = new Integer( image.getHeight() );
+            	InputStream asset = null;
+            	BufferedImage image = null;
+            	if(useLocalFile) {
+            		asset = new FileInputStream(new File(filePath));
+            		image = ImageIO.read( asset );
+            	} else {
+            		asset = (PlainTextInputStream) new URL(filePath).getContent();
+            		image = ImageIO.read( asset );
+            	}
+                Integer widthINT = new Integer( ext.equals("png")?image.getWidth()/2:image.getWidth() );
+                Integer heightINT = new Integer( ext.equals("png")?image.getHeight()/2:image.getHeight() );
                 lml.setAttribute( "height", heightINT.toString() );
                 lml.setAttribute( "width", widthINT.toString() );
                 asset.close();
             }
-            /*else if ( isSWF )
+            else if ( isSWF )
             {
                 SWFImageSizeDeterminer aImageDeterminer = new SWFImageSizeDeterminer( filePath );
                 aImageDeterminer.checkSize();
                 lml.setAttribute( "height", String.valueOf( aImageDeterminer.getHeight() ) );
                 lml.setAttribute( "width", String.valueOf( aImageDeterminer.getWidth() ) );                   
-            }*/
+            }
         }  
     }
     
