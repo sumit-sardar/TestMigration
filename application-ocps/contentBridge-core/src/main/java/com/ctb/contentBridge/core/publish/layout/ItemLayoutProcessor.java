@@ -1787,81 +1787,95 @@ public class ItemLayoutProcessor
                 }
                 else if ( name.equals( "CRResponseArea" ) )
                 {
-                    boolean isMultiLine = false;
-                    String type = thisElement.getAttributeValue( "Type" );
-                    if ("multiLine".equals(type))
-                        isMultiLine = true;
-                    boolean inline = false;    
-                    if (!isMultiLine && "Text".equals(thisElement.getParentElement().getName()))
-                        inline = true;
-                    
-                    Element crElement = null;
-                    if ( isMultiLine ) {
-                        crElement = new Element(multi_line_answer_widget);
-                        String width = thisElement.getAttributeValue("width");
-                        String height = thisElement.getAttributeValue("height");
-                        String accommodatedWidth = thisElement.getAttributeValue("accommodatedWidth");
-                        String accommodatedHeight = thisElement.getAttributeValue("accommodatedHeight");
-                        String charLimit = thisElement.getAttributeValue("charLimit");
-                        
-                        if (width != null)
-                            crElement.setAttribute("width", width);
-                        if (height != null)
-                            crElement.setAttribute("height", height);
-                        if (accommodatedWidth != null)
-                            crElement.setAttribute("acc_width", accommodatedWidth);
-                        if (accommodatedHeight != null)
-                            crElement.setAttribute("acc_height", accommodatedHeight);
-                        if (charLimit != null)
-                            crElement.setAttribute("char_limit", charLimit);
-                    } 
-                    else {
-                        String width = thisElement.getAttributeValue("width");
-                        String height = thisElement.getAttributeValue("height");
-                        if (height == null)
-                            height = "20"; //default height for single line
-                        String accommodatedWidth = thisElement.getAttributeValue("accommodatedWidth");
-                        String accommodatedHeight = thisElement.getAttributeValue("accommodatedHeight");
-                        String charLimit = thisElement.getAttributeValue("charLimit");
-                        if (!inline) {
-                            crElement = new Element(single_line_answer_widget);
-                            crElement.setAttribute("type", "standalone");
-                            
-                            if (width != null)
-                                crElement.setAttribute("width", width);
-                            if (height != null)
-                                crElement.setAttribute("height", height);
-                            if (accommodatedWidth != null)
-                                crElement.setAttribute("acc_width", accommodatedWidth);
-                            if (accommodatedHeight != null)
-                                crElement.setAttribute("acc_height", accommodatedHeight);
-                            if (charLimit != null)
-                                crElement.setAttribute("char_limit", charLimit);
-                        }                            
-                        else {
-                            String crId = "widget"+Math.round(Math.random()*89999+10000);
-                            textBuffer.append( " <single_line_answer id=\"").append(crId).append("\" type=\"inline\" ");
-                            if (width != null)
-                                textBuffer.append("width=\"").append(width).append("\" ");
-                            if (height != null)
-                                textBuffer.append("height=\"").append(height).append("\" ");
-                            if (accommodatedWidth != null)
-                                textBuffer.append("acc_width=\"").append(accommodatedWidth).append("\" ");
-                            if (accommodatedHeight != null)
-                                textBuffer.append("acc_height=\"").append(accommodatedHeight).append("\" ");
-                            if (charLimit != null)
-                                textBuffer.append("char_limit=\"").append(charLimit).append("\" ");
-                            
-                            textBuffer.append("/> ");
-                            
-                            this.boundingElement.setAttribute("input", "yes");
-                        }
-                                                    
-                    }                 
-                    if (!inline)
-                        childSrcList.add( crElement );
-                    
-                }
+					boolean isMultiLine = false;
+					String type = thisElement.getAttributeValue("Type");
+					if ("multiLine".equals(type))
+						isMultiLine = true;
+					boolean inline = false;    
+					if (!isMultiLine && "Text".equals(thisElement.getParentElement().getName()))
+						inline = true;
+
+					Element crElement = null;
+					if ( isMultiLine ) {
+						crElement = new Element(multi_line_answer_widget);
+						String ID = thisElement.getAttributeValue("ID");
+						String width = thisElement.getAttributeValue("width");
+						String height = thisElement.getAttributeValue("height");
+						String accommodatedWidth = thisElement.getAttributeValue("accommodatedWidth");
+						String accommodatedHeight = thisElement.getAttributeValue("accommodatedHeight");
+						String charLimit = thisElement.getAttributeValue("charLimit");
+						if(ID != null){
+							ID = ID + "$" + getUniqueId();
+							crElement.setAttribute("id",ID);
+						}
+						if (width != null)
+							crElement.setAttribute("width", width);
+						if (height != null)
+							crElement.setAttribute("height", height);
+						if (accommodatedWidth != null)
+							crElement.setAttribute("acc_width", accommodatedWidth);
+						if (accommodatedHeight != null)
+							crElement.setAttribute("acc_height", accommodatedHeight);
+						if (charLimit != null)
+							crElement.setAttribute("char_limit", charLimit);
+					} 
+					else {
+						String ID = thisElement.getAttributeValue("ID");
+						String width = thisElement.getAttributeValue("width");
+						String height = thisElement.getAttributeValue("height");
+						if (height == null)
+							height = "20"; // default height for single line
+						String accommodatedWidth = thisElement.getAttributeValue("accommodatedWidth");
+						String accommodatedHeight = thisElement.getAttributeValue("accommodatedHeight");
+						String charLimit = thisElement.getAttributeValue("charLimit");
+						if (!inline) {
+							crElement = new Element(single_line_answer_widget);
+							crElement.setAttribute("type", "standalone");
+							if(ID != null){
+								ID = ID + "$" + getUniqueId();
+								crElement.setAttribute("id",ID);
+							}
+							if (width != null)
+								crElement.setAttribute("width", width);
+							if (height != null)
+								crElement.setAttribute("height", height);
+							if (accommodatedWidth != null)
+								crElement.setAttribute("acc_width", accommodatedWidth);
+							if (accommodatedHeight != null)
+								crElement.setAttribute("acc_height", accommodatedHeight);
+							if (charLimit != null)
+								crElement.setAttribute("char_limit", charLimit);
+						} 
+						else {
+							String crId = null;
+							if (ID != null) {
+								crId = ID + "$" + getUniqueId();
+							}
+							else {
+								crId = "widget" + Math.round(Math.random() * 89999 + 10000);
+							}
+							textBuffer.append(" <single_line_answer id=\"").append(crId).append("\" type=\"inline\" ");
+							if (width != null)
+								textBuffer.append("width=\"").append(width).append("\" ");
+							if (height != null)
+								textBuffer.append("height=\"").append(height).append("\" ");
+							if (accommodatedWidth != null)
+								textBuffer.append("acc_width=\"").append(accommodatedWidth).append("\" ");
+							if (accommodatedHeight != null)
+								textBuffer.append("acc_height=\"").append(accommodatedHeight).append("\" ");
+							if (charLimit != null)
+								textBuffer.append("char_limit=\"").append(charLimit).append("\" ");
+
+							textBuffer.append("/> ");
+
+							this.boundingElement.setAttribute("input", "yes");
+						}
+
+					}
+					if (!inline)
+						childSrcList.add(crElement);
+
+				}
                 
                 else 
                     getProcessableChildInOrder( thisElement, childSrcList );
