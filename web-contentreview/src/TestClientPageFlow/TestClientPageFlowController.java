@@ -204,8 +204,9 @@ public class TestClientPageFlowController extends PageFlowController
             // return response to client
             this.writeResponse(result);
         }
-        catch(IOException e) 
+        catch(Exception e) 
        {
+        	e.printStackTrace();
                 StackTraceElement [] trace = e.getStackTrace();
                 StringBuffer sb = new StringBuffer();
                 sb.append("\n" + e.getMessage() + "\n");
@@ -244,8 +245,9 @@ public class TestClientPageFlowController extends PageFlowController
             // return response to client
             this.writeResponse(result);
         }
-        catch(IOException e) 
+        catch(Exception e) 
        {
+        	e.printStackTrace();
                 StackTraceElement [] trace = e.getStackTrace();
                 StringBuffer sb = new StringBuffer();
                 sb.append("\n" + e.getMessage() + "\n");
@@ -301,6 +303,7 @@ public class TestClientPageFlowController extends PageFlowController
         }
         catch(Exception e) 
        {
+        	e.printStackTrace();
                 StackTraceElement [] trace = e.getStackTrace();
                 StringBuffer sb = new StringBuffer();
                 sb.append("\n" + e.getMessage() + "\n");
