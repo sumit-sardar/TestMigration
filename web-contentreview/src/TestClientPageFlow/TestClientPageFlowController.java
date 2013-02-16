@@ -362,7 +362,7 @@ public class TestClientPageFlowController extends PageFlowController
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
-        String itemLML = item.getLml();
+        itemLML = item.getLml();
         
         System.out.println(itemLML);
         
