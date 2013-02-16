@@ -362,7 +362,7 @@ public class TestClientPageFlowController extends PageFlowController
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
-        getRequest().setAttribute("item", item.getLml());
+        getRequest().setAttribute("item", item.getLml().replaceAll("&nbsp;", " "));
         
     }
         /*
