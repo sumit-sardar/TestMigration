@@ -380,6 +380,7 @@ public class TestClientPageFlowController extends PageFlowController
 	        doc = builder.parse(is);
         } catch (Exception e) {
         	e.printStackTrace();
+        	System.out.println(itemLML);
 	        is = new InputSource(new StringReader(itemLML));
 	        doc = builder.parse(is);
         }
