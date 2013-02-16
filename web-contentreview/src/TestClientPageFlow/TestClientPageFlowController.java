@@ -368,8 +368,20 @@ public class TestClientPageFlowController extends PageFlowController
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource is = new InputSource(new StringReader(itemLML));
-        Document doc = builder.parse(is);
+        
+        InputSource is = null;
+        Document doc = null;
+        
+        try {
+	        String entityHeader = "<?xml version=\"1.0\"?>\n<!DOCTYPE some_name [ <!ENTITY nbsp \"&#160;\"> ]>\n";
+	        String modItemLML = entityHeader + itemLML;
+	        
+	        is = new InputSource(new StringReader(modItemLML));
+	        doc = builder.parse(is);
+        } catch (Exception e) {
+	        is = new InputSource(new StringReader(itemLML));
+	        doc = builder.parse(is);
+        }
         //optional, but recommended
     	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
     	doc.getDocumentElement().normalize();
