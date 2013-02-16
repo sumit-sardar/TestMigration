@@ -361,10 +361,11 @@ public class TestClientPageFlowController extends PageFlowController
         }
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
-		// For hexcode issue
-		//Start
-        itemLML = item.getLml();
+		
+        getRequest().setAttribute("item", item.getLml());
         
+    }
+        /*
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -373,8 +374,8 @@ public class TestClientPageFlowController extends PageFlowController
         Document doc = null;
         
         try {
-	        String entityHeader = "<?xml version=\"1.0\"?>\n<!DOCTYPE some_name [ <!ENTITY nbsp \"&#160;\"> ]>\n";
-	        String modItemLML = entityHeader + itemLML;
+	        //String entityHeader = "<?xml version=\"1.0\"?>\n<!DOCTYPE some_name [ <!ENTITY nbsp \"&#160;\"> ]>\n";
+	        String modItemLML = itemLML.replaceAll("&nbsp;", " ");
 	        
 	        is = new InputSource(new StringReader(modItemLML));
 	        doc = builder.parse(is);
@@ -414,6 +415,7 @@ public class TestClientPageFlowController extends PageFlowController
         getRequest().setAttribute("item", item.getLml());
         
     }
+    */
     
     private  void unzip(String zipFolderLocation,String unZipFolderLocation) throws Exception{
 		
