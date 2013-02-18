@@ -834,8 +834,6 @@ function EditOrganizationDetail(selectedOrgId){
 		$.unblockUI();
 		isViewMode = true;
 		$('#editOrgDisplayId').hide();
-		$('#Organization_Information_View').show();
-		$('#Organization_Information').hide();
 		organizationNodes = data.organizationNodes;
 		originalParentOrgId = data.organizationDetail.parentOrgNodeId;
 		$("#orgNameView").text(data.organizationDetail.orgNodeName);
@@ -893,15 +891,14 @@ function EditOrganizationDetail(selectedOrgId){
 		setPopupPosition(isAddOrganization);
 		//dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
 		//currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem
-						
+		$('#Organization_Information_View').show();
+		$('#Organization_Information').hide();
 	}
 	
 	function populateDataInEditMode(data, rowId){
 		$.unblockUI();
 		isViewMode = false;
 		$('#editOrgDisplayId').show();
-		$('#Organization_Information_View').hide();
-		$('#Organization_Information').show();
 		organizationNodes = data.organizationNodes;
 		originalParentOrgId = data.organizationDetail.parentOrgNodeId;
 		$("#orgName").val(data.organizationDetail.orgNodeName);
@@ -965,6 +962,8 @@ function EditOrganizationDetail(selectedOrgId){
 		dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
 		prepareCheckedList(); //added on 12.12.2011	
 		currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem
+		$('#Organization_Information_View').hide();
+		$('#Organization_Information').show();
 	}
 //upto this on 08.11.2011
 
