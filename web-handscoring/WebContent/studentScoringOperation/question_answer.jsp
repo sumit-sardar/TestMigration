@@ -17,7 +17,7 @@ function stopAudio(){
  
 			
 	 //This Function  will be called by javafx at runtime
-    function show_alert() {
+     function show_alert() {
     	var audioResponseString = document.getElementById("audioResponseString").value;
     	var regExp = /\s+/g;
 		var stringFX = audioResponseString.replace(regExp,'');
@@ -25,7 +25,7 @@ function stopAudio(){
     	return stringFX;
 	}
 	
-	function getAudioPlayer(parentObj) {
+	/*function getAudioPlayer(parentObj) {
 	  var fxstring = javafxString(
 	    {
 	            archive: "/ScoringWeb/resources/fxResources/JavaFXApplication1.jar",
@@ -39,7 +39,8 @@ function stopAudio(){
 	  );
 	  document.getElementById(parentObj).innerHTML = fxstring;
 	  playCompleted = false;
-	}
+	}*/
+	
 
 	function showScoreSelect(disableStatus){
 		if(document.getElementById("itemType").value == "AI"){
