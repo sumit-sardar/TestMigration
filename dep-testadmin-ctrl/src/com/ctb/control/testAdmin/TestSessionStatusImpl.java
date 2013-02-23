@@ -1360,7 +1360,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
              	if(status.equals("ValidationStatus")) {
 		            for (int i=0; i < itemSetIds.length; i++) {
 		            	String [] temp = itemSetIds[i].split("\\$");
-		            	if(temp[1].equals("PS")) {
+		            	if(temp[1].equals("PS") || temp[1].equalsIgnoreCase("UNDEFINED")) {
 		            		temp[1] = null;
 		            	}
 		            	studentItemSetStatus.toggleSubtestValidationStatus(testRosterId, Integer.parseInt(temp[0]),temp[1]);
