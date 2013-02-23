@@ -1237,7 +1237,28 @@ function getValue(keyVal) {
 	
 		if(keyVal == 'Microphone_Headphone')
 			return 'MicrophoneHeadphone';
-		
+		if(keyVal == 'Extended_Time')
+			return 'ExtendedTime';
+		if(keyVal == 'Masking_Ruler')
+			return 'MaskingRuler';
+		if(keyVal == 'Magnifying_Glass')
+			return 'MagnifyingGlass';
+		if(keyVal == 'Auditory_Calming')
+			return 'AuditoryCalming';
+		if(keyVal == 'Masking_Tool')
+			return 'MaskingTool';
+		if(keyVal == 'Highlighter')
+			return 'highlighter';
+		if(keyVal == 'Screen_Reader')
+			return 'screenReader';
+		if(keyVal == 'Untimed_Test')
+			return 'untimedTest';
+		if(keyVal == 'Test_Pause')
+			return 'testPause';
+		if(keyVal == 'Calculator')
+			return 'calculator';
+		if(keyVal == 'Font_Color')
+			return 'colorFont';
 		return keyVal;
 }
 
