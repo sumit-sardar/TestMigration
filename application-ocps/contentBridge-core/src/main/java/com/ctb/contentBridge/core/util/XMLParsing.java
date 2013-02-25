@@ -56,7 +56,8 @@ public class XMLParsing extends DefaultHandler {
 					FLAG1++;
 				if (lName.equals("image_widget") || lName.equals("assessment")
 						|| lName.equals("itemref")
-						|| lName.equals("item_delivery_package")) {
+						|| lName.equals("item_delivery_package")
+						|| lName.equals("asset_widget")) {
 					if (aName.toLowerCase().equals("src")
 							|| aName.toLowerCase().equals("ident")
 							|| aName.toLowerCase().equals("linkrefid")
@@ -70,7 +71,8 @@ public class XMLParsing extends DefaultHandler {
 				} else if (lName.equals("asset")) {
 					if (aName.toLowerCase().equals("ident")
 							|| aName.toLowerCase().equals("imagtype")
-							|| aName.toLowerCase().equals("pkgtype"))
+							|| aName.toLowerCase().equals("pkgtype")
+							|| aName.toLowerCase().equals("videotype"))
 						arrList.add(attrs.getValue(i));
 				} else if (aName.toLowerCase().equals("uri"))
 					arrList.add(attrs.getValue(i));

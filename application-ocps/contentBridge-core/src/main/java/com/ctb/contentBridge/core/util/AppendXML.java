@@ -210,14 +210,44 @@ public class AppendXML {
 					inStream = resultSet.getBlob(1).getBinaryStream();
 					encodedData = base64Encode
 							.base64Encoding(inStream, iLength);
-					Element imageNode = w3cDOMdoc.createElement("image");
+					if(resultSet.getString(3).equals("mp4"))
+                    {
+                        Element vedioNode = w3cDOMdoc.createElement("videoData");
+                        assetsNode.appendChild(vedioNode);
+                        org.w3c.dom.CDATASection cDATASection = w3cDOMdoc.createCDATASection(encodedData);
+                        vedioNode.appendChild(cDATASection);
+                        vedioNode.setAttribute("id", resultSet.getString(2));
+                        vedioNode.setAttribute("type", resultSet.getString(3));
+                        vedioNode.setAttribute("embedded", "base64");
+                    } 
+					else if(resultSet.getString(3).equals("zip"))
+                    {
+                        Element htmlNode = w3cDOMdoc.createElement("htmldata");
+                        assetsNode.appendChild(htmlNode);
+                        org.w3c.dom.CDATASection cDATASection = w3cDOMdoc.createCDATASection(encodedData);
+                        htmlNode.appendChild(cDATASection);
+                        htmlNode.setAttribute("id", resultSet.getString(2));
+                        htmlNode.setAttribute("type", resultSet.getString(3));
+                        htmlNode.setAttribute("embedded", "base64");
+                    } 
+					else
+                    {
+                        Element imageNode = w3cDOMdoc.createElement("image");
+                        assetsNode.appendChild(imageNode);
+                        org.w3c.dom.CDATASection cDATASection = w3cDOMdoc.createCDATASection(encodedData);
+                        imageNode.appendChild(cDATASection);
+                        imageNode.setAttribute("id", resultSet.getString(2));
+                        imageNode.setAttribute("type", resultSet.getString(3));
+                        imageNode.setAttribute("embedded", "base64");
+                    }
+					/*Element imageNode = w3cDOMdoc.createElement("image");
 					assetsNode.appendChild(imageNode);
 					org.w3c.dom.CDATASection cDATASection = w3cDOMdoc
 							.createCDATASection(encodedData);
 					imageNode.appendChild(cDATASection);
 					imageNode.setAttribute("id", resultSet.getString(2));
 					imageNode.setAttribute("type", resultSet.getString(3));
-					imageNode.setAttribute("embedded", "base64");
+					imageNode.setAttribute("embedded", "base64");*/
 				}
 			}
 			/*for (int i = 2; i < arrList1.size(); i++) {
