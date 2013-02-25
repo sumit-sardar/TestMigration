@@ -121,7 +121,7 @@
 			<div id="moveStudentRosterPopupButtonID"  style="display: none;">
 				<center>
 					<input type="button"  value=<lb:label key="stu.label.assignRoster" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:assignRosterData(); return false;" class="ui-widget-header">&nbsp;
-					<input type="button"  value=<lb:label key="stu.label.removeRoster" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeFromClass(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value=<lb:label key="stu.label.removeRoster" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:removeFromClass(); return false;" class="ui-widget-header" style = "display: none">&nbsp;
 					<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closeBulkMovePopup(); return false;" class="ui-widget-header">
 				</center>
 			</div>

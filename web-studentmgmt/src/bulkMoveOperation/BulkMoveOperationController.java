@@ -73,6 +73,7 @@ public class BulkMoveOperationController extends PageFlowController {
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
+	private Integer selectedTreeNodeId = null;
 	
 	
 	/**
@@ -102,6 +103,7 @@ public class BulkMoveOperationController extends PageFlowController {
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
 			String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
+			this.selectedTreeNodeId = Integer.valueOf(treeOrgNodeId);
 			OutputStream stream = null;
 			String contentType = CONTENT_TYPE_JSON;
 			List studentList = new ArrayList(0);
@@ -281,7 +283,7 @@ public class BulkMoveOperationController extends PageFlowController {
 				if(studentId != null && studentId.length > 0 && orgId != null && orgId.length >0 ) {
 					try {
 						
-						this.studentManagement.updateStudentRosterOperation(this.userName, orgId,studentId);
+						this.studentManagement.updateStudentRosterOperation(this.userName, orgId,studentId, this.selectedTreeNodeId);
 					} catch (CTBBusinessException e) {
 						// TODO Auto-generated catch block
 						successFlag=false;

@@ -1,7 +1,7 @@
 var bulkMoveGridLoaded = false;
 var bulkMoveStuCounterPage = 0;
 var allStudentInGrid = [];
-var selectedStudentForMove = [];
+var selectedStudentForMove = {};
 var finalSelectedNode;
 var isPopUp = false;
 var isbulkMoveRoster = null;
@@ -423,11 +423,12 @@ function changeStateHandlerForStudentRoster(e, d) {
     	var elementId = d.rslt[0].getAttribute("id");
 		var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
 		if (isChecked){
-			checkedNodeListObject.put(elementId,elementId);
+			//checkedNodeListObject.put(elementId,elementId);
+			finalSelectedNode = elementId;
 			$(d.rslt[0]).find('a').addClass("jstree-clicked");
 		} 
 		else {
-		    checkedNodeListObject._removeItem(elementId);
+		    //checkedNodeListObject._removeItem(elementId);
 			$(d.rslt[0]).find('a').removeClass("jstree-clicked");
 		}
 	}
@@ -523,22 +524,23 @@ function bulkMoveStudentActionHandler(e) {
 function bulkMoveStudentRosterHandler(e) {
 
 			styleClass = $(this.parentNode).attr('class');
-				var orgcategorylevel = $(this.parentNode).attr("cid");
-				if(orgcategorylevel == leafNodeCategoryId) {
-					if(styleClass.indexOf("unchecked") > 0){
-						//$('#innerIDForMS').jstree('uncheck_all');
-						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
-						$(this.parentNode).find('a').addClass("jstree-clicked");
-						//finalSelectedNode = $(this.parentNode).attr('id');
-						checkedNodeListObject.put($(this.parentNode).attr('id'),$(this.parentNode).attr('id'));
-					}else {
-						$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
-						if(checkedNodeListObject.get($(this.parentNode).attr('id')) != undefined)
-							checkedNodeListObject._removeItem($(this.parentNode).attr('id'));
-						$(this.parentNode).find('a').removeClass("jstree-clicked");
-					}
-				} else 
-					return false;
+			var orgcategorylevel = $(this.parentNode).attr("cid");
+			if(orgcategorylevel == leafNodeCategoryId) {
+				if(styleClass.indexOf("unchecked") > 0){
+					$('#innerIDForMS').jstree('uncheck_all');
+					$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+					$(this.parentNode).find('a').addClass("jstree-clicked");
+					finalSelectedNode = $(this.parentNode).attr('id');
+					//checkedNodeListObject.put($(this.parentNode).attr('id'),$(this.parentNode).attr('id'));
+				}else {
+					$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+					//if(checkedNodeListObject.get($(this.parentNode).attr('id')) != undefined)
+					//	checkedNodeListObject._removeItem($(this.parentNode).attr('id'));
+					finalSelectedNode = undefined;
+					$(this.parentNode).find('a').removeClass("jstree-clicked");
+				}
+			} else 
+				return false;
 }
 
 function closeBulkMovePopup() {
@@ -614,7 +616,7 @@ function saveBulkMoveData() {
 				data:		 param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){
-									selectedStudentForMove = [];
+									selectedStudentForMove = {};
 									bulkMoveStuCounterPage = 0;
 									//$("#innerIDForMS").undelegate();
 									//$("#innerIDForMS").unbind();
@@ -650,13 +652,13 @@ function assignRosterData() {
 	}
 	studentIds = studentIds.substring(0,studentIds.length-1);
 	param.studentIds = studentIds;
-	
-	for (var key1 in checkedNodeListObject.items){
-		selectedOrgIds = checkedNodeListObject.get(key1)+"," +selectedOrgIds;
-	}
-	selectedOrgIds = selectedOrgIds.substring(0,selectedOrgIds.length-1);
-	param.selectedOrgIds = selectedOrgIds;
-	if(selectedOrgIds != undefined && selectedOrgIds.length > 0) {
+	/**Changes for single node selection**/
+	//for (var key1 in checkedNodeListObject.items){
+	//	selectedOrgIds = checkedNodeListObject.get(key1)+"," +selectedOrgIds;
+	//}
+	//selectedOrgIds = selectedOrgIds.substring(0,selectedOrgIds.length-1);
+	param.selectedOrgIds = finalSelectedNode;
+	if(finalSelectedNode != undefined && finalSelectedNode.length > 0) {
 		$.ajax(
 		{
 				async:		false,//asynchronous calls do not sent post data in MAC safari
@@ -668,7 +670,7 @@ function assignRosterData() {
 				data:		 param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){
-									selectedStudentForMove = [];
+									selectedStudentForMove = {};
 									bulkMoveStuCounterPage = 0;
 									$('#innerIDForMS').jstree('close_all', -1);
 									gridReloadForBulkMoveStudent();

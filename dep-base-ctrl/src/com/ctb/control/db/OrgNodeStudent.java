@@ -246,4 +246,7 @@ public interface OrgNodeStudent extends JdbcControl
     
     @JdbcControl.SQL(statement = "delete from org_node_student where customer_id = {customerId} and student_id = {studentId} and activation_status = 'AC' and org_node_id = {orgNodeId}")
     void removeStudentFromClass(Integer customerId, Integer studentId, Integer orgNodeId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select count(1) from org_node_student where student_id = {studentId} and org_node_id = {orgId}")
+    int checkOrgNodes(Integer studentId, Integer orgId) throws SQLException;
 }

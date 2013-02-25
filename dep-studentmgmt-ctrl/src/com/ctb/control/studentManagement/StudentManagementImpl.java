@@ -2922,41 +2922,74 @@ public class StudentManagementImpl implements StudentManagement
 	
 	
 	//Added for updating roster student data 
-	public void updateStudentRosterOperation(String userName, Integer[] destOrgIds, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
+	public void updateStudentRosterOperation(String userName, Integer[] destOrgIds, Integer[] studentIds, Integer treeNodeId) throws com.ctb.exception.CTBBusinessException {
 		try {
 			if(studentIds != null) {
 				User user = getUserDetails(userName, userName);
 				Integer userId = user.getUserId();
 				Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
 				boolean foundInNewOrgNodes = false;
+				boolean newEntryOrg = false;
+				Node [] immediateChildOrgs = orgNode.getOrgNodesByParent(treeNodeId);
 				for(int i = 0; i < studentIds.length; i++) {
+				  com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentWithoutActivationStatus(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 				  for (int j=0; j<destOrgIds.length; j++ ){							 
-					com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentWithoutActivationStatus(studentIds[i], SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 					Integer orgId = destOrgIds[j];
 					for (int k=0; orgNodeStus!=null && k< orgNodeStus.length; k++) {
 						com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[k];
-						if ((orgId != null) && (oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue())) {
-							foundInNewOrgNodes = true;
-							orgId = null;
-
-						} else
-							foundInNewOrgNodes = false;
-						if (foundInNewOrgNodes) { //activate 
-						    orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
+//						if ((orgId != null) && (oldOrgNodeInDB.getOrgNodeId().intValue() == orgId.intValue())) {
+//							foundInNewOrgNodes = true;
+//							orgId = null;
+//
+//						} else
+//							foundInNewOrgNodes = false;
+//						
+//						if (foundInNewOrgNodes) { //activate 
+//						    orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), oldOrgNodeInDB.getOrgNodeId());                             
+//						} 	
+						
+						if (immediateChildOrgs != null && immediateChildOrgs.length > 0) { // uses for department
+							for(int indx=0; indx < immediateChildOrgs.length; indx++) {
+								if (immediateChildOrgs[indx].getOrgNodeId().intValue() == oldOrgNodeInDB.getOrgNodeId().intValue()) {
+									if(immediateChildOrgs[indx].getOrgNodeId().intValue() == orgId) { //active orgNodeStudent
+										orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), immediateChildOrgs[indx].getOrgNodeId());
+										foundInNewOrgNodes = true;
+									}
+									else // remove orgNodeStudent
+										orgNodeStudents.removeStudentFromClass(oldOrgNodeInDB.getCustomerId(), oldOrgNodeInDB.getStudentId(), immediateChildOrgs[indx].getOrgNodeId());
+								}									
+							}
+						} else { // uses for class
+							if (oldOrgNodeInDB.getOrgNodeId().intValue() == treeNodeId) {
+								if(treeNodeId == orgId) {
+									orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(oldOrgNodeInDB.getStudentId(), treeNodeId);
+									foundInNewOrgNodes = true;
+								}
+								else
+									orgNodeStudents.removeStudentFromClass(oldOrgNodeInDB.getCustomerId(), oldOrgNodeInDB.getStudentId(), treeNodeId);
+							}
 						}
-			
 					  }
+						if(foundInNewOrgNodes)
+							orgId = null;
+						
 						if(orgId != null) {
-							Node node = orgNode.getOrgNodeById(orgId);                
-							OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
-							orgNodeStudent.setActivationStatus("AC");
-							orgNodeStudent.setCreatedBy(userId);
-							orgNodeStudent.setCreatedDateTime(new Date());
-							orgNodeStudent.setCustomerId(node.getCustomerId());
-							orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
-							orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
-							orgNodeStudent.setStudentId(studentIds[i]);
-							orgNodeStudents.createOrgNodeStudent(orgNodeStudent);
+							int count = orgNodeStudents.checkOrgNodes(studentIds[i], orgId);
+							if (count > 0) {
+								orgNodeStudents.activateOrgNodeStudentForStudentAndOrgNode(studentIds[i], orgId);
+							} else {
+								Node node = orgNode.getOrgNodeById(orgId);                
+								OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
+								orgNodeStudent.setActivationStatus("AC");
+								orgNodeStudent.setCreatedBy(userId);
+								orgNodeStudent.setCreatedDateTime(new Date());
+								orgNodeStudent.setCustomerId(node.getCustomerId());
+								orgNodeStudent.setDataImportHistoryId(node.getDataImportHistoryId());
+								orgNodeStudent.setOrgNodeId(node.getOrgNodeId());
+								orgNodeStudent.setStudentId(studentIds[i]);
+								orgNodeStudents.createOrgNodeStudent(orgNodeStudent);
+							}
+								
 						}
 					}
 			   }
