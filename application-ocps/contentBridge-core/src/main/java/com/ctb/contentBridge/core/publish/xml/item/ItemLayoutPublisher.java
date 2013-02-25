@@ -58,6 +58,7 @@ public class ItemLayoutPublisher {
 		//added for TE item
 		String itemId = rootElement.getAttributeValue("ID");
 		ArrayList htmlList = new ArrayList();
+		ArrayList htmlAssetList = new ArrayList();
 		//end fro TE item
 		Element itemLml ;	
 		ArrayList assetList = new ArrayList();
@@ -74,7 +75,7 @@ public class ItemLayoutPublisher {
 			if ("IN".equals(itemType))
 				ItemLayoutProcessor.getPackageAsset(itemLml, htmlList,itemId);
 			else
-				ItemLayoutProcessor.getAsset(itemLml, assetList);
+				ItemLayoutProcessor.getAsset(itemLml, assetList, /*adsConfig,*/ htmlAssetList);
 			ItemLayoutProcessor.modifyItemLMLForADS_Puslishing(itemLml, itemType);
 					
 			//Transform layout
@@ -97,6 +98,9 @@ public class ItemLayoutPublisher {
 			if (htmlList != null && htmlList.size() > 0) {
 				 this.publishPkgAssets(htmlList,itemId);
 				 //logger.info("after publishPkgAssets for TE Items...");
+			}
+			if (htmlAssetList != null && htmlAssetList.size() > 0) {				
+				 this.publishHtmlAssets(htmlAssetList);
 			}
 			/*ContentPublishBO.publishItem(connection, xmlStr);*/
 			System.out.println("Publish item starts...");
@@ -315,7 +319,81 @@ public class ItemLayoutPublisher {
 	                }
 	            }
 	        }*/
+	
+		public void publishHtmlAssets(List inputFiles) throws Exception {
+			//logger.info("Inside publishPkgAssets method...");
+			//CommonClient client = clientLocator.getCommonClient();
+			String request = "";
+			//request="<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request><publish_asset> <asset ident= \"formula2\" videotype=\"mp4\"> <file_location uri=\"/local/apps/oas/ads/assets/formula2.mp4\" /></asset> </publish_asset> </ads_publish_request>";
+			Iterator iter = inputFiles.iterator();
+			
+			while (iter.hasNext()) {
+				String fileName = (String) iter.next();
+				String ext = fileName.substring(fileName.length() - 3).toLowerCase();
+				if(ext.equalsIgnoreCase("mp4")){
+					String mp4 = getImage(fileName);
+					String destination = destinationPath + mp4;
+					request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
+							+ "<publish_asset> <asset ident= \""
+							+ getImageId(mp4)
+							+ "\" videotype=\""
+							+ getImageType(mp4)
+							+ "\">"
+							+ " <file_location uri=\""
+							+ destination
+							+ "\" />"
+							+ "</asset> </publish_asset> </ads_publish_request>";
+				} else{
+					String destinationPkgPath = "/local/apps/oas/ads/assets/html_assets/" + fileName+"zip";
+					request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
+							+ "<publish_asset> <asset ident= \""
+							+ fileName
+							+ "\" pkgtype=\"zip"					
+							+ "\">"
+							+ " <file_location uri=\""
+							+ destinationPkgPath
+							+ "\" />"
+							+ "</asset> </publish_asset> </ads_publish_request>";
+					
+				}
+				//logger.info("request"+request);
+				//ContentPublishBO.publishAsset(connection, request);
+               	System.out.println("Publish asset starts...");
+               	System.out.println(request);
+               	ContentPublishBO.publishAsset(request);
+               	System.out.println("Publish asset ends...");
+	            	
+				/*String responseStr = client.callUploadAsset(request);
+				logger.info("responseStr >> "+responseStr);
+				if (responseStr == null) {
+					throw new SystemException(
+							"Error in Publishing Asset. Response is null. ");
+				}
 
+				ByteArrayInputStream bais = new ByteArrayInputStream(responseStr
+						.toString().getBytes());
+				org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
+				org.jdom.Document itemDoc = saxBuilder.build(bais);
+				Element responseElm = itemDoc.getRootElement();
+
+				Element response = ItemLayoutProcessor.extractSingleElement(
+						".//response", responseElm);
+				Attribute status = response.getAttribute("status");
+				String statusStr = status.getValue();
+				//logger.info("statusStr >> "+statusStr);
+				if (!statusStr.equals(statusOk)) {
+					Element msg = ItemLayoutProcessor.extractSingleElement(
+							".//msg", response);
+					if (!(msg.getText()).equals(status_republish_asset)) {
+						throw new SystemException(
+								"Error in Publishing Asset. Status = " + statusStr
+										+ " Error message: " + msg.getText());
+					}
+				}*/
+			}	
+			
+		}
+		
 		public void transform ( Reader xml, Reader xsl, Writer out ) throws TransformerException{
 				TransformerFactory factory = TransformerFactory.newInstance();
 				Transformer transformer = factory.newTransformer( new StreamSource(xsl));
