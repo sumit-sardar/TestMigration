@@ -12,7 +12,7 @@
 
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script src="http://dl.javafx.com/1.3/dtfx.js"></script>
+
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />
 
 <script>
@@ -223,19 +223,6 @@ optn.value = value;
 selectbox.options.add(optn);
 }
 	
-	function getAudioPlayer(parentObj) {
-	  var fxstring = javafxString(
-	    {
-	            archive: "JavaFXApplication1.jar",
-	            width: 250,
-	            height: 80,
-	            code: "javafxapplication1.Main",
-	            name: "fxApp",
-	            id: "fxApp"
-	    }
-	  );
-	  document.getElementById(parentObj).innerHTML = fxstring;
-	}
 
 /*function getPlayer(){
 
@@ -426,7 +413,7 @@ selectbox.options.add(optn);
 					
 					<textarea id="crText" width="70%" cols="100" rows="4" readonly="readonly"></textarea>
 					<div id="audioPlayer" width="200" height="200"><script>
-						getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+						//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 			</script></div>
 					</td>
 				</tr>

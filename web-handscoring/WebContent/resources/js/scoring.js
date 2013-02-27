@@ -48,14 +48,11 @@ if(isHidden){
 											//$("#crText").hide();
 									
 											if(navigator.userAgent.indexOf('Win') != -1) {
-
-												$("#iframeDiv").hide();
+												$("#audioPlayer").hide();
+												$("#iframeDiv").show();
 												var iframe = $("#iframeAudio");
-												$(iframe).attr('src', "about:blank");
-												
-												$("#audioPlayer").show();
-												getAudioPlayer('audioPlayer');
-											
+												$(iframe).attr('src', "audioPlayer.jsp");
+																														
 											}else {
 
 												$("#audioPlayer").hide();
@@ -262,13 +259,11 @@ if(isHidden){
 											//$("#crText").hide();
 											if(navigator.userAgent.indexOf('Win') != -1) {
 
-												$("#iframeDiv").hide();
+												$("#audioPlayer").hide();
+												$("#iframeDiv").show();
 												var iframe = $("#iframeAudio");
-												$(iframe).attr('src', "about:blank");
-												
-												$("#audioPlayer").show();
-												getAudioPlayer('audioPlayer');
-											
+												$(iframe).attr('src', "audioPlayer.jsp");
+																							
 											}else {
 
 												$("#audioPlayer").hide();

@@ -12,7 +12,7 @@
 
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script src="/HandScoringWeb/resources/fxResources/dtfx.js"></script>
+
 <script type="text/javascript" src="/HandScoringWeb/resources/js/scoring.js"></script>
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />
 <link type="text/css" href="/HandScoringWeb/resources/css/style.css" rel="stylesheet" />
@@ -52,21 +52,6 @@ function stopAudio(){
 	
 		
 	
-	function getAudioPlayer(parentObj) {
-	  var fxstring = javafxString(
-	    {
-	            archive: "/HandScoringWeb/resources/fxResources/JavaFXApplication1.jar",
-	            visible: false,	            
-	            width: 250,
-	            height: 80,
-	            code: "javafxapplication1.Main",
-	            name: "myApplet",
-	            id: "myApp"
-	    }
-	  );
-	  document.getElementById(parentObj).innerHTML = fxstring;
-	  playCompleted = false;
-	}
 
 
 	function showScoreSelect(disableStatus){
