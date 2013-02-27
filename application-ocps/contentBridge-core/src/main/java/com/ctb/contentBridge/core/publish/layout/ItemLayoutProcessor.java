@@ -2124,7 +2124,7 @@ public class ItemLayoutProcessor
         if ( height != null )
             lml.setAttribute( "height", height );
         String filePath = lml.getAttributeValue( "src" );
-
+ 
         String enlargeable = para.getAttributeValue( "Enlargeable" );
         if ( enlargeable != null )
             lml.setAttribute( "enlargeable", enlargeable );
@@ -2133,12 +2133,6 @@ public class ItemLayoutProcessor
         if ( autoenlargeable != null )
             lml.setAttribute( "autoenlargeable", autoenlargeable );
         
-        // this is ugly
-/*        PlainTextInputStream asset = (PlainTextInputStream) new URL(filePath).getContent();
-        int size = asset.available();
-        asset.close(); 
-           
-        totalDownloadSize += size;  */
         totalDownloadSize += 1000;
         
         if ( calculateSize && ( width == null || height == null ))
@@ -2148,40 +2142,87 @@ public class ItemLayoutProcessor
             boolean useLocalFile = false;
             String ext = filePath.substring( filePath.length() - 3 ).toLowerCase();
             if (ext.equalsIgnoreCase( "png" )) {
-            	isJPGorBMP = true;
-            	if(filePath.startsWith("http")) {
-            		useLocalFile = false;
-            	} else {
-            		useLocalFile = true;
-            	}
+                  isJPGorBMP = true;
+                  if(filePath.startsWith("http")) {
+                        useLocalFile = false;
+                  } else {
+                        useLocalFile = true;
+                  }
             } else if ( ext.equalsIgnoreCase( "bmp" ) || ext.equalsIgnoreCase( "jpg" )) {
                 isJPGorBMP = true;
-	            if ( isJPGorBMP )
-	            {
-	            	InputStream asset = null;
-	            	BufferedImage image = null;
-	            	if(useLocalFile) {
-	            		asset = new FileInputStream(new File(filePath));
-	            		image = ImageIO.read( asset );
-	            	} else {
-	            		asset = (PlainTextInputStream) new URL(filePath).getContent();
-	            		image = ImageIO.read( asset );
-	            	}
-	                Integer widthINT = new Integer( ext.equals("png")?image.getWidth()/2:image.getWidth() );
-	                Integer heightINT = new Integer( ext.equals("png")?image.getHeight()/2:image.getHeight() );
-	                lml.setAttribute( "height", heightINT.toString() );
-	                lml.setAttribute( "width", widthINT.toString() );
-	                asset.close();
-	            }
-	            /*else if ( isSWF )
-	            {
-	                SWFImageSizeDeterminer aImageDeterminer = new SWFImageSizeDeterminer( filePath );
-	                aImageDeterminer.checkSize();
-	                lml.setAttribute( "height", String.valueOf( aImageDeterminer.getHeight() ) );
-	                lml.setAttribute( "width", String.valueOf( aImageDeterminer.getWidth() ) );                   
-	            }*/
-            }  
-        }    
+            } else if ( ext.equalsIgnoreCase( "swf" )) {
+                String pngPath = filePath.replaceAll(".swf", ".png");
+                  pngPath = pngPath.replaceAll(".SWF", ".PNG");
+                  if(filePath.startsWith("http")) {
+                        if(checkWebFileExists(pngPath)) {
+                              filePath = pngPath;
+                            lml.setAttribute("src", pngPath);
+                            isJPGorBMP = true;
+                            useLocalFile = false;
+                            isSWF = false;
+                            ext = "png";
+                        } else {
+                              isSWF = true;
+                        isJPGorBMP = false;
+                        }
+                  } else {
+                        if(checkFileExists(pngPath)) {
+                            //png exists
+                            filePath = pngPath;
+                            lml.setAttribute("src", pngPath);
+                            isJPGorBMP = true;
+                            useLocalFile = true;
+                            isSWF = false;
+                            ext = "png";
+                        } else {
+                              isSWF = true;
+                        isJPGorBMP = false;
+                        }
+                  }
+            }
+            
+            if ( isJPGorBMP )
+            {
+                  InputStream asset = null;
+                  BufferedImage image = null;
+                  if(useLocalFile) {
+                        asset = new FileInputStream(new File(filePath));
+                        image = ImageIO.read( asset );
+                  } else {
+                        asset = (PlainTextInputStream) new URL(filePath).getContent();
+                        image = ImageIO.read( asset );
+                  }
+                Integer widthINT = new Integer( ext.equals("png")?image.getWidth()/2:image.getWidth() );
+                Integer heightINT = new Integer( ext.equals("png")?image.getHeight()/2:image.getHeight() );
+                lml.setAttribute( "height", heightINT.toString() );
+                lml.setAttribute( "width", widthINT.toString() );
+                asset.close();
+            }
+            else if ( isSWF )
+            {
+                SWFImageSizeDeterminer aImageDeterminer = new SWFImageSizeDeterminer( filePath );
+                aImageDeterminer.checkSize();
+                lml.setAttribute( "height", String.valueOf( aImageDeterminer.getHeight() ) );
+                lml.setAttribute( "width", String.valueOf( aImageDeterminer.getWidth() ) );                   
+            }
+        }  
+    }
+
+
+
+public boolean checkFileExists(String filePathString) {
+      File file = new File(filePathString);
+      return file.exists();
+    }
+    
+    public boolean checkWebFileExists(String filePathString) {
+      try {
+            PlainTextInputStream asset = (PlainTextInputStream) new URL(filePathString).getContent();
+                  BufferedImage image = ImageIO.read( asset );
+                  return true;
+      } catch (Exception e) {
+            return false;
+      }
     }
     
     public void handleParaAttributes( Element para, Element lml ) throws Exception
