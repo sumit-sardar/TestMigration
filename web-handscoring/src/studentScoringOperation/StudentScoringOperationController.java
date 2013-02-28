@@ -711,10 +711,8 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 
     	RubricViewData[] rubricDetailsData = null;
     	try {	
-    		
-    		System.out.println("Inside try block of getRubricDetails method:"+itemId);//for defect#72205
-    		rubricDetailsData =  this.testScoring.getRubricDetailsData(itemId);
-    		System.out.println("rubricdetails data"+rubricDetailsData);//for defect#72205
+    		rubricDetailsData =  this.studentManagement.getRubricDetailsData(itemId);
+    		System.out.println("rubricdetails data");
     	}
     	catch(CTBBusinessException be){
     		be.printStackTrace();

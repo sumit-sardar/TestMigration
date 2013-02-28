@@ -779,9 +779,7 @@ public class TestScoringImpl implements TestScoring {
 		RubricViewData[] rubricData = null;
 
 		try {		
-			System.out.println("Inside try of testscoringImpl "+itemId);//for defect#72205
 			rubricData = scoring.getRubricDataDetails(itemId);
-			System.out.println("Inside try of testscoringImpl after rubric: "+rubricData);//for defect#72205
 		} catch (SQLException se) {
 			se.printStackTrace();//for defect#72205
 			OASLogger
