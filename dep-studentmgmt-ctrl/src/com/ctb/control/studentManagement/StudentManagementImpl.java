@@ -200,12 +200,8 @@ public class StudentManagementImpl implements StudentManagement
 		try {		
 			rubricData = scoring.getRubricDataDetails(itemId);
 		} catch (SQLException se) {
-			se.printStackTrace();//for defect#72205
-			OASLogger
-			.getLogger("TestAdmin")
-			.error(
-					"Exception occurred while getting rubric data.",
-					se);
+			se.printStackTrace();
+			System.out.println("Exception occurred while getting rubric data."+se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getRubricDetailsData: "
 					+ se.getMessage());
@@ -213,11 +209,8 @@ public class StudentManagementImpl implements StudentManagement
 			throw rde;
 
 		} catch (Exception se) {
-			OASLogger
-			.getLogger("TestAdmin")
-			.error(
-					"Exception occurred while getting rubric data.",
-					se);
+			se.printStackTrace();
+			System.out.println("Exception occurred while getting rubric data."+se);
 			ScoringException rde = new ScoringException(
 					"TestScoringImpl: getRubricDetailsData: "
 					+ se.getMessage());
