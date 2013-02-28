@@ -1298,6 +1298,9 @@ public class StudentOperationController extends PageFlowController {
 		String demographicCategoryName = null;
 		for(StudentDemographic demographic : demographics) {
 			demographicCategoryName = demographic.getDemoCategory();
+			if (demographicCategoryName == null) {
+				demographicCategoryName = "ADDITIONAL INFO";
+			}
 			if(null == tempDemographicMap.get(demographicCategoryName)){
 				List dempgraphicsList = new ArrayList();
 				dempgraphicsList.add(demographic);
