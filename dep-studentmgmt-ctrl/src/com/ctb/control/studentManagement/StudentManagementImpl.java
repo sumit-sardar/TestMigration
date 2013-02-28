@@ -37,6 +37,7 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RubricViewData;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -61,9 +62,11 @@ import com.ctb.exception.studentManagement.StudentDataDeletionException;
 import com.ctb.exception.studentManagement.StudentDataNotFoundException;
 import com.ctb.exception.studentManagement.StudentDataUpdateException;
 import com.ctb.exception.studentManagement.UserDataNotFoundException;
+import com.ctb.exception.studentManagement.ScoringException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.DESUtils;
 import com.ctb.util.MathUtils;
+import com.ctb.util.OASLogger;
 import com.ctb.util.SQLutils;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
@@ -145,6 +148,12 @@ public class StudentManagementImpl implements StudentManagement
 	@org.apache.beehive.controls.api.bean.Control()
 	com.ctb.control.db.ImmediateReportingIrs immediateReportingIrs;
 	
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.CRScoring scoring;
+	
 
 	static final long serialVersionUID = 1L;
 
@@ -173,6 +182,55 @@ public class StudentManagementImpl implements StudentManagement
 		}
 
 	}
+	
+	
+	/**
+	 * Method retrieves score, sample and corresponding explanation for rubric view as per the itemid
+	 * 
+	 * @param itemId -
+	 *            identifies item
+	 * @return RubricViewData 
+	 * @throws CTBBusinessException
+	 */
+	@Override
+	public RubricViewData[] getRubricDetailsData(String itemId) throws CTBBusinessException {
+
+		RubricViewData[] rubricData = null;
+
+		try {		
+			rubricData = scoring.getRubricDataDetails(itemId);
+		} catch (SQLException se) {
+			se.printStackTrace();//for defect#72205
+			OASLogger
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting rubric data.",
+					se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getRubricDetailsData: "
+					+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+
+		} catch (Exception se) {
+			OASLogger
+			.getLogger("TestAdmin")
+			.error(
+					"Exception occurred while getting rubric data.",
+					se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getRubricDetailsData: "
+					+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+
+		}
+		return rubricData;
+	}
+
+	
+	
+	
 
 	/**
 	 * Get manage student object for the specified student with the array of assinged org ndoes populated.

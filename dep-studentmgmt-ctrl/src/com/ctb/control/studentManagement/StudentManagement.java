@@ -9,6 +9,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.testAdmin.RubricViewData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
@@ -442,6 +443,15 @@ public interface StudentManagement
      * @return CustomerConfigurationValue []
      * @throws CTBBusinessException
      */
+    
+    /**
+	 * This method retrieves the rubric data for view purpose
+	 * @param itemId - item id
+	 * @return RubricViewData
+	 * @throws CTBBusinessException
+	 */
+	public RubricViewData[] getRubricDetailsData(String itemId) throws CTBBusinessException;
+
     
     com.ctb.bean.studentManagement.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
     
