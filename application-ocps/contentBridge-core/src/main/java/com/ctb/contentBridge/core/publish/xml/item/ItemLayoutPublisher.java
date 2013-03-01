@@ -163,7 +163,7 @@ public class ItemLayoutPublisher {
 					+ "</asset> </publish_asset> </ads_publish_request>";
 			/*ContentPublishBO.publishAsset(connection, request);*/
 			System.out.println("Publish te pkg starts...");
-			System.out.println(request);
+			/*System.out.println(request);*/
 			ContentPublishBO.publishAsset(request);
 			System.out.println("Publish te pkg ends...");
 			//logger.info("responseStr >> "+responseStr);
@@ -215,7 +215,7 @@ public class ItemLayoutPublisher {
 						   "</asset> </publish_asset>";
 	            	//ContentPublishBO.publishAsset(connection, request);
 	               	System.out.println("Publish asset starts...");
-	               	System.out.println(request);
+	               	/*System.out.println(request);*/
 	               	ContentPublishBO.publishAsset(request);
 	               	System.out.println("Publish asset ends...");
 	            	/*String responseStr = client.callUploadAsset(request);
@@ -359,7 +359,7 @@ public class ItemLayoutPublisher {
 				//logger.info("request"+request);
 				//ContentPublishBO.publishAsset(connection, request);
                	System.out.println("Publish asset starts...");
-               	System.out.println(request);
+               	/*System.out.println(request);*/
                	ContentPublishBO.publishAsset(request);
                	System.out.println("Publish asset ends...");
 	            	
