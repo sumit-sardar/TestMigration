@@ -109,7 +109,7 @@ public class AppendXML {
 			throw new SystemException(e);
 		}
 
-		System.out.println(xml);
+		/*System.out.println(xml);*/
 		return xml;
 
 	}
