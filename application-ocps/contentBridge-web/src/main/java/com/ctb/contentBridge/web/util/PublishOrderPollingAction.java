@@ -85,8 +85,9 @@ public class PublishOrderPollingAction implements Runnable {
 							} else {
 								
 								jobStatus = "Error";
-								errMsg = CommandReportFormatter
-										.getErrorMessage((CommandReport) report);
+								errMsg = report.toString();
+										/*CommandReportFormatter
+										.getErrorMessage((CommandReport) report);*/
 							}
 						} else {
 							jobStatus = "Error";
