@@ -161,7 +161,7 @@ public class ContentPublishBO {
 						strAppendedXML, "UTF-8", true, false);
 
 				System.out.println("ContentPublishDAO.updateItem...");
-				ContentPublishDAO.updateItem(conn, finalValues);
+				/*ContentPublishDAO.updateItem(conn, finalValues);
 				decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				
 				
@@ -188,12 +188,12 @@ public class ContentPublishBO {
 					ContentPublishDAO.updateObItemPkg(conn,
 							(String) abtValues.get(0), hash, outData);
 					decrypt(crypto, (String) encdKeyIDs.get(1), hash, outData);
-				}
-				/*hash = crypto.generateHash(outData);
+				}*/
+				hash = crypto.generateHash(outData);
 				System.out.println("ContentPublishDAO.updateObItemPkg...");
 				ContentPublishDAO.updateObItemPkg(conn,
 						(String) abtValues.get(0), hash, outData);
-				decrypt(crypto, (String) encdKeyIDs.get(1), hash, outData);*/
+				decrypt(crypto, (String) encdKeyIDs.get(1), hash, outData);
 				System.out.println("ContentPublishDAO.updateAssetItemMap...");
 				ContentPublishDAO.updateAssetItemMap(conn, abtValues);
 			}
@@ -343,7 +343,7 @@ public class ContentPublishBO {
 
 			ArrayList arrList = xmlParsing.get_Attribute_Values();
 			Validation.validationOfXMLData(arrList, "Asset");
-			System.out.println("image xml  request->> "+xmlFile);
+			/*System.out.println("image xml  request->> "+xmlFile);*/
 			byte buffer[] = PublishCommon.ReadFile(arrList.get(2));
 			System.out.println(arrList.get(2) + "has been read...");
 			String strFlag = ContentPublishDAO.checkAsset(conn, (String)arrList.get(0));
