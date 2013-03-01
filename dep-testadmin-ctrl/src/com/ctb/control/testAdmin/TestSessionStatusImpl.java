@@ -2378,8 +2378,44 @@ public class TestSessionStatusImpl implements TestSessionStatus
 
      public void updateRosterForm(String userName, Integer testRosterId, String assignedForm) throws CTBBusinessException {
 //    	 validator.validate(userName, null, "testAdmin.updateRosterForm");
-         try {
+    	 
+    	 Integer [] itemSetTSs = null;
+    	 Integer [] itemSetTDs = null;
+    	 
+    	 try {
+    		Integer userId = this.users.getUserIdForName(userName);
+        	Integer customerId = this.users.getCustomerIdForName(userName);
       		this.roster.updateRosterForm(userName, testRosterId, assignedForm);
+      		
+      		// delete old form data from siss table.
+      		this.studentItemSetStatus.deleteStudentItemSetStatusesForRoster(testRosterId);
+      		
+      		// add roster with new form into siss table
+      		itemSetTSs = this.roster.getTSItemSetIds(testRosterId);
+      		if(itemSetTSs != null) {
+      			int subtestOrder = 0;
+      			for (int indx =0; indx < itemSetTSs.length; indx++) {
+      				itemSetTDs = this.studentItemSetStatus.getItemSetIdsForFormForParent(itemSetTSs[indx],assignedForm);
+      				for (int indx1 =0; indx1 < itemSetTDs.length; indx1++) {
+	      				StudentSessionStatus siss = new StudentSessionStatus();
+	      				siss.setItemSetId(itemSetTDs[indx1]);
+	      				siss.setCompletionStatus("SC");
+	      				siss.setItemSetOrder(new Integer(subtestOrder));
+	      				siss.setStartDateTime(null);
+	      				siss.setCompletionDateTime(null);
+	      				siss.setValidationStatus("VA");
+	      				siss.setAbsent("N");
+	      				siss.setTestExemptions("N");
+	      				siss.setTimeExpired("F");
+	      				siss.setValidationUpdatedBy(userId);
+	      				siss.setValidationUpdatedDateTime(new Date());
+	      				siss.setValidationUpdatedNote("");
+	                    this.studentItemSetStatus.createStudentItemSetStatusForRosterOnFormChange(customerId, siss, testRosterId);
+	                    subtestOrder++;
+      				}
+      			}
+      		}
+      		
       	 } catch (SQLException se) {
       		CTBBusinessException rde = new CTBBusinessException("TestSessionStatusImpl: updateRosterForm: " + se.getMessage());
       		rde.setStackTrace(se.getStackTrace());

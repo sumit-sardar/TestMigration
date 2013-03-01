@@ -613,4 +613,7 @@ public interface TestRoster extends JdbcControl
     
     @JdbcControl.SQL(statement = "UPDATE TEST_ROSTER SET FORM_ASSIGNMENT = {assignedForm} WHERE TEST_ROSTER_ID = {testRosterId}")
     void updateRosterForm(String userName, Integer testRosterId, String assignedForm) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT ISET.ITEM_SET_ID FROM ITEM_SET ISET, ITEM_SET_PARENT ISP, TEST_ADMIN TA, TEST_ROSTER TR WHERE ISET.ACTIVATION_STATUS = 'AC' AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID AND ISET.ITEM_SET_TYPE = 'TS' AND ISP.PARENT_ITEM_SET_ID = TA.ITEM_SET_ID AND TA.TEST_ADMIN_ID = TR.TEST_ADMIN_ID AND TR.TEST_ROSTER_ID = {testRosterId} ORDER BY ISP.ITEM_SET_SORT_ORDER")
+    Integer [] getTSItemSetIds(Integer testRosterId) throws SQLException;
 }
