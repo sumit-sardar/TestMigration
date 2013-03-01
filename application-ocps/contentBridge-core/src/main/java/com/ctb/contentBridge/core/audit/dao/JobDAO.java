@@ -438,7 +438,7 @@ public class JobDAO {
 			ps = conn.prepareStatement(sbufQuery.toString());
 			ps.setLong(1, jobPk);
 			ps.setString(2, paramName[5]);
-			ps.setString(3, "JOB" + assesmentXml);
+			ps.setString(3, "JOB_" + assesmentXml);
 			ps.setString(4, "New");
 			ps.setString(5, env);
 			ps.setString(6, paramName[0]);
