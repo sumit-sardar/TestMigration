@@ -47,7 +47,7 @@ public class ZippedFileSeparatorThread extends StopableThread {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			StopableThread.foreStopped = true;
+			//StopableThread.foreStopped = true;
 		}
 	}
 

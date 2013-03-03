@@ -95,7 +95,7 @@ public class FtpProcessorThread extends StopableThread {
 			updateItemSet();
 		} catch (Exception e) {
 			System.out.println("exception1 "+e.getMessage());
-			StopableThread.foreStopped = true;
+			//StopableThread.foreStopped = true;
 			e.printStackTrace();
 		} finally {
 			if (sftpSession != null) {
