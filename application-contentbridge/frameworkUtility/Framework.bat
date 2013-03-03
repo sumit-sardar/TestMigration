@@ -1,1 +1,1 @@
-java -cp C:\Workspace\Utility\ Framework %*
+java -cp . Framework %*

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="content/oastools/java"/>
+	<classpathentry kind="src" path="frameworkUtility"/>
 	<classpathentry exported="true" kind="lib" path="resources"/>
 	<classpathentry exported="true" kind="lib" path="conf"/>
 	<classpathentry exported="true" kind="lib" path="wsdl"/>
