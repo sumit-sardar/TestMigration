@@ -1582,6 +1582,16 @@ public class ContentPublishDAO {
 			sbufQuery.append(LINE_SEP);
 			sbufQuery.append("AND obi.aa_item_id = itm.aa_item_id");
 
+			sbufQuery.append(" order by instr('");
+			for (int i = 0; i < itemIdList.size(); i++) {
+				sbufQuery.append(itemIdList.get(i));
+				if (i != itemIdList.size() - 1) {
+					sbufQuery.append(",");
+				} else {
+					sbufQuery.append("',itm.aa_item_id)");
+				}
+			}
+			
 			ps = conn.prepareStatement(sbufQuery.toString());
 			rs = ps.executeQuery();
 		} catch (SQLException e) {
@@ -1630,6 +1640,16 @@ public class ContentPublishDAO {
 			sbufQuery.append(LINE_SEP);
 			sbufQuery.append("AND kym.source_ads_id = ?");
 
+			sbufQuery.append(" order by instr('");
+			for (int i = 0; i < keyId.length; i++) {
+				sbufQuery.append(keyId[i]);
+				if (i != keyId.length - 1) {
+					sbufQuery.append(",");
+				} else {
+					sbufQuery.append("',kym.key_id)");
+				}
+			}
+			
 			ps = conn.prepareStatement(sbufQuery.toString());
 			ps.setString(1, sourcePublishId);
 			rs = ps.executeQuery();
@@ -1722,6 +1742,16 @@ public class ContentPublishDAO {
 					sbufQuery.append(",");
 				} else {
 					sbufQuery.append(")");
+				}
+			}
+			
+			sbufQuery.append(" order by instr('");
+			for (int i = 0; i < itemIdList.size(); i++) {
+				sbufQuery.append(itemIdList.get(i));
+				if (i != itemIdList.size() - 1) {
+					sbufQuery.append(",");
+				} else {
+					sbufQuery.append("',obi.aa_item_id)");
 				}
 			}
 
@@ -2246,7 +2276,7 @@ public class ContentPublishDAO {
 						sbufQuery.append(")");
 					}
 				}
-
+				
 				ps = conn.prepareStatement(sbufQuery.toString());
 				rs = ps.executeQuery();
 
@@ -2285,6 +2315,16 @@ public class ContentPublishDAO {
 					sbufQuery.append(",");
 				} else {
 					sbufQuery.append(")");
+				}
+			}
+			
+			sbufQuery.append(" order by instr('");
+			for (int i = 0; i < itemIdList.size(); i++) {
+				sbufQuery.append(itemIdList.get(i));
+				if (i != itemIdList.size() - 1) {
+					sbufQuery.append(",");
+				} else {
+					sbufQuery.append("',itm.aa_item_id)");
 				}
 			}
 
