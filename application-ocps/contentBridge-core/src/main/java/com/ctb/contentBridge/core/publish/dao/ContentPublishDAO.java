@@ -14,8 +14,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1748,26 +1750,62 @@ public class ContentPublishDAO {
 			ArrayList iObItemIdArr = new ArrayList();
 			ArrayList strAAHash = new ArrayList();
 			ArrayList strAAKey = new ArrayList();
+			Map iObItemIdMap = new HashMap<String, String>();
+			Map strAAHashMap = new HashMap<String, String>();
+			Map strAAKeyMap = new HashMap<String, String>();
 			ResultSet oraset = selectManifestXMLData(conn, aa_item_id1);
 			InputStream is_new = new ByteArrayInputStream(xmlFile.getBytes());
 			Document w3cDoc_new = db.parse(is_new);
 			Element domRootElement_new = w3cDoc_new.getDocumentElement();
 			NodeList sectionElements_new = domRootElement_new
 					.getElementsByTagName("itemref");
+			if(aa_item_id1 != null && !aa_item_id1.isEmpty()){
+				System.out.println("ORIGINAL Item Order:::");
+				for(int z =0 ; z< aa_item_id1.size(); z++){
+					System.out.println(aa_item_id1.get(z));
+				}
+			}
+			
 			while (oraset.next()) {
+				iObItemIdMap.put(oraset.getString(1), oraset.getString(2));
+				strAAHashMap.put(oraset.getString(1), oraset.getString(3));
+				strAAKeyMap.put(oraset.getString(1), oraset.getString(4));
+					
+			}
+			if(aa_item_id1 != null && !aa_item_id1.isEmpty()){
+				
+				for(int z =0 ; z < aa_item_id1.size(); z++){
+					iObItemIdArr.add(iObItemIdMap.get(String.valueOf(aa_item_id1.get(z))));
+					strAAHash.add(strAAHashMap.get(String.valueOf(aa_item_id1.get(z))));
+					strAAKey.add(strAAKeyMap.get(String.valueOf(aa_item_id1.get(z))));
+				}
+			}
+			if(iObItemIdArr != null && !iObItemIdArr.isEmpty()){
+				System.out.println("MODIFIED Item Order:::");
+				for(int z =0 ; z< iObItemIdArr.size(); z++){
+					System.out.println(iObItemIdArr.get(z));
+				}
+			}
+			/*while (oraset.next()) {
 				if (aa_item_id1.contains(oraset.getString(1))) {
 					iObItemIdArr.add(oraset.getString(2));
 					strAAHash.add(oraset.getString(3));
 					strAAKey.add(oraset.getString(4));
+					System.out.println(oraset.getString(1));
 				}
-			}
-			/*
-			 * for (int i = 0; i < aa_item_id1.size(); i++) { oraset.first(); do
-			 * if (oraset.getString(1).equals((String) aa_item_id1.get(i))) {
-			 * iObItemIdArr.add(oraset.getString(2));
-			 * strAAHash.add(oraset.getString(3));
-			 * strAAKey.add(oraset.getString(4)); } while (oraset.next()); }
-			 */
+			}*/
+			
+			/*for (int i = 0; i < aa_item_id1.size(); i++) {
+				oraset.first();
+				do
+					if (oraset.getString(1).equals((String) aa_item_id1.get(i))) {
+						iObItemIdArr.add(oraset.getString(2));
+						strAAHash.add(oraset.getString(3));
+						strAAKey.add(oraset.getString(4));
+					}
+				while (oraset.next());
+			}*/
+			 
 
 			Document doc = db.newDocument();
 			org.w3c.dom.Node root = doc.createElement("ob_assessment");
@@ -2007,6 +2045,7 @@ public class ContentPublishDAO {
 		} catch (Exception ex) {
 			throw new SystemException(ex);
 		}
+		System.out.println("STRING MANIFEST XML:   " + strXmlManifest);
 		return strXmlManifest;
 	}
 
