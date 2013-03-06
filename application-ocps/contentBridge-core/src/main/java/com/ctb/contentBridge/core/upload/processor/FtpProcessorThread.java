@@ -46,7 +46,7 @@ public class FtpProcessorThread extends StopableThread {
 			String ftpPortCont[] = ftpPort.split(delimiter);
 			String sourceFile=null;
 			String sourceDir=null;
-     
+            int counter = 0;
       
       
 			while (!foreStopped) {
@@ -71,11 +71,22 @@ public class FtpProcessorThread extends StopableThread {
 							 sourceDir = configuration.getLocalFilePath();
 						
 						 for (int count = 0; count < ftpHostCont.length; count++) {								
-							
-								sftpSession = FtpUtil.getSFtpSession(configuration,
-										ftpHostCont[count], ftpUserCont[count],
-										ftpPassCont[count],
-										Integer.parseInt(ftpPortCont[count]));
+							counter = 0;
+							 do{
+								 try {
+									sftpSession = FtpUtil.getSFtpSession(configuration,
+											ftpHostCont[count], ftpUserCont[count],
+											ftpPassCont[count],
+											Integer.parseInt(ftpPortCont[count]));
+									System.out.println("COUNTER::"+counter);
+									counter = 20;
+								} catch (Exception e) {
+									counter++;
+									if(counter == 20){
+										throw e;
+									}
+								}
+							 }while(counter < 20);
 
 						System.out.println("Ftp started for file ["
 								+ value.getVal() + "] for ftp Host["+ftpHostCont[count]+"]");
