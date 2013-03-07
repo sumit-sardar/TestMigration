@@ -161,7 +161,7 @@ public class ContentPublishBO {
 						strAppendedXML, "UTF-8", true, false);
 
 				System.out.println("ContentPublishDAO.updateItem...");
-				ContentPublishDAO.updateItem(conn, finalValues);
+				//ContentPublishDAO.updateItem(conn, finalValues);
 				decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				
 				
@@ -171,7 +171,10 @@ public class ContentPublishBO {
 			     String decTemp1Xml=matcher.replaceAll("id=\"");
 			     Matcher matcherBSave =pattern.matcher(strAppendedXML);
 			     String decTemp2Xml=matcherBSave.replaceAll("id=\"");
-				if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
+			     String decTemp2Final = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			     String decTemp1Final = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+				//if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
+			     if (decTemp1Final.trim().equals(decTemp2Final.trim())) {
 					System.out.println("Content unchanged...");
 					/*hash = ContentPublishDAO.getHashItemPkg(conn, finalValues
 							.get(0).toString());
@@ -182,6 +185,9 @@ public class ContentPublishBO {
 					// outData);
 				} else {
 					System.out.println("Content changed...");
+					System.out.println("New Xml ::: " + decTemp2Final);
+					System.out.println("Old XML ::: " + decTemp1Final);
+					ContentPublishDAO.updateItem(conn, finalValues);
 					hash = crypto.generateHash(outData);
 					System.out.println("new hash-->>"+hash);
 					System.out.println("ContentPublishDAO.updateObItemPkg...");
