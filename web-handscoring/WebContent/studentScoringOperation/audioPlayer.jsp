@@ -9,7 +9,7 @@
 		var audioResponseString = sng;
 		var regExp = /\s+/g;
 		var stringFX = audioResponseString.replace(regExp,'');
-		var fxstring = '<applet CODEBASE = "/ScoringWeb/resources/fxResources/" mayscript="true" scriptable="true" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "myApplet" id= "myApplet"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
+		var fxstring = '<applet CODEBASE = "/ScoringWeb/resources/fxResources/" mayscript="true" scriptable="true" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "audioPlayer" id= "audioPlayer"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
 		document.getElementById(parentObj).innerHTML = fxstring;
 		parent.playCompleted = false;
 	}
