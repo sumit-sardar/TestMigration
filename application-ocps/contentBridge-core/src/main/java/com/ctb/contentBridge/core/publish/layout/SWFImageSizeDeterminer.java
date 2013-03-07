@@ -9,6 +9,7 @@ package com.ctb.contentBridge.core.publish.layout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.ctb.contentBridge.core.publish.anotherbigidea.flash.SWFConstants;
 import com.ctb.contentBridge.core.publish.anotherbigidea.flash.interfaces.SWFTags;
@@ -48,7 +49,13 @@ public class SWFImageSizeDeterminer
     public byte[] getRemoteFileContent( String src ) throws Exception
     {
         int EACH_READ_SIZE = 1000;
-        PlainTextInputStream inputStream = (PlainTextInputStream) new URL(src).getContent();
+        InputStream inputStream = null;
+        if(src != null && src.startsWith("http")) {
+        	 inputStream = (PlainTextInputStream) new URL(src).getContent();
+        }else{
+        	 inputStream = new FileInputStream(new File(src));
+        }
+       
         byte[] result = null;
         byte[] buffer = new byte[ EACH_READ_SIZE ];
         int readSize;
@@ -92,7 +99,13 @@ public class SWFImageSizeDeterminer
     {
         String filePath = null;
         byte[] content = getRemoteFileContent( src );
-        PlainTextInputStream inputStream = (PlainTextInputStream) new URL(src).getContent();
+        InputStream inputStream = null;
+        if(src != null && src.startsWith("http")) {
+        	 inputStream = (PlainTextInputStream) new URL(src).getContent();
+        }else{
+        	 inputStream = new FileInputStream(new File(src));
+        }
+        //PlainTextInputStream inputStream = (PlainTextInputStream) new URL(src).getContent();
  //       inputStream = new FileInputStream( new File( src ));
         int byteValue = inputStream.read();
         byteValue = inputStream.read();
@@ -123,7 +136,13 @@ public class SWFImageSizeDeterminer
         FontLoader fontloader = new FontLoader();
         consumer = new SWFTagParser( fontloader );
         //FileInputStream fis = new FileInputStream( new File( imagePath ) );
-        PlainTextInputStream fis = (PlainTextInputStream) new URL(imagePath).getContent();
+        InputStream fis = null;
+        if(imagePath != null && imagePath.startsWith("http")) {
+        	fis = (PlainTextInputStream) new URL(imagePath).getContent();
+        }else{
+        	fis = new FileInputStream(new File(imagePath));
+        }
+        //PlainTextInputStream fis = (PlainTextInputStream) new URL(imagePath).getContent();
         in = new InStream( fis );
         if( ( in.readUI8() == 0x43 ) &&  // "C"
             ( in.readUI8() == 0x57 ) &&  // "W"
@@ -149,7 +168,12 @@ public class SWFImageSizeDeterminer
         else
         {
             fis.close();
-            fis = (PlainTextInputStream) new URL(imagePath).getContent();
+            if(imagePath != null && imagePath.startsWith("http")) {
+            	fis = (PlainTextInputStream) new URL(imagePath).getContent();
+            }else{
+            	fis = new FileInputStream(new File(imagePath));
+            }
+            //fis = (PlainTextInputStream) new URL(imagePath).getContent();
             in = new InStream( fis );
         }
         if ( readHeader() )
