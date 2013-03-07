@@ -83,7 +83,7 @@ public class ItemProcessorGeneric implements ItemProcessor {
         this.connection = conn;
         this.maxPanelWidth = maxPanelWidth;
         this.includeAcknowledgment = includeAcknowledgment;
-        setCurrentItemList( new ArrayList() );
+        // setCurrentItemList( new ArrayList() );
     }
     
     public void getAttributeFromTestItem( Item mappedItem )
