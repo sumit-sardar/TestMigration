@@ -1301,6 +1301,9 @@ function openTreeNodes(orgNodeId) {
 												
 														jQuery("#list2").sortGrid(sortCol,true);
 													}
+													else{
+														jQuery("#list2").delRowData(data.organizationDetail.orgNodeId);
+													}
 													checkedListObject = {}; // Added to clear checkedListObject if organization saved successfully.
 
 												}
@@ -1972,7 +1975,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 		var index = getIndexOfRoot(currentSelectedId);
 		//Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
-		if (parentElementBeforeAdd.getAttribute("cid") ==1){
+		if (parentElementBeforeAdd.getAttribute("tcl") ==1){
 			//console.log("AddObject" + obj);		
 			/*if(obj == null || obj == undefined)
 				obj = [];
@@ -1984,7 +1987,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
 
 		}
-		prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
+		prepareData(false,parentElementBeforeAdd.getAttribute("tcl"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
 		var obj = map.get(currentSelectedId);
 		var addedObject = map.get(addedOrgId);
 
@@ -2010,7 +2013,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		
 		//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
 		//For levels 3 to n we have to consider two things before adding the elements to cache first whether the element has children or not.
-		if (parentElementBeforeAdd.getAttribute("cid") > 1 && obj.hasOwnProperty("children")){
+		if (parentElementBeforeAdd.getAttribute("tcl") > 1 && obj.hasOwnProperty("children")){
 			if (addedObject != null && addedObject != undefined && addedObject.children != undefined){
 			 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined},children: addedObject.children}); 
 			 }else {
@@ -2019,7 +2022,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		 map.put(currentSelectedId,obj);
 		 tclIndex = tclIndex +1;
 		}
-		else if (parentElementBeforeAdd.getAttribute("cid") > 1) {
+		else if (parentElementBeforeAdd.getAttribute("tcl") > 1) {
 		 obj.children = [];
 		 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});	 
 		 map.put(currentSelectedId,obj);
