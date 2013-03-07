@@ -172,8 +172,11 @@ public class ContentPublishBO {
 			     String decTemp1Xml=matcher.replaceAll("id=\"");
 			     Matcher matcherBSave =pattern.matcher(strAppendedXML);
 			     String decTemp2Xml=matcherBSave.replaceAll("id=\"");
-			     String decTemp2Final = URLEncoder.encode(decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");
-			     String decTemp1Final = URLEncoder.encode(decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");
+			     String decTemp2Final = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			     String decTemp1Final = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			     
+			     /*String decTemp2Final = URLEncoder.encode(decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");
+			     String decTemp1Final = URLEncoder.encode(decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");*/
 				//if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
 			     if (decTemp1Final.equalsIgnoreCase(decTemp2Final)) {
 					System.out.println("Content unchanged...");
@@ -186,8 +189,8 @@ public class ContentPublishBO {
 					// outData);
 				} else {
 					System.out.println("Content changed...");
-					System.out.println("New XML ::: " + decTemp2Final);
-					System.out.println("Old XML ::: " + decTemp1Final);
+					/*System.out.println("New XML ::: " + decTemp2Final);
+					System.out.println("Old XML ::: " + decTemp1Final);*/
 					ContentPublishDAO.updateItem(conn, finalValues);
 					hash = crypto.generateHash(outData);
 					System.out.println("new hash-->>"+hash);

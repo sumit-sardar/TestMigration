@@ -81,22 +81,24 @@ public class PublishOrderPollingAction implements Runnable {
 						if (report != null) {
 							if (report.isSuccess()) {
 								jobStatus = "Success";
-								
+								msgText = report.toString();
 							} else {
 								
 								jobStatus = "Error";
 								errMsg = report.toString();
+								System.out.println("Error in Report\n" + errMsg);
 										/*CommandReportFormatter
 										.getErrorMessage((CommandReport) report);*/
+								msgText = errMsg;
 							}
 						} else {
 							jobStatus = "Error";
 							errMsg = "Error has occurred in publish process.";
-							
+							msgText = errMsg;
 						}
 						String jobEnv[]=new String[2];
 						ContentBridgeService.getJobIdEnv(configuration, vJobBean.getJobPk(),jobEnv);
-						msgText=report.toString();
+						/*msgText=report.toString();*/
 
 						subject+= subjectBig+jobEnv[0]
 					                + " ["
@@ -105,6 +107,10 @@ public class PublishOrderPollingAction implements Runnable {
 			            subject += (report.isSuccess())
 			                    ? EmailGateway.SUCCESS_SUBJECT
 			                    : EmailGateway.FAILURE_SUBJECT;
+			            
+			            if(errMsg != null && errMsg.length() >= 4000) {
+			            	errMsg = errMsg.substring(0, 3900);
+			            }
 						vContentBridgeService.updateJobStatus(configuration,
 								vJobBean.getJobPk(), jobStatus, errMsg);
 						System.out.println("Processing job ends:	"+ vJobBean.getJobPk());
@@ -123,10 +129,10 @@ public class PublishOrderPollingAction implements Runnable {
 			} while (true);
 		} catch (InterruptedException exc) {
 			logger.info(exc);
-			System.out.println("MyThread interrupted.");
+			System.out.println("MyThread interrupted." + exc);
 		} catch (Exception exc) {
 			logger.info(exc);
-			System.out.println("MyThread interrupted.");
+			System.out.println("MyThread interrupted." + exc);
 		}
 		finally{
 			 /*if ( report != null )

@@ -107,8 +107,9 @@ public class ItemProcessorGeneric implements ItemProcessor {
         Item item = this.builder.build(itemElement);
         updateItemProcessorReport(item, r);
 
+        System.out.println("Validate: " + item.getId());
         this.sourceValidator.validate(item);
-
+        System.out.println("Validation successful for: " + item.getId());
         Item mappedItem = null;
         try {
             mappedItem = this.mapper.mapItem(item);
@@ -123,11 +124,13 @@ public class ItemProcessorGeneric implements ItemProcessor {
         if ( !isItemProcessed( r.getID() ))
         {
             ItemLayoutPublisher itemLayout = new ItemLayoutPublisher(unicodeList, /*adsConfig,*/connection, maxPanelWidth, includeAcknowledgment);
-        	mappedItem.setLayoutElement(itemLayout.publishLayout(itemElement));
+            System.out.println("Publish item starts for: " + item.getId());
+            mappedItem.setLayoutElement(itemLayout.publishLayout(itemElement));
             mappedItem.setMedia(null);
   //  		if (!"NI".equals(mappedItem.getType()))
     			r.setNewID(this.writer.write(mappedItem));
             setItemProcessed( r.getID() );
+            System.out.println("Processed item: " + item.getId());
         }
         else
         {
@@ -136,6 +139,7 @@ public class ItemProcessorGeneric implements ItemProcessor {
             r.setNewID( r.getID() );
         }
         
+        System.out.println("item report.isSuccess(): " + r.isSuccess());
         return r;
     }
 
