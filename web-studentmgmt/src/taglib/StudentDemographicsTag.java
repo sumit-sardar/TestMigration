@@ -224,7 +224,7 @@ public class StudentDemographicsTag extends CTBTag
                         writeToPage(getSpaces(1));  
                     displayCellEnd();                    
                     displayCellStart("transparent-small", "20", null);                    
-                        writeToPage(radioButton(name, "None", !hasSelected, editable));
+                        writeToPage(radioButton(name, name+"_None", !hasSelected, editable));
                     displayCellEnd();
                     displayCellStart("transparent-small", "*", null);                    
                         writeToPage("None");
@@ -247,10 +247,10 @@ public class StudentDemographicsTag extends CTBTag
             displayCellStart("transparent-small");
                 writeToPage(getSpaces(8));
                 if(name.equals("Ethnicity"))
-                	writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) +
+                	writeToPage("<select name=\"" + name + demoCategory + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) +
 					"\" id=\""+name+"\" onChange=toogleHispanicEhtnicityOptions('true');"+ " >");                	
                 else
-                	writeToPage("<select name=\"" + name + "\" id=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+                	writeToPage("<select name=\"" + name + demoCategory + "\" id=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 		        writeToPage(option("Please Select", true));
 			    for (i=0 ; i<values.length ; i++) {
 			        StudentDemographicValue sdv = (StudentDemographicValue)values[i];

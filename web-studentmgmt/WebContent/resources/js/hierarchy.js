@@ -3372,10 +3372,10 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 	function populateStuDemographics(){
 		var noRadioData = true;
-		var alreadyExecuted = false;
 		var demoGroup = "";
 		var groupDiv = "";
 		for(var count=0; count< stuDemographic.length; count++) {
+			var alreadyExecuted = false;
 			if(stuDemographic[count]['demoCategory'] != undefined) {
 					demoGroup = "_" + stuDemographic[count]['demoCategory'];
 																
@@ -3446,16 +3446,17 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     			if(noRadioData && !alreadyExecuted){
 				     				$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
 				     				if(demoGroup != "")
-				     					$("#"+groupDiv + " :radio[value='None']").attr('checked',true);
+				     					$("#"+groupDiv + " :radio[value='"+stuDemographic[count]['labelName']+"_None']").attr('checked',true);
 				     				alreadyExecuted = true;
 				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     			if(demoGroup != "")
 				     				$("#"+groupDiv + " select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     			
-				     			var radioButtonId = stuDemographic[count]['labelName'] +'_' + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'];
-				     			$("#"+radioButtonId).attr('checked',false);
-				     			//$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+				     			//var radioButtonId = stuDemographic[count]['labelName'] +'_' + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'];
+				     			//$("#"+radioButtonId).attr('checked',false);
+				     			if(groupDiv != "")
+				     				$("#"+groupDiv+" :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 				     		}
 				     	}
 						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
@@ -3494,7 +3495,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				}
 				if(valueCardinality == 'MULTIPLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){	
-			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
+			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] + demoGroup;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
 			     			if(demoGroup != "")
