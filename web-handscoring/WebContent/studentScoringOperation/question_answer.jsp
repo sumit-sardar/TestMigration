@@ -25,23 +25,7 @@ function stopAudio(){
     	return stringFX;
 	}
 	
-	/*function getAudioPlayer(parentObj) {
-	  var fxstring = javafxString(
-	    {
-	            archive: "/ScoringWeb/resources/fxResources/JavaFXApplication1.jar",
-	            visible: false,	            
-	            width: 250,
-	            height: 80,
-	            code: "javafxapplication1.Main",
-	            name: "myApplet",
-	            id: "myApp"
-	    }
-	  );
-	  document.getElementById(parentObj).innerHTML = fxstring;
-	  playCompleted = false;
-	}*/
 	
-
 	function showScoreSelect(disableStatus){
 		if(document.getElementById("itemType").value == "AI"){
 			if(disableStatus == "true"){
