@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.Config;
 
 
@@ -154,7 +154,7 @@ public class ProductConfig extends Config {
         if (productTypes != null) {
             return productTypes;
         } else {
-            throw new BusinessException("Cannot find framework [" + frameworkCode + "]\n");
+            throw new SystemException("Cannot find framework [" + frameworkCode + "]\n");
         }
     }
 
@@ -170,7 +170,7 @@ public class ProductConfig extends Config {
         if (info != null) {
             return info;
         } else {
-            throw new BusinessException("Cannot find product [" + productName + "] in framework ["
+            throw new SystemException("Cannot find product [" + productName + "] in framework ["
                     + frameworkCode + "]\n");
         }
     }

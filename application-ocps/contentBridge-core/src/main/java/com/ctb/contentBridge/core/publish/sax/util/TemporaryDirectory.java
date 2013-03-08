@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.sax.util;
 import java.io.File;
 import java.io.IOException;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 /**
  * User: mwshort
@@ -14,7 +14,7 @@ import com.ctb.contentBridge.core.exception.BusinessException;
  */
 public class TemporaryDirectory {
 
-    public static File createTempDir(File parent, String prefix) throws BusinessException {
+    public static File createTempDir(File parent, String prefix) throws SystemException {
 
         if (!parent.exists()) {
             parent.mkdir();
@@ -28,12 +28,12 @@ public class TemporaryDirectory {
             File tempDir = new File(dirName);
 
             if (!tempDir.mkdirs()) {
-                throw new BusinessException("Failed to create temp directory:"
+                throw new SystemException("Failed to create temp directory:"
                         + dirName);
             }
             return tempFilePath;
         } catch (IOException e) {
-            throw new BusinessException("Failed to create temp directory:"
+            throw new SystemException("Failed to create temp directory:"
                     + e.getMessage());
         }
     }

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetAncestorRecord;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetCategoryRecord;
@@ -168,7 +168,7 @@ public class DBObjectivesGateway {
         if (field != null) {
             return field.longValue();
         } else {
-            throw new BusinessException(
+            throw new SystemException(
                 "Item Set for Objective '"
                     + cmsObjectiveID
                     + "' in framework '"
@@ -194,7 +194,7 @@ public class DBObjectivesGateway {
                 session.evict(itemSetCategoryRecord);
                 return itemSetLevel;
             } else {
-                throw new BusinessException(
+                throw new SystemException(
                     "Item Set for ID " + extCmsItemSetID + " not found.");
             }
 
@@ -326,7 +326,7 @@ public class DBObjectivesGateway {
                     itemSetCategoryRecord.getItemSetCategoryLevel().intValue();
 
                 if (!categoryLevels.add(new Integer(level))) {
-                    throw new BusinessException(
+                    throw new SystemException(
                         "framework "
                             + frameworkCode
                             + " contains multiple categories at level "
@@ -398,7 +398,7 @@ public class DBObjectivesGateway {
             if (product != null)
                 return product.getProductId().intValue();
             else
-                throw new BusinessException(
+                throw new SystemException(
                     "Product "
                         + fullDisplayName
                         + " not found in framework "
@@ -538,7 +538,7 @@ public class DBObjectivesGateway {
             }
 
         } else {
-            throw new BusinessException(
+            throw new SystemException(
                 "Cannot update item set name for item with EXT_CMS_ITEM_SET_ID: ["
                     + extCmsItemSetId
                     + "]");
@@ -565,7 +565,7 @@ public class DBObjectivesGateway {
                 throw new SystemException(e.getMessage());
             }
         } else {
-            throw new BusinessException(
+            throw new SystemException(
                 "Cannot update item set display name for item with EXT_CMS_ITEM_SET_ID: ["
                     + extCmsItemSetId
                     + "]");

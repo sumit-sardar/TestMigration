@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingEntry;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingProcessor;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingUtils;
@@ -56,7 +56,7 @@ public class CommandProcessorTestMapWriteCSV implements CommandProcessor {
         }
 
         if (mappingProcessor.getEntries().size() != expectedNumberOfEntries) {
-            throw new BusinessException(
+            throw new SystemException(
                 "["
                     + expectedNumberOfEntries
                     + "] entries expected. Only ["

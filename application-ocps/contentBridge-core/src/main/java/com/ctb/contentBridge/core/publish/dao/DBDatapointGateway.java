@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ConditionCodeRecord;
 import com.ctb.contentBridge.core.publish.hibernate.persist.DatapointConditionCodeCompositeId;
@@ -112,7 +112,7 @@ public class DBDatapointGateway {
 
                 return datapoint;
             } else {
-                throw new BusinessException("no datapoint for item_id=" + itemId);
+                throw new SystemException("no datapoint for item_id=" + itemId);
             }
 
         } catch (HibernateException e) {
@@ -172,7 +172,7 @@ public class DBDatapointGateway {
 
                 return datapoint;
             } else {
-                throw new BusinessException("no datapoint for item_id=" + itemId);
+                throw new SystemException("no datapoint for item_id=" + itemId);
             }
 
         } catch (HibernateException e) {
@@ -321,7 +321,7 @@ public class DBDatapointGateway {
                 session.evict(condition);
                 return condition.getConditionCodeId().longValue();
             } else {
-                throw new BusinessException(
+                throw new SystemException(
                     "Invalid Condition Code: " + conditionCode);
             }
 

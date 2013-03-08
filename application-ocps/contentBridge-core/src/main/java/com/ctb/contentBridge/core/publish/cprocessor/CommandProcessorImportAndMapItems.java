@@ -9,7 +9,7 @@ import java.sql.Connection;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.HibernateSession;
 import com.ctb.contentBridge.core.publish.mapping.ItemMap;
 import com.ctb.contentBridge.core.publish.mapping.Objectives;
@@ -61,7 +61,7 @@ public class CommandProcessorImportAndMapItems implements CommandProcessor {
                 targetConnection);
         this.itemMaps = itemMaps;
         if (objectivesArray.length != itemMaps.length)
-            throw new BusinessException("Number of Objectives and ItemMaps is not equal");
+            throw new SystemException("Number of Objectives and ItemMaps is not equal");
         mapItemProcessors = new ItemProcessor[objectivesArray.length];
         for (int i = 0; i < objectivesArray.length; i++) {
             mapItemProcessors[i] =

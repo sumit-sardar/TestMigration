@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.sax.util;
 
 import java.io.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 
 
@@ -35,18 +35,18 @@ public class TransparentXSLDocument extends XSLDocType {
         }
         try {
 			loadInstance();
-		} catch (BusinessException e) {
+		} catch (SystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return instance;
     }
 
-    private static synchronized void loadInstance() throws BusinessException {
+    private static synchronized void loadInstance() throws SystemException {
         try {
             instance = new TransparentXSLDocument(XSL_STRING.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            throw new BusinessException("Could not support UTF-8 encoding");
+            throw new SystemException("Could not support UTF-8 encoding");
         }
     }
 }

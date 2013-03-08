@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 
 public class ProductTypeInfo {
@@ -109,7 +109,7 @@ public class ProductTypeInfo {
         if (info != null) {
             return info;
         } else {
-            throw new BusinessException("Cannot find content area [" + contentAreaName
+            throw new SystemException("Cannot find content area [" + contentAreaName
                     + "] in product [" + name + "]\n");
         }
     }

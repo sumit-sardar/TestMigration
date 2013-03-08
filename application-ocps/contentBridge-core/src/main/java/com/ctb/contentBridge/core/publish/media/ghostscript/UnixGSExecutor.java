@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.media.ghostscript;
 
 import java.io.File;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.executable.AbstractExecutor;
 import com.ctb.contentBridge.core.publish.executable.ExecutionInfo;
 
@@ -18,13 +18,13 @@ public class UnixGSExecutor extends AbstractExecutor implements GSExecutor {
 
         public static String PS2PDF_UNIX = "/usr/local/bin/ps2pdf";
 
-    public void execute(File psFile, File pdfFile) throws BusinessException {
+    public void execute(File psFile, File pdfFile) throws SystemException {
         exec(PS2PDF_UNIX + " " + psFile.getPath() + " " + pdfFile.getPath());
     }
 
     protected void checkForErrors(ExecutionInfo info) {
         super.checkForErrors(info);
         if ((!info.getErrors().equals("")) || (!info.getOutput().equals("")))
-            throw new BusinessException(info.toString());
+            throw new SystemException(info.toString());
     }
 }

@@ -6,7 +6,7 @@ import java.util.*;
 
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.IOUtils;
 
 
@@ -65,16 +65,16 @@ public class XSLDocType {
         return xslDocumentBytes;
     }
 
-    public Document getDocument() throws BusinessException {
+    public Document getDocument() throws SystemException {
         try {
             return IOUtils.loadXmlDocument(getDocumentStream(), false);
         } catch (JDOMException e) {
             e.printStackTrace();  // To change body of catch statement use Options | File Templates.
-            throw new BusinessException("Could not load XSL document with JDOM for "
+            throw new SystemException("Could not load XSL document with JDOM for "
                     + this);
         } catch (IOException e) {
             e.printStackTrace();  // To change body of catch statement use Options | File Templates.
-            throw new BusinessException("Could not load XSL document with JDOM for "
+            throw new SystemException("Could not load XSL document with JDOM for "
                     + this);
         }
     }

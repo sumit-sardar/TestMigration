@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.BuilderUtils;
 
 
@@ -48,7 +48,7 @@ public class PremadeTestHolderAssembler {
         String scoreTypeCode;
 
         if (!rootElement.getName().equals(SUBTEST)) {
-            throw new BusinessException("Invalid root element: "
+            throw new SystemException("Invalid root element: "
                     + rootElement.getName());
         }
         frameworkCode = extractAttributeMandatory(rootElement, FRAMEWORK_CODE);
@@ -58,7 +58,7 @@ public class PremadeTestHolderAssembler {
         version = extractAttributeOptional(rootElement, VERSION);
         grade = extractAttributeMandatory(rootElement, GRADE);
         if (grade.trim().length() == 0) {
-            throw new BusinessException("The " + GRADE
+            throw new SystemException("The " + GRADE
                     + " attribute cannot be empty");
         }
         itemSetLevel = grade;
@@ -109,7 +109,7 @@ public class PremadeTestHolderAssembler {
         String value = element.getAttributeValue(attributeName);
 
         if (value == null) {
-            throw new BusinessException("Attribute " + attributeName
+            throw new SystemException("Attribute " + attributeName
                     + " of element <" + element.getName() + "> is mandatory.");
         }
         return value;
@@ -122,7 +122,7 @@ public class PremadeTestHolderAssembler {
         try {
             value = Integer.parseInt(stringValue);
         } catch (NumberFormatException e) {
-            throw new BusinessException("Attribute " + attributeName
+            throw new SystemException("Attribute " + attributeName
                     + " does not contain an integer number: " + stringValue);
         }
         return value;
@@ -141,7 +141,7 @@ public class PremadeTestHolderAssembler {
         Element child = element.getChild(childElementName);
 
         if (child == null) {
-            throw new BusinessException("Element " + childElementName
+            throw new SystemException("Element " + childElementName
                     + " not found under element " + element.getName());
         }
         return child.getText();

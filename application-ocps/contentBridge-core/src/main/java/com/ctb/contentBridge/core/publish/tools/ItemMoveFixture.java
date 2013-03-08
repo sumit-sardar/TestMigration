@@ -1,6 +1,6 @@
 package com.ctb.contentBridge.core.publish.tools;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.dao.DBDatapointGateway;
 import com.ctb.contentBridge.core.publish.dao.DBItemGateway;
 import com.ctb.contentBridge.core.publish.dao.DBObjectivesGateway;
@@ -35,7 +35,7 @@ public class ItemMoveFixture {
             if (igw
                 .itemExistsActiveOrInactive(
                     ItemMoveFixture.ITEM_ID_NON_EXISTENT)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test did not expect existence of item "
                         + ItemMoveFixture.ITEM_ID_NON_EXISTENT);
             }
@@ -43,7 +43,7 @@ public class ItemMoveFixture {
                 .objectiveExistsWithinFramework(
                     ItemMoveFixture.EXT_CMS_ITEM_SET_ID_NON_EXISTENT,
                     FRAMEWORK_CODE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     " test did not expect existence of item set "
                         + ItemMoveFixture.EXT_CMS_ITEM_SET_ID_NON_EXISTENT
                         + " within CTB framework");
@@ -54,7 +54,7 @@ public class ItemMoveFixture {
                     ItemMoveFixture.ITEM_ID_ACTIVE_SR,
                     ItemMoveFixture.EXT_CMS_ITEM_SET_ID_ACTIVE_1,
                     FRAMEWORK_CODE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test expects item "
                         + ItemMoveFixture.ITEM_ID_ACTIVE_SR
                         + " to be linked to objective "
@@ -65,7 +65,7 @@ public class ItemMoveFixture {
                     ItemMoveFixture.ITEM_ID_ACTIVE_SR,
                     ItemMoveFixture.EXT_CMS_ITEM_SET_ID_ACTIVE_2,
                     FRAMEWORK_CODE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test does not expect item "
                         + ItemMoveFixture.ITEM_ID_ACTIVE_SR
                         + " to be linked to objective "
@@ -78,7 +78,7 @@ public class ItemMoveFixture {
                     ItemMoveFixture.ITEM_ID_ACTIVE_CR,
                     ItemMoveFixture.EXT_CMS_ITEM_SET_ID_ACTIVE_3,
                     FRAMEWORK_CODE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test expects item "
                         + ItemMoveFixture.ITEM_ID_ACTIVE_CR
                         + " to be linked to objective "
@@ -89,7 +89,7 @@ public class ItemMoveFixture {
                     ItemMoveFixture.ITEM_ID_ACTIVE_CR,
                     ItemMoveFixture.EXT_CMS_ITEM_SET_ID_ACTIVE_2,
                     FRAMEWORK_CODE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test does not expect item "
                         + ItemMoveFixture.ITEM_ID_ACTIVE_CR
                         + " to be linked to objective "
@@ -105,13 +105,13 @@ public class ItemMoveFixture {
             if (!ogw
                 .testGetItemSetActivationStatus(inactiveItemSetId)
                 .equals(OASConstants.ITEM_SET_STATUS_INACTIVE)) {
-                throw new BusinessException(
+                throw new SystemException(
                     "test expectes item set "
                         + ItemMoveFixture.EXT_CMS_ITEM_SET_ID_INACTIVE
                         + " to be inactive");
             }
         } catch (Exception ex) {
-            throw new BusinessException(
+            throw new SystemException(
                 "unexpected error setting up test fixture");
         }
     }

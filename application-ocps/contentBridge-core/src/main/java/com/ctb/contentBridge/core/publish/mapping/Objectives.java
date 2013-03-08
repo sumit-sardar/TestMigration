@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.mapping;
 import java.util.*;
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.DefaultObjectiveGradeProcessor;
 import com.ctb.contentBridge.core.publish.tools.ObjectiveGradeProcessor;
 import com.ctb.contentBridge.core.publish.tools.StandardObjectiveGradeProcessor;
@@ -98,7 +98,7 @@ public class Objectives {
                 return o;
             }
         }
-        throw new BusinessException("No element exists at the root framework level");
+        throw new SystemException("No element exists at the root framework level");
     }
 
     public Element hierarchy(String curriculumID) {

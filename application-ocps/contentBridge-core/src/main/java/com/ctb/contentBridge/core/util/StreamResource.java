@@ -6,7 +6,7 @@ package com.ctb.contentBridge.core.util;
 import java.io.*;
 import java.net.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 
 
@@ -19,31 +19,31 @@ public class StreamResource {
 
     public StreamResource() {}
 
-    public InputStream getStream(URL resourceLocator) throws IOException, BusinessException {
+    public InputStream getStream(URL resourceLocator) throws IOException, SystemException {
         synchronized (this) {
             try {
                 return getFromUrl(resourceLocator);
             } catch (Exception e) {
                 cleanUp();
-                throw new BusinessException("Could not locate resource at URL");
+                throw new SystemException("Could not locate resource at URL");
             }
 
         }
     }
 
-    public InputStream getStream(File resourceLocator) throws IOException, BusinessException {
+    public InputStream getStream(File resourceLocator) throws IOException, SystemException {
         synchronized (this) {
             try {
                 return getFromFile(resourceLocator);
             } catch (Exception e) {
                 cleanUp();
-                throw new BusinessException("Could not locate resource in file");
+                throw new SystemException("Could not locate resource in file");
             }
 
         }
     }
 
-    public InputStream getStream(String resourceLocator) throws IOException, BusinessException {
+    public InputStream getStream(String resourceLocator) throws IOException, SystemException {
 
         synchronized (this) {
             try {
@@ -74,7 +74,7 @@ public class StreamResource {
 
             cleanUp();
             // try and get off resource bundle
-            throw new BusinessException("Resource " + resourceLocator
+            throw new SystemException("Resource " + resourceLocator
                     + " not found or inaccessible at File, Classloader, AND URL");
 
         }

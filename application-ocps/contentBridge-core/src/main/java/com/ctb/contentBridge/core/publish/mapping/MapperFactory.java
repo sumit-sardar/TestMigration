@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.apache.log4j.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,7 +42,7 @@ public class MapperFactory {
 
             return newMapper(objectives, itemMap);
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
     public static Mapper newMapper(Objectives objectives, ItemMap itemMap) {
@@ -51,7 +51,7 @@ public class MapperFactory {
         try {
             mapper = new Mapper(itemMap, objectives);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
         Collection badItems = mapper.getMappedItemsNotInObjectives();
 
@@ -63,7 +63,7 @@ public class MapperFactory {
             for (Iterator iter = badItems.iterator(); iter.hasNext();) {
                 s += "\n  Item ID [" + (String) iter.next() + "]";
             }
-            throw new BusinessException(s);
+            throw new SystemException(s);
         }
         return mapper;
 
@@ -91,7 +91,7 @@ public class MapperFactory {
             String s =
                 "Duplicate Item IDs in Item Map file: "
                     + getDuplicateItemsList(itemMap);
-            throw new BusinessException(s);
+            throw new SystemException(s);
         }
         _currentItemMap.set(itemMap);
         return itemMap;
@@ -109,7 +109,7 @@ public class MapperFactory {
         } else if (objectivesFileFormat.equals(FILEFORMAT_LONG)) {
             builder = new LongFormatBuilder();
         } else {
-            throw new BusinessException(
+            throw new SystemException(
                 "Invalid Objectives file format specified: '"
                     + objectivesFileFormat
                     + "'. Has to be '"
@@ -141,7 +141,7 @@ public class MapperFactory {
             _currentObjectives.set(objectives);
             return objectives;
         } catch (IOException e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Failed to load Objectives from ["
                     + objectivesFile.getPath()
                     + "]: "
@@ -167,7 +167,7 @@ public class MapperFactory {
             _currentFrameworkInfo.set(frameworkInfo);
             return frameworkInfo;
         } catch (Exception e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Failed to load Framework Definition from ["
                     + frameworkDefinitonFile.getCanonicalPath()
                     + "]: "

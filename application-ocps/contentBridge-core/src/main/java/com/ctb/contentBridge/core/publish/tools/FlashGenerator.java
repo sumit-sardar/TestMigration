@@ -7,7 +7,7 @@ import org.apache.commons.lang.*;
 import org.jdom.*;
 import org.jdom.output.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlOutputter;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
 
@@ -27,14 +27,14 @@ import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
  *           Document document = builder.build(new FileInputStream(assessmentXML));
  *           rootElement = document.getRootElement();
  *       } catch (JDOMException e) {
- *           throw new BusinessException("Error parsing xml: " + e.getMessage(),e);
+ *           throw new SystemException("Error parsing xml: " + e.getMessage(),e);
  *       } catch (IOException e) {
- *           throw new BusinessException("Error reading xml: " + e.getMessage(),e);
+ *           throw new SystemException("Error reading xml: " + e.getMessage(),e);
  *       }
  *
  *       ImageValidation validator = new ImageValidation(rootElement);
  *       if (!validator.validateArt())
- *           throw new BusinessException("Could not validate art files for assessment: " + validator);
+ *           throw new SystemException("Could not validate art files for assessment: " + validator);
  *
  *       File myFlashTemplate = new File("myFlashTemplate.swt");
  *       FlashGenerator generator = new FlashGenerator(myFlashTemplate);
@@ -81,7 +81,7 @@ public class FlashGenerator {
      */
     public byte[] generate(Element element) {
         if (swtFile == null) {
-            throw new BusinessException("No Flash Template specified");
+            throw new SystemException("No Flash Template specified");
         }
         return generate(new ByteArrayInputStream(R2XmlTools.xmlToByteArray(element,
                 outputter)));
@@ -104,12 +104,12 @@ public class FlashGenerator {
      */
     public byte[] generate(InputStream is) {
         if (swtFile == null) {
-            throw new BusinessException("No Flash Template specified");
+            throw new SystemException("No Flash Template specified");
         }
         try {
             return generate(is, new FileInputStream(swtFile));
         } catch (FileNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class FlashGenerator {
                 buff.append(inString);
             }
         } catch (IOException e) {
-            throw new BusinessException("Error reading lines from byte array: "
+            throw new SystemException("Error reading lines from byte array: "
                     + e.getMessage());
         }
         return buff.toString().getBytes();

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingEntry;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingProcessor;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingUtils;
@@ -57,7 +57,7 @@ public class CommandProcessorTestMapMerge implements CommandProcessor {
         }
 
         if (mappingProcessor.getEntries().size() != expectedNumberOfEntries) {
-            throw new BusinessException(
+            throw new SystemException(
                 "["
                     + expectedNumberOfEntries
                     + "] entries expected. Only ["

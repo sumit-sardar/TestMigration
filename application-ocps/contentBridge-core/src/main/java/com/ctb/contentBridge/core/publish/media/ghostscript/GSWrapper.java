@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.sax.util.TemporaryDirectory;
 import com.ctb.contentBridge.core.util.Pipe;
 
@@ -47,7 +47,7 @@ public class GSWrapper {
             fis.close();
 
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } finally {
             TemporaryDirectory.delete(tempDir);
         }

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.HibernateUtils;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetParentCompositeId;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetParentRecord;
@@ -53,7 +53,7 @@ public class DBAssessmentGateway extends AbstractDBAssessmentGateway {
                 TestCatalogRecord testCatalogRecord = getTestCatalogRecord(testCatalogItemSetId);
 
                 if (testCatalogRecord == null)
-                    throw new BusinessException(
+                    throw new SystemException(
                             "Cannot retrieve associate test catalog for TC item set.");
 
                 testCatalogId = (testCatalogRecord == null) ? null : testCatalogRecord

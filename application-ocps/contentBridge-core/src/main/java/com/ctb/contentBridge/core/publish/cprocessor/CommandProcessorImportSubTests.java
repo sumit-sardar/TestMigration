@@ -11,7 +11,7 @@ import net.sf.hibernate.Session;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.HibernateSession;
 import com.ctb.contentBridge.core.publish.hibernate.HibernateUtils;
 import com.ctb.contentBridge.core.publish.mapping.ItemMap;
@@ -74,7 +74,7 @@ public class CommandProcessorImportSubTests implements CommandProcessor {
                     mappedItemIds);
                 this.subTestProcessor.processSubTest(this.subTestElement);
             } else
-                throw new BusinessException("Some Items in the SubTest failed");
+                throw new SystemException("Some Items in the SubTest failed");
             HibernateSession.currentSession().flush();
             connection.commit();
             report.setSuccess(true);

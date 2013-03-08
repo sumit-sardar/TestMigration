@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
 
 
@@ -34,7 +34,7 @@ public class AssessmentValidaterStandard extends AssessmentValidaterTerranova
         List errorList = new ArrayList();
         cumulateErrors(errorList, validateNoGradeAndLevel( assessmentElement ));
         if ( errorList.size() > 0) {
-            throw new BusinessException("\n" + StringUtils.join(errorList.iterator(), "\n"));
+            throw new SystemException("\n" + StringUtils.join(errorList.iterator(), "\n"));
         }
     }
 

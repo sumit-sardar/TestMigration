@@ -1,6 +1,6 @@
 package com.ctb.contentBridge.core.publish.itemmap.csv;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.mapping.ItemMap;
 import com.ctb.contentBridge.core.publish.mapping.Objectives;
 import com.ctb.contentBridge.core.publish.report.ItemMapReport;
@@ -27,7 +27,7 @@ public class MappingValidatorMerge implements MappingValidator {
         //		check if the objective id is valid
         if (objectives.objectiveFromCurriculumId(entry.getObjectiveId())
             == null) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Objective Id not existed: " + entry.getObjectiveId());
         }
 

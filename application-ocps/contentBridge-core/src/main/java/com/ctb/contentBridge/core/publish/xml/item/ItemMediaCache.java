@@ -5,7 +5,7 @@ package com.ctb.contentBridge.core.publish.xml.item;
 
 import java.util.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlOutputter;
 import com.ctb.contentBridge.core.publish.media.Media;
 
@@ -47,7 +47,7 @@ public class ItemMediaCache implements ItemMediaGenerator {
     }
 
     protected Media handleMediaNotInCache(Item mappedItem) {
-        throw new BusinessException(
+        throw new SystemException(
             "Cannot find media for item ["
                 + mappedItem.getId()
                 + "]");

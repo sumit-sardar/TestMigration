@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.dao.DBObjectivesGateway;
 import com.ctb.contentBridge.core.publish.dao.DBSubTestMediaGateway;
 import com.ctb.contentBridge.core.publish.dao.ItemSetRelationship;
@@ -171,7 +171,7 @@ public class DBPremadeTestGateway {
         TestCatalogRecord testCatalogRecord =
             (TestCatalogRecord) query.uniqueResult();
         if (testCatalogRecord == null)
-            throw new BusinessException(
+            throw new SystemException(
                 "No Test Catalog entry found for Item Set "
                     + testCatalogItemsetId);
         return testCatalogRecord;
@@ -184,7 +184,7 @@ public class DBPremadeTestGateway {
         ItemSetRecord itemSetRecord =
             getItemSetRecord(extTstsItemSetId, itemSetType);
         if (itemSetRecord == null)
-            throw new BusinessException(
+            throw new SystemException(
                 "No Item Set entry of Item Set Type ["
                     + itemSetType
                     + "] found for ["

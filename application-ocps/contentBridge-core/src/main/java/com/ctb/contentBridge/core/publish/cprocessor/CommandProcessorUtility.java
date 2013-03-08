@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.report.ItemProcessorReport;
 import com.ctb.contentBridge.core.publish.xml.XMLUtils;
 
@@ -19,9 +19,9 @@ public class CommandProcessorUtility {
 
     static void verifyRootElementName(
         String elementName,
-        String expectedElementName) throws BusinessException {
+        String expectedElementName) throws SystemException {
         if (!(elementName.equals(expectedElementName)))
-            throw new BusinessException(
+            throw new SystemException(
                 expectedElementName + " not found in XML Document");
         logger.info(expectedElementName + " found in XML Document");
     }
@@ -33,7 +33,7 @@ public class CommandProcessorUtility {
         logger.error("Item Processing failed", e);
     }
 
-    public static Element[] getItems(Element element) throws BusinessException {
+    public static Element[] getItems(Element element) throws SystemException {
         String rootNodeName = element.getName();
         if (rootNodeName.equals("Item")) {
             return new Element[] { element };
@@ -41,19 +41,19 @@ public class CommandProcessorUtility {
             List itemList = element.getChildren("Item");
             return (Element[]) itemList.toArray(new Element[itemList.size()]);
         } else {
-            throw new BusinessException(
+            throw new SystemException(
                 "Cannot process XML document with root node: " + rootNodeName);
         }
     }
     
-    public static List getItemsUnderTD(Element element) throws BusinessException {
+    public static List getItemsUnderTD(Element element) throws SystemException {
         return XMLUtils.getItemSubElementsInTD( element );
     }
 
-    public static Element getUniqueItemSet(Element subTestElement) throws BusinessException {
+    public static Element getUniqueItemSet(Element subTestElement) throws SystemException {
         List itemSets = subTestElement.getChildren("ItemSet");
         if (itemSets.size() != 1)
-            throw new BusinessException(
+            throw new SystemException(
                 "SubTest contains "
                     + itemSets.size()
                     + " ItemSet elements instead of 1.");
@@ -61,7 +61,7 @@ public class CommandProcessorUtility {
         return (Element) itemSets.iterator().next();
     }
 
-    public static List mapItemIDsInXML(Element subtest, Map mappeditemIds) throws BusinessException {
+    public static List mapItemIDsInXML(Element subtest, Map mappeditemIds) throws SystemException {
         logger.debug("SubTest: Mapping Item IDs in SubTest XML");
         List mappedItemIds = new ArrayList();
         Iterator itemElements = XMLUtils.getItemSubElementsInItemSets(subtest);
@@ -77,7 +77,7 @@ public class CommandProcessorUtility {
             String mappedItemId = (String) mappeditemIds.get(curItemId);
 
             if (mappedItemId == null) {
-                throw new BusinessException(
+                throw new SystemException(
                     "Item ["
                         + curItemId
                         + "] is part of the SubTest XML but was not processed by the Item Processor");

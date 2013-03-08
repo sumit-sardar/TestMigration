@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
 
 
@@ -32,7 +32,7 @@ public class SubTestValidaterSofa extends AbstractSubTestValidater {
         cumulateErrors(errorList, validateNoDuplicatedItems(element));
 
         if (errorList.size() > 0) {
-            throw new BusinessException(
+            throw new SystemException(
 			"\n" + StringUtils.join(errorList.iterator(), "\n"));
         }
     }

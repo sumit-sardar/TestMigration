@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.dao.ArgumentsSQLPair;
 import com.ctb.contentBridge.core.publish.dao.DBConnection;
@@ -72,7 +72,7 @@ public class AbstractDBGateway {
         executeMapping(WHERE_CLAUSE, arguments, mapper);
         Object[] objects = mapper.getResults();
         if (objects.length > 1)
-            throw new BusinessException(
+            throw new SystemException(
                 "Business rule constraint about uniqueness violated, more than one item found:"
                     + " "
                     + mapper.getSelectClause()

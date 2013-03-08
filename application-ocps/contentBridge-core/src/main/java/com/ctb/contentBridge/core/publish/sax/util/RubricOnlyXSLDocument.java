@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.sax.util;
 
 import java.io.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.IOUtils;
 
 
@@ -32,14 +32,14 @@ public class RubricOnlyXSLDocument extends XSLDocType {
         }
         try {
 			loadInstance();
-		} catch (BusinessException e) {
+		} catch (SystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return instance;
     }
 
-    private static synchronized void loadInstance() throws BusinessException {
+    private static synchronized void loadInstance() throws SystemException {
         try {
             File xslFile = new File(RUBRIC_ONLY);
             byte[] bytes = IOUtils.loadBytes(xslFile);
@@ -47,7 +47,7 @@ public class RubricOnlyXSLDocument extends XSLDocType {
             instance = new RubricOnlyXSLDocument(bytes);
         } catch (IOException e) {
             e.printStackTrace();  // To change body of catch statement use Options | File Templates.
-            throw new BusinessException("Could not load XSL-T for Rubric");
+            throw new SystemException("Could not load XSL-T for Rubric");
         }
     }
 }

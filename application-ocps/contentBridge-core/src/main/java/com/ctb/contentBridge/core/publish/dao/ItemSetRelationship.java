@@ -6,7 +6,7 @@ import net.sf.hibernate.HibernateException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetProductRecord;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ScoreLookupItemSetRecord;
@@ -30,7 +30,7 @@ public class ItemSetRelationship {
                 if (rec.getId().getProductId().equals(productID)) {
                     session.delete(rec);
                 } else {
-                    throw new BusinessException("Assessment or SubTest currently " +
+                    throw new SystemException("Assessment or SubTest currently " +
                             "associated to another product. ID:" + rec.getId().getProductId());
                 }
             }

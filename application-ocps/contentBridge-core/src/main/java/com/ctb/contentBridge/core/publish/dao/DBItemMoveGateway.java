@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.hibernate.persist.DatapointRecord;
 import com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetItemCompositeId;
@@ -44,7 +44,7 @@ public class DBItemMoveGateway {
             executeDatapointUpdate(sourceItemSetId, targetItemSetId, itemId);
 
         if (rows > 1) {
-            throw new BusinessException(
+            throw new SystemException(
                 "datapoint update failed for item "
                     + itemId
                     + ".  row count was unexpectedly "
@@ -66,7 +66,7 @@ public class DBItemMoveGateway {
             executeDatapointUpdate(sourceItemSetId, targetItemSetId, itemId);
 
         if (rows != 1) {
-            throw new BusinessException(
+            throw new SystemException(
                 "datapoint update failed for item "
                     + itemId
                     + ".  row count was unexpectedly "

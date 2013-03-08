@@ -5,7 +5,7 @@ package com.ctb.contentBridge.core.publish.xml.subtest;
 
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.BuilderUtils;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
 
@@ -15,7 +15,7 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
     public static final String OBJECTIVE_ID = "ObjectiveID";
     public static final String SUPPRESS_SCORE = "SuppressScore";
 
-    public SubTestHolder build(Element rootElement) throws BusinessException {
+    public SubTestHolder build(Element rootElement) throws SystemException {
         String frameworkCode;
         String productDisplayName;
         String extTstItemSetId;
@@ -35,7 +35,7 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
 
         boolean isTD = rootElement.getName().equals( ELEMENT_NAME_TD );
         if (!rootElement.getName().equals( ELEMENT_NAME_TS ) && !isTD ) {
-            throw new BusinessException("Invalid root element: " + rootElement.getName());
+            throw new SystemException("Invalid root element: " + rootElement.getName());
         }
         frameworkCode = BuilderUtils.extractAttributeOptional(rootElement, FRAMEWORK_CODE);
         productDisplayName = BuilderUtils.extractAttributeOptional(rootElement, PRODUCT_NAME);
@@ -64,8 +64,9 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         itemSetDisplayName = testName;
         try {
             itemSetDescription = BuilderUtils.extractChildElementValue(rootElement, DESCRIPTION);
-        } catch (BusinessException se) {
+        } catch (SystemException se) {
             itemSetDescription = "";
+            se.printStackTrace();
         }
         itemSetForm = BuilderUtils.extractAttributeOptional(rootElement, FORM);
         scoreLookupId = BuilderUtils.extractAttributeOptional(rootElement, SCORE_LOOKUP_ID);

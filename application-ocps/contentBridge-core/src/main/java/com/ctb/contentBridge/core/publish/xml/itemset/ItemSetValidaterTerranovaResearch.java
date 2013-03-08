@@ -7,7 +7,7 @@ import java.util.List;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.BuilderUtils;
 import com.ctb.contentBridge.core.publish.xml.ValidaterUtils;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
@@ -36,7 +36,7 @@ public class ItemSetValidaterTerranovaResearch extends ItemSetValidater {
                         researchQuestionMissingDistractor.add("Research item [" + itemId
                                 + "] <AnswerChoice> type should be [Distractor].");
                     }
-                } catch (BusinessException e) {
+                } catch (SystemException e) {
                     researchQuestionMissingDistractor.add(e.getMessage());
                 }
             }
@@ -49,7 +49,7 @@ public class ItemSetValidaterTerranovaResearch extends ItemSetValidater {
             XPath answerChoiceXPath = XPath.newInstance(".//AnswerChoice");
             return answerChoiceXPath.selectNodes(itemElement);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 

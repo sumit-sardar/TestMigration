@@ -7,7 +7,7 @@ import org.jdom.*;
 import org.jdom.xpath.*;
 import org.apache.log4j.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.OASConstants;
 
 
@@ -206,7 +206,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
 
     private void parseSelectedResponse(Element element) {
         if (item.getType().equals(Item.CONSTRUCTED_RESPONSE)) {
-            throw new BusinessException("SelectedResponse element not expected for CR Item");
+            throw new SystemException("SelectedResponse element not expected for CR Item");
         }
 
         String attValue = element.getAttributeValue("NumberAnswerChoices", "4");
@@ -230,7 +230,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
 
     private void parseConstructedResponse(Element element) {
         if (item.getType().equals(Item.SELECTED_RESPONSE)) {
-            throw new BusinessException("ConstructedResponse element not expected for SR Item");
+            throw new SystemException("ConstructedResponse element not expected for SR Item");
         }
 
         String maxPointsValue = element.getAttributeValue("MaxScorePts");
@@ -249,7 +249,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
             value = DEFAULT_FRAMEWORK;
             // }
             // else {
-            // throw new BusinessException("No framework specified. Validation mode does not allow
+            // throw new SystemException("No framework specified. Validation mode does not allow
             // defaults");
             // }
             logger
@@ -275,7 +275,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
 
     private static void validateAnswerChoicesMatch(Item item) {
         if (item.getNumAnswerChoices() != item.getChoiceCount()) {
-            throw new BusinessException("Item " + item.getId() + ": <SelectedResponse> specifies "
+            throw new SystemException("Item " + item.getId() + ": <SelectedResponse> specifies "
                     + item.getNumAnswerChoices() + " choices but " + item.getChoiceCount()
                     + " <AnswerChoice> elements were found");
         }
@@ -284,7 +284,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
     private static void validateCorrectAnswerExists(Item item) {
         if (item.isSR() || item.isSA()) {
             if (item.getCorrectAnswer() == null || item.getCorrectAnswer().equals("")) {
-                throw new BusinessException("Item " + item.getId()
+                throw new SystemException("Item " + item.getId()
                         + " does not have a correct answer identified.");
             }
         }
@@ -300,12 +300,12 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
         String objective = element.getAttributeValue("CurriculumID");
 
         if (StringUtils.isEmpty(objective)) {
-            throw new BusinessException("Item " + item.getId()
+            throw new SystemException("Item " + item.getId()
                     + ": No objective ID detected in hierarchy");
         }
         objective = objective.trim();
         if (!objective.equals(item.getObjectiveId())) {
-            throw new BusinessException("Item " + item.getId() + ": Objective ID "
+            throw new SystemException("Item " + item.getId() + ": Objective ID "
                     + item.getObjectiveId() + " specified in item element does not match "
                     + " objective " + objective + " specified in hierarchy.");
         }
@@ -317,7 +317,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
         String value = element.getAttributeValue(attributeName);
 
         if (value == null) {
-            throw new BusinessException("Attribute " + attributeName + " of element <"
+            throw new SystemException("Attribute " + attributeName + " of element <"
                     + element.getName() + "> is mandatory.");
         }
         return value;
@@ -331,7 +331,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
             if ( (validationMode & PARSE_ALLOW_DEFAULTS) != 0) {
                 value = defaultValue;
             } else {
-                throw new BusinessException("No value specified for attribute " + attributeName
+                throw new SystemException("No value specified for attribute " + attributeName
                         + ". Validation mode does not allow defaults.");
             }
         }
@@ -373,7 +373,7 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
 
             node = xpath.selectSingleNode(element);
         } catch (JDOMException e) {
-            throw new BusinessException("Invalid XPath expression: " + expression);
+            throw new SystemException("Invalid XPath expression: " + expression);
         }
 
         if (node != null) {

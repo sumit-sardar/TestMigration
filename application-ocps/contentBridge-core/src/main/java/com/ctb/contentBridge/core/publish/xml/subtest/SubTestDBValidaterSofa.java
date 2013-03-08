@@ -2,7 +2,7 @@ package com.ctb.contentBridge.core.publish.xml.subtest;
 
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 import net.sf.hibernate.Session;
 
@@ -25,7 +25,7 @@ public class SubTestDBValidaterSofa implements SubTestDBValidater{
         List scoreTypeCodes = gateway.getScoreTypeCodes();
 
         if (!scoreTypeCodes.contains(scoreTypeCode)) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Invalid Score Type Code: [" + scoreTypeCode + "]");
         }
     }

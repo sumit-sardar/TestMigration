@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.cprocessor.CommandProcessorFactoryUtil;
 import com.ctb.contentBridge.core.publish.cprocessor.CommandProcessorUtility;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingProcessor;
@@ -88,7 +88,7 @@ public class CIMCommandProcessorUtil {
                     MapperFactory.getItemMap(),
                     targetConnection);
         } else
-            throw new BusinessException(
+            throw new SystemException(
                     "Don't have Item Processor for command: "
                     + command.getCommandName());
     }
@@ -113,7 +113,7 @@ public class CIMCommandProcessorUtil {
                 sourceConnection,
                 targetConnection);
         } else
-            throw new BusinessException(
+            throw new SystemException(
                 "Don't have Item Processor for command: "
                     + command.getCommandName());
     }
@@ -134,7 +134,7 @@ public class CIMCommandProcessorUtil {
                 objectives,
                 itemMap);
         }
-        throw new BusinessException(
+        throw new SystemException(
             "Don't have Mapping Processor for command: "
                 + cmd.getCommandName());
     }
@@ -178,7 +178,7 @@ public class CIMCommandProcessorUtil {
                 itemMap);
         }
 
-        throw new BusinessException(
+        throw new SystemException(
             "Don't have Mapping Processor for command: "
                 + cmd.getCommandName());
     }
@@ -222,7 +222,7 @@ public class CIMCommandProcessorUtil {
                 || (cmd instanceof CIMCommandTestMapObjectiveUpdate)
                 || (cmd instanceof CIMCommandTestMapAK))
             return new MappingWriterImpl(cmd.getOutputFileName());
-        throw new BusinessException(
+        throw new SystemException(
             "Don't have Mapping Writer for command: " + cmd.getCommandName());
     }
 

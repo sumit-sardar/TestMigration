@@ -59,7 +59,7 @@ import com.ctb.contentBridge.core.publish.layout.AssessmentLayoutProcessor;
 	    		Element msg = ItemLayoutProcessor.extractSingleElement(".//msg", response);
        			if (!(msg.getText()).equals(status_republish))
        			{
-       				throw new BusinessException("Error in Publishing Subtest. Status = "+statusStr + " Error message: " + msg.getText()+ " XML : "+ xml);
+       				throw new SystemException("Error in Publishing Subtest. Status = "+statusStr + " Error message: " + msg.getText()+ " XML : "+ xml);
         		}
            	}*/
 	  

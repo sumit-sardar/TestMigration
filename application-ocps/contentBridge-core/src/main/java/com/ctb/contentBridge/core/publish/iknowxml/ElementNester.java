@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
 import com.ctb.contentBridge.core.publish.xml.XMLUtils;
 
@@ -48,10 +48,10 @@ public class ElementNester {
     public static Element nestInItemSet(Element itemElement) {
 
         if (itemElement.getDocument() != null) {
-            throw new BusinessException("Can not nest elements attached to documents");
+            throw new SystemException("Can not nest elements attached to documents");
         }
         if (!canBeDescendantOf(itemElement, ITEM_SET)) {
-            throw new BusinessException("Only Item elements may be nested in an ItemSet");
+            throw new SystemException("Only Item elements may be nested in an ItemSet");
         }
         Element itemSet = getDefaultItemSetElement(itemElement);
 
@@ -63,9 +63,9 @@ public class ElementNester {
     {
 
         if ( ItemSetElement.getDocument() != null) 
-            throw new BusinessException("Can not nest elements attached to documents");
+            throw new SystemException("Can not nest elements attached to documents");
         if ( !ItemSetElement.getName().equals( ITEM_SET ))
-            throw new BusinessException("Only ItemSet element may be nested in a Deliverable Unit.");
+            throw new SystemException("Only ItemSet element may be nested in a Deliverable Unit.");
         
         Element tdSubTest = new Element( TD_TEST );
         tdSubTest.setAttribute(
@@ -88,9 +88,9 @@ public class ElementNester {
     public static Element nestInSchedulableUnit( Element TDElement )
     {
         if ( TDElement.getDocument() != null) 
-            throw new BusinessException("Can not nest elements attached to documents");
+            throw new SystemException("Can not nest elements attached to documents");
         if ( !TDElement.getName().equals( TD_TEST_ITEM ))
-            throw new BusinessException("Only ItemSet element may be nested in a Deliverable Unit.");
+            throw new SystemException("Only ItemSet element may be nested in a Deliverable Unit.");
         Element tsSubTest = new Element( TS_TEST );
         tsSubTest.setAttribute(
                 "ID",

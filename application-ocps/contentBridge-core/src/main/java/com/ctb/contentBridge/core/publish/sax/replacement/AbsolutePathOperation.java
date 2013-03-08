@@ -14,7 +14,7 @@ import java.util.*;
 
 import org.xml.sax.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.sax.element.FieldOperation;
 
 
@@ -25,21 +25,21 @@ public class AbsolutePathOperation implements FieldOperation {
     private Set fileSet = new HashSet();
     public AbsolutePathOperation() {}
 
-    public AbsolutePathOperation(String imageAreaPath) throws BusinessException {
+    public AbsolutePathOperation(String imageAreaPath) throws SystemException {
         this(new File(imageAreaPath));
     }
 
-    public AbsolutePathOperation(File imageAreaPath) throws BusinessException {
+    public AbsolutePathOperation(File imageAreaPath) throws SystemException {
         try {
             basepath = imageAreaPath.getCanonicalPath();
         } catch (IOException e) {
-            throw new BusinessException("Folder " + imageAreaPath.getPath()
+            throw new SystemException("Folder " + imageAreaPath.getPath()
                     + " does not exist");
         }
         validateBasePath();
     }
 
-    public AbsolutePathOperation(com.ctb.contentBridge.core.util.ParseFilterProperties props) throws BusinessException {
+    public AbsolutePathOperation(com.ctb.contentBridge.core.util.ParseFilterProperties props) throws SystemException {
         pathProperties = props;
         basepath = pathProperties.getImagesBaseCanonicalPath();
         validateBasePath();
@@ -80,14 +80,14 @@ public class AbsolutePathOperation implements FieldOperation {
         return missingFiles;
     }
 
-    private void validateBasePath() throws BusinessException {
+    private void validateBasePath() throws SystemException {
         if (basepath == null) {
             return;
         }
         File file = new File(basepath);
 
         if (!file.isDirectory()) {
-            throw new BusinessException("Image area must point to a valid folder:"
+            throw new SystemException("Image area must point to a valid folder:"
                     + basepath);
         }
     }

@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.tools;
 
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
 import com.ctb.contentBridge.core.publish.sax.element.FieldOperation;
 import com.ctb.contentBridge.core.publish.sax.replacement.AbsolutePathOperation;
@@ -42,7 +42,7 @@ public class ImagePathMover {
 
     }
 
-    public void changeToLocal(Element element) throws BusinessException {
+    public void changeToLocal(Element element) throws SystemException {
         try {
             FieldOperation absolutePathOperation = new AbsolutePathOperation(localImageArea);
 
@@ -53,12 +53,12 @@ public class ImagePathMover {
             R2XmlTools.replaceAttributes(element, "//Flash/@FileName",
                     absolutePathOperation);
         } catch (Exception e) {
-            throw new BusinessException("Could not change image paths to local images: "
+            throw new SystemException("Could not change image paths to local images: "
                     + e.getMessage());
         }
     }
 
-    public void changeToRemote(Element element) throws BusinessException {
+    public void changeToRemote(Element element) throws SystemException {
         // move images from relative to absolute and remote, RemotePathOperation
         try {
             FieldOperation remotePathOperation = new RemotePathOperation(remoteImageArea);
@@ -70,7 +70,7 @@ public class ImagePathMover {
             R2XmlTools.replaceAttributes(element, "//Flash/@FileName",
                     remotePathOperation);
         } catch (Exception e) {
-            throw new BusinessException("Could not change image paths to remote images: "
+            throw new SystemException("Could not change image paths to remote images: "
                     + e.getMessage());
         }
     }

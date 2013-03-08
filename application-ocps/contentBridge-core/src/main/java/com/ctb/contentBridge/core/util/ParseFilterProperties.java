@@ -4,7 +4,7 @@ package com.ctb.contentBridge.core.util;
 import java.io.*;
 import java.util.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 import org.apache.log4j.*;
 
@@ -32,11 +32,11 @@ public class ParseFilterProperties extends Properties {
     private static ParseFilterProperties instance = null;
     ;
 
-    public ParseFilterProperties() throws BusinessException {
+    public ParseFilterProperties() throws SystemException {
         loadParserFilterProperties(DEFAULT_PROP_FILE);
     }
 
-    public ParseFilterProperties(String propFileName) throws BusinessException {
+    public ParseFilterProperties(String propFileName) throws SystemException {
         loadParserFilterProperties(propFileName);
     }
 
@@ -44,7 +44,7 @@ public class ParseFilterProperties extends Properties {
         super(defaults);
     }
 
-    private void loadParserFilterProperties(String propsFileName) throws BusinessException {
+    private void loadParserFilterProperties(String propsFileName) throws SystemException {
 
         try {
             StreamResource resource = new StreamResource();
@@ -52,7 +52,7 @@ public class ParseFilterProperties extends Properties {
             load(resource.getStream(propsFileName));
             logger.debug("Loading filter.properties:" + propsFileName);
         } catch (IOException e) {
-            throw new BusinessException("Resource Missing: Could not locate filter.properties file");
+            throw new SystemException("Resource Missing: Could not locate filter.properties file");
         }
     }
 
@@ -68,23 +68,23 @@ public class ParseFilterProperties extends Properties {
         return new File(getProperty(MEDIA_IMAGES_BASEPATH));
     }
 
-    public String getImagesBaseCanonicalPath() throws BusinessException {
+    public String getImagesBaseCanonicalPath() throws SystemException {
         File file = new File(getProperty(MEDIA_IMAGES_BASEPATH));
 
         try {
             return file.getCanonicalPath();
         } catch (IOException e) {
-            throw new BusinessException("Could not get canonical path for images base directory");
+            throw new SystemException("Could not get canonical path for images base directory");
         }
     }
 
-    public File getImagesBaseCanonicalFile() throws BusinessException {
+    public File getImagesBaseCanonicalFile() throws SystemException {
         File file = new File(getProperty(MEDIA_IMAGES_BASEPATH));
 
         try {
             return file.getCanonicalFile();
         } catch (IOException e) {
-            throw new BusinessException("Could not get canonical path for images base directory");
+            throw new SystemException("Could not get canonical path for images base directory");
         }
     }
 
@@ -108,7 +108,7 @@ public class ParseFilterProperties extends Properties {
         return getProperty(R2_DTD);
     }
 
-    public static ParseFilterProperties instance() throws BusinessException {
+    public static ParseFilterProperties instance() throws SystemException {
         if (instance == null) {
             instance = new ParseFilterProperties();
         }

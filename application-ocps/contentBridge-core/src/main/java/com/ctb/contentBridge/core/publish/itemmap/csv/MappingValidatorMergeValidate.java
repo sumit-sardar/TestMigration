@@ -1,6 +1,6 @@
 package com.ctb.contentBridge.core.publish.itemmap.csv;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.mapping.ItemMap;
 import com.ctb.contentBridge.core.publish.mapping.Objectives;
@@ -23,7 +23,7 @@ public class MappingValidatorMergeValidate extends MappingValidatorMerge {
 
         if (objectiveId != null
             && !objectiveId.equals(entry.getObjectiveId())) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Conflicted mapping. Item already mapped to ["
                     + objectiveId
                     + "] remapped to ["

@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.AbstractXMLElementValidater;
 import com.ctb.contentBridge.core.publish.xml.BuilderUtils;
 import com.ctb.contentBridge.core.publish.xml.ValidaterUtils;
@@ -29,7 +29,7 @@ public class AssessmentValidaterTerranova extends AbstractXMLElementValidater {
         List errorList = new ArrayList();
         cumulateErrors(errorList, validateRequiredField(assessmentElement,
                 attributeNames));
-        if (errorList.size() > 0) { throw new BusinessException("\n"
+        if (errorList.size() > 0) { throw new SystemException("\n"
                 + StringUtils.join(errorList.iterator(), "\n")); }
     }
 

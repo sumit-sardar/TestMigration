@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 abstract public class Loader {
 
@@ -17,7 +17,7 @@ abstract public class Loader {
             load(in);
             in.close();
         } catch (IOException e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Could not read file [" + file.getPath() + "]:" + e.toString());
         }
     }
@@ -34,7 +34,7 @@ abstract public class Loader {
                 addLine(line);
             }
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 

@@ -14,7 +14,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.sax.util.XSLDocType;
 
 /**
@@ -43,18 +43,18 @@ public class XMLToFOTransformer {
         this.docType = docType;
     }
 
-    public void process(InputStream is, OutputStream os) throws BusinessException {
+    public void process(InputStream is, OutputStream os) throws SystemException {
         Result result = new StreamResult(os);
         process(is,result);
     }
-    public void process(InputStream xmlIs, InputStream xslIs, OutputStream os) throws BusinessException {
+    public void process(InputStream xmlIs, InputStream xslIs, OutputStream os) throws SystemException {
         Result result = new StreamResult(os);
         process(xmlIs,xslIs,result);
     }
-    public void process(InputStream xmlIs, Result result) throws BusinessException {
+    public void process(InputStream xmlIs, Result result) throws SystemException {
         process(xmlIs,getDocumentStream(),result);
     }
-    public void process(InputStream xmlIs, InputStream xslIs, Result result) throws BusinessException {
+    public void process(InputStream xmlIs, InputStream xslIs, Result result) throws SystemException {
         try {
             TransformerFactory tFactory =
                               javax.xml.transform.TransformerFactory.newInstance();
@@ -65,19 +65,19 @@ public class XMLToFOTransformer {
             xmlSource.setSystemId(systemID);
             transformer.transform(xmlSource,result);
         } catch (TransformerFactoryConfigurationError e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } catch (TransformerException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 
-    private InputStream getDocumentStream() throws BusinessException {
+    private InputStream getDocumentStream() throws SystemException {
         if (docType != null)
             return docType.getDocumentStream();
         try {
             return new FileInputStream(xslFile);
         } catch (FileNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 }

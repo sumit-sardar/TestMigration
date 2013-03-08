@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.executable;
 
 import java.io.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.util.Pipe;
 
 /**
@@ -34,8 +34,8 @@ public class StreamSink implements Runnable {
                 ins_.close();
             } catch (IOException e) {
                 try {
-					throw new BusinessException(e.getMessage());
-				} catch (BusinessException e1) {
+					throw new SystemException(e.getMessage());
+				} catch (SystemException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

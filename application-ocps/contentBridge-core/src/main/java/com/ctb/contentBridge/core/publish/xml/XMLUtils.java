@@ -14,7 +14,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2DocumentBuilder;
 import com.ctb.contentBridge.core.publish.tools.ArtLocalizer;
 import com.ctb.contentBridge.core.publish.tools.ImagePathMover;
@@ -22,22 +22,22 @@ import com.ctb.contentBridge.core.publish.tools.ImagePathMover;
 
 public class XMLUtils {
 
-    public static Element buildRootElement(File inputFile) throws BusinessException {
+    public static Element buildRootElement(File inputFile) throws SystemException {
         try {
             return new R2DocumentBuilder()
                 .build(new FileInputStream(inputFile))
                 .getRootElement();
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } catch (JDOMException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 
     public static Element buildRootElement(
         File file,
         String imageArea,
-        String localImageArea) throws BusinessException {
+        String localImageArea) throws SystemException {
         Element rootElement = XMLUtils.buildRootElement(file);
         ArtLocalizer.setLocalImageArtPath(new File(localImageArea));
         new ImagePathMover(imageArea, localImageArea).changeToRemote(
@@ -57,7 +57,7 @@ public class XMLUtils {
         return theList;
     }
     
-    public static List getItemSubElementsInTD(Element subtest) throws BusinessException {
+    public static List getItemSubElementsInTD(Element subtest) throws SystemException {
         XPath itemXPath;
         try {
             itemXPath =
@@ -70,12 +70,12 @@ public class XMLUtils {
             List itemElements = itemXPath.selectNodes(subtest);
             return itemElements;
         } catch (JDOMException e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Could not extract Item sub-elements: " + e.getMessage());
         }
     }
 
-    public static Iterator getItemSubElementsInItemSets(Element subtest) throws BusinessException {
+    public static Iterator getItemSubElementsInItemSets(Element subtest) throws SystemException {
         XPath itemXPath;
         try {
             itemXPath =
@@ -87,12 +87,12 @@ public class XMLUtils {
             Iterator itemElements = itemXPath.selectNodes(subtest).iterator();
             return itemElements;
         } catch (JDOMException e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Could not extract Item sub-elements: " + e.getMessage());
         }
     }
     
-    public static Iterator getTestItemSubElementsInItemSets(Element subtest) throws BusinessException {
+    public static Iterator getTestItemSubElementsInItemSets(Element subtest) throws SystemException {
         XPath itemXPath;
         try {
             itemXPath =
@@ -100,7 +100,7 @@ public class XMLUtils {
             Iterator itemElements = itemXPath.selectNodes(subtest).iterator();
             return itemElements;
         } catch (JDOMException e) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Could not extract Item sub-elements: " + e.getMessage());
         }
     }

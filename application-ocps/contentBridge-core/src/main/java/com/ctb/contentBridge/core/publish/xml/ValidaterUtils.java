@@ -9,7 +9,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 /**
  * @author wmli
@@ -18,7 +18,7 @@ public class ValidaterUtils {
     private static final String ITEM_ELEMENT_XPATH = ".//Item";
     private static final String TEST_ITEM_ELEMENT_XPATH = ".//TestItem//Item";
     
-    public static List getItemElements(Element subTestElement) throws BusinessException 
+    public static List getItemElements(Element subTestElement) throws SystemException 
     {
         try {
             XPath itemXPath = null;
@@ -30,11 +30,11 @@ public class ValidaterUtils {
                 itemXPath = XPath.newInstance(ITEM_ELEMENT_XPATH);
             return itemXPath.selectNodes(subTestElement);
         } catch (JDOMException je) {
-            throw new BusinessException(je.getMessage());
+            throw new SystemException(je.getMessage());
         }
     }
 
-    public static Set getUniqueItemType(Element element) throws BusinessException {
+    public static Set getUniqueItemType(Element element) throws SystemException {
         Set itemTypeUniqueSet = new HashSet();
 
         for (Iterator iter = getItemElements(element).iterator();

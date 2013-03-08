@@ -6,7 +6,7 @@ import java.util.*;
 import org.jdom.*;
 import org.xml.sax.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
 import com.ctb.contentBridge.core.publish.sax.replacement.AbsolutePathOperation;
 
@@ -34,10 +34,10 @@ public class ImageValidation {
             R2XmlTools.replaceAttributes(element, "//Flash/@FileName",
                     absolutePathOperation);
         } catch (JDOMException e) {
-            throw new BusinessException("Could not read JDOM document: "
+            throw new SystemException("Could not read JDOM document: "
                     + e.getMessage());
         } catch (SAXException e) {
-            throw new BusinessException("Could not read inputsource: "
+            throw new SystemException("Could not read inputsource: "
                     + e.getMessage());
         }
 

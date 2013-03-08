@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.dao.ProductConfig;
 import com.ctb.contentBridge.core.publish.dao.ProductTypeInfo;
 /**
@@ -19,7 +19,7 @@ public class BuilderUtils {
             logger
                     .error("Empty " + attributeName + ": "
                             + new XMLOutputter().outputString(element));
-            throw new BusinessException("The " + attributeName + " attribute of <"
+            throw new SystemException("The " + attributeName + " attribute of <"
                     + element.getName() + "> cannot be empty");
         }
 
@@ -32,7 +32,7 @@ public class BuilderUtils {
         if (value == null) {
             logger.error("Missing " + attributeName + ": "
                     + new XMLOutputter().outputString(element));
-            throw new BusinessException("Attribute " + attributeName + " of element <"
+            throw new SystemException("Attribute " + attributeName + " of element <"
                     + element.getName() + "> is mandatory.");
         }
         return value;
@@ -47,7 +47,7 @@ public class BuilderUtils {
         } catch (NumberFormatException e) {
             logger.error("Missing " + attributeName + ": "
                     + new XMLOutputter().outputString(element));
-            throw new BusinessException("Attribute " + attributeName
+            throw new SystemException("Attribute " + attributeName
                     + " does not contain an integer number: " + stringValue);
         }
         return value;
@@ -82,7 +82,7 @@ public class BuilderUtils {
         if (child == null) {
             logger.error("Missing " + childElementName + ": "
                     + new XMLOutputter().outputString(element));
-            throw new BusinessException("Element " + childElementName + " not found under element "
+            throw new SystemException("Element " + childElementName + " not found under element "
                     + element.getName());
         }
         return child.getText();
@@ -127,7 +127,7 @@ public class BuilderUtils {
         ProductTypeInfo productType = config.findProductType(frameworkCode, productName);
 
         if (productType.getTitle() == null)
-            throw new BusinessException("Title for incremental test build not set in properties file. ["
+            throw new SystemException("Title for incremental test build not set in properties file. ["
                     + productType.getAbbreviation() + ":" + frameworkCode + ":" + productName + "]");
 
         // compose the id

@@ -5,7 +5,7 @@ import java.io.*;
 
 import org.apache.log4j.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.IOUtils;
 import com.ctb.contentBridge.core.util.ParseFilterProperties;
 
@@ -34,14 +34,14 @@ public class SelectiveResponseXSLDocument extends XSLDocType {
         }
         try {
 			loadInstance();
-		} catch (BusinessException e) {
+		} catch (SystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return instance;
     }
 
-    private static synchronized void loadInstance() throws BusinessException {
+    private static synchronized void loadInstance() throws SystemException {
         try {
             File xslFile = new File(PDF_MEDIA);
 
@@ -51,7 +51,7 @@ public class SelectiveResponseXSLDocument extends XSLDocType {
             instance = new SelectiveResponseXSLDocument(bytes);
         } catch (IOException e) {
             logger.error("Could not load XSL-T for Selective Response Items", e);
-            throw new BusinessException("Could not load XSL-T for questions on all Items");
+            throw new SystemException("Could not load XSL-T for questions on all Items");
         }
     }
 }

@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.cprocessor;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.itemmap.csv.MappingUtils;
 import com.ctb.contentBridge.core.publish.report.ItemMapReport;
 import com.ctb.contentBridge.core.publish.report.ItemSetReport;
@@ -28,7 +28,7 @@ public class CommandProcessorTestMapCompare implements CommandProcessor {
         ItemSetReport itemSetReport = ReportFactory.createItemSetReport(true);
 
         if (srcMappingEntries.size() != tgtMappingEntries.size()) {
-            throw new BusinessException(
+            throw new SystemException(
                 "The number of entries in the two csv files do not match: original csv ["
                     + srcMappingEntries.size()
                     + "] new csv ["

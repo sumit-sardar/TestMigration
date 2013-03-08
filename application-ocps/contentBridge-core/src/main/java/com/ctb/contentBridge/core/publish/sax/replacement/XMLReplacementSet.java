@@ -7,7 +7,7 @@ import java.util.*;
 import org.apache.xerces.parsers.*;
 import org.xml.sax.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 
 
@@ -16,14 +16,14 @@ public class XMLReplacementSet implements ReplacementSet {
     private String file = null;
     private Map map = null;
 
-    public XMLReplacementSet(String xmlFile) throws BusinessException {
+    public XMLReplacementSet(String xmlFile) throws SystemException {
         file = xmlFile;
         InputStream is = null;
 
         try {
             is = new FileInputStream(new File("xmlFile"));
         } catch (FileNotFoundException e) {
-            throw new BusinessException("XML replacement file not found: "
+            throw new SystemException("XML replacement file not found: "
                     + e.getMessage());
         }
         initialize(is);

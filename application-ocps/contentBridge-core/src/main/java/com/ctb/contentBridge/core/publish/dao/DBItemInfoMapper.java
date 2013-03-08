@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.ItemInfo;
 
@@ -67,7 +67,7 @@ public class DBItemInfoMapper implements DBMapper {
     }
 
     public void assembleObjectFromMultipleRows(ResultSet rs) {
-        throw new BusinessException("ItemInfo objects are assembled from single rows. Use assmemble" +
+        throw new SystemException("ItemInfo objects are assembled from single rows. Use assmemble" +
                 "ObjectFromResultSet method");
 
     }

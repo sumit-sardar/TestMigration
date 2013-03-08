@@ -6,7 +6,7 @@ import java.io.*;
 import org.apache.fop.image.FopImageFactory;
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlOutputter;
 import com.ctb.contentBridge.core.publish.sax.util.XSLDocType;
 
@@ -46,7 +46,7 @@ public class DefaultPDFGenerator implements PDFGenerator {
             renderer.process(xmlIs,bos);*/
             bos.close();
         } catch (IOException e) {
-            throw new BusinessException("Could not read input stream ");
+            throw new SystemException("Could not read input stream ");
         }
         return bos.toByteArray();
     }
@@ -74,7 +74,7 @@ public class DefaultPDFGenerator implements PDFGenerator {
             outputter.output(ele, writer);
             writer.close();
         } catch (IOException e) {
-            throw new BusinessException("Could not write document from DocumentHolder to OutputStream: "
+            throw new SystemException("Could not write document from DocumentHolder to OutputStream: "
                     + e.getMessage());
         }
         return os.toByteArray();

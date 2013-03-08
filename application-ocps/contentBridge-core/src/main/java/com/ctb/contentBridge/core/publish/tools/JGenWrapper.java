@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.tools;
 
 import java.io.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.util.Pipe;
 
 
@@ -44,14 +44,14 @@ public class JGenWrapper {
                     tempDir);
 
             if (info.exitValue != 0) {
-                throw new BusinessException("Error " + info.exitValue
+                throw new SystemException("Error " + info.exitValue
                         + " executing JGen: " + info.toString());
             }
             outBytes = IOUtils.loadBytes(new File(tempDir, LOCAL_MOVIE));
         } catch (IOException e) {
-            throw new BusinessException("FLASH ERROR");
+            throw new SystemException("FLASH ERROR");
         } catch (InterruptedException e) {
-            throw new BusinessException("FLASH ERROR");
+            throw new SystemException("FLASH ERROR");
         }
         finally {
             if (tempDir != null) {
@@ -99,12 +99,12 @@ public class JGenWrapper {
             File tempDir = new File(dirName);
 
             if (!tempDir.mkdirs()) {
-                throw new BusinessException("FLASH GENERATION ERROR - Failed to create temp directory:"
+                throw new SystemException("FLASH GENERATION ERROR - Failed to create temp directory:"
                         + dirName);
             }
             return tempFilePath;
         } catch (IOException e) {
-            throw new BusinessException("FLASH GENERATION ERROR - Failed to create temp directory:");
+            throw new SystemException("FLASH GENERATION ERROR - Failed to create temp directory:");
         }
     }
 }

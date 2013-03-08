@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.tools.SubProduct;
 
@@ -60,7 +60,7 @@ public class DBSubProductMapper implements DBMapper {
 
 
     public void assembleObjectFromMultipleRows(ResultSet rs) {
-        throw new BusinessException("SubProduct objects are assembled from single rows. Use assmemble" +
+        throw new SystemException("SubProduct objects are assembled from single rows. Use assmemble" +
                 "ObjectFromResultSet method");
 
     }

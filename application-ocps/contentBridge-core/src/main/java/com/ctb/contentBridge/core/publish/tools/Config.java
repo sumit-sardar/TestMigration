@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.tools;
 import java.io.*;
 import java.util.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 abstract public class Config {
     public static final File userPropertiesFile = new File("PROPERTIES_FILE_PATH");
@@ -52,7 +52,7 @@ abstract public class Config {
         try {
             properties.load(new FileInputStream(file));
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
         readProperties();
     }

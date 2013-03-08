@@ -14,7 +14,7 @@ import org.jdom.Attribute;
 import org.jdom.xpath.XPath;
 import org.xml.sax.SAXException;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.ElementNester;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
 import com.ctb.contentBridge.core.publish.sax.util.XSLDocType;
@@ -74,7 +74,7 @@ public abstract class AbstractSubTestMediaGenerator {
                     assessmentRoot,
                     new FileInputStream(new File("etc/cab_ak.swt"))));
         } catch (FileNotFoundException fnf) {
-            throw new BusinessException(fnf.getMessage());
+            throw new SystemException(fnf.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class AbstractSubTestMediaGenerator {
             List typeList = xPath.selectNodes(assessmentRoot);
             return hasCRNode(typeList);
         } catch (JDOMException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 

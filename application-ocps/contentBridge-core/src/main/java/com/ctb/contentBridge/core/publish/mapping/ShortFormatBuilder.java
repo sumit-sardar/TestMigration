@@ -3,7 +3,7 @@ package com.ctb.contentBridge.core.publish.mapping;
 
 import java.util.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.util.ObjectiveFileTokenizer;
 
 
@@ -21,14 +21,14 @@ public class ShortFormatBuilder implements ObjectiveBuilder {
                 Integer level = new Integer(toker.nextToken());
 
                 if (toker.hasMoreTokens()) {
-                    throw new BusinessException("Extra items in line:  " + line);
+                    throw new SystemException("Extra items in line:  " + line);
                 }
                 return new Objective(name, curriculumID, nodeKey, parentKey,
                         level, levelNameMap);
             } catch (NumberFormatException e) {
-                throw new BusinessException("Cannot parse line(" + lineNumber + "):  " + line);
+                throw new SystemException("Cannot parse line(" + lineNumber + "):  " + line);
             } catch (NoSuchElementException e) {
-                throw new BusinessException("Cannot parse line(" + lineNumber + "):  " + line);
+                throw new SystemException("Cannot parse line(" + lineNumber + "):  " + line);
             }
 
         }

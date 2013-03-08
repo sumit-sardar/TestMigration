@@ -14,7 +14,7 @@ import org.jdom.input.*;
 import org.jdom.output.*;
 import org.xml.sax.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlOutputter;
 import com.ctb.contentBridge.core.util.StreamResource;
 
@@ -23,7 +23,7 @@ public class IOUtils {
     public static final String DTD_NAME = "R2_Flash_UI_SOFA.dtd";
     private static Random random = new Random();
 
-    public static File copyFile(File source, File target) throws BusinessException {
+    public static File copyFile(File source, File target) throws SystemException {
         InputStream in = null;
         OutputStream out = null;
 
@@ -37,7 +37,7 @@ public class IOUtils {
             }
             out.flush(); // just in case
         } catch (IOException fnfe) {
-            new BusinessException(fnfe.getMessage());
+            new SystemException(fnfe.getMessage());
         } finally {
             if (out != null) {
                 try {
@@ -53,13 +53,13 @@ public class IOUtils {
             }
         }
         if (source.length() != target.length()) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Error in copying -- " + source + " to " + target);
         }
         return target;
     }
 
-    public static Document loadXmlDocument(File xmlFile, boolean validate) throws BusinessException {
+    public static Document loadXmlDocument(File xmlFile, boolean validate) throws SystemException {
         return loadXmlDocument(xmlFile, validate, null);
     }
 
@@ -71,7 +71,7 @@ public class IOUtils {
     public static Document loadXmlDocument(
         File xmlFile,
         boolean validate,
-        XMLFilter filter) throws BusinessException {
+        XMLFilter filter) throws SystemException {
 
         try {
             return loadXmlDocument(
@@ -79,9 +79,9 @@ public class IOUtils {
                 validate,
                 filter);
         } catch (JDOMException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ public class IOUtils {
     }
 
     public static File createCopyWithDoctype(File originalFile)
-        throws IOException, JDOMException, BusinessException {
+        throws IOException, JDOMException, SystemException {
         Document doc = loadXmlDocument(originalFile, false);
 
         setR2FlashUiDoctype(doc);
@@ -184,7 +184,7 @@ public class IOUtils {
         return bytes;
     }
 
-    public static byte[] loadBytes(File file) throws IOException, BusinessException {
+    public static byte[] loadBytes(File file) throws IOException, SystemException {
         long length = file.length();
 
         if (length > Integer.MAX_VALUE) {
@@ -194,7 +194,7 @@ public class IOUtils {
         return loadBytes(new StreamResource().getStream(file));
     }
 
-    public static byte[] loadBytes(String resourceName) throws IOException, BusinessException {
+    public static byte[] loadBytes(String resourceName) throws IOException, SystemException {
         InputStream is = new StreamResource().getStream(resourceName);
 
         if (is.available() > Integer.MAX_VALUE) {

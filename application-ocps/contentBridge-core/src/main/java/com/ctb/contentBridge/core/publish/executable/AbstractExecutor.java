@@ -5,7 +5,7 @@ package com.ctb.contentBridge.core.publish.executable;
 import java.util.StringTokenizer;
 import java.io.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 /**
  * User: mwshort
@@ -17,7 +17,7 @@ import com.ctb.contentBridge.core.exception.BusinessException;
 public class AbstractExecutor {
 
 
-    public void exec(String commandLine) throws BusinessException {
+    public void exec(String commandLine) throws SystemException {
         StringTokenizer tokenizer = new StringTokenizer(commandLine);
         String[] args = new String[tokenizer.countTokens()];
 
@@ -27,7 +27,7 @@ public class AbstractExecutor {
         exec(args);
     }
 
-    public void exec(String[] args) throws BusinessException {
+    public void exec(String[] args) throws SystemException {
         ExecutionInfo info = new ExecutionInfo();
         Runtime rt = Runtime.getRuntime();
         Process process = null;
@@ -37,17 +37,17 @@ public class AbstractExecutor {
             info.getInputSink(process).start();
             process.waitFor();
         } catch (IOException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } catch (InterruptedException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
         info.exitValue = process.exitValue();
         checkForErrors(info);
     }
 
-    protected void checkForErrors(ExecutionInfo info) throws BusinessException {
+    protected void checkForErrors(ExecutionInfo info) throws SystemException {
         if (info.exitValue != 0) {
-            throw new BusinessException(info.toString());
+            throw new SystemException(info.toString());
         }
     }
 

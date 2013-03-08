@@ -6,7 +6,7 @@ import java.util.*;
 
 import org.apache.log4j.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 public class ObjectivesLoader {
 
@@ -32,7 +32,7 @@ public class ObjectivesLoader {
             }
             reader.close();
         } catch (IOException ioEx) {
-            throw new BusinessException("Unexpected error reading objectives file");
+            throw new SystemException("Unexpected error reading objectives file");
         }
         validate(objectives);
     }
@@ -58,7 +58,7 @@ public class ObjectivesLoader {
             System.out.println(s);
         }
         if (!badObjectives.isEmpty() || !orphanedObjectives.isEmpty()) {
-            throw new BusinessException("Error in objectives file");
+            throw new SystemException("Error in objectives file");
         }
     }
 }

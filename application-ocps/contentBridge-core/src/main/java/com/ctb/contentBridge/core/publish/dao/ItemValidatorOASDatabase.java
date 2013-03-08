@@ -1,6 +1,6 @@
 package com.ctb.contentBridge.core.publish.dao;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.item.Item;
 
 
@@ -62,27 +62,27 @@ public class ItemValidatorOASDatabase {
 
     private void verifyItemNotMoved() 
     {
-/*
+
         String currentObjective = ( (item.getHistory() != null) && (!item.getHistory().equals(""))) ? ogw
                 .getCurrentObjectiveIDForItem(item.getHistory(), item.getFrameworkCode())
                 : ogw.getCurrentObjectiveIDForItem(item.getId());
 
         if (currentObjective == null) {
-            throw new BusinessException("Existing item not linked to any objective");
+            throw new SystemException("Existing item not linked to any objective");
         }
 
         if (!currentObjective.equals(item.getObjectiveId())) {
             throw new RuntimeException(
                     "The hierarchy location of an item can not be updated. (old = '"
                             + currentObjective + "' new = '" + item.getObjectiveId() + "')");
-        } */
+        } 
     }
 
     private void verifyItemTypeNotChanged() {
         String dbItemType = igw.getItem(item.getId()).getType();
 
         if (dbItemType != null && !dbItemType.equals(item.getType())) {
-            throw new BusinessException("An update to an existing item cannot change the item type "
+            throw new SystemException("An update to an existing item cannot change the item type "
                     + item.getId());
         }
     }
@@ -91,7 +91,7 @@ public class ItemValidatorOASDatabase {
         String dbAnswer = igw.getItem(item.getId()).getCorrectAnswer();
 
         if (dbAnswer != null && !dbAnswer.trim().equalsIgnoreCase(item.getCorrectAnswer().trim())) {
-            throw new BusinessException(
+            throw new SystemException(
                     "An update to an existing item cannot change the answer choice: "
                             + item.getId());
         }

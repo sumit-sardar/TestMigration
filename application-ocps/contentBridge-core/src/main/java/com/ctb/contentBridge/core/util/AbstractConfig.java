@@ -5,7 +5,7 @@ import java.util.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +56,7 @@ abstract public class AbstractConfig {
         for (Iterator iter = requiredKeys.keySet().iterator();iter.hasNext();) {
             String key = (String)iter.next();
             if (props.getProperty(key) == null)
-                throw new BusinessException("Required key " + key + " not set for " + configName);
+                throw new SystemException("Required key " + key + " not set for " + configName);
         }
     }
 
@@ -117,7 +117,7 @@ abstract public class AbstractConfig {
         try {
             return new URL(urlString);
         } catch (MalformedURLException e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 

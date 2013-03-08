@@ -6,7 +6,7 @@ import java.util.*;
 
 import org.apache.commons.lang.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 
 
 public class FrameworkInfo {
@@ -108,14 +108,14 @@ public class FrameworkInfo {
                     if (StringUtils.isNumeric(varValue)) {
                         gradeLevel = new Integer(varValue);
                     } else {
-                        throw new BusinessException("Variable " + varName
+                        throw new SystemException("Variable " + varName
                                 + " requires a numeric value");
                     }
                 } else if (varName.equals("productlevel")) {
                     if (StringUtils.isNumeric(varValue)) {
                         internalProductNameLevel = new Integer(varValue);
                     } else {
-                        throw new BusinessException("Variable " + varName
+                        throw new SystemException("Variable " + varName
                                 + " requires a numeric value");
                     }
                 }
@@ -128,43 +128,43 @@ public class FrameworkInfo {
                     Integer levelNumber = new Integer(levelToken);
 
                     if (map.containsKey(levelNumber)) {
-                        throw new BusinessException("Duplicate level definition: "
+                        throw new SystemException("Duplicate level definition: "
                                 + line);
                     }
                     map.put(levelNumber, levelName);
                 } else {
-                    throw new BusinessException("Level number has to be numeric value: "
+                    throw new SystemException("Level number has to be numeric value: "
                             + line);
                 }
 
             } else {
-                throw new BusinessException("Invalid row in line " + rowcount
+                throw new SystemException("Invalid row in line " + rowcount
                         + ": " + line + " (" + levelToker.countTokens() + " "
                         + variableToker.countTokens() + ")");
             }
             rowcount++;
         }
         if (frameworkCode == null) {
-            throw new BusinessException("Framework code not defined in framework definition file. The file requires a line of the format \"Framework=xyz\"");
+            throw new SystemException("Framework code not defined in framework definition file. The file requires a line of the format \"Framework=xyz\"");
         }
         if (gradeLevel == null) {
-            throw new BusinessException("Grade level not defined in framework definition file. The file requires a line of the format \"GradeLevel=n\"");
+            throw new SystemException("Grade level not defined in framework definition file. The file requires a line of the format \"GradeLevel=n\"");
         }
         if (internalProductNameLevel == null) {
-            throw new BusinessException("Product level not defined in framework definition file. The file requires a line of the format \"ProductLevel=n\"");
+            throw new SystemException("Product level not defined in framework definition file. The file requires a line of the format \"ProductLevel=n\"");
         }
         if (!gradeLevel.equals(NO_GRADE) && !map.containsKey(gradeLevel)) {
-            throw new BusinessException("The specified grade level " + gradeLevel
+            throw new SystemException("The specified grade level " + gradeLevel
                     + " does not match a level definition");
         }
         if (!map.containsKey(internalProductNameLevel)) {
-            throw new BusinessException("The specified product level "
+            throw new SystemException("The specified product level "
                     + internalProductNameLevel
                     + " does not match a level definition");
         }
         levelNames = map;
         if (!levelNames.get(new Integer(1)).equals("Root"))
-            throw new BusinessException("The first level entry in levels.txt must be 1,Root");
+            throw new SystemException("The first level entry in levels.txt must be 1,Root");
     }
 
     public Integer getInternalProductNameLevel() {
@@ -189,7 +189,7 @@ public class FrameworkInfo {
 
             return ((Integer) minObject).intValue();
         } else {
-            throw new BusinessException("Cannot get the root level of an empty collection ");
+            throw new SystemException("Cannot get the root level of an empty collection ");
         }
     }
 

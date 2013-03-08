@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.jdom.Element;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.BuilderUtils;
 import com.ctb.contentBridge.core.publish.xml.XMLConstants;
 
@@ -34,7 +34,7 @@ public class AssessmentBuilder implements XMLConstants {
         if (!rootElement
             .getName()
             .equals(XMLConstants.ELEMENT_NAME_ASSESSMENT)) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Invalid root element: " + rootElement.getName());
         }
         frameworkCode =
@@ -66,7 +66,7 @@ public class AssessmentBuilder implements XMLConstants {
             itemSetDescription =
                 BuilderUtils.extractChildElementValue(rootElement, DESCRIPTION);
     //        itemSetDescription = AbstractSubTestBuilder.replaceAll( itemSetDescription, "'", "&apos;" );
-        } catch (BusinessException se) {
+        } catch (SystemException se) {
             itemSetDescription = "";
           //      BuilderUtils.extractAttributeMandatory(rootElement, DESCRIPTION);
         }

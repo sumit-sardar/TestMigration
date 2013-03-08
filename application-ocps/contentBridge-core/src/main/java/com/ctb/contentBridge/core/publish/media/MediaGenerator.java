@@ -2,7 +2,7 @@ package com.ctb.contentBridge.core.publish.media;
 
 import org.jdom.*;
 
-import com.ctb.contentBridge.core.exception.BusinessException;
+import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.iknowxml.R2XmlTools;
 import com.ctb.contentBridge.core.publish.sax.util.XSLDocType;
 import com.ctb.contentBridge.core.publish.tools.ArtLocalizer;
@@ -62,7 +62,7 @@ public class MediaGenerator implements ItemMediaGenerator {
         try {
             return generate(item, item.getItemRootElement());
         } catch (Exception e) {
-			throw new BusinessException(e.getMessage());
+			throw new SystemException(e.getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ public class MediaGenerator implements ItemMediaGenerator {
         ImageValidation imv = new ImageValidation(element);
 
         if (!imv.validateArt()) {
-            throw new BusinessException(
+            throw new SystemException(
                 "Art missing, can not perform media generation\n" + imv);
         }
     }
