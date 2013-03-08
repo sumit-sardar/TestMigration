@@ -3390,22 +3390,30 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] + demoGroup ;
 		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);	
-			     	if(demoGroup != "")
-			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);			     	
+			     	if(demoGroup != ""){
+			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     		document.getElementById(dynKey).checked = true;
+			     		}		     	
 			     }else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
-			     	if(demoGroup != "")	
-			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);			     	 
+			     	if(demoGroup != ""){
+			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     		document.getElementById(dynKey).checked = false;
+			     		}			     	 
 			     }
 			     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     	if(demoGroup != "")
-			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     	if(demoGroup != ""){
+			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     		document.getElementById(dynKey).disabled = true;
+			     		}
 			     	
 			     } else {
 			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-			     	if(demoGroup != "")
-			     		$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     	if(demoGroup != "") {
+			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+			     		document.getElementById(dynKey).disabled = false;
+			     		}
 			     }
 			     
 			     var currenValue = $("#Ethnicity").val();
@@ -3451,12 +3459,13 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     			if(demoGroup != "")
-				     				$("#"+groupDiv + " select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+				     				$("#"+groupDiv + " select[name='" + stuDemographic[count]['labelName']+ demoGroup +"']").find("option:eq(0)").attr("selected","true");
 				     			
 				     			//var radioButtonId = stuDemographic[count]['labelName'] +'_' + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'];
 				     			//$("#"+radioButtonId).attr('checked',false);
-				     			if(groupDiv != "")
+				     			if(groupDiv != "") {
 				     				$("#"+groupDiv+" :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+				     				}
 				     		}
 				     	}
 						if((profileEditable === "false" || isEditStudentImported) && stuDemographic[count].importEditable == 'F') {
@@ -3498,21 +3507,29 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] + demoGroup;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
-			     			if(demoGroup != "")
-			     			$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     			if(demoGroup != ""){
+			     				//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     				document.getElementById(dynKey).checked = true;
+			     				}
 					     }else {
 						     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
-						     if(demoGroup != "")
-						     $("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
+						     if(demoGroup != ""){
+						     	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
+						     	document.getElementById(dynKey).checked = false;
+						     	}
 					     }
 					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
 			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     			if(demoGroup != "")
-			     			 $("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     			if(demoGroup != ""){
+			     			 	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+			     			 	document.getElementById(dynKey).disabled = true;
+			     			 	}
 					     }else {
 					     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-					     	if(demoGroup != "")
-					     	$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     	if(demoGroup != ""){
+					     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+					     		document.getElementById(dynKey).disabled = false;
+					     		}
 					     }
 					     var currenValue = $("#Ethnicity").val();
 							if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
