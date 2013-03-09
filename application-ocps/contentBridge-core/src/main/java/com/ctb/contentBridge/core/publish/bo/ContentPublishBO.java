@@ -145,6 +145,8 @@ public class ContentPublishBO {
 				ContentPublishDAO.insertAssetItemMap(conn, abtValues);
 			} else if ("Update".equals(strFlag)) {
 				System.out.println("Update Item...");
+				String decXml=null;
+				decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				appendXML = new AppendXML(xmlFile);
 				String strAppendedXML = null;
 				if ("true".equals(htmlWidget)) {
@@ -155,7 +157,7 @@ public class ContentPublishBO {
 					strAppendedXML = ContentPublishDAO.createAppendedXML(conn,
 							abtValues, obItemPkgId, appendXML);
 				}
-				String decXml=null;
+				
 				byte outData[] = (byte[]) null;
 				outData = new byte[strAppendedXML.length()];
 				outData = crypto.encrypt((String) encdKeyIDs.get(1),
@@ -163,14 +165,15 @@ public class ContentPublishBO {
 
 				System.out.println("ContentPublishDAO.updateItem...");
 				//ContentPublishDAO.updateItem(conn, finalValues);
-				decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
-				
+				//String decXml=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
+				String decXml2=ContentPublishDAO.getDecryptedItemXml(conn, finalValues.get(0).toString());
 				
 				Pattern pattern = Pattern.compile("id=\\\"widget\\d*");
 				Matcher matcher =pattern.matcher(decXml);
 				
 			     String decTemp1Xml=matcher.replaceAll("id=\"");
-			     Matcher matcherBSave =pattern.matcher(strAppendedXML);
+			     //Matcher matcherBSave =pattern.matcher(strAppendedXML);
+			     Matcher matcherBSave =pattern.matcher(decXml2);
 			     String decTemp2Xml=matcherBSave.replaceAll("id=\"");
 			     
 			     String decTemp2FinalOrig = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
@@ -192,7 +195,9 @@ public class ContentPublishBO {
 			     System.out.println("222222222232222222222222::::::"+decTemp2FinalOrig.length());
 			     
 			     System.out.println(decTemp2FinalOrig.length() == decTemp1FinalOrig.length());
-			     if((decTemp2FinalOrig.equals(decTemp1FinalOrig)) || (decTemp2FinalOrig.length() == decTemp1FinalOrig.length())){
+			     System.out.println(decTemp2FinalOrig.equals(decTemp1FinalOrig));
+			     //System.out.println(decTemp2Final.equals(decTemp1FinalOrig));
+			     if(decTemp2FinalOrig.equals(decTemp1FinalOrig)){
 			     //if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
 			     //if (decTemp1Final.equalsIgnoreCase(decTemp2Final)) {
 					System.out.println("Content unchanged...");
