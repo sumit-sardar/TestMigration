@@ -172,13 +172,29 @@ public class ContentPublishBO {
 			     String decTemp1Xml=matcher.replaceAll("id=\"");
 			     Matcher matcherBSave =pattern.matcher(strAppendedXML);
 			     String decTemp2Xml=matcherBSave.replaceAll("id=\"");
-			     String decTemp2Final = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
-			     String decTemp1Final = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
 			     
+			     String decTemp2FinalOrig = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			     String decTemp1FinalOrig = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "");
+			     
+			     //String decTemp2Final = decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("\\p{Cntrl}", "").replaceAll("[^\\p{Print}]", "").replaceAll("\\p{C}", "");
+			     //String decTemp1Final = decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("\\p{Cntrl}", "").replaceAll("[^\\p{Print}]", "").replaceAll("\\p{C}", "");
+			     
+			     System.out.println("111111111113111111111111ORIG:::::"+decTemp1Xml.length());
+			     System.out.println("222222222232222222222222ORIG::::::"+decTemp2Xml.length());
+			     
+			     //XMLUnitBasedComparator unitBasedComparator = new XMLUnitBasedComparator();
 			     /*String decTemp2Final = URLEncoder.encode(decTemp2Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");
 			     String decTemp1Final = URLEncoder.encode(decTemp1Xml.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\t", "").replaceAll(" ", ""),"UTF-8");*/
-				//if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
-			     if (decTemp1Final.equalsIgnoreCase(decTemp2Final)) {
+			     //System.out.println("111111111113111111111111Without NonPrint:::::"+decTemp1Final.length());
+			     //System.out.println("222222222232222222222222Without NonPrint::::::"+decTemp2Final.length());
+			     
+			     System.out.println("111111111113111111111111:::::"+decTemp1FinalOrig.length());
+			     System.out.println("222222222232222222222222::::::"+decTemp2FinalOrig.length());
+			     
+			     System.out.println(decTemp2FinalOrig.length() == decTemp1FinalOrig.length());
+			     if((decTemp2FinalOrig.equals(decTemp1FinalOrig)) || (decTemp2FinalOrig.length() == decTemp1FinalOrig.length())){
+			     //if (decTemp1Xml.trim().equals(decTemp2Xml.trim())) {
+			     //if (decTemp1Final.equalsIgnoreCase(decTemp2Final)) {
 					System.out.println("Content unchanged...");
 					/*hash = ContentPublishDAO.getHashItemPkg(conn, finalValues
 							.get(0).toString());

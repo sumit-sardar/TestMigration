@@ -83,7 +83,7 @@ public class ItemProcessorGeneric implements ItemProcessor {
         this.connection = conn;
         this.maxPanelWidth = maxPanelWidth;
         this.includeAcknowledgment = includeAcknowledgment;
-        // setCurrentItemList( new ArrayList() );
+        setCurrentItemList( new ArrayList() );
     }
     
     public void getAttributeFromTestItem( Item mappedItem )
@@ -127,14 +127,14 @@ public class ItemProcessorGeneric implements ItemProcessor {
             System.out.println("Publish item starts for: " + item.getId());
             mappedItem.setLayoutElement(itemLayout.publishLayout(itemElement));
             mappedItem.setMedia(null);
-  //  		if (!"NI".equals(mappedItem.getType()))
+            if (!"NI".equals(mappedItem.getType()))
     			r.setNewID(this.writer.write(mappedItem));
             setItemProcessed( r.getID() );
             System.out.println("Processed item: " + item.getId());
         }
         else
         {
- //   		if (!"NI".equals(mappedItem.getType()))
+        	if (!"NI".equals(mappedItem.getType()))
     			this.writer.writeDatapointConditionCode( mappedItem );
             r.setNewID( r.getID() );
         }
