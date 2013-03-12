@@ -55,8 +55,9 @@
 					<div id="viewStatus" style="float:right;visibility:hidden;">
 						<% if(isShowRosterStudents) {%>
 					    	<a href="#" id="bulkRosterButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.roster" /></a>
-					    <% }%>
+					    <% } else {%>
 						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><lb:label key="stu.label.move" /></a>
+						<%} %>
 					</div> 
 					<div style="clear:both;">
 				</td>
