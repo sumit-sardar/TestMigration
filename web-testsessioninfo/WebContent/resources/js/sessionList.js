@@ -1606,7 +1606,7 @@ function registerDelegate(tree){
 							//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 							fillDropDown("topOrgNode",data.topNodeDropDownList);
 							var productSelected = $("#testGroupList").val();
-							if(productSelected == '9003') {
+							if(productSelected == '9003' || productSelected == '9007') {
 								isOKEQDefaultSelected = true;
 							} else {
 								isOKEQDefaultSelected = false;
@@ -1663,8 +1663,8 @@ function registerDelegate(tree){
 			optionHtml += "<option  value='Select a product'>Show All</option>";
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {
-				if((optionList[i].productId == '9003') && !isOKAdmin) {
-					continue; // Only state level oklahoma admin should be able to see/schedule/edit 9003 product
+				if((optionList[i].productId == '9003' || optionList[i].productId == '9007') && !isOKAdmin) {
+					continue; // Only state level oklahoma admin should be able to see/schedule/edit 9003 and 9007 products
 				}
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
@@ -1811,7 +1811,7 @@ function registerDelegate(tree){
 		 if(isOKAdmin) {
 			 isOKProductChanged = true;
 			 var productSelected = $("#testGroupList").val();
-			 if(productSelected == '9003') {
+			 if(productSelected == '9003' || productSelected == '9007') {
 			 	isOKEqTestSelected = true;
 			 } else {
 			 	isOKEqTestSelected = false;
@@ -1873,8 +1873,8 @@ function registerDelegate(tree){
 		selectProductId = e.options[e.selectedIndex].value;
 		var optionList = ProductData.product
 		for(var i = 0; i < optionList.length; i++ ) {
-			if((optionList[i].productId == '9003') && !isOKAdmin) {
-				continue; // Only state level oklahoma admin should be able to see 9003 product
+			if((optionList[i].productId == '9003' || optionList[i].productId == '9007') && !isOKAdmin) {
+				continue; // Only state level oklahoma admin should be able to see 9003 and 9007 products
 			}
 			if(selectProductId==optionList[i].productId) { 	     
 				$("#productType").val(optionList[i].productType);
@@ -2210,7 +2210,7 @@ function registerDelegate(tree){
 					if (forceTestBreak) {
 						setTestBreakForCustomer();
 					}
-					if(state != 'EDIT' && previousValue == '9003' && !isOKEQActionPerformed && isOKAdmin) {
+					if(state != 'EDIT' && (previousValue == '9003' || previousValue == '9007') && !isOKEQActionPerformed && isOKAdmin) {
 						isOKEQActionPerformed = true;
 						isOKEqTestSelected = true;
 						$("#Proctor_Tab").css('display', 'block');
@@ -3112,7 +3112,7 @@ function registerDelegate(tree){
  		
  		proctorGridloaded = true;
 		var productSelected = $("#testGroupList").val();
-		if(productSelected == '9003') {
+		if(productSelected == '9003' || productSelected == '9007') {
 			isOKEqTestSelected = true;
 		} else {
 			isOKEqTestSelected = false;

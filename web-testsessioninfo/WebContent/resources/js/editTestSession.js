@@ -86,7 +86,8 @@
 							//Added for Oklahoma customer
 							isOKAdmin = data.isOkAdmin;
 							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
-									parseInt(data.savedTestDetails.testSession.productId) == 9003) {
+									(parseInt(data.savedTestDetails.testSession.productId) == 9003 || 
+									parseInt(data.savedTestDetails.testSession.productId) == 9007)) {
 								isOKEQProduct = true;
 								isOKEQActionPerformed = true;
 							} else {
