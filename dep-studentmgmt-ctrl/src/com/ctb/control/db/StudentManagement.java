@@ -1174,4 +1174,8 @@ public interface StudentManagement extends JdbcControl
     
     @JdbcControl.SQL(statement = "select opunit from test_roster where student_id  = {studentId}  and activation_status = 'AC' and opunit is not null and rownum = 1")
     String getIsStudentExtracted (Integer studentId) throws SQLException;
+    
+    //Check whether a particular customer configuration is present for the student or not. Currently used to check disable delete student.
+    @JdbcControl.SQL(statement = "select count(conf.customer_configuration_id) from customer_configuration conf, student stu where stu.customer_id = conf.customer_id and stu.student_id = {studentId} and conf.customer_configuration_name = {customerConfigurationName} and conf.editable = 'T' and conf.default_value = 'T'")
+    Integer isConfigurationPresent (Integer studentId, String customerConfigurationName) throws SQLException;
 }
