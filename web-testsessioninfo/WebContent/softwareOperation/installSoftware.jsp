@@ -20,7 +20,7 @@
 <netui-template:section name="bodySection">
 
 <% 
-	Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
+	Boolean isISTEPCustomer = (Boolean)request.getAttribute("isISTEPCustomer");
 %>
         
 <!-- ********************************************************************************************************************* -->
@@ -187,7 +187,7 @@
                    </td>
                    <td class="transparent-top" width="40%">
                         <b><netui:content value="${bundle.web['installClient.windows.clientName']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
                         <netui:content value="${bundle.web['installClient.windows.version.istep']}"/><br>
                         <% } else { %>
                         <netui:content value="${bundle.web['installClient.windows.version']}"/><br>
@@ -204,7 +204,7 @@
                     </td>
                    <td class="transparent-top" width="40%">
                         <b><netui:content value="${bundle.web['installClient.windows.clientName2']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
                         <netui:content value="${bundle.web['installClient.windows.version.istep']}"/><br>
                         <% } else { %>
                         <netui:content value="${bundle.web['installClient.windows.version']}"/><br>
@@ -228,7 +228,7 @@
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.mac.clientName']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
 		                <netui:content value="${bundle.web['installClient.mac.version.istep']}"/><br>
                         <% } else { %>
 		                <netui:content value="${bundle.web['installClient.mac.version']}"/><br>
@@ -245,7 +245,7 @@
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.mac.clientName2']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
 		                <netui:content value="${bundle.web['installClient.mac.version.istep']}"/><br>
                         <% } else { %>
 		                <netui:content value="${bundle.web['installClient.mac.version']}"/><br>
@@ -269,7 +269,7 @@
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
 		                <netui:content value="${bundle.web['installClient.linux.version.istep']}"/><br>
                         <% } else { %>
 		                <netui:content value="${bundle.web['installClient.linux.version']}"/><br>
@@ -295,7 +295,7 @@ Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return s
 		            </td>
 		            <td class="transparent-top" width="40%">
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName2']}"/></b><br>
-                        <% if (isLasLinkCustomer.booleanValue()) { %>
+                        <% if (isISTEPCustomer.booleanValue()) { %>
 		                <netui:content value="${bundle.web['installClient.linux.version.istep']}"/><br>
                         <% } else { %>
 		                <netui:content value="${bundle.web['installClient.linux.version']}"/><br>

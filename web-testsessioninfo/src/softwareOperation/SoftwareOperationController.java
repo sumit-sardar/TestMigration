@@ -571,6 +571,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean isISTEPCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	
 		if( customerConfigurations != null ) {
@@ -652,10 +653,16 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("OK_Customer")
 						&& cc.getDefaultValue().equals("T")) {
 	            	isOKCustomer = true;
+					continue;
 	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
 						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 					isGACustomer = true;
+					continue;
+				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("ISTEP_Customer") 
+						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
+					isISTEPCustomer = true;
 					continue;
 				}
 			}
@@ -687,6 +694,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getRequest().setAttribute("isISTEPCustomer", isISTEPCustomer);
 	
 		//System.out.println(laslinkCustomer);
      	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
