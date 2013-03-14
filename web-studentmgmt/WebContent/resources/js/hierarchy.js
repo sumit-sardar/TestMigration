@@ -1323,7 +1323,7 @@ function getValue(keyVal) {
 			}
 		var radiofields = $(":radio"); 
        for (var i=0; i<radiofields.length; i++) {
-			if (radiofields[i].value== "None") { 
+			if ((radiofields[i].value== "None") || (radiofields[i].value.indexOf("_None") != -1)) { 
 				radiofields[i].checked = true;
 			}
 		}
