@@ -166,7 +166,7 @@ function populateProgramStatusDetails(){
 										testIds[i] = data.testList[i].itemSetId;
 									}
 									fillTestNameOptions('testNameOptions',testNameOptions);
-									$("#testNameOptions").val(selectedTestCatalogId);
+									//$("#testNameOptions").val(selectedTestCatalogId);
 									$("#testNameOptions").show();
 								}
 								
@@ -438,6 +438,7 @@ function getSubtestDetailsForSelectedTest(){
 	var selectElement = document.getElementById("testNameOptions");
 	var chosenOption = selectElement.options[selectElement.selectedIndex];
 	selectedTestIdPS = chosenOption.value;
+	selectedTestNamePS = chosenOption.text;
 	$("#testStatusTitleID").hide();
 	$("#clickableSubtestMsg").hide();
 	$("#testStatusInfo").hide();
