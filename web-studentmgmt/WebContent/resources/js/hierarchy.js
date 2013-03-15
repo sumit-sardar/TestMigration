@@ -1675,6 +1675,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	
 	if(isAddStudent){
+		isEditStudentImported = false;
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
 		 "&isAddStudent=" + isAddStudent +"&createBy="+createBy ;
@@ -3388,32 +3389,34 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			if(stuDemographic[count]['studentDemographicValues'].length == 1){
 				
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] + demoGroup ;
-		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
-			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);	
-			     	if(demoGroup != ""){
-			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
-			     		document.getElementById(dynKey).checked = true;
-			     		}		     	
-			     }else {
-			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
-			     	if(demoGroup != ""){
-			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
-			     		document.getElementById(dynKey).checked = false;
-			     		}			     	 
-			     }
-			     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
-			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     	if(demoGroup != ""){
-			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     		document.getElementById(dynKey).disabled = true;
-			     		}
-			     	
-			     } else {
-			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-			     	if(demoGroup != "") {
-			     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-			     		document.getElementById(dynKey).disabled = false;
-			     		}
+		     	if(document.getElementById(dynKey) != undefined && document.getElementById(dynKey) != null){
+			     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
+				     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);	
+				     	if(demoGroup != ""){
+				     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
+				     		document.getElementById(dynKey).checked = true;
+				     		}		     	
+				     }else {
+				     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+				     	if(demoGroup != ""){
+				     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
+				     		document.getElementById(dynKey).checked = false;
+				     		}			     	 
+				     }
+				     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)) {
+				     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+				     	if(demoGroup != ""){
+				     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+				     		document.getElementById(dynKey).disabled = true;
+				     		}
+				     	
+				     } else {
+				     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+				     	if(demoGroup != "") {
+				     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+				     		document.getElementById(dynKey).disabled = false;
+				     		}
+				     }
 			     }
 			     
 			     var currenValue = $("#Ethnicity").val();
@@ -3505,32 +3508,34 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				if(valueCardinality == 'MULTIPLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){	
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] + demoGroup;
-			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
-			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
-			     			if(demoGroup != ""){
-			     				//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
-			     				document.getElementById(dynKey).checked = true;
-			     				}
-					     }else {
-						     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
-						     if(demoGroup != ""){
-						     	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
-						     	document.getElementById(dynKey).checked = false;
-						     	}
-					     }
-					     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
-			     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     			if(demoGroup != ""){
-			     			 	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
-			     			 	document.getElementById(dynKey).disabled = true;
-			     			 	}
-					     }else {
-					     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-					     	if(demoGroup != ""){
-					     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
-					     		document.getElementById(dynKey).disabled = false;
-					     		}
-					     }
+			     		if(document.getElementById(dynKey) != undefined && document.getElementById(dynKey) != null){
+				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+				     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+				     			if(demoGroup != ""){
+				     				//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', true);
+				     				document.getElementById(dynKey).checked = true;
+				     				}
+						     }else {
+							     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+							     if(demoGroup != ""){
+							     	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('checked', false);
+							     	document.getElementById(dynKey).checked = false;
+							     	}
+						     }
+						     if(stuDemographic[count].importEditable == 'F' && (profileEditable === "false" || isEditStudentImported)){
+				     			$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+				     			if(demoGroup != ""){
+				     			 	//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', true);
+				     			 	document.getElementById(dynKey).disabled = true;
+				     			 	}
+						     }else {
+						     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+						     	if(demoGroup != ""){
+						     		//$("#"+groupDiv + " :checkbox[name='" + dynKey+ "']").attr('disabled', false);
+						     		document.getElementById(dynKey).disabled = false;
+						     		}
+						     }
+						 }    
 					     var currenValue = $("#Ethnicity").val();
 							if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
 								displaySubEthnicityFunc();
