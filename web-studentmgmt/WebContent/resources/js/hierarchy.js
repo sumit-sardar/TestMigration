@@ -3439,7 +3439,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				     		    if(selectElement!=null && String(selectElement.options) !="undefined"){
 			     			     	setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 			     			     }else {
-			     			     	$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			     	$("#Student_Additional_Information :radio[name='"+stuDemographic[count]['labelName']+"'][value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 			     			     	if(demoGroup != "")
 			     			     		$("#"+groupDiv + " :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 			     			     	
