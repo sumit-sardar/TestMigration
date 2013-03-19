@@ -4,7 +4,7 @@ var selectedOrgNodeIdPS;
 var selectedOrgNodeNamePS="";
 var subtestStatusAction = "default";
 var selectedProgramIdPS;
-var selectedTestIdPS;
+var selectedTestIdPS = "";
 var isPSGridEmpty = true;
 var selectedProgramNamePS;
 var selectedTestNamePS;
@@ -123,7 +123,7 @@ function populateProgramStatusDetails(){
 	//var testIdPS;
 
 	selectedProgramIdPS=$('#programIdPS').val();
-	selectedTestIdPS=$('#selectedTestIdPS').val();
+	//selectedTestIdPS=$('#selectedTestIdPS').val();
 	var selectedTestCatalogId = $("#testNameOptions").val();
 
 	var params = "selectedProgramId="+selectedProgramIdPS+"&selectedOrgNodeId="+selectedOrgNodeIdPS+"&selectedOrgNodeName="+selectedOrgNodeNamePS+"&isBottomTwoLevels="+isBottomTwoLevels+"&selectedTestId="+selectedTestIdPS+"&subtestStatusAction="+subtestStatusAction;
@@ -166,7 +166,7 @@ function populateProgramStatusDetails(){
 										testIds[i] = data.testList[i].itemSetId;
 									}
 									fillTestNameOptions('testNameOptions',testNameOptions);
-									//$("#testNameOptions").val(selectedTestCatalogId);
+									$("#testNameOptions").val(selectedTestCatalogId);
 									$("#testNameOptions").show();
 								}
 								
