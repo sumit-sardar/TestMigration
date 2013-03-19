@@ -1539,10 +1539,6 @@ public class StudentManagementImpl implements StudentManagement
 			}
 
 			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
-			
-			// Check whether the customer has configuration for restricting delete student or not.
-			int canDeleteStudent = studentManagement.isConfigurationPresent(studentId,"Disable_Delete_Move_Student");
-			
 			for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
 				com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
 				boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());
@@ -1552,16 +1548,12 @@ public class StudentManagementImpl implements StudentManagement
 					newOrgNodeHash.remove(oldOrgNodeInDB.getOrgNodeId());                              
 				}
 				else { //delete or deactivate
-					if(canDeleteStudent < 1) { // If configuration Disable_Delete_Move_Student is present then student can neither be deleted nor deactivated
-						Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
-						if (rosterCount.intValue() >0) {
-							orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
-						}
-						else {
-							orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
-						}
-					} else {
-						throw new CTBBusinessException("Failed to update student.");
+					Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
+					if (rosterCount.intValue() >0) {
+						orgNodeStudents.deactivateOrgNodeStudentForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
+					}
+					else {
+						orgNodeStudents.deleteOrgNodeStudentForStudentAndOrgNode(studentId, oldOrgNodeInDB.getOrgNodeId());
 					}
 				}
 			}
@@ -1693,7 +1685,7 @@ public class StudentManagementImpl implements StudentManagement
 		validator.validateStudent(userName, studentId, "StudentManagementImpl.deleteStudent");
 		try {
 			// Check whether the customer has configuration for restricting delete student or not.
-			int canDeleteStudent = studentManagement.isConfigurationPresent(studentId,"Disable_Delete_Move_Student");
+			int canDeleteStudent = studentManagement.isConfigurationPresent(studentId,"Disable_Delete_Student");
 			if(canDeleteStudent > 0) {
 				CTBBusinessException be = new CTBBusinessException( 
 						"You cannot delete this student.");
