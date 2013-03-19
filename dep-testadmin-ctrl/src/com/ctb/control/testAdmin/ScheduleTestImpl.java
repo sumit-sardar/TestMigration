@@ -2070,6 +2070,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 }
             }
 */            
+        	Boolean hasLocator = newSession.getHasLocator();
             ArrayList subtests = new ArrayList();
             ScheduleElement [] oldUnits = tais.getTestAdminItemSetsForAdmin(newSession.getTestSession().getTestAdminId());
             HashMap oldMap = new HashMap();
@@ -2134,7 +2135,11 @@ public class ScheduleTestImpl implements ScheduleTest
                //
                 se.setItemSetId(newUnit.getItemSetId());
                 se.setItemSetOrder(new Integer(j));
-                se.setItemSetForm(newUnit.getItemSetForm()); /// tabe form
+                if (hasLocator) 
+                	se.setItemSetForm(null);
+                else 
+                	se.setItemSetForm(newUnit.getItemSetForm());
+                
                 se.setSessionDefault(newUnit.getSessionDefault()); //sessionDefault
                 se.setTestAdminId(newSession.getTestSession().getTestAdminId());
                 if(oldUnit == null) {

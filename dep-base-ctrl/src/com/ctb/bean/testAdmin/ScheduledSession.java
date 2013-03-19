@@ -27,8 +27,16 @@ public class ScheduledSession extends CTBBean
     private TestElement [] scheduledUnits;
     private String copyable;
     private Boolean fromTAS = true;
+    private Boolean hasLocator = false;
     
-    /**
+    
+    public Boolean getHasLocator() {
+		return hasLocator;
+	}
+	public void setHasLocator(Boolean hasLocator) {
+		this.hasLocator = hasLocator;
+	}
+	/**
 	 * @return Returns the copyable.
 	 */
 	public String getCopyable() {

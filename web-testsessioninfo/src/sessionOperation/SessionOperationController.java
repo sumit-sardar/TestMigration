@@ -1640,6 +1640,7 @@ public class SessionOperationController extends PageFlowController {
     	        				  locatorSubtest.setLevel(lItemSetForms);
     	        			  }
     	        			  subtestList.add(0, locatorSubtest);
+    	        			  scheduledSession.setHasLocator(true);
       	                } else {
       	                	 TestSessionUtils.setDefaultLevels(subtestList, "E");
       	                	
@@ -1660,7 +1661,7 @@ public class SessionOperationController extends PageFlowController {
 	        				  locatorSubtest.setLevel(lItemSetForms);
 	        			  }
 	        			  subtestList.add(0, locatorSubtest);
-    	            	
+	        			  scheduledSession.setHasLocator(true);    	            	
     	            	  TestSessionUtils.setDefaultLevels(subtestList, "1");
     	            }   
     	            
@@ -1810,7 +1811,7 @@ public class SessionOperationController extends PageFlowController {
 	private void populateSessionStudent(ScheduledSession scheduledSession,ScheduledSession savedSessionMinData,
 				HttpServletRequest httpServletRequest,
 			ValidationFailedInfo validationFailedInfo, boolean isAddOperation) {
-
+		
 		try {
 			
 			boolean isStudentListUpdated = true;
@@ -1918,8 +1919,11 @@ public class SessionOperationController extends PageFlowController {
                           studentManifests[j] = new StudentManifest();
                           
                           studentManifests[j].setItemSetId(subtestVO.getId());
-                          studentManifests[j].setItemSetName(subtestVO.getSubtestName());                            
-                          studentManifests[j].setItemSetForm(subtestVO.getLevel());
+                          studentManifests[j].setItemSetName(subtestVO.getSubtestName());    
+                          if (sessionHasLocator)
+                              studentManifests[j].setItemSetForm(null);
+                          else
+                        	  studentManifests[j].setItemSetForm(subtestVO.getLevel());
                           studentManifests[j].setItemSetOrder(new Integer(j + 1));                            
                       }   
                       
@@ -5984,7 +5988,9 @@ public class SessionOperationController extends PageFlowController {
 		        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, (isTabeSession || isTabeAdaptiveSession), isTabeLocatorSession, isLaslinkSession);       
 		       
 		        String testGrade = getTestGrade(this.studentStatusSubtests);
+		        if (testGrade == null) testGrade = "--";
 		        String testLevel = getTestLevel(this.studentStatusSubtests);
+		        if (testLevel == null) testLevel = "--";
 		        
 		        base.setStudentName(re.getFirstName() + " " + re.getLastName());
 		        base.setLoginName(re.getUserName());

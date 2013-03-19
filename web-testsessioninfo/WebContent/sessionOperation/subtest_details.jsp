@@ -30,6 +30,10 @@
         </tr>
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
+    
+	<netui-data:getData resultId="sessionDefault" value="${container.item.sessionDefault}"/>    
+	<% String sessionDefault = (String)pageContext.getAttribute("sessionDefault"); %>         		          
+    <% if (sessionDefault.equalsIgnoreCase("T")) { %>
         <tr class="simpletable">
             <td class="simpletable">
             	<netui:content value="${container.item.itemSetLevel}" defaultValue="&nbsp;"/>
@@ -44,6 +48,7 @@
             	<netui:content value="${container.item.accessCode}" defaultValue="&nbsp;"/>
             </td>
         </tr>
+       <% } %>
     </netui-data:repeaterItem>
 </netui-data:repeater>
 </table>
