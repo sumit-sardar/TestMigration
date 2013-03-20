@@ -2,6 +2,7 @@ package com.ctb.contentBridge.core.publish.dao;
 
 import com.ctb.contentBridge.core.exception.SystemException;
 import com.ctb.contentBridge.core.publish.xml.item.Item;
+import com.ctb.contentBridge.core.util.ObjectiveUtil;
 
 
 public class ItemValidatorOASDatabase {
@@ -18,12 +19,36 @@ public class ItemValidatorOASDatabase {
         this.dpgw = dpgw;
     }
 
-    public void validateItemreadyForInsert() {
+    /**
+     *  SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     *  This method validated all objective associated with a item.
+     * @throws Exception
+     */
+    public void validateItemForAllObjectveForInsert() throws Exception {
 
+    	final String originalObjective = item.getObjectiveId();
+    	if (originalObjective.indexOf(ObjectiveUtil.ObjectiveSeperatore)>1){
+    		String [] objectiveArray = ObjectiveUtil.getArrayFromString(originalObjective,ObjectiveUtil.ObjectiveSeperatore);
+    		try{
+    			for (int i=0; i<objectiveArray.length; i++) {
+        			item.setObjectiveId(objectiveArray[i]);
+        			validateItemreadyForInsert();
+           		 }
+    			item.setObjectiveId(originalObjective);
+    		} catch (Exception e) {
+    			item.setObjectiveId(originalObjective);
+    			throw e;
+			}
+    	} else {
+    		validateItemreadyForInsert();
+    	}
+
+    }
+    
+    public void validateItemreadyForInsert() {
 
         if (!item.isSample()) {
             validateItemSetId();
-
             if ( (igw.activeItemExists(item.getId()))) {
                 validateChangesAllowed();
             }
@@ -63,7 +88,7 @@ public class ItemValidatorOASDatabase {
     private void verifyItemNotMoved() 
     {
 
-        String currentObjective = ( (item.getHistory() != null) && (!item.getHistory().equals(""))) ? ogw
+        /*String currentObjective = ( (item.getHistory() != null) && (!item.getHistory().equals(""))) ? ogw
                 .getCurrentObjectiveIDForItem(item.getHistory(), item.getFrameworkCode())
                 : ogw.getCurrentObjectiveIDForItem(item.getId());
 
@@ -75,7 +100,7 @@ public class ItemValidatorOASDatabase {
             throw new RuntimeException(
                     "The hierarchy location of an item can not be updated. (old = '"
                             + currentObjective + "' new = '" + item.getObjectiveId() + "')");
-        } 
+        }*/ 
     }
 
     private void verifyItemTypeNotChanged() {

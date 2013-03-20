@@ -336,18 +336,25 @@ public class DBItemGateway {
 
         // create data point entry and connect to curriculum if the item type is not NI
         if (! Item.NOT_AN_ITEM.equals(item.getType())) {
-        
+        	System.out.println("item.getFrameworkCode(): "+item.getFrameworkCode());
 	        item.setFrameworkId(ogw.getFrameWorkID(item.getFrameworkCode()));
-	
-	
+	        System.out.println("item.getFrameworkId(): "+item.getFrameworkId());
+	        System.out.println("item.getObjectiveId(): "+item.getObjectiveId());
 	        itemSetId = ogw.getItemSetIdFromObjective(item.getObjectiveId(), item
 	                .getFrameworkCode());
+	        System.out.println("itemSetId: " + itemSetId);
         }
+        System.out.println("item.getId(): " + item.getId());
         if (itemExistsActiveOrInactive(item.getId())) {
+        	System.out.println("before updateExistingItem");
             updateExistingItem(item, itemSetId, item.isSample());
+            System.out.println("after updateExistingItem");
         } else {
+        	System.out.println("before insertNewItem");
             insertNewItem(item, itemSetId, item.isSample());
+            System.out.println("after insertNewItem");
         }
+        System.out.println("item.getChoiceCount: "+item.getChoiceCount());
         if (item.getChoiceCount() > 2 && item.getChoiceCount() < 6)
         {	// handle item_answer_choice
 	        CallableStatement stmt = null;
@@ -358,6 +365,7 @@ public class DBItemGateway {
 	            stmt = this.session.connection().prepareCall( "{call SP_POP_ANS_CHOICE_SINGLE_ITEM (?, ?)}");
 		        stmt.setString( 1, item.getId());
 		        stmt.setInt(2, item.getChoiceCount());
+		        System.out.println("call SP_POP_ANS_CHOICE_SINGLE_ITEM");
 		        stmt.execute();
 		        stmt.close();
 	        }
@@ -368,9 +376,12 @@ public class DBItemGateway {
 	            throw new SystemException(e.getMessage());
 	        }
         }
+        System.out.println("SP_POP_ANS_CHOICE_SINGLE_ITEM executed");
         //TODO - mws - prune logic should be part of the else
         if (!item.isSample() && activateObjectives  && ! Item.NOT_AN_ITEM.equals(item.getType())) {
-            ogw.activateAllParentObjectives(itemSetId);
+        	System.out.println("before activateAllParentObjectives");
+        	ogw.activateAllParentObjectives(itemSetId);
+        	System.out.println("after activateAllParentObjectives");
         }
     }
 
@@ -398,7 +409,7 @@ public class DBItemGateway {
 
     private void updateExistingItem(Item item, long itemSetId, boolean isSampleItem) {
         DBDatapointGateway dpgw = new DBDatapointGateway(session);
-
+        System.out.println("itemSetId: " + itemSetId);
         saveOrUpdateItem(item, getUniqueItemRecord(item.getId()));
 
         // update data point if the item type is not NI
@@ -410,14 +421,20 @@ public class DBItemGateway {
 	        // update data point if the item is sample
 	    //    if (!isSampleItem) {
 	 //          dpgw.deleteItemDatapoints( item.getId(), itemSetId );
+	        	System.out.println("before theDatapoint:" + item.getId() + ":" + item.getFrameworkCode());
 	            Datapoint theDatapoint = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
+	            
+	            System.out.println("theDatapoint:" + theDatapoint);
 	            if ( theDatapoint != null && theDatapoint.getItemSetId() == itemSetId )
 	            {
+	            	System.out.println("before updateDataPoint:");
 	                dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
 	                        .getMaxPoints());
+	                System.out.println("after updateDataPoint:");
 	            }
 	            else if ( theDatapoint != null )
 	            {
+	            	System.out.println("theDatapoint != null");
 	                try 
 	                {
 	                    ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
@@ -431,13 +448,16 @@ public class DBItemGateway {
 	                catch (Exception e) 
 	                {
 	                }
+	                System.out.println("before updateDataPoint1:");
 	                dpgw.updateDataPoint(item.getId(), theDatapoint.getItemSetId(), itemSetId, conditionCodes, item.getMinPoints(), item
 	                        .getMaxPoints());
+	                System.out.println("after updateDataPoint1:");
 	            }
 	            else
-	            {
+	            {	System.out.println("before insertDatapoint:");
 		            dpgw.insertDatapoint(item.getId(), itemSetId,
 		                    conditionCodes, item.getMinPoints(), item.getMaxPoints());
+		            System.out.println("after insertDatapoint:");
 	            }
 	            new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetId
 						, item.getFrameworkCode(), !item.isInvisible());

@@ -24,11 +24,12 @@ public class ItemWriterOASDatabaseInvisibleNoMedia
             setItemIdFromDatabase(item);
             this.setDatabaseValidator(item);
             if (!"NI".equals(item.getType()))
-            	this.getDatabaseValidator().validateItemreadyForInsert();
+            	this.getDatabaseValidator().validateItemForAllObjectveForInsert();
             this.getItemGateway().writeItemIntoDatabase(item);
             this.getDatabaseValidator().validateItemInDB();
             return item.getId();
         } catch (Exception e) {
+        	System.out.println("Exception inside write:" + e.getMessage());
             throw new SystemException(
                 "Could not write Item: " + e.getMessage());
         }

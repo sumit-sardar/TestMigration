@@ -1,5 +1,8 @@
 package com.ctb.contentBridge.core.publish.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -122,16 +125,23 @@ public class DBDatapointGateway {
     
     public Datapoint getFrameworkDatapoint(String itemId, String framework_code )
     {
+    	Statement statement = null;
+        ResultSet rs = null;
         try 
         {
-            Query query = session.createQuery(FIND_EXISTING_DATAPOINT);
+        	System.out.println("Inside getFrameworkDatapoint");
+            /*Query query = session.createQuery(FIND_EXISTING_DATAPOINT);
             query.setString(0, itemId);
             query.setString(1, itemId);
             query.setString(2, framework_code);
+            System.out.println("before iterate");
             Iterator datapointIT = query.iterate();
             if ( datapointIT.hasNext() )
             {
+            	System.out.println("Inside hasNext");
                 DatapointRecord datapointRecord = (DatapointRecord) datapointIT.next();
+                System.out.println("datapointRecord.getItemId():" + datapointRecord.getItemId());
+                System.out.println("datapointRecord.getItemSetId():" + datapointRecord.getItemSetId());
                 Datapoint datapoint =
                     new Datapoint(
                         datapointRecord.getItemId(),
@@ -143,11 +153,71 @@ public class DBDatapointGateway {
             else
             {
                 return null;
-            }
+            }*/
+			statement = session.connection().createStatement();
+			StringBuffer sbuf = new StringBuffer("select dat.item_id,dat.item_set_id,dat.min_points,dat.max_points ");
+			sbuf.append(" FROM datapoint dat,item_set_item isi,item_set_category isc,product prd,item_set ist ");
+			sbuf.append(" where dat.item_id = '").append(itemId).append("'");
+			sbuf.append(" and dat.item_set_id = isi.item_set_id");
+			sbuf.append(" and isi.item_id = '").append(itemId).append("'");
+			sbuf.append(" and isi.item_set_id= ist.item_set_id");
+			sbuf.append(" and ist.item_set_type = 'RE'");
+			sbuf.append(" and UPPER(prd.internal_display_name) = '").append(framework_code).append("'");
+			sbuf.append(" and prd.product_type = 'CF'");
+			sbuf.append(" and isc.framework_product_id = prd.product_id");
+			sbuf.append(" and ist.item_set_category_id = isc.item_set_category_id");
+			
+			String sql = sbuf.toString();
+			System.out.println("QUERY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+			System.out.println(sql);
+
+			rs = statement.executeQuery(sql);
+			Datapoint datapoint = null;        
+			while (rs.next()) {
+				datapoint = new Datapoint(rs.getString("item_id"),
+						rs.getLong("item_set_id"), rs.getInt("min_points"),
+						rs.getInt("max_points"));
+			}
+			return datapoint;
         }
         catch (Exception e) 
         {
+        	e.printStackTrace();
             return null;
+        } finally {
+			if (statement != null) {
+
+				try {
+
+					statement.close();
+
+				} catch (SQLException e) {
+
+					// TODO Auto-generated catch block
+
+					e.printStackTrace();
+
+				}
+
+			}
+
+			if (rs != null) {
+
+				try {
+
+					rs.close();
+
+				} catch (SQLException e) {
+
+					// TODO Auto-generated catch block
+
+					e.printStackTrace();
+
+				}
+
+			}
+
+
         }
     }
 
@@ -208,10 +278,16 @@ public class DBDatapointGateway {
         datapoint.setCreatedDateTime(new Date());
 
         try {
+        	System.out.println("Inside insertDatapoint1");
+        	System.out.println("itemId: " + itemId);
+        	System.out.println("itemSetId" + itemSetID);
             session.flush();
             Long datapointId = (Long) session.save(datapoint);
+            System.out.println("before insertDatapointConditionCodes");
             insertDatapointConditionCodes(datapointId, conditionCodes);
+            System.out.println("after insertDatapointConditionCodes");
         } catch (HibernateException e) {
+        	System.out.println("HibernateException; " + e.getMessage());
             throw new SystemException(e.getMessage());
         }catch (Exception e)
         {
@@ -249,9 +325,29 @@ public class DBDatapointGateway {
         String[] conditionCodes,
         int minPoints,
         int maxPoints) {
-
+    	Statement statement = null;
+        ResultSet rs = null;
         try {
-            Query query = session.createQuery(FIND_DATAPOINT_FOR_ITEM_ITEMSET);
+        	System.out.println("Inside updateDataPoint1");
+        	System.out.println("itemId: " + itemId);
+        	System.out.println("itemSetId" + itemSetId);
+        	
+        	statement = session.connection().createStatement();
+			StringBuffer sbuf = new StringBuffer("UPDATE datapoint dat ");
+			sbuf.append(" SET dat.min_points = ").append(minPoints);
+			sbuf.append(" , dat.max_points = ").append(maxPoints);
+			sbuf.append(" , dat.updated_by = ").append(OASConstants.CREATED_BY);
+			sbuf.append(" , dat.updated_date_time = SYSDATE ");
+			sbuf.append(" WHERE dat.item_id = '").append(itemId).append("'");
+			sbuf.append(" AND dat.item_set_id = '").append(itemSetId).append("'");
+			
+			String sql = sbuf.toString();
+			System.out.println("QUERY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+			System.out.println(sql);
+
+			statement.executeUpdate(sql);
+        	
+            /*Query query = session.createQuery(FIND_DATAPOINT_FOR_ITEM_ITEMSET);
             query.setString(0, itemId);
             query.setLong(1, itemSetId);
 
@@ -266,10 +362,32 @@ public class DBDatapointGateway {
 
                 session.update(datapointRecord);
                 session.flush();
-            }
-        } catch (HibernateException e) {
+            }*/
+        } catch (Exception e) 
+        {
+        	e.printStackTrace();
+        	throw new SystemException(e.getMessage());
+        } finally {
+			if (statement != null) {
+
+				try {
+
+					statement.close();
+
+				} catch (SQLException e) {
+
+					// TODO Auto-generated catch block
+
+					e.printStackTrace();
+
+				}
+
+			}
+
+        }/* catch (HibernateException e) {
+        	System.out.println("HibernateException: " + e.getMessage());
             throw new SystemException(e.getMessage());
-        }
+        }*/
     }
     
     public void updateDataPoint(
@@ -281,6 +399,10 @@ public class DBDatapointGateway {
             int maxPoints) {
 
             try {
+            	System.out.println("Inside updateDataPoint2");
+            	System.out.println("itemId: " + itemId);
+            	System.out.println("itemSetId" + itemSetId);
+            	System.out.println("old_itemSetId: " + old_itemSetId);
                 Query query = session.createQuery(FIND_DATAPOINT_FOR_ITEM_ITEMSET);
                 query.setString(0, itemId);
                 query.setLong(1, old_itemSetId);
@@ -299,6 +421,7 @@ public class DBDatapointGateway {
                     session.flush();
                 }
             } catch (HibernateException e) {
+            	System.out.println("HibernateException: " + e.getMessage());
                 throw new SystemException(e.getMessage());
             }
 

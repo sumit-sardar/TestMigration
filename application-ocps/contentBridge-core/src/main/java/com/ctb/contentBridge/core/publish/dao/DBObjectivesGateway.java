@@ -255,19 +255,22 @@ public class DBObjectivesGateway {
      */
     public String getCurrentObjectiveIDForItem(String itemId) {
         try {
+        	System.out.println("Start Inside  getCurrentObjectiveIDForItem ****** ############ :" + itemId);
             Query query = session.createQuery(FIND_OBJECTIVE_FOR_ITEM);
             query.setString("itemId", itemId);
             query.setString(
                 "itemSetType",
                 OASConstants.ITEM_SET_TYPE_REPORTING);
-
+            System.out.println("Before ItemSetRecord ****** ############");            
             ItemSetRecord itemSet = (ItemSetRecord) query.uniqueResult();
-
+            System.out.println("Before ItemSetRecord ****** ############" + itemSet);
             if (itemSet != null)
                 return itemSet.getExtCmsItemSetId();
 
             return null;
+            
         } catch (HibernateException e) {
+        	System.out.println("Exception in getCurrentObjectiveIDForItem"+e.getMessage());
             throw new SystemException(e.getMessage());
         }
     }
@@ -287,6 +290,7 @@ public class DBObjectivesGateway {
         String frameworkCode) {
 
         try {
+        	System.out.println("starts getCurrentObjectiveIDForItem");
             Query query = session.createQuery(FIND_OBJECTIVE_FOR_MAPPED_ITEM);
             query.setString("origItemId", originalItemId);
             query.setLong("frameworkProductId", getFrameWorkID(frameworkCode));
@@ -299,8 +303,11 @@ public class DBObjectivesGateway {
             if (itemSet != null)
                 return itemSet.getExtCmsItemSetId();
 
+            System.out.println("ends getCurrentObjectiveIDForItem");
             return null;
         } catch (HibernateException e) {
+        	System.out.println("Exception inside getCurrentObjectiveIDForItem...");
+        	System.out.println(e.getMessage());
             throw new SystemException(e.getMessage());
         }
     }
