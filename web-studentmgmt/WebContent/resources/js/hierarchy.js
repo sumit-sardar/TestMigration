@@ -2061,6 +2061,7 @@ function openNode(orgNodeId) {
 	isPopUp = true;
 	var rowid;
 	isAddStudent = false;
+	reset();
 	resetSubEthnicityRadioButtons();
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
