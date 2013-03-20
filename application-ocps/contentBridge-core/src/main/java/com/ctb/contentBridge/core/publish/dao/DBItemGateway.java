@@ -492,7 +492,7 @@ public class DBItemGateway {
 //            itemRecord.setIbsInvisible(OASConstants.ITEM_IBS_INVISIBLE);
         try {
             session.saveOrUpdate(itemRecord);
-            //      session.flush();
+            session.flush();
         } catch (HibernateException e) {
             throw new SystemException(e.getMessage());
         }
