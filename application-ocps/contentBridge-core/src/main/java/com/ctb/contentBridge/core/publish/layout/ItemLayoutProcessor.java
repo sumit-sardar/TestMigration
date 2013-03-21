@@ -3317,6 +3317,17 @@ public boolean checkFileExists(String filePathString) {
     {
         return this.includeAcknowledgement;
     }
-
+    
+    /*
+	 * For Audio Item - Las Links Method is used to add attributes AllowRevisit
+	 * and AllowRevisitOnRestart to Item. If attribute is not defined in
+	 * Assessment XML, method will add default value
+	 */
+	private void updateNavigationalConstraint(Element layout) {
+		layout.setAttribute("allow_revisit", itemElement.getAttributeValue(
+				"AllowRevisit", "true"));
+		layout.setAttribute("allow_revisit_on_restart", itemElement
+				.getAttributeValue("AllowRevisitOnRestart", "true"));
+	}
 }
 

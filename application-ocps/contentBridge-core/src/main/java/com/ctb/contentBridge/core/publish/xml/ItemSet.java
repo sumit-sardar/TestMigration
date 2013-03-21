@@ -31,4 +31,7 @@ public interface ItemSet {
 	
 	String getContentArea();
 
+	String getForwardOnly();
+	
+	String getAdaptive();
 }

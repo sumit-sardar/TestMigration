@@ -52,5 +52,6 @@ public interface XMLConstants {
     public static final String FRAMEWORK_CODE_TERRA = "TERRA";
     public static final String ITEM_TYPE_SR = "SR";
     public static final String ITEM_TYPE_CR = "CR";
-    
+    public static final String FORWARD_ONLY = "ForwardOnly";
+    public static final String ADAPTIVE = "Adaptive";
 }

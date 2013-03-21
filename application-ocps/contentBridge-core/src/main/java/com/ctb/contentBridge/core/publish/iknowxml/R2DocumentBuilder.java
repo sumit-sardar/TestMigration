@@ -54,8 +54,10 @@ public class R2DocumentBuilder extends SAXBuilder {
      */
     public Document build(InputStream inputStream) throws JDOMException, IOException {
 
-        // Ensure encoding is read as UTF-8
-        InputStreamReader isr = new InputStreamReader(inputStream, "UTF-8");
+    	System.setProperty("file.encoding", "ISO-8859-1");
+        // Ensure encoding is read as UTF-8: 
+        //encoding UTF-8 is removed to support spanish character
+        InputStreamReader isr = new InputStreamReader(inputStream);
 
         // do pre-parse munging
         InputStream is = null;
@@ -63,9 +65,8 @@ public class R2DocumentBuilder extends SAXBuilder {
         try {
             is = preParse(isr);
         } catch (IOException e) {
-            throw new JDOMException("Could not perform pre-parsing on R2 xml document: "
-                    + e.getMessage(),
-                    e);
+        	throw new SystemException("Could not perform pre-parsing on R2 xml document: "
+                    + e.getMessage());
         }
 
         // build document
@@ -78,10 +79,10 @@ public class R2DocumentBuilder extends SAXBuilder {
         try {
             postParse(doc);
         } catch (SAXException e) {
-            throw new JDOMException("Could not perform post-parsing on R2 xml document: "
+        	throw new SystemException("Could not perform post-parsing on R2 xml document: "
                     + e.getMessage());
         } catch (SystemException e) {
-        	throw new JDOMException("Could not perform post-parsing on R2 xml document: "
+        	throw new SystemException("Could not perform post-parsing on R2 xml document: "
                     + e.getMessage());
 		}
 
@@ -105,7 +106,6 @@ public class R2DocumentBuilder extends SAXBuilder {
      * @param doc
      * @throws JDOMException
      * @throws SAXException
-     * @throws BusinessException 
      */
     void postParse(Document doc) throws JDOMException, SAXException {
         // fix bad frameworks (CTB Assessement Framework --> CAB), replacementoperation

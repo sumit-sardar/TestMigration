@@ -229,7 +229,10 @@ public class Item {
     public String getOnlineCR() {
         if (new OnlineCRConfig().getOnlineCRTemplates().contains(this.templateId))
             return "T";
-        return "F";
+        else if (getType()!=null && getType().equalsIgnoreCase(CONSTRUCTED_RESPONSE))
+        	 return "T";
+        else
+        	 return "F";
     }
     public String getActivationStatus() {
         return activationStatus;

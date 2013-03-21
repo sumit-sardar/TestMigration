@@ -27,6 +27,7 @@ public class AssessmentProcessor extends AbstractXMLElementProcessor {
     private final XMLElementValidater assessmentValidater;
     private final AssessmentWriterOAS assessmentWriter;
     private static ThreadLocal _current = new ThreadLocal();
+    private String extTstItemSetId; //FOR Content Download
 
     public static Long getProductID() 
     {	
@@ -48,6 +49,11 @@ public class AssessmentProcessor extends AbstractXMLElementProcessor {
     
     public static void setThreadData(HashMap theMap) {
         _current.set( theMap );
+    }
+    
+    // FOR Content Download 
+    public String getExtTstItemSetId(){
+    	return extTstItemSetId;
     }
 
     public AssessmentProcessor(AssessmentBuilder builder, XMLElementValidater validater,
@@ -92,7 +98,7 @@ public class AssessmentProcessor extends AbstractXMLElementProcessor {
             assessmentHolder.isAddOn = getIsAddOn();
             assessmentHolder.setCommodityCode(getCommodityCode());
             captureRelationship(subReports, assessmentHolder);
-
+            this.extTstItemSetId = assessmentHolder.getExtTstItemSetId(); //FOR Content Download 
             this.assessmentWriter.writeAssessment(assessmentHolder);
             report.setSuccess(true);
         } catch (Exception e) {

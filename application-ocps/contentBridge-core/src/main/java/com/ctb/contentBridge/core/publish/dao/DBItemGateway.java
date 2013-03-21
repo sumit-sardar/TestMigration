@@ -20,6 +20,7 @@ import com.ctb.contentBridge.core.publish.tools.Datapoint;
 import com.ctb.contentBridge.core.publish.tools.OASConstants;
 import com.ctb.contentBridge.core.publish.xml.item.Item;
 import com.ctb.contentBridge.core.publish.xml.item.ItemNotFoundException;
+import com.ctb.contentBridge.core.util.ObjectiveUtil;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Query;
@@ -339,29 +340,30 @@ public class DBItemGateway {
     private void writeItemIntoDatabase(Item item, boolean activateObjectives) {
 
         long itemSetId = 0;
+        List itemSetIdArray = new ArrayList();
         DBObjectivesGateway ogw = new DBObjectivesGateway(session);
 
         // create data point entry and connect to curriculum if the item type is not NI
         if (! Item.NOT_AN_ITEM.equals(item.getType())) {
-        	System.out.println("item.getFrameworkCode(): "+item.getFrameworkCode());
+        
 	        item.setFrameworkId(ogw.getFrameWorkID(item.getFrameworkCode()));
-	        System.out.println("item.getFrameworkId(): "+item.getFrameworkId());
-	        System.out.println("item.getObjectiveId(): "+item.getObjectiveId());
-	        itemSetId = ogw.getItemSetIdFromObjective(item.getObjectiveId(), item
-	                .getFrameworkCode());
-	        System.out.println("itemSetId: " + itemSetId);
+	        //START : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+	        final String OriginalObjectiveId =  item.getObjectiveId();
+                String [] objectiveIdArray = ObjectiveUtil.getArrayFromString(OriginalObjectiveId,ObjectiveUtil.ObjectiveSeperatore);
+	    		for (int i=0; i<objectiveIdArray.length; i++) {
+	    			itemSetId = ogw.getItemSetIdFromObjective(objectiveIdArray[i], item.getFrameworkCode());
+	    			itemSetIdArray.add(new Long(itemSetId));
+	       		 }
+	       		
+
         }
-        System.out.println("item.getId(): " + item.getId());
         if (itemExistsActiveOrInactive(item.getId())) {
-        	System.out.println("before updateExistingItem");
-            updateExistingItem(item, itemSetId, item.isSample());
-            System.out.println("after updateExistingItem");
+            updateExistingItem(item, itemSetIdArray, item.isSample());
         } else {
-        	System.out.println("before insertNewItem");
-            insertNewItem(item, itemSetId, item.isSample());
-            System.out.println("after insertNewItem");
+            insertNewItem(item, itemSetIdArray, item.isSample());
         }
-        System.out.println("item.getChoiceCount: "+item.getChoiceCount());
+         //END : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+
         if (item.getChoiceCount() > 2 && item.getChoiceCount() < 6)
         {	// handle item_answer_choice
 	        CallableStatement stmt = null;
@@ -372,7 +374,6 @@ public class DBItemGateway {
 	            stmt = this.session.connection().prepareCall( "{call SP_POP_ANS_CHOICE_SINGLE_ITEM (?, ?)}");
 		        stmt.setString( 1, item.getId());
 		        stmt.setInt(2, item.getChoiceCount());
-		        System.out.println("call SP_POP_ANS_CHOICE_SINGLE_ITEM");
 		        stmt.execute();
 		        stmt.close();
 	        }
@@ -385,93 +386,124 @@ public class DBItemGateway {
 	            throw new SystemException(e.getMessage());
 	        }
         }
-        System.out.println("SP_POP_ANS_CHOICE_SINGLE_ITEM executed");
         //TODO - mws - prune logic should be part of the else
         if (!item.isSample() && activateObjectives  && ! Item.NOT_AN_ITEM.equals(item.getType())) {
-        	System.out.println("before activateAllParentObjectives");
-        	ogw.activateAllParentObjectives(itemSetId);
-        	System.out.println("after activateAllParentObjectives");
+            ogw.activateAllParentObjectives(itemSetIdArray); // SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
     }
 
-    private void insertNewItem(Item item, long itemSetId, boolean isSampleItem) {
+    private void insertNewItem(Item item, List itemSetIdList, boolean isSampleItem) {
         ItemRecord itemRecord = new ItemRecord();
         itemRecord.setCreatedBy(new Long(OASConstants.CREATED_BY));
         itemRecord.setCreatedDateTime(new Date());
         saveOrUpdateItem(item, itemRecord);
 
         // create data point entry and connect to curriculum if the item type is not NI
-        if (! Item.NOT_AN_ITEM.equals(item.getType())) {
+        if (! Item.NOT_AN_ITEM.equals(item.getType()) ) {
         
 			String[] conditionCodes = item.isCR() ? DBDatapointGateway.CR_CONDITION_CODES
 			        : DBDatapointGateway.SR_CONDITION_CODES;
-			
-		    new DBDatapointGateway(session).insertDatapoint(item.getId(), itemSetId,
-		            conditionCodes, item.getMinPoints(), item.getMaxPoints());
-		
-		    new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetId
-			            						, item.getFrameworkCode()
-			            						, !item.isInvisible());
-
+			//START : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+			for (Iterator it=itemSetIdList.iterator() ; it.hasNext();){
+				long itemSetID= ((Long)it.next()).longValue();
+				 new DBDatapointGateway(session).insertDatapoint(item.getId(), itemSetID,
+				            conditionCodes, item.getMinPoints(), item.getMaxPoints());
+			}
+			 new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetIdList
+						, item.getFrameworkCode()
+						, !item.isInvisible());
+		   //END : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
     }
 
-    private void updateExistingItem(Item item, long itemSetId, boolean isSampleItem) {
+    private void updateExistingItem(Item item, List itemSetIdList, boolean isSampleItem) {
         DBDatapointGateway dpgw = new DBDatapointGateway(session);
-        System.out.println("itemSetId: " + itemSetId);
+        List datapointList;
+        List newItemSetIdList = new ArrayList();
         saveOrUpdateItem(item, getUniqueItemRecord(item.getId()));
-
+       
         // update data point if the item type is not NI
         if (! Item.NOT_AN_ITEM.equals(item.getType())) {
         
 	        String[] conditionCodes = item.isCR() ? DBDatapointGateway.CR_CONDITION_CODES
 	                : DBDatapointGateway.SR_CONDITION_CODES;
-	
-	        // update data point if the item is sample
-	    //    if (!isSampleItem) {
-	 //          dpgw.deleteItemDatapoints( item.getId(), itemSetId );
-	        	System.out.println("before theDatapoint:" + item.getId() + ":" + item.getFrameworkCode());
-	            Datapoint theDatapoint = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
-	            
-	            System.out.println("theDatapoint:" + theDatapoint);
-	            if ( theDatapoint != null && theDatapoint.getItemSetId() == itemSetId )
-	            {
-	            	System.out.println("before updateDataPoint:");
-	                dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
-	                        .getMaxPoints());
-	                System.out.println("after updateDataPoint:");
+           //START SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+            datapointList = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
+            
+	        for (Iterator it= datapointList.iterator(); it.hasNext();){
+	        	long itemSetId= ((Datapoint)it.next()).getItemSetId();
+	        	if( itemSetIdList.contains(new Long (itemSetId)) ){
+	        		updateDataPoint( dpgw, item,itemSetId , conditionCodes );
+	            	newItemSetIdList.add(new Long(itemSetId));
+	            } else {
+	            	    ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
+	            	    ItemSetRecord originalItemSet;
+						try {
+							originalItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long(itemSetId));
+							r.setWarning( "Item removed from \"" + originalItemSet.getExtCmsItemSetId() + ":" +
+	                        		originalItemSet.getItemSetDisplayName() +"\"." );
+						} catch (HibernateException e) {
+						
+						}
+						deleteDataPoint(dpgw, item, itemSetId);
+	             		
 	            }
-	            else if ( theDatapoint != null )
-	            {
-	            	System.out.println("theDatapoint != null");
-	                try 
-	                {
-	                    ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
-		                ItemSetRecord originalItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long( theDatapoint.getItemSetId()));
-		                ItemSetRecord moveToItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long( itemSetId ) );
-		                r.setWarning( "Item moved from \"" + originalItemSet.getExtCmsItemSetId() + ":" +
-		                        		originalItemSet.getItemSetDisplayName() + "\" to \""
-		                        		+ moveToItemSet.getExtCmsItemSetId() + ":"
-		                        		+ moveToItemSet.getItemSetDisplayName() + "\"." );
-	                }
-	                catch (Exception e) 
-	                {
-	                }
-	                System.out.println("before updateDataPoint1:");
-	                dpgw.updateDataPoint(item.getId(), theDatapoint.getItemSetId(), itemSetId, conditionCodes, item.getMinPoints(), item
-	                        .getMaxPoints());
-	                System.out.println("after updateDataPoint1:");
-	            }
-	            else
-	            {	System.out.println("before insertDatapoint:");
-		            dpgw.insertDatapoint(item.getId(), itemSetId,
-		                    conditionCodes, item.getMinPoints(), item.getMaxPoints());
-		            System.out.println("after insertDatapoint:");
-	            }
-	            new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetId
+	        }
+
+	        if(!newItemSetIdList.containsAll(itemSetIdList)){
+	        	for (Iterator it= itemSetIdList.iterator(); it.hasNext();){
+	        		long itemSetId= ((Long)it.next()).longValue();
+		            if( !newItemSetIdList.contains(new Long (itemSetId)) ){
+		            	insertDataPoint(dpgw, item, itemSetId, conditionCodes);
+		            } 
+		       }
+	        }
+
+	            new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetIdList
 						, item.getFrameworkCode(), !item.isInvisible());
         }
+        //END SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
       }
+    
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method update existing datapoint
+     * @param dpgw 
+     * @param item
+     * @param itemSetId
+     * @param conditionCodes
+     */
+    private void updateDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId, String[] conditionCodes ) {
+    	 dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
+                 .getMaxPoints());
+    }
+
+
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method delete a datapoint
+     * @param dpgw
+     * @param item
+     * @param itemSetId
+     */
+    private void deleteDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId) {
+    	dpgw.deleteItemDatapoints( item.getId(), itemSetId );
+    	
+    }
+
+
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method insert a datapoint
+     * @param dpgw
+     * @param item
+     * @param itemSetId
+     * @param conditionCodes
+     */
+    private void insertDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId, String[] conditionCodes) {
+    	 dpgw.insertDatapoint(item.getId(), itemSetId,
+                 conditionCodes, item.getMinPoints(), item.getMaxPoints());	
+    }
 
     private void saveOrUpdateItem(Item item, ItemRecord itemRecord) {
         // TODO: *all* the item fields arguments (not just these)
@@ -501,7 +533,7 @@ public class DBItemGateway {
 //            itemRecord.setIbsInvisible(OASConstants.ITEM_IBS_INVISIBLE);
         try {
             session.saveOrUpdate(itemRecord);
-            session.flush();
+            //session.flush();
         } catch (HibernateException e) {
             throw new SystemException(e.getMessage());
         }

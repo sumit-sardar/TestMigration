@@ -97,7 +97,9 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
             parseStem(element);
         } else if (name.equalsIgnoreCase("ThinkCode")) {
             parseThinkID(element);
-        } else {
+        } else if (name.equalsIgnoreCase("AudioItem")) {    // For Audio Item - Las Links
+            parseAudioItem(element);
+        }else {
         }
         parseChildren(element);
     }
@@ -169,7 +171,15 @@ public class ItemAssembler implements ItemBuilder, ItemValidator {
         String thinkID = element.getAttributeValue("ThinkID");
         item.setThinkID(thinkID);
     }
-
+    /*
+     * For Audio Item - Las Links
+     * Method is used to set AnswerArea value for a Audio Item. 
+     * Value will be reflected in table ITEM.
+     */
+    private void parseAudioItem(Element element) {
+    	item.setAnswerArea("AudioItem");
+	}
+    
     /*
      * Get the all string from Text Data Type such as <P> , <I>, <B> Eg: <P> This is a <B> Very
      * Important Message </B> for you! </P> will return --- This is a Very Important Message For

@@ -15,7 +15,7 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
     public static final String OBJECTIVE_ID = "ObjectiveID";
     public static final String SUPPRESS_SCORE = "SuppressScore";
 
-    public SubTestHolder build(Element rootElement) throws SystemException {
+    public SubTestHolder build(Element rootElement) {
         String frameworkCode;
         String productDisplayName;
         String extTstItemSetId;
@@ -32,6 +32,8 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         String scoreLookupId;
         String scoreTypeCode;
         String contentArea;
+        String forwardOnly = "F";
+        String adaptive = "F";
 
         boolean isTD = rootElement.getName().equals( ELEMENT_NAME_TD );
         if (!rootElement.getName().equals( ELEMENT_NAME_TS ) && !isTD ) {
@@ -50,8 +52,11 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         
         grade = BuilderUtils.extractAttributeOptional(rootElement, GRADE);
         itemSetLevel = BuilderUtils.extractAttributeOptional(rootElement, LEVEL );
-        if ( isTD )
-            timeLimit = BuilderUtils.extractIntegerAttributeMandatory(rootElement, TIME_LIMIT) * 60;
+        if ( isTD ) {
+        	forwardOnly = BuilderUtils.extractAttributeMandatory(rootElement, FORWARD_ONLY);
+        	adaptive = BuilderUtils.extractAttributeMandatory(rootElement, ADAPTIVE);
+        	timeLimit = BuilderUtils.extractIntegerAttributeMandatory(rootElement, TIME_LIMIT) * 60;
+        }
         else
         {
             String TSTimeLimit = BuilderUtils.extractAttributeOptional(rootElement, TIME_LIMIT);
@@ -71,10 +76,10 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         itemSetForm = BuilderUtils.extractAttributeOptional(rootElement, FORM);
         scoreLookupId = BuilderUtils.extractAttributeOptional(rootElement, SCORE_LOOKUP_ID);
         scoreTypeCode = BuilderUtils.extractAttributeOptional(rootElement, SCORE_TYPE_CODE);
-
+       
         SubTestHolder testHolder = new SubTestHolder(frameworkCode, productDisplayName,
                 extTstItemSetId, testName, version, itemSetLevel, grade, timeLimit, breakTime,
-                itemSetDisplayName, itemSetDescription, itemSetForm, scoreLookupId, scoreTypeCode, contentArea, startItemNumber);
+                itemSetDisplayName, itemSetDescription, itemSetForm, scoreLookupId, scoreTypeCode, contentArea, startItemNumber,forwardOnly, adaptive);
         
         testHolder.setSample( BuilderUtils.extractAttributeOptional( rootElement, "Type").equals( "sample" ) );
 

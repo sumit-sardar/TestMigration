@@ -1,6 +1,9 @@
 package com.ctb.contentBridge.core.publish.dao;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.ctb.contentBridge.core.publish.dao.DBDatapointGateway;
 import com.ctb.contentBridge.core.publish.dao.DBItemGateway;
@@ -11,6 +14,7 @@ import com.ctb.contentBridge.core.publish.tools.Datapoint;
 import com.ctb.contentBridge.core.publish.tools.OASConstants;
 import com.ctb.contentBridge.core.publish.xml.item.Item;
 import com.ctb.contentBridge.core.publish.xml.item.ItemWriter;
+import com.ctb.contentBridge.core.util.ObjectiveUtil;
 
 import net.sf.hibernate.Session;
 
@@ -37,32 +41,48 @@ abstract public class AbstractItemWriterOASDatabase implements ItemWriter {
     
     public void writeDatapointConditionCode( Item item )
     {
-        long itemSetId = ogw.getItemSetIdFromObjective( item.getObjectiveId(), item.getFrameworkCode());
+        //START SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+        List datapointList ;
+        List itemSetIdList = new ArrayList();
+        List updatedItemSetIdList= new ArrayList();
+        final String OriginalObjectiveId =  item.getObjectiveId();
+        String [] objectiveIdArray = ObjectiveUtil.getArrayFromString(OriginalObjectiveId,ObjectiveUtil.ObjectiveSeperatore);
+		for (int i=0; i<objectiveIdArray.length; i++) {
+			long itemSetId = ogw.getItemSetIdFromObjective(objectiveIdArray[i], item.getFrameworkCode());
+			itemSetIdList.add(new Long(itemSetId));
+ 		 }
         
         String[] conditionCodes = item.isCR() ? DBDatapointGateway.CR_CONDITION_CODES
                 : DBDatapointGateway.SR_CONDITION_CODES;
    //     dpgw.deleteItemDatapoints( item.getId(), itemSetId );
-        Datapoint theDatapoint = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
-        if ( theDatapoint != null && theDatapoint.getItemSetId() == itemSetId )
-        {
-            dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
-                    .getMaxPoints());
-        }
-        else if ( theDatapoint != null )
-        {
-            ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
-            r.setWarning( "Item moved.");
-            dpgw.updateDataPoint(item.getId(), theDatapoint.getItemSetId(), itemSetId, conditionCodes, item.getMinPoints(), item
-                    .getMaxPoints());
-        }
-        else
-        {
-            dpgw.insertDatapoint(item.getId(), itemSetId,
-                    conditionCodes, item.getMinPoints(), item.getMaxPoints());
-        }
-        ogw.linkItemToObjective(item.getId(), itemSetId
+        datapointList = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
+        
+
+		for (Iterator it= datapointList.iterator(); it.hasNext();){
+       	long itemSetId= ((Datapoint)it.next()).getItemSetId();
+       	if( itemSetIdList.contains(new Long (itemSetId)) ){
+       		dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
+                 .getMaxPoints());
+       		updatedItemSetIdList.add(new Long(itemSetId));
+       	} else {
+       		dpgw.deleteItemDatapoints( item.getId(), itemSetId );
+       	}
+       }
+
+       if(!updatedItemSetIdList.containsAll(itemSetIdList)){
+       	 for (Iterator it= itemSetIdList.iterator(); it.hasNext();){
+           	 long itemSetId= ((Long)it.next()).longValue();
+           	if( !updatedItemSetIdList.contains(new Long (itemSetId)) ){
+           		dpgw.insertDatapoint(item.getId(), itemSetId,
+                        conditionCodes, item.getMinPoints(), item.getMaxPoints());
+           	} 
+           }
+       }
+        
+       ogw.linkItemToObjective(item.getId(), itemSetIdList
 				, item.getFrameworkCode(), !item.isInvisible());
-    }
+	 //END SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+   }
 
     protected void setDatabaseValidator(Item item) {
         this.databaseValidator =

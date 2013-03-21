@@ -35,13 +35,15 @@ public class SubTestHolder implements ItemSet {
     public Long content_size = new Long( 0 );
     public Long startItemNumber = new Long( 0 );
     boolean sample;
+    private String forwardOnly = "F";
+    private String adaptive = "F";
     
     private SubTestMedia media;
 
     public SubTestHolder(String frameworkCode, String productDisplayName, String extTstItemSetId,
             String testName, String version, String itemSetLevel, String grade, int timeLimit,
             int breakTime, String itemSetDisplayName, String itemSetDescription,
-            String itemSetForm, String scoreLookupId, String scoreTypeCode, String contentArea, Long startItemNumber) {
+            String itemSetForm, String scoreLookupId, String scoreTypeCode, String contentArea, Long startItemNumber, String forwardOnly, String adaptive) {
 
         this.frameworkCode = frameworkCode;
         this.productDisplayName = productDisplayName;
@@ -59,7 +61,11 @@ public class SubTestHolder implements ItemSet {
         this.scoreTypeCode = scoreTypeCode;
         this.contentArea = contentArea;
         this.startItemNumber = startItemNumber;
-          
+		if (forwardOnly != null)
+			this.forwardOnly = forwardOnly;
+		if (adaptive != null) {
+			this.adaptive = adaptive;
+		}  
     }
     
     public void setProductID( Long productId )
@@ -274,5 +280,31 @@ public class SubTestHolder implements ItemSet {
         this.bTDType = bTD;
     }
     
+    /**
+	 * @return the forwardOnly
+	 */
+	public String getForwardOnly() {
+		return forwardOnly;
+	}
 
+	/**
+	 * @param forwardOnly the forwardOnly to set
+	 */
+	public void setForwardOnly(String forwardOnly) {
+		this.forwardOnly = forwardOnly;
+	}
+
+	/**
+	 * @return the adaptive
+	 */
+	public String getAdaptive() {
+		return adaptive;
+	}
+
+	/**
+	 * @param adaptive the adaptive to set
+	 */
+	public void setAdaptive(String adaptive) {
+		this.adaptive = adaptive;
+	}
 }

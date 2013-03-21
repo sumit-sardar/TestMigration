@@ -3,6 +3,7 @@ package com.ctb.contentBridge.core.publish.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -123,10 +124,11 @@ public class DBDatapointGateway {
         }
     }
     
-    public Datapoint getFrameworkDatapoint(String itemId, String framework_code )
+    public List getFrameworkDatapoint(String itemId, String framework_code )
     {
     	Statement statement = null;
         ResultSet rs = null;
+        List listOfDatapoint =  new ArrayList();
         try 
         {
         	System.out.println("Inside getFrameworkDatapoint");
@@ -148,12 +150,9 @@ public class DBDatapointGateway {
                         datapointRecord.getItemSetId().longValue(),
                         datapointRecord.getMinPoints().intValue(),
                         datapointRecord.getMaxPoints().intValue());
-                return datapoint;
+                listOfDatapoint.add(datapoint);
             }
-            else
-            {
-                return null;
-            }*/
+            return listOfDatapoint;*/
 			statement = session.connection().createStatement();
 			StringBuffer sbuf = new StringBuffer("select dat.item_id,dat.item_set_id,dat.min_points,dat.max_points ");
 			sbuf.append(" FROM datapoint dat,item_set_item isi,item_set_category isc,product prd,item_set ist ");
@@ -177,8 +176,9 @@ public class DBDatapointGateway {
 				datapoint = new Datapoint(rs.getString("item_id"),
 						rs.getLong("item_set_id"), rs.getInt("min_points"),
 						rs.getInt("max_points"));
+				listOfDatapoint.add(datapoint);
 			}
-			return datapoint;
+			return listOfDatapoint;
         }
         catch (Exception e) 
         {

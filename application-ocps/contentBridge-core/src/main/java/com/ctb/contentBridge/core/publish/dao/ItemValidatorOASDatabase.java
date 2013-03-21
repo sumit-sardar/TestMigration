@@ -47,10 +47,11 @@ public class ItemValidatorOASDatabase {
     
     public void validateItemreadyForInsert() {
 
+
         if (!item.isSample()) {
-        	if (!"NI".equals(item.getType())) {
-        		validateItemSetId();
-        	}
+            validateItemSetId();
+
+
             if ( (igw.activeItemExists(item.getId()))) {
                 validateChangesAllowed();
             }
@@ -58,19 +59,48 @@ public class ItemValidatorOASDatabase {
 
     }
 
-    public boolean validateItemInDB() {
+    public boolean validateItemInDB() throws Exception {
         checkItemInDB();
 
         // only preform checking for regular item.
         // sample item won't have item set and datapoint entry.
         if (!item.isSample() &&  !Item.NOT_AN_ITEM.equals(item.getType())) {
-            checkItemSetItemInDB();
-            // TODO: reactivate
-            // checkItemMediaInDB();
-            checkDatapointInDB();
-            checkDatapointConditionCodeInDB();
+        	//START SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+        
+        	final String OriginalObjectiveId =  item.getObjectiveId();
+ 	    	if (OriginalObjectiveId.indexOf(ObjectiveUtil.ObjectiveSeperatore)>1){
+ 	    		String [] objectiveIdArray = ObjectiveUtil.getArrayFromString(OriginalObjectiveId,ObjectiveUtil.ObjectiveSeperatore);
+ 	    		for (int i=0; i<objectiveIdArray.length; i++) {
+ 	    			item.setObjectiveId(objectiveIdArray[i]);
+ 	    			try{
+ 	    			validateItemInDB(OriginalObjectiveId);
+ 	    			} catch (Exception e){
+ 	    	    		item.setObjectiveId(OriginalObjectiveId);
+ 	    	    		throw e;
+ 	    	    		
+ 	    	    	}
+ 	       		 }
+ 	    		item.setObjectiveId(OriginalObjectiveId);
+
+ 	    	} else {
+ 	    		validateItemInDB(OriginalObjectiveId);
+ 	    	}
+ 	    	//END SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
         return true;
+    }
+
+    /**
+     * SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+     * Method validated objective, datapoint and datapoint condition code in database
+     * @param OriginalObjectiveId
+     */
+    public void validateItemInDB( String OriginalObjectiveId ) {
+    		checkItemSetItemInDB();
+            checkDatapointInDB();
+            checkDatapointConditionCodeInDB();
+
+
     }
 
     public void validateChangesAllowed() {
