@@ -48,7 +48,9 @@ public class ItemValidatorOASDatabase {
     public void validateItemreadyForInsert() {
 
         if (!item.isSample()) {
-            validateItemSetId();
+        	if (!"NI".equals(item.getType())) {
+        		validateItemSetId();
+        	}
             if ( (igw.activeItemExists(item.getId()))) {
                 validateChangesAllowed();
             }

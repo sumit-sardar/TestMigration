@@ -20,6 +20,21 @@ public class ItemWriterOASDatabaseInvisibleNoMedia
 
     public String write(Item item) {
         try {
+        	try {
+        		this.getSession().flush();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
+        	try {
+        		this.getSession().connection().commit();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
+        	try {
+        		this.getSession().clear();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
         	item.setInvisible(true);
             setItemIdFromDatabase(item);
             this.setDatabaseValidator(item);
@@ -29,6 +44,7 @@ public class ItemWriterOASDatabaseInvisibleNoMedia
             this.getDatabaseValidator().validateItemInDB();
             return item.getId();
         } catch (Exception e) {
+        	e.printStackTrace();
         	System.out.println("Exception inside write:" + e.getMessage());
             throw new SystemException(
                 "Could not write Item: " + e.getMessage());

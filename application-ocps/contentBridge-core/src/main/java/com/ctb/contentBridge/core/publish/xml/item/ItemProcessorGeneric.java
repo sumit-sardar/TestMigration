@@ -127,7 +127,7 @@ public class ItemProcessorGeneric implements ItemProcessor {
             System.out.println("Publish item starts for: " + item.getId());
             mappedItem.setLayoutElement(itemLayout.publishLayout(itemElement));
             mappedItem.setMedia(null);
-            if (!"NI".equals(mappedItem.getType()))
+            //if (!"NI".equals(mappedItem.getType()))
     			r.setNewID(this.writer.write(mappedItem));
             setItemProcessed( r.getID() );
             System.out.println("Processed item: " + item.getId());

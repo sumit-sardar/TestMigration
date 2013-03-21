@@ -19,8 +19,9 @@ public class OasDelegater {
 	public static OasDelegater getInstance(Configuration configuration) {
 		if (instance == null) {
 			instance = new OasDelegater();
-			OasDelegater.configuration = configuration;
 		}
+		OasDelegater.configuration = configuration;
+
 		return instance;
 	}
 

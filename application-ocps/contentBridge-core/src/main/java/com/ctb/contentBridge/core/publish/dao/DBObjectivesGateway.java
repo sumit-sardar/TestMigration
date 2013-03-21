@@ -493,6 +493,7 @@ public class DBObjectivesGateway {
             return (ItemSetRecord) query.uniqueResult();
 
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }

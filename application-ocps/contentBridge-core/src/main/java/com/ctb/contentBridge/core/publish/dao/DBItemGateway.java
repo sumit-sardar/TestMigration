@@ -53,6 +53,7 @@ public class DBItemGateway {
                 throw new ItemNotFoundException("Could not find Item " + itemId);
             return item;
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }
@@ -67,6 +68,7 @@ public class DBItemGateway {
                 item = itemRecord.getItemId();
 
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
         return item;
@@ -247,6 +249,7 @@ public class DBItemGateway {
                 return false;
             return true;
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }
@@ -268,6 +271,7 @@ public class DBItemGateway {
                     new StringType(), new StringType(), new StringType(), new StringType()});
             return (itemSetIds.size() == 1);
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }
@@ -279,6 +283,7 @@ public class DBItemGateway {
             query.setString("itemId", itemId);
             return ((Integer) query.uniqueResult()).intValue();
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }
@@ -292,6 +297,7 @@ public class DBItemGateway {
             item.setActivationStatus(OASConstants.ITEM_SET_STATUS_INACTIVE);
             session.update(item);
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
         // TODO: this needs to cascade and inactivate item sets that no longer have items
@@ -313,6 +319,7 @@ public class DBItemGateway {
             item.setActivationStatus(OASConstants.ITEM_STATUS_INACTIVE);
             session.update(item);
         } catch (HibernateException e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }
@@ -370,9 +377,11 @@ public class DBItemGateway {
 		        stmt.close();
 	        }
 	        catch (SQLException sqlEx) {
+	        	sqlEx.printStackTrace();
 	            throw new SystemException(sqlEx.getMessage());
 	        }
 	        catch (HibernateException e) {
+	        	e.printStackTrace();
 	            throw new SystemException(e.getMessage());
 	        }
         }
