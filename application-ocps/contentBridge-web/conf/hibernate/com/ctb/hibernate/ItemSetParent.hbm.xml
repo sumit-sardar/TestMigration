@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="com.ctb.contentBridge.core.publish.hibernate.ItemSetParent"
+        table="ITEM_SET_PARENT"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="parentItemSetId"
+            column="PARENT_ITEM_SET_ID"
+            type="java.lang.Long"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="true"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetSortOrder"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ITEM_SET_SORT_ORDER"
+            not-null="false"
+        />
+        
+        <property
+            name="itemSetId"
+            type="java.lang.Long"
+            update="false"
+            insert="false"
+            column="ITEM_SET_ID"
+            not-null="false"
+        />
+
+        <property
+            name="itemSetType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_TYPE"
+            not-null="true"
+        />
+
+        <property
+            name="parentItemSetType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PARENT_ITEM_SET_TYPE"
+            not-null="true"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <many-to-one
+            name="child"
+            class="com.ctb.contentBridge.core.publish.hibernate.ItemSet"
+            cascade="all"
+            outer-join="true"
+            update="true"
+            insert="true"
+            column="ITEM_SET_ID"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemSetParent.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

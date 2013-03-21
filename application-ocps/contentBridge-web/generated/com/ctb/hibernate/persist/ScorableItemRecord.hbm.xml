@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ScorableItemRecord"
+        table="SCORABLE_ITEM"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <composite-id
+            name="id"
+            class="com.ctb.contentBridge.core.publish.hibernate.persist.ScorableItemCompositeId"
+        >
+                     <key-property
+                        name="itemId"
+                        type="java.lang.String"
+                        column="ITEM_ID"
+                />
+
+                     <key-property
+                        name="itemSetId"
+                        type="java.lang.Long"
+                        column="ITEM_SET_ID"
+                />
+
+                     <key-property
+                        name="scoreTypeCode"
+                        type="java.lang.String"
+                        column="SCORE_TYPE_CODE"
+                />
+
+        </composite-id>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ScorableItemRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

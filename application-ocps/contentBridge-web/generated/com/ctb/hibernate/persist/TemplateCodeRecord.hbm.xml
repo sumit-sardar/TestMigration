@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.TemplateCodeRecord"
+        table="TEMPLATE_CODE"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="templateId"
+            column="TEMPLATE_ID"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="isReadingPassage"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="IS_READING_PASSAGE"
+            not-null="true"
+        />
+
+        <property
+            name="isStimulusGraphic"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="IS_STIMULUS_GRAPHIC"
+            not-null="true"
+        />
+
+        <property
+            name="templateDesc"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEMPLATE_DESC"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-TemplateCodeRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

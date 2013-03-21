@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetCategoryRecord"
+        table="ITEM_SET_CATEGORY"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="itemSetCategoryId"
+            column="ITEM_SET_CATEGORY_ID"
+            type="java.lang.Long"
+        >
+            <generator class="sequence">
+                <param name="sequence">SEQ_ITEM_SET_CATEGORY_ID</param>
+            </generator>
+        </id>
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="true"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="false"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="true"
+        />
+
+        <property
+            name="frameworkProductId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="FRAMEWORK_PRODUCT_ID"
+            not-null="true"
+        />
+
+        <property
+            name="itemSetCategoryLevel"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="ITEM_SET_CATEGORY_LEVEL"
+            not-null="true"
+        />
+
+        <property
+            name="itemSetCategoryName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ITEM_SET_CATEGORY_NAME"
+            not-null="false"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemSetCategoryRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

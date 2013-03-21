@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class persister="com.ctb.contentBridge.core.publish.hibernate.CTBEntityPersister"
+        name="com.ctb.contentBridge.core.publish.hibernate.persist.ItemSetSampleSetRecord"
+        table="ITEM_SET_SAMPLE_SET"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="itemSetId"
+            column="ITEM_SET_ID"
+            type="java.lang.Long"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="sampleItemSetId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="SAMPLE_ITEM_SET_ID"
+            not-null="false"
+        />
+
+        <property
+            name="subtestLevel"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SUBTEST_LEVEL"
+            not-null="false"
+        />
+
+        <property
+            name="subtestName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SUBTEST_NAME"
+            not-null="false"
+        />
+
+        <property
+            name="testType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_TYPE"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-ItemSetSampleSetRecord.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>
