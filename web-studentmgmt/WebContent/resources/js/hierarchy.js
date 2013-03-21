@@ -1807,7 +1807,7 @@ function fillselectedOrgNode( elementId, orgList) {
         											$('#errorIcon').show();
 													$('#infoIcon').hide();
         											document.getElementById('displayMessage').style.display = "block";
-        											if(profileEditable === "false" || isEditStudentImported) {
+        											if(profileEditable === "false") { //Changes For defect #72680
 														disableAllNonEdFlds();
 													} else {
 														if(studentExtracted) {
@@ -1835,7 +1835,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	} else {
 			document.getElementById('displayMessage').style.display = "block";
-			if(profileEditable === "false" || isEditStudentImported) {
+			if(profileEditable === "false") { //Changes For defect #72680
 				disableAllNonEdFlds();
 			} else {
 				if(studentExtracted) {
