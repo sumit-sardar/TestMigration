@@ -1400,7 +1400,7 @@ public class CreateFile {
 		System.out.println("isClassNodeRequired >> "+isClassNodeRequired);
 		if(isClassNodeRequired.equalsIgnoreCase("true") && organizationMap.size() < 7){
 			/* shift each element to its immediate upper level... */
-			if(tfil.getElementNameB() != null){
+			if (tfil.getElementNameB() != null){
 				tfil.setElementNameA(tfil.getElementNameB());
 				tfil.setElementALabel(tfil.getElementBLabel());
 				tfil.setElementNumberA(tfil.getElementNumberB());
@@ -1409,7 +1409,8 @@ public class CreateFile {
 				//tfil.setCustomerId(tfil.getSchoolId());
 				tfil.setElementStructureLevelA("01");
 				//orderFile.setCustomerId(tfil.getSchoolId());
-			}else if (tfil.getElementNameC() != null){
+			}
+			if (tfil.getElementNameC() != null){
 				tfil.setElementNameB(tfil.getElementNameC());
 				tfil.setElementBLabel(tfil.getElementCLabel());
 				tfil.setElementNumberB(tfil.getElementNumberC());
@@ -1418,7 +1419,8 @@ public class CreateFile {
 				//tfil.setCustomerId(tfil.getClassId());
 				tfil.setElementStructureLevelB("02");
 				//orderFile.setCustomerId(tfil.getClassId());
-			}else if (tfil.getElementNameD() != null){
+			}
+			if (tfil.getElementNameD() != null){
 				tfil.setElementNameC(tfil.getElementNameD());
 				tfil.setElementCLabel(tfil.getElementDLabel());
 				tfil.setElementNumberC(tfil.getElementNumberD());
@@ -1427,7 +1429,8 @@ public class CreateFile {
 				//tfil.setCustomerId(tfil.getSectionId());
 				tfil.setElementStructureLevelC("03");
 				//orderFile.setCustomerId(tfil.getSectionId());
-			}else if (tfil.getElementNameE() != null){
+			}
+			if (tfil.getElementNameE() != null){
 				tfil.setElementNameD(tfil.getElementNameE());
 				tfil.setElementDLabel(tfil.getElementELabel());
 				tfil.setElementNumberD(tfil.getElementNumberE());
@@ -1436,7 +1439,8 @@ public class CreateFile {
 				//tfil.setCustomerId(tfil.getGroupId());
 				tfil.setElementStructureLevelD("04");
 				//orderFile.setCustomerId(tfil.getGroupId());
-			}else if (tfil.getElementNameF() != null){
+			}
+			if (tfil.getElementNameF() != null){
 				tfil.setElementNameE(tfil.getElementNameF());
 				tfil.setElementELabel(tfil.getElementFLabel());
 				tfil.setElementNumberE(tfil.getElementNumberF());
@@ -1445,7 +1449,8 @@ public class CreateFile {
 				//tfil.setCustomerId(tfil.getDivisionId());
 				tfil.setElementStructureLevelE("05");
 				//orderFile.setCustomerId(tfil.getDivisionId());
-			}else if (tfil.getElementNameG() != null){
+			}
+			if (tfil.getElementNameG() != null){
 				tfil.setElementNameF(tfil.getElementNameG());
 				tfil.setElementFLabel(tfil.getElementGLabel());
 				tfil.setElementNumberF(tfil.getElementNumberG());
