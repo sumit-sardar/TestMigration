@@ -19,6 +19,7 @@ public class ContentImportModuleUtils {
             command =
                 CIMCommandFactory.createCIMCommandFromCommandLine(commandLine);
         } catch (Exception e) {
+        	e.printStackTrace();
             handler.handleUsageException(e);
         }
         return CommandProcessorFacade.processCommand(command);
@@ -30,6 +31,7 @@ public class ContentImportModuleUtils {
         try {
             return new CommandLine();
         } catch (Exception e) {
+        	e.printStackTrace();
             handler.handleUsageException(e);
             throw new SystemException(e.getMessage()); // Unreachable code
         }
@@ -40,6 +42,7 @@ public class ContentImportModuleUtils {
             try {
                 return new CommandLine(args);
             } catch (Exception e) {
+            	e.printStackTrace();
                 handler.handleUsageException(e);
                 throw new SystemException(e.getMessage()); // Unreachable code
             }

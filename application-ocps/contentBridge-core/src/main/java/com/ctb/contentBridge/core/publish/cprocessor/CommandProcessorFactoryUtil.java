@@ -26,6 +26,7 @@ public class CommandProcessorFactoryUtil {
                 throw new SystemException("Mapping File not specified");
             MapperFactory.loadItemMapFromFile(mappingFile);
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new SystemException(e.getMessage());
         }
     }

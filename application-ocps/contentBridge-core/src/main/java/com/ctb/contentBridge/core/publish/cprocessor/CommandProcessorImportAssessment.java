@@ -87,8 +87,10 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
 				transaction.rollback();
 			return r;
 		} catch (HibernateException e) {
+			e.printStackTrace();
 			throw new SystemException(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SystemException(e.getMessage());
 		}
 	}

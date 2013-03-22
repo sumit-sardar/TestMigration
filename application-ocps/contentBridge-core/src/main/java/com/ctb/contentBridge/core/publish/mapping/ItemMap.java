@@ -1,8 +1,15 @@
 package com.ctb.contentBridge.core.publish.mapping;
 
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 
 public class ItemMap extends Loader {
@@ -22,10 +29,16 @@ public class ItemMap extends Loader {
         }
 
         private void tokenize(String s) {
-            StringTokenizer toker = new StringTokenizer(s, ",\"");
-
-            itemId = toker.nextToken().trim();
-            curriculumId = toker.nextToken().trim();
+        	try {
+	            StringTokenizer toker = new StringTokenizer(s, ",\"");
+	
+	            itemId = toker.nextToken().trim();
+	            curriculumId = toker.nextToken().trim();
+        	} catch (Exception e) {
+        		String message = "*****  Problem tokenizing item_map entry: " + s;
+        		System.out.println(message);
+        		throw new java.util.NoSuchElementException(message);
+        	}
         }
 
         public String getItemId() {

@@ -141,6 +141,7 @@ public class MapperFactory {
             _currentObjectives.set(objectives);
             return objectives;
         } catch (IOException e) {
+        	e.printStackTrace();
             throw new SystemException(
                 "Failed to load Objectives from ["
                     + objectivesFile.getPath()
