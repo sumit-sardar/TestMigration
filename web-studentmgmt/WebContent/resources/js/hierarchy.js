@@ -1291,7 +1291,15 @@ function getValue(keyVal) {
     	assignedOrgNodeIds = "";
     	
        jQuery.each(customerDemographicValue, function(i, field){         
-      		$("#"+field.name).val(field.value);
+      		//$("#"+field.name).val(field.value);
+      		var radioObj = $("[name ="+field.name+"]");
+      		for(var i=0; i<radioObj.length;i++){
+      			if(radioObj[i] && radioObj[i].value == field.value){
+      				radioObj[i].checked = true;
+      				break;
+      			}	
+      		}
+      		
       		
        });  
        var customerValCheckbox = [];
@@ -3441,6 +3449,9 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 			     			     	setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 			     			     }else {
 			     			     	$("#Student_Additional_Information :radio[name='"+stuDemographic[count]['labelName']+"'][value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			     	if(stuDemographic[count]['labelName'].indexOf('Sub_Ethnicity') >= 0) {
+			     			     		$("#Student_Additional_Information :radio[name='"+stuDemographic[count]['labelName']+"_"+stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+"'][value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			     	}
 			     			     	if(demoGroup != "")
 			     			     		$("#"+groupDiv + " :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
 			     			     	
