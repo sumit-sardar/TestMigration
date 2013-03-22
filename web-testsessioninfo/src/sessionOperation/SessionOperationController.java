@@ -2768,7 +2768,9 @@ public class SessionOperationController extends PageFlowController {
 			base.setRecords("10");
 			base.setTotal("2");
 			base.setStudentNode(studentNodes);
-			base.setGradeList(this.studentGradesForCustomer);
+			if(this.studentGradesForCustomer == null)				
+				this.studentGradesForCustomer = (List<String>)getSession().getAttribute("studentGradesForCustomer");
+			base.setGradeList(this.studentGradesForCustomer);			
 			base.setAccomodationMap(accomodationMap);
 			
 			// get licenses
@@ -5039,7 +5041,8 @@ public class SessionOperationController extends PageFlowController {
 
 				}
 
-			}			
+			}	
+			getSession().setAttribute("studentGradesForCustomer", this.studentGradesForCustomer);
 		}
 	 
 	 private int getRosterForTestSession(Integer testAdminId){
