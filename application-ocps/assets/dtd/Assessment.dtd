@@ -72,6 +72,8 @@ CHANGE HISTORY:
 	Form 			CDATA #REQUIRED
 	StartItemNumber		CDATA #IMPLIED
 	TimeLimit 		CDATA #IMPLIED
+	ForwardOnly (T | F) "F"
+	Adaptive (T | F) "F"
 >
 <!-- ===========================================================================
 	Element: RandomizationBlock
@@ -98,15 +100,17 @@ CHANGE HISTORY:
 	Author 		CDATA #IMPLIED
 >
 
-<!ELEMENT Item (StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?)>
+<!ELEMENT Item (TEAsset?, StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?)>
 <!ATTLIST Item
 	ID 		CDATA #REQUIRED
 	Grade		(K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Adult | EOC) "3"
 	DisplayID 	CDATA #IMPLIED
 	Author 		CDATA #IMPLIED
-	ItemType 	(SR | CR | NI) "SR"
+	ItemType 	(SR | CR | NI | IN) "SR"
 	ExternalID 	CDATA #IMPLIED 
 	ExternalSystem  (PEID | Monarch| na) "na"
+	AllowRevisit (true | false) "true"
+	AllowRevisitOnRestart (true | false) "true"
 >
 
 <!ELEMENT StudentDirections (Text|Graphic|Table)*>
@@ -120,6 +124,12 @@ CHANGE HISTORY:
 	height		CDATA #IMPLIED
 	widgetlayout 	(vertical | horizontal) "vertical"
 	widgetspacing	CDATA #IMPLIED
+>
+
+<!-- entry has been added for TE Item -->
+<!ELEMENT TEAsset EMPTY>
+<!ATTLIST TEAsset
+    path	      CDATA #REQUIRED	
 >
 
 <!-- a component that is necessary to answer a given set of items -->
@@ -221,7 +231,7 @@ facts and reach conclusions -->
 	widgetspacing 	CDATA #IMPLIED
 >
 
-<!ELEMENT AnswerArea (AnswerAreaDirection?, (Grid|Line)*, SubAnswerArea*)>
+<!ELEMENT AnswerArea (AnswerAreaDirection?, ((Grid|Line)* | (AudioItem)?), SubAnswerArea*)>
 <!ATTLIST AnswerArea
 	ID 		CDATA #IMPLIED
 	Border  	(yes | no) "yes"
@@ -290,16 +300,16 @@ answer -->
 >
 
 <!-- Graphic Component -->
-<!ELEMENT Graphic (Flash | EPSPrint | Acknowledgment)*>
+<!ELEMENT Graphic (Flash | EPSPrint | Acknowledgment | HtmlAsset)*>
 <!ATTLIST Graphic
-	ID 		CDATA #IMPLIED
-	Alt 		CDATA #IMPLIED
-	TabTitle	CDATA #IMPLIED
+	ID 				CDATA #IMPLIED
+	Alt 			CDATA #IMPLIED
+	TabTitle		CDATA #IMPLIED
 	width           CDATA #IMPLIED
 	height          CDATA #IMPLIED
-	inlineAlign	(top | middle | bottom | left | right) "bottom"
-	valign 		(top | middle | bottom) "top"
-	halign		(left | center | right) "left"
+	inlineAlign		(top | middle | bottom | left | right) "bottom"
+	valign 			(top | middle | bottom) "top"
+	halign			(left | center | right) "left"
 >
 
 <!ELEMENT Flash EMPTY>
@@ -309,7 +319,27 @@ answer -->
 	height 		CDATA #IMPLIED
 	width 		CDATA #IMPLIED
 	Enlargeable		(yes | no | accommodated ) "no"
-	autoenlargeable 	(yes | no ) "no"
+	autoenlargeable 	(yes | no )    "no"
+	isaudio				(true | false) "false"
+	autoplay			(true | false) "true"
+	playorder			CDATA          "1" 
+	playonce			(true | false) "false"
+>
+<!ELEMENT HtmlAsset EMPTY>
+<!ATTLIST HtmlAsset
+	ID 					CDATA #IMPLIED
+	FileName 			CDATA #REQUIRED
+	x					CDATA #IMPLIED
+	y					CDATA #IMPLIED
+	height 				CDATA #IMPLIED
+	width 				CDATA #IMPLIED
+	isMP4				(true | false)	"false"
+	autoplay			(true | false) 	"true"
+	playorder			CDATA          	"1" 
+	playonce			(true | false) 	"false"
+	nonstop				(true | false) 	"false"
+	playIfAnswered 		(true | false) 	"false"
+	responseAreaLocker	(true | false) 	"false"
 >
 <!ELEMENT EPSPrint EMPTY>
 <!ATTLIST EPSPrint
@@ -327,8 +357,13 @@ answer -->
 
 <!ELEMENT Manipulative EMPTY>
 <!ATTLIST Manipulative
-    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator ) #REQUIRED
+    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad | masking_ruler | ti_scientific_calculator | ti_scientific_graphic_calculator) #REQUIRED
 	Provision 	(required | accommodated ) "required"
+>
+
+<!ELEMENT FormulaCard EMPTY>
+<!ATTLIST FormulaCard 
+    	resource CDATA #REQUIRED
 >
 
 <!ELEMENT ThemePage (Text|Graphic)*>
@@ -430,4 +465,17 @@ answer -->
 	charLimit        CDATA #IMPLIED
 	softWordLimit    CDATA #IMPLIED
 	hardWordLimit    CDATA #IMPLIED
+>
+<!ELEMENT AudioItem EMPTY>
+<!ATTLIST AudioItem
+	x				    CDATA #IMPLIED
+	y				    CDATA #IMPLIED
+	width				CDATA #IMPLIED
+	height				CDATA #IMPLIED
+	totalTime		    CDATA #REQUIRED
+	pausable        	(true | false) "false"
+	playable        	(true | false) "false"
+	timer           	(true | false) "true" 
+	progressBar	    	(true | false) "true"
+	showActivityLevel 	(true | false) "true"
 >
