@@ -3,6 +3,7 @@ package com.ctb.contentBridge.core.upload.bo;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ctb.contentBridge.core.domain.Configuration;
@@ -60,6 +61,15 @@ public class ContentCreatorBO {
 		MainProcessor processor = new MainProcessor(configuration);
 		processor.processor(itemSetTd);
 	}
+	
+	public void processDeliverableUnitList(Configuration configuration,
+			ArrayList<String> tdList) throws Exception {
+		System.out.println("inside processDeliverableUnitList");
+		HashMap itemSetTd = null;		
+		itemSetTd = getItemSetTd(configuration, tdList);
+		MainProcessor processor = new MainProcessor(configuration);
+		processor.processor(itemSetTd);
+	}
 
 	private static HashMap getItemSetTd(Configuration configuration,
 			String extTstItemSetId) throws NumberFormatException, SQLException,
@@ -70,6 +80,24 @@ public class ContentCreatorBO {
 			System.out.println("contentcreationBO itemset"+extTstItemSetId);
 			delegater = OasDelegater.getInstance(configuration);
 			map = delegater.getItemSetTd(extTstItemSetId);
+			System.out.println("contentcreationBO "+map.size());
+		} finally {
+			if (delegater != null)				
+				delegater.releaseResource();
+		}
+		return map;
+
+	}
+	
+	private static HashMap getItemSetTd(Configuration configuration,
+			ArrayList<String> tdList) throws NumberFormatException, SQLException,
+			Exception {
+		HashMap map;
+		OasDelegater delegater = null;
+		try {
+			System.out.println("contentcreationBO getItemSetTd");
+			delegater = OasDelegater.getInstance(configuration);
+			map = delegater.getItemSetTd(tdList);
 			System.out.println("contentcreationBO "+map.size());
 		} finally {
 			if (delegater != null)				

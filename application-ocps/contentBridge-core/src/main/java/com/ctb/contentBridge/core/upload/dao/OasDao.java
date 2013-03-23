@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ctb.contentBridge.core.domain.Item;
@@ -19,6 +20,7 @@ public class OasDao {
 
 	private static String getItemSetTDForTestCatalog = "SELECT ISETTD.ITEM_SET_ID OAS_ID, ISETTD.ADS_OB_ASMT_ID ADS_ID, ISETTD.ASMT_HASH HASH_KEY , ISETTD.ASMT_ENCRYPTION_KEY KEY  FROM TEST_CATALOG CATALOG, ITEM_SET_ANCESTOR ANCESTOR, ITEM_SET ISETTC, ITEM_SET ISETTD    WHERE  CATALOG.TEST_CATALOG_ID = ?    AND CATALOG.ITEM_SET_ID = ISETTC.ITEM_SET_ID   AND ISETTC.ACTIVATION_STATUS = 'AC'   AND ANCESTOR.ANCESTOR_ITEM_SET_ID = CATALOG.ITEM_SET_ID   AND ANCESTOR.ITEM_SET_TYPE = 'TD'   AND ISETTD.ITEM_SET_ID = ANCESTOR.ITEM_SET_ID   AND ISETTD.ACTIVATION_STATUS = 'AC'";
 	private static String getItemSetTDForTC = "SELECT ISETTD.ITEM_SET_ID OAS_ID, ISETTD.ADS_OB_ASMT_ID ADS_ID, ISETTD.ASMT_HASH HASH_KEY , ISETTD.ASMT_ENCRYPTION_KEY KEY  FROM ITEM_SET_ANCESTOR ANCESTOR, ITEM_SET ISETTC, ITEM_SET ISETTD WHERE ISETTC.EXT_TST_ITEM_SET_ID = ?  AND ISETTC.ACTIVATION_STATUS = 'AC'  AND ISETTC.ITEM_SET_TYPE = 'TC'  AND ANCESTOR.ANCESTOR_ITEM_SET_ID = ISETTC.ITEM_SET_ID  AND ANCESTOR.ITEM_SET_TYPE = 'TD'  AND ISETTD.ITEM_SET_ID = ANCESTOR.ITEM_SET_ID  AND ISETTD.ACTIVATION_STATUS = 'AC'";
+	private static String getItemSetTDDtls = "SELECT ISETTD.ITEM_SET_ID OAS_ID, ISETTD.ADS_OB_ASMT_ID ADS_ID, ISETTD.ASMT_HASH HASH_KEY , ISETTD.ASMT_ENCRYPTION_KEY KEY  FROM ITEM_SET ISETTD WHERE ISETTD.EXT_TST_ITEM_SET_ID = ?";
 	private static String getItemForTD = "SELECT DISTINCT ITEM.ITEM_ID OAS_ID, ITEM.ADS_ITEM_ID ADS_ID FROM ITEM_SET_ITEM ISI, ITEM WHERE ITEM_SET_ID = ? AND ISI.ITEM_ID= ITEM.ITEM_ID AND ITEM.ACTIVATION_STATUS = 'AC'";
 	private static String updateItemSet = " UPDATE ITEM_SET SET CONTENT_REPOSITORY_URI = ? WHERE ITEM_SET_ID = ? ";
 	private static final String GET_ITEM_BLOB_SQL = "SELECT item_rendition_xml_encr as itemBlob  FROM pub_ob_item_pkg  WHERE pub_ob_item_pkg_id = ?";
@@ -83,6 +85,39 @@ public class OasDao {
 
 		return itemSetMap;
 
+	}
+	
+	public static HashMap getItemSetTDDtls(Connection conn,
+			ArrayList<String> tdList) throws SystemException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		HashMap itemSetMap = new HashMap();
+		try {
+			ps = conn.prepareStatement(getItemSetTDDtls);
+
+			if (tdList != null && !tdList.isEmpty()) {
+				for (String extTstItemSetId : tdList) {
+					ps.setString(1, extTstItemSetId);
+					rs = ps.executeQuery();
+					while (rs.next()) {
+						ItemSet td = new ItemSet();
+						td.setOasid(rs.getLong("OAS_ID"));
+						td.setAdsid(rs.getLong("ADS_ID"));
+						td.setHash(rs.getString("HASH_KEY"));
+						td.setKey(rs.getString("KEY"));
+						populteChildren(conn, td);
+						itemSetMap.put(new Long(td.getOasid()), td);
+					}
+				}
+			}
+			System.out.println(itemSetMap.size());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SystemException(e);
+		} finally {
+			ClosableHelper.close(ps, rs);
+		}
+		return itemSetMap;
 	}
 
 	private static void populteChildren(Connection conn, ItemSet td)

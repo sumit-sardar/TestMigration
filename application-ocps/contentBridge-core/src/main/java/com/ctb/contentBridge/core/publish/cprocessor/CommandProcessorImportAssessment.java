@@ -7,6 +7,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
@@ -75,14 +76,31 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
 
 				doTdContentSize((AbstractReport) r, extTstItemSetId,config);
 				System.out.println("under report Process");
-
-				ContentCreatorService mvContentCreatorService = new ContentCreatorService();
-				mvContentCreatorService.processExtTstItemSetId(
-						(AbstractReport) r, config, /*conn,*/ extTstItemSetId);
-				/*
-				 * doContentSizeFromADS( ( AbstractReport )r,
-				 * rootElement.getAttributeValue( "ID" ) );
-				 */
+				
+				ArrayList<String> rTDList = new ArrayList();
+				List<Element> tsList = rootElement
+						.getChildren(XMLConstants.ELEMENT_NAME_TS);
+				if (tsList != null && !tsList.isEmpty()) {
+					for (Element tsElement : tsList) {
+						List<Element> tdList = tsElement
+								.getChildren(XMLConstants.ELEMENT_NAME_TD);
+						if (tdList != null && !tdList.isEmpty()) {
+							for (Element tdElement : tdList) {
+								rTDList.add(tdElement.getAttributeValue("ID"));
+								System.out.println("TD: "
+										+ tdElement.getAttributeValue("ID"));
+							}
+						}
+					}
+				}
+				
+				if(rTDList != null && !rTDList.isEmpty()) {
+					ContentCreatorService mvContentCreatorService = new ContentCreatorService();
+					mvContentCreatorService.processDeliverableUnitList(
+							(AbstractReport) r, config, /*conn,*/ rTDList);
+					/*mvContentCreatorService.processExtTstItemSetId(
+							(AbstractReport) r, config, conn, extTstItemSetId);*/
+				}
 			} else
 				transaction.rollback();
 			return r;

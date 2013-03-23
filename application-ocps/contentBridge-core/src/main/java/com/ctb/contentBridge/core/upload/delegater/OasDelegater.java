@@ -2,6 +2,7 @@ package com.ctb.contentBridge.core.upload.delegater;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ctb.contentBridge.core.domain.Configuration;
@@ -35,6 +36,12 @@ public class OasDelegater {
 	public HashMap getItemSetTd(String extTstItemSetId) throws Exception {
 		Connection conn = ConnectionUtil.getOASConnection(configuration);
 		HashMap tdmap = OasDao.getItemSetTDForTC(conn, extTstItemSetId);
+		return tdmap;
+	}
+	
+	public HashMap getItemSetTd(ArrayList<String> tdList) throws Exception {
+		Connection conn = ConnectionUtil.getOASConnection(configuration);
+		HashMap tdmap = OasDao.getItemSetTDDtls(conn, tdList);
 		return tdmap;
 	}
 

@@ -1,6 +1,7 @@
 package com.ctb.contentBridge.core.upload.service;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import com.ctb.contentBridge.core.domain.Configuration;
 import com.ctb.contentBridge.core.exception.ExceptionResolver;
@@ -18,6 +19,19 @@ public class ContentCreatorService {
 			ContentCreatorBO mvContentCreatorBO = new ContentCreatorBO();
 			mvContentCreatorBO.processExtTstItemSetId(configuration,/* conn,*/
 					extTstItemSetId);
+		} catch (Exception ex) {
+			System.out.println("inside service "+ex.getMessage());
+			r.setException(ex);
+		}
+	}
+	
+	public void processDeliverableUnitList(AbstractReport r,
+			Configuration configuration, ArrayList<String> tdList)
+			throws Exception {
+		try {
+			ContentCreatorBO mvContentCreatorBO = new ContentCreatorBO();
+			mvContentCreatorBO.processDeliverableUnitList(configuration,/* conn,*/
+					tdList);
 		} catch (Exception ex) {
 			System.out.println("inside service "+ex.getMessage());
 			r.setException(ex);
