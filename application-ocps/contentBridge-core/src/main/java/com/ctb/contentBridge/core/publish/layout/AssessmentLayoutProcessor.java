@@ -207,7 +207,7 @@ public class AssessmentLayoutProcessor
                 sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\" allow_revisit=\"" +allowRevisit+"\" allow_revisit_on_restart=\"" +AllowRevisitOnRestart+"\" />\n");
             }
         }
-        sb.append( "</section></assessment></questestinterop></publish_subtest></ads_publish_request>" );
+        sb.append( "</section></assessment></questestinterop></publish_subtest>" );
         ByteArrayInputStream bais = new ByteArrayInputStream( sb.toString().getBytes());
         org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
         org.jdom.Document itemDoc = saxBuilder.build( bais );
