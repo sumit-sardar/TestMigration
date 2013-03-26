@@ -136,8 +136,9 @@ response.setDateHeader ("Expires", 0); */
 				<td class="prompt" align="left"><select name="jbRunStatus"
 					id="StatusID" ><option value=""
 							selected="selected">All</option>
+						<option value="New">New</option>
+						<option value="In Progress">In Progress</option>	
 						<option value="Success">Success</option>
-						<option value="In Progress">In Progress</option>
 						<option value="Error">Error</option>
 				</select></td>
 				<!--  <td class="prompt" align="right">Submitted By User : &nbsp;</td>
