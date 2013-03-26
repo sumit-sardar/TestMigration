@@ -66,7 +66,9 @@ public class PublishOrderPollingAction implements Runnable {
 					
 					for (JobBean vJobBean : rJobList) {
 						System.out.println("Processing job starts:	"+ vJobBean.getJobPk());
-												commandLine = new CommandLine();
+						vContentBridgeService.updateJobStatus(configuration,
+								vJobBean.getJobPk(), "In Progress", "");
+						commandLine = new CommandLine();
 						commandLine.setCommand(vJobBean.getCommand());
 						commandLine.setParameters(vJobBean.getParameters());
 						
