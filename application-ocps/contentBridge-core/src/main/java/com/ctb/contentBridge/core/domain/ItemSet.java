@@ -7,6 +7,7 @@ public class ItemSet {
 	private long adsid;
 	private String hash;
 	private String key;
+	private String extTstItemSetId;
 
 	private ArrayList children = new ArrayList();
 
@@ -85,6 +86,18 @@ public class ItemSet {
 		this.children.add(child);
 	}
 
-	
+	/**
+	 * @return the extTstItemSetId
+	 */
+	public String getExtTstItemSetId() {
+		return extTstItemSetId;
+	}
 
+	/**
+	 * @param extTstItemSetId
+	 *            the extTstItemSetId to set
+	 */
+	public void setExtTstItemSetId(String extTstItemSetId) {
+		this.extTstItemSetId = extTstItemSetId;
+	}	
 }

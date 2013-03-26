@@ -101,6 +101,8 @@ public class OasDao {
 					rs = ps.executeQuery();
 					while (rs.next()) {
 						ItemSet td = new ItemSet();
+						td.setExtTstItemSetId(extTstItemSetId);
+						
 						td.setOasid(rs.getLong("OAS_ID"));
 						td.setAdsid(rs.getLong("ADS_ID"));
 						td.setHash(rs.getString("HASH_KEY"));

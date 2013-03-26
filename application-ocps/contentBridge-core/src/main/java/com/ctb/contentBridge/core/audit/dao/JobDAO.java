@@ -180,6 +180,7 @@ public class JobDAO {
 			String jobRunStatus1, String jobDateFrom1, String jobDateTo1,
 			String targetEnv1, String dateFormat) {
 		String searchQuery = "select * from content_publish_job where ";
+		String orderQuery = "order by date_last_upd desc";
 		String dynamicResult = "";
 		if (jobID1 == null || "".equals(jobID1)) {
 			dynamicResult = dynamicResult + "Job_Id like '%'";
@@ -232,7 +233,7 @@ public class JobDAO {
 			dynamicResult = dynamicResult + " AND Date_Created <= TO_DATE( '"
 					+ jobDateTo1 + "','" + dateFormat + "')";
 		}
-		searchQuery = searchQuery + dynamicResult;
+		searchQuery = searchQuery + dynamicResult + "\n" + orderQuery;
 
 		return searchQuery;
 	}
@@ -365,7 +366,7 @@ public class JobDAO {
 
 				jobList.add(vJobBean);
 
-				updateJobStatus(conn, vJobBean.getJobPk(), "In Progress", "");
+				/*updateJobStatus(conn, vJobBean.getJobPk(), "In Progress", "");*/
 			}
 		} finally {
 			ClosableHelper.close(ps, rs);

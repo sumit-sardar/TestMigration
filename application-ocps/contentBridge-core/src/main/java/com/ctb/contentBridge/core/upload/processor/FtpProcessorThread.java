@@ -1,7 +1,11 @@
 package com.ctb.contentBridge.core.upload.processor;
 
+import java.io.File;
+
 import com.ctb.contentBridge.core.domain.Configuration;
 import com.ctb.contentBridge.core.domain.ItemSet;
+import com.ctb.contentBridge.core.publish.command.EmailGateway;
+import com.ctb.contentBridge.core.publish.tools.OCSConfig;
 import com.ctb.contentBridge.core.upload.delegater.OasDelegater;
 import com.ctb.contentBridge.core.upload.processor.CTBQueue.Element;
 import com.ctb.contentBridge.core.util.FileUtil;
@@ -19,7 +23,8 @@ public class FtpProcessorThread extends StopableThread {
 	private String ftpUser = null;
 	private String ftpPort = null;
 	private String delimiter = ",";
-
+	private OCSConfig ocsConfig;
+	private EmailGateway emailGateway;
 
 
 	public FtpProcessorThread(Configuration configuration, ItemSet itemSetTD,
@@ -28,6 +33,11 @@ public class FtpProcessorThread extends StopableThread {
 		this.configuration = configuration;
 		this.queue = queue;
 		this.itemSetTD = itemSetTD;
+		
+		String sPropFilePath = System.getProperty("PROPERTIES_FILE_PATH");
+		File configFile=new File(sPropFilePath);
+		ocsConfig = new OCSConfig(configFile);
+		emailGateway = new EmailGateway(ocsConfig);
 	}
 
 	public void run() {
@@ -105,9 +115,19 @@ public class FtpProcessorThread extends StopableThread {
     
 			updateItemSet();
 		} catch (Exception e) {
-			System.out.println("exception1 "+e.getMessage());
 			//StopableThread.foreStopped = true;
 			e.printStackTrace();
+			StringBuffer sbufSubject = new StringBuffer("FTP process [");
+			sbufSubject.append(this.itemSetTD.getExtTstItemSetId());
+			sbufSubject.append("]").append(EmailGateway.FAILURE_SUBJECT);
+
+			StringBuffer sbufBody = new StringBuffer(
+					"FTP process has been failed for Deliverable Unit \"");
+			sbufBody.append(this.itemSetTD.getExtTstItemSetId()).append("\".\n");
+			sbufBody.append("Please find the error below:\n");
+			sbufBody.append(e.getMessage());
+			
+			emailGateway.sendEmail(sbufSubject.toString(),sbufBody.toString());
 		} finally {
 			if (sftpSession != null) {
 				FtpUtil.closeSFtpClient(sftpSession);

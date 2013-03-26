@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -3206,11 +3207,11 @@ public class ItemLayoutProcessor {
 			String itemID) throws Exception {
 		//logger.info("Inside getPackageAsset()...");
 		List localAssetList = extractAllElement(".//" + html_widget, layoutItem);
-		for (int i = 0; i < localAssetList.size(); i++) {
+		/*for (int i = 0; i < localAssetList.size(); i++) {
 			Element image_widget = (Element) localAssetList.get(i);
 			String path = image_widget.getAttributeValue("src");
 			assetPkgList.add(path);
-		}
+		}*/
 		
 		/*Properties prop = new Properties();
 		prop.load(new FileInputStream(adsConfig.getFile()));*/
@@ -3224,12 +3225,19 @@ public class ItemLayoutProcessor {
 		String destination = tePackagePath + itemID + "zip";
 		//logger.info("source > "+sourcs);
 		//logger.info("destination > "+destination);
-	
+		File destFile = new File(destination);
+		if(destFile.exists()) {
+			destFile.delete();
+		}
 		zipFolder(sourcs, destination);
 		//logger.info("Zip Folder created....");
-
+		for (int i = 0; i < localAssetList.size(); i++) {
+			Element image_widget = (Element) localAssetList.get(i);
+			String path = tePackagePath + image_widget.getAttributeValue("src") + "zip";
+			assetPkgList.add(path);
+		}
 	}
-
+	
 	public static void adjustJDOMDifference(Element itemLML) throws Exception {
 		List gridcolList = ItemLayoutProcessor.extractAllElement(".//gridcol",
 				itemLML);
