@@ -438,7 +438,10 @@ function createMultiNodeSelectedTree(jsondata) {
 						delete leafNodeTextMap[elementId];			
 					}
 					if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
-						if($(this.parentNode).attr("tcl") == leafNodeCategoryId){
+						//if($(this.parentNode).attr("tcl") == leafNodeCategoryId){
+						//Since,there is already a check, the cid value will always be leaf node's value
+						//Only allow editing of org, if the node is in proper hierarchy.
+						if(!nodeHasMissingParents($(this.parentNode),$(this.parentNode).attr("cid"))){
 							updateOrganization(this.parentNode,isChecked);
 						}else{
 							$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
@@ -487,7 +490,10 @@ function createMultiNodeSelectedTree(jsondata) {
 							delete leafNodeTextMap[elementId];
 						}
 						if(hasLockHierarchyEditConfigured && hasLockHierarchyEditConfigured != undefined){
-							if(d.rslt[0].getAttribute("tcl") == leafNodeCategoryId){
+							//if(d.rslt[0].getAttribute("tcl") == leafNodeCategoryId){
+							//Since,there is already a check, the cid value will always be leaf node's value
+							//Only allow editing of org, if the node is in proper hierarchy.
+							if(!nodeHasMissingParents($(d.rslt[0]),d.rslt[0].getAttribute("cid"))) {
 								updateOrganization(d.rslt[0],isChecked);
 							}else{
 								$(d.rslt[0]).removeClass("jstree-checked").addClass("jstree-unchecked");
@@ -3598,5 +3604,26 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 	        }
 	    }
 	   }
+	 	   
 }
+
+	 //Check if a node is placed in correct hierarchy.
+	 function nodeHasMissingParents (orgnode,num) {
+		console.log("cid:"+orgnode.attr('cid')+" num : "+num);
+		if(num > 2) {
+		 	orgnode = orgnode.parent().parent();
+		 	if(num - orgnode.attr('cid') > 1) {
+				console.log("if cid:"+orgnode.attr('cid')+" num : "+num);
+				return true;
+		 	}
+		 	else {
+		 		num = orgnode.attr('cid');
+		 		console.log("else cid:"+orgnode.attr('cid')+" num : "+num);
+		 		return nodeHasMissingParents (orgnode,num); 
+		 	}
+		}
+		else {
+			return false;
+		}
+	 }
 		
