@@ -3609,16 +3609,16 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 	 //Check if a node is placed in correct hierarchy.
 	 function nodeHasMissingParents (orgnode,num) {
-		console.log("cid:"+orgnode.attr('cid')+" num : "+num);
+		//console.log("cid:"+orgnode.attr('cid')+" num : "+num);
 		if(num > 2) {
 		 	orgnode = orgnode.parent().parent();
 		 	if(num - orgnode.attr('cid') > 1) {
-				console.log("if cid:"+orgnode.attr('cid')+" num : "+num);
+				//console.log("if cid:"+orgnode.attr('cid')+" num : "+num);
 				return true;
 		 	}
 		 	else {
 		 		num = orgnode.attr('cid');
-		 		console.log("else cid:"+orgnode.attr('cid')+" num : "+num);
+		 		//console.log("else cid:"+orgnode.attr('cid')+" num : "+num);
 		 		return nodeHasMissingParents (orgnode,num); 
 		 	}
 		}
