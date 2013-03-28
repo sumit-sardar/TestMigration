@@ -1884,10 +1884,20 @@ function fillselectedOrgNode( elementId, orgList) {
 		$('#Student_Additional_Information :input').attr('disabled', false);
 		
 		for(var counter = 0; counter < demographicGroupIds.length;counter++) {
-			$('#'+demographicGroupIds[counter]+' :checkbox').attr('disabled', false); 
-			$('#'+demographicGroupIds[counter]+' :radio').attr('disabled', false); 
-			$('#'+demographicGroupIds[counter]+' select').attr('disabled', false);
-			$('#'+demographicGroupIds[counter]+' :input').attr('disabled', false);
+			//$('#'+demographicGroupIds[counter]+' :checkbox').attr('disabled', false); 
+			//$('#'+demographicGroupIds[counter]+' :radio').attr('disabled', false); 
+			//$('#'+demographicGroupIds[counter]+' select').attr('disabled', false);
+			//$('#'+demographicGroupIds[counter]+' :input').attr('disabled', false);
+			if(document.getElementById(demographicGroupIds[counter]) != undefined && document.getElementById(demographicGroupIds[counter]) != null){
+				var inputTagLength = document.getElementById(demographicGroupIds[counter]).getElementsByTagName('input').length;
+				for(var i = 0; i < inputTagLength; i++ ){
+					document.getElementById(demographicGroupIds[counter]).getElementsByTagName('input')[i].disabled = false;
+				}
+				var selectTagLength = document.getElementById(demographicGroupIds[counter]).getElementsByTagName('select').length;
+				for(var i = 0; i < selectTagLength; i++ ){
+					document.getElementById(demographicGroupIds[counter]).getElementsByTagName('select')[i].disabled = false;
+				}
+			}
 		}
 		
 	}
