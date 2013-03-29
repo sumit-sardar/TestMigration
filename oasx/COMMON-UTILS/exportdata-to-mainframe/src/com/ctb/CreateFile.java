@@ -1406,7 +1406,7 @@ public class CreateFile {
 				tfil.setElementNumberA(tfil.getElementNumberB());
 				tfil.setElementSpecialCodesA(tfil.getElementSpecialCodesB());
 				tfil.setOrganizationId("XX" + tfil.getSchoolId());
-				//tfil.setCustomerId(tfil.getSchoolId());
+				tfil.setCustomerId(tfil.getSchoolId());
 				tfil.setElementStructureLevelA("01");
 				//orderFile.setCustomerId(tfil.getSchoolId());
 			}
@@ -1415,7 +1415,7 @@ public class CreateFile {
 				tfil.setElementBLabel(tfil.getElementCLabel());
 				tfil.setElementNumberB(tfil.getElementNumberC());
 				tfil.setElementSpecialCodesB(tfil.getElementSpecialCodesC());
-				tfil.setSchoolId("XX" + tfil.getClassId());
+				tfil.setSchoolId(tfil.getClassId());
 				//tfil.setCustomerId(tfil.getClassId());
 				tfil.setElementStructureLevelB("02");
 				//orderFile.setCustomerId(tfil.getClassId());
@@ -1425,7 +1425,7 @@ public class CreateFile {
 				tfil.setElementCLabel(tfil.getElementDLabel());
 				tfil.setElementNumberC(tfil.getElementNumberD());
 				tfil.setElementSpecialCodesC(tfil.getElementSpecialCodesD());
-				tfil.setClassId("XX" + tfil.getSectionId());
+				tfil.setClassId(tfil.getSectionId());
 				//tfil.setCustomerId(tfil.getSectionId());
 				tfil.setElementStructureLevelC("03");
 				//orderFile.setCustomerId(tfil.getSectionId());
@@ -1435,7 +1435,7 @@ public class CreateFile {
 				tfil.setElementDLabel(tfil.getElementELabel());
 				tfil.setElementNumberD(tfil.getElementNumberE());
 				tfil.setElementSpecialCodesD(tfil.getElementSpecialCodesE());
-				tfil.setSectionId("XX" + tfil.getGroupId());
+				tfil.setSectionId(tfil.getGroupId());
 				//tfil.setCustomerId(tfil.getGroupId());
 				tfil.setElementStructureLevelD("04");
 				//orderFile.setCustomerId(tfil.getGroupId());
@@ -1445,7 +1445,7 @@ public class CreateFile {
 				tfil.setElementELabel(tfil.getElementFLabel());
 				tfil.setElementNumberE(tfil.getElementNumberF());
 				tfil.setElementSpecialCodesE(tfil.getElementSpecialCodesF());
-				tfil.setGroupId("XX" + tfil.getDivisionId());
+				tfil.setGroupId(tfil.getDivisionId());
 				//tfil.setCustomerId(tfil.getDivisionId());
 				tfil.setElementStructureLevelE("05");
 				//orderFile.setCustomerId(tfil.getDivisionId());
@@ -1455,7 +1455,7 @@ public class CreateFile {
 				tfil.setElementFLabel(tfil.getElementGLabel());
 				tfil.setElementNumberF(tfil.getElementNumberG());
 				tfil.setElementSpecialCodesF(tfil.getElementSpecialCodesG());
-				tfil.setDivisionId("XX" + tfil.getLeafLevelId());
+				tfil.setDivisionId(tfil.getLeafLevelId());
 				//tfil.setCustomerId(tfil.getLeafLevelId());
 				tfil.setElementStructureLevelF("06");
 				//orderFile.setCustomerId(tfil.getLeafLevelId());
