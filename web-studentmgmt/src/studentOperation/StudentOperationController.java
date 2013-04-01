@@ -94,6 +94,7 @@ public class StudentOperationController extends PageFlowController {
 	CustomerConfiguration[] customerConfigurations = null;
 	boolean hasBioUneditable = false;
 	Set<String> demoGraphicCategoryNames = null;
+	boolean customerDemographicGroupingEnable = false;
 
 
 
@@ -1075,8 +1076,13 @@ public class StudentOperationController extends PageFlowController {
 			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
 			if(null != sdd.getDemoCategory())
 				groupName = "_" + sdd.getDemoCategory();
-			else
-				groupName = "";
+			else {
+				if(this.customerDemographicGroupingEnable){
+					groupName = "_ADDITIONAL INFO";
+				}else{
+					groupName = "";
+				}
+			}
 			StudentDemographicValue[] values = sdd.getStudentDemographicValues();
 			
 			for (int j=0; j < values.length; j++)
@@ -1250,7 +1256,7 @@ public class StudentOperationController extends PageFlowController {
 	{	
 		//List demographics = null;
 		boolean studentImported = false;
-		boolean customerDemographicGroupingEnable = false;
+		//boolean customerDemographicGroupingEnable = false;
 		 if(createBy != null)
 			 studentImported = (createBy.intValue() == 1);
 		
@@ -1271,9 +1277,9 @@ public class StudentOperationController extends PageFlowController {
 		//this.demographics = demographics;
 		this.getRequest().setAttribute("demographics", demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
-		customerDemographicGroupingEnable = isCustomerDemographicGroupingEnable();
-		this.getRequest().setAttribute("customerDemographicGroupingEnable", customerDemographicGroupingEnable); 
-		if(customerDemographicGroupingEnable){
+		this.customerDemographicGroupingEnable = isCustomerDemographicGroupingEnable();
+		this.getRequest().setAttribute("customerDemographicGroupingEnable", this.customerDemographicGroupingEnable); 
+		if(this.customerDemographicGroupingEnable){
 			this.getRequest().setAttribute("okDemographicMap", populateOKDemographics(demographics));
 		}
 		return demographics;
@@ -1441,6 +1447,11 @@ public class StudentOperationController extends PageFlowController {
 							}
 						}
 					}
+					if(this.customerDemographicGroupingEnable && sd.getDemoCategory() == null ) { 
+						String demoCategoryName = "ADDITIONAL INFO";
+						sd.setDemoCategory(demoCategoryName);
+					}
+					
 					demographics.add(sd);                
 				}                        
 			}
