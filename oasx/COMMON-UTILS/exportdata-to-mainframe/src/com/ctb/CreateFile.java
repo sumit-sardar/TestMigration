@@ -75,7 +75,7 @@ public class CreateFile {
 		+ " and roster.test_roster_id = ? ";
 
 	private static String customerModelLevel = " select max(category_level) as modelLevel"
-		+ " from org_node_category where customer_id = :customerId";
+		+ " from org_node_category where customer_id = :customerId and activation_status= 'AC'";
 
 	private static String testRosterDetails = " select distinct siss.VALIDATION_STATUS as validationStatus,"
 		+ " siss.ITEM_SET_ORDER as itemSetOrder,siss.EXEMPTIONS as testExemptions,"
@@ -329,7 +329,7 @@ public class CreateFile {
 			for (TestRoster roster : myrosterList) {
 				Tfil tfil = new Tfil();
 				
-				tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
+				//tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
 				Student st = roster.getStudent();
 				System.out.println("Studnet Id"+ st.getStudentId() +" :: "+ roster.getTestRosterId());
 				setStudentList(tfil, st);
