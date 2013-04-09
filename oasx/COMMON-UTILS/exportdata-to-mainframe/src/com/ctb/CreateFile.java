@@ -102,20 +102,21 @@ public class CreateFile {
 	private String customerDemographicsqlWithLevel = "select this_.customer_demographic_id as customer_demographic_id, "
 		+ " this_.customer_id as customer_id, this_.label_name  as label_name  from customer_demographic this_ "
 		+ "where this_.customer_id = ? and label_name = 'Accommodations' ";
-	private String customersql = "select cust.STATEPR as state,addr.CITY as CITY, cust.CONTACT_EMAIL as email, cust.CONTACT_PHONE as phone,cust.CONTACT_NAME as contact from Customer cust, Address addr where CUSTOMER_ID = ? and cust.billing_address_id = addr.address_id(+)";
+	private String customersql = "select cust.STATEPR as state, nvl(addr.CITY,' ') as CITY, cust.CONTACT_EMAIL as email, cust.CONTACT_PHONE as phone,cust.CONTACT_NAME as contact from Customer cust, Address addr where CUSTOMER_ID = ? and cust.billing_address_id = addr.address_id(+) ";
 	private String testRosterSql = " select this_.TEST_ROSTER_ID    as TEST_ROSTER_ID, this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,   this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS,"
 		+ "  this_.CUSTOMER_ID            as CUSTOMER_ID, this_.STUDENT_ID  as STUDENT_ID, this_.TEST_ADMIN_ID   as TEST_ADMIN_ID  "
 		+ " from TEST_ROSTER this_  "
 		+ "where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' "
 		+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
 
-	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,    decode(upper(student0_.GENDER), 'U', ' ', student0_.GENDER)   as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
+	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  student0_.GENDER       as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
 
 	private String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
 
 	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME, VALUE from student_demographic_data sdd where sdd.student_id = ? ";
 
-	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+	private String customerDemographiValuecsql = "select value_name,value_code,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+
 	private String subSkillItemAreaInformation1 = "select tad.product_id || iset.item_set_id subskill_id,"
 		+ " iset.item_set_name from test_admin tad,product,item_set_category icat,item_set iset"
 		+ " where tad.test_admin_id = ? and icat.item_set_category_level = 4 and tad.product_id = product.product_id"
@@ -816,7 +817,8 @@ public class CreateFile {
 			while (rs.next()) {
 				CustomerDemographicValue cdv = new CustomerDemographicValue();
 				cdv.setValueName(rs.getString(1));
-				cdv.setCustomerDemographicId(rs.getInt(2));
+				cdv.setValueCode(rs.getString(2));
+				cdv.setCustomerDemographicId(rs.getInt(3));
 				customerDemographicValue.add(cdv);
 			}
 
@@ -933,14 +935,15 @@ public class CreateFile {
 				Set<CustomerDemographicValue> set = entry1.getValue()
 				.getCustomerDemographicValue();
 				for (CustomerDemographicValue value : set) {
-					if (value.getValueName().trim().equalsIgnoreCase(
+					if (value.getValueCode().trim().equalsIgnoreCase(
 							entry.getKey().trim())) {
-						String string = value.getValueName().replace('-', '_');
+						String string = value.getValueCode().replace('-', '_');
 
 						try {
 							accomodations.getClass().getMethod("set" + string,
 									String.class).invoke(accomodations,
-											new String("1"));
+									"1");
+							break;
 						} catch (Exception e) {
 							e.printStackTrace();
 
@@ -1343,7 +1346,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getLeafLevelId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameG(), new Integer(30)));
+						.getElementNameG(), 30));
 			
 		}else if (tfil.getElementNameE() == null) {
 			tfil.setOrganizationId("XX" + tfil.getDivisionId());
@@ -1351,7 +1354,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getDivisionId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameF(), new Integer(30)));
+						.getElementNameF(), 30));
 			
 		}else if (tfil.getElementNameD() == null) {
 			tfil.setOrganizationId("XX" + tfil.getGroupId());
@@ -1359,7 +1362,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getGroupId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameE(), new Integer(30)));
+						.getElementNameE(), 30));
 			
 		}else if (tfil.getElementNameC() == null) {
 			tfil.setOrganizationId("XX" + tfil.getSectionId());
@@ -1367,7 +1370,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getSectionId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameD(), new Integer(30)));
+						.getElementNameD(), 30));
 			
 		}else if (tfil.getElementNameB() == null) {
 			tfil.setOrganizationId("XX" + tfil.getClassId());
@@ -1375,7 +1378,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getClassId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameC(), new Integer(30)));
+						.getElementNameC(), 30));
 			
 		}else if (tfil.getElementNameA() == null) {
 			tfil.setOrganizationId("XX" + tfil.getSchoolId());
@@ -1383,7 +1386,7 @@ public class CreateFile {
 				orderFile.setCustomerId(tfil.getSchoolId());
 			if (orderFile.getCustomerName() == null)
 				orderFile.setCustomerName(EmetricUtil.truncate(tfil
-						.getElementNameB(), new Integer(30)));
+						.getElementNameB(), 30));
 			
 		}		
 
@@ -1391,7 +1394,7 @@ public class CreateFile {
 			orderFile.setOrgTestingProgram(tfil.getOrganizationId());
 		if (orderFile.getCustomerName() == null)
 			orderFile.setCustomerName(EmetricUtil.truncate(tfil
-					.getElementNameA(), new Integer(30)));
+					.getElementNameA(), 30));
 		
 		/* Added for Mainframe-OAS Blended Reporting : Add class level node based on flag isClassNodeRequired */
 		//start ::
@@ -1537,9 +1540,10 @@ public class CreateFile {
 					tfil.setTestLevel("5");
 				}
 				if(rs.getString(4) != null){
-				tfil.setTestDate(EmetricUtil.getTimeZone(rs.getString(4).toString(),rs.getString(3).toString(),true));
+					tfil.setTestDate(EmetricUtil.getTimeZone(rs.getString(4).toString(),rs.getString(3).toString(),true));
 				}
-				this.testDate = tfil.getTestDate();
+					this.testDate = tfil.getTestDate();
+					
 				if(rs.getString(5) != null){
 				tfil.setDateTestingCompleted(EmetricUtil.getTimeZone(rs.getString(5).toString(),rs.getString(3).toString(),false));
 				}
@@ -1551,8 +1555,10 @@ public class CreateFile {
 
 			}
 
-			if (orderFile.getTestDate() == null)
+			if (orderFile.getTestDate() == null && this.programDate != null){
 				orderFile.setTestDate(this.programDate.substring(0, 6));
+			}
+
 
 			// System.out.println("createTestSessionDetails");
 		} finally {
@@ -2104,6 +2110,22 @@ public class CreateFile {
 			writer.append("CUSTOMER_CONTACT_EMAIL");
 			writer.append(',');
 			writer.append("CUSTOMER_CONTACT_PHONE");
+			writer.append(',');
+			writer.append("TB");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("Hierarchy Mode location");
+			writer.append(',');
+			writer.append("Special code select");
+			writer.append(',');
+			writer.append("Expected Titles");
+			writer.append(',');
+			writer.append("SUBMITTER_EMAIL");
 			writer.append('\n');
 
 			writer.append(orderFile.getCustomerId().toString());
@@ -2141,6 +2163,23 @@ public class CreateFile {
 			writer.append(orderFile.getCustomerEmail());
 			writer.append(',');
 			writer.append(orderFile.getCustomerPhone());
+			
+			writer.append(',');
+			writer.append(orderFile.getTB());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles());
+			writer.append(',');
+			writer.append(orderFile.getHierarchyModeLocation2());
+			writer.append(',');
+			writer.append(orderFile.getSpecialCodeSelect2());
+			writer.append(',');
+			writer.append(orderFile.getExpectedTitles2());
+			writer.append(',');
+			writer.append(orderFile.getSubmittersEmail());
 			writer.append('\n');
 
 			writer.flush();
