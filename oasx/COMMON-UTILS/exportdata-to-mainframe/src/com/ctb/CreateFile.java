@@ -358,7 +358,7 @@ public class CreateFile {
 				createSkillAreaScoreInformation(irscon, tfil, roster);
 
 				createSubSkillAreaScoreInformation(oascon, irscon, tfil, roster);
-				createItemResponseInformation(oascon, roster,tfil);
+				//createItemResponseInformation(oascon, roster,tfil);
 				createSubtestIndicatorFlag(oascon, roster.getTestRosterId(), tfil);
 				tfilList.add(tfil);
 				studentCount++;
