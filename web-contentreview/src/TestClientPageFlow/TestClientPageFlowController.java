@@ -238,7 +238,9 @@ public class TestClientPageFlowController extends PageFlowController
             result = getLoginXML(); 
         else if (method.equals("save") || method.equals("feedback") || method.equals("uploadAuditFile") || method.equals("writeToAuditFile"))
             result = this.OK; 
-       else
+        else if (method.equals("isProductCheck") )
+        	result = "<ISTEP />"; 
+        else
             result = this.ERROR;  
               
         try{
