@@ -321,6 +321,98 @@ function eventMonitor(id,event) {
  	}
  	//lz.embed.setCanvasAttribute("bringBackFocus", 'true');
 }
+
+function callManipOutOfFrameCheck(testClientMouseUp) {
+	var elementArr = document.getElementsByTagName('iframe');
+	if(elementArr[0] != null && elementArr[0] != undefined && elementArr[0].id) {
+		document.getElementById(elementArr[0].id).contentWindow.manipOutOfFrameCheck(testClientMouseUp);
+	}
+}
+//------------------
+function callTestMouseUp1() {
+   	lz.embed.setCanvasAttribute('testMouseUp','true');
+}
+
+function fromWrapper() {
+	lz.embed.setCanvasAttribute('fromWrapper','true');
+}
+function showMagnify() {	
+		isMagnifierVisible = "true";
+		if(jQuery("#magnifierWindow").length < 1){
+			jQuery('body').addpowerzoom({
+					defaultpower: 1.5,
+					powerrange: [1.5,2],
+					largeimage: null,
+					magnifiersize: [300,100] 
+				});
+		}	
+		jQuery(ddpowerzoomer.$magnifier.outer).hide();
+		jQuery.ajax({
+			url: "servlet/PersistenceServlet.do?method=captureScreenshot",
+			dataType: "xml",
+			success: function(data) {
+			//xmlDoc = jQuery.parseXML( data ),
+		    xml = jQuery( data ),
+		    ok = xml.find( "OK" );
+			//alert(ok);
+			var timeStamp = ok.text();//jQuery(jQuery.parseXML(data)).find("ok").text();
+			//alert(timeStamp);
+			var imageName = "cache/screenshot"+timeStamp+".png"
+			
+			jQuery(ddpowerzoomer.$magnifier.outer).css('left',(document.body.clientWidth/2 - 165)+ 'px');
+			jQuery(ddpowerzoomer.$magnifier.outer).css('top',(document.body.clientHeight/2 - 75) + 'px');
+			jQuery(ddpowerzoomer.$magnifier.outer).show();
+			jQuery(ddpowerzoomer).initMagnify({largeimage:imageName});
+			}
+		});
+			
+		
+	}
+function hideMagnify() {		
+	isMagnifierVisible = "false";
+	jQuery(ddpowerzoomer.$magnifier.outer).hide();
+}
+function displayMagnifier() {		
+	
+	jQuery(ddpowerzoomer.$magnifier.outer).show();
+}
+
+function setMouseUpVal() {
+	lz.embed.setCanvasAttribute('mouseUpFired','false');
+}
+
+var currentFrameId;
+function frameID(frameid){
+	currentFrameId = frameid;
+}
+function isSPRequired(){
+	var isSP = lz.embed.lzapp.getCanvasAttribute('scratchpadRequired');
+	return isSP;
+}
+function enableHotKeys(arg) {
+	lz.embed.setCanvasAttribute('keysPressed',arg);
+}
+function enableManipBar(arg) {
+	lz.embed.setCanvasAttribute('enableManipBar',arg);
+}
+function setIframeIsLoaded(){
+	lz.embed.setCanvasAttribute('iframeIsLoaded',true);
+}
+
+function hideTooltip() {
+    var isTooltip = lz.embed.lzapp.getCanvasAttribute('isTooltip');
+    if(isTooltip == true || isTooltip == 'true')
+		lz.embed.setCanvasAttribute('hideTooltip',"hildTooltip");
+}
+
+function enablePasswordFocus(){
+    var myFlash = document.getElementById( 'lzapp' );
+     if ( myFlash ) { 
+      myFlash.focus(); 
+     }
+}
+	
+	
 //-->
 </script>
 <style type="text/css">
