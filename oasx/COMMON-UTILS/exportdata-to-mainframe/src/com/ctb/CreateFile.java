@@ -109,7 +109,7 @@ public class CreateFile {
 		+ "where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' "
 		+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
 
-	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  student0_.GENDER       as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
+	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  decode(upper(student0_.GENDER), 'U', ' ', student0_.GENDER)   as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
 
 	private String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
 
@@ -332,7 +332,7 @@ public class CreateFile {
 				
 				//tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
 				Student st = roster.getStudent();
-				System.out.println("Studnet Id"+ st.getStudentId() +" :: "+ roster.getTestRosterId());
+				System.out.println("Student Id :: "+ st.getStudentId() +" :: "+ roster.getTestRosterId());
 				setStudentList(tfil, st);
 
 				// Accomodations
@@ -873,7 +873,10 @@ public class CreateFile {
 		SpecialCodes specialCodes = new SpecialCodes();
 		// For Defect Fix 66411
 		for (StudentDemographic studentDem : sd) {
-			set1.put(studentDem.getValueName(), studentDem);
+			//set1.put(studentDem.getValueName(), studentDem);
+			if (studentDem.getValue() != null){
+				set1.put(studentDem.getValue(), studentDem);
+			}
 			studentDemographic.put(studentDem.getCustomerDemographicId(),
 					studentDem.getValueName());
 			if (customerDemographic.containsKey(studentDem
@@ -930,15 +933,18 @@ public class CreateFile {
 		}
 
 		for (Map.Entry<String, StudentDemographic> entry : set1.entrySet()) {
+			//System.out.println("entry.getKey()>>"+entry.getKey().trim());
 			for (Map.Entry<String, CustomerDemographic> entry1 : set2
 					.entrySet()) {
 				Set<CustomerDemographicValue> set = entry1.getValue()
 				.getCustomerDemographicValue();
+				//System.out.println("entry1.getKey()>>"+entry1.getKey());
 				for (CustomerDemographicValue value : set) {
+					//System.out.println("value.getValueCode()>>"+value.getValueCode());
 					if (value.getValueCode().trim().equalsIgnoreCase(
 							entry.getKey().trim())) {
 						String string = value.getValueCode().replace('-', '_');
-
+						//System.out.println("match found for :: set"+string);
 						try {
 							accomodations.getClass().getMethod("set" + string,
 									String.class).invoke(accomodations,
