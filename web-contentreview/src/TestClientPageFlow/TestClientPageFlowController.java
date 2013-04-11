@@ -365,34 +365,12 @@ public class TestClientPageFlowController extends PageFlowController
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
         itemLML = item.getLml();
-        
-        String outLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
-        
-        System.out.println(outLML);
-        
-        getRequest().setAttribute("item", outLML);
-        
-    }
-        /*
+
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        
-        InputSource is = null;
-        Document doc = null;
-        
-        try {
-	        //String entityHeader = "<?xml version=\"1.0\"?>\n<!DOCTYPE some_name [ <!ENTITY nbsp \"&#160;\"> ]>\n";
-	        String modItemLML = itemLML.replaceAll("&nbsp;", " ");
-	        
-	        is = new InputSource(new StringReader(modItemLML));
-	        doc = builder.parse(is);
-        } catch (Exception e) {
-        	e.printStackTrace();
-        	System.out.println(itemLML);
-	        is = new InputSource(new StringReader(itemLML));
-	        doc = builder.parse(is);
-        }
+        InputSource is = new InputSource(new StringReader(itemLML));
+        Document doc = builder.parse(is);
         //optional, but recommended
     	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
     	doc.getDocumentElement().normalize();
@@ -406,24 +384,60 @@ public class TestClientPageFlowController extends PageFlowController
     		int i = imageRef.lastIndexOf('"');
     		String folderId=imageRef.substring(11,i);
     		String userFolderPath = null;
+    	   	if(forReal)
+    	    	userFolderPath = "/export/data/contentdemo/asset";
+    	    else
+    	    	userFolderPath = "c:/contentdemo/assets";
+    	    
+    	    String zipLocation=userFolderPath+"/" + folderId + ".zip";
+    	   // String unzipLocation=this.getServlet().getServletContext().getRealPath("ContentReviewPageFlow");//
+    	    //getSession().getServletContext().getRealPath("ContentReviewPageFlow")+"/items";
+    	   // String filessss = getSession().getServletContext().getRealPath("items");
+    	   // String filessss1 = getSession().getServletContext().getRealPath("items");
+    	    //System.out.println("filessss -> " + filessss);
+    	    //System.out.println("filessss1 -> " + filessss1);
+    	    String unzipLocation=getSession().getServletContext().getRealPath("ContentReviewPageFlow")+"/items";//"/ContentReviewWeb/ContentReviewPageFlow/items";//this.totalPath + File.separator + "items";
+    	    //unzipLocation = filessss;
+    	    //getSession().getServletContext().getRealPath("ContentReviewPageFlow");
+    	    //String abcdef = this.getModulePath();
+    	   // System.out.println("getModulePath() -> " + abcdef);
+    	   // abcdef = this.getURI();
+    	   // System.out.println("getURI() -> " + abcdef);
+    	   // System.out.println("NewUnziplocation-->"+this.getServlet().getServletContext().getRealPath("ContentReviewPageFlow/items"));
+    	    System.out.println("MainProblem--->"+unzipLocation);
+            unzip(zipLocation,unzipLocation);    
+            //File newFIle = new File("/ContentReviewWeb/ContentReviewPageFlow/abcd.txt");
+    	}
+    	nList=doc.getElementsByTagName("html_widget");
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+   		 
+    		Node nNode = nList.item(temp);
+    		NamedNodeMap abcd = nNode.getAttributes();
+    		String imageRef=(abcd.getNamedItem("src")).toString();
+    		int i = imageRef.lastIndexOf('"');
+    		String folderId=imageRef.substring(5,i);
+    		String userFolderPath = null;
     	    if ( forReal )
-    	    	userFolderPath = "/export/data/contentdemo/Asset";
+    	    	userFolderPath = "/export/data/contentdemo/asset";
     	    else
     	    	userFolderPath = "c:/contentdemo/assets";
     	    
     	    String zipLocation=userFolderPath+"/" + folderId + ".zip";
     	    String unzipLocation=getSession().getServletContext().getRealPath("ContentReviewPageFlow")+"/items";
+    	    System.out.println("Unziplocation-->"+unzipLocation);
             unzip(zipLocation,unzipLocation);    
     	}
         itemLML = itemLML.replaceAll("&amp;", "&");
         itemLML = itemLML.replaceAll(" & ", " &amp; ");
         item.setLml(itemLML);
         //End
-
-        getRequest().setAttribute("item", item.getLml());
+        //getRequest().setAttribute("item", item.getLml());
+        String outLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
+        System.out.println(outLML);
+        getRequest().setAttribute("item", outLML);
+        
         
     }
-    */
     
     private  void unzip(String zipFolderLocation,String unZipFolderLocation) throws Exception{
 		
