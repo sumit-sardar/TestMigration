@@ -239,7 +239,7 @@ public class TestClientPageFlowController extends PageFlowController
         else if (method.equals("save") || method.equals("feedback") || method.equals("uploadAuditFile") || method.equals("writeToAuditFile"))
             result = this.OK; 
         else if (method.equals("isProductCheck") )
-        	result = "<ISTEP />"; 
+        	result = "<OKLAHOMA />"; 
         else
             result = this.ERROR;  
               
