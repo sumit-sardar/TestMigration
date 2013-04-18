@@ -154,6 +154,54 @@ public class CreateFile {
 	private String subtestIndicator = "SELECT CONL.SUBTEST_MODEL  FROM TEST_ROSTER              TR, TEST_ADMIN               TA, CUSTOMER_CONFIGURATION   CC, CUSTOMER_ORGNODE_LICENSE CONL, PRODUCT                  PROD WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND " +
 	"TA.CUSTOMER_ID = CC.CUSTOMER_ID AND CC.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription' AND CC.DEFAULT_VALUE = 'T' AND TA.PRODUCT_ID = PROD.PRODUCT_ID AND CONL.CUSTOMER_ID = CC.CUSTOMER_ID AND CONL.ORG_NODE_ID = TR.ORG_NODE_ID AND CONL.PRODUCT_ID = PROD.PARENT_PRODUCT_ID ";
 	
+	private String modifiedQueryToFetchRosters = "SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
+										                 "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
+										                 "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
+										                 "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
+										                 "ROS.STUDENT_ID             AS STUDENT_ID, "+
+										                 "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
+													  "FROM TEST_ROSTER ROS "+
+													 "WHERE ROS.CUSTOMER_ID = ? "+
+													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
+													   "AND ROS.TEST_COMPLETION_STATUS = 'CO' "+
+													
+													"UNION "+
+													
+													"SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
+											                "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
+											                "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
+											                "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
+											                "ROS.STUDENT_ID             AS STUDENT_ID, "+
+											                "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
+													  "FROM TEST_ROSTER ROS, STUDENT_ITEM_SET_STATUS SIS "+
+													 "WHERE ROS.CUSTOMER_ID = ? "+
+													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
+													   "AND ROS.TEST_COMPLETION_STATUS = 'IC' "+
+													   "AND SIS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
+													   "AND EXISTS (SELECT 1 "+
+													          "FROM STUDENT_ITEM_SET_STATUS SISS "+
+													         "WHERE SISS.COMPLETION_STATUS IN ('CO', 'IS') "+
+													           "AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID) "+
+													   "AND NOT EXISTS "+
+													 "(SELECT 1 "+
+													          "FROM STUDENT_ITEM_SET_STATUS SI "+
+													         "WHERE SI.COMPLETION_STATUS = 'IN' "+
+													           "AND SI.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID) "+
+													
+													"UNION "+
+													
+													"SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
+											                "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
+											                "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
+											                "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
+											                "ROS.STUDENT_ID             AS STUDENT_ID, "+
+											                "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
+													  "FROM TEST_ROSTER ROS, STUDENT_ITEM_SET_STATUS SISS "+
+													 "WHERE ROS.CUSTOMER_ID = ? "+
+													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
+													   "AND ROS.TEST_COMPLETION_STATUS = 'IS' "+
+													   "AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
+													   "AND SISS.COMPLETION_STATUS = 'CO'";
 	
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
@@ -635,7 +683,8 @@ public class CreateFile {
 		ResultSet rs = null;
 		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
 		try{
-			ps = con.prepareStatement(testRosterSql);
+			//ps = con.prepareStatement(testRosterSql);
+			ps = con.prepareStatement(modifiedQueryToFetchRosters);
 			ps.setInt(1, customerId);
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
