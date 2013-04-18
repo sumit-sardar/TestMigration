@@ -429,24 +429,25 @@ public class TestClientPageFlowController extends PageFlowController
             unzip(zipLocation,unzipLocation);    
     	}
     	
-        itemLML = itemLML.replaceAll("&amp;", "&");
-        itemLML = itemLML.replaceAll(" & ", " &amp; ");
-        itemLML = itemLML.replaceAll("&#x003C;", "&amp;#x003C;");
-        itemLML = itemLML.replaceAll("space#1", "&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#2", "&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#3", "&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#4", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#5", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#6", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#7", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#8", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
-        itemLML = itemLML.replaceAll("space#9", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replace("&amp;", "&");
+        itemLML = itemLML.replace(" & ", " &amp; ");
+        itemLML = itemLML.replace("&#x003C;", "&amp;#x003C;");
+        
+        itemLML = itemLML.replace("space#1", "&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#2", "&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#3", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#4", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#5", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#6", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#7", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#8", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
+        itemLML = itemLML.replace("space#9", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
 
-        //End
-        //getRequest().setAttribute("item", item.getLml());
-        String outLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
-        System.out.println(outLML);
-        getRequest().setAttribute("item", outLML);
+        itemLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
+
+        System.out.println(itemLML);
+        
+        getRequest().setAttribute("item", itemLML);
         item.setLml(origLML);
     }
     
