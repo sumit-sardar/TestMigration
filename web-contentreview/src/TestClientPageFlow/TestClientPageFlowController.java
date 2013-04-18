@@ -433,16 +433,24 @@ public class TestClientPageFlowController extends PageFlowController
         itemLML = itemLML.replace(" & ", " &amp; ");
         itemLML = itemLML.replace("&#x003C;", "&amp;#x003C;");
         
-        itemLML = itemLML.replace("space#1", "&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#2", "&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#3", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#4", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#5", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#6", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#7", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#8", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-        itemLML = itemLML.replace("space#9", "&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;");
-
+        boolean hasSpaceTag = itemLML.indexOf("space#") >= 0;
+        while (hasSpaceTag) {
+        	int start = itemLML.indexOf("space#");
+        	String spaceTagString = itemLML.substring(start, start+10);
+        	
+        	java.util.regex.Pattern intsOnly = java.util.regex.Pattern.compile("\\d+");
+        	java.util.regex.Matcher makeMatch = intsOnly.matcher(spaceTagString);
+        	makeMatch.find();
+        	String input = makeMatch.group();
+        	int spaceCount = Integer.parseInt(input);
+        	String replaceString = "";
+        	for(int i =0;i<spaceCount;i++) {
+        		replaceString = replaceString + "&amp;amp;nbsp;";
+        	}
+        	itemLML.replace("space#" + input, replaceString);
+        	hasSpaceTag = itemLML.indexOf("space#") >= 0;
+        }
+        
         itemLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
 
         System.out.println(itemLML);
