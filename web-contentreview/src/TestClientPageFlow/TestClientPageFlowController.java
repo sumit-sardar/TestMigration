@@ -365,6 +365,7 @@ public class TestClientPageFlowController extends PageFlowController
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
         itemLML = item.getLml();
+        Sring origLML = new String(itemLML);
 
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -427,16 +428,16 @@ public class TestClientPageFlowController extends PageFlowController
     	    System.out.println("Unziplocation-->"+unzipLocation);
             unzip(zipLocation,unzipLocation);    
     	}
+    	
         itemLML = itemLML.replaceAll("&amp;", "&");
         itemLML = itemLML.replaceAll(" & ", " &amp; ");
-        item.setLml(itemLML);
+
         //End
         //getRequest().setAttribute("item", item.getLml());
         String outLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
         System.out.println(outLML);
         getRequest().setAttribute("item", outLML);
-        
-        
+        item.setLml(origLML);
     }
     
     private  void unzip(String zipFolderLocation,String unZipFolderLocation) throws Exception{
