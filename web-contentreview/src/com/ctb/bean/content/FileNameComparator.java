@@ -13,6 +13,7 @@ public class FileNameComparator implements Comparator
         return tab1.compareTo( tab2 );   
     }
     
+    
     public String encodeNumber( String src )
     {
         String result = src;
