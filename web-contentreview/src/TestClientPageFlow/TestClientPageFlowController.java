@@ -365,7 +365,7 @@ public class TestClientPageFlowController extends PageFlowController
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
         itemLML = item.getLml();
-        Sring origLML = new String(itemLML);
+        String origLML = new String(itemLML);
 
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
