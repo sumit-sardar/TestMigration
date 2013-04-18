@@ -433,6 +433,8 @@ public class TestClientPageFlowController extends PageFlowController
         itemLML = itemLML.replace(" & ", " &amp; ");
         itemLML = itemLML.replace("&#x003C;", "&amp;#x003C;");
         
+        itemLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
+        
         boolean hasSpaceTag = itemLML.indexOf("space#") >= 0;
         while (hasSpaceTag) {
         	int start = itemLML.indexOf("space#");
@@ -447,11 +449,9 @@ public class TestClientPageFlowController extends PageFlowController
         	for(int i =0;i<spaceCount;i++) {
         		replaceString = replaceString + "&amp;amp;nbsp;";
         	}
-        	itemLML.replace("space#" + input, replaceString);
+        	itemLML = itemLML.replace("space#" + input, replaceString);
         	hasSpaceTag = itemLML.indexOf("space#") >= 0;
         }
-        
-        itemLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
 
         System.out.println(itemLML);
         
