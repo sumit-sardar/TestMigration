@@ -431,6 +431,16 @@ public class TestClientPageFlowController extends PageFlowController
     	
         itemLML = itemLML.replaceAll("&amp;", "&");
         itemLML = itemLML.replaceAll(" & ", " &amp; ");
+        itemLML = itemLML.replaceAll("&#x003C;", "&amp;#x003C;");
+        itemLML = itemLML.replaceAll("space#1", "&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#2", "&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#3", "&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#4", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#5", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#6", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#7", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#8", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
+        itemLML = itemLML.replaceAll("space#9", "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;");
 
         //End
         //getRequest().setAttribute("item", item.getLml());
