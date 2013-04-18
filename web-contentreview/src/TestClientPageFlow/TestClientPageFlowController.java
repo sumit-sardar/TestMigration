@@ -453,6 +453,9 @@ public class TestClientPageFlowController extends PageFlowController
         	hasSpaceTag = itemLML.indexOf("space#") >= 0;
         }
 
+        System.out.println("\n\n\n***** ORIGINAL *****");
+        System.out.println(origLML);
+        System.out.println("\n\n\n***** SUBBED *****");
         System.out.println(itemLML);
         
         getRequest().setAttribute("item", itemLML);
