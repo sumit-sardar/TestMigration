@@ -435,7 +435,9 @@ public class TestClientPageFlowController extends PageFlowController
         
         itemLML = itemLML.replace("&amp;amp;nbsp;", "&amp;nbsp;");
         
-        boolean hasSpaceTag = itemLML.indexOf("space#") >= 0;
+        itemLML = itemLML.replace("&nbsp;", "&amp;nbsp;");
+        
+        /* boolean hasSpaceTag = itemLML.indexOf("space#") >= 0;
         while (hasSpaceTag) {
         	int start = itemLML.indexOf("space#");
         	String spaceTagString = itemLML.substring(start, start+10);
@@ -451,10 +453,10 @@ public class TestClientPageFlowController extends PageFlowController
         	}
         	itemLML = itemLML.replace("space#" + input, replaceString);
         	hasSpaceTag = itemLML.indexOf("space#") >= 0;
-        }
+        } */
 
-        System.out.println("\n\n\n***** ORIGINAL *****");
-        System.out.println(origLML);
+        //System.out.println("\n\n\n***** ORIGINAL *****");
+        //System.out.println(origLML);
         System.out.println("\n\n\n***** SUBBED *****");
         System.out.println(itemLML);
         
