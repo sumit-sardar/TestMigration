@@ -686,6 +686,8 @@ public class CreateFile {
 			//ps = con.prepareStatement(testRosterSql);
 			ps = con.prepareStatement(modifiedQueryToFetchRosters);
 			ps.setInt(1, customerId);
+			ps.setInt(2, customerId);
+			ps.setInt(3, customerId);
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){
