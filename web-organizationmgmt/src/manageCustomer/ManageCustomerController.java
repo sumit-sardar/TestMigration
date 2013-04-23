@@ -1704,8 +1704,8 @@ public class ManageCustomerController extends PageFlowController
          copied.setSubtestModel(custLicense.getSubtestModel());
          copied.setEmailNotify(custLicense.getEmailNotify());
          
-         if (custLicense.getLicenseAfterLastPurchase() != null) {
-        	 copied.setLicenseQuantity(custLicense.getLicenseAfterLastPurchase().toString());             
+         if (custLicense.getAvailable() != null) {
+        	 copied.setLicenseQuantity(custLicense.getAvailable().toString());             
          }        
          
          copied.setPurchaseDate(DateUtils.formatDateToDateString(custLicense.getLicenseperiodStartdate(), "MM/dd/yy"));
