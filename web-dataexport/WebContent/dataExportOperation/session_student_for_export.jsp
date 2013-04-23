@@ -18,7 +18,8 @@
 					<table id="to_be_export_student_list" class="gridTable"></table>
 					<div id="to_be_export_student_list_pager" class="gridTable"></div>
 					<BR />
-					<input id ="dataExportNextButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="getUnscoredStudentDetails(); return false;"/>
+					<input id ="dataExportNextButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="getUnscoredStudentDetails('false'); return false;"/>
+					<input id ="dataExportBySession" type="button"  class="ui-widget-header" value="Export by Session" onClick="getUnscoredStudentDetails('true'); return false;"/>
 				</div>
 			<BR />
 		</td>
@@ -120,7 +121,7 @@
 					</table>
 			</div>
 			<BR />
-			<input id ="dataExportSubmitButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.submit" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="submitJobDetails(); return false;"/>
+			<input id ="dataExportSubmitButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.submit" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="openConfirmationPopupSubmit(); return false;"/>
 			<div id="submitJobBottom" style="display: none;font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; margin-bottom:5px; padding:2px 2px 2px 10px; color: black;">
 				<lb:label key="data.export.submitJobResult"/>
 			</div>
@@ -133,5 +134,19 @@
 	
 	<!-- Steps 3 ends Here -->
 	</table>
+	<div id="confirmationPopupOnSubmit"	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<lb:label key="data.export.onsubmit.warning.message" />
+		</div>
+	</div>
+	<div style="padding:10px;">	
+		<center>
+			<input type="button"  value="&nbsp;Yes&nbsp;" onclick="submitJobDetails(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="closePopUp('confirmationPopupOnSubmit'); return false;" class="ui-widget-header">
+		</center>
+	</div>	
+	
+</div>
 </div>
 	

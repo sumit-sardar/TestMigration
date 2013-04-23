@@ -146,20 +146,19 @@ public class DataExportSearchUtils {
 	
 	
 	public static ManageTestSessionData getTestSessionsWithUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
-			SortParams sort) {
+			SortParams sort, Integer[] selectedTestSessionIds) {
 
 		ManageTestSessionData mstData = null;
 	        
 	        try {    
-	        	mstData = deManagement.getTestSessionsWithUnexportedStudents(customerId, filter, page, sort);
+	        	mstData = deManagement.getTestSessionsWithUnexportedStudents(customerId, filter, page, sort, selectedTestSessionIds);
 	        }
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();
 	        }        
 	        return mstData;
 	}
-
-
+	
 	public static ManageStudentData getIncompleteRosterUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
 			SortParams sort) {
 

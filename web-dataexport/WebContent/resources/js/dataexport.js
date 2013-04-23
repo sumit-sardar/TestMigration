@@ -19,6 +19,11 @@ var notCompletedStudentCountVal = 0;
 var notTakenStudentCountVal = 0;
 var scheduledStudentCountVal = 0;
 var totalExportedStudentCountVal = 0;
+var testAdminIdsMap = new Map();
+var allSelectedTestAdminIds = {};
+var testSessionLocalData = {};
+var isDataExportBySession = 'false';
+
 
 
 function getStudentList() { 
@@ -79,7 +84,7 @@ function reload_populate_reset_by_session_step3_student_grid(testSessionList){
 		
 	
 function load_populate_to_be_export_student_grid(testSessionList){
-	
+		testSessionLocalData = testSessionList;
 		isGridToBeExportStudentLoaded = true;
 		$("#to_be_export_student_list").jqGrid({
       	  data: testSessionList,         
@@ -113,7 +118,7 @@ function load_populate_to_be_export_student_grid(testSessionList){
 			sortorder: "asc",
 			height: 165,
 			hoverrows: false,
-			
+			multiselect: true,
 			caption: $("#captionToBeExportGrid").val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#to_be_export_student_list').getGridParam("page"));
@@ -125,15 +130,127 @@ function load_populate_to_be_export_student_grid(testSessionList){
 				if(reqestedPage <= minPageSize){
 					$('#to_be_export_student_list').setGridParam({"page": minPageSize});
 				}
+				//$("#dataExportBySession").addClass('ui-state-disabled');
+				//$("#dataExportBySession").attr('disabled','true');
 				
 			},gridComplete: function() {
 				var allRowsInGridPresent = $('#to_be_export_student_list').jqGrid('getDataIDs');
+				var checkedCount = 0;
 				for(var k = 0; k < allRowsInGridPresent.length; k++) {
 					var selectedRowData = $("#to_be_export_student_list").getRowData(allRowsInGridPresent[k]);
-					
+					var testAdminData = testAdminIdsMap.get(selectedRowData.testAdminId);
+					if(testAdminData == null && testAdminData == undefined){
+						$("#"+allRowsInGridPresent[k]+" td input").attr("checked", false);
+						//$("#"+allRowsInGridPresent[k]).trigger('click');
+						//$("#"+allRowsInGridPresent[k]+" td input").attr("checked", true);											
+					}
+					else{						
+						$("#"+allRowsInGridPresent[k]+" td input").attr("checked", true);
+						$("#"+allRowsInGridPresent[k]).trigger('click');
+						$("#"+allRowsInGridPresent[k]+" td input").attr("checked", true);
+						checkedCount++;	
+					}		
 				}
-			},onSelectRow: function (rowId) {
-				$("#"+rowId).removeClass('ui-state-highlight');
+				/*if(checkedCount == allRowsInGridPresent.length){
+					$("#cb_to_be_export_student_list").attr("checked", true);
+					$("#cb_to_be_export_student_list").trigger('click');
+					$("#cb_to_be_export_student_list").attr("checked", true);
+				}*/
+				if(testAdminIdsMap.count == testSessionLocalData.length){
+					$("#cb_to_be_export_student_list").attr("checked", true);
+					$("#cb_to_be_export_student_list").trigger('click');
+					$("#cb_to_be_export_student_list").attr("checked", true);
+				}
+				/*else{
+					$("#cb_to_be_export_student_list").attr("checked", false);
+					$("#cb_to_be_export_student_list").trigger('click');
+					$("#cb_to_be_export_student_list").attr("checked", false);
+				}*/
+				if(testAdminIdsMap.count > 0){
+					$("#dataExportBySession").removeClass('ui-state-disabled');
+					$('#dataExportBySession').removeAttr('disabled');
+					$("#dataExportNextButton").addClass('ui-state-disabled');
+					$("#dataExportNextButton").attr('disabled','true');
+				}else{
+					$("#dataExportBySession").addClass('ui-state-disabled');
+					$("#dataExportBySession").attr('disabled','true');
+					$("#dataExportNextButton").removeClass('ui-state-disabled');
+					$('#dataExportNextButton').removeAttr('disabled');
+				}
+			},onSelectRow: function (rowId, status, e) {
+				//$("#"+rowId).removeClass('ui-state-highlight');				
+				var selectedRowId = rowId;
+				var selectedRowData = $("#to_be_export_student_list").getRowData(selectedRowId);
+				var testAdminData = testAdminIdsMap.get(selectedRowData.testAdminId);
+				if(status){
+					//allSelectedTestAdminIds[selectedRowData.testAdminId] = selectedRowData.testAdminId;
+					if(testAdminData == null && testAdminData == undefined)
+						testAdminIdsMap.put(selectedRowData.testAdminId, selectedRowData);
+				}else{
+					//delete allSelectedTestAdminIds[selectedRowData.testAdminId];
+					if(testAdminData != null && testAdminData != undefined)
+						testAdminIdsMap.remove(selectedRowData.testAdminId);
+				}
+				if(testAdminIdsMap.count == testSessionLocalData.length){
+					$("#cb_to_be_export_student_list").attr("checked", true);
+					//$("#cb_to_be_export_student_list").trigger('click');
+					//$("#cb_to_be_export_student_list").attr("checked", true);
+				}else{					
+					$("#cb_to_be_export_student_list").attr("checked", false);
+				}
+				if(testAdminIdsMap.count > 0){
+					$("#dataExportBySession").removeClass('ui-state-disabled');
+					$('#dataExportBySession').removeAttr('disabled');
+					$("#dataExportNextButton").addClass('ui-state-disabled');
+					$("#dataExportNextButton").attr('disabled','true');
+				}else{
+					$("#dataExportBySession").addClass('ui-state-disabled');
+					$("#dataExportBySession").attr('disabled','true');
+					$("#dataExportNextButton").removeClass('ui-state-disabled');
+					$('#dataExportNextButton').removeAttr('disabled');
+				}
+									
+									
+			},onSortCol : function(index, columnIndex, sortOrder) { 
+				//isSortingEvent = true;
+			},onSelectAll: function (aRowids, status) {
+				/*var allRowsInGrid = $('#to_be_export_student_list').jqGrid('getDataIDs');
+				for(var i = 0; i < allRowsInGrid.length; i++){
+					var selectedRowData = $("#to_be_export_student_list").getRowData(allRowsInGrid[i]);
+					var testAdminData = testAdminIdsMap.get(selectedRowData.testAdminId);
+					if(status){
+						if(testAdminData == null && testAdminData == undefined)
+							testAdminIdsMap.put(selectedRowData.testAdminId, selectedRowData);
+					}
+					else{
+						if(testAdminData != null && testAdminData != undefined)
+							testAdminIdsMap.remove(selectedRowData.testAdminId);
+					}
+				}*/
+				for(var i = 0; i < testSessionLocalData.length; i++){
+					var selectedRowData = testSessionLocalData[i];
+					var testAdminData = testAdminIdsMap.get(selectedRowData.testAdminId);
+					if(status){
+						//allSelectedTestAdminIds[selectedRowData.testAdminId] = selectedRowData.testAdminId;
+						$("#dataExportBySession").removeClass('ui-state-disabled');
+						$('#dataExportBySession').removeAttr('disabled');
+						$("#dataExportNextButton").addClass('ui-state-disabled');
+						$("#dataExportNextButton").attr('disabled','true');
+						if(testAdminData == null && testAdminData == undefined)
+							testAdminIdsMap.put(selectedRowData.testAdminId, selectedRowData);
+					}
+					else{
+						//delete allSelectedTestAdminIds[selectedRowData.testAdminId];
+						$("#dataExportBySession").addClass('ui-state-disabled');
+						$("#dataExportBySession").attr('disabled','true');
+						$("#dataExportNextButton").removeClass('ui-state-disabled');
+						$('#dataExportNextButton').removeAttr('disabled');
+						if(testAdminData != null && testAdminData != undefined)
+							testAdminIdsMap.remove(selectedRowData.testAdminId);
+					}
+				}
+					
+							
 			},loadComplete: function () {
 				if ($('#to_be_export_student_list').getGridParam('records') === 0) {
             		$('#sp_1_to_be_export_student_list_pager').text("1");
@@ -146,7 +263,17 @@ function load_populate_to_be_export_student_grid(testSessionList){
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				
+				if(testAdminIdsMap.count > 0){
+					$("#dataExportBySession").removeClass('ui-state-disabled');
+					$('#dataExportBySession').removeAttr('disabled');
+					$("#dataExportNextButton").addClass('ui-state-disabled');
+					$("#dataExportNextButton").attr('disabled','true');
+				}else{
+					$("#dataExportBySession").addClass('ui-state-disabled');
+					$("#dataExportBySession").attr('disabled','true');
+					$("#dataExportNextButton").removeClass('ui-state-disabled');
+					$('#dataExportNextButton').removeAttr('disabled');
+				}
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -157,8 +284,26 @@ function load_populate_to_be_export_student_grid(testSessionList){
 	
 	}
 
-function getUnscoredStudentDetails() {
+function getUnscoredStudentDetails(isDataExportForSelectedSessions) {
 	var postDataObject = {};
+	var selectedTestSessionIds = '';		
+	if(isDataExportForSelectedSessions == 'true'){
+		isDataExportBySession = 'true';
+		for (var i = 0; i < testSessionLocalData.length; i++){
+				var selectedRowData = testSessionLocalData[i];
+				var testAdminData = testAdminIdsMap.get(selectedRowData.testAdminId);
+				if(testAdminData != null && testAdminData != undefined){
+					tempTestAdminId = selectedRowData.testAdminId + ',';
+					selectedTestSessionIds = selectedTestSessionIds + tempTestAdminId;
+				}	
+		}
+		selectedTestSessionIds = selectedTestSessionIds.substr(0,selectedTestSessionIds.length -1);
+		postDataObject.selectedTestSessionIds = selectedTestSessionIds; // need to set the selectedTestSessionIds here
+	}	
+	else{
+		isDataExportBySession = 'false';
+		postDataObject.selectedTestSessionIds = '';
+	}	
 	$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -179,13 +324,21 @@ function getUnscoredStudentDetails() {
 									$("#data_export_step2").show();
 									$("#data_export_step3").hide();
 									window.scroll(0,100000);
-								} else { 
-									$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
-									$("#scheduledStudent").text(scheduledStudentCountVal);
-									$("#notTakenStudent").text(notTakenStudentCountVal);
-									$("#notCompleteStudent").text(notCompletedStudentCountVal);
+								} else {
+									if(isDataExportForSelectedSessions == 'true'){ 
+										$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
+										$("#scheduledStudent").text(data.scheduledStudentCount);
+										$("#notTakenStudent").text(data.notTakenStudentCount);
+										$("#notCompleteStudent").text(data.notCompletedStudentCount);
+									}else{										
+										$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
+										$("#scheduledStudent").text(scheduledStudentCountVal);
+										$("#notTakenStudent").text(notTakenStudentCountVal);
+										$("#notCompleteStudent").text(notCompletedStudentCountVal);
+									}
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
+									$('#dataExportSubmitButton').show();
 									if(data.studentBeingExportCount != undefined && parseInt(data.studentBeingExportCount) > 0) {
 										$("#dataExportSubmitButton").removeClass('ui-state-disabled');
 										$("#dataExportSubmitButton").removeAttr('disabled');
@@ -198,10 +351,17 @@ function getUnscoredStudentDetails() {
 							}
 							else {
 								//showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportUnscoredStudentSearchResultEmpty").val());
-									$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
-									$("#scheduledStudent").text(scheduledStudentCountVal);
-									$("#notTakenStudent").text(notTakenStudentCountVal);
-									$("#notCompleteStudent").text(notCompletedStudentCountVal);
+									if(isDataExportForSelectedSessions == 'true'){ 
+										$("#studentBeingExptdStep3").text(data.studentBeingExportCount);
+										$("#scheduledStudent").text(data.scheduledStudentCount);
+										$("#notTakenStudent").text(data.notTakenStudentCount);
+										$("#notCompleteStudent").text(data.notCompletedStudentCount);
+									}else{										
+										$("#studentBeingExptdStep3").text(totalExportedStudentCountVal);
+										$("#scheduledStudent").text(scheduledStudentCountVal);
+										$("#notTakenStudent").text(notTakenStudentCountVal);
+										$("#notCompleteStudent").text(notCompletedStudentCountVal);
+									}
 									$("#data_export_step3").show();
 									$("#data_export_step2").hide();
 									$('#dataExportSubmitButton').show();
@@ -213,6 +373,12 @@ function getUnscoredStudentDetails() {
 									$("#dataExportSubmitButton").attr('disabled','true');
 									window.scroll(0,100000);
 							}
+							//reseting dataExportSummaryLbl div
+							$("#jobId").text('');
+							$('#jobIdDisplay').hide();
+							$('#dataExportViewButton').hide();
+							$('#submitJobTop').hide();
+							$('#submitJobBottom').hide();
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  
@@ -570,6 +736,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 	}
 
  function submitJobDetails(){
+ 		closePopUp('confirmationPopupOnSubmit')
  		var postDataObject = {};
 		$.ajax({
 			async:		true,
@@ -596,8 +763,10 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 							$.unblockUI();  
 							window.location.href="error.do";
 						},
-			complete :  function(){
+			complete :  function(XMLHttpRequest, textStatus){
 							 $.unblockUI();  
+							 if(textStatus == "success")
+							 	refreshStudentList();
 						}
  });
  }
@@ -1031,7 +1200,8 @@ function processScore(element){
 	}
 	
 	if (dailogId == 'studentScoringId') {
-		getUnscoredStudentDetails(); // Currently if the scoring popup is closed, grid reload function will be called and it will be a server side call
+		// need to reset the selectedTestSessionIds here
+		getUnscoredStudentDetails(); // Currently if the scoring popup is closed, grid reload function will be called and it will be a server side call		
 	}
 	
 	$("#"+dailogId).dialog("close");
@@ -1291,3 +1461,62 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 	function hideMessage(){
 		clearMessage();
 	}
+	
+	function openConfirmationPopupSubmit(){
+		if(isDataExportBySession == 'true'){
+			$("#confirmationPopupOnSubmit").dialog({  
+					title:$("#onSubmitConfirmID").val(),  
+				 	resizable:false,
+				 	autoOpen: true,
+				 	width: '400px',
+				 	modal: true,
+				 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+					});	
+			 $("#confirmationPopupOnSubmit").css('height',130);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#confirmationPopupOnSubmit").parent().css("top",toppos);
+			 $("#confirmationPopupOnSubmit").parent().css("left",leftpos);	
+		}else{
+			submitJobDetails();
+		}		 
+	}
+	
+	function refreshStudentList() { 
+		var postDataObject = {};		
+		
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'getStudentForExport.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		 postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+							if(data.testSessionList.length>0){							
+								//populate_to_be_export_student_grid(data.testSessionList);
+								reload_populate_reset_by_session_step3_student_grid(data.testSessionList);
+								//$('#data_export_step1').show();
+								notCompletedStudentCountVal = data.notCompletedStudentCount;
+								notTakenStudentCountVal = data.notTakenStudentCount;
+								scheduledStudentCountVal = data.scheduledStudentCount;
+								totalExportedStudentCountVal = data.studentBeingExportCount;
+							} else {
+								showHideMessage(true,$("#dataExportSearchResultTitle").val(),$("#exportStudentTestSessionSearchResultEmpty").val());
+								//$('#data_export_step1').hide();
+							}
+							
+							
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();  
+							window.location.href="error.do";
+						},
+			complete :  function(){
+							 $.unblockUI();  
+						}
+		});
+}

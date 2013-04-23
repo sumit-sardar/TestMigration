@@ -5,6 +5,8 @@
 function Map() {
     this.items = {};
     this.count = 0;
+    this.keys = [];
+    this.isDurty = true;
 }
 
 Map.prototype.get = function(key) {
@@ -29,6 +31,17 @@ Map.prototype.put = function(key, value) {
 		this._addItem(new map(key, value));
 		}
     this._addItem(new map(key, value));
+    this.isDurty = true;
+};
+
+Map.prototype.remove = function(key) {
+	 if(this.get(key) !=null) {
+	  	this._removeItem(key);
+	  	this.isDurty = true;
+	  	return true;
+	 } else {
+	   return false;
+	 }
 };
 
 Map.prototype.length = function() {

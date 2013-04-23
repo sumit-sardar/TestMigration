@@ -562,7 +562,7 @@ public class DataExportOperationController extends PageFlowController {
 			Date date = new Date();  
 		        System.out.println(dateFormat.format(date));  
 			
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement,customerId,null,null,null);
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null);
 			Date date1 = new Date();  
 	        System.out.println(dateFormat.format(date1));  
 			if ((mtsData != null)) {
@@ -631,9 +631,41 @@ public class DataExportOperationController extends PageFlowController {
 		List<ManageStudent> studentList=new ArrayList<ManageStudent>();
 		DataExportVO vo = new DataExportVO();
 		System.out.println("......"+this.toBeExportedRosterList);
+		/* LAS Online 2013 - 008 - eMetric export - Allow users to select test sessions*/
+		ManageTestSessionData mtsData = null;
+		//List<Integer> selectedTestSessionIds = new ArrayList<Integer>();
+		List<Integer> rosterListForSelectedSessions = null;
+		Integer totalExportedStudentCount = null;
+		String [] selectedTestSessionIdArr = null;
+		Integer [] selectedTestSessionIds = null;
+		String selectedTestSessionIdStr = (String) getRequest().getParameter("selectedTestSessionIds");
+		if(selectedTestSessionIdStr != null && !selectedTestSessionIdStr.equalsIgnoreCase("")){			
+			selectedTestSessionIdArr =  selectedTestSessionIdStr.split(",");
+			selectedTestSessionIds  = new Integer[selectedTestSessionIdArr.length];
+			for (int i = 0; i < selectedTestSessionIdArr.length; i++) {
+				selectedTestSessionIds[i] = Integer.parseInt(selectedTestSessionIdArr[i]);
+				System.out.println(selectedTestSessionIdArr[i]);
+			}
+		}
 		try {
-			
-			msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(this.toBeExportedRosterList,this.dataexportManagement, customerId, null, null, null);
+			if(selectedTestSessionIds != null && selectedTestSessionIds.length > 0){
+				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds);
+				if (mtsData != null) {
+					if( (mtsData.getFilteredCount().intValue() > 0)) {
+						//List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
+						rosterListForSelectedSessions = mtsData.getToBeExportedStudentRosterList();
+						totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
+					}
+					vo.setNotCompletedStudentCount(mtsData.getNotCompletedStudentCount());
+					vo.setNotTakenStudentCount(mtsData.getNotTakenStudentCount());
+					vo.setScheduledStudentCount(mtsData.getScheduledStudentCount());
+					vo.setStudentBeingExportCount(mtsData.getTotalExportedStudentCount());
+				}
+			}else{
+				rosterListForSelectedSessions = this.toBeExportedRosterList;
+				totalExportedStudentCount = this.totalExportedStudentCount;
+			}
+			msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(rosterListForSelectedSessions,this.dataexportManagement, customerId, null, null, null);
 			if (msData != null && (msData.getFilteredCount() !=null && msData.getFilteredCount().intValue() > 0)) {
 				studentList = DataExportSearchUtils.buildExportStudentList(msData);
 				for (int index = 0; index <studentList.size(); index++ ){
@@ -642,7 +674,7 @@ public class DataExportOperationController extends PageFlowController {
 				}
 				vo.setUnscoredStudentCount(msData.getTotalCount());
 			}
-			vo.setStudentBeingExportCount(this.totalExportedStudentCount);
+			vo.setStudentBeingExportCount(totalExportedStudentCount);
 			vo.setStudentList(studentList);
 			
 		
@@ -1270,6 +1302,8 @@ public Forward rescoreStudent() {
     	boolean isGACustomer = false;
     	boolean hasLicenseConfigured = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
+    	boolean hasDataExportVisibilityConfig = false;
+    	Integer dataExportVisibilityLevel = 1;
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
     	boolean hasUploadDownloadConfig = false;
@@ -1299,6 +1333,12 @@ public Forward rescoreStudent() {
 	        		cc.getDefaultValue().equals("T")	) {
 				hasLicenseConfigured = true;
 	        }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Data_Export_Visibility")) {
+				hasDataExportVisibilityConfig = true;
+				dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
+				continue;
+            }
+            
 			// For Upload Download
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
 					&& cc.getDefaultValue().equals("T")) {
@@ -1360,11 +1400,22 @@ public Forward rescoreStudent() {
      
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		
-		this.getSession().setAttribute("hasDataExportConfigured", new Boolean(laslinkCustomer)); // add for Data Export
+		//this.getSession().setAttribute("hasDataExportConfigured", new Boolean(laslinkCustomer)); // add for Data Export
+		this.getSession().setAttribute("hasDataExportConfigured", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 		
 	}
+	
+	private boolean checkUserLevel(Integer defaultVisibilityLevel){
+			boolean isUserLevelMatched = false;
+			try {
+				isUserLevelMatched = orgnode.matchUserLevelWithDefault(this.userName, defaultVisibilityLevel);	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return isUserLevelMatched;
+		}
 	
 	private boolean isTopLevelUser(){
 		boolean isUserTopLevel = false;

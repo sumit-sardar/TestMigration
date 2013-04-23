@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
@@ -28,6 +29,7 @@ import com.ctb.exception.dataExportManagement.StudentDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.DateUtils;
+import com.ctb.util.SQLutils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 /**
  * @author John_Wang
@@ -362,10 +364,13 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	}
 
 	@Override
-	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort) throws CTBBusinessException{
+	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds) throws CTBBusinessException{
 		
 		ManageTestSessionData mtsd = new ManageTestSessionData();
 		ManageTestSession[] testSessions = null;
+		ManageTestSession[] tempTestSessions = null;
+		List<ManageTestSession[]> testSessionsObjList = new ArrayList<ManageTestSession[]>();
+		List<ManageTestSession> consolidatedTestSessions = new ArrayList<ManageTestSession>();
 		Integer toBeExportedValue = new Integer(0);
 		Integer completeValue = new Integer(0); 
 		Integer notTakenValue = new Integer(0);
@@ -384,13 +389,50 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		Boolean hasCompleteValue = false;
 	    Hashtable rostersToIndexHash = null;
 	    Hashtable rosterIdTorosterId = null;
+	    int inClauselimit = 999;		
 	    
 		if(page != null) {
 			pageSize = new Integer(page.getPageSize());
 		}
         
        try {
-        	testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
+    	   	   if(selectedTestSessionIds != null ){	
+		    	   int loopCounters = selectedTestSessionIds.length / inClauselimit;
+		   		   if((selectedTestSessionIds.length % inClauselimit) > 0){
+		   			   loopCounters = loopCounters + 1;
+		   		   }
+		   		   
+		    	   for(int counter=0; counter<loopCounters; counter++){
+			   			Integer[] newSelectedSessionId = null;
+			   			String inputSessionIds = "";
+			   			if((counter+1)!=loopCounters){
+			   				newSelectedSessionId = new Integer [inClauselimit];
+			   				System.arraycopy(selectedTestSessionIds, (counter*inClauselimit) , newSelectedSessionId, 0, inClauselimit);
+			   			} else {
+			   				int count = selectedTestSessionIds.length % inClauselimit;
+			   				newSelectedSessionId = new Integer [count];
+			   				System.arraycopy(selectedTestSessionIds, ((loopCounters-1)*inClauselimit) , newSelectedSessionId, 0, count);
+			   			}
+			   			inputSessionIds = SQLutils.generateSQLCriteria("TADMIN.TEST_ADMIN_ID IN ",newSelectedSessionId);			   		
+		   				
+			   			tempTestSessions = dataExportManagement.getSelectedTestSessionDetails(customerId, inputSessionIds);
+			   			testSessionsObjList.add(tempTestSessions);
+		   		  }
+		    	   
+		    	  for (int i = 0; i < testSessionsObjList.size(); i++) {
+		    		  ManageTestSession [] tempTestSessionArray = testSessionsObjList.get(i);
+		    		  for (int j = 0; j < tempTestSessionArray.length; j++) {
+		    			  consolidatedTestSessions.add(tempTestSessionArray[j]); 
+					  }
+				  }
+		    	  testSessions = new ManageTestSession[consolidatedTestSessions.size()];
+		    	  for (int i = 0; i < consolidatedTestSessions.size(); i++) {
+					testSessions[i] = consolidatedTestSessions.get(i);					
+				  }	
+		    	   
+    	   	} else{
+    	   		testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
+    	   	}
         	
 			for (int i = 0; i <testSessions.length; i++ ){
 				TestAdminStatusComputer.adjustSessionTimesToLocalTimeZoneForExport(testSessions[i]);

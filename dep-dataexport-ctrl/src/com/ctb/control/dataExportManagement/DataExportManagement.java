@@ -81,8 +81,8 @@ public interface DataExportManagement
 	ManageJobData getDataExportJobStatus(Integer userId, FilterParams filter, PageParams page, SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
 	
-	ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page, SortParams sort) throws com.ctb.exception.CTBBusinessException;
-    
+	ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page, SortParams sort, Integer[] selectedTestSessionIds) throws com.ctb.exception.CTBBusinessException;
+	   
 	Integer getSubmitJobIdAndStartExport(Integer userId, Integer studentCount) throws com.ctb.exception.CTBBusinessException;
 	 
 	//End - LLO- 118 - Change for Ematrix UI
