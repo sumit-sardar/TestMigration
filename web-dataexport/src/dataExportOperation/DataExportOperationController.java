@@ -1011,7 +1011,7 @@ public Forward rescoreStudent() {
 		Integer userId = user.getUserId();		
 		Integer studentCount = null;
 		List<Integer> finalExportedRosterList = null;
-	   if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession == "true"){
+	   if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession.equalsIgnoreCase("true")){
 		   studentCount = this.toBeExportedRosterListForSessions.size();
 		   finalExportedRosterList = this.toBeExportedRosterListForSessions;
 	   }	   
