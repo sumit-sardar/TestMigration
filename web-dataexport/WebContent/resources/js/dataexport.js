@@ -1201,7 +1201,10 @@ function processScore(element){
 	
 	if (dailogId == 'studentScoringId') {
 		// need to reset the selectedTestSessionIds here
-		getUnscoredStudentDetails(); // Currently if the scoring popup is closed, grid reload function will be called and it will be a server side call		
+		if(isDataExportBySession == 'true')
+			getUnscoredStudentDetails('true'); // Currently if the scoring popup is closed, grid reload function will be called and it will be a server side call
+		else	
+			getUnscoredStudentDetails('false');		
 	}
 	
 	$("#"+dailogId).dialog("close");
