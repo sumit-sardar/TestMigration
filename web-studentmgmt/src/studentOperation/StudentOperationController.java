@@ -2882,6 +2882,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean laslinkCustomer = false;
     	boolean hasLockHierarchyEdit = false;
     	String hierarchyLockLevel = "-1";
+    	boolean hasDataExportVisibilityConfig = false;
+    	Integer dataExportVisibilityLevel = 1;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -2988,6 +2990,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					this.hasBioUneditable = true;
 					continue;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Data_Export_Visibility")) {
+					hasDataExportVisibilityConfig = true;
+					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
+					continue;
+	            }
 			}
 			
 		}
@@ -3024,7 +3031,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		//System.out.println(laslinkCustomer);
-     	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+     	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
      	this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		
      	//show Account file download link      	
@@ -3035,7 +3043,17 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	//Disable student bio if exported once from a org
      	this.getSession().setAttribute("hasBioUneditable", this.hasBioUneditable);
 
-}
+	}
+	
+	private boolean checkUserLevel(Integer defaultVisibilityLevel){
+		boolean isUserLevelMatched = false;
+		try {
+			isUserLevelMatched = orgnode.matchUserLevelWithDefault(this.userName, defaultVisibilityLevel);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserLevelMatched;
+	}
 
 	private boolean isAdminCoordinatotUser() //For Student Registration
 	{               

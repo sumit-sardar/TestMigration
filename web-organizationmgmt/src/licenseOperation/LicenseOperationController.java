@@ -1076,6 +1076,9 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
     	boolean hasUploadDownloadConfig = false;
+    	boolean hasDataExportVisibilityConfig = false;
+    	Integer dataExportVisibilityLevel = 1; 
+    	
         
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
@@ -1136,7 +1139,12 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 					&& cc.getDefaultValue().equals("T")) {
 				hasUploadDownloadConfig = true;
 				continue;
-            }			
+            }	
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Data_Export_Visibility")) {
+				hasDataExportVisibilityConfig = true;
+				dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
+				continue;
+            }
 		}       
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -1152,9 +1160,20 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
-		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+	}
+	
+	private boolean checkUserLevel(Integer defaultVisibilityLevel){
+		boolean isUserLevelMatched = false;
+		try {
+			isUserLevelMatched = orgnode.matchUserLevelWithDefault(this.userName, defaultVisibilityLevel);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserLevelMatched;
 	}
 	
 	private boolean isTopLevelUser(){

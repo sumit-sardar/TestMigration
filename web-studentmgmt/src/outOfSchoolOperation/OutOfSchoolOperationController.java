@@ -431,6 +431,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean isGACustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean laslinkCustomer = false;
+    	boolean hasDataExportVisibilityConfig = false;
+    	Integer dataExportVisibilityLevel = 1;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -516,6 +518,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            	laslinkCustomer = true;
 	            	continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Data_Export_Visibility")) {
+					hasDataExportVisibilityConfig = true;
+					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
+					continue;
+	            }
 			}
 			
 		}
@@ -546,12 +553,23 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		System.out.println(laslinkCustomer);
-     	this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+     	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 }
+	
+	private boolean checkUserLevel(Integer defaultVisibilityLevel){
+		boolean isUserLevelMatched = false;
+		try {
+			isUserLevelMatched = orgnode.matchUserLevelWithDefault(this.userName, defaultVisibilityLevel);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return isUserLevelMatched;
+	}
 
-private boolean isTopLevelUser(){	
+	private boolean isTopLevelUser(){	
 		boolean isUserTopLevel = false;
 		try {
 			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
