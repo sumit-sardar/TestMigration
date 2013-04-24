@@ -212,6 +212,7 @@ public class LASLicenseNode implements java.io.Serializable
          copied.setOrderIndex(this.orderIndex);
          copied.setOrderNumber(this.orderNumber);
          copied.setPurchaseOrder(this.purchaseOrder);
+         copied.setBalanceLicense(this.balanceLicense);
          
         return copied;       
     }

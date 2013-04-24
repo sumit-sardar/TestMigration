@@ -112,4 +112,6 @@ public interface Licensing
     int getTopNodeId(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
     
     com.ctb.bean.testAdmin.CustomerLicense getTopOrgnodeLicenseDetails(java.lang.Integer orgNodeId, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
+    
+    boolean addEditOrgnodeOrderLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
 } 

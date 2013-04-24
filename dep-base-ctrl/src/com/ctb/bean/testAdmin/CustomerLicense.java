@@ -28,6 +28,7 @@ public class CustomerLicense extends CTBBean
     private String purchaseOrder = null;
 	private Integer orderIndex = null;
 	private Integer orgNodeId = null;
+	private Integer balanceLicense = null;
 
 
     //changes for LM12
@@ -231,5 +232,13 @@ public class CustomerLicense extends CTBBean
 		this.orgNodeId = orgNodeId;
 	}
 
+	public Integer getBalanceLicense() {
+		return balanceLicense;
+	}
+
+	public void setBalanceLicense(Integer balanceLicense) {
+		this.balanceLicense = balanceLicense;
+	}
+	
 
 } 

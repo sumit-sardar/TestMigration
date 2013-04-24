@@ -394,5 +394,20 @@ public interface License extends JdbcControl
      
      @JdbcControl.SQL(statement = "select customer_id AS customerId, product_id  AS productId, org_node_id   AS orgNodeId, available, consumed as consumedLicense ,reserved  as reservedLicense, email_notify_flag AS emailNotify, subtest_model  AS subtestModel, license_after_last_purchase AS licenseAfterLastPurchase  from customer_orgnode_license where org_node_id = {orgNodeId} and product_id= {productId}")
      CustomerLicense getTopOrgnodeLicenseDetails(Integer orgNodeId,Integer productId) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "select order_index from customer_product_license where customer_id = {customerLicense.customerId} and product_id = {customerLicense.productId} and order_number = {customerLicense.orderNumber} order by order_index desc")
+     Integer getOrderIndexDetails(CustomerLicense customerLicense) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "select available from orgnode_order_license where org_node_id = {customerLicense.orgNodeId} and order_index = {customerLicense.orderIndex}")
+     Integer getOrgOrderLicenseDetails(CustomerLicense customerLicense) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "INSERT INTO ORGNODE_ORDER_LICENSE(ORG_NODE_ID, ORDER_INDEX, AVAILABLE ) VALUES ({customerLicense.orgNodeId}, {customerLicense.orderIndex}, {customerLicense.available})")
+     void addOrgnodeOrderLicense(CustomerLicense customerLicense) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "UPDATE ORGNODE_ORDER_LICENSE SET available = {customerLicense.available} where org_node_id = {customerLicense.orgNodeId} and order_index = {customerLicense.orderIndex}")
+     void updateOrgnodeOrderLicense (CustomerLicense customerLicense) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "select available from orgnode_order_license where org_node_id = {customerLicense.orgNodeId} and order_index = {customerLicense.orderIndex}")
+     Integer getAvailableOrgOrderLicense (CustomerLicense customerLicense) throws SQLException;
 }
 

@@ -147,22 +147,27 @@
     </netui-data:repeaterHeader>
     
     <netui-data:repeaterItem>
-    
+    <netui-data:getData resultId="itemIndex" value="${container.item.orderIndex}" />
+	<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
+<% 	String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
+   	Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
+  	String expiryDateIndex = "expiryDate" + itemIndex.toString();
+%>
         <td class="sortable alignLeft">
               <netui:span value="${container.item.orderNumber}" defaultValue="&nbsp;"/>
          </td>    
         <td class="sortable alignLeft">
-            <netui:textBox tagId="orderNumber" dataSource="container.item.licenseQuantity" maxlength="9" style="width:100px" onKeyPress="return constrainNumericChar(event);" />
+<%if (expiryStatus.equals("Expired")) {%>
+			  <netui:textBox tagId="orderNumber" dataSource="container.item.licenseQuantity" maxlength="9" style="width:100px" onKeyPress="return constrainNumericChar(event);" disabled="true"/>
+<%} else { %>
+			  <netui:textBox tagId="orderNumber" dataSource="container.item.licenseQuantity" maxlength="9" style="width:100px" onKeyPress="return constrainNumericChar(event);"/>
+<% } %>
          </td>    
         <td class="sortable alignLeft">
               <netui:span value="${container.item.purchaseDate}" defaultValue="&nbsp;"/>
          </td>   
           
-<netui-data:getData resultId="itemIndex" value="${container.item.orderIndex}" />
-<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
-<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
-   Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
-   String expiryDateIndex = "expiryDate" + itemIndex.toString();	
+<%	
    if (expiryStatus.equals("Expired")) {	 
 %>
     <td class="sortableRed alignLeft">

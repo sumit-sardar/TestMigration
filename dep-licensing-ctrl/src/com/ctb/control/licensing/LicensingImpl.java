@@ -621,7 +621,7 @@ public class LicensingImpl implements Licensing
    public CustomerLicense getTopOrgnodeLicenseDetails(Integer orgNodeId, Integer productId) throws CTBBusinessException {
 	   try {   
 		     CustomerLicense customerLicense  = null;
-		     customerLicense = license.getTopOrgnodeLicenseDetails(orgNodeId, productId);  
+		     customerLicense = this.license.getTopOrgnodeLicenseDetails(orgNodeId, productId);  
 		  
 		    return customerLicense;  
 		              
@@ -633,6 +633,42 @@ public class LicensingImpl implements Licensing
 		    throw lde;
 		    
 		}
+   }
+   
+   public boolean addEditOrgnodeOrderLicense (CustomerLicense customerLicense)throws CTBBusinessException {
+	   
+	   Integer orderIndexId = null;
+	   Integer orgOrderLicense = null;
+	   Integer availableOrgOrderLicense = null;
+	   boolean result = false;
+	   
+	   try {
+		   orderIndexId = this.license.getOrderIndexDetails(customerLicense);
+		   customerLicense.setOrderIndex(orderIndexId);
+		   orgOrderLicense = this.license.getOrgOrderLicenseDetails(customerLicense);
+		   if (orderIndexId != null) {
+			   if (orgOrderLicense == null) {
+				   this.license.addOrgnodeOrderLicense(customerLicense);
+				   result = true;
+			   }	
+			   else {
+				   	availableOrgOrderLicense = this.license.getAvailableOrgOrderLicense(customerLicense);
+				   	if(availableOrgOrderLicense != null)
+				   		availableOrgOrderLicense = availableOrgOrderLicense + customerLicense.getBalanceLicense();
+				   	customerLicense.setAvailable(availableOrgOrderLicense);
+				   	this.license.updateOrgnodeOrderLicense(customerLicense);
+				    result = true;
+			   }
+		   }
+		   else 
+			   result = false;
+		   
+	   } catch (SQLException se) {
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.addEditOrgnodeOrderLicense");
+           throw lce;
+        }
+        return result ; 
    }
 } 
   

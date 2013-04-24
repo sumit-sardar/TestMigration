@@ -1588,7 +1588,8 @@ public class ManageCustomerController extends PageFlowController
         	paramStr = "{requestScope.licenses[" + i + "].licenseQuantity}";    
         	if (paramStr == null) paramStr = "";
         	paramValue = (String)this.getRequest().getParameter(paramStr);
-        	
+        	if (paramValue == null && "Expired".equals(node.getExpiryStatus()))
+        		paramValue = node.getLicenseQuantity();
         	if (! LicenseFormUtils.isValidNumber(paramValue)) {
                 setLASLicenseNodeToForm(form, customerId);
                 String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddUpdateError");
@@ -1704,8 +1705,8 @@ public class ManageCustomerController extends PageFlowController
          copied.setSubtestModel(custLicense.getSubtestModel());
          copied.setEmailNotify(custLicense.getEmailNotify());
          
-         if (custLicense.getAvailable() != null) {
-        	 copied.setLicenseQuantity(custLicense.getAvailable().toString());             
+         if (custLicense.getLicenseAfterLastPurchase() != null) {
+        	 copied.setLicenseQuantity(custLicense.getLicenseAfterLastPurchase().toString());             
          }        
          
          copied.setPurchaseDate(DateUtils.formatDateToDateString(custLicense.getLicenseperiodStartdate(), "MM/dd/yy"));
@@ -1785,23 +1786,31 @@ public class ManageCustomerController extends PageFlowController
     {
     	CustomerLicense orgNodeLicenseData=null;
     	boolean result = false;
+    	boolean orgNodeLic = false;
+    	boolean orgOrderLic = false;
     	try {
     	
 	   	orgNodeLicenseData = this.topNodeLicenseDetail;
     	if (orgNodeLicenseData!= null) {
+    		CustomerLicense orgOrderDetail = licenseNode.makeCopy();
+    		orgOrderDetail.setOrgNodeId(orgNodeId);
+    		orgOrderLic = addEditOrderLicense(orgOrderDetail);
     		Integer availableLicense = Integer.valueOf(orgNodeLicenseData.getAvailable())+ (Integer.valueOf(licenseNode.getBalanceLicense()));
     		Integer licenseAfterLastPurchase = Integer.valueOf(orgNodeLicenseData.getLicenseAfterLastPurchase())+ Integer.valueOf(licenseNode.getBalanceLicense());
     		orgNodeLicenseData.setAvailable(availableLicense);
     		orgNodeLicenseData.setLicenseAfterLastPurchase(licenseAfterLastPurchase);
-    		result = license.updateLASCustomerTopNodeLicense(orgNodeLicenseData);
-    		result = true;
+    		orgNodeLic = license.updateLASCustomerTopNodeLicense(orgNodeLicenseData);
+    		if (orgOrderLic && orgNodeLic)
+        		result = true;
     	}
     	else {
 //    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
     		orgNodeLicenseData = licenseNode.makeCopy();
     		orgNodeLicenseData.setOrgNodeId(orgNodeId);
-    		result = license.addLASCustomerTopNodeLicense(orgNodeLicenseData);
-    		result = true;
+    		orgNodeLic = license.addLASCustomerTopNodeLicense(orgNodeLicenseData);
+    		orgOrderLic = addEditOrderLicense(orgNodeLicenseData);
+    		if (orgOrderLic && orgNodeLic)
+        		result = true;
     	}
     	}catch (Exception e) {
     		e.printStackTrace();
@@ -1811,6 +1820,18 @@ public class ManageCustomerController extends PageFlowController
     	return result;
     }
     
+    private boolean addEditOrderLicense (CustomerLicense custLicense )
+    {
+    	boolean result = false;
+    try {
+    	
+    	result = license.addEditOrgnodeOrderLicense(custLicense);
+    }catch (Exception e) {
+		e.printStackTrace();
+		String msg = MessageResourceBundle.getMessage(e.getMessage());      
+	}
+    	return result;
+    }
     
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** Private methods ************* ///////////////////////////////    
