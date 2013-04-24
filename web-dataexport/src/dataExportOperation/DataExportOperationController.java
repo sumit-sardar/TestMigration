@@ -75,6 +75,7 @@ public class DataExportOperationController extends PageFlowController {
 	private static final String ACTION_VIEW_STATUS = "getExportStatus";
 	private static final String STUDENT_STATUS = "Incomplete";
 	private List<Integer> toBeExportedRosterList = null;
+	private List<Integer> toBeExportedRosterListForSessions = null;
 	private CustomerLicense[] customerLicenses = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
@@ -654,6 +655,7 @@ public class DataExportOperationController extends PageFlowController {
 					if( (mtsData.getFilteredCount().intValue() > 0)) {
 						//List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
 						rosterListForSelectedSessions = mtsData.getToBeExportedStudentRosterList();
+						this.toBeExportedRosterListForSessions = rosterListForSelectedSessions;
 						totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
 					}
 					vo.setNotCompletedStudentCount(mtsData.getNotCompletedStudentCount());
@@ -1004,15 +1006,25 @@ public Forward rescoreStudent() {
 	   
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-	   DataExportVO vo = new DataExportVO();
-		Integer userId = user.getUserId();
-	   Integer studentCount = this.toBeExportedRosterList.size();
+		String isDataExportBySession = getRequest().getParameter("isDataExportBySession");
+		DataExportVO vo = new DataExportVO();
+		Integer userId = user.getUserId();		
+		Integer studentCount = null;
+		List<Integer> finalExportedRosterList = null;
+	   if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession == "true"){
+		   studentCount = this.toBeExportedRosterListForSessions.size();
+		   finalExportedRosterList = this.toBeExportedRosterListForSessions;
+	   }	   
+	   else{	   
+		   studentCount = this.toBeExportedRosterList.size();
+		   finalExportedRosterList = this.toBeExportedRosterList;
+	   }	   
 	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
 	   
 	   ExportDataJMSUtil exportDataJMSUtil = null;
 		 try {
 			 exportDataJMSUtil = new ExportDataJMSUtil ();
-		     exportDataJMSUtil.initGenerateReportTask (userName, customerId, userId, jobId, this.toBeExportedRosterList);
+		     exportDataJMSUtil.initGenerateReportTask (userName, customerId, userId, jobId, finalExportedRosterList);
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}

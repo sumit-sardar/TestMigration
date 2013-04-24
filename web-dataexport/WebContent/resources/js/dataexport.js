@@ -738,6 +738,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
  function submitJobDetails(){
  		closePopUp('confirmationPopupOnSubmit')
  		var postDataObject = {};
+ 		postDataObject.isDataExportBySession =  isDataExportBySession;
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
