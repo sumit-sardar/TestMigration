@@ -1508,25 +1508,55 @@ public class ItemLayoutProcessor {
 						widgetElement.setAttribute("id", thisElement.getAttributeValue("ID"));
 					else 
 						widgetElement.setAttribute("id", getUniqueId());*/
-					widgetElement.setAttribute("x", thisElement.getAttributeValue("x"));
-					widgetElement.setAttribute("y", thisElement.getAttributeValue("y"));
-					widgetElement.setAttribute("height", thisElement.getAttributeValue("height"));
-					widgetElement.setAttribute("width", thisElement.getAttributeValue("width"));
-					widgetElement.setAttribute("isMP4", thisElement.getAttributeValue("isMP4"));
-					widgetElement.setAttribute("autoplay", thisElement.getAttributeValue("autoplay"));
-					widgetElement.setAttribute("playorder", thisElement.getAttributeValue("playorder"));
-					widgetElement.setAttribute("playonce", thisElement.getAttributeValue("playonce"));
-					widgetElement.setAttribute("nonstop", thisElement.getAttributeValue("nonstop"));
-					widgetElement.setAttribute("playIfAnswered", thisElement.getAttributeValue("playIfAnswered"));
-					widgetElement.setAttribute("responseAreaLocker", thisElement.getAttributeValue("responseAreaLocker"));
-					Boolean isMP4 = new Boolean(thisElement.getAttributeValue("isMP4"));
+					if (thisElement.getAttributeValue("x") != null)
+						widgetElement.setAttribute("x",
+								thisElement.getAttributeValue("x"));
+					if (thisElement.getAttributeValue("y") != null)
+						widgetElement.setAttribute("y",
+								thisElement.getAttributeValue("y"));
+					if (thisElement.getAttributeValue("height") != null)
+						widgetElement.setAttribute("height",
+								thisElement.getAttributeValue("height"));
+					if (thisElement.getAttributeValue("width") != null)
+						widgetElement.setAttribute("width",
+								thisElement.getAttributeValue("width"));
+					if (thisElement.getAttributeValue("isMP4") != null)
+						widgetElement.setAttribute("isMP4",
+								thisElement.getAttributeValue("isMP4"));
+					if (thisElement.getAttributeValue("autoplay") != null)
+						widgetElement.setAttribute("autoplay",
+								thisElement.getAttributeValue("autoplay"));
+					if (thisElement.getAttributeValue("playorder") != null)
+						widgetElement.setAttribute("playorder",
+								thisElement.getAttributeValue("playorder"));
+					if (thisElement.getAttributeValue("playonce") != null)
+						widgetElement.setAttribute("playonce",
+								thisElement.getAttributeValue("playonce"));
+					if (thisElement.getAttributeValue("nonstop") != null)
+						widgetElement.setAttribute("nonstop",
+								thisElement.getAttributeValue("nonstop"));
+					if (thisElement.getAttributeValue("playIfAnswered") != null)
+						widgetElement
+								.setAttribute("playIfAnswered", thisElement
+										.getAttributeValue("playIfAnswered"));
+					if (thisElement.getAttributeValue("responseAreaLocker") != null)
+						widgetElement
+								.setAttribute(
+										"responseAreaLocker",
+										thisElement
+												.getAttributeValue("responseAreaLocker"));
+					
+					Boolean isMP4 = (thisElement.getAttributeValue("isMP4")) != null ? new Boolean(
+							thisElement.getAttributeValue("isMP4"))
+							: Boolean.FALSE;
 					if(isMP4.booleanValue()){
 						String srcMP4 = thisElement.getAttributeValue("FileName");
 						widgetElement.setAttribute("id", getImageId(srcMP4));
-						srcMP4 = "http://mcsdoas15.mhe.mhc:9000/images/"
+						srcMP4 = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/" + srcMP4.substring(srcMP4.indexOf("/images/") + 8);
+						/*srcMP4 = "http://mcsdoas15.mhe.mhc:9000/images/"
 								+ srcMP4.substring(
 										srcMP4.indexOf("/images/") + 8)
-										.replaceAll(" ", "%20");
+										.replaceAll(" ", "%20");*/
 						//srcMP4 = "/local/apps/oas/ads/assets/formula2.mp4";
 						/*srcMP4 = "/local/apps/oas/ads/assets/"+ srcMP4.substring(
 								srcMP4.indexOf("/images/") + 8)
@@ -3142,18 +3172,23 @@ public class ItemLayoutProcessor {
 		for (int i = 0; i < localAssetList.size(); i++) {
 			Element asset_widget = (Element) localAssetList.get(i);
 			String filePath = asset_widget.getAttributeValue("src");
+			System.out.println("asset_widget filePath: " + filePath); 
 			htmlAssetList.add(filePath);
 			
 			//String fileExt = filePath.substring(filePath.length() - 3).toLowerCase();			
 			//if (!fileExt.equalsIgnoreCase("mp4")){
-			if (asset_widget.getAttributeValue("isMP4").equalsIgnoreCase("false")){
+			if ("false".equalsIgnoreCase(asset_widget.getAttributeValue("isMP4"))){
 				/*Properties prop = new Properties();
 				prop.load(new FileInputStream(adsConfig.getFile()));
 				String htmlAssetPkgPath = prop.getProperty("html.asset.package.path");*/	
-				String htmlAssetPkgPath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/TEAssets/";
-				String source = htmlAssetPkgPath + "\\" + filePath;
-				String destination = htmlAssetPkgPath + "\\" + filePath + "zip";			
+				String htmlAssetPkgPath = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/HtmlAssets";
+				String source = htmlAssetPkgPath + "/" + filePath;
+				String destination = htmlAssetPkgPath + "/" + filePath + "zip";
+				
+				System.out.println("zipFolder source: " + source);
+				System.out.println("zipFolder destination: " + destination);
 				zipFolder(source, destination);
+				System.out.println("zipFolder completed.");
 			}
 		}
 	}

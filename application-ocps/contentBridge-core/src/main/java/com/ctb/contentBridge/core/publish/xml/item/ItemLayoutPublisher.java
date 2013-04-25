@@ -135,6 +135,7 @@ public class ItemLayoutPublisher {
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			throw new SystemException("Error in ItemLayoutPublisher " + e.getMessage());
 		}
 		
@@ -326,7 +327,7 @@ public class ItemLayoutPublisher {
 			String request = "";
 			//request="<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request><publish_asset> <asset ident= \"formula2\" videotype=\"mp4\"> <file_location uri=\"/local/apps/oas/ads/assets/formula2.mp4\" /></asset> </publish_asset> </ads_publish_request>";
 			Iterator iter = inputFiles.iterator();
-			
+			String destinationPath =  "/iwmnt/default/main/OAS/WORKAREA/highwire/images/HtmlAssets/";
 			while (iter.hasNext()) {
 				String fileName = (String) iter.next();
 				String ext = fileName.substring(fileName.length() - 3).toLowerCase();
@@ -344,7 +345,7 @@ public class ItemLayoutPublisher {
 							+ "\" />"
 							+ "</asset> </publish_asset> </ads_publish_request>";
 				} else{
-					String destinationPkgPath = "/local/apps/oas/ads/assets/html_assets/" + fileName+"zip";
+					String destinationPkgPath = destinationPath + fileName+"zip";
 					request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ads_publish_request>"
 							+ "<publish_asset> <asset ident= \""
 							+ fileName
