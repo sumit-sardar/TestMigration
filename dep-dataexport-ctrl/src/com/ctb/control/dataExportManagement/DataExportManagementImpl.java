@@ -364,7 +364,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	}
 
 	@Override
-	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds) throws CTBBusinessException{
+	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds, String userName) throws CTBBusinessException{
 		
 		ManageTestSessionData mtsd = new ManageTestSessionData();
 		ManageTestSession[] testSessions = null;
@@ -413,9 +413,10 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 			   				newSelectedSessionId = new Integer [count];
 			   				System.arraycopy(selectedTestSessionIds, ((loopCounters-1)*inClauselimit) , newSelectedSessionId, 0, count);
 			   			}
-			   			inputSessionIds = SQLutils.generateSQLCriteria("TADMIN.TEST_ADMIN_ID IN ",newSelectedSessionId);			   		
-		   				
-			   			tempTestSessions = dataExportManagement.getSelectedTestSessionDetails(customerId, inputSessionIds);
+			   			inputSessionIds = SQLutils.generateSQLCriteria("TADMIN.TEST_ADMIN_ID IN ",newSelectedSessionId);
+			   			
+			   			//tempTestSessions = dataExportManagement.getSelectedTestSessionDetails(customerId, inputSessionIds);
+			   			tempTestSessions = dataExportManagement.getSelectedTestSessionDetailsForUser(customerId, inputSessionIds, userName);
 			   			testSessionsObjList.add(tempTestSessions);
 		   		  }
 		    	   
@@ -431,7 +432,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 				  }	
 		    	   
     	   	} else{
-    	   		testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
+    	   		//testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
+    	   		testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUser(customerId, userName);
     	   	}
         	
 			for (int i = 0; i <testSessions.length; i++ ){
