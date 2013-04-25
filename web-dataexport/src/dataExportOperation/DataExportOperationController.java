@@ -563,7 +563,7 @@ public class DataExportOperationController extends PageFlowController {
 			Date date = new Date();  
 		        System.out.println(dateFormat.format(date));  
 			
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null);
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null, this.userName);
 			Date date1 = new Date();  
 	        System.out.println(dateFormat.format(date1));  
 			if ((mtsData != null)) {
@@ -650,7 +650,7 @@ public class DataExportOperationController extends PageFlowController {
 		}
 		try {
 			if(selectedTestSessionIds != null && selectedTestSessionIds.length > 0){
-				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds);
+				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds, this.userName);
 				if (mtsData != null) {
 					if( (mtsData.getFilteredCount().intValue() > 0)) {
 						//List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);

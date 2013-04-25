@@ -146,12 +146,12 @@ public class DataExportSearchUtils {
 	
 	
 	public static ManageTestSessionData getTestSessionsWithUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
-			SortParams sort, Integer[] selectedTestSessionIds) {
+			SortParams sort, Integer[] selectedTestSessionIds, String userName) {
 
 		ManageTestSessionData mstData = null;
 	        
 	        try {    
-	        	mstData = deManagement.getTestSessionsWithUnexportedStudents(customerId, filter, page, sort, selectedTestSessionIds);
+	        	mstData = deManagement.getTestSessionsWithUnexportedStudents(customerId, filter, page, sort, selectedTestSessionIds, userName);
 	        }
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();
