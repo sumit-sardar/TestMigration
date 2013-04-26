@@ -106,7 +106,7 @@
 		        				</ul>
 		        			 </li>
 	        			 </c:if>
-        			 <ctb:auth roles="Administrator">	        			 
+        			 </ctb:auth>	        			 
         			 <c:if test="${sessionScope.hasLicenseConfigured}">	
         			 <li>
         				<a href="#" id="manageLicensesLink" onClick="verifyEditLicenseAndGotoMenuAction('services.do', 'manageLicensesLink');"><lb:label key="org.menu.licenses" /></a>
