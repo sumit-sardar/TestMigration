@@ -322,6 +322,9 @@ public class TestSessionStatusImpl implements TestSessionStatus
             String systemKey = null;
             String customerKey = null;
             String orgCategoryLevel = null;
+            //** [IAA]: pass converted/timezone dates for IndividualProfile when called for a session
+            String adjustedCustomerStartDate = null;
+            String adjustedCustomerEndDate = null;
             
             CustomerReport [] cr = reportBridge.getReportAssignmentsForProgram(session.getProgramId(), session.getCreatorOrgNodeId());
             for (int i=0; i < cr.length; i++) {
@@ -331,6 +334,11 @@ public class TestSessionStatusImpl implements TestSessionStatus
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
+                    //**[IAA] Defect#70394: TABE BAUM: Individual Profie Report: Start Date and End Date of Test not matching with the one shown in Session (when report is run from TAS-UI).
+                    TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(session);
+                    java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy");
+                    adjustedCustomerStartDate = df.format(session.getLoginStartDate());//session.getLoginStartDateString()
+                    adjustedCustomerEndDate = df.format(session.getLoginEndDate());
                 }
             }
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
@@ -339,6 +347,12 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 "&LevelId="+orgCategoryLevel+
                 "&NodeInstanceId="+orgNodeId+
                 "&CurrentTestSessionId="+sessionId;
+            //**[IAA] Defect#70394
+            if (adjustedCustomerStartDate != null && adjustedCustomerEndDate != null)
+            {
+            	paramsPlainText += "&CustSessionStartDate="+adjustedCustomerStartDate;
+            	paramsPlainText += "&CustSessionEndDate="+adjustedCustomerEndDate;
+            }
             System.out.println("Non-encrypted URL = " + reportURL + "?TestID="+ testId + "&sys=" + paramsPlainText);
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
