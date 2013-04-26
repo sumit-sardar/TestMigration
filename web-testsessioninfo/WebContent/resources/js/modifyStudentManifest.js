@@ -17,7 +17,8 @@
 	var msmSelectedTestName = "";
 	var msmTestAdminName = "";
 	var msmSelectedStudentName = "";
-	 
+	var allLocatorSubtestTds = [];
+	var selectedLocatorSubtests = [];
 
 	function initializeModifyTestPopup(rowId,listId, isTabeProduct, isTabeAdaptiveProduct, productType, selectedTestName, testAdminName){
 
@@ -154,6 +155,7 @@
 		   	jsonReader: { repeatitems : false, root:"savedStudentsDetails", id:"studentId",
 		   		records: function(obj) {	
 			   		subTestDetails = obj.testSession; 
+			   		allLocatorSubtestTds = subTestDetails.locatorSubtestTDs;
 			   		prepareallSubtestsMsm(); 
 			   		levelOptions = obj.levelOptions; 
 			   		var noOfRows = 0;
@@ -557,8 +559,10 @@
 	    }
 	    if(isValidated) {
 	         warningMessage = getMsmWarningMessage(tmpSelectedSubtestsMsm);
+         	locatorSubtestUpdate(tmpSelectedSubtestsMsm);
 			updateManifestForRoster(tmpSelectedSubtestsMsm);
 	    }
+	    
 	    
 	}
 	
@@ -571,6 +575,9 @@
 		   var msmHasLocator = false;
 		   if( subTestDetails.locatorSubtest != undefined  && locElement !=null && locElement.checked){
 		  	 msmHasLocator = true;
+		  	 for(var indx=0; indx<selectedLocatorSubtests.length; indx++){
+			   		msmParam += "&locatorSubtestTDs="+ selectedLocatorSubtests[indx];
+			   }
 		   } 
 		   msmParam += "&hasAutolocator="+msmHasLocator;
 		   if(msmHasLocator){
@@ -585,7 +592,6 @@
 		   		}
 		   		msmParam += "&subtestName=" +formatString(selectedSubtestsMsm[ii].subtestName);
 		   }
-		   
 		param += "testAdminId="+ selectedTestAdminId;
 		param += "&studentId=" + modifyManifestStudentId;
 		param += "&studentOrgNodeId=" + modifyManifestStudentOrgId;
@@ -818,4 +824,16 @@
 		}
 	}
 	
-	
+	function locatorSubtestUpdate(modifiedSubtests){
+		var count = 0;
+		for(var i=0; i<allLocatorSubtestTds.length;i++){
+			var locatorSubtestName = allLocatorSubtestTds[i].subtestName;
+			for(var j=0; j<modifiedSubtests.length; j++){
+				var contentArea = modifiedSubtests[j].subtestName.substring(5);
+				if(contentArea!= null && locatorSubtestName.contains(contentArea)){
+					selectedLocatorSubtests[count] = allLocatorSubtestTds[i].id;
+					count++;
+				}
+			}
+		}
+	}

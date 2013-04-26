@@ -194,3 +194,14 @@
 		</center>
 	</div>	
 </div>
+<div id="validateLocatorTestPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div id="confirmationMessage" style="text-align: left;"> </div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:locatorSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:onCancelLocatorSubtestConfirm();return false;" class="ui-widget-header" style="width:60px">
+		</center>
+	</div>	
+</div>

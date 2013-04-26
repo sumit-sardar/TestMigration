@@ -1237,14 +1237,20 @@ public class SessionOperationController extends PageFlowController {
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
     	    try {
+    	    	TestElement[] locatorSubtestTds = null;
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
     	    	TestElement[] testSession = this.itemSet.getTestElementByTestAdmin(testAdminId);
-    	    	
+    	    	for(int indx=0; indx<testSession.length;indx++){
+    	    		if(testSession[indx].getItemSetName().indexOf("Locator") > 0){
+    	    			locatorSubtestTds = this.itemSet.getTestElementsForParent(testSession[indx].getItemSetId(), "TD");
+    	    			
+    	    		}
+    	    	}
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	List<SessionStudent> studentsList = buildStudentList(students, accomodationMap);
     	    	vo.setSavedStudentsDetails(studentsList);
-    	    	vo.populateTestSession(testSession);
+    	    	vo.populateTestSession(testSession, locatorSubtestTds);
     	    	vo.populateLevelOptions();
                 status.setSuccess(true);
     	    	
@@ -1600,19 +1606,31 @@ public class SessionOperationController extends PageFlowController {
         	 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
         	 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
         	 String[] itemSetIdTDs          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]);
+        	// String[] itemSetIdTDName       = RequestUtil.getValuesFromRequest(request, "itemSetIdTDName", true ,  new String [0]);
+        	 String[] locatorTDsForTABE		= RequestUtil.getValuesFromRequest(request, "locatorItemTD", true ,  new String [0]);
         	 String[] accesscodes           = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
         	 String[] itemSetForms          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
         	 String[] itemSetisDefault      = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
-        	 String autoLocator				=  RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
-        	 
+        	 String autoLocator				= RequestUtil.getValueFromRequest(request, RequestUtil.HAS_AUTOLOCATOR, true, "false");
+        	 String[] islocatorChecked           = RequestUtil.getValuesFromRequest(request, RequestUtil.LOCATOR_CHECKBOX, true ,  new String [itemSetIdTDs.length]);
         	 
         	 //List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
+        	 List<SubtestVO> subtestTDList = new ArrayList<SubtestVO>();
+        	 List<String> locatorTDList = new ArrayList<String>();
+        	 Map<Integer,String> locatorItemSetTDMap = new HashMap<Integer,String>();
+        	 for(int indx =0; indx<locatorTDsForTABE.length; indx++){
+        		 String[] strArr = locatorTDsForTABE[indx].split("~");
+        		 Integer TDid = Integer.valueOf(strArr[0].trim());
+        		 String testName = strArr[1].trim();
+     			 locatorItemSetTDMap.put(TDid, testName);
+        	 }
         	 List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
         	 for(int ii =0, jj =itemSetIdTDs.length; ii<jj; ii++ ){
         		 SubtestVO subtest = new SubtestVO();
         		 subtest.setId(Integer.valueOf(itemSetIdTDs[ii].trim()));
         		 subtest.setTestAccessCode(accesscodes[ii]);
         		 subtest.setSessionDefault(itemSetisDefault[ii]);
+        		 subtest.setIslocatorChecked(islocatorChecked[ii]);
         		 if(itemSetForms[ii] != null && itemSetForms[ii].trim().length()>0){
         			 subtest.setLevel(itemSetForms[ii]);
         		 }
@@ -1641,6 +1659,7 @@ public class SessionOperationController extends PageFlowController {
     	        			  }
     	        			  subtestList.add(0, locatorSubtest);
     	        			  scheduledSession.setHasLocator(true);
+    	        			  scheduledSession.setLocatorSubtestTD(locatorItemSetTDMap);
       	                } else {
       	                	 TestSessionUtils.setDefaultLevels(subtestList, "E");
       	                	
@@ -1649,6 +1668,8 @@ public class SessionOperationController extends PageFlowController {
     	            else
     	            {
     	                // tabe locator test
+    	            	  subtestTDList = subtestList;
+    	            	  subtestList.clear();
 		            	  Integer lItemSetId   = Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_SET_ID_TD, false, null));
 	        			  String lAccesscodes  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IND_ACCESS_CODE, true, "");
 	        			  String lItemSetisDefault  = RequestUtil.getValueFromRequest(request, RequestUtil.LOCATOR_TEST_ITEM_IS_SESSION_DEFAULT, false, null);
@@ -1661,9 +1682,10 @@ public class SessionOperationController extends PageFlowController {
 	        				  locatorSubtest.setLevel(lItemSetForms);
 	        			  }
 	        			  subtestList.add(0, locatorSubtest);
-	        			  scheduledSession.setHasLocator(true);    	            	
+	        			  scheduledSession.setHasLocator(true);
+	        			  scheduledSession.setLocatorSubtestTD(locatorItemSetTDMap);
     	            	  TestSessionUtils.setDefaultLevels(subtestList, "1");
-    	            }   
+    	            }
     	            
     	        }
     	        else
@@ -1700,7 +1722,7 @@ public class SessionOperationController extends PageFlowController {
     	               
     	            
     	            te.setSessionDefault(subVO.getSessionDefault());
-    	            
+    	            te.setIslocatorChecked(subVO.getIslocatorChecked());
     	            newTEs[i] = te;
     	        }
     	        
@@ -5879,6 +5901,7 @@ public class SessionOperationController extends PageFlowController {
 		     }
 			 return null;
 		 }
+		 boolean isTabeLocatorProduct = false;
 		 
 		 @Jpf.Action(forwards = { 
 		        @Jpf.Forward(name = "success",
@@ -5890,7 +5913,13 @@ public class SessionOperationController extends PageFlowController {
 				List invalidateReasonList= null;
 		        String testAdminId = getRequest().getParameter("testAdminId");
 		        initializeTestSession();
-		        
+		        if(testAdminId != null){
+			        TestProduct tp = getProductForTestAdmin(Integer.valueOf(testAdminId));
+			        if(tp!=null){
+			        	this.isTabeLocatorProduct = isTabeSession(tp.getProductType());
+			        	
+			        }
+		        }
 		        if (testAdminId != null)
 		            this.sessionId = Integer.valueOf(testAdminId);
 		        RosterElementData red = getRosterForViewTestSession(this.sessionId);
@@ -5937,7 +5966,6 @@ public class SessionOperationController extends PageFlowController {
 				try {
 					ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
 					TestElement[] testElements = scheduledSession.getScheduledUnits();
-					
 			        for (int i=0; i < testElements.length; i++) {
 			            TestElement te = testElements[i];
 			            String sequence = String.valueOf(i+1);
@@ -5947,7 +5975,17 @@ public class SessionOperationController extends PageFlowController {
 			            if (te.getTimeLimit() != null && te.getTimeLimit().intValue() > 0)
 			                duration = String.valueOf(te.getTimeLimit().intValue() / 60) + " mins";
 			            te.setMediaPath(duration);
-			            
+			            String hasLocatorTD = "-";
+			            System.out.println("te.getIslocatorChecked()"+te.getIslocatorChecked());
+			            if(te.getIslocatorChecked() != null && "T".equalsIgnoreCase(te.getIslocatorChecked())){
+			            	
+			            	hasLocatorTD = "Yes";
+			            }else if(te.getIslocatorChecked() != null && "F".equalsIgnoreCase(te.getIslocatorChecked())){
+			            	
+			            	hasLocatorTD = "No";
+			            }
+			          
+			            te.setIslocatorChecked(hasLocatorTD);
 			            this.subtestDetails.add(te);	            
 			        }
 		        }
@@ -5963,7 +6001,9 @@ public class SessionOperationController extends PageFlowController {
 		    protected Forward showSubtestDetails()
 		    {
 		        this.getSession().setAttribute("subtestDetails", this.subtestDetails);
-		    	
+		      
+		    	this.getSession().setAttribute("isTABE", this.isTabeLocatorProduct);
+		    	  System.out.println("getSession().getAttribute"+getSession().getAttribute("isTABE"));
 		        return new Forward("success");
 		    }
 			
@@ -6061,7 +6101,7 @@ public class SessionOperationController extends PageFlowController {
 		    	   
 		        String userTimeZone = this.user.getTimeZone();//(String)getSession().getAttribute("userTimeZone"); 
 		        List subtestList = new ArrayList();        
-		        TestElementData ted = getTestElementsForTestSession(testAdminId); 
+		        TestElementData ted = getTestElementsForTestSession(testAdminId);
 		        StudentSessionStatus[] ssss = getStudentItemSetStatusesForRoster(studentId, testAdminId);                 
 		        TestElement[] subtestelements = ted.getTestElements(); 
 		        HashMap recLevelHM = new HashMap();
@@ -6072,7 +6112,7 @@ public class SessionOperationController extends PageFlowController {
 		        for (int i=0; i < subtestelements.length; i++)
 		        {
 		            TestElement te = subtestelements[i];          
-		              
+		              System.out.println("-------------------->>"+te.getIslocatorChecked());
 		            if (te != null)
 		            {
 		                SubtestDetail sd_TS = new SubtestDetail(te, i + 1);
@@ -6389,10 +6429,21 @@ public class SessionOperationController extends PageFlowController {
 				String[] itemSetIds   = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_ID_TD, true, new String[0]);
 				String[] levels       = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.TEST_ITEM_SET_FORM, true, new String[itemSetIds.length]);
 				String[] subtestNames = RequestUtil.getValuesFromRequest(this.getRequest(), RequestUtil.SUB_TEST_NAME, true, new String[itemSetIds.length]);
-				String autoLocator	  =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.HAS_AUTOLOCATOR, true, "false");
+				String autoLocator	  = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.HAS_AUTOLOCATOR, true, "false");
+				String[] locatorSubtestTDs = RequestUtil.getValuesFromRequest(this.getRequest(), "locatorSubtestTDs", true ,  new String [0]); 
+				
+				/*Map<Integer,String> locatorItemSetTDMap = new HashMap<Integer,String>();
+	        	 for(int indx =0; indx<locatorTDsForTABE.length; indx++){
+	        		 String[] strArr = locatorTDsForTABE[indx].split("~");
+	        		 Integer TDid = Integer.valueOf(strArr[0].trim());
+	        		 String testName = strArr[1].trim();
+	        		 System.out.println("testNameLocator ::"+testName);
+	        		 locatorItemSetTDMap.put(TDid, testName);
+	        	 }*/
 				int subtestSize       = itemSetIds.length;
 				int order             = 0;
 				boolean hasAutoLocator = false;
+				String [] locatorSubtests = null;
 				StudentManifest locatorManifest = null;
 				TestProduct tp = scheduleTest.getProductForTestAdmin(this.userName, testAdminId);
 				String productType = TestSessionUtils.getProductType(tp.getProductType());
@@ -6411,6 +6462,7 @@ public class SessionOperationController extends PageFlowController {
 				 StudentManifest [] manifestArray = new StudentManifest[subtestSize];
 				 if(hasAutoLocator){
 					 manifestArray[0] = locatorManifest;
+					 locatorSubtests = locatorSubtestTDs;
 				 }
 				 for(int ii=0; ii<itemSetIds.length; ii++ ,order++){
 					 StudentManifest manifest = new StudentManifest(); 
@@ -6426,7 +6478,7 @@ public class SessionOperationController extends PageFlowController {
 				 try {
 					 validateStudentManifest(studentId, testAdminId, manifestData, tp, validationFailedInfo);
 					 if(!validationFailedInfo.isValidationFailed()){
-						 scheduleTest.updateManifestForRoster(this.userName, studentId, null, testAdminId, manifestData);
+						 scheduleTest.updateManifestForRoster(this.userName, studentId, null, testAdminId, manifestData, locatorSubtests);
 						 String messageHeader = MessageResourceBundle.getMessage("Modify.Student.Manifest.SaveMessage.Header");
 						 successInfo.setKey("MODIFY_STUDENT_MANIFEST_SAVED");
 			           	 successInfo.setMessageHeader(messageHeader);

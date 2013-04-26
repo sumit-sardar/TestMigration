@@ -25,6 +25,7 @@
 	var LASLINKS_LISTENING = "Listening";
 	var LASLINKS_READING = "Reading";
 	var LASLINKS_WRINTING = "Writing";
+	var deselectSubtest = new Map();
 	
 	
 	
@@ -40,6 +41,7 @@
 	    var isValidated = true;
 	    var tmpSelectedSubtests = new Array();
 	    prepareSelectedSubtests(tmpSelectedSubtests);
+	    prepareDeselectSubtest(tmpSelectedSubtests);
 	    
 	    if(isTabeProduct){
 	    	var validateLevels = false; 
@@ -64,6 +66,7 @@
 	        populateAllSubtestMap(allSubtests) 
 	        updateOldAccessCodes(selectedSubtests);
 	        closePopUp('modifyTestPopup');
+	        enableDisableLocatorCheckBox();
 	    }
 	    
 	    
@@ -1251,4 +1254,19 @@
 			return selectedSubtests.length;
 		else
 			return 0;
+	}
+	
+	function prepareDeselectSubtest(tmpSelectedSubtests){
+	    deselectSubtest = allSubtestMap;
+	    for(var indx = 0; indx < allSubtests.length; indx++){
+	    	var mapData = allSubtests[indx];
+	    	for(j=0; j<tmpSelectedSubtests.length;j++){
+	    		var arrData = tmpSelectedSubtests[j];	    	
+	    		if(arrData != null && arrData != undefined){	    		
+	    			if(mapData == arrData){
+	    			deselectSubtest.remove(indx);
+	    			}
+	    		}
+	    	}	    	
+	    }
 	}

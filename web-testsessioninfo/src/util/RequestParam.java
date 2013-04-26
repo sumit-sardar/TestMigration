@@ -51,4 +51,5 @@ public interface RequestParam {
 	String LOCATOR_SUB_TEST_NAME		= "subtestName_l";
 	String STUDENT_ORG_NODE_ID		    = "studentOrgNodeId";
 	
+	String LOCATOR_CHECKBOX = "locatorCheckbox";
 }

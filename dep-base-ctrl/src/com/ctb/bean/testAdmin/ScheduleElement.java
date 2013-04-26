@@ -20,6 +20,7 @@ public class ScheduleElement extends CTBBean
      private String itemSetName;
      private Integer creatorOrgNodeId;
      private Integer customerId;
+     private String isLocatorChecked;
     
      /**
  	 * @return Returns the itemSetForm.
@@ -143,4 +144,17 @@ public class ScheduleElement extends CTBBean
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
+	/**
+	 * @return the isLocatorChecked
+	 */
+	public String getIsLocatorChecked() {
+		return isLocatorChecked;
+	}
+	/**
+	 * @param isLocatorChecked the isLocatorChecked to set
+	 */
+	public void setIsLocatorChecked(String isLocatorChecked) {
+		this.isLocatorChecked = isLocatorChecked;
+	}
+	
 } 

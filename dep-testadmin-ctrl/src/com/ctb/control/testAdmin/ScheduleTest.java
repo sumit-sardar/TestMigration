@@ -616,4 +616,8 @@ public interface ScheduleTest
     java.lang.String[] getAllContentAreaOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
     
     java.lang.String[] getAllFormOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.TestElementData getDeliverableUnitsForTestWithBlankAccessCode(java.lang.String userName, java.lang.Integer testItemSetId, java.lang.Boolean generateAccessCodes, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.RosterElement updateManifestForRoster(java.lang.String userName, java.lang.Integer studentId, java.lang.Integer stdentOrgNodeId, java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData, java.lang.String[] locatorSubtestTDs) throws com.ctb.exception.CTBBusinessException;
 } 

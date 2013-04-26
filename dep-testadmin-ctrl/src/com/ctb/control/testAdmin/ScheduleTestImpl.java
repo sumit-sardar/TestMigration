@@ -438,6 +438,46 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     
+    public TestElementData getDeliverableUnitsForTestWithBlankAccessCode(String userName, Integer testItemSetId, Boolean generateAccessCodes, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        try {
+            String [] forms = itemSet.getFormsForTest(testItemSetId);
+            TestElementData ted = new TestElementData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            String cacheKey = String.valueOf(testItemSetId) + "|TD";
+            TestElementCacheObject cacheObj = (TestElementCacheObject) SimpleCache.checkCache5min("TEST_ELEMENT", cacheKey);
+            if(cacheObj == null) {
+                cacheObj = new TestElementCacheObject();
+                cacheObj.testElements = itemSet.getTestElementsForParentForTD(testItemSetId, "TD");
+                SimpleCache.cacheResult("TEST_ELEMENT", cacheKey, cacheObj);
+            }
+            ted.setTestElements(cacheObj.testElements, pageSize);
+            if(filter != null) ted.applyFiltering(filter);
+            if(sort != null) ted.applySorting(sort);
+            if(page != null) ted.applyPaging(page);
+            if(generateAccessCodes.booleanValue() == true) {
+            TestElement [] subtests = ted.getTestElements();
+                HashMap accessCodeHashmap = new HashMap();
+                for(int i=0;i<subtests.length && subtests[i] != null;i++) {
+                    TestElement subtest = subtests[i];
+                    subtest.setForms(forms);
+                    /*boolean validCode = false;
+                    String code = "";
+                    subtest.setAccessCode(code);*/
+                }
+            }
+            return ted;
+        } catch (SQLException se) {
+            TestElementDataNotFoundException tee = new TestElementDataNotFoundException("ScheduleTestImpl: getSchedulableUnitsForTest: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+        
+    }
+    
     public List<String> getFixedNoAccessCode(int count) throws CTBBusinessException
     {
     	HashMap accessCodeHashmap = new HashMap();
@@ -1863,16 +1903,59 @@ public class ScheduleTestImpl implements ScheduleTest
 			
 			if(testAdminId == null) {
 				session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
-                ArrayList subtests = createTestAdminItemSetRecords(newSession);
-                createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
+                ArrayList<TestElement> subtests = createTestAdminItemSetRecords(newSession);
+               
+                // added for locator subtest manifest
+                ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
+                HashMap<Integer,String> locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
+                if(locatorSubtestTD !=null){
+                	Iterator iterator = locatorSubtestTD.keySet().iterator();
+                	for(TestElement subtestlist: subtests){
+                		if(subtestlist.getItemSetName().toUpperCase().contains("LOCATOR")){
+//			                while(iterator.hasNext()){
+//			                	Integer id = (Integer)iterator.next();
+			            		if(subtestlist.getItemSetName().equalsIgnoreCase(locatorSubtestTD.get(subtestlist.getItemSetId()))){
+			            			filterSubtest.add(subtestlist);
+			            		}
+//                			}
+	                	}else{
+	                		filterSubtest.add(subtestlist);
+	                	}
+	                }
+                }else{
+                	filterSubtest = subtests; 
+                }
+                //end
+                createTestRosters(userName, userId, filterSubtest, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
             	updateTestAdminRecord(userId, session, customerId);
-                ArrayList subtests = updateTestAdminItemSetRecords(newSession);
+                ArrayList<TestElement> subtests = updateTestAdminItemSetRecords(newSession);
                 //updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
+                // added for locator subtest manifest
+                ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
+                HashMap<Integer,String> locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
+                if(locatorSubtestTD.keySet() !=null){
+                	Iterator iterator = locatorSubtestTD.keySet().iterator();
+                	for(TestElement subtestlist: subtests){
+                		if(subtestlist.getItemSetName().toUpperCase().contains("LOCATOR")){
+//			                while(iterator.hasNext()){
+//			                	Integer id = (Integer)iterator.next();
+			            		if(subtestlist.getItemSetName().equalsIgnoreCase(locatorSubtestTD.get(subtestlist.getItemSetId()))){
+			            			filterSubtest.add(subtestlist);
+			            		}
+//                			}
+	                	}else{
+	                		filterSubtest.add(subtestlist);
+	                	}
+	                }
+                }else{
+                	filterSubtest = subtests; 
+                }
+                //end
                 updateProctorAssignments(userName, userId, newSession);
                 writeTestAdminRecord(userId, session);
-                updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
+                updateTestRosters(userName, userId, filterSubtest, newSession, session.getItemSetId(), extendedTimeValue);
             }
             
             thisTestAdminId = session.getTestAdminId();
@@ -2020,7 +2103,7 @@ public class ScheduleTestImpl implements ScheduleTest
             }
 */            
             TestElement [] scheduledElements = newSession.getScheduledUnits();
-            ArrayList subtests = new ArrayList();
+            ArrayList<TestElement> subtests = new ArrayList<TestElement>();
             for(int i=0;i<scheduledElements.length;i++) {
                 TestElement te = scheduledElements[i];
                 //sessionDefault
@@ -2037,6 +2120,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 se.setItemSetForm(te.getItemSetForm()); ///tabe form
                 se.setSessionDefault(te.getSessionDefault()); //sessionDefault
                 //tais.getConnection().setAutoCommit(false);
+                se.setIsLocatorChecked(te.getIslocatorChecked());	// added for locator checkbox
                 tais.createNewTestAdminItemSet(se);
                 String cacheKey = String.valueOf(te.getItemSetId()) + "|TD";
                 TestElementCacheObject cacheObj = (TestElementCacheObject) SimpleCache.checkCache5min("TEST_ELEMENT", cacheKey);
@@ -2058,7 +2142,7 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    private ArrayList updateTestAdminItemSetRecords(ScheduledSession newSession) throws SessionCreationException,CTBBusinessException {
+    private ArrayList<TestElement> updateTestAdminItemSetRecords(ScheduledSession newSession) throws SessionCreationException,CTBBusinessException {
         try {
             
             //sessionDefault
@@ -2071,7 +2155,7 @@ public class ScheduleTestImpl implements ScheduleTest
             }
 */            
         	Boolean hasLocator = newSession.getHasLocator();
-            ArrayList subtests = new ArrayList();
+            ArrayList<TestElement> subtests = new ArrayList<TestElement>();
             ScheduleElement [] oldUnits = tais.getTestAdminItemSetsForAdmin(newSession.getTestSession().getTestAdminId());
             HashMap oldMap = new HashMap();
             boolean sameTAC = false;
@@ -2387,8 +2471,12 @@ public class ScheduleTestImpl implements ScheduleTest
                     newAssignment.setForm(form);
                     newAssignment.setTestAdminId(testAdminId);
                     newAssignment.setStudentId(student.getStudentId());
-                    if (overrideUsingStudentManifest) { 
-                        newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests()));
+                    if (overrideUsingStudentManifest) {
+                    	if(newSession.getHasLocator()){
+                    		newAssignment.setSubtests(subtests);   
+                    	}else{
+                    		newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests()));
+                    	}
                     } else {
                         newAssignment.setSubtests(subtests);   
                     }
@@ -2602,7 +2690,10 @@ public class ScheduleTestImpl implements ScheduleTest
                     assignment.setStudentId(re.getStudentId());
                     assignment.setTestRosterId(re.getTestRosterId());
                     if (overrideUsingStudentManifest) {
-                        assignment.setSubtests(getTDTestElementList(newUnit.getStudentManifests()));
+                    	if(newSession.getHasLocator()){
+                    		 assignment.setSubtests(subtests);
+                    	}else
+                    		assignment.setSubtests(getTDTestElementList(newUnit.getStudentManifests()));
                     } else {
                         assignment.setSubtests(subtests);
                     }
@@ -3189,6 +3280,120 @@ public class ScheduleTestImpl implements ScheduleTest
      }  
      
      /**
+      * Adjusts the manifest as specified for a roster element/student 
+      * already part of an existing session. This will be used in the 
+      * edit test session UI to persist changes to the manifest or subtest 
+      * selection for a particular student within an existing test session. 
+      * This call should fail if the roster element is not in an editable completion state (eg. Not SC)
+      * @param userName - identifies the user
+      * @param StudentManifestData - identifies StudentManifest info
+      * @return RosterElement - roster
+      * @throws CTBBusinessException
+      *  @common:operation
+      */
+     
+      public RosterElement updateManifestForRoster(java.lang.String userName,java.lang.Integer studentId,java.lang.Integer stdentOrgNodeId,java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData, java.lang.String[] locatorSubtestTds) throws com.ctb.exception.CTBBusinessException
+      {
+        // validator.validate(userName,studentId,"updateManifestForRoster");
+         //START -Added for deferred defect #64306 and #64308  
+         try{	
+         //END -Added for deferred defect #64306 and #64308        		
+                  Integer  userId  = users.getUserIdForName(userName);     
+                  Integer customerId = users.getCustomerIdForName(userName);            
+                  String completionStatus =  siss.geCompletionStatusForRoster(studentId,testAdminId);                 
+                  if(!completionStatus.equals("SC"))
+                     throw new NotEditableManifestException("This Student manifest can not be changed");
+                  RosterElement roster = null; 
+                  
+                  if(studentManifestData != null){
+                   //  Integer rosterId = rosters.getRosterIdForStudentAndTestAdmin(studentId,testAdminId);
+                     roster = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);
+                     if(!roster.getOrgNodeId().equals(stdentOrgNodeId) && stdentOrgNodeId != null){
+                         OrgNodeStudent orgNodeStd =  orgNodeStudent.getValidStudentOrgNode(studentId,stdentOrgNodeId);
+                         if(orgNodeStd.getOrgNodeId() != null){
+                             roster.setOrgNodeId(orgNodeStd.getOrgNodeId());
+                             //rosters.getConnection().setAutoCommit(false);
+                             rosters.updateTestRoster(roster);
+                          }
+                     }                   
+                     Integer rosterId = roster.getTestRosterId();
+                     //siss.getConnection().setAutoCommit(false);
+                     siss.deleteStudentItemSetStatusesForRoster(rosterId);
+                     StudentManifest[] studentManifests = studentManifestData.getStudentManifests();  
+                     checkTestAdminItemSets(testAdminId,studentManifests);
+                     int subtestOrder = 0;
+                     for(int i=0;studentManifests != null && i<studentManifests.length;i++) {
+                         StudentManifest studentManifest = studentManifests[i];
+                         if(studentManifest != null) {
+                             Integer parentItemsetId = studentManifest.getItemSetId();
+                             String form =  studentManifest.getItemSetForm();
+                             if(form == null || form.length()==0 || form.trim().length()==0)
+                                 form = "%";
+                            Integer [] itemSetIds = siss.getItemSetIdsForFormForParent(parentItemsetId,form);
+                            if(studentManifest.getItemSetName().toUpperCase().contains("LOCATOR") && locatorSubtestTds != null){
+                         	   for(int indx=0; indx<itemSetIds.length;indx++){
+                         		   for(int jndx=0; jndx<locatorSubtestTds.length; jndx++){
+                         			   if(itemSetIds[indx] ==  Integer.valueOf(locatorSubtestTds[jndx])){
+                         				   StudentSessionStatus sss = new StudentSessionStatus();
+                                            sss.setItemSetId(itemSetIds[indx]);
+                                            sss.setCompletionStatus("SC");
+                                            sss.setItemSetOrder(new Integer(subtestOrder));
+                                            sss.setStartDateTime(null);
+                                            sss.setCompletionDateTime(null);
+                                            sss.setValidationStatus("VA");
+                                            sss.setTimeExpired("F");
+                                            sss.setValidationUpdatedBy(userId);
+                                            sss.setValidationUpdatedDateTime(new Date());
+                                            sss.setValidationUpdatedNote("");
+                                            //siss.getConnection().setAutoCommit(false);
+                                            siss.createNewStudentItemSetStatusForRoster(customerId, sss, rosterId);
+                                            subtestOrder++;
+                         			   }
+                         		   }
+                         	   }
+                            }else {
+ 	                            for(int j=0;j<itemSetIds.length;j++){
+ 	                                StudentSessionStatus sss = new StudentSessionStatus();
+ 	                                sss.setItemSetId(itemSetIds[j]);
+ 	                                sss.setCompletionStatus("SC");
+ 	                                sss.setItemSetOrder(new Integer(subtestOrder));
+ 	                                sss.setStartDateTime(null);
+ 	                                sss.setCompletionDateTime(null);
+ 	                                sss.setValidationStatus("VA");
+ 	                                sss.setTimeExpired("F");
+ 	                                sss.setValidationUpdatedBy(userId);
+ 	                                sss.setValidationUpdatedDateTime(new Date());
+ 	                                sss.setValidationUpdatedNote("");
+ 	                                //siss.getConnection().setAutoCommit(false);
+ 	                                siss.createNewStudentItemSetStatusForRoster(customerId, sss, rosterId);
+ 	                                subtestOrder++;
+ 	                            } 
+                            }
+                         }                    
+                     }
+                  }    
+                //  RosterElement roster = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);                
+                  return roster;
+          } 
+          //START- Added for deferred defect #64306 and #64308
+          
+          catch(Exception se){
+
+      	 CTBBusinessException muf = null;
+      	 String message = se.getMessage().toLowerCase();
+      	 if(message.indexOf("insufficient available license quantity") >=0) {
+      		 muf = new InsufficientLicenseQuantityException("Insufficient available license quantity");
+           } else {
+          	 muf = new ManifestUpdateFailException("ScheduleTestImpl: getManifestForRoster: " + se.getMessage());
+               muf.setStackTrace(se.getStackTrace());
+           }
+          throw muf; 
+          }
+         //END- Added for deferred defect #64306 and #64308   
+      }  
+      
+      
+     /**
      * Delete the  Student Item set Status for a roster and the roster for a student.
      * @param userName - identifies the user
      * @param studentId -  identifies the student
@@ -3485,6 +3690,8 @@ public class ScheduleTestImpl implements ScheduleTest
           
             TestElement [] testUnits = itemSet.getTestElementsForSession(testAdminId);
             session.setScheduledUnits(testUnits);
+            TestElement [] deliverableUnit = itemSet.getTestElementsTDForLocatorSession(testAdminId);
+            session.setLocatorDeliverableUnit(deliverableUnit);
             TestSession testSession = admins.getTestAdminDetails(testAdminId);
             
             Integer productId = testSession.getProductId();
@@ -3496,6 +3703,10 @@ public class ScheduleTestImpl implements ScheduleTest
             for(int i=0;i<testUnits.length && testUnits[i] != null;i++) {
                 TestElement testUnit = testUnits[i];
                 testUnit.setForms(forms);
+                if(testUnits[i].getItemSetName().toUpperCase().contains("LOCATOR")){
+                	TestElement[] allLocatorTDUnit = itemSet.getTestElementsForParent(testUnits[i].getItemSetId(), "TD");
+                	session.setHasLocatorSubtestList(allLocatorTDUnit);
+                }
             }
             
             studentsLoggedIn =  students.getLoggedInSessionStudentCountForAdmin(testAdminId);

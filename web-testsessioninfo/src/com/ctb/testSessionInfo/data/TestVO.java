@@ -53,6 +53,7 @@ public class TestVO implements java.io.Serializable
     
     private String formOperand = TestSession.FormAssignment.ROUND_ROBIN;
     
+    private List<SubtestVO> locatorSubtestTDs = null;
     public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests, SubtestVO locatorSubtest) {
         this.id = id;
         this.testName = testName;
@@ -104,7 +105,7 @@ public class TestVO implements java.io.Serializable
         }
         
         this.isSubtestExists = getSubtestExistStatus();
-        
+        this.locatorSubtestTDs = src.getLocatorSubtestTDs();
     }
    	
    	
@@ -115,6 +116,19 @@ public class TestVO implements java.io.Serializable
         	this.autoLocator = true;
         }
    	   this.subtestCount = getSubtestCount();
+	}
+   	public TestVO(List<SubtestVO> subtests, SubtestVO locatorSubtest, List<SubtestVO> locatorTDs) {
+   		this.subtests = subtests;
+   		if(locatorSubtest!= null) {
+        	this.locatorSubtest = locatorSubtest;
+        	this.autoLocator = true;
+        }
+   	   this.subtestCount = getSubtestCount();
+   	   this.locatorSubtestTDs = locatorTDs;
+	}
+	public TestVO(List<SubtestVO> subtests) {
+   		this.subtests = subtests;
+   		this.subtestCount = getSubtestCount();
 	}
 
    	public int getSubtestCount() {
@@ -368,6 +382,20 @@ public class TestVO implements java.io.Serializable
 	 */
 	public void setAutoLocator(boolean autoLocator) {
 		this.autoLocator = autoLocator;
+	}
+
+	/**
+	 * @return the locatorSubtestTDs
+	 */
+	public List<SubtestVO> getLocatorSubtestTDs() {
+		return locatorSubtestTDs;
+	}
+
+	/**
+	 * @param locatorSubtestTDs the locatorSubtestTDs to set
+	 */
+	public void setLocatorSubtestTDs(List<SubtestVO> locatorSubtestTDs) {
+		this.locatorSubtestTDs = locatorSubtestTDs;
 	}
     
     

@@ -17,6 +17,9 @@ public class SubtestVO implements java.io.Serializable
     private boolean selected = true;
     private String sessionDefault = null;
     
+    private List<SubtestVO> subtestTestTD = null;	//added for locator
+    private String islocatorChecked = null;
+    
     public SubtestVO() {
         this.id = new Integer(0);
         this.sequence = "";
@@ -27,6 +30,8 @@ public class SubtestVO implements java.io.Serializable
         
         this.level = null;
         this.selected = false;
+        this.subtestTestTD = null;
+        this.islocatorChecked = "";
     }
     
     public SubtestVO(Integer id, String sequence, String subtestName, String duration, String testAccessCode, String sessionDefault) {
@@ -63,6 +68,8 @@ public class SubtestVO implements java.io.Serializable
         
         this.level = src.getLevel();
         this.selected = src.getSelected();
+        this.subtestTestTD = src.getSubtestTestTD();
+        this.islocatorChecked = src.getIslocatorChecked();
     }
     
     public SubtestVO(SubtestVO src, String level, String sequence, boolean selected) {
@@ -74,7 +81,9 @@ public class SubtestVO implements java.io.Serializable
         
         this.level = level;
         this.sequence = sequence;
-        this.selected = selected;        
+        this.selected = selected;
+        
+        this.subtestTestTD = src.getSubtestTestTD();
     }
 
     public Integer getId() {
@@ -127,6 +136,18 @@ public class SubtestVO implements java.io.Serializable
 	}
 	public void setSessionDefault(String sessionDefault) {
 		this.sessionDefault = sessionDefault;
+	}
+	public List<SubtestVO> getSubtestTestTD() {
+		return subtestTestTD;
+	}
+	public void setSubtestTestTD(List<SubtestVO> subtestTestTD) {
+		this.subtestTestTD = subtestTestTD;
+	}
+	public String getIslocatorChecked() {
+		return islocatorChecked;
+	}
+	public void setIslocatorChecked(String islocatorChecked) {
+		this.islocatorChecked = islocatorChecked;
 	}
 
 }

@@ -8,7 +8,9 @@
  
 <%
 	List subtestDetails = (List) session.getAttribute("subtestDetails");
-	System.out.println(subtestDetails);		
+	System.out.println(subtestDetails);	
+	boolean isTABE = Boolean.parseBoolean( session.getAttribute("isTABE").toString());
+	System.out.println(isTABE);	
 %>
 
 <table class="simpletable" width="100%">
@@ -27,6 +29,11 @@
            <th width="140" style="padding-left:5px;" align="left">
                <div class="notCurrentSort"><span>Access Code</span></div>
            </th>
+           <%if(isTABE){ %>
+           <th width="80" style="padding-left:5px;" align="left">
+               <div class="notCurrentSort"><span>Locator</span></div>
+           </th>
+           <%} %>
         </tr>
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
@@ -47,6 +54,11 @@
             <td class="simpletable">
             	<netui:content value="${container.item.accessCode}" defaultValue="&nbsp;"/>
             </td>
+            <%if(isTABE) {%>
+            <td class="simpletable">
+            	<netui:content value="${container.item.islocatorChecked}" defaultValue="&nbsp;"/>
+            </td>
+            <%} %>
         </tr>
        <% } %>
     </netui-data:repeaterItem>

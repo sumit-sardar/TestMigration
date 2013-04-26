@@ -30,17 +30,19 @@ public interface TestAdminItemSet extends JdbcControl
      *          ITEM_SET_ORDER,
      *          ACCESS_CODE,
      *			ITEM_SET_FORM,
-     *			SESSION_DEFAULT
+     *			SESSION_DEFAULT,
+     *			LOCATOR_SUBTEST
      *      ) values (
      *          {se.itemSetId},
      *          {se.testAdminId},
      *          {se.itemSetOrder},
      *          {se.accessCode},
      *			{se.itemSetForm},
-     *			{se.sessionDefault}
+     *			{se.sessionDefault},
+     *			{se.isLocatorChecked}
      *      )::
     */ 
-    @JdbcControl.SQL(statement = "insert into  test_admin_item_set (  ITEM_SET_ID,  TEST_ADMIN_ID,  ITEM_SET_ORDER,  ACCESS_CODE, \t\t\tITEM_SET_FORM, \t\t\tSESSION_DEFAULT  ) values (  {se.itemSetId},  {se.testAdminId},  {se.itemSetOrder},  {se.accessCode}, \t\t\t{se.itemSetForm}, \t\t\t{se.sessionDefault}  )")
+    @JdbcControl.SQL(statement = "insert into  test_admin_item_set (  ITEM_SET_ID,  TEST_ADMIN_ID,  ITEM_SET_ORDER,  ACCESS_CODE, \t\t\tITEM_SET_FORM, \t\t\tSESSION_DEFAULT, \t\t\tLOCATOR_SUBTEST  ) values (  {se.itemSetId},  {se.testAdminId},  {se.itemSetOrder},  {se.accessCode}, \t\t\t{se.itemSetForm}, \t\t\t{se.sessionDefault}, \t\t\t{se.isLocatorChecked}  )")
     void createNewTestAdminItemSet(ScheduleElement se) throws SQLException;
 
     /** 

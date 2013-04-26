@@ -127,6 +127,8 @@ var selectedForm = "";
 var updateSuccess = false;
 var testStatusMap = new Map();
 var testStatus = "";
+var locatorOnlyTest = false;
+var locatorTDList = [];
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1871,7 +1873,7 @@ function registerDelegate(tree){
 		selectedTestId = "";
 		var e = document.getElementById("testGroupList");  
 		selectProductId = e.options[e.selectedIndex].value;
-		var optionList = ProductData.product
+		var optionList = ProductData.product;
 		for(var i = 0; i < optionList.length; i++ ) {
 			if((optionList[i].productId == '9003' || optionList[i].productId == '9007') && !isOKAdmin) {
 				continue; // Only state level oklahoma admin should be able to see 9003 and 9007 products
@@ -2163,6 +2165,22 @@ function registerDelegate(tree){
 					if(testSessionListRequired.autoLocator){
 						hasAutolocator = true;
 						locatorSubtest = testSessionListRequired.locatorSubtest;
+						locatorTDList = locatorSubtest.subtestTestTD;
+						if(testSessionListRequired.testName.indexOf("Locator") != -1){
+							locatorOnlyTest = true;
+							//testJSONValue = locatorSubtest.subtestTestTD;
+							var locatorSubtestTDList = [];
+							var count = 0;
+							for(var indx=0; indx<locatorSubtest.subtestTestTD.length; indx++){
+								if(locatorSubtest.subtestTestTD[indx].subtestName.indexOf("Sample Question") == -1){
+									locatorSubtestTDList[count]= locatorSubtest.subtestTestTD[indx];
+									count++;
+								}
+							}
+							testJSONValue = locatorSubtestTDList;
+						}else{
+							locatorOnlyTest = false;
+						}
 					} else {
 						hasAutolocator = false;
 						locatorSubtest = {};
@@ -2309,11 +2327,11 @@ function registerDelegate(tree){
 			locatorSubtestTableHtml +='<tr >';
 			locatorSubtestTableHtml +='<td height="23" width="24" bgcolor="#FFFFFF" style="padding-left:10px;" >';
 			var disabled = "";
-			if(allSubtests!=null && allSubtests!= undefined && allSubtests.length<1){
+			if((allSubtests!=null && allSubtests!= undefined && allSubtests.length<1) || locatorOnlyTest){
 				disabled = 'disabled ="disabled"';
 			}
 			if(hasAutolocator) {
-				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked"'+ disabled+ ' value="true" onClick="javascript:updateLocatorValue(); " />';
+				locatorSubtestTableHtml +='<input id = "hasAutolocator" type = "checkBox" name="hasAutolocator" checked="checked" '+ disabled+ ' value="true" onClick="javascript:updateLocatorValue(); " />';
 			} else {
 				locatorSubtestTableHtml +='<input id="hasAutolocator" type = "checkBox" name="hasAutolocator"  '+ disabled+ '  value="false" onClick="javascript:updateLocatorValue(); "/>';
 			}
@@ -2400,6 +2418,12 @@ function registerDelegate(tree){
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
+			if(hasAutolocator){
+				for(j=0;j<locatorTDList.length;j++) {
+					subtestData+='<input type = "hidden" id ="locator_'+locatorTDList[j].subtestName+'" name ="locatorItemTD" value ="'+locatorTDList[j].id+'~'+locatorTDList[j].subtestName+'" />';
+				}
+			}
+			document.getElementById("subtestGrid").innerHTML = subtestData;
 			subtestData +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table id ="subtestTable" width="100%" class="ts" cellpadding="0" cellspacing="1">';
 							
 			th +='<tr class="subtestHeader" >';
@@ -2415,6 +2439,9 @@ function registerDelegate(tree){
 			/*if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
 			}*/
+			if(hasAutolocator){
+				th +='<th width="82" height="23" align="center"><strong>Locator</strong></th>';
+			}
 			th +='</tr>';
 			subtestData += th;
 			
@@ -2425,6 +2452,7 @@ function registerDelegate(tree){
 				tr +='<td height="23" width="24" >';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
 				tr +='<input type = "hidden" id ="itemSetIdTD'+i+'" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
+				//tr +='<input type = "hidden" id ="itemSetIdTDName'+i+'" name ="itemSetIdTDName" value ="'+subtestArr[i].id+'~'+subtestArr[i].subtestName+'" />';
 				if(subtestArr[i].level != undefined){
 					tr +='<input type = "hidden" id ="itemSetForm" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
 				} else {
@@ -2435,6 +2463,9 @@ function registerDelegate(tree){
 					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
 				} else {
 					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="" />';
+				}
+				if(hasAutolocator) {
+					tr +='<input type = "hidden" id = "locatorCheckbox'+i+'"  name="locatorCheckbox" />';
 				}
 				
 				tr +='</td>';
@@ -2475,11 +2506,17 @@ function registerDelegate(tree){
 					tr +='</div>';
 					tr +='</td>';
 				}*/
+				if(hasAutolocator){
+				tr +='<td height="23" width="60" align="center"> <div align="center" id="locator'+i+'"> <input type="checkbox" id="'+subtestArr[i].subtestName+'" name="'+subtestArr[i].subtestName+'" onclick = "javascript:validatelocatorCheckbox(this);" /></div></td>'
+				}
 				tr +='</tr>';				
-				subtestData += tr;		
+				subtestData += tr;
+				
 			}
 			subtestData +='</table></td></tr></table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
+			populateLocatorSubtest();
+			deselectSubtest.clear();
 			subtestGridLoaded = true;
 		}else if (subtestArr.length == 0  ){
 			document.getElementById("noSubtest").style.display = "none";
@@ -3565,7 +3602,7 @@ function registerDelegate(tree){
 	    
 	    var param;
    	 if(state != "EDIT"){
-		
+		populateLocatorCheckboxValue();
 		var param1 =$("#testDiv *").serialize(); 
 	    var param2 = $("#Test_Detail *").serialize();
 	    var time = document.getElementById("time").innerHTML;
@@ -3908,16 +3945,43 @@ function registerDelegate(tree){
 		populateSelectedSubtestsMap (testJSONValue);
 		
 		if(subtestDataArr!= undefined && subtestDataArr.length>1){
-			document.getElementById("testBreak").disabled=false;
+			if(!locatorOnlyTest){
+				document.getElementById("testBreak").disabled=false;
+			}else{
+				document.getElementById("testBreak").disabled=true;
+			}
 		} else {
 			document.getElementById("testBreak").disabled=true;
 		}						
 		createSubtestGrid();
+		enableDisableLocatorCheckBox();
 		$("#selectedNewTestId").val(selectedTestId);
 		$("#sData").removeClass("ui-state-disabled");
 		document.getElementById("sData").disabled=false;
     }
-	
+    
+    function enableDisableLocatorCheckBox(){
+		var locator = document.getElementById("hasAutolocator");
+		if(!locator.checked){
+			for(var indx=0; indx<selectedSubtests.length; indx++) {
+				if(selectedSubtests[indx].subtestName.indexOf("Sample Question") == -1){
+					document.getElementById(selectedSubtests[indx].subtestName).checked = "";
+					document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
+				}
+			}
+		}else{
+			for(var indx=0; indx<selectedSubtests.length; indx++) {
+				if(selectedSubtests[indx].subtestName.indexOf("Sample Question") == -1){
+					document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
+					if(locator.disabled){
+						document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
+					}else{
+						document.getElementById(selectedSubtests[indx].subtestName).disabled="";
+					}
+				}
+			}
+		}	
+	}
    /******Jstree Methods*****/
 	//method triggered from library
 	  function customLoad(){
@@ -4616,15 +4680,21 @@ function registerDelegate(tree){
            					}
            					html += '</tr>';
             				var row = "";
+            				
 							for(var i=0; i<data.testElement.length; i++) {
 								row = data.testElement[i];
 								html += '<tr class="sortable" id="'+row.itemSetId+'">';
 								if(row.itemSetType == 'TS') {
+									var hasLocatorTD = "";
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter">&nbsp;</td>';
 									}
+									
+									if(data.isTabeSession && row.hasLocatorTDs == "T"){
+										hasLocatorTD = "( Locator )";
+									}
 									html += '<td class="sortable alignLeft" colspan="'+data.numberColumn+'">';
-									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span></td>';
+									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span>&nbsp;&nbsp;<span> '+hasLocatorTD+'</span></td>';
 								} else {
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
@@ -4979,7 +5049,7 @@ function registerDelegate(tree){
 	function serializeDisabledFieldFromDiv(element) {
 		var disParam = "";
 		 $("#"+element+" *").find(":disabled").each( function() {
-		        if( this.name != undefined &&  this.name!=null && this.name!="")
+		        if( this.name != undefined &&  this.name!=null && this.name!="" && this.id.indexOf("locator_") == -1)
 		    	 	disParam = disParam + '&' + this.name + '=' + $(this).val();
 		    });
 		 
@@ -5231,11 +5301,17 @@ function validNumber(str){
 				if(isTestBreak){
 						$("#"+locatorSubtest.id+" input").val("");
 				}
-
-				
+				for(var indx=0; indx<selectedSubtests.length; indx++) {
+					document.getElementById(selectedSubtests[indx].subtestName).checked = "";
+					document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
+				}
 		} else {
 			locator.value = "true";	
 			hasAutolocator = true;
+			for(var indx=0; indx<selectedSubtests.length; indx++) {
+				document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
+				document.getElementById(selectedSubtests[indx].subtestName).disabled="";
+			}
 			if(isTestBreak){
 				var accesscode = ProductData.accessCodeList[0];
 				var localAccesCodeMap = new Map();
@@ -5436,4 +5512,304 @@ function validNumber(str){
 	
 	function setRetainedRowListValue() {
 		pageSizeSelected = $("#rosterPager .ui-pg-selbox").val(); 
+	}
+	
+	
+	var checkboxId = "";
+	function validatelocatorCheckbox(checkBox) {
+		checkboxId = checkBox.id;
+		if(checkboxId.indexOf("Reading") != -1){
+			if (document.getElementById(checkboxId).checked == false) {
+				openLocatorValidatePopup();//confirm("Remove Reading will also remove Vocabulary. Do you want to continue?");
+			}else if (document.getElementById(checkboxId).checked == true) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+					}
+				}
+			}
+		}
+		else if(checkboxId.indexOf("Vocabulary") != -1){
+			if (document.getElementById(checkboxId).checked == true) {
+				openLocatorValidatePopup();//confirm("Add Vocabulary will also add Reading. Do you want to continue?");
+			}
+		}
+		else if(checkboxId.indexOf("Language") != -1 && checkboxId.indexOf("Mechanics") == -1){
+			if (document.getElementById(checkboxId).checked == false) {
+				openLocatorValidatePopup();//confirm("Remove Language will also remove Language Mechanics and Spelling. Do you want to continue?");
+			}else if (document.getElementById(checkboxId).checked == true) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+					}
+				}
+			}
+		}
+		else if(checkboxId.indexOf("Mechanics") != -1){
+			if (document.getElementById(checkboxId).checked == true) {
+				openLocatorValidatePopup();//confirm("Add Mechanics will also add Language. Do you want to continue?");
+			}
+		}
+		else if(checkboxId.indexOf("Spelling") != -1){
+			if (document.getElementById(checkboxId).checked == true) {
+				openLocatorValidatePopup();//("Add Spelling will also add Language. Do you want to continue?");
+			}
+		}
+		else if(checkboxId.indexOf("Computation") != -1){
+			if (document.getElementById(checkboxId).checked == false) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Computation")!= -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "true";
+					}
+				}
+				disableAutoLocatorCheckbox();
+			}else if (document.getElementById(checkboxId).checked == true) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+					}
+				}
+			}
+		}
+		else if(checkboxId.indexOf("Applied") != -1){
+			if (document.getElementById(checkboxId).checked == false) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "true";
+					}
+				}
+				disableAutoLocatorCheckbox();
+			}else if (document.getElementById(checkboxId).checked == true) {
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+					}
+				}
+			}
+		}
+	}
+	
+	function disableAutoLocatorCheckbox(){
+		var count = 0;
+		for(var indx=0; indx<selectedSubtests.length; indx++){
+			if((document.getElementById(selectedSubtests[indx].subtestName) !=  undefined ||
+				document.getElementById(selectedSubtests[indx].subtestName)!= null) && 
+					(document.getElementById(selectedSubtests[indx].subtestName).checked == true)){
+					 count++;
+					}
+		}
+		if(count > 0){
+			document.getElementById("hasAutolocator").checked = "true";
+		}else{
+			document.getElementById("hasAutolocator").checked = "";
+			updateLocatorValue();
+		}
+		
+	}
+	 
+	function populateLocatorCheckboxValue(){
+		for(var i=0;i<selectedSubtests.length; i++){
+			var id = selectedSubtests[i].subtestName;
+			var idd = "locatorCheckbox"+i;
+			if(idd != undefined){
+				if(document.getElementById(id).checked){
+					document.getElementById(idd).value = "T";
+				}
+				else{
+					document.getElementById(idd).value = "F";
+				}
+			}
+		}
+	}
+	
+	function openLocatorValidatePopup(){
+		$("#validateLocatorTestPopup").dialog({  
+		title:$("#confirmAlrt").val(),  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		if(checkboxId.indexOf("Reading") != -1){
+			$("#confirmationMessage").html($("#uncheckReadingMsg").val());
+		}
+		else if(checkboxId.indexOf("Language") != -1 && checkboxId.indexOf("Mechanics") == -1){
+			$("#confirmationMessage").html($("#uncheckLanguageMsg").val());
+		}
+		else if(checkboxId.indexOf("Vocabulary") != -1){
+			$("#confirmationMessage").html($("#checkVocabularyMsg").val());
+		}
+		else if(checkboxId.indexOf("Mechanics") != -1){
+			$("#confirmationMessage").html($("#checkMechanicsMsg").val());
+		}
+		else if(checkboxId.indexOf("Spelling") != -1){
+			$("#confirmationMessage").html($("#checkSpellingMsg").val());
+		}
+		$("#validateLocatorTestPopup").css('height',120);
+		var toppos = ($(window).height() - 290) /2 + 'px';
+		var leftpos = ($(window).width() - 410) /2 + 'px';
+		$("#validateLocatorTestPopup").parent().css("top",toppos);
+		$("#validateLocatorTestPopup").parent().css("left",leftpos);	
+		 
+	}
+	
+	
+	function locatorSubtestConfirmPopup(){
+		closePopUp('validateLocatorTestPopup');
+		if(checkboxId.indexOf("Reading") != -1){
+			document.getElementById(checkboxId).checked = "";
+			for(var i = 0; i<selectedSubtests.length; i++){
+				var keyId = selectedSubtests[i].subtestName;
+				if((keyId).indexOf("Vocabulary") != -1){
+					document.getElementById(keyId).checked = "";
+				}
+			}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "true";
+				}
+			}
+		}
+		else if(checkboxId.indexOf("Vocabulary") != -1) {
+			document.getElementById(checkboxId).checked = "true";
+			for(var i = 0; i<selectedSubtests.length; i++){	
+					var keyId = selectedSubtests[i].subtestName;
+					if((keyId).indexOf("Reading") != -1 && !(document.getElementById(keyId).checked)){
+						document.getElementById(keyId).checked = "true";
+					}
+				}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+				}
+			}
+   		}
+   		else if(checkboxId.indexOf("Language")!= -1 && checkboxId.indexOf("Mechanics") == -1){
+   			document.getElementById(checkboxId).checked = "";
+   			for(var i = 0; i<selectedSubtests.length; i++){
+					var keyId = selectedSubtests[i].subtestName;
+					if((keyId).indexOf("Mechanics")!= -1 || (keyId).indexOf("Spelling")!= -1){
+						document.getElementById(keyId).checked = "";
+					}
+				}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "true";
+				}
+			}
+   		}
+   		else if(checkboxId.indexOf("Mechanics") != -1){
+   			document.getElementById(checkboxId).checked = "true";
+   			for(var i = 0; i<selectedSubtests.length; i++){
+				var keyId = selectedSubtests[i].subtestName;
+				if((keyId).indexOf("Language") != -1 && !(document.getElementById(keyId).checked)){
+					document.getElementById(keyId).checked = "true";
+				}
+			}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+				}
+			}
+   		}
+   		else if(checkboxId.indexOf("Spelling") != -1){
+   			document.getElementById(checkboxId).checked = "true";
+   			for(var i = 0; i<selectedSubtests.length; i++){
+				var keyId = selectedSubtests[i].subtestName;
+				if((keyId).indexOf("Language")!= -1 && !(document.getElementById(keyId).checked)){
+					document.getElementById(keyId).checked = "true";
+				}
+			}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Language")!= -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "";
+				}
+			}
+   		}
+   		disableAutoLocatorCheckbox();
+	}
+	
+	function onCancelLocatorSubtestConfirm(){
+		closePopUp('validateLocatorTestPopup');
+		if(checkboxId.indexOf("Reading") != -1 || (checkboxId.indexOf("Language") != -1 && checkboxId.indexOf("Mechanics") == -1)){
+			document.getElementById(checkboxId).checked = "true";
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Language") != -1 || locatorTDList[j].subtestName.indexOf("Reading") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(id != undefined && id != null)
+						document.getElementById(id).disabled = "";
+				}
+			}
+		}
+		else if(checkboxId.indexOf("Vocabulary") != -1 || checkboxId.indexOf("Mechanics") != -1 || checkboxId.indexOf("Spelling") != -1){
+			document.getElementById(checkboxId).checked = "";
+		}
+	}
+	
+	
+	function populateLocatorSubtest(){
+		for(var i = 0; i < allSubtests.length; i++){
+			var mapData = deselectSubtest.get(i);
+			if(mapData!= null && mapData!= undefined){
+				if(mapData.subtestName.indexOf("Reading") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(id != undefined && id != null)
+								document.getElementById(id).disabled = "true";
+							}
+						}
+				}
+				else if(mapData.subtestName.indexOf("Language") != -1 && !mapData.subtestName.indexOf("Mechanics") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(id != undefined && id != null)
+								document.getElementById(id).disabled = "true";
+							}
+						}
+				}
+				else if(mapData.subtestName.indexOf("Computation") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(id != undefined && id != null)
+								document.getElementById(id).disabled = "true";
+							}
+						}
+				}
+				else if(mapData.subtestName.indexOf("Applied") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(id != undefined && id != null)
+								document.getElementById(id).disabled = "true";
+							}
+						}
+				}
+			}
+		}
 	}

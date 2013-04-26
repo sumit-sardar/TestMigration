@@ -37,9 +37,11 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
 	public void setOperationStatus(OperationStatus operationStatus) {
 		this.operationStatus = operationStatus;
 	}
-	public void populateTestSession(TestElement[] usTes) {
+	public void populateTestSession(TestElement[] usTes, TestElement[] locatorTds) {
 		
 			SubtestVO locatorSubtest = null;
+			SubtestVO locatorSubtests =null;
+			List<SubtestVO> locatorSubtestList = new ArrayList<SubtestVO>();
 			List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
             for (int j=0; j<usTes.length; j++)
             {
@@ -59,9 +61,21 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
                 	subtestList.add(subtestVO);
                 }
             }
+            for(int j=0; j<locatorTds.length; j++){
+            	int durationMinutes = locatorTds[j].getTimeLimit().intValue()/60;
+                String duration1 = (durationMinutes == 0) ? "Untimed" : durationMinutes + " mins";
+                locatorSubtests = new SubtestVO(locatorTds[j].getItemSetId(),
+                        String.valueOf(j+1), 
+                        locatorTds[j].getItemSetName(), 
+                        duration1, 
+                        locatorTds[j].getAccessCode(),
+                        locatorTds[j].getSessionDefault(),
+                        locatorTds[j].getItemSetForm(),
+                        false);
+                locatorSubtestList.add(locatorSubtests);
+            }
             subtestList = getDefaultSubtestsWithoutLocator(subtestList);
-
-            TestVO testVO = new TestVO( subtestList, locatorSubtest);
+            TestVO testVO = new TestVO( subtestList, locatorSubtest, locatorSubtestList);
             setTestSession(testVO);
 		
 		

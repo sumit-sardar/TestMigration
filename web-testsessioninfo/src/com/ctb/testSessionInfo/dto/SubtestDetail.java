@@ -32,6 +32,7 @@ public class SubtestDetail implements java.io.Serializable
     private String absent = null;
     private String invalidationReason = null;
     
+    private String hasLocatorTDs = null;
     
     public String getInvalidationReason() {
 		return invalidationReason;
@@ -81,6 +82,7 @@ public class SubtestDetail implements java.io.Serializable
         this.grade = te.getGrade();
         this.level = te.getItemSetLevel();     
         this.accessCode = te.getAccessCode();
+        this.hasLocatorTDs = te.getIslocatorChecked();
         this.subtestName = te.getItemSetName();
         this.sequence = new Integer(sequence);
         if (te.getTimeLimit().intValue() == 0)
@@ -210,5 +212,11 @@ public class SubtestDetail implements java.io.Serializable
     public void setCustomStatus(String customStatus) {
         this.customStatus = customStatus;
     }
+	public String getHasLocatorTDs() {
+		return hasLocatorTDs;
+	}
+	public void setHasLocatorTDs(String hasLocatorTDs) {
+		this.hasLocatorTDs = hasLocatorTDs;
+	}
     
 } 

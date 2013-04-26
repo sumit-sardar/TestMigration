@@ -123,3 +123,8 @@
 
 <input type="hidden" id="assignFormUpdateMsg" name="assignFormUpdateMsg" value=<lb:label key="viewStatus.assignForm.message" prefix="'" suffix="'"/> />
 
+<input type="hidden" id="uncheckReadingMsg" name="uncheckReadingMsg" value=<lb:label key="scheduleTest.removeReadingConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkVocabularyMsg" name="checkVocabularyMsg" value=<lb:label key="scheduleTest.addVocabularyConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckLanguageMsg" name="uncheckLanguageMsg" value=<lb:label key="scheduleTest.removeLanguageConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkMechanicsMsg" name="checkMechanicsMsg" value=<lb:label key="scheduleTest.addMechanicsConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkSpellingMsg" name="checkSpellingMsg" value=<lb:label key="scheduleTest.addSpellingConfirmation.message" prefix="'" suffix="'"/> />

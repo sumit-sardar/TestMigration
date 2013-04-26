@@ -99,7 +99,7 @@ public class ScheduleTestVo implements Serializable{
             String accessCode = tes[i].getAccessCode();
             
             List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
-
+            List<SubtestVO>	tdSubtestList = new ArrayList<SubtestVO>();
             Integer itemSetId = tes[i].getItemSetId();
             TestElementData suTed = scheduleTest.getSchedulableUnitsForTestWithBlankAccessCode(userName, itemSetId, new Boolean(true), null, null, null);
             TestElement [] usTes = suTed.getTestElements();
@@ -118,6 +118,23 @@ public class ScheduleTestVo implements Serializable{
                                                     false);
                 if(locatorSubtest == null && usTes[j].getItemSetName().indexOf("Locator") > 0){
                 	locatorSubtest = subtestVO;
+                	TestElementData locatorSubtestTD = scheduleTest.getDeliverableUnitsForTestWithBlankAccessCode(userName, subtestVO.getId(), new Boolean(false), null, null, null);
+                	TestElement [] testElementTD = locatorSubtestTD.getTestElements();
+                	for (int z=0; z<testElementTD.length; z++)
+                    {
+                        int duraMin = testElementTD[z].getTimeLimit().intValue()/60;
+                        String dura = (duraMin == 0) ? "Untimed" : duraMin + " mins";
+                        SubtestVO subtestVOforTD = new SubtestVO(testElementTD[z].getItemSetId(),
+                                                            String.valueOf(z+1), 
+                                                            testElementTD[z].getItemSetName(), 
+                                                            dura, 
+                                                            testElementTD[z].getAccessCode(),
+                                                            testElementTD[z].getSessionDefault(),
+                                                            testElementTD[z].getItemSetForm(),
+                                                            false);
+                        tdSubtestList.add(subtestVOforTD);
+                    }
+                	locatorSubtest.setSubtestTestTD(tdSubtestList);
                 } else {
                 	subtestList.add(subtestVO);
                 }

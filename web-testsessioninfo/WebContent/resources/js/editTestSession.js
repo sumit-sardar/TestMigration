@@ -231,6 +231,7 @@
 							 }
 							});	
 						setPopupPosition();
+						updateLocatorSubtestsList();
 							$('#ssAccordion').accordion('activate', 1 );	
 						$.unblockUI(); 
 									
@@ -394,6 +395,9 @@
 									if(subtest.length <= 1) {
 										$("#testBreak").attr('disabled', true);
 									}
+									if(locatorOnlyTest){
+										$("#hasAutolocator").attr('disabled', true);
+									}
 								}
 								
 								if (forceTestBreak) {
@@ -402,7 +406,10 @@
 								
 								onChangeHandler.register("Select_Test");
 								isPopUp = true;
-								wizard.accordion("activate", index);					
+								wizard.accordion("activate", index);
+								enableDisableLocatorCheckBox();
+								populateCheckboxSelection(selectedTestSession.scheduledUnits);
+								updateLocatorSubtestsList();				
 								$.unblockUI(); 
 											
 							},
@@ -838,6 +845,7 @@
 	function createSubtestGridInEdit(savedTestDetails , hasLocator , locatorId ){
 
         var subtestArr = savedTestDetails.scheduledUnits;
+        var locatorArr = savedTestDetails.hasLocatorSubtestList;
 		var subtestData = '';
 		var subtestLength = 0;
 		//alert(subtestGridLoaded);
@@ -865,6 +873,17 @@
 			th +='<tr class="subtestHeader" >';
 			th +='</tr>';
 			subtestData += th;
+			if(hasLocator && locatorId!=undefined){
+				for(var j=0; j<locatorArr.length; j++){
+					tr = ''			
+					tr +='<tr>';
+					tr +='<td >';
+					tr +='<input type = "hidden" id ="locator_'+locatorArr[j].itemSetName+'" name ="locatorItemTD" value ="'+selectedTestSession.hasLocatorSubtestList[j].itemSetId+'~'+selectedTestSession.hasLocatorSubtestList[j].itemSetName+'" disabled="disabled" />';
+					tr +='</td>';
+					tr +='</tr>';				
+					subtestData += tr;
+				}
+			}
 			for(var i=0;i<subtestArr.length; i++){
 				tr = ''			
 				tr +='<tr>';
@@ -886,6 +905,7 @@
 					if(savedTestDetails.testSession.enforceBreak != undefined && savedTestDetails.testSession.enforceBreak == "T"){
 						tr +='<input type="hidden"  name="aCodeB_l"  value="'+subtestArr[i].accessCode+'"  /></div>';
 					}
+					
 				} else {
 					tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].itemSetId+'" />';
 					if(subtestArr[i].itemSetForm != undefined){
@@ -911,6 +931,12 @@
 			}
 			subtestData +='</table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
+			if(selectedTestSession.locatorDeliverableUnit != null){
+				updateLocatorSubtestsForEdit(savedTestDetails.locatorDeliverableUnit ,locatorArr);
+			}else{
+				updateLocatorSubtestsForEdit(subtestArr ,locatorArr);
+			}
+			
 			//subtestGridLoaded = true;
 		}/*else{
 			subtestLength = 0;
@@ -999,7 +1025,15 @@
 		    }
 		 }
 		selectedSubtests  = new Array();
-		prepareSelectedSubtestsFromSavedDetails(allSubtests, selectedTestSession.scheduledUnits );
+		if(locatorOnlyTest != undefined && locatorOnlyTest){
+			if(selectedTestSession.locatorDeliverableUnit!= null && selectedTestSession.locatorDeliverableUnit!= undefined){
+				prepareSelectedSubtestsFromSavedDetails(allSubtests, selectedTestSession.locatorDeliverableUnit);
+			}else{
+				prepareSelectedSubtestsFromSavedDetails(allSubtests, allSubtests);
+			}
+		}else{
+			prepareSelectedSubtestsFromSavedDetails(allSubtests, selectedTestSession.scheduledUnits );
+		}
 		updateAllSubtests(allSubtests, selectedSubtests);
 		populateAllSubtestMap(allSubtests)
 		createSubtestGrid();
@@ -1028,5 +1062,65 @@
 		return null;	
 	}
 	
+	function populateCheckboxSelection(scheduledUnits){
+		for(var indx=0; indx<scheduledUnits.length;indx++){
+			if(document.getElementById(scheduledUnits[indx].itemSetName) != undefined && document.getElementById(scheduledUnits[indx].itemSetName) != null 
+				&& scheduledUnits[indx].islocatorChecked != undefined && scheduledUnits[indx].islocatorChecked == "T" || scheduledUnits[indx].islocatorChecked == "Yes"){
+				document.getElementById(scheduledUnits[indx].itemSetName).checked = "true";
+			}
+			if(document.getElementById(scheduledUnits[indx].itemSetName) != undefined && document.getElementById(scheduledUnits[indx].itemSetName) != null 
+				&& scheduledUnits[indx].islocatorChecked != undefined && scheduledUnits[indx].islocatorChecked == "F" || scheduledUnits[indx].islocatorChecked == "No"){
+				document.getElementById(scheduledUnits[indx].itemSetName).checked = "";
+			}
+		}
+	}
 	
-
+	function updateLocatorSubtestsList(){
+		prepareDeselectSubtest(selectedSubtests);
+		populateLocatorSubtest();
+		for(var indx=0; indx<selectedSubtests.length;indx++){
+			if(document.getElementById(selectedSubtests[indx].subtestName) != null && document.getElementById(selectedSubtests[indx].subtestName) != undefined) {
+				if(selectedSubtests[indx].subtestName.indexOf("Reading") != -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
+					for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						document.getElementById(id).disabled = "true";
+					}
+					}
+				}else if(selectedSubtests[indx].subtestName.indexOf("Language") != -1 && (selectedSubtests[indx].subtestName.indexOf("Mechanics") == -1) && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
+					for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						document.getElementById(id).disabled = "true";
+					}
+					}
+				}else if(selectedSubtests[indx].subtestName.indexOf("Applied")!= -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
+					for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						document.getElementById(id).disabled = "true";
+					}
+					}
+				}else if(selectedSubtests[indx].subtestName.indexOf("Computation") != -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
+					for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						document.getElementById(id).disabled = "true";
+					}
+					}
+				}
+			}
+		}
+	}
+	
+	function updateLocatorSubtestsForEdit(selectedSubtests, locatorTDList){
+		prepareDeselectSubtest(selectedSubtests);
+		for(var indx=0; indx<selectedSubtests.length;indx++){
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].itemSetName) == selectedSubtests[indx].itemSetName){
+					var id = "locator_"+locatorTDList[j].itemSetName;
+					document.getElementById(id).disabled = "";
+				}
+			}
+		}
+	}

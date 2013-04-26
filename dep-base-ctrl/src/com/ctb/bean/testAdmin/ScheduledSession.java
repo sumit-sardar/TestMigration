@@ -5,6 +5,7 @@ import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * input object for creating new test sessions.
@@ -28,6 +29,10 @@ public class ScheduledSession extends CTBBean
     private String copyable;
     private Boolean fromTAS = true;
     private Boolean hasLocator = false;
+   
+    private Map<Integer,String> locatorSubtestTD = null;	 //added for locator manifest
+    private TestElement [] locatorDeliverableUnit;		 //added for locator manifest
+    private TestElement [] hasLocatorSubtestList;
     
     
     public Boolean getHasLocator() {
@@ -120,5 +125,43 @@ public class ScheduledSession extends CTBBean
 	public void setFromTAS(Boolean fromTAS) {
 		this.fromTAS = fromTAS;
 	}
+	/**
+	 * @return the locatorSubtestTD
+	 */
+	public Map<Integer,String> getLocatorSubtestTD() {
+		return locatorSubtestTD;
+	}
+	/**
+	 * @param locatorSubtestTD the locatorSubtestTD to set
+	 */
+	public void setLocatorSubtestTD(Map<Integer,String> locatorSubtestTD) {
+		this.locatorSubtestTD = locatorSubtestTD;
+	}
+	/**
+	 * @return the locatorDeliverableUnit
+	 */
+	public TestElement[] getLocatorDeliverableUnit() {
+		return locatorDeliverableUnit;
+	}
+	/**
+	 * @param locatorDeliverableUnit the locatorDeliverableUnit to set
+	 */
+	public void setLocatorDeliverableUnit(TestElement[] locatorDeliverableUnit) {
+		this.locatorDeliverableUnit = locatorDeliverableUnit;
+	}
+	/**
+	 * @return the hasLocatorSubtestList
+	 */
+	public TestElement[] getHasLocatorSubtestList() {
+		return hasLocatorSubtestList;
+	}
+	/**
+	 * @param hasLocatorSubtestList the hasLocatorSubtestList to set
+	 */
+	public void setHasLocatorSubtestList(TestElement[] hasLocatorSubtestList) {
+		this.hasLocatorSubtestList = hasLocatorSubtestList;
+	}
+	
+	
 	
 } 
