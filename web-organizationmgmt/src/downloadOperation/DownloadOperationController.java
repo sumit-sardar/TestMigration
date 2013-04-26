@@ -223,7 +223,7 @@ public class DownloadOperationController extends PageFlowController {
         return null;
     }
     
-    private void isTopLevelUser(){
+    private boolean isTopLevelUser(){
 		
 		boolean isUserTopLevel = false;
 		boolean isLaslinkUserTopLevel = false;
@@ -239,7 +239,8 @@ public class DownloadOperationController extends PageFlowController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);
+		return isLaslinkUserTopLevel;
 	}
     
     
@@ -816,7 +817,7 @@ public class DownloadOperationController extends PageFlowController {
 		
 		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
-		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
+		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer)|| (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 	}

@@ -3092,7 +3092,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 
 
 	
-		this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
+		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 
 	}
 
