@@ -3962,6 +3962,9 @@ function registerDelegate(tree){
     
     function enableDisableLocatorCheckBox(){
 		var locator = document.getElementById("hasAutolocator");
+		if(locator == null) 
+			return;
+		 
 		if(!locator.checked){
 			for(var indx=0; indx<selectedSubtests.length; indx++) {
 				if(selectedSubtests[indx].subtestName.indexOf("Sample Question") == -1){
@@ -5624,11 +5627,13 @@ function validNumber(str){
 			var id = selectedSubtests[i].subtestName;
 			var idd = "locatorCheckbox"+i;
 			if(idd != undefined){
-				if(document.getElementById(id).checked){
-					document.getElementById(idd).value = "T";
-				}
-				else{
-					document.getElementById(idd).value = "F";
+				if (document.getElementById(id) != null) {
+					if(document.getElementById(id).checked){
+						document.getElementById(idd).value = "T";
+					}
+					else{
+						document.getElementById(idd).value = "F";
+					}
 				}
 			}
 		}

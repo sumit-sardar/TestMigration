@@ -1907,7 +1907,9 @@ public class ScheduleTestImpl implements ScheduleTest
                
                 // added for locator subtest manifest
                 ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
-                HashMap<Integer,String> locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
+                HashMap<Integer,String> locatorSubtestTD = null;
+                if (newSession.getLocatorSubtestTD() != null)
+                	locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
                 if(locatorSubtestTD !=null){
                 	Iterator iterator = locatorSubtestTD.keySet().iterator();
                 	for(TestElement subtestlist: subtests){
@@ -1934,8 +1936,10 @@ public class ScheduleTestImpl implements ScheduleTest
                 //updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 // added for locator subtest manifest
                 ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
-                HashMap<Integer,String> locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
-                if(locatorSubtestTD.keySet() !=null){
+                HashMap<Integer,String> locatorSubtestTD = null;
+                if (newSession.getLocatorSubtestTD() != null)
+                	locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
+                if((locatorSubtestTD != null) && (locatorSubtestTD.keySet() !=null)){
                 	Iterator iterator = locatorSubtestTD.keySet().iterator();
                 	for(TestElement subtestlist: subtests){
                 		if(subtestlist.getItemSetName().toUpperCase().contains("LOCATOR")){
