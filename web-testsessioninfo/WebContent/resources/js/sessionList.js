@@ -129,6 +129,8 @@ var testStatusMap = new Map();
 var testStatus = "";
 var locatorOnlyTest = false;
 var locatorTDList = [];
+var sessionHasLocator = false;
+var selectedLocatorMap = new Map();
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -2002,6 +2004,10 @@ function registerDelegate(tree){
 			 if(accessCode==null){
 			 	accessCode = ProductData.accessCodeList[0];
 			 }
+			 if(sessionHasLocator){
+			 //updateLocatorValue();
+			 selectCheckbox();
+			 }
 			document.getElementById("aCode").value = accessCode; 
 
 		}
@@ -2163,6 +2169,7 @@ function registerDelegate(tree){
 					testSessionListRequired = getDataFromTestJson(selectedTestId, testSessionlist);
 					testJSONValue = testSessionListRequired.subtests;
 					if(testSessionListRequired.autoLocator){
+						sessionHasLocator = true;
 						hasAutolocator = true;
 						locatorSubtest = testSessionListRequired.locatorSubtest;
 						locatorTDList = locatorSubtest.subtestTestTD;
@@ -2182,6 +2189,7 @@ function registerDelegate(tree){
 							locatorOnlyTest = false;
 						}
 					} else {
+						sessionHasLocator = false;
 						hasAutolocator = false;
 						locatorSubtest = {};
 					}
@@ -2418,7 +2426,7 @@ function registerDelegate(tree){
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
-			if(hasAutolocator){
+			if(sessionHasLocator){
 				for(j=0;j<locatorTDList.length;j++) {
 					subtestData+='<input type = "hidden" id ="locator_'+locatorTDList[j].subtestName+'" name ="locatorItemTD" value ="'+locatorTDList[j].id+'~'+locatorTDList[j].subtestName+'" />';
 				}
@@ -2439,7 +2447,7 @@ function registerDelegate(tree){
 			/*if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
 			}*/
-			if(hasAutolocator){
+			if(sessionHasLocator){
 				th +='<th width="82" height="23" align="center"><strong>Locator</strong></th>';
 			}
 			th +='</tr>';
@@ -2464,7 +2472,7 @@ function registerDelegate(tree){
 				} else {
 					tr +='<input type = "hidden" id ="sessionDefault" name ="sessionDefault" value ="" />';
 				}
-				if(hasAutolocator) {
+				if(sessionHasLocator) {
 					tr +='<input type = "hidden" id = "locatorCheckbox'+i+'"  name="locatorCheckbox" />';
 				}
 				
@@ -2506,7 +2514,7 @@ function registerDelegate(tree){
 					tr +='</div>';
 					tr +='</td>';
 				}*/
-				if(hasAutolocator){
+				if(sessionHasLocator){
 				tr +='<td height="23" width="60" align="center"> <div align="center" id="locator'+i+'"> <input type="checkbox" id="'+subtestArr[i].subtestName+'" name="'+subtestArr[i].subtestName+'" onclick = "javascript:validatelocatorCheckbox(this);" /></div></td>'
 				}
 				tr +='</tr>';				
@@ -2587,6 +2595,8 @@ function registerDelegate(tree){
 		document.getElementById("locatorSubtestGridHeading").style.display = "none";
 		locatorSubtest={};
 		hasAutolocator =false;
+		sessionHasLocator = false;	
+		selectedLocatorMap.clear();	
 		
 		if(state != "EDIT"){
 			document.getElementById("testSessionName").value = "";
@@ -2621,6 +2631,8 @@ function registerDelegate(tree){
 		document.getElementById("locatorSubtestGrid").style.display = "none";
 		locatorSubtest = {};
 		hasAutolocator = false;
+		sessionHasLocator = false;
+		selectedLocatorMap.clear();
 		document.getElementById("modifyTestDiv").style.display = "none";
 		document.getElementById("testSessionName_lbl").innerHTML = $("#noTestSelected").val();
 		document.getElementById("testSessionName").value = "";
@@ -3969,6 +3981,7 @@ function registerDelegate(tree){
 			for(var indx=0; indx<selectedSubtests.length; indx++) {
 				if(selectedSubtests[indx].subtestName.indexOf("Sample Question") == -1){
 					document.getElementById(selectedSubtests[indx].subtestName).checked = "";
+					selectedLocatorMap.put(selectedSubtests[indx].subtestName,false);
 					document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
 				}
 			}
@@ -3976,6 +3989,7 @@ function registerDelegate(tree){
 			for(var indx=0; indx<selectedSubtests.length; indx++) {
 				if(selectedSubtests[indx].subtestName.indexOf("Sample Question") == -1){
 					document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
+					selectedLocatorMap.put(selectedSubtests[indx].subtestName,true);
 					if(locator.disabled){
 						document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
 					}else{
@@ -5301,10 +5315,12 @@ function validNumber(str){
 		if(!locator.checked){	
 				locator.value = "false";	
 				hasAutolocator = false;
+				selectedLocatorMap.clear();
 				if(isTestBreak){
 						$("#"+locatorSubtest.id+" input").val("");
 				}
 				for(var indx=0; indx<selectedSubtests.length; indx++) {
+					selectedLocatorMap.put(selectedSubtests[indx].subtestName,false);
 					document.getElementById(selectedSubtests[indx].subtestName).checked = "";
 					document.getElementById(selectedSubtests[indx].subtestName).disabled="true";
 				}
@@ -5312,6 +5328,7 @@ function validNumber(str){
 			locator.value = "true";	
 			hasAutolocator = true;
 			for(var indx=0; indx<selectedSubtests.length; indx++) {
+				selectedLocatorMap.put(selectedSubtests[indx].subtestName,true);
 				document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
 				document.getElementById(selectedSubtests[indx].subtestName).disabled="";
 			}
@@ -5521,6 +5538,13 @@ function validNumber(str){
 	var checkboxId = "";
 	function validatelocatorCheckbox(checkBox) {
 		checkboxId = checkBox.id;
+		if (document.getElementById(checkboxId).checked == false) {
+		selectedLocatorMap.put(checkboxId,false);
+		}
+		else{
+		selectedLocatorMap.put(checkboxId,true);
+		}
+				
 		if(checkboxId.indexOf("Reading") != -1){
 			if (document.getElementById(checkboxId).checked == false) {
 				openLocatorValidatePopup();//confirm("Remove Reading will also remove Vocabulary. Do you want to continue?");
@@ -5676,10 +5700,12 @@ function validNumber(str){
 		closePopUp('validateLocatorTestPopup');
 		if(checkboxId.indexOf("Reading") != -1){
 			document.getElementById(checkboxId).checked = "";
+			selectedLocatorMap.put(checkboxId,false);
 			for(var i = 0; i<selectedSubtests.length; i++){
 				var keyId = selectedSubtests[i].subtestName;
 				if((keyId).indexOf("Vocabulary") != -1){
 					document.getElementById(keyId).checked = "";
+					selectedLocatorMap.put(keyId,false);
 				}
 			}
 			for(var j=0; j<locatorTDList.length;j++){
@@ -5692,10 +5718,12 @@ function validNumber(str){
 		}
 		else if(checkboxId.indexOf("Vocabulary") != -1) {
 			document.getElementById(checkboxId).checked = "true";
+			selectedLocatorMap.put(checkboxId,true);
 			for(var i = 0; i<selectedSubtests.length; i++){	
 					var keyId = selectedSubtests[i].subtestName;
 					if((keyId).indexOf("Reading") != -1 && !(document.getElementById(keyId).checked)){
 						document.getElementById(keyId).checked = "true";
+						selectedLocatorMap.put(keyId,true);
 					}
 				}
 			for(var j=0; j<locatorTDList.length;j++){
@@ -5708,10 +5736,12 @@ function validNumber(str){
    		}
    		else if(checkboxId.indexOf("Language")!= -1 && checkboxId.indexOf("Mechanics") == -1){
    			document.getElementById(checkboxId).checked = "";
+   			selectedLocatorMap.put(checkboxId,false);
    			for(var i = 0; i<selectedSubtests.length; i++){
 					var keyId = selectedSubtests[i].subtestName;
 					if((keyId).indexOf("Mechanics")!= -1 || (keyId).indexOf("Spelling")!= -1){
 						document.getElementById(keyId).checked = "";
+						selectedLocatorMap.put(keyId,false);
 					}
 				}
 			for(var j=0; j<locatorTDList.length;j++){
@@ -5724,10 +5754,12 @@ function validNumber(str){
    		}
    		else if(checkboxId.indexOf("Mechanics") != -1){
    			document.getElementById(checkboxId).checked = "true";
+   			selectedLocatorMap.put(checkboxId,true);
    			for(var i = 0; i<selectedSubtests.length; i++){
 				var keyId = selectedSubtests[i].subtestName;
 				if((keyId).indexOf("Language") != -1 && !(document.getElementById(keyId).checked)){
 					document.getElementById(keyId).checked = "true";
+					selectedLocatorMap.put(keyId,true);
 				}
 			}
 			for(var j=0; j<locatorTDList.length;j++){
@@ -5740,10 +5772,12 @@ function validNumber(str){
    		}
    		else if(checkboxId.indexOf("Spelling") != -1){
    			document.getElementById(checkboxId).checked = "true";
+   			selectedLocatorMap.put(checkboxId,true);
    			for(var i = 0; i<selectedSubtests.length; i++){
 				var keyId = selectedSubtests[i].subtestName;
 				if((keyId).indexOf("Language")!= -1 && !(document.getElementById(keyId).checked)){
 					document.getElementById(keyId).checked = "true";
+					selectedLocatorMap.put(keyId,true);
 				}
 			}
 			for(var j=0; j<locatorTDList.length;j++){
@@ -5761,6 +5795,7 @@ function validNumber(str){
 		closePopUp('validateLocatorTestPopup');
 		if(checkboxId.indexOf("Reading") != -1 || (checkboxId.indexOf("Language") != -1 && checkboxId.indexOf("Mechanics") == -1)){
 			document.getElementById(checkboxId).checked = "true";
+			selectedLocatorMap.put(checkboxId,true);
 			for(var j=0; j<locatorTDList.length;j++){
 				if((locatorTDList[j].subtestName).indexOf("Language") != -1 || locatorTDList[j].subtestName.indexOf("Reading") != -1){
 					var id = "locator_"+locatorTDList[j].subtestName;
@@ -5818,3 +5853,29 @@ function validNumber(str){
 			}
 		}
 	}
+	function selectCheckbox(){
+			var locator = document.getElementById("hasAutolocator");
+			 for(var indx=0; indx<selectedSubtests.length; indx++) {
+			 if(document.getElementById(selectedSubtests[indx].subtestName) != null && document.getElementById(selectedSubtests[indx].subtestName) != undefined){	
+			 	document.getElementById(selectedSubtests[indx].subtestName).checked = '';
+			 	}
+			if(locator.checked != null && locator.checked !=undefined && !locator.checked){
+			document.getElementById(selectedSubtests[indx].subtestName).disabled='disabled';
+			}
+			 	if(selectedLocatorMap.get(selectedSubtests[indx].subtestName)!=null && selectedLocatorMap.get(selectedSubtests[indx].subtestName)!=undefined && selectedLocatorMap.get(selectedSubtests[indx].subtestName) == true){
+			 		
+			 		document.getElementById(selectedSubtests[indx].subtestName).checked = 'true';
+			 		
+			 	}
+			 }	
+			 	
+		/*		document.getElementById(selectedSubtests[indx].subtestName).disabled="disabled";
+				 if(selectedSubtests[indx].subtestName.indexOf()!=-1){
+					document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
+					document.getElementById(selectedSubtests[indx].subtestName).disabled="";
+				}
+			}*/
+	} 
+	
+	
+	

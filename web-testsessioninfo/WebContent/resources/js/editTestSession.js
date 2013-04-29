@@ -1084,6 +1084,7 @@
 					for(var j=0; j<locatorTDList.length;j++){
 					if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
 						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 						document.getElementById(id).disabled = "true";
 					}
 					}
@@ -1091,6 +1092,7 @@
 					for(var j=0; j<locatorTDList.length;j++){
 					if((locatorTDList[j].subtestName).indexOf("Language") != -1){
 						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 						document.getElementById(id).disabled = "true";
 					}
 					}
@@ -1098,6 +1100,7 @@
 					for(var j=0; j<locatorTDList.length;j++){
 					if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
 						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 						document.getElementById(id).disabled = "true";
 					}
 					}
@@ -1105,6 +1108,7 @@
 					for(var j=0; j<locatorTDList.length;j++){
 					if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
 						var id = "locator_"+locatorTDList[j].subtestName;
+						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 						document.getElementById(id).disabled = "true";
 					}
 					}
@@ -1119,6 +1123,7 @@
 			for(var j=0; j<locatorTDList.length;j++){
 				if((locatorTDList[j].itemSetName) == selectedSubtests[indx].itemSetName){
 					var id = "locator_"+locatorTDList[j].itemSetName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 					document.getElementById(id).disabled = "";
 				}
 			}
