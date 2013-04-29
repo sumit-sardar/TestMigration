@@ -5976,7 +5976,7 @@ public class SessionOperationController extends PageFlowController {
 			                duration = String.valueOf(te.getTimeLimit().intValue() / 60) + " mins";
 			            te.setMediaPath(duration);
 			            String hasLocatorTD = "-";
-			            System.out.println("te.getIslocatorChecked()"+te.getIslocatorChecked());
+			           // System.out.println("te.getIslocatorChecked()"+te.getIslocatorChecked());
 			            if(te.getIslocatorChecked() != null && "T".equalsIgnoreCase(te.getIslocatorChecked())){
 			            	
 			            	hasLocatorTD = "Yes";
@@ -6003,7 +6003,7 @@ public class SessionOperationController extends PageFlowController {
 		        this.getSession().setAttribute("subtestDetails", this.subtestDetails);
 		      
 		    	this.getSession().setAttribute("isTABE", this.isTabeLocatorProduct);
-		    	  System.out.println("getSession().getAttribute"+getSession().getAttribute("isTABE"));
+		    	 // System.out.println("getSession().getAttribute"+getSession().getAttribute("isTABE"));
 		        return new Forward("success");
 		    }
 			
@@ -6112,7 +6112,7 @@ public class SessionOperationController extends PageFlowController {
 		        for (int i=0; i < subtestelements.length; i++)
 		        {
 		            TestElement te = subtestelements[i];          
-		              System.out.println("-------------------->>"+te.getIslocatorChecked());
+		           
 		            if (te != null)
 		            {
 		                SubtestDetail sd_TS = new SubtestDetail(te, i + 1);
