@@ -5783,7 +5783,7 @@ function validNumber(str){
 			for(var j=0; j<locatorTDList.length;j++){
 				if((locatorTDList[j].subtestName).indexOf("Language")!= -1){
 					var id = "locator_"+locatorTDList[j].subtestName;
-					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)	
 						document.getElementById(id).disabled = "";
 				}
 			}
@@ -5799,7 +5799,7 @@ function validNumber(str){
 			for(var j=0; j<locatorTDList.length;j++){
 				if((locatorTDList[j].subtestName).indexOf("Language") != -1 || locatorTDList[j].subtestName.indexOf("Reading") != -1){
 					var id = "locator_"+locatorTDList[j].subtestName;
-					if(id != undefined && id != null)
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 						document.getElementById(id).disabled = "";
 				}
 			}
@@ -5827,7 +5827,7 @@ function validNumber(str){
 					for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Language") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
-							if(id != undefined && id != null)
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 								document.getElementById(id).disabled = "true";
 							}
 						}
@@ -5836,7 +5836,7 @@ function validNumber(str){
 					for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
-							if(id != undefined && id != null)
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 								document.getElementById(id).disabled = "true";
 							}
 						}
@@ -5845,7 +5845,7 @@ function validNumber(str){
 					for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
-							if(id != undefined && id != null)
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 								document.getElementById(id).disabled = "true";
 							}
 						}

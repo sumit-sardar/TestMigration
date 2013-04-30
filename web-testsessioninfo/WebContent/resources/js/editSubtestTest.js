@@ -1257,7 +1257,10 @@
 	}
 	
 	function prepareDeselectSubtest(tmpSelectedSubtests){
-	    deselectSubtest = allSubtestMap;
+		deselectSubtest = new Map();
+		  for(var indx = 0; indx < allSubtests.length; indx++){
+	    deselectSubtest.put(indx,allSubtestMap.get(indx));
+	    }
 	    for(var indx = 0; indx < allSubtests.length; indx++){
 	    	var mapData = allSubtests[indx];
 	    	for(j=0; j<tmpSelectedSubtests.length;j++){
