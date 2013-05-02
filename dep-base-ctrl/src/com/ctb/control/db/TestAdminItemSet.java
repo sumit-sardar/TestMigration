@@ -52,12 +52,13 @@ public interface TestAdminItemSet extends JdbcControl
      *          ITEM_SET_ORDER = {se.itemSetOrder},
      *          ACCESS_CODE = {se.accessCode},
      *          ITEM_SET_FORM = {se.itemSetForm},
-     *          SESSION_DEFAULT = {se.sessionDefault}
+     *          SESSION_DEFAULT = {se.sessionDefault},
+     *          LOCATOR_SUBTEST = {se.isLocatorChecked}
      * where
      *      test_admin_id = {se.testAdminId}
      *      and item_set_id = {se.itemSetId}::
     */ 
-    @JdbcControl.SQL(statement = "update  test_admin_item_set set  ITEM_SET_ORDER = {se.itemSetOrder},  ACCESS_CODE = {se.accessCode},  ITEM_SET_FORM = {se.itemSetForm},  SESSION_DEFAULT = {se.sessionDefault} where  test_admin_id = {se.testAdminId}  and item_set_id = {se.itemSetId}")
+    @JdbcControl.SQL(statement = "update  test_admin_item_set set  ITEM_SET_ORDER = {se.itemSetOrder},  ACCESS_CODE = {se.accessCode},  ITEM_SET_FORM = {se.itemSetForm},  SESSION_DEFAULT = {se.sessionDefault}, LOCATOR_SUBTEST = {se.isLocatorChecked} where  test_admin_id = {se.testAdminId}  and item_set_id = {se.itemSetId}")
     void updateTestAdminItemSet(ScheduleElement se) throws SQLException;
 
 

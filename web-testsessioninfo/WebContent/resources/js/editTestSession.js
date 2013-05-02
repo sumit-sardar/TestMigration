@@ -905,6 +905,9 @@
 					if(savedTestDetails.testSession.enforceBreak != undefined && savedTestDetails.testSession.enforceBreak == "T"){
 						tr +='<input type="hidden"  name="aCodeB_l"  value="'+subtestArr[i].accessCode+'"  /></div>';
 					}
+					if(sessionHasLocator) {
+						tr +='<input type = "hidden" id = "locatorCheckbox'+i+'"  name="locatorCheckbox" />';
+					}
 					
 				} else {
 					tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].itemSetId+'" />';
@@ -1026,7 +1029,7 @@
 		 }
 		selectedSubtests  = new Array();
 		if(locatorOnlyTest != undefined && locatorOnlyTest){
-			if(selectedTestSession.locatorDeliverableUnit!= null && selectedTestSession.locatorDeliverableUnit!= undefined){
+			if(selectedTestSession.locatorDeliverableUnit!= null && selectedTestSession.locatorDeliverableUnit!= undefined && selectedTestSession.locatorDeliverableUnit != ""){
 				prepareSelectedSubtestsFromSavedDetails(allSubtests, selectedTestSession.locatorDeliverableUnit);
 			}else{
 				prepareSelectedSubtestsFromSavedDetails(allSubtests, allSubtests);
@@ -1067,10 +1070,12 @@
 			if(document.getElementById(scheduledUnits[indx].itemSetName) != undefined && document.getElementById(scheduledUnits[indx].itemSetName) != null 
 				&& scheduledUnits[indx].islocatorChecked != undefined && scheduledUnits[indx].islocatorChecked == "T" || scheduledUnits[indx].islocatorChecked == "Yes"){
 				document.getElementById(scheduledUnits[indx].itemSetName).checked = "true";
+				selectedLocatorMap.put(scheduledUnits[indx].itemSetName, true);
 			}
 			if(document.getElementById(scheduledUnits[indx].itemSetName) != undefined && document.getElementById(scheduledUnits[indx].itemSetName) != null 
 				&& scheduledUnits[indx].islocatorChecked != undefined && scheduledUnits[indx].islocatorChecked == "F" || scheduledUnits[indx].islocatorChecked == "No"){
 				document.getElementById(scheduledUnits[indx].itemSetName).checked = "";
+				selectedLocatorMap.put(scheduledUnits[indx].itemSetName, false);
 			}
 		}
 	}

@@ -2230,6 +2230,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 
                 se.setSessionDefault(newUnit.getSessionDefault()); //sessionDefault
                 se.setTestAdminId(newSession.getTestSession().getTestAdminId());
+                se.setIsLocatorChecked(newUnit.getIslocatorChecked());
                 if(oldUnit == null) {
                 	//tais.getConnection().setAutoCommit(false);
                     tais.createNewTestAdminItemSet(se);
@@ -3337,7 +3338,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             if(studentManifest.getItemSetName().toUpperCase().contains("LOCATOR") && locatorSubtestTds != null){
                          	   for(int indx=0; indx<itemSetIds.length;indx++){
                          		   for(int jndx=0; jndx<locatorSubtestTds.length; jndx++){
-                         			   if(itemSetIds[indx] ==  Integer.valueOf(locatorSubtestTds[jndx])){
+                         			 	if(itemSetIds[indx].toString().equalsIgnoreCase(locatorSubtestTds[jndx])){
                          				   StudentSessionStatus sss = new StudentSessionStatus();
                                             sss.setItemSetId(itemSetIds[indx]);
                                             sss.setCompletionStatus("SC");
