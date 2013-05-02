@@ -100,14 +100,13 @@
     <tr class="transparent">
         <td class="transparent"><span class="asterisk">*</span>&nbsp;Purchase Date:</td>
         <td class="transparent">
-            <netui:textBox tagId="purchaseDate" dataSource="actionForm.LASLicenseNode.purchaseDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-            <a href="#" onclick="showCalendar(document.getElementById('purchaseDate'), document.getElementById('purchaseDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+            <netui:textBox disabled="true" tagId="purchaseDate" dataSource="actionForm.LASLicenseNode.purchaseDate" maxlength="8" style="width:100px" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent"><span class="asterisk">*</span>&nbsp;Expiry Date:</td>
         <td class="transparent">
-            <netui:textBox tagId="expiryDate" dataSource="actionForm.LASLicenseNode.expiryDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
+            <netui:textBox tagId="expiryDate" dataSource="actionForm.LASLicenseNode.expiryDate" maxlength="8" style="width:100px" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
             <a href="#" onclick="showCalendar(document.getElementById('expiryDate'), document.getElementById('expiryDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
         </td>
     </tr>
