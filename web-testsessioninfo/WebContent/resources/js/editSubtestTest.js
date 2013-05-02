@@ -378,6 +378,9 @@
 	}
 
 	function presented(subtestName, subtests) {
+		if(locatorOnlyTest){
+		subtestName = subtestName.replace("TABE","TABE Locator"); 
+		}
 	    for (var i = 0; i < subtests.length; i ++ ) {
 	        var subtest = subtests[i];
 	        if (subtestName == subtest.subtestName)
