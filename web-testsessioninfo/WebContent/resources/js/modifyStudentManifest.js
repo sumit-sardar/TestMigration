@@ -830,7 +830,7 @@
 			var locatorSubtestName = allLocatorSubtestTds[i].subtestName;
 			for(var j=0; j<modifiedSubtests.length; j++){
 				var contentArea = modifiedSubtests[j].subtestName.substring(5);
-				if(contentArea!= null && locatorSubtestName.contains(contentArea)){
+				if(contentArea!= null && locatorSubtestName.indexOf(contentArea) != -1){
 					selectedLocatorSubtests[count] = allLocatorSubtestTds[i].id;
 					count++;
 				}
