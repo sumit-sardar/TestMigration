@@ -124,7 +124,12 @@
 <input type="hidden" id="assignFormUpdateMsg" name="assignFormUpdateMsg" value=<lb:label key="viewStatus.assignForm.message" prefix="'" suffix="'"/> />
 
 <input type="hidden" id="uncheckReadingMsg" name="uncheckReadingMsg" value=<lb:label key="scheduleTest.removeReadingConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkReadingMsg" name="checkReadingMsg" value=<lb:label key="scheduleTest.addReadingConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckVocabularyMsg" name="uncheckVocabularyMsg" value=<lb:label key="scheduleTest.removeVocabularyConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkVocabularyMsg" name="checkVocabularyMsg" value=<lb:label key="scheduleTest.addVocabularyConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="uncheckLanguageMsg" name="uncheckLanguageMsg" value=<lb:label key="scheduleTest.removeLanguageConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkLanguageMsg" name="checkLanguageMsg" value=<lb:label key="scheduleTest.addLanguageConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckMechanicsMsg" name="uncheckMechanicsMsg" value=<lb:label key="scheduleTest.removeMechanicsConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkMechanicsMsg" name="checkMechanicsMsg" value=<lb:label key="scheduleTest.addMechanicsConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckSpellingMsg" name="uncheckSpellingMsg" value=<lb:label key="scheduleTest.removeSpellingConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkSpellingMsg" name="checkSpellingMsg" value=<lb:label key="scheduleTest.addSpellingConfirmation.message" prefix="'" suffix="'"/> />
