@@ -5905,7 +5905,7 @@ function validNumber(str){
 							}
 						}
 				}
-				else if(mapData.subtestName.indexOf("Language") != -1 && !mapData.subtestName.indexOf("Mechanics") != -1){
+				else if(mapData.subtestName.indexOf("Language") != -1 && mapData.subtestName.indexOf("Mechanics") == -1){
 					for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Language") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
@@ -5933,6 +5933,44 @@ function validNumber(str){
 						}
 				}
 			}
+		}
+		for(var jndx; jndx<selectedSubtests; jndx++){
+				if(selectedSubtests[jndx].subtestName.indexOf("Reading") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+								document.getElementById(id).disabled = "";
+							}
+						}
+				}
+				else if(selectedSubtests[jndx].subtestName.indexOf("Language") != -1 && mapData.subtestName.indexOf("Mechanics") == -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+								document.getElementById(id).disabled = "";
+							}
+						}
+				}
+				else if(selectedSubtests[jndx].subtestName.indexOf("Computation") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+								document.getElementById(id).disabled = "";
+							}
+						}
+				}
+				else if(selectedSubtests[jndx].subtestName.indexOf("Applied") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+								document.getElementById(id).disabled = "";
+							}
+						}
+				}
 		}
 	}
 	function selectCheckbox(){
