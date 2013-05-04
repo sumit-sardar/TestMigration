@@ -14,6 +14,7 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.commons.httpclient.protocol.Protocol;
 
 import com.ctb.control.testAdmin.TestSessionStatus;
+import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.RosterUtil;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.AuthenticatedUser;
@@ -21,9 +22,15 @@ import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
 
 import dto.Accommodation;
+import dto.OrgNode;
 import dto.SecureUser;
 import dto.Session;
 import dto.SessionStatus;
@@ -48,11 +55,19 @@ public class TestWebServiceController extends PageFlowController
 	private RosterStatusWSServiceControl rosterStatusWSServiceControl;
 
 	@Control
+	private ClickerWSServiceControl clickerWSServiceControl;
+	
+	@Control
 	private TestSessionStatus testSessionStatus;
 	
     @Control()
     private com.ctb.control.db.TestRoster rosters;
 	
+	private String userName = "tai_tabe";
+	private String password = "welcome1";
+	private Integer userId = new Integer(153854);
+	private Integer orgNodeId = new Integer(335709);
+	private Integer sessionId = new Integer(181459);
 	
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -75,7 +90,126 @@ public class TestWebServiceController extends PageFlowController
     {
         return new Forward("success");
     }
-	
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "testClicker.jsp") 
+        }) 
+    protected Forward clickerService()
+    {
+		String resultText = "";
+    	String status = (String)this.getRequest().getParameter("status");
+    	if (status != null) {
+    		
+    		if ("authenticateUser".equals(status)) {
+    			userName = (String)this.getRequest().getParameter("userName");
+    			password = (String)this.getRequest().getParameter("password");
+	    		userId = clickerWSServiceControl.authenticateUser(userName, password);   
+	    		if (userId != null)
+	    			resultText = "authenticateUser: " + userName + " - userId: " + userId.toString();
+	    		else
+	    			resultText = "failed to authenticate";
+    		}
+
+    		if ("getUserTopNode".equals(status)) {
+    			userName = (String)this.getRequest().getParameter("userName");
+    			OrgNode orgNode = clickerWSServiceControl.getUserTopNode(userName);
+    			if (orgNode != null) {
+    				orgNodeId = orgNode.getId();
+    				resultText = "getUserTopNode: " + orgNode.getName() + " - " + orgNode.getId();
+    			}
+    			else
+	    			resultText = "failed to getUserTopNode";
+    		}
+
+    		if ("getChildrenNodes".equals(status)) {
+    			userName = (String)this.getRequest().getParameter("userName");
+    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
+    			orgNodeId = new Integer(tmp);
+    			resultText = "getChildrenNodes:";
+    			NodeData nd = null;                        
+    	        try
+    	        {      
+    	            nd = this.testSessionStatus.getOrgNodesForParent(userName, orgNodeId, null, null, null);
+        	        Node[] nodes = nd.getNodes(); 
+        	        for (int i=0; i < nodes.length; i++) {
+        	        	Node node = nodes[i];
+        	        	resultText += "<br/>";
+        	        	resultText += (node.getOrgNodeName() + " - " + node.getOrgNodeId()); 
+        	        }
+    	        }
+    	        catch (CTBBusinessException be)
+    	        {
+    	            be.printStackTrace();
+	    			resultText = "failed to getChildrenNodes";
+    	        }
+    		}
+
+    		if ("getSessionsForNode".equals(status)) {
+    			userName = (String)this.getRequest().getParameter("userName");
+    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
+    			orgNodeId = new Integer(tmp);    			
+    			resultText = "getSessionsForNode:";
+    			TestSessionData tsd = null;                        
+    	        try
+    	        {      
+    	        	tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, null, null, null);
+        	        TestSession[] testsessions = tsd.getTestSessions();
+        	        for (int i=0; i < testsessions.length; i++) {
+        	            TestSession ts = testsessions[i];
+        	            if (ts != null) {
+            	        	resultText += "<br/>";
+            	        	resultText += (ts.getTestAdminName() + " - " + ts.getTestAdminId()); 
+            	        	sessionId = ts.getTestAdminId();
+        	            }
+        	        }
+    	        }
+    	        catch (CTBBusinessException be)
+    	        {
+    	            be.printStackTrace();
+	    			resultText = "failed to getSessionsForNode";
+    	        }
+    		}
+
+    		if ("getRostersInSession".equals(status)) {
+    			userName = (String)this.getRequest().getParameter("userName");
+    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
+    			sessionId = new Integer(tmp);
+    			resultText = "getRostersInSession:";
+    	        RosterElementData red = null;
+    	        try
+    	        {      
+    	            red = this.testSessionStatus.getRosterForTestSession(userName, sessionId, null, null, null);
+        	        RosterElement[] rosterElements = red.getRosterElements();
+        	        for (int i=0; i < rosterElements.length; i++) {
+        	        	RosterElement re = rosterElements[i];
+        	            if (re != null) {
+            	        	resultText += "<br/>";
+            	        	resultText += (re.getUserName() + " - " + re.getTestRosterId()); 
+        	            }
+        	        }
+    	        }
+    	        catch (CTBBusinessException be)
+    	        {
+    	            be.printStackTrace();
+	    			resultText = "failed to getRostersInSession";
+    	        }        
+    		}
+
+    		if ("submitStudentResponses".equals(status)) {
+    			resultText = "submitStudentResponses: not yet";
+    		}
+    		
+    	}
+    	
+    	this.getRequest().setAttribute("resultText", resultText);
+    	this.getRequest().setAttribute("userName", userName);
+    	this.getRequest().setAttribute("password", password);
+    	this.getRequest().setAttribute("orgNodeId", orgNodeId.toString());
+    	this.getRequest().setAttribute("sessionId", sessionId.toString());
+    	
+        return new Forward("success");
+    }
+    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "testRosterStatus.jsp") 
         }) 

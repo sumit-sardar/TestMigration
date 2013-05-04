@@ -1,3 +1,12 @@
+
+function submitStatus(status)
+{
+	var element = document.getElementById('status');
+	element.value = status;
+   	document.forms[0].submit();
+}    
+
+
 function gotoAction(action)
 {
     document.body.style.cursor = 'wait';

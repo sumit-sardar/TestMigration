@@ -1,0 +1,4 @@
+#Tue Apr 30 21:33:43 PDT 2013
+eclipse.preferences.version=1
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=.apt_src
