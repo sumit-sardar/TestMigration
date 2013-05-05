@@ -92,6 +92,11 @@
 </tr>
 <tr>
 	<td colspan="3">
+		<input type="button" value="getTestStructure" onclick="submitStatus('getTestStructure');" />&nbsp;&nbsp;
+	</td>
+</tr>
+<tr>
+	<td colspan="3">
 		<input type="button" value="submitStudentResponses" onclick="submitStatus('submitStudentResponses');" />&nbsp;&nbsp;
 	</td>
 </tr>

@@ -1,5 +1,11 @@
 package dto; 
 
+/**
+* Organization information in OAS hierarchy
+* OAS populates the fields
+* 
+* @author Tai_Truong
+*/
 public class OrgNode implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
@@ -8,6 +14,11 @@ public class OrgNode implements java.io.Serializable
     private String name = null;
     
     public OrgNode() {}
+
+    public OrgNode(Integer id, String name) {
+    	this.id = id;
+    	this.name = name;
+    }
     
     public Integer getId() {
         return this.id;

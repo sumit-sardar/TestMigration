@@ -6,7 +6,7 @@ package dto;
 *
 * @author Tai_Truong
 */
-public class Subtest implements java.io.Serializable 
+public class Subject implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
     
@@ -14,9 +14,9 @@ public class Subtest implements java.io.Serializable
     private String subtestName;
     private Question[] questions;
     
-    public Subtest() {}
+    public Subject() {}
 
-    public Subtest(Integer subtestId, String subtestName, Question[] questions) {
+    public Subject(Integer subtestId, String subtestName, Question[] questions) {
     	this.subtestId = subtestId;
     	this.subtestName = subtestName;
     	this.questions = questions;

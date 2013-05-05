@@ -25,13 +25,15 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.control.testAdmin.TestSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
+import dto.Assignment;
 import dto.OrgNode;
 import dto.Question;
 import dto.Roster;
-import dto.Session;
 import dto.StudentResponse;
-import dto.Subtest;
+import dto.Subject;
 import dto.TestStructure;
+
+import utils.JsonUtils;
 
 @WebService
 public class ClickerWS implements Serializable {
@@ -57,9 +59,13 @@ public class ClickerWS implements Serializable {
 		try {
 			this.user = this.testSessionStatus.getUserDetails(userName, userName);
 			if (this.user != null) {
-				//if (this.user.getPassword().equals(password)) {
+				String userPassword = this.user.getPassword();
+				System.out.println(userPassword);
+				String encodePassword = JsonUtils.encodePassword(password);
+				System.out.println(encodePassword);
+				if (userPassword.equals(encodePassword)) {
 					userId = this.user.getUserId();
-				//}
+				}
 			}
 		}
 		catch (Exception e) {
@@ -130,21 +136,21 @@ public class ClickerWS implements Serializable {
 	* Return all sessions associated with this node.
 	*/
 	@WebMethod
-	public Session[] getSessionsForNode(String userName, Integer orgNodeId) 
+	public Assignment[] getSessionsForNode(String userName, Integer orgNodeId) 
 	{
-		Session[] sessions = null;
+		Assignment[] sessions = null;
 		
         try
         {      
         	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, 
         																						null, null, null);
 	        TestSession[] testsessions = tsd.getTestSessions();
-	        sessions = new Session[testsessions.length];
+	        sessions = new Assignment[testsessions.length];
 	        
 	        for (int i=0; i < testsessions.length; i++) {
 	            TestSession ts = testsessions[i];
 	            if (ts != null) {
-	            	Session session = new Session(ts.getTestAdminId(), ts.getTestAdminName(), 
+	            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
 	            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
 	            	sessions[i] = session;
 	            }
@@ -197,8 +203,11 @@ public class ClickerWS implements Serializable {
 	* testId is test_catalog_id from OAS 
 	*/
 	@WebMethod
-	public void getTestStructure(String userName, Integer testId) 
+	public TestStructure getTestStructure(String userName, Integer testId) 
 	{
+		TestStructure ts = new TestStructure();
+		
+		return ts;
 	}
 	
 	
@@ -208,8 +217,11 @@ public class ClickerWS implements Serializable {
 	* 
 	*/
 	@WebMethod
-	public void submitStudentResponses(StudentResponse stdRes) 
+	public Boolean submitStudentResponses(StudentResponse stdRes) 
 	{
+		Boolean ret = Boolean.TRUE;
+		
+		return ret;
 	}
 
 	

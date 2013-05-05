@@ -6,7 +6,7 @@ package dto;
 *
 * @author Tai_Truong
 */
-public class Session implements java.io.Serializable 
+public class Assignment implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
     
@@ -16,9 +16,9 @@ public class Session implements java.io.Serializable
     private String endDate;
     private Roster[] rosters;
     
-    public Session() {}
+    public Assignment() {}
 
-    public Session(Integer sessionId, String sessionName, String startDate, String endDate, Roster[] rosters) {
+    public Assignment(Integer sessionId, String sessionName, String startDate, String endDate, Roster[] rosters) {
     	this.sessionId = sessionId;
     	this.sessionName = sessionName;
     	this.startDate = startDate;

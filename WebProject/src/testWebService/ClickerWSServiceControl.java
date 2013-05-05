@@ -15,7 +15,17 @@ public interface ClickerWSServiceControl extends ServiceControl
 
     public java.lang.Integer authenticateUser(java.lang.String userName_arg,java.lang.String password_arg);
 
+    public dto.OrgNode[] getChildrenNodes(java.lang.String userName_arg,java.lang.Integer orgNodeId_arg);
+
+    public dto.Roster[] getRostersInSession(java.lang.String userName_arg,java.lang.Integer sessionId_arg);
+
+    public dto.Assignment[] getSessionsForNode(java.lang.String userName_arg,java.lang.Integer orgNodeId_arg);
+
+    public void getTestStructure(java.lang.String userName_arg,java.lang.Integer testId_arg);
+
     public dto.OrgNode getUserTopNode(java.lang.String userName_arg);
+
+    public void submitStudentResponses(dto.StudentResponse stdRes_arg);
 
    /** This event set interface provides support for the onAsyncFailure event.
     */
