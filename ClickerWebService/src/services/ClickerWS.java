@@ -17,10 +17,21 @@ import java.io.Serializable;
 
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.control.testAdmin.TestSessionStatus;
+import com.ctb.exception.CTBBusinessException;
 
 import dto.OrgNode;
+import dto.Question;
+import dto.Roster;
+import dto.Session;
+import dto.StudentResponse;
+import dto.Subtest;
+import dto.TestStructure;
 
 @WebService
 public class ClickerWS implements Serializable {
@@ -34,9 +45,10 @@ public class ClickerWS implements Serializable {
     private User user = null;
 
 	
-	/**
-	 * authenticateUser: this web service to authenticate login user
-	 */
+    /**
+    * OAS authenticates this user. 
+    * Return userId if valid user otherwise return 0 
+    */
 	@WebMethod
 	public Integer authenticateUser(String userName, String password) 
 	{
@@ -56,10 +68,11 @@ public class ClickerWS implements Serializable {
 		
 		return userId;
 	}
-
+ 
 	/**
-	 * getUserTopNode: this web service to get organization associated with this user
-	 */
+	* userName comes from OAS after authenticate successfully. 
+	* Return organization associated with this user.
+	*/
 	@WebMethod
 	public OrgNode getUserTopNode(String userName) 
 	{
@@ -69,9 +82,9 @@ public class ClickerWS implements Serializable {
 			NodeData nodeData = this.testSessionStatus.getTopNodesForUser(userName, null, null, null);
 			if (nodeData != null) {
 				Node node = nodeData.getNodes()[0];
-				orgNode = new OrgNode();
-				orgNode.setId(node.getOrgNodeId());
-				orgNode.setName(node.getOrgNodeName());
+				if (node != null) {
+					orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+				}
 			}
 		}
 		catch (Exception e) {
@@ -79,6 +92,124 @@ public class ClickerWS implements Serializable {
 		}                    
 		
 		return orgNode;
+	}
+
+	/**
+	* userName comes from OAS after authenticate successfully. 
+	* orgNodeId is org_node_id from OAS
+	* Return all children nodes under this node.
+	*/
+	@WebMethod
+	public OrgNode[] getChildrenNodes(String userName, Integer orgNodeId) 
+	{
+		OrgNode[] orgNodes = null;
+        try
+        {      
+        	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, orgNodeId, null, null, null);
+	        Node[] nodes = nodeData.getNodes(); 
+	        orgNodes = new OrgNode[nodes.length];
+	        
+	        for (int i=0; i < nodes.length; i++) {
+	        	Node node = nodes[i];
+	        	if (node != null) {
+	        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+	        		orgNodes[i] = orgNode;
+	        	}
+	        }
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return orgNodes;
+	}
+
+	/**
+	* userName comes from OAS after authenticate successfully. 
+	* orgNodeId is org_node_id from OAS
+	* Return all sessions associated with this node.
+	*/
+	@WebMethod
+	public Session[] getSessionsForNode(String userName, Integer orgNodeId) 
+	{
+		Session[] sessions = null;
+		
+        try
+        {      
+        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, 
+        																						null, null, null);
+	        TestSession[] testsessions = tsd.getTestSessions();
+	        sessions = new Session[testsessions.length];
+	        
+	        for (int i=0; i < testsessions.length; i++) {
+	            TestSession ts = testsessions[i];
+	            if (ts != null) {
+	            	Session session = new Session(ts.getTestAdminId(), ts.getTestAdminName(), 
+	            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
+	            	sessions[i] = session;
+	            }
+	        }
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        
+        return sessions;
+	}
+
+	/**
+	* userName comes from OAS after authenticate successfully. 
+	* sessionId is test_admin_id from OAS
+	* Return all rosters in this session.
+	*/
+	@WebMethod
+	public Roster[] getRostersInSession(String userName, Integer sessionId) 
+	{
+		Roster[] rosters = null;
+		
+        try
+        {      
+        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, sessionId, null, null, null);
+	        RosterElement[] rosterElements = red.getRosterElements();
+	        rosters = new Roster[rosterElements.length];
+	        
+	        for (int i=0; i < rosterElements.length; i++) {
+	        	RosterElement re = rosterElements[i];
+	            if (re != null) {
+	            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
+	            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
+	            	rosters[i] = roster;
+	            }
+	        }
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }    
+        
+        return rosters;
+	}
+
+	
+	/**
+	* userName comes from OAS after authenticate successfully.
+	* testId is test_catalog_id from OAS 
+	*/
+	@WebMethod
+	public void getTestStructure(String userName, Integer testId) 
+	{
+	}
+	
+	
+	/**
+	* stdRes contains student responses and all other related information sent to OAS
+	* Return true if transaction successfully otherwise return false.
+	* 
+	*/
+	@WebMethod
+	public void submitStudentResponses(StudentResponse stdRes) 
+	{
 	}
 
 	

@@ -158,7 +158,10 @@ public class TestWebServiceController extends PageFlowController
         	            TestSession ts = testsessions[i];
         	            if (ts != null) {
             	        	resultText += "<br/>";
-            	        	resultText += (ts.getTestAdminName() + " - " + ts.getTestAdminId()); 
+            	        	resultText += ( ts.getTestAdminName() + " - " + 
+            	        					ts.getTestAdminId() + " - " + 
+            	        					ts.getLoginStartDateString() + " - " + 
+            	        					ts.getLoginEndDateString()); 
             	        	sessionId = ts.getTestAdminId();
         	            }
         	        }
@@ -184,7 +187,11 @@ public class TestWebServiceController extends PageFlowController
         	        	RosterElement re = rosterElements[i];
         	            if (re != null) {
             	        	resultText += "<br/>";
-            	        	resultText += (re.getUserName() + " - " + re.getTestRosterId()); 
+            	        	resultText += (re.getTestRosterId() + " - " + 
+     	        				   		   re.getUserName() + " - " + 
+            	        				   re.getFirstName() + " - " + 
+            	        				   re.getLastName() + " - " + 
+            	        				   re.getExtPin1()); 
         	            }
         	        }
     	        }
