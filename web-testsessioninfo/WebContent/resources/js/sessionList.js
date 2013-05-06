@@ -5340,13 +5340,41 @@ function validNumber(str){
 				selectedLocatorMap.put(selectedSubtests[indx].subtestName,true);
 				document.getElementById(selectedSubtests[indx].subtestName).checked = "true";
 				document.getElementById(selectedSubtests[indx].subtestName).disabled="";
-			}
-			
-			for(var j=0; j<locatorTDList.length;j++){
-					var id = "locator_"+locatorTDList[j].subtestName;
-					if(document.getElementById(id) != undefined && document.getElementById(id) != null) {
-						document.getElementById(id).disabled = "";
+				
+				var name = selectedSubtests[indx].subtestName;
+				if(name.indexOf("Reading") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Reading") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+							document.getElementById(id).disabled = "";
+						}
 					}
+				} else if(name.indexOf("Language") != -1 && name.indexOf("Mechanics") == -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Language") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+							document.getElementById(id).disabled = "";
+						}
+					}
+				} else if(name.indexOf("Computation") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+							document.getElementById(id).disabled = "";
+						}
+					}
+				} else if(name.indexOf("Applied") != -1){
+					for(var j=0; j<locatorTDList.length;j++){
+						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+							var id = "locator_"+locatorTDList[j].subtestName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+							document.getElementById(id).disabled = "";
+						}
+					}
+				}
 			}
 				
 			if(isTestBreak){
