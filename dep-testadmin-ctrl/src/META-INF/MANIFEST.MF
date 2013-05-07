@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
- dep-base-ctrl.jar 
- APP-INF/lib/jdom.jar
-

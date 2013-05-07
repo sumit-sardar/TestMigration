@@ -1,7 +1,0 @@
-#Wed Nov 02 15:31:39 PDT 2011
-eclipse.preferences.version=1
-encoding//WebContent/resources/jsp/oas_header.jsp=ISO-8859-1
-encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1
-encoding//WebContent/userOperation/add_edit_user_detail.jsp=ISO-8859-1
-encoding//WebContent/userOperation/find_user_hierarchy.jsp=UTF-8
-encoding//WebContent/userOperation/organizations_manageStudents.jsp=UTF-8
