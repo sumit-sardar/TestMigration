@@ -934,7 +934,7 @@
 			}
 			subtestData +='</table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
-			if(selectedTestSession.locatorDeliverableUnit != null){
+			if(selectedTestSession.locatorDeliverableUnit.length > 0 ){
 				updateLocatorSubtestsForEdit(savedTestDetails.locatorDeliverableUnit ,locatorArr);
 			}else{
 				updateLocatorSubtestsForEdit(subtestArr ,locatorArr);
@@ -1047,7 +1047,12 @@
 		selectedSubtests  = new Array();
 		var indx = 0;
 		for (var ii=0; ii<savedSelectedSubtests.length; ii++ ) {
-			  var subtest =  getValueFromDetails(allSubtests , savedSelectedSubtests[ii].itemSetId, "id" );
+			  var subtest;  
+			  if(locatorOnlyTest != undefined && locatorOnlyTest && selectedTestSession.locatorDeliverableUnit.length == 0){
+			  	subtest = getValueFromDetails(allSubtests , savedSelectedSubtests[ii].id, "id" );
+			  }else{
+			  	subtest = getValueFromDetails(allSubtests , savedSelectedSubtests[ii].itemSetId, "id" );
+			  }
 			  if(subtest !=null ){
 			  	selectedSubtests[indx++]= subtest;
 			  	if(savedSelectedSubtests[ii].itemSetForm != undefined)
@@ -1122,14 +1127,30 @@
 		}
 	}
 	
-	function updateLocatorSubtestsForEdit(selectedSubtests, locatorTDList){
-		prepareDeselectSubtest(selectedSubtests);
-		for(var indx=0; indx<selectedSubtests.length;indx++){
-			for(var j=0; j<locatorTDList.length;j++){
-				if((locatorTDList[j].itemSetName) == selectedSubtests[indx].itemSetName){
-					var id = "locator_"+locatorTDList[j].itemSetName;
-					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
-					document.getElementById(id).disabled = "";
+	function updateLocatorSubtestsForEdit(selectedSubtest, locatorTDList){
+		prepareDeselectSubtest(selectedSubtest);
+		var validate = false;
+		for(var indx=0; indx<selectedSubtest.length;indx++){
+			var subtestName = selectedSubtest[indx].itemSetName.replace("TABE","");
+			if(locatorTDList != undefined && locatorTDList != null){
+				for(var j=0; j<locatorTDList.length;j++){
+					if((locatorTDList[j].itemSetName).indexOf(subtestName) != -1){
+						for(var z=0; z<selectedTestSession.scheduledUnits.length; z++){
+							var name = selectedTestSession.scheduledUnits[z].itemSetName.replace("TABE","");
+							if(locatorTDList[j].itemSetName.indexOf(name) != -1){
+								if(selectedTestSession.scheduledUnits[z].islocatorChecked != undefined && selectedTestSession.scheduledUnits[z].islocatorChecked == "T" || selectedTestSession.scheduledUnits[z].islocatorChecked == "Yes"){
+										validate= true;
+								}else{
+										validate= false;
+								}
+							}	
+						}
+						if(validate){
+							var id = "locator_"+locatorTDList[j].itemSetName;
+							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+							document.getElementById(id).disabled = "";
+						}
+					}
 				}
 			}
 		}
