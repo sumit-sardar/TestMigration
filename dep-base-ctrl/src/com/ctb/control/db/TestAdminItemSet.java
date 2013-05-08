@@ -71,7 +71,8 @@ public interface TestAdminItemSet extends JdbcControl
      *     tais.ACCESS_CODE as accessCode,    
      *     max(decode(status.item_Set_id, null, 'F', 'T')) as tested,
      *	   tais.ITEM_SET_FORM as itemSetForm,
-     *	   tais.SESSION_DEFAULT as sessionDefault
+     *	   tais.SESSION_DEFAULT as sessionDefault,
+     *	   tais.LOCATOR_SUBTEST as isLocatorChecked
      * from
      *     test_admin_item_set tais,
      *     item_Set_parent isp,
@@ -95,10 +96,11 @@ public interface TestAdminItemSet extends JdbcControl
      *     tais.ACCESS_CODE,    
      *     tais.ITEM_SET_FORM,
      *     tais.SESSION_DEFAULT
+     *     tais.LOCATOR_SUBTEST
      * order by tais.ITEM_SET_ORDER::
      *     array-max-length="all"
      */
-    @JdbcControl.SQL(statement = "select distinct  tais.ITEM_SET_ID as itemSetId,  tais.TEST_ADMIN_ID as testAdminId,  tais.ITEM_SET_ORDER as itemSetOrder,  tais.ACCESS_CODE as accessCode,  max(decode(status.item_Set_id, null, 'F', 'T')) as tested, \t  tais.ITEM_SET_FORM as itemSetForm, \t  tais.SESSION_DEFAULT as sessionDefault from  test_admin_item_set tais,  item_Set_parent isp,  (select distinct  siss.item_set_id  from  student_item_set_status siss,  test_roster ros  where  siss.completion_status != 'SC'  and siss.test_roster_id = ros.test_roster_id  and ros.test_admin_id = {testAdminId}) status where  tais.test_admin_id = {testAdminId}  and isp.parent_item_set_id = tais.item_set_id  and status.item_Set_id (+) = isp.item_Set_id group by  tais.ITEM_SET_ID,  tais.TEST_ADMIN_ID,  tais.ITEM_SET_ORDER,  tais.ACCESS_CODE,  tais.ITEM_SET_FORM,  tais.SESSION_DEFAULT order by tais.ITEM_SET_ORDER",
+    @JdbcControl.SQL(statement = "select distinct  tais.ITEM_SET_ID as itemSetId,  tais.TEST_ADMIN_ID as testAdminId,  tais.ITEM_SET_ORDER as itemSetOrder,  tais.ACCESS_CODE as accessCode,  max(decode(status.item_Set_id, null, 'F', 'T')) as tested, \t  tais.ITEM_SET_FORM as itemSetForm, \t  tais.SESSION_DEFAULT as sessionDefault,tais.LOCATOR_SUBTEST as isLocatorChecked from  test_admin_item_set tais,  item_Set_parent isp,  (select distinct  siss.item_set_id  from  student_item_set_status siss,  test_roster ros  where  siss.completion_status != 'SC'  and siss.test_roster_id = ros.test_roster_id  and ros.test_admin_id = {testAdminId}) status where  tais.test_admin_id = {testAdminId}  and isp.parent_item_set_id = tais.item_set_id  and status.item_Set_id (+) = isp.item_Set_id group by  tais.ITEM_SET_ID,  tais.TEST_ADMIN_ID,  tais.ITEM_SET_ORDER,  tais.ACCESS_CODE,  tais.ITEM_SET_FORM,  tais.SESSION_DEFAULT, tais.LOCATOR_SUBTEST order by tais.ITEM_SET_ORDER",
                      arrayMaxLength = 100000)
     ScheduleElement [] getTestAdminItemSetsForAdmin(Integer testAdminId) throws SQLException;
 

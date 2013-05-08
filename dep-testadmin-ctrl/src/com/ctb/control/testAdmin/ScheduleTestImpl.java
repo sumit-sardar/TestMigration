@@ -1910,7 +1910,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 HashMap<Integer,String> locatorSubtestTD = null;
                 if (newSession.getLocatorSubtestTD() != null)
                 	locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
-                if(locatorSubtestTD !=null){
+                if(locatorSubtestTD !=null && locatorSubtestTD.size() > 0){
                 	Iterator iterator = locatorSubtestTD.keySet().iterator();
                 	for(TestElement subtestlist: subtests){
                 		if(subtestlist.getItemSetName().toUpperCase().contains("LOCATOR")){
@@ -1938,8 +1938,8 @@ public class ScheduleTestImpl implements ScheduleTest
                 ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
                 HashMap<Integer,String> locatorSubtestTD = null;
                 if (newSession.getLocatorSubtestTD() != null)
-                	locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
-                if((locatorSubtestTD != null) && (locatorSubtestTD.keySet() !=null)){
+                		locatorSubtestTD = new HashMap<Integer, String>(newSession.getLocatorSubtestTD());
+                if(locatorSubtestTD !=null && locatorSubtestTD.size() > 0){
                 	Iterator iterator = locatorSubtestTD.keySet().iterator();
                 	for(TestElement subtestlist: subtests){
                 		if(subtestlist.getItemSetName().toUpperCase().contains("LOCATOR")){
@@ -2230,7 +2230,11 @@ public class ScheduleTestImpl implements ScheduleTest
                 
                 se.setSessionDefault(newUnit.getSessionDefault()); //sessionDefault
                 se.setTestAdminId(newSession.getTestSession().getTestAdminId());
-                se.setIsLocatorChecked(newUnit.getIslocatorChecked());
+                if((newUnit.getIslocatorChecked() ==null || newUnit.getIslocatorChecked() == "") && oldUnit != null){
+                	se.setIsLocatorChecked(oldUnit.getIsLocatorChecked());
+                }else{
+                	se.setIsLocatorChecked(newUnit.getIslocatorChecked());
+                }
                 if(oldUnit == null) {
                 	//tais.getConnection().setAutoCommit(false);
                     tais.createNewTestAdminItemSet(se);
