@@ -840,12 +840,13 @@
 	    removeAllRows.removeAttribute("disabled");
 	    $(removeAllRows).addClass("ui-widget-header");
 	    
-	    moveUp.removeAttribute("disabled");
-	    $(moveUp).addClass("ui-widget-header");
-	    
-	    moveDown.removeAttribute("disabled");
-	    $(moveDown).addClass("ui-widget-header");
-	    
+	    if(!locatorOnlyTest){
+		    moveUp.removeAttribute("disabled");
+		    $(moveUp).addClass("ui-widget-header");
+		    
+		    moveDown.removeAttribute("disabled");
+		    $(moveDown).addClass("ui-widget-header");
+	    }
 	    
 	    var visibleRows = getVisibleRows("des_row_");
 	    
