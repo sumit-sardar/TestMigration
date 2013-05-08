@@ -742,7 +742,8 @@ public class ManageLicenseController extends PageFlowController
 		
 		Integer customerId = this.user.getCustomer().getCustomerId();       
         int numberNodes = this.licenseNodeList.size();
-        LicenseNodeData [] licenseNodeDataList = new LicenseNodeData[numberNodes];
+        //LicenseNodeData [] licenseNodeDataList = new LicenseNodeData[numberNodes];
+        List<LicenseNodeData> licenseNodeDataList = new ArrayList<LicenseNodeData>();
         
         for (int i = 0 ; i < numberNodes ; i++) {           
         	LicenseNode licenseNode = (LicenseNode)this.licenseNodeList.get(i);
@@ -758,13 +759,14 @@ public class ManageLicenseController extends PageFlowController
         	licenseNodeData.setOrgNodeId(orgNodeId);
         	licenseNodeData.setSubtestModel(subtestModel);
         	licenseNodeData.setCustomerId(customerId);
-        	licenseNodeDataList[i] = licenseNodeData;
+        	//licenseNodeDataList[i] = licenseNodeData;
+        	licenseNodeDataList.add(licenseNodeData);
       	
 System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productId=" + productId + "    subtestModel=" + subtestModel + "    customerId=" + customerId + "    available=" + available);
         }
 
         try {
-			result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList);
+			result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList,false);
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}

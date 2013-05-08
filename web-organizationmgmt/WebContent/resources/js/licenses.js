@@ -539,6 +539,8 @@ function saveLicenses() {
 	if (result) {
 		editingId = null;
 		document.getElementById('currentEditing').value = 'false';
+		var postDataObject = {};
+		postDataObject.selectedOrgNodeId = $("#treeOrgNodeId").val();
 	 
 		$.ajax({
 			async:		false,
@@ -546,8 +548,9 @@ function saveLicenses() {
 							UIBlock();
 						},
 			url:		'saveLicenses.do',
-			type:		'POST',
+			type:       'POST',
 			dataType:	'json',
+			data: postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){	
 							$.unblockUI(); 
 						},

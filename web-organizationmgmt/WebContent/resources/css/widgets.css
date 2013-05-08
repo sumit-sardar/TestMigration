@@ -560,6 +560,10 @@ table.simpletable {
 tr.simpletable { 
 }
 
+tr.simpletableYellow { 
+    background-color: #FBEC88; 
+}
+
 th.simpletable { 
     background-color: #d0e5f5;
     border-color: #999999; 
@@ -585,6 +589,18 @@ td.simpletable {
     font-weight: normal;
     padding: 5px; 
 } 
+
+td.simpletableYellow {
+    border-color: #999999; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+}
 
 td.simpletable a {
     color: #00f;

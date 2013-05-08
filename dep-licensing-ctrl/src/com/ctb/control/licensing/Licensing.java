@@ -1,8 +1,11 @@
 package com.ctb.control.licensing; 
 
 
+import java.util.List;
+
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
+import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.exception.CTBBusinessException;
 
 @ControlInterface()
@@ -94,6 +97,8 @@ public interface Licensing
    
     // TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
    
-    boolean saveOrUpdateOrgNodeLicenseDetail(com.ctb.bean.testAdmin.LicenseNodeData [] licenseNodeData) throws com.ctb.exception.CTBBusinessException;
+    boolean saveOrUpdateOrgNodeLicenseDetail(List<com.ctb.bean.testAdmin.LicenseNodeData> licenseNodeData, boolean isLASManageLicense) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.LASLicenseNode[] getLicenseOrderDetailsForCustomer(Integer customerId) throws com.ctb.exception.CTBBusinessException;
 
 } 

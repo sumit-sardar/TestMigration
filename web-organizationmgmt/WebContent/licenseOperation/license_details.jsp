@@ -32,20 +32,47 @@
         </tr>
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
-        <tr class="simpletable">
+    	<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}"/>
+    	<% String expiryStatus = (String)pageContext.getAttribute("expiryStatus"); 
+    	boolean aboutExpire = false; 
+    	if(expiryStatus.equalsIgnoreCase("ABOUT_EXPIRED")){
+    		aboutExpire = true;%>
+    		<tr class="simpletableYellow">
+    		<%}else{%>
+        	<tr class="simpletable">
+        <%} if(aboutExpire){%>
+        	<td class="simpletableYellow">
+        	<%}else{ %>
             <td class="simpletable">
+            <%}%>
             	<netui:content value="${container.item.orderNumber}" defaultValue="&nbsp;"/>
             </td>
+            <%if(aboutExpire){%>
+        	<td class="simpletableYellow">
+        	<%}else{ %>
             <td class="simpletable">
+            <%}%>
             	<netui:content value="${container.item.licenseQuantity}" defaultValue="&nbsp;"/>
             </td>
+            <%if(aboutExpire){%>
+        	<td class="simpletableYellow">
+        	<%}else{ %>
             <td class="simpletable">
+            <%}%>
             	<netui:content value="${container.item.purchaseDate}" defaultValue="&nbsp;"/>
             </td>
+            <%if(aboutExpire){%>
+        	<td class="simpletableYellow">
+        	<%}else{ %>
             <td class="simpletable">
+            <%}%>
             	<netui:content value="${container.item.expiryDate}" defaultValue="&nbsp;"/>
             </td>
+            <%if(aboutExpire){%>
+        	<td class="simpletableYellow">
+        	<%}else{ %>
             <td class="simpletable">
+            <%}%>
             	<netui:content value="${container.item.purchaseOrder}" defaultValue="&nbsp;"/>
             </td>
         </tr>

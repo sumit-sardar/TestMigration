@@ -1,6 +1,7 @@
 package com.ctb.control.licensing; 
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
@@ -16,6 +17,8 @@ import com.ctb.exception.licensing.LicenseUpdationException;
 import com.ctb.exception.licensing.OrgLicenseDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.licensing.CTBConstants;
+import com.ctb.bean.testAdmin.LASLicenseNode;
+
 
 
 /**
@@ -480,30 +483,47 @@ public class LicensingImpl implements Licensing
     
  // START - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
     
-        public boolean saveOrUpdateOrgNodeLicenseDetail (LicenseNodeData [] licenseNodeData) 
+        public boolean saveOrUpdateOrgNodeLicenseDetail (List<LicenseNodeData> licenseNodeData, boolean isLASManageLicense) 
     throws CTBBusinessException {
         	
     	try{
-    		for(int i =0; i < licenseNodeData.length ; i++ ) {
+    		for(int i =0; i < licenseNodeData.size() ; i++ ) {
     			String isSubtestModel ="T";
-            	if(licenseNodeData[i].getSubtestModel().equals("Session")) {
+            	if(licenseNodeData.get(i).getSubtestModel().equals("Session")) {
             		isSubtestModel = "F";
             	}
-            	licenseNodeData[i].setSubtestModel(isSubtestModel);
+            	licenseNodeData.get(i).setSubtestModel(isSubtestModel);
 
-	    		if (isCustomerOrgnodeLicenseExist (licenseNodeData[i])) {
-	    	        
-	    	    
-	    		this.license.updateAvailableLicenseChange(licenseNodeData[i]);
+	    		if (isCustomerOrgnodeLicenseExist (licenseNodeData.get(i))) {	    	        
+	    			if(isLASManageLicense){
+	    				System.out.println("Call Procedure for Update...");
+	    				this.license.updateLicenseDataForLaslink(
+								licenseNodeData.get(i).getCustomerId(),
+								licenseNodeData.get(i).getProductId(),
+								licenseNodeData.get(i).getOrgNodeId(),
+								Integer.parseInt(licenseNodeData.get(i).getAvailable()));
+	    			}	
+	    			else
+	    				this.license.updateAvailableLicenseChange(licenseNodeData.get(i));
 	    
 	    		} else {
-	    
-	    		this.license.addOrgNodeLicenses(licenseNodeData[i]);
-	    
+	    			if(isLASManageLicense){
+	    				System.out.println("Call Procedure For Insert...");
+	    				this.license.insertLicenseDataForLaslink(
+								licenseNodeData.get(i).getOrgNodeId(),
+								licenseNodeData.get(i).getCustomerId(),
+								licenseNodeData.get(i).getProductId(), 
+								Integer.parseInt(licenseNodeData.get(i).getAvailable()),
+								Integer.parseInt(licenseNodeData.get(i).getReserved()),
+								Integer.parseInt(licenseNodeData.get(i).getConsumed()),
+								licenseNodeData.get(i).getSubtestModel());
+	    			}
+	    			else
+	    				this.license.addOrgNodeLicenses(licenseNodeData.get(i));	    
 	    		}
     		}
     	}catch (SQLException se) {
-          
+    		se.printStackTrace();
           LicenseUpdationException lue = 
                   new LicenseUpdationException("platformlicence.updateCustomerLicenses.E0014");
                   
@@ -517,5 +537,15 @@ public class LicensingImpl implements Licensing
     
      // END - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
      
+    public LASLicenseNode[] getLicenseOrderDetailsForCustomer(Integer customerId) throws CTBBusinessException{
+    	LASLicenseNode[] lasLicenseNode = null;
+    	try {
+    		lasLicenseNode = this.license.getLicenseOrderDetails(customerId);
+		} catch (SQLException se) {
+			// TODO: handle exception
+			se.printStackTrace();
+		}
+    	return lasLicenseNode;
+    }
 } 
   

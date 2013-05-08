@@ -8,6 +8,7 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.LASLicenseNode;
 
 
 
@@ -349,6 +350,18 @@ public interface License extends JdbcControl
      
      @JdbcControl.SQL(arrayMaxLength = 100000,statement = " select decode(sum(nvl(col.available, 0)),0,0,1) as isLicenseAvailable , prd.product_id as productId from customer_orgnode_license col,product prd,org_node node,user_role role,users, org_node_ancestor ans where prd.product_id = col.product_id and role.org_node_id = ans.ancestor_org_node_id  and col.org_node_id = ans.org_node_id and role.org_node_id = node.org_node_id and role.activation_status = 'AC' and node.activation_status = 'AC' and role.user_id = users.user_id and users.user_name = {userName} group by prd.product_id, prd.product_name, col.subtest_model ")
      CustomerLicense[] isLicenseAvailable(String userName);
+     
+     @JdbcControl.SQL(arrayMaxLength = 100000,statement = " SELECT CPL.CUSTOMER_ID          AS CUSTOMERID, CPL.PRODUCT_ID           AS PRODUCTID, CPL.ORDER_INDEX          AS ORDERINDEX, CPL.ORDER_NUMBER         AS ORDERNUMBER,     CPL.AVAILABLE            AS LICENSEQUANTITY, TO_CHAR(CPL.LICENSE_PERIOD_START, 'mm/dd/yyyy')  AS PURCHASEDATE, TO_CHAR(CPL.LICENSE_PERIOD_END, 'mm/dd/yyyy')   AS EXPIRYDATE, CPL.PO_TEXT              AS PURCHASEORDER  FROM CUSTOMER_PRODUCT_LICENSE CPL  WHERE CPL.CUSTOMER_ID = {customerId} ")
+     LASLicenseNode[] getLicenseOrderDetails(Integer customerId) throws SQLException;
+     
+     /**
+      * @jc:sql statement="call UpdateLicenseDataForLaslink({CustomerId})"
+      */
+     @JdbcControl.SQL(statement = "call UpdateLicenseDataForLaslink({customerId}, {productId}, {orgNodeId}, {available})")
+     void updateLicenseDataForLaslink(Integer customerId, Integer productId, Integer orgNodeId, Integer available) throws SQLException;
+     
+     @JdbcControl.SQL(statement = "call InsertLicenseDataForLaslink({orgNodeId}, {customerId}, {productId}, {available}, {reserved}, {consumed}, {subtestModel})")
+     void insertLicenseDataForLaslink(Integer orgNodeId, Integer customerId, Integer productId, Integer available, Integer reserved, Integer consumed, String subtestModel) throws SQLException;
 
 }
 

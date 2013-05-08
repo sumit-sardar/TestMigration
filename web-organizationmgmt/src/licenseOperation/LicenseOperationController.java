@@ -561,12 +561,18 @@ public class LicenseOperationController extends PageFlowController {
  	 */
  	@Jpf.Action()
 	protected Forward saveLicenses() {
-		
+		String selectedOrgNodeId = getRequest().getParameter("selectedOrgNodeId");
 		Integer customerId = this.user.getCustomer().getCustomerId();       
         int numberNodes = this.licenseNodes.size();
-        LicenseNodeData [] licenseNodeDataList = new LicenseNodeData[numberNodes];
-        
-        for (int i = 0 ; i < numberNodes ; i++) {           
+        //LicenseNodeData [] licenseNodeDataList = null;
+        List<LicenseNodeData> licenseNodeDataList = new ArrayList<LicenseNodeData>();
+       // if (this.isLASManageLicense)
+        	//licenseNodeDataList = new LicenseNodeData[numberNodes -1];        	
+       // else 
+        	//licenseNodeDataList = new LicenseNodeData[numberNodes];
+        System.out.println("selectedOrgNodeId >> "+selectedOrgNodeId);
+        System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);
+        for (int i = 0 ; i < numberNodes ; i++) {
         	LicenseNode licenseNode = (LicenseNode)this.licenseNodes.get(i);
         	Integer orgNodeId = licenseNode.getId();
         	String name = licenseNode.getName();
@@ -574,20 +580,34 @@ public class LicenseOperationController extends PageFlowController {
         	Integer productId = licenseNode.getProductId();
         	String subtestModel = licenseNode.getSubtestModel();
         	
-        	LicenseNodeData licenseNodeData = new LicenseNodeData();
-        	licenseNodeData.setProductId(productId);
-        	licenseNodeData.setAvailable(available);
-        	licenseNodeData.setOrgNodeId(orgNodeId);
-        	licenseNodeData.setSubtestModel(subtestModel);
-        	licenseNodeData.setCustomerId(customerId);
-        	licenseNodeDataList[i] = licenseNodeData;
+        	if (this.isLASManageLicense){
+        		if(!selectedOrgNodeId.equalsIgnoreCase(orgNodeId.toString())){
+        			LicenseNodeData licenseNodeData = new LicenseNodeData();
+	        		licenseNodeData.setProductId(productId);
+		        	licenseNodeData.setAvailable(available);
+		        	licenseNodeData.setOrgNodeId(orgNodeId);
+		        	licenseNodeData.setSubtestModel(subtestModel);
+		        	licenseNodeData.setCustomerId(customerId);
+		        	//licenseNodeDataList[i] = licenseNodeData;
+		        	licenseNodeDataList.add(licenseNodeData);
+        		}
+        	}else{
+	        	LicenseNodeData licenseNodeData = new LicenseNodeData();
+	        	licenseNodeData.setProductId(productId);
+	        	licenseNodeData.setAvailable(available);
+	        	licenseNodeData.setOrgNodeId(orgNodeId);
+	        	licenseNodeData.setSubtestModel(subtestModel);
+	        	licenseNodeData.setCustomerId(customerId);
+	        	//licenseNodeDataList[i] = licenseNodeData;
+	        	licenseNodeDataList.add(licenseNodeData);
+        	}
       	
 System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productId=" + productId + "    subtestModel=" + subtestModel + "    customerId=" + customerId + "    available=" + available);
         }
 
         
         try {
-			boolean result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList);
+			boolean result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList, this.isLASManageLicense.booleanValue());
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
@@ -1001,8 +1021,22 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         })
     protected Forward showLicenseDetails()
     {
-    	ArrayList licenseDetails = new ArrayList();
-    	LASLicenseNode node = new LASLicenseNode();
+    	ArrayList<com.ctb.bean.testAdmin.LASLicenseNode> licenseDetails = new ArrayList<com.ctb.bean.testAdmin.LASLicenseNode>();
+    	com.ctb.bean.testAdmin.LASLicenseNode[] lasLicenseNode = null;
+    	
+    	try {
+    		lasLicenseNode = this.licensing.getLicenseOrderDetailsForCustomer(this.customerId);
+		} catch (CTBBusinessException ctbe) {
+			// TODO: handle exception
+			ctbe.printStackTrace();
+		}
+		
+		for (int i = 0; i < lasLicenseNode.length; i++) {
+			licenseDetails.add(lasLicenseNode[i]);
+		}
+		
+		
+    	/*LASLicenseNode node = new LASLicenseNode();
     	node.setOrderNumber("123");
     	node.setLicenseQuantity("200");
     	node.setPurchaseDate("01/08/11");
@@ -1024,7 +1058,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
     	node.setPurchaseDate("01/08/13");
     	node.setExpiryDate("01/08/16");
     	node.setPurchaseOrder("Corporation order");
-    	licenseDetails.add(node);
+    	licenseDetails.add(node);*/
     	
         this.getSession().setAttribute("licenseDetails", licenseDetails);
     	

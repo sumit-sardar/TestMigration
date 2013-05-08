@@ -26,9 +26,24 @@ public class CustomerLicense extends CTBBean
     private String orderNumber = null;
     private String purchaseOrder = null;
 	private Integer index = null;
+	private Integer orderIndex = null;
 
 
-    //changes for LM12
+    /**
+	 * @return the orderIndex
+	 */
+	public Integer getOrderIndex() {
+		return orderIndex;
+	}
+
+	/**
+	 * @param orderIndex the orderIndex to set
+	 */
+	public void setOrderIndex(Integer orderIndex) {
+		this.orderIndex = orderIndex;
+	}
+
+	//changes for LM12
     public CustomerLicense() {}
     
     public String getCustomerName() {
