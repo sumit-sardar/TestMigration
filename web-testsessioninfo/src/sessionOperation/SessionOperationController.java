@@ -193,7 +193,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isOKCustomer = false;
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
-
+	private boolean isTABELocatorOnlyTest = false;
 	
 	//Added for view/monitor test status
     
@@ -5966,6 +5966,11 @@ public class SessionOperationController extends PageFlowController {
 				try {
 					ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
 					TestElement[] testElements = scheduledSession.getScheduledUnits();
+					if(testElements.length == 1 && testElements[0].getItemSetName().toUpperCase().contains("LOCATOR")){
+						this.isTABELocatorOnlyTest = true;
+					}else{
+						this.isTABELocatorOnlyTest = false;
+					}
 			        for (int i=0; i < testElements.length; i++) {
 			            TestElement te = testElements[i];
 			            String sequence = String.valueOf(i+1);
@@ -6003,6 +6008,7 @@ public class SessionOperationController extends PageFlowController {
 		        this.getSession().setAttribute("subtestDetails", this.subtestDetails);
 		      
 		    	this.getSession().setAttribute("isTABE", this.isTabeLocatorProduct);
+		    	this.getSession().setAttribute("tabeLocatorOnlyTest", this.isTABELocatorOnlyTest);
 		    	 // System.out.println("getSession().getAttribute"+getSession().getAttribute("isTABE"));
 		        return new Forward("success");
 		    }

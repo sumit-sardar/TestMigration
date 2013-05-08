@@ -10,7 +10,7 @@
 	List subtestDetails = (List) session.getAttribute("subtestDetails");
 	System.out.println(subtestDetails);	
 	boolean isTABE = Boolean.parseBoolean( session.getAttribute("isTABE").toString());
-	System.out.println(isTABE);	
+	boolean tabeLocatorOnlyTest = Boolean.parseBoolean( session.getAttribute("tabeLocatorOnlyTest").toString());	
 %>
 
 <table class="simpletable" width="100%">
@@ -29,7 +29,7 @@
            <th width="140" style="padding-left:5px;" align="left">
                <div class="notCurrentSort"><span>Access Code</span></div>
            </th>
-           <%if(isTABE){ %>
+           <%if(isTABE && !tabeLocatorOnlyTest){ %>
            <th width="80" style="padding-left:5px;" align="left">
                <div class="notCurrentSort"><span>Locator</span></div>
            </th>
@@ -54,7 +54,7 @@
             <td class="simpletable">
             	<netui:content value="${container.item.accessCode}" defaultValue="&nbsp;"/>
             </td>
-            <%if(isTABE) {%>
+            <%if(isTABE && !tabeLocatorOnlyTest) {%>
             <td class="simpletable">
             	<netui:content value="${container.item.islocatorChecked}" defaultValue="&nbsp;"/>
             </td>
