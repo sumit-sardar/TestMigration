@@ -5591,7 +5591,32 @@ function validNumber(str){
 		}
 		
 		if(checkboxId.indexOf("Mathematics") == -1) {
-			openLocatorValidatePopup();
+			var found=false;
+		
+			if(checkboxId.indexOf("Reading") != -1) {
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Vocabulary") != -1) {
+						found=true;
+						break;
+					}
+				}
+			} else if(checkboxId.indexOf("Language") != -1) {
+				for(var j=0;j<selectedSubtests.length;j++) {
+					if(selectedSubtests[j].subtestName.indexOf("Mechanics") != -1 || selectedSubtests[j].subtestName.indexOf("Spelling") != -1) {
+						found=true;
+						break;
+					}
+				}
+			} else {
+				found=true;
+			}
+			
+			if(found) {
+				openLocatorValidatePopup();
+			} else {
+				document.getElementById(checkboxId).checked=!document.getElementById(checkboxId).checked;
+				locatorSubtestConfirmPopup();
+			}
 		}
 		else if(checkboxId.indexOf("Computation") != -1){
 			if (document.getElementById(checkboxId).checked == false) {
