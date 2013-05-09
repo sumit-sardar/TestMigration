@@ -282,6 +282,14 @@ public class LicenseFormUtils
         	form.setMessage(Message.INVALID_LICENSE_DATE_FORMAT, invalidString, Message.ERROR);
             return true;
         }
+        Date purDate = DateUtils.getDateFromDateString(node.getPurchaseDate());
+        Date expDate = DateUtils.getDateFromDateString(node.getExpiryDate());
+         
+        if (com.ctb.util.DateUtils.dateBefore(expDate, purDate) || com.ctb.util.DateUtils.dateEquals(expDate, purDate)) {    
+        	form.setMessage(Message.INVALID_LICENSE_EXPIRY_DATE, "Expiry date cannot be before or equal purchase date.", Message.ERROR);
+            return true;
+        }
+        
         return false;   
     }
     
