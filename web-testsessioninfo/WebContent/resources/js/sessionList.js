@@ -4703,16 +4703,12 @@ function registerDelegate(tree){
 								row = data.testElement[i];
 								html += '<tr class="sortable" id="'+row.itemSetId+'">';
 								if(row.itemSetType == 'TS') {
-									var hasLocatorTD = "";
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter">&nbsp;</td>';
 									}
 									
-									if(data.isTabeSession && row.hasLocatorTDs == "T"){
-										hasLocatorTD = "( Locator )";
-									}
 									html += '<td class="sortable alignLeft" colspan="'+data.numberColumn+'">';
-									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span>&nbsp;&nbsp;<span> '+hasLocatorTD+'</span></td>';
+									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span></td>';
 								} else {
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
@@ -5795,9 +5791,41 @@ function validNumber(str){
 		}
 		else if(checkboxId.indexOf("Language") != -1 && checkboxId.indexOf("Mechanics") == -1){
 			if(document.getElementById(checkboxId).checked) {
-				$("#confirmationMessage").html($("#checkLanguageMsg").val());
+				var found1=false;
+				var found2=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Mechanics") != -1) {
+						found1=true;
+					}
+					if(selectedSubtests[i].subtestName.indexOf("Spelling") != -1) {
+						found2=true;
+					}
+				}
+				if(found1 && found2) {
+					$("#confirmationMessage").html($("#checkLanguageMsg").val());
+				} else if(found1) {
+					$("#confirmationMessage").html($("#checkLanguageMechaMsg").val());
+				} else if(found2) {
+					$("#confirmationMessage").html($("#checkLanguageSpellMsg").val());
+				}
 			} else {
-				$("#confirmationMessage").html($("#uncheckLanguageMsg").val());
+				var found1=false;
+				var found2=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Mechanics") != -1) {
+						found1=true;
+					}
+					if(selectedSubtests[i].subtestName.indexOf("Spelling") != -1) {
+						found2=true;
+					}
+				}
+				if(found1 && found2) {
+					$("#confirmationMessage").html($("#uncheckLanguageMsg").val());
+				} else if(found1) {
+					$("#confirmationMessage").html($("#uncheckLanguageMechaMsg").val());
+				} else if(found2) {
+					$("#confirmationMessage").html($("#uncheckLanguageSpellMsg").val());
+				}
 			}
 		}
 		else if(checkboxId.indexOf("Vocabulary") != -1){
@@ -5809,16 +5837,56 @@ function validNumber(str){
 		}
 		else if(checkboxId.indexOf("Mechanics") != -1){
 			if(document.getElementById(checkboxId).checked) {
-				$("#confirmationMessage").html($("#checkMechanicsMsg").val());
+				var found=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Spelling") != -1) {
+						found=true;
+					}
+				}
+				if(found) {
+					$("#confirmationMessage").html($("#checkMechanicsMsg").val());
+				} else {
+					$("#confirmationMessage").html($("#checkMechanicsLangMsg").val());
+				}
 			} else {
-				$("#confirmationMessage").html($("#uncheckMechanicsMsg").val());
+				var found=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Spelling") != -1) {
+						found=true;
+					}
+				}
+				if(found) {
+					$("#confirmationMessage").html($("#uncheckMechanicsMsg").val());
+				} else {
+					$("#confirmationMessage").html($("#uncheckMechanicsLangMsg").val());
+				}
 			}
 		}
 		else if(checkboxId.indexOf("Spelling") != -1){
 			if(document.getElementById(checkboxId).checked) {
-				$("#confirmationMessage").html($("#checkSpellingMsg").val());
+				var found=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Mechanics") != -1) {
+						found=true;
+					}
+				}
+				if(found) {
+					$("#confirmationMessage").html($("#checkSpellingMsg").val());
+				} else {
+					$("#confirmationMessage").html($("#checkSpellingLangMsg").val());
+				}
 			} else {
-				$("#confirmationMessage").html($("#uncheckSpellingMsg").val());
+				var found=false;
+				for(var i=0;i<selectedSubtests.length;i++) {
+					if(selectedSubtests[i].subtestName.indexOf("Mechanics") != -1) {
+						found=true;
+					}
+				}
+				if(found) {
+					$("#confirmationMessage").html($("#uncheckSpellingMsg").val());
+				} else {
+					$("#confirmationMessage").html($("#uncheckSpellingLangMsg").val());
+				}
 			}
 		}
 		$("#validateLocatorTestPopup").css('height',120);

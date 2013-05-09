@@ -133,3 +133,11 @@
 <input type="hidden" id="checkMechanicsMsg" name="checkMechanicsMsg" value=<lb:label key="scheduleTest.addMechanicsConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="uncheckSpellingMsg" name="uncheckSpellingMsg" value=<lb:label key="scheduleTest.removeSpellingConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkSpellingMsg" name="checkSpellingMsg" value=<lb:label key="scheduleTest.addSpellingConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkLanguageMechaMsg" name="checkLanguageMechaMsg" value=<lb:label key="scheduleTest.checkLanguageMechaMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkLanguageSpellMsg" name="checkLanguageSpellMsg" value=<lb:label key="scheduleTest.checkLanguageSpellMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckLanguageMechaMsg" name="uncheckLanguageMechaMsg" value=<lb:label key="scheduleTest.uncheckLanguageMechaMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckLanguageSpellMsg" name="uncheckLanguageSpellMsg" value=<lb:label key="scheduleTest.uncheckLanguageSpellMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkMechanicsLangMsg" name="checkMechanicsLangMsg" value=<lb:label key="scheduleTest.checkMechanicsLangMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckMechanicsLangMsg" name="uncheckMechanicsLangMsg" value=<lb:label key="scheduleTest.uncheckMechanicsLangMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkSpellingLangMsg" name="checkSpellingLangMsg" value=<lb:label key="scheduleTest.checkSpellingLangMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckSpellingLangMsg" name="uncheckSpellingLangMsg" value=<lb:label key="scheduleTest.uncheckSpellingLangMsg.message" prefix="'" suffix="'"/> />
