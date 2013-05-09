@@ -1551,8 +1551,16 @@ public class ManageCustomerController extends PageFlowController
         if (result) {
             String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddSuccessfully");
             String title = Message.ADD_UPDATED_LICENSE;
-            form.setMessage(title, msg, Message.INFORMATION); 
-        	this.getRequest().setAttribute("pageMessage", form.getMessage());               
+            form.setMessage(title, msg, Message.INFORMATION);
+            this.getRequest().setAttribute("pageMessage", form.getMessage());
+            String customerEmail = "";
+            try{
+            customerEmail = users.getEmailIdForCustomer(customerId);
+            }catch(Exception e){
+            	e.printStackTrace();
+            }
+            this.license.sendMail(customerId, customerEmail , CTBConstants.EMAIL_TYPE_LICENSE_NOTIFICATION, LASLicenseNode.getOrderNumber(),
+                     LASLicenseNode.getLicenseQuantity(), LASLicenseNode.getPurchaseDate(), LASLicenseNode.getExpiryDate());        	            
         }
         else {
             String msg = MessageResourceBundle.getMessage("ManageLicense.license.AddError");

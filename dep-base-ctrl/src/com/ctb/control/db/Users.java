@@ -831,6 +831,20 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
+     * select c.customer_id as customerId
+     * , c.email_type as emailType
+     * , c.reply_to as replyTo
+     * , c.subject as subject
+     * , c.email_body as emailBody
+     * from customer_email_config c
+     * where c.customer_id = {customer_id}
+     * and c.email_type = {emailType}::
+     */
+    @JdbcControl.SQL(statement = "select c.customer_id as customerId , c.email_type as emailType , c.reply_to as replyTo , c.subject as subject , c.email_body as emailBody from customer_email_config c where c.customer_id = {customerId} and c.email_type = {emailType}")
+    CustomerEmail getCustomerEmailByCustomerId(Integer customerId, Integer emailType) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
      * select
      *      users.user_id as userId
      * from
@@ -910,6 +924,8 @@ public interface Users extends JdbcControl
     
     @JdbcControl.SQL(statement = "select enforce_break from test_admin where test_admin_id = {testAdminId}")
     String hasMultipleAccessCode(int testAdminId) throws SQLException;
-
-
+    
+    @JdbcControl.SQL(statement = "select contact_email from customer where customer_id = {customerId}")
+    String getEmailIdForCustomer(Integer customerId) throws SQLException;
+    
 }

@@ -44,6 +44,7 @@ public final class CTBConstants {
 	public static final Integer EMAIL_TYPE_WELCOME = new Integer(1);
     public static final Integer EMAIL_TYPE_PASSWORD = new Integer(2);
     public static final Integer EMAIL_TYPE_NOTIFICATION = new Integer(3);
+    public static final Integer EMAIL_TYPE_LICENSE_NOTIFICATION = new Integer(5);
     public static final String OAS_QA_URL = "https://oastest1.ctb.com/"; 
     public static final String OAS_PRODUCTION_URL = "https://oas.ctb.com/"; 
     public static final String STATE_KEY = "STATES";

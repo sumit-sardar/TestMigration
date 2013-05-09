@@ -1,10 +1,20 @@
 package com.ctb.control.licensing; 
 
 import java.sql.SQLException;
+import java.util.Date;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.naming.InitialContext;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.Node;
@@ -15,6 +25,7 @@ import com.ctb.exception.licensing.LicenseCreationException;
 import com.ctb.exception.licensing.LicenseUpdationException;
 import com.ctb.exception.licensing.OrgLicenseDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
+import com.ctb.util.OASLogger;
 import com.ctb.util.licensing.CTBConstants;
 
 
@@ -670,5 +681,70 @@ public class LicensingImpl implements Licensing
         }
         return result ; 
    }
-} 
-  
+   
+   /**
+    * This is a generic method to send mail. It retrieves the content of the body
+    * from database. value should be an empty string even If for some email_type, 
+    * there is no replacement in the body. Caller should ensure that to_address 
+    * is not null. This method suppresses any exception occured. 
+    * 
+    */
+   public void sendMail(Integer customerId, String to, Integer emailType, String orderNumber, String licenseQuantity, 
+		   String purchaseDate, String expiryDate) {
+       try {
+           CustomerEmail emailData = new CustomerEmail();
+           boolean isLaslinkCustomer = false;
+           if(customerId != null){ 
+             emailData = users.getCustomerEmailByCustomerId(customerId, emailType);
+           }
+           /*else if (orgNodeId != null){
+             emailData = users.getCustomerEmailByOrgId(orgNodeId, emailType);
+           }*/
+           CustomerConfiguration [] cc = users.getCustomerConfigurations(emailData.getCustomerId());
+           for (int i = 0; i < cc.length; i++) {
+				if(cc[i].getCustomerConfigurationName().equals("LASLINK_Customer") ||
+						cc[i].getCustomerConfigurationName().equals("LL_Customer")){
+					isLaslinkCustomer = true;
+				}
+			}
+           String content = emailData.getEmailBodyStr().replaceAll(
+                               CTBConstants.EMAIL_CONTENT_PLACEHOLDER_ORDERNO, orderNumber);
+           content = content.replaceAll(
+        		   			   CTBConstants.EMAIL_CONTENT_PLACEHOLDER_LICENSEQTY, licenseQuantity);
+           content = content.replaceAll(
+        		   			   CTBConstants.EMAIL_CONTENT_PLACEHOLDER_PURCHASEDATE, purchaseDate );
+           content = content.replaceAll(
+        		   			   CTBConstants.EMAIL_CONTENT_PLACEHOLDER_EXPIRYDATE, expiryDate);
+                               
+           InitialContext ic = new InitialContext();
+           
+           //the properties were configured in WebLogic through the console
+           Session session = (Session) ic.lookup("UserManagementMail");
+           
+           //contruct the actual message
+           Message msg =  new MimeMessage(session);
+           String replyTo = emailData.getReplyTo();
+           if(replyTo == null || replyTo.length() < 1) {
+               replyTo = CTBConstants.EMAIL_FROM;
+           }
+           if(isLaslinkCustomer)
+           	msg.setFrom(new InternetAddress(replyTo,CTBConstants.EMAIL_FROM_ALIAS_LASLINKS));
+           else
+           	msg.setFrom(new InternetAddress(replyTo));
+           
+           //emailTo could be a comma separated list of addresses
+           msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+           msg.setSubject(emailData.getSubject());
+           msg.setText(content);
+           msg.setSentDate(new Date());
+           
+           //send the message
+           Transport.send(msg);
+           
+       } catch (Exception e) {
+           e.printStackTrace();
+           OASLogger.getLogger("Licensing").error(e.getMessage());
+           OASLogger.getLogger("Licensing").error("sendMail failed for emailType: " + emailType);
+       }
+   }
+}

@@ -114,4 +114,6 @@ public interface Licensing
     com.ctb.bean.testAdmin.CustomerLicense getTopOrgnodeLicenseDetails(java.lang.Integer orgNodeId, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
     
     boolean addEditOrgnodeOrderLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
+    
+    void sendMail(Integer customerId, String to, Integer emailType, String orderNumber, String licenseQuantity, String purchaseDate, String expiryDate); 
 } 
