@@ -175,7 +175,7 @@ public class LASLicenseNode implements java.io.Serializable
 	                cal.add(Calendar.DAY_OF_MONTH, 1);
 		            dateIteration = cal.getTime();
 	        	}
-	        	this.expiryStatus = "About expired in " + dayCount + " days";
+	        	this.expiryStatus = "About expired in " + (dayCount + 1) + " days";
 	        	System.out.println(this.expiryStatus);
 	        }
 	        else {

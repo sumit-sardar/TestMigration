@@ -1,5 +1,7 @@
 package utils; 
 
+import java.util.Date;
+
 import dto.LASLicenseNode;
 import dto.Message;
 import manageCustomer.ManageCustomerController.ManageCustomerForm;
@@ -159,6 +161,14 @@ public class LicenseFormUtils
         	form.setMessage(Message.INVALID_LICENSE_DATE_FORMAT, invalidString, Message.ERROR);
             return true;
         }
+        Date purDate = DateUtils.getDateFromDateString(form.getLASLicenseNode().getPurchaseDate());
+        Date expDate = DateUtils.getDateFromDateString(form.getLASLicenseNode().getExpiryDate());
+         
+        if (com.ctb.util.DateUtils.dateBefore(expDate, purDate) || com.ctb.util.DateUtils.dateEquals(expDate, purDate)) {    
+        	form.setMessage(Message.INVALID_LICENSE_EXPIRY_DATE, "Expiry date cannot be before or equal purchase date.", Message.ERROR);
+            return true;
+        }
+        
         return false;   
     }
   
