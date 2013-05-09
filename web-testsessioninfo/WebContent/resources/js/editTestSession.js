@@ -397,6 +397,7 @@
 									}
 									if(locatorOnlyTest){
 										$("#hasAutolocator").attr('disabled', true);
+										$("#testBreak").attr('disabled', true);
 									}
 								}
 								
@@ -793,12 +794,13 @@
 	function removeDisableInEdit() {
 		$('#testGroupList').removeAttr("disabled");
 		$('#level').removeAttr("disabled");
-		$('#testBreak').removeAttr("disabled");
+		if(locatorOnlyTest != undefined && !locatorOnlyTest)
+			$('#testBreak').removeAttr("disabled");
 		$('#aCode').removeAttr("disabled");
 		$('#testSessionName').removeAttr("disabled");
 		$('#startDate').removeAttr("disabled");
 		$('#endDate').removeAttr("disabled"); 
-		if(allSubtests.length != 0)
+		if(allSubtests.length != 0 && locatorOnlyTest != undefined && !locatorOnlyTest)
 			$('#hasAutolocator').removeAttr("disabled");
   		$('#aCodeB_l').removeAttr("disabled");
 		setAnchorButtonState('modifyTestButton', false);
@@ -815,7 +817,7 @@
   		if($('#randomDis') != undefined && $('#randomDis') != null) {
   			$('#randomDis').removeAttr("disabled");
   		}
-  		if($('#testBreak') != undefined && $('#testBreak') != null) {
+  		if($('#testBreak') != undefined && $('#testBreak') != null && locatorOnlyTest != undefined && !locatorOnlyTest) {
   			$('#testBreak').removeAttr("disabled");
   		}
   		var isChecked = $("#testBreak").attr('checked');
