@@ -1997,12 +1997,15 @@ public class SessionOperationController extends PageFlowController {
 			SessionStudent[] savedStds = savedSession.getStudents();
 			SessionStudent[] scheduledStds = scheduledSession.getStudents();
 			Map<Integer, StudentManifest []> stdIdManifestsMap = new TreeMap<Integer, StudentManifest []>();
+			Map<Integer, Map<Integer,Integer>> locatorSubtestMap = new TreeMap<Integer, Map<Integer,Integer>>();
 			for( SessionStudent std: savedStds) {
 				stdIdManifestsMap.put(std.getStudentId(), std.getStudentManifests());
+				locatorSubtestMap.put(std.getStudentId(), std.getSavedlocatorTDMap());
 			}
 			for(SessionStudent std: scheduledStds){
 				if(!std.isNewStudent())
 					std.setStudentManifests(stdIdManifestsMap.get(std.getStudentId()) );
+					std.setSavedlocatorTDMap(locatorSubtestMap.get(std.getStudentId()));
 			}
 			
 			

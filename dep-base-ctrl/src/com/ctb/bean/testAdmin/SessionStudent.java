@@ -1,6 +1,7 @@
 package com.ctb.bean.testAdmin; 
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -33,6 +34,7 @@ public class SessionStudent extends SchedulingStudent
     private String[] valueMap;
     private List valueHashMap;
     private boolean isNewStudent = false;
+    private Map<Integer, Integer> savedlocatorTDMap;
     
     public SessionStudent() {
         super();
@@ -191,4 +193,14 @@ public class SessionStudent extends SchedulingStudent
 	public void setNewStudent(boolean isNewStudent) {
 		this.isNewStudent = isNewStudent;
 	}
+
+	public Map<Integer, Integer> getSavedlocatorTDMap() {
+		return savedlocatorTDMap;
+	}
+
+	public void setSavedlocatorTDMap(Map<Integer, Integer> savedlocatorTDMap) {
+		this.savedlocatorTDMap = savedlocatorTDMap;
+	}
+	
+	
 } 

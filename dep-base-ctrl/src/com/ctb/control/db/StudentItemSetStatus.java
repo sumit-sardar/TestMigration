@@ -622,6 +622,9 @@ public interface StudentItemSetStatus extends JdbcControl
             arrayMaxLength = 100000)
      StudentManifest [] getStudentLocatorManifestsForRoster(Integer studentId, Integer testAdminId) throws SQLException;
 
+	@JdbcControl.SQL(statement= "SELECT ISET.ITEM_SET_ID    AS itemSetId, ISET.ITEM_SET_NAME  AS itemSetName ,ISET.ITEM_SET_FORM  AS itemSetForm, SISS.ITEM_SET_ORDER AS itemSetOrder FROM ITEM_SET     ISET, ITEM_SET_PARENT    ISP,  STUDENT_ITEM_SET_STATUS    SISS,  TEST_ROSTER             TR WHERE ISP.PARENT_ITEM_SET_ID = {itemSetIdTS} AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID AND SISS.ITEM_SET_ID = ISET.ITEM_SET_ID AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND TR.TEST_ADMIN_ID = {testAdminId} ", arrayMaxLength = 100000)
+	StudentManifest [] getLocatorTD(Integer testAdminId, Integer itemSetIdTS) throws SQLException;
+	
     static final long serialVersionUID = 1L;
 
 }   

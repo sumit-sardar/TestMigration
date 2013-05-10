@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -2484,7 +2485,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     	if(newSession.getHasLocator()){
                     		newAssignment.setSubtests(subtests);   
                     	}else{
-                    		newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests()));
+                    		newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests(), student.getSavedlocatorTDMap()));
                     	}
                     } else {
                         newAssignment.setSubtests(subtests);   
@@ -2500,15 +2501,16 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    private ArrayList getTDTestElementList(StudentManifest [] studentManifests) 
+    private ArrayList getTDTestElementList(StudentManifest [] studentManifests, Map<Integer,Integer> locatorManifest) 
         throws SQLException
     {
         ArrayList subtests = new ArrayList();
+        ArrayList<TestElement> forLocator = new ArrayList<TestElement>();
         for(int i=0;i<studentManifests.length;i++) {
             Integer itemSetId = studentManifests[i].getItemSetId();
             String form = studentManifests[i].getItemSetForm() ==  null || "".equals(studentManifests[i].getItemSetForm())?"-":studentManifests[i].getItemSetForm();
-            ArrayList elements = (ArrayList) SimpleCache.checkCache("TSSubtestFormList", String.valueOf(itemSetId) + form);
-            if(elements == null) {
+            ArrayList<TestElement> elements = (ArrayList) SimpleCache.checkCache("TSSubtestFormList", String.valueOf(itemSetId) + form);
+            if(elements == null || elements.size() == 0) {
                 elements = new ArrayList();
                 TestElement [] scheduledSubtests;
                 if ("-".equals(form)) {
@@ -2516,12 +2518,28 @@ public class ScheduleTestImpl implements ScheduleTest
                 } else { 
                     scheduledSubtests = itemSet.getTestElementsForParentByForm(itemSetId, "TD", form);
                 } for(int ii=0;ii<scheduledSubtests.length;ii++) {
-                    subtests.add(scheduledSubtests[ii]);
-                    elements.add(scheduledSubtests[ii]);
+                	if(studentManifests[i].getItemSetName() != null && (studentManifests[i].getItemSetName().toUpperCase().contains("LOCATOR")) && locatorManifest!= null  && locatorManifest.size() >0 ){
+                		if(locatorManifest.get(scheduledSubtests[ii].getItemSetId()) != null && locatorManifest.get(scheduledSubtests[ii].getItemSetId()).intValue() == scheduledSubtests[ii].getItemSetId().intValue()){
+                			subtests.add(scheduledSubtests[ii]);
+                			elements.add(scheduledSubtests[ii]);
+                		}
+                	}else{
+                		subtests.add(scheduledSubtests[ii]);
+                		elements.add(scheduledSubtests[ii]);
+                	}
                 }
                 SimpleCache.cacheResult("TSSubtestFormList", String.valueOf(itemSetId) + form, elements);
             } else {
-                subtests.addAll(elements);
+            	if(studentManifests[i].getItemSetName() != null && (studentManifests[i].getItemSetName().toUpperCase().contains("LOCATOR")) && locatorManifest!= null && locatorManifest.size() >0 ){
+	    			for( TestElement te :  elements){
+	    				if(locatorManifest.get(te.getItemSetId()) != null && locatorManifest.get(te.getItemSetId()).intValue() == te.getItemSetId().intValue()){
+	    					forLocator.add(te);
+	    				}
+	    			}
+	    			subtests.addAll(forLocator);
+            	}else{
+            		subtests.addAll(elements);
+            	}
             }
         }
         return subtests;
@@ -2699,10 +2717,10 @@ public class ScheduleTestImpl implements ScheduleTest
                     assignment.setStudentId(re.getStudentId());
                     assignment.setTestRosterId(re.getTestRosterId());
                     if (overrideUsingStudentManifest) {
-                    	if(newSession.getHasLocator()){
+                    	if(newSession.getHasLocator() && oldUnit == null){
                     		 assignment.setSubtests(subtests);
                     	}else
-                    		assignment.setSubtests(getTDTestElementList(newUnit.getStudentManifests()));
+                    		assignment.setSubtests(getTDTestElementList(newUnit.getStudentManifests(), newUnit.getSavedlocatorTDMap()));
                     } else {
                         assignment.setSubtests(subtests);
                     }
@@ -3862,6 +3880,16 @@ public class ScheduleTestImpl implements ScheduleTest
             for(int i=0;i<roster.length;i++) {
                 if (overrideUsingStudentManifest) {
                     StudentManifest [] studentManifests = studentItemSetStatus.getStudentManifestsForRoster(roster[i].getStudentId(),testAdminId);
+                    for(int indx=0; indx<studentManifests.length; indx++){
+                    	if(studentManifests[indx].getItemSetName().toUpperCase().contains("LOCATOR")){
+                    		StudentManifest [] locatorTD = studentItemSetStatus.getLocatorTD(testAdminId, studentManifests[indx].getItemSetId());
+                    		Map<Integer, Integer> locatorMap = new HashMap<Integer, Integer>();
+                    		for(int j=0; j<locatorTD.length; j++){
+                    			locatorMap.put(locatorTD[j].getItemSetId(), locatorTD[j].getItemSetId());
+                    		}
+                    		roster[i].setSavedlocatorTDMap(locatorMap);
+                    	}
+                    }
                     ArrayList smAr = getFilteredStudentManifestForRoster(studentManifests);
                     roster[i].setStudentManifests((StudentManifest [])smAr.toArray(new StudentManifest[0]));
                 }
