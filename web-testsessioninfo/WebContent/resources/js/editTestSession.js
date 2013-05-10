@@ -1090,6 +1090,9 @@
 	function updateLocatorSubtestsList(){
 		prepareDeselectSubtest(selectedSubtests);
 		populateLocatorSubtest();
+		var found1=false;
+		var found2=false;
+		
 		for(var indx=0; indx<selectedSubtests.length;indx++){
 			if(document.getElementById(selectedSubtests[indx].subtestName) != null && document.getElementById(selectedSubtests[indx].subtestName) != undefined) {
 				if(selectedSubtests[indx].subtestName.indexOf("Reading") != -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
@@ -1108,22 +1111,20 @@
 						document.getElementById(id).disabled = "true";
 					}
 					}
-				}else if(selectedSubtests[indx].subtestName.indexOf("Applied")!= -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
-					for(var j=0; j<locatorTDList.length;j++){
-					if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
-						var id = "locator_"+locatorTDList[j].subtestName;
-						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
-						document.getElementById(id).disabled = "true";
-					}
-					}
+				} else if(selectedSubtests[indx].subtestName.indexOf("Applied")!= -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
+					found1=true;
 				}else if(selectedSubtests[indx].subtestName.indexOf("Computation") != -1 && !(document.getElementById(selectedSubtests[indx].subtestName).checked)){
-					for(var j=0; j<locatorTDList.length;j++){
-					if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
-						var id = "locator_"+locatorTDList[j].subtestName;
-						if(document.getElementById(id) != undefined && document.getElementById(id) != null)
-						document.getElementById(id).disabled = "true";
-					}
-					}
+					found2=true;
+				}
+			}
+		}
+		
+		if(found1 || found2) {
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Computation") != -1 || (locatorTDList[j].subtestName).indexOf("Applied") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+					document.getElementById(id).disabled = "true";
 				}
 			}
 		}
@@ -1154,6 +1155,31 @@
 						}
 					}
 				}
+			}
+		}
+		
+		if(locatorTDList != undefined && locatorTDList != null){
+			for(var x=0;x<locatorTDList.length;x++) {
+				if(locatorTDList[x].itemSetName.indexOf("Applied")!=-1) {
+					var id = "locator_"+locatorTDList[x].itemSetName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null && (document.getElementById(id).disabled == "" || document.getElementById(id).disabled == false)) {
+						for(var y=0;y<locatorTDList.length;y++) {
+							var idd = "locator_"+locatorTDList[y].itemSetName;
+							if(document.getElementById(idd) != undefined && document.getElementById(idd) != null && idd.indexOf("Computation")!=-1)
+								document.getElementById(idd).disabled = "";
+						}
+					}
+				} else if(locatorTDList[x].itemSetName.indexOf("Computation")!=-1) {
+					var id = "locator_"+locatorTDList[x].itemSetName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null && (document.getElementById(id).disabled == "" || document.getElementById(id).disabled == false)) {
+						for(var y=0;y<locatorTDList.length;y++) {
+							var idd = "locator_"+locatorTDList[y].itemSetName;
+							if(document.getElementById(idd) != undefined && document.getElementById(idd) != null && idd.indexOf("Applied")!=-1)
+								document.getElementById(idd).disabled = "";
+						}
+					}
+				}
+					
 			}
 		}
 	}

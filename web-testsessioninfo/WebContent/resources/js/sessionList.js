@@ -5356,7 +5356,7 @@ function validNumber(str){
 					}
 				} else if(name.indexOf("Computation") != -1){
 					for(var j=0; j<locatorTDList.length;j++){
-						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
+						if((locatorTDList[j].subtestName).indexOf("Computation") != -1 || (locatorTDList[j].subtestName).indexOf("Applied") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
 							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 							document.getElementById(id).disabled = "";
@@ -5364,7 +5364,7 @@ function validNumber(str){
 					}
 				} else if(name.indexOf("Applied") != -1){
 					for(var j=0; j<locatorTDList.length;j++){
-						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
+						if((locatorTDList[j].subtestName).indexOf("Applied") != -1 || (locatorTDList[j].subtestName).indexOf("Computation") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
 							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 							document.getElementById(id).disabled = "";
@@ -5586,35 +5586,49 @@ function validNumber(str){
 		selectedLocatorMap.put(checkboxId,true);
 		}
 		
-		if(checkboxId.indexOf("Mathematics") == -1) {
-			var found=false;
-		
-			if(checkboxId.indexOf("Reading") != -1) {
-				for(var i=0;i<selectedSubtests.length;i++) {
-					if(selectedSubtests[i].subtestName.indexOf("Vocabulary") != -1) {
-						found=true;
-						break;
-					}
+		var found=false;
+	
+		if(checkboxId.indexOf("Reading") != -1) {
+			for(var i=0;i<selectedSubtests.length;i++) {
+				if(selectedSubtests[i].subtestName.indexOf("Vocabulary") != -1) {
+					found=true;
+					break;
 				}
-			} else if(checkboxId.indexOf("Language") != -1) {
-				for(var j=0;j<selectedSubtests.length;j++) {
-					if(selectedSubtests[j].subtestName.indexOf("Mechanics") != -1 || selectedSubtests[j].subtestName.indexOf("Spelling") != -1) {
-						found=true;
-						break;
-					}
+			}
+		} else if(checkboxId.indexOf("Language") != -1) {
+			for(var j=0;j<selectedSubtests.length;j++) {
+				if(selectedSubtests[j].subtestName.indexOf("Mechanics") != -1 || selectedSubtests[j].subtestName.indexOf("Spelling") != -1) {
+					found=true;
+					break;
 				}
-			} else {
-				found=true;
 			}
-			
-			if(found) {
-				openLocatorValidatePopup();
-			} else {
-				document.getElementById(checkboxId).checked=!document.getElementById(checkboxId).checked;
-				locatorSubtestConfirmPopup();
+		} else if(checkboxId.indexOf("Computation") != -1) {
+			for(var j=0;j<selectedSubtests.length;j++) {
+				if(selectedSubtests[j].subtestName.indexOf("Applied") != -1) {
+					found=true;
+					break;
+				}
 			}
+		} else if(checkboxId.indexOf("Applied") != -1) {
+			for(var j=0;j<selectedSubtests.length;j++) {
+				if(selectedSubtests[j].subtestName.indexOf("Computation") != -1) {
+					found=true;
+					break;
+				}
+			}
+		} else {
+			found=true;
 		}
-		else if(checkboxId.indexOf("Computation") != -1){
+		
+		if(found) {
+			openLocatorValidatePopup();
+		} else {
+			document.getElementById(checkboxId).checked=!document.getElementById(checkboxId).checked;
+			locatorSubtestConfirmPopup();
+		}
+		
+		
+	/*	else if(checkboxId.indexOf("Computation") != -1){
 			if (document.getElementById(checkboxId).checked == false) {
 				for(var j=0; j<locatorTDList.length;j++){
 					if((locatorTDList[j].subtestName).indexOf("Computation")!= -1){
@@ -5654,7 +5668,7 @@ function validNumber(str){
 				}
 			}
 		}
-				
+		*/		
 	/*	if(checkboxId.indexOf("Reading") != -1){
 			if (document.getElementById(checkboxId).checked == false) {
 				openLocatorValidatePopup();//confirm("Remove Reading will also remove Vocabulary. Do you want to continue?");
@@ -5888,7 +5902,20 @@ function validNumber(str){
 					$("#confirmationMessage").html($("#uncheckSpellingLangMsg").val());
 				}
 			}
+		} else if(checkboxId.indexOf("Computation") != -1){
+			if(document.getElementById(checkboxId).checked) {
+				$("#confirmationMessage").html($("#checkComputationMsg").val());
+			} else {
+				$("#confirmationMessage").html($("#uncheckComputationMsg").val());
+			}
+		} else if(checkboxId.indexOf("Applied") != -1){
+			if(document.getElementById(checkboxId).checked) {
+				$("#confirmationMessage").html($("#checkAppliedMsg").val());
+			} else {
+				$("#confirmationMessage").html($("#uncheckAppliedMsg").val());
+			}
 		}
+			
 		$("#validateLocatorTestPopup").css('height',120);
 		var toppos = ($(window).height() - 290) /2 + 'px';
 		var leftpos = ($(window).width() - 410) /2 + 'px';
@@ -5990,7 +6017,44 @@ function validNumber(str){
 						document.getElementById(id).disabled = !document.getElementById(checkboxId).checked;
 				}
 			}
+   		} else if(checkboxId.indexOf("Computation") != -1){
+   			document.getElementById(checkboxId).checked = !document.getElementById(checkboxId).checked;
+   			selectedLocatorMap.put(checkboxId,document.getElementById(checkboxId).checked);
+   			for(var i = 0; i<selectedSubtests.length; i++){
+				var keyId = selectedSubtests[i].subtestName;
+				if((keyId).indexOf("Applied")!= -1){
+					document.getElementById(keyId).checked = document.getElementById(checkboxId).checked;
+					selectedLocatorMap.put(keyId,document.getElementById(keyId).checked);
+				}
+			}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Computation")!= -1 || (locatorTDList[j].subtestName).indexOf("Applied")!= -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)	
+						document.getElementById(id).disabled = !document.getElementById(checkboxId).checked;
+				}
+			}
    		}
+   		else if(checkboxId.indexOf("Applied") != -1){
+   			document.getElementById(checkboxId).checked = !document.getElementById(checkboxId).checked;
+   			selectedLocatorMap.put(checkboxId,document.getElementById(checkboxId).checked);
+   			for(var i = 0; i<selectedSubtests.length; i++){
+				var keyId = selectedSubtests[i].subtestName;
+				if((keyId).indexOf("Computation")!= -1){
+					document.getElementById(keyId).checked = document.getElementById(checkboxId).checked;
+					selectedLocatorMap.put(keyId,document.getElementById(keyId).checked);
+				}
+			}
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Computation")!= -1 || (locatorTDList[j].subtestName).indexOf("Applied")!= -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)	
+						document.getElementById(id).disabled = !document.getElementById(checkboxId).checked;
+				}
+			}
+   		}
+   		
+   		
    		disableAutoLocatorCheckbox();
 	}
 	
@@ -6014,6 +6078,8 @@ function validNumber(str){
 	
 	
 	function populateLocatorSubtest(){
+		var hasMConLeft = false;
+		var hasAMonLeft = false; 
 		for(var i = 0; i < allSubtests.length; i++){
 			var mapData = deselectSubtest.get(i);
 			if(mapData!= null && mapData!= undefined){
@@ -6036,22 +6102,33 @@ function validNumber(str){
 						}
 				}
 				else if(mapData.subtestName.indexOf("Computation") != -1){
-					for(var j=0; j<locatorTDList.length;j++){
+					hasMConLeft = true;
+					/*for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Computation") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
 							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 								document.getElementById(id).disabled = "true";
 							}
-						}
+						}*/
 				}
 				else if(mapData.subtestName.indexOf("Applied") != -1){
-					for(var j=0; j<locatorTDList.length;j++){
+					hasAMonLeft = true;
+					/*for(var j=0; j<locatorTDList.length;j++){
 						if((locatorTDList[j].subtestName).indexOf("Applied") != -1){
 							var id = "locator_"+locatorTDList[j].subtestName;
 							if(document.getElementById(id) != undefined && document.getElementById(id) != null)
 								document.getElementById(id).disabled = "true";
 							}
-						}
+						}*/
+				}
+			}
+		}
+		if(hasMConLeft && hasAMonLeft){
+			for(var j=0; j<locatorTDList.length;j++){
+				if((locatorTDList[j].subtestName).indexOf("Computation") != -1 || (locatorTDList[j].subtestName).indexOf("Applied") != -1){
+					var id = "locator_"+locatorTDList[j].subtestName;
+					if(document.getElementById(id) != undefined && document.getElementById(id) != null)
+						document.getElementById(id).disabled = "true";
 				}
 			}
 		}

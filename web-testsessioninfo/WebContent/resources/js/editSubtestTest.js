@@ -227,6 +227,13 @@
 	        } else {
 	         	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#readingLevelMsg").val());
 	        }
+	    } else if ( !mathDependency(subtests) && locatorOnlyTest) {
+	        isValid = false;
+	       if(isForStudentMsm) {
+	        	 setMsmErrorMessage($("#subtestValidationFailedMsg").val(), $("#mathDependencyMsg").val());
+	        } else {
+	         	 setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#mathDependencyMsg").val());
+	        }
 	    } else if(validateLevels && ! mathLevel(subtests)){
 	    	isValid = false;
 	    	if(isForStudentMsm) {
@@ -358,6 +365,20 @@
 	    return isValid;
 	}
 	
+	function mathDependency(subtests) {
+	    var isValid = true;
+	    if (presented(MATH_COMPUTATION, subtests)) {
+	        if ( ! presented(APPLIED_MATH, subtests)) {
+	            isValid = false;
+	        }
+	    }
+	    if (presented(APPLIED_MATH, subtests)) {
+	        if ( ! presented(MATH_COMPUTATION, subtests)) {
+	            isValid = false;
+	        }
+	    }
+	    return isValid;
+	}
 	
 	function mathSubtests(subtests) {
 	    var isValid = false;

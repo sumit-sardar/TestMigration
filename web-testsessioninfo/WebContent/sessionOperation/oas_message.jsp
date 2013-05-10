@@ -101,6 +101,7 @@
 <input type="hidden" id="languageDependencyMsg" name = "languageDependencyMsg" value=<lb:label key="session.languageDependency.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="languageLevelMsg" name = "languageLevelMsg" value=<lb:label key="session.languageLevel.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="readingDependencyMsg" name = "readingDependencyMsg" value=<lb:label key="session.readingDependency.message" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mathDependencyMsg" name = "mathDependencyMsg" value=<lb:label key="session.mathDependency.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="readingLevelMsg" name = "readingLevelMsg" value=<lb:label key="session.readingLevel.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mathSubtestsMsg" name = "mathSubtestsMsg" value=<lb:label key="session.mathSubtests.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="scoreCalulatableMsg" name = "scoreCalulatableMsg" value=<lb:label key="session.scoreCalulatable.message" prefix="'" suffix="'"/>/>
@@ -141,3 +142,7 @@
 <input type="hidden" id="uncheckMechanicsLangMsg" name="uncheckMechanicsLangMsg" value=<lb:label key="scheduleTest.uncheckMechanicsLangMsg.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkSpellingLangMsg" name="checkSpellingLangMsg" value=<lb:label key="scheduleTest.checkSpellingLangMsg.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="uncheckSpellingLangMsg" name="uncheckSpellingLangMsg" value=<lb:label key="scheduleTest.uncheckSpellingLangMsg.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckComputationMsg" name="uncheckComputationMsg" value=<lb:label key="scheduleTest.removeComputationConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkComputationMsg" name="checkComputationMsg" value=<lb:label key="scheduleTest.addComputationConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="uncheckAppliedMsg" name="uncheckAppliedMsg" value=<lb:label key="scheduleTest.removeAppliedConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="checkAppliedMsg" name="checkAppliedMsg" value=<lb:label key="scheduleTest.addAppliedConfirmation.message" prefix="'" suffix="'"/> />
