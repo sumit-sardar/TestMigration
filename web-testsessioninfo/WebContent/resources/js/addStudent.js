@@ -659,6 +659,17 @@ function populateSelectStudentGrid() {
 							}
 						}
 					}
+					
+					var allChecked=true;
+					for(var all=0;all<allStudentIds.length;all++) {
+						if(!document.getElementById("jqg_selectStudent_" + allStudentIds[all].studentId).checked) {
+							allChecked=false;
+							break;
+						}
+					}
+					if(allChecked) {
+						$("#cb_selectStudent").attr("checked", true);
+					}
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
