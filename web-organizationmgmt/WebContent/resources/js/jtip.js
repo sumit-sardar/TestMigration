@@ -15,6 +15,7 @@ function JT_init(){
 }
 
 function JT_show(url,linkId,title){
+	url = url + "&sessionId=" + Math.random()*10;
 	if(title == false)title="&nbsp;";
 	var de = document.documentElement;
 	var w = self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
