@@ -1628,6 +1628,8 @@ public class ManageCustomerController extends PageFlowController
         	if (! paramValue.equals(node.getLicenseQuantity())) {
         		node.setBalanceLicense(Integer.valueOf(paramValue) - Integer.valueOf(node.getLicenseQuantity()));
         		node.setLicenseQuantity(paramValue);
+    			updateNeeded = true;
+        		/*
         		if (Math.abs(Integer.valueOf(node.getBalanceLicense())) > Integer.valueOf(this.topNodeLicenseDetail.getAvailable())) 
         		{        			
         			String msg = MessageResourceBundle.getMessage("ManageLicense.license.cannot.reduce");
@@ -1638,6 +1640,7 @@ public class ManageCustomerController extends PageFlowController
         		}
         		else 
         			updateNeeded = true;
+        		*/
         	}
         	paramStr = "{requestScope.licenses[" + i + "].expiryDate}";           	
         	paramValue = (String)this.getRequest().getParameter(paramStr);
@@ -1713,8 +1716,8 @@ public class ManageCustomerController extends PageFlowController
          copied.setSubtestModel(custLicense.getSubtestModel());
          copied.setEmailNotify(custLicense.getEmailNotify());
          
-         if (custLicense.getLicenseAfterLastPurchase() != null) {
-        	 copied.setLicenseQuantity(custLicense.getLicenseAfterLastPurchase().toString());             
+         if (custLicense.getAvailable() != null) {
+        	 copied.setLicenseQuantity(custLicense.getAvailable().toString());             
          }        
          
          copied.setPurchaseDate(DateUtils.formatDateToDateString(custLicense.getLicenseperiodStartdate(), "MM/dd/yy"));
