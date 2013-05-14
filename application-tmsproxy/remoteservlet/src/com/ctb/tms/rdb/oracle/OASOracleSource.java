@@ -20,6 +20,10 @@ import noNamespace.EntryType;
 import noNamespace.StereotypeType;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.CatPriorData;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.CatPriorData.Subtest;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.CatPriorData.Subtest.PriorItemHistory;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.CatPriorData.Subtest.PriorItemHistory.PriorItem;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
@@ -33,6 +37,8 @@ import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
+import com.ctb.tms.bean.login.CATPriorData;
+import com.ctb.tms.bean.login.CATPriorItemData;
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
@@ -59,7 +65,9 @@ public class OASOracleSource implements OASRDBSource
 	
 	static Logger logger = Logger.getLogger(OASOracleSource.class);
 	
-	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
+	private static final String GET_CAT_PRIOR_SQL = "select distinct old_siss.test_roster_id as priorRosterId, old_siss.item_set_id as subtestId, iset.ads_ob_asmt_id as externalId, old_siss.ability_score as abilityScore from test_roster curr_ros,  student_item_set_status curr_siss, test_roster old_ros, student_item_set_status old_siss, item_set iset where  curr_ros.test_roster_id = ? and curr_siss.test_roster_id = curr_ros.test_roster_id and old_ros.student_id = curr_ros.student_id and old_siss.item_set_id = curr_siss.item_set_id and old_siss.test_roster_id = old_ros.test_roster_id and old_siss.test_roster_id = (select max(test_roster_id) from student_item_set_status where test_roster_id != curr_ros.test_roster_id and test_roster_id = old_ros.test_roster_id and item_set_id = curr_siss.item_set_id) and iset.item_set_id = old_siss.item_set_id and old_siss.completion_status not in ('SC', 'NT') and iset.sample = 'F' order by old_siss.item_set_id";
+	private static final String GET_CAT_PRIOR_ITEM_SQL = "select distinct item.item_id as itemId, item.external_id as externalId from item, item_response ir where ir.test_roster_id = ? and ir.item_set_id = ? and item.item_id = ir.item_id";
+	private static final String AUTHENTICATE_STUDENT_SQL = "select ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
 	private static final String REAUTHENTICATE_STUDENT_SQL = "select distinct upper(tais.access_code) as accessCode, ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, ros.random_distractor_seed as randomDistractorSeedNumber,  ros.tts_speed_status as ttsSpeedStatus, ros.start_date_time as startTime, ros.completion_date_time as endTime, ros.correlation_id as correlationId, ros.last_mseq as lastMseq from  student stu,  test_roster ros,  test_admin adm, test_admin_item_set tais, student_item_set_status siss, item_set_parent isa where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and tais.test_admin_id = adm.test_admin_id and tais.item_set_id = isa.parent_item_set_id and isa.item_set_id = siss.item_set_id and siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = ? and upper(tais.access_code) = upper(?)";    
 	private static final String ACCOMMODATIONS_SQL = "select  distinct accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  ccon.default_value as speechSpeedControl, accom.calculator as calculator, accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor, accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor, accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler, accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId, accom.extended_time as extendedTime, accom.masking_tool as maskingTool from  test_roster ros,  student_accommodation accom, (select * from customer_configuration where customer_configuration_name = 'Allow_Speech_Controller') ccon where ccon.customer_id (+) = ros.customer_id and accom.student_id = ros.student_id  and ros.test_roster_id = ?";    
 	private static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product,subtestForm, subtestLevel, adaptive, accessCode, raw_score, max_score, unscored, ability_score, sem_score, objective_score, start_date_time, completion_date_time, contentURI, recommended_level, blockDownload, issample from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  decode(nvl(tr.extended_time,0),0,iset.time_limit / 60,(iset.time_limit * tr.extended_time) / 60) as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus, iset.forward_only as forwardOnly, pr.scorable as scorable, pr.product_type as product, iset.item_set_form as subtestForm, iset.item_set_level as subtestLevel, iset.adaptive as adaptive, upper(tais.access_code) as accessCode, siss.raw_score, siss.max_score, siss.unscored, siss.ability_score, siss.sem_score, siss.objective_score, siss.start_date_time, siss.completion_date_time, iset.content_repository_uri as contentURI, siss.recommended_level, tc.block_download_flag as blockDownload, iset.sample as issample from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  test_catalog tc, item_set_parent  isp,  test_admin_item_set  tais, product pr where tc.test_catalog_id = ta.test_catalog_id and isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id and tais.test_admin_id = ta.test_admin_id and pr.product_id = ta.product_id group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status, tr.extended_time, iset.forward_only, scorable,pr.product_type, iset.item_set_form, iset.item_set_level, iset.adaptive, tais.access_code, siss.raw_score, siss.max_score, siss.unscored, siss.ability_score, siss.sem_score, siss.objective_score, siss.start_date_time, siss.completion_date_time, iset.content_repository_uri, siss.recommended_level, tc.block_download_flag, iset.sample)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product, subtestForm, subtestLevel, adaptive, accessCode, raw_score, max_score, unscored, ability_score, sem_score, objective_score, start_date_time, completion_date_time, contentURI, recommended_level, blockDownload, issample order by scoOrder";
@@ -231,6 +239,64 @@ public class OASOracleSource implements OASRDBSource
 		}
 	}
 	
+	public CATPriorData [] getCATPriorData(Connection con, int testRosterId) {
+		PreparedStatement stmt1 = null;
+    	try {
+    		stmt1 = con.prepareStatement(GET_CAT_PRIOR_SQL);
+    		stmt1.setInt(1, testRosterId);
+			ResultSet rs1 = stmt1.executeQuery();
+			ArrayList<CATPriorData> dataList = new ArrayList<CATPriorData>();
+			while (rs1.next()) {
+				CATPriorData prior = new CATPriorData();
+				prior.setSubtestId(rs1.getInt("subtestId"));
+				prior.setExternalId(rs1.getInt("externalId"));
+				prior.setAbilityScore(rs1.getInt("abilityScore"));
+				prior.setPriorRosterId(rs1.getInt("priorRosterId"));
+				prior.setPriorItems(getCATPriorItemData(con, prior.getPriorRosterId(), prior.getSubtestId()));
+				dataList.add(prior);
+			}
+			rs1.close();
+			return (CATPriorData[]) dataList.toArray(new CATPriorData[0]);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+	}
+	
+	public CATPriorItemData [] getCATPriorItemData(Connection con, int testRosterId, int subtestId) {
+		PreparedStatement stmt1 = null;
+    	try {
+    		stmt1 = con.prepareStatement(GET_CAT_PRIOR_ITEM_SQL);
+    		stmt1.setInt(1, testRosterId);
+    		stmt1.setInt(2, subtestId);
+			ResultSet rs1 = stmt1.executeQuery();
+			ArrayList<CATPriorItemData> dataList = new ArrayList<CATPriorItemData>();
+			while (rs1.next()) {
+				CATPriorItemData prior = new CATPriorItemData();
+				prior.setItemId(rs1.getString("itemId"));
+				prior.setExternalId(rs1.getString("externalId"));
+				dataList.add(prior);
+			}
+			rs1.close();
+			return (CATPriorItemData[]) dataList.toArray(new CATPriorItemData[0]);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+	}
+	
 	public RosterData getRosterData(Connection conn, String key)  throws Exception {
 		String username = key.substring(0, key.indexOf(":"));
     	key = key.substring(key.indexOf(":") + 1, key.length());
@@ -329,6 +395,27 @@ public class OASOracleSource implements OASRDBSource
 	                    	}
 	                }
 	            }
+	            
+	            // TODO: come up with better way to identify an adaptive product
+	            if ("TA".equals(testProduct.getProductType())) {
+	                // Adaptive test, get prior deliveryData
+	            	CatPriorData prior = loginResponse.addNewCatPriorData();
+	            	CATPriorData [] priors = getCATPriorData(conn, testRosterId);
+	            	for(int i=0;i<priors.length;i++) {
+	            		Subtest subtest = prior.addNewSubtest();
+	            		subtest.addNewSubtestId().setValue(BigInteger.valueOf(priors[i].getSubtestId()));
+	            		subtest.addNewExternalId().setValue(BigInteger.valueOf(priors[i].getExternalId()));
+	            		subtest.addNewPriorAbility().setValue(BigInteger.valueOf(priors[i].getAbilityScore()));
+	            		PriorItemHistory history = subtest.addNewPriorItemHistory();
+	            		for(int j=0;j<priors[i].getPriorItems().length;j++) {
+	            			CATPriorItemData item = priors[i].getPriorItems()[j];
+	            			PriorItem priorItem = history.addNewPriorItem();
+	            			priorItem.setItemId(item.getItemId());
+	            			priorItem.setExternalId(item.getExternalId());
+	            		}
+	            	}
+	            }
+	            
 	            // TODO: get product logo URI as part of product data
 	            String logoURI = testProduct.getLogoURI();
 	            if (logoURI == null || "".equals(logoURI))

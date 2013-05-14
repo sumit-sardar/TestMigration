@@ -487,6 +487,53 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
+
+							<xs:element
+								name="cat_prior_data" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>
+										Prior response history and ability score for CAT service
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="subtest" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="subtest_id" minOccurs="1" maxOccurs="1">
+														<xs:complexType>
+															<xs:attribute name="value" type="xs:integer" use="required"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="external_id" minOccurs="1" maxOccurs="1">
+														<xs:complexType>
+															<xs:attribute name="value" type="xs:integer" use="required"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="prior_ability" minOccurs="1" maxOccurs="1">
+														<xs:complexType>
+															<xs:attribute name="value" type="xs:integer" use="required"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="prior_item_history" minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="prior_item" minOccurs="0">
+																	<xs:complexType>
+																		<xs:attribute name="item_id" type="xs:string" use="required"/>
+																		<xs:attribute name="external_id" type="xs:string" use="required"/>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+											
 							<xs:element name="testing_session_data">
 								<xs:annotation>
 									<xs:documentation>
