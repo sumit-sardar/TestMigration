@@ -826,13 +826,28 @@
 	
 	function locatorSubtestUpdate(modifiedSubtests){
 		var count = 0;
-		for(var i=0; i<allLocatorSubtestTds.length;i++){
-			var locatorSubtestName = allLocatorSubtestTds[i].subtestName;
-			for(var j=0; j<modifiedSubtests.length; j++){
-				var contentArea = modifiedSubtests[j].subtestName.substring(5);
-				if(contentArea!= null && locatorSubtestName.indexOf(contentArea) != -1){
-					selectedLocatorSubtests[count] = allLocatorSubtestTds[i].id;
-					count++;
+		var flagMath = false;
+		for(var j=0; j<modifiedSubtests.length; j++){
+			var contentArea = modifiedSubtests[j].subtestName.substring(5);
+			if(contentArea!= null && contentArea!= undefined && (contentArea.indexOf("Computation") != -1 || contentArea.indexOf("Applied") != -1)){
+				if(!flagMath){
+					for(var i=0; i<allLocatorSubtestTds.length;i++){
+						var locatorSubtestName = allLocatorSubtestTds[i].subtestName;
+						if(locatorSubtestName.indexOf("Computation") != -1 || locatorSubtestName.indexOf("Applied") != -1){
+						selectedLocatorSubtests[count] = allLocatorSubtestTds[i].id;
+						count++;
+						}
+					}
+					flagMath = true;
+				}
+			}
+			else{
+				for(var i=0; i<allLocatorSubtestTds.length;i++){
+					var locatorSubtestName = allLocatorSubtestTds[i].subtestName;
+					if(contentArea!= null && locatorSubtestName.indexOf(contentArea) != -1){
+						selectedLocatorSubtests[count] = allLocatorSubtestTds[i].id;
+						count++;
+					}
 				}
 			}
 		}
