@@ -4175,7 +4175,7 @@ function registerDelegate(tree){
 				  if($(this).parent().attr("id") == 'subtestDetailsSectionId') {
 					$("#loginName").text("");
 					$("#password").text("");
-					$("#testAdminName").text("");
+					//$("#testAdminName").text("");
 					$("#testAdminName_acco").text("");
 					$("#subTestName").text("");
 					$("#testStatus").text("");
