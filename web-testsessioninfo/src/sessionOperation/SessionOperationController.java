@@ -1943,7 +1943,7 @@ public class SessionOperationController extends PageFlowController {
                           studentManifests[j].setItemSetId(subtestVO.getId());
                           studentManifests[j].setItemSetName(subtestVO.getSubtestName());    
                           if (sessionHasLocator)
-                              studentManifests[j].setItemSetForm(null);
+                              studentManifests[j].setItemSetForm("E");
                           else
                         	  studentManifests[j].setItemSetForm(subtestVO.getLevel());
                           studentManifests[j].setItemSetOrder(new Integer(j + 1));                            
@@ -1962,6 +1962,55 @@ public class SessionOperationController extends PageFlowController {
                           	Integer locatorItemSetId = locSubtest.getId();
                           	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
                           }
+                      }
+                      
+                      // set recommended level or null for this student if there is auto locator check box is checked
+                      if (sessionHasLocator && TestSessionUtils.isTabeProduct(productType).booleanValue()){
+                    	  Map<Integer, String> subtestItemMap= scheduleTest.getSubtestNames(studentManifests);
+                    	  Integer studentId = sessionStudent.getStudentId();
+                          Integer itemSetId = scheduledSession.getTestSession().getItemSetId() /*testSession.getItemSetId()*/;
+                    	  if (locSubtest == null) {
+                              locSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetId); 
+                          }
+                          if (locSubtest != null) {
+                          	Integer locatorItemSetId = locSubtest.getId();
+                          	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
+                          }
+                          
+                    	  //StudentManifest [] studentManifestsModified = sessionStudent.getStudentManifests();
+                    	  //int count = 0;
+                    	  Map<Integer,String> locatorTDMap = scheduledSession.getLocatorSubtestTD();
+                    	  if(locatorTDMap!=null){
+                    		  for (int j=0; j < studentManifests.length; j++)
+                              {
+                    			  String subtestName =  subtestItemMap.get(studentManifests[j].getItemSetId());
+                    			  if(subtestName.indexOf("Locator") != -1){
+                    				  studentManifests[j].setItemSetForm(null);
+                    			  }else{
+	                    			  for(Integer ii : locatorTDMap.keySet()){
+		                            	  String locatorSubtestName = locatorTDMap.get(ii);
+			                			  if(locatorSubtestName != null && locatorSubtestName.contains("Reading")){
+			                				  if(subtestName.contains("Reading") || subtestName.contains("Vocabulary")){
+			                					  studentManifests[j].setItemSetForm(null);
+			                					  break;
+			                				  }
+			                			  }
+			                			  if(locatorSubtestName != null && locatorSubtestName.contains("Language")){
+			                				  if(subtestName.contains("Language") ||subtestName.contains("Mechanics") ||subtestName.contains("Spelling")){
+			                					  studentManifests[j].setItemSetForm(null);
+			                					  break;
+			                				  }
+			                			  }
+			                			  if(locatorSubtestName != null && locatorSubtestName.contains("Computation") || locatorSubtestName != null && locatorSubtestName.contains("Applied")){
+			                				  if(subtestName.contains("Computation") ||subtestName.contains("Applied")){
+			                					  studentManifests[j].setItemSetForm(null);
+			                					  break;
+			                				  }
+			                			  }
+			                		  }
+                    			  }
+                              }
+                    	  }
                       }
                                    
                       sessionStudent.setStudentManifests(studentManifests);
@@ -5974,11 +6023,13 @@ public class SessionOperationController extends PageFlowController {
 					}else{
 						this.isTABELocatorOnlyTest = false;
 					}
+					Integer sequence = Integer.valueOf(1);
 			        for (int i=0; i < testElements.length; i++) {
 			            TestElement te = testElements[i];
-			            String sequence = String.valueOf(i+1);
-			            te.setItemSetLevel(sequence);
-			            
+			            if(te.getSessionDefault().equals("T")){
+			            	te.setItemSetLevel(sequence.toString());
+			            	sequence++;
+			            }
 			            String duration = "Untimed";
 			            if (te.getTimeLimit() != null && te.getTimeLimit().intValue() > 0)
 			                duration = String.valueOf(te.getTimeLimit().intValue() / 60) + " mins";
