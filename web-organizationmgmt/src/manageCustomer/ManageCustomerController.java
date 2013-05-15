@@ -1833,14 +1833,14 @@ public class ManageCustomerController extends PageFlowController
     
     private boolean addEditOrderLicense (CustomerLicense custLicense )
     {
-    	boolean result = false;
-    try {
-    	
-    	result = license.addEditOrgnodeOrderLicense(custLicense);
-    }catch (Exception e) {
-		e.printStackTrace();
-		String msg = MessageResourceBundle.getMessage(e.getMessage());      
-	}
+    	boolean result = true;
+	    try {
+	    	license.addEditOrgnodeOrderLicense(custLicense);
+	    }catch (Exception e) {
+			e.printStackTrace();
+			String msg = MessageResourceBundle.getMessage(e.getMessage());     
+			result = false;
+		}
     	return result;
     }
     
