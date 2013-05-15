@@ -2483,7 +2483,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     newAssignment.setStudentId(student.getStudentId());
                     if (overrideUsingStudentManifest) {
                     	if(newSession.getHasLocator()){
-                    		newAssignment.setSubtests(subtests);   
+                    		newAssignment.setSubtests(getTDTestElementListForTABELocator(subtests,student.getStudentManifests()));   
                     	}else{
                     		newAssignment.setSubtests(getTDTestElementList(student.getStudentManifests(), student.getSavedlocatorTDMap()));
                     	}
@@ -2544,6 +2544,35 @@ public class ScheduleTestImpl implements ScheduleTest
         }
         return subtests;
     }
+    
+    private ArrayList getTDTestElementListForTABELocator(ArrayList<TestElement> subtests, StudentManifest [] studentManifests) throws SQLException{
+    	ArrayList<TestElement> finalSubtests = new ArrayList<TestElement>();
+    	for(TestElement te : subtests){
+    		if(te.getItemSetName().contains("Locator")){
+    			finalSubtests.add(te);
+    		}
+    	}
+    	for(int i=0; i<studentManifests.length;i++){
+    		Integer itemSetId = studentManifests[i].getItemSetId();
+    		String form = studentManifests[i].getItemSetForm() ==  null || "".equals(studentManifests[i].getItemSetForm())?"-":studentManifests[i].getItemSetForm();
+    		if(i>0){
+    			TestElement [] scheduledSubtests;
+    			if("-".equals(form)){
+	    			scheduledSubtests = itemSet.getTestElementsForParent(itemSetId, "TD");
+	    			for(int ii=0; ii<scheduledSubtests.length;ii++){
+	    				finalSubtests.add(scheduledSubtests[ii]);
+	    			}
+	    		}else{
+	    			scheduledSubtests = itemSet.getTestElementsForParentByForm(itemSetId, "TD", form);
+	    			for(int ii=0;ii<scheduledSubtests.length;ii++) {
+	    				finalSubtests.add(scheduledSubtests[ii]);
+	    			}
+	    		}
+    		}
+    	}
+    	return finalSubtests;
+    }
+    
     
     private void updateTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Integer itemSetId, Double extendedTimeValue) throws CTBBusinessException {
         try {
@@ -2718,7 +2747,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     assignment.setTestRosterId(re.getTestRosterId());
                     if (overrideUsingStudentManifest) {
                     	if(newSession.getHasLocator() && oldUnit == null){
-                    		 assignment.setSubtests(subtests);
+                    		 assignment.setSubtests(getTDTestElementListForTABELocator(subtests,newUnit.getStudentManifests()));
                     	}else
                     		assignment.setSubtests(getTDTestElementList(newUnit.getStudentManifests(), newUnit.getSavedlocatorTDMap()));
                     } else {
@@ -4197,4 +4226,28 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    public Map<Integer,String> getSubtestNames(StudentManifest[] studentManifests) throws CTBBusinessException
+    {
+    	Map<Integer,String>studentSubtestMap = new HashMap<Integer, String>();
+    	String itemSetId = "WHERE ISET.ITEM_SET_ID IN (";
+    	try {
+            for(int i=0; i<studentManifests.length;i++){
+            	itemSetId += studentManifests[i].getItemSetId().toString() + ",";  
+            }
+            itemSetId = itemSetId.substring(0, itemSetId.length()-1) + ")";
+            StudentManifest [] studentManifest = itemSet.getSubtestName(itemSetId);
+    		
+            if(studentManifest!= null){
+            	for(int i=0; i<studentManifest.length;i++){
+            		studentSubtestMap.put(studentManifest[i].getItemSetId(), studentManifest[i].getItemSetName());
+            	}
+            }
+            
+            return studentSubtestMap;
+        } catch (SQLException se) {
+            ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getSubtestNames: " + se.getMessage());
+            pde.setStackTrace(se.getStackTrace());
+            throw pde;
+        }
+    }
 } 
