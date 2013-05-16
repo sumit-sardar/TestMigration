@@ -1087,6 +1087,7 @@ public class OrganizationManagementImpl implements OrganizationManagement
 //  	 START - changes for TABE BAUM to delete organization node and assign remaining license to top node
 
     	 Boolean isOrgNodeLicenseEntry = false;
+    	 Boolean isLASManageLicense = Boolean.FALSE;
     	 try {
     		 selectedOrgNodeId = currentOrgnode.getOrgNodeId();
     		 if ( selectedOrgNodeId != null) {
@@ -1150,8 +1151,8 @@ public class OrganizationManagementImpl implements OrganizationManagement
     		 Integer[] productIdList;
     		 Integer customerId = orgNode.getCustomerIdbyOrgNode(selectedOrgNodeId);
     		 currentOrgnode.setUpdatedDateTime(new Date());
-
-    		 orgNode.inActivateTestCatalogForOrgId(selectedOrgNodeId,loginUserId);
+    		 Integer parentNodeID = orgNode.getParentForOrgNode(selectedOrgNodeId);
+    		 orgNode.inActivateTestCatalogForOrgId(selectedOrgNodeId,loginUserId);    		 
     		 orgNode.deleteOrgNodeParentForOrgNode(currentOrgnode);
     		 orgNode.inActivateOrganization(currentOrgnode,loginUserId);
     		 Node customerTopNode = orgNode.getTopOrgNodeForCustomer(customerId);
@@ -1159,22 +1160,34 @@ public class OrganizationManagementImpl implements OrganizationManagement
     		 productIdList = orgNode.getProductIdList(selectedOrgNodeId, customerId);
     		 if(productIdList != null){
     			 isOrgNodeLicenseEntry =  orgNode.getOrgNodeLiceseEntryPresent(selectedOrgNodeId, customerId);
+    			 isLASManageLicense = orgNode.isLasManageLicenseConfigured(customerId);
+    			 
     			 if(isOrgNodeLicenseEntry)
-    			 {
-    				 for(int i=0;i< productIdList.length;i++) {
-    					 Integer availableLicense;
-    					 availableLicense = orgNode.getAvailableLicenseQuantityForOrgNode(selectedOrgNodeId,customerId,productIdList[i]);
-    					 if (customerTopNode.getOrgNodeId() != null ) {
-    						 orgNode.addDeletedNodeLicenseToTopNode(customerTopNode.getOrgNodeId(),availableLicense,productIdList[i]);
-    					 }
+    			 {	 
+					 for(int i=0;i< productIdList.length;i++) {
+						 if(isLASManageLicense){
+							 System.out.println("Call procedure to return licenses to the parent node..");
+    						 orgNode.returnDeletedNodeLicenseToParent(selectedOrgNodeId, customerId, productIdList[i], parentNodeID);
+						 }else{
+							 Integer availableLicense;
+        					 availableLicense = orgNode.getAvailableLicenseQuantityForOrgNode(selectedOrgNodeId,customerId,productIdList[i]);
+        					 if (customerTopNode.getOrgNodeId() != null ) {
+        						 orgNode.addDeletedNodeLicenseToTopNode(customerTopNode.getOrgNodeId(),availableLicense,productIdList[i]);
+        					 }
+						 }
+    					 
     				 }
     				 orgNode.deleteOrgNodeDetails(selectedOrgNodeId, customerId);
+    				 if(isLASManageLicense)
+    					 orgNode.deleteOrgnodeOrderDetails(selectedOrgNodeId);
+    				 
     			 }
     		 }
 
 //  		 END - changes for TABE BAUM to delete organization node and assign remaining license to top node
 
     	 } catch(SQLException se){
+    		 se.printStackTrace();
     		 OrgDataDeletedException dataNotDeletedException = 
     			 new OrgDataDeletedException
     			 ("DeleteOrganization.Failed");
@@ -1183,6 +1196,7 @@ public class OrganizationManagementImpl implements OrganizationManagement
     	 catch (CTBBusinessException e) {
     		 throw e;
          }catch (Exception e) {
+        	 e.printStackTrace();
     		 OrgDataDeletedException dataNotDeletedException = 
     			 new OrgDataDeletedException
     			 ("DeleteOrganization.Failed");

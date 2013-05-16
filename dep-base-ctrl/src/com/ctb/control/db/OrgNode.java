@@ -2031,4 +2031,16 @@ public interface OrgNode extends JdbcControl
     @JdbcControl.SQL(statement = "select count(*) from users u,user_role urole,org_node orgnode,org_node_category onc where u.user_id = urole.user_id and urole.org_node_id = orgnode.org_node_id and orgnode.org_node_category_id = onc.org_node_category_id and onc.category_level <=  {defaultVisibilityLevel} and u.user_name = {userName}")
 	Boolean matchUserLevelWithDefault(String userName, Integer defaultVisibilityLevel) throws SQLException;
     
+    @JdbcControl.SQL(statement = "select count(*) from customer_configuration cc where cc.customer_id = {customerId} and cc.customer_configuration_name = 'License_Yearly_Expiry' ")
+	Boolean isLasManageLicenseConfigured(Integer customerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "call return_deleted_node_license({customerId}, {productId}, {orgNodeId}, {parentId})")
+    void returnDeletedNodeLicenseToParent(Integer orgNodeId, Integer customerId, Integer productId, Integer parentId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "delete from orgnode_order_license where org_node_id = {orgNodeId}")
+	void deleteOrgnodeOrderDetails(Integer orgNodeId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select parent_org_node_id from org_node_parent where org_node_id = {orgNodeId}")
+	Integer getParentForOrgNode(Integer orgNodeId) throws SQLException;
+    
 }
