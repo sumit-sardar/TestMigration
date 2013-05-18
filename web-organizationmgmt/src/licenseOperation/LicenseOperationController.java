@@ -901,7 +901,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 	    
 	 
 	 @Jpf.Action(forwards = { 
-			 @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp") 
+			 @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp"),
+			 @Jpf.Forward(name = "error", path = "error_manageLicenses.jsp")
 	 }) 
 	 protected Forward services_manageLicenses()
 	 {
@@ -918,7 +919,12 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
 		 
 		 this.licenseNodes = new ArrayList();
 
-		 this.getRequest().setAttribute("licenseModel", this.customerLicenses[0].getSubtestModel());
+		 if (this.customerLicenses.length > 0) {
+			 this.getRequest().setAttribute("licenseModel", this.customerLicenses[0].getSubtestModel());
+		 }
+		 else {
+			 return new Forward("error");			 
+		 }
 		 this.getRequest().setAttribute("isLASManageLicense", this.isLASManageLicense);
 		 
 		 return new Forward("success");
