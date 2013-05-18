@@ -116,9 +116,6 @@ function load() {
      }
 }
 
-function setCurLasItemId(id) {
-	currentLasAssetItemId = id;
-}
 
 function isMac(){
 	return (window.navigator.platform.indexOf("Mac") != -1);
@@ -276,6 +273,7 @@ document.getElementById('__lz0').contentWindow.setFocus();
 function setCurLasItemId(id) {
 	currentLasAssetItemId = id;
 	assetCount = 0;
+	checkAnswered = false;
 }
 
 
@@ -283,7 +281,7 @@ function eventMonitor(id,event) {
 
 	var currIframeId = frameFolderObject[id];
  	if(event == 'play' || event == 'jsplay') {
- 		setPlayingAttr('true');
+ 		setPlayingAttr(event,'true');
  		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = true;
  		//console.log("Is Playing :",iframeObject[currentLasAssetItemId][currIframeId]['playEvent']);
  		playSingleAsset(currIframeId);
@@ -297,9 +295,8 @@ function eventMonitor(id,event) {
  		
  	} else if(event == 'finished' || event == 'endTrack' || event == 'pause') {
  		if( event == 'endTrack' || event == 'pause'){
- 			setPlayingAttr('false');
+ 			setPlayingAttr(event,'false');
  		}
- 		if(autoPlayEvent == 'false') { // play is for autoPlay
 	 		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = false;
 	 		//console.log("event -- ",event);
 	 		if(iframeObject[currentLasAssetItemId]) {
@@ -311,13 +308,17 @@ function eventMonitor(id,event) {
 	 		}
 	 		unlockResponseArea(currIframeId);
 	 		enableNextButton(id);
- 		}
- 		else{
- 		autoPlayEvent = "false";
- 		}
+ 		  if(autoPlayEvent == 'true') {
+	 			autoPlayEvent = "false";
+	 		}
+	 		restrictNavigation('unlock');
  		
  	} else if (event == 'reset') {
  		//setPlayingAttr('false');
+ 	}
+ 	 	else if (event == 'autoplayEndTrack') {
+ 		setPlayingAttr('false');
+ 	  	autoPlayEvent = "false";	
  	}
  	//lz.embed.setCanvasAttribute("bringBackFocus", 'true');
 }

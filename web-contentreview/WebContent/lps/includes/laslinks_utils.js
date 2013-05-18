@@ -4,11 +4,13 @@ var currentPlayOrder = 0;
 var playOrderArray = {};
 var enabledArray = [];
 var assetCount = 0;
+var checkAnswered = false;
+var pausedAssetID = null;
 
 function iframeLoaded(id, iframe){
 	if(currentLasAssetItemId) {
 		
-		console.log("UTILS -->",id,"  ",iframe);
+		//console.log("UTILS -->",id,"  ",iframe);
 		var folderName = iframe.src.substring(iframe.src.indexOf('items')+6,iframe.src.indexOf('asset.html') -1);
 		frameFolderObject[folderName] = iframe.id;
 		if(iframe.src.indexOf('asset.html') > 0) {
@@ -52,7 +54,7 @@ function iframeLoaded(id, iframe){
 			if(gController.lasAssetArray.length == assetCount){
 				setTimeout("startAutoplay()",500);
 			}
-
+           restrictNavigation('lock');
 		}
 		
 	}
@@ -160,7 +162,10 @@ function checkValIfAnswered(frameId) {
    ////console.log("frameId-->",frameId);
    if(gController.playIfAnswered) {
 		if(iframeObject[currentLasAssetItemId] && iframeObject[currentLasAssetItemId][frameId]) {
+		 if (checkAnswered == false){
 			iframeObject[currentLasAssetItemId][frameId].iframeObj.contentWindow.enable();
+			checkAnswered = true;
+			}
 		}
 	}  
 }
@@ -185,11 +190,31 @@ function playSingleAsset(currIframeId){
 		
 }
 
-function setPlayingAttr(arg){	
-	if(arg == 'true'){
+function setPlayingAttr(event,value){	
+	if(value == 'true'){
 		gController.setAttribute('isplaying',true);
+		
+	} 
+	else if(event == 'pause'){
+	
+		var	k=0;
+		for(var i=0; i<gController.lasAssetArray.length;i++){
+					if(gController.lasAssetArray[i].asset){
+						if(iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.isPlaying == "true"){
+							//console.log(iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.isPlaying);
+							k++;
+							
+						}	
+				}
+ 		}
+		
+		if(k>0){
+			gController.setAttribute('isplaying',true);
+	    } else{
+	    	gController.setAttribute('isplaying',false);
+	  	  }
 	} else{
-		gController.setAttribute('isplaying',false);
+	gController.setAttribute('isplaying',false);
 	}
 }
 
@@ -233,3 +258,53 @@ function startAutoplay(){
 			}
 		}
   }
+  
+   function restrictNavigation(arg){
+   if(arg  == 'unlock'){
+	 	if(checkAllPlayedOnce()) {
+			//console.log("All asset played once");
+			gController.setAttribute('unlockNavigation',true);
+		} else {
+				//console.log("All asset not played once");
+				gController.setAttribute('unlockNavigation',false);
+	 		}
+ 	}else {
+ 	gController.setAttribute('unlockNavigation',false);
+ 	}
+  } 
+  
+    function pauseAudio() {
+  console.log("inside pause audio method ");
+	for(var i=0; i<gController.lasAssetArray.length;i++){
+				if(gController.lasAssetArray[i].asset){
+				if(iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.isPlaying == "true"){
+					iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.pause();
+					pausedAssetID=gController.lasAssetArray[i].asset.aw.iframeid;
+					console.log("inside pause audio ");
+				}
+				else if(iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.isPlaying == "disabled"){
+					if((iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].clickedOnce) && !(iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].playedOnce)) {
+						iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.pause();
+						pausedAssetID=gController.lasAssetArray[i].asset.aw.iframeid;
+						console.log("inside pause audio disabled ");
+					}
+					
+				}
+			}
+  		}
+  }
+  
+  function playAudio(){
+  	if(pausedAssetID != null){
+		for(var i=0; i<gController.lasAssetArray.length;i++){
+				if(gController.lasAssetArray[i].asset){
+					if(gController.lasAssetArray[i].asset.aw.iframeid == pausedAssetID){
+						iframeObject[currentLasAssetItemId][gController.lasAssetArray[i].asset.aw.iframeid].iframeObj.contentWindow.play();
+						console.log("inside play audio ");
+					}
+				}
+			}
+		}
+	pausedAssetID = null;
+
+}
