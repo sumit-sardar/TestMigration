@@ -20,9 +20,9 @@ import java.util.ResourceBundle;
 public class FileUtil {
 	private static String inserQuery="INSERT INTO IRT_SCORE_LOOKUP_FILES VALUES(?,?,?,?,?)";
 	private static String getDisplayNameQuery="SELECT INTERNAL_DISPLAY_NAME FROM PRODUCT WHERE PRODUCT_ID = ?";
-	private static String insertScore_lookupQuery="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
-			"source_score_value,dest_score_value,test_form,test_level,content_area,framework_code,product_internal_display_name) " +
-			"VALUES(?,?,?,?,?,?,?,?,?,?)";
+	public static String insertScore_lookupQuery="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
+			"source_score_value,dest_score_value,test_form,test_level,content_area,norm_year,framework_code,product_internal_display_name) " +
+			"VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 	private static String insertScore_lookupQuery_withNorms="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
 		"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name) " +
 		"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -452,13 +452,14 @@ public class FileUtil {
 		try{
 		con=SqlUtil.openOASDBcon();
 		con.setAutoCommit(false);
+		
 		for ( itr = contentOfFile.iterator(); itr.hasNext(); ) 
 		{   
 			String str = itr.next().toString();                                
 			String[] splitSt = str.split("    "); 
 			String source_score_value="",dest_score_value="";
-			source_score_value = splitSt[0];                                        
-			dest_score_value = splitSt[1]; 
+			source_score_value = splitSt[0].trim();                                        
+			dest_score_value = splitSt[1].trim(); 
 			
 			ps = con.prepareStatement(insertScore_lookupQuery);
 			ps.setString(1, Source_score_type_code);
@@ -469,8 +470,9 @@ public class FileUtil {
 			ps.setString(6, test_form);
 			ps.setString(7, Test_Level);
 			ps.setString(8, Content_area);
-			ps.setString(9, framework_code);
-			ps.setString(10,product_internal_display_name);
+			ps.setString(9, "");
+			ps.setString(10, framework_code);
+			ps.setString(11,product_internal_display_name);
 			save=ps.executeUpdate();
 			SqlUtil.close(ps);
 		}
