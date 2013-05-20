@@ -117,7 +117,7 @@ public class Message implements java.io.Serializable
     public static final String FIELD_LICENSE_AVALIABLE = "Avaliable";
     public static final String FIELD_LICENSE_CONSUME = "Consume";
     public static final String REQUIRED_LICENSE_TEXT   = "Please enter this value to continue.";
-    public static final String ADD_UPDATED_LICENSE   = "Manage Licenses:";
+    public static final String ADD_UPDATED_LICENSE   = "Manage Licenses";
     public static final String INVALID_LICENSE_TEXT = "One or more fields contain invalid values:";
     public static final String INVALID_LICENSE_VALUE = "Please enter a positive numeric value.";
     public static final String INVALID_LICENSE_DATE_FORMAT = "Date not valid.<br/>Please change your entry to mm/dd/yy format or use the calendar button to select a valid date.";

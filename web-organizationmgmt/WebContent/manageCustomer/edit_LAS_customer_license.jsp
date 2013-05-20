@@ -148,8 +148,10 @@
     <netui-data:repeaterItem>
     <netui-data:getData resultId="itemIndex" value="${container.item.orderIndex}" />
 	<netui-data:getData resultId="expiryStatus" value="${container.item.expiryStatus}" />
-<% 	String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
-   	Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");  
+<% 	
+	String expiryStatus = (String)pageContext.getAttribute("expiryStatus");
+   	Integer itemIndex = (Integer)pageContext.getAttribute("itemIndex");
+   	if (itemIndex == null) itemIndex = new Integer(1);
   	String expiryDateIndex = "expiryDate" + itemIndex.toString();
 %>
         <td class="sortable alignLeft">

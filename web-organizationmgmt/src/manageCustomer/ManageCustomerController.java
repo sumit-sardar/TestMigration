@@ -1645,8 +1645,24 @@ public class ManageCustomerController extends PageFlowController
         	paramStr = "{requestScope.licenses[" + i + "].expiryDate}";           	
         	paramValue = (String)this.getRequest().getParameter(paramStr);
         	if (! paramValue.equals(node.getExpiryDate())) {
-        		node.setExpiryDate(paramValue);
-        		updateNeeded = true;
+            	if ("Expired".equals(node.getExpiryStatus())) {
+            		if (node.isValidExpiryDate(paramValue)) {
+            			node.setExpiryDate(paramValue);
+            			updateNeeded = true;
+            		}
+            		else {
+                        String title = Message.ADD_UPDATED_LICENSE;
+                        String msg = "The Expiry Date cannot be extended more than 90 days.";
+                        form.setMessage(title, msg, Message.ERROR);
+                    	this.getRequest().setAttribute("pageMessage", form.getMessage());        
+            			updateNeeded = false;
+                    	break;
+            		}
+            	}
+            	else {
+        			node.setExpiryDate(paramValue);
+        			updateNeeded = true;
+            	}
         	}
         	if (updateNeeded) {
         		validInfo = LicenseFormUtils.verifyLASLicenseEditInformation(form, node);

@@ -174,7 +174,10 @@ public class LASLicenseNode implements java.io.Serializable
 	                cal.add(Calendar.DAY_OF_MONTH, 1);
 		            dateIteration = cal.getTime();
 	        	}
-	        	this.expiryStatus = "About expired in " + dayCount + " days";
+	        	if (dayCount == 0)
+		        	this.expiryStatus = "About expired today";
+	        	else
+	        		this.expiryStatus = "About expired in " + dayCount + " days";
 	        	System.out.println(this.expiryStatus);
 	        }
 	        else {
@@ -224,4 +227,23 @@ public class LASLicenseNode implements java.io.Serializable
          this.productName = src.getProductName();
     }
     
+	public boolean isValidExpiryDate(String expiryDate) {
+		boolean validExpiryDate = true;
+        Date expDate = DateUtils.getDateFromDateShortString(expiryDate);
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getDefault());
+        cal.setTime(today);
+        cal.add(Calendar.DAY_OF_MONTH, 91);
+        Date today90 = cal.getTime();
+        
+        if (expDate.after(today90)) {
+         	this.expiryStatus = "The Expiry Date cannot be extended more than 90 days.";
+            System.out.println(this.expiryStatus);
+            validExpiryDate = false;
+        }
+        
+		return validExpiryDate;
+	}
+	
 } 
