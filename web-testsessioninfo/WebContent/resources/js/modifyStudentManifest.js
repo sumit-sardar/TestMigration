@@ -826,6 +826,7 @@
 	
 	function locatorSubtestUpdate(modifiedSubtests){
 		var count = 0;
+		selectedLocatorSubtests = [];
 		var flagMath = false;
 		for(var j=0; j<modifiedSubtests.length; j++){
 			var contentArea = modifiedSubtests[j].subtestName.substring(5);
