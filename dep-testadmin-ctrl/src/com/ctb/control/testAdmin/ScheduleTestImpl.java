@@ -2531,11 +2531,13 @@ public class ScheduleTestImpl implements ScheduleTest
                 SimpleCache.cacheResult("TSSubtestFormList", String.valueOf(itemSetId) + form, elements);
             } else {
             	if(studentManifests[i].getItemSetName() != null && (studentManifests[i].getItemSetName().toUpperCase().contains("LOCATOR")) && locatorManifest!= null && locatorManifest.size() >0 ){
-	    			for( TestElement te :  elements){
-	    				if(locatorManifest.get(te.getItemSetId()) != null && locatorManifest.get(te.getItemSetId()).intValue() == te.getItemSetId().intValue()){
-	    					forLocator.add(te);
-	    				}
-	    			}
+            		TestElement [] scheduledSubtests;
+                    scheduledSubtests = itemSet.getTestElementsForParent(itemSetId, "TD");
+                    for(int ii=0;ii<scheduledSubtests.length;ii++) {
+                        if(locatorManifest.get(scheduledSubtests[ii].getItemSetId()) != null && locatorManifest.get(scheduledSubtests[ii].getItemSetId()).intValue() == scheduledSubtests[ii].getItemSetId().intValue()){
+                        	forLocator.add(scheduledSubtests[ii]);
+                		}
+                    }
 	    			subtests.addAll(forLocator);
             	}else{
             		subtests.addAll(elements);
@@ -3911,7 +3913,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     StudentManifest [] studentManifests = studentItemSetStatus.getStudentManifestsForRoster(roster[i].getStudentId(),testAdminId);
                     for(int indx=0; indx<studentManifests.length; indx++){
                     	if(studentManifests[indx].getItemSetName().toUpperCase().contains("LOCATOR")){
-                    		StudentManifest [] locatorTD = studentItemSetStatus.getLocatorTD(testAdminId, studentManifests[indx].getItemSetId());
+                    		StudentManifest [] locatorTD = studentItemSetStatus.getLocatorTD(testAdminId, studentManifests[indx].getItemSetId(),roster[i].getStudentId());
                     		Map<Integer, Integer> locatorMap = new HashMap<Integer, Integer>();
                     		for(int j=0; j<locatorTD.length; j++){
                     			locatorMap.put(locatorTD[j].getItemSetId(), locatorTD[j].getItemSetId());
