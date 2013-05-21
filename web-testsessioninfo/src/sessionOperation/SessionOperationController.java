@@ -1900,7 +1900,7 @@ public class SessionOperationController extends PageFlowController {
 		}
 			
 		if(scheduledSession.getStudents()!= null && scheduledSession.getStudents().length>0 && !isAddOperation){
-			if(TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue()){
+			if(TestSessionUtils.isTabeBatterySurveyProduct(productType).booleanValue() || TestSessionUtils.isTabeAdaptiveProduct(productType).booleanValue() ||TestSessionUtils.isTabeLocatorProduct(productType).booleanValue()){
 				updateStudentstudentManifests(scheduledSession, savedSessionMinData, isStudentManifestsExists );
 			}
 				
@@ -1962,6 +1962,11 @@ public class SessionOperationController extends PageFlowController {
                           	Integer locatorItemSetId = locSubtest.getId();
                           	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
                           }
+                          Map<Integer, String> subtestItemMap= scheduleTest.getSubtestNames(studentManifests);
+                          for (int j=0; j < studentManifests.length; j++)
+                          {
+                        	  studentManifests[j].setItemSetName(subtestItemMap.get(studentManifests[j].getItemSetId()));
+                          }
                       }
                       
                       // set recommended level or null for this student if there is auto locator check box is checked
@@ -1986,6 +1991,7 @@ public class SessionOperationController extends PageFlowController {
                     			  String subtestName =  subtestItemMap.get(studentManifests[j].getItemSetId());
                     			  if(subtestName.indexOf("Locator") != -1){
                     				  studentManifests[j].setItemSetForm(null);
+                    				  studentManifests[j].setItemSetName(subtestName);
                     			  }else{
 	                    			  for(Integer ii : locatorTDMap.keySet()){
 		                            	  String locatorSubtestName = locatorTDMap.get(ii);
@@ -2052,9 +2058,17 @@ public class SessionOperationController extends PageFlowController {
 				locatorSubtestMap.put(std.getStudentId(), std.getSavedlocatorTDMap());
 			}
 			for(SessionStudent std: scheduledStds){
-				if(!std.isNewStudent())
+				if(!std.isNewStudent()){
 					std.setStudentManifests(stdIdManifestsMap.get(std.getStudentId()) );
 					std.setSavedlocatorTDMap(locatorSubtestMap.get(std.getStudentId()));
+				}else{
+					Map<Integer, Integer> newLocatorMap = new TreeMap<Integer, Integer>(); 
+					Set<Integer> keySet = scheduledSession.getLocatorSubtestTD().keySet();
+					for (Integer keyVal:keySet) {						
+						newLocatorMap.put(keyVal,keyVal);
+					}
+					std.setSavedlocatorTDMap(newLocatorMap);
+				}
 			}
 			
 			
