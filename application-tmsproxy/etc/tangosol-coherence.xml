@@ -28,12 +28,12 @@ to find specific notes on changes suggested for production use.
       Note: All members of the cluster must specify the same cluster name in
       order to be allowed to join the cluster.
       -->
-      <cluster-name system-property="tangosol.coherence.cluster">tms</cluster-name>
-      <site-name    system-property="tangosol.coherence.site"></site-name>
-      <rack-name    system-property="tangosol.coherence.rack"></rack-name>
-      <machine-name system-property="tangosol.coherence.machine"></machine-name>
-      <process-name system-property="tangosol.coherence.process"></process-name>
-      <member-name  system-property="tangosol.coherence.member"></member-name>
+      <cluster-name system-property="tangosol.coherence.cluster">cattms</cluster-name>
+      <site-name    system-property="tangosol.coherence.site">QA</site-name>
+      <rack-name    system-property="tangosol.coherence.rack">1</rack-name>
+      <machine-name system-property="tangosol.coherence.machine">1</machine-name>
+      <process-name system-property="tangosol.coherence.process">1</process-name>
+      <member-name  system-property="tangosol.coherence.member">1</member-name>
       <role-name    system-property="tangosol.coherence.role"></role-name>
       <priority     system-property="tangosol.coherence.priority"></priority>
     </member-identity>
