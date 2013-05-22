@@ -28,6 +28,7 @@ import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.ProctorAssignment;
@@ -3745,6 +3746,7 @@ public class ScheduleTestImpl implements ScheduleTest
         try {
             ScheduledSession session = new ScheduledSession();
             int studentsLoggedIn = 0;
+            boolean isTestSessionHasStudents = false; 
           
             TestElement [] testUnits = itemSet.getTestElementsForSession(testAdminId);
             session.setScheduledUnits(testUnits);
@@ -3768,7 +3770,8 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             
             studentsLoggedIn =  students.getLoggedInSessionStudentCountForAdmin(testAdminId);
-           
+            isTestSessionHasStudents = students.isSessionHasStudents(testAdminId);
+            session.setTestSessionHasStudents(isTestSessionHasStudents);
             TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(testSession);
             session.setTestSession(testSession);
             session.setStudentsLoggedIn(new Integer(studentsLoggedIn));
@@ -4251,5 +4254,17 @@ public class ScheduleTestImpl implements ScheduleTest
             pde.setStackTrace(se.getStackTrace());
             throw pde;
         }
+    }
+    
+    public LASLicenseNode getNonZeroActivePOForCustomer(String userName)
+    {	
+    	LASLicenseNode nonZeroActivePO = null;
+    	try{
+    		nonZeroActivePO = this.admins.getOldestNonZeroActivePOForCustomer(userName);
+	    	
+    	}catch(SQLException se){
+    		se.printStackTrace();
+    	}
+    	return nonZeroActivePO;
     }
 } 

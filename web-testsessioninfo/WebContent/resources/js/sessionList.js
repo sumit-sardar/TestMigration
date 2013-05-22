@@ -131,6 +131,8 @@ var locatorOnlyTest = false;
 var locatorTDList = [];
 var sessionHasLocator = false;
 var selectedLocatorMap = new Map();
+var oldestNonZeroPO;
+var isTestSessionHasStudents = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1145,6 +1147,7 @@ function registerDelegate(tree){
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
 		    isLasLinksProduct = false;
+		    oldestNonZeroPO = null;
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1592,6 +1595,7 @@ function registerDelegate(tree){
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
+						oldestNonZeroPO = data.nonZeroActivePO;
 						
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
@@ -3602,6 +3606,10 @@ function registerDelegate(tree){
     }
     
     function saveTest(checkRestricted) {
+
+        if(!validateEndDateBeforeSave())
+        	return;
+        
         
         $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();

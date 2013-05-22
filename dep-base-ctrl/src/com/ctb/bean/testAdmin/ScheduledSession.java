@@ -33,6 +33,7 @@ public class ScheduledSession extends CTBBean
     private Map<Integer,String> locatorSubtestTD = null;	 //added for locator manifest
     private TestElement [] locatorDeliverableUnit;		 //added for locator manifest
     private TestElement [] hasLocatorSubtestList;
+    private boolean isTestSessionHasStudents;
     
     
     public Boolean getHasLocator() {
@@ -160,6 +161,18 @@ public class ScheduledSession extends CTBBean
 	 */
 	public void setHasLocatorSubtestList(TestElement[] hasLocatorSubtestList) {
 		this.hasLocatorSubtestList = hasLocatorSubtestList;
+	}
+	/**
+	 * @return the isTestSessionHasStudents
+	 */
+	public boolean isTestSessionHasStudents() {
+		return isTestSessionHasStudents;
+	}
+	/**
+	 * @param isTestSessionHasStudents the isTestSessionHasStudents to set
+	 */
+	public void setTestSessionHasStudents(boolean isTestSessionHasStudents) {
+		this.isTestSessionHasStudents = isTestSessionHasStudents;
 	}
 	
 	

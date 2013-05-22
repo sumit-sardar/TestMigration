@@ -44,6 +44,7 @@ import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.EditCopyStatus;
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
@@ -231,6 +232,7 @@ public class SessionOperationController extends PageFlowController {
     private String currentTestAdminId = "";
    private String pageSize=null;
    private boolean pageSizeconfig = false;
+   private Boolean isLASManageLicense = Boolean.FALSE;
     
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
@@ -568,6 +570,7 @@ public class SessionOperationController extends PageFlowController {
         //String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  null;
         String userTimeZone = null;
+        LASLicenseNode oldestNonZeroActivePO = null;
         /*if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
@@ -575,7 +578,13 @@ public class SessionOperationController extends PageFlowController {
         
           try
         {
-        	  userTimeZone =  userManagement.getUserTimeZone(this.userName);
+        	System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);  	
+        	if(this.isLASManageLicense){  
+        		oldestNonZeroActivePO = this.scheduleTest.getNonZeroActivePOForCustomer(this.userName);
+        		vo.setNonZeroActivePO(oldestNonZeroActivePO);
+        	}	
+        	  
+        	userTimeZone =  userManagement.getUserTimeZone(this.userName);
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
@@ -976,12 +985,20 @@ public class SessionOperationController extends PageFlowController {
     	    String action = getRequest().getParameter("action"); 
     	    String originalTestAdminName = null;
     	    String testAdminNameCopySession = null;
+    	    LASLicenseNode oldestNonZeroActivePO = null;
     	    //
-    	    try {
+    	    try { 
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	userTimeZone =  userManagement.getUserTimeZone(this.userName);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	
+    	    	System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);  	
+            	if(this.isLASManageLicense){  
+            		oldestNonZeroActivePO = this.scheduleTest.getNonZeroActivePOForCustomer(this.userName);
+            		vo.setNonZeroActivePO(oldestNonZeroActivePO);
+            		vo.setTestSessionHasStudents(scheduledSession.isTestSessionHasStudents());
+            	}
+            	
     	    	this.numberSelectedSubtests = scheduledSession.getScheduledUnits().length;
     	    	this.selectedProductType = scheduledSession.getTestSession().getProductType();
     	    	
@@ -4085,6 +4102,9 @@ public class SessionOperationController extends PageFlowController {
 					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Yearly_Expiry")) {
+	        		this.isLASManageLicense = Boolean.TRUE;
+	            } 
 			}
 			
 		}

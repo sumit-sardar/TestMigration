@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.TestElement;
@@ -39,6 +40,8 @@ public class ScheduledSavedTestVo implements Serializable {
 	private boolean isOkAdmin = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
+	private LASLicenseNode nonZeroActivePO = null;
+	private boolean isTestSessionHasStudents;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -272,4 +275,25 @@ public class ScheduledSavedTestVo implements Serializable {
 		this.selectGE = selectGE;
 	}
 
+	public LASLicenseNode getNonZeroActivePO() {
+		return nonZeroActivePO;
+	}
+
+	public void setNonZeroActivePO(LASLicenseNode nonZeroActivePO) {
+		this.nonZeroActivePO = nonZeroActivePO;
+	}
+
+	/**
+	 * @return the isTestSessionHasStudents
+	 */
+	public boolean isTestSessionHasStudents() {
+		return isTestSessionHasStudents;
+	}
+
+	/**
+	 * @param isTestSessionHasStudents the isTestSessionHasStudents to set
+	 */
+	public void setTestSessionHasStudents(boolean isTestSessionHasStudents) {
+		this.isTestSessionHasStudents = isTestSessionHasStudents;
+	}
 }

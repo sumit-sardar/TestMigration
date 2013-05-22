@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.StudentManifest;
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
@@ -624,4 +625,6 @@ public interface ScheduleTest
     com.ctb.bean.testAdmin.RosterElement updateManifestForRoster(java.lang.String userName, java.lang.Integer studentId, java.lang.Integer stdentOrgNodeId, java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData, java.lang.String[] locatorSubtestTDs) throws com.ctb.exception.CTBBusinessException;
     
     Map<Integer,String> getSubtestNames (StudentManifest [] studentManifests) throws com.ctb.exception.CTBBusinessException;
+    
+    LASLicenseNode getNonZeroActivePOForCustomer(String userName) throws com.ctb.exception.CTBBusinessException;
 } 

@@ -73,3 +73,18 @@
 		</center>
 	</div>	
 </div>
+
+<div id="expiryDatePOConfirmationPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<div style="padding:10px;text-align:center;">
+		<div style="text-align: left;">
+			<p id= "expiryDatePOMsg" ></p>
+		</div>
+	</div>
+	<div style="padding:10px;">			
+		<center>
+			<input type="button"  value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:setEndDateToPOExpiryDate(); return false;" class="ui-widget-header">&nbsp;
+			<input type="button"  value=<lb:label key="common.button.cancel" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:closePopUpOnCancel('expiryDatePOConfirmationPopup');" class="ui-widget-header">
+		</center>
+	</div>	
+</div>

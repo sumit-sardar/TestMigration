@@ -3,6 +3,7 @@ package com.ctb.control.db;
 import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.ActiveSession;
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.TestSession; 
 import java.sql.SQLException;
@@ -870,6 +871,8 @@ public interface TestAdmin extends JdbcControl
             arrayMaxLength = 1)
 	String getTestCataLogLevelByTestAdmin(Integer testAdminId)throws SQLException;
     
-
+	@JdbcControl.SQL(statement = " SELECT LICENSEQUANTITY, CUSTOMERID, PRODUCTID, ORDERINDEX, ORDERNUMBER,  EXPIRYDATE, PURCHASEDATE  FROM ( SELECT SUM(OOL.AVAILABLE) AS LICENSEQUANTITY, CPL.CUSTOMER_ID AS CUSTOMERID, CPL.PRODUCT_ID AS PRODUCTID,  CPL.ORDER_INDEX AS ORDERINDEX,  CPL.ORDER_NUMBER AS ORDERNUMBER, TO_CHAR(CPL.LICENSE_PERIOD_END, 'mm/dd/yyyy') AS EXPIRYDATE, TO_CHAR(CPL.LICENSE_PERIOD_START, 'mm/dd/yyyy') AS PURCHASEDATE,  CPL.PO_TEXT AS PURCHASEORDER  FROM CUSTOMER_PRODUCT_LICENSE CPL, ORGNODE_ORDER_LICENSE    OOL, USERS  U, USER_ROLE   UR, ORG_NODE   ORG  WHERE U.USER_ID = UR.USER_ID  AND UR.ORG_NODE_ID = ORG.ORG_NODE_ID  AND ORG.CUSTOMER_ID = CPL.CUSTOMER_ID  AND CPL.ORDER_INDEX = OOL.ORDER_INDEX  AND U.USER_NAME = {userName} AND U.ACTIVATION_STATUS = 'AC' AND ORG.ACTIVATION_STATUS = 'AC' GROUP BY CPL.CUSTOMER_ID, CPL.PRODUCT_ID, CPL.ORDER_INDEX, CPL.ORDER_NUMBER, CPL.LICENSE_PERIOD_END, CPL.LICENSE_PERIOD_START, CPL.PO_TEXT ORDER BY CPL.LICENSE_PERIOD_END ASC, CPL.LICENSE_PERIOD_START ASC, SUM(OOL.AVAILABLE) ASC ) DERIVED WHERE DERIVED.LICENSEQUANTITY > 0  AND ROWNUM = 1", 
+			arrayMaxLength = 1)
+	LASLicenseNode getOldestNonZeroActivePOForCustomer(String userName)throws SQLException;
 
 }

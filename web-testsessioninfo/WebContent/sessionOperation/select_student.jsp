@@ -67,7 +67,7 @@
 		<tr id="Act_Buttons" align="center">
 			<td  width="100%">
 				<center>
-				<input type="button"  id="okData" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:returnSelectedStudent(); return false;" class="ui-widget-header">
+				<input type="button"  id="okData" value=<lb:label key="common.button.ok" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:validateEndDateForLaslinkLM(); return false;" class="ui-widget-header">
 				<input type="button"  id="cancelData" value=<lb:label key="common.button.back" prefix="'&nbsp;" suffix="&nbsp;'"/> onclick="javascript:hideSelectStudent(); return false;" class="ui-widget-header">
 				</center>
 				<br>

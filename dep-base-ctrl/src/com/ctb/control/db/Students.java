@@ -744,6 +744,10 @@ public interface Students extends JdbcControl
 	// @JdbcControl.SQL(statement = "select  stu.student_id as studentId,  stu.user_Name as userName,  stu.password as password,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.preferred_Name as preferredName,  stu.prefix as prefix,  stu.suffix as suffix,  stu.birthdate as birthdate,  stu.gender as gender,  stu.ethnicity as ethnicity,  stu.email as email,  stu.grade as grade,  stu.ext_Elm_Id as extElmId,  stu.ext_Pin1 as extPin1,  stu.ext_Pin2 as extPin2,  stu.ext_Pin3 as extPin3,  stu.ext_School_Id as extSchoolId,  stu.active_Session as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By as createdBy,  stu.created_Date_Time as createdDateTime,  stu.updated_By as updatedBy,  stu.updated_Date_Time as updatedDateTime,  stu.activation_Status as activationStatus,  stu.data_import_history_id as dataImportHistoryId from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
 	 @JdbcControl.SQL(statement = "select  stu.student_id as studentId,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.grade as grade from  student stu where  stu.student_id = {studentId}", arrayMaxLength = 100000)
 	 SessionStudent getStudent(int studentId) throws SQLException;
+	 
+	 @JdbcControl.SQL(statement = "select count(1) from test_roster ros, test_admin adm where ros.test_admin_id = adm.test_admin_id and ros.activation_status = 'AC' and adm.test_admin_id = {testAdminId}", arrayMaxLength = 100000)
+	 boolean isSessionHasStudents(Integer testAdminId) throws SQLException;
+	 
 	static final long serialVersionUID = 1L;
 
 

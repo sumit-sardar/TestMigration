@@ -1688,3 +1688,82 @@ function studentInTest(stdId, orgNodeId) {
 	}
 	return false;
 }
+
+	function validateEndDateForLaslinkLM(){
+		if(oldestNonZeroPO != null && oldestNonZeroPO != undefined){
+			//TODO: LAS LM end date validation with oldest PO expiry date
+			if(studentTempMap != null && studentTempMap != undefined && studentTempMap.count>0){
+				var endDateSelected = $("#endDate").datepicker( "getDate" );
+				var expiryDateForPO = new Date(oldestNonZeroPO.expiryDate);
+				if (expiryDateForPO < endDateSelected){
+					var msg = 'Your licenses will expire before selected end date i.e. on <br>\"'+ oldestNonZeroPO.expiryDate +'\". Click "OK" to set the end date to the expiry date or click "Cancel" to close the pop up.';
+					nonZeroPOExpiryDatePopup(msg);
+					/*var isOk = confirm('Your licenses will expire before selected end eate i.e. on \"'+ oldestNonZeroPO.expiryDate +'\". Click "OK" to set the end date to the expiry date or click "Cancel" to close the pop up.');
+					if(isOk)
+						 $("#endDate").datepicker( "setDate", new Date(oldestNonZeroPO.expiryDate));
+					else
+						return;
+					*/	
+				}else{
+					returnSelectedStudent();
+				}
+			}else {
+				returnSelectedStudent();
+			}				
+		}else{
+			returnSelectedStudent();
+		}
+	}
+	
+	function nonZeroPOExpiryDatePopup(message){
+		$("#expiryDatePOConfirmationPopup").dialog({  
+			title:$("#confirmAlrt").val(),  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#expiryDatePOConfirmationPopup").css('height','110px');
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#expiryDatePOConfirmationPopup").parent().css("top",toppos);
+		 $("#expiryDatePOConfirmationPopup").parent().css("left",leftpos);	
+		 /*if(state == "EDIT") {
+		 	$("#editRemove").show();
+		 	$("#scheduleRemove").hide();
+		 } else {
+		 	$("#scheduleRemove").show();
+		 	$("#editRemove").hide();
+		 }*/
+		 $("#expiryDatePOMsg").html(message);
+		 $("#expiryDatePOMsg").show();
+	}
+	
+	function setEndDateToPOExpiryDate(){
+		var oldestNonZeroPOExpiryDate = new Date(oldestNonZeroPO.expiryDate);
+		$("#endDate").datepicker( "setDate", oldestNonZeroPOExpiryDate);
+		closePopUp('expiryDatePOConfirmationPopup');
+		returnSelectedStudent();
+	}
+	
+	function closePopUpOnCancel(popupId){
+		closePopUp('expiryDatePOConfirmationPopup');
+	}
+	
+	function validateEndDateBeforeSave(){
+		var result = true;
+		if(oldestNonZeroPO != null && oldestNonZeroPO != undefined ){
+			if((studentTempMap != null && studentTempMap != undefined && studentTempMap.count > 0) || isTestSessionHasStudents){
+				var endDateSelected = $("#endDate").datepicker( "getDate" );
+				var expiryDateForPO = new Date(oldestNonZeroPO.expiryDate);
+				if (expiryDateForPO < endDateSelected){
+					var msgText = 'Your licenses will expire before selected end date. Select a test session end date that is sooner than or equal to license expiry date i.e. "'+ oldestNonZeroPO.expiryDate+'"';
+					setMessage("License Expiry Alert", "", "errorMessage", msgText);       
+					$('#displayMessage').show();
+					result = false;
+				}
+			}	
+		}
+		return result;
+	}

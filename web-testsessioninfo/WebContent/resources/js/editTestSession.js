@@ -72,7 +72,10 @@
 		data:		param,
 		success:	function(data, textStatus, XMLHttpRequest){
 						
-						if (data.status.isSuccess){	
+						if (data.status.isSuccess){						
+							oldestNonZeroPO = data.nonZeroActivePO;
+							isTestSessionHasStudents = data.isTestSessionHasStudents;
+						
 							//added for copy test session
 							if(data.isCopySession){
 								isCopySession = true;

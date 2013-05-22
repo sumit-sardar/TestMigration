@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.ctb.bean.testAdmin.LASLicenseNode;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
@@ -40,6 +41,7 @@ public class ScheduleTestVo implements Serializable{
 	private boolean isOkAdmin = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
+	private LASLicenseNode nonZeroActivePO = null;
 	
 	
 	
@@ -519,6 +521,22 @@ public class ScheduleTestVo implements Serializable{
 
 	public void setSelectGE(Boolean selectGE) {
 		this.selectGE = selectGE;
+	}
+
+
+	/**
+	 * @return the nonZeroActivePO
+	 */
+	public LASLicenseNode getNonZeroActivePO() {
+		return nonZeroActivePO;
+	}
+
+
+	/**
+	 * @param nonZeroActivePO the nonZeroActivePO to set
+	 */
+	public void setNonZeroActivePO(LASLicenseNode nonZeroActivePO) {
+		this.nonZeroActivePO = nonZeroActivePO;
 	}
 }
 
