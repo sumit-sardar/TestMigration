@@ -88,6 +88,11 @@ var xscalefactor = 1;
 var yscalefactor = 1;
 var currentLasAssetItemId;
 var autoPlayEvent = "false";
+var LASAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/"; 
+
+function getLasAssetPath(){
+	lz.embed.setCanvasAttribute("LASAssetPath", LASAssetPath);
+}
 
 //This is to revert the change for the header group in javascript side. Because this is not going to be parsed by Flash.
 String.prototype.replaceAll = function(stringToFind,stringToReplace){
@@ -291,6 +296,8 @@ function eventMonitor(id,event) {
  				 getCurrentPlayOrder(currIframeId);
  			}
  		}
+ 		 
+ 		 unlockResponseArea(currIframeId);
  		
  		
  	} else if(event == 'finished' || event == 'endTrack' || event == 'pause') {
@@ -306,7 +313,6 @@ function eventMonitor(id,event) {
 	 				}
 	 			}
 	 		}
-	 		unlockResponseArea(currIframeId);
 	 		enableNextButton(id);
  		  if(autoPlayEvent == 'true') {
 	 			autoPlayEvent = "false";
