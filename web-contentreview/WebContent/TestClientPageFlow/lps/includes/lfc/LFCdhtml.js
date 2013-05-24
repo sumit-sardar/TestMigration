@@ -3318,10 +3318,43 @@ var LzMouseKernel = {
 		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "move");
 	        }
 	        else {//set relative url for setting a custom cursor
-		        LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "url(manipulatives/resource/iknow_cursors/cursor_eliminate.png),auto");
-		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "url(manipulatives/resource/iknow_cursors/cursor_eliminate.png),auto");
-		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "url(manipulatives/resource/iknow_cursors/cursor_eliminate.png),auto");
-		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "url(manipulatives/resource/iknow_cursors/cursor_eliminate.png),auto");
+				LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eliminate.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eliminate.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eliminate.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eliminate.png),auto");
+	        }
+
+        }
+         else if($0 == "highlighter_cursor"){
+
+			if(lz.embed.browser.browser == "Mozilla") {//if lockdown browser, show a open built in hand cursor similar to dragger_over
+		        LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "move");
+	        }
+	        else {//set relative url for setting a custom cursor
+		        LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_highliter.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_highliter.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_highliter.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_highliter.png),auto");
+	        }
+
+        }
+        else if($0 == "eraser_cursor"){
+
+			if(lz.embed.browser.browser == "Mozilla") {//if lockdown browser, show a open built in hand cursor similar to dragger_over
+		        LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "move");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "move");
+	        }
+	        else {//set relative url for setting a custom cursor
+		        LzSprite.prototype.__setCSSClassProperty(".lzclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eraser.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eraser.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eraser.png),auto");
+		        LzSprite.prototype.__setCSSClassProperty(".lzcanvasclickdiv", "cursor", "url(ctbmodules/resources/iknow_cursors/cursor_eraser.png),auto");
+		        
 	        }
 
         }
