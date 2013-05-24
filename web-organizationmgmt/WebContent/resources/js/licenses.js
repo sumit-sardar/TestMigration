@@ -91,24 +91,57 @@ function createOrgNodeTree(jsondata) {
 	    */
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
-	    	
-	    	document.getElementById('displayMessageMain').style.display = "none";
-	    	
-			if (isEditing()) {
-				//jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
-				return true;
+	    	var currentEditing = document.getElementById('currentEditing').value;
+		    if (currentEditing == 'true') {
+			    var ret = confirm("You have unsaved license data changes. Click 'OK' to save your changes and navigate to selected node. Click 'Cancel' to continue editing license information.");
+			    if (ret) {
+			    	editingId = null;
+					if(saveLicensesAfterEditAlert()){
+						document.getElementById('displayMessageMain').style.display = "none";
+			    	
+						if (isEditing()) {
+							//jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+							return true;
+						}
+				    	
+			  			SelectedOrgNodeId = $(this).parent().attr("id");
+			 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+			 		     		    
+			 		    if(!gridloaded) {
+			 		    	UIBlock();
+						    loadOrgNodeLicense();
+						}
+						else {
+			 		    	UIBlock();
+							orgNodeLicenseReload();
+						}
+					}else{
+						return true;
+					}
+			   	}
+			    else {
+			    	return true;
+			    }
 			}
-	    	
-  			SelectedOrgNodeId = $(this).parent().attr("id");
- 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
- 		     		    
- 		    if(!gridloaded) {
- 		    	UIBlock();
-			    loadOrgNodeLicense();
-			}
-			else {
- 		    	UIBlock();
-				orgNodeLicenseReload();
+			else{
+		    	document.getElementById('displayMessageMain').style.display = "none";
+		    	
+				if (isEditing()) {
+					//jQuery('#orgNodeLicenseChildrenGrid').jqGrid("restoreCell", editingRow, editingCol); 				
+					return true;
+				}
+		    	
+	  			SelectedOrgNodeId = $(this).parent().attr("id");
+	 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+	 		     		    
+	 		    if(!gridloaded) {
+	 		    	UIBlock();
+				    loadOrgNodeLicense();
+				}
+				else {
+	 		    	UIBlock();
+					orgNodeLicenseReload();
+				}
 			}
 			
 		});
@@ -583,5 +616,48 @@ function verifyEditLicenseAndGotoMenuAction(action, menuId){
     	gotoMenuAction(action, menuId);
     }
 }
- 
+
                 
+function saveLicensesAfterEditAlert() {
+	var inputCtrlPresent = false;
+	$(":input").each(function(){
+		var xxx = $(this);
+		var id = xxx.attr('id');
+		if (id.indexOf('_available') != -1) {
+			inputCtrlPresent = true;
+		}
+	});
+	
+   	if ((editingId != null) || inputCtrlPresent) {
+   		alert("You are currently editing a license quantity. Press the Enter key to commit the value. Then click Save to save all your changes.");
+   		return false;
+	}
+	
+	editingId = null;
+	document.getElementById('currentEditing').value = 'false';
+	var postDataObject = {};
+	postDataObject.selectedOrgNodeId = $("#treeOrgNodeId").val();
+ 
+	$.ajax({
+		async:		false,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'saveLicenses.do',
+		type:       'POST',
+		dataType:	'json',
+		data: postDataObject,
+		success:	function(data, textStatus, XMLHttpRequest){	
+						$.unblockUI(); 
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="/SessionWeb/logout.do";						
+					},
+		complete :  function(){
+						 $.unblockUI(); 
+					}
+	});
+	
+	return true;
+}                
