@@ -96,8 +96,13 @@
 			                if(licenseDataMap != null)
 			                	licenseData = licenseDataMap.get($('#stdOrg').val());
 
-							openModifyManifestPopup();	
-							 $.unblockUI();		
+							if (isTabeTutorialProduct) {
+								validateAndScheduleStudent();		
+							}
+							else {
+								openModifyManifestPopup();
+								$.unblockUI();		
+							}	
 						},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 				             $.unblockUI();
@@ -1092,9 +1097,10 @@
 		 }
 		 if(subTestDetails.subtests.length > 0){
 		  	prepareMsmSelectedSubtests(tmpSelectedSubtestsMsm, validateLevels);
-		  	if(isTabeProduct){
-	    		isValidated = validateTABESubtest(tmpSelectedSubtestsMsm, validateLevels, true);
-	    	} else {
+		  	if(isTabeProduct){ 
+    			isValidated = validateTABESubtest(tmpSelectedSubtestsMsm, validateLevels, true);
+    		}
+	    	else { 
 	    		isValidated = validationTABE_ADAPTIVE (tmpSelectedSubtestsMsm, true);
 	    	}
 		 }
@@ -1122,6 +1128,9 @@
 	function validateTABESubtest(subtests, validateLevels , isForStudentMsm) {
 	    var isValid = true;
 	   
+   		if (isTabeTutorialProduct)
+	   		return true;
+	   		
 	    if (subtests == undefined || subtests == null || subtests.length == 0) {
 	        isValid = false;
          	setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noSubtestMsg").val());
@@ -1358,13 +1367,12 @@
 							 	populateStudConfirmation(data);
 							 	displayStudConfirmation();
 							 	setPopupPosition("studentConfirmation");
+							 	
 							 	$("#studentConfirmation").height($("#modifyTestPopup").height());
-							 	//$("#studRegInfo").height($("#studentConfirmation").height()-15);
 							 	if($("#studentConfirmation").parent().height()-90>$("#studRegInfo").height()) {
 							 		$("#studRegInfo").height($("#studentConfirmation").parent().height()-90);
 							 	} 
-							 	//$("#studRegInfo").height($("#studentConfirmation").parent().height()-15);
-							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width());
+							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width()-224);
 							 	
 							 } else {
 

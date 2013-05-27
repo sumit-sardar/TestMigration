@@ -71,6 +71,7 @@ var isTabeProduct = false;
 var isTabeAdaptiveProduct = false;
 var isTabeProductFinal = false;
 var isTabeAdaptiveProductFinal = false;
+var isTabeTutorialProduct = false;
 var selectedItemSetIdTC = null;
 var selectedItemSetIdTCFinal = null;
 var selectedTestAdminId = null;
@@ -549,6 +550,8 @@ function populateGridAsPerView() {
 function setPopupPosition(popupId){
 		var toppos = ($(window).height() - 650) /2 + 'px';
 		var leftpos = ($(window).width() - 1024) /2 + 'px';
+		if (popupId == "studentConfirmation")
+			leftpos = ($(window).width() - 912) /2 + 'px';
 		$("#"+popupId).parent().css("top",toppos);
 		$("#"+popupId).parent().css("left",leftpos);	
 	}
@@ -809,6 +812,10 @@ function populateRegistrationSessionGrid() {
 					} else {
 						isTabeProduct = true;
 						isTabeAdaptiveProduct = false;
+						isTabeTutorialProduct = false;
+						if (selectedRowData.testName == "TABE 9 & 10 Online Tutorial") {						
+							isTabeTutorialProduct = true;
+						}						
 					} 
 				},
 			loadComplete: function () {
@@ -1942,7 +1949,6 @@ function isExist(val, customerValCheckbox){
 			title: 'Register Student',  
 			resizable:false,
 			autoOpen: true,
-			width: '1024px',
 			modal: true,
 			closeOnEscape: false,
 			open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
