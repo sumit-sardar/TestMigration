@@ -723,9 +723,11 @@ public class TMSServlet extends HttpServlet {
 	    	ItemResponseData[] rdirt = null;
 	    	ConsolidatedRestartData restartData = null;
 	    	cachedirt = oasSource.getItemResponses(Integer.parseInt(testRosterId));
-	    	for(int j=0;j<cachedirt.length;j++) {
-				netirt.add(cachedirt[j]);
-	        }
+	    	if(cachedirt != null && cachedirt.length > 0) {
+		    	for(int j=0;j<cachedirt.length;j++) {
+					netirt.add(cachedirt[j]);
+		        }
+	    	}
 	    	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
 	    	if(crda != null && crda.length > 0) {
 	    		for(int f=0;f<crda.length;f++) {

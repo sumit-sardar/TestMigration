@@ -85,25 +85,26 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	public ItemResponseData[] getItemResponses(int testRosterId) throws IOException, ClassNotFoundException {
 		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, testRosterId); 
 		Set setKeys = responseCache.keySet(filter); 
-		Map mapResult = responseCache.getAll(setKeys); 
-		if(mapResult != null) {
-			Iterator it = mapResult.keySet().iterator();
-			int size = mapResult.size();
-			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Found " + size + " response keys for roster " + testRosterId);
-			ItemResponseData[] irda = new ItemResponseData[size];
-			int i = 0;
-			while(it.hasNext()) {
-				ItemResponseData ird = (ItemResponseData) mapResult.get(it.next());;
-				//ird.setTestRosterId(testRosterId);
-				irda[i] = ird;
-				logger.debug("*****  OASCoherenceSource: getItemResponses: Retrieved response from cache: " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
-				i++;
+		if(setKeys != null && setKeys.size() > 0) {
+			Map mapResult = responseCache.getAll(setKeys); 
+			if(mapResult != null && mapResult.size() > 0) {
+				Set keySet = mapResult.keySet();
+				if(keySet != null && keySet.size() > 0) {
+					Iterator it = keySet.iterator();
+					int size = mapResult.size();
+					ItemResponseData[] irda = new ItemResponseData[size];
+					int i = 0;
+					while(it.hasNext()) {
+						ItemResponseData ird = (ItemResponseData) mapResult.get(it.next());
+						irda[i] = ird;
+						logger.debug("*****  OASCoherenceSource: getItemResponses: Retrieved response from cache: " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+						i++;
+					}
+					return irda;
+				}
 			}
-			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Retrieved " + i + " responses for roster " + testRosterId);
-			return irda;
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	public ManifestWrapper getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
