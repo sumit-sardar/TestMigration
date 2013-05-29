@@ -1549,23 +1549,31 @@ public class ItemLayoutProcessor {
 					Boolean isMP4 = (thisElement.getAttributeValue("isMP4")) != null ? new Boolean(
 							thisElement.getAttributeValue("isMP4"))
 							: Boolean.FALSE;
-					if(isMP4.booleanValue()){
+					
+					widgetElement.setAttribute("id", getUniqueId());
+					widgetElement.setAttribute("src", thisElement.getAttributeValue("FileName"));
+					//Commented as video asset [i.e. isMP4 = true] will be processed as html component only 
+					/*if(isMP4.booleanValue()){
 						String srcMP4 = thisElement.getAttributeValue("FileName");
-						widgetElement.setAttribute("id", getImageId(srcMP4));
-						srcMP4 = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/" + srcMP4.substring(srcMP4.indexOf("/images/") + 8);
-						/*srcMP4 = "http://mcsdoas15.mhe.mhc:9000/images/"
+						if(srcMP4.indexOf("/")!= -1)
+						    widgetElement.setAttribute("id", getImageId(srcMP4));
+						else
+							widgetElement.setAttribute("id", srcMP4);	
+						System.out.println("Video ID :: " + getImageId(srcMP4));
+						//srcMP4 = "/iwmnt/default/main/OAS/WORKAREA/highwire/images/HtmlAssets/" + srcMP4;
+						srcMP4 = "http://mcsdoas15.mhe.mhc:9000/images/"
 								+ srcMP4.substring(
 										srcMP4.indexOf("/images/") + 8)
-										.replaceAll(" ", "%20");*/
+										.replaceAll(" ", "%20");
 						//srcMP4 = "/local/apps/oas/ads/assets/formula2.mp4";
-						/*srcMP4 = "/local/apps/oas/ads/assets/"+ srcMP4.substring(
+						srcMP4 = "/local/apps/oas/ads/assets/"+ srcMP4.substring(
 								srcMP4.indexOf("/images/") + 8)
-								.replaceAll(" ", "%20");*/
+								.replaceAll(" ", "%20");
 						widgetElement.setAttribute("src", srcMP4);						
 					}else{
 						widgetElement.setAttribute("id", getUniqueId());
 						widgetElement.setAttribute("src", thisElement.getAttributeValue("FileName"));
-					}
+					}*/
 					childSrcList.add(widgetElement);
 				} else if (name.equals("Table")) {
 					this.insideTable = true;
@@ -3177,7 +3185,7 @@ public class ItemLayoutProcessor {
 			
 			//String fileExt = filePath.substring(filePath.length() - 3).toLowerCase();			
 			//if (!fileExt.equalsIgnoreCase("mp4")){
-			if ("false".equalsIgnoreCase(asset_widget.getAttributeValue("isMP4"))){
+			//if ("false".equalsIgnoreCase(asset_widget.getAttributeValue("isMP4"))){  //Commented as video asset [i.e. isMP4 = true] will be processed as html component only
 				/*Properties prop = new Properties();
 				prop.load(new FileInputStream(adsConfig.getFile()));
 				String htmlAssetPkgPath = prop.getProperty("html.asset.package.path");*/	
@@ -3189,7 +3197,7 @@ public class ItemLayoutProcessor {
 				System.out.println("zipFolder destination: " + destination);
 				zipFolder(source, destination);
 				System.out.println("zipFolder completed.");
-			}
+			//}	//Commented as video asset [i.e. isMP4 = true] will be processed as html component only		
 		}
 	}
 
@@ -3317,13 +3325,14 @@ public class ItemLayoutProcessor {
 			}
 		}
 		
-		List assetList = extractAllElement(".//asset_widget", itemLML);
+		//Commented as video asset [i.e. isMP4 = true] will be processed as html component only 
+		/*List assetList = extractAllElement(".//asset_widget", itemLML);
 		for (int i = 0; i < assetList.size(); i++) {
 			Element asset_widget = (Element) assetList.get(i);		
-			String id = asset_widget.getAttributeValue("id");
+			String id = asset_widget.getAttributeValue("id");			
 			if (asset_widget.getAttributeValue("isMP4").equalsIgnoreCase("true"))				
 				asset_widget.setAttribute("src",id);			
-		}
+		}*/
 		
 		Element item_model = ItemLayoutProcessor.extractSingleElement(
 				".//item_model", itemLML);
