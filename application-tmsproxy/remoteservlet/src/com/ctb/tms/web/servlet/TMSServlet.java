@@ -80,7 +80,7 @@ public class TMSServlet extends HttpServlet {
 	ADSNoSQLSink adsSink = NoSQLStorageFactory.getADSSink();
 	
 	ADSRDBSource adsDBSource = RDBStorageFactory.getADSSource();
-	
+	private String completedLocatorContain = "";
 	static Logger logger = Logger.getLogger(TMSServlet.class);
 
 	public TMSServlet() {
@@ -418,9 +418,27 @@ public class TMSServlet extends HttpServlet {
 				    			thisSco.setCompletionStatus("IS");
 				    			manifest.setRosterCompletionStatus("IS");
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
-				    			if("TABE Locator Language".equals(thisSco.getTitle())) {
+				    			if(thisSco.getTitle().contains("TABE Locator") && !thisSco.getTitle().contains("Sample")) {
 				    				locatorComplete = true;
-				    				logger.info("Roster " + rosterId + " completed locator");
+				    				//logger.info("Roster " + rosterId + " completed locator");
+				    				if(thisSco.getTitle().contains("Reading"))
+                                    {
+                                        completedLocatorContain = "Reading";
+                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Reading locator").toString());
+                                    } else if(thisSco.getTitle().contains("Computation"))
+                                    {
+                                        completedLocatorContain = "Computation";
+                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Mathematics Computation locator").toString());
+                                    } else if(thisSco.getTitle().contains("Applied"))
+                                    {
+                                        completedLocatorContain = "Applied";
+                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Applied Mathematics locator").toString());
+                                    } else
+                                    {
+                                        completedLocatorContain = "Language";
+                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Language locator").toString());
+                                    }
+
 				    			}
 				    			thisSco.setCompletionStatus("CO");
 				    			thisSco.setEndTime(System.currentTimeMillis());
@@ -572,15 +590,27 @@ public class TMSServlet extends HttpServlet {
 	private void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
         logger.debug("##### handleTabeLocator: In handleTabeLocator");
 		RosterSubtestStatus [] locatorSubtests = null;
+		//ManifestData modifiedManifestData[] = (ManifestData[])null;
+		ArrayList<ManifestData> modifiedManifestList = new ArrayList<ManifestData>();
         ArrayList rssList = new ArrayList();
         Manifest[] manifesta = oasSource.getAllManifests(testRosterId).getManifests();
         logger.debug("##### handleTabeLocator: found " + manifesta.length + " manifests for roster " + testRosterId);
         for(int i=0;i<manifesta.length;i++) {
-        	Manifest manifest = manifesta[i];
-        	ManifestData[] mda = manifest.getManifest();
-        	logger.debug("##### handleTabeLocator: manifest " + i + " length: " + mda.length);
-        	for(int j=0;j<mda.length;j++) {
-        		ManifestData md = mda[j];
+        	 Manifest manifest = manifesta[i];
+             ManifestData mda[] = manifest.getManifest();
+             logger.debug((new StringBuilder("##### handleTabeLocator: manifest ")).append(i).append(" length: ").append(mda.length).toString());
+             for(int indx = 0; indx < mda.length; indx++) {
+            	 if((completedLocatorContain != "" || completedLocatorContain != null) && mda[indx].getTitle().contains(completedLocatorContain))
+                 {
+            		 modifiedManifestList.add(mda[indx]);
+                 }
+             }
+             //ManifestData mod[] = new ManifestData[modifiedManifestList.size()];
+             ManifestData modifiedManifestData[] = modifiedManifestList.toArray(new ManifestData[modifiedManifestList.size()]);
+             System.out.println("*******Modified manifest Size Before set recommended level set******"+ modifiedManifestData.length);
+             //for(int j=0;j<mda.length;j++) {
+             for(int j=0;j<modifiedManifestData.length;j++) {
+        		ManifestData md = modifiedManifestData[j];
         		if("L".equals(md.getLevel())) {
         			logger.debug("##### handleTabeLocator: md " + i + "-" + j + " is locator");
         			RosterSubtestStatus rss = new RosterSubtestStatus();
@@ -604,20 +634,26 @@ public class TMSServlet extends HttpServlet {
         		ManifestData md = mda[j];
         		String subtestName = md.getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
         		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
-        		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) recommendedMap.get(subtestName.trim());
+        		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) ((recommendedMap.get(subtestName.trim()) == null)? null : recommendedMap.get(subtestName.trim()));
+        		System.out.println("########### Recommended Subtest Level ####===>"+((rsl != null) ? rsl.getRecommendedLevel(): "NULL") +"### For ### "+ subtestName);
         		if(rsl != null) {
+        			System.out.println("########### Set Locator  Recommended Subtest Level ####===>"+rsl.getRecommendedLevel() +"### For ### "+ subtestName);
 	        		if("L".equals(md.getLevel())) {
 	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
 	        			newmanifest.add(md);
 	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
+	        			System.out.println("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
 	        		} else if (rsl.getRecommendedLevel().equals(md.getLevel())) {
 	        				newmanifest.add(md);
 	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+	        				System.out.println("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
 	        		} else {
 	        			logger.debug("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
+	        			System.out.println("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
 	        		}
         		} else {
         			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);
+        			System.out.println("##### handleTabeLocator: no level in map for " + subtestName);
         			// no recommendation for this content area yet
         			newmanifest.add(md);
         		}
