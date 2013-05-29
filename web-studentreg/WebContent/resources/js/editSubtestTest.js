@@ -1368,11 +1368,10 @@
 							 	displayStudConfirmation();
 							 	setPopupPosition("studentConfirmation");
 							 	
-							 	$("#studentConfirmation").height($("#modifyTestPopup").height());
+							 	$("#studentConfirmation").height($("#modifyTestPopup").height() + 30);
 							 	if($("#studentConfirmation").parent().height()-90>$("#studRegInfo").height()) {
 							 		$("#studRegInfo").height($("#studentConfirmation").parent().height()-90);
 							 	} 
-							 	$("#studentConfirmation").parent().width($("#modifyTestPopup").width()-224);
 							 	
 							 } else {
 

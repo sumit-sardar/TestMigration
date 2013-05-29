@@ -550,8 +550,10 @@ function populateGridAsPerView() {
 function setPopupPosition(popupId){
 		var toppos = ($(window).height() - 650) /2 + 'px';
 		var leftpos = ($(window).width() - 1024) /2 + 'px';
-		if (popupId == "studentConfirmation")
-			leftpos = ($(window).width() - 912) /2 + 'px';
+		if (popupId == "studentConfirmation") {
+			toppos = ($(window).height() - 680) /2 + 'px';
+			leftpos = ($(window).width() - 974) /2 + 'px';
+		}
 		$("#"+popupId).parent().css("top",toppos);
 		$("#"+popupId).parent().css("left",leftpos);	
 	}
@@ -1949,6 +1951,7 @@ function isExist(val, customerValCheckbox){
 			title: 'Register Student',  
 			resizable:false,
 			autoOpen: true,
+			width: '974px',
 			modal: true,
 			closeOnEscape: false,
 			open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
