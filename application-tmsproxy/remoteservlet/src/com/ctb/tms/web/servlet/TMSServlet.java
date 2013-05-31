@@ -792,25 +792,31 @@ public class TMSServlet extends HttpServlet {
 		    		OASRDBSource source = RDBStorageFactory.getOASSource();
 		    		conn = source.getOASConnection();
 					RosterData dbrd = source.getRosterData(conn, key);
-					ConsolidatedRestartData[] dbcrda = dbrd.getLoginDocument().getTmssvcResponse().getLoginResponse().getConsolidatedRestartDataArray();
-					if(dbcrda != null && dbcrda.length > 0) {
-			    		for(int f=0;f<dbcrda.length;f++) {
-				        	restartData = loginResponse.getConsolidatedRestartDataArray(f);
-				        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-				        	if (responsesInRD) {
-				        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
-				        		for(int m=0;m<rdtsda.length;m++) {
-				        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
-				            		for(int j=0;j<rdirt.length;j++) {
-				            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
-				            			//oasSink.putItemResponse(rdirt[j], true);
-				            			netirt.add(rdirt[j]);
-				                    }
-				        		}
-				        	}
-			    		}
+					LoginResponse DBloginResponse = dbrd.getLoginDocument().getTmssvcResponse().getLoginResponse();
+					if(DBloginResponse.getCatPriorData() == null) {
+						ConsolidatedRestartData[] dbcrda = DBloginResponse.getConsolidatedRestartDataArray();
+						if(dbcrda != null && dbcrda.length > 0) {
+				    		for(int f=0;f<dbcrda.length;f++) {
+					        	restartData = loginResponse.getConsolidatedRestartDataArray(f);
+					        	if(restartData != null) {
+						        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+						        	if (responsesInRD) {
+						        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
+						        		for(int m=0;m<rdtsda.length;m++) {
+						        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
+						            		for(int j=0;j<rdirt.length;j++) {
+						            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
+						            			//oasSink.putItemResponse(rdirt[j], true);
+						            			netirt.add(rdirt[j]);
+						                    }
+						        		}
+						        	}
+					        	}
+				    		}
+						}
 			    	}
 	    		} catch (Exception e) {
+	    			e.printStackTrace();
 					logger.error("Error retrieving restart responses from DB: " + e.getMessage());
 					response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
 		            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
