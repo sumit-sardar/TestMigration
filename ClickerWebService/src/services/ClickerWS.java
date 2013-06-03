@@ -12,7 +12,7 @@ import weblogic.jws.Conversation;
 import java.io.Serializable;
 
 import org.apache.beehive.controls.api.bean.Control;
-
+ 
 import java.io.Serializable;
 
 import com.ctb.bean.testAdmin.NodeData;
@@ -25,13 +25,17 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.control.testAdmin.TestSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
+import dto.UserInfo;
 import dto.Assignment;
+import dto.AssignmentList;
 import dto.OrgNode;
-import dto.Question;
+import dto.OrgNodeList;
 import dto.Roster;
-import dto.StudentResponse;
+import dto.RosterList;
+import dto.Question;
 import dto.Subject;
 import dto.TestStructure;
+import dto.StudentResponse;
 
 import utils.JsonUtils;
 
@@ -44,60 +48,75 @@ public class ClickerWS implements Serializable {
 	@Control
 	private TestSessionStatus testSessionStatus;
 	
-    private User user = null;
-
-	
     /**
     * OAS authenticates this user. 
-    * Return userId if valid user otherwise return 0 
+    * populates userId, userName if authenticating successfully otherwise set to null
+    * status stores error message otherwise set to 'OK'
     */
 	@WebMethod
-	public Integer authenticateUser(String userName, String password) 
+	public UserInfo authenticateUser(String userName, String password) 
 	{
-		Integer userId = null;
+		UserInfo userInfo = null;
 		
 		try {
-			this.user = this.testSessionStatus.getUserDetails(userName, userName);
-			if (this.user != null) {
-				String userPassword = this.user.getPassword();
-				System.out.println(userPassword);
+			User user = this.testSessionStatus.getUserDetails(userName, userName);
+			if (user != null) {
+				String userPassword = user.getPassword();
 				String encodePassword = JsonUtils.encodePassword(password);
-				System.out.println(encodePassword);
 				if (userPassword.equals(encodePassword)) {
-					userId = this.user.getUserId();
+					userInfo = new UserInfo(user.getUserId(), user.getDisplayUserName());
 				}
+				else {
+					userInfo = new UserInfo("Invalid Password");
+				}
+			}
+			else {
+				userInfo = new UserInfo("Invalid User Name");
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			userInfo = new UserInfo(e.getMessage());
 		}                    
 		
-		return userId;
+		return userInfo;
 	}
  
 	/**
 	* userName comes from OAS after authenticate successfully. 
-	* Return organization associated with this user.
+	* Return organizations associated with this user.
 	*/
 	@WebMethod
-	public OrgNode getUserTopNode(String userName) 
+	public OrgNodeList getUserTopNodes(String userName) 
 	{
-		OrgNode orgNode = null;
+		OrgNodeList userTopNodes = null;
 		
 		try {
 			NodeData nodeData = this.testSessionStatus.getTopNodesForUser(userName, null, null, null);
 			if (nodeData != null) {
-				Node node = nodeData.getNodes()[0];
-				if (node != null) {
-					orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
-				}
+				Node[] nodes = nodeData.getNodes();
+				OrgNode[] orgNodes = new OrgNode[nodes.length];
+				
+		        for (int i=0; i < nodes.length; i++) {
+		        	Node node = nodes[i];
+		        	if (node != null) {
+		        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+		        		orgNodes[i] = orgNode;
+		        	}
+		        }
+		        
+		        userTopNodes = new OrgNodeList(null, orgNodes);									
+			}
+			else {
+				userTopNodes = new OrgNodeList("Cannot get user top nodes");									
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			userTopNodes = new OrgNodeList(e.getMessage());					
 		}                    
 		
-		return orgNode;
+		return userTopNodes;
 	}
 
 	/**
@@ -106,28 +125,38 @@ public class ClickerWS implements Serializable {
 	* Return all children nodes under this node.
 	*/
 	@WebMethod
-	public OrgNode[] getChildrenNodes(String userName, Integer orgNodeId) 
+	public OrgNodeList getChildrenNodes(String userName, Integer orgNodeId) 
 	{
-		OrgNode[] orgNodes = null;
-        try
+		OrgNodeList childrenNodes = null;
+
+		try
         {      
         	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, orgNodeId, null, null, null);
-	        Node[] nodes = nodeData.getNodes(); 
-	        orgNodes = new OrgNode[nodes.length];
-	        
-	        for (int i=0; i < nodes.length; i++) {
-	        	Node node = nodes[i];
-	        	if (node != null) {
-	        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
-	        		orgNodes[i] = orgNode;
-	        	}
-	        }
+        	if (nodeData != null) {
+		        Node[] nodes = nodeData.getNodes(); 
+		        OrgNode[] orgNodes = new OrgNode[nodes.length];
+		        
+		        for (int i=0; i < nodes.length; i++) {
+		        	Node node = nodes[i];
+		        	if (node != null) {
+		        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+		        		orgNodes[i] = orgNode;
+		        	}
+		        }
+		        
+		        childrenNodes = new OrgNodeList(orgNodeId, orgNodes);
+        	}
+        	else {
+                childrenNodes = new OrgNodeList("Cannot get children nodes");                		
+        	}
         }
-        catch (CTBBusinessException be)
+        catch (Exception e)
         {
-            be.printStackTrace();
+            e.printStackTrace();
+            childrenNodes = new OrgNodeList(e.getMessage());        
         }
-        return orgNodes;
+        
+        return childrenNodes;
 	}
 
 	/**
@@ -136,32 +165,39 @@ public class ClickerWS implements Serializable {
 	* Return all sessions associated with this node.
 	*/
 	@WebMethod
-	public Assignment[] getSessionsForNode(String userName, Integer orgNodeId) 
+	public AssignmentList getSessionsForNode(String userName, Integer orgNodeId) 
 	{
-		Assignment[] sessions = null;
+		AssignmentList assignmentList = null;
 		
         try
         {      
-        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, 
-        																						null, null, null);
-	        TestSession[] testsessions = tsd.getTestSessions();
-	        sessions = new Assignment[testsessions.length];
-	        
-	        for (int i=0; i < testsessions.length; i++) {
-	            TestSession ts = testsessions[i];
-	            if (ts != null) {
-	            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
-	            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
-	            	sessions[i] = session;
-	            }
-	        }
+        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, null, null, null);
+        	if (tsd != null) {
+		        TestSession[] testsessions = tsd.getTestSessions();
+		        Assignment[] assignments = new Assignment[testsessions.length];
+		        
+		        for (int i=0; i < testsessions.length; i++) {
+		            TestSession ts = testsessions[i];
+		            if (ts != null) {
+		            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
+		            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
+		            	assignments[i] = session;
+		            }
+		        }
+
+		        assignmentList = new AssignmentList(orgNodeId, assignments);
+        	}
+        	else {
+                assignmentList = new AssignmentList("Cannot get sessions");        		
+        	}
         }
         catch (CTBBusinessException be)
         {
             be.printStackTrace();
+            assignmentList = new AssignmentList(be.getMessage());
         }
         
-        return sessions;
+        return assignmentList;
 	}
 
 	/**
@@ -170,31 +206,39 @@ public class ClickerWS implements Serializable {
 	* Return all rosters in this session.
 	*/
 	@WebMethod
-	public Roster[] getRostersInSession(String userName, Integer sessionId) 
+	public RosterList getRostersInSession(String userName, Integer sessionId) 
 	{
-		Roster[] rosters = null;
+		RosterList rosterList = null;
 		
         try
         {      
         	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, sessionId, null, null, null);
-	        RosterElement[] rosterElements = red.getRosterElements();
-	        rosters = new Roster[rosterElements.length];
-	        
-	        for (int i=0; i < rosterElements.length; i++) {
-	        	RosterElement re = rosterElements[i];
-	            if (re != null) {
-	            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
-	            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
-	            	rosters[i] = roster;
-	            }
-	        }
+        	if (red != null) {
+		        RosterElement[] rosterElements = red.getRosterElements();
+		        Roster[] rosters = new Roster[rosterElements.length];
+		        
+		        for (int i=0; i < rosterElements.length; i++) {
+		        	RosterElement re = rosterElements[i];
+		            if (re != null) {
+		            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
+		            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
+		            	rosters[i] = roster;
+		            }
+		        }
+		        
+                rosterList = new RosterList(sessionId, rosters);        				        
+        	}
+        	else {
+                rosterList = new RosterList("Cannot get rosters");        		
+        	}
         }
         catch (CTBBusinessException be)
         {
             be.printStackTrace();
+            rosterList = new RosterList(be.getMessage());
         }    
         
-        return rosters;
+        return rosterList;
 	}
 
 	
@@ -205,7 +249,7 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public TestStructure getTestStructure(String userName, Integer testId) 
 	{
-		TestStructure ts = new TestStructure();
+		TestStructure ts = new TestStructure(null);
 		
 		return ts;
 	}

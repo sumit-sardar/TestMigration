@@ -2,7 +2,7 @@ package dto;
 
 /**
 * Session information
-* Rosters is all students in this session
+* Rosters is a list of students in this session
 *
 * @author Tai_Truong
 */

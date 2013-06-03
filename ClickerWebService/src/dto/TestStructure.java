@@ -4,6 +4,7 @@ package dto;
 * Structure of the test
 * Subtests is the list of subtests in the test
 * OAS populates the fields
+* status stores error message otherwise set to 'OK'
 *
 * @author Tai_Truong
 */
@@ -14,14 +15,18 @@ public class TestStructure implements java.io.Serializable
     private Integer testId;
     private String testName;
     private Subject[] subjects; 
+    private String status = null;		
     
     public TestStructure(Integer testId, String testName, Subject[] subjects) {
     	this.testId = testId;
     	this.testName = testName;
     	this.subjects = subjects;
+    	this.status = "OK";
     }
 
-    public TestStructure() {}
+    public TestStructure(String error) {
+    	this.status = error;
+    }
     
 	public Integer getTestId() {
 		return testId;
@@ -45,6 +50,12 @@ public class TestStructure implements java.io.Serializable
 
 	public void setSubjects(Subject[] subjects) {
 		this.subjects = subjects;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
         

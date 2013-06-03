@@ -26,6 +26,9 @@ import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 
@@ -45,6 +48,7 @@ import dto.Subject;
 import dto.TestStructure;
 
 import com.ctb.util.RosterUtil;
+import com.ctb.control.testAdmin.ScheduleTest;
 
 @Jpf.Controller()
 public class TestWebServiceController extends PageFlowController
@@ -66,6 +70,9 @@ public class TestWebServiceController extends PageFlowController
 	
 	@Control
 	private TestSessionStatus testSessionStatus;
+	
+	@Control
+	private ScheduleTest scheduleTest;
 	
     @Control()
     private com.ctb.control.db.TestRoster rosters;
@@ -112,10 +119,10 @@ public class TestWebServiceController extends PageFlowController
     			password = (String)this.getRequest().getParameter("password");
 	    		userId = clickerWSServiceControl.authenticateUser(userName, password);   
 	    		if (userId != null) {
-	    			resultText = "authenticateUser: " + userName + " - userId: " + userId.toString();
+	    			resultText = "authenticateUser: SUCCESS" + "<br/>userName: " + userName + "<br/>" + "userId: " + userId.toString();
 	    		}
 	    		else {
-	    			resultText = "failed to authenticate";
+	    			resultText = "authenticateUser: FAILED" + "<br/>Invalid username or password";
 	    		}
     		}
 
@@ -124,10 +131,10 @@ public class TestWebServiceController extends PageFlowController
     			OrgNode orgNode = clickerWSServiceControl.getUserTopNode(userName);
     			if (orgNode != null) {
     				orgNodeId = orgNode.getId();
-    				resultText = "getUserTopNode: " + orgNode.getName() + " - " + orgNode.getId();
+    				resultText = "getUserTopNode: SUCCESS" + "<br/>orgNodeName: " + orgNode.getName() + "<br/>orgNodeId: " + orgNode.getId();
     			}
     			else {
-	    			resultText = "failed to getUserTopNode";
+	    			resultText = "getUserTopNode: FAILED";
     			}
     		}
 
@@ -135,18 +142,18 @@ public class TestWebServiceController extends PageFlowController
     			userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
     			orgNodeId = new Integer(tmp.trim());
-    			resultText = "getChildrenNodes:";
     			
     			OrgNode[] orgNodes = clickerWSServiceControl.getChildrenNodes(userName, orgNodeId);
     			if (orgNodes != null) {
+    				resultText = "getChildrenNodes: SUCCESS" ;
+    				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
         	        for (int i=0; i < orgNodes.length; i++) {
         	        	OrgNode node = orgNodes[i];
-        	        	resultText += "<br/>";
-        	        	resultText += (node.getName() + " - " + node.getId()); 
+        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
         	        }    				
     			}
     			else {
-	    			resultText = "failed to getChildrenNodes";
+	    			resultText = "getChildrenNodes: FAILED";
     			}
     		}
 
@@ -154,15 +161,15 @@ public class TestWebServiceController extends PageFlowController
     			userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
     			orgNodeId = new Integer(tmp.trim());    			
-    			resultText = "getSessionsForNode:";
     			
     			Assignment[] sessions = clickerWSServiceControl.getSessionsForNode(userName, orgNodeId);
     			if (sessions != null) {
+    				resultText = "getSessionsForNode: SUCCESS" ;
+    				resultText += "<br/>sessionName - sessionId - startDate - endDate<br/>" ;
         	        for (int i=0; i < sessions.length; i++) {
         	        	Assignment session = sessions[i];
         	            if (session != null) {
-            	        	resultText += "<br/>";
-            	        	resultText += ( session.getSessionName() + " - " + 
+            	        	resultText += ("<br/>" + session.getSessionName() + " - " + 
             	        			session.getSessionId() + " - " + 
             	        			session.getStartDate() + " - " + 
             	        			session.getEndDate()); 
@@ -171,7 +178,7 @@ public class TestWebServiceController extends PageFlowController
         	        }    				
     			}
     			else {
-	    			resultText = "failed to getSessionsForNode";
+	    			resultText = "getSessionsForNode: FAILED";
     			}
     		}
 
@@ -179,10 +186,11 @@ public class TestWebServiceController extends PageFlowController
     			userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
     			sessionId = new Integer(tmp.trim());
-    			resultText = "getRostersInSession:";
     			
     			Roster[] rosters = clickerWSServiceControl.getRostersInSession(userName, sessionId);
     			if (rosters != null) {
+    				resultText = "getRostersInSession: SUCCESS" ;
+    				resultText += "<br/>rosterId - loginName - firstName - lastName - studentKey<br/>" ;
         	        for (int i=0; i < rosters.length; i++) {
         	        	Roster roster = rosters[i];
         	            if (roster != null) {
@@ -196,16 +204,36 @@ public class TestWebServiceController extends PageFlowController
         	        }
     			}
     			else {
-	    			resultText = "failed to getRostersInSession";    				
+	    			resultText = "getRostersInSession: FAILED";
     			}
     		}
 
     		if ("getTestStructure".equals(status)) {
-    			resultText = "getTestStructure: not yet";
+    			userName = (String)this.getRequest().getParameter("userName");
+    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
+    			sessionId = new Integer(tmp.trim());
+    			
+    	    	try {
+        			resultText = "getTestStructure: Not Implemented Yet";
+
+        			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, sessionId);
+					
+					TestElement[] testElements = scheduledSession.getScheduledUnits();
+					
+	    	    	ScheduledSession scheduledSession2 = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, sessionId);
+					
+					SessionStudent[] sessionStudents = scheduledSession2.getStudents();
+					
+					TestStructure testStructure = new TestStructure();
+					
+				} catch (CTBBusinessException e) {
+					e.printStackTrace();
+				}
+    			
     		}
 
     		if ("submitStudentResponses".equals(status)) {
-    			resultText = "submitStudentResponses: not yet";
+    			resultText = "submitStudentResponses: Not Implemented Yet";
     		}
     		
     	}

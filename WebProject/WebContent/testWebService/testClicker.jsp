@@ -88,10 +88,6 @@
 	<td width=200>SessionId:&nbsp;<input type="textbox" id="sessionId" name="sessionId" value="<%=sessionId%>" /></td>
 	<td colspan="2">
 		<input type="button" value="getRostersInSession" onclick="submitStatus('getRostersInSession');" />&nbsp;&nbsp;
-	</td>
-</tr>
-<tr>
-	<td colspan="3">
 		<input type="button" value="getTestStructure" onclick="submitStatus('getTestStructure');" />&nbsp;&nbsp;
 	</td>
 </tr>

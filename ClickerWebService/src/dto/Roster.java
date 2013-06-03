@@ -22,7 +22,7 @@ public class Roster implements java.io.Serializable
     public Roster() {}
 
     public Roster(Integer rosterId, Integer studentId, String loginName, 
-    			String firstName, String lastName, String studentKey, Subject[] subjects) {
+    					String firstName, String lastName, String studentKey, Subject[] subjects) {
     	this.rosterId = rosterId;
     	this.studentId = studentId;
     	this.loginName = loginName;
