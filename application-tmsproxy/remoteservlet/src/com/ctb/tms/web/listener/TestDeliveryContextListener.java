@@ -25,7 +25,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	
 	public static final int batchSize = 10000;
 	
-	private static int checkFrequency = 30;
+	private static int checkFrequency = 300;
 	private static int postFrequency = 5;
 	private static RosterThread rosterThread;
 	private static ScoringThread scoringThread;
@@ -141,11 +141,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					int storedCount = 0;
 					fetchedCount = 0;
 					
-					Member localMember = cluster.getLocalMember();
-					int nodeId = Integer.parseInt(localMember.getMemberName());
 					
-					oasDBSource.markActiveRosters(conn, clusterName, nodeId);
-					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn, clusterName, nodeId);
+					//TODO - need to restore this to normal for non-TABE-Adaptive-specific use
+					//Member localMember = cluster.getLocalMember();
+					//int nodeId = Integer.parseInt(localMember.getMemberName());
+					//oasDBSource.markActiveRosters(conn, clusterName, nodeId);
+					StudentCredentials[] creds = oasDBSource.getActiveAdaptiveRosters(conn);
 					fetchedCount = creds.length;
 					for(int i=0;i<creds.length;i++) {
 						try {
@@ -191,8 +192,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					}
 					logger.info("Stored data in cache for " + storedCount + " rosters.");
 					creds = null;
-					oasDBSource.sweepActiveRosters(conn, clusterName, nodeId);
-					localMember = null;
+					//TODO - need to restore this to normal for non-TABE-Adaptive-specific use
+					//oasDBSource.sweepActiveRosters(conn, clusterName, nodeId);
+					//localMember = null;
 				} catch (Exception e) {
 					logger.error("Caught Exception during active roster check.", e);
 					e.printStackTrace();

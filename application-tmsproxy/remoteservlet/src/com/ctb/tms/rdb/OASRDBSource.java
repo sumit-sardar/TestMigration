@@ -13,6 +13,8 @@ public interface OASRDBSource
 	
 	public StudentCredentials[] getActiveRosters(Connection con, String clusterName, int nodeid);
 	
+	public StudentCredentials[] getActiveAdaptiveRosters(Connection con);
+	
 	public void sweepActiveRosters(Connection con, String clusterName, int nodeid);
     
     public RosterData getRosterData(Connection conn, String key) throws Exception;
