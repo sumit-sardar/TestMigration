@@ -2,33 +2,18 @@
 <s0:definitions name="ClickerWSServiceDefinitions" targetNamespace="http://services" xmlns="" xmlns:s0="http://schemas.xmlsoap.org/wsdl/" xmlns:s1="http://services" xmlns:s2="http://schemas.xmlsoap.org/wsdl/soap/">
   <s0:types>
     <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="java:dto" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-      <xs:complexType name="StudentResponse">
+      <xs:complexType name="RosterList">
         <xs:annotation>
           <xs:documentation>/** 
- * Student response from vendor
- * Vendor needs to populate response field in Question object
+ * All rosters associated under this assignment 
+ * status stores error message otherwise set to 'OK'
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="1" name="Assignment" nillable="true" type="java:Assignment" xmlns:java="java:dto"/>
-          <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="Assignment">
-        <xs:annotation>
-          <xs:documentation>/** 
- * Session information
- * Rosters is all students in this session
- * @author Tai_Truong
- */</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="EndDate" nillable="true" type="xs:string"/>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="Rosters" nillable="true" type="java:Roster" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="SessionId" nillable="true" type="xs:int"/>
-          <xs:element minOccurs="1" name="SessionName" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="1" name="StartDate" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="Roster">
@@ -91,11 +76,98 @@
           </xs:element>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="StudentResponse">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * Student response from vendor
+ * Vendor needs to populate student responses
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="Assignment" nillable="true" type="java:Assignment" xmlns:java="java:dto"/>
+          <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Assignment">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * Session information
+ * Rosters is a list of students in this session
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="EndDate" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Rosters" nillable="true" type="java:Roster" xmlns:java="java:dto"/>
+          <xs:element minOccurs="1" name="SessionId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="SessionName" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="StartDate" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="TestStructure">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * Structure of the test
+ * Subtests is the list of subtests in the test
+ * OAS populates the fields
+ * status stores error message otherwise set to 'OK'
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subjects" nillable="true" type="java:Subject" xmlns:java="java:dto"/>
+          <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="TestName" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="UserInfo">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * Populates userId, userName if authenticating successfully otherwise set to null
+ * status stores error message otherwise set to 'OK'
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="UserId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="UserName" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="AssignmentList">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * All assignments associated with this organization 
+ * status stores error message otherwise set to 'OK'
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Assignments" nillable="true" type="java:Assignment" xmlns:java="java:dto"/>
+          <xs:element minOccurs="1" name="OrgNodeId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="OrgNodeList">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * Children nodes of an organization 
+ * status stores error message otherwise set to 'OK'
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="OrgNodes" nillable="true" type="java:OrgNode" xmlns:java="java:dto"/>
+          <xs:element minOccurs="1" name="ParentOrgNodeId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="OrgNode">
         <xs:annotation>
           <xs:documentation>/** 
  * Organization information in OAS hierarchy
- * OAS populates the fields
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
@@ -104,24 +176,6 @@
           <xs:element minOccurs="1" name="Name" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="ArrayOfOrgNode_literal">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="OrgNode" nillable="true" type="java:OrgNode" xmlns:java="java:dto"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:element name="ArrayOfOrgNode_literal" type="java:ArrayOfOrgNode_literal" xmlns:java="java:dto"/>
-      <xs:complexType name="ArrayOfAssignment_literal">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="Assignment" nillable="true" type="java:Assignment" xmlns:java="java:dto"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:element name="ArrayOfAssignment_literal" type="java:ArrayOfAssignment_literal" xmlns:java="java:dto"/>
-      <xs:complexType name="ArrayOfRoster_literal">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="Roster" nillable="true" type="java:Roster" xmlns:java="java:dto"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:element name="ArrayOfRoster_literal" type="java:ArrayOfRoster_literal" xmlns:java="java:dto"/>
     </xs:schema>
     <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://services" xmlns:xs="http://www.w3.org/2001/XMLSchema">
       <xs:import namespace="java:dto"/>
@@ -136,7 +190,51 @@
       <xs:element name="getSessionsForNodeResponse">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="return" type="java:ArrayOfAssignment_literal" xmlns:java="java:dto"/>
+            <xs:element name="return" type="java:AssignmentList" xmlns:java="java:dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getTestStructure">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element minOccurs="0" name="testId" nillable="true" type="xs:int"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getTestStructureResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="java:TestStructure" xmlns:java="java:dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="authenticateUser">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="password" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="authenticateUserResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="java:UserInfo" xmlns:java="java:dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getUserTopNodes">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getUserTopNodesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="java:OrgNodeList" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -151,7 +249,7 @@
       <xs:element name="getRostersInSessionResponse">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="return" type="java:ArrayOfRoster_literal" xmlns:java="java:dto"/>
+            <xs:element name="return" type="java:RosterList" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -164,20 +262,8 @@
       </xs:element>
       <xs:element name="submitStudentResponsesResponse">
         <xs:complexType>
-          <xs:sequence/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="getUserTopNode">
-        <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="getUserTopNodeResponse">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="return" type="java:OrgNode" xmlns:java="java:dto"/>
+            <xs:element minOccurs="0" name="return" nillable="true" type="xs:boolean"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -192,35 +278,7 @@
       <xs:element name="getChildrenNodesResponse">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="return" type="java:ArrayOfOrgNode_literal" xmlns:java="java:dto"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="getTestStructure">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
-            <xs:element minOccurs="0" name="testId" nillable="true" type="xs:int"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="getTestStructureResponse">
-        <xs:complexType>
-          <xs:sequence/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="authenticateUser">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
-            <xs:element name="password" type="xs:string"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="authenticateUserResponse">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element minOccurs="0" name="return" nillable="true" type="xs:int"/>
+            <xs:element name="return" type="java:OrgNodeList" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -231,30 +289,6 @@
   </s0:message>
   <s0:message name="getSessionsForNodeResponse">
     <s0:part element="s1:getSessionsForNodeResponse" name="parameters"/>
-  </s0:message>
-  <s0:message name="getRostersInSession">
-    <s0:part element="s1:getRostersInSession" name="parameters"/>
-  </s0:message>
-  <s0:message name="getRostersInSessionResponse">
-    <s0:part element="s1:getRostersInSessionResponse" name="parameters"/>
-  </s0:message>
-  <s0:message name="submitStudentResponses">
-    <s0:part element="s1:submitStudentResponses" name="parameters"/>
-  </s0:message>
-  <s0:message name="submitStudentResponsesResponse">
-    <s0:part element="s1:submitStudentResponsesResponse" name="parameters"/>
-  </s0:message>
-  <s0:message name="getUserTopNode">
-    <s0:part element="s1:getUserTopNode" name="parameters"/>
-  </s0:message>
-  <s0:message name="getUserTopNodeResponse">
-    <s0:part element="s1:getUserTopNodeResponse" name="parameters"/>
-  </s0:message>
-  <s0:message name="getChildrenNodes">
-    <s0:part element="s1:getChildrenNodes" name="parameters"/>
-  </s0:message>
-  <s0:message name="getChildrenNodesResponse">
-    <s0:part element="s1:getChildrenNodesResponse" name="parameters"/>
   </s0:message>
   <s0:message name="getTestStructure">
     <s0:part element="s1:getTestStructure" name="parameters"/>
@@ -268,26 +302,34 @@
   <s0:message name="authenticateUserResponse">
     <s0:part element="s1:authenticateUserResponse" name="parameters"/>
   </s0:message>
+  <s0:message name="getUserTopNodes">
+    <s0:part element="s1:getUserTopNodes" name="parameters"/>
+  </s0:message>
+  <s0:message name="getUserTopNodesResponse">
+    <s0:part element="s1:getUserTopNodesResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="getRostersInSession">
+    <s0:part element="s1:getRostersInSession" name="parameters"/>
+  </s0:message>
+  <s0:message name="getRostersInSessionResponse">
+    <s0:part element="s1:getRostersInSessionResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="submitStudentResponses">
+    <s0:part element="s1:submitStudentResponses" name="parameters"/>
+  </s0:message>
+  <s0:message name="submitStudentResponsesResponse">
+    <s0:part element="s1:submitStudentResponsesResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="getChildrenNodes">
+    <s0:part element="s1:getChildrenNodes" name="parameters"/>
+  </s0:message>
+  <s0:message name="getChildrenNodesResponse">
+    <s0:part element="s1:getChildrenNodesResponse" name="parameters"/>
+  </s0:message>
   <s0:portType name="ClickerWS">
     <s0:operation name="getSessionsForNode" parameterOrder="parameters">
       <s0:input message="s1:getSessionsForNode"/>
       <s0:output message="s1:getSessionsForNodeResponse"/>
-    </s0:operation>
-    <s0:operation name="getRostersInSession" parameterOrder="parameters">
-      <s0:input message="s1:getRostersInSession"/>
-      <s0:output message="s1:getRostersInSessionResponse"/>
-    </s0:operation>
-    <s0:operation name="submitStudentResponses" parameterOrder="parameters">
-      <s0:input message="s1:submitStudentResponses"/>
-      <s0:output message="s1:submitStudentResponsesResponse"/>
-    </s0:operation>
-    <s0:operation name="getUserTopNode" parameterOrder="parameters">
-      <s0:input message="s1:getUserTopNode"/>
-      <s0:output message="s1:getUserTopNodeResponse"/>
-    </s0:operation>
-    <s0:operation name="getChildrenNodes" parameterOrder="parameters">
-      <s0:input message="s1:getChildrenNodes"/>
-      <s0:output message="s1:getChildrenNodesResponse"/>
     </s0:operation>
     <s0:operation name="getTestStructure" parameterOrder="parameters">
       <s0:input message="s1:getTestStructure"/>
@@ -297,10 +339,53 @@
       <s0:input message="s1:authenticateUser"/>
       <s0:output message="s1:authenticateUserResponse"/>
     </s0:operation>
+    <s0:operation name="getUserTopNodes" parameterOrder="parameters">
+      <s0:input message="s1:getUserTopNodes"/>
+      <s0:output message="s1:getUserTopNodesResponse"/>
+    </s0:operation>
+    <s0:operation name="getRostersInSession" parameterOrder="parameters">
+      <s0:input message="s1:getRostersInSession"/>
+      <s0:output message="s1:getRostersInSessionResponse"/>
+    </s0:operation>
+    <s0:operation name="submitStudentResponses" parameterOrder="parameters">
+      <s0:input message="s1:submitStudentResponses"/>
+      <s0:output message="s1:submitStudentResponsesResponse"/>
+    </s0:operation>
+    <s0:operation name="getChildrenNodes" parameterOrder="parameters">
+      <s0:input message="s1:getChildrenNodes"/>
+      <s0:output message="s1:getChildrenNodesResponse"/>
+    </s0:operation>
   </s0:portType>
   <s0:binding name="ClickerWSServiceSoapBinding" type="s1:ClickerWS">
     <s2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <s0:operation name="getSessionsForNode">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+    <s0:operation name="getTestStructure">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+    <s0:operation name="authenticateUser">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+    <s0:operation name="getUserTopNodes">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>
@@ -324,37 +409,10 @@
         <s2:body parts="parameters" use="literal"/>
       </s0:input>
       <s0:output>
-        <s2:body use="literal"/>
-      </s0:output>
-    </s0:operation>
-    <s0:operation name="getUserTopNode">
-      <s2:operation style="document"/>
-      <s0:input>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:input>
-      <s0:output>
         <s2:body parts="parameters" use="literal"/>
       </s0:output>
     </s0:operation>
     <s0:operation name="getChildrenNodes">
-      <s2:operation style="document"/>
-      <s0:input>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:input>
-      <s0:output>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:output>
-    </s0:operation>
-    <s0:operation name="getTestStructure">
-      <s2:operation style="document"/>
-      <s0:input>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:input>
-      <s0:output>
-        <s2:body use="literal"/>
-      </s0:output>
-    </s0:operation>
-    <s0:operation name="authenticateUser">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>

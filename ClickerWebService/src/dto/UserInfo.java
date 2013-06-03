@@ -14,6 +14,11 @@ public class UserInfo implements java.io.Serializable {
     private String userName = null;		
     private String status = null;		
 	
+	public UserInfo() {
+		this.userId = null;
+		this.userName = null;
+		this.status = null;
+	}
 	public UserInfo(Integer userId, String userName) {
 		this.userId = userId;
 		this.userName = userName;

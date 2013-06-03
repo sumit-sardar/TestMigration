@@ -14,6 +14,12 @@ public class AssignmentList implements java.io.Serializable
     Assignment[] assignments = null;
     private String status = null;		
 
+    public AssignmentList() {
+    	this.orgNodeId = null;
+    	this.assignments = null;
+		this.status = null;
+    }
+    
     public AssignmentList(Integer orgNodeId, Assignment[] assignments) {
     	this.orgNodeId = orgNodeId;
     	this.assignments = assignments;

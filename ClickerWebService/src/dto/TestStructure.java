@@ -12,11 +12,17 @@ public class TestStructure implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer testId;
-    private String testName;
-    private Subject[] subjects; 
+    private Integer testId = null;
+    private String testName = null;
+    private Subject[] subjects = null; 
     private String status = null;		
     
+    public TestStructure() {
+    	this.testId = null;
+    	this.testName = null;
+    	this.subjects = null;
+    	this.status = null;
+    }
     public TestStructure(Integer testId, String testName, Subject[] subjects) {
     	this.testId = testId;
     	this.testName = testName;

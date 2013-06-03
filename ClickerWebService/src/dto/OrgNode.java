@@ -12,6 +12,10 @@ public class OrgNode implements java.io.Serializable
     private Integer id = null;
     private String name = null;
 
+    public OrgNode() {
+    	this.id = null;
+    	this.name = null;
+    }
     public OrgNode(Integer id, String name) {
     	this.id = id;
     	this.name = name;

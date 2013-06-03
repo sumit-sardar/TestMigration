@@ -14,6 +14,11 @@ public class RosterList implements java.io.Serializable
     Roster[] rosters = null;
     private String status = null;		
 
+    public RosterList() {
+    	this.sessionId = null;
+    	this.rosters = null;
+		this.status = null;
+    }
     public RosterList(Integer sessionId, Roster[] rosters) {
     	this.sessionId = sessionId;
     	this.rosters = rosters;

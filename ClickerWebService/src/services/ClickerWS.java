@@ -23,7 +23,6 @@ import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.control.testAdmin.TestSessionStatus;
-import com.ctb.exception.CTBBusinessException;
 
 import dto.UserInfo;
 import dto.Assignment;
@@ -191,10 +190,10 @@ public class ClickerWS implements Serializable {
                 assignmentList = new AssignmentList("Cannot get sessions");        		
         	}
         }
-        catch (CTBBusinessException be)
+        catch (Exception e)
         {
-            be.printStackTrace();
-            assignmentList = new AssignmentList(be.getMessage());
+            e.printStackTrace();
+            assignmentList = new AssignmentList(e.getMessage());
         }
         
         return assignmentList;
@@ -232,10 +231,10 @@ public class ClickerWS implements Serializable {
                 rosterList = new RosterList("Cannot get rosters");        		
         	}
         }
-        catch (CTBBusinessException be)
+        catch (Exception e)
         {
-            be.printStackTrace();
-            rosterList = new RosterList(be.getMessage());
+            e.printStackTrace();
+            rosterList = new RosterList(e.getMessage());
         }    
         
         return rosterList;

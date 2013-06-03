@@ -10,13 +10,19 @@ public class Assignment implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer sessionId;
-    private String sessionName;
-    private String startDate;
-    private String endDate;
-    private Roster[] rosters;
+    private Integer sessionId = null;
+    private String sessionName = null;
+    private String startDate = null;
+    private String endDate = null;
+    private Roster[] rosters = null;
     
-    public Assignment() {}
+    public Assignment() {
+    	this.sessionId = null;
+    	this.sessionName = null;
+    	this.startDate = null;
+    	this.endDate = null;
+    	this.rosters = null;
+    }
 
     public Assignment(Integer sessionId, String sessionName, String startDate, String endDate, Roster[] rosters) {
     	this.sessionId = sessionId;
