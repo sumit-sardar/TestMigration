@@ -183,7 +183,7 @@ public class TestClientPageFlowController extends PageFlowController
                           "\" sco_unit_type=\"SUBTEST\" sco_unit_question_number_offset=\"0\" sco_duration_minutes=\"" +
                           timeLimit +
                           "\" id=\"24105\" cmi.core.entry=\"ab-initio\" force_logout=\"false\" />" + 
-                          "<terminator id=\"SEE_YOU_LATER\" /> </manifest> </login_response> </tmssvc_response>";
+                          "<terminator id=\"SEE_YOU_LATER\" /> </manifest> <branding tdclogo=\"/resources/logo.swf\"/></login_response> </tmssvc_response>";
          
         return loginXML;
     
