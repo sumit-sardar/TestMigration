@@ -11,18 +11,26 @@ public class Roster implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer rosterId;
-    private Integer studentId;
-    private String loginName;
-    private String firstName;
-    private String lastName;
-    private String studentKey;
-    private Subject[] subjects; 
+    private Integer rosterId = null;
+    private Integer studentId = null;
+    private String loginName = null;
+    private String firstName = null;
+    private String lastName = null;
+    private String studentKey = null;
+    private Subject[] subjects = null; 
     
-    public Roster() {}
+    public Roster() {
+    	this.rosterId = null;
+    	this.studentId = null;
+    	this.loginName = null;
+    	this.firstName = null;
+    	this.lastName = null;
+    	this.studentKey = null;
+    	this.subjects = null;    	
+    }
 
     public Roster(Integer rosterId, Integer studentId, String loginName, 
-    			String firstName, String lastName, String studentKey, Subject[] subjects) {
+    					String firstName, String lastName, String studentKey, Subject[] subjects) {
     	this.rosterId = rosterId;
     	this.studentId = studentId;
     	this.loginName = loginName;

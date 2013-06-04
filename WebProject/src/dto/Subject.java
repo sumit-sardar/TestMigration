@@ -10,11 +10,15 @@ public class Subject implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer subtestId;
-    private String subtestName;
-    private Question[] questions;
+    private Integer subtestId = null;
+    private String subtestName = null;
+    private Question[] questions = null;
     
-    public Subject() {}
+    public Subject() {
+    	this.subtestId = null;
+    	this.subtestName = null;
+    	this.questions = null;    	
+    }
 
     public Subject(Integer subtestId, String subtestName, Question[] questions) {
     	this.subtestId = subtestId;

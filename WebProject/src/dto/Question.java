@@ -11,11 +11,20 @@ public class Question implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer questionId;
-    private char correctAnswer;
-    private char response; 
+    private Integer questionId = null;
+    private char correctAnswer = '-';
+    private char response = '-'; 
 
-    public Question() {}
+    public Question() {
+        this.questionId = null;
+        this.correctAnswer = '-';
+        this.response = '-';     	
+    }
+    public Question(Integer questionId, char correctAnswer, char response) {
+        this.questionId = questionId;
+        this.correctAnswer = correctAnswer;
+        this.response = response;     	
+    }
 
 	public Integer getQuestionId() {
 		return questionId;

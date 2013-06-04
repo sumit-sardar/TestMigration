@@ -2,7 +2,7 @@ package dto;
 
 /**
 * Student response from vendor
-* Vendor needs to populate response field in Question object
+* Vendor needs to populate student responses
 *
 * @author Tai_Truong
 */
@@ -10,10 +10,13 @@ public class StudentResponse implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer testId;
-    private Assignment assignment;
+    private Integer testId = null;
+    private Assignment assignment = null;
     
-    public StudentResponse() {}
+    public StudentResponse() {
+    	this.testId = null;
+    	this.assignment = null;    	
+    }
 
     public StudentResponse(Integer testId, Assignment assignment) {
     	this.testId = testId;
