@@ -2080,9 +2080,11 @@ public class SessionOperationController extends PageFlowController {
 					std.setSavedlocatorTDMap(locatorSubtestMap.get(std.getStudentId()));
 				}else{
 					Map<Integer, Integer> newLocatorMap = new TreeMap<Integer, Integer>(); 
-					Set<Integer> keySet = scheduledSession.getLocatorSubtestTD().keySet();
-					for (Integer keyVal:keySet) {						
-						newLocatorMap.put(keyVal,keyVal);
+					if (scheduledSession.getLocatorSubtestTD() != null) {
+						Set<Integer> keySet = scheduledSession.getLocatorSubtestTD().keySet();
+						for (Integer keyVal:keySet) {						
+							newLocatorMap.put(keyVal,keyVal);
+						}
 					}
 					std.setSavedlocatorTDMap(newLocatorMap);
 				}
