@@ -183,7 +183,7 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="userName" type="xs:string"/>
-            <xs:element minOccurs="0" name="orgNodeId" nillable="true" type="xs:int"/>
+            <xs:element name="orgNodeId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -194,18 +194,33 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="getTestStructure">
+      <xs:element name="getChildNodes">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="userName" type="xs:string"/>
-            <xs:element minOccurs="0" name="testId" nillable="true" type="xs:int"/>
+            <xs:element name="orgNodeId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="getTestStructureResponse">
+      <xs:element name="getChildNodesResponse">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="return" type="java:TestStructure" xmlns:java="java:dto"/>
+            <xs:element name="return" type="java:OrgNodeList" xmlns:java="java:dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getRostersInSession">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="sessionId" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getRostersInSessionResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="java:RosterList" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -238,18 +253,18 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="getRostersInSession">
+      <xs:element name="getTestStructure">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="userName" type="xs:string"/>
-            <xs:element minOccurs="0" name="sessionId" nillable="true" type="xs:int"/>
+            <xs:element name="testId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="getRostersInSessionResponse">
+      <xs:element name="getTestStructureResponse">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="return" type="java:RosterList" xmlns:java="java:dto"/>
+            <xs:element name="return" type="java:TestStructure" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -267,21 +282,6 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="getChildrenNodes">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
-            <xs:element minOccurs="0" name="orgNodeId" nillable="true" type="xs:int"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="getChildrenNodesResponse">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="return" type="java:OrgNodeList" xmlns:java="java:dto"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
     </xs:schema>
   </s0:types>
   <s0:message name="getSessionsForNode">
@@ -290,11 +290,17 @@
   <s0:message name="getSessionsForNodeResponse">
     <s0:part element="s1:getSessionsForNodeResponse" name="parameters"/>
   </s0:message>
-  <s0:message name="getTestStructure">
-    <s0:part element="s1:getTestStructure" name="parameters"/>
+  <s0:message name="getChildNodes">
+    <s0:part element="s1:getChildNodes" name="parameters"/>
   </s0:message>
-  <s0:message name="getTestStructureResponse">
-    <s0:part element="s1:getTestStructureResponse" name="parameters"/>
+  <s0:message name="getChildNodesResponse">
+    <s0:part element="s1:getChildNodesResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="getRostersInSession">
+    <s0:part element="s1:getRostersInSession" name="parameters"/>
+  </s0:message>
+  <s0:message name="getRostersInSessionResponse">
+    <s0:part element="s1:getRostersInSessionResponse" name="parameters"/>
   </s0:message>
   <s0:message name="authenticateUser">
     <s0:part element="s1:authenticateUser" name="parameters"/>
@@ -308,11 +314,11 @@
   <s0:message name="getUserTopNodesResponse">
     <s0:part element="s1:getUserTopNodesResponse" name="parameters"/>
   </s0:message>
-  <s0:message name="getRostersInSession">
-    <s0:part element="s1:getRostersInSession" name="parameters"/>
+  <s0:message name="getTestStructure">
+    <s0:part element="s1:getTestStructure" name="parameters"/>
   </s0:message>
-  <s0:message name="getRostersInSessionResponse">
-    <s0:part element="s1:getRostersInSessionResponse" name="parameters"/>
+  <s0:message name="getTestStructureResponse">
+    <s0:part element="s1:getTestStructureResponse" name="parameters"/>
   </s0:message>
   <s0:message name="submitStudentResponses">
     <s0:part element="s1:submitStudentResponses" name="parameters"/>
@@ -320,20 +326,18 @@
   <s0:message name="submitStudentResponsesResponse">
     <s0:part element="s1:submitStudentResponsesResponse" name="parameters"/>
   </s0:message>
-  <s0:message name="getChildrenNodes">
-    <s0:part element="s1:getChildrenNodes" name="parameters"/>
-  </s0:message>
-  <s0:message name="getChildrenNodesResponse">
-    <s0:part element="s1:getChildrenNodesResponse" name="parameters"/>
-  </s0:message>
   <s0:portType name="ClickerWS">
     <s0:operation name="getSessionsForNode" parameterOrder="parameters">
       <s0:input message="s1:getSessionsForNode"/>
       <s0:output message="s1:getSessionsForNodeResponse"/>
     </s0:operation>
-    <s0:operation name="getTestStructure" parameterOrder="parameters">
-      <s0:input message="s1:getTestStructure"/>
-      <s0:output message="s1:getTestStructureResponse"/>
+    <s0:operation name="getChildNodes" parameterOrder="parameters">
+      <s0:input message="s1:getChildNodes"/>
+      <s0:output message="s1:getChildNodesResponse"/>
+    </s0:operation>
+    <s0:operation name="getRostersInSession" parameterOrder="parameters">
+      <s0:input message="s1:getRostersInSession"/>
+      <s0:output message="s1:getRostersInSessionResponse"/>
     </s0:operation>
     <s0:operation name="authenticateUser" parameterOrder="parameters">
       <s0:input message="s1:authenticateUser"/>
@@ -343,17 +347,13 @@
       <s0:input message="s1:getUserTopNodes"/>
       <s0:output message="s1:getUserTopNodesResponse"/>
     </s0:operation>
-    <s0:operation name="getRostersInSession" parameterOrder="parameters">
-      <s0:input message="s1:getRostersInSession"/>
-      <s0:output message="s1:getRostersInSessionResponse"/>
+    <s0:operation name="getTestStructure" parameterOrder="parameters">
+      <s0:input message="s1:getTestStructure"/>
+      <s0:output message="s1:getTestStructureResponse"/>
     </s0:operation>
     <s0:operation name="submitStudentResponses" parameterOrder="parameters">
       <s0:input message="s1:submitStudentResponses"/>
       <s0:output message="s1:submitStudentResponsesResponse"/>
-    </s0:operation>
-    <s0:operation name="getChildrenNodes" parameterOrder="parameters">
-      <s0:input message="s1:getChildrenNodes"/>
-      <s0:output message="s1:getChildrenNodesResponse"/>
     </s0:operation>
   </s0:portType>
   <s0:binding name="ClickerWSServiceSoapBinding" type="s1:ClickerWS">
@@ -367,7 +367,16 @@
         <s2:body parts="parameters" use="literal"/>
       </s0:output>
     </s0:operation>
-    <s0:operation name="getTestStructure">
+    <s0:operation name="getChildNodes">
+      <s2:operation style="document"/>
+      <s0:input>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s2:body parts="parameters" use="literal"/>
+      </s0:output>
+    </s0:operation>
+    <s0:operation name="getRostersInSession">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>
@@ -394,7 +403,7 @@
         <s2:body parts="parameters" use="literal"/>
       </s0:output>
     </s0:operation>
-    <s0:operation name="getRostersInSession">
+    <s0:operation name="getTestStructure">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>
@@ -404,15 +413,6 @@
       </s0:output>
     </s0:operation>
     <s0:operation name="submitStudentResponses">
-      <s2:operation style="document"/>
-      <s0:input>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:input>
-      <s0:output>
-        <s2:body parts="parameters" use="literal"/>
-      </s0:output>
-    </s0:operation>
-    <s0:operation name="getChildrenNodes">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>

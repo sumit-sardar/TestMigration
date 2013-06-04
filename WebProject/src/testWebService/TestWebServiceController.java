@@ -62,7 +62,7 @@ public class TestWebServiceController extends PageFlowController
 	private static final String AUTHENTICATE_PASSWORD = "acuity101";
 	private static final String ACUITY_USER_TYPE = "QA";
 	private static final String DELETE_SESSION = "DELETE";
-	
+	 
 	@Control
 	private SchedulingWSServiceControl schedulingWSServiceControl;
 	
@@ -133,9 +133,10 @@ public class TestWebServiceController extends PageFlowController
 
     		if ("getUserTopNode".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
+    			
     			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(this.userName);
+    			
     			if (orgNodeList.getStatus().equals("OK")) {
-    				this.orgNodeId = orgNodeList.getParentOrgNodeId();
     				resultText = "getUserTopNode: SUCCESS" ;
     				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
     				OrgNode[] orgNodes = orgNodeList.getOrgNodes();
@@ -143,6 +144,7 @@ public class TestWebServiceController extends PageFlowController
         	        for (int i=0; i < orgNodes.length; i++) {
         	        	OrgNode node = orgNodes[i];
         	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
+        				this.orgNodeId = node.getId();
         	        }    				
     			}
     			else {
@@ -154,8 +156,9 @@ public class TestWebServiceController extends PageFlowController
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
     			this.orgNodeId = new Integer(tmp.trim());
+    			 
+    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(this.userName, this.orgNodeId.toString());
     			
-    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildrenNodes(this.userName, this.orgNodeId);
     			if (orgNodeList.getStatus().equals("OK")) {
     				resultText = "getChildrenNodes: SUCCESS" ;
     				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
@@ -176,7 +179,8 @@ public class TestWebServiceController extends PageFlowController
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
     			orgNodeId = new Integer(tmp.trim());    			
     			
-    			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId);
+    			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId.toString());
+    			
     			if (assignmentList.getStatus().equals("OK")) {
     				resultText = "getSessionsForNode: SUCCESS" ;
     				resultText += "<br/>sessionName - sessionId - startDate - endDate<br/>" ;
@@ -203,7 +207,8 @@ public class TestWebServiceController extends PageFlowController
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
     			sessionId = new Integer(tmp.trim());
     			
-    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId);
+    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
+    			
     			if (rosterList.getStatus().equals("OK")) {
     				resultText = "getRostersInSession: SUCCESS" ;
     				resultText += "<br/>rosterId - loginName - firstName - lastName - studentKey<br/>" ;
@@ -257,10 +262,12 @@ public class TestWebServiceController extends PageFlowController
     	}
     	
     	this.getRequest().setAttribute("resultText", resultText);
-    	this.getRequest().setAttribute("userName", userName);
-    	this.getRequest().setAttribute("password", password);
-    	this.getRequest().setAttribute("orgNodeId", orgNodeId.toString());
-    	this.getRequest().setAttribute("sessionId", sessionId.toString());
+    	this.getRequest().setAttribute("userName", this.userName);
+    	this.getRequest().setAttribute("password", this.password);
+    	if (this.orgNodeId == null) this.orgNodeId = new Integer(0);
+    	this.getRequest().setAttribute("orgNodeId", this.orgNodeId.toString());
+    	if (this.sessionId == null) this.sessionId = new Integer(0);
+    	this.getRequest().setAttribute("sessionId", this.sessionId.toString());
     	
         return new Forward("success");
     }

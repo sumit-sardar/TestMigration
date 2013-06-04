@@ -15,13 +15,13 @@ public interface ClickerWSServiceControl extends ServiceControl
 
     public dto.UserInfo authenticateUser(java.lang.String userName_arg,java.lang.String password_arg);
 
-    public dto.OrgNodeList getChildrenNodes(java.lang.String userName_arg,int orgNodeId_arg);
+    public dto.OrgNodeList getChildNodes(java.lang.String userName_arg,java.lang.String orgNodeId_arg);
 
-    public dto.RosterList getRostersInSession(java.lang.String userName_arg,int sessionId_arg);
+    public dto.RosterList getRostersInSession(java.lang.String userName_arg,java.lang.String sessionId_arg);
 
-    public dto.AssignmentList getSessionsForNode(java.lang.String userName_arg,int orgNodeId_arg);
+    public dto.AssignmentList getSessionsForNode(java.lang.String userName_arg,java.lang.String orgNodeId_arg);
 
-    public dto.TestStructure getTestStructure(java.lang.String userName_arg,int testId_arg);
+    public dto.TestStructure getTestStructure(java.lang.String userName_arg,java.lang.String testId_arg);
 
     public dto.OrgNodeList getUserTopNodes(java.lang.String userName_arg);
 

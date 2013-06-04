@@ -124,13 +124,13 @@ public class ClickerWS implements Serializable {
 	* Return all children nodes under this node.
 	*/
 	@WebMethod
-	public OrgNodeList getChildrenNodes(String userName, Integer orgNodeId) 
+	public OrgNodeList getChildNodes(String userName, String orgNodeId) 
 	{
-		OrgNodeList childrenNodes = null;
+		OrgNodeList childNodes = null;
 
 		try
-        {      
-        	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, orgNodeId, null, null, null);
+        {   
+        	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, new Integer(orgNodeId), null, null, null);
         	if (nodeData != null) {
 		        Node[] nodes = nodeData.getNodes(); 
 		        OrgNode[] orgNodes = new OrgNode[nodes.length];
@@ -143,19 +143,19 @@ public class ClickerWS implements Serializable {
 		        	}
 		        }
 		        
-		        childrenNodes = new OrgNodeList(orgNodeId, orgNodes);
+		        childNodes = new OrgNodeList(new Integer(orgNodeId), orgNodes);
         	}
         	else {
-                childrenNodes = new OrgNodeList("Cannot get children nodes");                		
+        		childNodes = new OrgNodeList("Cannot get children nodes");                		
         	}
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            childrenNodes = new OrgNodeList(e.getMessage());        
+            childNodes = new OrgNodeList(e.getMessage());        
         }
         
-        return childrenNodes;
+        return childNodes;
 	}
 
 	/**
@@ -164,13 +164,14 @@ public class ClickerWS implements Serializable {
 	* Return all sessions associated with this node.
 	*/
 	@WebMethod
-	public AssignmentList getSessionsForNode(String userName, Integer orgNodeId) 
+	public AssignmentList getSessionsForNode(String userName, String orgNodeId) 
 	{
 		AssignmentList assignmentList = null;
 		
         try
         {      
-        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, null, null, null);
+        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, new Integer(orgNodeId), 
+        																							null, null, null);
         	if (tsd != null) {
 		        TestSession[] testsessions = tsd.getTestSessions();
 		        Assignment[] assignments = new Assignment[testsessions.length];
@@ -184,7 +185,7 @@ public class ClickerWS implements Serializable {
 		            }
 		        }
 
-		        assignmentList = new AssignmentList(orgNodeId, assignments);
+		        assignmentList = new AssignmentList(new Integer(orgNodeId), assignments);
         	}
         	else {
                 assignmentList = new AssignmentList("Cannot get sessions");        		
@@ -205,13 +206,14 @@ public class ClickerWS implements Serializable {
 	* Return all rosters in this session.
 	*/
 	@WebMethod
-	public RosterList getRostersInSession(String userName, Integer sessionId) 
+	public RosterList getRostersInSession(String userName, String sessionId) 
 	{
 		RosterList rosterList = null;
 		
         try
         {      
-        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, sessionId, null, null, null);
+        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, new Integer(sessionId), 
+        																				null, null, null);
         	if (red != null) {
 		        RosterElement[] rosterElements = red.getRosterElements();
 		        Roster[] rosters = new Roster[rosterElements.length];
@@ -225,7 +227,7 @@ public class ClickerWS implements Serializable {
 		            }
 		        }
 		        
-                rosterList = new RosterList(sessionId, rosters);        				        
+                rosterList = new RosterList(new Integer(sessionId), rosters);        				        
         	}
         	else {
                 rosterList = new RosterList("Cannot get rosters");        		
@@ -246,7 +248,7 @@ public class ClickerWS implements Serializable {
 	* testId is test_catalog_id from OAS 
 	*/
 	@WebMethod
-	public TestStructure getTestStructure(String userName, Integer testId) 
+	public TestStructure getTestStructure(String userName, String testId) 
 	{
 		TestStructure ts = new TestStructure(null);
 		
