@@ -29,9 +29,9 @@ public class FileUtil {
 	private static String insertScore_lookupQuery_withNorms_GE="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
 		"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name" +
 		", extended_flag) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static String itemSetIDQuery=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
+	public static String itemSetIDQuery=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
 			"where tc.product_id = ? and tc.item_set_id = isa.ancestor_item_Set_id and isa.item_set_id = iset.item_set_id " +
-			"and iset.item_set_type = 'TD' and iset.sample = 'F' and iset.subject = ? and iset.item_set_level = ? ";
+			"and iset.item_set_type = 'TD' and iset.sample = 'F' and upper(iset.subject) = ? and iset.item_set_level = ? ";
 	private static String itemSetIdGEQuery = "SELECT iset.item_set_id FROM item_set iset, item_set_ancestor isa, test_catalog tc, " +
 			"product prod WHERE prod.parent_product_id = 3700 AND prod.product_id = tc.product_id AND tc.item_set_id = isa.ancestor_item_set_id AND " +
 			"isa.item_set_id = iset.item_set_id AND iset.item_set_type = 'TD' AND iset.SAMPLE = 'F' AND iset.subject = ?";
@@ -503,7 +503,7 @@ public class FileUtil {
 			con=SqlUtil.openOASDBcon();
 			ps = con.prepareStatement(itemSetIDQuery);
 			ps.setInt(1, Integer.parseInt(product_id));
-			ps.setString(2,Content_area );
+			ps.setString(2,Content_area.toUpperCase());
 			ps.setString(3,Test_Level );
 			rs=ps.executeQuery();
 			while(rs.next())

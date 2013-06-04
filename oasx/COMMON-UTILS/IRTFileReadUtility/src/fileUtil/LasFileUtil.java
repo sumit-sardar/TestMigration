@@ -28,18 +28,18 @@ public class LasFileUtil {
 	"VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	public static boolean writeInOASDBLas(String path) throws IOException {
-		boolean success = false;
+		boolean success = false, successInScore_lookup_item_set = false;
 		File file = new File(path);                
 		File[] files = file.listFiles(); 
 		System.out.println("Processing " + path + "... ");
-		
-		String File_name,file_location,Content_area_initial,Product_type, grade;
+		List<String> itemSetIdList = new ArrayList<String>();
+		String File_name,file_location,Content_area_initial,Product_type, grade, product_id;
 		String Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area;
 		List<String> contentOfFile = new ArrayList<String>();
 		
 		for (File inFile: files ) {
 			if(inFile.getName().substring(0,2).equals("NS")) { // For Raw Score to Scale Score Conversion
-				File_name="";Content_area_initial  = "";  Product_type = "";
+				File_name="";Content_area_initial  = "";  Product_type = "";  product_id = "";
 				Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 				test_form = " ";Test_Level = "";Content_area="";
 				File_name = inFile.getName();
@@ -65,6 +65,15 @@ public class LasFileUtil {
 				Test_Level = processTestLevel(Test_Level); 
 				score_lookup_id	= lasFrameWorkCode+"_2012_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				success=FileUtil.writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
+				if(Product_type.equalsIgnoreCase("EB")) {
+					product_id = "7502";
+				}
+				if(Product_type.equalsIgnoreCase("C")) {
+					product_id = "7501";
+				}
+				
+				itemSetIdList=getItemSetID(product_id,Content_area,Test_Level);
+				successInScore_lookup_item_set=FileUtil.writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 			} 
 			
 			else if (inFile.getName().substring(0,2).equals("SS")) { // For Proficiency Level
@@ -178,7 +187,10 @@ public class LasFileUtil {
 			}
 		}
 		
-		return success;
+		if(success == true && successInScore_lookup_item_set== true)
+			return true;
+		else
+			return false;
 	}
 	
 	public static String processGrade(String gradeCode) {
@@ -330,12 +342,12 @@ public static String processContentAreaName(String caShortName) {
 					ps.setString(11, framework_code);
 					ps.setString(12,product_internal_display_name);
 					save=ps.executeUpdate();
+					SqlUtil.close(ps);
 				}
-			}			
-			
-			SqlUtil.close(ps);
+				con.commit();
+			}
 		}
-		con.commit();
+		
 		}catch(SQLException e) {
 			try {
 				con.rollback();
@@ -485,5 +497,33 @@ public static String processContentAreaName(String caShortName) {
 		
 		return (save==1)? true :  false;
 	}
-
+	
+	public static List<String> getItemSetID(String product_id,String Content_area,String Test_Level)
+	{
+		List<String> itemSetIdList = new ArrayList<String>();
+		String name="";
+		if(Test_Level == "K" || Test_Level == "1"){
+			Test_Level = "K-1";
+		}
+		try {
+			con=SqlUtil.openOASDBcon();
+			ps = con.prepareStatement(FileUtil.itemSetIDQuery);
+			ps.setInt(1, Integer.parseInt(product_id));
+			ps.setString(2,Content_area.toUpperCase() );
+			ps.setString(3,Test_Level );
+			rs=ps.executeQuery();
+			while(rs.next())
+			{
+				name=rs.getString(1);
+				itemSetIdList.add(name);
+			}
+			
+		}catch(SQLException sq) {
+			sq.printStackTrace();
+		} finally {
+			SqlUtil.close(con,ps,rs);
+		}
+		return itemSetIdList;
+	}
+	
 }
