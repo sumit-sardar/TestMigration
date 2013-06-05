@@ -939,7 +939,7 @@
 			}
 			subtestData +='</table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
-			if(selectedTestSession.locatorDeliverableUnit.length > 0 ){
+			if(locatorOnlyTest != undefined && locatorOnlyTest && selectedTestSession.locatorDeliverableUnit.length > 0) {
 				updateLocatorSubtestsForEdit(savedTestDetails.locatorDeliverableUnit ,locatorArr);
 			}else{
 				updateLocatorSubtestsForEdit(subtestArr ,locatorArr);
