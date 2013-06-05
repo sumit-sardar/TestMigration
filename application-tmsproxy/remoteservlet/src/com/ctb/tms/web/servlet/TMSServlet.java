@@ -81,6 +81,7 @@ public class TMSServlet extends HttpServlet {
 	
 	ADSRDBSource adsDBSource = RDBStorageFactory.getADSSource();
 	private String completedLocatorContain = "";
+	private String completedLocatorContain1 ="";
 	static Logger logger = Logger.getLogger(TMSServlet.class);
 
 	public TMSServlet() {
@@ -425,15 +426,12 @@ public class TMSServlet extends HttpServlet {
                                     {
                                         completedLocatorContain = "Reading";
                                         logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Reading locator").toString());
-                                    } else if(thisSco.getTitle().contains("Computation"))
-                                    {
-                                        completedLocatorContain = "Computation";
-                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Mathematics Computation locator").toString());
                                     } else if(thisSco.getTitle().contains("Applied"))
                                     {
                                         completedLocatorContain = "Applied";
+                                        completedLocatorContain1 = "Computation";
                                         logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Applied Mathematics locator").toString());
-                                    } else
+                                    } else if(thisSco.getTitle().contains("Language"))
                                     {
                                         completedLocatorContain = "Language";
                                         logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Language locator").toString());
@@ -600,14 +598,13 @@ public class TMSServlet extends HttpServlet {
              ManifestData mda[] = manifest.getManifest();
              logger.debug((new StringBuilder("##### handleTabeLocator: manifest ")).append(i).append(" length: ").append(mda.length).toString());
              for(int indx = 0; indx < mda.length; indx++) {
-            	 if((completedLocatorContain != "" || completedLocatorContain != null) && mda[indx].getTitle().contains(completedLocatorContain))
-                 {
+            	 if(((completedLocatorContain != "" || completedLocatorContain != null) && mda[indx].getTitle().contains(completedLocatorContain))
+            		 ||((completedLocatorContain1 != "" || completedLocatorContain1 != null) && mda[indx].getTitle().contains(completedLocatorContain1))){
             		 modifiedManifestList.add(mda[indx]);
                  }
              }
              //ManifestData mod[] = new ManifestData[modifiedManifestList.size()];
              ManifestData modifiedManifestData[] = modifiedManifestList.toArray(new ManifestData[modifiedManifestList.size()]);
-             System.out.println("*******Modified manifest Size Before set recommended level set******"+ modifiedManifestData.length);
              //for(int j=0;j<mda.length;j++) {
              for(int j=0;j<modifiedManifestData.length;j++) {
         		ManifestData md = modifiedManifestData[j];
@@ -635,25 +632,25 @@ public class TMSServlet extends HttpServlet {
         		String subtestName = md.getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
         		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
         		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) ((recommendedMap.get(subtestName.trim()) == null)? null : recommendedMap.get(subtestName.trim()));
-        		System.out.println("########### Recommended Subtest Level ####===>"+((rsl != null) ? rsl.getRecommendedLevel(): "NULL") +"### For ### "+ subtestName);
+//        		System.out.println("########### Recommended Subtest Level ####===>"+((rsl != null) ? rsl.getRecommendedLevel(): "NULL") +"### For ### "+ subtestName);
         		if(rsl != null) {
-        			System.out.println("########### Set Locator  Recommended Subtest Level ####===>"+rsl.getRecommendedLevel() +"### For ### "+ subtestName);
+//        			System.out.println("########### Set Locator  Recommended Subtest Level ####===>"+rsl.getRecommendedLevel() +"### For ### "+ subtestName);
 	        		if("L".equals(md.getLevel())) {
 	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
 	        			newmanifest.add(md);
 	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
-	        			System.out.println("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
+//	        			System.out.println("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
 	        		} else if (rsl.getRecommendedLevel().equals(md.getLevel())) {
 	        				newmanifest.add(md);
 	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
-	        				System.out.println("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+//	        				System.out.println("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
 	        		} else {
 	        			logger.debug("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
-	        			System.out.println("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
+//	        			System.out.println("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
 	        		}
         		} else {
         			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);
-        			System.out.println("##### handleTabeLocator: no level in map for " + subtestName);
+//        			System.out.println("##### handleTabeLocator: no level in map for " + subtestName);
         			// no recommendation for this content area yet
         			newmanifest.add(md);
         		}
