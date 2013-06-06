@@ -2008,9 +2008,32 @@ function registerDelegate(tree){
 			 if(accessCode==null){
 			 	accessCode = ProductData.accessCodeList[0];
 			 }
-			 if(sessionHasLocator){
-			 //updateLocatorValue();
-			 selectCheckbox();
+			 
+			if(sessionHasLocator){
+				// updateLocatorValue();
+				selectCheckbox();
+				for(var j=0; j<locatorTDList.length;j++){
+					document.getElementById("locator_"+locatorTDList[j].subtestName).disabled = "true";
+				}
+				for(var i=0; i<selectedSubtests.length;i++){
+					var content = selectedSubtests[i].subtestName.substr(5,selectedSubtests[i].subtestName.length);
+					for(var j=0; j<locatorTDList.length ;j++){
+						var id = "locator_"+locatorTDList[j].subtestName;
+						if((locatorTDList[j].subtestName.indexOf(content) != -1) && (document.getElementById(selectedSubtests[i].subtestName) != undefined && 
+							document.getElementById(selectedSubtests[i].subtestName).checked)){
+							
+							document.getElementById(id).disabled = "";
+							if((locatorTDList[j].subtestName.indexOf("Computation") != -1) || (locatorTDList[j].subtestName.indexOf("Applied") != -1)) {
+								for(var k=0 ; k < locatorTDList.length ;k++){
+									var id1 = "locator_"+locatorTDList[k].subtestName;
+									if((locatorTDList[k].subtestName.indexOf("Computation") != -1) || (locatorTDList[k].subtestName.indexOf("Applied") != -1)){
+										document.getElementById(id1).disabled = "";
+									}
+								}
+							}
+						}
+					}
+				} 
 			 }
 			document.getElementById("aCode").value = accessCode; 
 
