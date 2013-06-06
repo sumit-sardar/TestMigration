@@ -120,6 +120,12 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "insert into  test_roster (  TEST_ROSTER_ID,  TEST_ADMIN_ID,  CREATED_DATE_TIME,  START_DATE_TIME,  COMPLETION_DATE_TIME,  TEST_COMPLETION_STATUS,  VALIDATION_STATUS,  VALIDATION_UPDATED_BY,  VALIDATION_UPDATED_DATE_TIME,  VALIDATION_UPDATED_NOTE,  OVERRIDE_TEST_WINDOW,  PASSWORD,  STUDENT_ID,  CREATED_BY,  UPDATED_BY,  ACTIVATION_STATUS,  UPDATED_DATE_TIME,  CUSTOMER_ID,  TUTORIAL_TAKEN_DATE_TIME,  CAPTURE_METHOD,  SCORING_STATUS,  ORG_NODE_ID,  FORM_ASSIGNMENT,  CUSTOMER_FLAG_STATUS, EXTENDED_TIME  ) values (  SEQ_TEST_ROSTER_ID.NEXTVAL,  {roster.testAdminId},  {roster.createdDateTime},  {roster.startDateTime},  {roster.completionDateTime},  {roster.testCompletionStatus},  {roster.validationStatus},  {roster.validationUpdatedBy},  {roster.validationUpdatedDateTime},  {roster.validationUpdatedNote},  {roster.overrideTestWindow},  {roster.password},  {roster.studentId},  {roster.createdBy},  {roster.updatedBy},  {roster.activationStatus},  {roster.updatedDateTime},  {roster.customerId},  {roster.tutorialTakenDateTime},  {roster.captureMethod},  {roster.scoringStatus},  {roster.orgNodeId},  {roster.formAssignment},  {roster.customerFlagStatus}, {roster.extendedTime}  )")
     void createNewTestRoster(RosterElement roster) throws SQLException;
     
+    
+    
+    @JdbcControl.SQL(statement = "call PKG_LAS_LM_TRG.SP_MANTAIN_AVAILABILTY({testAdminId})" )
+    void mantainLicenseAvailabilty(Integer testAdminId) throws SQLException;
+    
+    
     /**
      * @jc:sql statement::
      * select SEQ_TEST_ROSTER_ID.NEXTVAL from dual

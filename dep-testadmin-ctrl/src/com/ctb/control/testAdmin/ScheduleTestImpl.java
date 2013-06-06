@@ -1835,6 +1835,8 @@ public class ScheduleTestImpl implements ScheduleTest
             siss.deleteStudentItemSetStatusesForAdmin(testAdminId);
             //rosters.getConnection().setAutoCommit(false);
             rosters.deleteTestRostersForAdmin(testAdminId);
+           // maintaining 100% availability
+            rosters.mantainLicenseAvailabilty(testAdminId);            
             //tais.getConnection().setAutoCommit(false);
             tais.deleteTestAdminItemSetsForAdmin(testAdminId);
             //taur.getConnection().setAutoCommit(false);
@@ -1965,6 +1967,9 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             
             thisTestAdminId = session.getTestAdminId();
+            
+            // Start for maintaining 100% availability
+            rosters.mantainLicenseAvailabilty(session.getTestAdminId());
             
         } catch (Exception se) {
         	CTBBusinessException ctbe = null;
