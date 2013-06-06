@@ -238,6 +238,18 @@ function setScaleFactor(args){
 	yscalefactor = args[1];
 	
 }
+function setScaleFactor(xscalefactor,yscalefactor){
+	if(!xscalefactor){
+    	xscalefactorjs = 1.2;
+    }else{
+    	xscalefactorjs = xscalefactor;
+    }
+    if(!yscalefactor){
+    	yscalefactorjs = 1.2;
+    }else{
+    	yscalefactorjs = yscalefactor;
+    }
+}
 function getFontAccomodation(){
 	var fontAccom = lz.embed.lzapp.getCanvasAttribute('fontString');
 	fontAccom = fontAccom.split("|");
@@ -340,6 +352,48 @@ function callTestMouseUp1() {
    	lz.embed.setCanvasAttribute('testMouseUp','true');
 }
 
+<!-- following functions are using for CR item scrolledittext scrollbar -->
+
+function hideScrollbarForCRitem(arg){
+    var crItemid = document.getElementById(arg);
+    //console.log("== crItemid ===",crItemid);
+    crItemid.setAttribute('style',"overflow-x: hidden; overflow-y: scroll;");
+}
+function setCRscrollEdittextWidth(elmId,comWidth){
+    var crItemid = document.getElementById(elmId);
+    //console.log("== setCRscrollEdittextWidth ===",crItemid);
+    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; width: '+comWidth+'');
+}
+function setCRscrollEdittextHeight(elmId,comHeight){
+    var crItemid = document.getElementById(elmId);
+    //console.log("== setCRscrollEdittextHeight ===",crItemid);
+    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; height: '+comHeight+'');
+}
+
+<!-- End CR item scrolledittext scrollbar functions-->
+
+<!-- following functions are using for scratchpad scrollbar-->
+
+function hideScrollbar(arg){
+    var scrid = document.getElementById(arg);
+    //console.log("== hideScrollbar scrid ===",scrid);
+    scrid.setAttribute('style',"overflow-x: hidden; overflow-y: scroll;");
+}
+
+function setScrollEdittextWidth(elmId,comWidth){
+    var scrid = document.getElementById(elmId);
+    //console.log("== setScrollEdittextWidth ===",scrid);
+    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; width: '+comWidth+'');
+}
+
+function setScrollEdittextHeight(elmId,comHeight){
+    var scrid = document.getElementById(elmId);
+    //console.log("== setScrollEdittextHeight ===",scrid);
+    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; height: '+comHeight+'');
+}
+
+<!-- End scratchpad scrollbar functions-->
+
 function fromWrapper() {
 	lz.embed.setCanvasAttribute('fromWrapper','true');
 }
@@ -397,7 +451,7 @@ function isSPRequired(){
 	return isSP;
 }
 function enableHotKeys(arg) {
-	lz.embed.setCanvasAttribute('keysPressed',arg);
+	gHotKeys.handleHtmlKeyPress(arg);
 }
 function enableManipBar(arg) {
 	lz.embed.setCanvasAttribute('enableManipBar',arg);
