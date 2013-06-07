@@ -626,5 +626,7 @@ public interface ScheduleTest
     
     Map<Integer,String> getSubtestNames (StudentManifest [] studentManifests) throws com.ctb.exception.CTBBusinessException;
     
-    LASLicenseNode getNonZeroActivePOForCustomer(String userName) throws com.ctb.exception.CTBBusinessException;
+	LASLicenseNode getNonZeroActivePOForSelectedOrg(Integer customerId,String selectedOrgIds) throws com.ctb.exception.CTBBusinessException;
+
+	LASLicenseNode getNonZeroActivePOForSelectedTest(Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 } 

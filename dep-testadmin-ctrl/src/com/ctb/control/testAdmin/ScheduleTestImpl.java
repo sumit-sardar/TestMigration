@@ -4261,15 +4261,29 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    public LASLicenseNode getNonZeroActivePOForCustomer(String userName)
+    public LASLicenseNode getNonZeroActivePOForSelectedOrg(Integer customerId,String selectedOrgIds)
     {	
     	LASLicenseNode nonZeroActivePO = null;
     	try{
-    		nonZeroActivePO = this.admins.getOldestNonZeroActivePOForCustomer(userName);
+    		String OrgIds = " OOL.ORG_NODE_ID IN ("+selectedOrgIds+")";
+    		nonZeroActivePO = this.admins.getOldestNonZeroActivePOForOrgIds(customerId,OrgIds);
 	    	
     	}catch(SQLException se){
     		se.printStackTrace();
     	}
     	return nonZeroActivePO;
+    }
+    
+    
+    public LASLicenseNode getNonZeroActivePOForSelectedTest(Integer testAdminId)
+    {	
+	    	LASLicenseNode nonZeroActivePO = null;
+	    	try{
+	    	 nonZeroActivePO = this.admins.getOldestNonZeroActivePOForTestSelected(testAdminId);
+		    	
+	    	}catch(SQLException se){
+	    		se.printStackTrace();
+	    	}
+	    	return nonZeroActivePO;
     }
 } 

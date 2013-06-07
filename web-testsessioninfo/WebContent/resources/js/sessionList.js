@@ -131,8 +131,9 @@ var locatorOnlyTest = false;
 var locatorTDList = [];
 var sessionHasLocator = false;
 var selectedLocatorMap = new Map();
-var oldestNonZeroPO;
+
 var isTestSessionHasStudents = false;
+var studentDeleted = false;
 
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -1147,7 +1148,7 @@ function registerDelegate(tree){
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
 		    isLasLinksProduct = false;
-		    oldestNonZeroPO = null;
+		   
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1518,6 +1519,7 @@ function registerDelegate(tree){
 	}
 	
 	function removeSelectedStudent() {
+	   studentDeleted = true;
 		for(var i = 0; i < delStuIdObjArray.length; i++) {
 			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
 				if(allSelectOrg != undefined && allSelectOrg.length > 0) {
@@ -1595,7 +1597,6 @@ function registerDelegate(tree){
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
-						oldestNonZeroPO = data.nonZeroActivePO;
 						
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
@@ -3606,7 +3607,8 @@ function registerDelegate(tree){
 		 
 	}
     
-    function onCloseScheduleSessionPopUp() {    	
+    function onCloseScheduleSessionPopUp() {  
+        studentDeleted =  false;  	
     	var sessionName = document.getElementById("testSessionName").value;	
     	var selectedId1 = $("#list2").jqGrid('getGridParam', 'selrow');
 		if(selectedId1 != null && $.trim(selectedId1) != '') {

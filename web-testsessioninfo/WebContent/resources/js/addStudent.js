@@ -50,6 +50,7 @@ var licenseInfo = null;
 var licenseInfoMap = null;
 var isSelectingStudent = false;
 var showLicenseInfo = false;
+var oldestNonZeroPO;
 
 /// FOR FILTER
 
@@ -826,6 +827,55 @@ function updateDupStudent(){
 	 gridReloadStu(false);
 	 $("#duplicateStudent").dialog("close");
 }
+	
+//changes for PO expiration date checking
+function getAssociatedOrgIds(){
+	
+	orgIdMap = new Map(); 	
+	var orgId ="";
+	var keys = studentTempMap.getKeys();
+	for(var ll =0 ; ll<keys.length; ll++ ) {
+		var stdId = keys[ll];
+		var objstr = studentTempMap.get(stdId);
+		if(objstr != null && objstr != undefined) {
+		  	var orgArray = String(objstr.orgNodeId).split(",");
+	 	 	var mm= 0;
+	 	 	var tempOrgArray = [];
+	 	 	// extracare to avoid junc data
+	 	 	if(orgArray.length>1){
+		 	 	 for(var nn = 0; nn<orgArray.length ; ++nn){
+		 	 	 	if(!(orgArray[nn]== undefined ||orgArray[nn]== null, orgArray[nn].length==0 ) ) {
+		 	 	 		tempOrgArray[mm] = orgArray[nn];
+		 	 	 		mm = mm+1;
+		 	 	 	}		 	 	 
+		 	 	 }
+		 	 	orgArray =  tempOrgArray;
+	 	 	}	 	 	
+	 	 	orgIdMap.put(orgArray.valueOf(),orgArray.valueOf());		    
+		}
+	}
+  keys = orgIdMap.getKeys();
+  for (var zz=0;zz<keys.length;zz++){
+    orgId = orgId + orgIdMap.get(keys[zz])+",";
+  }
+  orgId = orgId.substr(0, orgId.length-1);
+  return orgId;
+}	
+	
+//changes for PO expiration date checking 
+function getAssociatedOrgIdsForOldStudents(){	
+	var orgId ="";
+	if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0 ) {	
+	for(var ll =0 ; ll<AddStudentLocaldata.length; ll++ ) {
+		var stuObj = AddStudentLocaldata[ll];
+		if(stuObj != null && stuObj != undefined) {
+			orgId = orgId+String(stuObj.orgNodeId)+",";	
+		}
+	}
+  orgId = orgId.substr(0, orgId.length-1);
+  return orgId;
+ }
+}	
 	
 function returnSelectedStudent() {
 	var duplicateStuArray=[];
@@ -1690,6 +1740,29 @@ function studentInTest(stdId, orgNodeId) {
 }
 
 	function validateEndDateForLaslinkLM(){
+	  var orgIds = getAssociatedOrgIds();
+	  var postDataObject = {};
+	  postDataObject.selectedOrgIds = orgIds;
+		  $.ajax({
+			async:		false,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'validateEndDateForLaslinkLM.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){
+							oldestNonZeroPO = data.nonZeroActivePO;
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+		
 		if(oldestNonZeroPO != null && oldestNonZeroPO != undefined){
 			//TODO: LAS LM end date validation with oldest PO expiry date
 			if(studentTempMap != null && studentTempMap != undefined && studentTempMap.count>0){
@@ -1753,6 +1826,34 @@ function studentInTest(stdId, orgNodeId) {
 	
 	function validateEndDateBeforeSave(){
 		var result = true;
+		if (state == "EDIT" && studentDeleted == true){
+		   
+		   var orgIds = getAssociatedOrgIdsForOldStudents();
+		   var postDataObject = {};
+	  	   postDataObject.selectedOrgIds = orgIds;
+	  	   oldestNonZeroPO = null;
+		   $.ajax({
+			async:		false,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'validateEndDateForLaslinkLM.do',
+			type:		'POST',
+			dataType:	'json',
+			data:		postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){
+							oldestNonZeroPO = data.nonZeroActivePO;
+							studentDeleted = false;
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+		}
+		
 		if(oldestNonZeroPO != null && oldestNonZeroPO != undefined ){
 			if((studentTempMap != null && studentTempMap != undefined && studentTempMap.count > 0) || isTestSessionHasStudents){
 				var endDateSelected = $("#endDate").datepicker( "getDate" );

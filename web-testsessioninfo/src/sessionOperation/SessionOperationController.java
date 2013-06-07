@@ -560,6 +560,52 @@ public class SessionOperationController extends PageFlowController {
     }
     
     @Jpf.Action()
+    protected Forward validateEndDateForLaslinkLM()
+    {
+    	initialize();
+    	String jsonData = "";
+    	HttpServletResponse resp = getResponse();
+    	resp.setCharacterEncoding("UTF-8"); 
+    	OutputStream stream = null;    	
+    	String selectedOrgIds =this.getRequest().getParameter("selectedOrgIds");
+    	LASLicenseNode nonZeroActivePO = null;
+    	  try
+          {
+          	System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);  	
+          	if(this.isLASManageLicense){  
+          		nonZeroActivePO = this.scheduleTest.getNonZeroActivePOForSelectedOrg(this.customerId,selectedOrgIds);
+          		vo.setNonZeroActivePO(nonZeroActivePO);
+          		Gson gson = new Gson();
+            	jsonData = gson.toJson(vo);
+            	System.out.println(jsonData);
+            	
+            
+            	resp.setContentType(CONTENT_TYPE_JSON);
+
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+          }
+         }catch (Exception e) {
+             try {
+				resp.flushBuffer();
+			} catch (Exception e1) {
+			}
+			e.printStackTrace();
+		} finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+    	
+    	return null;
+    }
+    
+    
+    @Jpf.Action()
     protected Forward selectTest(SessionOperationForm form)
     {
     	initialize();
@@ -570,20 +616,13 @@ public class SessionOperationController extends PageFlowController {
         //String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  null;
         String userTimeZone = null;
-        LASLicenseNode oldestNonZeroActivePO = null;
         /*if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
         } */
         
           try
-        {
-        	System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);  	
-        	if(this.isLASManageLicense){  
-        		oldestNonZeroActivePO = this.scheduleTest.getNonZeroActivePOForCustomer(this.userName);
-        		vo.setNonZeroActivePO(oldestNonZeroActivePO);
-        	}	
-        	  
+        {    	  
         	userTimeZone =  userManagement.getUserTimeZone(this.userName);
             if (!isPopulatedSuccessfully){
             	TestProductData testProductData  = this.getTestProductDataForUser();
@@ -993,8 +1032,9 @@ public class SessionOperationController extends PageFlowController {
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
     	    	
     	    	System.out.println("this.isLASManageLicense >> "+this.isLASManageLicense);  	
-            	if(this.isLASManageLicense){  
-            		oldestNonZeroActivePO = this.scheduleTest.getNonZeroActivePOForCustomer(this.userName);
+            	if(this.isLASManageLicense){ 
+            		// Added to get the Oldest Non Zero PO for the selected Test in case of EDIT Session.
+            		oldestNonZeroActivePO = this.scheduleTest.getNonZeroActivePOForSelectedTest(testAdminId);
             		vo.setNonZeroActivePO(oldestNonZeroActivePO);
             		vo.setTestSessionHasStudents(scheduledSession.isTestSessionHasStudents());
             	}
