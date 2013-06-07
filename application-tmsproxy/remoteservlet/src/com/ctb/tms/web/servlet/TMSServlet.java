@@ -926,6 +926,11 @@ public class TMSServlet extends HttpServlet {
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		
 		manifest.setUsable(true);
+		
+		// used for CAT client detection
+		String sdsid = lr.getSdsId();
+		manifest.setSdsId(sdsid);
+		
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest, true);
 		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd, true);

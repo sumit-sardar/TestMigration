@@ -20,12 +20,27 @@ public class Manifest implements Serializable {
 	private String tutorialTaken;
 	private boolean forceReplication;
 	private String ttsSpeedStatus;
+	private String sdsId;
 	
 	private boolean usable = true;
 	
 	public boolean isUsable() {
 		return usable;
 	}
+
+	
+	
+	public String getSdsId() {
+		return sdsId;
+	}
+
+
+
+	public void setSdsId(String sdsId) {
+		this.sdsId = sdsId;
+	}
+
+
 
 	public void setUsable(boolean usable) {
 		this.usable = usable;
