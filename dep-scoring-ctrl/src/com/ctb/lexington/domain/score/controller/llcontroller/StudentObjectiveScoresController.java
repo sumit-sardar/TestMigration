@@ -72,11 +72,11 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<prims.length;i++) {
             PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
+            if(adminData.getProductId() == 7500){
+        		if(tempMap.containsKey(prims[i].getPrimaryObjectiveId()))
+        				details = tempMap.get(prims[i].getPrimaryObjectiveId());
+        	}
             if(details != null && !"F".equals(details.getAtsArchive())) {
-            	if(adminData.getProductId() == 7500){
-            		if(tempMap.containsKey(prims[i].getPrimaryObjectiveId()))
-            				details = tempMap.get(prims[i].getPrimaryObjectiveId());
-            	}
             	IrsLLPrimObjFactData primObjFact = new IrsLLPrimObjFactData();
                 primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
                 primObjFact.setPointsObtained(details.getPointsObtained());
@@ -175,19 +175,19 @@ public class StudentObjectiveScoresController {
 				0), literacyPointAttempted = new Long(0), literacyPointObtained = new Long(
 				0); 
     	for(int i=0; i<prim.length;i++){
-			if("Listening".equals(prim[i].getPrimaryObjectiveName()) || "Speaking".equals(prim[i].getPrimaryObjectiveName())){
+			if(("Listening".equals(prim[i].getPrimaryObjectiveName()) || "Speaking".equals(prim[i].getPrimaryObjectiveName())) && !"F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
 				oralPointPosible += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsPossible());
 				oralPointAttempted += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsAttempted());
 				oralPointObtained += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsObtained());
-			}if("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Listening".equals(prim[i].getPrimaryObjectiveName())){
+			}if(("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Listening".equals(prim[i].getPrimaryObjectiveName())) && !"F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
 				comprehensionPointPosible += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsPossible());
 				comprehensionPointAttempted += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsAttempted());
 				comprehensionPointObtained += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsObtained());
-			}if("Speaking".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())){
+			}if(("Speaking".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())) && !"F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
 				productivePointPosible += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsPossible());
 				productivePointAttempted += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsAttempted());
 				productivePointObtained += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsObtained());
-			}if("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())){
+			}if(("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())) && !"F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
 				literacyPointPosible += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsPossible());
 				literacyPointAttempted += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsAttempted());
 				literacyPointObtained += new Long(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getPointsObtained());
@@ -225,6 +225,41 @@ public class StudentObjectiveScoresController {
 				tempMap.put(prim[i].getPrimaryObjectiveId(), details);
 			}
 		}
+    	String compSet ="";
+    	String oralSet ="";
+    	String prodSet ="";
+    	String liteSet ="";
+    	for(int i=0; i<prim.length;i++){
+    		if(("Listening".equals(prim[i].getPrimaryObjectiveName()) || "Speaking".equals(prim[i].getPrimaryObjectiveName())) && "F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
+    			oralSet = "F";
+    		}if(("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Listening".equals(prim[i].getPrimaryObjectiveName())) && "F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
+    			compSet = "F";
+    		}if(("Speaking".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())) && "F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
+    			prodSet = "F";
+    		}if(("Reading".equals(prim[i].getPrimaryObjectiveName()) || "Writing".equals(prim[i].getPrimaryObjectiveName())) && "F".equals(studentScoreSummaryData.get(prim[i].getPrimaryObjectiveId()).getAtsArchive())){
+    			liteSet = "F";
+    		}if("Oral".equals(prim[i].getPrimaryObjectiveName()) && !"".equals(oralSet)){
+    			StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+    			details.setAtsArchive(oralSet);
+    			tempMap.remove(prim[i].getPrimaryObjectiveId());
+    			tempMap.put(prim[i].getPrimaryObjectiveId(), details);
+    		}if("Comprehension".equals(prim[i].getPrimaryObjectiveName()) && !"".equals(compSet)){
+    			StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+    			details.setAtsArchive(compSet);
+    			tempMap.remove(prim[i].getPrimaryObjectiveId());
+    			tempMap.put(prim[i].getPrimaryObjectiveId(), details);
+    		}if("Productive".equals(prim[i].getPrimaryObjectiveName()) && !"".equals(prodSet)){
+    			StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+    			details.setAtsArchive(prodSet);
+    			tempMap.remove(prim[i].getPrimaryObjectiveId());
+    			tempMap.put(prim[i].getPrimaryObjectiveId(), details);
+    		}if("Literacy".equals(prim[i].getPrimaryObjectiveName()) && !"".equals(liteSet)){
+    			StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+    			details.setAtsArchive(liteSet);
+    			tempMap.remove(prim[i].getPrimaryObjectiveId());
+    			tempMap.put(prim[i].getPrimaryObjectiveId(), details);
+    		}
+    	}
 		
 		return tempMap;
 	}
