@@ -1,5 +1,6 @@
 package com.ctb.lexington.domain.score.controller.llcontroller;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -43,7 +44,6 @@ public class StudentContentAreaScoresController {
         	IrsLLContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
             if(new Long(1).equals(newFact.getCurrentResultid()))  {
-                System.out.println("LLCAFact record currency: " + mapper.isLLCAFactCurrent(newFact));
                 mapper.insert(newFact);
             }
         }
@@ -65,7 +65,10 @@ public class StudentContentAreaScoresController {
                        "B".equals(currData.getContentAreas()[0].getSubtestForm())?8:
                            ("Espa?ol".equals(currData.getContentAreas()[0].getSubtestForm()) 
                           		 || "Espanol".equals(currData.getContentAreas()[0].getSubtestForm()) 
-                          		 || "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:10));
+                          		 || "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:
+                          		"C".equals(currData.getContentAreas()[0].getSubtestForm())?15:
+                          				"D".equals(currData.getContentAreas()[0].getSubtestForm())?16:
+                          					("ESP B".equals(currData.getContentAreas()[0].getSubtestForm()))?17:10));
                    
                    newFact.setGradeid(context.getGradeId());
                    newFact.setLevelid(new Long("K".equals(currData.getContentAreas()[0].getSubtestLevel())?16:
@@ -85,6 +88,8 @@ public class StudentContentAreaScoresController {
                    newFact.setProgramid(context.getProgramId());
                    newFact.setScaleScore((fact.getScaleScore()==null)?null:new Long(fact.getScaleScore().longValue()));
                    newFact.setProficencyLevel((fact.getPerformanceLevelCode()==null)?null:new Long(fact.getPerformanceLevelCode()));
+                   //newFact.setPercentileRank((fact.getPercentileRank()==null)?null:fact.getPercentileRank());
+                   newFact.setLexileValue((fact.getLexileValue()==null)?null: fact.getLexileValue());
                    newFact.setSessionid(context.getSessionId());
                    newFact.setStudentid(context.getStudentId());
                    newFact.setSubjectid(contentAreas[i].getSubjectId());

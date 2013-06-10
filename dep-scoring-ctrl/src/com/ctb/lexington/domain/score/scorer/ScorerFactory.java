@@ -243,9 +243,21 @@ public class ScorerFactory {
             throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
         try {
-            return (Scorer) getScorerClass(assessment.getProductType())
-                    .getConstructor(null).newInstance(null);
-
+        	System.out.println("*** PRODUCT TYPE :: "+assessment.getProductTypeValue()+" && PRODUCT ID :: "+assessment.getProductId());
+        	if("LL".equalsIgnoreCase(assessment.getProductTypeValue()) && !(assessment.getProductId().intValue() == 7001 
+        			|| assessment.getProductId().intValue() == 7002 || assessment.getProductId().intValue() == 7003)) { // Added for laslink second edition
+        		Class[] cls = new Class[1];
+            	cls[0] = assessment.getProductId().getClass();
+            	Integer[] inte = new Integer[1];
+            	inte[0] = assessment.getProductId();
+            	
+                return (Scorer) getScorerClass(assessment.getProductType())
+                        .getConstructor(cls).newInstance(inte);
+        	} else {
+        		return (Scorer) getScorerClass(assessment.getProductType())
+                .getConstructor(null).newInstance(null);
+        	}
+            
         } catch (ClassNotFoundException e) {
             // TODO: what is with the know-nothing scorer? --bko
             // If the scorer class could not be found, default to a no-op implementation
@@ -312,8 +324,7 @@ public class ScorerFactory {
 	            scoreWithEventsInForeground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
 	        }
         }else {
-        	System.out
-					.println("ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: " + testRosterId);
+        	System.out.println("ScorerFactory.invokeScoring(testRosterId, runInBackGround): no product info for roster: " + testRosterId);
         }
     }
 

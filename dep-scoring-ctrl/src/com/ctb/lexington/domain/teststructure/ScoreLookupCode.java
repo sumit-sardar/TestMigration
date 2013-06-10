@@ -36,6 +36,8 @@ public final class ScoreLookupCode extends StringConstant {
     public static final ScoreLookupCode EXPECTED_GED_SOCIAL = new ScoreLookupCode("EGEDSO", "EXPECTED GED FOR SUBJECT SOCIAL STUDIES");
     public static final ScoreLookupCode EXPECTED_GED_SCIENCE = new ScoreLookupCode("EGEDSC", "EXPECTED GED FOR SUBJECT SCIENCE");
     public static final ScoreLookupCode EXPECTED_GED_AVERAGE = new ScoreLookupCode("EGEDAV", "EXPECTED GED FOR SUBJECT AVERAGE");
+    
+    public static final ScoreLookupCode PERCENTILE_RANK = new ScoreLookupCode("PR", "Percentile Rank"); //Added for Laslink 2nd edtn
 
     private ScoreLookupCode(final String code, final String description) {
         super(code, description);

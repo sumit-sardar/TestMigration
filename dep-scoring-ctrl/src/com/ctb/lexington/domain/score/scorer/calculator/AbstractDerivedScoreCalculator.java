@@ -140,6 +140,37 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
             closeConnection(conn);
         }
     }
+    
+    protected BigDecimal getLasLinkNCE(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getLasLinkNCE(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    protected BigDecimal getLasLinkPR(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getLasLinkPR(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    protected BigDecimal getLasLinkLexile(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getLasLinkLexile(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
 	// END For Laslink Scoring
     protected Connection getOASConnection() {
         try {

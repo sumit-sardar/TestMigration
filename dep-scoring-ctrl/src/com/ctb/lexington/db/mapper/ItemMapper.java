@@ -18,6 +18,7 @@ public class ItemMapper extends AbstractDBMapper {
     private static final String FIND_CONDITION_CODE_ID_ITEM_IDS_BY_ITEM_SET_ID_NAME = "findConditionCodeIdItemIdsForItemSet";
     private static final String FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT = "findItemGroupByContentAreaForItemSetAndProduct";
     private static final String FIND_ITEM_PEIDS_WSTV_BY_ITEM_SET_ID = "findItemIdPeIdsForWSTV";
+    private static final String FIND_VIRTUAL_CONTENT_FOR_LASLINK = "findVirtualContentForLaslink";
 
     /**
      * @param conn
@@ -64,12 +65,24 @@ public class ItemMapper extends AbstractDBMapper {
         return result;
     }
 
-    public List findItemGroupByContentAreaForItemSetAndProduct(Long itemSetId, Long productId) {
+    public List<ItemContentArea> findItemGroupByContentAreaForItemSetAndProduct(Long itemSetId, Long productId) {
         ItemContentArea template = new ItemContentArea();
         template.setItemSetId(itemSetId);
         template.setProductId(productId);
 
         return findMany(FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT,template);
+    }
+    
+    public Map<String,Long> findAllVirtuContent(Long itemSetId, Long productId) {
+        ItemContentArea template = new ItemContentArea();
+        Map<String, Long> vContentMap = new HashMap<String, Long>();
+        template.setItemSetId(itemSetId);
+        template.setProductId(productId);
+        List<ItemContentArea> vContentArea = findMany(FIND_VIRTUAL_CONTENT_FOR_LASLINK,template);
+        for(ItemContentArea ica : vContentArea){
+        	vContentMap.put(ica.getContentAreaName(), ica.getContentAreaId());
+        }
+        return vContentMap;
     }
     
     public List<WsTvCaItemPeidVo> findItemIdsAndPeidsByItemSetId(Long itemSetId) {

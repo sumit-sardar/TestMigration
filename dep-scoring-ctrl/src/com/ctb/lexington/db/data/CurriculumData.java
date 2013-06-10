@@ -127,7 +127,23 @@ public class CurriculumData {
         private String subtestForm;
         private String subtestLevel;
         private Long subjectId;
-
+        
+        
+		public ContentArea() {
+			super();
+		}
+		public ContentArea(ContentArea contentArea) {
+			this.contentAreaId = contentArea.getContentAreaId();
+		    this.contentAreaName = contentArea.getContentAreaName();
+	        this.contentAreaType = contentArea.getContentAreaType();
+	        this.subject = contentArea.getSubject();
+	        this.contentAreaNumItems = contentArea.getContentAreaNumItems();
+	        this.contentAreaPointsPossible = contentArea.getContentAreaPointsPossible();
+	        this.subtestId = contentArea.getSubtestId();
+	        this.subtestForm = contentArea.getSubtestForm();
+	        this.subtestLevel = contentArea.getSubtestLevel();
+	        this.subjectId = contentArea.getSubjectId();
+		}
 		/**
 		 * @return Returns the subjectId.
 		 */
@@ -267,6 +283,26 @@ public class CurriculumData {
         private Integer lowMasteryRange;
         private String monarchId;
         
+        public PrimaryObjective() {
+			super();
+		}
+		public PrimaryObjective(PrimaryObjective primaryObj) {
+			this.primaryObjectiveId = primaryObj.getPrimaryObjectiveId();
+		    this.contentAreaId = primaryObj.getContentAreaId();
+	        this.primaryObjectiveName = primaryObj.getPrimaryObjectiveName();
+	        this.primaryObjectiveType = primaryObj.getPrimaryObjectiveType();
+	        this.primaryObjectiveNumItems = primaryObj.getPrimaryObjectiveNumItems();
+	        this.primaryObjectivePointsPossible = primaryObj.getPrimaryObjectivePointsPossible();
+	        this.subtestId = primaryObj.getSubtestId();
+	        this.subtestForm = primaryObj.getSubtestForm();
+	        this.subtestLevel = primaryObj.getSubtestLevel();
+	        this.primaryObjectiveIndex = primaryObj.getPrimaryObjectiveIndex();
+	        this.nationalAverage = primaryObj.getNationalAverage();
+	        this.productId = primaryObj.getProductId();
+	        this.highMasteryRange = primaryObj.getHighMasteryRange();
+	        this.lowMasteryRange = primaryObj.getLowMasteryRange();
+	        this.monarchId = primaryObj.getMonarchId();
+		}
         public Long getProductId() {
 			return productId;
 		}

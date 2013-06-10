@@ -30,6 +30,7 @@ import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.scorer.calculator.ContentAreaNumberCorrectCalculator;
 import com.ctb.lexington.domain.score.scorer.calculator.LasLinkCompositeScoreCalculator;
+import com.ctb.lexington.domain.score.scorer.calculator.LasLinkCompositeScoreCalculatorSecondEdition;
 import com.ctb.lexington.domain.score.scorer.calculator.LasLinkContentAreaDerivedScoreCalculator;
 import com.ctb.lexington.domain.score.scorer.calculator.PrimaryObjectivePercentMasteryCalculator;
 import com.ctb.lexington.exception.CTBSystemException;
@@ -49,6 +50,20 @@ public class LLScorer extends STScorer {
         addCalculator(new LasLinkContentAreaDerivedScoreCalculator(channel, this));
         addCalculator(new PrimaryObjectivePercentMasteryCalculator(channel, this));
         addCalculator(new LasLinkCompositeScoreCalculator(channel,this));
+        channel.subscribe(this, AssessmentStartedEvent.class);
+        channel.subscribe(this, ContentAreaNumberCorrectEvent.class);
+        channel.subscribe(this, ContentAreaDerivedScoreEvent.class);
+        channel.subscribe(this, SubtestContentAreaCompositeScoreEvent.class);
+        channel.subscribe(this, SubtestContentAreaCompositeAndDerivedEvent.class);
+        channel.subscribe(this, PrimaryObjectivePercentMasteryEvent.class);
+    }
+    public LLScorer(Integer productId) throws CTBSystemException, IOException {
+        super();
+
+        addCalculator(new ContentAreaNumberCorrectCalculator(channel, this));
+        addCalculator(new LasLinkContentAreaDerivedScoreCalculator(channel, this));
+        addCalculator(new PrimaryObjectivePercentMasteryCalculator(channel, this));
+        addCalculator(new LasLinkCompositeScoreCalculatorSecondEdition(channel,this));
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, ContentAreaNumberCorrectEvent.class);
         channel.subscribe(this, ContentAreaDerivedScoreEvent.class);
@@ -82,6 +97,9 @@ public class LLScorer extends STScorer {
         
         factDetails.setPerformanceLevelCode(event.getPerformanceLevel().getCode());
         factDetails.setPerformanceLevel(event.getPerformanceLevel().getDescription());
+        factDetails.setNormalCurveEquivalent(event.getNormalCurveEquivalent()); // added for laslink 2nd edition norm curve equivalent
+        factDetails.setNationalPercentile(event.getNationalPercentile()); // added for laslink 2nd edition percentile rank
+        factDetails.setLexileValue(event.getLexileValue());// added for laslink 2nd edition lexile
     }
 
     public void onEvent(PrimaryObjectivePercentMasteryEvent popmEvent) {
@@ -107,6 +125,8 @@ public class LLScorer extends STScorer {
         detail.setNormYear(event.getNormYear());
         detail.setValidScore(event.getValidScore());
         detail.setProficencyLevel(event.getProficencyLevel());
+        detail.setNationalPercentile(event.getNationalPercentile());
+        detail.setNormalCurveEquivalent(event.getNormalCurveEquivalent());
         
 
     
@@ -126,6 +146,12 @@ public class LLScorer extends STScorer {
              factDetails.setPerformanceLevelCode(String.valueOf(subtestContentAreaCompositeAndDerivedScore.getProficencyLevelCode()));
              factDetails.setDecimalPercentObtained(new Float(subtestContentAreaCompositeAndDerivedScore.getPercentObtained()));
              factDetails.setScaleScore(new BigDecimal(subtestContentAreaCompositeAndDerivedScore.getScaleScore()));
+//             if(new BigDecimal(subtestContentAreaCompositeAndDerivedScore.getNationalPercentile())!=null){
+            	 factDetails.setNationalPercentile(new BigDecimal(subtestContentAreaCompositeAndDerivedScore.getNationalPercentile()));
+//             }
+//             if(new BigDecimal(subtestContentAreaCompositeAndDerivedScore.getNormCurveEquivalent())!=null){
+            	 factDetails.setNormalCurveEquivalent(new BigDecimal(subtestContentAreaCompositeAndDerivedScore.getNormCurveEquivalent()));
+//             }
              if(subtestContentAreaCompositeAndDerivedScore.getProficencyLevelDescription() != null)
             	 factDetails.setPerformanceLevel(subtestContentAreaCompositeAndDerivedScore.getProficencyLevelDescription());
              if(subtestContentAreaCompositeAndDerivedScore.getValidScore() != null) {
@@ -166,7 +192,8 @@ public class LLScorer extends STScorer {
 		                            	 summaryData.get(sec[j].getSecondaryObjectiveId()).setAtsArchive("T");
 		                             }
 		                         }
-		                         if(!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")){
+		                         if((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")) 
+		                        		 || (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
 			                		 itemData.markItemsValidForSubtest(ca.getSubtestId());
 			                	 }
 		                         break;
@@ -181,7 +208,8 @@ public class LLScorer extends STScorer {
 		                              summaryData.get(sec[j].getSecondaryObjectiveId()).setAtsArchive("F");
 		                          }
 		                      }
-		                      if(!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")){
+		                      if((!ca.getContentAreaName().equals("Oral") && !ca.getContentAreaName().equals("Comprehension")) 
+		                        		 || (!ca.getContentAreaName().equals("Productive") && (!ca.getContentAreaName().equals("Literacy")))){
 				            		 itemData.markItemsNonValidForSubtest(ca.getSubtestId());
 				              }
 		                      break;

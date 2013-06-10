@@ -17,6 +17,9 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_TV_COMPOSITE_SCORE = "findTerraNovaCompositeScore";
     private static final String FIND_TV_PERFORMANCE_LEVEL = "findTerraNovaPerformanceLevel";
     private static final String FIND_LL_PERFORMANCE_LEVEL = "findLasLinkPerformanceLevel";  // For Laslink Scoring
+    private static final String FIND_LL_NCE = "findLasLinkNCE";  // For Laslink Scoring
+    private static final String FIND_LL_PR = "findLasLinkPR";	// For Laslink Scoring
+    private static final String FIND_LL_LEXILE = "findLasLinkLexile"; // For Laslink Scoring
     private static final String FIND_HIGH_MODERATE_MASTERY = "findScoreLookupForHighMasteryRange";
     private static final String FIND_LOW_MODERATE_MASTERY = "findScoreLookupForLowMasteryRange";
     private static final String FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SETTN3 = "findScoreLookupForItemSetAndUniqueKeyTN3";
@@ -132,7 +135,61 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         else
             return new BigDecimal("1");
     }
+    
+    public BigDecimal findLasLinkNCE(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
 
+        final ScoreLookupRecord normaCurveEq = (ScoreLookupRecord) find(FIND_LL_NCE,
+                template);
+        if (null != normaCurveEq && null != normaCurveEq.getDestScoreValue())
+            return normaCurveEq.getDestScoreValue();
+        else
+            return new BigDecimal("1");
+    }
+
+    public BigDecimal findLasLinkPR(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord percentileRank = (ScoreLookupRecord) find(FIND_LL_PR,
+                template);
+        if (null != percentileRank && null != percentileRank.getDestScoreValue())
+            return percentileRank.getDestScoreValue();
+        else
+            return new BigDecimal("1");
+    }
+    
+    public BigDecimal findLasLinkLexile(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord lexileValue = (ScoreLookupRecord) find(FIND_LL_LEXILE,
+                template);
+        if (null != lexileValue && null != lexileValue.getDestScoreValue())
+            return lexileValue.getDestScoreValue();
+        else
+            return new BigDecimal("1");
+    }
+    
     public BigDecimal findObjectivePValue(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level) {
         final ScoreLookupRecord template = new ScoreLookupRecord(itemSetId, ScoreLookupCode.SUBTEST_NUMBER_CORRECT.getCode(),
                 ScoreLookupCode.OBJECTIVE_P_VALUE.getCode(), new BigDecimal(0), null);

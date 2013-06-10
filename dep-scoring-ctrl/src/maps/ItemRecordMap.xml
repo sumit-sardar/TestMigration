@@ -146,4 +146,20 @@
  ORDER BY ISI.ITEM_SORT_ORDER
 
     </select>
+    <select id="findVirtualContentForLaslink" parameterClass="com.ctb.lexington.data.ItemContentArea" resultClass="com.ctb.lexington.data.ItemContentArea">
+    SELECT ISET.ITEM_SET_ID   AS contentAreaId,
+           ISET.ITEM_SET_NAME AS contentAreaName,
+           ISETTD.ITEM_SET_ID AS itemSetId
+      FROM PRODUCT           PROD,
+           ITEM_SET_CATEGORY ISC,
+           ITEM_SET          ISET,
+           ITEM_SET          ISETTD
+     WHERE PROD.PRODUCT_ID = #productId:NUMERIC#
+       AND PROD.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID
+       AND ISC.ITEM_SET_CATEGORY_LEVEL = PROD.CONTENT_AREA_LEVEL
+       AND ISET.ITEM_SET_CATEGORY_ID = ISC.ITEM_SET_CATEGORY_ID
+       AND ISETTD.ITEM_SET_ID = #itemSetId:NUMERIC#
+       AND SUBSTR(ISETTD.ITEM_SET_LEVEL, 3, LENGTH(ISETTD.ITEM_SET_LEVEL)) = ISET.ITEM_SET_LEVEL
+     ORDER BY ISET.ITEM_SET_NAME
+    </select>
 </sqlMap>

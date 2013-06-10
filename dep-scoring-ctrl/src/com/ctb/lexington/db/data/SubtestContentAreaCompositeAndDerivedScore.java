@@ -15,6 +15,8 @@ public class SubtestContentAreaCompositeAndDerivedScore {
     private  String contentAreaName;
     private  int scaleScore;
     private  String validScore;
+    private  int normCurveEquivalent;
+    private  int nationalPercentile;
    
 	/**
 	 * @return the proficencyLevelCode
@@ -124,6 +126,30 @@ public class SubtestContentAreaCompositeAndDerivedScore {
 	 */
 	public void setValidScore(String validScore) {
 		this.validScore = validScore;
+	}
+	/**
+	 * @return the normCurveEquivalent
+	 */
+	public int getNormCurveEquivalent() {
+		return normCurveEquivalent;
+	}
+	/**
+	 * @param normCurveEquivalent the normCurveEquivalent to set
+	 */
+	public void setNormCurveEquivalent(int normCurveEquivalent) {
+		this.normCurveEquivalent = normCurveEquivalent;
+	}
+	/**
+	 * @return the nationalPercentile
+	 */
+	public int getNationalPercentile() {
+		return nationalPercentile;
+	}
+	/**
+	 * @param nationalPercentile the nationalPercentile to set
+	 */
+	public void setNationalPercentile(int nationalPercentile) {
+		this.nationalPercentile = nationalPercentile;
 	}
     
     

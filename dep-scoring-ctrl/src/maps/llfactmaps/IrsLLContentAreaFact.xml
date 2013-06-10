@@ -53,7 +53,8 @@ SELECT
         PERCENT_OBTAINED as percentObtained,
         POINTS_OBTAINED as pointsObtained,
         TEST_COMPLETION_TIMESTAMP as testCompletionTimestamp,
-        TEST_START_TIMESTAMP as testStartTimestamp
+        TEST_START_TIMESTAMP as testStartTimestamp,
+        LEXILE as lexileValue
 FROM
         LASLINK_CONTENT_AREA_FACT  
 WHERE 
@@ -119,7 +120,8 @@ WHERE
 		        POINTS_OBTAINED,
                 POINTS_POSSIBLE,
 		        TEST_COMPLETION_TIMESTAMP,
-		        TEST_START_TIMESTAMP
+		        TEST_START_TIMESTAMP,
+		        LEXILE
                 )
         VALUES
                 (
@@ -206,7 +208,8 @@ WHERE
 		        #pointsObtained:NUMERIC#,
                 #pointsPossible:NUMERIC#,
 		        #testCompletionTimestamp:TIMESTAMP#,
-		        #testStartTimestamp:TIMESTAMP#
+		        #testStartTimestamp:TIMESTAMP#,
+		        #lexileValue:NUMERIC#
                 )        
 </insert>
 
@@ -296,8 +299,9 @@ select decode(
 		        POINTS_ATTEMPTED = #pointsAttempted:NUMERIC#,		
 		        PERCENT_OBTAINED = #percentObtained:NUMERIC#,		
 		        POINTS_OBTAINED	 = #pointsObtained:NUMERIC#,		
-		        TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#	
-		        TEST_START_TIMESTAMP = #testStartTimestamp:TIMESTAMP#		
+		        TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#,	
+		        TEST_START_TIMESTAMP = #testStartTimestamp:TIMESTAMP#,
+		        LEXILE = #lexileValue:NUMERIC#
         WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND

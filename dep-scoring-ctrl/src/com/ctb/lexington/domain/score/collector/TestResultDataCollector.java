@@ -122,10 +122,13 @@ public class TestResultDataCollector {
         
         for(int i=0;i<contentAreas.length;i++) {
             StudentItemSetStatusRecord subtest = (StudentItemSetStatusRecord) subtestMap.get(contentAreas[i].getSubtestId());
+            String contentAreaName = contentAreas[i].getContentAreaName();
             if(subtest != null && !"SC".equals(subtest.getCompletionStatus()) 
                                && !"NT".equals(subtest.getCompletionStatus())
                                && !"IP".equals(subtest.getCompletionStatus())
-                               && !"IN".equals(subtest.getCompletionStatus())) {
+                               && !"IN".equals(subtest.getCompletionStatus()) || ("Comprehension".equals(contentAreaName) 
+                               || "Oral".equals(contentAreaName) || "Productive".equals(contentAreaName) ||"Literacy".equals(contentAreaName) 
+                               && ("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm())))) { // added for laslink second edition
                 contentAreaList.add(contentAreas[i]);
                 PrimaryObjective [] primObjs = currData.getPrimaryObjectives();
                 for(int j=0;j<primObjs.length;j++) {

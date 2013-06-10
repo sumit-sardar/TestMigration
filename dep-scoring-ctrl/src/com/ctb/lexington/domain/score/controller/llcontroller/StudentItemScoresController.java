@@ -58,7 +58,8 @@ public class StudentItemScoresController {
 			PrimaryObjective [] prims = currData.getPrimaryObjectives();
 			for(int j=0;j<prims.length;j++) {
 				String contentAreaName = prims[j].getPrimaryObjectiveName();
-				if(!contentAreaName.equals("Oral") && !contentAreaName.equals("Comprehension")){
+				if(!contentAreaName.equals("Oral") && !contentAreaName.equals("Comprehension")
+						&& !contentAreaName.equals("Productive") && !contentAreaName.equals("Literacy")){
 					if(studentItemScoreData.contains(item.getOasItemId()+ contentAreaName)) {
 					StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
 					if(scoreDetails != null && scoreDetails.getAtsArchive()!= null &&!"F".equals(scoreDetails.getAtsArchive())) {
@@ -80,7 +81,12 @@ public class StudentItemScoresController {
 							"B".equals(currData.getContentAreas()[0].getSubtestForm())?8:
 								("Espa?ol".equals(currData.getContentAreas()[0].getSubtestForm()) 
 										|| "Espanol".equals(currData.getContentAreas()[0].getSubtestForm()) 
-										|| "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:10));
+										|| "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:
+										"C".equals(currData.getContentAreas()[0].getSubtestForm())?15:
+											"D".equals(currData.getContentAreas()[0].getSubtestForm())?16:
+												("Espa?ol2".equals(currData.getContentAreas()[0].getSubtestForm()) 
+														|| "Espanol2".equals(currData.getContentAreas()[0].getSubtestForm()) 
+														|| "Español2".equals(currData.getContentAreas()[0].getSubtestForm()))?17:10));
 						itemFact.setGradeid(contextData.getGradeId());
 						itemFact.setLevelid(new Long("K".equals(currData.getContentAreas()[0].getSubtestLevel())?16:
 							"1".equals(currData.getContentAreas()[0].getSubtestLevel())?17:

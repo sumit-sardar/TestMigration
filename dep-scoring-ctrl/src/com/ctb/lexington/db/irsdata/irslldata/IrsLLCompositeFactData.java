@@ -60,6 +60,9 @@ public class IrsLLCompositeFactData implements Persistent {
 	private Long attr35id; // MUSIC_FILE_ID
 	private Long attr36id; // MASKING_RULER
 	private Long attr37id; // MAGNIFYING_GLASS
+	
+	//private BigDecimal percentileRank; //Used in table as national percentile for laslink 2nd edition
+	private BigDecimal lexileValue; //Added for LasLinks Second Edition
 	// Added for LasLink - END
     
    
@@ -112,7 +115,9 @@ public class IrsLLCompositeFactData implements Persistent {
                 attr34id.equals(((IrsLLCompositeFactData)arg0).getAttr34id()) &&
                 attr35id.equals(((IrsLLCompositeFactData)arg0).getAttr35id()) &&
                 attr36id.equals(((IrsLLCompositeFactData)arg0).getAttr36id()) &&
-                attr37id.equals(((IrsLLCompositeFactData)arg0).getAttr37id());
+                attr37id.equals(((IrsLLCompositeFactData)arg0).getAttr37id()) &&
+				lexileValue.equals(((IrsLLCompositeFactData)arg0).getLexileValue());
+                //percentileRank.equals(((IrsLLContentAreaFactData)arg0).getPercentileRank());
     }
 
     public Date getTestStartTimestamp() {
@@ -523,5 +528,13 @@ public class IrsLLCompositeFactData implements Persistent {
 	public void setAttr37id(Long attr37id) {
 			this.attr37id = attr37id;
 	}
-
+	
+	public BigDecimal getLexileValue() {
+		return lexileValue;
+	}
+	
+	public void setLexileValue(BigDecimal lexileValue) {
+		this.lexileValue = lexileValue;
+	}
+	
 }

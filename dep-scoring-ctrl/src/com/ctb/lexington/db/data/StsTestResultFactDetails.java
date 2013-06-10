@@ -116,7 +116,10 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
     private String normGroup;
     private String normYear;
     private String contentAreaName;
-
+    
+    private BigDecimal percentileRank;
+    private BigDecimal lexileValue; 
+    
     public Long getFactId() {
         return factId;
     }
@@ -972,4 +975,36 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
 	public void setDecimalPercentObtained(Float decimalPercentObtained) {
 		this.decimalPercentObtained = decimalPercentObtained;
 	}
+
+	/**
+	 * @return the lexileValue
+	 */
+	public BigDecimal getLexileValue() {
+		return lexileValue;
+	}
+
+	/**
+	 * @param lexileValue the lexileValue to set
+	 */
+	public void setLexileValue(BigDecimal lexileValue) {
+		this.lexileValue = lexileValue;
+	}
+
+	/**
+	 * @return the percentileRank
+	 *//*
+	public BigDecimal getPercentileRank() {
+		return percentileRank;
+	}
+
+	*//**
+	 * @param percentileRank the percentileRank to set
+	 *//*
+	public void setPercentileRank(BigDecimal percentileRank) {
+		this.percentileRank = percentileRank;
+	}*/
+
+	
+	
+	
 }

@@ -19,6 +19,8 @@ import com.ctb.lexington.util.SafeHashMap;
 */
 public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedScoreCalculator {
     private static final String LASLINK_FRAMEWORK_CODE = "LLEAB";
+    private static final String LASLINK_FRAMEWORK_CODE_2ND_EDTN = "LL2ND";
+    private static final String TESTLEVELFORLISTENING = "K-1";
     public LasLinkContentAreaDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
         channel.subscribe(this, ContentAreaRawScoreEvent.class);
@@ -48,18 +50,32 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
          if( "6-8".equals(pTestLevel) ){  pTestLevel = "4"; }
          if( "9-12".equals(pTestLevel) ){ pTestLevel = "5"; }
          */
-         if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm)) { 
+    	if("C".equals(pDupTestForm) || "D".equals(pDupTestForm) ||  "ESP B".equals(pDupTestForm)){
+    		
+    		if( "K-1".equals(pTestLevel) && "K".equals(pGrade) && !event.getContentAreaName().equals("Listening")){
+    			pTestLevel = "K"; 
+    			}
+    		if( "K-1".equals(pTestLevel) && "1".equals(pGrade) && !event.getContentAreaName().equals("Listening")){
+    			pTestLevel = "1"; 
+    			} 
+    	}
+    	
+        if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "C".equals(pDupTestForm) || "D".equals(pDupTestForm)) { 
         	 pTestForm = pDupTestForm;
-         }
-         if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm)) {
+        }
+        if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm)) {
         	pTestForm  = "S";
-         }
-       
+        }
+        if ("Espa?ol2".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Español2".equals(pDupTestForm)) {
+        	pTestForm  = "T";
+        }
         ContentAreaRawScoreEvent contentAreaRawScoreEvent = (ContentAreaRawScoreEvent)contentAreaRawScoreEvents.get(event.getContentAreaName());
         //System.out.println("===>"+contentAreaRawScoreEvent.getPointsObtained());
         Integer pointObtained = contentAreaRawScoreEvent.getPointsObtained();
         BigDecimal obtained = new BigDecimal(pointObtained.toString());
-        final BigDecimal scaleScore = getScore(
+        final BigDecimal scaleScore = (("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm)) && 
+        		("Comprehension".equals(event.getContentAreaName())|| "Oral".equals(event.getContentAreaName()) 
+        				||"Productive".equals(event.getContentAreaName()) ||"Literacy".equals(event.getContentAreaName())))? null :getScore(
     			subtestId,
     			event.getContentAreaName(),
 				null,
@@ -71,32 +87,80 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
 				ScoreLookupCode.SCALED_SCORE,
 				null );
         
-        final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel(LASLINK_FRAMEWORK_CODE, event.getContentAreaName(),
-                pTestLevel, scaleScore, pGrade, pTestForm);
+       final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel((("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm))?LASLINK_FRAMEWORK_CODE_2ND_EDTN : LASLINK_FRAMEWORK_CODE ), event.getContentAreaName(),
+    		   ("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm))? null : pTestLevel, scaleScore, pGrade, pTestForm);
        final PerformanceLevel proficencyLevel = PerformanceLevel.getByCode(String
                 .valueOf(proficencyLevelValue));
-        
        
-
-        channel.send(new ContentAreaDerivedScoreEvent(
+       final BigDecimal normalCurveEquivalent = ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "S".equals(pDupTestForm) || scaleScore==null) ? null : getLasLinkNCE(
+    		   LASLINK_FRAMEWORK_CODE_2ND_EDTN,
+   			event.getContentAreaName(),
+				pTestLevel,
+				scaleScore,
+				null,
+				pTestForm);
+        
+       final BigDecimal percentileRank = ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "S".equals(pDupTestForm) || scaleScore==null) ? null : getLasLinkPR(
+    		   LASLINK_FRAMEWORK_CODE_2ND_EDTN,
+      			event.getContentAreaName(),
+      			pTestLevel,
+   				scaleScore,
+   				null,
+   				pTestForm);
+       
+       final BigDecimal lexileValue = ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "S".equals(pDupTestForm) || !"Reading".equals(event.getContentAreaName())) ? null : getLasLinkLexile(
+    		   LASLINK_FRAMEWORK_CODE_2ND_EDTN,
+     			event.getContentAreaName(),
+     			("K".equals(pTestLevel) && "1".equals(pTestLevel))?"K-1":pTestLevel,
+  				scaleScore,
+  				null,
+  				pTestForm);
+       
+       //System.err.println(">>>>>ScaleScore ::"+scaleScore+"<<>>>percentileRank :: "+percentileRank+"<<>>>proficencyLevelValue :: "+proficencyLevelValue+"<<<>>>ContentArea ::"+event.getContentAreaName());
+       if("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "S".equals(pDupTestForm)){
+    	   
+    	   channel.send(new ContentAreaDerivedScoreEvent(
                 event.getTestRosterId(),
-        		event.getSubtestId(), 
-				event.getContentAreaId(), 
-				event.getContentAreaName(), 
-				scaleScore, 
-				null,//standardErrorMeasurement,
-				null,//normalCurveEquivalent,
-				null,//gradeEquivalent,
-				null,//null,
-				null,//nationalStanine, 
-				null,//nationalPercentile, 
-				null,
-				null,
-				proficencyLevel,
-				pNormGroup,
+           		event.getSubtestId(), 
+   				event.getContentAreaId(), 
+   				event.getContentAreaName(), 
+   				scaleScore, 
+   				null,//standardErrorMeasurement,
+   				null,//normalCurveEquivalent,
+   				null,//gradeEquivalent,
+   				null,//null,
+   				null,//nationalStanine, 
+   				null,//nationalPercentile, 
+   				null,
+   				null,
+   				proficencyLevel,
+   				pNormGroup,
                 pNormYear,
-				pAgeCategory,
+   				pAgeCategory,
                 pTestLevel,
                 pRecommendedLevel));
+       }else {
+    	   channel.send(new ContentAreaDerivedScoreEvent(
+                event.getTestRosterId(),
+          		event.getSubtestId(), 
+  				event.getContentAreaId(), 
+  				event.getContentAreaName(), 
+  				scaleScore, 
+  				null,//standardErrorMeasurement,
+  				normalCurveEquivalent,//normalCurveEquivalent,
+  				null,//gradeEquivalent,
+  				null,//null,
+  				null,//nationalStanine, 
+  				percentileRank,//percentile rank as nationalPercentile, 
+  				null,
+  				null,
+  				proficencyLevel, //performance Level
+  				pNormGroup,
+                pNormYear,
+  				pAgeCategory,
+                pTestLevel,
+                pRecommendedLevel,
+                lexileValue));
+       }
     }
 }

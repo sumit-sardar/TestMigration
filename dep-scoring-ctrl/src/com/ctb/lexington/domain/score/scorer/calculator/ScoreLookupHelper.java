@@ -60,7 +60,37 @@ public class ScoreLookupHelper {
             throw new RuntimeException(e);
         }
     }
+    
+    public BigDecimal getLasLinkNCE(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findLasLinkNCE(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public BigDecimal getLasLinkPR(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findLasLinkPR(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public BigDecimal getLasLinkLexile(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findLasLinkLexile(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public BigDecimal getObjectivePValue(final Long itemSetId, final String testForm, final String contentArea, final String normGroup, final String grade, final String level, Connection conn) {
         try {
             final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);

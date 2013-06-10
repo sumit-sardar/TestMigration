@@ -1,7 +1,10 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.lexington.data.ItemContentArea;
 import com.ctb.lexington.db.mapper.ItemMapper;
@@ -25,9 +28,12 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
     }
 
     public void onEvent(final SubtestItemCollectionEvent event) {
-        final List itemsByContentAreaQueryResults = getItemsByContentArea(event.getItemSetId(),
+        List<ItemContentArea> itemsByContentAreaQueryResults = getItemsByContentArea(event.getItemSetId(),
                 event.getProductId());
-
+        if(event.getProductId() == 7501 || event.getProductId() == 7502){
+        	final Map<String,Long> contentMap = getAllVirtualContentArea(event.getItemSetId(),event.getProductId());
+        	itemsByContentAreaQueryResults = populateContentListWithVirtual(itemsByContentAreaQueryResults, contentMap);
+        }
         final IndexMap itemsByContentArea = new IndexMap(String.class, ItemContentArea.class,
                 new IndexMap.Mapper() {
                     public Object getKeyFor(final Object value) {
@@ -46,12 +52,128 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
         }
     }
 
-    protected List getItemsByContentArea(Integer itemSetId, Integer productId) {
+    protected List<ItemContentArea> getItemsByContentArea(Integer itemSetId, Integer productId) {
         Connection conn = null;
         try {
             conn = scorer.getOASConnection();
             ItemMapper mapper = new ItemMapper(conn);
             return mapper.findItemGroupByContentAreaForItemSetAndProduct(DatabaseHelper
+                    .asLong(itemSetId), DatabaseHelper.asLong(productId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                scorer.close(true, conn);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    protected List<ItemContentArea> populateContentListWithVirtual(List<ItemContentArea> iContentAreaResults, Map<String,Long> vContentAreaMap){
+    	List<ItemContentArea> tempVirtualContentList = new ArrayList<ItemContentArea>();
+    	Iterator iter = vContentAreaMap.keySet().iterator();
+        while (iter.hasNext()) {
+        	String vContentArea = (String)iter.next();
+        	if("Comprehension".equals(vContentArea)){
+		        for(ItemContentArea ica : iContentAreaResults){
+		    		if("Listening".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}else if("Reading".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}
+		    	}
+        	}else if("Oral".equals(vContentArea)){
+		        for(ItemContentArea ica : iContentAreaResults){
+		    		if("Listening".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}else if("Speaking".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}
+		    	}
+        	}else if("Productive".equals(vContentArea)){
+		        for(ItemContentArea ica : iContentAreaResults){
+		    		if("Speaking".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}else if("Writing".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}
+		    	}
+        	}else if("Literacy".equals(vContentArea)){
+		        for(ItemContentArea ica : iContentAreaResults){
+		    		if("Reading".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}else if("Writing".equals(ica.getContentAreaName())){
+		    			ItemContentArea newIca = new ItemContentArea();
+		    			newIca.setContentAreaId(vContentAreaMap.get(vContentArea));
+		    			newIca.setContentAreaName(vContentArea);
+		    			newIca.setProductId(ica.getProductId());
+		    			newIca.setItemId(ica.getItemId());
+		    			newIca.setItemSetId(ica.getItemSetId());
+		    			newIca.setMaxPoints(ica.getMaxPoints());
+		    			tempVirtualContentList.add(newIca);
+		    		}
+		    	}
+        	}
+        }
+        iContentAreaResults.addAll(tempVirtualContentList);
+    	return iContentAreaResults;
+    }
+    
+    protected Map<String,Long> getAllVirtualContentArea(Integer itemSetId, Integer productId) {
+        Connection conn = null;
+        try {
+            conn = scorer.getOASConnection();
+            ItemMapper mapper = new ItemMapper(conn);
+            return mapper.findAllVirtuContent(DatabaseHelper
                     .asLong(itemSetId), DatabaseHelper.asLong(productId));
         } catch (Exception e) {
             throw new RuntimeException(e);

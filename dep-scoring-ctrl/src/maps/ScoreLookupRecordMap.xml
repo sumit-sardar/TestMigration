@@ -333,6 +333,71 @@
         </isNotNull>
     </select>
     
+    <select id="findLasLinkNCE" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT
+            MIN(SL.DEST_SCORE_VALUE) as destScoreValue
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+        	SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+            AND SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
+            AND SL.DEST_SCORE_TYPE_CODE = 'NCE'
+            AND SL.SOURCE_SCORE_VALUE >= #sourceScoreValue:NUMERIC#
+            AND SL.CONTENT_AREA = #contentArea:VARCHAR#
+            AND SL.TEST_FORM = #testForm:VARCHAR#
+        ]]>
+        <isNotNull property="grade" prepend="and ">
+            SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+        <isNotNull property="testLevel" prepend="and ">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
+    
+    <select id="findLasLinkPR" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT
+            MIN(SL.DEST_SCORE_VALUE) as destScoreValue
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+        	SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+            AND SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
+            AND SL.DEST_SCORE_TYPE_CODE = 'PR'
+            AND SL.SOURCE_SCORE_VALUE >= #sourceScoreValue:NUMERIC#
+            AND SL.CONTENT_AREA = #contentArea:VARCHAR#
+            AND SL.TEST_FORM = #testForm:VARCHAR#
+        ]]>
+        <isNotNull property="grade" prepend="and ">
+            SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+        <isNotNull property="testLevel" prepend="and ">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
+    
+    <select id="findLasLinkLexile" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT
+            SL.DEST_SCORE_VALUE as destScoreValue
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+        	SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+            AND SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
+            AND SL.DEST_SCORE_TYPE_CODE = 'LXL'
+            AND SL.SOURCE_SCORE_VALUE = #sourceScoreValue:NUMERIC#
+            AND SL.CONTENT_AREA = #contentArea:VARCHAR#
+            AND SL.TEST_FORM = #testForm:VARCHAR#
+        ]]>
+        <isNotNull property="grade" prepend="and ">
+            SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+        <isNotNull property="testLevel" prepend="and ">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
     <select id="findScoreLookupForHighMasteryRange" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
         SELECT DISTINCT
             SL.SOURCE_SCORE_TYPE_CODE as sourceScoreTypeCode,

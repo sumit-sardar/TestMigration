@@ -427,7 +427,90 @@ public class CurriculumCollector {
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
             }
-           } 
+           } else if("ESP B".equals(form)){	
+        	   if(level != null && "K-1".equals(level)) {
+	           	composites[0].setAssessmentId(new Long(13337));
+	            composites[0].setCompositeId(new Long(39));
+	            composites[0].setCompositeNumItems(new Long(100));
+	            composites[0].setCompositePointsPossible(new Long(315));
+	          }else if("9-12".equals(level)) {
+	            composites[0].setAssessmentId(new Long(13341));
+	            composites[0].setCompositeId(new Long(40));
+	            composites[0].setCompositeNumItems(new Long(100));
+	            composites[0].setCompositePointsPossible(new Long(315));
+	          } else if("6-8".equals(level)) {
+	            composites[0].setAssessmentId(new Long(13340));
+	            composites[0].setCompositeId(new Long(41));
+	            composites[0].setCompositeNumItems(new Long(100));
+	            composites[0].setCompositePointsPossible(new Long(315));
+	          }else if("4-5".equals(level)) {
+	            composites[0].setAssessmentId(new Long(13217));
+	            composites[0].setCompositeId(new Long(42));
+	            composites[0].setCompositeNumItems(new Long(100));
+	            composites[0].setCompositePointsPossible(new Long(315));
+	          }else if("2-3".equals(level)) {
+	            composites[0].setAssessmentId(new Long(13339));
+	            composites[0].setCompositeId(new Long(43));
+	            composites[0].setCompositeNumItems(new Long(100));
+	            composites[0].setCompositePointsPossible(new Long(315));
+	          }
+           }else if("C".equals(form)){
+
+        	   if(level != null && "K-1".equals(level)) {
+               	composites[0].setAssessmentId(new Long(29126));
+                   composites[0].setCompositeId(new Long(44));
+                   composites[0].setCompositeNumItems(new Long(100));
+                   composites[0].setCompositePointsPossible(new Long(315));
+                 }else if("9-12".equals(level)) {
+                   composites[0].setAssessmentId(new Long(29355));
+                   composites[0].setCompositeId(new Long(45));
+                   composites[0].setCompositeNumItems(new Long(100));
+                   composites[0].setCompositePointsPossible(new Long(315));
+                 } else if("6-8".equals(level)) {
+                   composites[0].setAssessmentId(new Long(29346));
+                   composites[0].setCompositeId(new Long(46));
+                   composites[0].setCompositeNumItems(new Long(100));
+                   composites[0].setCompositePointsPossible(new Long(315));
+                 }else if("4-5".equals(level)) {
+                   composites[0].setAssessmentId(new Long(29077));
+                   composites[0].setCompositeId(new Long(47));
+                   composites[0].setCompositeNumItems(new Long(100));
+                   composites[0].setCompositePointsPossible(new Long(315));
+                 }else if("2-3".equals(level)) {
+                   composites[0].setAssessmentId(new Long(29304));
+                   composites[0].setCompositeId(new Long(48));
+                   composites[0].setCompositeNumItems(new Long(100));
+                   composites[0].setCompositePointsPossible(new Long(315));
+                 }
+           }/*else if("D".equals(form)){
+
+        	   if(level != null && "K-1".equals(level)) {
+            	composites[0].setAssessmentId(new Long(29364));
+                composites[0].setCompositeId(new Long(49));
+                composites[0].setCompositeNumItems(new Long(100));
+                composites[0].setCompositePointsPossible(new Long(315));
+              }else if("9-12".equals(level)) {
+                composites[0].setAssessmentId(new Long(29418));
+                composites[0].setCompositeId(new Long(50));
+                composites[0].setCompositeNumItems(new Long(100));
+                composites[0].setCompositePointsPossible(new Long(315));
+              } else if("6-8".equals(level)) {
+                composites[0].setAssessmentId(new Long(29502));
+                composites[0].setCompositeId(new Long(51));
+                composites[0].setCompositeNumItems(new Long(100));
+                composites[0].setCompositePointsPossible(new Long(315));
+              }else if("4-5".equals(level)) {
+                composites[0].setAssessmentId(new Long(29086));
+                composites[0].setCompositeId(new Long(52));
+                composites[0].setCompositeNumItems(new Long(100));
+                composites[0].setCompositePointsPossible(new Long(315));
+              }else if("2-3".equals(level)) {
+                composites[0].setAssessmentId(new Long(29382));
+                composites[0].setCompositeId(new Long(53));
+                composites[0].setCompositeNumItems(new Long(100));
+                composites[0].setCompositePointsPossible(new Long(315));
+              }
+           } */
         	return composites;
         } else if ("TA".equals(productType)) {
         	Composite [] composites = new Composite[2];
@@ -454,10 +537,13 @@ public class CurriculumCollector {
     }
     
     public ContentArea [] getContentAreas(Long oasRosterId) throws SQLException {
+    	Integer productId =null;
+    	String subtestLevel="", subtestForm="";
         HashMap caMap = new HashMap();
-        ArrayList contentAreas = new ArrayList();
+        ArrayList<ContentArea> contentAreas = new ArrayList<ContentArea>();
         final String casql = 
         	"select distinct " +
+        	"  	prod.product_id as productId,"+
             "   prod.product_id || ca.item_Set_id as contentAreaId, " + 
             "   ca.item_set_name as contentAreaName, " + 
             "   prod.product_type || ' CONTENT AREA' as contentAreaType, " + 
@@ -504,6 +590,7 @@ public class CurriculumCollector {
             "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " + 
             "   and cacat.framework_product_id = prod.PARENT_PRODUCT_ID " +
             " group by " +
+            "   prod.product_id, "+
             "   prod.product_id || ca.item_Set_id, " + 
             "   ca.item_set_name, " + 
             "   prod.product_type || ' CONTENT AREA', " + 
@@ -519,6 +606,9 @@ public class CurriculumCollector {
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
             while (rs.next()) {
+            	productId =  rs.getInt("productId");
+            	subtestLevel = rs.getString("subtestLevel");
+            	subtestForm = rs.getString("subtestForm");
                 ContentArea contentArea = new ContentArea();
                 contentArea.setContentAreaId(new Long(rs.getLong("contentAreaId")));
                 contentArea.setContentAreaName(rs.getString("contentAreaName"));
@@ -548,12 +638,160 @@ public class CurriculumCollector {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
+        if(productId == 7501 || productId == 7502){
+        	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
+        }
+            
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
     }
     
-    public PrimaryObjective [] getPrimaryObjectives(Long oasRosterId) throws SQLException {
+    private ArrayList getVirtualContentAreaForLaslinkSecEdition(
+			ArrayList<ContentArea> contentAreas, Integer productId, String subtestLevel, String subtestForm) throws SQLException{
+    	 ArrayList<ContentArea> finalCAList = new ArrayList<ContentArea>();
+    	
+    	 final String casql = "select prod.product_id || ca.item_Set_id as contentAreaId, " + 
+         "	ca.item_set_name as contentAreaName, " + 
+         "  prod.product_type || ' CONTENT AREA' as contentAreaType, " + 
+         "  prod.product_type || ' ' || ca.item_Set_name as subject " +
+         "  from item_set ca," +
+         "  item_set_category isc," +
+         "  product prod" +
+         "	where ca.ext_cms_item_set_id like ?" +
+         "	and ca.item_set_category_id = isc.item_set_category_id" +
+         "	and isc.item_set_category_level = prod.content_area_level" +
+         "	and isc.framework_product_id = prod.parent_product_id" +
+         "	and prod.product_id = ?";
+
+    	 PreparedStatement ps = null;
+         ResultSet rs = null;
+         try {
+             ps = conn.prepareStatement(casql);
+             String likeSubtestLevel = "%"+subtestLevel+"%";
+             ps.setString(1, likeSubtestLevel);
+             ps.setInt(2, productId);
+             rs = ps.executeQuery();
+             while (rs.next()) {
+             ContentArea contentArea = new ContentArea();
+             contentArea.setContentAreaId(rs.getLong("contentAreaId"));
+             contentArea.setContentAreaName(rs.getString("contentAreaName"));
+             contentArea.setContentAreaType(rs.getString("contentAreaType"));
+             contentArea.setSubject(rs.getString("subject"));
+             contentArea.setSubtestLevel(subtestLevel);
+             contentArea.setSubtestForm(subtestForm);
+             
+             if ("Comprehension".equals(contentArea.getContentAreaName())){
+            	 Long contentAreaPointsPossible = new Long(0);
+                 Long contentAreaNumItems = new Long(0);
+                 for(ContentArea ca : contentAreas){
+            		 if("Listening".equals(ca.getContentAreaName()) || "Reading".equals(ca.getContentAreaName())){
+            			 contentAreaPointsPossible += ca.getContentAreaPointsPossible();
+            			 contentAreaNumItems += ca.getContentAreaNumItems();
+            			 contentArea.setContentAreaPointsPossible(contentAreaPointsPossible);
+            			 contentArea.setContentAreaNumItems(contentAreaNumItems);
+            		 }
+            	 }
+            	 for(ContentArea ca : contentAreas){
+            		 if("Listening".equals(ca.getContentAreaName())){
+            			 ContentArea newCA = new ContentArea(contentArea);
+            			 newCA.setSubtestId(ca.getSubtestId());
+            			 finalCAList.add(newCA);
+            		 }
+            		 if("Reading".equals(ca.getContentAreaName())){
+            			 ContentArea newCA = new ContentArea(contentArea);
+            			 newCA.setSubtestId(ca.getSubtestId());
+            			 finalCAList.add(newCA);
+            		 }
+            	 }
+            	 
+             	}
+             else if("Oral".equals(contentArea.getContentAreaName())){
+            	 Long contentAreaPointsPossible = new Long(0);
+                 Long contentAreaNumItems = new Long(0);
+            	 for(ContentArea ca : contentAreas){
+            		 if("Listening".equals(ca.getContentAreaName()) || "Speaking".equals(ca.getContentAreaName())){
+            			 contentAreaPointsPossible += ca.getContentAreaPointsPossible();
+            			 contentAreaNumItems += ca.getContentAreaNumItems();
+            			 contentArea.setContentAreaPointsPossible(contentAreaPointsPossible);
+            			 contentArea.setContentAreaNumItems(contentAreaNumItems);
+            		 }
+            	 }
+            	 for(ContentArea ca : contentAreas){
+            		 if("Listening".equals(ca.getContentAreaName())){
+            			 ContentArea newCA = new ContentArea(contentArea);
+            			 newCA.setSubtestId(ca.getSubtestId());
+            			 finalCAList.add(newCA);
+            		 }
+            		 if("Speaking".equals(ca.getContentAreaName())){
+            			 ContentArea newCA = new ContentArea(contentArea);
+            			 newCA.setSubtestId(ca.getSubtestId());
+            			 finalCAList.add(newCA);
+            		 }
+            	 }
+             }
+             else if("Productive".equals(contentArea.getContentAreaName())){
+	           	 Long contentAreaPointsPossible = new Long(0);
+	             Long contentAreaNumItems = new Long(0);
+	           	 for(ContentArea ca : contentAreas){
+	           		 if("Writing".equals(ca.getContentAreaName()) || "Speaking".equals(ca.getContentAreaName())){
+	           			 contentAreaPointsPossible += ca.getContentAreaPointsPossible();
+	           			 contentAreaNumItems += ca.getContentAreaNumItems();
+	           			 contentArea.setContentAreaPointsPossible(contentAreaPointsPossible);
+	           			 contentArea.setContentAreaNumItems(contentAreaNumItems);
+	           		 }
+	           	 }
+	           	 for(ContentArea ca : contentAreas){
+	           		 if("Writing".equals(ca.getContentAreaName())){
+	           			ContentArea newCA = new ContentArea(contentArea);
+	           			newCA.setSubtestId(ca.getSubtestId());
+	           			finalCAList.add(newCA);
+	           		 }
+	           		 if("Speaking".equals(ca.getContentAreaName())){
+	           			ContentArea newCA = new ContentArea(contentArea);
+	           			newCA.setSubtestId(ca.getSubtestId());
+	           			finalCAList.add(newCA);
+	           		 }
+	           	 }
+             }
+             else if("Literacy".equals(contentArea.getContentAreaName())){
+	           	 Long contentAreaPointsPossible = new Long(0);
+	             Long contentAreaNumItems = new Long(0);
+	           	 for(ContentArea ca : contentAreas){
+	           		 if("Reading".equals(ca.getContentAreaName()) || "Writing".equals(ca.getContentAreaName())){
+	           			 contentAreaPointsPossible += ca.getContentAreaPointsPossible();
+	           			 contentAreaNumItems += ca.getContentAreaNumItems();
+	           			 contentArea.setContentAreaPointsPossible(contentAreaPointsPossible);
+	           			 contentArea.setContentAreaNumItems(contentAreaNumItems);
+	           		 }
+	           	 }
+	           	 for(ContentArea ca : contentAreas){
+	           		 if("Writing".equals(ca.getContentAreaName())){
+	           			ContentArea newCA = new ContentArea(contentArea);
+	           			newCA.setSubtestId(ca.getSubtestId());
+	           			finalCAList.add(newCA);
+	           		 }
+	           		 if("Reading".equals(ca.getContentAreaName())){
+	           			ContentArea newCA = new ContentArea(contentArea);
+	           			newCA.setSubtestId(ca.getSubtestId());
+	           			finalCAList.add(newCA);
+	           		 }
+	           	 }
+             }
+             }
+             contentAreas.addAll(finalCAList);
+         }finally {
+             SQLUtil.close(rs);
+             ConnectionFactory.getInstance().release(ps);
+         }
+		
+		return contentAreas;
+	}
+
+	public PrimaryObjective [] getPrimaryObjectives(Long oasRosterId) throws SQLException {
         ArrayList primaryObjectives = new ArrayList();
         HashMap poMap = new HashMap();
+        Integer productId = null;
+        String subtestLevel ="", subtestForm ="";
+        Long objectiveIndex = new Long(0);
         
         final String casql = 
         	"select primaryObjectiveId, " + 
@@ -641,6 +879,9 @@ public class CurriculumCollector {
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
             while (rs.next()) {
+            	productId = rs.getInt("productId");
+            	subtestLevel = rs.getString("subtestLevel");
+            	subtestForm = rs.getString("subtestForm");
                 PrimaryObjective primaryObjective = new PrimaryObjective();
                 primaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
                 primaryObjective.setContentAreaId(new Long(rs.getLong("contentAreaId")));
@@ -664,6 +905,10 @@ public class CurriculumCollector {
                 }   
                 poMap.put(key, primaryObjective);    
                 primaryObjectives.add(primaryObjective);
+                objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
+            }
+            if(productId == 7501 || productId == 7502){
+            	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
             }
         } finally {
             SQLUtil.close(rs);
@@ -671,9 +916,177 @@ public class CurriculumCollector {
         }
         return (PrimaryObjective []) primaryObjectives.toArray(new PrimaryObjective[0]);
     }
-    
+	
+	
+	private ArrayList getVirtualPrimaryObjectiveForLaslinkSecEdition(
+			ArrayList<PrimaryObjective> primaryObjectives, Integer productId, String subtestLevel, String subtestForm, Long objectiveIndex) throws SQLException{
+    	 ArrayList<PrimaryObjective> tempPrimList = new ArrayList<PrimaryObjective>();
+    	
+    	 final String casql = "select prim.item_Set_id as primaryObjectiveId," +
+    	 		"	prod.product_id || prim.item_Set_id as contentAreaId," +
+    	 		"	prim.item_set_name as primaryObjectiveName," +
+    	 		"	primcat.ITEM_SET_CATEGORY_NAME as primaryObjectiveType," +
+    	 		"	prim.ext_cms_item_set_id as monarchId" +
+    	 		"	from item_set prim, item_set_category primcat, product prod" +
+    	 		"	where prim.ext_cms_item_set_id like ?" +
+    	 		"	and prim.item_set_category_id = primcat.item_set_category_id" +
+    	 		"	and primcat.item_set_category_level = prod.content_area_level" +
+    	 		"	and primcat.framework_product_id = prod.parent_product_id" +
+    	 		"	and prod.product_id = ?";
+
+    	 PreparedStatement ps = null;
+         ResultSet rs = null;
+         
+         try {
+             ps = conn.prepareStatement(casql);
+             String likeSubtestLevel = "%"+subtestLevel+"%";
+             ps.setString(1, likeSubtestLevel);
+             ps.setInt(2, productId);
+             rs = ps.executeQuery();
+             while (rs.next()) {
+            	 PrimaryObjective primaryObjective = new PrimaryObjective();
+                 primaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
+                 primaryObjective.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                 primaryObjective.setPrimaryObjectiveName(rs.getString("primaryObjectiveName"));
+                 primaryObjective.setPrimaryObjectiveType(rs.getString("primaryObjectiveType"));
+                 primaryObjective.setSubtestForm(subtestForm);
+                 primaryObjective.setSubtestLevel(subtestLevel);
+//                 primaryObjective.setPrimaryObjectiveIndex(objectiveIndex);
+                 primaryObjective.setProductId(new Long(productId));
+                 primaryObjective.setMonarchId(rs.getString("monarchId"));
+             	 
+             //finalCAList.add(contentArea);
+                 if ("Comprehension".equals(primaryObjective.getPrimaryObjectiveName())){
+                	 Long primaryObjectivePointsPossible = new Long(0);
+                     Long primaryObjectiveNumItems = new Long(0);
+                	 for(PrimaryObjective prim : primaryObjectives){
+                		 if("Listening".equals(prim.getPrimaryObjectiveName()) || "Reading".equals(prim.getPrimaryObjectiveName())){
+                			 primaryObjectivePointsPossible += prim.getPrimaryObjectivePointsPossible();
+                			 primaryObjectiveNumItems += prim.getPrimaryObjectiveNumItems();
+                			 primaryObjective.setPrimaryObjectivePointsPossible(primaryObjectivePointsPossible);
+                			 primaryObjective.setPrimaryObjectiveNumItems(primaryObjectiveNumItems);
+                		 }
+                	 }
+                	 for(PrimaryObjective prim : primaryObjectives){
+    	           		 if("Writing".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           		 if("Reading".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           	 }
+                	 //primaryObjectives.add(primaryObjective);
+                 	}
+                 else if ("Oral".equals(primaryObjective.getPrimaryObjectiveName())){
+                	 Long primaryObjectivePointsPossible = new Long(0);
+                     Long primaryObjectiveNumItems = new Long(0);
+                	 for(PrimaryObjective prim : primaryObjectives){
+                		 if("Listening".equals(prim.getPrimaryObjectiveName()) || "Speaking".equals(prim.getPrimaryObjectiveName())){
+                			 primaryObjectivePointsPossible += prim.getPrimaryObjectivePointsPossible();
+                			 primaryObjectiveNumItems += prim.getPrimaryObjectiveNumItems();
+                			 primaryObjective.setPrimaryObjectivePointsPossible(primaryObjectivePointsPossible);
+                			 primaryObjective.setPrimaryObjectiveNumItems(primaryObjectiveNumItems);
+                		 }
+                	 }
+                	 for(PrimaryObjective prim : primaryObjectives){
+    	           		 if("Listening".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           		 if("Speaking".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           	 }
+                	 //primaryObjectives.add(primaryObjective);
+                	 //objectiveIndex++;
+                 	}
+                 else if ("Productive".equals(primaryObjective.getPrimaryObjectiveName())){
+                	 Long primaryObjectivePointsPossible = new Long(0);
+                     Long primaryObjectiveNumItems = new Long(0);
+                	 for(PrimaryObjective prim : primaryObjectives){
+                		 if("Speaking".equals(prim.getPrimaryObjectiveName()) || "Writing".equals(prim.getPrimaryObjectiveName())){
+                			 primaryObjectivePointsPossible += prim.getPrimaryObjectivePointsPossible();
+                			 primaryObjectiveNumItems += prim.getPrimaryObjectiveNumItems();
+                			 primaryObjective.setPrimaryObjectivePointsPossible(primaryObjectivePointsPossible);
+                			 primaryObjective.setPrimaryObjectiveNumItems(primaryObjectiveNumItems);
+                		 }
+                	 }
+                	 for(PrimaryObjective prim : primaryObjectives){
+    	           		 if("Speaking".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           		 if("Writing".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           	 }
+                	 //primaryObjectives.add(primaryObjective);
+                	 //objectiveIndex++;
+                 	}
+                 else if ("Literacy".equals(primaryObjective.getPrimaryObjectiveName())){
+                	 Long primaryObjectivePointsPossible = new Long(0);
+                     Long primaryObjectiveNumItems = new Long(0);
+                	 for(PrimaryObjective prim : primaryObjectives){
+                		 if("Reading".equals(prim.getPrimaryObjectiveName()) || "Writing".equals(prim.getPrimaryObjectiveName())){
+                			 primaryObjectivePointsPossible += prim.getPrimaryObjectivePointsPossible();
+                			 primaryObjectiveNumItems += prim.getPrimaryObjectiveNumItems();
+                			 primaryObjective.setPrimaryObjectivePointsPossible(primaryObjectivePointsPossible);
+                			 primaryObjective.setPrimaryObjectiveNumItems(primaryObjectiveNumItems);
+                		 }
+                	 }
+                	 for(PrimaryObjective prim : primaryObjectives){
+    	           		 if("Reading".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           		 if("Writing".equals(prim.getPrimaryObjectiveName())){
+    	           			PrimaryObjective tempPO = new PrimaryObjective(primaryObjective);
+    	           			tempPO.setSubtestId(prim.getSubtestId());
+    	           			tempPO.setPrimaryObjectiveIndex(objectiveIndex);
+    	           			tempPrimList.add(tempPO);
+    	           			objectiveIndex++;
+    	           		 }
+    	           	 }
+                	 //primaryObjectives.add(primaryObjective);
+                	 //objectiveIndex++;
+                 	}
+                 primaryObjectives.addAll(tempPrimList);
+             }
+         }finally {
+             SQLUtil.close(rs);
+             ConnectionFactory.getInstance().release(ps);
+         }
+		
+		return primaryObjectives;
+	}
     public SecondaryObjective [] getSecondaryObjectives(Long oasRosterId) throws SQLException {
-        ArrayList secondaryObjectives = new ArrayList();
+        ArrayList<SecondaryObjective> secondaryObjectives = new ArrayList<SecondaryObjective>();
+        Integer productId = null;
         final String casql = 
         	"select distinct " +
             "   sec.item_Set_id as secondaryObjectiveId, " +
@@ -749,6 +1162,7 @@ public class CurriculumCollector {
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
             while (rs.next()) {
+            	productId = rs.getInt("productId");
                 SecondaryObjective secondaryObjective = new SecondaryObjective();
                 secondaryObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
                 secondaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
@@ -765,6 +1179,10 @@ public class CurriculumCollector {
                 
                 secondaryObjectives.add(secondaryObjective);
             }
+            if(productId == 7501 || productId == 7502){
+            	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
+            }
+            
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
@@ -1048,5 +1466,146 @@ public class CurriculumCollector {
         return (PrimaryObjective []) primaryObjectives.toArray(new PrimaryObjective[0]);
     }
     
+    public ArrayList<SecondaryObjective> calculateAcademicScore(SecondaryObjective[] secondaryObjectives, Long oasRosterId) throws SQLException{
+    	ArrayList<SecondaryObjective> secObjList = new ArrayList<SecondaryObjective>();
+    	HashMap<String, SecondaryObjective> academicMap = new HashMap<String, SecondaryObjective>();
+    	SecondaryObjective readingAcademic = new SecondaryObjective();
+    	SecondaryObjective writingAcademic = new SecondaryObjective();
+    	SecondaryObjective speakingAcademic = new SecondaryObjective();
+    	SecondaryObjective listeningAcademic = new SecondaryObjective();
+    	Long readingPointPossible = new Long(0);
+    	Long readingNumItems = new Long(0);
+    	Long writingPointPossible = new Long(0);
+    	Long writingNumItems = new Long(0);
+    	Long speakingPointPossible = new Long(0);
+    	Long speakingNumItems = new Long(0);
+    	Long listeningPointPossible = new Long(0);
+    	Long listeningNumItems = new Long(0);
+    	String secObjIdReadingAc="";
+    	String secObjIdListeningAc="";
+    	String secObjIdSpeakingAc="";
+    	String secObjIdWritingAc="";
+    	
+    	final String SQL = 
+        	"SELECT LCO.OBJECTIVE_ID as secondaryObjectiveId," +
+        	"	LCO.OBJECTIVE_NAME as secondaryObjectiveName," +
+        	"	LCO.EXT_CMS_ITEM_SET_ID as monarchId," +
+        	"	LCO.TEST_LEVEL as subtestLevel," +
+        	"	LCO.SUBJECT as subtestName" +
+        	"	FROM LASLINK_CD_OBJECTIVE LCO," +
+        	"	TEST_ADMIN           TA," +
+        	"	ITEM_SET             ISET," +
+        	"	TEST_ROSTER          TR" +
+        	"	WHERE TR.TEST_ROSTER_ID = ?" +
+        	"	AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID" +
+        	"	AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID" +
+        	"	AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL))=LCO.TEST_LEVEL";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(SQL);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                SecondaryObjective secObjective = new SecondaryObjective();
+                secObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
+                secObjective.setSecondaryObjectiveName(rs.getString("secondaryObjectiveName"));
+                secObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                secObjective.setSubtestName(rs.getString("subtestName"));
+                secObjective.setMonarchId(rs.getString("monarchId"));
+                
+                academicMap.put(rs.getString("subtestName").toUpperCase(), secObjective);
+            }
+        }finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        
+    	for(int ii=0; ii<secondaryObjectives.length; ii++){
+    		secObjList.add(secondaryObjectives[ii]);
+	    		if(secondaryObjectives[ii].getSecondaryObjectiveName().contains("Language Arts / Social Studies / History")|| 
+	    				secondaryObjectives[ii].getSecondaryObjectiveName().contains("Mathematics / Science / Technical Subjects") || 
+	    					secondaryObjectives[ii].getSecondaryObjectiveName().contains("Foundational Skills")){
+	    			
+	    			if("READING".equals(secondaryObjectives[ii].getSubtestName())){
+	    				readingPointPossible = readingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
+	    				readingNumItems = readingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
+	    				if(readingAcademic.getSubtestName() == null){
+		    				readingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
+		    				readingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				readingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
+		    				readingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
+		    				readingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
+		    				readingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
+		    				readingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
+		    				readingAcademic.setProductId(secondaryObjectives[ii].getProductId());
+		    				readingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
+		    				readingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+	    				}
+		    			readingAcademic.setSecondaryObjectivePointsPossible(readingPointPossible);
+		    			readingAcademic.setSecondaryObjectiveNumItems(readingNumItems);
+	    			}else if("LISTENING".equals(secondaryObjectives[ii].getSubtestName())){
+	    				listeningPointPossible = listeningPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
+	    				listeningNumItems = listeningNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
+	    				if(listeningAcademic.getSubtestName() == null){
+		    				listeningAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
+		    				listeningAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				listeningAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
+		    				listeningAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
+		    				listeningAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
+		    				listeningAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
+		    				listeningAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
+		    				listeningAcademic.setProductId(secondaryObjectives[ii].getProductId());
+		    				listeningAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
+		    				listeningAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+	    				}
+	    				listeningAcademic.setSecondaryObjectivePointsPossible(listeningPointPossible);
+	    				listeningAcademic.setSecondaryObjectiveNumItems(listeningNumItems);
+	    			}else if("SPEAKING".equals(secondaryObjectives[ii].getSubtestName())){
+	    				speakingPointPossible = speakingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
+	    				speakingNumItems = speakingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
+	    				if(speakingAcademic.getSubtestName() == null){
+		    				speakingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
+		    				speakingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				speakingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
+		    				speakingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
+		    				speakingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
+		    				speakingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
+		    				speakingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
+		    				speakingAcademic.setProductId(secondaryObjectives[ii].getProductId());
+		    				speakingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
+		    				speakingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+	    				}
+	    				speakingAcademic.setSecondaryObjectivePointsPossible(speakingPointPossible);
+	    				speakingAcademic.setSecondaryObjectiveNumItems(speakingNumItems);
+	    			}else if("WRITING".equals(secondaryObjectives[ii].getSubtestName())){
+	    				writingPointPossible = writingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
+	    				writingNumItems = writingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
+	    				if(writingAcademic.getSubtestName() == null){
+		    				writingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
+		    				writingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				writingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
+		    				writingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
+		    				writingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
+		    				writingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
+		    				writingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
+		    				writingAcademic.setProductId(secondaryObjectives[ii].getProductId());
+		    				writingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
+		    				writingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+	    				}
+	    				writingAcademic.setSecondaryObjectivePointsPossible(writingPointPossible);
+	    				writingAcademic.setSecondaryObjectiveNumItems(writingNumItems);
+	    			}
+	    		}
+    	}
+    	if(readingAcademic != null && listeningAcademic != null && speakingAcademic != null && writingAcademic != null){
+	    	secObjList.add(readingAcademic);
+	    	secObjList.add(listeningAcademic);
+	    	secObjList.add(speakingAcademic);
+	    	secObjList.add(writingAcademic);
+    	}
+    	return secObjList;
+    }
     
 }

@@ -14,6 +14,7 @@ public class AssessmentStartedEvent extends AssessmentEvent {
     private final Integer productId;
     private final ProductType productType;
     private final String grade;
+    private String productTypeValue;
 
     public AssessmentStartedEvent(final Long testRosterId, final Integer productId,
             final String productType, final String grade) {
@@ -29,6 +30,7 @@ public class AssessmentStartedEvent extends AssessmentEvent {
             throw new NullPointerException("Cannot start an assessment for null grade for non SOFA and non TABE test");
 
         this.productId = productId;
+        this.productTypeValue = productType;
         //TODO: pass in ProductType enum
         this.productType = (productType == null ? null : ProductType.getByCode(productType));
         this.grade = grade;
@@ -190,4 +192,12 @@ public class AssessmentStartedEvent extends AssessmentEvent {
 
         return (getTestRosterId().equals(that.getTestRosterId()));
     }
+
+	public String getProductTypeValue() {
+		return productTypeValue;
+	}
+
+	public void setProductTypeValue(String productTypeValue) {
+		this.productTypeValue = productTypeValue;
+	}
 }
