@@ -386,6 +386,8 @@ function searchUserByKeywordList2(){
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 
+	 setAnchorButtonState('viewStatusButton', true);
+	 setAnchorButtonState('printTicketButton', true); 
 	 closePopUp('searchUserByKeywordList2');
 	 selectedTestAdminId = null;
 	 $("#list2").jqGrid('resetSelection');	//Removing grid selection after search
@@ -446,6 +448,8 @@ function searchUserByKeywordList3(){
 		 $.extend(grid[0].p.postData,{filters:JSON.stringify(f)});
 	 }
 	 grid.trigger("reloadGrid",[{page:1,current:true}]); 	
+	 setAnchorButtonState('viewStatusButton', true);
+	 setAnchorButtonState('printTicketButton', true); 
 	 closePopUp('searchUserByKeywordList3');
 	 selectedTestAdminId = null;
 	 $("#list3").jqGrid('resetSelection');	//Removing grid selection after search
