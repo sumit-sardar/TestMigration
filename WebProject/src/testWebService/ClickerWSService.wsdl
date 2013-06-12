@@ -82,7 +82,7 @@
         <xs:annotation>
           <xs:documentation>/** 
  * Student response from vendor
- * Vendor needs to populate student responses
+ * Vendor needs to populate all necessary fields in the StudentResponse object (i.e, student responses...)
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
@@ -154,7 +154,7 @@
       <xs:complexType name="OrgNodeList">
         <xs:annotation>
           <xs:documentation>/** 
- * Children nodes of an organization 
+ * List of organizations 
  * status stores error message otherwise set to 'OK'
  * @author Tai_Truong
  */</xs:documentation>
@@ -254,6 +254,20 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="submitStudentResponses">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="studentResponses" type="java:StudentResponse" xmlns:java="java:dto"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="submitStudentResponsesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="return" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="getTestStructure">
         <xs:complexType>
           <xs:sequence>
@@ -266,20 +280,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="return" type="java:TestStructure" xmlns:java="java:dto"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="submitStudentResponses">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="stdRes" type="java:StudentResponse" xmlns:java="java:dto"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="submitStudentResponsesResponse">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element minOccurs="0" name="return" nillable="true" type="xs:boolean"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -315,17 +315,17 @@
   <s0:message name="getUserTopNodesResponse">
     <s0:part element="s1:getUserTopNodesResponse" name="parameters"/>
   </s0:message>
-  <s0:message name="getTestStructure">
-    <s0:part element="s1:getTestStructure" name="parameters"/>
-  </s0:message>
-  <s0:message name="getTestStructureResponse">
-    <s0:part element="s1:getTestStructureResponse" name="parameters"/>
-  </s0:message>
   <s0:message name="submitStudentResponses">
     <s0:part element="s1:submitStudentResponses" name="parameters"/>
   </s0:message>
   <s0:message name="submitStudentResponsesResponse">
     <s0:part element="s1:submitStudentResponsesResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="getTestStructure">
+    <s0:part element="s1:getTestStructure" name="parameters"/>
+  </s0:message>
+  <s0:message name="getTestStructureResponse">
+    <s0:part element="s1:getTestStructureResponse" name="parameters"/>
   </s0:message>
   <s0:portType name="ClickerWS">
     <s0:operation name="getSessionsForNode" parameterOrder="parameters">
@@ -348,13 +348,13 @@
       <s0:input message="s1:getUserTopNodes"/>
       <s0:output message="s1:getUserTopNodesResponse"/>
     </s0:operation>
-    <s0:operation name="getTestStructure" parameterOrder="parameters">
-      <s0:input message="s1:getTestStructure"/>
-      <s0:output message="s1:getTestStructureResponse"/>
-    </s0:operation>
     <s0:operation name="submitStudentResponses" parameterOrder="parameters">
       <s0:input message="s1:submitStudentResponses"/>
       <s0:output message="s1:submitStudentResponsesResponse"/>
+    </s0:operation>
+    <s0:operation name="getTestStructure" parameterOrder="parameters">
+      <s0:input message="s1:getTestStructure"/>
+      <s0:output message="s1:getTestStructureResponse"/>
     </s0:operation>
   </s0:portType>
   <s0:binding name="ClickerWSServiceSoapBinding" type="s1:ClickerWS">
@@ -404,7 +404,7 @@
         <s2:body parts="parameters" use="literal"/>
       </s0:output>
     </s0:operation>
-    <s0:operation name="getTestStructure">
+    <s0:operation name="submitStudentResponses">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>
@@ -413,7 +413,7 @@
         <s2:body parts="parameters" use="literal"/>
       </s0:output>
     </s0:operation>
-    <s0:operation name="submitStudentResponses">
+    <s0:operation name="getTestStructure">
       <s2:operation style="document"/>
       <s0:input>
         <s2:body parts="parameters" use="literal"/>

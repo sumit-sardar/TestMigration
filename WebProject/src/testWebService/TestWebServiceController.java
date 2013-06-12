@@ -250,7 +250,10 @@ public class TestWebServiceController extends PageFlowController
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
     			this.sessionId = new Integer(tmp.trim());
 
-    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+    			//TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+    			
+    			TestStructure testStructure = new TestStructure("Not implemented.");
+    			
     			if (testStructure.getStatus().equals("OK")) {
     				resultText = "getTestStructure: SUCCESS" ;
 					resultText += "<br/>testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
@@ -290,7 +293,9 @@ public class TestWebServiceController extends PageFlowController
     		
     		// submitStudentResponses
        		if ("submitStudentResponses".equals(status)) {
-    			resultText = "submitStudentResponses: Not Implemented Yet";
+       			StudentResponse studentResponse = new StudentResponse();
+       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+    			resultText = "submitStudentResponses: FAILED" + "<br/>" + ret;
     		}
      		
     			

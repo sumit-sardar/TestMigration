@@ -11,7 +11,7 @@ public class AssignmentList implements java.io.Serializable
     static final long serialVersionUID = 1L;
 
     private Integer orgNodeId = null;
-    Assignment[] assignments = null;
+    private Assignment[] assignments = null;
     private String status = null;		
 
     public AssignmentList() {

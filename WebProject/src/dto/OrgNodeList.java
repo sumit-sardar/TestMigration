@@ -1,7 +1,7 @@
 package dto; 
 
 /**
-* Children nodes of an organization 
+* List of organizations 
 * status stores error message otherwise set to 'OK'
 * 
 * @author Tai_Truong
@@ -11,7 +11,7 @@ public class OrgNodeList implements java.io.Serializable
     static final long serialVersionUID = 1L;
 
     private Integer parentOrgNodeId = null;
-    OrgNode[] orgNodes = null;
+    private OrgNode[] orgNodes = null;
     private String status = null;		
 
     public OrgNodeList() {

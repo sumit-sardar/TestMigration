@@ -2,7 +2,7 @@ package dto;
 
 /**
 * Student response from vendor
-* Vendor needs to populate student responses
+* Vendor needs to populate all necessary fields in the StudentResponse object (i.e, student responses...)
 *
 * @author Tai_Truong
 */

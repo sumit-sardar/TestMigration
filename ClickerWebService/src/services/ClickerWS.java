@@ -134,7 +134,7 @@ public class ClickerWS implements Serializable {
 	/**
 	* userName comes from OAS after authenticate successfully. 
 	* orgNodeId is org_node_id from OAS
-	* Return all children nodes under this node.
+	* Return all children nodes under this parent node.
 	*/
 	@WebMethod
 	public OrgNodeList getChildNodes(String userName, String orgNodeId) 
@@ -259,6 +259,7 @@ public class ClickerWS implements Serializable {
 	/**
 	* userName comes from OAS after authenticate successfully.
 	* sessionId is test_admin_id from OAS 
+	* return a test structure of specific session
 	*/
 	@WebMethod
 	public TestStructure getTestStructure(String userName, String sessionId) 
@@ -335,16 +336,16 @@ public class ClickerWS implements Serializable {
 	
 	
 	/**
-	* stdRes contains student responses and all other related information sent to OAS
-	* Return true if transaction successfully otherwise return false.
+	* studentResponses contains student responses and all other related information sent to OAS
+	* Return status of the transaction. "OK" if successfully otherwise return the error message.
 	* 
 	*/
 	@WebMethod
-	public Boolean submitStudentResponses(StudentResponse stdRes) 
+	public String submitStudentResponses(StudentResponse studentResponses) 
 	{
-		Boolean ret = Boolean.TRUE;
+		String status = "Not Implemented.";
 		
-		return ret;
+		return status;
 	}
 
 	
