@@ -2,7 +2,6 @@ package dto;
 
 /**
 * Question information
-* OAS populates correctAnswer
 * Vendor populates response
 *
 * @author Tai_Truong
@@ -11,42 +10,43 @@ public class Question implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer questionId = null;
-    private char correctAnswer = '-';
-    private char response = '-'; 
+    private String questionId = null;
+    private String correctAnswer = null;
+    private String response = null; 
 
     public Question() {
         this.questionId = null;
-        this.correctAnswer = '-';
-        this.response = '-';     	
+        this.correctAnswer = null;
+        this.response = null;     	
     }
-    public Question(Integer questionId, char correctAnswer, char response) {
+    
+    public Question(String questionId, String correctAnswer, String response) {
         this.questionId = questionId;
         this.correctAnswer = correctAnswer;
         this.response = response;     	
     }
 
-	public Integer getQuestionId() {
+	public String getQuestionId() {
 		return questionId;
 	}
 
-	public void setQuestionId(Integer questionId) {
+	public void setQuestionId(String questionId) {
 		this.questionId = questionId;
 	}
 
-	public char getCorrectAnswer() {
+	public String getCorrectAnswer() {
 		return correctAnswer;
 	}
 
-	public void setCorrectAnswer(char correctAnswer) {
+	public void setCorrectAnswer(String correctAnswer) {
 		this.correctAnswer = correctAnswer;
 	}
 
-	public char getResponse() {
+	public String getResponse() {
 		return response;
 	}
 
-	public void setResponse(char response) {
+	public void setResponse(String response) {
 		this.response = response;
 	}
     

@@ -21,7 +21,7 @@ public interface ClickerWSServiceControl extends ServiceControl
 
     public dto.AssignmentList getSessionsForNode(java.lang.String userName_arg,java.lang.String orgNodeId_arg);
 
-    public dto.TestStructure getTestStructure(java.lang.String userName_arg,java.lang.String testId_arg);
+    public dto.TestStructure getTestStructure(java.lang.String userName_arg,java.lang.String sessionId_arg);
 
     public dto.OrgNodeList getUserTopNodes(java.lang.String userName_arg);
 

@@ -1,6 +1,7 @@
 
 function submitStatus(status)
 {
+    document.body.style.cursor = 'wait';
 	var element = document.getElementById('status');
 	element.value = status;
    	document.forms[0].submit();

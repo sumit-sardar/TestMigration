@@ -26,26 +26,41 @@
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="ContentArea" nillable="true" type="java:ContentArea" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="FirstName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="LastName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="LoginName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="RosterId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="StudentId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="StudentKey" nillable="true" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subjects" nillable="true" type="java:Subject" xmlns:java="java:dto"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="Subject">
+      <xs:complexType name="ContentArea">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * ContentArea information
+ * subtests is a list of subtests in this content area
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="ContentAreaId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="ContentAreaName" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subtests" nillable="true" type="java:SubtestInfo" xmlns:java="java:dto"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SubtestInfo">
         <xs:annotation>
           <xs:documentation>/** 
  * Subtest information
- * OAS populates the fields
+ * questions is a list of questions in this subtest
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="Questions" nillable="true" type="java:Question" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="SubtestId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="SubtestLevel" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="SubtestName" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
@@ -53,27 +68,14 @@
         <xs:annotation>
           <xs:documentation>/** 
  * Question information
- * OAS populates correctAnswer
  * Vendor populates response
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element minOccurs="1" name="CorrectAnswer" nillable="false">
-            <xs:simpleType>
-              <xs:restriction base="xs:string">
-                <xs:length value="1"/>
-              </xs:restriction>
-            </xs:simpleType>
-          </xs:element>
-          <xs:element minOccurs="1" name="QuestionId" nillable="true" type="xs:int"/>
-          <xs:element minOccurs="1" name="Response" nillable="false">
-            <xs:simpleType>
-              <xs:restriction base="xs:string">
-                <xs:length value="1"/>
-              </xs:restriction>
-            </xs:simpleType>
-          </xs:element>
+          <xs:element minOccurs="1" name="CorrectAnswer" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="QuestionId" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="Response" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="StudentResponse">
@@ -109,15 +111,14 @@
         <xs:annotation>
           <xs:documentation>/** 
  * Structure of the test
- * Subtests is the list of subtests in the test
- * OAS populates the fields
+ * contentAreas is a list of content areas in the test
  * status stores error message otherwise set to 'OK'
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="ContentAreas" nillable="true" type="java:ContentArea" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subjects" nillable="true" type="java:Subject" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="TestName" nillable="true" type="xs:string"/>
         </xs:sequence>
@@ -257,7 +258,7 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="userName" type="xs:string"/>
-            <xs:element name="testId" type="xs:string"/>
+            <xs:element name="sessionId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>

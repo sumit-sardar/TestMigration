@@ -2,8 +2,7 @@ package dto;
 
 /**
 * Structure of the test
-* Subtests is the list of subtests in the test
-* OAS populates the fields
+* contentAreas is a list of content areas in the test
 * status stores error message otherwise set to 'OK'
 *
 * @author Tai_Truong
@@ -14,19 +13,19 @@ public class TestStructure implements java.io.Serializable
     
     private Integer testId = null;
     private String testName = null;
-    private Subject[] subjects = null; 
+    private ContentArea[] contentAreas = null; 
     private String status = null;		
     
     public TestStructure() {
     	this.testId = null;
     	this.testName = null;
-    	this.subjects = null;
+    	this.contentAreas = null;
     	this.status = null;
     }
-    public TestStructure(Integer testId, String testName, Subject[] subjects) {
+    public TestStructure(Integer testId, String testName, ContentArea[] contentAreas) {
     	this.testId = testId;
     	this.testName = testName;
-    	this.subjects = subjects;
+    	this.contentAreas = contentAreas;
     	this.status = "OK";
     }
 
@@ -49,14 +48,15 @@ public class TestStructure implements java.io.Serializable
 	public void setTestName(String testName) {
 		this.testName = testName;
 	}
-
-	public Subject[] getSubjects() {
-		return subjects;
+	
+	public ContentArea[] getContentAreas() {
+		return contentAreas;
 	}
-
-	public void setSubjects(Subject[] subjects) {
-		this.subjects = subjects;
+	
+	public void setContentAreas(ContentArea[] contentAreas) {
+		this.contentAreas = contentAreas;
 	}
+	
 	public String getStatus() {
 		return status;
 	}

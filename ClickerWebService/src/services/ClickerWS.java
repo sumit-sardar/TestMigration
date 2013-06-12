@@ -14,16 +14,23 @@ import java.io.Serializable;
 import org.apache.beehive.controls.api.bean.Control;
  
 import java.io.Serializable;
+import java.sql.SQLException;
 
+import com.ctb.bean.testAdmin.Item;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.control.testAdmin.TestSessionStatus;
+import com.ctb.exception.CTBBusinessException;
 
+import dto.SubtestInfo;
 import dto.UserInfo;
 import dto.Assignment;
 import dto.AssignmentList;
@@ -32,7 +39,7 @@ import dto.OrgNodeList;
 import dto.Roster;
 import dto.RosterList;
 import dto.Question;
-import dto.Subject;
+import dto.ContentArea;
 import dto.TestStructure;
 import dto.StudentResponse;
 
@@ -46,6 +53,12 @@ public class ClickerWS implements Serializable {
 	
 	@Control
 	private TestSessionStatus testSessionStatus;
+	
+	@Control
+	private ScheduleTest scheduleTest;
+	
+    @Control()
+    private com.ctb.control.db.ItemSet itemSet;
 	
     /**
     * OAS authenticates this user. 
@@ -245,14 +258,79 @@ public class ClickerWS implements Serializable {
 	
 	/**
 	* userName comes from OAS after authenticate successfully.
-	* testId is test_catalog_id from OAS 
+	* sessionId is test_admin_id from OAS 
 	*/
 	@WebMethod
-	public TestStructure getTestStructure(String userName, String testId) 
+	public TestStructure getTestStructure(String userName, String sessionId) 
 	{
-		TestStructure ts = new TestStructure(null);
+		TestStructure testStructure = new TestStructure();
 		
-		return ts;
+    	try {
+
+			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, new Integer(sessionId));
+			
+			TestElement[] TS_testElements = scheduledSession.getScheduledUnits();
+			
+	    	//ScheduledSession scheduledSession2 = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, sessionId);					
+			//SessionStudent[] sessionStudents = scheduledSession2.getStudents();		
+			
+			ContentArea[] contentAreas = new ContentArea[TS_testElements.length];
+			
+			for (int i=0 ; i<TS_testElements.length ; i++) {
+				TestElement TS_testElement = TS_testElements[i];
+				Integer parentItemSetId = TS_testElement.getItemSetId();
+				
+				try {
+					TestElement[] TD_testElements = this.itemSet.getTestElementsForParentForTD(parentItemSetId, "TD");
+					
+					SubtestInfo[] subtests = new SubtestInfo[TD_testElements.length];
+					
+					for (int j=0 ; j<TD_testElements.length ; j++) {	
+						TestElement TD_testElement = TD_testElements[j];
+						Integer itemSetId = TD_testElement.getItemSetId();								
+						
+						Item[] items = this.itemSet.getItems(itemSetId);
+						
+						Question[] questions = new Question[items.length];
+						
+						for (int k=0 ; k<items.length ; k++) {							
+							Item item = items[k];
+							Question question = new Question(item.getItemId(), item.getCorrectAnswer(), null);
+							questions[k] = question;
+						}
+						
+						SubtestInfo subtest = new SubtestInfo(TD_testElement.getItemSetId(), 
+															  TD_testElement.getItemSetName(), 
+															  TD_testElement.getItemSetLevel(), 
+															  questions);
+						subtests[j] = subtest;
+					}
+
+					ContentArea contentArea = new ContentArea(TS_testElement.getItemSetId(), 
+															  TS_testElement.getItemSetName(), 
+															  subtests);
+					
+				    contentAreas[i] = contentArea;
+					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(userName, new Integer(sessionId));
+			TestSession[] testSessions = tsData.getTestSessions();
+			TestSession testSession = testSessions[0];
+			
+			testStructure = new TestStructure(testSession.getTestCatalogId(),
+											  testSession.getTestName(),
+											  contentAreas);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			testStructure = new TestStructure(e.getMessage());
+		}
+		
+		return testStructure;
 	}
 	
 	

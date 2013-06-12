@@ -10,15 +10,15 @@ package dto;
 public class Roster implements java.io.Serializable 
 { 
     static final long serialVersionUID = 1L;
-    
+     
     private Integer rosterId = null;
     private Integer studentId = null;
     private String loginName = null;
     private String firstName = null;
     private String lastName = null;
     private String studentKey = null;
-    private Subject[] subjects = null; 
-    
+    private ContentArea[] contentArea = null; 
+     
     public Roster() {
     	this.rosterId = null;
     	this.studentId = null;
@@ -26,18 +26,18 @@ public class Roster implements java.io.Serializable
     	this.firstName = null;
     	this.lastName = null;
     	this.studentKey = null;
-    	this.subjects = null;    	
+    	this.contentArea = null;    	
     }
 
     public Roster(Integer rosterId, Integer studentId, String loginName, 
-    					String firstName, String lastName, String studentKey, Subject[] subjects) {
+    					String firstName, String lastName, String studentKey, ContentArea[] contentArea) {
     	this.rosterId = rosterId;
     	this.studentId = studentId;
     	this.loginName = loginName;
     	this.firstName = firstName;
     	this.lastName = lastName;
     	this.studentKey = studentKey;
-    	this.subjects = subjects;
+    	this.contentArea = contentArea;
     }
 
 	public Integer getRosterId() {
@@ -88,13 +88,14 @@ public class Roster implements java.io.Serializable
 		this.studentKey = studentKey;
 	}
 
-	public Subject[] getSubjects() {
-		return subjects;
+	public ContentArea[] getContentArea() {
+		return contentArea;
 	}
 
-	public void setSubjects(Subject[] subjects) {
-		this.subjects = subjects;
+	public void setContentArea(ContentArea[] contentArea) {
+		this.contentArea = contentArea;
 	}
+
 
 
     

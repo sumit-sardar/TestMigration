@@ -1,5 +1,6 @@
 package testWebService;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -22,6 +23,7 @@ import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ProcessStudentScore
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.ScoringStatus;
 import com.mcgraw_hill.ctb.acuity.scoring.ScoringServiceStub.StudentScore;
 
+import com.ctb.bean.testAdmin.Item;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.RosterElement;
@@ -41,6 +43,7 @@ import dto.Subtest;
 
 import dto.Assignment;
 import dto.AssignmentList;
+import dto.ContentArea;
 import dto.OrgNode;
 import dto.OrgNodeList;
 import dto.Question;
@@ -48,6 +51,7 @@ import dto.Roster;
 import dto.RosterList;
 import dto.StudentResponse;
 import dto.Subject;
+import dto.SubtestInfo;
 import dto.TestStructure;
 import dto.UserInfo;
 
@@ -81,6 +85,10 @@ public class TestWebServiceController extends PageFlowController
     @Control()
     private com.ctb.control.db.TestRoster rosters;
 	
+    @Control()
+    private com.ctb.control.db.ItemSet itemSet;
+
+    
 	private String userName = "tai_tabe";
 	private String password = "welcome1";
 	private Integer userId = new Integer(153854);
@@ -118,6 +126,7 @@ public class TestWebServiceController extends PageFlowController
     	String status = (String)this.getRequest().getParameter("status");
     	if (status != null) {
     		
+    		// authenticateUser
     		if ("authenticateUser".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			this.password = (String)this.getRequest().getParameter("password");
@@ -131,6 +140,7 @@ public class TestWebServiceController extends PageFlowController
 	    		}
     		}
 
+    		// getUserTopNode
     		if ("getUserTopNode".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			
@@ -152,6 +162,7 @@ public class TestWebServiceController extends PageFlowController
     			}
     		}
 
+    		// getChildrenNodes
     		if ("getChildrenNodes".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
@@ -174,10 +185,11 @@ public class TestWebServiceController extends PageFlowController
     			}
     		}
 
+    		// getSessionsForNode
     		if ("getSessionsForNode".equals(status)) {
-    			userName = (String)this.getRequest().getParameter("userName");
+    			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
-    			orgNodeId = new Integer(tmp.trim());    			
+    			this.orgNodeId = new Integer(tmp.trim());    			
     			
     			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId.toString());
     			
@@ -202,10 +214,11 @@ public class TestWebServiceController extends PageFlowController
     			}
     		}
 
+    		// getRostersInSession
     		if ("getRostersInSession".equals(status)) {
-    			userName = (String)this.getRequest().getParameter("userName");
+    			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			sessionId = new Integer(tmp.trim());
+    			this.sessionId = new Integer(tmp.trim());
     			
     			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
     			
@@ -231,34 +244,56 @@ public class TestWebServiceController extends PageFlowController
     			}
     		}
 
+    		// getTestStructure
     		if ("getTestStructure".equals(status)) {
-    			userName = (String)this.getRequest().getParameter("userName");
+    			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			sessionId = new Integer(tmp.trim());
-    			
-    	    	try {
-        			resultText = "getTestStructure: Not Implemented Yet";
+    			this.sessionId = new Integer(tmp.trim());
 
-        			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, sessionId);
-					
-					TestElement[] testElements = scheduledSession.getScheduledUnits();
-					
-	    	    	ScheduledSession scheduledSession2 = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, sessionId);
-					
-					SessionStudent[] sessionStudents = scheduledSession2.getStudents();
-					
-					TestStructure testStructure = new TestStructure();
-					
-				} catch (CTBBusinessException e) {
-					e.printStackTrace();
-				}
-    			
-    		}
+    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+    			if (testStructure.getStatus().equals("OK")) {
+    				resultText = "getTestStructure: SUCCESS" ;
+					resultText += "<br/>testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
 
-    		if ("submitStudentResponses".equals(status)) {
-    			resultText = "submitStudentResponses: Not Implemented Yet";
+					resultText += "<table>";
+					ContentArea[] contentAreas = testStructure.getContentAreas();
+					for (int i=0 ; i<contentAreas.length ; i++) {
+						ContentArea contentArea = contentAreas[i];
+						resultText += "<tr><td>";
+						resultText += "TS=" + contentArea.getContentAreaId() + " - " + contentArea.getContentAreaName();					
+						resultText += "</td></tr>";
+						
+						SubtestInfo[] subtests = contentArea.getSubtests();
+						for (int j=0 ; j<subtests.length ; j++) {	
+							SubtestInfo subtest = subtests[j];
+							resultText += "<tr><td>";
+							resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+							resultText += "TD=" + subtest.getSubtestId() + " - " + subtest.getSubtestName() + " - " + subtest.getSubtestLevel();					
+							resultText += "</td></tr>";
+							resultText += "<tr><td>";
+							resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+							
+							Question[] questions = subtest.getQuestions();
+							for (int k=0 ; k<questions.length ; k++) {		
+								Question question = questions[k];
+								resultText += (question.getCorrectAnswer() + ",");
+							}
+							resultText += "</td></tr>";
+						}
+					}
+	    			resultText += "</table>";
+	    		}
+    			else {
+	    			resultText = "getTestStructure: FAILED" + "<br/>" + testStructure.getStatus();
+    			}
     		}
     		
+    		// submitStudentResponses
+       		if ("submitStudentResponses".equals(status)) {
+    			resultText = "submitStudentResponses: Not Implemented Yet";
+    		}
+     		
+    			
     	}
     	
     	this.getRequest().setAttribute("resultText", resultText);
