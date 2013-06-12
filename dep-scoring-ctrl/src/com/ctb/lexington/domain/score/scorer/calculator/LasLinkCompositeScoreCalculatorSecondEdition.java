@@ -494,11 +494,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
 	       	overallCompositeScores.nationalPercentile = getScore(OVERALL_CONTENT_AREA_NAME,OverallScaleScore,
 	       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.PERCENTILE_RANK,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 	       	if(overallCompositeScores.nationalPercentile == null)
-	       		overallCompositeScores.nationalPercentile = new BigDecimal(10);
+	       		overallCompositeScores.nationalPercentile = new BigDecimal(1);
 	       	overallCompositeScores.normalCurveEquivalent = getScore(OVERALL_CONTENT_AREA_NAME,OverallScaleScore,
 	       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.NORMAL_CURVE_EQUIVALENT,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 	       	if(overallCompositeScores.normalCurveEquivalent == null)
-	       		overallCompositeScores.normalCurveEquivalent = new BigDecimal(10);
+	       		overallCompositeScores.normalCurveEquivalent = new BigDecimal(1);
 	      }
 	       	
 	       if ( contentAreaScaleScore.containsKey(ORAL_CONTENT_AREA_NAME)) {
@@ -508,11 +508,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
 	                    ScoreLookupCode.PERFORMANCE_LEVEL, ("K-1".equals(pTestLevel))?pGrade:pTestLevel, pGrade);
 	        	if(oralCompositeScores.proficencyLevel == null)
 	        		oralCompositeScores.proficencyLevel = new BigDecimal(1);
-	        	oralCompositeScores.nationalPercentile = getScore(OVERALL_CONTENT_AREA_NAME,oralScaleScore,
+	        	oralCompositeScores.nationalPercentile = getScore(ORAL_CONTENT_AREA_NAME,oralScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.PERCENTILE_RANK,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(oralCompositeScores.nationalPercentile == null)
 		       		oralCompositeScores.nationalPercentile = new BigDecimal(1);
-		       	oralCompositeScores.normalCurveEquivalent = getScore(OVERALL_CONTENT_AREA_NAME,oralScaleScore,
+		       	oralCompositeScores.normalCurveEquivalent = getScore(ORAL_CONTENT_AREA_NAME,oralScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.NORMAL_CURVE_EQUIVALENT,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(oralCompositeScores.normalCurveEquivalent == null)
 		       		oralCompositeScores.normalCurveEquivalent = new BigDecimal(1);
@@ -525,11 +525,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
 	        			ScoreLookupCode.PERFORMANCE_LEVEL, ("K-1".equals(pTestLevel))?pGrade:pTestLevel, pGrade);
 	        	if(comprehensionCompositeScores.proficencyLevel == null)
 	        		comprehensionCompositeScores.proficencyLevel = new BigDecimal(1);
-	        	comprehensionCompositeScores.nationalPercentile = getScore(OVERALL_CONTENT_AREA_NAME,comprehensionScaleScore,
+	        	comprehensionCompositeScores.nationalPercentile = getScore(COMPREHENSIVE_CONTENT_AREA_NAME,comprehensionScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.PERCENTILE_RANK,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(comprehensionCompositeScores.nationalPercentile == null)
 		       		comprehensionCompositeScores.nationalPercentile = new BigDecimal(1);
-		       	comprehensionCompositeScores.normalCurveEquivalent = getScore(OVERALL_CONTENT_AREA_NAME,comprehensionScaleScore,
+		       	comprehensionCompositeScores.normalCurveEquivalent = getScore(COMPREHENSIVE_CONTENT_AREA_NAME,comprehensionScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.NORMAL_CURVE_EQUIVALENT,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(comprehensionCompositeScores.normalCurveEquivalent == null)
 		       		comprehensionCompositeScores.normalCurveEquivalent = new BigDecimal(1);
@@ -542,11 +542,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
 	        			ScoreLookupCode.PERFORMANCE_LEVEL, ("K-1".equals(pTestLevel))?pGrade:pTestLevel, pGrade);
 	        	if(productiveCompositeScores.proficencyLevel == null)
 	        		productiveCompositeScores.proficencyLevel = new BigDecimal(1);
-	        	productiveCompositeScores.nationalPercentile = getScore(OVERALL_CONTENT_AREA_NAME,productiveScaleScore,
+	        	productiveCompositeScores.nationalPercentile = getScore(PRODUCTIVE_CONTENT_AREA_NAME,productiveScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.PERCENTILE_RANK,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(productiveCompositeScores.nationalPercentile == null)
 		       		productiveCompositeScores.nationalPercentile = new BigDecimal(1);
-		       	productiveCompositeScores.normalCurveEquivalent = getScore(OVERALL_CONTENT_AREA_NAME,productiveScaleScore,
+		       	productiveCompositeScores.normalCurveEquivalent = getScore(PRODUCTIVE_CONTENT_AREA_NAME,productiveScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.NORMAL_CURVE_EQUIVALENT,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(productiveCompositeScores.normalCurveEquivalent == null)
 		       		productiveCompositeScores.normalCurveEquivalent = new BigDecimal(1);
@@ -559,11 +559,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
 	        			ScoreLookupCode.PERFORMANCE_LEVEL, ("K-1".equals(pTestLevel))?pGrade:pTestLevel, pGrade);
 	        	if(literacyCompositeScores.proficencyLevel == null)
 	        		literacyCompositeScores.proficencyLevel = new BigDecimal(1);
-	        	literacyCompositeScores.nationalPercentile = getScore(OVERALL_CONTENT_AREA_NAME,literacyScaleScore,
+	        	literacyCompositeScores.nationalPercentile = getScore(LITERACY_CONTENT_AREA_NAME,literacyScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.PERCENTILE_RANK,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(literacyCompositeScores.nationalPercentile == null)
 		       		literacyCompositeScores.nationalPercentile = new BigDecimal(1);
-		       	literacyCompositeScores.normalCurveEquivalent = getScore(OVERALL_CONTENT_AREA_NAME,literacyScaleScore,
+		       	literacyCompositeScores.normalCurveEquivalent = getScore(LITERACY_CONTENT_AREA_NAME,literacyScaleScore,
 		       			ScoreLookupCode.SCALED_SCORE,ScoreLookupCode.NORMAL_CURVE_EQUIVALENT,("K-1".equals(pTestLevel))?pGrade:pTestLevel,null);
 		       	if(literacyCompositeScores.normalCurveEquivalent == null)
 		       		literacyCompositeScores.normalCurveEquivalent = new BigDecimal(1);
