@@ -4,7 +4,7 @@ import com.bea.control.ServiceControl;
 import org.apache.beehive.controls.api.events.EventSet;
 import org.apache.beehive.controls.api.bean.ControlExtension;
 
-@ServiceControl.Location(urls = {"http://localhost:7001/ClickerWebService/ClickerWS"})
+@ServiceControl.Location(urls = {"http://nj09mhe5338.mhe.mhc:22611/ClickerWebService/ClickerWS"})
 @ServiceControl.HttpSoapProtocol
 @ServiceControl.SOAPBinding(style = ServiceControl.SOAPBinding.Style.DOCUMENT, use = ServiceControl.SOAPBinding.Use.LITERAL, parameterStyle = ServiceControl.SOAPBinding.ParameterStyle.WRAPPED)
 @ServiceControl.WSDL(resourcePath = "testWebService/ClickerWSService.wsdl", service = "ClickerWSService")
