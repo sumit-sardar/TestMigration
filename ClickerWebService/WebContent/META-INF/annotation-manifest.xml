@@ -1,36 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <annotation-manifest xmlns="http://www.bea.com/2004/03/wlw/external-config/">
   <annotated-class>
-    <annotated-class-name>testWebService.ClickerWSServiceControl</annotated-class-name>
+    <annotated-class-name>com.ctb.control.db.testAdmin.ADS</annotated-class-name>
     <component-type>Control Extension (JCX)</component-type>
     <annotation>
-      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
-      <array-member>
-        <member-name>urls</member-name>
-        <member-value>http://nj09mhe5338.mhe.mhc:22611/ClickerWebService/ClickerWS</member-value>
-      </array-member>
+      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
+      <member>
+        <member-name>jndiName</member-name>
+        <member-value>adsDataSource</member-value>
+      </member>
+      <member>
+        <member-name>jndiContextFactory</member-name>
+      </member>
     </annotation>
   </annotated-class>
   <annotated-class>
-    <annotated-class-name>testWebService.RosterStatusWSServiceControl</annotated-class-name>
+    <annotated-class-name>com.ctb.control.db.testAdmin.CustomerConfigurations</annotated-class-name>
     <component-type>Control Extension (JCX)</component-type>
     <annotation>
-      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
-      <array-member>
-        <member-name>urls</member-name>
-        <member-value>http://nj09mhe5381-mgt.edmz.mcgraw-hill.com:22611/RosterStatusWebService/RosterStatusWS</member-value>
-      </array-member>
+      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
+      <member>
+        <member-name>jndiName</member-name>
+        <member-value>oasDataSource</member-value>
+      </member>
+      <member>
+        <member-name>jndiContextFactory</member-name>
+      </member>
     </annotation>
   </annotated-class>
   <annotated-class>
-    <annotated-class-name>testWebService.SchedulingWSServiceControl</annotated-class-name>
+    <annotated-class-name>com.ctb.control.db.testAdmin.FormAssignment</annotated-class-name>
     <component-type>Control Extension (JCX)</component-type>
     <annotation>
-      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
-      <array-member>
-        <member-name>urls</member-name>
-        <member-value>http://nj09mhe5381-mgt.edmz.mcgraw-hill.com:22611/SchedulingWebService/SchedulingWS</member-value>
-      </array-member>
+      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
+      <member>
+        <member-name>jndiName</member-name>
+        <member-value>oasDataSource</member-value>
+      </member>
+      <member>
+        <member-name>jndiContextFactory</member-name>
+      </member>
+    </annotation>
+  </annotated-class>
+  <annotated-class>
+    <annotated-class-name>com.ctb.control.jms.ScoreStudent</annotated-class-name>
+    <component-type>Control Extension (JCX)</component-type>
+    <annotation>
+      <annotation-class-name>org.apache.beehive.controls.system.jms.JMSControl$Destination</annotation-class-name>
+      <member>
+        <member-name>sendJndiName</member-name>
+        <member-value>ScoreStudentJMSQueue</member-value>
+      </member>
+      <member>
+        <member-name>sendCorrelationProperty</member-name>
+      </member>
+      <member>
+        <member-name>jndiConnectionFactory</member-name>
+        <member-value>irsConnectionFactory</member-value>
+      </member>
+      <member>
+        <member-name>sendType</member-name>
+        <member-value>Queue</member-value>
+      </member>
+      <member>
+        <member-name>transacted</member-name>
+      </member>
+      <member>
+        <member-name>acknowledgeMode</member-name>
+      </member>
+      <member>
+        <member-name>jndiContextFactory</member-name>
+      </member>
+      <member>
+        <member-name>jndiProviderURL</member-name>
+      </member>
+      <member>
+        <member-name>jndiUsername</member-name>
+      </member>
+      <member>
+        <member-name>jndiPassword</member-name>
+      </member>
     </annotation>
   </annotated-class>
   <annotated-class>
@@ -384,88 +433,6 @@
     </annotation>
   </annotated-class>
   <annotated-class>
-    <annotated-class-name>com.ctb.control.db.testAdmin.ADS</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
-      <member>
-        <member-name>jndiName</member-name>
-        <member-value>adsDataSource</member-value>
-      </member>
-      <member>
-        <member-name>jndiContextFactory</member-name>
-      </member>
-    </annotation>
-  </annotated-class>
-  <annotated-class>
-    <annotated-class-name>com.ctb.control.db.testAdmin.CustomerConfigurations</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
-      <member>
-        <member-name>jndiName</member-name>
-        <member-value>oasDataSource</member-value>
-      </member>
-      <member>
-        <member-name>jndiContextFactory</member-name>
-      </member>
-    </annotation>
-  </annotated-class>
-  <annotated-class>
-    <annotated-class-name>com.ctb.control.db.testAdmin.FormAssignment</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
-      <member>
-        <member-name>jndiName</member-name>
-        <member-value>oasDataSource</member-value>
-      </member>
-      <member>
-        <member-name>jndiContextFactory</member-name>
-      </member>
-    </annotation>
-  </annotated-class>
-  <annotated-class>
-    <annotated-class-name>com.ctb.control.jms.ScoreStudent</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>org.apache.beehive.controls.system.jms.JMSControl$Destination</annotation-class-name>
-      <member>
-        <member-name>sendJndiName</member-name>
-        <member-value>ScoreStudentJMSQueue</member-value>
-      </member>
-      <member>
-        <member-name>sendCorrelationProperty</member-name>
-      </member>
-      <member>
-        <member-name>jndiConnectionFactory</member-name>
-        <member-value>irsConnectionFactory</member-value>
-      </member>
-      <member>
-        <member-name>sendType</member-name>
-        <member-value>Queue</member-value>
-      </member>
-      <member>
-        <member-name>transacted</member-name>
-      </member>
-      <member>
-        <member-name>acknowledgeMode</member-name>
-      </member>
-      <member>
-        <member-name>jndiContextFactory</member-name>
-      </member>
-      <member>
-        <member-name>jndiProviderURL</member-name>
-      </member>
-      <member>
-        <member-name>jndiUsername</member-name>
-      </member>
-      <member>
-        <member-name>jndiPassword</member-name>
-      </member>
-    </annotation>
-  </annotated-class>
-  <annotated-class>
     <annotated-class-name>com.ctb.control.db.StudentManagement</annotated-class-name>
     <component-type>Control Extension (JCX)</component-type>
     <annotation>
@@ -479,43 +446,6 @@
       </member>
     </annotation>
   </annotated-class>
-  <annotated-class>
-    <annotated-class-name>com.ctb.control.db.OASDB</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
-      <member>
-        <member-name>jndiName</member-name>
-        <member-value>oasDataSource</member-value>
-      </member>
-      <member>
-        <member-name>jndiContextFactory</member-name>
-      </member>
-    </annotation>
-  </annotated-class>
-  <annotated-class>
-    <annotated-class-name>com.ctb.service.ScoringServiceControl</annotated-class-name>
-    <component-type>Control Extension (JCX)</component-type>
-    <annotation>
-      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
-      <array-member>
-        <member-name>urls</member-name>
-        <member-value>http://192.168.14.136:8080/host/services/ScoringService</member-value>
-      </array-member>
-    </annotation>
-  </annotated-class>
-  <annotation-definition>
-    <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
-    <allowed-on-declaration>true</allowed-on-declaration>
-    <member-definition>
-      <member-name>urls</member-name>
-      <is-array>true</is-array>
-      <is-required>false</is-required>
-      <simple-type-definition>
-        <base-type>STRING</base-type>
-      </simple-type-definition>
-    </member-definition>
-  </annotation-definition>
   <annotation-definition>
     <annotation-class-name>org.apache.beehive.controls.system.jdbc.JdbcControl$ConnectionDataSource</annotation-class-name>
     <allowed-on-declaration>true</allowed-on-declaration>
