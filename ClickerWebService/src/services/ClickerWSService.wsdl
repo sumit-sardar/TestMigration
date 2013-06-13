@@ -425,7 +425,7 @@
   </s0:binding>
   <s0:service name="ClickerWSService">
     <s0:port binding="s1:ClickerWSServiceSoapBinding" name="ClickerWSSoapPort">
-      <s2:address location="http://localhost:7001/ClickerWebService/ClickerWS"/>
+      <s2:address location="http://nj09mhe5338.mhe.mhc:22611/ClickerWebService/ClickerWS"/>
     </s0:port>
   </s0:service>
 </s0:definitions>
