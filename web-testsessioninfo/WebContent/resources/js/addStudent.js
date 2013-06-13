@@ -1117,10 +1117,16 @@ function populateGradeLevelFilter() {
 				}
 			} else { // For handling laslink products
 				splitArray = String(dropListToDisplay[i].id).split("-");
-				init = parseInt(splitArray[0]);
-				final = parseInt(splitArray[1]);
-				for(var j = init; j <= final; j++) {
-					categoriesStr = categoriesStr + j + ":" + j + ";";
+				if((dropListToDisplay[i].id) == "K-1"){
+					for(var indx=0; indx<splitArray.length;indx++){
+						categoriesStr = categoriesStr + splitArray[indx] + ":" + splitArray[indx] + ";";
+					}
+				}else{
+					init = parseInt(splitArray[0]);
+					final = parseInt(splitArray[1]);
+					for(var j = init; j <= final; j++) {
+						categoriesStr = categoriesStr + j + ":" + j + ";";
+					}
 				}
 			}
 		}

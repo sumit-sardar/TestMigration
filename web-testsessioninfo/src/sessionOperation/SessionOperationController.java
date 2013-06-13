@@ -5166,12 +5166,20 @@ public class SessionOperationController extends PageFlowController {
 		ArrayList<FilterParam> filters = new ArrayList<FilterParam>();
 		if(selectedLevel.contains("-")) {
 			String [] grades = selectedLevel.split("-");
-			int initVal = Integer.parseInt(grades[0]);
-			int finalVal = Integer.parseInt(grades[1]);
-			for(int i = initVal; i <= finalVal; i++) {
-				String [] args = new String[1];
-				args[0] = String.valueOf(i);
-				filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+			if(selectedLevel.contains("K")){
+				for(int i=0; i< grades.length;i++){
+					String [] args = new String[1];
+					args[0] = (String)grades[i];
+					filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+				}
+			}else{
+				int initVal = Integer.parseInt(grades[0]);
+				int finalVal = Integer.parseInt(grades[1]);
+				for(int i = initVal; i <= finalVal; i++) {
+					String [] args = new String[1];
+					args[0] = String.valueOf(i);
+					filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+				}
 			}
 		} else if(selectedLevel.contains("/")) {
 			String [] grades = selectedLevel.split("/");
