@@ -48,6 +48,8 @@ public class TestClientPageFlowController extends PageFlowController
 {
 
     public static final String OK = "<OK />";
+    public static final String TRUE = "<true />";
+    public static final String FALSE = "<false />";
     public static final String ERROR = "<ERROR />";
     public static boolean forReal = true;
     // Uncomment this declaration to access Global.app.
@@ -240,6 +242,9 @@ public class TestClientPageFlowController extends PageFlowController
             result = this.OK; 
         else if (method.equals("isProductCheck") )
         	result = "<OKLAHOMA />"; 
+        else if(method != null && method.equals("ismicattached")){
+			result = this.FALSE;
+		}
         else
             result = this.ERROR;  
               
