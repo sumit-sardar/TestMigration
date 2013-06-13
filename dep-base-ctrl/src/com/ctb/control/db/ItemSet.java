@@ -4,6 +4,7 @@ import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.ActiveTest;
 import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.Item;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.StudentManifest;
 import com.ctb.bean.testAdmin.TestElement; 
@@ -790,4 +791,9 @@ public interface ItemSet extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT ISET.ITEM_SET_ID AS itemSetId, ISET.ITEM_SET_NAME AS itemSetName FROM ITEM_SET ISET {sql: itemSetIds}",
             arrayMaxLength = 100000)
     StudentManifest [] getSubtestName(String itemSetIds) throws SQLException;
+
+    @JdbcControl.SQL(statement = "select item_id as itemId, item_display_name itemName, item_type as itemType, correct_answer correctAnswer from item where item_id in (select item_id from item_set_item where item_set_id = {itemSetId})",
+            arrayMaxLength = 100000)
+    Item [] getItems(Integer itemSetId) throws SQLException;
+    
 }
