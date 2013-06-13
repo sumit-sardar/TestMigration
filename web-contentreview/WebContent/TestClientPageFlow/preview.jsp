@@ -487,7 +487,7 @@ body {
 
 <!--SA041005 start -->
 
-<BODY onload="load()">
+<BODY onload="load()"  oncontextmenu="return false;">
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
 	<tr>
