@@ -20,7 +20,7 @@ import com.ctb.lexington.util.SafeHashMap;
 public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedScoreCalculator {
     private static final String LASLINK_FRAMEWORK_CODE = "LLEAB";
     private static final String LASLINK_FRAMEWORK_CODE_2ND_EDTN = "LL2ND";
-    private static final String TESTLEVELFORLISTENING = "K-1";
+//    private static final String TESTLEVELFORLISTENING = "K-1";
     public LasLinkContentAreaDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
         channel.subscribe(this, ContentAreaRawScoreEvent.class);
@@ -52,12 +52,15 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
          */
     	if("C".equals(pDupTestForm) || "D".equals(pDupTestForm) ||  "ESP B".equals(pDupTestForm)){
     		
-    		if( "K-1".equals(pTestLevel) && "K".equals(pGrade) && !event.getContentAreaName().equals("Listening")){
+    		if( "K-1".equals(pTestLevel) && "K".equals(pGrade) && !"Listening".equals(event.getContentAreaName())){
     			pTestLevel = "K"; 
     			}
-    		if( "K-1".equals(pTestLevel) && "1".equals(pGrade) && !event.getContentAreaName().equals("Listening")){
+    		if( "K-1".equals(pTestLevel) && "1".equals(pGrade) && !"Listening".equals(event.getContentAreaName())){
     			pTestLevel = "1"; 
-    			} 
+    			}
+    		if(("K".equals(pTestLevel) ||  "1".equals(pTestLevel)) && "Listening".equals(event.getContentAreaName())){
+    			pTestLevel = "K-1";
+    		}
     	}
     	
         if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "C".equals(pDupTestForm) || "D".equals(pDupTestForm)) { 

@@ -1473,6 +1473,11 @@ public class CurriculumCollector {
     	SecondaryObjective writingAcademic = new SecondaryObjective();
     	SecondaryObjective speakingAcademic = new SecondaryObjective();
     	SecondaryObjective listeningAcademic = new SecondaryObjective();
+    	SecondaryObjective comprehensionAcademic = new SecondaryObjective();
+    	SecondaryObjective oralAcademic = new SecondaryObjective();
+    	SecondaryObjective productiveAcademic = new SecondaryObjective();
+    	SecondaryObjective literacyAcademic = new SecondaryObjective();
+    	SecondaryObjective overallAcademic = new SecondaryObjective();
     	Long readingPointPossible = new Long(0);
     	Long readingNumItems = new Long(0);
     	Long writingPointPossible = new Long(0);
@@ -1481,26 +1486,40 @@ public class CurriculumCollector {
     	Long speakingNumItems = new Long(0);
     	Long listeningPointPossible = new Long(0);
     	Long listeningNumItems = new Long(0);
-    	String secObjIdReadingAc="";
-    	String secObjIdListeningAc="";
-    	String secObjIdSpeakingAc="";
-    	String secObjIdWritingAc="";
+    	Long comprehensionPointPossible = new Long(0);
+    	Long comprehensionNumItems = new Long(0);
+    	Long oralPointPossible = new Long(0);
+    	Long oralNumItems = new Long(0);
+    	Long productivePointPossible = new Long(0);
+    	Long productiveNumItems = new Long(0);
+    	Long literacyPointPossible = new Long(0);
+    	Long literacyNumItems = new Long(0);
+    	Long overallPointPossible = new Long(0);
+    	Long overallNumItems = new Long(0);
     	
     	final String SQL = 
-        	"SELECT LCO.OBJECTIVE_ID as secondaryObjectiveId," +
-        	"	LCO.OBJECTIVE_NAME as secondaryObjectiveName," +
-        	"	LCO.EXT_CMS_ITEM_SET_ID as monarchId," +
-        	"	LCO.TEST_LEVEL as subtestLevel," +
-        	"	LCO.SUBJECT as subtestName" +
-        	"	FROM LASLINK_CD_OBJECTIVE LCO," +
-        	"	TEST_ADMIN           TA," +
-        	"	ITEM_SET             ISET," +
-        	"	TEST_ROSTER          TR" +
-        	"	WHERE TR.TEST_ROSTER_ID = ?" +
-        	"	AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID" +
-        	"	AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID" +
-        	"	AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL))=LCO.TEST_LEVEL";
-        
+        	"SELECT LCO.OBJECTIVE_ID    AS secondaryObjectiveId, " +
+        	"	ISET1.ITEM_SET_ID       AS primaryObjectiveId, " +
+        	"	LCO.OBJECTIVE_NAME      AS secondaryObjectiveName," +
+        	"	LCO.EXT_CMS_ITEM_SET_ID AS monarchId," +
+        	"	LCO.TEST_LEVEL          AS subtestLevel, " +
+        	"	LCO.SUBJECT             AS subtestName " +
+        	"	FROM LASLINK_CD_OBJECTIVE LCO, " +
+        	"	TEST_ADMIN           TA, " +
+        	"	ITEM_SET             ISET, " +
+        	"	TEST_ROSTER          TR, " +
+        	"	ITEM_SET             ISET1, " +
+        	"	PRODUCT              PRO, " +
+        	"	ITEM_SET_CATEGORY    ISC " +
+        	"	WHERE TR.TEST_ROSTER_ID = ? " +
+        	"	AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
+        	"	AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
+        	"	AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL)) = LCO.TEST_LEVEL " +
+        	"	AND LCO.SUBJECT = ISET1.ITEM_SET_NAME AND ISET1.ITEM_SET_LEVEL = LCO.TEST_LEVEL " +
+        	"	AND TA.PRODUCT_ID = PRO.PRODUCT_ID AND PRO.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID " +
+        	"	AND ISC.ITEM_SET_CATEGORY_ID = ISET1.ITEM_SET_CATEGORY_ID";
+    	
+    	
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1510,6 +1529,7 @@ public class CurriculumCollector {
             while (rs.next()) {
                 SecondaryObjective secObjective = new SecondaryObjective();
                 secObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
+                secObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
                 secObjective.setSecondaryObjectiveName(rs.getString("secondaryObjectiveName"));
                 secObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 secObjective.setSubtestName(rs.getString("subtestName"));
@@ -1604,6 +1624,73 @@ public class CurriculumCollector {
 	    	secObjList.add(listeningAcademic);
 	    	secObjList.add(speakingAcademic);
 	    	secObjList.add(writingAcademic);
+	    	
+	    	for(SecondaryObjective secObj : secObjList){
+	    		if(secObj.getSecondaryObjectiveName().contains("Academic")){
+	    			if(secObj.getSecondaryObjectiveName().toUpperCase().contains("LISTENING") || secObj.getSecondaryObjectiveName().toUpperCase().contains("READING")){
+	    				comprehensionPointPossible = comprehensionPointPossible + ((Long) secObj.getSecondaryObjectivePointsPossible());
+	    				comprehensionNumItems = comprehensionNumItems + ((Long) secObj.getSecondaryObjectiveNumItems());
+	    				if(comprehensionAcademic.getSecondaryObjectiveName() == null){
+	    					comprehensionAcademic.setPrimaryObjectiveId(academicMap.get("COMPREHENSION").getPrimaryObjectiveId());
+	    					comprehensionAcademic.setSecondaryObjectiveName(academicMap.get("COMPREHENSION").getSecondaryObjectiveName());
+	    					comprehensionAcademic.setSecondaryObjectiveType(secObj.getSecondaryObjectiveType());
+	    					comprehensionAcademic.setSubtestForm(secObj.getSubtestForm());
+	    					comprehensionAcademic.setSubtestLevel(secObj.getSubtestLevel());
+	    					comprehensionAcademic.setProductId(secObj.getProductId());
+	    					comprehensionAcademic.setSecondaryObjectiveId(new Long(academicMap.get("COMPREHENSION").getSecondaryObjectiveId()));
+	    				}
+	    				comprehensionAcademic.setSecondaryObjectivePointsPossible(comprehensionPointPossible);
+	    				comprehensionAcademic.setSecondaryObjectiveNumItems(comprehensionNumItems);
+	    			}if(secObj.getSecondaryObjectiveName().toUpperCase().contains("LISTENING") || secObj.getSecondaryObjectiveName().toUpperCase().contains("SPEAKING")){
+	    				oralPointPossible = oralPointPossible + ((Long) secObj.getSecondaryObjectivePointsPossible());
+	    				oralNumItems = oralNumItems + ((Long) secObj.getSecondaryObjectiveNumItems());
+	    				if(oralAcademic.getSecondaryObjectiveName() == null){
+	    					oralAcademic.setPrimaryObjectiveId(academicMap.get("ORAL").getPrimaryObjectiveId());
+	    					oralAcademic.setSecondaryObjectiveName(academicMap.get("ORAL").getSecondaryObjectiveName());
+	    					oralAcademic.setSecondaryObjectiveType(secObj.getSecondaryObjectiveType());
+	    					oralAcademic.setSubtestForm(secObj.getSubtestForm());
+	    					oralAcademic.setSubtestLevel(secObj.getSubtestLevel());
+	    					oralAcademic.setProductId(secObj.getProductId());
+	    					oralAcademic.setSecondaryObjectiveId(new Long(academicMap.get("ORAL").getSecondaryObjectiveId()));
+	    				}
+	    				oralAcademic.setSecondaryObjectivePointsPossible(oralPointPossible);
+	    				oralAcademic.setSecondaryObjectiveNumItems(oralNumItems);
+	    			}if(secObj.getSecondaryObjectiveName().toUpperCase().contains("WRITING") || secObj.getSecondaryObjectiveName().toUpperCase().contains("SPEAKING")){
+	    				productivePointPossible = productivePointPossible + ((Long) secObj.getSecondaryObjectivePointsPossible());
+	    				productiveNumItems = productiveNumItems + ((Long) secObj.getSecondaryObjectiveNumItems());
+	    				if(productiveAcademic.getSecondaryObjectiveName() == null){
+	    					productiveAcademic.setPrimaryObjectiveId(academicMap.get("PRODUCTIVE").getPrimaryObjectiveId());
+	    					productiveAcademic.setSecondaryObjectiveName(academicMap.get("PRODUCTIVE").getSecondaryObjectiveName());
+	    					productiveAcademic.setSecondaryObjectiveType(secObj.getSecondaryObjectiveType());
+	    					productiveAcademic.setSubtestForm(secObj.getSubtestForm());
+	    					productiveAcademic.setSubtestLevel(secObj.getSubtestLevel());
+	    					productiveAcademic.setProductId(secObj.getProductId());
+	    					productiveAcademic.setSecondaryObjectiveId(new Long(academicMap.get("PRODUCTIVE").getSecondaryObjectiveId()));
+	    				}
+	    				productiveAcademic.setSecondaryObjectivePointsPossible(productivePointPossible);
+	    				productiveAcademic.setSecondaryObjectiveNumItems(productiveNumItems);
+	    			}if(secObj.getSecondaryObjectiveName().toUpperCase().contains("READING") || secObj.getSecondaryObjectiveName().toUpperCase().contains("WRITING")){
+	    				literacyPointPossible = literacyPointPossible + ((Long) secObj.getSecondaryObjectivePointsPossible());
+	    				literacyNumItems = literacyNumItems + ((Long) secObj.getSecondaryObjectiveNumItems());
+	    				if(literacyAcademic.getSecondaryObjectiveName() == null){
+	    					literacyAcademic.setPrimaryObjectiveId(academicMap.get("LITERACY").getPrimaryObjectiveId());
+	    					literacyAcademic.setSecondaryObjectiveName(academicMap.get("LITERACY").getSecondaryObjectiveName());
+	    					literacyAcademic.setSecondaryObjectiveType(secObj.getSecondaryObjectiveType());
+	    					literacyAcademic.setSubtestForm(secObj.getSubtestForm());
+	    					literacyAcademic.setSubtestLevel(secObj.getSubtestLevel());
+	    					literacyAcademic.setProductId(secObj.getProductId());
+	    					literacyAcademic.setSecondaryObjectiveId(new Long(academicMap.get("LITERACY").getSecondaryObjectiveId()));
+	    				}
+	    				literacyAcademic.setSecondaryObjectivePointsPossible(literacyPointPossible);
+	    				literacyAcademic.setSecondaryObjectiveNumItems(literacyNumItems);
+	    			}
+	    		}
+	    	}
+	    	secObjList.add(comprehensionAcademic);
+	    	secObjList.add(oralAcademic);
+	    	secObjList.add(productiveAcademic);
+	    	secObjList.add(literacyAcademic);
+	    	//secObjList.add(overallAcademic);
     	}
     	return secObjList;
     }
