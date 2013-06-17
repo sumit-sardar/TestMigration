@@ -244,7 +244,8 @@ function loadOrgNodeLicense() {
  		 
          $("#orgNodeLicenseParentGrid").jqGrid({    
     
-         url:'loadOrgNodeLicense.do', 
+         url:'loadOrgNodeLicense.do',
+         ajaxGridOptions: {async: false}, 
 		 mtype:   'POST',
 		 datatype: "json",         
          postData: postDataObject,       
@@ -388,20 +389,20 @@ function loadChildrenOrgNodeLicense() {
               	
               		reloadChildren = false;
               		orgNodeLicenseReload();
-              		
+              		saveLicensesAfterSaveCell();              		
               		return [true, ""];
               	}
               	else {
               		if (serverresponse.responseText != 'ERROR') 
-              			alert(serverresponse.responseText);
+              			alert(serverresponse.responseText);              			
               		return [false, "", ""];
               	}
           	},
           	afterSaveCell : function(rowid,cellname,value,iRow,iCol) { 
-              	//alert('afterSaveCell: ' + rowid + " - " + value);
+              	//alert('afterSaveCell: ' + rowid + " - " + value);              	
               	setEditingInfo(null, null, value);
 				highLightNoAvailable();
-				saveLicensesAfterSaveCell();
+				//saveLicensesAfterSaveCell();
           	},
 					
 			onCellSelect: function (rowid, iCol, cellcontent, e) {
@@ -684,7 +685,7 @@ function saveLicensesAfterEditAlert() {
 						window.location.href="/SessionWeb/logout.do";						
 					},
 		complete :  function(){
-						 $.unblockUI(); 
+						 $.unblockUI(); 						 
 					}
 	});
 	
