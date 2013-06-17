@@ -401,6 +401,7 @@ function loadChildrenOrgNodeLicense() {
               	//alert('afterSaveCell: ' + rowid + " - " + value);
               	setEditingInfo(null, null, value);
 				highLightNoAvailable();
+				saveLicensesAfterSaveCell();
           	},
 					
 			onCellSelect: function (rowid, iCol, cellcontent, e) {
@@ -596,6 +597,34 @@ function saveLicenses() {
 						}
 		});
 	}
+}
+
+
+
+function saveLicensesAfterSaveCell(){
+		var postDataObject = {};
+		postDataObject.selectedOrgNodeId = $("#treeOrgNodeId").val();
+	 
+		$.ajax({
+			async:		false,
+			beforeSend:	function(){
+							//UIBlock();
+						},
+			url:		'saveLicenses.do',
+			type:       'POST',
+			dataType:	'json',
+			data: 		postDataObject,
+			success:	function(data, textStatus, XMLHttpRequest){	
+							$.unblockUI(); 
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";						
+						},
+			complete :  function(){
+							//$.unblockUI(); 
+						}
+		});
 }
                 
 function verifyEditLicenseAndGotoMenuAction(action, menuId){
