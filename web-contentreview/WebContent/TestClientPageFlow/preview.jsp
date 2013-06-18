@@ -26,6 +26,13 @@
 <script type="text/javascript" src="../includes/embed-compressed.js"></script>
 <script type="text/javascript" src="../includes/manipulative_manager.js"></script>
 <script type="text/javascript" src="../lps/includes/laslinks_utils.js"></script>
+<script type="text/javascript" src="../lps/includes/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript" src="../lps/jquery.min.js"></script>
+<script type="text/javascript" src="lps/jquery.min.js"></script>
+<script type="text/javascript" src="../ContentReviewPageFlow/assets/jquery-1.8.3.js"></script>
+
+<script type="text/javascript" src="lps/jquery.magnifier.js"></script>
+<script type="text/javascript" src="../ContentReviewPageFlow/assets/imageZoomer.js"></script>
 <style type="text/css">
 html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	height: 100%;
@@ -50,26 +57,59 @@ img {
 
 @font-face {
 	font-family: "CTB";
-	src: url("ctbmodules/resources/fonts/OASmathv3.ttf");
+	src: local('OASmathv3'), url('ctbmodules/resources/fonts/OASmathv3.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
-	font-family: "CTB";
-	src: url("ctbmodules/resources/fonts/OASmathv3 Bold.ttf");
+	font-family: 'CTB';
+	src: local('OASmathv3 Bold'), url('ctbmodules/resources/fonts/OASmathv3Bold.svg') format('svg'); 
 	font-weight: bold;
+    font-style: normal;
 }
 
 @font-face {
-	font-family: "CTB";
-	src: url("ctbmodules/resources/fonts/OASmathv3 Italic.ttf");
-	font-style: italic;
+	font-family: 'CTB';
+	src: local('OASmathv3 Italic'), url('ctbmodules/resources/fonts/OASmathv3Italic.svg') format('svg'); 
+    font-style: italic;
 }
 
 @font-face {
-	font-family: "CTB";
-	src: url("ctbmodules/resources/fonts/OASmathv3 BoldItalic.ttf");
+	font-family: 'CTB';
+	src: local('OASmathv3 BoldItalic'), url('ctbmodules/resources/fonts/OASmathv3BoldItalic.svg') format('svg'); 
 	font-weight: bold;
-	font-style: italic;
+    font-style: italic;
+}
+
+@font-face {
+	font-family: 'CTB';
+	src: local('OASmathv3 Italic'), url('ctbmodules/resources/fonts/OASmathv3Italic.svg') format('svg'); 
+    font-style: italic;
+}
+
+@font-face {
+	font-family: 'oasmathv3';
+	src: local('OASmathv3'), url('ctbmodules/resources/fonts/OASmathv3.svg') format('svg'); 
+	font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+	font-family: 'oasmathv3';
+	src: local('OASmathv3 Bold'), url('ctbmodules/resources/fonts/OASmathv3Bold.svg') format('svg'); 
+	font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+	font-family: 'oasmathv3';
+	src: local('OASmathv3 BoldItalic'), url('ctbmodules/resources/fonts/OASmathv3BoldItalic.svg') format('svg'); 
+	font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+	font-family: 'oasmathv3';
+	src: local('OASmathv3 Italic'), url('ctbmodules/resources/fonts/OASmathv3Italic.svg') format('svg'); 
+    font-style: italic;
 }
 </style>
 <!--[if IE]>
@@ -88,6 +128,10 @@ var xscalefactor = 1;
 var yscalefactor = 1;
 var currentLasAssetItemId;
 var autoPlayEvent = "false";
+var isMagnifierVisible = "false";
+var forLaslinksLayout = null;
+var xscalefactorjs;
+var yscalefactorjs;
 var LASAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/"; 
 
 function getLasAssetPath(){
@@ -257,6 +301,7 @@ function getFontAccomodation(){
 	fontObj.hasFont = fontAccom[0];
 	fontObj.bgcolor = fontAccom[1].replace('0x', '#');
 	fontObj.fgcolor = fontAccom[2].replace('0x', '#');
+	fontObj.hasFontMag = fontAccom[3];
 	return fontObj;
 }
 
@@ -291,6 +336,7 @@ function setCurLasItemId(id) {
 	currentLasAssetItemId = id;
 	assetCount = 0;
 	checkAnswered = false;
+	answerClicked = null;
 }
 
 
@@ -299,8 +345,9 @@ function eventMonitor(id,event) {
 	var currIframeId = frameFolderObject[id];
  	if(event == 'play' || event == 'jsplay') {
  		setPlayingAttr(event,'true');
+ 		if(!checkAllPlayedOnce())
+ 		disableAssets();
  		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = true;
- 		//console.log("Is Playing :",iframeObject[currentLasAssetItemId][currIframeId]['playEvent']);
  		playSingleAsset(currIframeId);
  		if(iframeObject[currentLasAssetItemId]) {
  			if(iframeObject[currentLasAssetItemId][currIframeId]['folder'] == id) {
@@ -308,14 +355,16 @@ function eventMonitor(id,event) {
  				 getCurrentPlayOrder(currIframeId);
  			}
  		}
- 		 
- 		 unlockResponseArea(currIframeId);
- 		
- 		
+ 		if(autoPlayEvent == 'false') {
+ 			unlockResponseArea(currIframeId);
+ 			}
+ 		 		
  	} else if(event == 'finished' || event == 'endTrack' || event == 'pause') {
  		if( event == 'endTrack' || event == 'pause'){
  			setPlayingAttr(event,'false');
  		}
+ 			if(!checkAllPlayedOnce())
+ 			enableAssets();
 	 		iframeObject[currentLasAssetItemId][currIframeId]['playEvent'] = false;
 	 		//console.log("event -- ",event);
 	 		if(iframeObject[currentLasAssetItemId]) {
@@ -325,16 +374,22 @@ function eventMonitor(id,event) {
 	 				}
 	 			}
 	 		}
+	 		iframeFolderId = null;
 	 		enableNextButton(id);
- 		  if(autoPlayEvent == 'true') {
+	 		if(autoPlayEvent == 'true') {
 	 			autoPlayEvent = "false";
 	 		}
-	 		restrictNavigation('unlock');
+	 		if(answerClicked != null){
+	 			checkValIfAnswered(answerClicked);
+	 			answerClicked = null;
+	 		}
  		
+ 		restrictNavigation('unlock');
+ 		setTimeout("resetAllAssets()",500);
  	} else if (event == 'reset') {
  		//setPlayingAttr('false');
  	}
- 	 	else if (event == 'autoplayEndTrack') {
+ 	else if (event == 'autoplayEndTrack') {
  		setPlayingAttr('false');
  	  	autoPlayEvent = "false";	
  	}
@@ -356,18 +411,32 @@ function callTestMouseUp1() {
 
 function hideScrollbarForCRitem(arg){
     var crItemid = document.getElementById(arg);
-    //console.log("== crItemid ===",crItemid);
-    crItemid.setAttribute('style',"overflow-x: hidden; overflow-y: scroll;");
+    var fontcolor = getCRcolor();
+    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+fontcolor+';');
 }
 function setCRscrollEdittextWidth(elmId,comWidth){
     var crItemid = document.getElementById(elmId);
-    //console.log("== setCRscrollEdittextWidth ===",crItemid);
-    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; width: '+comWidth+'');
+    var fontcolor = getCRcolor();
+    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+fontcolor+'; width: '+comWidth+'');
 }
 function setCRscrollEdittextHeight(elmId,comHeight){
     var crItemid = document.getElementById(elmId);
-    //console.log("== setCRscrollEdittextHeight ===",crItemid);
-    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; height: '+comHeight+'');
+    var fontcolor = getCRcolor();
+    crItemid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+fontcolor+'; height: '+comHeight+'');
+}
+
+function getCRcolor(){
+	var fontcolor;
+	var answerFontColor = gController.answerFontColor;
+	if(Number(answerFontColor) == 0)
+		answerFontColor = "0x000000";
+	if(answerFontColor.indexOf('0x') != -1) {
+		fontcolor = answerFontColor.replace('0x', '#');
+	}
+	else {
+		fontcolor = answerFontColor;
+	}
+	return fontcolor;
 }
 
 <!-- End CR item scrolledittext scrollbar functions-->
@@ -380,16 +449,14 @@ function hideScrollbar(arg){
     scrid.setAttribute('style',"overflow-x: hidden; overflow-y: scroll;");
 }
 
-function setScrollEdittextWidth(elmId,comWidth){
+function setScrollEdittextWidth(elmId,comWidth,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    //console.log("== setScrollEdittextWidth ===",scrid);
-    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; width: '+comWidth+'');
+    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; width: '+comWidth+'');
 }
 
-function setScrollEdittextHeight(elmId,comHeight){
+function setScrollEdittextHeight(elmId,comHeight,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    //console.log("== setScrollEdittextHeight ===",scrid);
-    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; height: '+comHeight+'');
+    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; height: '+comHeight+'');
 }
 
 <!-- End scratchpad scrollbar functions-->
@@ -397,7 +464,9 @@ function setScrollEdittextHeight(elmId,comHeight){
 function fromWrapper() {
 	lz.embed.setCanvasAttribute('fromWrapper','true');
 }
-function showMagnify() {	
+
+
+function showMagnify() {		
 		isMagnifierVisible = "true";
 		if(jQuery("#magnifierWindow").length < 1){
 			jQuery('body').addpowerzoom({
@@ -406,24 +475,26 @@ function showMagnify() {
 					largeimage: null,
 					magnifiersize: [300,100] 
 				});
-		}	
-		jQuery(ddpowerzoomer.$magnifier.outer).hide();
+		}			
 		jQuery.ajax({
 			url: "servlet/PersistenceServlet.do?method=captureScreenshot",
+			beforeSend: function() {
+				jQuery(ddpowerzoomer.$magnifier.outer).hide();
+			},
 			dataType: "xml",
 			success: function(data) {
-			//xmlDoc = jQuery.parseXML( data ),
-		    xml = jQuery( data ),
-		    ok = xml.find( "OK" );
-			//alert(ok);
-			var timeStamp = ok.text();//jQuery(jQuery.parseXML(data)).find("ok").text();
-			//alert(timeStamp);
-			var imageName = "cache/screenshot"+timeStamp+".png"
+				//xmlDoc = jQuery.parseXML( data ),
+		    	xml = jQuery( data );
+		    	ok = xml.find( "OK" );
+				//alert(ok);
+				var timeStamp = ok.text();//jQuery(jQuery.parseXML(data)).find("ok").text();
+				//alert(timeStamp);
+				var imageName = "cache/screenshot"+timeStamp+".png"
 			
-			jQuery(ddpowerzoomer.$magnifier.outer).css('left',(document.body.clientWidth/2 - 165)+ 'px');
-			jQuery(ddpowerzoomer.$magnifier.outer).css('top',(document.body.clientHeight/2 - 75) + 'px');
-			jQuery(ddpowerzoomer.$magnifier.outer).show();
-			jQuery(ddpowerzoomer).initMagnify({largeimage:imageName});
+				jQuery(ddpowerzoomer.$magnifier.outer).css('left',(document.body.clientWidth/2 - 165)+ 'px');
+				jQuery(ddpowerzoomer.$magnifier.outer).css('top',(document.body.clientHeight/2 - 75) + 'px');
+				jQuery(ddpowerzoomer.$magnifier.outer).show();
+				jQuery(ddpowerzoomer).initMagnify({largeimage:imageName});
 			}
 		});
 			
@@ -433,8 +504,10 @@ function hideMagnify() {
 	isMagnifierVisible = "false";
 	jQuery(ddpowerzoomer.$magnifier.outer).hide();
 }
-function displayMagnifier() {		
-	
+
+/* Method to reinstate the magnifier to previous state */
+function displayMagnifier() {	
+	isMagnifierVisible = "true";
 	jQuery(ddpowerzoomer.$magnifier.outer).show();
 }
 
@@ -467,13 +540,57 @@ function hideTooltip() {
 }
 
 function enablePasswordFocus(){
+	hideMagnify();
     var myFlash = document.getElementById( 'lzapp' );
      if ( myFlash ) { 
       myFlash.focus(); 
      }
 }
+
+jQuery(document).ready(function() {
+ 	jQuery('textarea').each(function(){
+   		var $this = jQuery(this);
+		jQuery(this).setAttribute('style',"overflow-x: hidden; overflow-y: hidden;");
+	});
+ });
+ 
+ function destroyIframe(){
+	var objIfrArr = jQ('body').find('iframe');
+	for(var i=0; i < jQ(objIfrArr).size(); i++) {
+		var obj = jQ(objIfrArr).eq(i);
+		jQ(obj).remove();
+	}
+}
+
+function checkForAssetArea()
+{
+	gController.setAttribute("mouseUpEventFired",true);
 	
+}
+
+function checkTextDragging(){
+	//jQuery("textarea").attr('disabled','disabled');
+	jQuery("textarea").on("dragstart", function(e) {
+				e.preventDefault();
+			});
+}
+
+function buttonClicked(magnifierPosition){
+  	if(magnifierPosition == "T") {
+  		$.setPreviousPosition();
+  	}
+	document.getElementById('mybutton').click();
 	
+}
+ function closeMagnifier(){
+    var olddiv = document.getElementById('mborder');
+    if (olddiv && olddiv.parentNode && olddiv.parentNode.removeChild)
+		olddiv.parentNode.removeChild(olddiv);
+	$.closeMagnifier();
+}
+
+
+
 //-->
 </script>
 <style type="text/css">
@@ -482,12 +599,14 @@ body {
 	margin: 0px;
 	overflow: hidden;
 }
+#magnifierWindow {cursor: pointer;}
 </style>
 </HEAD>
 
 <!--SA041005 start -->
 
-<BODY onload="load()"  oncontextmenu="return false;">
+<BODY onload="load()" oncontextmenu="return false;">
+<button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
 	<tr>
