@@ -10,7 +10,7 @@ jQuery.noConflict()
 var isDragging = 0;
 var ddpowerzoomer={
 	dsetting: {defaultpower:2, powerrange:[2,7], magnifiersize:[75, 75]},
-	mousewheelevt: (/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel", //FF doesn't recognize mousewheel as of FF3.x
+	//mousewheelevt: (/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel", //FF doesn't recognize mousewheel as of FF3.x
 	$magnifier: {outer:null, inner:null, image:null},
 	activeimage: null,
 	imageRef:null,
@@ -41,16 +41,33 @@ var ddpowerzoomer={
 		
 		var y = jQuery("#magnifierWindow").offset().top - coords.top ;
 		
-		if(y > (document.body.clientHeight)/2) {
-			y = y + 100;
-		}else if(y < (document.body.clientHeight)/2 && y > (document.body.clientHeight * .25)) {
+		if(y > (document.body.clientHeight)/2 && x < (document.body.clientWidth)/2) {
+			y = y + 48;
+			x = x + 8;
+		} else if(y > (document.body.clientHeight)/2 && x > (document.body.clientWidth)/2) {
+			y = y + 48;
+			x = x + 115;
+		} else if(y < (document.body.clientHeight)/2 && y > (document.body.clientHeight * .05) && x < (document.body.clientWidth)/2) {
 			y = y + 15;
-		}
-		
-		if(x < (document.body.clientWidth)/2) {
+			x = x + 8;
+		} else if (y < (document.body.clientHeight)/2 && y > (document.body.clientHeight * .05) && x > (document.body.clientWidth)/2) {
+			y = y + 15;
+			x = x + 115;
+		} else if(y < (document.body.clientHeight * .05) && x > (document.body.clientWidth * 0.25)) {
+			y = y + 7;
+			x = x + 115;
+		} else if(y < (document.body.clientHeight * .05) && x < (document.body.clientWidth * 0.25)) {
+			y = y + 7;
+			x = x + 8;
+		} 
+		 /*else if (y < (document.body.clientHeight * .05)) {
 			x = x + 50;
-		}/*else if(x > (document.body.clientWidth * .70)) {
-			x = x + 30;
+		}*/
+		
+		/*if(x < (document.body.clientWidth)/2) {
+			x = x + 8;
+		}else if(x > (document.body.clientWidth)/2) {
+			x = x + 8;
 		}*/
 		
 		
@@ -98,24 +115,29 @@ var ddpowerzoomer={
 		var $magnifier=$('<div style="position:absolute;z-index:1000000;width:'+parseInt(ddpowerzoomer.$zommersettings.magnifiersize[0])+ 'px;height:'+parseInt(ddpowerzoomer.$zommersettings.magnifiersize[1])+'px;display:none;" />')
 			.append('<div  id="magnifierWindow" style="width:'+ddpowerzoomer.$zommersettings.magnifiersize[0]+ 'px;height:'+ddpowerzoomer.$zommersettings.magnifiersize[1]+'px;overflow:hidden; border:8px solid #333333;"><div style="position:relative;left:0;top:0;" /></div>')
 			.appendTo(document.body).draggable({
-			containment: [0, 0,document.body.offsetWidth - 330,$("body").height()-150],	
+			containment: [0, 0,document.body.offsetWidth - 316,$("body").height()-116],	
+			cursorAt: {
+				top: parseInt(ddpowerzoomer.$zommersettings.magnifiersize[1])/2,
+				left: parseInt(ddpowerzoomer.$zommersettings.magnifiersize[0])/2
+			},
 			start: function(event,ui) {
 			    //alert(window.isDragging);
 			    if(isDragging == 0){
-			    isDragging = 1;
-				jQuery("#magnifierWindow").css('visibility','hidden');
+			    isDragging = 1;				
+			    jQuery("#magnifierWindow").css('visibility','hidden');
 				setTimeout(function(){jQuery.ajax({
-					url: "servlet/PersistenceServlet.do?method=captureScreenshot",
+					url: "servlet/PersistenceServlet.do?method=captureScreenshot",					
 					dataType: "xml",
 					success: function(data) {
 					//xmlDoc = jQuery.parseXML( data ),
-				    xml = jQuery( data ),
+				    xml = jQuery( data );
 				    ok = xml.find( "OK" );
 					//alert(ok);
 					var timeStamp = ok.text();//jQuery(jQuery.parseXML(data)).find("ok").text();
 					//alert(timeStamp);
 					var imageName = "cache/screenshot"+timeStamp+".png";
 					jQuery(ddpowerzoomer).initMagnify({largeimage:imageName});
+					jQuery("#magnifierWindow").find("img").attr("onmousedown","event.preventDefault();");
 					jQuery("#magnifierWindow").css('visibility','visible');
 					isDragging = 0;
 					}
@@ -128,24 +150,32 @@ var ddpowerzoomer={
 			    }else{
 			    	$('#magnifierWindow').css( 'cursor', 'move' );
 			    }
-				var $magnifier=ddpowerzoomer.$magnifier
-				var s = ddpowerzoomer.$zommersettings
-				$magnifier.outer.css({width:parseInt(s.magnifiersize[0]), height:parseInt(s.magnifiersize[1])}) //set magnifier's size
-				var imgref = ddpowerzoomer.$imageRef;
-				var offset= $(imgref).offset() //get image offset from document
-				var power=imgref.info.power.current
-				$magnifier.inner.html('<img src="'+s.largeimagesrc+'"/>') //get base image's src and create new image inside magnifier based on it
-				$magnifier.image=$magnifier.outer.find('img:first')
-					.css({width:imgref.info.dimensions[0]*power, height:imgref.info.dimensions[1]*power}) //set size of enlarged image
-				var coords={left:offset.left, top:offset.top, right:offset.left+imgref.info.dimensions[0], bottom:offset.top+imgref.info.dimensions[1]}
-				imgref.info.coords=coords //remember left, right, and bottom right coordinates of image relative to doc
-				$magnifier.outer.show()
-				ddpowerzoomer.activeimage=imgref
-				if (ddpowerzoomer.activeimage){ //if mouse is currently over a magnifying image
-					ddpowerzoomer.movemagnifier(event, true) //move magnifier
+			    if(isMagnifierVisible == false || isMagnifierVisible == 'false') {
+					ddpowerzoomer.$magnifier.outer.hide()
+				}
+				else {
+					var $magnifier=ddpowerzoomer.$magnifier
+					var s = ddpowerzoomer.$zommersettings
+					$magnifier.outer.css({width:parseInt(s.magnifiersize[0]), height:parseInt(s.magnifiersize[1])}) //set magnifier's size
+					var imgref = ddpowerzoomer.$imageRef;
+					var offset= $(imgref).offset() //get image offset from document
+					var power=imgref.info.power.current
+					//$magnifier.inner.html('<img src="'+s.largeimagesrc+'"/>') //get base image's src and create new image inside magnifier based on it
+					/*$magnifier.image=$magnifier.outer.find('img:first')
+						.css({width:imgref.info.dimensions[0]*power, height:imgref.info.dimensions[1]*power})*/ //set size of enlarged image
+					var coords={left:offset.left, top:offset.top, right:offset.left+imgref.info.dimensions[0], bottom:offset.top+imgref.info.dimensions[1]}
+					imgref.info.coords=coords //remember left, right, and bottom right coordinates of image relative to doc
+					$magnifier.outer.show()
+					ddpowerzoomer.activeimage=imgref
+					if (ddpowerzoomer.activeimage){ //if mouse is currently over a magnifying image
+						ddpowerzoomer.movemagnifier(event, true) //move magnifier
+					}
 				}
 			},
 			stop: function(event, ui) {
+				if(isMagnifierVisible == false || isMagnifierVisible == 'false') {
+					ddpowerzoomer.$magnifier.outer.hide()
+				}
 				$('#magnifierWindow').css( 'cursor', 'pointer' );
 			}
 			
