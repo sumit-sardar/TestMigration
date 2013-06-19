@@ -378,19 +378,19 @@ public class StudentObjectiveScoresController {
 	    				secs[ii].getSecondaryObjectiveName().contains("Mathematics / Science / Technical Subjects") || 
 	    					secs[ii].getSecondaryObjectiveName().contains("Foundational Skills")){
 	    			
-	    			if("READING".equals(secs[ii].getSubtestName())){
+	    			if("READING".equals(secs[ii].getSubtestName().toUpperCase()) || "LECTURA".equals(secs[ii].getSubtestName().toUpperCase())){
 	    				readingPointPossible += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsPossible());
 	    				readingPointAttempted += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsAttempted());
 	    				readingPointObtained += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsObtained());
-	    			}else if("LISTENING".equals(secs[ii].getSubtestName())){
+	    			}else if("LISTENING".equals(secs[ii].getSubtestName().toUpperCase()) || "ESCUCHANDO".equals(secs[ii].getSubtestName().toUpperCase())){
 	    				listeningPointPossible += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsPossible());
 	    				listeningPointAttempted += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsAttempted());
 	    				listeningPointObtained += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsObtained());
-	    			}else if("SPEAKING".equals(secs[ii].getSubtestName())){
+	    			}else if("SPEAKING".equals(secs[ii].getSubtestName().toUpperCase()) || "HABLANDO".equals(secs[ii].getSubtestName().toUpperCase())){
 	    				speakingPointPossible += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsPossible());
 	    				speakingPointAttempted += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsAttempted());
 	    				speakingPointObtained += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsObtained());
-	    			}else if("WRITING".equals(secs[ii].getSubtestName())){
+	    			}else if("WRITING".equals(secs[ii].getSubtestName().toUpperCase()) || "ESCRITURA".equals(secs[ii].getSubtestName().toUpperCase())){
 	    				writingPointPossible += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsPossible());
 	    				writingPointAttempted += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsAttempted());
 	    				writingPointObtained += new Long(studentScoreSummaryData.get(secs[ii].getSecondaryObjectiveId()).getPointsObtained());
@@ -399,38 +399,40 @@ public class StudentObjectiveScoresController {
 		 }
 		 for(int ii=0; ii<secs.length;ii++){
 	    		if(secs[ii].getSecondaryObjectiveName().toUpperCase().contains("ACADEMIC")){
-	    			if("READING".equals(secs[ii].getSubtestName())){
-	    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
-	    				details.setPointsAttempted(readingPointAttempted);
-	    				details.setPointsObtained(readingPointObtained);
-	    				details.setPointsPossible(readingPointPossible);
-	    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(readingPointObtained.intValue(), readingPointPossible.intValue())));
-	    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(readingPointObtained.intValue(), readingPointPossible.intValue()))).getCode());
-	    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
-	    			}else if("LISTENING".equals(secs[ii].getSubtestName())){
-	    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
-	    				details.setPointsAttempted(listeningPointAttempted);
-	    				details.setPointsObtained(listeningPointObtained);
-	    				details.setPointsPossible(listeningPointPossible);
-	    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(listeningPointObtained.intValue(), listeningPointPossible.intValue())));
-	    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(listeningPointObtained.intValue(), listeningPointPossible.intValue()))).getCode());
-	    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
-	    			}else if("SPEAKING".equals(secs[ii].getSubtestName())){
-	    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
-	    				details.setPointsAttempted(speakingPointAttempted);
-	    				details.setPointsObtained(speakingPointObtained);
-	    				details.setPointsPossible(speakingPointPossible);
-	    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(speakingPointObtained.intValue(), speakingPointPossible.intValue())));
-	    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(speakingPointObtained.intValue(), speakingPointPossible.intValue()))).getCode());
-	    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
-	    			}else if("WRITING".equals(secs[ii].getSubtestName())){
-	    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
-	    				details.setPointsAttempted(writingPointAttempted);
-	    				details.setPointsObtained(writingPointObtained);
-	    				details.setPointsPossible(writingPointPossible);
-	    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(writingPointObtained.intValue(), writingPointPossible.intValue())));
-	    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(writingPointObtained.intValue(), writingPointPossible.intValue()))).getCode());
-	    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
+	    			if(secs[ii].getSubtestName()!= null){
+		    			if("READING".equals(secs[ii].getSubtestName().toUpperCase()) || "LECTURA".equals(secs[ii].getSubtestName().toUpperCase())){
+		    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+		    				details.setPointsAttempted(readingPointAttempted);
+		    				details.setPointsObtained(readingPointObtained);
+		    				details.setPointsPossible(readingPointPossible);
+		    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(readingPointObtained.intValue(), readingPointPossible.intValue())));
+		    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(readingPointObtained.intValue(), readingPointPossible.intValue()))).getCode());
+		    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
+		    			}else if("LISTENING".equals(secs[ii].getSubtestName().toUpperCase()) || "ESCUCHANDO".equals(secs[ii].getSubtestName().toUpperCase())){
+		    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+		    				details.setPointsAttempted(listeningPointAttempted);
+		    				details.setPointsObtained(listeningPointObtained);
+		    				details.setPointsPossible(listeningPointPossible);
+		    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(listeningPointObtained.intValue(), listeningPointPossible.intValue())));
+		    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(listeningPointObtained.intValue(), listeningPointPossible.intValue()))).getCode());
+		    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
+		    			}else if("SPEAKING".equals(secs[ii].getSubtestName().toUpperCase()) || "HABLANDO".equals(secs[ii].getSubtestName().toUpperCase())){
+		    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+		    				details.setPointsAttempted(speakingPointAttempted);
+		    				details.setPointsObtained(speakingPointObtained);
+		    				details.setPointsPossible(speakingPointPossible);
+		    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(speakingPointObtained.intValue(), speakingPointPossible.intValue())));
+		    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(speakingPointObtained.intValue(), speakingPointPossible.intValue()))).getCode());
+		    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
+		    			}else if("WRITING".equals(secs[ii].getSubtestName().toUpperCase()) || "ESCRITURA".equals(secs[ii].getSubtestName().toUpperCase())){
+		    				StudentScoreSummaryDetails details = new StudentScoreSummaryDetails();
+		    				details.setPointsAttempted(writingPointAttempted);
+		    				details.setPointsObtained(writingPointObtained);
+		    				details.setPointsPossible(writingPointPossible);
+		    				details.setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentage(writingPointObtained.intValue(), writingPointPossible.intValue())));
+		    				details.setMasteryLevel((MasteryLevel.masteryLevelForPercentage(ScorerHelper.calculatePercentage(writingPointObtained.intValue(), writingPointPossible.intValue()))).getCode());
+		    				tempMap.put(secs[ii].getSecondaryObjectiveId(), details);
+		    			}
 	    			}
 	    			
 	    			if("COMPREHENSION ACADEMIC".equals(secs[ii].getSecondaryObjectiveName().toUpperCase())){

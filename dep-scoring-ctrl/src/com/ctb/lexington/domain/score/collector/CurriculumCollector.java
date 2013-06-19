@@ -1548,71 +1548,71 @@ public class CurriculumCollector {
 	    				secondaryObjectives[ii].getSecondaryObjectiveName().contains("Mathematics / Science / Technical Subjects") || 
 	    					secondaryObjectives[ii].getSecondaryObjectiveName().contains("Foundational Skills")){
 	    			
-	    			if("READING".equals(secondaryObjectives[ii].getSubtestName())){
+	    			if("READING".equals(secondaryObjectives[ii].getSubtestName().toUpperCase()) || "LECTURA".equals(secondaryObjectives[ii].getSubtestName().toUpperCase())){
 	    				readingPointPossible = readingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
 	    				readingNumItems = readingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
 	    				if(readingAcademic.getSubtestName() == null){
 		    				readingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
-		    				readingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				readingAcademic.setSecondaryObjectiveName(academicMap.get("READING").getSecondaryObjectiveName());
 		    				readingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
 		    				readingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
 		    				readingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
 		    				readingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
 		    				readingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
 		    				readingAcademic.setProductId(secondaryObjectives[ii].getProductId());
-		    				readingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
-		    				readingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+		    				readingAcademic.setMonarchId(academicMap.get("READING").getMonarchId());
+		    				readingAcademic.setSecondaryObjectiveId(new Long(academicMap.get("READING").getSecondaryObjectiveId()));
 	    				}
 		    			readingAcademic.setSecondaryObjectivePointsPossible(readingPointPossible);
 		    			readingAcademic.setSecondaryObjectiveNumItems(readingNumItems);
-	    			}else if("LISTENING".equals(secondaryObjectives[ii].getSubtestName())){
+	    			}else if("LISTENING".equals(secondaryObjectives[ii].getSubtestName().toUpperCase()) || "ESCUCHANDO".equals(secondaryObjectives[ii].getSubtestName().toUpperCase())){
 	    				listeningPointPossible = listeningPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
 	    				listeningNumItems = listeningNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
 	    				if(listeningAcademic.getSubtestName() == null){
 		    				listeningAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
-		    				listeningAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				listeningAcademic.setSecondaryObjectiveName(academicMap.get("LISTENING").getSecondaryObjectiveName());
 		    				listeningAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
 		    				listeningAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
 		    				listeningAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
 		    				listeningAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
 		    				listeningAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
 		    				listeningAcademic.setProductId(secondaryObjectives[ii].getProductId());
-		    				listeningAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
-		    				listeningAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+		    				listeningAcademic.setMonarchId(academicMap.get("LISTENING").getMonarchId());
+		    				listeningAcademic.setSecondaryObjectiveId(new Long(academicMap.get("LISTENING").getSecondaryObjectiveId()));
 	    				}
 	    				listeningAcademic.setSecondaryObjectivePointsPossible(listeningPointPossible);
 	    				listeningAcademic.setSecondaryObjectiveNumItems(listeningNumItems);
-	    			}else if("SPEAKING".equals(secondaryObjectives[ii].getSubtestName())){
+	    			}else if("SPEAKING".equals(secondaryObjectives[ii].getSubtestName().toUpperCase()) || "HABLANDO".equals(secondaryObjectives[ii].getSubtestName().toUpperCase())){
 	    				speakingPointPossible = speakingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
 	    				speakingNumItems = speakingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
 	    				if(speakingAcademic.getSubtestName() == null){
 		    				speakingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
-		    				speakingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				speakingAcademic.setSecondaryObjectiveName(academicMap.get("SPEAKING").getSecondaryObjectiveName());
 		    				speakingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
 		    				speakingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
 		    				speakingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
 		    				speakingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
 		    				speakingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
 		    				speakingAcademic.setProductId(secondaryObjectives[ii].getProductId());
-		    				speakingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
-		    				speakingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+		    				speakingAcademic.setMonarchId(academicMap.get("SPEAKING").getMonarchId());
+		    				speakingAcademic.setSecondaryObjectiveId(new Long(academicMap.get("SPEAKING").getSecondaryObjectiveId()));
 	    				}
 	    				speakingAcademic.setSecondaryObjectivePointsPossible(speakingPointPossible);
 	    				speakingAcademic.setSecondaryObjectiveNumItems(speakingNumItems);
-	    			}else if("WRITING".equals(secondaryObjectives[ii].getSubtestName())){
+	    			}else if("WRITING".equals(secondaryObjectives[ii].getSubtestName().toUpperCase()) || "ESCRITURA".equals(secondaryObjectives[ii].getSubtestName().toUpperCase())){
 	    				writingPointPossible = writingPointPossible + ((Long) secondaryObjectives[ii].getSecondaryObjectivePointsPossible());
 	    				writingNumItems = writingNumItems + ((Long) secondaryObjectives[ii].getSecondaryObjectiveNumItems());
 	    				if(writingAcademic.getSubtestName() == null){
 		    				writingAcademic.setPrimaryObjectiveId(secondaryObjectives[ii].getPrimaryObjectiveId());
-		    				writingAcademic.setSecondaryObjectiveName(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveName());
+		    				writingAcademic.setSecondaryObjectiveName(academicMap.get("WRITING").getSecondaryObjectiveName());
 		    				writingAcademic.setSubtestName(secondaryObjectives[ii].getSubtestName());
 		    				writingAcademic.setSecondaryObjectiveType(secondaryObjectives[ii].getSecondaryObjectiveType());
 		    				writingAcademic.setSubtestForm(secondaryObjectives[ii].getSubtestForm());
 		    				writingAcademic.setSubtestLevel(secondaryObjectives[ii].getSubtestLevel());
 		    				writingAcademic.setSubtestId(secondaryObjectives[ii].getSubtestId());
 		    				writingAcademic.setProductId(secondaryObjectives[ii].getProductId());
-		    				writingAcademic.setMonarchId(academicMap.get(secondaryObjectives[ii].getSubtestName()).getMonarchId());
-		    				writingAcademic.setSecondaryObjectiveId(new Long(academicMap.get(secondaryObjectives[ii].getSubtestName()).getSecondaryObjectiveId()));
+		    				writingAcademic.setMonarchId(academicMap.get("WRITING").getMonarchId());
+		    				writingAcademic.setSecondaryObjectiveId(new Long(academicMap.get("WRITING").getSecondaryObjectiveId()));
 	    				}
 	    				writingAcademic.setSecondaryObjectivePointsPossible(writingPointPossible);
 	    				writingAcademic.setSecondaryObjectiveNumItems(writingNumItems);
