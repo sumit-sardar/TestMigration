@@ -11,8 +11,8 @@ import org.apache.beehive.controls.system.jms.JMSControl;
  */
 @ControlExtension()
 @JMSControl.Destination(sendType = JMSControl.DestinationType.Queue, 
-                        sendJndiName = "ScoreStudentJMSQueue", 
-                        jndiConnectionFactory = "irsConnectionFactory"
+                        sendJndiName = "irsDataSource", 
+                        jndiConnectionFactory = "irsDataSource"
 )
 public interface ScoreStudent extends JMSControl 
 {

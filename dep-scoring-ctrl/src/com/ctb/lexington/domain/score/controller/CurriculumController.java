@@ -245,7 +245,7 @@ public class CurriculumController {
         for(int i=0;i<data.getSecondaryObjectives().length;i++) {
             sod[i] = new IrsSecObjDimData();
             SecondaryObjective so = data.getSecondaryObjectives()[i];
-            sod[i].setPrimObjid(new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
+            sod[i].setPrimObjid((so.getPrimaryObjectiveId()==null)?null:new Long(Long.parseLong(String.valueOf(so.getProductId()) + String.valueOf(so.getPrimaryObjectiveId()))));
             sod[i].setName(so.getSecondaryObjectiveName());
             sod[i].setNumItems(so.getSecondaryObjectiveNumItems());
             sod[i].setPointsPossible(so.getSecondaryObjectivePointsPossible());

@@ -114,7 +114,7 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
        final BigDecimal lexileValue = ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "S".equals(pDupTestForm) || !"Reading".equals(event.getContentAreaName())) ? null : getLasLinkLexile(
     		   LASLINK_FRAMEWORK_CODE_2ND_EDTN,
      			event.getContentAreaName(),
-     			("K".equals(pTestLevel) && "1".equals(pTestLevel))?"K-1":pTestLevel,
+     			("K".equals(pTestLevel) || "1".equals(pTestLevel))?"K-1":pTestLevel,
   				scaleScore,
   				null,
   				pTestForm);

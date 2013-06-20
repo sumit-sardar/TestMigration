@@ -138,7 +138,8 @@ public class TestResultDataCollector {
                         primObjList.add(primObjs[j]);
                         SecondaryObjective [] secObjs = currData.getSecondaryObjectives();
                         for(int k=0;k<secObjs.length;k++) {
-                            if(secObjs[k].getPrimaryObjectiveId().equals(primObjs[j].getPrimaryObjectiveId()) &&
+                            if(((secObjs[k].getPrimaryObjectiveId() != null && secObjs[k].getPrimaryObjectiveId().equals(primObjs[j].getPrimaryObjectiveId()))||
+                            	(("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm())) && secObjs[k].getSecondaryObjectiveName().contains("Overall")))	&&
                                 secObjs[k].getSubtestLevel().equals(contentAreas[i].getSubtestLevel())) {
                                 secObjList.add(secObjs[k]);
                                 Item [] items = currData.getItems();

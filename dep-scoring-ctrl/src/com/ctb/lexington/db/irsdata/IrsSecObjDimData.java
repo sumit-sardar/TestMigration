@@ -28,7 +28,7 @@ public class IrsSecObjDimData implements Persistent{
     public boolean equals(Object arg0) {
 		return 
 			name.equals(((IrsSecObjDimData)arg0).getName()) &&
-			primObjid.equals(((IrsSecObjDimData)arg0).getPrimObjid()) &&
+			(((IrsSecObjDimData)arg0).getPrimObjid()== null || primObjid.equals(((IrsSecObjDimData)arg0).getPrimObjid())) &&
 			(secObjIndex == null || secObjIndex.equals(((IrsSecObjDimData)arg0).getSecObjIndex())) &&
 			secObjType.equals(((IrsSecObjDimData)arg0).getSecObjType()) &&
 			numItems.equals(((IrsSecObjDimData)arg0).getNumItems()) &&

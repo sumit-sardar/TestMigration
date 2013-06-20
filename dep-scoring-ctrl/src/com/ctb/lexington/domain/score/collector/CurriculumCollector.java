@@ -1498,26 +1498,50 @@ public class CurriculumCollector {
     	Long overallNumItems = new Long(0);
     	
     	final String SQL = 
-        	"SELECT LCO.OBJECTIVE_ID    AS secondaryObjectiveId, " +
-        	"	ISET1.ITEM_SET_ID       AS primaryObjectiveId, " +
-        	"	LCO.OBJECTIVE_NAME      AS secondaryObjectiveName," +
-        	"	LCO.EXT_CMS_ITEM_SET_ID AS monarchId," +
-        	"	LCO.TEST_LEVEL          AS subtestLevel, " +
-        	"	LCO.SUBJECT             AS subtestName " +
-        	"	FROM LASLINK_CD_OBJECTIVE LCO, " +
-        	"	TEST_ADMIN           TA, " +
-        	"	ITEM_SET             ISET, " +
-        	"	TEST_ROSTER          TR, " +
-        	"	ITEM_SET             ISET1, " +
-        	"	PRODUCT              PRO, " +
-        	"	ITEM_SET_CATEGORY    ISC " +
+    		"	SELECT SECONDARYOBJECTIVEID as secondaryObjectiveId," +
+        	" 	PRIMARYOBJECTIVEID as primaryObjectiveId," +
+        	"	SECONDARYOBJECTIVENAME as secondaryObjectiveName, " +
+        	"	MONARCHID as monarchId, " +
+        	"	SUBTESTLEVEL as subtestLevel, " +
+        	"	SUBTESTNAME as subtestName" +
+        	"	FROM (SELECT LCO.OBJECTIVE_ID       AS SECONDARYOBJECTIVEID, " +
+        	"				ISET1.ITEM_SET_ID       AS PRIMARYOBJECTIVEID, " +
+        	"				LCO.OBJECTIVE_NAME      AS SECONDARYOBJECTIVENAME, " +
+        	"				LCO.EXT_CMS_ITEM_SET_ID AS MONARCHID, " +
+        	"				LCO.TEST_LEVEL          AS SUBTESTLEVEL, " +
+        	"				LCO.SUBJECT             AS SUBTESTNAME " +
+        	"				FROM LASLINK_CD_OBJECTIVE LCO, " +
+        	"					 TEST_ADMIN           TA, " +
+        	"					 ITEM_SET             ISET, " +
+        	"					 TEST_ROSTER          TR, " +
+        	"					 ITEM_SET             ISET1, " +
+        	"					 PRODUCT              PRO, " +
+        	"					 ITEM_SET_CATEGORY    ISC " +
+        	"				WHERE TR.TEST_ROSTER_ID = ? " +
+        	"				AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
+        	"				AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
+        	"				AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL)) = LCO.TEST_LEVEL " +
+        	"				AND LCO.SUBJECT = ISET1.ITEM_SET_NAME " +
+        	"				AND ISET1.ITEM_SET_LEVEL = LCO.TEST_LEVEL " +
+        	"				AND TA.PRODUCT_ID = PRO.PRODUCT_ID " +
+        	"				AND PRO.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID " +
+        	"				AND ISC.ITEM_SET_CATEGORY_ID = ISET1.ITEM_SET_CATEGORY_ID " +
+        	"	UNION " +
+        	"	SELECT LCO.OBJECTIVE_ID        AS SECONDARYOBJECTIVEID, " +
+        	"	NULL                    AS PRIMARYOBJECTIVEID, " +
+        	"	LCO.OBJECTIVE_NAME      AS SECONDARYOBJECTIVENAME, " +
+        	"	LCO.EXT_CMS_ITEM_SET_ID AS MONARCHID, " +
+        	"	LCO.TEST_LEVEL          AS SUBTESTLEVEL, " +
+        	"	LCO.SUBJECT             AS SUBTESTNAME " +
+        	"	FROM 	LASLINK_CD_OBJECTIVE LCO, " +
+        	"			TEST_ADMIN           TA, " +
+        	"			ITEM_SET             ISET, " +
+        	"			TEST_ROSTER          TR " +
         	"	WHERE TR.TEST_ROSTER_ID = ? " +
         	"	AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
         	"	AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
         	"	AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL)) = LCO.TEST_LEVEL " +
-        	"	AND LCO.SUBJECT = ISET1.ITEM_SET_NAME AND ISET1.ITEM_SET_LEVEL = LCO.TEST_LEVEL " +
-        	"	AND TA.PRODUCT_ID = PRO.PRODUCT_ID AND PRO.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID " +
-        	"	AND ISC.ITEM_SET_CATEGORY_ID = ISET1.ITEM_SET_CATEGORY_ID";
+        	"	AND LCO.SUBJECT = 'Overall')";
     	
     	
         PreparedStatement ps = null;
@@ -1525,6 +1549,7 @@ public class CurriculumCollector {
         try {
             ps = conn.prepareStatement(SQL);
             ps.setLong(1, oasRosterId.longValue());
+            ps.setLong(2, oasRosterId.longValue());
             rs = ps.executeQuery();
             while (rs.next()) {
                 SecondaryObjective secObjective = new SecondaryObjective();
@@ -1637,6 +1662,7 @@ public class CurriculumCollector {
 	    					comprehensionAcademic.setSubtestForm(secObj.getSubtestForm());
 	    					comprehensionAcademic.setSubtestLevel(secObj.getSubtestLevel());
 	    					comprehensionAcademic.setProductId(secObj.getProductId());
+	    					comprehensionAcademic.setSubtestName(academicMap.get("COMPREHENSION").getSubtestName());
 	    					comprehensionAcademic.setSecondaryObjectiveId(new Long(academicMap.get("COMPREHENSION").getSecondaryObjectiveId()));
 	    				}
 	    				comprehensionAcademic.setSecondaryObjectivePointsPossible(comprehensionPointPossible);
@@ -1651,6 +1677,7 @@ public class CurriculumCollector {
 	    					oralAcademic.setSubtestForm(secObj.getSubtestForm());
 	    					oralAcademic.setSubtestLevel(secObj.getSubtestLevel());
 	    					oralAcademic.setProductId(secObj.getProductId());
+	    					oralAcademic.setSubtestName(academicMap.get("ORAL").getSubtestName());
 	    					oralAcademic.setSecondaryObjectiveId(new Long(academicMap.get("ORAL").getSecondaryObjectiveId()));
 	    				}
 	    				oralAcademic.setSecondaryObjectivePointsPossible(oralPointPossible);
@@ -1665,6 +1692,7 @@ public class CurriculumCollector {
 	    					productiveAcademic.setSubtestForm(secObj.getSubtestForm());
 	    					productiveAcademic.setSubtestLevel(secObj.getSubtestLevel());
 	    					productiveAcademic.setProductId(secObj.getProductId());
+	    					productiveAcademic.setSubtestName(academicMap.get("PRODUCTIVE").getSubtestName());
 	    					productiveAcademic.setSecondaryObjectiveId(new Long(academicMap.get("PRODUCTIVE").getSecondaryObjectiveId()));
 	    				}
 	    				productiveAcademic.setSecondaryObjectivePointsPossible(productivePointPossible);
@@ -1679,18 +1707,33 @@ public class CurriculumCollector {
 	    					literacyAcademic.setSubtestForm(secObj.getSubtestForm());
 	    					literacyAcademic.setSubtestLevel(secObj.getSubtestLevel());
 	    					literacyAcademic.setProductId(secObj.getProductId());
+	    					literacyAcademic.setSubtestName(academicMap.get("LITERACY").getSubtestName());
 	    					literacyAcademic.setSecondaryObjectiveId(new Long(academicMap.get("LITERACY").getSecondaryObjectiveId()));
 	    				}
 	    				literacyAcademic.setSecondaryObjectivePointsPossible(literacyPointPossible);
 	    				literacyAcademic.setSecondaryObjectiveNumItems(literacyNumItems);
 	    			}
+	    			overallPointPossible = overallPointPossible + ((Long) secObj.getSecondaryObjectivePointsPossible());
+	    			overallNumItems = overallNumItems + ((Long) secObj.getSecondaryObjectiveNumItems());
+    				if(overallAcademic.getSecondaryObjectiveName() == null){
+    					//overallAcademic.setPrimaryObjectiveId(academicMap.get("OVERALL").getPrimaryObjectiveId());
+    					overallAcademic.setSecondaryObjectiveName(academicMap.get("OVERALL").getSecondaryObjectiveName());
+    					overallAcademic.setSecondaryObjectiveType(secObj.getSecondaryObjectiveType());
+    					overallAcademic.setSubtestForm(secObj.getSubtestForm());
+    					overallAcademic.setSubtestLevel(secObj.getSubtestLevel());
+    					overallAcademic.setProductId(secObj.getProductId());
+    					overallAcademic.setSubtestName(academicMap.get("OVERALL").getSubtestName());
+    					overallAcademic.setSecondaryObjectiveId(new Long(academicMap.get("OVERALL").getSecondaryObjectiveId()));
+    				}
+    				overallAcademic.setSecondaryObjectivePointsPossible(overallPointPossible);
+    				overallAcademic.setSecondaryObjectiveNumItems(overallNumItems);
 	    		}
 	    	}
 	    	secObjList.add(comprehensionAcademic);
 	    	secObjList.add(oralAcademic);
 	    	secObjList.add(productiveAcademic);
 	    	secObjList.add(literacyAcademic);
-	    	//secObjList.add(overallAcademic);
+	    	secObjList.add(overallAcademic);
     	}
     	return secObjList;
     }
