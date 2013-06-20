@@ -107,17 +107,22 @@ public class ClickerWS implements Serializable {
 			NodeData nodeData = this.testSessionStatus.getTopNodesForUser(userName, null, null, null);
 			if (nodeData != null) {
 				Node[] nodes = nodeData.getNodes();
-				OrgNode[] orgNodes = new OrgNode[nodes.length];
-				
-		        for (int i=0; i < nodes.length; i++) {
-		        	Node node = nodes[i];
-		        	if (node != null) {
-		        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
-		        		orgNodes[i] = orgNode;
-		        	}
-		        }
-		        
-		        userTopNodes = new OrgNodeList(null, orgNodes);									
+				if (nodes.length > 0) {
+					OrgNode[] orgNodes = new OrgNode[nodes.length];
+					
+			        for (int i=0; i < nodes.length; i++) {
+			        	Node node = nodes[i];
+			        	if (node != null) {
+			        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+			        		orgNodes[i] = orgNode;
+			        	}
+			        }
+			        
+			        userTopNodes = new OrgNodeList(null, orgNodes);
+				}
+				else {
+					userTopNodes = new OrgNodeList("Cannot get user top nodes");														
+				}
 			}
 			else {
 				userTopNodes = new OrgNodeList("Cannot get user top nodes");									
@@ -146,17 +151,22 @@ public class ClickerWS implements Serializable {
         	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, new Integer(orgNodeId), null, null, null);
         	if (nodeData != null) {
 		        Node[] nodes = nodeData.getNodes(); 
-		        OrgNode[] orgNodes = new OrgNode[nodes.length];
-		        
-		        for (int i=0; i < nodes.length; i++) {
-		        	Node node = nodes[i];
-		        	if (node != null) {
-		        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
-		        		orgNodes[i] = orgNode;
-		        	}
+		        if (nodes.length > 0) {
+			        OrgNode[] orgNodes = new OrgNode[nodes.length];
+			        
+			        for (int i=0; i < nodes.length; i++) {
+			        	Node node = nodes[i];
+			        	if (node != null) {
+			        		OrgNode orgNode = new OrgNode(node.getOrgNodeId(), node.getOrgNodeName());
+			        		orgNodes[i] = orgNode;
+			        	}
+			        }
+			        
+			        childNodes = new OrgNodeList(new Integer(orgNodeId), orgNodes);
 		        }
-		        
-		        childNodes = new OrgNodeList(new Integer(orgNodeId), orgNodes);
+		        else {
+	        		childNodes = new OrgNodeList("Cannot get children nodes");                				        	
+		        }
         	}
         	else {
         		childNodes = new OrgNodeList("Cannot get children nodes");                		
@@ -183,22 +193,27 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
-        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, new Integer(orgNodeId), 
-        																							null, null, null);
+        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(
+        													userName, null, new Integer(orgNodeId), null, null, null);
         	if (tsd != null) {
 		        TestSession[] testsessions = tsd.getTestSessions();
-		        Assignment[] assignments = new Assignment[testsessions.length];
-		        
-		        for (int i=0; i < testsessions.length; i++) {
-		            TestSession ts = testsessions[i];
-		            if (ts != null) {
-		            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
-		            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
-		            	assignments[i] = session;
-		            }
+		        if (testsessions.length > 0) {
+			        Assignment[] assignments = new Assignment[testsessions.length];
+			        
+			        for (int i=0; i < testsessions.length; i++) {
+			            TestSession ts = testsessions[i];
+			            if (ts != null) {
+			            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
+			            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
+			            	assignments[i] = session;
+			            }
+			        }
+	
+			        assignmentList = new AssignmentList(new Integer(orgNodeId), assignments);
 		        }
-
-		        assignmentList = new AssignmentList(new Integer(orgNodeId), assignments);
+		        else {
+	                assignmentList = new AssignmentList("There is no session");        				        	
+		        }
         	}
         	else {
                 assignmentList = new AssignmentList("Cannot get sessions");        		
@@ -225,22 +240,27 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
-        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, new Integer(sessionId), 
-        																				null, null, null);
+        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(
+        														userName, new Integer(sessionId), null, null, null);
         	if (red != null) {
 		        RosterElement[] rosterElements = red.getRosterElements();
-		        Roster[] rosters = new Roster[rosterElements.length];
-		        
-		        for (int i=0; i < rosterElements.length; i++) {
-		        	RosterElement re = rosterElements[i];
-		            if (re != null) {
-		            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
-		            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
-		            	rosters[i] = roster;
-		            }
+		        if (rosterElements.length > 0) {
+			        Roster[] rosters = new Roster[rosterElements.length];
+			        
+			        for (int i=0; i < rosterElements.length; i++) {
+			        	RosterElement re = rosterElements[i];
+			            if (re != null) {
+			            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
+			            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
+			            	rosters[i] = roster;
+			            }
+			        }
+			        
+	                rosterList = new RosterList(new Integer(sessionId), rosters);
 		        }
-		        
-                rosterList = new RosterList(new Integer(sessionId), rosters);        				        
+		        else {
+	                rosterList = new RosterList("There is no roster");        		
+		        }
         	}
         	else {
                 rosterList = new RosterList("Cannot get rosters");        		
@@ -275,56 +295,59 @@ public class ClickerWS implements Serializable {
 	    	//ScheduledSession scheduledSession2 = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, sessionId);					
 			//SessionStudent[] sessionStudents = scheduledSession2.getStudents();		
 			
-			ContentArea[] contentAreas = new ContentArea[TS_testElements.length];
-			
-			for (int i=0 ; i<TS_testElements.length ; i++) {
-				TestElement TS_testElement = TS_testElements[i];
-				Integer parentItemSetId = TS_testElement.getItemSetId();
+			if (TS_testElements.length > 0) {
+				ContentArea[] contentAreas = new ContentArea[TS_testElements.length];
 				
-				try {
-					TestElement[] TD_testElements = this.itemSet.getTestElementsForParentForTD(parentItemSetId, "TD");
+				for (int i=0 ; i<TS_testElements.length ; i++) {
+					TestElement TS_testElement = TS_testElements[i];
+					Integer parentItemSetId = TS_testElement.getItemSetId();
 					
-					SubtestInfo[] subtests = new SubtestInfo[TD_testElements.length];
-					
-					for (int j=0 ; j<TD_testElements.length ; j++) {	
-						TestElement TD_testElement = TD_testElements[j];
-						Integer itemSetId = TD_testElement.getItemSetId();								
+					try {
+						TestElement[] TD_testElements = this.itemSet.getTestElementsForParentForTD(parentItemSetId, "TD");
 						
-						Item[] items = this.itemSet.getItems(itemSetId);
+						SubtestInfo[] subtests = new SubtestInfo[TD_testElements.length];
 						
-						Question[] questions = new Question[items.length];
-						
-						for (int k=0 ; k<items.length ; k++) {							
-							Item item = items[k];
-							Question question = new Question(item.getItemId(), item.getCorrectAnswer(), null);
-							questions[k] = question;
+						for (int j=0 ; j<TD_testElements.length ; j++) {	
+							TestElement TD_testElement = TD_testElements[j];
+							Integer itemSetId = TD_testElement.getItemSetId();								
+							
+							Item[] items = this.itemSet.getItems(itemSetId);
+							
+							Question[] questions = new Question[items.length];
+							
+							for (int k=0 ; k<items.length ; k++) {							
+								Item item = items[k];
+								Question question = new Question(item.getItemId(), item.getCorrectAnswer(), null);
+								questions[k] = question;
+							}
+							
+							SubtestInfo subtest = new SubtestInfo(TD_testElement.getItemSetId(), 
+																  TD_testElement.getItemSetName(), 
+																  TD_testElement.getItemSetLevel(), 
+																  questions);
+							subtests[j] = subtest;
 						}
+	
+						ContentArea contentArea = new ContentArea(TS_testElement.getItemSetId(), 
+																  TS_testElement.getItemSetName(), 
+																  subtests);
 						
-						SubtestInfo subtest = new SubtestInfo(TD_testElement.getItemSetId(), 
-															  TD_testElement.getItemSetName(), 
-															  TD_testElement.getItemSetLevel(), 
-															  questions);
-						subtests[j] = subtest;
+					    contentAreas[i] = contentArea;
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
-
-					ContentArea contentArea = new ContentArea(TS_testElement.getItemSetId(), 
-															  TS_testElement.getItemSetName(), 
-															  subtests);
-					
-				    contentAreas[i] = contentArea;
-					
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
+				
+				TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(userName, new Integer(sessionId));
+				TestSession[] testSessions = tsData.getTestSessions();
+				TestSession testSession = testSessions[0];
+				
+				testStructure = new TestStructure(testSession.getTestCatalogId(), testSession.getTestName(), contentAreas);
 			}
-			
-			TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(userName, new Integer(sessionId));
-			TestSession[] testSessions = tsData.getTestSessions();
-			TestSession testSession = testSessions[0];
-			
-			testStructure = new TestStructure(testSession.getTestCatalogId(),
-											  testSession.getTestName(),
-											  contentAreas);
+			else {
+				testStructure = new TestStructure("cannot get test structure");				
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

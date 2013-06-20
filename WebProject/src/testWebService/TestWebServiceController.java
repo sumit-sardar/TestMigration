@@ -166,7 +166,7 @@ public class TestWebServiceController extends PageFlowController
     		if ("getChildrenNodes".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
-    			this.orgNodeId = new Integer(tmp.trim());
+    			this.orgNodeId = newInteger(tmp.trim());
     			 
     			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(this.userName, this.orgNodeId.toString());
     			
@@ -189,7 +189,7 @@ public class TestWebServiceController extends PageFlowController
     		if ("getSessionsForNode".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
-    			this.orgNodeId = new Integer(tmp.trim());    			
+    			this.orgNodeId = newInteger(tmp.trim());    			
     			
     			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId.toString());
     			
@@ -218,7 +218,7 @@ public class TestWebServiceController extends PageFlowController
     		if ("getRostersInSession".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			this.sessionId = new Integer(tmp.trim());
+    			this.sessionId = newInteger(tmp.trim());
     			
     			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
     			
@@ -248,7 +248,7 @@ public class TestWebServiceController extends PageFlowController
     		if ("getTestStructure".equals(status)) {
     			this.userName = (String)this.getRequest().getParameter("userName");
     			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			this.sessionId = new Integer(tmp.trim());
+    			this.sessionId = newInteger(tmp.trim());
 
     			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
     			
@@ -835,6 +835,18 @@ public class TestWebServiceController extends PageFlowController
       	
         return new Forward("success");
     }
- 
+
+    private Integer newInteger(String valueStr) {
+    	Integer valueInt = new Integer(0);
+    	try {
+        	valueInt = new Integer(valueStr);
+    	}
+      	catch (Exception e) {
+        	valueInt = new Integer(0);
+      		
+      	}
+		return valueInt;
+    }
+    
      
  }
