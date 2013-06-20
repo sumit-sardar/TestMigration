@@ -13,6 +13,7 @@ var prvCatalog 		= "";
 var prvContentArea	= "";
 var prvForm	= "";
 var stateLevelNodeIds = [];
+var scrollPos = 0;
 
 function populateUserOrgHierarchy() {
 	$.ajax({
@@ -114,6 +115,7 @@ function resetFilters() {
 }
 
 function populateGrid() {
+	scrollPos = 0;
 	var studentIdTitle = $("#studentIdLabelName").val();
 	var postDataObject = {};
  	postDataObject.q = 2;
@@ -166,10 +168,14 @@ function populateGrid() {
 			}
 			enableDisableImmediateReportButton(false);
 		},
-		onSortCol : function(index, columnIndex, sortOrder) { 
+		onSortCol : function(index, columnIndex, sortOrder) {
+				if(index != "immdRptGrid_userName")
+					scrollPos = $('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();
+				else
+					scrollPos = 0;	 
 				enableDisableImmediateReportButton(false);
 		},
-		onSelectRow: function (rowId) {
+		onSelectRow: function (rowId) {		
 			immdRptSelectedRosterId = rowId;
 			selectedRData = $("#immdRptGrid").getRowData(rowId);
 			immdRptSelectedTestAdminId = selectedRData.testAdminId;
@@ -182,7 +188,8 @@ function populateGrid() {
            		$('#next_immdRptGridPager').addClass('ui-state-disabled');
            		$('#last_immdRptGridPager').addClass('ui-state-disabled');
            		$('#immdRptGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 		$('#immdRptGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/StudentWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
+		 		$('#immdRptGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/StudentWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");	 		
+		 		//$('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft(scrollPos);	
            	}
 
 			var tdList = ("#immdRptGridPager_left table.ui-pg-table  td");
@@ -197,6 +204,7 @@ function populateGrid() {
 			prvContentArea	= $("#gs_contentAreaString").val();
 			prvForm	= $("#gs_form").val();
 			//$("#immdRptGrid").setGridWidth($("#jqGrid-content-section").width());
+			$('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft(scrollPos);
 			$.unblockUI(); 
 		},
 		loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -233,6 +241,7 @@ function populateGrid() {
 }
 
 function gridScoringStudentReload(){
+	scrollPos = 0;
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
