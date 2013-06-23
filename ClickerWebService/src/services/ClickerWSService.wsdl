@@ -26,26 +26,12 @@
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="ContentArea" nillable="true" type="java:ContentArea" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="FirstName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="LastName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="LoginName" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="RosterId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="StudentId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="StudentKey" nillable="true" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="ContentArea">
-        <xs:annotation>
-          <xs:documentation>/** 
- * ContentArea information
- * subtests is a list of subtests in this content area
- * @author Tai_Truong
- */</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-          <xs:element minOccurs="1" name="ContentAreaId" nillable="true" type="xs:int"/>
-          <xs:element minOccurs="1" name="ContentAreaName" nillable="true" type="xs:string"/>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="Subtests" nillable="true" type="java:SubtestInfo" xmlns:java="java:dto"/>
         </xs:sequence>
       </xs:complexType>
@@ -100,10 +86,14 @@
  */</xs:documentation>
         </xs:annotation>
         <xs:sequence>
+          <xs:element minOccurs="1" name="AccessCode" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="EndDate" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="EnforceBreak" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="EnforceTimeLimit" nillable="true" type="xs:string"/>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="Rosters" nillable="true" type="java:Roster" xmlns:java="java:dto"/>
           <xs:element minOccurs="1" name="SessionId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="SessionName" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="SessionNumber" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="StartDate" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
@@ -121,6 +111,21 @@
           <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="TestId" nillable="true" type="xs:int"/>
           <xs:element minOccurs="1" name="TestName" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ContentArea">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * ContentArea information
+ * subtests is a list of subtests in this content area
+ * @author Tai_Truong
+ */</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="AccessCode" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="1" name="ContentAreaId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="ContentAreaName" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Subtests" nillable="true" type="java:SubtestInfo" xmlns:java="java:dto"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="UserInfo">
@@ -425,12 +430,7 @@
   </s0:binding>
   <s0:service name="ClickerWSService">
     <s0:port binding="s1:ClickerWSServiceSoapBinding" name="ClickerWSSoapPort">
-    /** 
-    	nj09mhe5338.mhe.mhc:22611
-    	localhost:7001 	
-    **/
-    	<s2:address location="http://localhost:7001/ClickerWebService/ClickerWS"/>
-   
+      <s2:address location="http://localhost:7001/ClickerWebService/ClickerWS"/>
     </s0:port>
   </s0:service>
 </s0:definitions>

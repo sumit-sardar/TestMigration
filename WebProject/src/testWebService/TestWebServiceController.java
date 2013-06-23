@@ -91,9 +91,10 @@ public class TestWebServiceController extends PageFlowController
     
 	private String userName = "tai_tabe";
 	private String password = "welcome1";
-	private Integer userId = new Integer(153854);
+	private Integer userId = null; // new Integer(153854);
 	private Integer orgNodeId = new Integer(335709);
 	private Integer sessionId = new Integer(181459);
+	
 	
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -142,163 +143,203 @@ public class TestWebServiceController extends PageFlowController
 
     		// getUserTopNode
     		if ("getUserTopNode".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
     			
-    			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(this.userName);
-    			
-    			if (orgNodeList.getStatus().equals("OK")) {
-    				resultText = "getUserTopNode: SUCCESS" ;
-    				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
-    				OrgNode[] orgNodes = orgNodeList.getOrgNodes();
-    				
-        	        for (int i=0; i < orgNodes.length; i++) {
-        	        	OrgNode node = orgNodes[i];
-        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
-        				this.orgNodeId = node.getId();
-        	        }    				
+    			if (this.userId != null) {
+	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			
+	    			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(this.userName);
+	    			
+	    			if (orgNodeList.getStatus().equals("OK")) {
+	    				resultText = "getUserTopNode: SUCCESS" ;
+	    				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
+	    				OrgNode[] orgNodes = orgNodeList.getOrgNodes();
+	    				
+	        	        for (int i=0; i < orgNodes.length; i++) {
+	        	        	OrgNode node = orgNodes[i];
+	        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
+	        				this.orgNodeId = node.getId();
+	        	        }    				
+	    			}
+	    			else {
+		    			resultText = "getUserTopNodes: FAILED" + "<br/>" + orgNodeList.getStatus();
+	    			}
     			}
     			else {
-	    			resultText = "getUserTopNodes: FAILED" + "<br/>" + orgNodeList.getStatus();
+    				resultText = "getUserTopNodes: FAILED <br/> Unauthenticated user.";   				
     			}
     		}
 
     		// getChildrenNodes
     		if ("getChildrenNodes".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
-    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
-    			this.orgNodeId = newInteger(tmp.trim());
-    			 
-    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(this.userName, this.orgNodeId.toString());
-    			
-    			if (orgNodeList.getStatus().equals("OK")) {
-    				resultText = "getChildrenNodes: SUCCESS" ;
-    				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
-    				OrgNode[] orgNodes = orgNodeList.getOrgNodes();
-    				
-        	        for (int i=0; i < orgNodes.length; i++) {
-        	        	OrgNode node = orgNodes[i];
-        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
-        	        }    				
+    			if (this.userId != null) {
+	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
+	    			this.orgNodeId = newInteger(tmp.trim());
+	    			 
+	    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(this.userName, this.orgNodeId.toString());
+	    			
+	    			if (orgNodeList.getStatus().equals("OK")) {
+	    				resultText = "getChildrenNodes: SUCCESS" ;
+	    				resultText += "<br/>orgNodeName - orgNodeId<br/>" ;
+	    				OrgNode[] orgNodes = orgNodeList.getOrgNodes();
+	    				
+	        	        for (int i=0; i < orgNodes.length; i++) {
+	        	        	OrgNode node = orgNodes[i];
+	        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
+	        	        }    				
+	    			}
+	    			else {
+		    			resultText = "getChildrenNodes: FAILED" + "<br/>" + orgNodeList.getStatus();
+	    			}
     			}
     			else {
-	    			resultText = "getChildrenNodes: FAILED" + "<br/>" + orgNodeList.getStatus();
+    				resultText = "getChildrenNodes: FAILED <br/> Unauthenticated user.";   				
     			}
     		}
 
     		// getSessionsForNode
     		if ("getSessionsForNode".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
-    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
-    			this.orgNodeId = newInteger(tmp.trim());    			
-    			
-    			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId.toString());
-    			
-    			if (assignmentList.getStatus().equals("OK")) {
-    				resultText = "getSessionsForNode: SUCCESS" ;
-    				resultText += "<br/>sessionName - sessionId - startDate - endDate<br/>" ;
-    				Assignment[] assignments = assignmentList.getAssignments();
-    				
-        	        for (int i=0; i < assignments.length; i++) {
-        	        	Assignment assignment = assignments[i];
-        	            if (assignment != null) {
-            	        	resultText += ("<br/>" + assignment.getSessionName() + " - " + 
-            	        			assignment.getSessionId() + " - " + 
-            	        			assignment.getStartDate() + " - " + 
-            	        			assignment.getEndDate()); 
-            	        	this.sessionId = assignment.getSessionId();
-        	            }
-        	        }    				
+    			if (this.userId != null) {
+	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
+	    			this.orgNodeId = newInteger(tmp.trim());    			
+	    			
+	    			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId.toString());
+	    			
+	    			if (assignmentList.getStatus().equals("OK")) {
+	    				resultText = "getSessionsForNode: SUCCESS" ;
+	    				resultText += "<br/>sessionName - sessionId - accessCode - startDate - endDate - enforceBreak - enforceTimeLimit<br/>" ;
+	    				Assignment[] assignments = assignmentList.getAssignments();
+	    				
+	        	        for (int i=0; i < assignments.length; i++) {
+	        	        	Assignment assignment = assignments[i];
+	        	            if (assignment != null) {
+	            	        	resultText += ("<br/>" + assignment.getSessionName() + " - " + 
+	            	        			assignment.getSessionId() + " - " + 
+	            	        			assignment.getAccessCode() + " - " + 
+	            	        			assignment.getStartDate() + " - " + 
+	            	        			assignment.getEndDate() + " - " + 
+	            	        			assignment.getEnforceBreak() + " - " + 
+	            	        			assignment.getEnforceTimeLimit()); 
+	            	        	this.sessionId = assignment.getSessionId();
+	        	            }
+	        	        }    				
+	    			}
+	    			else {
+		    			resultText = "getSessionsForNode: FAILED" + "<br/>" + assignmentList.getStatus();
+	    			}
     			}
     			else {
-	    			resultText = "getSessionsForNode: FAILED" + "<br/>" + assignmentList.getStatus();
+    				resultText = "getSessionsForNode: FAILED <br/> Unauthenticated user.";   				
     			}
     		}
 
     		// getRostersInSession
     		if ("getRostersInSession".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
-    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			this.sessionId = newInteger(tmp.trim());
-    			
-    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
-    			
-    			if (rosterList.getStatus().equals("OK")) {
-    				resultText = "getRostersInSession: SUCCESS" ;
-    				resultText += "<br/>rosterId - loginName - firstName - lastName - studentKey<br/>" ;
-    				Roster[] rosters = rosterList.getRosters();
-    				
-        	        for (int i=0; i < rosters.length; i++) {
-        	        	Roster roster = rosters[i];
-        	            if (roster != null) {
-            	        	resultText += "<br/>";
-            	        	resultText += (roster.getRosterId() + " - " + 
-            	        			roster.getLoginName() + " - " + 
-            	        			roster.getFirstName() + " - " + 
-            	        			roster.getLastName() + " - " + 
-            	        			roster.getStudentKey()); 
-        	            }
-        	        }
+    			if (this.userId != null) {
+	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
+	    			this.sessionId = newInteger(tmp.trim());
+	    			
+	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
+	    			
+	    			if (rosterList.getStatus().equals("OK")) {
+	    				resultText = "getRostersInSession: SUCCESS" ;
+	    				resultText += "<br/>rosterId - loginName - firstName - lastName - studentKey<br/>" ;
+	    				Roster[] rosters = rosterList.getRosters();
+	    				
+	        	        for (int i=0; i < rosters.length; i++) {
+	        	        	Roster roster = rosters[i];
+	        	            if (roster != null) {
+	            	        	resultText += "<br/>";
+	            	        	resultText += (roster.getRosterId() + " - " + 
+	            	        			roster.getLoginName() + " - " + 
+	            	        			roster.getFirstName() + " - " + 
+	            	        			roster.getLastName() + " - " + 
+	            	        			roster.getStudentKey()); 
+            	        		resultText += "<br/>";
+	            	        	SubtestInfo[] subtests = roster.getSubtests();
+	            	        	for (int j=0 ; j<subtests.length ; j++) {
+	            	        		SubtestInfo subtest = subtests[j];
+	            	        		resultText += (subtest.getSubtestId() + " , ");
+	            	        	}
+            	        		resultText += "<br/>";
+	        	            }
+	        	        }
+	    			}
+	    			else {
+		    			resultText = "getRostersInSession: FAILED" + "<br/>" + rosterList.getStatus();
+	    			}
     			}
     			else {
-	    			resultText = "getRostersInSession: FAILED" + "<br/>" + rosterList.getStatus();
+    				resultText = "getRostersInSession: FAILED <br/> Unauthenticated user.";   				
     			}
     		}
 
     		// getTestStructure
     		if ("getTestStructure".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
-    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
-    			this.sessionId = newInteger(tmp.trim());
-
-    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
-    			
-    			//TestStructure testStructure = new TestStructure("Not implemented.");
-    			
-    			if (testStructure.getStatus().equals("OK")) {
-    				resultText = "getTestStructure: SUCCESS" ;
-					resultText += "<br/>testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
-
-					resultText += "<table>";
-					ContentArea[] contentAreas = testStructure.getContentAreas();
-					for (int i=0 ; i<contentAreas.length ; i++) {
-						ContentArea contentArea = contentAreas[i];
-						resultText += "<tr><td>";
-						resultText += "TS=" + contentArea.getContentAreaId() + " - " + contentArea.getContentAreaName();					
-						resultText += "</td></tr>";
-						
-						SubtestInfo[] subtests = contentArea.getSubtests();
-						for (int j=0 ; j<subtests.length ; j++) {	
-							SubtestInfo subtest = subtests[j];
+    			if (this.userId != null) {
+	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
+	    			this.sessionId = newInteger(tmp.trim());
+	
+	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+	    			
+	    			//TestStructure testStructure = new TestStructure("Not implemented.");
+	    			
+	    			if (testStructure.getStatus().equals("OK")) {
+	    				resultText = "getTestStructure: SUCCESS" ;
+						resultText += "<br/>testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
+	
+						resultText += "<table>";
+						ContentArea[] contentAreas = testStructure.getContentAreas();
+						for (int i=0 ; i<contentAreas.length ; i++) {
+							ContentArea contentArea = contentAreas[i];
 							resultText += "<tr><td>";
-							resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-							resultText += "TD=" + subtest.getSubtestId() + " - " + subtest.getSubtestName() + " - " + subtest.getSubtestLevel();					
+							resultText += "TS=" + contentArea.getContentAreaId() + " - " + contentArea.getContentAreaName() + " - " + contentArea.getAccessCode();					
 							resultText += "</td></tr>";
-							resultText += "<tr><td>";
-							resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 							
-							Question[] questions = subtest.getQuestions();
-							for (int k=0 ; k<questions.length ; k++) {		
-								Question question = questions[k];
-								resultText += (question.getCorrectAnswer() + ",");
+							SubtestInfo[] subtests = contentArea.getSubtests();
+							for (int j=0 ; j<subtests.length ; j++) {	
+								SubtestInfo subtest = subtests[j];
+								resultText += "<tr><td>";
+								resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+								resultText += "TD=" + subtest.getSubtestId() + " - " + subtest.getSubtestName() + 
+													" - " + subtest.getSubtestLevel();					
+								resultText += "</td></tr>";
+								resultText += "<tr><td>";
+								resultText += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+								
+								Question[] questions = subtest.getQuestions();
+								for (int k=0 ; k<questions.length ; k++) {		
+									Question question = questions[k];
+									resultText += (question.getCorrectAnswer() + ",");
+								}
+								resultText += "</td></tr>";
 							}
-							resultText += "</td></tr>";
 						}
-					}
-	    			resultText += "</table>";
-	    		}
+		    			resultText += "</table>";
+		    		}
+	    			else {
+		    			resultText = "getTestStructure: FAILED" + "<br/>" + testStructure.getStatus();
+	    			}
+    			}
     			else {
-	    			resultText = "getTestStructure: FAILED" + "<br/>" + testStructure.getStatus();
+    				resultText = "getTestStructure: FAILED <br/> Unauthenticated user.";   				
     			}
     		}
     		
     		// submitStudentResponses
        		if ("submitStudentResponses".equals(status)) {
-       			StudentResponse studentResponse = new StudentResponse();
-       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
-    			resultText = "submitStudentResponses: FAILED" + "<br/>" + ret;
+    			if (this.userId != null) {
+	       			StudentResponse studentResponse = new StudentResponse();
+	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+	    			resultText = "submitStudentResponses: FAILED" + "<br/>" + ret;
+    			}
+    			else {
+    				resultText = "submitStudentResponses: FAILED <br/> Unauthenticated user.";   				
+    			}
     		}
-     		
-    			
     	}
     	
     	this.getRequest().setAttribute("resultText", resultText);

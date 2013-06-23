@@ -12,17 +12,20 @@ public class ContentArea implements java.io.Serializable
     
     private Integer contentAreaId = null;
     private String contentAreaName = null;
+    private String accessCode = null;
     private SubtestInfo[] subtests = null;
     
     public ContentArea() {
     	this.contentAreaId = null;
     	this.contentAreaName = null;
+    	this.accessCode = null;
     	this.subtests = null;    	
     }
 
-    public ContentArea(Integer contentAreaId, String contentAreaName, SubtestInfo[] subtests) {
+    public ContentArea(Integer contentAreaId, String contentAreaName, String accessCode, SubtestInfo[] subtests) {
     	this.contentAreaId = contentAreaId;
     	this.contentAreaName = contentAreaName;
+    	this.accessCode = accessCode;
     	this.subtests = subtests;
     }
 
@@ -40,6 +43,14 @@ public class ContentArea implements java.io.Serializable
 
 	public void setContentAreaName(String contentAreaName) {
 		this.contentAreaName = contentAreaName;
+	}
+
+	public String getAccessCode() {
+		return accessCode;
+	}
+
+	public void setAccessCode(String accessCode) {
+		this.accessCode = accessCode;
 	}
 
 	public SubtestInfo[] getSubtests() {

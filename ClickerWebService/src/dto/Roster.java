@@ -17,7 +17,7 @@ public class Roster implements java.io.Serializable
     private String firstName = null;
     private String lastName = null;
     private String studentKey = null;
-    private ContentArea[] contentArea = null; 
+    private SubtestInfo[] subtests = null;
      
     public Roster() {
     	this.rosterId = null;
@@ -26,18 +26,18 @@ public class Roster implements java.io.Serializable
     	this.firstName = null;
     	this.lastName = null;
     	this.studentKey = null;
-    	this.contentArea = null;    	
+    	this.subtests = null;    	
     }
 
     public Roster(Integer rosterId, Integer studentId, String loginName, 
-    					String firstName, String lastName, String studentKey, ContentArea[] contentArea) {
+    					String firstName, String lastName, String studentKey, SubtestInfo[] subtests) {
     	this.rosterId = rosterId;
     	this.studentId = studentId;
     	this.loginName = loginName;
     	this.firstName = firstName;
     	this.lastName = lastName;
     	this.studentKey = studentKey;
-    	this.contentArea = contentArea;
+    	this.subtests = subtests;
     }
 
 	public Integer getRosterId() {
@@ -88,15 +88,12 @@ public class Roster implements java.io.Serializable
 		this.studentKey = studentKey;
 	}
 
-	public ContentArea[] getContentArea() {
-		return contentArea;
+	public SubtestInfo[] getSubtests() {
+		return subtests;
 	}
 
-	public void setContentArea(ContentArea[] contentArea) {
-		this.contentArea = contentArea;
+	public void setSubtests(SubtestInfo[] subtests) {
+		this.subtests = subtests;
 	}
-
-
-
-    
+	
 } 

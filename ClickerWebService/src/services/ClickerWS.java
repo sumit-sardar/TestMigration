@@ -16,12 +16,19 @@ import org.apache.beehive.controls.api.bean.Control;
 import java.io.Serializable;
 import java.sql.SQLException;
 
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.SortParams.SortParam;
+import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.testAdmin.Item;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.StudentManifest;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
@@ -203,8 +210,9 @@ public class ClickerWS implements Serializable {
 			        for (int i=0; i < testsessions.length; i++) {
 			            TestSession ts = testsessions[i];
 			            if (ts != null) {
-			            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), 
-			            									ts.getLoginStartDateString(), ts.getLoginEndDateString(), null);
+			            	Assignment session = new Assignment(ts.getTestAdminId(), ts.getTestAdminName(), ts.getAccessCode(),
+			            										ts.getSessionNumber(), ts.getLoginStartDateString(), ts.getLoginEndDateString(), 
+			            										ts.getEnforceBreak(), ts.getEnforceTimeLimit(),	null);
 			            	assignments[i] = session;
 			            }
 			        }
@@ -240,18 +248,36 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
-        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(
-        														userName, new Integer(sessionId), null, null, null);
+	    	//ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, new Integer(sessionId));					
+   			//SessionStudent[] sessionStudents = scheduledSession.getStudents();		
+	        SortParams sort = new SortParams();
+            SortParam[] sortParams = new SortParam[1];
+            SortType sortType = new SortType();
+            sortType.setType("asc");
+            sortParams[0] = new SortParam("ItemSetOrder", sortType);
+            sort.setSortParams(sortParams);	
+        	
+        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, new Integer(sessionId), 
+        																			null, null, null);
         	if (red != null) {
 		        RosterElement[] rosterElements = red.getRosterElements();
 		        if (rosterElements.length > 0) {
 			        Roster[] rosters = new Roster[rosterElements.length];
-			        
 			        for (int i=0; i < rosterElements.length; i++) {
 			        	RosterElement re = rosterElements[i];
 			            if (re != null) {
+            	            StudentSessionStatusData sssData = testSessionStatus.getStudentItemSetStatusesForRoster(userName, re.getStudentId(), 
+            	            																			new Integer(sessionId), null, null, sort);
+            	            StudentSessionStatus[] sssList = sssData.getStudentSessionStatuses();
+            	            SubtestInfo[] subtests = new SubtestInfo[sssList.length];  
+            	            for (int j=0 ; j<sssList.length ; j++) {
+            	            	StudentSessionStatus sss = sssList[j];
+            	            	SubtestInfo subtest = new SubtestInfo(sss.getItemSetId(), sss.getItemSetName(), sss.getItemSetLevel(), null);
+            	            	subtests[j] = subtest;
+            	            }
 			            	Roster roster = new Roster(re.getTestRosterId(), re.getStudentId(), 
-			            			re.getUserName(), re.getFirstName(), re.getLastName(), re.getExtPin1(), null);
+			            							   re.getUserName(), re.getFirstName(), re.getLastName(), 
+			            							   re.getExtPin1(), subtests);
 			            	rosters[i] = roster;
 			            }
 			        }
@@ -292,9 +318,6 @@ public class ClickerWS implements Serializable {
 			
 			TestElement[] TS_testElements = scheduledSession.getScheduledUnits();
 			
-	    	//ScheduledSession scheduledSession2 = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, sessionId);					
-			//SessionStudent[] sessionStudents = scheduledSession2.getStudents();		
-			
 			if (TS_testElements.length > 0) {
 				ContentArea[] contentAreas = new ContentArea[TS_testElements.length];
 				
@@ -330,6 +353,7 @@ public class ClickerWS implements Serializable {
 	
 						ContentArea contentArea = new ContentArea(TS_testElement.getItemSetId(), 
 																  TS_testElement.getItemSetName(), 
+																  TS_testElement.getAccessCode(),
 																  subtests);
 						
 					    contentAreas[i] = contentArea;
