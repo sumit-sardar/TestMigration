@@ -36,19 +36,19 @@ public class ManageSSOController extends PageFlowController
         	cookie.setMaxAge( -42000 );
         	this.getResponse().addCookie(cookie);
         	String tokenValue = this.getRequest().getParameter("oamSessionID");
-        	
+        	System.out.println("tokenValue - " +tokenValue);
         	tokenValue = URLDecoder.decode(tokenValue,"UTF-8");
-        	
+        	System.out.println("tokenValue from URL decode - " +tokenValue);
         	tokenValue=tokenValue.replaceAll("\\r\\n", "");
-            
+        	System.out.println("tokenValue replacing CRLF - " +tokenValue);
             tokenValue=URLEncoder.encode(tokenValue,"UTF-8");
-            
+            System.out.println("tokenValue after URL encode- " +tokenValue);
             //Base 64
         	BASE64Encoder base64 =  new BASE64Encoder();
             tokenValue = base64.encode(tokenValue.getBytes());
-           
+            System.out.println("tokenValue after Base64 encode - " +tokenValue);
             tokenValue=tokenValue.replaceAll("\\r\\n", "");
-          
+            System.out.println("tokenValue after CRLF replace - " +tokenValue);
             Cookie encodeCookie = new Cookie( "DExPerimeterAtnToken", tokenValue);
         	encodeCookie.setMaxAge( -42000 );
         	this.getResponse().addCookie(encodeCookie);
