@@ -89,11 +89,11 @@ public class TestWebServiceController extends PageFlowController
     private com.ctb.control.db.ItemSet itemSet;
 
     
-	private String userName = "tai_tabe";
-	private String password = "welcome1";
+	private String userName = ""; //"tai_tabe";
+	private String password = ""; //"welcome1";
 	private Integer userId = null; // new Integer(153854);
 	private Integer orgNodeId = new Integer(335709);
-	private Integer sessionId = new Integer(181459);
+	private Integer sessionId = new Integer(184010);
 	
 	
 	/**
@@ -145,7 +145,7 @@ public class TestWebServiceController extends PageFlowController
     		if ("getUserTopNode".equals(status)) {
     			
     			if (this.userId != null) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			//this.userName = (String)this.getRequest().getParameter("userName");
 	    			
 	    			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(this.userName);
 	    			
@@ -172,7 +172,7 @@ public class TestWebServiceController extends PageFlowController
     		// getChildrenNodes
     		if ("getChildrenNodes".equals(status)) {
     			if (this.userId != null) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			//this.userName = (String)this.getRequest().getParameter("userName");
 	    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
 	    			this.orgNodeId = newInteger(tmp.trim());
 	    			 
@@ -200,7 +200,7 @@ public class TestWebServiceController extends PageFlowController
     		// getSessionsForNode
     		if ("getSessionsForNode".equals(status)) {
     			if (this.userId != null) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			//this.userName = (String)this.getRequest().getParameter("userName");
 	    			String tmp = (String)this.getRequest().getParameter("orgNodeId");    			
 	    			this.orgNodeId = newInteger(tmp.trim());    			
 	    			
@@ -237,7 +237,7 @@ public class TestWebServiceController extends PageFlowController
     		// getRostersInSession
     		if ("getRostersInSession".equals(status)) {
     			if (this.userId != null) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			//this.userName = (String)this.getRequest().getParameter("userName");
 	    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
 	    			this.sessionId = newInteger(tmp.trim());
 	    			
@@ -279,13 +279,13 @@ public class TestWebServiceController extends PageFlowController
     		// getTestStructure
     		if ("getTestStructure".equals(status)) {
     			if (this.userId != null) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
+	    			//this.userName = (String)this.getRequest().getParameter("userName");
 	    			String tmp = (String)this.getRequest().getParameter("sessionId");    			
 	    			this.sessionId = newInteger(tmp.trim());
 	
-	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+	    			//TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
 	    			
-	    			//TestStructure testStructure = new TestStructure("Not implemented.");
+	    			TestStructure testStructure = new TestStructure("Not implemented.");
 	    			
 	    			if (testStructure.getStatus().equals("OK")) {
 	    				resultText = "getTestStructure: SUCCESS" ;

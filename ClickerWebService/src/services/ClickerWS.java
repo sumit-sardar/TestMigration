@@ -191,7 +191,7 @@ public class ClickerWS implements Serializable {
 	/**
 	* userName comes from OAS after authenticate successfully. 
 	* orgNodeId is org_node_id from OAS
-	* Return all sessions associated with this node.
+	* Return all current and future sessions (CU and FU) associated with this node.
 	*/
 	@WebMethod
 	public AssignmentList getSessionsForNode(String userName, String orgNodeId) 
