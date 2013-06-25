@@ -1,4 +1,5 @@
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
 
@@ -29,23 +30,25 @@ public class ManageSSOController extends PageFlowController
 	)
     protected Forward begin()
     {
-    	System.out.println("ManageSSO 32");
     	Forward result = globalApp.logout();
     	try {
-    		System.out.println("ManageSSO 35");
     		Cookie cookie = new Cookie( "TAS_SESSIONID", "00000000000000000000" );
         	cookie.setMaxAge( -42000 );
         	this.getResponse().addCookie(cookie);
         	String tokenValue = this.getRequest().getParameter("oamSessionID");
-        	System.out.println("Token - " + tokenValue);
+        	
         	tokenValue = URLDecoder.decode(tokenValue,"UTF-8");
-        	System.out.println("Token after URL Decode - " + tokenValue);
+        	
+        	tokenValue=tokenValue.replaceAll("\\r\\n", "");
+            
+            tokenValue=URLEncoder.encode(tokenValue,"UTF-8");
+            
             //Base 64
         	BASE64Encoder base64 =  new BASE64Encoder();
             tokenValue = base64.encode(tokenValue.getBytes());
-            System.out.println("Token after Base 64 encode - " + tokenValue);
+           
             tokenValue=tokenValue.replaceAll("\\r\\n", "");
-            System.out.println("Token after replacing CRLF - " + tokenValue);
+          
             Cookie encodeCookie = new Cookie( "DExPerimeterAtnToken", tokenValue);
         	encodeCookie.setMaxAge( -42000 );
         	this.getResponse().addCookie(encodeCookie);
@@ -55,13 +58,13 @@ public class ManageSSOController extends PageFlowController
     	} catch (Exception e) {
     		
     		e.printStackTrace();
-    		System.out.println("ManageSSO 53");
+    		
     	}
         
          
         
 
-    	System.out.println("ManageSSO 59");
+    	
     	return new Forward("success");
     }
     
