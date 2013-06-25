@@ -4,6 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%
+	String userAuthenticated = (String)request.getAttribute("userAuthenticated");
 	String resultText = (String)request.getAttribute("resultText");
 	String userName = (String)request.getAttribute("userName");
 	String password = (String)request.getAttribute("password");
@@ -38,6 +39,7 @@
 <netui:form action="clickerService">
 
 <input type="hidden" id="status" name="status"   value="submit"/>
+<input type="hidden" id="userAuthenticated" name="userAuthenticated"   value="<%=userAuthenticated%>"/>
 
 <!-- MAIN BODY -->
 

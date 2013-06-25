@@ -310,6 +310,7 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public TestStructure getTestStructure(String userName, String sessionId) 
 	{
+		/*
 		TestStructure testStructure = new TestStructure();
 		
     	try {
@@ -377,6 +378,9 @@ public class ClickerWS implements Serializable {
 			e.printStackTrace();
 			testStructure = new TestStructure(e.getMessage());
 		}
+		*/
+		
+		TestStructure testStructure = new TestStructure("Not Implemented.");
 		
 		return testStructure;
 	}
