@@ -86,7 +86,8 @@
 			<td class="transparent">
             	<netui-data:getData resultId="reportUrl" value="${container.item.reportUrl}"/>  
 				<li style="list-style-type: square;">
-				<a href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
+				<!-- [IAA]: 6/25/2013 added onclick to block user from clicking any anchor link after clicking on report name.-->
+				<a onclick="UIBlock();" href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
 					<netui:content value="${container.item.displayName}" defaultValue="&nbsp;" />
 				</a>
 				</li>
