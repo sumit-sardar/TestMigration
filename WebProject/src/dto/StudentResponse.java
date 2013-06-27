@@ -10,27 +10,19 @@ public class StudentResponse implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
     
-    private Integer testId = null;
     private Assignment assignment = null;
+    private String status = null;		
     
     public StudentResponse() {
-    	this.testId = null;
     	this.assignment = null;    	
+    	this.status = null;
     }
 
-    public StudentResponse(Integer testId, Assignment assignment) {
-    	this.testId = testId;
+    public StudentResponse(Assignment assignment) {
     	this.assignment = assignment;
+    	this.status = "OK";
     }
     
-	public Integer getTestId() {
-		return testId;
-	}
-
-	public void setTestId(Integer testId) {
-		this.testId = testId;
-	}
-
 	public Assignment getAssignment() {
 		return assignment;
 	}
@@ -39,6 +31,12 @@ public class StudentResponse implements java.io.Serializable
 		this.assignment = assignment;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
     
     
 } 

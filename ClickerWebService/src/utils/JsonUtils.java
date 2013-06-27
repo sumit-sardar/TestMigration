@@ -38,6 +38,18 @@ public class JsonUtils {
         }
 
         return retval.toString();
-  }
+	}
 
+	public static Integer newInteger(String valueStr) {
+    	Integer valueInt = new Integer(0);
+    	try {
+        	valueInt = new Integer(valueStr);
+    	}
+      	catch (Exception e) {
+        	valueInt = new Integer(0);
+      		
+      	}
+		return valueInt;
+    }
+	
 }

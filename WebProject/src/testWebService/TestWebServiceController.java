@@ -88,19 +88,18 @@ public class TestWebServiceController extends PageFlowController
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
 
-    
+    /*
 	private String userName = "";
 	private String password = "";
 	private String orgNodeId = "";
 	private String sessionId = "";
-	
-    /*
+	*/
+    
 	private String userName = "tai_tabe";
 	private String password = "welcome1";
-	private String userId = "153854";
 	private String orgNodeId = "335709";
 	private String sessionId = "184010";
-	*/
+	
 	
 	
 	private AssignmentList assignmentList = null;
@@ -341,18 +340,47 @@ public class TestWebServiceController extends PageFlowController
     			if ("true".equals(userAuthenticated)) {
 	    			this.userName = (String)this.getRequest().getParameter("userName");
 	    			this.sessionId = (String)this.getRequest().getParameter("sessionId");    			
+
+	    			String responsevalues = (String)this.getRequest().getParameter("responses");  
+    				System.out.println("responsevalues = " + responsevalues);
+	    			String[] responses = initializeResponses(responsevalues);
+	    			int index = 0;
 	    			
-	    			//TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId.toString()); 
+	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId);
 	    			
-	    		    //Assignment assignment = getAssignment(this.sessionId);
-	    			//RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId.toString());
-	    			//assignment.setRosters(rosterList.getRosters());
+	    		    Assignment assignment = getAssignment(newInteger(this.sessionId));
+	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId);
+	    			Roster[] rosters = rosterList.getRosters();
+	    			
+	    			for (int i=0 ; i<rosters.length ; i++) {
+	    				Roster roster = rosters[i];
+	    				SubtestInfo[] subtests = roster.getSubtests();
+		    			for (int j=0 ; j<subtests.length ; j++) {
+		    				SubtestInfo subtest = subtests[j];
+		    				
+		    				initialzeQuestions(responses[index], subtest, testStructure);
+		    				index++; 
+		    				if (index > 3) index = 0;
+		    				
+		    				System.out.println(subtest.getSubtestId() + " - " + subtest.getSubtestName());
+		    				
+		    				Question[] questions = subtest.getQuestions();
+			    			for (int k=0 ; k<questions.length ; k++) {
+			    				Question question = questions[k];
+			    				System.out.println(question.getQuestionId() + " - " + question.getCorrectAnswer() + " - " + question.getResponse());
+			    			}
+		    			}	    				
+	    			}
+	    			
+	    			assignment.setRosters(rosterList.getRosters());
+	    			
 	    			
 	       			StudentResponse studentResponse = new StudentResponse();
-	       			//studentResponse.setTestId(new Integer(0));
-	       			//studentResponse.setAssignment(assignment);
+	       			studentResponse.setAssignment(assignment);
 	       			
-	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+	       			//String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+	       			String ret = "OK";
+	       			
 	       			if (ret.equals("OK")) {
 	       				resultText = "submitStudentResponses: SUCCESS" + "<br/>" + ret;	       				
 	       			}
@@ -923,6 +951,46 @@ public class TestWebServiceController extends PageFlowController
 	        }
 	    }    				
     	return assignment;
+    }
+
+    private void initialzeQuestions(String response, SubtestInfo srcSubtest, TestStructure testStructure) {
+
+		ContentArea[] contentAreas = testStructure.getContentAreas();
+		for (int i=0 ; i<contentAreas.length ; i++) {
+			ContentArea contentArea = contentAreas[i];
+			SubtestInfo[] subtests = contentArea.getSubtests();
+			for (int j=0 ; j<subtests.length ; j++) {	
+				SubtestInfo subtest = subtests[j];
+				
+				if (subtest.getSubtestId().intValue() == srcSubtest.getSubtestId().intValue()) {
+					srcSubtest.setSubtestName(subtest.getSubtestName());
+					Question[] questions = subtest.getQuestions();
+					for (int k=0 ; k<questions.length ; k++) {		
+						Question question = questions[k];
+	    				question.setResponse(response);
+					}
+					srcSubtest.setQuestions(questions);
+				}
+			}
+		}
+		
+    }
+
+    private String[] initializeResponses(String responsevalues) {
+    	String[] responses = new String[4];
+    	if ("A".equals(responsevalues)) {
+    		responses[0] = "A"; responses[1] = "A"; responses[2] = "A"; responses[3] = "A";
+    	}
+    	if ("B".equals(responsevalues)) {
+    		responses[0] = "B"; responses[1] = "B"; responses[2] = "B"; responses[3] = "B";
+    	}
+    	if ("C".equals(responsevalues)) {
+    		responses[0] = "C"; responses[1] = "C"; responses[2] = "C"; responses[3] = "C";
+    	}
+    	if ("ABCD".equals(responsevalues)) {
+    		responses[0] = "A"; responses[1] = "B"; responses[2] = "C"; responses[3] = "D";
+    	}
+    	return responses;
     }
     
  }

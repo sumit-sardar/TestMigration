@@ -72,6 +72,12 @@
       	
 <table width="80%" cellpadding="5" cellspacing="5">
 <tr>
+	<td colspan="3">
+		<li> authenticateUser and getUserTopNode are prerequisite for all calls.</li>
+		<li> getSessionsForNode is prerequisite for submitStudentResponses.</li>		
+	</td>
+</tr>
+<tr>
 	<td width=200>Username:&nbsp;<input type="textbox" id="userName" name="userName" value="<%=userName%>" /></td>
 	<td width=200>Password:<input type="textbox" id="password" name="password" value="<%=password%>" /></td>
 	<td>
@@ -94,7 +100,16 @@
 	</td>
 </tr>
 <tr>
-	<td colspan="3">
+	<td width=200>Responses:&nbsp;
+	<select id="responses" name="responses">
+		<option value="A">All A</option>
+		<option value="B">All B</option>
+		<option value="C">All C</option>
+		<option value="D">All D</option>
+		<option value="ABCD">Alternate A|B|C|D</option>
+	</select>
+	</td>
+	<td colspan="2">
 		<input type="button" value="submitStudentResponses" onclick="submitStatus('submitStudentResponses');" />&nbsp;&nbsp;
 	</td>
 </tr>

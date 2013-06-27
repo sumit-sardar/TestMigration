@@ -155,7 +155,8 @@ public class ClickerWS implements Serializable {
 
 		try
         {   
-        	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, new Integer(orgNodeId), null, null, null);
+        	NodeData nodeData = this.testSessionStatus.getOrgNodesForParent(userName, JsonUtils.newInteger(orgNodeId), 
+        																	null, null, null);
         	if (nodeData != null) {
 		        Node[] nodes = nodeData.getNodes(); 
 		        if (nodes.length > 0) {
@@ -169,7 +170,7 @@ public class ClickerWS implements Serializable {
 			        	}
 			        }
 			        
-			        childNodes = new OrgNodeList(new Integer(orgNodeId), orgNodes);
+			        childNodes = new OrgNodeList(JsonUtils.newInteger(orgNodeId), orgNodes);
 		        }
 		        else {
 	        		childNodes = new OrgNodeList("Cannot get children nodes");                				        	
@@ -200,8 +201,8 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
-        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(
-        													userName, null, new Integer(orgNodeId), null, null, null);
+        	TestSessionData tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, 
+        														JsonUtils.newInteger(orgNodeId), null, null, null);
         	if (tsd != null) {
 		        TestSession[] testsessions = tsd.getTestSessions();
 		        if (testsessions.length > 0) {
@@ -217,7 +218,7 @@ public class ClickerWS implements Serializable {
 			            }
 			        }
 	
-			        assignmentList = new AssignmentList(new Integer(orgNodeId), assignments);
+			        assignmentList = new AssignmentList(JsonUtils.newInteger(orgNodeId), assignments);
 		        }
 		        else {
 	                assignmentList = new AssignmentList("There is no session");        				        	
@@ -248,8 +249,6 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
-	    	//ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(userName, new Integer(sessionId));					
-   			//SessionStudent[] sessionStudents = scheduledSession.getStudents();		
 	        SortParams sort = new SortParams();
             SortParam[] sortParams = new SortParam[1];
             SortType sortType = new SortType();
@@ -257,7 +256,7 @@ public class ClickerWS implements Serializable {
             sortParams[0] = new SortParam("ItemSetOrder", sortType);
             sort.setSortParams(sortParams);	
         	
-        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, new Integer(sessionId), 
+        	RosterElementData red = this.testSessionStatus.getRosterForTestSession(userName, JsonUtils.newInteger(sessionId), 
         																			null, null, null);
         	if (red != null) {
 		        RosterElement[] rosterElements = red.getRosterElements();
@@ -267,7 +266,7 @@ public class ClickerWS implements Serializable {
 			        	RosterElement re = rosterElements[i];
 			            if (re != null) {
             	            StudentSessionStatusData sssData = testSessionStatus.getStudentItemSetStatusesForRoster(userName, re.getStudentId(), 
-            	            																			new Integer(sessionId), null, null, sort);
+            	            																JsonUtils.newInteger(sessionId), null, null, sort);
             	            StudentSessionStatus[] sssList = sssData.getStudentSessionStatuses();
             	            SubtestInfo[] subtests = new SubtestInfo[sssList.length];  
             	            for (int j=0 ; j<sssList.length ; j++) {
@@ -282,7 +281,7 @@ public class ClickerWS implements Serializable {
 			            }
 			        }
 			        
-	                rosterList = new RosterList(new Integer(sessionId), rosters);
+	                rosterList = new RosterList(JsonUtils.newInteger(sessionId), rosters);
 		        }
 		        else {
 	                rosterList = new RosterList("There is no roster");        		
@@ -310,12 +309,11 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public TestStructure getTestStructure(String userName, String sessionId) 
 	{
-		/*
 		TestStructure testStructure = new TestStructure();
 		
     	try {
 
-			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, new Integer(sessionId));
+			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, JsonUtils.newInteger(sessionId));
 			
 			TestElement[] TS_testElements = scheduledSession.getScheduledUnits();
 			
@@ -364,7 +362,7 @@ public class ClickerWS implements Serializable {
 					}
 				}
 				
-				TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(userName, new Integer(sessionId));
+				TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(userName, JsonUtils.newInteger(sessionId));
 				TestSession[] testSessions = tsData.getTestSessions();
 				TestSession testSession = testSessions[0];
 				
@@ -378,9 +376,6 @@ public class ClickerWS implements Serializable {
 			e.printStackTrace();
 			testStructure = new TestStructure(e.getMessage());
 		}
-		*/
-		
-		TestStructure testStructure = new TestStructure("Not Implemented.");
 		
 		return testStructure;
 	}
@@ -395,6 +390,9 @@ public class ClickerWS implements Serializable {
 	public String submitStudentResponses(StudentResponse studentResponses) 
 	{
 		String status = "Not Implemented.";
+
+		Assignment assignment = studentResponses.getAssignment();
+		
 		
 		return status;
 	}
