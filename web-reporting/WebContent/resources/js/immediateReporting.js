@@ -115,7 +115,7 @@ function resetFilters() {
 }
 
 function populateGrid() {
-	scrollPos = 0;
+	//scrollPos = 0;
 	var studentIdTitle = $("#studentIdLabelName").val();
 	var postDataObject = {};
  	postDataObject.q = 2;
@@ -171,8 +171,8 @@ function populateGrid() {
 		onSortCol : function(index, columnIndex, sortOrder) {
 				if(index != "immdRptGrid_userName")
 					scrollPos = $('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();
-				else
-					scrollPos = 0;	 
+				//else
+					//scrollPos = 0;	 
 				enableDisableImmediateReportButton(false);
 		},
 		onSelectRow: function (rowId) {		
@@ -214,8 +214,12 @@ function populateGrid() {
 	 });  
 
     jQuery("#immdRptGrid").jqGrid('filterToolbar',{
+    	beforeSearch: function(){
+    		scrollPos = $('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();			
+    	},
     	afterSearch : function(){
-    		immdRptGridSearh();
+    		immdRptGridSearh();    		
+    		$('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft(scrollPos);
     	}});  
     
   	jQuery("#immdRptGrid").navGrid('#immdRptGridPager',{
@@ -238,10 +242,12 @@ function populateGrid() {
 		$("#immdRptGridSearhInputParam").val('');
 		enableDisableImmediateReportButton(false);
 	}); 
+
 }
 
 function gridScoringStudentReload(){
-	scrollPos = 0;
+	//scrollPos = 0;
+	scrollPos = $('#immdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
