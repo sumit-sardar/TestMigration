@@ -51,6 +51,8 @@ import dto.TestStructure;
 import dto.StudentResponse;
 
 import utils.JsonUtils;
+import com.ctb.control.db.StudentItemSetStatus;
+import com.ctb.control.db.TestRoster;
 
 @WebService
 public class ClickerWS implements Serializable {
@@ -66,6 +68,12 @@ public class ClickerWS implements Serializable {
 	
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
+
+	@Control
+	private StudentItemSetStatus studentItemSetStatus;
+
+	@Control
+	private TestRoster testRoster;
 	
     /**
     * OAS authenticates this user. 
@@ -392,7 +400,20 @@ public class ClickerWS implements Serializable {
 		String status = "Not Implemented.";
 
 		Assignment assignment = studentResponses.getAssignment();
+		Roster[] rosters = assignment.getRosters();
 		
+		for (int i=0 ; i<rosters.length ; i++) {
+			Roster roster = rosters[i];
+			SubtestInfo[] subtests = roster.getSubtests();
+			for (int j=0 ; j<subtests.length ; j++) {
+				SubtestInfo subtest = subtests[j];
+				
+				Question[] questions = subtest.getQuestions();
+    			for (int k=0 ; k<questions.length ; k++) {
+    				Question question = questions[k];
+    			}
+			}	    				
+		}
 		
 		return status;
 	}

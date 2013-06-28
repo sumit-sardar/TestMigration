@@ -294,7 +294,7 @@ public class TestWebServiceController extends PageFlowController
 	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId); 
 	    			
 	    			if (testStructure.getStatus().equals("OK")) {
-	    				resultText = "getTestStructure: SUCCESS" ;
+	    				resultText = "getTestStructure: SUCCESS";
 						resultText += "<br/>testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
 	
 						resultText += "<table>";
@@ -338,11 +338,15 @@ public class TestWebServiceController extends PageFlowController
     		// submitStudentResponses
        		if ("submitStudentResponses".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
+    				/*
+       				resultText = "submitStudentResponses: Input Information" + "<br/>";	       				
+    				
 	    			this.userName = (String)this.getRequest().getParameter("userName");
 	    			this.sessionId = (String)this.getRequest().getParameter("sessionId");    			
 
 	    			String responsevalues = (String)this.getRequest().getParameter("responses");  
-    				System.out.println("responsevalues = " + responsevalues);
+	    			resultText += ("response values = " + responsevalues + "<br/>");
+	    			
 	    			String[] responses = initializeResponses(responsevalues);
 	    			int index = 0;
 	    			
@@ -362,12 +366,12 @@ public class TestWebServiceController extends PageFlowController
 		    				index++; 
 		    				if (index > 3) index = 0;
 		    				
-		    				System.out.println(subtest.getSubtestId() + " - " + subtest.getSubtestName());
+		    				resultText += (subtest.getSubtestId() + " - " + subtest.getSubtestName() + "<br/>");
 		    				
 		    				Question[] questions = subtest.getQuestions();
 			    			for (int k=0 ; k<questions.length ; k++) {
 			    				Question question = questions[k];
-			    				System.out.println(question.getQuestionId() + " - " + question.getCorrectAnswer() + " - " + question.getResponse());
+			    				resultText +=(question.getQuestionId() + " - " + question.getCorrectAnswer() + " - " + question.getResponse() + "<br/>");
 			    			}
 		    			}	    				
 	    			}
@@ -378,14 +382,16 @@ public class TestWebServiceController extends PageFlowController
 	       			StudentResponse studentResponse = new StudentResponse();
 	       			studentResponse.setAssignment(assignment);
 	       			
-	       			//String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
-	       			String ret = "OK";
-	       			
+	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+	       			*/
+    				
+    				String ret = "Not Implemented.";
+    				
 	       			if (ret.equals("OK")) {
-	       				resultText = "submitStudentResponses: SUCCESS" + "<br/>" + ret;	       				
+	       				resultText += ("<br/><br/>" + "submitStudentResponses: SUCCESS" + "<br/>" + ret);	       				
 	       			}
 	       			else {
-	       				resultText = "submitStudentResponses: FAILED" + "<br/>" + ret;
+	       				resultText += ("<br/><br/>" + "submitStudentResponses: FAILED" + "<br/>" + ret);	       				
 	       			}
     			}
     			else {
