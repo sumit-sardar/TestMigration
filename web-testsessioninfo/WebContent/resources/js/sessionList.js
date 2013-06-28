@@ -3666,6 +3666,7 @@ function registerDelegate(tree){
 	 } else {
 	 		populateLocatorCheckboxValue();
 	 		$("#timeZoneList").removeAttr("disabled");
+	 		$("#testSessionName").removeAttr("disabled");
 		    var param1 =$("#testDiv *").serialize(); 
 		    param1 = param1 +serializeDisabledFieldFromDiv("testDiv");
 		    
