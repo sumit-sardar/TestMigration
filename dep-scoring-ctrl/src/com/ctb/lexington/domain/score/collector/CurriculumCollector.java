@@ -428,7 +428,7 @@ public class CurriculumCollector {
                 composites[0].setCompositePointsPossible(new Long(315));
             }
            } else if("ESP B".equals(form)){	
-        	   if(level != null && "K-1".equals(level)) {
+        	   if(level != null && "K".equals(level)) {
 	           	composites[0].setAssessmentId(new Long(13337));
 	            composites[0].setCompositeId(new Long(39));
 	            composites[0].setCompositeNumItems(new Long(100));
@@ -453,34 +453,44 @@ public class CurriculumCollector {
 	            composites[0].setCompositeId(new Long(43));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
+	          }else if("1".equals(level)) {
+		            composites[0].setAssessmentId(new Long(13338));
+		            composites[0].setCompositeId(new Long(44));
+		            composites[0].setCompositeNumItems(new Long(100));
+		            composites[0].setCompositePointsPossible(new Long(315));
 	          }
            }else if("C".equals(form)){
 
-        	   if(level != null && "K-1".equals(level)) {
+        	   if(level != null && "K".equals(level)) {
                	composites[0].setAssessmentId(new Long(29126));
-                   composites[0].setCompositeId(new Long(44));
+                   composites[0].setCompositeId(new Long(45));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("9-12".equals(level)) {
                    composites[0].setAssessmentId(new Long(29355));
-                   composites[0].setCompositeId(new Long(45));
+                   composites[0].setCompositeId(new Long(46));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  } else if("6-8".equals(level)) {
                    composites[0].setAssessmentId(new Long(29346));
-                   composites[0].setCompositeId(new Long(46));
+                   composites[0].setCompositeId(new Long(47));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("4-5".equals(level)) {
                    composites[0].setAssessmentId(new Long(29077));
-                   composites[0].setCompositeId(new Long(47));
+                   composites[0].setCompositeId(new Long(48));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("2-3".equals(level)) {
                    composites[0].setAssessmentId(new Long(29304));
-                   composites[0].setCompositeId(new Long(48));
+                   composites[0].setCompositeId(new Long(49));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
+                 }else if("1".equals(level)) {
+                     composites[0].setAssessmentId(new Long(29255));
+                     composites[0].setCompositeId(new Long(50));
+                     composites[0].setCompositeNumItems(new Long(100));
+                     composites[0].setCompositePointsPossible(new Long(315));
                  }
            }/*else if("D".equals(form)){
 
@@ -939,7 +949,7 @@ public class CurriculumCollector {
          
          try {
              ps = conn.prepareStatement(casql);
-             String likeSubtestLevel = "%"+subtestLevel+"%";
+             String likeSubtestLevel = (subtestLevel == "K" || subtestLevel == "1")?"%K-1%":"%"+subtestLevel+"%";
              ps.setString(1, likeSubtestLevel);
              ps.setInt(2, productId);
              rs = ps.executeQuery();
@@ -1520,7 +1530,7 @@ public class CurriculumCollector {
         	"				WHERE TR.TEST_ROSTER_ID = ? " +
         	"				AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
         	"				AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
-        	"				AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL)) = LCO.TEST_LEVEL " +
+        	"				AND SUBSTR(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)), 3, 3) = LCO.TEST_LEVEL " +
         	"				AND LCO.SUBJECT = ISET1.ITEM_SET_NAME " +
         	"				AND ISET1.ITEM_SET_LEVEL = LCO.TEST_LEVEL " +
         	"				AND TA.PRODUCT_ID = PRO.PRODUCT_ID " +
@@ -1540,7 +1550,7 @@ public class CurriculumCollector {
         	"	WHERE TR.TEST_ROSTER_ID = ? " +
         	"	AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
         	"	AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
-        	"	AND SUBSTR(ISET.ITEM_SET_LEVEL, 3, LENGTH(ISET.ITEM_SET_LEVEL)) = LCO.TEST_LEVEL " +
+        	"	AND SUBSTR(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)), 3, LENGTH(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)))) = LCO.TEST_LEVEL " +
         	"	AND LCO.SUBJECT = 'Overall')";
     	
     	
