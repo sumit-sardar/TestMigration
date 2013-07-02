@@ -118,6 +118,9 @@ public class CustomerManagementImpl implements CustomerManagement
         String customerName = null;
         boolean laslinkFormAOrFormBSelected = false;  
         boolean laslinkEspanolSelected = false; 
+        boolean laslinkFormCSelected = false;
+        
+        boolean laslinkEspanolBSelected = false;
         
         try {
             validator.validateUser(loginName, loginName,
@@ -211,6 +214,16 @@ public class CustomerManagementImpl implements CustomerManagement
                 	customers.setupEspanolCustomerConfiguration(customerId);
                 	laslinkEspanolSelected = true;
                 }
+            	//changes for FORM C and FORM D starts
+                else if(CTBConstants.CUSTOMER_PRODUCT_FORMC.equals(selectedProduct)){
+                	customers.setupLaslinkFormCCustomerConfiguration(customerId);
+                	laslinkFormCSelected = true;
+                }
+               
+                else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB.equals(selectedProduct)){
+                	customers.setupEspanolBCustomerConfiguration(customerId);
+                	laslinkEspanolBSelected = true;
+                }
             }
             //create demographic data
             //create common demographicdata
@@ -256,6 +269,10 @@ public class CustomerManagementImpl implements CustomerManagement
         Integer mailingAddressId = null;
         boolean laslinkFormAOrFormBSelected = false;  
         boolean laslinkEspanolSelected = false; 
+        boolean laslinkFormCSelected = false;
+       
+        boolean laslinkEspanolBSelected = false;
+        
         try {
             validator.validateUser(loginUserName, 
                                    loginUserName,
@@ -355,6 +372,18 @@ public class CustomerManagementImpl implements CustomerManagement
                     else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOL.equals(selectedProduct)){
                     	customers.setupEspanolCustomerConfiguration(customerId);
                     	laslinkEspanolSelected = true;
+                    }
+                	//changes for FORM C and FORM D starts
+                    else if(CTBConstants.CUSTOMER_PRODUCT_FORMC.equals(selectedProduct)){
+                    	customers.setupLaslinkFormCCustomerConfiguration(customerId);
+                    	laslinkFormCSelected = true;
+                    }
+                    
+                	//changes for FORM C and FORM D ends
+                	
+                    else if(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB.equals(selectedProduct)){
+                    	customers.setupEspanolBCustomerConfiguration(customerId);
+                    	laslinkEspanolBSelected = true;
                     }
                 }
                 //create demographic data
@@ -742,8 +771,28 @@ public class CustomerManagementImpl implements CustomerManagement
                 	customerConfigurations[0].setCustomerConfigurationName(
                         CTBConstants.LLESPANOL_CUSTOMER);
                                                     
-       			 }
+       			 }                
        			//END - Changes For LLESPANOL Product
+                
+              //START - Changes For LASLINK FORM C-D Product
+                else if( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_LASLINK_FORMC_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.LASLINK_FORMC_CUSTOMER);
+                                                    
+       			 }
+               
+              ////START - Changes For LLESPANOL B Product
+                
+                else if( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_LLESPANOLB_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.LLESPANOLB_CUSTOMER);
+                                                    
+       			 }
+               ////END - - Changes For LLESPANOL B Product
                 
               //START - Changes For TABE ADAPTIVE Product
                 else if( customerConfigurations[0].getCustomerConfigurationName().equals(
@@ -807,6 +856,13 @@ public class CustomerManagementImpl implements CustomerManagement
 	           }
 	           if(Arrays.asList(productTestCatalogIds).contains(7003)){
 	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOL);
+	           }
+	           if(Arrays.asList(productTestCatalogIds).contains(7501)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_FORMC);
+	           }
+	           
+	           if(Arrays.asList(productTestCatalogIds).contains(7502)){
+	        	   products.add(CTBConstants.CUSTOMER_PRODUCT_ESPANOLB);
 	           }
            }
            String[] customerSelectedProducts = new String[products.size()];

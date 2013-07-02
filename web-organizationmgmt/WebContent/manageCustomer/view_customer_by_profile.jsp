@@ -45,7 +45,9 @@ pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
 						dataSource="actionForm.customerProfile.userSelections" disabled="<%=isLasLinkProduct%>">
 						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
 						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
-						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" /><br>
+						<netui:checkBoxOption value="Form C" tagId="FormCcheckBox" />
+						<netui:checkBoxOption value="Espanol B" tagId="EspanolBcheckBox" />
 					</netui:checkBoxGroup></div>
 				</c:if> <c:if test="${isLasLinkProduct}">
 					<div id="LaslinkProductChecboxGroup" style="display: block;">
@@ -53,7 +55,9 @@ pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
 						dataSource="actionForm.customerProfile.userSelections" disabled="<%=isLasLinkProduct%>">
 						<netui:checkBoxOption value="Form A" tagId="FormAcheckBox" />
 						<netui:checkBoxOption value="Form B" tagId="FormBcheckBox" />
-						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" />
+						<netui:checkBoxOption value="Espanol" tagId="EspanolcheckBox" /><br>
+						<netui:checkBoxOption value="Form C" tagId="FormCcheckBox" />
+						<netui:checkBoxOption value="Espanol B" tagId="EspanolBcheckBox" />
 					</netui:checkBoxGroup></div>
 				</c:if></td>
 			</tr>

@@ -33,6 +33,16 @@ public final class CTBConstants {
     public static final String DB_LLESPANOL_CUSTOMER = "LLESPANOL_Customer";
     //END - Changes for LLESPANOL PRODUCT
     
+    //START - Changes for LASLINK FORM C-D PRODUCT
+    public static final String LASLINK_FORMC_CUSTOMER = "LasLink Customer";
+    public static final String DB_LASLINK_FORMC_CUSTOMER = "LL_Customer";
+    //END - Changes for LASLINK FORM C-D PRODUCT
+    
+  //START - Changes for LLESPANOL B PRODUCT 
+    public static final String LLESPANOLB_CUSTOMER = "LLEspanol Customer";
+    public static final String DB_LLESPANOLB_CUSTOMER = "LLESPANOL_Customer";
+    //END - Changes for LLESPANOL B PRODUCT
+    
     //START - Changes for TABE ADAPTIVE PRODUCT 
     public static final String TABE_ADAPTIVE_CUSTOMER = "TABE Adaptive Customer";
     public static final String DB_TABE_ADAPTIVE_CUSTOMER = "TABE_Customer";
@@ -219,5 +229,7 @@ public final class CTBConstants {
     public static final String CUSTOMER_PRODUCT_FORMA 	= "Form A";
     public static final String CUSTOMER_PRODUCT_FORMB 	= "Form B";
     public static final String CUSTOMER_PRODUCT_ESPANOL = "Espanol";
+    public static final String CUSTOMER_PRODUCT_FORMC = "Form C";
+    public static final String CUSTOMER_PRODUCT_ESPANOLB = "Espanol B";
     
  } 
