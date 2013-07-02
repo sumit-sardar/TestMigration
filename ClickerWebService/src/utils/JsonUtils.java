@@ -52,4 +52,18 @@ public class JsonUtils {
 		return valueInt;
     }
 	
+	public static String safeGuardString(String value) 
+	{
+		if (value == null)
+			value = "";
+		return value.trim();
+	}
+	
+	public static String safeGuardInteger(String value) 
+	{
+		if (value == null)
+			value = "0";
+		return value.trim();
+	}
+	
 }

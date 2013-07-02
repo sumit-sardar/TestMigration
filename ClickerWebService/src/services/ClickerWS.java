@@ -84,6 +84,7 @@ public class ClickerWS implements Serializable {
 	public UserInfo authenticateUser(String userName, String password) 
 	{
 		UserInfo userInfo = null;
+		userName = JsonUtils.safeGuardString(userName);
 		
 		try {
 			User user = this.testSessionStatus.getUserDetails(userName, userName);
@@ -117,6 +118,7 @@ public class ClickerWS implements Serializable {
 	public OrgNodeList getUserTopNodes(String userName) 
 	{
 		OrgNodeList userTopNodes = null;
+		userName = JsonUtils.safeGuardString(userName);
 		
 		try {
 			NodeData nodeData = this.testSessionStatus.getTopNodesForUser(userName, null, null, null);
@@ -160,6 +162,8 @@ public class ClickerWS implements Serializable {
 	public OrgNodeList getChildNodes(String userName, String orgNodeId) 
 	{
 		OrgNodeList childNodes = null;
+		userName = JsonUtils.safeGuardString(userName);
+		orgNodeId = JsonUtils.safeGuardInteger(orgNodeId);
 
 		try
         {   
@@ -206,6 +210,8 @@ public class ClickerWS implements Serializable {
 	public AssignmentList getSessionsForNode(String userName, String orgNodeId) 
 	{
 		AssignmentList assignmentList = null;
+		userName = JsonUtils.safeGuardString(userName);
+		orgNodeId = JsonUtils.safeGuardInteger(orgNodeId);
 		
         try
         {      
@@ -254,6 +260,8 @@ public class ClickerWS implements Serializable {
 	public RosterList getRostersInSession(String userName, String sessionId) 
 	{
 		RosterList rosterList = null;
+		userName = JsonUtils.safeGuardString(userName);
+		sessionId = JsonUtils.safeGuardInteger(sessionId);
 		
         try
         {      
@@ -318,6 +326,8 @@ public class ClickerWS implements Serializable {
 	public TestStructure getTestStructure(String userName, String sessionId) 
 	{
 		TestStructure testStructure = new TestStructure();
+		userName = JsonUtils.safeGuardString(userName);
+		sessionId = JsonUtils.safeGuardInteger(sessionId);
 		
     	try {
 
@@ -418,5 +428,4 @@ public class ClickerWS implements Serializable {
 		return status;
 	}
 
-	
 }
