@@ -676,7 +676,7 @@ public class CurriculumCollector {
          ResultSet rs = null;
          try {
              ps = conn.prepareStatement(casql);
-             String likeSubtestLevel = "%"+subtestLevel+"%";
+             String likeSubtestLevel = ("K".equals(subtestLevel) || "1".equals(subtestLevel))?"%K-1%":"%"+subtestLevel+"%";
              ps.setString(1, likeSubtestLevel);
              ps.setInt(2, productId);
              rs = ps.executeQuery();
@@ -949,7 +949,7 @@ public class CurriculumCollector {
          
          try {
              ps = conn.prepareStatement(casql);
-             String likeSubtestLevel = (subtestLevel == "K" || subtestLevel == "1")?"%K-1%":"%"+subtestLevel+"%";
+             String likeSubtestLevel = ("K".equals(subtestLevel) || "1".equals(subtestLevel))?"%K-1%":"%"+subtestLevel+"%";
              ps.setString(1, likeSubtestLevel);
              ps.setInt(2, productId);
              rs = ps.executeQuery();
@@ -1530,7 +1530,7 @@ public class CurriculumCollector {
         	"				WHERE TR.TEST_ROSTER_ID = ? " +
         	"				AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID " +
         	"				AND TA.ITEM_SET_ID = ISET.ITEM_SET_ID " +
-        	"				AND SUBSTR(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)), 3, 3) = LCO.TEST_LEVEL " +
+        	"				AND SUBSTR(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)), 3, LENGTH(DECODE(ISET.ITEM_SET_LEVEL, 'K', 'K-1', DECODE(ISET.ITEM_SET_LEVEL, '1', 'K-1', ISET.ITEM_SET_LEVEL)))) = LCO.TEST_LEVEL " +
         	"				AND LCO.SUBJECT = ISET1.ITEM_SET_NAME " +
         	"				AND ISET1.ITEM_SET_LEVEL = LCO.TEST_LEVEL " +
         	"				AND TA.PRODUCT_ID = PRO.PRODUCT_ID " +
