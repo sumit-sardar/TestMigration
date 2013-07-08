@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -26,6 +27,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -36,6 +42,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.ctb.bean.content.ItemBean;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
@@ -330,6 +337,19 @@ public class TestClientPageFlowController extends PageFlowController
      */
     protected void getSubtestXML()
     {
+    	HttpServletRequest request = getRequest();
+        HttpSession session = request.getSession();
+        String productType = (String) session.getAttribute( "productType" );
+        //System.out.print(productType+"--Product Type--"+productType);
+        session.setAttribute( "productType",productType );
+        if(productType.equals("laslinksLayout"))
+        {	
+    	 String dub = globalApp.currentDeliverableUnitBean.getItemReferences();
+    	 dub = dub.replaceAll("allow_revisit=\"false\"", "allow_revisit=\"true\"");
+    	 globalApp.currentDeliverableUnitBean.setItemReferences(dub);
+    	 //System.out.println("dub>>"+ dub);
+    	 //System.out.println("\n\nglobalApp.currentDeliverableUnitBean.getItemReferences() >>\t"+globalApp.currentDeliverableUnitBean.getItemReferences());
+        }
         
         
         getRequest().setAttribute("title", globalApp.currentDeliverableUnitBean.getTitle().replaceAll( "& ", "&amp; " ));
@@ -345,6 +365,13 @@ public class TestClientPageFlowController extends PageFlowController
      */
     protected void getClientItemXML(String inxml) throws Exception
     {
+    	
+ // Changes for Laslinks Layout -->  	
+       HttpServletRequest request = getRequest();
+       HttpSession session = request.getSession();
+       String productType = (String) session.getAttribute( "productType" );
+       System.out.print(productType+"--Product Type--"+productType);
+       session.setAttribute( "productType",productType );
        
        org.jdom.input.SAXBuilder saxBuilder = new org.jdom.input.SAXBuilder();
        ByteArrayInputStream bais = new ByteArrayInputStream( inxml.toString().getBytes());
@@ -370,8 +397,14 @@ public class TestClientPageFlowController extends PageFlowController
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
 		
         itemLML = item.getLml();
+        //System.out.println("itemLML_OLD-->"+itemLML);
         String origLML = new String(itemLML);
-
+        //System.out.println("origLML-->"+origLML);
+        if(productType.equals("laslinksLayout"))
+        {
+        	itemLML=changeLml(itemLML);  //Create This Funtion To Change Item lml for Laslinks Layout
+        	//System.out.println("itemLML_NEW-->"+itemLML);
+        }
         //Changes for Laslink Item
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -463,8 +496,7 @@ public class TestClientPageFlowController extends PageFlowController
         //System.out.println("\n\n\n***** ORIGINAL *****");
         //System.out.println(origLML);
         System.out.println("\n\n\n***** SUBBED *****");
-        System.out.println(itemLML);
-        
+        System.out.println(itemLML);      
         getRequest().setAttribute("item", itemLML);
         item.setLml(origLML);
     }
@@ -524,6 +556,115 @@ public class TestClientPageFlowController extends PageFlowController
         }        
         
 	}
+    
+    private String changeLml(String xml) throws ParserConfigurationException, SAXException, IOException
+    {
+
+		String attributeName = null;
+		try {
+
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(new InputSource(new StringReader(xml)));
+
+
+			doc.getDocumentElement().normalize();
+
+			//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+
+			NodeList nList = doc.getElementsByTagName("element_package");
+
+			//System.out.println("----------------------------");
+
+			for (int temp = 0; temp < nList.getLength(); temp++) {
+
+				Node nNode = nList.item(temp);
+
+				//System.out.println("\nCurrent Element :" + nNode.getNodeName());
+				if(nNode.getNodeName().equalsIgnoreCase("element_package")) {
+					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+						//Element eElement = (Element) nNode;
+						
+						attributeName=nNode.getAttributes().getNamedItem("allow_revisit").toString();
+						//attributeName = nNode.getAttribute("allow_revisit").toString();
+						System.out.println("Allow Revisit attribute : " + attributeName);
+
+						if(attributeName == null || attributeName.trim().length() == 0 || nNode.getAttributes().getNamedItem("allow_revisit").getNodeValue().equalsIgnoreCase("false")){
+							NamedNodeMap attributes = nNode.getAttributes();
+							Node attNode = nNode.getOwnerDocument().createAttribute("allow_revisit");
+							attNode.setNodeValue("true");
+							attributes.setNamedItem(attNode);
+						}
+
+					}
+				}
+			}
+			NodeList nList1 = doc.getElementsByTagName("asset_widget");
+			for (int temp = 0; temp < nList1.getLength(); temp++)
+			{
+				Node nNode1 = nList1.item(temp);
+				//System.out.println("\nCurrent Element :" + nNode1.getNodeName());
+				if(nNode1.getNodeName().equalsIgnoreCase("asset_widget")) {
+					if (nNode1.getNodeType() == Node.ELEMENT_NODE) {
+						attributeName=nNode1.getAttributes().getNamedItem("playorder").toString();
+						//System.out.println("playorder : " + attributeName);
+						if(attributeName != null || attributeName.trim().length() == 0 ){
+							NamedNodeMap attributes = nNode1.getAttributes();
+							Node attNode = nNode1.getOwnerDocument().createAttribute("playorder");
+							attNode.setNodeValue("1");
+							attributes.setNamedItem(attNode);
+						}
+						attributeName=nNode1.getAttributes().getNamedItem("autoplay").toString();
+						//System.out.println("autoplay : " + attributeName);
+						if(attributeName != null)
+						{
+							NamedNodeMap attributes = nNode1.getAttributes();
+							Node attNode = nNode1.getOwnerDocument().createAttribute("autoplay");
+							attNode.setNodeValue("false");
+							attributes.setNamedItem(attNode);
+						}
+						attributeName=nNode1.getAttributes().getNamedItem("nonstop").toString();
+						//System.out.println("nonstop : " + attributeName);
+						if(attributeName != null)
+						{
+							NamedNodeMap attributes = nNode1.getAttributes();
+							Node attNode = nNode1.getOwnerDocument().createAttribute("nonstop");
+							attNode.setNodeValue("false");
+							attributes.setNamedItem(attNode);
+						}
+						
+					}
+				}
+			}
+
+			//
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			
+			DOMSource source = new DOMSource(doc);
+			
+		       StringWriter writer = new StringWriter();
+		       StreamResult result = new StreamResult(writer);
+		       TransformerFactory tf = TransformerFactory.newInstance();
+		       transformer = tf.newTransformer();
+		       transformer.transform(source, result);
+		       StringBuffer buff=new StringBuffer(writer.toString());
+		       String xmlCode="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";		       
+		       int length=xmlCode.length();
+		       buff.delete(0,length);
+		       xml=buff.toString();
+				//xml= writer.toString();
+			//System.out.println(xml);
+			//System.out.println("File saved!");
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+    	return xml;
+    }
     
     protected Forward getLocalResource() throws IOException {
     	String filename = getRequest().getParameter("resourcePath");
