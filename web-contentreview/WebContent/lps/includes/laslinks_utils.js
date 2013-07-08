@@ -47,6 +47,7 @@ function iframeLoaded(id, iframe){
 							//if(gController.lasAssetArray[i].data.getAttr('autoplay') == "true")
 				 			//iframe.contentWindow.autoPlay();
 				 			//iframe.contentWindow.play();
+				 			preview(iframe);
 						}
 						// Apart from first asset, rest should be disabled
 						if(parseInt(gController.lasAssetArray[i].data.getAttr('playorder')) != 1) {
@@ -290,6 +291,15 @@ function startAutoplay(){
 				break;
 			}
 		}
+  }
+    function preview(arg){
+  //console.log("inside function preview(arg)"+arg);
+	  if(forLaslinksLayout != null && forLaslinksLayout!= undefined && forLaslinksLayout == 'laslinksLayout'){
+	  	arg.contentWindow.enable();
+	  	gController.setAttribute('unlockNavigation',true);
+	  	//gController.setAttribute('allowrevisit',true);
+	  	//arg.contentWindow.isPlaying = "false";
+	  }
   }
 
    function restrictNavigation(arg){
