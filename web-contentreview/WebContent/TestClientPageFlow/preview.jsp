@@ -158,7 +158,10 @@ function load() {
     String productType = (String) session.getAttribute( "productType" );
     %>
      var productTypeVal = "<%=productType%>";
-     if(productTypeVal == 'Laslinks'){
+     //alert("prodtype******"+productTypeVal);
+     if(productTypeVal == 'Laslinks'|| productTypeVal== 'laslinksLayout'){
+        forLaslinksLayout = productTypeVal;
+        //alert("forLaslinksLayout****"+forLaslinksLayout)
         loadJsApplication();
      }else {
         loadSwfApplication();
@@ -445,18 +448,17 @@ function getCRcolor(){
 
 function hideScrollbar(arg){
     var scrid = document.getElementById(arg);
-    //console.log("== hideScrollbar scrid ===",scrid);
-    scrid.setAttribute('style',"overflow-x: hidden; overflow-y: scroll;");
+    scrid.setAttribute('style',"overflow-x: hidden; white-space: pre-line; overflow-y: scroll;");
 }
 
 function setScrollEdittextWidth(elmId,comWidth,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; width: '+comWidth+'');
+    scrid.setAttribute('style','overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; width: '+comWidth+'');
 }
 
 function setScrollEdittextHeight(elmId,comHeight,fontSize,textFontColor){
     var scrid = document.getElementById(elmId);
-    scrid.setAttribute('style','overflow-x: hidden; overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; height: '+comHeight+'');
+    scrid.setAttribute('style','overflow-x: hidden;  overflow-y: scroll; color: '+textFontColor+'; font-size: '+fontSize+'; height: '+comHeight+'');
 }
 
 <!-- End scratchpad scrollbar functions-->
