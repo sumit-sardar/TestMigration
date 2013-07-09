@@ -501,27 +501,36 @@ public static String processContentAreaName(String caShortName) {
 	public static List<String> getItemSetID(String product_id,String Content_area,String Test_Level)
 	{
 		List<String> itemSetIdList = new ArrayList<String>();
-		String name="";
-		if(Test_Level == "K" || Test_Level == "1"){
-			Test_Level = "K-1";
+		String[] test_level= new String[2];			
+		int count=0;
+		if(Test_Level == "K-1"){
+			count = 1;
+			test_level[0]="K";
+			test_level[1]="1";
+		}else{
+			test_level[0]=Test_Level;
 		}
-		try {
-			con=SqlUtil.openOASDBcon();
-			ps = con.prepareStatement(FileUtil.itemSetIDQuery);
-			ps.setInt(1, Integer.parseInt(product_id));
-			ps.setString(2,Content_area.toUpperCase() );
-			ps.setString(3,Test_Level );
-			rs=ps.executeQuery();
-			while(rs.next())
-			{
-				name=rs.getString(1);
-				itemSetIdList.add(name);
+		for(int ii=0; ii<=count;ii++){
+			String name="";
+			try {
+				con=SqlUtil.openOASDBcon();
+				ps = con.prepareStatement(FileUtil.itemSetIDQuery);
+				ps.setInt(1, Integer.parseInt(product_id));
+				ps.setString(2,Content_area.toUpperCase() );
+				ps.setString(3,test_level[ii] );
+				rs=ps.executeQuery();
+				while(rs.next())
+				{
+					name=rs.getString(1);
+					itemSetIdList.add(name);
+				}
+				
 			}
-			
-		}catch(SQLException sq) {
-			sq.printStackTrace();
-		} finally {
-			SqlUtil.close(con,ps,rs);
+			catch(SQLException sq) {
+				sq.printStackTrace();
+			} finally {
+				SqlUtil.close(con,ps,rs);
+			}
 		}
 		return itemSetIdList;
 	}
