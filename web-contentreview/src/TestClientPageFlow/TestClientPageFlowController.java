@@ -607,24 +607,31 @@ public class TestClientPageFlowController extends PageFlowController
 				//System.out.println("\nCurrent Element :" + nNode1.getNodeName());
 				if(nNode1.getNodeName().equalsIgnoreCase("asset_widget")) {
 					if (nNode1.getNodeType() == Node.ELEMENT_NODE) {
-						attributeName=nNode1.getAttributes().getNamedItem("playorder").toString();
+						if(nNode1.getAttributes().getNamedItem("playorder") != null)
+							attributeName = nNode1.getAttributes().getNamedItem("playorder").toString();
+						else
+							attributeName = null;
 						//System.out.println("playorder : " + attributeName);
-						if(attributeName != null || attributeName.trim().length() == 0 ){
+						//if((attributeName == null) || 
+							//	(attributeName != null || attributeName.trim().length() == 0)){
+						{
 							NamedNodeMap attributes = nNode1.getAttributes();
 							Node attNode = nNode1.getOwnerDocument().createAttribute("playorder");
 							attNode.setNodeValue("1");
 							attributes.setNamedItem(attNode);
 						}
-						attributeName=nNode1.getAttributes().getNamedItem("autoplay").toString();
+						//}
+						attributeName = nNode1.getAttributes().getNamedItem("autoplay") != null ?
+										nNode1.getAttributes().getNamedItem("autoplay").toString() : null;
 						//System.out.println("autoplay : " + attributeName);
-						if(attributeName != null)
+						//if(attributeName != null)
 						{
 							NamedNodeMap attributes = nNode1.getAttributes();
 							Node attNode = nNode1.getOwnerDocument().createAttribute("autoplay");
 							attNode.setNodeValue("false");
 							attributes.setNamedItem(attNode);
 						}
-						attributeName=nNode1.getAttributes().getNamedItem("nonstop").toString();
+						attributeName = nNode1.getAttributes().getNamedItem("nonstop").toString();
 						//System.out.println("nonstop : " + attributeName);
 						if(attributeName != null)
 						{
