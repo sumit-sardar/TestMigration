@@ -95,11 +95,12 @@ public class TestWebServiceController extends PageFlowController
 	private String sessionId = "";
 	*/
     
+    /*
 	private String userName = "tai_tabe";
 	private String password = "welcome1";
 	private String orgNodeId = "335709";
 	private String sessionId = "184010";
-	
+	*/
 	
 	
 	private AssignmentList assignmentList = null;
@@ -132,18 +133,20 @@ public class TestWebServiceController extends PageFlowController
     protected Forward clickerService()
     {
 		String resultText = "";
-    	String status = (String)this.getRequest().getParameter("status");
-    	String userAuthenticated = (String)this.getRequest().getParameter("userAuthenticated");
-    	if (userAuthenticated == null)
+    	String userName = safeGuardString((String)this.getRequest().getParameter("userName"));
+    	String password = safeGuardString((String)this.getRequest().getParameter("password"));
+    	String orgNodeId = safeGuardString((String)this.getRequest().getParameter("orgNodeId"));
+    	String sessionId = safeGuardString((String)this.getRequest().getParameter("sessionId"));
+    	String status = safeGuardString((String)this.getRequest().getParameter("status"));
+    	String userAuthenticated = safeGuardString((String)this.getRequest().getParameter("userAuthenticated"));
+    	if ((userAuthenticated == null) || (userAuthenticated.length() == 0))
     		userAuthenticated = "false";
     	
     	if (status != null) {
     		
     		// authenticateUser
     		if ("authenticateUser".equals(status)) {
-    			this.userName = (String)this.getRequest().getParameter("userName");
-    			this.password = (String)this.getRequest().getParameter("password");
-    			UserInfo userInfo = clickerWSServiceControl.authenticateUser(this.userName, this.password);   
+    			UserInfo userInfo = clickerWSServiceControl.authenticateUser(userName, password);   
 	    		if (userInfo.getStatus().equals("OK")) {
 	    			resultText = "authenticateUser: SUCCESS" + "<br/>userName: " + userName + "<br/>" + "userId: " + userInfo.getUserId().toString();
 	    			userAuthenticated = "true";
@@ -152,14 +155,15 @@ public class TestWebServiceController extends PageFlowController
 	    			resultText = "authenticateUser: FAILED" + "<br/>" + userInfo.getStatus();
 	    			userAuthenticated = "false";
 	    		}
+	    		orgNodeId = "";
+	    		sessionId = "";
     		}
 
     		// getUserTopNode
     		if ("getUserTopNode".equals(status)) {
     			
     			if ("true".equals(userAuthenticated)) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(this.userName);
+	    			OrgNodeList orgNodeList = clickerWSServiceControl.getUserTopNodes(userName);
 	    			
 	    			if (orgNodeList.getStatus().equals("OK")) {
 	    				resultText = "getUserTopNode: SUCCESS" ;
@@ -169,7 +173,7 @@ public class TestWebServiceController extends PageFlowController
 	        	        for (int i=0; i < orgNodes.length; i++) {
 	        	        	OrgNode node = orgNodes[i];
 	        	        	resultText += ("<br/>" + node.getName() + " - " + node.getId()); 
-	        				this.orgNodeId = node.getId().toString();
+	        				orgNodeId = node.getId().toString();
 	        	        }    				
 	    			}
 	    			else {
@@ -184,10 +188,7 @@ public class TestWebServiceController extends PageFlowController
     		// getChildrenNodes
     		if ("getChildrenNodes".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			this.orgNodeId = (String)this.getRequest().getParameter("orgNodeId");    			
-	    			
-	    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(this.userName, this.orgNodeId);
+	    			OrgNodeList orgNodeList = clickerWSServiceControl.getChildNodes(userName, orgNodeId);
 	    			
 	    			if (orgNodeList.getStatus().equals("OK")) {
 	    				resultText = "getChildrenNodes: SUCCESS" ;
@@ -211,10 +212,7 @@ public class TestWebServiceController extends PageFlowController
     		// getSessionsForNode
     		if ("getSessionsForNode".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			this.orgNodeId = (String)this.getRequest().getParameter("orgNodeId");    			
-	    			
-	    			this.assignmentList = clickerWSServiceControl.getSessionsForNode(this.userName, this.orgNodeId);
+	    			this.assignmentList = clickerWSServiceControl.getSessionsForNode(userName, orgNodeId);
 	    			
 	    			if (this.assignmentList.getStatus().equals("OK")) {
 	    				resultText = "getSessionsForNode: SUCCESS" ;
@@ -231,7 +229,7 @@ public class TestWebServiceController extends PageFlowController
 	            	        			assignment.getEndDate() + " - " + 
 	            	        			assignment.getEnforceBreak() + " - " + 
 	            	        			assignment.getEnforceTimeLimit()); 
-	            	        	this.sessionId = assignment.getSessionId().toString();
+	            	        	sessionId = assignment.getSessionId().toString();
 	        	            }
 	        	        }    				
 	    			}
@@ -247,10 +245,7 @@ public class TestWebServiceController extends PageFlowController
     		// getRostersInSession
     		if ("getRostersInSession".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			this.sessionId = (String)this.getRequest().getParameter("sessionId");    			
-	    			
-	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId);
+	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(userName, sessionId);
 	    			
 	    			if (rosterList.getStatus().equals("OK")) {
 	    				resultText = "getRostersInSession: SUCCESS" ;
@@ -288,10 +283,7 @@ public class TestWebServiceController extends PageFlowController
     		// getTestStructure
     		if ("getTestStructure".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			this.sessionId = (String)this.getRequest().getParameter("sessionId");    			
-	
-	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId); 
+	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(userName, sessionId); 
 	    			
 	    			if (testStructure.getStatus().equals("OK")) {
 	    				resultText = "getTestStructure: SUCCESS";
@@ -338,22 +330,19 @@ public class TestWebServiceController extends PageFlowController
     		// submitStudentResponses
        		if ("submitStudentResponses".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
-    				/*
+    				
        				resultText = "submitStudentResponses: Input Information" + "<br/>";	       				
     				
-	    			this.userName = (String)this.getRequest().getParameter("userName");
-	    			this.sessionId = (String)this.getRequest().getParameter("sessionId");    			
-
 	    			String responsevalues = (String)this.getRequest().getParameter("responses");  
 	    			resultText += ("response values = " + responsevalues + "<br/>");
 	    			
 	    			String[] responses = initializeResponses(responsevalues);
 	    			int index = 0;
 	    			
-	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(this.userName, this.sessionId);
+	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(userName, sessionId);
 	    			
-	    		    Assignment assignment = getAssignment(newInteger(this.sessionId));
-	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(this.userName, this.sessionId);
+	    		    Assignment assignment = getAssignment(newInteger(sessionId));
+	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(userName, sessionId);
 	    			Roster[] rosters = rosterList.getRosters();
 	    			
 	    			for (int i=0 ; i<rosters.length ; i++) {
@@ -381,11 +370,11 @@ public class TestWebServiceController extends PageFlowController
 	    			
 	       			StudentResponse studentResponse = new StudentResponse();
 	       			studentResponse.setAssignment(assignment);
-	       			
-	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
-	       			*/
     				
-    				String ret = "Not Implemented.";
+	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+	       			
+	       			
+    				//String ret = "Not Implemented.";
     				
 	       			if (ret.equals("OK")) {
 	       				resultText += ("<br/><br/>" + "submitStudentResponses: SUCCESS" + "<br/>" + ret);	       				
@@ -402,10 +391,10 @@ public class TestWebServiceController extends PageFlowController
     	
     	this.getRequest().setAttribute("resultText", resultText);
     	this.getRequest().setAttribute("userAuthenticated", userAuthenticated);
-    	this.getRequest().setAttribute("userName", this.userName);
-    	this.getRequest().setAttribute("password", this.password);
-    	this.getRequest().setAttribute("orgNodeId", this.orgNodeId);
-    	this.getRequest().setAttribute("sessionId", this.sessionId);
+    	this.getRequest().setAttribute("userName", userName);
+    	this.getRequest().setAttribute("password", password);
+    	this.getRequest().setAttribute("orgNodeId", orgNodeId);
+    	this.getRequest().setAttribute("sessionId", sessionId);
     	
         return new Forward("success");
     }
@@ -946,6 +935,19 @@ public class TestWebServiceController extends PageFlowController
 		return valueInt;
     }
     
+    private String safeGuardString(String value) 
+	{
+		if (value == null)
+			value = "";
+		return value.trim();
+	}
+	
+    private String safeGuardInteger(String value) 
+	{
+		if (value == null)
+			value = "0";
+		return value.trim();
+	}
     
     private Assignment getAssignment(Integer sessionId) {
     	Assignment assignment = null;
