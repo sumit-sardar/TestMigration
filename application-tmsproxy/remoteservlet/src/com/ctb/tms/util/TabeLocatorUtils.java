@@ -254,7 +254,7 @@ public class TabeLocatorUtils
 		return result;
 	}
 
-    private static List getRecommendSubtestLevel(String locatorName, int score, int itemSetId) {
+    private static synchronized List getRecommendSubtestLevel(String locatorName, int score, int itemSetId) {
         String level = null;
         List result = new ArrayList();
         

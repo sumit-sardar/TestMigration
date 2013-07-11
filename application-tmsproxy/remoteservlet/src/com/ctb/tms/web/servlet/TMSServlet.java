@@ -447,6 +447,12 @@ public class TMSServlet extends HttpServlet {
 						    	} else {
 						    		logger.debug("Selected next sco index " + nextScoIndex + " is greater than manifest length: " + manifestData.length);
 						    	}
+						    	NextSco nextSco = saveResponse.getTsdArray(i).getNextSco();
+						    	if(nextSco == null) {
+						    		nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+						    		nextSco.setId("TERMINATOR");
+						    	}
+						    	logger.info("LMS Finish event - sending next sco: " + nextSco.getId());
 				    		}
 				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 				    		manifest.setRosterEndTime(System.currentTimeMillis());
@@ -585,7 +591,7 @@ public class TMSServlet extends HttpServlet {
 		return responseDocument.xmlText();
 	}
 	
-	private void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
+	private synchronized void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
         logger.debug("##### handleTabeLocator: In handleTabeLocator");
 		RosterSubtestStatus [] locatorSubtests = null;
 		//ManifestData modifiedManifestData[] = (ManifestData[])null;
@@ -623,39 +629,51 @@ public class TMSServlet extends HttpServlet {
         locatorSubtests = (RosterSubtestStatus[]) rssList.toArray(new RosterSubtestStatus[0]);
         HashMap recommendedMap = TabeLocatorUtils.calculateRecommendSubtestLevel(locatorSubtests);
         logger.debug("##### handleTabeLocator: calculated " + recommendedMap.keySet().size() + " recommended levels");
+        HashMap recMap = new HashMap(7);
         for(int i=0;i<manifesta.length;i++) {
         	Manifest manifest = manifesta[i];
         	ManifestData[] mda = manifest.getManifest();
         	ArrayList newmanifest = new ArrayList();
         	for(int j=0;j<mda.length;j++) {
         		ManifestData md = mda[j];
+        		String recTitle = md.getTitle();
         		String subtestName = md.getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
         		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
         		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) ((recommendedMap.get(subtestName.trim()) == null)? null : recommendedMap.get(subtestName.trim()));
 //        		System.out.println("########### Recommended Subtest Level ####===>"+((rsl != null) ? rsl.getRecommendedLevel(): "NULL") +"### For ### "+ subtestName);
-        		if(rsl != null) {
+        		if(rsl != null) {	
 //        			System.out.println("########### Set Locator  Recommended Subtest Level ####===>"+rsl.getRecommendedLevel() +"### For ### "+ subtestName);
 	        		if("L".equals(md.getLevel())) {
 	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
 	        			newmanifest.add(md);
-	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
+	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId() + " " + md.getTitle());
 //	        			System.out.println("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
 	        		} else if (rsl.getRecommendedLevel().equals(md.getLevel())) {
-	        				newmanifest.add(md);
-	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
-//	        				System.out.println("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+	        				if(recMap.get(recTitle) == null) {
+		        				newmanifest.add(md);
+		        				logger.debug("##### handleTabeLocator: found recommended subtest: " + md.getId() + " " + md.getTitle());
+	//	        				System.out.println("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+		        				recMap.put(recTitle, recTitle);
+	        				} else  {
+	        					logger.debug("##### handleTabeLocator: discarding duplicate subtest: " + md.getId() + " " + md.getTitle());
+	        				}
 	        		} else {
 	        			logger.debug("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
 //	        			System.out.println("##### handleTabeLocator: discarding non-recommended subtest: " + md.getId() + " " + md.getTitle());
 	        		}
         		} else {
-        			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);
-//        			System.out.println("##### handleTabeLocator: no level in map for " + subtestName);
-        			// no recommendation for this content area yet
-        			newmanifest.add(md);
+        			if(recMap.get(recTitle) == null) {
+	        			logger.debug("##### handleTabeLocator: no level in map for subtest: " + md.getId() + " " + md.getTitle());
+	//        			System.out.println("##### handleTabeLocator: no level in map for " + subtestName);
+	        			// no recommendation for this content area yet
+	        			newmanifest.add(md);
+        			} else {
+        				logger.debug("##### handleTabeLocator: discarding duplicate subtest: " + md.getId() + " " + md.getTitle());
+        			}
         		}
         	}
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
+        	manifesta[i] = manifest;
         }
         oasSink.putAllManifests(testRosterId, new ManifestWrapper(manifesta), true);
     }
