@@ -21,6 +21,7 @@
 
 <% 
 	Boolean isISTEPCustomer = (Boolean)request.getAttribute("isISTEPCustomer");
+	Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
 %>
         
 <!-- ********************************************************************************************************************* -->
@@ -60,7 +61,12 @@
 		<td style="padding-left:6px;" colspan="2">
 			<p style="color:#000"><netui:content value="${bundle.web['installClient.message']}"/></p>
 			<p align="right">
-			    <a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
+               <% if (isLasLinkCustomer.booleanValue()) { %>
+			    	<a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc_LAS.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
+               <% } else { %>
+			    	<a href="#" onClick="newWindow('/help/pdfs/min_sys_req_client_pc.pdf');return false;"><netui:content value="${bundle.web['installClient.viewSystemRequirements']}"/></a>
+               <% } %>
+			
 			</p> 
 		</td>
 	</tr>
