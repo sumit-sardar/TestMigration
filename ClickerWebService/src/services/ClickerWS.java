@@ -407,7 +407,7 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public String submitStudentResponses(StudentResponse studentResponses) 
 	{
-		String status = "Not Implemented.";
+		String status = "OK";
 
 		Assignment assignment = studentResponses.getAssignment();
 		Roster[] rosters = assignment.getRosters();

@@ -88,21 +88,7 @@ public class TestWebServiceController extends PageFlowController
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
 
-    /*
-	private String userName = "";
-	private String password = "";
-	private String orgNodeId = "";
-	private String sessionId = "";
-	*/
-    
-    /*
-	private String userName = "tai_tabe";
-	private String password = "welcome1";
-	private String orgNodeId = "335709";
-	private String sessionId = "184010";
-	*/
-	
-	
+   
 	private AssignmentList assignmentList = null;
 	
 	/**
@@ -331,7 +317,7 @@ public class TestWebServiceController extends PageFlowController
        		if ("submitStudentResponses".equals(status)) {
     			if ("true".equals(userAuthenticated)) {
     				
-       				resultText = "submitStudentResponses: Input Information" + "<br/>";	       				
+       				resultText = "submitStudentResponses: SUCCESS" + "<br/>";	       				
     				
 	    			String responsevalues = (String)this.getRequest().getParameter("responses");  
 	    			resultText += ("response values = " + responsevalues + "<br/>");
@@ -340,6 +326,7 @@ public class TestWebServiceController extends PageFlowController
 	    			int index = 0;
 	    			
 	    			TestStructure testStructure = clickerWSServiceControl.getTestStructure(userName, sessionId);
+					resultText += "testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
 	    			
 	    		    Assignment assignment = getAssignment(newInteger(sessionId));
 	    			RosterList rosterList = clickerWSServiceControl.getRostersInSession(userName, sessionId);
@@ -347,6 +334,10 @@ public class TestWebServiceController extends PageFlowController
 	    			
 	    			for (int i=0 ; i<rosters.length ; i++) {
 	    				Roster roster = rosters[i];
+	    				
+        	        	resultText += "<br/>ROSTER: " + (roster.getRosterId() + " - " + roster.getLoginName() + " - " + 
+        	        						roster.getFirstName() + " - " +	roster.getLastName()) + "<br/>"; 
+	    				
 	    				SubtestInfo[] subtests = roster.getSubtests();
 		    			for (int j=0 ; j<subtests.length ; j++) {
 		    				SubtestInfo subtest = subtests[j];
@@ -372,12 +363,9 @@ public class TestWebServiceController extends PageFlowController
 	       			studentResponse.setAssignment(assignment);
     				
 	       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
-	       			
-	       			
-    				//String ret = "Not Implemented.";
     				
 	       			if (ret.equals("OK")) {
-	       				resultText += ("<br/><br/>" + "submitStudentResponses: SUCCESS" + "<br/>" + ret);	       				
+	       				//resultText += ("<br/><br/>" + "submitStudentResponses: SUCCESS" + "<br/>");	       				
 	       			}
 	       			else {
 	       				resultText += ("<br/><br/>" + "submitStudentResponses: FAILED" + "<br/>" + ret);	       				
