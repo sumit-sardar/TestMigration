@@ -348,6 +348,67 @@ public class PDFUtils {
 	          return new PDFTableVO(table, 0, rows, x, y, rows);
 	      }
 	       
+	       
+           //Added to remove the bottom border for academic language score
+
+	       protected static PDFTableVO getTacTableAcademicForHeader(String[] texts, float width,
+	    		   float[] columnWidths, float x, float y, float borderWidth) throws DocumentException {
+	    	   
+	    	   ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
+	    	   int cols = columnWidths.length;
+	    	   int rows = texts.length / cols;
+	    	   for (int i = 0; i < texts.length; i++) {
+	    		   cells.add(getTableCell(texts[i], getBlueHeaderBorderFont(i, cols),
+	    				   getAllBorderNew(i, cols, rows), borderWidth,
+	    				   getHeaderBorderColorForAcademic(i, cols)));
+	    	   }
+	    	   PdfPTable table = getTable(cols, cells);
+	    	   table.setTotalWidth(width);
+	    	   table.setWidths(columnWidths);
+	    	   return new PDFTableVO(table, 0, rows, x, y, rows);
+	       }
+	       
+	       
+	       
+	       protected static PDFTableVO getTacTableAcademic(String[] texts,
+				float width, float[] columnWidths, float x, float y,
+				float borderWidth) throws DocumentException {
+				ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
+				int cols = columnWidths.length;
+				int rows = texts.length / cols;
+				for (int i = 0; i < texts.length; i++) {
+					cells.add(getTableCell(texts[i], getBlueHeaderBorderFont(i, cols),
+							getAllBorder(i, cols, rows), borderWidth,
+							getHeaderBorderColorForAcademic(i, cols)));
+				}
+				PdfPTable table = getTable(cols, cells);
+				table.setTotalWidth(width);
+				table.setWidths(columnWidths);
+				return new PDFTableVO(table, 0, rows, x, y, rows);
+	       }
+	      
+	       protected static PDFTableVO getTacTableForTotal(String[] texts,
+				float width, float[] columnWidths, float x, float y,
+				float borderWidth)throws DocumentException{
+    	   		boolean[] result = new boolean[4];
+    	   		result[0]=true;result[1]=true;result[2]=false;result[3]=true;
+				ArrayList<PdfPCell> cells = new ArrayList<PdfPCell>();
+				int cols = columnWidths.length;
+				int rows = texts.length / cols;
+				for (int i = 0; i < texts.length; i++) {
+					cells.add(getTableCell(texts[i], getNormalFont(),
+							(i==0)?result:getAllBorder(i, cols, rows), borderWidth,
+							getWhiteColor()));
+				}
+				PdfPTable table = getTable(cols, cells);
+				table.setTotalWidth(width);
+				table.setWidths(columnWidths);
+				return new PDFTableVO(table, 0, rows, x, y, rows);
+	       }
+	  //END
+	       
+	       
+	       
 	       private static Font getBlueHeaderBorderFont(int cell, int cols){
 	           if(cell < cols){
 	               return getNormalBoldBlueFont();
@@ -394,6 +455,34 @@ public class PDFUtils {
 	           return result;
 	       }
 	       
+	    // left top right bottom
+	       private static boolean[] getAllBorderNew(int cell, int cols, int rows){
+	           boolean[] result = new boolean[4];
+	           int mod = cell%cols;
+	           int div = cell/cols;
+	           if(cell == 0) {
+	        	   result[0] = false;
+		           result[1] = false;
+	           } else {
+		           result[0] = true;
+		           result[1] = true;
+	           }
+	           if(mod == cols-1){ // show right border for right col
+	               result[2] = true;
+	           }
+	           else{
+	               result[2] = false;
+	           }
+	           /**if(div == rows - 1){ // show bottom border for bottom row
+	               result[3] = true;
+	           }
+	           else{
+	               result[3] = false;
+	           }**/
+	           result[3] = false;
+	           return result;
+	       }
+	       
 	       private static BaseColor getHeaderBorderColor(int cell, int cols){
 	    	   if(cell == 0)
 	    		   return getWhiteColor();
@@ -402,6 +491,21 @@ public class PDFUtils {
 	           }
 	           else{
 	        	   if((cell >= 12 && cell <= 15) || (cell >= 24 && cell <= 31)) {
+	        		   return getGreenColor();
+	        	   } else {
+	        		   return getWhiteColor();
+	        	   }
+	           }
+	       }
+	       
+	       private static BaseColor getHeaderBorderColorForAcademic(int cell, int cols){
+	    	   if(cell == 0)
+	    		   return getWhiteColor();
+	           if(cell < cols){
+	               return getGreyColor();
+	           }
+	           else{
+	        	   if(cell >= 40 && cell <= 45) {
 	        		   return getGreenColor();
 	        	   } else {
 	        		   return getWhiteColor();

@@ -55,9 +55,9 @@ public class StudentSearchUtils {
     }
 
 
-	public static ManageStudentData getAllCompletedStudentForOrgNode(String userName,	StudentManagement studentManagement, Integer treeOrgNodeId) throws CTBBusinessException {
+	public static ManageStudentData getAllCompletedStudentForOrgNode(String userName,	StudentManagement studentManagement, Integer treeOrgNodeId, Integer productId) throws CTBBusinessException {
 		
-		ManageStudentData msData = studentManagement.getAllCompletedStudentForOrgNode(userName, treeOrgNodeId);
+		ManageStudentData msData = studentManagement.getAllCompletedStudentForOrgNode(userName, treeOrgNodeId, productId);
 		return msData;
 	}
 

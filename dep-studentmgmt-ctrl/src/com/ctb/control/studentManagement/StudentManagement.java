@@ -537,11 +537,13 @@ public interface StudentManagement
 	
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsMinimalInfoForScoring(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
-	com.ctb.bean.studentManagement.ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer treeOrgNodeId)throws com.ctb.exception.CTBBusinessException;
+	com.ctb.bean.studentManagement.ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer treeOrgNodeId, Integer productId)throws com.ctb.exception.CTBBusinessException;
 
 	java.lang.Integer getCompletedStudentCountForOrgNode(String userName,	Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
 
 	com.ctb.bean.studentManagement.StudentScoreReport getStudentReport(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+	
+	com.ctb.bean.studentManagement.StudentScoreReport getStudentReportForAcademic(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 
 	com.ctb.bean.studentManagement.ManageStudentData getStudentsForSelectedOrgNode(String userName,	Integer orgNodeId, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 

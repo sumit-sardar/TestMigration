@@ -21,6 +21,14 @@ public interface ImmediateReport {
 	public static final float SCORE_TABLE_SPACING = 30f;
 	public static final float SCORE_BORDER = 1f;
 	
+	// Added for Academic Language Report
+	public static final float[] THREE_COLUMN_TAC_WIDTHS_FOR_ACADEMIC = new float[] {4f, 3f, 3f, 3f, 3f}; 
+	public static final float[] THREE_SUB_COLUMN_TAC_WIDTHS = new float[] {4f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f};
+//	public static final float[] THREE_COLUMN_TAC_WIDTHS_FOR_ACADEMIC_TOTAL = new float[] {4f, 1f, 1f, 1f, 1f}; 
+	public static final float SCORE_TABLE_SPACING_FOR_ACADEMIC = 16f;
+	public static final float SCORE_TABLE_SPACING_FOR_TOTAL = 173f;
+	public static final String ACADEMICTOTALSCORECONDITION = "*Total Score = Social, Intercultural, and Instructional Communication + Academic Score";
+	
 	public static final String COPYWRITE = "Developed and published by CTB/McGraw-Hill LLC, 20 Ryan Ranch Road, Monterey, California 93940-5703. Copyright © 2013 by CTB/McGraw-Hill LLC. All rights reserved. Only authorized customers may copy, download or print any portion of the document located at www.ctb.com. Any other use or reproduction of this document, in whole or in part, requires written permission of the publisher. \"OAS\" is a trademark of McGraw-Hill Education. All other trademarks and trade names found here are the property of their respective owners and are not associated with the publisher of this OAS.";
 	public static final String STUDENT_NAME_LABEL = "Student: ";
 	public static final String STUDENT_Id_LABEL = "ID: ";
@@ -70,4 +78,18 @@ public interface ImmediateReport {
 	public static final String COMPREHENSION_PROFICIENCY_LEVEL_CSV = "Comprehension / PL";
 	public static final String OVERALL_PROFICIENCY_LEVEL_CSV = "Overall / PL";
 
+	public static final String ACADEMIC_LANGUAGE_REPORT = "Academic Language Report";
+	
+	public static final String PtsPossible = "Pts Possible";
+	public static final String PtsObtained = "Pts Obtained";
+	public static final String PerCorrect = "% Correct";
+	public static final String TotalSpeaking = "Total Speaking";
+	public static final String TotalListening = "Total Listening";
+	public static final String TotalReading = "Total Reading";
+	public static final String TotalWriting = "Total Writing";
+	
+	public static final String SPEAKING = "Speaking";
+	public static final String LISTENING = "Listening";
+	public static final String READING = "Reading";
+	public static final String WRITING = "Writing";
 }

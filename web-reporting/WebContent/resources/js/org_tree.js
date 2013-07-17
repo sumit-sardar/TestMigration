@@ -69,6 +69,7 @@ function createSingleNodeScoringTree(node_id,jsondata) {
  		    $("#displayMessageMain").hide();
  		    var gridOrg = $("#orgImmdRptGrid");
 			var grid = $("#immdRptGrid");
+			var secGrid = $("#secondImmdRptGrid");
 			if(gridOrg[0] != undefined){
 				for(var i = 0; i < stateLevelNodeIds.length; i++)
 				{
@@ -105,7 +106,11 @@ function createSingleNodeScoringTree(node_id,jsondata) {
  		    else if (grid[0] != undefined)
  		    {
  		    	processStudentTable();
- 		    }		    
+ 		    }	
+ 		    else if (secGrid[0] != undefined)
+ 		    {
+ 		    	processStudentTable();
+ 		    }	    
 		});
 		
 		registerDelegate(node_id);

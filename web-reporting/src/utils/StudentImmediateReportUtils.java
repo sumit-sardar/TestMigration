@@ -22,6 +22,7 @@ public abstract class StudentImmediateReportUtils {
 	private String titleText = "LAS Links Student Proficiency Report";
 	private String testName;
 	private PrintWriter outWriter;
+	private String academicTitleText = "LAS Links Student Academic Report"; //Added for academic report
 	
 
 	abstract void generateReport() throws Exception ;
@@ -161,6 +162,18 @@ public abstract class StudentImmediateReportUtils {
 	 */
 	public void setOutWriter(PrintWriter outWriter) {
 		this.outWriter = outWriter;
+	}
+	/**
+	 * @return the academicTitleText
+	 */
+	public String getAcademicTitleText() {
+		return academicTitleText;
+	}
+	/**
+	 * @param academicTitleText the academicTitleText to set
+	 */
+	public void setAcademicTitleText(String academicTitleText) {
+		this.academicTitleText = academicTitleText;
 	}
 
 	

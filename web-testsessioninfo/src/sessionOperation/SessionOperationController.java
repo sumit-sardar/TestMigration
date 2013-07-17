@@ -3501,12 +3501,17 @@ public class SessionOperationController extends PageFlowController {
         for (int i=0; i < reportList.size(); i++) {
             CustomerReport cr = (CustomerReport)reportList.get(i);
             if ("ImmediateScores".equalsIgnoreCase(cr.getReportName())) {
-            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/ImmediateReportingOperationController.jpf";
+            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/ImmediateReportingOperationController.jpf?productId="+cr.getProductId();
             	cr.setReportUrl(reportUrl);
             }
             if ("GroupImmediateScores".equalsIgnoreCase(cr.getReportName())) {
-            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/groupImmediateReporting.do";
+            	String reportUrl = "/ImmediateReportingWeb/immediateReportingOperation/groupImmediateReporting.do?productId="+cr.getProductId();
             	cr.setReportUrl(reportUrl);
+            }
+            if ("AcademicScores".equalsIgnoreCase(cr.getReportName())) {
+            	String AcademicScores = "/ImmediateReportingWeb/immediateReportingOperation/academicScoresReport.do?productId="+cr.getProductId();
+            	cr.setReportUrl(AcademicScores);
+            	System.out.println("Academic -->>" + cr.getProductId());
             }
         }
         

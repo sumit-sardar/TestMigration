@@ -32,6 +32,8 @@ import utils.GroupImmediatePDFReportUtils;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
+import utils.StudentAcademicExcelReportUtils;
+import utils.StudentAcademicPdfReportUtils;
 import utils.StudentImmediateCSVReportUtils;
 import utils.StudentImmediatePdfReportUtils;
 import utils.StudentPathListUtils;
@@ -92,6 +94,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "immediate_scoring_report_main.jsp") })
 	protected Forward begin() {
 		initialize();
+		Integer productId = Integer.parseInt(getRequest().getParameter("productId").trim());
+		getRequest().setAttribute("productId", productId);
 		return new Forward("success");
 	}
 	
@@ -112,9 +116,19 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "organization_immediate_scoring_report_main.jsp") })
 	public Forward groupImmediateReporting(){
+		Integer productId = Integer.parseInt(getRequest().getParameter("productId").trim());
 		initialize();
+		getRequest().setAttribute("productId", productId);
 		Forward forward = new Forward("success");
 		return forward;
+	}
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "academic_language_scoring_report_main.jsp") })	
+	public Forward academicScoresReport(){
+			Integer productId = Integer.parseInt(getRequest().getParameter("productId").trim());
+			initialize();
+			getRequest().setAttribute("productId", productId);
+			Forward forward = new Forward("success");
+			return forward;	
 	}
 	
 	@Jpf.Action()
@@ -245,7 +259,9 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		try {
 			ManageStudentData msData = null;
 			Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
-			msData = StudentSearchUtils.getAllCompletedStudentForOrgNode(this.userName, this.studentManagement, treeOrgNodeId);
+			Integer productId = Integer.parseInt(getRequest().getParameter("productId").toString());
+			System.out.println("Framework Product Id : "+ productId);
+			msData = StudentSearchUtils.getAllCompletedStudentForOrgNode(this.userName, this.studentManagement, treeOrgNodeId, productId);
 			studentList = StudentSearchUtils.buildStudentList(msData);
 			//populate student roster list
 			testRosterList = new Integer [msData.getManageStudents().length]; 
@@ -296,6 +312,40 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
 			stuReport.setTestAdminStartDateString(  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY));
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(stuReport);
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes("UTF-8"));
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			System.err.println("Exception while retrieving all completed student.");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Jpf.Action(forwards={	@Jpf.Forward(name = "success",	path ="") })
+	protected Forward getStudentScoreDetailsForAcademicScore(){
+
+		OutputStream stream = null;
+		HttpServletResponse resp = getResponse();
+		resp.setCharacterEncoding("UTF-8"); 
+
+		try {
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReportForAcademic(testRosterId, testAdminId);
+			stuReport.setTestAdminStartDateString(DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY));
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(stuReport);
@@ -391,6 +441,89 @@ public class ImmediateReportingOperationController extends PageFlowController {
     	
 		  return null;
     }
+	
+	
+	
+	// second Immediate reporting link.......
+	@Jpf.Action()
+    protected Forward studentsAcademicLanguageScoreReportInPDF()
+    {
+		
+		try{
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReportForAcademic(testRosterId, testAdminId);
+			StudentAcademicPdfReportUtils utils = new StudentAcademicPdfReportUtils();
+			String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
+			getResponse().setContentType("application/pdf");
+	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".pdf");
+	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+	        getResponse().setHeader("Pragma", "public"); 
+			utils.setup(getResponse().getOutputStream(), stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+			utils.generateReport();
+			
+		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	
+	@Jpf.Action()
+    protected Forward studentsAcademicLanguageScoreReportInExcel()
+    {
+		try{
+			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
+			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReportForAcademic(testRosterId, testAdminId);
+//			StudentAcademicCSVReportUtils utilsCSV = new StudentAcademicCSVReportUtils();
+			StudentAcademicExcelReportUtils excelUtils =  new StudentAcademicExcelReportUtils();
+			String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
+//			getResponse().setContentType("text/csv");
+//	        getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".csv");
+//	        getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+//	        getResponse().setHeader("Pragma", "public");
+	        getResponse().setCharacterEncoding("UTF-8");
+			OutputStream os = getResponse().getOutputStream();
+//			os.write(239);     
+//			os.write(187);     
+//			os.write(191);    
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
+//			utilsCSV.setupCSV(writer, stuReport,  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY) );
+//	        utilsCSV.generateReport();
+//			writer.flush();
+//			writer.close();
+//			String server = getRequest().getServerName();
+//            int port = getRequest().getServerPort();
+			getResponse().setContentType("application/vnd.ms-excel");
+            getResponse().setHeader("Content-Disposition","attachment; filename="+fileName+".xls");
+            getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            getResponse().setHeader("Pragma", "public");
+            excelUtils.generateExcelReport(new Object[]{fileName,
+            		stuReport,
+            		DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY),
+            		writer,
+            		os,
+            		this.getRequest().getScheme()});
+            
+            
+		} catch (CTBBusinessException ce){
+			ce.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+	
+	
+	
+	
 	
 	@Jpf.Action()
     protected Forward studentsImmediateScoreReportInCSV()

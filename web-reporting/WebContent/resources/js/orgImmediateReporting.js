@@ -28,6 +28,7 @@ function populateGridOrg() {
 	var postDataObject = {};
  	postDataObject.q = 2;
  	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+ 	postDataObject.productId = $("#productId").val();
  	$("#orgImmdRptGrid").jqGrid({         
        	url:'getAllCompletedStudentForOrgNode.do', 
 	 	mtype:   'POST',
@@ -153,6 +154,7 @@ function gridScoringStudentReloadOrg(){
 	var postDataObject = {};
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
+	postDataObject.productId = $("#productId").val();
 	jQuery("#orgImmdRptGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
 	jQuery("#orgImmdRptGrid").jqGrid('setGridParam', {url:'getAllCompletedStudentForOrgNode.do',postData:postDataObject,page:1}).trigger("reloadGrid");
 	jQuery("#orgImmdRptGrid").sortGrid('userName',true,'asc');
