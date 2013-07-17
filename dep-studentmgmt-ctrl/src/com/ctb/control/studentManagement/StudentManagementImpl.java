@@ -159,6 +159,11 @@ public class StudentManagementImpl implements StudentManagement
 
 	private static final int CTB_CUSTOMER_ID =2;
 	private String findInColumn = "ona.ancestor_org_node_id in ";
+	
+	private static final String SOCIAL = "Intercultural";
+	private static final String FOUNDATIONAL = "Foundational";
+	private static final String LANGUAGEARTS = "Language Arts";
+	private static final String MATHEMATICS	="Technical Subjects";
 
 	/**
 	 * Get student profile for the specified student.
@@ -3225,13 +3230,13 @@ public class StudentManagementImpl implements StudentManagement
 		}
 	}
 
-	public ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
+	public ManageStudentData getAllCompletedStudentForOrgNode(String userName, Integer orgNodeId, Integer productId) throws CTBBusinessException
 	{
 		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAllCompletedStudentForOrgNode");
 		try {
 			ManageStudentData std = new ManageStudentData();
 			Integer pageSize = null;
-			ManageStudent [] students = studentManagement.getAllCompletedStudentForOrgNode(orgNodeId);
+			ManageStudent [] students = studentManagement.getAllCompletedStudentForOrgNode(orgNodeId,productId);
 			std.setManageStudents(students, pageSize);
 			return std;
 		}catch (SQLException se) {
@@ -3304,6 +3309,64 @@ public class StudentManagementImpl implements StudentManagement
 		}
 
 	}
+	
+	@Override
+	public StudentScoreReport getStudentReportForAcademic(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
+
+		try {
+			int socialCounter = 0;
+			int academicCounter = 4;
+			int foundationalCounter = 8;
+			int languageArtsCounter = 10;
+			int mathematicsCounter = 14;
+			
+			StudentScoreReport stuScrReport = new StudentScoreReport();
+			StudentReportIrsScore[] stuScoreData = null;
+			StudentReportIrsScore[] stuFinalScoreData = null;
+			StudentReportIrsScore[] academicScoreData = null;
+			String secondaryObjectives = null;
+			stuScrReport = studentManagement.getStudentDataForAcademicReport(testRosterId);
+			secondaryObjectives = stuScrReport.getContentAreaNameString();
+			stuScoreData = immediateReportingIrs.getScoreDataForAcademicReport(stuScrReport.getStudentId(), testAdminId);
+		   	stuFinalScoreData = new StudentReportIrsScore[18];
+		   	for(int ii=0;ii<18;ii++){
+		   		stuFinalScoreData[ii] = new StudentReportIrsScore();
+		   	}
+			if(stuScoreData != null && secondaryObjectives != null) {
+				for(int i = 0; i < stuScoreData.length; i++) {
+					if(stuScoreData[i].getContentAreaName().contains(SOCIAL)) {
+						setFinalScoreValuesForAcademic(stuFinalScoreData, stuScoreData[i], 0, secondaryObjectives, socialCounter);
+						socialCounter++;
+					} else if(stuScoreData[i].getContentAreaName().contains(FOUNDATIONAL)) {
+						setFinalScoreValuesForAcademic(stuFinalScoreData, stuScoreData[i], 1, secondaryObjectives, foundationalCounter);
+						foundationalCounter++;
+					} else if(stuScoreData[i].getContentAreaName().contains(LANGUAGEARTS)) {
+						setFinalScoreValuesForAcademic(stuFinalScoreData, stuScoreData[i], 2, secondaryObjectives, languageArtsCounter);
+						languageArtsCounter++;
+					} else if(stuScoreData[i].getContentAreaName().contains(MATHEMATICS)) {
+						setFinalScoreValuesForAcademic(stuFinalScoreData, stuScoreData[i], 3, secondaryObjectives, mathematicsCounter);
+						mathematicsCounter++;
+					} else if(stuScoreData[i].getContentAreaName().toUpperCase().contains("ACADEMIC") && (stuScoreData[i].getContentAreaName().toUpperCase().contains("LISTENING")
+							|| stuScoreData[i].getContentAreaName().toUpperCase().contains("SPEAKING") || stuScoreData[i].getContentAreaName().toUpperCase().contains("READING") ||stuScoreData[i].getContentAreaName().toUpperCase().contains("WRITING"))) {
+						setFinalScoreValuesForAcademic(stuFinalScoreData, stuScoreData[i], 4, secondaryObjectives, academicCounter);
+						academicCounter++;
+					} 
+				}
+			}
+			academicScoreData = new StudentReportIrsScore[6];
+			setObjectiveForAcademic(academicScoreData);
+			populateAcademicReportDesign(academicScoreData, stuFinalScoreData);
+			stuScrReport.setStudentReportIrsScore(academicScoreData);
+			return stuScrReport;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentReportForAcademic: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+
+	}
+	
+	
 
 
 	public List<StudentScoreReport> getStudentReportByGroup(Integer [] testRosterIdArr) throws CTBBusinessException 
@@ -3500,7 +3563,194 @@ public class StudentManagementImpl implements StudentManagement
 			return true;
 		return false;
 	}
+	
+	private boolean checkAcademicAvailability(Integer stuFinalScoreDataValue,
+			String objectives, String secondaryObjName) {
+		if (stuFinalScoreDataValue == 0
+				&& (objectives.toUpperCase().contains(SOCIAL.toUpperCase()))
+					&& (objectives.toUpperCase().contains(secondaryObjName.toUpperCase())))
+			return true;
+		if (stuFinalScoreDataValue == 1
+				&& (objectives.toUpperCase().contains(FOUNDATIONAL.toUpperCase()))
+					&& (objectives.toUpperCase().contains(secondaryObjName.toUpperCase())))
+			return true;
+		if (stuFinalScoreDataValue == 2
+				&& (objectives.toUpperCase().contains(LANGUAGEARTS.toUpperCase()))
+					&& (objectives.toUpperCase().contains(secondaryObjName.toUpperCase())))
+			return true;
+		if (stuFinalScoreDataValue == 3
+				&& (objectives.toUpperCase().contains(MATHEMATICS.toUpperCase()))
+					&& (objectives.toUpperCase().contains(secondaryObjName.toUpperCase())))
+			return true;
+		if (stuFinalScoreDataValue == 4
+				&& (objectives.toUpperCase().contains("ACADEMIC") && (objectives.toUpperCase().contains("LISTENING")
+						|| objectives.toUpperCase().contains("SPEAKING") || objectives.toUpperCase().contains("READING") ||objectives.toUpperCase().contains("WRITING")))
+						&& (objectives.toUpperCase().contains(secondaryObjName.toUpperCase())))
+			return true;
+		return false;
+	}
+	
+	
+	private void setFinalScoreValuesForAcademic(StudentReportIrsScore[] stuFinalScoreData,
+			StudentReportIrsScore stuScoreDataTemp,
+			Integer stuFinalScoreDataValue, String objectives, Integer subtestCounter) {
+		//stuFinalScoreData[subtestCounter.intValue()] = new StudentReportIrsScore();
+		if (checkAcademicAvailability(stuFinalScoreDataValue, objectives, stuScoreDataTemp.getContentAreaName())) {
+			stuFinalScoreData[subtestCounter.intValue()]
+			        .setContentAreaName(stuScoreDataTemp.getContentAreaName());
+			stuFinalScoreData[subtestCounter.intValue()]
+					.setPtsPossible(stuScoreDataTemp.getPtsPossible());
+			stuFinalScoreData[subtestCounter.intValue()]
+					.setPtsObtained(stuScoreDataTemp.getPtsObtained());
+			stuFinalScoreData[subtestCounter.intValue()]
+					.setPerCorrect(stuScoreDataTemp.getPerCorrect());
+		} else {
+			stuFinalScoreData[subtestCounter.intValue()].setContentAreaName(stuScoreDataTemp.getContentAreaName());
+			stuFinalScoreData[subtestCounter.intValue()].setPtsPossible("N/A");
+			stuFinalScoreData[subtestCounter.intValue()].setPtsObtained("N/A");
+			stuFinalScoreData[subtestCounter.intValue()].setPerCorrect("N/A");
+		}
 
+	}
+	
+	private void setObjectiveForAcademic(StudentReportIrsScore[] academicScoreData){
+		for (int i = 0; i < 6; i++) {
+			academicScoreData[i] = new StudentReportIrsScore();
+		}
+		academicScoreData[0].setContentAreaName("Social, Intercultural, and Instructional Communication");
+		academicScoreData[1].setContentAreaName("Academic");
+		academicScoreData[2].setContentAreaName("Foundational Skills");
+		academicScoreData[3].setContentAreaName("Language Arts, Social Studies, History");
+		academicScoreData[4].setContentAreaName("Mathematics, Science, Technical Subjects");
+		academicScoreData[5].setContentAreaName("Total Score*");
+	}
+
+	private void populateAcademicReportDesign(StudentReportIrsScore[] academicScoreData, StudentReportIrsScore[] stuFinalScoreData){
+		HashMap<String,StudentReportIrsScore> contentMap = new HashMap<String,StudentReportIrsScore>(); 
+		String spTotalScore = "0";
+		String lnTotalScore = "0";
+		String rdTotalScore = "0";
+		String wrTotalScore = "0";
+		String objectiveName = "";
+		for(int i=0; i<stuFinalScoreData.length; i++){
+				if(stuFinalScoreData[i].getContentAreaName() != null){
+				objectiveName = stuFinalScoreData[i].getContentAreaName();
+				if(objectiveName.contains("Listening")){
+					if(objectiveName.contains(SOCIAL)){
+						contentMap.put(("Listening_"+SOCIAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(FOUNDATIONAL)){
+						contentMap.put(("Listening_"+FOUNDATIONAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(LANGUAGEARTS)){
+						contentMap.put(("Listening_"+LANGUAGEARTS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(MATHEMATICS)){
+						contentMap.put(("Listening_"+MATHEMATICS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains("Academic")){
+						contentMap.put(("Listening_Academic"),stuFinalScoreData[i]);
+					}
+					
+					if(objectiveName.contains(SOCIAL) || objectiveName.contains("Academic")){
+						if(!"N/A".equals(stuFinalScoreData[i].getPtsObtained()) && !"N/A".equals(lnTotalScore))
+							lnTotalScore  = String.valueOf((Integer.valueOf(lnTotalScore)+Integer.valueOf(stuFinalScoreData[i].getPtsObtained())));
+						else
+							lnTotalScore = "N/A";
+					}
+				}else if(objectiveName.contains("Speaking")){
+					if(objectiveName.contains(SOCIAL)){
+						contentMap.put(("Speaking_"+SOCIAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(FOUNDATIONAL)){
+						contentMap.put(("Speaking_"+FOUNDATIONAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(LANGUAGEARTS)){
+						contentMap.put(("Speaking_"+LANGUAGEARTS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(MATHEMATICS)){
+						contentMap.put(("Speaking_"+MATHEMATICS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains("Academic")){
+						contentMap.put(("Speaking_Academic"),stuFinalScoreData[i]);
+					}
+					
+					if(objectiveName.contains(SOCIAL) || objectiveName.contains("Academic")){
+						if(!"N/A".equals(stuFinalScoreData[i].getPtsObtained()) && !"N/A".equals(spTotalScore))
+							spTotalScore  = String.valueOf((Integer.valueOf(spTotalScore)+Integer.valueOf(stuFinalScoreData[i].getPtsObtained())));
+						else
+							spTotalScore = "N/A";
+					}
+				}else if(objectiveName.contains("Reading")){
+					if(objectiveName.contains(SOCIAL)){
+						contentMap.put(("Reading_"+SOCIAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(FOUNDATIONAL)){
+						contentMap.put(("Reading_"+FOUNDATIONAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(LANGUAGEARTS)){
+						contentMap.put(("Reading_"+LANGUAGEARTS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(MATHEMATICS)){
+						contentMap.put(("Reading_"+MATHEMATICS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains("Academic")){
+						contentMap.put(("Reading_Academic"),stuFinalScoreData[i]);
+					}
+
+					if(objectiveName.contains(SOCIAL) || objectiveName.contains("Academic")){
+						if(!"N/A".equals(stuFinalScoreData[i].getPtsObtained()) && !"N/A".equals(rdTotalScore))
+							rdTotalScore  = String.valueOf((Integer.valueOf(rdTotalScore)+Integer.valueOf(stuFinalScoreData[i].getPtsObtained())));
+						else
+							rdTotalScore = "N/A";
+					}
+				}else if(objectiveName.contains("Writing")){
+					if(objectiveName.contains(SOCIAL)){
+						contentMap.put(("Writing_"+SOCIAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(FOUNDATIONAL)){
+						contentMap.put(("Writing_"+FOUNDATIONAL),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(LANGUAGEARTS)){
+						contentMap.put(("Writing_"+LANGUAGEARTS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains(MATHEMATICS)){
+						contentMap.put(("Writing_"+MATHEMATICS),stuFinalScoreData[i]);
+					}else if(objectiveName.contains("Academic")){
+						contentMap.put(("Writing_Academic"),stuFinalScoreData[i]);
+					}
+					
+					if(objectiveName.contains(SOCIAL) || objectiveName.contains("Academic")){
+						if(!"N/A".equals(stuFinalScoreData[i].getPtsObtained()) && !"N/A".equals(wrTotalScore))
+							wrTotalScore  = String.valueOf((Integer.valueOf(wrTotalScore)+Integer.valueOf(stuFinalScoreData[i].getPtsObtained())));
+						else
+							wrTotalScore = "N/A";
+					}
+				}
+			}
+		}
+		
+		for(int ii=0; ii<5;ii++){
+			String objective = "";
+			if(ii==0)objective=SOCIAL;
+			if(ii==1)objective="Academic";
+			if(ii==2)objective=FOUNDATIONAL;
+			if(ii==3)objective=LANGUAGEARTS;
+			if(ii==4)objective=MATHEMATICS;
+		
+			if(contentMap.containsKey("Listening_"+objective)){
+				academicScoreData[ii].setLnPerCorrect(contentMap.get("Listening_"+objective).getPerCorrect());
+				academicScoreData[ii].setLnPtsObtained(contentMap.get("Listening_"+objective).getPtsObtained());
+				academicScoreData[ii].setLnPtsPossible(contentMap.get("Listening_"+objective).getPtsPossible());
+			}
+			if(contentMap.containsKey("Speaking_"+objective)){
+				academicScoreData[ii].setSpPerCorrect(contentMap.get("Speaking_"+objective).getPerCorrect());
+				academicScoreData[ii].setSpPtsObtained(contentMap.get("Speaking_"+objective).getPtsObtained());
+				academicScoreData[ii].setSpPtsPossible(contentMap.get("Speaking_"+objective).getPtsPossible());
+			}
+			if(contentMap.containsKey("Reading_"+objective)){
+				academicScoreData[ii].setRdPerCorrect(contentMap.get("Reading_"+objective).getPerCorrect());
+				academicScoreData[ii].setRdPtsObtained(contentMap.get("Reading_"+objective).getPtsObtained());
+				academicScoreData[ii].setRdPtsPossible(contentMap.get("Reading_"+objective).getPtsPossible());
+			}
+			if(contentMap.containsKey("Writing_"+objective)){
+				academicScoreData[ii].setWrPerCorrect(contentMap.get("Writing_"+objective).getPerCorrect());
+				academicScoreData[ii].setWrPtsObtained(contentMap.get("Writing_"+objective).getPtsObtained());
+				academicScoreData[ii].setWrPtsPossible(contentMap.get("Writing_"+objective).getPtsPossible());
+			}
+		}
+		academicScoreData[5].setSpTotalScore(spTotalScore);
+		academicScoreData[5].setLnTotalScore(lnTotalScore);
+		academicScoreData[5].setRdTotalScore(rdTotalScore);
+		academicScoreData[5].setWrTotalScore(wrTotalScore);
+	}
+	
+	
 	@Override
 	public ManageStudentData getStudentsForSelectedOrgNode(String userName,	Integer orgNodeId, Integer testAdminId) throws CTBBusinessException {
 		
