@@ -398,6 +398,9 @@ public interface License extends JdbcControl
      @JdbcControl.SQL(statement = "select order_index from customer_product_license where customer_id = {customerLicense.customerId} and product_id = {customerLicense.productId} and order_number = {customerLicense.orderNumber} order by order_index desc")
      Integer getOrderIndexDetails(CustomerLicense customerLicense) throws SQLException;
      
+     @JdbcControl.SQL(statement = "select PKG_LAS_LM_TRG.FN_GET_FRAMEWORK_PARENT_PROD({productId}) from dual ")
+     Integer getFrameworkParentProductId(Integer productId) throws SQLException;
+     
      @JdbcControl.SQL(statement = "select available from orgnode_order_license where org_node_id = {customerLicense.orgNodeId} and order_index = {customerLicense.orderIndex}")
      Integer getOrgOrderLicenseDetails(CustomerLicense customerLicense) throws SQLException;
      

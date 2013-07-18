@@ -1770,10 +1770,23 @@ public class ManageCustomerController extends PageFlowController
         boolean licensevalue = false;
         boolean isAddOrgLice = false;
         boolean result = false;
+        Integer frameworkParentProductId = new Integer(0); 
         
         CustomerLicense customerLicense = licenseNode.makeCopy();
          
         try {
+        	
+        	/*checking for multiple framework support. 
+        	 If this product doesnot support  multiple-product-framework  then frameworkParentProductId = -1,
+        	 else frameworkParentProductId = the parent-product-id of the framework-product
+        	*/
+        	 frameworkParentProductId = license.checkMultipleFrameWorkProduct(customerLicense.getProductId());
+          	 if (frameworkParentProductId != -1 ){
+        		 
+        		 customerLicense.setProductId(frameworkParentProductId);
+        		 licenseNode.setProductId(frameworkParentProductId);
+        	 }
+        	 
         	licensevalue = license.addCustomerProductLicense(customerLicense);
         	licenseNode.setBalanceLicense(customerLicense.getAvailable());
         	Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());

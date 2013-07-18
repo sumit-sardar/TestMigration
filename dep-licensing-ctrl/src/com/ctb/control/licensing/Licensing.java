@@ -115,5 +115,7 @@ public interface Licensing
     
     boolean addEditOrgnodeOrderLicense (CustomerLicense customerLicense)throws com.ctb.exception.CTBBusinessException;
     
-    void sendMail(Integer customerId, String to, Integer emailType, String orderNumber, String licenseQuantity, String purchaseDate, String expiryDate); 
+    void sendMail(Integer customerId, String to, Integer emailType, String orderNumber, String licenseQuantity, String purchaseDate, String expiryDate);
+
+	Integer checkMultipleFrameWorkProduct(Integer productId) throws com.ctb.exception.CTBBusinessException; 
 } 

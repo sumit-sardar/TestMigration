@@ -541,6 +541,26 @@ public class LicensingImpl implements Licensing
          
          return true;  
     }
+   
+   public Integer checkMultipleFrameWorkProduct(Integer productId) throws com.ctb.exception.CTBBusinessException {
+	   Integer frameworkParentProductId =  null;
+	   try {
+          
+		   frameworkParentProductId =  this.license.getFrameworkParentProductId(productId);
+           
+        } catch (SQLException se) {
+           
+           LicenseCreationException lce = 
+                   new LicenseCreationException("platformlicence.getParentMultipleFrameworkException.E0014");
+                   
+           throw lce;
+           
+        }
+        
+        return frameworkParentProductId;   
+	   
+   }
+   
    public CustomerLicense[] getCustomerProductLicenses(Integer customerId) throws CTBBusinessException {
 	   try {   
 		     CustomerLicense[] customerLicense  = license.getCustomerProductLicenses(customerId);  
