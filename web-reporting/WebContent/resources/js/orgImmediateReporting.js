@@ -248,19 +248,29 @@ function orgImmdRptGridresetSearch(){
 function downloadCSVReport(element) {
  	if (isButtonDisabled(element)) 
 		return true;
-    var element = document.getElementById("downloadGroupImmediateReport");
-    element.form.action="groupImmediateScoreReportInCSV.do?productId="+$('#productId').val();
-    element.form.submit();
-    $("#displayMessageMain").hide();
-	return false;
+	// Disabling function temporarily for productId:7500. Enabale once Excel/PDF is implemented.
+	if($("#productId").val()=='7500'){
+        return true;
+	}else{	
+	    var element = document.getElementById("downloadGroupImmediateReport");
+	    element.form.action="groupImmediateScoreReportInCSV.do?productId="+$('#productId').val();
+	    element.form.submit();
+	    $("#displayMessageMain").hide();
+		return false;
+	}
  }
  
  function downloadPDFReport(element) {
  	if (isButtonDisabled(element)) 
 		return true;
-    var element = document.getElementById("downloadGroupImmediateReport");
-    element.form.action="groupImmediateScoreReportInPDF.do?productId="+$('#productId').val();
-    element.form.submit();
-    $("#displayMessageMain").hide();
-	return false;
+	// Disabling function temporarily for productId:7500. Enabale once Excel/PDF is implemented.	
+	if($("#productId").val()=='7500'){
+        return true;
+	}else{	
+	    var element = document.getElementById("downloadGroupImmediateReport");
+	    element.form.action="groupImmediateScoreReportInPDF.do?productId="+$('#productId').val();
+	    element.form.submit();
+	    $("#displayMessageMain").hide();
+		return false;
+	}
  }
