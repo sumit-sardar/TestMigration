@@ -10,6 +10,8 @@
 	String orgNodeId = (String)request.getAttribute("orgNodeId");
 	String sessionId = (String)request.getAttribute("sessionId");
 	String resultText = (String)request.getAttribute("resultText");
+	String decryptedUserName = (String)request.getAttribute("decryptedUserName");
+	String decryptedUserId = (String)request.getAttribute("decryptedUserId");
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -77,7 +79,11 @@
 	</td>
 </tr>
 <tr>
-	<td colspan="3">Userkey:&nbsp;<input type="textbox" id="userKey" name="userKey" value="<%=userKey%>" size=105 /></td>
+	<td colspan="3">
+		Userkey:&nbsp;<input type="textbox" id="userKey" name="userKey" value="<%=userKey%>" size=80 />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		Decrypted UserName:&nbsp;&nbsp;<label><%=decryptedUserName%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		Decrypted UserId:&nbsp;&nbsp;<label><%=decryptedUserId%></label>
+	</td>
 </tr>
 <tr>
 	<td width=200>Username:&nbsp;<input type="textbox" id="userName" name="userName" value="<%=userName%>" /></td>

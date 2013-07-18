@@ -127,13 +127,14 @@ public class TestWebServiceController extends PageFlowController
     	String orgNodeId = safeGuardString((String)this.getRequest().getParameter("orgNodeId"));
     	String sessionId = safeGuardString((String)this.getRequest().getParameter("sessionId"));
     	String userKey = safeGuardString((String)this.getRequest().getParameter("userKey"));
+    	String decryptedUserName = safeGuardString((String)this.getRequest().getParameter("decryptedUserName"));
+    	String decryptedUserId = safeGuardString((String)this.getRequest().getParameter("decryptedUserId"));
 
     	if ((status.length() > 0) && (! "authenticateUser".equals(status))) {
 	    	if (userKey.length() > 0) {
-	    		String name = decrypt(userKey, 0);
-	    		String id = decrypt(userKey, 1);
-	    		System.out.println("name=" + name + " - id=" + id);
-	    		if ((name.length() == 0) || (id.length() == 0)) {
+	    		decryptedUserName = decrypt(userKey, 0);
+	    		decryptedUserId = decrypt(userKey, 1);
+	    		if ((decryptedUserName.length() == 0) || (decryptedUserId.length() == 0)) {
 	    			status = "";
 	    			resultText = "Invalid Userkey.";   	
 	    		}
@@ -157,6 +158,8 @@ public class TestWebServiceController extends PageFlowController
 	    										"<br/>" + "userId: " + userInfo.getUserId().toString() +
 	    										"<br/>" + "userKey: " + userInfo.getUserKey();
 	    			userKey = userInfo.getUserKey();
+	    			decryptedUserName = decrypt(userKey, 0);
+	    			decryptedUserId = decrypt(userKey, 1);	    			
 	    		}
 	    		else {
 	    			resultText = "authenticateUser: FAILED" + "<br/>" + userInfo.getStatus();
@@ -355,7 +358,7 @@ public class TestWebServiceController extends PageFlowController
        			StudentResponse studentResponse = new StudentResponse();
        			studentResponse.setAssignment(assignment);
 				
-       			String ret = clickerWSServiceControl.submitStudentResponses(studentResponse);
+       			String ret = clickerWSServiceControl.submitStudentResponses(userKey, studentResponse);
 				
        			if (ret.equals("OK")) {
        				//resultText += ("<br/><br/>" + "submitStudentResponses: SUCCESS" + "<br/>");	       				
@@ -372,6 +375,8 @@ public class TestWebServiceController extends PageFlowController
     	this.getRequest().setAttribute("password", password);
     	this.getRequest().setAttribute("orgNodeId", orgNodeId);
     	this.getRequest().setAttribute("sessionId", sessionId);
+    	this.getRequest().setAttribute("decryptedUserName", decryptedUserName);
+    	this.getRequest().setAttribute("decryptedUserId", decryptedUserId);
     	
         return new Forward("success");
     }
@@ -978,6 +983,9 @@ public class TestWebServiceController extends PageFlowController
     	return responses;
     }
     
+	/**
+	* encrypt value using Cipher algorithm 
+	*/
 	private String encrypt(String value)
 	{
 		String result = value;
@@ -989,6 +997,9 @@ public class TestWebServiceController extends PageFlowController
 		return result;
 	}
 
+	/**
+	* decrypt value using Cipher algorithm 
+	*/
 	private String decrypt(String value, int index)
 	{
 		String decrypt = "";

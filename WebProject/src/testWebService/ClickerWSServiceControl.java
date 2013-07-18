@@ -25,7 +25,7 @@ public interface ClickerWSServiceControl extends ServiceControl
 
     public dto.OrgNodeList getUserTopNodes(java.lang.String userKey_arg);
 
-    public java.lang.String submitStudentResponses(dto.StudentResponse studentResponses_arg);
+    public java.lang.String submitStudentResponses(java.lang.String userKey_arg,dto.StudentResponse studentResponses_arg);
 
    /** This event set interface provides support for the onAsyncFailure event.
     */

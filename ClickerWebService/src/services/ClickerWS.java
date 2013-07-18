@@ -403,14 +403,16 @@ public class ClickerWS implements Serializable {
 	
 	
 	/**
+	* userKey comes from OAS after authenticate successfully.
 	* studentResponses contains student responses and all other related information sent to OAS
 	* Return status of the transaction. "OK" if successfully otherwise return the error message.
 	* 
 	*/
 	@WebMethod
-	public String submitStudentResponses(StudentResponse studentResponses) 
+	public String submitStudentResponses(String userKey, StudentResponse studentResponses) 
 	{
 		String status = "OK";
+		String userName = decrypt(userKey, 0);
 
 		Assignment assignment = studentResponses.getAssignment();
 		Roster[] rosters = assignment.getRosters();
@@ -431,6 +433,10 @@ public class ClickerWS implements Serializable {
 		return status;
 	}
 
+	
+	/**
+	* encrypt value using Cipher algorithm 
+	*/
 	private String encrypt(String value)
 	{
 		String result = value;
@@ -442,6 +448,10 @@ public class ClickerWS implements Serializable {
 		return result;
 	}
 
+	
+	/**
+	* decrypt value using Cipher algorithm 
+	*/
 	private String decrypt(String value, int index)
 	{
 		String decrypt = "";

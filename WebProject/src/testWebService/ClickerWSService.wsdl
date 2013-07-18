@@ -131,8 +131,9 @@
       <xs:complexType name="UserInfo">
         <xs:annotation>
           <xs:documentation>/** 
- * Populates userId, userName if authenticating successfully otherwise set to null
+ * Populates userId, userName, userKey if authenticating successfully otherwise set to null
  * status stores error message otherwise set to 'OK'
+ * userKey = userName + "@" + userId (encrypted) 
  * @author Tai_Truong
  */</xs:documentation>
         </xs:annotation>
@@ -263,6 +264,7 @@
       <xs:element name="submitStudentResponses">
         <xs:complexType>
           <xs:sequence>
+            <xs:element name="userKey" type="xs:string"/>
             <xs:element name="studentResponses" type="java:StudentResponse" xmlns:java="java:dto"/>
           </xs:sequence>
         </xs:complexType>
