@@ -249,7 +249,7 @@ function downloadCSVReport(element) {
  	if (isButtonDisabled(element)) 
 		return true;
     var element = document.getElementById("downloadGroupImmediateReport");
-    element.form.action="groupImmediateScoreReportInCSV.do";
+    element.form.action="groupImmediateScoreReportInCSV.do?productId="+$('#productId').val();
     element.form.submit();
     $("#displayMessageMain").hide();
 	return false;
@@ -259,7 +259,7 @@ function downloadCSVReport(element) {
  	if (isButtonDisabled(element)) 
 		return true;
     var element = document.getElementById("downloadGroupImmediateReport");
-    element.form.action="groupImmediateScoreReportInPDF.do";
+    element.form.action="groupImmediateScoreReportInPDF.do?productId="+$('#productId').val();
     element.form.submit();
     $("#displayMessageMain").hide();
 	return false;
