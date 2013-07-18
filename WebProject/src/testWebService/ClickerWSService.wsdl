@@ -139,6 +139,7 @@
         <xs:sequence>
           <xs:element minOccurs="1" name="Status" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="UserId" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="1" name="UserKey" nillable="true" type="xs:string"/>
           <xs:element minOccurs="1" name="UserName" nillable="true" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
@@ -188,7 +189,7 @@
       <xs:element name="getSessionsForNode">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="userKey" type="xs:string"/>
             <xs:element name="orgNodeId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
@@ -203,7 +204,7 @@
       <xs:element name="getChildNodes">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="userKey" type="xs:string"/>
             <xs:element name="orgNodeId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
@@ -218,7 +219,7 @@
       <xs:element name="getRostersInSession">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="userKey" type="xs:string"/>
             <xs:element name="sessionId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
@@ -248,7 +249,7 @@
       <xs:element name="getUserTopNodes">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="userKey" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -276,7 +277,7 @@
       <xs:element name="getTestStructure">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="userKey" type="xs:string"/>
             <xs:element name="sessionId" type="xs:string"/>
           </xs:sequence>
         </xs:complexType>

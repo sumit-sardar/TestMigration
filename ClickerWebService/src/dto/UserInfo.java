@@ -12,16 +12,20 @@ public class UserInfo implements java.io.Serializable {
 
     private Integer userId = null;
     private String userName = null;		
+    private String userKey = null;
     private String status = null;		
 	
 	public UserInfo() {
 		this.userId = null;
 		this.userName = null;
+		this.userKey = null;
 		this.status = null;
 	}
-	public UserInfo(Integer userId, String userName) {
+	
+	public UserInfo(Integer userId, String userName, String userKey) {
 		this.userId = userId;
 		this.userName = userName;
+		this.userKey = userKey;
 		this.status = "OK";
 	}
 
@@ -40,6 +44,12 @@ public class UserInfo implements java.io.Serializable {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getUserKey() {
+		return userKey;
+	}
+	public void setUserKey(String userKey) {
+		this.userKey = userKey;
 	}
 	public String getStatus() {
 		return status;

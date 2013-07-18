@@ -4,12 +4,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%
-	String userAuthenticated = (String)request.getAttribute("userAuthenticated");
-	String resultText = (String)request.getAttribute("resultText");
+	String userKey = (String)request.getAttribute("userKey");
 	String userName = (String)request.getAttribute("userName");
 	String password = (String)request.getAttribute("password");
 	String orgNodeId = (String)request.getAttribute("orgNodeId");
 	String sessionId = (String)request.getAttribute("sessionId");
+	String resultText = (String)request.getAttribute("resultText");
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -39,7 +39,6 @@
 <netui:form action="clickerService">
 
 <input type="hidden" id="status" name="status"   value="submit"/>
-<input type="hidden" id="userAuthenticated" name="userAuthenticated"   value="<%=userAuthenticated%>"/>
 
 <!-- MAIN BODY -->
 
@@ -74,8 +73,11 @@
 <tr>
 	<td colspan="3">
 		<li> authenticateUser and getUserTopNode are prerequisite for all calls.</li>
-		<li> getSessionsForNode is prerequisite for submitStudentResponses.</li>		
+		<li> getSessionsForNode is prerequisite for submitStudentResponses.</li>	
 	</td>
+</tr>
+<tr>
+	<td colspan="3">Userkey:&nbsp;<input type="textbox" id="userKey" name="userKey" value="<%=userKey%>" size=105 /></td>
 </tr>
 <tr>
 	<td width=200>Username:&nbsp;<input type="textbox" id="userName" name="userName" value="<%=userName%>" /></td>
