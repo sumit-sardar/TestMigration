@@ -74,7 +74,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 	private User user = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-	private Integer [] testRosterList = null;
+	private Integer [] testRosterListForLLEAB = null;
+	private Integer [] testRosterListForLL2ND = null;
 	/**
 	 * Callback that is invoked when this controller instance is created.
 	 */
@@ -268,7 +269,10 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			for(int i=0; i<msData.getManageStudents().length; i++){
 				testRosterList[i] = msData.getManageStudents()[i].getRosterId();
 			}
-			this.testRosterList = testRosterList;
+			if(productId == 7000)
+				this.testRosterListForLLEAB = testRosterList;
+			else 
+				this.testRosterListForLL2ND = testRosterList;
 			System.out.println("Total Roster Present :"+ msData.getManageStudents().length );
 			Base base = new Base();
 			base.setPage("1");
@@ -564,9 +568,14 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		List<StudentProfileInformation> allStudentList = new ArrayList<StudentProfileInformation>();
 		try {
 			Integer treeOrgNodeId = Integer.valueOf(this.getRequest().getParameter("treeOrgNodeId"));
+			Integer productId = Integer.valueOf(this.getRequest().getParameter("productId"));
 			String treeOrgName = this.getRequest().getParameter("treeOrgName");
 			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
-			Integer [] testRosterList = this.testRosterList;
+			Integer [] testRosterList = null;
+			if(productId == 7000)
+				testRosterList = this.testRosterListForLLEAB;
+			else
+				testRosterList = this.testRosterListForLL2ND;
 			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
 			GroupImmediateCSVReportUtils utilsCSV = new GroupImmediateCSVReportUtils();
 			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
@@ -605,9 +614,14 @@ public class ImmediateReportingOperationController extends PageFlowController {
     {
 		try {
 			Integer treeOrgNodeId = Integer.valueOf(this.getRequest().getParameter("treeOrgNodeId"));
+			Integer productId = Integer.valueOf(this.getRequest().getParameter("productId"));
 			String treeOrgName = this.getRequest().getParameter("treeOrgName");
 			String orgName =  (treeOrgName.replace("\u00A0","").trim()).replace("\u0020", "_");
-			Integer [] testRosterList = this.testRosterList;
+			Integer [] testRosterList = null;
+			if(productId == 7000)
+				testRosterList = this.testRosterListForLLEAB;
+			else
+				testRosterList = this.testRosterListForLL2ND;
 			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
 			GroupImmediatePDFReportUtils utilsPDF = new GroupImmediatePDFReportUtils();
 			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
