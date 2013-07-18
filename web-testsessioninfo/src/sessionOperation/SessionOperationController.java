@@ -3694,6 +3694,7 @@ public class SessionOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
 	        @Jpf.Forward(name = "exportDataLink", path = "services_dataExport.do"),
 	        @Jpf.Forward(name = "viewStatusLink", path = "services_viewStatus.do"),
+	        //@Jpf.Forward(name = "uploadPrescriptionDataLink", path = "services_uploadPrescriptionData.do"),
 	        @Jpf.Forward(name = "showAccountFileDownloadLink", path = "eMetric_user_accounts_detail.do")
 	        
 	    }) 
@@ -3704,6 +3705,23 @@ public class SessionOperationController extends PageFlowController {
 		
 	    return new Forward(forwardName);
 	}
+    
+    /*
+    @Jpf.Action()
+    protected Forward services_uploadPrescriptionData()
+    {
+    	try
+    	{
+    		String url = "/OrganizationWeb/uploadPrescriptionOperation/services_uploadPrescriptionData.do";
+    		getResponse().sendRedirect(url);
+    	}
+    	catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+    	return null;
+    }
+    */
     
     @Jpf.Action()
     protected Forward services_dataExport()
@@ -5176,6 +5194,17 @@ public class SessionOperationController extends PageFlowController {
 					String [] args = new String[1];
 					args[0] = (String)grades[i];
 					filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+					
+					//** [IAA]: STORY: OAS – Grade string naming and Filtering (e.g. 9 should also look for 09, etc)
+					int iGrade = 0;
+					boolean startsWith0 = grades[i].startsWith("0");
+					try { iGrade = Integer.parseInt(grades[i]);} catch(Exception e) {iGrade = 0;}
+					if (iGrade>0 && iGrade<10)
+					{
+						args = new String[1];
+						args[0] = (startsWith0)?""+iGrade:"0"+iGrade;
+						filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+					}
 				}
 			}else{
 				int initVal = Integer.parseInt(grades[0]);
@@ -5184,6 +5213,14 @@ public class SessionOperationController extends PageFlowController {
 					String [] args = new String[1];
 					args[0] = String.valueOf(i);
 					filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+					
+					//** [IAA]: STORY: OAS – Grade string naming and Filtering (e.g. 9 should also look for 09, etc)
+					if (i>0 && i<10)
+					{
+						args = new String[1];
+						args[0] = String.valueOf("0"+i);
+						filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+					}
 				}
 			}
 		} else if(selectedLevel.contains("/")) {
@@ -5193,8 +5230,38 @@ public class SessionOperationController extends PageFlowController {
 			filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
 			args[0] = grades[1];
 			filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+			
+			//** [IAA]: STORY: OAS – Grade string naming and Filtering (9 should also look for 09, etc)
+			int iGrade = 0;
+			boolean startsWith0 = grades[0].startsWith("0");
+			try { iGrade = Integer.parseInt(grades[0]);} catch(Exception e) {iGrade = 0;}
+			if (iGrade>0 && iGrade<10)
+			{
+				String [] args2 = new String[1];
+				args2[0] = (startsWith0)?""+iGrade:"0"+iGrade;
+				filters.add(new FilterParam("StudentGrade", args2, FilterType.EQUALS));
+			}
+			startsWith0 = grades[1].startsWith("0");
+			try { iGrade = Integer.parseInt(grades[1]);} catch(Exception e) {iGrade = 0;}
+			if (iGrade>0 && iGrade<10)
+			{
+				String [] args2 = new String[1];
+				args2[0] = (startsWith0)?""+iGrade:"0"+iGrade;
+				filters.add(new FilterParam("StudentGrade", args2, FilterType.EQUALS));
+			}
 		} else {
 			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+			
+			//** [IAA]: OAS – Grade string naming and Filtering (9 should also look for 09, etc)
+			int iGrade = 0;
+			boolean startsWith0 = arg[0].startsWith("0"); 
+			try { iGrade = Integer.parseInt(arg[0]);} catch(Exception e) {iGrade = 0;}
+			if (iGrade>0 && iGrade<10)
+			{
+				String [] args2 = new String[1];
+				args2[0] = (startsWith0)?""+iGrade:"0"+iGrade;
+				filters.add(new FilterParam("StudentGrade", args2, FilterType.EQUALS));
+			}
 		}
 		studentFilter.setFilterParams((FilterParam[])filters.toArray(new FilterParam[0]));
 		 

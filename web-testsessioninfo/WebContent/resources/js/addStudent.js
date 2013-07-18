@@ -340,6 +340,78 @@ function populateSelectStudentGrid() {
 				}		
 			} 
 
+			//**[IAA]: STORY: Grade string naming and Filtering. Adjust grades: eg. 09->9
+			if (obj.studentNode != null && obj.studentNode.length > 0) {			
+					for(var i=0; i<obj.studentNode.length; i++) {
+						if (selectedLevel.substring(0,1)==="0")
+						{
+							switch (obj.studentNode[i].grade)
+							{
+								case "1":
+								obj.studentNode[i].grade = "01";
+								break;
+								case "2":
+								obj.studentNode[i].grade = "02";
+								break;
+								case "3":
+								obj.studentNode[i].grade = "03";
+								break;
+								case "4":
+								obj.studentNode[i].grade = "04";
+								break;
+								case "5":
+								obj.studentNode[i].grade = "05";
+								break;
+								case "6":
+								obj.studentNode[i].grade = "06";
+								break;
+								case "7":
+								obj.studentNode[i].grade = "07";
+								break;
+								case "8":
+								obj.studentNode[i].grade = "08";
+								break;
+								case "9":
+								obj.studentNode[i].grade = "09";
+								break;
+							}							
+						}
+						else
+						{
+							switch (obj.studentNode[i].grade)
+							{
+								case "01":
+								obj.studentNode[i].grade = "1";
+								break;
+								case "02":
+								obj.studentNode[i].grade = "2";
+								break;
+								case "03":
+								obj.studentNode[i].grade = "3";
+								break;
+								case "04":
+								obj.studentNode[i].grade = "4";
+								break;
+								case "05":
+								obj.studentNode[i].grade = "5";
+								break;
+								case "06":
+								obj.studentNode[i].grade = "6";
+								break;
+								case "07":
+								obj.studentNode[i].grade = "7";
+								break;
+								case "08":
+								obj.studentNode[i].grade = "8";
+								break;
+								case "09":
+								obj.studentNode[i].grade = "9";
+								break;
+							}
+						}
+					}		
+			}	
+			
 		   	accomodationMapForAll = obj.accomodationMap;
 		   	var nonLicenseProduct = isTutorialOrLocatorProduct();
 		   	
