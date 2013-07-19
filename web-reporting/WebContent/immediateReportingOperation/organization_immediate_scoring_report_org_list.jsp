@@ -38,7 +38,11 @@
     		<table class="transparent">
 				<tr class="transparent">
 					<td>
-			    		<h1><lb:label key="immediate.report.page.titleOrg" /></h1>
+					<% if(productId == 7000){ %>
+			    		<h1><lb:label key="immediate.report.page.titleOrg.LLEAB" /></h1>
+			    	<%} else if(productId == 7500){%>
+			    		<h1><lb:label key="immediate.report.page.titleOrg.LL2ND" /></h1>
+			    	<%} %>	
 					</td>
 				</tr>
 				<tr> 
