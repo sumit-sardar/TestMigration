@@ -90,8 +90,6 @@ public class TestWebServiceController extends PageFlowController
     @Control()
     private com.ctb.control.db.ItemSet itemSet;
 
-   
-	private AssignmentList assignmentList = null;
 	
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -210,12 +208,12 @@ public class TestWebServiceController extends PageFlowController
 
     		// getSessionsForNode
     		if ("getSessionsForNode".equals(status)) {
-    			this.assignmentList = clickerWSServiceControl.getSessionsForNode(userKey, orgNodeId);
+    			AssignmentList assignmentList = clickerWSServiceControl.getSessionsForNode(userKey, orgNodeId);
     			
-    			if (this.assignmentList.getStatus().equals("OK")) {
+    			if (assignmentList.getStatus().equals("OK")) {
     				resultText = "getSessionsForNode: SUCCESS" ;
     				resultText += "<br/>sessionName - sessionId - accessCode - startDate - endDate - enforceBreak - enforceTimeLimit<br/>" ;
-    				Assignment[] assignments = this.assignmentList.getAssignments();
+    				Assignment[] assignments = assignmentList.getAssignments();
     				
         	        for (int i=0; i < assignments.length; i++) {
         	        	Assignment assignment = assignments[i];
@@ -232,7 +230,7 @@ public class TestWebServiceController extends PageFlowController
         	        }    				
     			}
     			else {
-	    			resultText = "getSessionsForNode: FAILED" + "<br/>" + this.assignmentList.getStatus();
+	    			resultText = "getSessionsForNode: FAILED" + "<br/>" + assignmentList.getStatus();
     			}
     		}
 
@@ -324,7 +322,26 @@ public class TestWebServiceController extends PageFlowController
     			TestStructure testStructure = clickerWSServiceControl.getTestStructure(userKey, sessionId);
 				resultText += "testId=" + testStructure.getTestId() + " - testName=" + testStructure.getTestName() + "<br/><br/>";					
     			
-    		    Assignment assignment = getAssignment(newInteger(sessionId));
+    		    Assignment assignment = new Assignment();
+    		    Integer testAdminId = newInteger(sessionId);
+    		    
+    			decryptedUserName = decrypt(userKey, 0);
+    		    try {
+					TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(decryptedUserName, testAdminId);
+					TestSession[] testSessions = tsData.getTestSessions();
+					TestSession testSession = testSessions[0];
+	    		    assignment.setSessionId(testAdminId);
+					assignment.setSessionName(testSession.getTestAdminName());
+					assignment.setAccessCode(testSession.getAccessCode());
+					assignment.setStartDate(testSession.getLoginStartDate().toString());
+					assignment.setEndDate(testSession.getLoginEndDate().toString());
+					assignment.setEnforceBreak(testSession.getEnforceBreak());
+					assignment.setEnforceTimeLimit(testSession.getEnforceTimeLimit());
+					assignment.setSessionName(testSession.getSessionNumber());
+				} catch (CTBBusinessException e) {
+					e.printStackTrace();
+				}
+    		    
     			RosterList rosterList = clickerWSServiceControl.getRostersInSession(userKey, sessionId);
     			Roster[] rosters = rosterList.getRosters();
     			
@@ -931,18 +948,6 @@ public class TestWebServiceController extends PageFlowController
 		return value.trim();
 	}
     
-    private Assignment getAssignment(Integer sessionId) {
-    	Assignment assignment = null;
-		Assignment[] assignments = this.assignmentList.getAssignments();
-	    for (int i=0; i < assignments.length; i++) {
-	    	assignment = assignments[i];
-	        if (assignment.getSessionId().intValue() == sessionId.intValue()) {
-	        	break;
-	        }
-	    }    				
-    	return assignment;
-    }
-
     private void initialzeQuestions(String response, SubtestInfo srcSubtest, TestStructure testStructure) {
 
 		ContentArea[] contentAreas = testStructure.getContentAreas();
