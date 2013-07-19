@@ -65,7 +65,7 @@ public class LasFileUtil {
 				Test_Level = processTestLevel(Test_Level); 
 				score_lookup_id	= lasFrameWorkCode+"_2012_"+test_form+"_"+Test_Level+"_"+Content_area_initial;
 				success=FileUtil.writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,lasFrameWorkCode,lasProductDisplayName);
-				if(Product_type.equalsIgnoreCase("EB")) {
+				if(Product_type.equalsIgnoreCase("T")) {
 					product_id = "7502";
 				}
 				if(Product_type.equalsIgnoreCase("C")) {
@@ -414,9 +414,10 @@ public static String processContentAreaName(String caShortName) {
 				previousValue = Integer.parseInt(splitSt[1].trim());
 			}
 			scaleToNce.put(Integer.parseInt(contentOfFile.get(contentOfFile.size() - 1).split("     ")[0].trim()), Integer.parseInt(contentOfFile.get(contentOfFile.size() - 1).split("     ")[1].trim()));
+			ps = con.prepareStatement(FileUtil.insertScore_lookupQuery);
 			for (Map.Entry<Integer, Integer> entry : scaleToNce.entrySet()) {
 			    //System.out.println(entry.getKey() + " - " + entry.getValue());			
-				ps = con.prepareStatement(FileUtil.insertScore_lookupQuery);
+				//ps = con.prepareStatement(FileUtil.insertScore_lookupQuery);
 				ps.setString(1, Source_score_type_code);
 				ps.setString(2, dest_Score_type_code);
 				ps.setString(3, score_lookup_id);
@@ -428,10 +429,13 @@ public static String processContentAreaName(String caShortName) {
 				ps.setString(9, "2012");
 				ps.setString(10, framework_code);
 				ps.setString(11,product_internal_display_name);
-				save=ps.executeUpdate();
-				SqlUtil.close(ps);
+//				save=ps.executeUpdate();
+//				SqlUtil.close(ps);
+				ps.addBatch();
 			}
+			ps.executeBatch();
 			con.commit();
+			save =1;
 		}catch(SQLException e) {
 			try {
 				con.rollback();
