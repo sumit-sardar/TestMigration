@@ -4207,6 +4207,21 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
+    public String[] getTestCatalogForUserForReporting(String userName, Integer productId) throws CTBBusinessException
+    {
+    	//Attempt to improve performance
+        //validator.validate(userName, null, "testAdmin.getTestProductsForUser");
+        try {
+            
+        	String[] catalogNames = product.getTestCatalogForUserForReporting(userName, productId);
+            
+            return catalogNames;
+        } catch (SQLException se) {
+            ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getTestCatalogForUserForReporting: " + se.getMessage());
+            pde.setStackTrace(se.getStackTrace());
+            throw pde;
+        }
+    }
     public String[] getAllContentAreaOptionsForUser(String userName) throws CTBBusinessException
     {
         //validator.validate(userName, null, "testAdmin.getTestProductsForUser");

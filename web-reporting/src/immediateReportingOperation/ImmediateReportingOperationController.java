@@ -383,6 +383,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
+		Integer productId = Integer.parseInt(getRequest().getParameter("productId"));
 		resp.setCharacterEncoding("UTF-8"); 
 		try {
 			if(this.userName == null ) {
@@ -391,7 +392,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			}
 			GridDropLists dropList = new GridDropLists();
 			dropList.setGradeOptions(getGradeOptions());
-			dropList.setTestCatalogOptions(getTestNameOptions());
+			//dropList.setTestCatalogOptions(getTestNameOptions());
+			dropList.setTestCatalogOptions(getTestNameOptionsForReporting(productId));
 			dropList.setContentAreaOptions(getContentAreaOptions());
 			dropList.setFormOptions(getFormOptions());
 			try{
@@ -1542,6 +1544,15 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		String[] testNameOptions = null;
 		testNameOptions = this.scheduleTest
 					.getTestCatalogForUserForScoring(this.userName);
+
+		return testNameOptions;
+
+	}
+	
+	private String[] getTestNameOptionsForReporting(Integer productId) throws Exception {
+		String[] testNameOptions = null;
+		testNameOptions = this.scheduleTest
+					.getTestCatalogForUserForReporting(this.userName, productId);
 
 		return testNameOptions;
 

@@ -253,6 +253,10 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
             arrayMaxLength = 100000)
             String [] getTestCatalogForUserForScoring(String userName) throws SQLException;
     
+    @JdbcControl.SQL(statement = "select distinct cat.test_name as testCatalogName from product prod,  test_catalog cat,  org_node_test_catalog ontc,  user_role urole,  users, product parentprod  where parentprod.product_id = prod.product_id and parentprod.parent_product_id = {productId} and prod.activation_status = 'AC' and prod.product_id = cat.product_id  and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id  and ontc.activation_status = 'AC' and urole.org_node_id = ontc.org_node_id and urole.activation_status = 'AC' and users.user_id = urole.user_id  and users.user_name = {userName} order by cat.test_name",
+            arrayMaxLength = 100000)
+            String [] getTestCatalogForUserForReporting(String userName, Integer productId) throws SQLException;
+    
     static final long serialVersionUID = 1L;
 
     @JdbcControl.SQL(statement = "SELECT DISTINCT INITCAP( ISET.ITEM_SET_NAME) FROM USERS  USRS, USER_ROLE    UROLE, ORG_NODE  NODE, ORG_NODE_ANCESTOR   ONA, ORG_NODE_TEST_CATALOG ONTC, TEST_CATALOG   CATALOG, ITEM_SET_ANCESTOR     ISA, ITEM_SET              ISET WHERE ISET.ITEM_SET_TYPE = 'TD' AND NODE.ACTIVATION_STATUS ='AC' AND ISET.ACTIVATION_STATUS ='AC' AND CATALOG.ACTIVATION_STATUS ='AC' AND ONTC.ACTIVATION_STATUS ='AC' AND ISA.ITEM_SET_ID = ISET.ITEM_SET_ID AND CATALOG.ITEM_SET_ID = ISA.ANCESTOR_ITEM_SET_ID AND ONTC.TEST_CATALOG_ID = CATALOG.TEST_CATALOG_ID AND NODE.ORG_NODE_ID = ONTC.ORG_NODE_ID AND ONA.ORG_NODE_ID = ONTC.ORG_NODE_ID AND UROLE.ORG_NODE_ID = ONA.ANCESTOR_ORG_NODE_ID AND USRS.USER_ID = UROLE.USER_ID AND USRS.USER_NAME = {userName}",

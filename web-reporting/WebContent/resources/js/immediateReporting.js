@@ -461,6 +461,7 @@ function showPopup(stuCount){
 
 function populateDropDowns() {
 	var postDataObject = {};
+	postDataObject.productId = $('#productId').val();
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){	UIBlock();	},
@@ -707,7 +708,7 @@ function showHtmlReportPopupForAcademic(){
 	            $(".ui-dialog-titlebar-close").hide();
 	        }
 	    });
-	var toppos = (($(window).height() - 900) / 2) +10+'px';
+	var toppos = (($(window).height() - 601) / 2) +10+'px';
 	var leftpos = (($(window).width() - 1024) / 2) + 'px';
 	$("#immdRptScorePopup").parent().css("top", toppos);
 	$("#immdRptScorePopup").parent().css("left", leftpos);
