@@ -22,6 +22,7 @@ public class StudentAcademicPdfReportUtils extends StudentImmediateReportUtils i
 	private float gradeY;
 	private float testNameY;
 	private float scoreTableY;
+	private float totalCondition;
 
 	@Override
 	public void setup(OutputStream outputStream, StudentScoreReport stuReport, String testAdminStartDateString) {
@@ -57,6 +58,7 @@ public class StudentAcademicPdfReportUtils extends StudentImmediateReportUtils i
 	private void createScroreReportTable() throws Exception{
 		createRosterData();
 		addRosterScoreData();
+		addTotalScoreCondition();
 	}
 
 	private void createHeaderTable() throws DocumentException {
@@ -268,6 +270,12 @@ public class StudentAcademicPdfReportUtils extends StudentImmediateReportUtils i
                 LEFT_X,
                 scoreTableY,
                 SCORE_BORDER);
+		PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
+	}
+	
+	private void addTotalScoreCondition() throws DocumentException {
+		totalCondition = scoreTableY - PDFUtils.getInfoHeight(getGrade(), INFO_VALUE_WIDTH) - LINE_ROSTER_DATA_SPACING;
+		PDFTableVO table = PDFUtils.getLabelTable(ACADEMICTOTALSCORECONDITION, PAGE_WIDTH, LEFT_X, totalCondition);
 		PDFUtils.write(writer,table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
 	}
 	
