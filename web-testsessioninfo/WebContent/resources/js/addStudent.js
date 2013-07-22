@@ -339,78 +339,6 @@ function populateSelectStudentGrid() {
 					}		
 				}		
 			} 
-
-			//**[IAA]: STORY: Grade string naming and Filtering. Adjust grades: eg. 09->9
-			if (obj.studentNode != null && obj.studentNode.length > 0) {			
-					for(var i=0; i<obj.studentNode.length; i++) {
-						if (selectedLevel.substring(0,1)==="0")
-						{
-							switch (obj.studentNode[i].grade)
-							{
-								case "1":
-								obj.studentNode[i].grade = "01";
-								break;
-								case "2":
-								obj.studentNode[i].grade = "02";
-								break;
-								case "3":
-								obj.studentNode[i].grade = "03";
-								break;
-								case "4":
-								obj.studentNode[i].grade = "04";
-								break;
-								case "5":
-								obj.studentNode[i].grade = "05";
-								break;
-								case "6":
-								obj.studentNode[i].grade = "06";
-								break;
-								case "7":
-								obj.studentNode[i].grade = "07";
-								break;
-								case "8":
-								obj.studentNode[i].grade = "08";
-								break;
-								case "9":
-								obj.studentNode[i].grade = "09";
-								break;
-							}							
-						}
-						else
-						{
-							switch (obj.studentNode[i].grade)
-							{
-								case "01":
-								obj.studentNode[i].grade = "1";
-								break;
-								case "02":
-								obj.studentNode[i].grade = "2";
-								break;
-								case "03":
-								obj.studentNode[i].grade = "3";
-								break;
-								case "04":
-								obj.studentNode[i].grade = "4";
-								break;
-								case "05":
-								obj.studentNode[i].grade = "5";
-								break;
-								case "06":
-								obj.studentNode[i].grade = "6";
-								break;
-								case "07":
-								obj.studentNode[i].grade = "7";
-								break;
-								case "08":
-								obj.studentNode[i].grade = "8";
-								break;
-								case "09":
-								obj.studentNode[i].grade = "9";
-								break;
-							}
-						}
-					}		
-			}	
 			
 		   	accomodationMapForAll = obj.accomodationMap;
 		   	var nonLicenseProduct = isTutorialOrLocatorProduct();
@@ -816,7 +744,89 @@ function populateSelectStudentGrid() {
 			}
 	 });
 	 jQuery("#selectStudent").jqGrid('navGrid','#selectStudentPager',{edit:false,add:false,del:false,search:false,refresh:false});
-	 jQuery("#selectStudent").jqGrid('filterToolbar');
+	 jQuery("#selectStudent").jqGrid('filterToolbar'
+	 //** [IAA]: STORY: Grade string naming and Filtering. Adjust grades: eg. 09->9. Fixes defect#74703.
+	 ,{beforeSearch: function () {
+		 var filters = $.parseJSON(this.p.postData.filters);
+		 var rules,group;
+		 if (filters && typeof filters.rules !== 'undefined' && filters.rules.length>0)
+		 {
+		 	rules = filters.rules;
+		 	var grade_search_only = true;
+		 	var contains_grade_search = false;
+		 	for (var i=0;i<rules.length;i++)
+		 	{
+		 		var rule = rules[i];
+		 		//if (rule.field == "calculator" || rule.field == "hasColorFontAccommodations")
+		 		if (rule.field.toLowerCase() != "grade")
+		 		{
+		 			grade_search_only = false;
+		 		}
+		 		else
+		 		{
+		 			contains_grade_search = true;
+		 		}
+		 	}
+		 	if (grade_search_only)
+		 	{
+		 		var rule = rules[0];
+		 		//** For grade filter, make operation OR and add both grades with and without 0.
+		 		if (rule.data == "1") {filters.rules.push({data: "01",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "01") {filters.rules.push({data: "1",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "2") {filters.rules.push({data: "02",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "02") {filters.rules.push({data: "2",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "3") {filters.rules.push({data: "03",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "03") {filters.rules.push({data: "3",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "4") {filters.rules.push({data: "04",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "04") {filters.rules.push({data: "4",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "5") {filters.rules.push({data: "05",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "05") {filters.rules.push({data: "5",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "6") {filters.rules.push({data: "06",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "06") {filters.rules.push({data: "6",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "7") {filters.rules.push({data: "07",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "07") {filters.rules.push({data: "7",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "8") {filters.rules.push({data: "08",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "08") {filters.rules.push({data: "8",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "9") {filters.rules.push({data: "09",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 		else if (rule.data == "09") {filters.rules.push({data: "9",op: "eq",field: rule.field});filters.groupOp = 'OR';}
+		 	}
+		 	else
+		 	{
+		 		for (var i=0;i<rules.length;i++)
+		 		{
+			 		var rule = rules[i];
+			 		if (rule.field.toLowerCase() == "grade")
+			 		{
+						if (typeof filters.groups === 'undefined' ) filters.groups = [];
+				 		group = { groupOp: 'OR', groups: [],rules: [] };
+				 		filters.groups.push(group);
+				 		group.rules.push({data: rule.data,op: "eq",field: rule.field});
+				 		if (rule.data == "1") group.rules.push({data: "01",op: "eq",field: rule.field});
+				 		else if (rule.data == "01") group.rules.push({data: "1",op: "eq",field: rule.field});
+				 		else if (rule.data == "2") group.rules.push({data: "02",op: "eq",field: rule.field});
+				 		else if (rule.data == "02") group.rules.push({data: "2",op: "eq",field: rule.field});
+				 		else if (rule.data == "3") group.rules.push({data: "03",op: "eq",field: rule.field});
+				 		else if (rule.data == "03") group.rules.push({data: "3",op: "eq",field: rule.field});
+				 		else if (rule.data == "4") group.rules.push({data: "04",op: "eq",field: rule.field});
+				 		else if (rule.data == "04") group.rules.push({data: "4",op: "eq",field: rule.field});
+				 		else if (rule.data == "5") group.rules.push({data: "05",op: "eq",field: rule.field});
+				 		else if (rule.data == "05") group.rules.push({data: "5",op: "eq",field: rule.field});
+				 		else if (rule.data == "6") group.rules.push({data: "06",op: "eq",field: rule.field});
+				 		else if (rule.data == "06") group.rules.push({data: "6",op: "eq",field: rule.field});
+				 		else if (rule.data == "7") group.rules.push({data: "07",op: "eq",field: rule.field});
+				 		else if (rule.data == "07") group.rules.push({data: "7",op: "eq",field: rule.field});
+				 		else if (rule.data == "8") group.rules.push({data: "08",op: "eq",field: rule.field});
+				 		else if (rule.data == "08") group.rules.push({data: "8",op: "eq",field: rule.field});
+				 		else if (rule.data == "9") group.rules.push({data: "09",op: "eq",field: rule.field});
+				 		else if (rule.data == "09") group.rules.push({data: "9",op: "eq",field: rule.field});
+				 		filters.rules.splice(i,1);
+				 		i--;//to skip i++	 	
+			 		}
+			 	}//for
+		 	}
+		 	this.p.postData.filters = JSON.stringify(filters);
+		 }
+	 }});
 	 $("thead:first tr.ui-jqgrid-labels", $("#selectStudent")[0].grid.hDiv).height('28px'); // Changed for increasing height of header of grid
 	 
 	 //Changes to block off grade testing
