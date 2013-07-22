@@ -12,6 +12,7 @@
 	String resultText = (String)request.getAttribute("resultText");
 	String decryptedUserName = (String)request.getAttribute("decryptedUserName");
 	String decryptedUserId = (String)request.getAttribute("decryptedUserId");
+	String decryptedTimeStamp = (String)request.getAttribute("decryptedTimeStamp");
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -71,25 +72,35 @@
 
   	<div class="feature" style="background-color: #ffffff; border:1px; padding: 5px;">
       	
-<table width="80%" cellpadding="5" cellspacing="5">
-<tr>
-	<td colspan="3">
-		<li> authenticateUser and getUserTopNode are prerequisite for all calls.</li>
-		<li> getSessionsForNode is prerequisite for submitStudentResponses.</li>	
-	</td>
-</tr>
-<tr>
-	<td colspan="3">
-		Userkey:&nbsp;<input type="textbox" id="userKey" name="userKey" value="<%=userKey%>" size=80 />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		Decrypted UserName:&nbsp;&nbsp;<label><%=decryptedUserName%></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		Decrypted UserId:&nbsp;&nbsp;<label><%=decryptedUserId%></label>
-	</td>
-</tr>
+<table width="100%" cellpadding="5" cellspacing="5">
 <tr>
 	<td width=200>Username:&nbsp;<input type="textbox" id="userName" name="userName" value="<%=userName%>" /></td>
 	<td width=200>Password:<input type="textbox" id="password" name="password" value="<%=password%>" /></td>
 	<td>
 		<input type="button" value="authenticateUser" onclick="submitStatus('authenticateUser');" />&nbsp;&nbsp;
+	</td>
+</tr>
+<tr>
+	<td colspan="3"><hr size="1"></td>
+</tr>
+<tr>
+	<td colspan="3">
+		Userkey:&nbsp;<input type="textbox" id="userKey" name="userKey" value="<%=userKey%>" size=110 />
+	</td>
+</tr>
+<tr>
+	<td colspan="3">
+		Decrypted UserName:&nbsp;&nbsp;<label><%=decryptedUserName%></label>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;
+		Decrypted UserId:&nbsp;&nbsp;<label><%=decryptedUserId%></label>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;
+		Decrypted TimeStamp:&nbsp;&nbsp;<label><%=decryptedTimeStamp%></label>
+	</td>
+</tr>
+<tr>
+	<td colspan="3"><hr size="1"></td>
+</tr>
+<tr>
+	<td width=200>&nbsp;</td>
+	<td colspan="2">
 		<input type="button" value="getUserTopNode" onclick="submitStatus('getUserTopNode');" />&nbsp;&nbsp;
 	</td>
 </tr>

@@ -15,7 +15,11 @@ import org.apache.beehive.controls.api.bean.Control;
  
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.SortParams.SortParam;
@@ -51,7 +55,7 @@ import dto.ContentArea;
 import dto.TestStructure;
 import dto.StudentResponse;
 
-import utils.DExCrypto;
+import utils.CryptoUtils;
 import utils.JsonUtils;
 import com.ctb.control.db.StudentItemSetStatus;
 import com.ctb.control.db.TestRoster;
@@ -94,8 +98,9 @@ public class ClickerWS implements Serializable {
 				String userPassword = user.getPassword();
 				String encodePassword = JsonUtils.encodePassword(password);
 				if (userPassword.equals(encodePassword)) {
-					String userKey = (userName + "@" + user.getUserId().toString());
-					userInfo = new UserInfo(user.getUserId(), user.getDisplayUserName(), encrypt(userKey));
+					String timeStamp = (new Date()).toString();
+					String userKey = (userName + "@" + user.getUserId().toString() + "@" + timeStamp);
+					userInfo = new UserInfo(user.getUserId(), user.getDisplayUserName(), CryptoUtils.encryptUserkey(userKey));
 				}
 				else {
 					userInfo = new UserInfo("Invalid Password");
@@ -121,7 +126,14 @@ public class ClickerWS implements Serializable {
 	public OrgNodeList getUserTopNodes(String userKey) 
 	{
 		OrgNodeList userTopNodes = null;
-		String userName = decrypt(userKey, 0);
+		
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			userTopNodes = new OrgNodeList(status);														
+			return userTopNodes;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 		
 		try {
 			NodeData nodeData = this.testSessionStatus.getTopNodesForUser(userName, null, null, null);
@@ -165,7 +177,14 @@ public class ClickerWS implements Serializable {
 	public OrgNodeList getChildNodes(String userKey, String orgNodeId) 
 	{
 		OrgNodeList childNodes = null;
-		String userName = decrypt(userKey, 0);
+		
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			childNodes = new OrgNodeList(status);														
+			return childNodes;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 		orgNodeId = JsonUtils.safeGuardInteger(orgNodeId);
 
 		try
@@ -213,7 +232,14 @@ public class ClickerWS implements Serializable {
 	public AssignmentList getSessionsForNode(String userKey, String orgNodeId) 
 	{
 		AssignmentList assignmentList = null;
-		String userName = decrypt(userKey, 0);
+		
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			assignmentList = new AssignmentList(status);														
+			return assignmentList;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 		orgNodeId = JsonUtils.safeGuardInteger(orgNodeId);
 		
         try
@@ -263,7 +289,14 @@ public class ClickerWS implements Serializable {
 	public RosterList getRostersInSession(String userKey, String sessionId) 
 	{
 		RosterList rosterList = null;
-		String userName = decrypt(userKey, 0);
+		
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			rosterList = new RosterList(status);														
+			return rosterList;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 		sessionId = JsonUtils.safeGuardInteger(sessionId);
 		
         try
@@ -328,8 +361,15 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public TestStructure getTestStructure(String userKey, String sessionId) 
 	{
-		TestStructure testStructure = new TestStructure();
-		String userName = decrypt(userKey, 0);
+		TestStructure testStructure = null;
+		
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			testStructure = new TestStructure(status);														
+			return testStructure;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 		sessionId = JsonUtils.safeGuardInteger(sessionId);
 		
     	try {
@@ -411,8 +451,12 @@ public class ClickerWS implements Serializable {
 	@WebMethod
 	public String submitStudentResponses(String userKey, StudentResponse studentResponses) 
 	{
-		String status = "OK";
-		String userName = decrypt(userKey, 0);
+		String status = CryptoUtils.validateRequest(userKey);
+		if (! "OK".equals(status)) {
+			return status;
+		}
+		
+		String userName = CryptoUtils.decryptUserKey(userKey, 0);
 
 		Assignment assignment = studentResponses.getAssignment();
 		Roster[] rosters = assignment.getRosters();
@@ -434,38 +478,5 @@ public class ClickerWS implements Serializable {
 	}
 
 	
-	/**
-	* encrypt value using Cipher algorithm 
-	*/
-	private String encrypt(String value)
-	{
-		String result = value;
-	    try {
-	    	result = DExCrypto.encryptUsingPassPhrase(value);
-		} catch (Exception e) {
-			result = value;
-		}
-		return result;
-	}
-
-	
-	/**
-	* decrypt value using Cipher algorithm 
-	*/
-	private String decrypt(String value, int index)
-	{
-		String decrypt = "";
-	    try {
-	    	decrypt = DExCrypto.decryptUsingPassPhrase(value);
-			StringTokenizer strToken = new StringTokenizer(decrypt, "@");
-			decrypt = (String)strToken.nextElement();
-			if (index == 1) { 
-				decrypt = (String)strToken.nextElement();
-			}
-		} catch (Exception e) {
-			decrypt = "";
-		}
-		return decrypt;
-	}
 	
 }

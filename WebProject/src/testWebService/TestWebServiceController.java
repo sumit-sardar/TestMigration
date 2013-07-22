@@ -1,9 +1,12 @@
 package testWebService;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpSession;
 
@@ -57,7 +60,7 @@ import dto.TestStructure;
 import dto.UserInfo;
 
 import com.ctb.util.RosterUtil;
-import utils.DExCrypto;
+import utils.CryptoUtils;
 import com.ctb.control.testAdmin.ScheduleTest;
 
 @Jpf.Controller()
@@ -127,12 +130,12 @@ public class TestWebServiceController extends PageFlowController
     	String userKey = safeGuardString((String)this.getRequest().getParameter("userKey"));
     	String decryptedUserName = safeGuardString((String)this.getRequest().getParameter("decryptedUserName"));
     	String decryptedUserId = safeGuardString((String)this.getRequest().getParameter("decryptedUserId"));
+    	String decryptedTimeStamp = safeGuardString((String)this.getRequest().getParameter("decryptedTimeStamp"));
 
+    	/*
     	if ((status.length() > 0) && (! "authenticateUser".equals(status))) {
 	    	if (userKey.length() > 0) {
-	    		decryptedUserName = decrypt(userKey, 0);
-	    		decryptedUserId = decrypt(userKey, 1);
-	    		if ((decryptedUserName.length() == 0) || (decryptedUserId.length() == 0)) {
+	    		if (! CryptoUtils.validateRequest(userKey)) {
 	    			status = "";
 	    			resultText = "Invalid Userkey.";   	
 	    		}
@@ -144,6 +147,7 @@ public class TestWebServiceController extends PageFlowController
 	    		}
 	    	}
     	}
+    	*/
     	
     	if (status.length() > 0) {
     		
@@ -156,8 +160,6 @@ public class TestWebServiceController extends PageFlowController
 	    										"<br/>" + "userId: " + userInfo.getUserId().toString() +
 	    										"<br/>" + "userKey: " + userInfo.getUserKey();
 	    			userKey = userInfo.getUserKey();
-	    			decryptedUserName = decrypt(userKey, 0);
-	    			decryptedUserId = decrypt(userKey, 1);	    			
 	    		}
 	    		else {
 	    			resultText = "authenticateUser: FAILED" + "<br/>" + userInfo.getStatus();
@@ -325,7 +327,6 @@ public class TestWebServiceController extends PageFlowController
     		    Assignment assignment = new Assignment();
     		    Integer testAdminId = newInteger(sessionId);
     		    
-    			decryptedUserName = decrypt(userKey, 0);
     		    try {
 					TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(decryptedUserName, testAdminId);
 					TestSession[] testSessions = tsData.getTestSessions();
@@ -392,8 +393,14 @@ public class TestWebServiceController extends PageFlowController
     	this.getRequest().setAttribute("password", password);
     	this.getRequest().setAttribute("orgNodeId", orgNodeId);
     	this.getRequest().setAttribute("sessionId", sessionId);
+    	
+		decryptedUserName = CryptoUtils.decryptUserKey(userKey, 0);
+		decryptedUserId = CryptoUtils.decryptUserKey(userKey, 1);	 
+		decryptedTimeStamp = CryptoUtils.decryptUserKey(userKey, 2);	 
+    	
     	this.getRequest().setAttribute("decryptedUserName", decryptedUserName);
     	this.getRequest().setAttribute("decryptedUserId", decryptedUserId);
+    	this.getRequest().setAttribute("decryptedTimeStamp", decryptedTimeStamp);
     	
         return new Forward("success");
     }
@@ -426,7 +433,6 @@ public class TestWebServiceController extends PageFlowController
 	    		StudentStatus student = students[i];
 	    		String status = student.getRosterStatus(); 		
 	    		String text = "studentId=" + student.getStudentId() + " - status= " + status;
-	    		System.out.println(text);
 	    		infoText += ("<br/>" + text);
 	    	}
 	    }    	
@@ -988,37 +994,5 @@ public class TestWebServiceController extends PageFlowController
     	return responses;
     }
     
-	/**
-	* encrypt value using Cipher algorithm 
-	*/
-	private String encrypt(String value)
-	{
-		String result = value;
-	    try {
-	    	result = DExCrypto.encryptUsingPassPhrase(value);
-		} catch (Exception e) {
-			result = value;
-		}
-		return result;
-	}
-
-	/**
-	* decrypt value using Cipher algorithm 
-	*/
-	private String decrypt(String value, int index)
-	{
-		String decrypt = "";
-	    try {
-	    	decrypt = DExCrypto.decryptUsingPassPhrase(value);
-			StringTokenizer strToken = new StringTokenizer(decrypt, "@");
-			decrypt = (String)strToken.nextElement();
-			if (index == 1) { 
-				decrypt = (String)strToken.nextElement();
-			}
-		} catch (Exception e) {
-			decrypt = "";
-		}
-		return decrypt;
-	}
-    
+	
  }

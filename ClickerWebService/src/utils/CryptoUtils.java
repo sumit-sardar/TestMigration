@@ -9,6 +9,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -21,28 +26,7 @@ import javax.crypto.spec.PBEParameterSpec;
 
 import sun.misc.BASE64Encoder;
 
-
- 
-
-/**
- * -----------------------------------------------------------------------------
- * The following example implements a class for encrypting and decrypting
- * strings using several Cipher algorithms. The class is created with a key and
- * can be used repeatedly to encrypt and decrypt strings using that key.
- * Some of the more popular algorithms are:
- *      Blowfish
- *      DES
- *      DESede
- *      PBEWithMD5AndDES
- *      PBEWithMD5AndTripleDES
- *      TripleDES
- * 
- * @version 1.0
- * @author  Tata Consultancy Services Ltd.
- * -----------------------------------------------------------------------------
- */
-
-public class DExCrypto {
+public class CryptoUtils {
 	/**
 	 * Cipher object used for encrypting the string
 	 */
@@ -61,7 +45,7 @@ public class DExCrypto {
      * @param algorithm  Which algorithm to use for creating the encrypter and
      *                   decrypter instances.
      */
-    DExCrypto(SecretKey key, String algorithm) {
+    CryptoUtils(SecretKey key, String algorithm) {
         try {
             ecipher = Cipher.getInstance(algorithm);
             dcipher = Cipher.getInstance(algorithm);
@@ -87,7 +71,7 @@ public class DExCrypto {
      *                   decrypter instances.
      * @throws Exception , Throws Base Exception if business logic failed.
      */
-    DExCrypto(String passPhrase) throws Exception {
+    CryptoUtils(String passPhrase) throws Exception {
         // 8-bytes Salt
         byte[] salt = {
             (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
@@ -177,7 +161,7 @@ public class DExCrypto {
      */
     public static String encryptUsingPassPhrase(String secretString) throws Exception {
     	  String passPhrase   = "CTBGROWDUT123&&";
-    	  DExCrypto dexEncrypter = new DExCrypto(passPhrase);
+    	  CryptoUtils dexEncrypter = new CryptoUtils(passPhrase);
     	  return dexEncrypter.encrypt(secretString);
     }
 		/**
@@ -188,7 +172,7 @@ public class DExCrypto {
 		 */    
     public static String decryptUsingPassPhrase(String secretString) throws Exception {
     	  String passPhrase   = "CTBGROWDUT123&&";
-    	  DExCrypto dexEncrypter = new DExCrypto(passPhrase);
+    	  CryptoUtils dexEncrypter = new CryptoUtils(passPhrase);
     	  return dexEncrypter.decrypt(secretString);
     }    
 		/**
@@ -222,6 +206,78 @@ public class DExCrypto {
       		  return null;
         }
     }    
+    
+	/**
+	* encryptUserkey 
+	*/
+    public static String encryptUserkey(String value)
+	{
+		String result = value;
+	    try {
+	    	result = encryptUsingPassPhrase(value);
+		} catch (Exception e) {
+			result = value;
+		}
+		return result;
+	}
+
+	
+	/**
+	* decryptUserKey 
+	*/
+    public static String decryptUserKey(String value, int index)
+	{
+		String decrypt = "";
+	    try {
+	    	decrypt = decryptUsingPassPhrase(value);
+			StringTokenizer strToken = new StringTokenizer(decrypt, "@");
+			decrypt = (String)strToken.nextElement();
+			if (index == 1) { 
+				decrypt = (String)strToken.nextElement();
+			}
+			if (index == 2) { 
+				decrypt = (String)strToken.nextElement();
+				decrypt = (String)strToken.nextElement();
+			}
+		} catch (Exception e) {
+			decrypt = "";
+		}
+		return decrypt;
+	}
+
+	/**
+	* validateRequest 
+	*/
+    public static String validateRequest(String userKey)
+	{
+		String decryptedUserName = decryptUserKey(userKey, 0);
+		if (decryptedUserName.length() == 0) {
+			return "Invalid User Name";
+		}
+		
+		String decryptedUserId = decryptUserKey(userKey, 1);
+		if (decryptedUserId.length() == 0) {
+			return "Invalid User ID";
+		}
+
+		String decryptedTimeStamp = decryptUserKey(userKey, 2);
+		try {
+			Date dateStamp = new Date(decryptedTimeStamp);
+			Calendar cal = new GregorianCalendar();
+			cal.setTimeZone(TimeZone.getDefault());
+			cal.setTime(new Date());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Date yesterday = cal.getTime();
+			if (dateStamp.before(yesterday)) {
+				return "Invalid Timestamp";
+			}
+		}
+		catch (Exception e) {
+			return "Invalid Timestamp";
+		}
+		
+		return "OK";
+	}
     
       
 }
