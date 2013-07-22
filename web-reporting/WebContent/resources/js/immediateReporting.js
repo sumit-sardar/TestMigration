@@ -273,7 +273,6 @@ function populateGrid() {
 }
 
 function populateGridAcademic() {
-	scrollPos = 0;
 	var studentIdTitle = $("#studentIdLabelName").val();
 	var postDataObject = {};
  	postDataObject.q = 2;
@@ -330,8 +329,7 @@ function populateGridAcademic() {
 		onSortCol : function(index, columnIndex, sortOrder) {
 				if(index != "secondImmdRptGrid_userName")
 					scrollPos = $('#secondImmdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();
-				else
-					scrollPos = 0;	 
+					 
 				enableDisableImmediateReportButton(false);
 		},
 		onSelectRow: function (rowId) {		
@@ -373,8 +371,12 @@ function populateGridAcademic() {
 	 });  
 
     jQuery("#secondImmdRptGrid").jqGrid('filterToolbar',{
+		beforeSearch: function(){
+    		scrollPos = $('#secondImmdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft();			
+    	},
     	afterSearch : function(){
     		immdRptGridSearhForAcademic();
+			$('#secondImmdRptGrid').closest(".ui-jqgrid-bdiv").scrollLeft(scrollPos);
     	}});  
     
   	jQuery("#secondImmdRptGrid").navGrid('#immdRptGridPager',{

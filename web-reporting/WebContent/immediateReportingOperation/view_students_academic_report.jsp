@@ -94,10 +94,10 @@
 	    <%-- For button --%>
 		
 		<div id="generate_csv_pop" style="float:left; padding-left: 25px;">
-				<a href="#" id="generateCSVButtonPop" onclick="" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.excel.button.value" /></a>
+				<a href="#" id="generateCSVButtonPop" onclick="javascript:downloadAcademicLanguageCVSReport(this);" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.excel.button.value" /></a>
 		</div>
 		<div id="generate_pdf_pop" style="float:left; padding-left: 5px;">
-			<a href="#" id="generatePDFButtonPop" onclick="" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
+			<a href="#" id="generatePDFButtonPop" onclick="javascript:downloadAcademicLanguagePDFReport(this);" class="rounded {transparent} button" style="color: #0000FF !important;"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 		</div>
 		<BR/>
 		<BR/>

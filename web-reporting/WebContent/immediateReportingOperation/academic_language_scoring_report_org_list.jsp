@@ -91,10 +91,10 @@
 						</table>				
 					</div>
 					<div id="generate_pdf" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
-						<a href="#" id="generatePDFButton" onclick="" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
+						<a href="#" id="generatePDFButton" onclick="javascript:downloadAcademicLanguagePDFReport(this);" class="rounded {transparent} button"><lb:label key="immediate.report.generate.pdf.button.value" /></a>
 					</div>
 					<div id="generate_csv" style="float:right;visibility:hidden;  padding-right: 5px; padding-top: 5px;">
-						<a href="#" id="generateCSVButton" onclick="" class="rounded {transparent} button"><lb:label key="immediate.report.generate.excel.button.value" /></a>
+						<a href="#" id="generateCSVButton" onclick="javascript:downloadAcademicLanguageCVSReport(this);" class="rounded {transparent} button"><lb:label key="immediate.report.generate.excel.button.value" /></a>
 					</div>
 					<div id="view_report" style="float:right;visibility:hidden; padding-right: 5px; padding-top: 5px;">
 						<a href="#" id="viewReportButton" onclick="javascript:viewHtmlReportAcademic(this); return false;" class="rounded {transparent} button"><lb:label key="immediate.report.view.report.button.value" /></a>
