@@ -314,7 +314,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		try {
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+			Integer productId = Integer.valueOf(this.getRequest().getParameter("productId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId, productId);
 			stuReport.setTestAdminStartDateString(  DateUtils.formatDateToDateString(stuReport.getTestAdminStartDate(), DateUtils.DATE_FORMAT_DISPLAY));
 			try {
 				Gson gson = new Gson();
@@ -425,7 +426,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		try{
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+			Integer productId = Integer.valueOf(this.getRequest().getParameter("productId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId, productId);
 			StudentImmediatePdfReportUtils utils = new StudentImmediatePdfReportUtils();
 			String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
 			getResponse().setContentType("application/pdf");
@@ -537,7 +539,8 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		try{
 			Integer testRosterId = Integer.valueOf(this.getRequest().getParameter("rosterId"));
 			Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
-			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId);
+			Integer productId = Integer.valueOf(this.getRequest().getParameter("productId"));
+			StudentScoreReport stuReport = studentManagement.getStudentReport(testRosterId, testAdminId, productId);
 			StudentImmediateCSVReportUtils utilsCSV = new StudentImmediateCSVReportUtils();
 			String fileName = stuReport.getStudentFirstName()+"_"+stuReport.getStudentLastName()+"_"+testRosterId;
 			getResponse().setContentType("text/csv");

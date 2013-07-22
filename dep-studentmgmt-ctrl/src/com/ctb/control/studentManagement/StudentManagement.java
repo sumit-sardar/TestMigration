@@ -541,7 +541,7 @@ public interface StudentManagement
 
 	java.lang.Integer getCompletedStudentCountForOrgNode(String userName,	Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
 
-	com.ctb.bean.studentManagement.StudentScoreReport getStudentReport(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+	com.ctb.bean.studentManagement.StudentScoreReport getStudentReport(java.lang.Integer testRosterId, java.lang.Integer testAdminId, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
 	
 	com.ctb.bean.studentManagement.StudentScoreReport getStudentReportForAcademic(java.lang.Integer testRosterId, java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 

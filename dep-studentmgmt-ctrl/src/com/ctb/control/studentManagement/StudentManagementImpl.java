@@ -3263,7 +3263,7 @@ public class StudentManagementImpl implements StudentManagement
 
 	}
 
-	public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId) throws CTBBusinessException {
+	public StudentScoreReport getStudentReport(Integer testRosterId, Integer testAdminId, Integer parentProductId) throws CTBBusinessException {
 
 		try {
 			StudentScoreReport stuScrReport = new StudentScoreReport();
@@ -3276,8 +3276,15 @@ public class StudentManagementImpl implements StudentManagement
 			contentAreas = stuScrReport.getContentAreaNameString();
 			stuScoreData = immediateReportingIrs.getScoreDataForReport(stuScrReport.getStudentId(), testAdminId);
 			stuScoreDataComp = immediateReportingIrs.getScoreDataForReportComposite(stuScrReport.getStudentId(), testAdminId);
-			stuFinalScoreData = new StudentReportIrsScore[7];
-			setContentAreaValues(stuFinalScoreData, productId);
+			if(parentProductId == 7000){
+				stuFinalScoreData = new StudentReportIrsScore[7];
+				setContentAreaValues(stuFinalScoreData, productId);
+			}
+			else if (parentProductId == 7500){
+				stuFinalScoreData = new StudentReportIrsScore[9];
+				setContentAreaValuesForLL2ND(stuFinalScoreData, productId);			
+			}
+			
 			if(stuScoreData != null && contentAreas != null) {
 				for(int i = 0; i < stuScoreData.length; i++) {
 					if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Listening")) {
@@ -3292,11 +3299,19 @@ public class StudentManagementImpl implements StudentManagement
 						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 4, contentAreas);
 					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
 						setFinalScoreValues(stuFinalScoreData, stuScoreData[i], 5, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Productive")) {
+						setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreData[i], 6, contentAreas);
+					} else if(stuScoreData[i].getContentAreaName().equalsIgnoreCase("Literacy")) {
+						setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreData[i], 7, contentAreas);
 					}
 				}
 			}
-			if(stuScoreDataComp != null)
-				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
+			if(stuScoreDataComp != null){
+				if(parentProductId == 7000)
+					setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, contentAreas);
+				else if (parentProductId == 7500)
+					setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreDataComp, 8, contentAreas);
+			}				
 
 			stuScrReport.setStudentReportIrsScore(stuFinalScoreData);
 
@@ -3438,6 +3453,10 @@ public class StudentManagementImpl implements StudentManagement
 						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 4, reportData.getContentAreaNameString());
 					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
 						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 5, reportData.getContentAreaNameString());
+					} else if (studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Productive")){
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 6, reportData.getContentAreaNameString());
+					}else if (studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Literacy")){
+						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 7, reportData.getContentAreaNameString());
 					}
 				}
 			}
@@ -3501,11 +3520,59 @@ public class StudentManagementImpl implements StudentManagement
 			stuFinalScoreData[6].setContentAreaName("Overall");
 		}
 	}
+	
+	private void setContentAreaValuesForLL2ND(
+			StudentReportIrsScore[] stuFinalScoreData, Integer productId) {
+		for (int i = 0; i < 9; i++) {
+			stuFinalScoreData[i] = new StudentReportIrsScore();
+		}
+		if (productId == 7003) {
+			stuFinalScoreData[0].setContentAreaName("Escuchando");
+			stuFinalScoreData[1].setContentAreaName("Hablando");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Lectura");
+			stuFinalScoreData[4].setContentAreaName("Escritura");
+			stuFinalScoreData[5].setContentAreaName("Comprensión");
+			stuFinalScoreData[6].setContentAreaName("Productive");
+			stuFinalScoreData[7].setContentAreaName("Literacy");
+			stuFinalScoreData[8].setContentAreaName("Overall");
+		} else {
+			stuFinalScoreData[0].setContentAreaName("Listening");
+			stuFinalScoreData[1].setContentAreaName("Speaking");
+			stuFinalScoreData[2].setContentAreaName("Oral");
+			stuFinalScoreData[3].setContentAreaName("Reading");
+			stuFinalScoreData[4].setContentAreaName("Writing");
+			stuFinalScoreData[5].setContentAreaName("Comprehension");
+			stuFinalScoreData[6].setContentAreaName("Productive");
+			stuFinalScoreData[7].setContentAreaName("Literacy");
+			stuFinalScoreData[8].setContentAreaName("Overall");
+		}
+	}
 
+	
 	private void setFinalScoreValues(StudentReportIrsScore[] stuFinalScoreData,
 			StudentReportIrsScore stuScoreDataTemp,
 			Integer stuFinalScoreDataValue, String contentAreas) {
 		if (checkAvailability(stuFinalScoreDataValue, contentAreas)) {
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setRawScore(stuScoreDataTemp.getRawScore());
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setScaleScore(stuScoreDataTemp.getScaleScore());
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setProficiencyLevel(stuScoreDataTemp.getProficiencyLevel());
+		} else {
+			stuFinalScoreData[stuFinalScoreDataValue].setRawScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue].setScaleScore("N/A");
+			stuFinalScoreData[stuFinalScoreDataValue]
+					.setProficiencyLevel("N/A");
+		}
+
+	}
+	
+	private void setFinalScoreValuesForLL2ND(StudentReportIrsScore[] stuFinalScoreData,
+			StudentReportIrsScore stuScoreDataTemp,
+			Integer stuFinalScoreDataValue, String contentAreas) {
+		if (checkAvailabilityForLL2ND(stuFinalScoreDataValue, contentAreas)) {
 			stuFinalScoreData[stuFinalScoreDataValue]
 					.setRawScore(stuScoreDataTemp.getRawScore());
 			stuFinalScoreData[stuFinalScoreDataValue]
@@ -3550,8 +3617,63 @@ public class StudentManagementImpl implements StudentManagement
 						.contains("Lectura"))
 				&& (contentAreas.contains("Listening") || contentAreas
 						.contains("Escuchando")))
-			return true;
+			return true;		
 		if (stuFinalScoreDataValue == 6
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando"))
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando"))
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura"))
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		return false;
+	}
+	
+	private boolean checkAvailabilityForLL2ND(Integer stuFinalScoreDataValue,
+			String contentAreas) {
+		if (stuFinalScoreDataValue == 0
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando")))
+			return true;
+		if (stuFinalScoreDataValue == 1
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando")))
+			return true;
+		if (stuFinalScoreDataValue == 2
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando"))
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando")))
+			return true;
+		if (stuFinalScoreDataValue == 3
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura")))
+			return true;
+		if (stuFinalScoreDataValue == 4
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		if (stuFinalScoreDataValue == 5
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura"))
+				&& (contentAreas.contains("Listening") || contentAreas
+						.contains("Escuchando")))
+			return true;		
+		if (stuFinalScoreDataValue == 6
+				&& (contentAreas.contains("Speaking") || contentAreas
+						.contains("Hablando"))
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		if (stuFinalScoreDataValue == 7
+				&& (contentAreas.contains("Reading") || contentAreas
+						.contains("Lectura"))
+				&& (contentAreas.contains("Writing") || contentAreas
+						.contains("Escritura")))
+			return true;
+		if (stuFinalScoreDataValue == 8
 				&& (contentAreas.contains("Listening") || contentAreas
 						.contains("Escuchando"))
 				&& (contentAreas.contains("Speaking") || contentAreas

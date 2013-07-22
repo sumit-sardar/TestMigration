@@ -664,15 +664,10 @@ function trapEnterKey(e){
 
 function viewHtmlReport(element){
 	if (element!=null && isButtonDisabled(element)) 
-		return true;
-	if($('#productId').val() == 7000){	
-		resetViewReportPopupData();
-		$("#displayMessageMain").hide();
-		getAndPopulateStudentScoreDetails();
-	}
-	else if($('#productId').val() == 7500){
-		return true;
-	}
+		return true;	
+	resetViewReportPopupData();
+	$("#displayMessageMain").hide();
+	getAndPopulateStudentScoreDetails();
 }
 function viewHtmlReportAcademic(element){
 	if (element!=null && isButtonDisabled(element)) 
@@ -722,6 +717,7 @@ function getAndPopulateStudentScoreDetails(){
 	var postDataObject = {};
 	postDataObject.rosterId   = immdRptSelectedRosterId;
 	postDataObject.testAdminId= immdRptSelectedTestAdminId;
+	postDataObject.productId = $('#productId').val();
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){	UIBlock();	},
@@ -852,7 +848,7 @@ function populateReportTableForAcademicScore(data){
  
  function populateReportTableRow(rowdata) {
     var tr = '<tr ' ;
-    if(rowdata.contentAreaName != undefined && (rowdata.contentAreaName =='Comprehension'  || rowdata.contentAreaName =='Comprensión' || rowdata.contentAreaName =='Oral' || rowdata.contentAreaName=='Overall')){
+    if(rowdata.contentAreaName != undefined && (rowdata.contentAreaName =='Comprehension'  || rowdata.contentAreaName =='Comprensión' || rowdata.contentAreaName =='Oral' || rowdata.contentAreaName=='Overall' || rowdata.contentAreaName=='Productive') ||rowdata.contentAreaName=='Literacy'){
     	tr += ' bgcolor="#C3D599" >';
     } else { tr += ' >'; }
     tr +='<td align="left" class="transparent" style="border-style: solid !important; border-width: thin !important; ">'+ rowdata.contentAreaName + '</td>';
