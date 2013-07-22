@@ -3,7 +3,7 @@ package dto;
 /**
  * Populates userId, userName, userKey if authenticating successfully otherwise set to null
  * status stores error message otherwise set to 'OK'
- * userKey = userName + "@" + userId (encrypted) 
+ * userKey = userName + "@" + userId + "@" + timeStamp (encrypted) 
  * @author Tai_Truong
  */
 public class UserInfo implements java.io.Serializable {
