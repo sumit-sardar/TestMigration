@@ -4237,11 +4237,11 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    public String[] getAllFormOptionsForUser(String userName) throws CTBBusinessException
+    public String[] getAllFormOptionsForUser(String userName, Integer productId) throws CTBBusinessException
     {
         try {
             
-        	String[] formNames = product.getAllFormOptionsForUser(userName);
+        	String[] formNames = product.getAllFormOptionsForUser(userName, productId);
             
             return formNames;
         } catch (SQLException se) {

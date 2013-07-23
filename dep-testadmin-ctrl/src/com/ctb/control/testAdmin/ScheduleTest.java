@@ -620,7 +620,7 @@ public interface ScheduleTest
 
     java.lang.String[] getAllContentAreaOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
     
-    java.lang.String[] getAllFormOptionsForUser(String userName) throws com.ctb.exception.CTBBusinessException;
+    java.lang.String[] getAllFormOptionsForUser(String userName, Integer productId) throws com.ctb.exception.CTBBusinessException;
     
     com.ctb.bean.testAdmin.TestElementData getDeliverableUnitsForTestWithBlankAccessCode(java.lang.String userName, java.lang.Integer testItemSetId, java.lang.Boolean generateAccessCodes, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
     
