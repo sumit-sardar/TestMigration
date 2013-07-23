@@ -26,7 +26,7 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		writeStudentTestData();
 	}
 	
-	public void writeHeaderRow(PrintWriter outputStream) throws Exception {
+	public void writeHeaderRow(PrintWriter outputStream,Integer productId) throws Exception {
 		cvsOutStream = outputStream;
 		StringBuffer headerRow = new StringBuffer();
 		headerRow.append(STUDENT_NAME_LABEL_CSV);
@@ -81,12 +81,33 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		headerRow.append(",");
 		headerRow.append(COMPREHENSION_PROFICIENCY_LEVEL_CSV);
 		headerRow.append(",");
-		headerRow.append(OVERALL_RAW_SCORE_CSV);
-		headerRow.append(",");
-		headerRow.append(OVERALL_SCALE_SCORE_CSV);
-		headerRow.append(",");
-		headerRow.append(OVERALL_PROFICIENCY_LEVEL_CSV);
-		headerRow.append('\n');
+		if(productId == 7000){
+			headerRow.append(OVERALL_RAW_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(OVERALL_SCALE_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(OVERALL_PROFICIENCY_LEVEL_CSV);
+			headerRow.append('\n');
+		}else{
+			headerRow.append(PRODUCTIVE_RAW_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(PRODUCTIVE_SCALE_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(PRODUCTIVE_PROFICIENCY_LEVEL_CSV);
+			headerRow.append(",");
+			headerRow.append(LITERACY_RAW_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(LITERACY_SCALE_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(LITERACY_PROFICIENCY_LEVEL_CSV);
+			headerRow.append(",");
+			headerRow.append(OVERALL_RAW_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(OVERALL_SCALE_SCORE_CSV);
+			headerRow.append(",");
+			headerRow.append(OVERALL_PROFICIENCY_LEVEL_CSV);
+			headerRow.append('\n');
+		}
 		cvsOutStream.write(headerRow.toString());
 	}
 

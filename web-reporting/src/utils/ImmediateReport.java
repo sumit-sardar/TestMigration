@@ -61,6 +61,8 @@ public interface ImmediateReport {
 	public static final String WRITING_RAW_SCORE_CSV = "Writing / Raw Score";
 	public static final String COMPREHENSION_RAW_SCORE_CSV = "Comprehension / Raw Score";
 	public static final String OVERALL_RAW_SCORE_CSV = "Overall / Raw Score";
+	public static final String PRODUCTIVE_RAW_SCORE_CSV = "Productive / Raw Score";
+	public static final String LITERACY_RAW_SCORE_CSV	= "Literacy /Raw Score";
 	
 	public static final String LISTENING_SCALE_SCORE_CSV = "Listening / Scale Score";
 	public static final String SPEAKING_SCALE_SCORE_CSV = "Speaking / Scale Score";
@@ -69,6 +71,8 @@ public interface ImmediateReport {
 	public static final String WRITING_SCALE_SCORE_CSV = "Writing / Scale Score";
 	public static final String COMPREHENSION_SCALE_SCORE_CSV = "Comprehension / Scale Score";
 	public static final String OVERALL_SCALE_SCORE_CSV = "Overall / Scale Score";
+	public static final String PRODUCTIVE_SCALE_SCORE_CSV = "Productive / Scale Score";
+	public static final String LITERACY_SCALE_SCORE_CSV ="Literacy / Scale Score";
 	
 	public static final String LISTENING_PROFICIENCY_LEVEL_CSV = "Listening / PL";
 	public static final String SPEAKING_PROFICIENCY_LEVEL_CSV = "Speaking / PL";
@@ -77,6 +81,8 @@ public interface ImmediateReport {
 	public static final String WRITING_PROFICIENCY_LEVEL_CSV = "Writing / PL";
 	public static final String COMPREHENSION_PROFICIENCY_LEVEL_CSV = "Comprehension / PL";
 	public static final String OVERALL_PROFICIENCY_LEVEL_CSV = "Overall / PL";
+	public static final String PRODUCTIVE_PROFICIENCY_LEVEL_CSV = "Productive / PL";
+	public static final String LITERACY_PROFICIENCY_LEVEL_CSV ="Literacy / PL";
 
 	public static final String ACADEMIC_LANGUAGE_REPORT = "Academic Language Report";
 	
