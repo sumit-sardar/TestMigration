@@ -46,6 +46,7 @@
                         	<netui:selectOption value="Others">OTHERS</netui:selectOption>
                             <netui:selectOption value="Laslinks">LASLINKS</netui:selectOption>
                             <netui:selectOption value="laslinksLayout">LASLINKS LAYOUT</netui:selectOption>
+                            <netui:selectOption value="TeIstep">TE ISTEP</netui:selectOption>
                         </netui:select>
                     </td>
                     <td width="10">&nbsp;</td>

@@ -41,6 +41,7 @@ html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	padding: 0;
 	border: 0 none;
 	text-rendering: optimizeLegibility;
+	font-family: CTB !important;
 }
 
 body {
@@ -163,7 +164,10 @@ function load() {
         forLaslinksLayout = productTypeVal;
         //alert("forLaslinksLayout****"+forLaslinksLayout)
         loadJsApplication();
-     }else {
+     }else if(productTypeVal == 'TeIstep'){
+            loadTeJsApplication();
+     }
+     else {
         loadSwfApplication();
      }
 }
@@ -297,6 +301,8 @@ function setScaleFactor(xscalefactor,yscalefactor){
     	yscalefactorjs = yscalefactor;
     }
 }
+
+/*
 function getFontAccomodation(){
 	var fontAccom = lz.embed.lzapp.getCanvasAttribute('fontString');
 	fontAccom = fontAccom.split("|");
@@ -307,13 +313,79 @@ function getFontAccomodation(){
 	fontObj.hasFontMag = fontAccom[3];
 	return fontObj;
 }
+*/
 
+function getFontAccomodation(){
+	var fontObj = new Object();
+	var questionBgColor = gController.questionBgColor;
+	var questionFontColor = gController.questionFontColor;
+	
+	if(typeof questionBgColor == "number"){
+		questionBgColor = questionBgColor.toString(16);
+		while(questionBgColor.length<6)
+        {
+            questionBgColor='0'+questionBgColor;
+        }
+		if(questionBgColor.indexOf("0x") < 0){
+			questionBgColor = "0x"+ questionBgColor;
+		}
+	}
+	
+	if(typeof questionFontColor == "number"){
+		questionFontColor = questionFontColor.toString(16);
+		while(questionFontColor.length<6)
+        {
+            questionFontColor='0'+questionFontColor;
+        }
+		if(questionFontColor.indexOf("0x") < 0){
+			questionFontColor = "0x"+ questionFontColor;
+		}
+	}
+	fontObj.bgcolor = questionBgColor.replace('0x', '#');
+	fontObj.fgcolor = questionFontColor.replace('0x', '#');
+	fontObj.hasFontMag = gController.hasFontAccommodation;
+	return fontObj;
+}
+
+/*
 function getBackColorAccomodation(){
 	var backColorString = lz.embed.lzapp.getCanvasAttribute('backColorString');
 	backColorString = backColorString.split("|");
 	var bgColorObj = new Object();
 	bgColorObj.stemArea = backColorString[0].replace('0x', '#');
 	bgColorObj.responseArea = backColorString[1].replace('0x', '#');
+	return bgColorObj;
+}
+*/
+function getBackColorAccomodation(){
+	var bgColorObj = new Object();
+	var questionBgColor = gController.questionBgColor;
+	var answerBgColor = gController.answerBgColor;
+	
+	if(typeof questionBgColor == "number"){
+		questionBgColor = questionBgColor.toString(16);
+		while(questionBgColor.length<6)
+        {
+            questionBgColor='0'+questionBgColor;
+        }
+		if(questionBgColor.indexOf("0x") < 0){
+			questionBgColor = "0x"+ questionBgColor;
+		}
+	}
+	
+	if(typeof answerBgColor == "number"){
+		answerBgColor = answerBgColor.toString(16);
+		while(answerBgColor.length<6)
+        {
+            answerBgColor='0'+answerBgColor;
+        }
+		if(answerBgColor.indexOf("0x") < 0){
+			answerBgColor = "0x"+ answerBgColor;
+		}
+	}
+	
+	bgColorObj.stemArea = questionBgColor.replace('0x', '#');
+	bgColorObj.responseArea = answerBgColor.replace('0x', '#');
 	return bgColorObj;
 }
 function setHtmlGeneralManip(htmlGeneralManip){
@@ -591,6 +663,109 @@ function buttonClicked(magnifierPosition){
 	$.closeMagnifier();
 }
 
+//Changes for Te Item
+
+function enableEraser(isEnabled){
+	var iframe = $("iframe")[0];
+	if(iframe){
+		if(iframe.contentWindow.accomPkg!= null && iframe.contentWindow.accomPkg!=undefined){
+			iframe.contentWindow.accomPkg.enableEraser(isEnabled);
+			if(isEnabled){
+				iframe.contentWindow.accomPkg.removeHighlighterCursor();
+				iframe.contentWindow.accomPkg.setEraserCursor("../../includes/cursor_images/cursor_eraser.png");
+			}else{
+				iframe.contentWindow.accomPkg.removeHighlighterCursor();
+			}
+		}
+	}
+}
+
+//var iframeLoaded = false;
+ function iframeState(){
+     	var iframe = $("iframe")[0];
+     	console.log("iframe state");
+     	if(iframe){
+			  
+		    setAnswerNow('complete');
+		    //check whether iFrame loaded successfully or not
+		    if(iframe != null
+	    		&& iframe.contentWindow != null
+	    		&& typeof iframe.contentWindow.accomPkg != 'undefined') {
+	    		console.log("if");
+		    	//iframeLoaded = true;
+		    }
+		    
+     		var fontObj = getFontAccomodation();	
+     		var bgColorObj = getBackColorAccomodation();				
+     		
+    		/*if(fontObj.hasFontMag){
+    			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '18px',bgColorObj);
+    		}
+    		else {
+    			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
+    		}*/
+	    	
+	    	iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
+	    	/*var xscalefact = (780 * xscalefactorjs)/800;
+	    	var yscalefact = (450 * yscalefactorjs)/462;*/
+	    	var xscalefact = 780/800;
+	    	var yscalefact = 450/462;
+	    	iframe.contentWindow.translate(xscalefact, yscalefact);
+	    	lz.embed.setCanvasAttribute('frameLoaded',true);
+	    	
+	}
+}
+
+function isAnswered(){
+ var elem = $("iframe")[0];
+	if(elem){
+	if(elem.contentWindow.accomPkg)
+ 	return elem.contentWindow.accomPkg.isItemAnswered();
+  }        	
+ 
+ }
+ 
+ function enableHighlighter(isEnabled){
+	var iframe = $("iframe")[0];
+	if(iframe){
+		if(iframe.contentWindow.accomPkg!= null && iframe.contentWindow.accomPkg!=undefined){
+			iframe.contentWindow.accomPkg.enableHighlighter(isEnabled);
+			if(isEnabled){
+				iframe.contentWindow.accomPkg.removeHighlighterCursor();	
+				iframe.contentWindow.accomPkg.setHighlighterCursor("../../includes/cursor_images/cursor_highliter.png");
+			}else{
+				iframe.contentWindow.accomPkg.removeHighlighterCursor();
+			}
+		}
+	}
+}
+
+ function getState(){ 
+  var elem = $("iframe")[0];
+  if(elem){
+ 
+ 		if(elem.contentWindow.accomPkg){
+	 		//console.log("state****"+JSON.stringify(elem.contentWindow.accomPkg.getState()));
+	 		return elem.contentWindow.accomPkg.getState();
+ 		}
+ 	}     
+ }
+ 
+  function setState(htmlContent,jsonContent,checkedVals){
+ 	var elem = $("iframe")[0];
+ 	console.log("inside setState");
+ 	if(elem){	
+ 		console.log("inside if elem of setState");
+     if(elem.contentWindow){
+    	console.log("inside if elem contentWindow of setState");
+   		if(elem.contentWindow.accomPkg){
+   			console.log("inside if elem contentWindow accomPkg of setState");
+			elem.contentWindow.accomPkg.setState(htmlContent,jsonContent,checkedVals);
+			//ansSet = true;
+  		}
+  	}
+   }          
+ }
 
 
 //-->
@@ -667,6 +842,20 @@ body {
 </p>
 </div>
 <script type="text/javascript" defer>
+ function loadTeJsApplication(){
+ 						try {
+	                  lz.embed.dhtml({url: '/ContentReviewWeb/TestClientPageFlow/TestClient_ISTEP.js?servletUrl=/ContentReviewWeb/TestClientPageFlow', lfcurl: '/ContentReviewWeb/TestClientPageFlow/lps/includes/lfc/LFCdhtml.js', serverroot: '/ContentReviewWeb/TestClientPageFlow/lps/resources/', bgcolor: '#6691b4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, cancelkeyboardcontrol: false, skipchromeinstall: false, usemastersprite: false, approot: '', appenddivid: 'appcontainer'});
+                       setTimeout(function(){
+                    	removeStatusDiv();
+                        }, 500);
+	                  lz.embed.applications.lzapp.onload = function loaded() {
+	                    // called when this application is done loading
+	                    //removeStatusDiv();
+	                  }
+	                  } catch (exception) {
+	                  	//alert("Exception"+ exception.message);
+	                  }
+                  }
  function loadJsApplication(){
  						try {
 	                  lz.embed.dhtml({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.js?servletUrl=/ContentReviewWeb/TestClientPageFlow', lfcurl: '/ContentReviewWeb/TestClientPageFlow/lps/includes/lfc/LFCdhtml.js', serverroot: '/ContentReviewWeb/TestClientPageFlow/lps/resources/', bgcolor: '#6691b4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, cancelkeyboardcontrol: false, skipchromeinstall: false, usemastersprite: false, approot: '', appenddivid: 'appcontainer'});
