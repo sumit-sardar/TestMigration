@@ -345,6 +345,7 @@ public class TestClientPageFlowController extends PageFlowController
         if(productType.equals("laslinksLayout"))
         {	
     	 String dub = globalApp.currentDeliverableUnitBean.getItemReferences();
+    	 dub = dub.replaceAll("allow_revisit=\"null\"", "allow_revisit=\"true\"");
     	 dub = dub.replaceAll("allow_revisit=\"false\"", "allow_revisit=\"true\"");
     	 globalApp.currentDeliverableUnitBean.setItemReferences(dub);
     	 //System.out.println("dub>>"+ dub);
