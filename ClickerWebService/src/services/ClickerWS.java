@@ -59,6 +59,7 @@ import utils.CryptoUtils;
 import utils.JsonUtils;
 import com.ctb.control.db.StudentItemSetStatus;
 import com.ctb.control.db.TestRoster;
+import com.ctb.control.validation.Validator;
 
 @WebService
 public class ClickerWS implements Serializable {
@@ -80,6 +81,9 @@ public class ClickerWS implements Serializable {
 
 	@Control
 	private TestRoster testRoster;
+
+	@Control
+	private Validator validator;
 	
 	/**
     * OAS authenticates this user. 
@@ -301,6 +305,8 @@ public class ClickerWS implements Serializable {
 		
         try
         {      
+            validator.validateAdmin(userName, JsonUtils.newInteger(sessionId), "testAdmin.getRosterElementsForTestSession");
+        	
 	        SortParams sort = new SortParams();
             SortParam[] sortParams = new SortParam[1];
             SortType sortType = new SortType();
@@ -373,6 +379,7 @@ public class ClickerWS implements Serializable {
 		sessionId = JsonUtils.safeGuardInteger(sessionId);
 		
     	try {
+            validator.validateAdmin(userName, JsonUtils.newInteger(sessionId), "testAdmin.getScheduledSessionDetails");
 
 			ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(userName, JsonUtils.newInteger(sessionId));
 			
