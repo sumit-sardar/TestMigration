@@ -3384,7 +3384,7 @@ public class StudentManagementImpl implements StudentManagement
 	
 
 
-	public List<StudentScoreReport> getStudentReportByGroup(Integer [] testRosterIdArr) throws CTBBusinessException 
+	public List<StudentScoreReport> getStudentReportByGroup(Integer [] testRosterIdArr,Integer parentProductId) throws CTBBusinessException 
 	{
 
 		StudentScoreReport [] stuDataListTemp = null;
@@ -3430,14 +3430,25 @@ public class StudentManagementImpl implements StudentManagement
 		StudentReportIrsScore[] stuFinalScoreData = null;
 		StudentReportIrsScore[] studentScoreIrsData = null;
 		StudentReportIrsScore stuScoreDataComp = null;
+		
 		for(StudentScoreReport reportData : stuDataListTemp ) {
 			studentScoreIrsData = getStudentReportIrsScore(stuScoreListTemp,reportData.getTestRosterId());
 			stuScoreDataComp = getOverallScore(studentScoreIrsData);
 			reportData.setStudentReportIrsScore(studentScoreIrsData);
 			//now stuDataListTemp is populated fully.
 			
-			stuFinalScoreData = new StudentReportIrsScore[7];
-			setContentAreaValues(stuFinalScoreData, new Integer(reportData.getProductId()));
+			
+			// Setting content area
+			if(parentProductId==7000){
+				stuFinalScoreData = new StudentReportIrsScore[7];
+				setContentAreaValues(stuFinalScoreData,new Integer(reportData.getProductId()));
+			}
+			else if(parentProductId==7500){
+				stuFinalScoreData = new StudentReportIrsScore[9];
+				setContentAreaValuesForLL2ND(stuFinalScoreData,new Integer(reportData.getProductId()));
+			}	
+			
+//			setContentAreaValues(stuFinalScoreData, new Integer(reportData.getProductId()));
 			if(reportData.getStudentReportIrsScore() != null && 
 					reportData.getContentAreaNameString() != null) {
 				for(int i = 0; i < studentScoreIrsData.length; i++) {
@@ -3453,16 +3464,19 @@ public class StudentManagementImpl implements StudentManagement
 						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 4, reportData.getContentAreaNameString());
 					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Comprehension")) {
 						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 5, reportData.getContentAreaNameString());
-					} else if (studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Productive")){
-						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 6, reportData.getContentAreaNameString());
-					}else if (studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Literacy")){
-						setFinalScoreValues(stuFinalScoreData, studentScoreIrsData[i], 7, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Productive")) {
+						setFinalScoreValuesForLL2ND(stuFinalScoreData, studentScoreIrsData[i], 6, reportData.getContentAreaNameString());
+					} else if(studentScoreIrsData[i].getContentAreaName().equalsIgnoreCase("Literacy")) {
+						setFinalScoreValuesForLL2ND(stuFinalScoreData, studentScoreIrsData[i], 7, reportData.getContentAreaNameString());
 					}
 				}
 			}
-			if(stuScoreDataComp != null)
-				setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, reportData.getContentAreaNameString());
-
+			if(stuScoreDataComp != null){
+				if(parentProductId == 7000)
+					setFinalScoreValues(stuFinalScoreData, stuScoreDataComp, 6, reportData.getContentAreaNameString());
+				else if (parentProductId == 7500)
+					setFinalScoreValuesForLL2ND(stuFinalScoreData, stuScoreDataComp, 8, reportData.getContentAreaNameString());
+			}
 			reportData.setStudentReportIrsScore(stuFinalScoreData);
 			finalList.add(reportData);
 		}
@@ -3864,6 +3878,19 @@ public class StudentManagementImpl implements StudentManagement
 				academicScoreData[ii].setWrPerCorrect(contentMap.get("Writing_"+objective).getPerCorrect());
 				academicScoreData[ii].setWrPtsObtained(contentMap.get("Writing_"+objective).getPtsObtained());
 				academicScoreData[ii].setWrPtsPossible(contentMap.get("Writing_"+objective).getPtsPossible());
+			}
+		}
+		for(int ii=0; ii<5;ii++){
+			if(academicScoreData[ii].getContentAreaName().contains(SOCIAL)){
+				if("N/A".equals(academicScoreData[ii].getLnPtsObtained())){
+					lnTotalScore = "N/A";
+				}if("N/A".equals(academicScoreData[ii].getSpPtsObtained())){
+					spTotalScore = "N/A";
+				}if("N/A".equals(academicScoreData[ii].getRdPtsObtained())){
+					rdTotalScore = "N/A";
+				}if("N/A".equals(academicScoreData[ii].getWrPtsObtained())){
+					wrTotalScore = "N/A";
+				}
 			}
 		}
 		academicScoreData[5].setSpTotalScore(spTotalScore);
