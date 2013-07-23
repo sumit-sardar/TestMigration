@@ -490,7 +490,7 @@ public class PDFUtils {
 	               return getGreyColor();
 	           }
 	           else{
-	        	   if((cell >= 12 && cell <= 15) || (cell >= 24 && cell <= 31)) {
+	        	   if((cell >= 12 && cell <= 15) || (cell >= 24 && cell <= 39)) {
 	        		   return getGreenColor();
 	        	   } else {
 	        		   return getWhiteColor();

@@ -900,35 +900,26 @@ function populateReportTableForAcademicScore(data){
 
  function downloadImmediatePDFReport(element) {
 	if (isButtonDisabled(element)) 
-		return true;
-	if($('#productId').val() == 7500)
-		return true;
-	else if($('#productId').val() == 7000){	
-		$("#rosterId").val(immdRptSelectedRosterId);
-	    $("#testAdminId").val(immdRptSelectedTestAdminId);
-	    var element = document.getElementById("downloadImmediateReport");
-	    element.form.action = "studentsImmediateScoreReportInPDF.do";
-	    element.form.submit();
-	    $("#displayMessageMain").hide();
-		return false;
-	}
+		return true;	
+	$("#rosterId").val(immdRptSelectedRosterId);
+    $("#testAdminId").val(immdRptSelectedTestAdminId);
+    var element = document.getElementById("downloadImmediateReport");
+    element.form.action = "studentsImmediateScoreReportInPDF.do?productId="+$('#productId').val();
+    element.form.submit();
+    $("#displayMessageMain").hide();
+	return false;
  }
  
  
  function downloadImmediateCSVReport(element) {
  	if (isButtonDisabled(element)) 
-		return true;
-	if($('#productId').val() == 7500)
-		return true;
-	else if($('#productId').val() == 7000){		
-	    $("#rosterId").val(immdRptSelectedRosterId);
-	    $("#testAdminId").val(immdRptSelectedTestAdminId);
-	    var element = document.getElementById("downloadImmediateReport");
-	    element.form.action = "studentsImmediateScoreReportInCSV.do";
-	    element.form.submit();
-	    $("#displayMessageMain").hide();
-		return false;
-	}
+		return true;		
+    $("#rosterId").val(immdRptSelectedRosterId);
+    $("#testAdminId").val(immdRptSelectedTestAdminId);
+    var element = document.getElementById("downloadImmediateReport");
+    element.form.action = "studentsImmediateScoreReportInCSV.do?productId="+$('#productId').val();
+    element.form.submit();
+    $("#displayMessageMain").hide();
  }
 
  function resetViewReportPopupData(){
