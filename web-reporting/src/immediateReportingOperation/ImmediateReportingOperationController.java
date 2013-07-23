@@ -396,7 +396,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			//dropList.setTestCatalogOptions(getTestNameOptions());
 			dropList.setTestCatalogOptions(getTestNameOptionsForReporting(productId));
 			dropList.setContentAreaOptions(getContentAreaOptions());
-			dropList.setFormOptions(getFormOptions());
+			dropList.setFormOptions(getFormOptions(productId));
 			try{
 				Gson gson = new Gson();
 				json = gson.toJson(dropList);
@@ -581,7 +581,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				testRosterList = this.testRosterListForLLEAB;
 			else
 				testRosterList = this.testRosterListForLL2ND;
-			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
+			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList,productId);
 			GroupImmediateCSVReportUtils utilsCSV = new GroupImmediateCSVReportUtils();
 			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
 			getResponse().setContentType("text/csv");
@@ -594,7 +594,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 			os.write(187);     
 			os.write(191);    
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8")); 
-			utilsCSV.writeHeaderRow(writer);
+			utilsCSV.writeHeaderRow(writer,productId);
 			if(allStudentList != null){
 				for(StudentScoreReport spi : stuReportList)
 				{
@@ -627,7 +627,7 @@ public class ImmediateReportingOperationController extends PageFlowController {
 				testRosterList = this.testRosterListForLLEAB;
 			else
 				testRosterList = this.testRosterListForLL2ND;
-			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList);
+			List<StudentScoreReport> stuReportList = studentManagement.getStudentReportByGroup(testRosterList,productId);
 			GroupImmediatePDFReportUtils utilsPDF = new GroupImmediatePDFReportUtils();
 			String fileName = "Group_Immediate_Report_"+orgName+"_"+treeOrgNodeId;
 			getResponse().setContentType("application/pdf");
@@ -1567,9 +1567,9 @@ public class ImmediateReportingOperationController extends PageFlowController {
 		return testNameOptions;
 	}
 	
-	private String[] getFormOptions() throws Exception {
+	private String[] getFormOptions(Integer productId) throws Exception {
 		String[] testNameOptions = null;
-		testNameOptions = this.scheduleTest.getAllFormOptionsForUser(this.userName);
+		testNameOptions = this.scheduleTest.getAllFormOptionsForUser(this.userName, productId);
 		return testNameOptions;
 	}
 	
