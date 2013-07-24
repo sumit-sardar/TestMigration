@@ -134,6 +134,11 @@ var forLaslinksLayout = null;
 var xscalefactorjs;
 var yscalefactorjs;
 var LASAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/"; 
+var TEAssetPath = "/ContentReviewWeb/ContentReviewPageFlow/items/";
+
+function getTEAssetPath(){
+	lz.embed.setCanvasAttribute("TEAssetPath", TEAssetPath);
+}
 
 function getLasAssetPath(){
 	lz.embed.setCanvasAttribute("LASAssetPath", LASAssetPath);
