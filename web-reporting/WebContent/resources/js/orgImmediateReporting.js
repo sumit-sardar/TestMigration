@@ -242,7 +242,12 @@ function orgImmdRptGridresetSearch(){
 	 closePopUp('orgImmdRptGridSearhPopup');
 	 //grid[0].triggerToolbar();
 	 $("#orgImmdRptGrid").resetSelection(); 
-	 enableDisableImmediateReportButtonOrg(false);
+	 if ($('#orgImmdRptGrid').getGridParam('records') === 0) {
+		enableDisableImmediateReportButtonOrg(false);
+	 }
+	 else {
+		enableDisableImmediateReportButtonOrg(true);
+	 }
 }
 
 function downloadCSVReport(element) {
