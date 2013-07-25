@@ -16,6 +16,7 @@ var editingId = null;
 var editingRow = null;
 var editingCol = null;
 var requestedPage = 1;
+var isDataSavedDuringCellEdit = 'false';
 
 function loadOrgNodeTree() {
 	
@@ -354,6 +355,8 @@ function loadChildrenOrgNodeLicense() {
           	beforeEditCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeEditCell: ' + rowid + " - " + value);
               	setEditingInfo(iRow, iCol, value);
+              	isDataSavedDuringCellEdit = 'false'; 
+              	
           	},
           	beforeSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('beforeSaveCell: ' + rowid + " - " + value);
@@ -389,7 +392,8 @@ function loadChildrenOrgNodeLicense() {
               	
               		reloadChildren = false;
               		orgNodeLicenseReload();
-              		saveLicensesAfterSaveCell();              		
+              		saveLicensesAfterSaveCell(); // after each time the value is changed and entered i.e. without clicking Save button,save call is made to DB.. Changes for Defect #74216.             		
+              		isDataSavedDuringCellEdit = 'true';
               		return [true, ""];
               	}
               	else {
@@ -631,7 +635,7 @@ function saveLicensesAfterSaveCell(){
 function verifyEditLicenseAndGotoMenuAction(action, menuId){
     
 	var currentEditing = document.getElementById('currentEditing').value;
-    if (currentEditing == 'true') {
+    if (currentEditing == 'true' && isDataSavedDuringCellEdit == 'false') {//isDataSavedDuringCellEdit condition added for Defect #74791
 	    var ret = confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
 	    if (ret) {
 	    	editingId = null;
