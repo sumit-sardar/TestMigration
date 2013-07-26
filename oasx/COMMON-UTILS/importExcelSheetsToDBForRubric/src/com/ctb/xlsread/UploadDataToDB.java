@@ -91,6 +91,8 @@ public class UploadDataToDB {
 		UploadDataToDB uploadDataToDB = new UploadDataToDB(db_ip,db_user, db_pass, db_sid);
 		uploadDataToDB.readFirstSheet(fileName,0);
 		uploadDataToDB.readSecondSheet(fileName,1);
+		
+		System.out.println("Finished Successfully ....");
 	}
     
 	
@@ -134,7 +136,7 @@ public class UploadDataToDB {
 								}
 								if (cells.getStringCellValue().equals("DESCRIPTION")) {
 									System.out.println(cells.getStringCellValue());
-									rubViewD.setRubricDescription(dataRow.getCell((short)i).getStringCellValue());
+									rubViewD.setRubricDescription(dataRow.getCell((short)i).getStringCellValue().replaceAll("'", "''"));
 								}
 							}
 							rubricList.add(rubViewD);
@@ -212,10 +214,10 @@ public class UploadDataToDB {
 									rubViewD.setScore(d.intValue());
 								}
 								if (cells.getStringCellValue().equals("SAMPLE RESPONSE")) {
-									rubViewD.setSampleResponse(dataRow.getCell((short)i).getStringCellValue());
+									rubViewD.setSampleResponse(dataRow.getCell((short)i).getStringCellValue().replaceAll("'", "''"));
 								}
 								if (cells.getStringCellValue().equals("EXPLANATION OF SCORE")) {
-									rubViewD.setRubricExplanation(dataRow.getCell((short)i).getStringCellValue());
+									rubViewD.setRubricExplanation(dataRow.getCell((short)i).getStringCellValue().replaceAll("'", "''"));
 								}
 							}
 							rubricList.add(rubViewD);

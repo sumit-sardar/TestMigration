@@ -31,7 +31,7 @@ public abstract class BaseConnection {
 	public String connectionUrl() {
 
 		String url;
-		url = driverName + host + ":1521:" + sid;
+		url = driverName + host + ":1521/" + sid;
 
 		return url;
 	}
