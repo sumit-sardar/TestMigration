@@ -2928,8 +2928,10 @@ public class ScheduleTestImpl implements ScheduleTest
             	stmt.executeBatch();
             	conn.commit();
             	
-            } catch(SQLException sqle) {
+            } catch(Exception sqle) {
             	sqle.printStackTrace();
+            	conn.rollback();
+            	throw sqle;// Throwing the exception to check if this is related to insufficient licenses. LAS-LM Defect-#74837
             } finally {
             	stmt.close();
             	conn.setAutoCommit(true);
