@@ -395,12 +395,14 @@ function loadChildrenOrgNodeLicense() {
               		saveLicensesAfterSaveCell(); // after each time the value is changed and entered i.e. without clicking Save button,save call is made to DB.. Changes for Defect #74216.             		
               		isDataSavedDuringCellEdit = 'true';
               		return [true, ""];
+              	}              	
+              	else if (serverresponse.responseText.indexOf('<html>') != -1){
+              		window.location.href="/SessionWeb/logout.do";
               	}
-              	else {
-              		if (serverresponse.responseText != 'ERROR') 
+              	else if (serverresponse.responseText != 'ERROR'){ 
               			alert(serverresponse.responseText);              			
               		return [false, "", ""];
-              	}
+              	}              	
           	},
           	afterSaveCell : function(rowid,cellname,value,iRow,iCol) { 
               	//alert('afterSaveCell: ' + rowid + " - " + value);              	
