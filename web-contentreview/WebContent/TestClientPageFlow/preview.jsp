@@ -668,6 +668,34 @@ function buttonClicked(magnifierPosition){
 	$.closeMagnifier();
 }
 
+function disableShortcuts() {
+	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
+	if (event.ctrlKey) {
+		switch(keystroke){
+			case 'l':
+				gHotKeys.toggleMark();
+				event.preventDefault(); // disable Ctrl+L
+				break;
+			case 'd':
+				event.preventDefault(); // disable Ctrl+D
+				break;
+			case 'h':
+				event.preventDefault(); // disable Ctrl+H
+				break;
+			case 'b':
+				event.preventDefault(); // disable Ctrl+B
+				break;
+			case 'v':
+				if(window.navigator.platform.indexOf('Mac')>=0){
+					event.preventDefault(); // disable Ctrl+V
+				}
+				break;
+			default:
+				break;
+				}
+	}
+}
+
 //Changes for Te Item
 
 function enableEraser(isEnabled){
@@ -787,7 +815,7 @@ body {
 
 <!--SA041005 start -->
 
-<BODY onload="load()" oncontextmenu="return false;">
+<BODY onload="load()" onkeydown="disableShortcuts()" oncontextmenu="javascript:return false;">
 <button id="mybutton" style="visibility:hidden; width:0px; height:0px; display:none;">clickMe </button>
 <div id="needFlash9" style="display: none">
 <table height="100%" width="100%">
