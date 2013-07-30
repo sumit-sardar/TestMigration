@@ -836,7 +836,8 @@ function populateSelectStudentGrid() {
 			else
 				$("#gs_grade").attr('disabled', true);
 		}
-	 	$("#gs_grade").attr("style", "width: 50px");//to avoid changing width in IE
+		//**[IAA] Changed width of gs_grade from 50 to 55 to fix defect#74805 on Mac.
+	 	$("#gs_grade").attr("style", "width: 55px");//to avoid changing width in IE
 	 
 }
 	
