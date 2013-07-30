@@ -1312,6 +1312,15 @@ function studentScoring() {
 					$("#"+rowId).removeClass('ui-state-highlight');
 			},
 			loadComplete: function () {
+						var $this = $(this),
+				        datatype = $this.getGridParam('datatype');
+				
+				    if (datatype === "xml" || datatype === "json") {
+				        setTimeout(function () {
+				            $this.trigger("reloadGrid");
+				        }, 100);
+				    }
+							
 				if ($('#studentItemListGrid').getGridParam('records') === 0) {
             		$('#sp_1_studentItemListPager').text("1");
             		$('#next_studentItemListPager').addClass('ui-state-disabled');
@@ -1503,6 +1512,15 @@ function populateSBSItemListGrid() {
 					$("#"+rowId).removeClass('ui-state-highlight');
 			},
 			loadComplete: function () {
+				var $this = $(this),
+				        datatype = $this.getGridParam('datatype');
+				
+				    if (datatype === "xml" || datatype === "json") {
+				        setTimeout(function () {
+				            $this.trigger("reloadGrid");
+				        }, 100);
+				    }
+						
 				if ($('#studentItemListGridSBS').getGridParam('records') === 0) {
             		$('#sp_1_studentItemListPagerSBS').text("1");
             		$('#next_studentItemListPagerSBS').addClass('ui-state-disabled');
