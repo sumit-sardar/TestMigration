@@ -924,7 +924,24 @@ function gridScoringStudentReload(){
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
 	jQuery("#studentScoringGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#studentScoringGrid").jqGrid('setGridParam', {url:'getStudentForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#studentScoringGrid").jqGrid('setGridParam',{
+		url:'getStudentForScoringGrid.do',
+		postData:postDataObject,
+		page:1,
+		loadComplete: function (){
+			var $this = $(this),
+				        datatype = $this.getGridParam('datatype');
+				
+				    if (datatype === "xml" || datatype === "json") {
+				        setTimeout(function () {
+				        	$("#studentScoringGrid")[0].triggerToolbar();
+				        }, 100);
+				    }
+				    $.unblockUI();  
+				    $("#studentScoringGrid").setGridParam({datatype:'local'});
+			}
+		}).trigger("reloadGrid");
+		
 	jQuery("#studentScoringGrid").sortGrid('userName',true,'asc');
 	$("#displayMessageMain").hide();
 	UIBlock();
@@ -1061,7 +1078,24 @@ function gridScoringSessionReload(){
 	postDataObject.q = 2;
 	postDataObject.treeOrgNodeId = $("#treeOrgNodeId").val();
 	jQuery("#sessionScoringGrid").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});
-	jQuery("#sessionScoringGrid").jqGrid('setGridParam', {url:'getSessionForScoringGrid.do',postData:postDataObject,page:1}).trigger("reloadGrid");
+	jQuery("#sessionScoringGrid").jqGrid('setGridParam',{
+		url:'getSessionForScoringGrid.do',
+		postData:postDataObject,
+		page:1,
+		loadComplete: function (){
+			var $this = $(this),
+				        datatype = $this.getGridParam('datatype');
+				
+				    if (datatype === "xml" || datatype === "json") {
+				        setTimeout(function () {
+				        	$("#sessionScoringGrid")[0].triggerToolbar();
+				        }, 100);
+				    }
+				    $.unblockUI();  
+				    $("#sessionScoringGrid").setGridParam({datatype:'local'});
+			}
+		}).trigger("reloadGrid");
+		
 	jQuery("#sessionScoringGrid").sortGrid('studentNumber',true,'asc');
 	$("#displayMessageMain").hide();
 	UIBlock();
