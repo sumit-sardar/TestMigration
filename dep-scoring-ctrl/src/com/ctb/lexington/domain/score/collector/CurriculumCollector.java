@@ -430,32 +430,32 @@ public class CurriculumCollector {
            } else if("ESP B".equals(form)){	
         	   if(level != null && "K".equals(level)) {
 	           	composites[0].setAssessmentId(new Long(13337));
-	            composites[0].setCompositeId(new Long(39));
+	            composites[0].setCompositeId(new Long(58));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
 	          }else if("9-12".equals(level)) {
 	            composites[0].setAssessmentId(new Long(13341));
-	            composites[0].setCompositeId(new Long(40));
+	            composites[0].setCompositeId(new Long(63));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
 	          } else if("6-8".equals(level)) {
 	            composites[0].setAssessmentId(new Long(13340));
-	            composites[0].setCompositeId(new Long(41));
+	            composites[0].setCompositeId(new Long(62));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
 	          }else if("4-5".equals(level)) {
 	            composites[0].setAssessmentId(new Long(13217));
-	            composites[0].setCompositeId(new Long(42));
+	            composites[0].setCompositeId(new Long(61));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
 	          }else if("2-3".equals(level)) {
 	            composites[0].setAssessmentId(new Long(13339));
-	            composites[0].setCompositeId(new Long(43));
+	            composites[0].setCompositeId(new Long(60));
 	            composites[0].setCompositeNumItems(new Long(100));
 	            composites[0].setCompositePointsPossible(new Long(315));
 	          }else if("1".equals(level)) {
 		            composites[0].setAssessmentId(new Long(13338));
-		            composites[0].setCompositeId(new Long(44));
+		            composites[0].setCompositeId(new Long(59));
 		            composites[0].setCompositeNumItems(new Long(100));
 		            composites[0].setCompositePointsPossible(new Long(315));
 	          }
@@ -463,32 +463,32 @@ public class CurriculumCollector {
 
         	   if(level != null && "K".equals(level)) {
                	composites[0].setAssessmentId(new Long(29126));
-                   composites[0].setCompositeId(new Long(45));
+                   composites[0].setCompositeId(new Long(64));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("9-12".equals(level)) {
                    composites[0].setAssessmentId(new Long(29355));
-                   composites[0].setCompositeId(new Long(46));
+                   composites[0].setCompositeId(new Long(69));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  } else if("6-8".equals(level)) {
                    composites[0].setAssessmentId(new Long(29346));
-                   composites[0].setCompositeId(new Long(47));
+                   composites[0].setCompositeId(new Long(68));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("4-5".equals(level)) {
                    composites[0].setAssessmentId(new Long(29077));
-                   composites[0].setCompositeId(new Long(48));
+                   composites[0].setCompositeId(new Long(67));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("2-3".equals(level)) {
                    composites[0].setAssessmentId(new Long(29304));
-                   composites[0].setCompositeId(new Long(49));
+                   composites[0].setCompositeId(new Long(66));
                    composites[0].setCompositeNumItems(new Long(100));
                    composites[0].setCompositePointsPossible(new Long(315));
                  }else if("1".equals(level)) {
                      composites[0].setAssessmentId(new Long(29255));
-                     composites[0].setCompositeId(new Long(50));
+                     composites[0].setCompositeId(new Long(65));
                      composites[0].setCompositeNumItems(new Long(100));
                      composites[0].setCompositePointsPossible(new Long(315));
                  }
