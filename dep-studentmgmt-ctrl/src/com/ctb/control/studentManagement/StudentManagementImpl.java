@@ -3540,7 +3540,7 @@ public class StudentManagementImpl implements StudentManagement
 		for (int i = 0; i < 9; i++) {
 			stuFinalScoreData[i] = new StudentReportIrsScore();
 		}
-		if (productId == 7003) {
+		if (productId == 7502) {
 			stuFinalScoreData[0].setContentAreaName("Escuchando");
 			stuFinalScoreData[1].setContentAreaName("Hablando");
 			stuFinalScoreData[2].setContentAreaName("Oral");
