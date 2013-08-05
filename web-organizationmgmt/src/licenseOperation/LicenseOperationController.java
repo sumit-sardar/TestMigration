@@ -1133,7 +1133,8 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration() && adminUser);
+     	this.getSession().setAttribute("hasLicenseConfigured", 
+     			new Boolean( customerHasSubscription(customerConfigs).booleanValue() && adminUser)) ;
 
 		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
 		
@@ -1298,10 +1299,24 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
     	this.customerLicenses =  getCustomerLicenses();
 		return new Boolean(this.customerLicenses.length > 0);
     }
+
+    private Boolean customerHasSubscription(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean hasSubscription = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasSubscription = true;
+            } 
+        }
+        return new Boolean(hasSubscription);
+    }
     
     private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
     {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
         
         for (int i=0; i < customerConfigs.length; i++)
