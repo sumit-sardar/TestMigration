@@ -328,6 +328,8 @@ public class TestWebServiceController extends PageFlowController
     		    Integer testAdminId = newInteger(sessionId);
     		    
     		    try {
+    				decryptedUserName = CryptoUtils.decryptUserKey(userKey, 0);
+    		    	System.out.println("decryptedUserName=" + decryptedUserName);
 					TestSessionData tsData = this.testSessionStatus.getTestSessionDetails(decryptedUserName, testAdminId);
 					TestSession[] testSessions = tsData.getTestSessions();
 					TestSession testSession = testSessions[0];
