@@ -118,8 +118,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float[] FOUR_COLUMN_TAC_WIDTHS = new float[] {1.5f, 6f, 2f, 3f};
     private static final float[] STUDENT_WIDTHS = new float[] {50f, 32f, 72f, 21f, 13f, 21f, 31f};
     private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {50f, 32f, 72f, 21f, 21f, 44f};
+    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS = new float[] {50f, 32f, 64f, 21f, 21f, 21f, 31f};
     private static final float[] STUDENT_WIDTHS_WITH_CLASSNAME = new float[] {40f, 29f, 25f, 60f, 21f, 13f, 21f, 31f};
     private static final float[] STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME = new float[] {45f, 30f, 30f, 62f, 21f, 21f, 31f};
+    private static final float[] STUDENT_WIDTHS_FOR_LASLINKS_WITH_CLASSNAME = new float[] {40f, 29f, 25f, 52f, 21f, 21f, 21f, 31f};
 
     private static final float SESSION_VALUE_WIDTH = 170f;
     // maximum number of student lines on a page
@@ -293,6 +295,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     }
     
     private float[] getStudentWidths() {
+        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()); 
+        if (isLasLinksProduct) 
+            return STUDENT_WIDTHS_FOR_LASLINKS;
+        else
         if (this.isTabeProduct.booleanValue()) 
             return STUDENT_WIDTHS_FOR_TABE;
         else
@@ -1522,6 +1528,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     }
     
     private float[] getStudentWidthsToPrintClassName() {
+        boolean isLasLinksProduct = "LL".equals(this.testProduct.getProductType()); 
+        if (isLasLinksProduct) 
+            return STUDENT_WIDTHS_FOR_LASLINKS_WITH_CLASSNAME;
+        else
         if (this.isTabeProduct.booleanValue()) 
             return STUDENT_WIDTHS_FOR_TABE_WITH_CLASSNAME;
         else
