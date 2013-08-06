@@ -260,19 +260,22 @@ public class Framework {
 	            result = false;
 	        } else {
 		        strItemId = as [0].replaceAll ("\"","");
-		        strObjId = as [1].replaceAll ("\"","");
+		        String objList = as [1].replaceAll ("\"","");
+		        String os[] = objList.split(":");
+		        for(int i=0;i<os.length;i++) {
+		        	strObjId = os[i];
+			        if (itemIds.contains (strItemId)) { // duplicate item IDs are not allowed
+			            System.err.println ("Found duplicate Item ID: " + strLine.trim ());
+			            result = false;
+		            } else {
+		                itemIds.add (strObjId);
+			        }
 	
-		        if (itemIds.contains (strItemId)) { // duplicate item IDs are not allowed
-		            System.err.println ("Found duplicate Item ID: " + strLine.trim ());
-		            result = false;
-	            } else {
-	                itemIds.add (strObjId);
+			        if (!Oids.contains (strObjId)) { // the objective ID must exist in objectives.txt
+			            System.err.println ("Item Objective ID not found: " + strLine.trim ());
+			            result = false;
+		            }
 		        }
-
-		        if (!Oids.contains (strObjId)) { // the objective ID must exist in objectives.txt
-		            System.err.println ("Item Objective ID not found: " + strLine.trim ());
-		            result = false;
-	            }
 	        }
 	    }
 
