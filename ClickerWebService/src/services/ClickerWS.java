@@ -473,11 +473,13 @@ public class ClickerWS implements Serializable {
 			SubtestInfo[] subtests = roster.getSubtests();
 			for (int j=0 ; j<subtests.length ; j++) {
 				SubtestInfo subtest = subtests[j];
-				
 				Question[] questions = subtest.getQuestions();
     			for (int k=0 ; k<questions.length ; k++) {
     				Question question = questions[k];
+    				String response = question.getResponse();
+    				// save response to item_response table
     			}
+				// save information in student_item_set_status table
 			}	    				
 		}
 		
