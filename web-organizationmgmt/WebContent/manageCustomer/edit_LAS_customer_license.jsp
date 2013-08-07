@@ -46,6 +46,7 @@
 <netui:hidden dataSource="actionForm.LASLicenseNode.purchaseOrder"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.expiryDate"/>
 <netui:hidden dataSource="actionForm.LASLicenseNode.purchaseDate"/>
+<netui:hidden dataSource="actionForm.LASLicenseNode.subtestModel"/>
  
 
 <!-- message -->

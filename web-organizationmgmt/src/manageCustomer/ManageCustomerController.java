@@ -142,6 +142,7 @@ public class ManageCustomerController extends PageFlowController
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
 	private Boolean isLASManageLicense = null;
+	private Boolean isSubtestModel = null;
 
 	private CustomerConfiguration [] customerConfigurations = null;   
 	CustomerLicense topNodeLicenseDetail = null; // added for laslink License management
@@ -1786,7 +1787,13 @@ public class ManageCustomerController extends PageFlowController
         		 customerLicense.setProductId(frameworkParentProductId);
         		 licenseNode.setProductId(frameworkParentProductId);
         	 }
-        	 
+          	 
+          	if (isLicenseSubtestModel(licenseNode.getCustomerId())){
+          		customerLicense.setSubtestModel("T");
+    		}
+    		else {
+    			customerLicense.setSubtestModel("F");
+    		} 
         	licensevalue = license.addCustomerProductLicense(customerLicense);
         	licenseNode.setBalanceLicense(customerLicense.getAvailable());
         	Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
@@ -1828,6 +1835,7 @@ public class ManageCustomerController extends PageFlowController
     	boolean result = false;
     	boolean orgNodeLic = false;
     	boolean orgOrderLic = false;
+    	String subtestModel = null;
     	try {
     	
 	   	orgNodeLicenseData = this.topNodeLicenseDetail;
@@ -1845,9 +1853,15 @@ public class ManageCustomerController extends PageFlowController
         		result = true;
     	}
     	else {
-//    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());
+//    		Integer orgNodeId = license.getTopNodeId(licenseNode.getCustomerId());    		
     		orgNodeLicenseData = licenseNode.makeCopy();
     		orgNodeLicenseData.setOrgNodeId(orgNodeId);
+    		if (isLicenseSubtestModel(licenseNode.getCustomerId())){
+    			orgNodeLicenseData.setSubtestModel("T");
+    		}
+    		else {
+    			orgNodeLicenseData.setSubtestModel("F");
+    		}
     		orgNodeLic = license.addLASCustomerTopNodeLicense(orgNodeLicenseData);
     		orgOrderLic = addEditOrderLicense(orgNodeLicenseData);
     		if (orgOrderLic && orgNodeLic)
@@ -3117,6 +3131,36 @@ public class ManageCustomerController extends PageFlowController
         
        
         return this.isLASManageLicense.booleanValue();
+    }
+	
+	
+	/**
+	 * This method checks whether customer is configured to have Subtest model or Session model of licensing features.
+	 * @return Return Boolean 
+	 */
+	private boolean isLicenseSubtestModel(Integer customerId)
+    {        
+		this.isSubtestModel = new Boolean(false);
+
+        try
+        {    
+        	CustomerConfiguration[] customerConfs = users.getCustomerConfigurations(customerId.intValue());
+        	
+            for (int i=0; i < customerConfs.length; i++)
+            {
+            	CustomerConfiguration cc = (CustomerConfiguration)customerConfs[i];
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Subtest_Model") && cc.getDefaultValue().equalsIgnoreCase("T")) {
+            		this.isSubtestModel = new Boolean(true);            		
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return this.isSubtestModel.booleanValue();
     }
 	 
 

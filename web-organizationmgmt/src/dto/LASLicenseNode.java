@@ -39,7 +39,7 @@ public class LASLicenseNode implements java.io.Serializable
     	this.purchaseDate = "";
     	this.expiryDate = "";
     	this.emailNotify = "T";
-    	this.subtestModel = "T";
+    	this.subtestModel = "";
     }
     public LASLicenseNode(Integer customerId) {
     	this.customerId = customerId;
