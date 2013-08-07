@@ -64,6 +64,7 @@ public class DataExportTABE {
 	private static final Map<String, Integer> ITEM_COUNT_MAP_TB = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> ITEM_COUNT_MAP_TS = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> ITEM_COUNT_MAP_TL = new LinkedHashMap<String, Integer>();
+	private static final Map<String, Integer> ITEM_COUNT_MAP_MAX = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> SCORE_TYPES = new LinkedHashMap<String, Integer>();
 	private static String PRODUCT_TYPE = "";
 	private static String [] productIds = null;
@@ -86,6 +87,14 @@ public class DataExportTABE {
 		SCORE_TYPES.put("Objective Mastery Level", 0);
 		SCORE_TYPES.put("Objective Mastery", 0);
 		
+		ITEM_COUNT_MAP_MAX.put("Reading", 50);
+		ITEM_COUNT_MAP_MAX.put("Mathematics Computation", 40);
+		ITEM_COUNT_MAP_MAX.put("Applied Mathematics", 55);
+		ITEM_COUNT_MAP_MAX.put("Language", 55);
+		ITEM_COUNT_MAP_MAX.put("Vocabulary", 20);
+		ITEM_COUNT_MAP_MAX.put("Language Mechanics", 20);
+		ITEM_COUNT_MAP_MAX.put("Spelling", 20);
+		
 		ITEM_COUNT_MAP_TA.put("Reading", 29);
 		ITEM_COUNT_MAP_TA.put("Mathematics Computation", 24);
 		ITEM_COUNT_MAP_TA.put("Applied Mathematics", 29);
@@ -93,7 +102,7 @@ public class DataExportTABE {
 		
 		ITEM_COUNT_MAP_TB.put("Reading", 50);
 		ITEM_COUNT_MAP_TB.put("Mathematics Computation", 40);
-		ITEM_COUNT_MAP_TB.put("Applied Mathematics", 55);
+		ITEM_COUNT_MAP_TB.put("Applied Mathematics", 50);
 		ITEM_COUNT_MAP_TB.put("Language", 55);
 		ITEM_COUNT_MAP_TB.put("Vocabulary", 20);
 		ITEM_COUNT_MAP_TB.put("Language Mechanics", 20);
@@ -230,7 +239,7 @@ public class DataExportTABE {
 			contentDomains.append("Level, Raw Score, Scale Score").append(SEPARATOR);
 			contentDomains.append("Item Response Data").append(SEPARATOR);
 			//Integer itemCount = ITEM_COUNT_MAP.get(contentDomainName);
-			Integer itemCount = ITEM_COUNT_MAP_TB.get(contentDomainName);
+			Integer itemCount = ITEM_COUNT_MAP_MAX.get(contentDomainName);
 			if(itemCount != null) {
 				i=0;
 				for(i=0 ; i < itemCount-1 ; i++) {
@@ -1307,7 +1316,7 @@ public class DataExportTABE {
 					   itemResposneData.append(itemId + oasItemId + 
 							   rawScore + originalResponse + timeOnItem + SEPARATOR);
 				   }
-				   int itemMaxCountForSubtest = ITEM_COUNT_MAP_TB.get(itemSetName);
+				   int itemMaxCountForSubtest = ITEM_COUNT_MAP_MAX.get(itemSetName);
 				   for(int i=0; i<itemMaxCountForSubtest-itemCount ;i++) {
 					   itemResposneData.append(SPACE + SEPARATOR);
 				   }
