@@ -63,6 +63,17 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             	System.out.println(event.getObjectiveId() + " -> " + pValue);
             	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
             			.getObjectiveId(), pValue, event.getSubtestId(), highMR, lowMR));
+            } else if(scorer.getResultHolder().getAdminData().getProductId() == 3500){
+            	if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))
+                		|| ("11".equals(pGrade) && "21".equals(pLevel)) || ("12".equals(pGrade) && "22".equals(pLevel))) {
+            		if(Integer.valueOf(event.getNumberOfItems())>=4){
+            			pValue = getScoreLookupHelper().getObjectivePValue(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
+            		}else{
+            			pValue = null;
+            		}
+                }
+            	channel.send(new PrimaryObjectiveDerivedScoreEvent(event.getTestRosterId(), event
+            			.getObjectiveId(), pValue, event.getSubtestId(), null, null));
             } else {
             	if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))
                 		|| ("11".equals(pGrade) && "21".equals(pLevel)) || ("12".equals(pGrade) && "22".equals(pLevel))) {

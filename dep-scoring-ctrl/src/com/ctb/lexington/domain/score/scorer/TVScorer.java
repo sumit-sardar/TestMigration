@@ -129,7 +129,7 @@ public class TVScorer extends STScorer {
                 prim.setLowMasteryRange(event.getLowMasteryRange());
             }
         }
-        if(getResultHolder().getAdminData().getProductId() == 3700) {
+        if(getResultHolder().getAdminData().getProductId() == 3700 || getResultHolder().getAdminData().getProductId() == 3500) {
         	if(event.getPValue() == null) {
         		PrimaryObjective prim = getResultHolder().getCurriculumData().getPrimObjById(event.getObjectiveId());
                 if(prim != null) {

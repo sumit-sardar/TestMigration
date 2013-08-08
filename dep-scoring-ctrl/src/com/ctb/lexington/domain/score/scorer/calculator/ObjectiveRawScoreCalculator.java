@@ -140,13 +140,26 @@ public class ObjectiveRawScoreCalculator extends Calculator {
             }
 
             int pointsPossible = getPointsPossibleFor(objectiveId);
+            
+            if(isLessItemCountForTV(objectiveId) &&  objectiveLevel.equals(Objective.PRIMARY)){ //Added for TN Online 
+            	pointsObtained = 0;
+            }
             //System.out.println("objectiveId==>"+objectiveId);
             channel.send(new ObjectiveRawScoreEvent(testRosterId, objectiveId, objectiveLevel,
                     pointsPossible, pointsObtained, pointsAttempted, ScorerHelper.calculatePercentage(
                             pointsObtained, pointsPossible), subtestId));
         }
     }
-
+    
+    //Added to for story : Suppress OPI, Raw and Master scores for objectives for less than 4 items
+    private boolean isLessItemCountForTV(Long objectiveId){
+    	if(scorer.getResultHolder().getAdminData().getProductId().intValue() == 3500 && 
+    			((Objective)subtestObjectiveMap.get(objectiveId)).getNumberOfItems().intValue()<4)
+    		return true;
+    	else
+    		return false;
+    }
+    
     private int getPointsPossibleFor(final Long objectiveID) {
         return ((Objective) subtestObjectiveMap.get(objectiveID)).getPointsPossible().intValue();
     }
