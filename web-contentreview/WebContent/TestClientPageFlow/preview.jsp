@@ -417,6 +417,8 @@ function setCurLasItemId(id) {
 	assetCount = 0;
 	checkAnswered = false;
 	answerClicked = null;
+	canNotAnswerFlag = false;
+	currentPlayOrder = 0;
 }
 
 
@@ -654,6 +656,13 @@ function checkTextDragging(){
 			});
 }
 
+function preventTextDragging(){
+	jQuery('.lzswfinputtext').on("dragstart", function(e) {
+				e.preventDefault();
+			});
+}
+
+
 function buttonClicked(magnifierPosition){
   	if(magnifierPosition == "T") {
   		$.setPreviousPosition();
@@ -694,6 +703,11 @@ function disableShortcuts() {
 				break;
 				}
 	}
+}
+
+function getOS() {
+	var os = window.navigator.platform;
+	return os;
 }
 
 //Changes for Te Item
