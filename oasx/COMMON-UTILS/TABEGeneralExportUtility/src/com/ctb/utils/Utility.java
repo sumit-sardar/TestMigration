@@ -256,7 +256,7 @@ public class Utility {
 			date = (Date) formatter.parse(str_date);
 			TimeZone tz = TimeZone.getTimeZone(timeZon);
 			formatter.setTimeZone(tz);
-			System.out.println(formatter.format(date));
+			//System.out.println(formatter.format(date));
 			Date tempDate = (Date) formatter.parse(formatter.format(date));
 			if (dateType) {
 				formatter = new SimpleDateFormat("MMddyy HH:mm:ss");

@@ -127,15 +127,15 @@ public class SQLQuery {
 			+ " student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1, student0_.EXT_PIN2  as EXT_PIN2  from student student0_ "
 			+ " where student0_.STUDENT_ID = ? ";
 	
-	public static String studentAccommodationsSql = "select sa.SCREEN_MAGNIFIER AS SCREEN_MAGNIFIER, sa.SCREEN_READER AS SCREEN_READER, sa.CALCULATOR AS CALCULATOR,"
+	public static String studentAccommodationsSql = "select sa.SCREEN_READER AS SCREEN_READER, sa.CALCULATOR AS CALCULATOR,"
 			+ " sa.TEST_PAUSE AS TEST_PAUSE, sa.UNTIMED_TEST UNTIMED_TEST, sa.QUESTION_BACKGROUND_COLOR AS QUESTION_BACKGROUND_COLOR,"
 			+ " sa.QUESTION_FONT_COLOR AS QUESTION_FONT_COLOR, sa.QUESTION_FONT_SIZE AS QUESTION_FONT_SIZE,"
-			+ " sa.ANSWER_BACKGROUND_COLOR AS  ANSWER_BACKGROUND_COLOR, sa.ANSWER_FONT_COLOR AS ANSWER_FONT_COLOR,"
+			+ " sa.ANSWER_BACKGROUND_COLOR AS ANSWER_BACKGROUND_COLOR, sa.ANSWER_FONT_COLOR AS ANSWER_FONT_COLOR,"
 			+ " sa.ANSWER_FONT_SIZE AS ANSWER_FONT_SIZE, sa.HIGHLIGHTER AS HIGHLIGHTER,"
 			+ " DECODE((SELECT AUDIO_FILE_NAME FROM MUSIC_FILE_LIST MFL WHERE MFL.FILE_ID=SA.MUSIC_FILE_ID),NULL,'',"
 			+ " (SELECT AUDIO_FILE_NAME FROM MUSIC_FILE_LIST MFL WHERE MFL.FILE_ID = SA.MUSIC_FILE_ID)) AS MUSIC_FILE_NAME,"
 			+ " sa.MASKING_RULER AS MASKING_RULER, sa.MAGNIFYING_GLASS AS MAGNIFYING_GLASS, sa.EXTENDED_TIME AS EXTENDED_TIME,"
-			+ " sa.MASKING_TOOL AS MASKING_TOOL, sa.MICROPHONE_HEADPHONE AS MICROPHONE_HEADPHONE"
+			+ " sa.MASKING_TOOL AS MASKING_TOOL"
 			+ " from student_accommodation sa where sa.STUDENT_ID = ?";
 
 	public static String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
@@ -269,10 +269,19 @@ public class SQLQuery {
 											" AND TPOF.SESSIONID = ?" +
 											" AND TPOF.STUDENTID = ?";
 	
-	public static String ALL_OBJECTIVE_SQL_TA = "SELECT objective_id, objective_name " +
-			                                   "FROM tabe_cat_objective";
+	/*public static String ALL_OBJECTIVE_SQL_TA = "SELECT objective_id, objective_name " +
+			                                   "FROM tabe_cat_objective";*/
 	
-	public static String ALL_OBJECTIVE_SQL_TB = "SELECT DISTINCT ISET.ITEM_SET_ID AS objective_id,"
+	public static String ALL_OBJECTIVE_SQL_TA = "SELECT TCO.OBJECTIVE_ID,"+
+												" DECODE(CA.ITEM_SET_NAME,'Applied Mathematics','AM'," +
+												" DECODE(CA.ITEM_SET_NAME,'Language','LN'," +
+												" DECODE(CA.ITEM_SET_NAME,'Mathematics Computation','MC'," +
+												" DECODE(CA.ITEM_SET_NAME, 'Reading', 'RD', '')))) || '-' ||" +
+												" TCO.OBJECTIVE_NAME AS OBJECTIVE_NAME" +
+												" FROM TABE_CAT_OBJECTIVE TCO, ITEM_SET CA" +
+												" WHERE CA.ITEM_SET_ID = TCO.CONTENT_AREA_ID";
+	
+	/*public static String ALL_OBJECTIVE_SQL_TB = "SELECT DISTINCT ISET.ITEM_SET_ID AS objective_id,"
 											 +" ISET.ITEM_SET_NAME as objective_name"
 											 +" FROM PRODUCT PROD, ITEM_SET_CATEGORY ISC, ITEM_SET ISET"
 											 +" WHERE PROD.SCORING_ITEM_SET_LEVEL = ISC.ITEM_SET_CATEGORY_LEVEL"
@@ -280,7 +289,34 @@ public class SQLQuery {
 											 +" AND ISET.ITEM_SET_CATEGORY_ID = ISC.ITEM_SET_CATEGORY_ID"
 											 +" AND ISET.ITEM_SET_TYPE = 'RE'"
 											 +" AND PRODUCT_TYPE = 'TB'"
-											 +" GROUP BY ISET.ITEM_SET_ID, ISET.ITEM_SET_NAME";
+											 +" GROUP BY ISET.ITEM_SET_ID, ISET.ITEM_SET_NAME";*/
+	
+	public static String ALL_OBJECTIVE_SQL_TB = "SELECT ISET.ITEM_SET_ID AS OBJECTIVE_ID,"  +
+												" DECODE(CA.ITEM_SET_NAME,'Applied Mathematics','AM',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Language','LN',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Language Mechanics','LM',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Math Computation','MC',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Reading','RD',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Spelling','SP',"  +
+												" DECODE(CA.ITEM_SET_NAME,'Vocabulary','VO',''))))))) || '-' ||ISET.ITEM_SET_NAME AS OBJECTIVE_NAME"  +
+												" FROM PRODUCT           PROD,"  +
+												" ITEM_SET_CATEGORY ISC,"  +
+												" ITEM_SET          ISET,"  +
+												" ITEM_SET          CA,"  +
+												" ITEM_SET_CATEGORY CAC,"  +
+												" ITEM_SET_ANCESTOR ISA"  +
+												" WHERE PROD.SCORING_ITEM_SET_LEVEL = ISC.ITEM_SET_CATEGORY_LEVEL"  +
+												" AND PROD.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID"  +
+												" AND ISET.ITEM_SET_CATEGORY_ID = ISC.ITEM_SET_CATEGORY_ID"  +
+												" AND ISET.ITEM_SET_TYPE = 'RE'"  +
+												" AND PRODUCT_TYPE = ?"  +
+												" AND ISA.ITEM_SET_ID = ISET.ITEM_SET_ID"  +
+												" AND ISA.ANCESTOR_ITEM_SET_ID = CA.ITEM_SET_ID"  +
+												" AND CA.ITEM_SET_CATEGORY_ID = CAC.ITEM_SET_CATEGORY_ID"  +
+												" AND CAC.FRAMEWORK_PRODUCT_ID = PROD.PARENT_PRODUCT_ID"  +
+												" AND CAC.ITEM_SET_CATEGORY_LEVEL = PROD.CONTENT_AREA_LEVEL"  +
+												" GROUP BY CA.ITEM_SET_NAME, ISET.ITEM_SET_ID, ISET.ITEM_SET_NAME"  +
+												" ORDER BY ISET.ITEM_SET_ID, OBJECTIVE_NAME";
 	
 	public static String CONTENT_DOMAIN_FOR_ROSTER_SQL_TABE = 
 															 "SELECT ISET.ITEM_SET_ID," +
@@ -461,6 +497,19 @@ public class SQLQuery {
 													"FROM tabe_content_area_fact tcaf " +
 													"WHERE tcaf.studentid = ? " +
 													"AND tcaf.sessionid = ? ";
+	
+	public static final String SCALE_SCORE_SQL_TA = "SELECT TA.PRODUCT_ID || SISS.ITEM_SET_ID AS CONTENT_AREAID," +
+												" SISS.ABILITY_SCORE AS SCALE_SCORE" +
+												" FROM STUDENT_ITEM_SET_STATUS SISS," +
+												" TEST_ROSTER TR," +
+												" TEST_ADMIN TA," +
+												" ITEM_SET ISET" +
+												" WHERE TR.STUDENT_ID = ?" +
+												" AND TR.TEST_ADMIN_ID = ?" +
+												" AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID" +
+												" AND ISET.ITEM_SET_ID = SISS.ITEM_SET_ID" +
+												" AND ISET.SAMPLE = 'F'" +
+												" AND TR.TEST_ROSTER_ID = SISS.TEST_ROSTER_ID";
 	
 	public static final String GET_LAST_ITEM_SQL = "SELECT item_id AS lastItemId "
 													+ "FROM ITEM_RESPONSE "

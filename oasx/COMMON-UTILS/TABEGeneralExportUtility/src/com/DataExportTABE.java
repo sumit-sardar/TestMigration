@@ -163,8 +163,8 @@ public class DataExportTABE {
 					System.out.println("Product ID is not specified in Resource Bundle named config.properties");
 				}
 				if(customerIdProvided && productIdProvided) {
+					System.out.println("Started Export for CustomerID:[" + CUSTOMER_ID + "]");
 					dataExport.writeToText();
-					//System.out.println("Customer ID is : " + CUSTOMER_ID );
 					//System.out.println("Product ID is : " + PRODUCT_ID );
 				}
 				else {
@@ -197,7 +197,7 @@ public class DataExportTABE {
 		StringBuilder headerRow = new StringBuilder();		
 		int i=0;
 		StringBuilder contentDomains = new StringBuilder();
-		for (String scoreType: SCORE_TYPES.keySet()) {
+		/*for (String scoreType: SCORE_TYPES.keySet()) {
 				contentDomains.append(scoreType).append("(Recall Information").append(SEPARATOR)
 				.append("Construct Meaning in Context").append(SEPARATOR).append("Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
 				.append("Whole Numbers").append(SEPARATOR).append("Decimals, Fractions, Percents").append(SEPARATOR)				
@@ -221,6 +221,32 @@ public class DataExportTABE {
 				.append("Subtract Whole Numbers").append(SEPARATOR).append("Vowel").append(SEPARATOR)
 				.append("Word Meaning").append(SEPARATOR).append("Words in Context").append(SEPARATOR)
 				.append("Writing Conventions)").append(SEPARATOR);
+		}*/
+		for (String scoreType: SCORE_TYPES.keySet()) {
+			contentDomains.append(scoreType)
+			.append("(RD-Construct Meaning in Context").append(SEPARATOR).append("RD-Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
+			.append("RD-Recall Information").append(SEPARATOR).append("RD-Construct Meaning").append(SEPARATOR)
+			.append("RD-Evaluate/Extend Meaning").append(SEPARATOR).append("RD-Interpret Graphic Information").append(SEPARATOR)
+			.append("RD-Pre-Reading Skills").append(SEPARATOR).append("RD-Words in Context").append(SEPARATOR)
+			.append("MC-Algebraic Operations").append(SEPARATOR).append("MC-Decimals, Fractions, Percents").append(SEPARATOR)
+			.append("MC-Integers").append(SEPARATOR).append("MC-Whole Numbers").append(SEPARATOR)
+			.append("MC-Add Whole Numbers").append(SEPARATOR).append("MC-Decimals").append(SEPARATOR)
+			.append("MC-Divide Whole Numbers").append(SEPARATOR).append("MC-Fractions").append(SEPARATOR)
+			.append("MC-Multiply Whole Numbers").append(SEPARATOR).append("MC-Order of Operations").append(SEPARATOR)
+			.append("MC-Percents").append(SEPARATOR).append("MC-Subtract Whole Numbers").append(SEPARATOR)
+			.append("AM-Computation and Estimation").append(SEPARATOR).append("AM-Geometry and Spatial Sense").append(SEPARATOR)
+			.append("AM-Measurement").append(SEPARATOR).append("AM-Number and Number Operations").append(SEPARATOR)
+			.append("AM-Patterns, Functions, Algebra").append(SEPARATOR).append("AM-Problem Solving and Reasoning").append(SEPARATOR)
+			.append("AM-Statistics and Probability").append(SEPARATOR).append("AM-Computation in Context").append(SEPARATOR)
+			.append("AM-Data Analysis").append(SEPARATOR).append("AM-Estimation").append(SEPARATOR)
+			.append("LN-Sentence and Paragraph Development").append(SEPARATOR).append("LN-Usage").append(SEPARATOR)
+			.append("LN-Writing Mechanics and Conventions").append(SEPARATOR).append("LN-Capitalization").append(SEPARATOR)
+			.append("LN-Paragraph Development").append(SEPARATOR).append("LN-Punctuation").append(SEPARATOR)
+			.append("LN-Sentence Formation").append(SEPARATOR).append("LN-Writing Conventions").append(SEPARATOR)
+			.append("VO-Multimeaning Words").append(SEPARATOR).append("VO-Word Meaning").append(SEPARATOR)
+			.append("VO-Words in Context").append(SEPARATOR).append("LM-Sentences, Phrases, Clauses").append(SEPARATOR)
+			.append("LM-Writing Conventions").append(SEPARATOR).append("SP-Consonant").append(SEPARATOR)
+			.append("SP-Structural Unit").append(SEPARATOR).append("SP-Vowel)").append(SEPARATOR);
 		}
 		int j=0;
 		for(TABEFile tabe: myList) {
@@ -264,7 +290,7 @@ public class DataExportTABE {
 		.append("Free Lunch").append(SEPARATOR).append("IEP").append(SEPARATOR)
 		.append("LEP").append(SEPARATOR).append("Labor Force").append(SEPARATOR)
 		.append("Migrant").append(SEPARATOR).append("Section 504").append(SEPARATOR)
-		.append("Screen Magnifier").append(SEPARATOR).append("Screen Reader").append(SEPARATOR)
+		/*.append("Screen Magnifier").append(SEPARATOR)*/.append("Screen Reader").append(SEPARATOR)
 		.append("Calculator").append(SEPARATOR).append("Test Pause").append(SEPARATOR)
 		.append("Untimed Test").append(SEPARATOR).append("Question Background Color").append(SEPARATOR)
 		.append("Question Font Color").append(SEPARATOR).append("Question Font Size").append(SEPARATOR)
@@ -272,7 +298,7 @@ public class DataExportTABE {
 		.append("Answer Font Size").append(SEPARATOR).append("Highlighter").append(SEPARATOR)
 		.append("Music File Name").append(SEPARATOR).append("Masking Ruler").append(SEPARATOR)
 		.append("Magnifying Glass").append(SEPARATOR).append("Extended Time").append(SEPARATOR)
-		.append("Masking Tool").append(SEPARATOR).append("Microphone Headphone").append(SEPARATOR)
+		.append("Masking Tool").append(SEPARATOR)//.append("Microphone Headphone").append(SEPARATOR)
 		.append("Testing Site").append(SEPARATOR).append("Date Testing Complete").append(SEPARATOR)
 		.append("Interrupted").append(SEPARATOR).append("Test Form Id").append(SEPARATOR)
 		.append("Last Item").append(SEPARATOR).append("Timed Out").append(SEPARATOR)
@@ -328,7 +354,7 @@ public class DataExportTABE {
 				.append(tabe.getFreeLunch()).append(SEPARATOR).append(tabe.getIep()).append(SEPARATOR)
 				.append(tabe.getLep()).append(SEPARATOR).append(tabe.getLaborForceStatus()).append(SEPARATOR)
 				.append(tabe.getMigrant()).append(SEPARATOR).append(tabe.getSection504()).append(SEPARATOR)
-				.append(tabe.getScreenMagnifier()).append(SEPARATOR).append(tabe.getScreenReader()).append(SEPARATOR)
+				/*.append(tabe.getScreenMagnifier()).append(SEPARATOR)*/.append(tabe.getScreenReader()).append(SEPARATOR)
 				.append(tabe.getCalculator()).append(SEPARATOR).append(tabe.getTestPause()).append(SEPARATOR)
 				.append(tabe.getUntimedTest()).append(SEPARATOR).append(tabe.getQuestionBackgroundColor()).append(SEPARATOR)
 				.append(tabe.getQuestionFontColor()).append(SEPARATOR).append(tabe.getQuestionFontSize()).append(SEPARATOR)
@@ -336,7 +362,7 @@ public class DataExportTABE {
 				.append(tabe.getAnswerFontSize()).append(SEPARATOR).append(tabe.getHighlighter()).append(SEPARATOR)
 				.append(tabe.getMusicFileName()).append(SEPARATOR).append(tabe.getMaskingRuler()).append(SEPARATOR)
 				.append(tabe.getMagnifyingGlass()).append(SEPARATOR).append(tabe.getExtendedTime()).append(SEPARATOR)
-				.append(tabe.getMaskingTool()).append(SEPARATOR).append(tabe.getMicrophoneHeadphone()).append(SEPARATOR)
+				.append(tabe.getMaskingTool()).append(SEPARATOR)//.append(tabe.getMicrophoneHeadphone()).append(SEPARATOR)
 				.append(tabe.getTestingSite()).append(SEPARATOR).append(tabe.getDateTestingCompleted()).append(SEPARATOR)
 				.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getTestFormId()).append(SEPARATOR)
 				.append(tabe.getLastItem()).append(SEPARATOR).append(tabe.getTimedOut()).append(SEPARATOR)
@@ -369,11 +395,11 @@ public class DataExportTABE {
 					.append(tabe.getPredictedGED().getAverage()).append(SEPARATOR)
 					.append(tabe.getPredictedGED().getMath()).append(SEPARATOR).append(tabe.getPredictedGED().getReading()).append(SEPARATOR)
 					.append(tabe.getPredictedGED().getScience()).append(SEPARATOR).append(tabe.getPredictedGED().getSocialStudies()).append(SEPARATOR)
-					.append(tabe.getPredictedGED().getWriting()).append(SEPARATOR).append(tabe.getObjectiveRawScore())
+					.append(tabe.getPredictedGED().getWriting()).append(SEPARATOR)
 					
-					.append(tabe.getObjectiveTotalRawScore()).append(tabe.getObjectiveScaleScore())
-					.append(tabe.getObjectiveScaleScoreSEM()).append(tabe.getObjectiveMasteryLevel())
-					.append(tabe.getObjectiveMastery())
+					.append(tabe.getObjectiveRawScore()).append(tabe.getObjectiveTotalRawScore())
+					.append(tabe.getObjectiveScaleScore()).append(tabe.getObjectiveScaleScoreSEM())
+					.append(tabe.getObjectiveMasteryLevel()).append(tabe.getObjectiveMastery())
 				
 				.append(tabe.getItemResponse());
 				
@@ -405,9 +431,7 @@ public class DataExportTABE {
 				getProductType(oascon, Integer.parseInt(productIds[i]));
 				//System.out.println("Excution for " + productIds[i] + " Product Id and Product Type " + PRODUCT_TYPE);
 				getAllContentDomain(oascon, Integer.parseInt(productIds[i]));
-				if(!"TL".equals(PRODUCT_TYPE)) {
-					getAllObjectives(oascon);
-				}
+				getAllObjectives(oascon);
 				customerDemoList = getCustomerDemographic(oascon);
 				Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
 						customerDemoList);
@@ -443,7 +467,7 @@ public class DataExportTABE {
 					if("TA".equals(PRODUCT_TYPE)) {
 						getSemScores(oascon, catData, roster,catData.getAbilityScores());
 						fillObjective(oascon, catData, roster);
-					}else if("TB".equals(PRODUCT_TYPE)){
+					}else if("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)){
 						fillObjectiveForOnline(oascon, irscon, catData, roster);
 					}
 					prepareItemResponses(oascon, irscon, catData, roster, Integer.parseInt(productIds[i]));				
@@ -646,42 +670,42 @@ public class DataExportTABE {
 			while (rs.next()) {
 				StudentAccommodations studentAccommodations = new StudentAccommodations();
 				studentAccommodations.setStudentId(studentId);
-				if(rs.getString(1) != null)
-					studentAccommodations.setScreenMagnifier(setStudentAccommodationValue(rs.getString(1)));
-				if(rs.getString(2) != null)
-					studentAccommodations.setScreenReader(setStudentAccommodationValue(rs.getString(2)));
-				if(rs.getString(3) != null)
-					studentAccommodations.setCalculator(setStudentAccommodationValue(rs.getString(3)));
-				if(rs.getString(4) != null)
-					studentAccommodations.setTestPause(setStudentAccommodationValue(rs.getString(4)));
-				if(rs.getString(5) != null)
-					studentAccommodations.setUntimedTest(setStudentAccommodationValue(rs.getString(5)));
-				if(rs.getString(6) != null)
-					studentAccommodations.setQuestionBackgroundColor(setColor(rs.getString(6)));
-				if(rs.getString(7) != null)
-					studentAccommodations.setQuestionFontColor(setColor(rs.getString(7)));
-				if(rs.getString(8) != null)
-					studentAccommodations.setQuestionFontSize(setFontSize(rs.getString(8)));
-				if(rs.getString(9) != null)
-					studentAccommodations.setAnswerBackgroundColor(setColor(rs.getString(9)));
-				if(rs.getString(10) != null)
-					studentAccommodations.setAnswerFontColor(setColor(rs.getString(10)));
-				if(rs.getString(11) != null)
-					studentAccommodations.setAnswerFontSize(setFontSize(rs.getString(11)));
-				if(rs.getString(12) != null)
-					studentAccommodations.setHighlighter(setStudentAccommodationValue(rs.getString(12)));
-				if(rs.getString(13) != null)
-					studentAccommodations.setMusicFileName(rs.getString(13));
-				if(rs.getString(14) != null)
-					studentAccommodations.setMaskingRuler(setStudentAccommodationValue(rs.getString(14)));
-				if(rs.getString(15) != null)
-					studentAccommodations.setMagnifyingGlass(setStudentAccommodationValue(rs.getString(15)));
-				if(rs.getString(16) != null)
-					studentAccommodations.setExtendedTime(setStudentAccommodationValue(rs.getString(16)));
-				if(rs.getString(17) != null)
-					studentAccommodations.setMaskingTool(setStudentAccommodationValue(rs.getString(17)));
-				if(rs.getString(18) != null)
-					studentAccommodations.setMicrophoneHeadphone(setStudentAccommodationValue(rs.getString(18)));
+				/*if(rs.getString(1) != null)
+					studentAccommodations.setScreenMagnifier(setStudentAccommodationValue(rs.getString(1)));*/
+				if(rs.getString("SCREEN_READER") != null)
+					studentAccommodations.setScreenReader(setStudentAccommodationValue(rs.getString("SCREEN_READER")));
+				if(rs.getString("CALCULATOR") != null)
+					studentAccommodations.setCalculator(setStudentAccommodationValue(rs.getString("CALCULATOR")));
+				if(rs.getString("TEST_PAUSE") != null)
+					studentAccommodations.setTestPause(setStudentAccommodationValue(rs.getString("TEST_PAUSE")));
+				if(rs.getString("UNTIMED_TEST") != null)
+					studentAccommodations.setUntimedTest(setStudentAccommodationValue(rs.getString("UNTIMED_TEST")));
+				if(rs.getString("QUESTION_BACKGROUND_COLOR") != null)
+					studentAccommodations.setQuestionBackgroundColor(setColor(rs.getString("QUESTION_BACKGROUND_COLOR")));
+				if(rs.getString("QUESTION_FONT_COLOR") != null)
+					studentAccommodations.setQuestionFontColor(setColor(rs.getString("QUESTION_FONT_COLOR")));
+				if(rs.getString("QUESTION_FONT_SIZE") != null)
+					studentAccommodations.setQuestionFontSize(setFontSize(rs.getString("QUESTION_FONT_SIZE")));
+				if(rs.getString("ANSWER_BACKGROUND_COLOR") != null)
+					studentAccommodations.setAnswerBackgroundColor(setColor(rs.getString("ANSWER_BACKGROUND_COLOR")));
+				if(rs.getString("ANSWER_FONT_COLOR") != null)
+					studentAccommodations.setAnswerFontColor(setColor(rs.getString("ANSWER_FONT_COLOR")));
+				if(rs.getString("ANSWER_FONT_SIZE") != null)
+					studentAccommodations.setAnswerFontSize(setFontSize(rs.getString("ANSWER_FONT_SIZE")));
+				if(rs.getString("HIGHLIGHTER") != null)
+					studentAccommodations.setHighlighter(setStudentAccommodationValue(rs.getString("HIGHLIGHTER")));
+				if(rs.getString("MUSIC_FILE_NAME") != null)
+					studentAccommodations.setMusicFileName(rs.getString("MUSIC_FILE_NAME"));
+				if(rs.getString("MASKING_RULER") != null)
+					studentAccommodations.setMaskingRuler(setStudentAccommodationValue(rs.getString("MASKING_RULER")));
+				if(rs.getString("MAGNIFYING_GLASS") != null)
+					studentAccommodations.setMagnifyingGlass(setStudentAccommodationValue(rs.getString("MAGNIFYING_GLASS")));
+				if(rs.getString("EXTENDED_TIME") != null)
+					studentAccommodations.setExtendedTime(setStudentAccommodationValue(rs.getString("EXTENDED_TIME")));
+				if(rs.getString("MASKING_TOOL") != null)
+					studentAccommodations.setMaskingTool(setStudentAccommodationValue(rs.getString("MASKING_TOOL")));
+				/*if(rs.getString(18) != null)
+					studentAccommodations.setMicrophoneHeadphone(setStudentAccommodationValue(rs.getString(18)));*/
 				studentAccommodationsSet.add(studentAccommodations);
 			}
 
@@ -863,7 +887,7 @@ public class DataExportTABE {
 	
 	private void fillAccommodations(Set<StudentAccommodations> sa, TABEFile tfill) {
 		for(StudentAccommodations studentAccom : sa) {
-			tfill.setScreenMagnifier(studentAccom.getScreenMagnifier());
+			//tfill.setScreenMagnifier(studentAccom.getScreenMagnifier());
 			tfill.setScreenReader(studentAccom.getScreenReader());
 			tfill.setCalculator(studentAccom.getCalculator());
 			tfill.setTestPause(studentAccom.getTestPause());
@@ -880,7 +904,7 @@ public class DataExportTABE {
 			tfill.setMagnifyingGlass(studentAccom.getMagnifyingGlass());
 			tfill.setExtendedTime(studentAccom.getExtendedTime());
 			tfill.setMaskingTool(studentAccom.getMaskingTool());
-			tfill.setMicrophoneHeadphone(studentAccom.getMicrophoneHeadphone());
+			//tfill.setMicrophoneHeadphone(studentAccom.getMicrophoneHeadphone());
 		}
 	}
 
@@ -1159,7 +1183,7 @@ public class DataExportTABE {
 			   for(String itemSetName: keySet) {
 				   StringBuilder itemResposneData = new StringBuilder();
 				   Integer itemSetId = CONTENT_DOMAINS.get(itemSetName);
-				   System.out.println("Item Set Name : " + itemSetName + " : Item Set ID : " + itemSetId);
+				   //System.out.println("Item Set Name : " + itemSetName + " : Item Set ID : " + itemSetId);
 				   if("Reading".equals(itemSetName)) {
 					   response.append("RD" + SEPARATOR);
 					   //itemCount = 29;
@@ -1211,7 +1235,11 @@ public class DataExportTABE {
 					}
 					SqlUtil.close(ps, rs);
 					//Getting scale score
-					ps = irscon.prepareStatement(SQLQuery.SCALE_SCORE_SQL);
+					if ("TA".equals(PRODUCT_TYPE)) {
+						ps = con.prepareStatement(SQLQuery.SCALE_SCORE_SQL_TA);
+					} else if ("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)) {
+						ps = irscon.prepareStatement(SQLQuery.SCALE_SCORE_SQL);
+					}
 					ps.setInt(1, roster.getStudentId());
 					ps.setInt(2, roster.getTestAdminId());
 					rs = ps.executeQuery();
@@ -1384,8 +1412,9 @@ public class DataExportTABE {
 		try {
 			if("TA".equals(PRODUCT_TYPE)){
 				ps = con.prepareStatement(SQLQuery.ALL_OBJECTIVE_SQL_TA);
-			}else if("TB".equals(PRODUCT_TYPE)){
+			}else if("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)){
 				ps = con.prepareStatement(SQLQuery.ALL_OBJECTIVE_SQL_TB);
+				ps.setString(1, PRODUCT_TYPE);
 			}
 			rs = ps.executeQuery();
 			while(rs.next()) {
