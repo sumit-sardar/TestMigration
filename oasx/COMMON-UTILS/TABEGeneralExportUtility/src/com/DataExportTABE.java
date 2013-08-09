@@ -1486,7 +1486,12 @@ public class DataExportTABE {
 			long totalTimeTaken = 0L;
 			int timedOut = 0;
 			try {
-				ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL_PER_CONTENT_AREA);
+				if("TB".equals(PRODUCT_TYPE) || "TA".equals(PRODUCT_TYPE)) {
+					ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL_PER_CONTENT_AREA);
+				}
+				else if("TL".equals(PRODUCT_TYPE)) {
+					ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL_PER_CONTENT_AREA_LOCATOR);
+				}
 				ps.setInt(1, itemSetId);
 				ps.setInt(2, roster.getTestRosterId());
 				rs = ps.executeQuery();
@@ -1585,7 +1590,12 @@ public class DataExportTABE {
 				long totalTestTime = 0L;
 				long totalTimeTaken = 0L;
 				try {
-					ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL);
+					if("TB".equals(PRODUCT_TYPE) || "TA".equals(PRODUCT_TYPE)) {
+						ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL);
+					}
+					else if("TL".equals(PRODUCT_TYPE)) {
+						ps = con.prepareStatement(SQLQuery.TOTAL_TEST_TIME_SQL_LOCATOR);
+					}
 					ps.setInt(1, roster.getTestRosterId());
 					rs = ps.executeQuery();
 					if(rs.next()) {

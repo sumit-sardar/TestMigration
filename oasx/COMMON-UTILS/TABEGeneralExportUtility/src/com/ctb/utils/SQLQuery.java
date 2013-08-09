@@ -109,7 +109,7 @@ public class SQLQuery {
 								        + " and tr.test_admin_id = ta.test_admin_id"
 								        + " and ta.product_id = p.product_id "
 								        + " and ta.product_id = ?"
-								        + " and tr.last_used_sds like ('https://cat.ctb.com%')"
+								        + " and tr.last_used_sds like ('https://%')"
 								        + " order by tr.test_roster_id";
 	
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
@@ -396,6 +396,13 @@ public class SQLQuery {
 	   													"AND itms.item_set_level <> 'L' " +
 	   													"AND siss.item_set_id = ?" +
 	   													"AND siss.test_roster_id = ?";
+	
+	public static final String TOTAL_TEST_TIME_SQL_PER_CONTENT_AREA_LOCATOR = "SELECT SUM(itms.time_limit) total_time " +
+														"FROM student_item_set_status siss, item_set itms " +
+														"WHERE itms.item_set_id = siss.item_set_id " +
+														"AND itms.SAMPLE = 'F' " +
+														"AND siss.item_set_id = ?" +
+														"AND siss.test_roster_id = ?";
 
 	public static final String TOTAL_TIME_TAKEN_SQL_PER_CONTENT_AREA = "SELECT SUM(ir.response_elapsed_time) total_time " +
 														"FROM item_response ir " +
@@ -408,6 +415,12 @@ public class SQLQuery {
 	      "AND itms.SAMPLE = 'F' " +
 	      "AND itms.item_set_level <> 'L' " +
 	      "AND siss.test_roster_id = ?";
+	
+	public static final String TOTAL_TEST_TIME_SQL_LOCATOR = "SELECT SUM(itms.time_limit) total_time " +
+				"FROM student_item_set_status siss, item_set itms " +
+				"WHERE itms.item_set_id = siss.item_set_id " +
+			    "AND itms.SAMPLE = 'F' " +
+			    "AND siss.test_roster_id = ?";
 	
 	public static final String TOTAL_TIME_TAKEN_SQL = "SELECT SUM(ir.response_elapsed_time) total_time " +
 		   "FROM item_response ir " +
