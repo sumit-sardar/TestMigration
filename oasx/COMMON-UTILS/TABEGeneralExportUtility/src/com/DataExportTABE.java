@@ -49,9 +49,9 @@ public class DataExportTABE {
 	
 	private static String CUSTOMER_ID ;
 	private static String PRODUCT_ID ;
-	private static final String FILE_TYPE = ExtractUtil.getDetail("oas.exportdata.fileType");
-	private static String FILE_NAME = ExtractUtil.getDetail("oas.exportdata.genfileName");
-	private static final String LOCAL_FILE_PATH = ExtractUtil.getDetail("oas.exportdata.filepath");
+	private static String FILE_TYPE;
+	private static String FILE_NAME;
+	private static String LOCAL_FILE_PATH;
 	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> CONTENT_DOMAINS_TB = new LinkedHashMap<String, Integer>();
@@ -69,7 +69,7 @@ public class DataExportTABE {
 	private static String PRODUCT_TYPE = "";
 	private static String [] productIds = null;
 	static String env = "";
-	static Properties properties = null;
+	private static Properties properties = null;
 	
 	static {
 		CONTENT_DOMAINS_TB.put("Reading", 0);
@@ -130,6 +130,7 @@ public class DataExportTABE {
 		try {
 			boolean customerIdProvided = false;
 			boolean productIdProvided = false;
+			boolean mandatoryField = false;
 			dataExport.getCommandLine(args);
 			if(!"".equals(env)) {
 				properties = dataExport.loadProperties(env);
@@ -153,22 +154,25 @@ public class DataExportTABE {
 							System.out.println("Survey Product Id can not be Input to the program, So stopping the execution");
 							productIdProvided = false;
 						}
-						/*else if(productIds[i].equals("4008")) {
-							System.out.println("Locator Product Id can not be Input to the program, So stopping the execution");
-							productIdProvided = false;
-						}*/
 					}
 				}
 				else {
 					System.out.println("Product ID is not specified in Resource Bundle named config.properties");
 				}
-				if(customerIdProvided && productIdProvided) {
+				FILE_TYPE = dataExport.getPropertyValue("oas.exportdata.fileType");
+				FILE_NAME = dataExport.getPropertyValue("oas.exportdata.genfileName");
+				LOCAL_FILE_PATH = dataExport.getPropertyValue("oas.exportdata.filepath");
+				if(FILE_TYPE != null && FILE_NAME != null && LOCAL_FILE_PATH != null 
+						&& FILE_TYPE.length() > 0 && FILE_NAME.length() > 0 && LOCAL_FILE_PATH.length()>0){
+					mandatoryField = true;
+				}
+				if(customerIdProvided && productIdProvided && mandatoryField) {
 					System.out.println("Started Export for CustomerID:[" + CUSTOMER_ID + "]");
 					dataExport.writeToText();
 					//System.out.println("Product ID is : " + PRODUCT_ID );
 				}
 				else {
-					System.out.println("As mandatory inputs Customer_ID/Product_ID are missing" +
+					System.out.println("As mandatory inputs Customer_Id/Product_Id/File_Type/File_Name/File_Path are missing" +
 							" or wrong type of ProductIDs are given in Resource Bundle so program is exiting..");
 				}
 			}
@@ -187,230 +191,207 @@ public class DataExportTABE {
 	private void writeToText() throws IOException, FFPojoException, SQLException,Exception {
 
 		List<TABEFile> myList = createList();
-		String fileName = FILE_NAME + "_" + System.currentTimeMillis() + FILE_TYPE;
-		if(!(new File(LOCAL_FILE_PATH)).exists()){
-			File f = new File(LOCAL_FILE_PATH);
-			f.mkdirs();
-		}
-		File file = new File(LOCAL_FILE_PATH, fileName);
-		CSVWriter writer = new CSVWriter(new FileWriter(file));
-		StringBuilder headerRow = new StringBuilder();		
-		int i=0;
-		StringBuilder contentDomains = new StringBuilder();
-		/*for (String scoreType: SCORE_TYPES.keySet()) {
-				contentDomains.append(scoreType).append("(Recall Information").append(SEPARATOR)
-				.append("Construct Meaning in Context").append(SEPARATOR).append("Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
-				.append("Whole Numbers").append(SEPARATOR).append("Decimals, Fractions, Percents").append(SEPARATOR)				
-				.append("Integers").append(SEPARATOR).append("Algebraic Operations").append(SEPARATOR)
-				.append("Number and Number Operations").append(SEPARATOR).append("Computation and Estimation").append(SEPARATOR)
-				.append("Measurement").append(SEPARATOR).append("Geometry and Spatial Sense").append(SEPARATOR)
-				.append("Statistics and Probability").append(SEPARATOR).append("Patterns, Functions, Algebra").append(SEPARATOR)
-				.append("Problem Solving and Reasoning").append(SEPARATOR).append("Usage").append(SEPARATOR)
-				.append("Sentence and Paragraph Development").append(SEPARATOR).append("Writing Mechanics and Conventions").append(SEPARATOR)
-				.append("Add Whole Numbers").append(SEPARATOR).append("Capitalization").append(SEPARATOR)
-				.append("Computation in Context").append(SEPARATOR).append("Consonant").append(SEPARATOR)
-				.append("Construct Meaning").append(SEPARATOR).append("Data Analysis").append(SEPARATOR)
-				.append("Decimals").append(SEPARATOR).append("Divide Whole Numbers").append(SEPARATOR)
-				.append("Estimation").append(SEPARATOR).append("Evaluate/Extend Meaning").append(SEPARATOR)
-				.append("Fractions").append(SEPARATOR).append("Interpret Graphic Information").append(SEPARATOR)
-				.append("Multimeaning Words").append(SEPARATOR).append("Multiply Whole Numbers").append(SEPARATOR)
-				.append("Order of Operations").append(SEPARATOR).append("Paragraph Development").append(SEPARATOR)
-				.append("Percents").append(SEPARATOR).append("Pre-Reading Skills").append(SEPARATOR)
-				.append("Punctuation").append(SEPARATOR).append("Sentence Formation").append(SEPARATOR)
-				.append("Sentences, Phrases, Clauses").append(SEPARATOR).append("Structural Unit").append(SEPARATOR)
-				.append("Subtract Whole Numbers").append(SEPARATOR).append("Vowel").append(SEPARATOR)
-				.append("Word Meaning").append(SEPARATOR).append("Words in Context").append(SEPARATOR)
-				.append("Writing Conventions)").append(SEPARATOR);
-		}*/
-		for (String scoreType: SCORE_TYPES.keySet()) {
-			contentDomains.append(scoreType)
-			.append("(RD-Construct Meaning in Context").append(SEPARATOR).append("RD-Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
-			.append("RD-Recall Information").append(SEPARATOR).append("RD-Construct Meaning").append(SEPARATOR)
-			.append("RD-Evaluate/Extend Meaning").append(SEPARATOR).append("RD-Interpret Graphic Information").append(SEPARATOR)
-			.append("RD-Pre-Reading Skills").append(SEPARATOR).append("RD-Words in Context").append(SEPARATOR)
-			.append("MC-Algebraic Operations").append(SEPARATOR).append("MC-Decimals, Fractions, Percents").append(SEPARATOR)
-			.append("MC-Integers").append(SEPARATOR).append("MC-Whole Numbers").append(SEPARATOR)
-			.append("MC-Add Whole Numbers").append(SEPARATOR).append("MC-Decimals").append(SEPARATOR)
-			.append("MC-Divide Whole Numbers").append(SEPARATOR).append("MC-Fractions").append(SEPARATOR)
-			.append("MC-Multiply Whole Numbers").append(SEPARATOR).append("MC-Order of Operations").append(SEPARATOR)
-			.append("MC-Percents").append(SEPARATOR).append("MC-Subtract Whole Numbers").append(SEPARATOR)
-			.append("AM-Computation and Estimation").append(SEPARATOR).append("AM-Geometry and Spatial Sense").append(SEPARATOR)
-			.append("AM-Measurement").append(SEPARATOR).append("AM-Number and Number Operations").append(SEPARATOR)
-			.append("AM-Patterns, Functions, Algebra").append(SEPARATOR).append("AM-Problem Solving and Reasoning").append(SEPARATOR)
-			.append("AM-Statistics and Probability").append(SEPARATOR).append("AM-Computation in Context").append(SEPARATOR)
-			.append("AM-Data Analysis").append(SEPARATOR).append("AM-Estimation").append(SEPARATOR)
-			.append("LN-Sentence and Paragraph Development").append(SEPARATOR).append("LN-Usage").append(SEPARATOR)
-			.append("LN-Writing Mechanics and Conventions").append(SEPARATOR).append("LN-Capitalization").append(SEPARATOR)
-			.append("LN-Paragraph Development").append(SEPARATOR).append("LN-Punctuation").append(SEPARATOR)
-			.append("LN-Sentence Formation").append(SEPARATOR).append("LN-Writing Conventions").append(SEPARATOR)
-			.append("VO-Multimeaning Words").append(SEPARATOR).append("VO-Word Meaning").append(SEPARATOR)
-			.append("VO-Words in Context").append(SEPARATOR).append("LM-Sentences, Phrases, Clauses").append(SEPARATOR)
-			.append("LM-Writing Conventions").append(SEPARATOR).append("SP-Consonant").append(SEPARATOR)
-			.append("SP-Structural Unit").append(SEPARATOR).append("SP-Vowel)").append(SEPARATOR);
-		}
-		int j=0;
-		for(TABEFile tabe: myList) {
-			if("TB".equals(tabe.getProductType())) {
-				if(CONTENT_DOMAINS.size() != CONTENT_DOMAINS_TB.size()) {
-					CONTENT_DOMAINS.put("Vocabulary", 0);
-					CONTENT_DOMAINS.put("Language Mechanics", 0);
-					CONTENT_DOMAINS.put("Spelling", 0);
-				}
-				break;
+		if(!myList.isEmpty()) {
+			String fileName = FILE_NAME + "_" + System.currentTimeMillis() + FILE_TYPE;
+			if(!(new File(LOCAL_FILE_PATH)).exists()){
+				File f = new File(LOCAL_FILE_PATH);
+				f.mkdirs();
 			}
-		}
-		for(String contentDomainName : CONTENT_DOMAINS.keySet()) {
-			//contentDomains.append(contentDomainName).append(SEPARATOR);
-			contentDomains.append("SubTest"+(++j)).append(SEPARATOR);
-			contentDomains.append("Level, Raw Score, Scale Score").append(SEPARATOR);
-			contentDomains.append("Item Response Data").append(SEPARATOR);
-			//Integer itemCount = ITEM_COUNT_MAP.get(contentDomainName);
-			Integer itemCount = ITEM_COUNT_MAP_MAX.get(contentDomainName);
-			if(itemCount != null) {
-				i=0;
-				for(i=0 ; i < itemCount-1 ; i++) {
-					contentDomains.append(SPACE).append(SEPARATOR);
-				}
-				contentDomains.append("Restart Flag").append(SEPARATOR).append("Restart Item Number").append(SEPARATOR)
-				.append("Timed Out").append(SEPARATOR).append("Stopped Item Number").append(SEPARATOR);			
+			File file = new File(LOCAL_FILE_PATH, fileName);
+			CSVWriter writer = new CSVWriter(new FileWriter(file));
+			StringBuilder headerRow = new StringBuilder();		
+			int i=0;
+			StringBuilder contentDomains = new StringBuilder();
+			for (String scoreType: SCORE_TYPES.keySet()) {
+				contentDomains.append(scoreType)
+				.append("(RD-Construct Meaning in Context").append(SEPARATOR).append("RD-Interpret, Evaluate, and Extend Meaning").append(SEPARATOR)
+				.append("RD-Recall Information").append(SEPARATOR).append("RD-Construct Meaning").append(SEPARATOR)
+				.append("RD-Evaluate/Extend Meaning").append(SEPARATOR).append("RD-Interpret Graphic Information").append(SEPARATOR)
+				.append("RD-Pre-Reading Skills").append(SEPARATOR).append("RD-Words in Context").append(SEPARATOR)
+				.append("MC-Algebraic Operations").append(SEPARATOR).append("MC-Decimals, Fractions, Percents").append(SEPARATOR)
+				.append("MC-Integers").append(SEPARATOR).append("MC-Whole Numbers").append(SEPARATOR)
+				.append("MC-Add Whole Numbers").append(SEPARATOR).append("MC-Decimals").append(SEPARATOR)
+				.append("MC-Divide Whole Numbers").append(SEPARATOR).append("MC-Fractions").append(SEPARATOR)
+				.append("MC-Multiply Whole Numbers").append(SEPARATOR).append("MC-Order of Operations").append(SEPARATOR)
+				.append("MC-Percents").append(SEPARATOR).append("MC-Subtract Whole Numbers").append(SEPARATOR)
+				.append("AM-Computation and Estimation").append(SEPARATOR).append("AM-Geometry and Spatial Sense").append(SEPARATOR)
+				.append("AM-Measurement").append(SEPARATOR).append("AM-Number and Number Operations").append(SEPARATOR)
+				.append("AM-Patterns, Functions, Algebra").append(SEPARATOR).append("AM-Problem Solving and Reasoning").append(SEPARATOR)
+				.append("AM-Statistics and Probability").append(SEPARATOR).append("AM-Computation in Context").append(SEPARATOR)
+				.append("AM-Data Analysis").append(SEPARATOR).append("AM-Estimation").append(SEPARATOR)
+				.append("LN-Sentence and Paragraph Development").append(SEPARATOR).append("LN-Usage").append(SEPARATOR)
+				.append("LN-Writing Mechanics and Conventions").append(SEPARATOR).append("LN-Capitalization").append(SEPARATOR)
+				.append("LN-Paragraph Development").append(SEPARATOR).append("LN-Punctuation").append(SEPARATOR)
+				.append("LN-Sentence Formation").append(SEPARATOR).append("LN-Writing Conventions").append(SEPARATOR)
+				.append("VO-Multimeaning Words").append(SEPARATOR).append("VO-Word Meaning").append(SEPARATOR)
+				.append("VO-Words in Context").append(SEPARATOR).append("LM-Sentences, Phrases, Clauses").append(SEPARATOR)
+				.append("LM-Writing Conventions").append(SEPARATOR).append("SP-Consonant").append(SEPARATOR)
+				.append("SP-Structural Unit").append(SEPARATOR).append("SP-Vowel)").append(SEPARATOR);
 			}
-		}			
-				
-		headerRow.append("Product Type").append(SEPARATOR).append("Customer Id").append(SEPARATOR)
-		.append("State Name").append(SEPARATOR).append("State Code").append(SEPARATOR)
-		.append("District Name").append(SEPARATOR).append("District Code").append(SEPARATOR)
-		.append("School Name").append(SEPARATOR).append("School Code").append(SEPARATOR)
-		.append("Class Name").append(SEPARATOR).append("Class Code").append(SEPARATOR)
-		.append("OAS Roster Id").append(SEPARATOR).append("OAS Student Id").append(SEPARATOR)
-		.append("Student Id").append(SEPARATOR).append("Student Id 2").append(SEPARATOR)
-		.append("First Name").append(SEPARATOR).append("Middle Name").append(SEPARATOR)
-		.append("Last Name").append(SEPARATOR).append("Grade").append(SEPARATOR)
-		.append("Birth Date").append(SEPARATOR).append("Gender").append(SEPARATOR)
-		.append("Ethnicity").append(SEPARATOR).append("ELL").append(SEPARATOR)
-		.append("Free Lunch").append(SEPARATOR).append("IEP").append(SEPARATOR)
-		.append("LEP").append(SEPARATOR).append("Labor Force").append(SEPARATOR)
-		.append("Migrant").append(SEPARATOR).append("Section 504").append(SEPARATOR)
-		/*.append("Screen Magnifier").append(SEPARATOR)*/.append("Screen Reader").append(SEPARATOR)
-		.append("Calculator").append(SEPARATOR).append("Test Pause").append(SEPARATOR)
-		.append("Untimed Test").append(SEPARATOR).append("Question Background Color").append(SEPARATOR)
-		.append("Question Font Color").append(SEPARATOR).append("Question Font Size").append(SEPARATOR)
-		.append("Answer Background Color").append(SEPARATOR).append("Answer Font Color").append(SEPARATOR)
-		.append("Answer Font Size").append(SEPARATOR).append("Highlighter").append(SEPARATOR)
-		.append("Music File Name").append(SEPARATOR).append("Masking Ruler").append(SEPARATOR)
-		.append("Magnifying Glass").append(SEPARATOR).append("Extended Time").append(SEPARATOR)
-		.append("Masking Tool").append(SEPARATOR)//.append("Microphone Headphone").append(SEPARATOR)
-		.append("Testing Site").append(SEPARATOR).append("Date Testing Complete").append(SEPARATOR)
-		.append("Interrupted").append(SEPARATOR).append("Test Form Id").append(SEPARATOR)
-		.append("Last Item").append(SEPARATOR).append("Timed Out").append(SEPARATOR)
-		.append("Reading - Ability Score").append(SEPARATOR)
-		.append("Reading - SEM Score").append(SEPARATOR).append("Math Comp - Ability Score").append(SEPARATOR)
-		.append("Math Comp - SEM Score").append(SEPARATOR).append("Applied Math - Ability Score").append(SEPARATOR)
-		.append("Applied Math - SEM Score").append(SEPARATOR).append("Language - Ability Score").append(SEPARATOR).append("Language - SEM Score").append(SEPARATOR)
-		
-		.append("Language Mechanics - Ability Score").append(SEPARATOR)//.append("Language Mechanics - SEM Score").append(SEPARATOR)
-		.append("Vocabulary - Ability Score").append(SEPARATOR)//.append("Vocabulary - SEM Score").append(SEPARATOR)
-		.append("Spelling - Ability Score").append(SEPARATOR)//.append("Spelling - SEM Score").append(SEPARATOR)
-		.append("Total Math - Ability Score").append(SEPARATOR).append("Total Battery - Ability Score").append(SEPARATOR)
-		
-		.append("Grade Equivalent - Reading").append(SEPARATOR).append("Grade Equivalent - Math Comp").append(SEPARATOR)
-		.append("Grade Equivalent - Applied Math").append(SEPARATOR).append("Grade Equivalent - Language").append(SEPARATOR)
-		.append("Grade Equivalent - Language Mechanics").append(SEPARATOR).append("Grade Equivalent - Vocabulary").append(SEPARATOR)
-		.append("Grade Equivalent - Spelling").append(SEPARATOR).append("Grade Equivalent - Total Math").append(SEPARATOR)
-		.append("Grade Equivalent - Total Battery").append(SEPARATOR)
-		
-		.append("NRS Level - Reading").append(SEPARATOR).append("NRS Level - Math Comp").append(SEPARATOR)
-		.append("NRS Level - Applied Math").append(SEPARATOR).append("NRS Level - Language").append(SEPARATOR)
-		.append("NRS Level - Language Mechanics").append(SEPARATOR).append("NRS Level - Vocabulary").append(SEPARATOR)
-		.append("NRS Level - Spelling").append(SEPARATOR).append("NRS Level - Total Math").append(SEPARATOR)
-		.append("NRS Level - Total Battery").append(SEPARATOR)
-		
-		.append("Percentage Mastery - Reading").append(SEPARATOR).append("Percentage Mastery - Math Comp").append(SEPARATOR)
-		.append("Percentage Mastery - Applied Math").append(SEPARATOR).append("Percentage Mastery - Language").append(SEPARATOR)
-		.append("Percentage Mastery - Language Mechanics").append(SEPARATOR).append("Percentage Mastery - Vocabulary").append(SEPARATOR)
-		.append("Percentage Mastery - Spelling").append(SEPARATOR)
-		
-		.append("Predicted GED - Average").append(SEPARATOR)
-		.append("Predicted GED - Math").append(SEPARATOR).append("Predicted GED - Reading").append(SEPARATOR)
-		.append("Predicted GED - Science").append(SEPARATOR).append("Predicted GED - Social Studies").append(SEPARATOR)
-		.append("Predicted GED - Writing").append(SEPARATOR).append(contentDomains.substring(0, contentDomains.length() - 1));		
-				
-		writer.writeNext(headerRow.toString().split(SEPARATOR));
-		try {
-			StringBuilder row = new StringBuilder();
+			int j=0;
 			for(TABEFile tabe: myList) {
-				
-				row = new StringBuilder();
-				row.append(tabe.getProductType()).append(SEPARATOR).append(tabe.getCustomerID()).append(SEPARATOR)
-				.append(tabe.getOrgLevel1Name()).append(SEPARATOR).append(tabe.getOrgLevel1Code()).append(SEPARATOR)
-				.append(tabe.getOrgLevel2Name()).append(SEPARATOR).append(tabe.getOrgLevel2Code()).append(SEPARATOR)
-				.append(tabe.getOrgLevel3Name()).append(SEPARATOR).append(tabe.getOrgLevel3Code()).append(SEPARATOR)
-				.append(tabe.getOrgLevel4Name()).append(SEPARATOR).append(tabe.getOrgLevel4Code()).append(SEPARATOR)
-				.append(tabe.getRosterId()).append(SEPARATOR).append(tabe.getStudentID()).append(SEPARATOR)
-				.append(tabe.getExtStudentId()).append(SEPARATOR).append(tabe.getExtStudentId2()).append(SEPARATOR)
-				.append(tabe.getStudentFirstName()).append(SEPARATOR).append(tabe.getStudentMiddleName()).append(SEPARATOR)
-				.append(tabe.getStudentLastName()).append(SEPARATOR).append(tabe.getGrade()).append(SEPARATOR)
-				.append(tabe.getStudentBirthDate()).append(SEPARATOR).append(tabe.getStudentGender()).append(SEPARATOR)
-				.append(tabe.getEthnicity()).append(SEPARATOR).append(tabe.getEll()).append(SEPARATOR)
-				.append(tabe.getFreeLunch()).append(SEPARATOR).append(tabe.getIep()).append(SEPARATOR)
-				.append(tabe.getLep()).append(SEPARATOR).append(tabe.getLaborForceStatus()).append(SEPARATOR)
-				.append(tabe.getMigrant()).append(SEPARATOR).append(tabe.getSection504()).append(SEPARATOR)
-				/*.append(tabe.getScreenMagnifier()).append(SEPARATOR)*/.append(tabe.getScreenReader()).append(SEPARATOR)
-				.append(tabe.getCalculator()).append(SEPARATOR).append(tabe.getTestPause()).append(SEPARATOR)
-				.append(tabe.getUntimedTest()).append(SEPARATOR).append(tabe.getQuestionBackgroundColor()).append(SEPARATOR)
-				.append(tabe.getQuestionFontColor()).append(SEPARATOR).append(tabe.getQuestionFontSize()).append(SEPARATOR)
-				.append(tabe.getAnswerBackgroundColor()).append(SEPARATOR).append(tabe.getAnswerFontColor()).append(SEPARATOR)
-				.append(tabe.getAnswerFontSize()).append(SEPARATOR).append(tabe.getHighlighter()).append(SEPARATOR)
-				.append(tabe.getMusicFileName()).append(SEPARATOR).append(tabe.getMaskingRuler()).append(SEPARATOR)
-				.append(tabe.getMagnifyingGlass()).append(SEPARATOR).append(tabe.getExtendedTime()).append(SEPARATOR)
-				.append(tabe.getMaskingTool()).append(SEPARATOR)//.append(tabe.getMicrophoneHeadphone()).append(SEPARATOR)
-				.append(tabe.getTestingSite()).append(SEPARATOR).append(tabe.getDateTestingCompleted()).append(SEPARATOR)
-				.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getTestFormId()).append(SEPARATOR)
-				.append(tabe.getLastItem()).append(SEPARATOR).append(tabe.getTimedOut()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getReadingAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getReadingSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getMathCompAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getMathCompSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getAppliedMathAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getAppliedMathSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getLanguageAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getLanguageSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getLanguageMechAbilityScore()).append(SEPARATOR)//.append(tabe.getAbilityScores().getLanguageMechSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getVocabularyAbilityScore()).append(SEPARATOR)//.append(tabe.getAbilityScores().getVocabularySEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getSpellingAbilityScore()).append(SEPARATOR)//.append(tabe.getAbilityScores().getSpellingSEMScore()).append(SEPARATOR)
-					.append(tabe.getAbilityScores().getTotalMathAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getTotalBatteryAbilityScore()).append(SEPARATOR)
-					
-					.append(tabe.getGradeEquivalent().getReading()).append(SEPARATOR)
-					.append(tabe.getGradeEquivalent().getMathComp()).append(SEPARATOR).append(tabe.getGradeEquivalent().getAppliedMath()).append(SEPARATOR)
-					.append(tabe.getGradeEquivalent().getLanguage()).append(SEPARATOR).append(tabe.getGradeEquivalent().getLanguageMech()).append(SEPARATOR)
-					.append(tabe.getGradeEquivalent().getVocabulary()).append(SEPARATOR).append(tabe.getGradeEquivalent().getSpelling()).append(SEPARATOR)
-					.append(tabe.getGradeEquivalent().getTotalMath()).append(SEPARATOR).append(tabe.getGradeEquivalent().getTotalBattery()).append(SEPARATOR)
-					
-					.append(tabe.getNrsLevels().getReading()).append(SEPARATOR)
-					.append(tabe.getNrsLevels().getMathComp()).append(SEPARATOR).append(tabe.getNrsLevels().getAppliedMath()).append(SEPARATOR)
-					.append(tabe.getNrsLevels().getLanguage()).append(SEPARATOR).append(tabe.getNrsLevels().getLanguageMech()).append(SEPARATOR)
-					.append(tabe.getNrsLevels().getVocabulary()).append(SEPARATOR).append(tabe.getNrsLevels().getSpelling()).append(SEPARATOR)
-					.append(tabe.getNrsLevels().getTotalMath()).append(SEPARATOR).append(tabe.getNrsLevels().getTotalBattery()).append(SEPARATOR)
-					
-					.append(tabe.getPercentageMastery().getReading()).append(SEPARATOR)
-					.append(tabe.getPercentageMastery().getMathComp()).append(SEPARATOR).append(tabe.getPercentageMastery().getAppliedMath()).append(SEPARATOR)
-					.append(tabe.getPercentageMastery().getLanguage()).append(SEPARATOR).append(tabe.getPercentageMastery().getLanguageMech()).append(SEPARATOR)
-					.append(tabe.getPercentageMastery().getVocabulary()).append(SEPARATOR).append(tabe.getPercentageMastery().getSpelling()).append(SEPARATOR)
-					
-					.append(tabe.getPredictedGED().getAverage()).append(SEPARATOR)
-					.append(tabe.getPredictedGED().getMath()).append(SEPARATOR).append(tabe.getPredictedGED().getReading()).append(SEPARATOR)
-					.append(tabe.getPredictedGED().getScience()).append(SEPARATOR).append(tabe.getPredictedGED().getSocialStudies()).append(SEPARATOR)
-					.append(tabe.getPredictedGED().getWriting()).append(SEPARATOR)
-					
-					.append(tabe.getObjectiveRawScore()).append(tabe.getObjectiveTotalRawScore())
-					.append(tabe.getObjectiveScaleScore()).append(tabe.getObjectiveScaleScoreSEM())
-					.append(tabe.getObjectiveMasteryLevel()).append(tabe.getObjectiveMastery())
-				
-				.append(tabe.getItemResponse());
-				
-				writer.writeNext(row.toString().split(SEPARATOR));
+				if("TB".equals(tabe.getProductType())) {
+					if(CONTENT_DOMAINS.size() != CONTENT_DOMAINS_TB.size()) {
+						CONTENT_DOMAINS.put("Vocabulary", 0);
+						CONTENT_DOMAINS.put("Language Mechanics", 0);
+						CONTENT_DOMAINS.put("Spelling", 0);
+					}
+					break;
+				}
 			}
-			System.out.println("Export file successfully generated:["+fileName+"]");
-			System.out.println("Completed Writing");
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
+			for(String contentDomainName : CONTENT_DOMAINS.keySet()) {
+				//contentDomains.append(contentDomainName).append(SEPARATOR);
+				contentDomains.append("SubTest"+(++j)).append(SEPARATOR);
+				contentDomains.append("Level, Raw Score, Scale Score").append(SEPARATOR);
+				contentDomains.append("Item Response Data").append(SEPARATOR);
+				//Integer itemCount = ITEM_COUNT_MAP.get(contentDomainName);
+				Integer itemCount = ITEM_COUNT_MAP_MAX.get(contentDomainName);
+				if(itemCount != null) {
+					i=0;
+					for(i=0 ; i < itemCount-1 ; i++) {
+						contentDomains.append(SPACE).append(SEPARATOR);
+					}
+					contentDomains.append("Restart Flag").append(SEPARATOR).append("Restart Item Number").append(SEPARATOR)
+					.append("Timed Out").append(SEPARATOR).append("Stopped Item Number").append(SEPARATOR);			
+				}
+			}			
+					
+			headerRow.append("Product Type").append(SEPARATOR).append("Customer Id").append(SEPARATOR)
+			.append("State Name").append(SEPARATOR).append("State Code").append(SEPARATOR)
+			.append("District Name").append(SEPARATOR).append("District Code").append(SEPARATOR)
+			.append("School Name").append(SEPARATOR).append("School Code").append(SEPARATOR)
+			.append("Class Name").append(SEPARATOR).append("Class Code").append(SEPARATOR)
+			.append("OAS Roster Id").append(SEPARATOR).append("OAS Student Id").append(SEPARATOR)
+			.append("Student Id").append(SEPARATOR).append("Student Id 2").append(SEPARATOR)
+			.append("First Name").append(SEPARATOR).append("Middle Name").append(SEPARATOR)
+			.append("Last Name").append(SEPARATOR).append("Grade").append(SEPARATOR)
+			.append("Birth Date").append(SEPARATOR).append("Gender").append(SEPARATOR)
+			.append("Ethnicity").append(SEPARATOR).append("ELL").append(SEPARATOR)
+			.append("Free Lunch").append(SEPARATOR).append("IEP").append(SEPARATOR)
+			.append("LEP").append(SEPARATOR).append("Labor Force").append(SEPARATOR)
+			.append("Migrant").append(SEPARATOR).append("Section 504").append(SEPARATOR)
+			.append("Screen Reader").append(SEPARATOR)
+			.append("Calculator").append(SEPARATOR).append("Test Pause").append(SEPARATOR)
+			.append("Untimed Test").append(SEPARATOR).append("Question Background Color").append(SEPARATOR)
+			.append("Question Font Color").append(SEPARATOR).append("Question Font Size").append(SEPARATOR)
+			.append("Answer Background Color").append(SEPARATOR).append("Answer Font Color").append(SEPARATOR)
+			.append("Answer Font Size").append(SEPARATOR).append("Highlighter").append(SEPARATOR)
+			.append("Music File Name").append(SEPARATOR).append("Masking Ruler").append(SEPARATOR)
+			.append("Magnifying Glass").append(SEPARATOR).append("Extended Time").append(SEPARATOR)
+			.append("Masking Tool").append(SEPARATOR)
+			.append("Testing Site").append(SEPARATOR).append("Date Testing Complete").append(SEPARATOR)
+			.append("Interrupted").append(SEPARATOR).append("Test Form Id").append(SEPARATOR)
+			.append("Last Item").append(SEPARATOR).append("Timed Out").append(SEPARATOR)
+			.append("Reading - Ability Score").append(SEPARATOR)
+			.append("Reading - SEM Score").append(SEPARATOR).append("Math Comp - Ability Score").append(SEPARATOR)
+			.append("Math Comp - SEM Score").append(SEPARATOR).append("Applied Math - Ability Score").append(SEPARATOR)
+			.append("Applied Math - SEM Score").append(SEPARATOR).append("Language - Ability Score").append(SEPARATOR).append("Language - SEM Score").append(SEPARATOR)
+			
+			.append("Language Mechanics - Ability Score").append(SEPARATOR)
+			.append("Vocabulary - Ability Score").append(SEPARATOR)
+			.append("Spelling - Ability Score").append(SEPARATOR)
+			.append("Total Math - Ability Score").append(SEPARATOR).append("Total Battery - Ability Score").append(SEPARATOR)
+			
+			.append("Grade Equivalent - Reading").append(SEPARATOR).append("Grade Equivalent - Math Comp").append(SEPARATOR)
+			.append("Grade Equivalent - Applied Math").append(SEPARATOR).append("Grade Equivalent - Language").append(SEPARATOR)
+			.append("Grade Equivalent - Language Mechanics").append(SEPARATOR).append("Grade Equivalent - Vocabulary").append(SEPARATOR)
+			.append("Grade Equivalent - Spelling").append(SEPARATOR).append("Grade Equivalent - Total Math").append(SEPARATOR)
+			.append("Grade Equivalent - Total Battery").append(SEPARATOR)
+			
+			.append("NRS Level - Reading").append(SEPARATOR).append("NRS Level - Math Comp").append(SEPARATOR)
+			.append("NRS Level - Applied Math").append(SEPARATOR).append("NRS Level - Language").append(SEPARATOR)
+			.append("NRS Level - Language Mechanics").append(SEPARATOR).append("NRS Level - Vocabulary").append(SEPARATOR)
+			.append("NRS Level - Spelling").append(SEPARATOR).append("NRS Level - Total Math").append(SEPARATOR)
+			.append("NRS Level - Total Battery").append(SEPARATOR)
+			
+			.append("Percentage Mastery - Reading").append(SEPARATOR).append("Percentage Mastery - Math Comp").append(SEPARATOR)
+			.append("Percentage Mastery - Applied Math").append(SEPARATOR).append("Percentage Mastery - Language").append(SEPARATOR)
+			.append("Percentage Mastery - Language Mechanics").append(SEPARATOR).append("Percentage Mastery - Vocabulary").append(SEPARATOR)
+			.append("Percentage Mastery - Spelling").append(SEPARATOR)
+			
+			.append("Predicted GED - Average").append(SEPARATOR)
+			.append("Predicted GED - Math").append(SEPARATOR).append("Predicted GED - Reading").append(SEPARATOR)
+			.append("Predicted GED - Science").append(SEPARATOR).append("Predicted GED - Social Studies").append(SEPARATOR)
+			.append("Predicted GED - Writing").append(SEPARATOR).append(contentDomains.substring(0, contentDomains.length() - 1));		
+					
+			writer.writeNext(headerRow.toString().split(SEPARATOR));
+			try {
+				StringBuilder row = new StringBuilder();
+				for(TABEFile tabe: myList) {
+					
+					row = new StringBuilder();
+					row.append(tabe.getProductType()).append(SEPARATOR).append(tabe.getCustomerID()).append(SEPARATOR)
+					.append(tabe.getOrgLevel1Name()).append(SEPARATOR).append(tabe.getOrgLevel1Code()).append(SEPARATOR)
+					.append(tabe.getOrgLevel2Name()).append(SEPARATOR).append(tabe.getOrgLevel2Code()).append(SEPARATOR)
+					.append(tabe.getOrgLevel3Name()).append(SEPARATOR).append(tabe.getOrgLevel3Code()).append(SEPARATOR)
+					.append(tabe.getOrgLevel4Name()).append(SEPARATOR).append(tabe.getOrgLevel4Code()).append(SEPARATOR)
+					.append(tabe.getRosterId()).append(SEPARATOR).append(tabe.getStudentID()).append(SEPARATOR)
+					.append(tabe.getExtStudentId()).append(SEPARATOR).append(tabe.getExtStudentId2()).append(SEPARATOR)
+					.append(tabe.getStudentFirstName()).append(SEPARATOR).append(tabe.getStudentMiddleName()).append(SEPARATOR)
+					.append(tabe.getStudentLastName()).append(SEPARATOR).append(tabe.getGrade()).append(SEPARATOR)
+					.append(tabe.getStudentBirthDate()).append(SEPARATOR).append(tabe.getStudentGender()).append(SEPARATOR)
+					.append(tabe.getEthnicity()).append(SEPARATOR).append(tabe.getEll()).append(SEPARATOR)
+					.append(tabe.getFreeLunch()).append(SEPARATOR).append(tabe.getIep()).append(SEPARATOR)
+					.append(tabe.getLep()).append(SEPARATOR).append(tabe.getLaborForceStatus()).append(SEPARATOR)
+					.append(tabe.getMigrant()).append(SEPARATOR).append(tabe.getSection504()).append(SEPARATOR)
+					.append(tabe.getScreenReader()).append(SEPARATOR)
+					.append(tabe.getCalculator()).append(SEPARATOR).append(tabe.getTestPause()).append(SEPARATOR)
+					.append(tabe.getUntimedTest()).append(SEPARATOR).append(tabe.getQuestionBackgroundColor()).append(SEPARATOR)
+					.append(tabe.getQuestionFontColor()).append(SEPARATOR).append(tabe.getQuestionFontSize()).append(SEPARATOR)
+					.append(tabe.getAnswerBackgroundColor()).append(SEPARATOR).append(tabe.getAnswerFontColor()).append(SEPARATOR)
+					.append(tabe.getAnswerFontSize()).append(SEPARATOR).append(tabe.getHighlighter()).append(SEPARATOR)
+					.append(tabe.getMusicFileName()).append(SEPARATOR).append(tabe.getMaskingRuler()).append(SEPARATOR)
+					.append(tabe.getMagnifyingGlass()).append(SEPARATOR).append(tabe.getExtendedTime()).append(SEPARATOR)
+					.append(tabe.getMaskingTool()).append(SEPARATOR)
+					.append(tabe.getTestingSite()).append(SEPARATOR).append(tabe.getDateTestingCompleted()).append(SEPARATOR)
+					.append(tabe.getInterrupted()).append(SEPARATOR).append(tabe.getTestFormId()).append(SEPARATOR)
+					.append(tabe.getLastItem()).append(SEPARATOR).append(tabe.getTimedOut()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getReadingAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getReadingSEMScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getMathCompAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getMathCompSEMScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getAppliedMathAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getAppliedMathSEMScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getLanguageAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getLanguageSEMScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getLanguageMechAbilityScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getVocabularyAbilityScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getSpellingAbilityScore()).append(SEPARATOR)
+						.append(tabe.getAbilityScores().getTotalMathAbilityScore()).append(SEPARATOR).append(tabe.getAbilityScores().getTotalBatteryAbilityScore()).append(SEPARATOR)
+						
+						.append(tabe.getGradeEquivalent().getReading()).append(SEPARATOR)
+						.append(tabe.getGradeEquivalent().getMathComp()).append(SEPARATOR).append(tabe.getGradeEquivalent().getAppliedMath()).append(SEPARATOR)
+						.append(tabe.getGradeEquivalent().getLanguage()).append(SEPARATOR).append(tabe.getGradeEquivalent().getLanguageMech()).append(SEPARATOR)
+						.append(tabe.getGradeEquivalent().getVocabulary()).append(SEPARATOR).append(tabe.getGradeEquivalent().getSpelling()).append(SEPARATOR)
+						.append(tabe.getGradeEquivalent().getTotalMath()).append(SEPARATOR).append(tabe.getGradeEquivalent().getTotalBattery()).append(SEPARATOR)
+						
+						.append(tabe.getNrsLevels().getReading()).append(SEPARATOR)
+						.append(tabe.getNrsLevels().getMathComp()).append(SEPARATOR).append(tabe.getNrsLevels().getAppliedMath()).append(SEPARATOR)
+						.append(tabe.getNrsLevels().getLanguage()).append(SEPARATOR).append(tabe.getNrsLevels().getLanguageMech()).append(SEPARATOR)
+						.append(tabe.getNrsLevels().getVocabulary()).append(SEPARATOR).append(tabe.getNrsLevels().getSpelling()).append(SEPARATOR)
+						.append(tabe.getNrsLevels().getTotalMath()).append(SEPARATOR).append(tabe.getNrsLevels().getTotalBattery()).append(SEPARATOR)
+						
+						.append(tabe.getPercentageMastery().getReading()).append(SEPARATOR)
+						.append(tabe.getPercentageMastery().getMathComp()).append(SEPARATOR).append(tabe.getPercentageMastery().getAppliedMath()).append(SEPARATOR)
+						.append(tabe.getPercentageMastery().getLanguage()).append(SEPARATOR).append(tabe.getPercentageMastery().getLanguageMech()).append(SEPARATOR)
+						.append(tabe.getPercentageMastery().getVocabulary()).append(SEPARATOR).append(tabe.getPercentageMastery().getSpelling()).append(SEPARATOR)
+						
+						.append(tabe.getPredictedGED().getAverage()).append(SEPARATOR)
+						.append(tabe.getPredictedGED().getMath()).append(SEPARATOR).append(tabe.getPredictedGED().getReading()).append(SEPARATOR)
+						.append(tabe.getPredictedGED().getScience()).append(SEPARATOR).append(tabe.getPredictedGED().getSocialStudies()).append(SEPARATOR)
+						.append(tabe.getPredictedGED().getWriting()).append(SEPARATOR)
+						
+						.append(tabe.getObjectiveRawScore()).append(tabe.getObjectiveTotalRawScore())
+						.append(tabe.getObjectiveScaleScore()).append(tabe.getObjectiveScaleScoreSEM())
+						.append(tabe.getObjectiveMasteryLevel()).append(tabe.getObjectiveMastery())
+					
+					.append(tabe.getItemResponse());
+					
+					writer.writeNext(row.toString().split(SEPARATOR));
+				}
+				System.out.println("Export file successfully generated:["+fileName+"]");
+				System.out.println("Completed Writing");
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				writer.close();
+			}
 		}
 	}		
 		
@@ -425,59 +406,61 @@ public class DataExportTABE {
 		try {
 			oascon = SqlUtil.openOASDBconnectionForResearch();
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
-			int totalCount = 0;
-			for (int i=0 ; i<productIds.length ; i++) {
-				clearAllMaps();
-				getProductType(oascon, Integer.parseInt(productIds[i]));
-				//System.out.println("Excution for " + productIds[i] + " Product Id and Product Type " + PRODUCT_TYPE);
-				getAllContentDomain(oascon, Integer.parseInt(productIds[i]));
-				getAllObjectives(oascon);
-				customerDemoList = getCustomerDemographic(oascon);
-				Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
-						customerDemoList);
-				for (CustomerDemographic c : set) {
-					customerDemographic.put(c.getCustomerDemographicId(), c
-							.getLabelName());
-				}
-				myrosterList = getTestRoster(oascon, Integer.parseInt(productIds[i]));
-				int count = 0;
-				for (TestRoster roster : myrosterList) {
-					TABEFile catData = new TABEFile();
-					Student studentInfo = roster.getStudent();
-					fillStudent(catData, studentInfo);
-					catData.setCustomerID(CUSTOMER_ID.toString());
-					catData.setProductType(PRODUCT_TYPE.toString());
-					catData.setRosterId(roster.getTestRosterId().toString());
-					catData.setDateTestingCompleted(roster.getDateTestingCompleted());
-					catData.setTestingSite(roster.getTestingSite());
-					catData.setTestFormId(roster.getTestFormId());
-					if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
-						catData.setInterrupted("1");
-					}else{
-						catData.setInterrupted("0");
+			if(oascon != null && irscon != null) {
+				int totalCount = 0;
+				for (int i=0 ; i<productIds.length ; i++) {
+					clearAllMaps();
+					getProductType(oascon, Integer.parseInt(productIds[i]));
+					//System.out.println("Excution for " + productIds[i] + " Product Id and Product Type " + PRODUCT_TYPE);
+					getAllContentDomain(oascon, Integer.parseInt(productIds[i]));
+					getAllObjectives(oascon);
+					customerDemoList = getCustomerDemographic(oascon);
+					Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
+							customerDemoList);
+					for (CustomerDemographic c : set) {
+						customerDemographic.put(c.getCustomerDemographicId(), c
+								.getLabelName());
 					}
-					getLastItem(oascon, catData, roster);
-					getTimedOut(oascon, catData, roster);
-					createOrganization(oascon, catData, roster.getStudentId());
-					fillEthnicity(studentInfo.getStudentDemographic(), customerDemographic, catData);
-					fillAccommodations(studentInfo.getStudentAccommodations(), catData);
-					createAbilityScoreInformation(irscon,catData,roster);
-					//Assuming SEM Scores available only for CAT and Ability score in OAS db for CAT is final
-					//getSemScores(oascon, catData, roster,catData.getAbilityScores()); 
-					if("TA".equals(PRODUCT_TYPE)) {
-						getSemScores(oascon, catData, roster,catData.getAbilityScores());
-						fillObjective(oascon, catData, roster);
-					}else if("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)){
-						fillObjectiveForOnline(oascon, irscon, catData, roster);
+					myrosterList = getTestRoster(oascon, Integer.parseInt(productIds[i]));
+					int count = 0;
+					for (TestRoster roster : myrosterList) {
+						TABEFile catData = new TABEFile();
+						Student studentInfo = roster.getStudent();
+						fillStudent(catData, studentInfo);
+						catData.setCustomerID(CUSTOMER_ID.toString());
+						catData.setProductType(PRODUCT_TYPE.toString());
+						catData.setRosterId(roster.getTestRosterId().toString());
+						catData.setDateTestingCompleted(roster.getDateTestingCompleted());
+						catData.setTestingSite(roster.getTestingSite());
+						catData.setTestFormId(roster.getTestFormId());
+						if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
+							catData.setInterrupted("1");
+						}else{
+							catData.setInterrupted("0");
+						}
+						getLastItem(oascon, catData, roster);
+						getTimedOut(oascon, catData, roster);
+						createOrganization(oascon, catData, roster.getStudentId());
+						fillEthnicity(studentInfo.getStudentDemographic(), customerDemographic, catData);
+						fillAccommodations(studentInfo.getStudentAccommodations(), catData);
+						createAbilityScoreInformation(irscon,catData,roster);
+						//Assuming SEM Scores available only for CAT and Ability score in OAS db for CAT is final
+						//getSemScores(oascon, catData, roster,catData.getAbilityScores()); 
+						if("TA".equals(PRODUCT_TYPE)) {
+							getSemScores(oascon, catData, roster,catData.getAbilityScores());
+							fillObjective(oascon, catData, roster);
+						}else if("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)){
+							fillObjectiveForOnline(oascon, irscon, catData, roster);
+						}
+						prepareItemResponses(oascon, irscon, catData, roster, Integer.parseInt(productIds[i]));				
+						tabeFileList.add(catData);	
+						System.out.println("Record Processed: " + ++count);
 					}
-					prepareItemResponses(oascon, irscon, catData, roster, Integer.parseInt(productIds[i]));				
-					tabeFileList.add(catData);	
-					System.out.println("Record Processed: " + ++count);
+					System.out.println("Total records for Product Id " + productIds[i] + " is " + count);
+					totalCount += count;
 				}
-				System.out.println("Total records for Product Id " + productIds[i] + " is " + count);
-				totalCount += count;
+				System.out.println("Total records: " + totalCount);
 			}
-			System.out.println("Total records: " + totalCount);
 		} finally {
 			SqlUtil.close(oascon);
 			SqlUtil.close(irscon);
@@ -501,12 +484,6 @@ public class DataExportTABE {
 	throws SQLException {
 		//System.out.println("getCustomerDemographic start");
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
-		/*
-		 * Criteria crit = session.createCriteria(CustomerDemographic.class);
-		 * crit.add(Expression.eq("customerId", customerId)); myList =
-		 * crit.list();
-		 */
-	 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -670,8 +647,6 @@ public class DataExportTABE {
 			while (rs.next()) {
 				StudentAccommodations studentAccommodations = new StudentAccommodations();
 				studentAccommodations.setStudentId(studentId);
-				/*if(rs.getString(1) != null)
-					studentAccommodations.setScreenMagnifier(setStudentAccommodationValue(rs.getString(1)));*/
 				if(rs.getString("SCREEN_READER") != null)
 					studentAccommodations.setScreenReader(setStudentAccommodationValue(rs.getString("SCREEN_READER")));
 				if(rs.getString("CALCULATOR") != null)
@@ -704,8 +679,6 @@ public class DataExportTABE {
 					studentAccommodations.setExtendedTime(setStudentAccommodationValue(rs.getString("EXTENDED_TIME")));
 				if(rs.getString("MASKING_TOOL") != null)
 					studentAccommodations.setMaskingTool(setStudentAccommodationValue(rs.getString("MASKING_TOOL")));
-				/*if(rs.getString(18) != null)
-					studentAccommodations.setMicrophoneHeadphone(setStudentAccommodationValue(rs.getString(18)));*/
 				studentAccommodationsSet.add(studentAccommodations);
 			}
 
@@ -887,7 +860,6 @@ public class DataExportTABE {
 	
 	private void fillAccommodations(Set<StudentAccommodations> sa, TABEFile tfill) {
 		for(StudentAccommodations studentAccom : sa) {
-			//tfill.setScreenMagnifier(studentAccom.getScreenMagnifier());
 			tfill.setScreenReader(studentAccom.getScreenReader());
 			tfill.setCalculator(studentAccom.getCalculator());
 			tfill.setTestPause(studentAccom.getTestPause());
@@ -904,7 +876,6 @@ public class DataExportTABE {
 			tfill.setMagnifyingGlass(studentAccom.getMagnifyingGlass());
 			tfill.setExtendedTime(studentAccom.getExtendedTime());
 			tfill.setMaskingTool(studentAccom.getMaskingTool());
-			//tfill.setMicrophoneHeadphone(studentAccom.getMicrophoneHeadphone());
 		}
 	}
 
@@ -1656,7 +1627,7 @@ public class DataExportTABE {
 			return null;
 		}
 		
-		private String getPropertyValue(String name)
+		public String getPropertyValue(String name)
 		{
 			String value = this.properties.getProperty(name);
 			if ((value == null) || (value.length() == 0)) {

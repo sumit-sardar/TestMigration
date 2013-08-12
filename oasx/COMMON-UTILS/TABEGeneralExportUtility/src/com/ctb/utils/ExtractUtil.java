@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 		private static ResourceBundle rb;
 		
 		static {
-			rb = ResourceBundle.getBundle("config");
+			//rb = ResourceBundle.getBundle("config");
 		}
 		
 				

@@ -9,16 +9,12 @@ public class Configuration {
 	static String ftpFilepath = "";
 
 	static {
-
-		localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
+		/*localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
 		ftphost = ExtractUtil.getDetail("oas.exportdata.ftphost");
 		ftpuser = ExtractUtil.getDetail("oas.exportdata.ftpuser");
 		ftppassword = ExtractUtil.getDetail("oas.exportdata.ftppassword");
-		ftpFilepath = ExtractUtil.getDetail("oas.exportdata.ftp.filepath");
-
+		ftpFilepath = ExtractUtil.getDetail("oas.exportdata.ftp.filepath");*/
 	}
-
-	
 	
 	/**
 	 * @return the localFilePath

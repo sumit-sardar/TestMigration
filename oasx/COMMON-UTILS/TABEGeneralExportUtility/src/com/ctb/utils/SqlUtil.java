@@ -9,10 +9,14 @@ import java.sql.Statement;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.DataExportTABE;
+
 public class SqlUtil {
 
 	private static String oasDtataSourceJndiName= "oasDataSource";
 	private static String irsDtataSourceJndiName= "irsDataSource";
+	
+	private static DataExportTABE dataExport = new DataExportTABE();
 
 	public static Connection openOASDBcon() throws Exception {
 		Connection conn = null;
@@ -53,53 +57,55 @@ public class SqlUtil {
 
 	
 	public static Connection openOASDBconnectionForResearch() {
-		String dbip = ExtractUtil.getDetail("oas.db.host.address").trim();
-		String sid = ExtractUtil.getDetail("oas.db.sid.address").trim();
-		String user = ExtractUtil.getDetail("oas.db.user.name").trim();
-		String password = ExtractUtil.getDetail("oas.db.user.password").trim();
-		
-		String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:"	+ sid;
-
+		String dbip = dataExport.getPropertyValue("oas.db.host.address").trim();
+		String sid = dataExport.getPropertyValue("oas.db.sid.address").trim();
+		String user = dataExport.getPropertyValue("oas.db.user.name").trim();
+		String password = dataExport.getPropertyValue("oas.db.user.password").trim();
 		Connection conn = null;
-
-		try {
-
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(connURL, user, password);
-			conn.setAutoCommit(false);
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-
+		
+		if(dbip != null && sid != null && user != null && password != null
+				&& dbip.length() > 0 && sid.length() > 0 && user.length() > 0 && password.length() > 0) {
+			
+			String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:"	+ sid;
+			try {
+				DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+				conn = DriverManager.getConnection(connURL, user, password);
+				conn.setAutoCommit(false);
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+			}
 		}
-
+		else {
+			System.out.println("Mandatory Input OASDBAddress/OASDBSID/OASDBUserName/OASDBPassword are missing in Resource Bundle.");
+		}
 		return conn;
 	}
 
 	public static Connection openIRSDBconnectionForResearch() {
 		
-		String dbip = ExtractUtil.getDetail("irs.db.host.address").trim();
-		String sid = ExtractUtil.getDetail("irs.db.sid.address").trim();
-		String user = ExtractUtil.getDetail("irs.db.user.name").trim();
-		String password = ExtractUtil.getDetail("irs.db.user.password").trim();
-		
-		String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:" + sid;
-
+		String dbip = dataExport.getPropertyValue("irs.db.host.address").trim();
+		String sid = dataExport.getPropertyValue("irs.db.sid.address").trim();
+		String user = dataExport.getPropertyValue("irs.db.user.name").trim();
+		String password = dataExport.getPropertyValue("irs.db.user.password").trim();
 		Connection conn = null;
-
-		try {
-
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			conn = DriverManager.getConnection(connURL, user, password);
-			conn.setAutoCommit(false);
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-
+		
+		if(dbip != null && sid != null && user != null && password != null
+				&& dbip.length() > 0 && sid.length() > 0 && user.length() > 0 && password.length() > 0) {
+			
+			String connURL = "jdbc:oracle:thin:@" + dbip + ":1521:" + sid;
+			try {
+				DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+				conn = DriverManager.getConnection(connURL, user, password);
+				conn.setAutoCommit(false);
+			} catch (SQLException e) {
+				System.err.println(e.getMessage());
+				e.printStackTrace();
+			}
 		}
-
+		else {
+			System.out.println("Mandatory Input IRSDBAddress/IRSDBSID/IRSDBUserName/IRSDBPassword are missing in Resource Bundle.");
+		}
 		return conn;
 	}
 
