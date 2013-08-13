@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class PasswordDetails extends CTBBean
 { 
+	static final long serialVersionUID = 1L;
     private String resetPassword;
 
     private Integer passwordHintQuestionId;

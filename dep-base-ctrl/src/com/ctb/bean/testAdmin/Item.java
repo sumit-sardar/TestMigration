@@ -9,6 +9,7 @@ import com.ctb.bean.CTBBean;
  */
 public class Item extends CTBBean
 { 
+    static final long serialVersionUID = 1L;
     private String itemId;
     private String itemName;
     private String itemType;

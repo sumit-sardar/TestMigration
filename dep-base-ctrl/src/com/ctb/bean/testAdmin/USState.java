@@ -9,6 +9,7 @@ import com.ctb.bean.CTBBean;
  */
 
 public class USState extends CTBBean { 
+    static final long serialVersionUID = 1L;
     private String statePr;
     private String statePrDesc;
     

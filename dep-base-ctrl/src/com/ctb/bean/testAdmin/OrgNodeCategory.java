@@ -10,6 +10,7 @@ public class OrgNodeCategory extends CTBBean
      * Data bean representing the contents of the OAS.ORG_NODE_Category table
      * @author Tata Consulency Services
 	 */
+	static final long serialVersionUID = 1L;
 	private Integer orgNodeCategoryId;
 	private Integer customerId;
 	private Integer categoryLevel;

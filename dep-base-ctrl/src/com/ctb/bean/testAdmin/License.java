@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class License extends CTBBean
 { 
+    static final long serialVersionUID = 1L;
     private Integer customerId;
     private Integer productId;
     private String addressLine1;

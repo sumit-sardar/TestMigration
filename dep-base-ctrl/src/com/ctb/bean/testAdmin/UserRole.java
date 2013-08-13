@@ -2,8 +2,11 @@ package com.ctb.bean.testAdmin;
 
 import java.util.Date;
 
-public class UserRole 
+import com.ctb.bean.CTBBean;
+
+public class UserRole extends CTBBean
 { 
+    static final long serialVersionUID = 1L;
     private Long userId; 
 	private Long roleId;
 	private Long orgNodeId;

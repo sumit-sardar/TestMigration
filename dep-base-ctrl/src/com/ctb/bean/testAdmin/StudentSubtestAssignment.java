@@ -2,8 +2,12 @@ package com.ctb.bean.testAdmin;
 
 import java.util.ArrayList;
 
-public class StudentSubtestAssignment 
+import com.ctb.bean.CTBBeanData;
+
+public class StudentSubtestAssignment extends CTBBeanData
 { 
+    static final long serialVersionUID = 1L;
+
     private ArrayList subtests;
     private String form;
     private Integer testRosterId;

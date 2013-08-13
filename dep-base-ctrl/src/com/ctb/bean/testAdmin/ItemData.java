@@ -2,8 +2,11 @@ package com.ctb.bean.testAdmin;
 
 import java.util.Date;
 
-public class ItemData 
+import com.ctb.bean.CTBBean;
+
+public class ItemData extends CTBBean
 {
+    static final long serialVersionUID = 1L;
     private String itemId;
     private byte [] item;
     private Date createdDateTime;

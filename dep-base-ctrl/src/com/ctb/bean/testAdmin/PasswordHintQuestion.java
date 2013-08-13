@@ -11,6 +11,7 @@ import java.util.Date;
  */
 
 public class PasswordHintQuestion extends CTBBean { 
+	static final long serialVersionUID = 1L;
     private String passwordHintQuestionId;
     private String passwordHintQuestion;
     private Long createdBy;

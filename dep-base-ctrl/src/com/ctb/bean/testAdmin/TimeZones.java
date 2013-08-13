@@ -10,6 +10,7 @@ import com.ctb.bean.CTBBean;
 
 public class TimeZones extends CTBBean { 
     
+    static final long serialVersionUID = 1L;
     private String timeZone;
     private String timeZoneDesc;
     

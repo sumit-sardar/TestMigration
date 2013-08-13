@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class PasswordHistory extends CTBBean
 { 
+	static final long serialVersionUID = 1L;
     private Integer userId;
     private String password;
     private Date createdDate;

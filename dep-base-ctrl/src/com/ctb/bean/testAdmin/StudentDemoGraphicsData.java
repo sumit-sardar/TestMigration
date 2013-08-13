@@ -2,8 +2,12 @@ package com.ctb.bean.testAdmin;
 
 import java.util.Date;
 
-public class StudentDemoGraphicsData { 
+import com.ctb.bean.CTBBean;
+
+public class StudentDemoGraphicsData extends CTBBean { 
     	
+    static final long serialVersionUID = 1L;
+	
     private Integer studentDemographicId;
     private Integer studentId;
     private Integer customerDemographicId;
