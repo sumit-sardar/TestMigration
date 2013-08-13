@@ -1,6 +1,7 @@
 package services;
 
 import javax.jws.*;
+import javax.naming.InitialContext;
 
 import weblogic.jws.CallbackService;
 import weblogic.wsee.jws.CallbackInterface;
@@ -15,9 +16,11 @@ import org.apache.beehive.controls.api.bean.Control;
  
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -25,6 +28,7 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.testAdmin.Item;
+import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.RosterElement;
@@ -41,6 +45,7 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.control.testAdmin.TestSessionStatus;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.testAdmin.RosterDataNotFoundException;
 
 import dto.SubtestInfo;
 import dto.UserInfo;
@@ -59,6 +64,7 @@ import utils.CryptoUtils;
 import utils.JsonUtils;
 import com.ctb.control.db.StudentItemSetStatus;
 import com.ctb.control.db.TestRoster;
+import com.ctb.control.jms.QueueSend;
 import com.ctb.control.validation.Validator;
 
 @WebService
@@ -84,6 +90,13 @@ public class ClickerWS implements Serializable {
 
 	@Control
 	private Validator validator;
+	
+	private String jndiFactory = "";
+    private String jmsFactory = "";
+    private String jmsURL = "";
+    private String jmsQueue = "";
+    private String jmsPrincipal = "";
+    private String jmsCredentials = "";
 	
 	/**
     * OAS authenticates this user. 
@@ -456,7 +469,7 @@ public class ClickerWS implements Serializable {
 	* 
 	*/
 	@WebMethod
-	public String submitStudentResponses(String userKey, StudentResponse studentResponses) 
+	public String submitStudentResponses(String userKey, StudentResponse studentResponses) throws CTBBusinessException
 	{
 		String status = CryptoUtils.validateRequest(userKey);
 		if (! "OK".equals(status)) {
@@ -464,28 +477,105 @@ public class ClickerWS implements Serializable {
 		}
 		
 		String userName = CryptoUtils.decryptUserKey(userKey, 0);
-
+		//String status = "";
+		String errMsg = "";
 		Assignment assignment = studentResponses.getAssignment();
 		Roster[] rosters = assignment.getRosters();
 		
 		for (int i=0 ; i<rosters.length ; i++) {
-			Roster roster = rosters[i];
-			SubtestInfo[] subtests = roster.getSubtests();
-			for (int j=0 ; j<subtests.length ; j++) {
-				SubtestInfo subtest = subtests[j];
-				Question[] questions = subtest.getQuestions();
-    			for (int k=0 ; k<questions.length ; k++) {
-    				Question question = questions[k];
-    				String response = question.getResponse();
-    				// save response to item_response table
-    			}
-				// save information in student_item_set_status table
-			}	    				
+			Roster roster = rosters[i];							
+			if(saveResponsesForRoster(roster)){	
+				System.out.println("Scoring invoked.....");
+				try {          
+		    		 // new Weblogic 10.3 JMS call
+		             invokeScoring(roster.getRosterId());
+		    	 }catch (SQLException se) {
+		             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: Roster Not found : " + se.getMessage());
+		             rde.setStackTrace(se.getStackTrace());
+		             throw rde;  
+		         }
+		         catch (Exception se) {
+		             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl:  Roster Not found : " + se.getMessage());
+		             rde.setStackTrace(se.getStackTrace());
+		             throw rde;  
+		         }
+			}else
+				errMsg += roster.getRosterId()+",";
 		}
+		
+		if(errMsg.equalsIgnoreCase(""))
+			status = "OK";
+		else{
+			errMsg = errMsg.substring(1, errMsg.length()-1); 
+			status = "Error: "+errMsg;
+		}	
 		
 		return status;
 	}
-
+	
+		
+	public boolean saveResponsesForRoster(Roster roster){
+		SubtestInfo[] subtests = roster.getSubtests();
+		boolean isSuccess = false;
+		boolean result = false;
+		int subtestSuccessCtr = 0;
+		
+		for (int j=0 ; j<subtests.length ; j++) {
+			SubtestInfo subtest = subtests[j];
+			ArrayList<ItemResponseData> responseListForSubtest = new ArrayList<ItemResponseData>();
+			Question[] questions = subtest.getQuestions();
+			
+			// build response list for subtest : start
+			for (int k=0 ; k<questions.length ; k++) {
+				Question question = questions[k];
+				ItemResponseData ird = new ItemResponseData();    				
+				ird.setItemId(question.getQuestionId());
+				ird.setTestRosterId(roster.getRosterId());
+				ird.setResponse(question.getResponse());
+				ird.setItemSetId(subtest.getSubtestId());    				
+				ird.setResponseMethod("C");
+				ird.setCompletionDateTime(subtest.getCompletionDateTime());
+				ird.setStartDateTime(subtest.getStartDateTime());
+				responseListForSubtest.add(ird);				
+			}
+			//build response list for subtest : end
+			try {
+				isSuccess = this.testSessionStatus.saveStudentResponseInBatch(responseListForSubtest);// batch insert to reduce db overhead
+			} catch (CTBBusinessException e) {
+				// TODO Auto-generated catch block
+				isSuccess = false;
+				e.printStackTrace();
+			}
+			if(isSuccess)
+				subtestSuccessCtr++;
+		}
+		if(subtestSuccessCtr == subtests.length)
+			result = true;
+		else
+			result = false;
+		
+		return result;
+	}
 	
 	
+	private void invokeScoring(Integer testRosterId) throws Exception { 
+		getResourceValue();
+	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
+	    QueueSend qs = new QueueSend();
+	    qs.init(ic, jmsFactory, jmsQueue);
+	    qs.readAndSend(qs,testRosterId);
+	    qs.close();
+	    ic.close();
+	  }
+        
+    private void getResourceValue() throws Exception {
+	    ResourceBundle rb = ResourceBundle.getBundle("security");
+	    jndiFactory = rb.getString("jndiFactory");
+	    jmsFactory = rb.getString("jmsFactory");
+	    jmsURL = rb.getString("jmsURL");
+	    jmsQueue = rb.getString("jmsQueue");
+	    jmsPrincipal = rb.getString("jmsPrincipal");
+	    jmsCredentials = rb.getString("jmsCredentials");
+    }
+    
 }

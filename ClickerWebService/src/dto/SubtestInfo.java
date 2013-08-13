@@ -1,5 +1,7 @@
 package dto; 
 
+import java.util.Date;
+
 /**
 * Subtest information
 * questions is a list of questions in this subtest
@@ -14,12 +16,17 @@ public class SubtestInfo implements java.io.Serializable
     private String subtestName = null;
     private String subtestLevel = null;
     private Question[] questions = null;
+    private Date startDateTime = null;
+    private Date completionDateTime = null;
     
-    public SubtestInfo() {
+
+	public SubtestInfo() {
     	this.subtestId = null;
     	this.subtestName = null;
     	this.subtestLevel = null;
-    	this.questions = null;    	
+    	this.questions = null;    
+    	this.startDateTime = null;
+    	this.completionDateTime = null;	
     }
 
     public SubtestInfo(Integer subtestId, String subtestName, String subtestLevel, Question[] questions) {
@@ -59,6 +66,25 @@ public class SubtestInfo implements java.io.Serializable
 
 	public void setQuestions(Question[] questions) {
 		this.questions = questions;
+	}
+	
+
+	public Date getStartDateTime() {
+		return startDateTime;
+	}
+
+	public void setStartDateTime(Date startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+
+
+	public Date getCompletionDateTime() {
+		return completionDateTime;
+	}
+
+
+	public void setCompletionDateTime(Date completionDateTime) {
+		this.completionDateTime = completionDateTime;
 	}
     
 } 

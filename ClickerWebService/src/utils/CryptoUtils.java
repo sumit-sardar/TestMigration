@@ -240,6 +240,7 @@ public class CryptoUtils {
 				decrypt = (String)strToken.nextElement();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			decrypt = "";
 		}
 		return decrypt;
@@ -273,6 +274,7 @@ public class CryptoUtils {
 			}
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			return "Invalid Timestamp";
 		}
 		
