@@ -1,9 +1,12 @@
 package com.ctb.control.testAdmin; 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -33,6 +36,7 @@ import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.CustomerSDSData;
 import com.ctb.bean.testAdmin.CustomerTestResource;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
+import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrganizationNode;
@@ -2436,4 +2440,76 @@ public class TestSessionStatusImpl implements TestSessionStatus
   	        throw rde;
   	    }
      }
+     
+     public String saveStudentResponseFromClicker(ItemResponseData itemResponseData) throws CTBBusinessException{
+    	 String result = "OK";
+    	 try{
+    		 this.studentItemSetStatus.insertIntoItemResponse(itemResponseData);
+    	 }catch(SQLException se){
+    		 result = "Failed";
+    		 CTBBusinessException cbe = new CTBBusinessException("TestSessionStatusImpl: saveStudentResponseFromClicker :: "+ se.getMessage());
+    		 cbe.setStackTrace(se.getStackTrace());
+    		 //throw cbe;
+    	 }
+    	 return result;
+     }
+     
+     public boolean saveStudentResponseInBatch(ArrayList<ItemResponseData> itemResponseData) throws CTBBusinessException{
+    	 boolean result = true;
+    	 String sqlStr = "insert into item_response ( ITEM_RESPONSE_ID, ITEM_SET_ID, TEST_ROSTER_ID, RESPONSE, RESPONSE_METHOD,RESPONSE_SEQ_NUM, CREATED_DATE_TIME, ITEM_ID) values ( ?, ?, ?, ?, ?, ?, sysdate, ? )";
+    	 Connection conn = null;
+    	 PreparedStatement pstmt = null;
+    	 if(itemResponseData != null && itemResponseData.size() > 0){
+	    	 try{
+	    		 conn = this.studentItemSetStatus.getConnection();
+		    	 conn.setAutoCommit(false);
+		    	 pstmt = conn.prepareStatement(sqlStr);
+		    	 for (Iterator iterator = itemResponseData.iterator(); iterator.hasNext();) {
+					ItemResponseData ird = (ItemResponseData) iterator.next();
+					String[] sequenceString = this.studentItemSetStatus.fetchResponseId().split("\\$");
+					
+					Integer itemResponseId = Integer.parseInt(sequenceString[0]);
+					Integer responseSeqNum = Integer.parseInt(sequenceString[1]);
+
+					System.out.println("itemResponseId >> "+itemResponseId+"\tresponseSeqNum >> "+responseSeqNum);
+					
+					pstmt.setInt(1, itemResponseId);
+					pstmt.setInt(2, ird.getItemSetId());
+					pstmt.setInt(3, ird.getTestRosterId());
+					pstmt.setString(4, ird.getResponse());
+					pstmt.setString(5, ird.getResponseMethod());
+					pstmt.setInt(6, responseSeqNum);
+					pstmt.setString(7, ird.getItemId());
+					pstmt.addBatch();				
+				}    	 
+			    try {
+		    		int[]insertCount = pstmt.executeBatch();
+		    		System.out.println("No. of responses inserted = "+insertCount.length+", for subtestId = "+itemResponseData.get(0).getItemSetId());
+		         	//update siss record for the subtest
+		    		this.studentItemSetStatus.updateSissRecord(itemResponseData.get(0).getTestRosterId(), 
+		    				itemResponseData.get(0).getItemSetId(), itemResponseData.get(0).getStartDateTime(), itemResponseData.get(0).getCompletionDateTime());
+		    		conn.commit();
+		         	
+		         } catch(Exception sqle) {
+		         	sqle.printStackTrace();
+		         	result = false;
+		         	// if any of the response data is not saved or siss update fails then rollback
+		         	conn.rollback(); 
+		         	//throw sqle;
+		         } finally {
+		        	 pstmt.close();
+		         	 conn.setAutoCommit(true);
+		         	//conn.close();
+		         }
+	    	 } catch(SQLException se){
+	    		 result = false;
+	    		 CTBBusinessException cbe = new CTBBusinessException("TestSessionStatusImpl: saveStudentResponseInBatch :: "+se.getMessage());
+	    		 cbe.setStackTrace(se.getStackTrace());
+	    		 throw cbe;
+	    	 }
+    	 }
+    	 
+    	 return result;
+     }
+     
 } 

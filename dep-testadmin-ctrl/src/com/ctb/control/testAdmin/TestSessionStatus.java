@@ -1,6 +1,7 @@
 package com.ctb.control.testAdmin; 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
@@ -9,6 +10,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
+import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.exception.CTBBusinessException;
 
 /**
@@ -510,4 +512,9 @@ public interface TestSessionStatus
 	List<String> getRosterFormList(java.lang.String testAdminId) throws com.ctb.exception.CTBBusinessException;
 	
 	void updateRosterForm(java.lang.String userName, java.lang.Integer testRosterId, java.lang.String assignedForm) throws com.ctb.exception.CTBBusinessException;
+	
+	String saveStudentResponseFromClicker(ItemResponseData itemResponseData) throws com.ctb.exception.CTBBusinessException;
+	
+	boolean saveStudentResponseInBatch(ArrayList<ItemResponseData> itemResponseData) throws com.ctb.exception.CTBBusinessException;
+	
 } 

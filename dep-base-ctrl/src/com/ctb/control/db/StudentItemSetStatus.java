@@ -2,6 +2,8 @@ package com.ctb.control.db;
 
 import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
+import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.bean.testAdmin.StudentManifest;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.SubtestStatusCount;
@@ -624,6 +626,16 @@ public interface StudentItemSetStatus extends JdbcControl
 
 	@JdbcControl.SQL(statement= "SELECT ISET.ITEM_SET_ID    AS itemSetId, ISET.ITEM_SET_NAME  AS itemSetName ,ISET.ITEM_SET_FORM  AS itemSetForm, SISS.ITEM_SET_ORDER AS itemSetOrder FROM ITEM_SET     ISET, ITEM_SET_PARENT    ISP,  STUDENT_ITEM_SET_STATUS    SISS,  TEST_ROSTER             TR WHERE ISP.PARENT_ITEM_SET_ID = {itemSetIdTS} AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID AND SISS.ITEM_SET_ID = ISET.ITEM_SET_ID AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND TR.TEST_ADMIN_ID = {testAdminId} AND TR.STUDENT_ID = {studentId}", arrayMaxLength = 100000)
 	StudentManifest [] getLocatorTD(Integer testAdminId, Integer itemSetIdTS, Integer studentId) throws SQLException;
+	
+	@JdbcControl.SQL(statement =" insert into item_response ( ITEM_RESPONSE_ID, ITEM_SET_ID, TEST_ROSTER_ID, RESPONSE, RESPONSE_METHOD, RESPONSE_ELAPSED_TIME, RESPONSE_SEQ_NUM, CREATED_DATE_TIME, ITEM_ID, EXT_ANSWER_CHOICE_ID, STUDENT_MARKED, CREATED_BY ) values ( seq_item_response_id.nextval, {itemResponseData.itemSetId}, {itemResponseData.testRosterId}, {itemResponseData.response}, {itemResponseData.responseMethod}, {itemResponseData.responseElapsedTime}, {itemResponseData.responseSeqNum}, {itemResponseData.created_date_time}, {itemResponseData.itemId}, {itemResponseData.extAnswerChoiceId}, {itemResponseData.studentMarked}, {itemResponseData.createdBy} )")
+	void insertIntoItemResponse(ItemResponseData itemResponseData) throws SQLException;
+		
+	@JdbcControl.SQL(statement ="update student_item_set_status set completion_status = 'CO', START_DATE_TIME = startDateTime, COMPLETION_DATE_TIME = completionDateTime, RAW_SCORE = null, MAX_SCORE= null, UNSCORED= null, RECOMMENDED_LEVEL= null, ABILITY_SCORE= null,  SEM_SCORE= null, OBJECTIVE_SCORE= null, TMS_UPDATE= null  where test_roster_id = {testRosterId} and item_set_id = {itemSetId} ")
+    void updateSissRecord(Integer testRosterId,Integer itemSetId, java.util.Date startDateTime, java.util.Date completionDateTime ) throws SQLException;
+	
+	
+	@JdbcControl.SQL(statement ="select (SEQ_ITEM_RESPONSE_ID.nextval || '$' ||SEQ_RESPONSE_SEQ_NUM.nextval) as sequenceString from dual")
+    String fetchResponseId() throws SQLException;
 	
     static final long serialVersionUID = 1L;
 
