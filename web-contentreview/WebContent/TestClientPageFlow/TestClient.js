@@ -49,7 +49,7 @@ with($0)with($0.prototype){
 {
 LzNode.mergeAttributes({$CSSDescriptor:{},$attributeDescriptor:{types:lz.ClassAttributeTypes["$lzc$class__mf"]}},$lzc$class__mf.attributes)
 }}})($lzc$class__mf)
-};canvas=new $lzc$class__mf(null,{$delegates:["onfocus","$m5",null,"onkeydown","$m7","$m6","onmousedown","$m9","$m8","onbringBackFocus","$ma",null,"onfootnotedata","$mb",null,"onisMultiAudio","$mc",null,"oninit","$md",null,"onfootnotetext","$me",null],Copyrite:"CTB/McGraw-Hill",LASAssetPath:void 0,__LZproxied:"true",accessible:true,appbuilddate:"2013-08-09T15:06:17Z",basefontsize:12,bgcolor:6721972,bringBackFocus:void 0,copyriteColor:5406116,currentCursor:null,embedfonts:true,focusclass:null,focusobj:void 0,font:"Verdana,Vera,sans-serif",fontsize:11,fontstyle:"plain",footnotedata:void 0,footnotetext:null,height:"100%",isMultiAudio:void 0,loadItem:true,lpsbuild:"trunk@19872 (19872)",lpsbuilddate:"2012-11-15T20:16:44Z",lpsrelease:"Latest",lpsversion:"5.0.x",proxied:false,readable:false,runtime:"dhtml",useDefaultEliminator:true,width:"100%",xscalefactor:null,yscalefactor:null});lz.colors.offwhite=15921906;lz.colors.gray10=1710618;lz.colors.gray20=3355443;lz.colors.gray30=5066061;lz.colors.gray40=6710886;lz.colors.gray50=8355711;lz.colors.gray60=10066329;lz.colors.gray70=11776947;lz.colors.gray80=13421772;lz.colors.gray90=15066597;lz.colors.iceblue1=3298963;lz.colors.iceblue2=5472718;lz.colors.iceblue3=12240085;lz.colors.iceblue4=14017779;lz.colors.iceblue5=15659509;lz.colors.palegreen1=4290113;lz.colors.palegreen2=11785139;lz.colors.palegreen3=12637341;lz.colors.palegreen4=13888170;lz.colors.palegreen5=15725032;lz.colors.gold1=9331721;lz.colors.gold2=13349195;lz.colors.gold3=15126388;lz.colors.gold4=16311446;lz.colors.sand1=13944481;lz.colors.sand2=14276546;lz.colors.sand3=15920859;lz.colors.sand4=15986401;lz.colors.ltpurple1=6575768;lz.colors.ltpurple2=12038353;lz.colors.ltpurple3=13353453;lz.colors.ltpurple4=15329264;lz.colors.grayblue=12501704;lz.colors.graygreen=12635328;lz.colors.graypurple=10460593;lz.colors.ltblue=14540287;lz.colors.ltgreen=14548957;lz.ClassAttributeTypes["basefocusview"]=LzNode.mergeAttributeTypes(lz.ClassAttributeTypes["view"],{});{
+};canvas=new $lzc$class__mf(null,{$delegates:["onfocus","$m5",null,"onkeydown","$m7","$m6","onmousedown","$m9","$m8","onbringBackFocus","$ma",null,"onfootnotedata","$mb",null,"onisMultiAudio","$mc",null,"oninit","$md",null,"onfootnotetext","$me",null],Copyrite:"CTB/McGraw-Hill",LASAssetPath:void 0,__LZproxied:"true",accessible:true,appbuilddate:"2013-08-13T13:32:56Z",basefontsize:12,bgcolor:6721972,bringBackFocus:void 0,copyriteColor:5406116,currentCursor:null,embedfonts:true,focusclass:null,focusobj:void 0,font:"Verdana,Vera,sans-serif",fontsize:11,fontstyle:"plain",footnotedata:void 0,footnotetext:null,height:"100%",isMultiAudio:void 0,loadItem:true,lpsbuild:"trunk@19872 (19872)",lpsbuilddate:"2012-11-15T20:16:44Z",lpsrelease:"Latest",lpsversion:"5.0.x",proxied:false,readable:false,runtime:"dhtml",useDefaultEliminator:true,width:"100%",xscalefactor:null,yscalefactor:null});lz.colors.offwhite=15921906;lz.colors.gray10=1710618;lz.colors.gray20=3355443;lz.colors.gray30=5066061;lz.colors.gray40=6710886;lz.colors.gray50=8355711;lz.colors.gray60=10066329;lz.colors.gray70=11776947;lz.colors.gray80=13421772;lz.colors.gray90=15066597;lz.colors.iceblue1=3298963;lz.colors.iceblue2=5472718;lz.colors.iceblue3=12240085;lz.colors.iceblue4=14017779;lz.colors.iceblue5=15659509;lz.colors.palegreen1=4290113;lz.colors.palegreen2=11785139;lz.colors.palegreen3=12637341;lz.colors.palegreen4=13888170;lz.colors.palegreen5=15725032;lz.colors.gold1=9331721;lz.colors.gold2=13349195;lz.colors.gold3=15126388;lz.colors.gold4=16311446;lz.colors.sand1=13944481;lz.colors.sand2=14276546;lz.colors.sand3=15920859;lz.colors.sand4=15986401;lz.colors.ltpurple1=6575768;lz.colors.ltpurple2=12038353;lz.colors.ltpurple3=13353453;lz.colors.ltpurple4=15329264;lz.colors.grayblue=12501704;lz.colors.graygreen=12635328;lz.colors.graypurple=10460593;lz.colors.ltblue=14540287;lz.colors.ltgreen=14548957;lz.ClassAttributeTypes["basefocusview"]=LzNode.mergeAttributeTypes(lz.ClassAttributeTypes["view"],{});{
 Class.make("$lzc$class_basefocusview",["active",void 0,"$lzc$set_active",function($0){
 this.setActive($0)
 },"target",void 0,"$lzc$set_target",function($0){
@@ -15549,7 +15549,7 @@ with($0)with($0.prototype){
 {
 LzNode.mergeAttributes({$CSSDescriptor:{},$attributeDescriptor:{types:lz.ClassAttributeTypes["$lzc$class__m17r"]}},$lzc$class__m17r.attributes)
 }}})($lzc$class__m17r)
-};lz.ClassAttributeTypes["CachableRecorder"]=LzNode.mergeAttributeTypes(lz.ClassAttributeTypes["CachableComponent"],{allow_revisit:"boolean",bgcolor:"color",blinkerVal:"number",factor:"number",height:"size",increment:"boolean",level:"number",micConnected:"boolean",micState:"boolean",recordStarted:"boolean",recordState:"number",requestSent:"boolean",resetCalled:"boolean",stopCalled:"boolean",widget_id:"string",width:"size"});{
+};lz.ClassAttributeTypes["CachableRecorder"]=LzNode.mergeAttributeTypes(lz.ClassAttributeTypes["CachableComponent"],{allow_revisit:"boolean",bgcolor:"color",blinkerVal:"number",factor:"number",height:"size",increment:"boolean",level:"number",micConnected:"boolean",micState:"boolean",recordStarted:"boolean",recordState:"number",recordingCounter:"number",requestSent:"boolean",resetCalled:"boolean",stopCalled:"boolean",widget_id:"string",width:"size"});{
 Class.make("$lzc$class_CachableRecorder",["$m11v",function($0){
 var $1=gCompTypes.WIDGET_RECORDER;if($1!==this["comptype"]||!this.inited){
 this.setAttribute("comptype",$1)
@@ -15575,7 +15575,7 @@ this.setAttribute("linuxLevelDel",new (lz.Delegate)(this,"updateLinux"))
 this.setAttribute("activityArray",new Array())
 },"activityArray",void 0,"$m123",function($0){
 this.setAttribute("fakeActivityArray",new Array())
-},"fakeActivityArray",void 0,"recordState",void 0,"factor",void 0,"micState",void 0,"stopCalled",void 0,"blinkerVal",void 0,"resetCalled",void 0,"requestSent",void 0,"micConnected",void 0,"mc",void 0,"myMic",void 0,"$m124",function($0){
+},"fakeActivityArray",void 0,"recordState",void 0,"factor",void 0,"micState",void 0,"stopCalled",void 0,"blinkerVal",void 0,"recordingCounter",void 0,"resetCalled",void 0,"requestSent",void 0,"micConnected",void 0,"mc",void 0,"myMic",void 0,"$m124",function($0){
 this.setAttribute("drecordDel",new (lz.Delegate)(this,"callRecordMethod"))
 },"drecordDel",void 0,"audioDset",void 0,"init",function(){
 console.log("Inside init");(arguments.callee["$superclass"]&&arguments.callee.$superclass.prototype["init"]||this.nextMethod(arguments.callee,"init")).call(this);gController.setAttribute("resetButtonEnable",false);this.setReferences()
@@ -15629,12 +15629,16 @@ $0=null;
 
 };this.red.setAttribute("visible",true);this.recordStatus.setAttribute("text","RECORDING...")
 },"stopblinker",function($0){
-gController.setAttribute("playIfAnswered",true);gController.enableAllAssets();gController.setAttribute("recordingStopped",true);this.red.setAttribute("visible",false);this.redReplace.setAttribute("visible",false);this.blinkerVal=0;lz.Timer.removeTimer(this.linuxLevelDel);this.stopCalled=true;this.micState=false;this.resetActivityMeterHeight();if(this.recordStarted||$0=="reset"){
-this.sendRequest($0);this.green.setAttribute("visible",true);this.recordStatus.setAttribute("text","AUDIO CAPTURED");this.recordStarted=false;this.stopCountDownTimer();this.stopButton.setAttribute("enabled",false)
+gController.enableAllAssets();gController.setAttribute("recordingStopped",true);this.red.setAttribute("visible",false);this.redReplace.setAttribute("visible",false);this.blinkerVal=0;lz.Timer.removeTimer(this.linuxLevelDel);this.stopCalled=true;this.micState=false;this.resetActivityMeterHeight();if(this.recordStarted||$0=="reset"){
+gController.setAttribute("playIfAnswered",true);this.sendRequest($0);this.green.setAttribute("visible",true);this.recordStatus.setAttribute("text","AUDIO CAPTURED");this.recordStarted=false;this.stopCountDownTimer();this.stopButton.setAttribute("enabled",false)
 }},"reset",function($0){
 if(this.resetCalled==false||gController.isplaying==false){
 if($0=="reset"){
-this.sendRequest($0);this.requestSent=false;this.resetCalled=true;gController.updateAudioField(this.widget_id,false);gController.setAttribute("resetButtonEnable",false)
+if(this.recordingCounter<=2){
+this.recordingCounter=this.recordingCounter+1
+};this.sendRequest($0);this.requestSent=false;if(this.recordingCounter==3){
+this.resetCalled=true
+};gController.updateAudioField(this.widget_id,false);gController.setAttribute("resetButtonEnable",false)
 };this.stopCalled=true;this.micState=false;this.blinkerVal=0;this.totalTime=this.defaultTotalTime;if(gController.isplaying==false){
 this.recordButton.setAttribute("enabled",true)
 }else{
@@ -15665,9 +15669,12 @@ var $1=this.audioDset;var $2=new LzParam();$2.addValue("method",$0,true);$2.addV
 this.blinkerVal=0;var $1=$0.childNodes[0].data;if($1=="RECORDING_START"){
 this.startCountDownTimer();this.blinker();this.stopButton.setAttribute("enabled",true)
 }else if($1=="RECORDING_STOP"){
-if(this.totalTime==0){
+if(this.totalTime==0&&this.recordingCounter==3){
 gController.setAttribute("recordingCompleted",true);this.recordButton.setAttribute("enabled",false);this.resetButton.setAttribute("enabled",false);this.stopButton.setAttribute("enabled",false);return
-};this.recordButton.setAttribute("enabled",false);if(gController.isplaying==false&&this.resetCalled==false){
+}else{
+if(this.totalTime==0){
+this.recordButton.setAttribute("enabled",true)
+}};this.recordButton.setAttribute("enabled",false);if(gController.isplaying==false&&this.resetCalled==false){
 gController.setAttribute("resetButtonEnable",true);this.resetButton.setAttribute("enabled",true)
 }}else{
 Debug.write("Result Default...."+$1)
@@ -15750,7 +15757,7 @@ $3=false;
 }],$lzc$class_CachableComponent,["tagname","CachableRecorder","children",LzNode.mergeChildren([{attrs:{$classrootdepth:1,$delegates:["ondata","$m125",null,"onerror","$m126",null],name:"audioDset",request:false,type:"http"},"class":$lzc$class__m16u},{attrs:{$classrootdepth:1,align:"center",content:void 0,header:void 0,height:new LzAlwaysExpr("$m12b","$m12c",null),name:"main",valign:"middle",width:new LzAlwaysExpr("$m129","$m12a",null)},"class":$lzc$class__m16v},{attrs:{$classrootdepth:1,attachMic:void 0,bgcolor:16777215,clickable:true,height:new LzAlwaysExpr("$m169","$m16a",null),micNotConnected:void 0,name:"whitewrapperOverLay",showhandcursor:false,visible:false,width:new LzAlwaysExpr("$m16b","$m16c",null),x:2,y:new LzAlwaysExpr("$m167","$m168",null)},"class":$lzc$class__m17o},{attrs:{$classrootdepth:1,bgcolor:0,clickable:true,height:new LzAlwaysExpr("$m16p","$m16q",null),name:"blackOverLay",opacity:0.5,showhandcursor:false,visible:false,width:new LzAlwaysExpr("$m16r","$m16s",null),x:new LzAlwaysExpr("$m16l","$m16m",null),y:new LzAlwaysExpr("$m16n","$m16o",null)},"class":$lzc$class__m17r}],$lzc$class_CachableComponent["children"]),"__LZCSSTagSelectors",["CachableRecorder","CachableComponent","view","node","$lfc$LzEventable","Instance"],"attributes",new LzInheritedHash($lzc$class_CachableComponent.attributes)]);(function($0){
 with($0)with($0.prototype){
 {
-LzNode.mergeAttributes({$attributeDescriptor:{types:lz.ClassAttributeTypes["CachableRecorder"]},$delegates:["oninit","$m127",null,"ondata","$m128",null,"oninit","$m16t",null],aaactive:true,aasilent:false,activityArray:new LzOnceExpr("$m122",null),allow_revisit:false,bgcolor:7278351,blinkerDel:new LzOnceExpr("$m11x",null),blinkerVal:0,comptype:new LzAlwaysExpr("$m11v","$m11w",null),countDownDel:new LzOnceExpr("$m11y",null),dCheckConnection:new LzOnceExpr("$m120",null),defaultHeight:150,defaultTotalTime:90,defaultWidth:250,drecordDel:new LzOnceExpr("$m124",null),factor:1,fakeActivityArray:new LzOnceExpr("$m123",null),height:150,increment:0,level:0,leveldel:new LzOnceExpr("$m11z",null),linuxLevelDel:new LzOnceExpr("$m121",null),micConnected:false,micState:false,recordStarted:false,recordState:0,requestSent:false,resetCalled:false,stopCalled:false,totalTime:90,widget_id:"widget10000000000",width:250},$lzc$class_CachableRecorder.attributes)
+LzNode.mergeAttributes({$attributeDescriptor:{types:lz.ClassAttributeTypes["CachableRecorder"]},$delegates:["oninit","$m127",null,"ondata","$m128",null,"oninit","$m16t",null],aaactive:true,aasilent:false,activityArray:new LzOnceExpr("$m122",null),allow_revisit:false,bgcolor:7278351,blinkerDel:new LzOnceExpr("$m11x",null),blinkerVal:0,comptype:new LzAlwaysExpr("$m11v","$m11w",null),countDownDel:new LzOnceExpr("$m11y",null),dCheckConnection:new LzOnceExpr("$m120",null),defaultHeight:150,defaultTotalTime:90,defaultWidth:250,drecordDel:new LzOnceExpr("$m124",null),factor:1,fakeActivityArray:new LzOnceExpr("$m123",null),height:150,increment:0,level:0,leveldel:new LzOnceExpr("$m11z",null),linuxLevelDel:new LzOnceExpr("$m121",null),micConnected:false,micState:false,recordStarted:false,recordState:0,recordingCounter:1,requestSent:false,resetCalled:false,stopCalled:false,totalTime:90,widget_id:"widget10000000000",width:250},$lzc$class_CachableRecorder.attributes)
 }}})($lzc$class_CachableRecorder)
 };lz.ClassAttributeTypes["CachableGriddedResponsePanel"]=LzNode.mergeAttributeTypes(lz.ClassAttributeTypes["CachablePanel"],{gridResponsePanelIdentifier:"boolean"});{
 Class.make("$lzc$class_CachableGriddedResponsePanel",["$m17s",function($0){
@@ -28236,11 +28243,10 @@ $0=null;
 };if(gItemInterface.visible){
 if(gController.allowNavigate&&gController.allowItmeNavigate){
 if(gController.unlockNavigation){
-if(!gController.fwdOnly){
 if(!gController.onFirstItem()){
 lz.Focus.clearFocus()
 };this.exitPopups();gEnlargePopup.shrink();gController.stepNavigateBack()
-}}}}},"goOn",function($0){
+}}}},"goOn",function($0){
 switch(arguments.length){
 case 0:
 $0=null;
@@ -32944,7 +32950,7 @@ case 3:
 $3=false;
 
 };(arguments.callee["$superclass"]&&arguments.callee.$superclass.prototype["$lzsc$initialize"]||this.nextMethod(arguments.callee,"$lzsc$initialize")).call(this,$0,$1,$2,$3)
-}],LzView,["displayName","<anonymous extends='view'>","children",[{attrs:{$classrootdepth:2,fgcolor:16777215,fontsize:12,resize:true,text:"<b>Login ID:</b>",valign:"middle",x:new LzAlwaysExpr("$m2i0","$m2i1",null)},"class":$lzc$class__m2ij},{attrs:{$CSSDescriptor:{},$attributeDescriptor:{types:lz.ClassAttributeTypes["view"]},$classrootdepth:2,bgcolor:16777215,height:26,loginIdField:void 0,width:265,x:287},children:[{attrs:{$classrootdepth:3,fgcolor:7829367,fontsize:12,name:"loginIdField",text:new LzAlwaysExpr("$m2i2","$m2i3",null),valign:"center",visible:true,width:265},"class":$lzc$class__m2ik}],"class":LzView}],"__LZCSSTagSelectors",["view","node","$lfc$LzEventable","Instance"],"attributes",new LzInheritedHash(LzView.attributes)]);(function($0){
+}],LzView,["displayName","<anonymous extends='view'>","children",[{attrs:{$classrootdepth:2,fgcolor:16777215,fontsize:12,resize:true,text:"<b>Login ID:</b>",valign:"middle",x:new LzAlwaysExpr("$m2i0","$m2i1",null)},"class":$lzc$class__m2ij},{attrs:{$CSSDescriptor:{},$attributeDescriptor:{types:lz.ClassAttributeTypes["view"]},$classrootdepth:2,bgcolor:16777215,height:26,loginIdField:void 0,width:265,x:287},children:[{attrs:{$classrootdepth:3,fgcolor:7829367,fontsize:12,name:"loginIdField",text:new LzAlwaysExpr("$m2i2","$m2i3",null),valign:"middle",visible:true,width:265},"class":$lzc$class__m2ik}],"class":LzView}],"__LZCSSTagSelectors",["view","node","$lfc$LzEventable","Instance"],"attributes",new LzInheritedHash(LzView.attributes)]);(function($0){
 with($0)with($0.prototype){
 {
 LzNode.mergeAttributes({$CSSDescriptor:{},$attributeDescriptor:{types:lz.ClassAttributeTypes["$lzc$class__m2ii"]}},$lzc$class__m2ii.attributes)
