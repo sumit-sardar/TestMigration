@@ -800,16 +800,20 @@ function isAnswered(){
  
   function setState(htmlContent,jsonContent,checkedVals){
  	var elem = $("iframe")[0];
- 	console.log("inside setState");
+ 	//console.log("inside setState");
  	if(elem){	
- 		console.log("inside if elem of setState");
+ 		//console.log("inside if elem of setState");
      if(elem.contentWindow){
-    	console.log("inside if elem contentWindow of setState");
+    	//console.log("inside if elem contentWindow of setState");
    		if(elem.contentWindow.accomPkg){
-   			console.log("inside if elem contentWindow accomPkg of setState");
+   			//console.log("inside if elem contentWindow accomPkg of setState");
 			elem.contentWindow.accomPkg.setState(htmlContent,jsonContent,checkedVals);
 			//ansSet = true;
-  		}
+  		}else{
+            setTimeout(function(){
+                setState(htmlContent,jsonContent,checkedVals);
+                }, 500);
+        }
   	}
    }          
  }
