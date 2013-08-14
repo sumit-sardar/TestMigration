@@ -485,7 +485,15 @@ public class ClickerWS implements Serializable {
 		for (int i=0 ; i<rosters.length ; i++) {
 			Roster roster = rosters[i];	
 			System.out.println("Roster Id :: "+rosters[i].getRosterId());
-			if(saveResponsesForRoster(roster)){	
+			if(saveResponsesForRoster(roster)){
+				System.out.println("Responses of all the subtests for the rosterId "+roster.getRosterId()+" is saved successfully...."+"\n\t Updating test_completion_status for the roster...");
+				try{	
+					this.testSessionStatus.updateCompletionStatusForRoster(roster.getRosterId());
+				} catch (CTBBusinessException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Failed to update test_completion_status for roster id : "+roster.getRosterId());
+					e.printStackTrace();
+				}
 				System.out.println("Scoring invoked.....");
 				try {          
 		    		 // new Weblogic 10.3 JMS call
