@@ -630,7 +630,7 @@ public interface StudentItemSetStatus extends JdbcControl
 	@JdbcControl.SQL(statement =" insert into item_response ( ITEM_RESPONSE_ID, ITEM_SET_ID, TEST_ROSTER_ID, RESPONSE, RESPONSE_METHOD, RESPONSE_ELAPSED_TIME, RESPONSE_SEQ_NUM, CREATED_DATE_TIME, ITEM_ID, EXT_ANSWER_CHOICE_ID, STUDENT_MARKED, CREATED_BY ) values ( seq_item_response_id.nextval, {itemResponseData.itemSetId}, {itemResponseData.testRosterId}, {itemResponseData.response}, {itemResponseData.responseMethod}, {itemResponseData.responseElapsedTime}, {itemResponseData.responseSeqNum}, {itemResponseData.created_date_time}, {itemResponseData.itemId}, {itemResponseData.extAnswerChoiceId}, {itemResponseData.studentMarked}, {itemResponseData.createdBy} )")
 	void insertIntoItemResponse(ItemResponseData itemResponseData) throws SQLException;
 		
-	@JdbcControl.SQL(statement ="update student_item_set_status set completion_status = 'CO', START_DATE_TIME = startDateTime, COMPLETION_DATE_TIME = completionDateTime, RAW_SCORE = null, MAX_SCORE= null, UNSCORED= null, RECOMMENDED_LEVEL= null, ABILITY_SCORE= null,  SEM_SCORE= null, OBJECTIVE_SCORE= null, TMS_UPDATE= null  where test_roster_id = {testRosterId} and item_set_id = {itemSetId} ")
+	@JdbcControl.SQL(statement ="update student_item_set_status set completion_status = 'CO', START_DATE_TIME = {startDateTime}, COMPLETION_DATE_TIME = {completionDateTime}, RAW_SCORE = null, MAX_SCORE= null, UNSCORED= null, RECOMMENDED_LEVEL= null, ABILITY_SCORE= null,  SEM_SCORE= null, OBJECTIVE_SCORE= null, TMS_UPDATE= null  where test_roster_id = {testRosterId} and item_set_id = {itemSetId} ")
     void updateSissRecord(Integer testRosterId,Integer itemSetId, java.util.Date startDateTime, java.util.Date completionDateTime ) throws SQLException;
 	
 	
