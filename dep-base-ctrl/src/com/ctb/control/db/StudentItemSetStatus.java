@@ -637,6 +637,10 @@ public interface StudentItemSetStatus extends JdbcControl
 	@JdbcControl.SQL(statement ="select (SEQ_ITEM_RESPONSE_ID.nextval || '$' ||SEQ_RESPONSE_SEQ_NUM.nextval) as sequenceString from dual")
     String fetchResponseId() throws SQLException;
 	
+	@JdbcControl.SQL(statement ="update test_roster set test_completion_status = 'CO' where test_roster_id = {rosterId}")
+    void updateCompletionStatusForRoster(Integer rosterId) throws SQLException;
+	
+	
     static final long serialVersionUID = 1L;
 
 }   

@@ -2514,4 +2514,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
     	 return result;
      }
      
+     public void updateCompletionStatusForRoster(Integer rosterId) throws CTBBusinessException{
+    	 try{
+    		 this.studentItemSetStatus.updateCompletionStatusForRoster(rosterId);
+    	 }catch(SQLException se){
+    		 CTBBusinessException cbe = new CTBBusinessException("TestSessionStatusImpl: updateCompletionStatusForRoster :: "+se.getMessage());
+    		 cbe.setStackTrace(se.getStackTrace());
+    		 throw cbe;
+    	 }
+     }
+     
 } 

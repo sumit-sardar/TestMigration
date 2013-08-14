@@ -517,4 +517,6 @@ public interface TestSessionStatus
 	
 	boolean saveStudentResponseInBatch(ArrayList<ItemResponseData> itemResponseData) throws com.ctb.exception.CTBBusinessException;
 	
+	void updateCompletionStatusForRoster(Integer rosterId) throws com.ctb.exception.CTBBusinessException;
+	
 } 
