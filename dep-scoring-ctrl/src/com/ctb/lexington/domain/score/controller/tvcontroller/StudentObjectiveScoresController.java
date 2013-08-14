@@ -15,6 +15,9 @@ import com.ctb.lexington.db.irsdata.irstvdata.IrsTVPrimObjFactData;
 import com.ctb.lexington.db.irsdata.irstvdata.IrsTVSecObjFactData;
 import com.ctb.lexington.db.mapper.tvmapper.IrsTVPrimObjFactMapper;
 import com.ctb.lexington.db.mapper.tvmapper.IrsTVSecObjFactMapper;
+import com.ctb.lexington.domain.score.event.Objective;
+import com.ctb.lexington.domain.score.scorer.ScorerHelper;
+import com.ctb.lexington.domain.score.scorer.calculator.ObjectiveRawScoreCalculator;
 import com.ctb.lexington.domain.teststructure.MasteryLevel;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -81,6 +84,14 @@ public class StudentObjectiveScoresController {
                 StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
                 if(details != null) {
                     // scores
+                	//Added to for story : Suppress OPI, Raw and Master scores for objectives for less than 4 items//**Start**//
+                	if(adminData.getProductId() == 3500){
+                		Objective tvPrimObjective = (Objective)ObjectiveRawScoreCalculator.tvSubtestObjectiveMap.get(prims[i].getPrimaryObjectiveId());
+                		if(tvPrimObjective.getNumberOfItems().intValue() < 4){
+	                		details.setPointsObtained(new Long(0));
+	                		details.setPercentObtained(new Long(ScorerHelper.calculatePercentage(new Integer(0).intValue(), details.getPointsObtained().intValue())));
+                		}
+                	} //**End**//            		
                     primObjFacts[i].setPointsObtained(details.getPointsObtained());
                     primObjFacts[i].setPointsPossible(details.getPointsPossible());
                     if(details != null && details.getPercentObtained() != null) {

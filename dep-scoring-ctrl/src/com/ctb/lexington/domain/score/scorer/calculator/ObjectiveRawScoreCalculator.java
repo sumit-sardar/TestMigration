@@ -27,6 +27,7 @@ public class ObjectiveRawScoreCalculator extends Calculator {
     private final Map secondaryObjectives = new SafeHashMap(Long.class, Map.class);
     private final Map subtestObjectiveMap = new SafeHashMap(Long.class, Objective.class);
     private SubtestObjectiveCollectionEvent subtestObjectives = null;
+    public static Map tvSubtestObjectiveMap = new SafeHashMap(Long.class, Objective.class);
 
     /**
      * Constructor for ObjectiveNumberCorrectCalculator.
@@ -52,6 +53,7 @@ public class ObjectiveRawScoreCalculator extends Calculator {
             Objective element = (Objective) iter.next();
             primaryObjectives.put(element.getId(), new HashMap()); // null values ok?
             subtestObjectiveMap.put(element.getId(), element);
+            tvSubtestObjectiveMap.put(element.getId(), element);
         }
         iter = event.secondaryReportingLevelObjectiveIterator();
         while (iter.hasNext()) {
@@ -141,23 +143,10 @@ public class ObjectiveRawScoreCalculator extends Calculator {
 
             int pointsPossible = getPointsPossibleFor(objectiveId);
             
-            if(isLessItemCountForTV(objectiveId) &&  objectiveLevel.equals(Objective.PRIMARY)){ //Added for TN Online 
-            	pointsObtained = 0;
-            }
-            //System.out.println("objectiveId==>"+objectiveId);
             channel.send(new ObjectiveRawScoreEvent(testRosterId, objectiveId, objectiveLevel,
                     pointsPossible, pointsObtained, pointsAttempted, ScorerHelper.calculatePercentage(
                             pointsObtained, pointsPossible), subtestId));
         }
-    }
-    
-    //Added to for story : Suppress OPI, Raw and Master scores for objectives for less than 4 items
-    private boolean isLessItemCountForTV(Long objectiveId){
-    	if(scorer.getResultHolder().getAdminData().getProductId().intValue() == 3500 && 
-    			((Objective)subtestObjectiveMap.get(objectiveId)).getNumberOfItems().intValue()<4)
-    		return true;
-    	else
-    		return false;
     }
     
     private int getPointsPossibleFor(final Long objectiveID) {
