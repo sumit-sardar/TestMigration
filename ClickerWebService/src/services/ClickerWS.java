@@ -483,7 +483,8 @@ public class ClickerWS implements Serializable {
 		Roster[] rosters = assignment.getRosters();
 		
 		for (int i=0 ; i<rosters.length ; i++) {
-			Roster roster = rosters[i];							
+			Roster roster = rosters[i];	
+			System.out.println("Roster Id :: "+rosters[i].getRosterId());
 			if(saveResponsesForRoster(roster)){	
 				System.out.println("Scoring invoked.....");
 				try {          
@@ -492,12 +493,12 @@ public class ClickerWS implements Serializable {
 		    	 }catch (SQLException se) {
 		             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: Roster Not found : " + se.getMessage());
 		             rde.setStackTrace(se.getStackTrace());
-		             throw rde;  
+		             //throw rde;  
 		         }
 		         catch (Exception se) {
 		             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl:  Roster Not found : " + se.getMessage());
 		             rde.setStackTrace(se.getStackTrace());
-		             throw rde;  
+		             //throw rde;  
 		         }
 			}else
 				errMsg += roster.getRosterId()+",";
@@ -524,7 +525,7 @@ public class ClickerWS implements Serializable {
 			SubtestInfo subtest = subtests[j];
 			ArrayList<ItemResponseData> responseListForSubtest = new ArrayList<ItemResponseData>();
 			Question[] questions = subtest.getQuestions();
-			
+			System.out.println("Subtest Id:: "+subtests[j].getSubtestId());
 			// build response list for subtest : start
 			for (int k=0 ; k<questions.length ; k++) {
 				Question question = questions[k];
@@ -543,6 +544,7 @@ public class ClickerWS implements Serializable {
 				isSuccess = this.testSessionStatus.saveStudentResponseInBatch(responseListForSubtest);// batch insert to reduce db overhead
 			} catch (CTBBusinessException e) {
 				// TODO Auto-generated catch block
+				System.out.println("Failed to save responses for subtest id : "+subtests[j].getSubtestId());
 				isSuccess = false;
 				e.printStackTrace();
 			}
