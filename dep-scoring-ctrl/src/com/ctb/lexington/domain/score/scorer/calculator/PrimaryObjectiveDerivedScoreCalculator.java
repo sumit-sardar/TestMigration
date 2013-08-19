@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
+import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryCumulativeNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.PrimaryObjectiveDerivedScoreEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
@@ -66,7 +67,8 @@ public class PrimaryObjectiveDerivedScoreCalculator extends AbstractDerivedScore
             } else if(scorer.getResultHolder().getAdminData().getProductId() == 3500){
             	if( ("1" + pGrade).equals(pLevel) || ("19/20".equals(pLevel) && ("9".equals(pGrade) || "10".equals(pGrade)))
                 		|| ("11".equals(pGrade) && "21".equals(pLevel)) || ("12".equals(pGrade) && "22".equals(pLevel))) {
-            		if(Integer.valueOf(event.getNumberOfItems())>=4){
+            		Objective tvPrimObjective = (Objective)ObjectiveRawScoreCalculator.tvSubtestObjectiveMap.get(event.getObjectiveId());
+            		if(tvPrimObjective.getNumberOfItems().intValue() >= 4) {
             			pValue = getScoreLookupHelper().getObjectivePValue(event.getObjectiveId(), "%", "%", pNormGroup, pGrade, pLevel, conn);
             		}else{
             			pValue = null;

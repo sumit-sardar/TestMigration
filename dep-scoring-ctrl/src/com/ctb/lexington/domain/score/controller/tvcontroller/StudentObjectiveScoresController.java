@@ -89,7 +89,7 @@ public class StudentObjectiveScoresController {
                 		Objective tvPrimObjective = (Objective)ObjectiveRawScoreCalculator.tvSubtestObjectiveMap.get(prims[i].getPrimaryObjectiveId());
                 		if(tvPrimObjective.getNumberOfItems().intValue() < 4){
 	                		details.setPointsObtained(new Long(0));
-	                		details.setPercentObtained(new Long(ScorerHelper.calculatePercentage(new Integer(0).intValue(), details.getPointsObtained().intValue())));
+	                		details.setPercentObtained(new Long(ScorerHelper.calculatePercentage(new Integer(0).intValue(), details.getPointsPossible().intValue())));
                 		}
                 	} //**End**//            		
                     primObjFacts[i].setPointsObtained(details.getPointsObtained());
