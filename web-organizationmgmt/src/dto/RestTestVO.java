@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ctb.util.OperationStatus;
 
-public class RestTestVO {
+public class RestTestVO implements java.io.Serializable {
 	List<ScheduleElementVO> deliverableItemSetList = new ArrayList<ScheduleElementVO>();
 	List<StudentSessionStatusVO> studentDetailsList = new ArrayList<StudentSessionStatusVO>();
 	List<TestSessionVO> testSessionList  = new ArrayList<TestSessionVO>();
