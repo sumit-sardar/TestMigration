@@ -169,7 +169,7 @@ public class ManageDownloadController extends PageFlowController
                 
                 //fileContent = UploadDownloadFormUtils.downLoadUserData(userFile);
                 data = UploadDownloadFormUtils.downLoadUserDataFile
-                        (userFile, this.userName, userManagement);
+                        (userFile, this.userName, userManagement,false);
                 
             } else {
                 
@@ -186,7 +186,7 @@ public class ManageDownloadController extends PageFlowController
                 //fileContent = UploadDownloadFormUtils.downLoadStudentData(studentFile);
                 
                 data = UploadDownloadFormUtils.downLoadStudentDataFile
-                        (studentFile, this.userName, userManagement);
+                        (studentFile, this.userName, userManagement,false);
                 
             }
             

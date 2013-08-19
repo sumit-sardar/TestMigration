@@ -152,6 +152,7 @@ public interface OrgNode extends JdbcControl
      *     node.parent_county as parentCounty,
      *     node.parent_district as parentDistrict,
      *     node.org_node_code as orgNodeCode,
+     *     node.org_node_mdr_number as mdrNumber,
      *     cat.category_name as orgNodeCategoryName,
      *     count(distinct child.org_node_id) as childNodeCount
      * from 
@@ -189,10 +190,11 @@ public interface OrgNode extends JdbcControl
      *      node.parent_county,
      *      node.parent_district,
      *      node.org_node_code,
+     *      node.org_node_mdr_number as mdrNumber,
      *      cat.category_name::
      *      array-max-length="all"
      */
-    @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName,  count(distinct child.org_node_id) as childNodeCount from  org_node node, user_role role, users, org_node_category cat,  org_node_parent child, org_node chnode where  role.org_node_id = node.org_node_id  and cat.org_node_category_id = node.org_node_category_id  and node.activation_status = 'AC'  and role.activation_status = 'AC'  and users.activation_status = 'AC'  and cat.activation_status = 'AC'  and role.user_id = users.user_id  and users.user_name = {userName}  and child.parent_org_node_id (+) = node.org_node_id  and chnode.org_node_id (+) = child.org_node_id  and NVL(chnode.activation_status, 'AC') = 'AC' group by  node.org_node_id,  node.customer_id,  node.org_node_category_id,  node.org_node_name,  node.ext_qed_pin,  node.ext_elm_id,  node.ext_org_node_type,  node.org_node_description,  node.created_by,  node.created_date_time,  node.updated_by,  node.updated_date_time,  node.activation_status,  node.data_import_history_id,  node.parent_state,  node.parent_region,  node.parent_county,  node.parent_district,  node.org_node_code,  cat.category_name",
+    @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode, node.org_node_mdr_number as mdrNumber ,  cat.category_name as orgNodeCategoryName,  count(distinct child.org_node_id) as childNodeCount from  org_node node, user_role role, users, org_node_category cat,  org_node_parent child, org_node chnode where  role.org_node_id = node.org_node_id  and cat.org_node_category_id = node.org_node_category_id  and node.activation_status = 'AC'  and role.activation_status = 'AC'  and users.activation_status = 'AC'  and cat.activation_status = 'AC'  and role.user_id = users.user_id  and users.user_name = {userName}  and child.parent_org_node_id (+) = node.org_node_id  and chnode.org_node_id (+) = child.org_node_id  and NVL(chnode.activation_status, 'AC') = 'AC' group by  node.org_node_id,  node.customer_id,  node.org_node_category_id,  node.org_node_name,  node.ext_qed_pin,  node.ext_elm_id,  node.ext_org_node_type,  node.org_node_description,  node.created_by,  node.created_date_time,  node.updated_by,  node.updated_date_time,  node.activation_status,  node.data_import_history_id,  node.parent_state,  node.parent_region,  node.parent_county,  node.parent_district,  node.org_node_code, node.org_node_mdr_number , cat.category_name",
                      arrayMaxLength = 100000)
     Node [] getTopNodesForUser(String userName) throws SQLException;
 
@@ -1545,7 +1547,8 @@ public interface OrgNode extends JdbcControl
      *     customer_id,
      *     created_by,
      *     org_node_code,
-     *     activation_status 
+     *     activation_status,
+     *     org_node_mdr_number
      *    )         
      *   values (
      *    {orgNode.orgNodeId},
@@ -1554,7 +1557,8 @@ public interface OrgNode extends JdbcControl
      *    {orgNode.customerId},
      *    {orgNode.createdBy},   
      *    {orgNode.orgNodeCode},
-     *    {orgNode.activationStatus} 
+     *    {orgNode.activationStatus},
+     *    {orgNode.mdrNumber}
      *   )::
 	 * Changes For LASLINK Customer
      */

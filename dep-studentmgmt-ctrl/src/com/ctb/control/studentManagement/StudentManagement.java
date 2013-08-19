@@ -552,6 +552,9 @@ public interface StudentManagement
 	List<com.ctb.bean.studentManagement.StudentScoreReport> getStudentReportByGroup(Integer [] testRosterId,Integer parentProductId) throws com.ctb.exception.CTBBusinessException;
 	
 	boolean getIsStudentExtracted (java.lang.Integer studentId) throws com.ctb.exception.CTBBusinessException;
+	
+    com.ctb.bean.studentManagement.CustomerConfiguration[] getCustomerConfigurations(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
+
 
 } 	
 

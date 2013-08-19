@@ -87,7 +87,7 @@ public class UploadDownloadFormUtils
     * Create Template in Server path and return byte array 
     */ 
     public static byte[] createTemplateFile (UserFile userFile, String userName, 
-            UserManagement userManagement) {
+            UserManagement userManagement, boolean isLaslink) {
         byte []errorData = null;
         try {
             
@@ -109,25 +109,59 @@ public class UploadDownloadFormUtils
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-                        
-                        cell = row.createCell((short)j);
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-                        
-                        cell = row.createCell((short)(j + 1));
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-                        
-               
-                    }
                     
+	                    if (isLaslink){
+	                    	// then add an extra column MDR number 
+	                        for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
+	                            
+	                            cell = row.createCell((short)j);
+	                            style = cell.getCellStyle();
+	                            style.setWrapText(true);
+	                            cell.setCellStyle(style);
+	                            cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                            
+	                            cell = row.createCell((short)(j + 1));
+	                            style = cell.getCellStyle();
+	                            style.setWrapText(true);
+	                            cell.setCellStyle(style);
+	                            cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                            
+	                            cell = row.createCell((short)(j + 2));
+	                            style = cell.getCellStyle();
+	                            style.setWrapText(true);
+	                            cell.setCellStyle(style);
+	                            cell.setCellValue(headerNode[k].getMdrNumber());
+	                            
+	                   
+	                        }
+	                    }
+	                  else {
+	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+	                        
+	                        cell = row.createCell((short)j);
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                        
+	                        cell = row.createCell((short)(j + 1));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                       
+	                        
+	               
+	                    }
+	                 } 
+	                    
                     //Insert User Header
-                    userPos = headerNode.length * 2;
+	                if (isLaslink){
+	                	userPos = headerNode.length * 3;
+	                }
+	                else{
+	                	userPos = headerNode.length * 2;
+	                }
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -258,7 +292,7 @@ public class UploadDownloadFormUtils
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
                         
-                        cellPosition = getCellPosition (headerNode, nodeData[j]);
+                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
                         
                         if (cellPosition != -1) {
                             
@@ -275,6 +309,15 @@ public class UploadDownloadFormUtils
                             style.setWrapText(true);
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
+                            
+                          //create cell for nodeMDRNumber if laslink customer
+                          if(isLaslink) {
+                            cell = row.createCell((short)(cellPosition + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(nodeData[j].getMdrNumber());
+                          }
                             
                         }
                         
@@ -353,8 +396,49 @@ public class UploadDownloadFormUtils
             }
             
             
+           
+        	   cellPosition = cellPosition + 2;
+           
             
-            cellPosition = cellPosition + 2;
+        }
+        if (flag) {
+            
+            return cellPosition;
+        
+        } else {
+            
+            return -1;
+            
+        }
+        
+        
+    }
+    
+    private static int getCellPositionForLaslink (Node []headerNode, Node node,boolean isLaslink) {
+        
+        int cellPosition = 0;
+        boolean flag = false;
+        for (int i = 0; i < headerNode.length; i++) {
+            
+            Node tempHeaderNode = headerNode[i];
+            
+            if (node.getOrgNodeName() != null && !node.getOrgNodeName().trim().equals("")) {
+                
+                if (tempHeaderNode.getOrgNodeCategoryId().intValue() 
+                    == node.getOrgNodeCategoryId().intValue()) {
+                    flag = true;    
+                    break;
+                
+                }
+                
+            }
+            
+            
+           if (isLaslink) {
+        	   cellPosition = cellPosition + 3;
+           } else{
+        	   cellPosition = cellPosition + 2;   
+           }
             
         }
         if (flag) {
@@ -427,7 +511,7 @@ public class UploadDownloadFormUtils
     }
     
     public static byte[] downLoadUserDataFile (UserFile userFile, String userName, 
-            UserManagement userManagement) {
+            UserManagement userManagement,boolean isLaslink) {
         
         
         byte []errorData = null;
@@ -450,26 +534,54 @@ public class UploadDownloadFormUtils
                 if (i == 0) {
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
-                    //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-                        
-                        cell = row.createCell((short)j);
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-                        
-                        cell = row.createCell((short)(j + 1));
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-                        
-               
+                    
+                    
+                  //Insert organization header
+                    if(isLaslink){                    	
+	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {	                        
+	                        cell = row.createCell((short)j);
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                        
+	                        cell = row.createCell((short)(j + 1));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                        
+	                        //MDR Number cell added for Laslink
+	                        cell = row.createCell((short)(j + 2));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getMdrNumber());
+	                   }
+                    	
+                    }else {	                    
+	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {	                        
+	                        cell = row.createCell((short)j);
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                        
+	                        cell = row.createCell((short)(j + 1));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                   }
                     }
                     
+                    
                     //Insert User Header
-                    userPos = headerNode.length * 2;
+                    if(isLaslink){
+                    	userPos = headerNode.length * 3;
+                    }else {
+                    	userPos = headerNode.length * 2;
+                    }
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -599,7 +711,7 @@ public class UploadDownloadFormUtils
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
                         
-                        cellPosition = getCellPosition (headerNode, nodeData[j]);
+                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
                         
                         if (cellPosition != -1) {
                             
@@ -617,11 +729,24 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                            
+                            if(isLaslink){
+	                            //create cell for nodeMDR Number
+	                            cell = row.createCell((short)(cellPosition + 2));
+	                            style = cell.getCellStyle();
+	                            style.setWrapText(true);
+	                            cell.setCellStyle(style);
+	                            cell.setCellValue(nodeData[j].getMdrNumber());
+                            }
                         }
                    
                     } //End for loop
                     
-                    cellPosition = headerNode.length * 2;    
+                    if(isLaslink){
+                    	cellPosition = headerNode.length * 3;
+                    }else{
+                    	cellPosition = headerNode.length * 2;
+                    }
                     
                     //FirstName
                  
@@ -1041,7 +1166,7 @@ public class UploadDownloadFormUtils
     //Creating student data file with POI
     
     public static byte[] downLoadStudentDataFile (StudentFile studentFile, String userName,
-            UserManagement userManagement) {
+            UserManagement userManagement,boolean isLaslink) {
             
             byte []errorData = null;
         
@@ -1069,26 +1194,58 @@ public class UploadDownloadFormUtils
                 if (i == 0) {
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
-                    //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-                        
-                        cell = row.createCell((short)j);
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-                        
-                        cell = row.createCell((short)(j + 1));
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-                        
-               
-                    }
                     
+                    //Insert organization header
+                    
+	                 if(isLaslink){
+	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
+	                        
+	                        cell = row.createCell((short)j);
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                        
+	                        cell = row.createCell((short)(j + 1));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                        
+	                        cell = row.createCell((short)(j + 2));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getMdrNumber());
+	                        
+	               
+	                    }
+                    } 
+	                 else {
+	                	 for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+		                        
+		                        cell = row.createCell((short)j);
+		                        style = cell.getCellStyle();
+		                        style.setWrapText(true);
+		                        cell.setCellStyle(style);
+		                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+		                        
+		                        cell = row.createCell((short)(j + 1));
+		                        style = cell.getCellStyle();
+		                        style.setWrapText(true);
+		                        cell.setCellStyle(style);
+		                        cell.setCellValue(headerNode[k].getOrgNodeCode());		                        
+		               
+		                    }
+	                	 
+	                 }
+	                 
                     //Insert Student Header
-                    studentPos = headerNode.length * 2;
+	                 if(isLaslink){
+	                	 studentPos = headerNode.length * 3;
+	                 }else {
+	                	 studentPos = headerNode.length * 2;
+	                 }
                     
                     //FirstName Header
                     cell = row.createCell((short)studentPos++);
@@ -1269,7 +1426,7 @@ public class UploadDownloadFormUtils
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
                         
-                        cellPosition = getCellPosition (headerNode, nodeData[j]);
+                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j] , isLaslink);
                         
                         if (cellPosition != -1) {
                             
@@ -1287,11 +1444,24 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                            if(isLaslink){
+                            	//create cell for nodeMDR
+                            	cell = row.createCell((short)(cellPosition + 2));
+                                style = cell.getCellStyle();
+                                style.setWrapText(true);
+                                cell.setCellStyle(style);
+                                cell.setCellValue(nodeData[j].getMdrNumber());
+                            }
+                            
                         }
                    
                     } //End for loop
                     
-                    cellPosition = headerNode.length * 2;    
+                    if(isLaslink){
+                    	cellPosition = headerNode.length * 3;
+                    }else{
+                    	cellPosition = headerNode.length * 2;
+                    }
                     
                     //FirstName
                  
@@ -1656,7 +1826,7 @@ public class UploadDownloadFormUtils
     * Create Template in Server path and return byte array 
     */ 
     public static byte[] createStudentTemplateFile (StudentFile studentFile, String userName, 
-            UserManagement userManagement) {
+            UserManagement userManagement,boolean isLaslink) {
         byte []errorData = null;
         try {
             
@@ -1679,25 +1849,52 @@ public class UploadDownloadFormUtils
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-                        
-                        cell = row.createCell((short)j);
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-                        
-                        cell = row.createCell((short)(j + 1));
-                        style = cell.getCellStyle();
-                        style.setWrapText(true);
-                        cell.setCellStyle(style);
-                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-                        
-               
-                    }
+	                if (isLaslink){
+	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
+	                        
+	                        cell = row.createCell((short)j);
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+	                        
+	                        cell = row.createCell((short)(j + 1));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+	                        
+	                        cell = row.createCell((short)(j + 2));
+	                        style = cell.getCellStyle();
+	                        style.setWrapText(true);
+	                        cell.setCellStyle(style);
+	                        cell.setCellValue(headerNode[k].getMdrNumber());                        
+	               
+	                    }
+                   }
+                   else{
+                	   for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {                           
+                           cell = row.createCell((short)j);
+                           style = cell.getCellStyle();
+                           style.setWrapText(true);
+                           cell.setCellStyle(style);
+                           cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+                           
+                           cell = row.createCell((short)(j + 1));
+                           style = cell.getCellStyle();
+                           style.setWrapText(true);
+                           cell.setCellStyle(style);
+                           cell.setCellValue(headerNode[k].getOrgNodeCode());
+                  
+                       }
+                   }
                     
                     //Insert Student Header
-                    userPos = headerNode.length * 2;
+	                if (isLaslink){
+	                	userPos = headerNode.length * 3;
+	                }else{
+	                	userPos = headerNode.length * 2;
+	                }
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos++);
@@ -1880,7 +2077,7 @@ public class UploadDownloadFormUtils
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
                         
-                        cellPosition = getCellPosition (headerNode, nodeData[j]);
+                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
                         
                         if (cellPosition != -1) {
                             
@@ -1897,6 +2094,15 @@ public class UploadDownloadFormUtils
                             style.setWrapText(true);
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
+                            
+                            if (isLaslink){
+	                            //create cell for mdrNumber
+	                            cell = row.createCell((short)(cellPosition + 2));
+	                            style = cell.getCellStyle();
+	                            style.setWrapText(true);
+	                            cell.setCellStyle(style);
+	                            cell.setCellValue(nodeData[j].getMdrNumber());
+                            }
                             
                         }
                         

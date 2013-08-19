@@ -172,7 +172,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
     /**
      * @common:operation
      */
-    public UserFile getUserFileTemplate (String userName) 
+    public UserFile getUserFileTemplate (String userName ) 
                                         throws CTBBusinessException {
         
         UserFile userFile = new UserFile();
@@ -365,7 +365,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             isStudentIDConfigurableCustomer(userName);
             // Insert Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
-                    studentFileRow, false);
+                    studentFileRow, false );
                     
             //Insert Template Body
             createTemplateBody(hierarchyMap,studentFileRow, false);
@@ -979,6 +979,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 
         // Used to read the file type
         InputStream fileInputStrean = null;
+        boolean isLaslinkProd = false;
                         
         try {
             DataFileAudit dataFileAudit = new DataFileAudit();
@@ -990,7 +991,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                 
              // get user customer Id
             Customer customer = users.getCustomer(userName);
-            Integer customerId = customer.getCustomerId();
+            this.customerId = customer.getCustomerId();
             
             if ( serverFilePath.indexOf(String.valueOf(
                     customerId.intValue())) <=  -1  ) {
@@ -1000,9 +1001,23 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                          throw be;
             }
             
+            com.ctb.bean.testAdmin.CustomerConfiguration[] cc = users.getCustomerConfigurations(this.customerId.intValue());
+            for(int ii=0; ii<cc.length; ii++){
+            	if(cc[ii].getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    					&& cc[ii].getDefaultValue().equals("T")){
+            		isLaslinkProd = true;
+            		break;
+            	}
+            }
+            
             // get the start column number of userdata
-            noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 2 + 1;
+            if(isLaslinkProd){		// change for mdr number
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 3 + 1;
+            }else{
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 2 + 1;
+            }
                     
             fileInputStrean = new FileInputStream(new File(excelFile));            
             
@@ -1027,7 +1042,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             dataFileAudit.setCreatedDateTime(new Date());
             dataFileAudit.setStatus("IN");
             dataFileAudit.setUserId(user.getUserId());
-            dataFileAudit.setCustomerId(customerId);
+            dataFileAudit.setCustomerId(this.customerId);
             dataFileAudit.setCreatedBy(user.getUserId());
             uploadDataFile.createDataFileAudit(dataFileAudit);
             
@@ -1136,6 +1151,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                     baos.write(buffer, 0, read);
                 }
             }
+            tempDataFile.free();
             return true;          
 
 		} catch (Exception e) {
@@ -1157,7 +1173,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
        try {
          
            saveFileToDisk(serverFilePath, uploadDataFileId);
-        
+           
            Integer customerId = new Integer(0);
            StringBuffer container = new StringBuffer(); 
            int noOfUserColumn = 0;
@@ -1177,9 +1193,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
              // get user customer Id
             Customer customer = users.getCustomer(userName);
             customerId = customer.getCustomerId();
-            
+            this.customerId=customerId;
             // Get the user
             User user = users.getUserDetails(userName);
+            
+            // Get CustomerConfiguration 
+            getCustomerConfigurations(userName, customerId);
             
             // Get top Node
             
@@ -1216,9 +1235,13 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             
             // get the start column number of userdata
-            noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 2 + 1;
-                    
+            if(isLaslinkCustomer()){		// Changes for MDR Number
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 3 + 1;
+            }else {
+	            noOfUserColumn = (orgNodeCate.
+	                    getOrgNodeCategories(customerId).length) * 2 + 1;
+            } 
 			inputStream = new FileInputStream(new File(excelFile));
             fileInputStrean = new FileInputStream(new File(excelFile));
             
@@ -1303,6 +1326,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
             fileNotUploadedException.setStackTrace(e.getStackTrace());
+            System.out.println("***Print Exception**-->>" + e.fillInStackTrace().toString());
             throw fileNotUploadedException;
         
         } 
@@ -1903,7 +1927,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
         
         int userHeaderPosition = 0;
         int cellPosition = 0;
-        
+        this.customerId = customer.getCustomerId();
         if (isUserHeader) {
             
             UserFileRow []userFileRow = (UserFileRow [])object;
@@ -1918,6 +1942,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                 OrgNodeCategory[i].getCategoryName()+ " Name");
                 currentHeader.setOrgNodeCode(
                                 OrgNodeCategory[i].getCategoryName()+ " Id");
+                if(isLaslinkCustomer()){
+	                currentHeader.setMdrNumber(
+	                        OrgNodeCategory[i].getCategoryName()+ " MDR");
+                }
                 currentHeader.setOrgNodeCategoryId(
                                 OrgNodeCategory[i].getOrgNodeCategoryId());
                 node[i] = currentHeader;
@@ -1961,7 +1989,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                                 
                 currentHeader.setOrgNodeCode(
                         OrgNodeCategory[i].getCategoryName()+ " Id");
-                        
+                if(isLaslinkCustomer()){
+		            currentHeader.setMdrNumber(
+		                    OrgNodeCategory[i].getCategoryName()+ " MDR");
+                }
                 currentHeader.setOrgNodeCategoryId(
                         OrgNodeCategory[i].getOrgNodeCategoryId());
                         
@@ -2586,7 +2617,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                        Customer customer,String userName) throws CTBBusinessException {
     
        isStudentIDConfigurableCustomer(userName);
-       String fileType = "";                 
+       String fileType = "";  
+       boolean isLaslink = isLaslinkCustomer();
        try {                              
             POIFSFileSystem pfs  = new POIFSFileSystem( fileInputStream );
             HSSFWorkbook wb = new HSSFWorkbook(pfs);
@@ -2654,7 +2686,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         for( int i = 0; i < orgNodes.length; i++ ) {
                             
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
-                            orgNodeList.add(orgNodes[i].getOrgNodeCode());                                             
+                            orgNodeList.add(orgNodes[i].getOrgNodeCode());
+                            if(isLaslink){
+                            	orgNodeList.add(orgNodes[i].getMdrNumber());
+                            }
                             
                          }
                          /* postion should be at the begining and should 
@@ -2714,8 +2749,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         for( int i = 0; i < orgNodes.length; i++ ) {
                             
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
-                            orgNodeList.add(orgNodes[i].getOrgNodeCode());                                             
-                            
+                            orgNodeList.add(orgNodes[i].getOrgNodeCode());
+                            if(isLaslink){
+                            	orgNodeList.add(orgNodes[i].getMdrNumber());
+                            }
                          }
                          /* postion should be at the begining and should 
                           * end before student details       
@@ -3417,8 +3454,35 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	}
 
 
+	private boolean isLaslinkCustomer()
+    {               
+        boolean laslinkCustomer = false;
+        getCustomerConfigurations(this.customerId);
+        for (int i=0; i < this.customerConfigurations.length; i++)
+        {
+        	if ("Laslink_Customer".equalsIgnoreCase(this.customerConfigurations[i].getCustomerConfigurationName())
+					&& "T".equals(this.customerConfigurations[i].getDefaultValue())) {
+            	laslinkCustomer = true;
+            }
+        }
+        return laslinkCustomer;
+    }
 
-
+	/**
+	 * 
+	 * 
+	 * @param customerId
+	 */
+	private void getCustomerConfigurations(Integer customerId)
+	{
+		try {
+			this.customerConfigurations = this.studentManagement.getCustomerConfigurations(customerId);
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
 	/**
 	 * @return the studentIdMinLength
 	 */

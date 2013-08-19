@@ -58,6 +58,9 @@ public class DownloadOperationController extends PageFlowController {
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+	
+	// Changes for - LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+	private boolean isLaslinkCustomerUploadDownlod = false;
   
     
     private static final String ACTION_DEFAULT = "defaultAction";
@@ -164,7 +167,7 @@ public class DownloadOperationController extends PageFlowController {
         try {
             if ( fileName.indexOf("_User.xls") > 0 ){
                 
-                System.out.println("downLoadUserDataFile");
+                System.out.println("downLoadUserDataFile -> Laslink : " + isLaslinkCustomerUploadDownlod);
             	
                 UserFile userFile = downLoadManagement.getUserFile(this.userName);
                 UserFileRow []userFileRow = userFile.getUserFileRows();
@@ -175,11 +178,11 @@ public class DownloadOperationController extends PageFlowController {
                 
                 //fileContent = UploadDownloadFormUtils.downLoadUserData(userFile);
                 data = UploadDownloadFormUtils.downLoadUserDataFile
-                        (userFile, this.userName, userManagement);
+                        (userFile, this.userName, userManagement,isLaslinkCustomerUploadDownlod);
                 
             } else {
 
-                System.out.println("downLoadStudentDataFile");
+                System.out.println("downLoadStudentDataFile -> Laslink : " + isLaslinkCustomerUploadDownlod);
             	
                 StudentFile studentFile = downLoadManagement.getStudentFile(this.userName);
                 StudentFileRow []studentFileRow = studentFile.getStudentFileRows();
@@ -190,7 +193,7 @@ public class DownloadOperationController extends PageFlowController {
                 //fileContent = UploadDownloadFormUtils.downLoadStudentData(studentFile);
                 
                 data = UploadDownloadFormUtils.downLoadStudentDataFile
-                        (studentFile, this.userName, userManagement);
+                        (studentFile, this.userName, userManagement,isLaslinkCustomerUploadDownlod);
                 
             }
             
@@ -219,7 +222,7 @@ public class DownloadOperationController extends PageFlowController {
             this.getRequest().setAttribute("errorMessage", "Failed to export data.");            
             return new Forward("error");
         }
-        
+        System.out.println("Export successful");
         return null;
     }
     
@@ -738,6 +741,7 @@ public class DownloadOperationController extends PageFlowController {
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
     	
+    	this.isLaslinkCustomerUploadDownlod =  laslinkCustomer ;
        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));

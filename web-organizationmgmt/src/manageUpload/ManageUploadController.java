@@ -319,7 +319,7 @@ public class ManageUploadController extends PageFlowController
         }
         else
         {
-            
+        	System.out.println("***** Calling writeFileContent***");
             boolean isSuccessful = writeFileContent(form);
                         
             if (isSuccessful)
@@ -900,7 +900,7 @@ public class ManageUploadController extends PageFlowController
         
                 UserFile userFile = uploadDownloadManagement.
                                     getUserFileTemplate(this.userName);
-                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement);      
+                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement,false);      
                 //fileContent = UploadDownloadFormUtils.createTemplate(userFile);                                               
         
             } else {
@@ -909,7 +909,7 @@ public class ManageUploadController extends PageFlowController
                                     getStudentFileTemplate(this.userName);
                                     
                 data = UploadDownloadFormUtils.createStudentTemplateFile(studentFile,
-                        this.userName, userManagement);                    
+                        this.userName, userManagement,false);                    
                 //fileContent = UploadDownloadFormUtils.
                                     //createStudentTemplate(studentFile);
         

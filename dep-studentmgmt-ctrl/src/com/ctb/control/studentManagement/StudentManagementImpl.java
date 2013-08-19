@@ -3950,4 +3950,31 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return result;
 	}
+	
+	public CustomerConfiguration [] getCustomerConfigurations(Integer customerId) throws CTBBusinessException
+	{
+		try {
+			CustomerConfiguration [] customerConfigurations = studentManagement.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = studentManagement.getCustomerConfigurations(CTB_CUSTOMER_ID);
+			}
+
+			if (customerConfigurations != null && customerConfigurations.length > 0) 
+			{
+				for (int i = 0; i < customerConfigurations.length; i++) {
+					CustomerConfiguration cutomerConfig = customerConfigurations[i];
+					CustomerConfigurationValue [] customerConfigurationValues 
+					= studentManagement.getCustomerConfigurationValues(cutomerConfig.getId().intValue());
+					cutomerConfig.setCustomerConfigurationValues(customerConfigurationValues);              
+				}
+			}
+			return customerConfigurations;
+		} catch (SQLException se) {
+			CustomerConfigurationDataNotFoundException tee = new CustomerConfigurationDataNotFoundException("StudentManagementImpl: getCustomerConfigurations: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+
+
+	}
 } 

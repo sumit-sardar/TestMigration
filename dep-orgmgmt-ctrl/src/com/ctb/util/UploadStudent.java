@@ -147,6 +147,9 @@ public class UploadStudent extends BatchProcessor.Process
 	boolean checkOrgNodeCode;
 	boolean isMatchUploadOrgIds = false;
 	private Node []userTopOrgNode = null;
+     // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+      // For  MDR columns needs to be removed for nonLaslinks
+    boolean isLasLinksCustomer = false;
 
 	//Changed 04/12/2008
 	private Node [] detailNodeM = null;
@@ -178,6 +181,8 @@ public class UploadStudent extends BatchProcessor.Process
 	private boolean isStudentIdUnique = false;
 	//store student IDs for checking duplicacy
 	private ArrayList studentIdList = new ArrayList();
+	 // For  MDR columns needs to be removed for nonLaslinks
+	private int orgPosFact = 2;
 	
 	public UploadStudent ( String serverFilePath,String username, 
 			InputStream uploadedStream , 
@@ -296,6 +301,10 @@ public class UploadStudent extends BatchProcessor.Process
 		String strCellId ="";
 		String strCellHeaderName = "";
 		String strCellHeaderId = "";
+		 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		String strCellMdr ="";
+        String strCellHeaderMdr = "";
+         // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 
 
 		HashMap studentDataMap = new HashMap();
@@ -384,15 +393,31 @@ public class UploadStudent extends BatchProcessor.Process
 						loginUserPosition = 
 							getLoginUserOrgPosition(row, rowHeader, this.userTopOrgNode);
 
-
+						 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+						List<String> newMDRList = new ArrayList<String>();
 						// create Organization process
 						Node []node = this.studentFileRowHeader[0].
 						getOrganizationNodes();
+						 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+						  // For  MDR columns needs to be removed for nonLaslinks
+						Integer [] parentOrgId = new Integer[1];
+						if(isLasLinksCustomer){
+							HSSFCell loginUserOrgCell = row.getCell((short)loginUserPosition);
+	                        String loginUserOrgName = getCellValue(loginUserOrgCell);
+	                        Node loginUserNode = getLoginUserOrgDetail(this.userTopOrgNode, loginUserOrgName);
+	                        Integer parentOId = loginUserNode.getOrgNodeId();
+	                        parentOrgId[0] = parentOId;
+						}
+                        // End For MQC 66840 : Upload/Download user/student with MDR
+                        
 
-						int OrgHeaderLastPosition = node.length * 2;
+						 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+						  // For  MDR columns needs to be removed for nonLaslinks
+						int OrgHeaderLastPosition = node.length * orgPosFact;
 
-						for ( int j = loginUserPosition + 2; 
-						j < OrgHeaderLastPosition; j = j + 2 ) {
+						 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+                         // For  MDR columns needs to be removed for nonLaslinks
+						for ( int j = loginUserPosition + orgPosFact; j < OrgHeaderLastPosition; j = j + orgPosFact ) {
 
 							HSSFCell cellHeaderName = rowHeader.getCell(j);
 							HSSFCell cellHeaderId = rowHeader.getCell(j + 1);
@@ -403,6 +428,20 @@ public class UploadStudent extends BatchProcessor.Process
 							strCellId = getCellValue(cellId);
 							strCellHeaderName = getCellValue(cellHeaderName);
 							strCellHeaderId = getCellValue(cellHeaderId);
+							 Integer categoryId = null;
+							 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+							  // For  MDR columns needs to be removed for nonLaslinks
+							if(isLasLinksCustomer){
+								HSSFCell cellHeaderMdr = rowHeader.getCell(j + 2);
+								HSSFCell cellMdr = row.getCell(j+2);
+								strCellMdr = getCellValue(cellMdr);
+								strCellHeaderMdr = getCellValue(cellHeaderMdr);
+								HSSFCell OrgCellHeaderName = rowHeader.getCell((short)j);
+	                            String headerName = getCellValue(OrgCellHeaderName);
+	                            Node []nodeCategory =  this.studentFileRowHeader[0].getOrganizationNodes();
+	                            categoryId = getCategoryId (headerName, nodeCategory);
+							}
+                         	 // End For MQC 66840 : Upload/Download user/student with MDR
 
 							// OrgName required check
 							if ( strCellName.equals("") && hasOrganization(j,row) 
@@ -418,7 +457,7 @@ public class UploadStudent extends BatchProcessor.Process
 								break;
 
 
-							} else if (strCellName.equals("") && hasOrganization(j - 2, row) 
+							} else if (strCellName.equals("") && hasOrganization(j - orgPosFact, row)   // For  MDR columns needs to be removed for nonLaslinks
 									&& !strCellId.equals("")) {
 
 								// write excel  required  with the help of cellHeaderName
@@ -428,6 +467,11 @@ public class UploadStudent extends BatchProcessor.Process
 
 
 								break;
+
+							 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+							  // For  MDR columns needs to be removed for nonLaslinks
+							} else if(isLasLinksCustomer && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
+                                    break;
 
 							} else { 
 
@@ -513,16 +557,14 @@ public class UploadStudent extends BatchProcessor.Process
 						leafNodeErrorMap,minLengthMap); 
 
 			}  
-
-
-
-
+ 			// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 			//create Student and organization
+			 // For  MDR columns needs to be removed for nonLaslinks
 			createOrganizationAndStudent (requiredMap,minLengthMap, maxLengthMap, 
 					invalidCharMap, logicalErrorMap, 
 					hierarchyErrorMap, studentDataMap, 
 					leafNodeErrorMap, blankRowMap, isMatchUploadOrgIds,
-					this.userTopOrgNode);
+					this.userTopOrgNode, isLasLinksCustomer);
 
 
 
@@ -532,6 +574,122 @@ public class UploadStudent extends BatchProcessor.Process
 
 
 	} 
+
+	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+	 private boolean isValidMDR(int cellPos, boolean isMatchUploadOrgIds, String orgCode,
+				Integer[] parentOrgId, Integer categoryId, HashMap requiredMap,
+				HashMap invalidCharMap, HashMap logicalErrorMap, List<String> newMDRList, String strCellMdr, String orgName, String strCellHeaderMdr) {
+	    	 // For  MDR columns needs to be removed for nonLaslinks
+		 	if(orgName==null || orgName.trim().length()==0 ){
+	    		return true; // if org name is blank then no need to validate the mdr no
+	    	}
+	    	if(!isOrganizationExists(isMatchUploadOrgIds, orgCode,
+	    			 parentOrgId,  categoryId, newMDRList,  strCellMdr,  orgName)) {
+	    		
+	    		if(!validMdrNo(strCellMdr)){
+	        		ArrayList requiredList = new ArrayList();
+	                requiredList.add(strCellHeaderMdr); 
+	                requiredMap.put(new Integer(cellPos), requiredList); 
+	                return false;
+
+	        	} else if(!validMdrNoLength(strCellMdr)){
+	        		ArrayList requiredList = new ArrayList();
+	                requiredList.add(strCellHeaderMdr); 
+	                invalidCharMap.put(new Integer(cellPos), requiredList);
+	                return false;
+
+	        	} else if(!validMdrNoNumeric(strCellMdr)){
+	        		ArrayList requiredList = new ArrayList();
+	                requiredList.add(strCellHeaderMdr); 
+	                invalidCharMap.put(new Integer(cellPos), requiredList);  
+	                return false;
+	              
+	        	} else if (!isUniqueMdr(strCellMdr, newMDRList)){
+	        		ArrayList requiredList = new ArrayList();
+	                requiredList.add(strCellHeaderMdr); 
+	                logicalErrorMap.put(new Integer(cellPos), requiredList); 
+	                return false;
+	             
+	        	}
+	    		
+	    		newMDRList.add(strCellMdr) ;
+	    	}
+	    	
+	    	
+	    	return true;
+	    }
+	    
+	   // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+	    private boolean isOrganizationExists(boolean isMatchUploadOrgIds, String orgCode,
+				Integer[] parentOrgIdArray, Integer categoryId, List<String> newMDRList, String strCellMdr, String orgName) {
+			
+	    	Node organization = null;
+	    	boolean isOrgExist = false;
+	    	Integer parentOrgId = parentOrgIdArray[0];
+	    	if ( isMatchUploadOrgIds ) {
+	            
+	            isOrgExist = isOrganizationExist (orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
+	            if (!orgCode.trim().equals("") || !orgName.trim().equals("") ) {
+	                
+	                 // Search Organization by OrgName
+	                if ( !isOrgExist ) {
+	                    
+	                    isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, !isMatchUploadOrgIds);
+	                     if(isOrgExist){
+	                        // retrive existing organization by passing orgName
+	                        organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
+	                        //Is Organization Exist
+	                            if (organization != null) {
+	                            	parentOrgId = organization.getOrgNodeId();
+	                            	parentOrgIdArray[0] = parentOrgId;
+	                            }  else {
+	                            	isOrgExist = false;
+	                            }
+	                            
+	                        }
+	                    
+	                    } else {
+	                        
+	                        // retrive existing organization by passing orgCode
+	                            organization = getOrgNodeDetail(orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
+	                            
+	                            //Is Organization Exist
+	                            if (organization != null) {
+	                                    
+	                                    parentOrgId = organization.getOrgNodeId();
+	                                    parentOrgIdArray[0] = parentOrgId;
+	                            
+	                            } else {
+	                            	isOrgExist = false;
+	                            
+	                            }
+	                        
+	                    }
+	            }
+
+	    	} else { // if no MatchUploadOrgIds present in customer configuration 
+	            
+	            
+	            isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, false);
+	       
+	           if (!orgName.trim().equals("")) {   
+	             // if no organization exist
+	        	   if(isOrgExist) {
+	                    // retrive existing organization by passing orgName
+	                    organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
+	                    
+	                    //Is Organization Exist
+	                    if (organization != null) {
+	                            parentOrgId = organization.getOrgNodeId();
+	                            parentOrgIdArray[0] = parentOrgId;
+	                    } else {
+	                    	isOrgExist = false;
+	                    }
+	                }
+	            }
+	    }
+			return isOrgExist;
+		}
 	/*
 	 *
 	 */ 
@@ -549,8 +707,9 @@ public class UploadStudent extends BatchProcessor.Process
 		int lastCellPos = 0;
 		HSSFCell cellName = null;
 		HSSFCell cellId = null;
-
-		for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2  ) {
+		// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		 // For  MDR columns needs to be removed for nonLaslinks
+		for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact  ) {
 
 			if ( !hasOrganization(j, row) ) {
 
@@ -1435,6 +1594,17 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 			isMatchUploadOrgIds = this.uploadDataFile.checkCustomerConfigurationEntries(customer.getCustomerId(),
 					CTBConstants.CUSTOMER_CONF_NAME);
+				// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+				 // For  MDR columns needs to be removed for nonLaslinks
+			isLasLinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
+			 // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+	        if(isLasLinksCustomer){
+	        	orgPosFact = 3;
+	        } else {
+	        	orgPosFact = 2;
+	        }
+	         // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 
 			//Get customer configuration Entries
 
@@ -2801,8 +2971,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 		// retrive header category Array
 		Node []node = this.studentFileRowHeader[0].getOrganizationNodes();
-
-		int studentHeaderStartPosition = node.length * 2;
+		// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		 // For  MDR columns needs to be removed for nonLaslinks
+		int studentHeaderStartPosition = node.length * orgPosFact;
 
 		// checking for required field,invalid charecter,maxlength,logical error
 		if ( isRequired (studentHeaderStartPosition, row, rowHeader, requiredList) ) {
@@ -3881,8 +4052,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			String strCellName = "";
 
 			int loginUserPosition = -1;
-
-			for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+			// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+			 // For  MDR columns needs to be removed for nonLaslinks
+			for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) {
 
 				HSSFCell cellName = row.getCell(j);
 				HSSFCell cellId = row.getCell(j + 1);
@@ -3984,8 +4156,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 				String orgHeader = orgName +" Name";
 				ArrayList errorHierarchyList = new ArrayList();
 				String strCellNameHeader = "";
-
-				for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+				// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+				 // For  MDR columns needs to be removed for nonLaslinks
+				for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) {
 
 					HSSFCell cellNameHeader = rowHeader.getCell(j);
 					HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
@@ -4157,9 +4330,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 			Node []node = this.studentFileRowHeader[0].getOrganizationNodes();
 			ArrayList errorHierarchyList = new ArrayList();
-			currentPosition = currentPosition * 2;
-			for ( int j = currentPosition ; j < loginUserPosition + 2; j = j + 2 ) {
-
+			//Start For MQC 66840 : Upload/Download user/student with MDR
+			// For  MDR columns needs to be removed for nonLaslinks
+			currentPosition = currentPosition * orgPosFact;
+			for ( int j = currentPosition ; j < loginUserPosition + orgPosFact; j = j + orgPosFact ) {
+			// End For MQC 66840 : Upload/Download user/student with MDR
 				HSSFCell cellNameHeader = rowHeader.getCell(j);
 				HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
 
@@ -4255,7 +4430,9 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			int OrgHeaderLastPosition = node.length ;
 			String leafOrgName = "";
 			// Node []loginUserNode =  orgNode.getTopNodesForUser(this.userName);
-			for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+			// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+			//For MQC 67720: MDR columns needs to be removed for nonLaslinks
+			for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) {
 
 				HSSFCell cell = row.getCell(j);
 
@@ -4307,6 +4484,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 	/*
 	 * create Organization and Student
 	 */ 
+	 // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 	private void createOrganizationAndStudent(  HashMap requiredMap, 
 			HashMap minLengthMap,
 			HashMap maxLengthMap,
@@ -4317,7 +4495,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			HashMap leafNodeErrorMap,
 			HashMap blankRowMap,
 			boolean isMatchUploadOrgIds,
-			Node []loginUserNodes) 
+			Node []loginUserNodes, boolean isMatchMdrNo) 
 	throws SQLException,CTBBusinessException {
 
 
@@ -4345,7 +4523,8 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			HSSFRow rowHeader = sheet.getRow(0);
 			//find the statr position of the user details header
 			Node []nodeCategory = this.studentFileRowHeader[0].getOrganizationNodes();
-			int orgHeaderLastPosition = nodeCategory.length * 2;    
+			 // For  MDR columns needs to be removed for nonLaslinks
+			int orgHeaderLastPosition = nodeCategory.length * orgPosFact;    	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 			//    Node []loginUserNodes =  orgNode.getTopNodesForUser(this.username);
 			//travers the entire sheet to update the db for user insertion 
 			for ( int i = 1; i < totalRows; i++ ) {
@@ -4410,7 +4589,8 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					orgNodeId = loginUserNode.getOrgNodeId();
 					int lastOrganization = 0; 
 					String leafName="";
-					for ( int ii = loginUserOrgPosition + 2; ii < orgHeaderLastPosition; ii = ii + 2 ) {
+					// For  MDR columns needs to be removed for nonLaslinks
+					for ( int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition; ii = ii + orgPosFact ) { 	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 
 						HSSFCell OrgCellName = bodyRow.getCell((short)ii);
 						HSSFCell OrgCellId = bodyRow.getCell((short)ii + 1);
@@ -4420,6 +4600,15 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 						HSSFCell OrgCellHeaderName = rowHeader.getCell((short)ii);
 						String headerName = getCellValue(OrgCellHeaderName);
 						Integer categoryId = getCategoryId (headerName, nodeCategory);
+						// Start For MQC 66840 : Upload/Download user/student with MDR
+					    // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+						String orgMdr = null;
+						if(isMatchMdrNo){
+							HSSFCell OrgCellMdr = bodyRow.getCell((short)ii + 2);
+	                        orgMdr = getCellValue(OrgCellMdr);
+						}
+						// END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        // End For MQC 66840 : Upload/Download user/student with MDR
 
 						if ( !hasOrganization(ii,bodyRow) && orgName.equals("")
 								&& orgCode.equals("")) {
@@ -4454,6 +4643,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 											organization.setOrgNodeCode(orgCode); 
 											organization.setOrgNodeCategoryId(categoryId);
 											organization.setParentOrgNodeId(parentOrgId);
+											//Start For MQC 66840 : Upload/Download user/student with MDR
+											 if(isMatchMdrNo) {
+                                             	organization.setMdrNumber(orgMdr);
+                                             }
+											// End For MQC 66840 : Upload/Download user/student with MDR
 											//create Organization
 											organization = this.organizationManagement.
 											createOrganization(this.userName, organization);
@@ -4488,6 +4682,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 												organization.setOrgNodeCode(orgCode); 
 												organization.setOrgNodeCategoryId(categoryId);
 												organization.setParentOrgNodeId(parentOrgId);
+												// StartFor MQC 66840 : Upload/Download user/student with MDR
+												if(isMatchMdrNo) {
+	                                             	organization.setMdrNumber(orgMdr);
+	                                             }
+	                                             // End For MQC 66840 : Upload/Download user/student with MDR
 												//create Organization
 												organization = this.organizationManagement.
 												createOrganization(this.userName, organization);
@@ -4524,6 +4723,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 											organization.setOrgNodeCode(orgCode); 
 											organization.setOrgNodeCategoryId(categoryId);
 											organization.setParentOrgNodeId(parentOrgId);
+											// Start For MQC 66840 : Upload/Download user/student with MDR
+											if(isMatchMdrNo) {
+                                             	organization.setMdrNumber(orgMdr);
+                                             }
+                                             // End For MQC 66840 : Upload/Download user/student with MDR
 											//create Organization
 											organization = this.organizationManagement.
 											createOrganization(this.userName, organization);
@@ -4562,6 +4766,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 										organization.setOrgNodeCode(orgCode); 
 										organization.setOrgNodeCategoryId(categoryId);
 										organization.setParentOrgNodeId(parentOrgId);
+										// Start For MQC 66840 : Upload/Download user/student with MDR
+										if(isMatchMdrNo) {
+                                         	organization.setMdrNumber(orgMdr);
+                                         }
+                                         // End For MQC 66840 : Upload/Download user/student with MDR
 										//create Organization
 										organization = this.organizationManagement.
 										createOrganization(this.userName, organization);
@@ -4595,6 +4804,11 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 											organization.setOrgNodeCode(orgCode); 
 											organization.setOrgNodeCategoryId(categoryId);
 											organization.setParentOrgNodeId(parentOrgId);
+											// Start For MQC 66840 : Upload/Download user/student with MDR
+											if(isMatchMdrNo) {
+                                             	organization.setMdrNumber(orgMdr);
+                                             }
+                                             // End For MQC 66840 : Upload/Download user/student with MDR
 											//create Organization
 											organization = this.organizationManagement.
 											createOrganization(this.userName, organization);
@@ -4766,10 +4980,12 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 	private boolean hasOrganization (int currentPosition, HSSFRow row) {
 
 		Node []node = this.studentFileRowHeader[0].getOrganizationNodes();
-		int OrgHeaderLastPosition = node.length * 2;
+		// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		 // For  MDR columns needs to be removed for nonLaslinks
+		int OrgHeaderLastPosition = node.length * orgPosFact;
 		String leafOrgName = "";
-		for (int j = currentPosition + 2 ; j < OrgHeaderLastPosition; j = j + 2 ) {
-
+		 // For  MDR columns needs to be removed for nonLaslinks
+		for (int j = currentPosition + orgPosFact ; j < OrgHeaderLastPosition; j = j + orgPosFact ) { 	// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
 			HSSFCell cellName = row.getCell(j);
 			HSSFCell cellId = row.getCell(j + 1);
 
@@ -5318,6 +5534,44 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 
 
+		// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+	 private boolean validMdrNo(String strCellMdr) {
+	    	if(strCellMdr == null || (strCellMdr.trim().length()==0 )){
+				return false;
+			} 
+	    	return true;
+		}
+
+		private boolean validMdrNoLength(String strCellMdr) {
+	    	if((strCellMdr.trim().length()!=8 )){
+				return false;
+			} 
+	    	return true;
+		}
+			// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList) {
+	    	try{
+	    		String val= orgNode.checkUniqueMdrNumberForOrgNodes(strCellMdr);
+	        	if((val.equalsIgnoreCase("T")) && !(newMDRList.contains(strCellMdr))){
+	        		return true;
+	        	} 
+	    	} catch (Exception e){
+	    		return false;
+	    	}
+	    	return false;
+		}
+		// For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+		private boolean validMdrNoNumeric(String strCellMdr) {
+			try {
+					 Integer.parseInt(strCellMdr.trim());
+					if(strCellMdr.trim().indexOf(".")!=-1){
+						return false;
+					}
+				} catch (Exception e){
+					return false;
+				}
+			return true;
+		}
 
 } 
 

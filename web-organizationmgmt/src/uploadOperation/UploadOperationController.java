@@ -142,6 +142,9 @@ public class UploadOperationController extends PageFlowController {
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+	
+	// Changes for - LAS Online – 2013 – Defect 74768 – support MDR number upload-download
+	private boolean isLaslinkCustomerUploadDownlod = false;
     
     
     public List getFileList() {
@@ -258,7 +261,8 @@ public class UploadOperationController extends PageFlowController {
                 
             e.printStackTrace();
             
-        }                
+        }
+        System.out.println(fileName + "Template File exported successfully");
         return null;
     }
     
@@ -565,7 +569,7 @@ public class UploadOperationController extends PageFlowController {
 	                }
                 }                
             	e.printStackTrace();
-            	System.out.println("****************** end EXCEPTION in invokeService ***************** ");
+            	System.out.println("****************** end EXCEPTION in invokeService ***************** " + e.fillInStackTrace());
             	throw new RuntimeException(e);
             }
         }
@@ -616,21 +620,22 @@ public class UploadOperationController extends PageFlowController {
         byte[] data = null;
         
         try {
-        
+        	
+        	System.out.println("Laslink "+this.isLaslinkCustomerUploadDownlod);
             if ( fileName.equals("UserTemplate.xls") ) {
         
                 UserFile userFile = uploadDownloadManagement.
-                                    getUserFileTemplate(this.userName);
-                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement);      
+                                    getUserFileTemplate(this.userName );
+                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement , isLaslinkCustomerUploadDownlod);      
                 //fileContent = UploadDownloadFormUtils.createTemplate(userFile);                                               
         
             } else {
         
                 StudentFile studentFile = uploadDownloadManagement.
-                                    getStudentFileTemplate(this.userName);
+                                    getStudentFileTemplate(this.userName );
                                     
                 data = UploadDownloadFormUtils.createStudentTemplateFile(studentFile,
-                        this.userName, userManagement);                    
+                        this.userName, userManagement ,isLaslinkCustomerUploadDownlod);                    
                 //fileContent = UploadDownloadFormUtils.
                                     //createStudentTemplate(studentFile);
         
@@ -1174,8 +1179,10 @@ public class UploadOperationController extends PageFlowController {
     	boolean hasDownloadConfig = false;
     	boolean hasUploadDownloadConfig = false;
     	boolean hasDataExportVisibilityConfig = false;
-    	Integer dataExportVisibilityLevel = 1;    	
-    	        
+    	Integer dataExportVisibilityLevel = 1;  
+    	
+    	this.isLaslinkCustomerUploadDownlod =  laslinkCustomer ;   
+    	
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
