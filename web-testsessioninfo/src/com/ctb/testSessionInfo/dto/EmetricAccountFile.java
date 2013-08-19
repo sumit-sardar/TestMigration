@@ -1,6 +1,6 @@
 package com.ctb.testSessionInfo.dto;
 
-public class EmetricAccountFile{
+public class EmetricAccountFile implements java.io.Serializable{
 	
 	private String fileName;
 	private String fileSize;

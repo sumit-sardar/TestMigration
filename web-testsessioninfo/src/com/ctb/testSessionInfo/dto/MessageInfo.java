@@ -3,7 +3,7 @@ package com.ctb.testSessionInfo.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageInfo {
+public class MessageInfo implements java.io.Serializable{
 	private boolean errorFlag = false;
 	private boolean successFlag = false;
 	private String title ;

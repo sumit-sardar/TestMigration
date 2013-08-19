@@ -3,7 +3,7 @@ package com.ctb.testSessionInfo.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmetricAccountFileVO {
+public class EmetricAccountFileVO implements java.io.Serializable{
 
 	private String page;
 	private String total;
