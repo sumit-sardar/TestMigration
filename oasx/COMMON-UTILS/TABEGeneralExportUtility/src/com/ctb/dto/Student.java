@@ -1,6 +1,5 @@
 package com.ctb.dto;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +13,6 @@ public class Student {
 	private String lastName;
 	private String firstName;
 	private String middleName;
-	//private Date birthDate;
 	private String birthDate;
 	private String ethnicity;
 	private String gender;

@@ -108,9 +108,7 @@ public class SQLQuery {
 								        + " and tr.VALIDATION_STATUS = 'VA'"
 								        + " and tr.test_admin_id = ta.test_admin_id"
 								        + " and ta.product_id = p.product_id "
-								        + " and ta.product_id = ?"
-								        + " and tr.last_used_sds like ('https://%')"
-								        + " order by tr.test_roster_id";
+								        + " and ta.product_id = ?";
 	
 	public static String testRosterByIDSql = " select this_.TEST_ROSTER_ID as TEST_ROSTER_ID, this_.ACTIVATION_STATUS as ACTIVATION_STATUS,"
 			+ " this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,"
@@ -181,36 +179,6 @@ public class SQLQuery {
 														" and irp.item_set_id = ? " +
 														" ORDER BY derived.maxseqnum";
 	
-/*	public static String ALL_ITEMS_DETAILS_SQL_TA = " SELECT IRP.ITEM_ID,"
-													+ " ITEM.ADS_ITEM_ID AS OAS_ITEM_ID,"
-													+ " IRP.RESPONSE AS ORIGINAL_RESPONSE,"
-													+ " DECODE(IRP.RESPONSE, ITEM.CORRECT_ANSWER, '1', '0') RESPONSE,"
-													+ " DERIVED.MAXSEQNUM,"
-													+ " IRP.RESPONSE_ELAPSED_TIME,"
-													+ " IRP.ITEM_RESPONSE_ID"
-													+ " FROM ITEM_RESPONSE IRP,"
-													+ " ITEM,"
-													+ " (SELECT ITEM_RESPONSE.ITEM_ID ITEM_ID,"
-													+ " ITEM_RESPONSE.ITEM_SET_ID ITEM_SET_ID,"
-													+ " MAX(RESPONSE_SEQ_NUM) MAXSEQNUM"
-													+ " FROM ITEM_RESPONSE, ITEM, TEST_ROSTER TR"
-													+ " WHERE ITEM_RESPONSE.TEST_ROSTER_ID = ?"
-													+ " AND ITEM_RESPONSE.ITEM_ID = ITEM.ITEM_ID"
-													+ " AND ITEM.ITEM_TYPE = 'SR'"
-													+ " AND ITEM.ACTIVATION_STATUS = 'AC'"
-													+ " AND ITEM_RESPONSE.ITEM_SET_ID = ?"
-													+ " AND TR.TEST_ROSTER_ID = ITEM_RESPONSE.TEST_ROSTER_ID"
-													+ " AND ITEM_RESPONSE.RESPONSE_SEQ_NUM >= ((TR.RESTART_NUMBER - 1) * 1000000)"
-													+ " GROUP BY ITEM_RESPONSE.ITEM_ID, ITEM_SET_ID) DERIVED"
-													+ " WHERE IRP.ITEM_ID = DERIVED.ITEM_ID"
-													+ " AND IRP.ITEM_SET_ID = DERIVED.ITEM_SET_ID"
-													+ " AND IRP.RESPONSE_SEQ_NUM = DERIVED.MAXSEQNUM"
-													+ " AND ITEM.ITEM_ID = DERIVED.ITEM_ID"
-													+ " AND IRP.ITEM_ID = ITEM.ITEM_ID"
-													+ " AND IRP.TEST_ROSTER_ID = ?"
-													+ " AND IRP.ITEM_SET_ID = ?"
-													+ " ORDER BY DERIVED.MAXSEQNUM";*/
-	
 	public static String ALL_ITEMS_DETAILS_SQL_TA = " SELECT IRP.ITEM_ID,"
 													+ " ITEM.ADS_ITEM_ID AS OAS_ITEM_ID,"
 													+ " IRP.RESPONSE AS ORIGINAL_RESPONSE,"
@@ -269,9 +237,6 @@ public class SQLQuery {
 											" AND TPOF.SESSIONID = ?" +
 											" AND TPOF.STUDENTID = ?";
 	
-	/*public static String ALL_OBJECTIVE_SQL_TA = "SELECT objective_id, objective_name " +
-			                                   "FROM tabe_cat_objective";*/
-	
 	public static String ALL_OBJECTIVE_SQL_TA = "SELECT TCO.OBJECTIVE_ID,"+
 												" DECODE(CA.ITEM_SET_NAME,'Applied Mathematics','AM'," +
 												" DECODE(CA.ITEM_SET_NAME,'Language','LN'," +
@@ -280,16 +245,6 @@ public class SQLQuery {
 												" TCO.OBJECTIVE_NAME AS OBJECTIVE_NAME" +
 												" FROM TABE_CAT_OBJECTIVE TCO, ITEM_SET CA" +
 												" WHERE CA.ITEM_SET_ID = TCO.CONTENT_AREA_ID";
-	
-	/*public static String ALL_OBJECTIVE_SQL_TB = "SELECT DISTINCT ISET.ITEM_SET_ID AS objective_id,"
-											 +" ISET.ITEM_SET_NAME as objective_name"
-											 +" FROM PRODUCT PROD, ITEM_SET_CATEGORY ISC, ITEM_SET ISET"
-											 +" WHERE PROD.SCORING_ITEM_SET_LEVEL = ISC.ITEM_SET_CATEGORY_LEVEL"
-											 +" AND PROD.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID"
-											 +" AND ISET.ITEM_SET_CATEGORY_ID = ISC.ITEM_SET_CATEGORY_ID"
-											 +" AND ISET.ITEM_SET_TYPE = 'RE'"
-											 +" AND PRODUCT_TYPE = 'TB'"
-											 +" GROUP BY ISET.ITEM_SET_ID, ISET.ITEM_SET_NAME";*/
 	
 	public static String ALL_OBJECTIVE_SQL_TB = "SELECT ISET.ITEM_SET_ID AS OBJECTIVE_ID,"  +
 												" DECODE(CA.ITEM_SET_NAME,'Applied Mathematics','AM',"  +
@@ -436,7 +391,6 @@ public class SQLQuery {
 													"items.item_set_name, " +
 													"items.item_set_level, " +
 													"siss.raw_score, " +
-													"siss.objective_score " +
 													"FROM student_item_set_status siss, item_set items " +
 													"WHERE items.item_set_id = siss.item_set_id " +
 													"AND items.sample = 'F' " +
@@ -445,7 +399,7 @@ public class SQLQuery {
 													"ORDER BY items.item_set_name ";
 	
 	public static String CONTENT_DOMAIN_SQL_TABE_ONLINE = "SELECT DISTINCT ISET.ITEM_SET_ID, substr(ISETTD.ITEM_SET_NAME,6) as ITEM_SET_NAME,"+
-													" ISETTD.ITEM_SET_LEVEL, SISS.RAW_SCORE, SISS.OBJECTIVE_SCORE"+
+													" ISETTD.ITEM_SET_LEVEL"+
 													" FROM STUDENT_ITEM_SET_STATUS SISS,"+
 													" ITEM_SET ISET,"+
 													" TEST_ROSTER TR,"+
@@ -476,7 +430,7 @@ public class SQLQuery {
 													" ORDER BY ISET.ITEM_SET_ID";
 	
 	public static String CONTENT_DOMAIN_SQL_TABE_LOCATOR = "SELECT DISTINCT ISET.ITEM_SET_ID, substr(ISETTD.ITEM_SET_NAME,14) as ITEM_SET_NAME,"+
-													" ISETTD.ITEM_SET_LEVEL, SISS.RAW_SCORE, SISS.OBJECTIVE_SCORE"+
+													" ISETTD.ITEM_SET_LEVEL"+
 													" FROM STUDENT_ITEM_SET_STATUS SISS,"+
 													" ITEM_SET ISET,"+
 													" TEST_ROSTER TR,"+
@@ -506,7 +460,8 @@ public class SQLQuery {
 													" ORDER BY ISET.ITEM_SET_ID";
 	
 	public static final String SCALE_SCORE_SQL = "SELECT tcaf.content_areaid, " +
-													"tcaf.scale_score " +
+													"tcaf.scale_score, " +
+													"tcaf.points_obtained as raw_score " +
 													"FROM tabe_content_area_fact tcaf " +
 													"WHERE tcaf.studentid = ? " +
 													"AND tcaf.sessionid = ? ";

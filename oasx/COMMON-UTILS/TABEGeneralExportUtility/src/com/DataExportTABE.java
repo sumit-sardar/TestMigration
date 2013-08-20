@@ -40,7 +40,6 @@ import com.ctb.dto.StudentAccommodations;
 import com.ctb.dto.StudentDemographic;
 import com.ctb.dto.TABEFile;
 import com.ctb.dto.TestRoster;
-import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.SQLQuery;
 import com.ctb.utils.SqlUtil;
 import com.ctb.utils.Utility;
@@ -52,6 +51,9 @@ public class DataExportTABE {
 	private static String FILE_TYPE;
 	private static String FILE_NAME;
 	private static String LOCAL_FILE_PATH;
+	private static String START_DATE;
+	private static String END_DATE;
+	private static String LAST_USED_SDS;
 	private static final Map<String, String> OBJECTIVE_MAP = new LinkedHashMap<String, String>();
 	private static final Map<String, Integer> CONTENT_DOMAINS = new LinkedHashMap<String, Integer>();
 	private static final Map<String, Integer> CONTENT_DOMAINS_TB = new LinkedHashMap<String, Integer>();
@@ -133,7 +135,7 @@ public class DataExportTABE {
 			boolean mandatoryField = false;
 			dataExport.getCommandLine(args);
 			if(!"".equals(env)) {
-				properties = dataExport.loadProperties(env);
+				properties = DataExportTABE.loadProperties(env);
 				if(dataExport.getPropertyValue("oas.customerId") != null
 						&& !"".equals(dataExport.getPropertyValue("oas.customerId")) 
 						&& dataExport.getPropertyValue("oas.customerId").length() > 0) {
@@ -151,7 +153,7 @@ public class DataExportTABE {
 					productIds = PRODUCT_ID.split(",");
 					for(int i=0 ; i<productIds.length ; i++) {
 						if(productIds[i].equals("4013")) {
-							System.out.println("Survey Product Id can not be Input to the program, So stopping the execution");
+							System.out.println("TABE 9 & 10 Online Tutorial Product's Id can not be Input to the program, So stopping the execution");
 							productIdProvided = false;
 						}
 					}
@@ -166,10 +168,12 @@ public class DataExportTABE {
 						&& FILE_TYPE.length() > 0 && FILE_NAME.length() > 0 && LOCAL_FILE_PATH.length()>0){
 					mandatoryField = true;
 				}
+				START_DATE = dataExport.getPropertyValue("oas.exportdata.startDate");
+				END_DATE = dataExport.getPropertyValue("oas.exportdata.endDate");
+				LAST_USED_SDS = dataExport.getPropertyValue("oas.exportdata.lastUsedSds");
 				if(customerIdProvided && productIdProvided && mandatoryField) {
 					System.out.println("Started Export for CustomerID:[" + CUSTOMER_ID + "]");
 					dataExport.writeToText();
-					//System.out.println("Product ID is : " + PRODUCT_ID );
 				}
 				else {
 					System.out.println("As mandatory inputs Customer_Id/Product_Id/File_Type/File_Name/File_Path are missing" +
@@ -476,7 +480,7 @@ public class DataExportTABE {
 			CUST_CATEGORIES.clear();
 			ITEM_COUNT_MAP.clear();
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 	}
 	
@@ -503,7 +507,6 @@ public class DataExportTABE {
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-
 		return myList;
 	}
 	
@@ -523,22 +526,30 @@ public class DataExportTABE {
 				cdv.setCustomerDemographicId(rs.getInt(3));
 				customerDemographicValue.add(cdv);
 			}
-
 			//System.out.println("getCustomerDemographicValue End");
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-
 		return customerDemographicValue;
-
 	}
 	
 	private List<TestRoster> getTestRoster(Connection con, Integer productId) throws SQLException {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
-		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
+		List<TestRoster> rosterList = new ArrayList<TestRoster>();
 		try{
-			ps = con.prepareStatement(SQLQuery.testRosterSql);
+			String query = SQLQuery.testRosterSql;
+			if(START_DATE != null && !"".equals(START_DATE) && START_DATE.length() > 0 ) {
+				query += " and TRUNC(tr.completion_date_time) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";
+			}
+			if(END_DATE != null && !"".equals(END_DATE) && END_DATE.length() > 0) {
+				query += " and TRUNC(tr.completion_date_time) <= TO_DATE('" + END_DATE + "', 'MMDDYYYY')";
+			}
+			if(LAST_USED_SDS != null && !"".equals(LAST_USED_SDS) && LAST_USED_SDS.length() > 0) {
+				query += " and tr.last_used_sds like ('" + LAST_USED_SDS + "%')";
+			}
+			query += " order by tr.test_roster_id";
+			ps = con.prepareStatement(query);
 			ps.setString(1, CUSTOMER_ID);
 			ps.setInt(2, productId);
 			rs = ps.executeQuery(); 
@@ -1009,7 +1020,6 @@ public class DataExportTABE {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		//String testCompleted = "";
 		try {
 			ps = con.prepareStatement(SQLQuery.getSemScores);
 			ps.setInt(1, roster.getTestRosterId());
@@ -1029,17 +1039,10 @@ public class DataExportTABE {
 					abilityScore.setLanguageAbilityScore(rs.getString(4) != null ? rs.getString(4) : "" );
 					abilityScore.setLanguageSEMScore(rs.getString(2) != null ? rs.getString(2) : "" );				
 				}
-				//testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
-				//if(tfil.getDateTestingCompleted() == null || tfil.getDateTestingCompleted().length() == 0){
-				//testCompleted = rs.getString(3) != null ? rs.getString(3) : roster.getStartDate();
-				//if(!"".equals(testCompleted))
-				//tfil.setDateTestingCompleted(Utility.getTimeZone(testCompleted, roster.getTimeZone(), true));
-				//}
 			} 
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		//tfil.setDateTestingCompleted(Utility.getTimeZone(testCompleted, roster.getTimeZone(), true));
 		tfil.setAbilityScores(abilityScore);	
 	}
 	
@@ -1112,18 +1115,13 @@ public class DataExportTABE {
 			ps.setInt(1, roster.getTestAdminId());
 			ps.setInt(2, roster.getStudentId());
 			rs = ps.executeQuery();
-			//System.out.println(rs.getFetchSize());
-			//System.out.println(rs.getRow());
 			while(rs.next()) {
 				String objectiveName = OBJECTIVE_MAP.get(rs.getString("objectiveId"));
 				//System.out.println("Objective Id : " + rs.getInt("objectiveId") + " Objective Name : " + objectiveName);
 				if(objectiveName != null) {
 					objRawScore.getObjectiveMap().put(objectiveName, String.valueOf(rs.getInt("rawScore")));
 					objTotalRawScore.getObjectiveMap().put(objectiveName, String.valueOf(rs.getInt("totalRawScore")));
-					//objScaleScore.getObjectiveMap().put();
-					//objScaleScoreSEM.getObjectiveMap().put();
 					objMasteryLevel.getObjectiveMap().put(objectiveName, String.valueOf(rs.getInt("mastery")));
-					//objMastery.getObjectiveMap().put();
 				}
 				tfil.setObjectiveMasteryLevel(objMasteryLevel);
 				tfil.setObjectiveMastery(objMastery);
@@ -1148,7 +1146,52 @@ public class DataExportTABE {
 		   Map<String, Scores> scaleScoreMap = new LinkedHashMap<String, Scores>();
 		   StringBuilder response = new StringBuilder();
 		   try {
+			   //Getting content domain
 			   getContentDomain(con, roster.getTestRosterId());
+			   if("TB".equals(PRODUCT_TYPE)) {
+				   ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_ONLINE);
+			   }
+			   else if("TA".equals(PRODUCT_TYPE)) {
+				   ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_ADAPTIVE);
+			   }
+			   else if("TL".equals(PRODUCT_TYPE)) {
+				   ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_LOCATOR);
+			   }
+			   ps.setInt(1, roster.getTestRosterId());
+			   rs = ps.executeQuery();
+			   while(rs.next()) {
+				   Scores score = new Scores();
+				   score.setItemSetId(rs.getString("item_set_id"));
+				   score.setContentAreaId(productId + rs.getString("item_set_id"));
+				   score.setItemSetName(rs.getString("item_set_name"));
+				   score.setLevel(rs.getString("item_set_level"));
+				   if("TA".equals(PRODUCT_TYPE)) {
+					   score.setRawScore(rs.getString("raw_score"));
+				   }
+				   scoreMap.put(score.getItemSetName(), score);
+				   scaleScoreMap.put(score.getContentAreaId(), score);
+			   }
+			   SqlUtil.close(ps, rs);
+			   //Getting scale score
+			   if ("TA".equals(PRODUCT_TYPE)) {
+				   ps = con.prepareStatement(SQLQuery.SCALE_SCORE_SQL_TA);
+			   } else if ("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)) {
+				   ps = irscon.prepareStatement(SQLQuery.SCALE_SCORE_SQL);
+			   }
+			   ps.setInt(1, roster.getStudentId());
+			   ps.setInt(2, roster.getTestAdminId());
+			   rs = ps.executeQuery();
+			   while(rs.next()) {
+				   Scores score = scaleScoreMap.get(rs.getString("content_areaid"));
+				   //System.out.println("Scale score for Product Id : " + rs.getString("content_areaid") + " is " + rs.getString("scale_score"));
+				   if(score != null) {
+					   if ("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)) {
+						   score.setRawScore(rs.getString("raw_score"));
+					   }
+					   score.setScaleScore(rs.getString("scale_score"));
+				   }
+			   }
+			   SqlUtil.close(ps, rs);
 			   Set<String> keySet = CONTENT_DOMAINS.keySet();
 			   int itemCount = 0;
 			   for(String itemSetName: keySet) {
@@ -1157,84 +1200,32 @@ public class DataExportTABE {
 				   //System.out.println("Item Set Name : " + itemSetName + " : Item Set ID : " + itemSetId);
 				   if("Reading".equals(itemSetName)) {
 					   response.append("RD" + SEPARATOR);
-					   //itemCount = 29;
 				   } else if("Mathematics Computation".equals(itemSetName)) {
 					   response.append("MC" + SEPARATOR);
-					   //itemCount = 24;
 				   } else if("Applied Mathematics".equals(itemSetName)) {
 					   response.append("AM" + SEPARATOR);
-					   //itemCount = 29;
 				   } else if("Language".equals(itemSetName)) {
 					   response.append("LN" + SEPARATOR);
-					   //itemCount = 29;
 				   } else if("Language Mechanics".equals(itemSetName)) {
 					   response.append("LM" + SEPARATOR);
-					   //itemCount = 29;
 				   } else if("Vocabulary".equals(itemSetName)) {
 					   response.append("VO" + SEPARATOR);
-					   //itemCount = 29;
 				   } else if("Spelling".equals(itemSetName)) {
 					   response.append("SP" + SEPARATOR);
-					   //itemCount = 29;
 				   }
-				   //ITEM_COUNT_MAP.put(itemSetName, itemCount);
-				   //Getting content domain
-					if("TB".equals(PRODUCT_TYPE)) {
-						//System.out.println("This is Online product.");
-						ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_ONLINE);
-					}
-					else if("TA".equals(PRODUCT_TYPE)) {
-						ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_ADAPTIVE);
-					}
-					else if("TL".equals(PRODUCT_TYPE)) {
-						ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_LOCATOR);
-					}
-					ps.setInt(1, roster.getTestRosterId());
-					rs = ps.executeQuery();
-					while(rs.next()) {
-						Scores score = new Scores();
-						score.setItemSetId(rs.getString("item_set_id"));
-						score.setContentAreaId(productId + rs.getString("item_set_id"));
-						score.setItemSetName(rs.getString("item_set_name"));
-						score.setLevel(rs.getString("item_set_level"));
-						score.setRawScore(rs.getString("raw_score"));
-						/*System.out.println("Item set Id : " + rs.getString("item_set_id") + " : Content Area Id : "
-								+ score.getContentAreaId() + " : Item Set Name : " + rs.getString("item_set_name") + 
-								" : Item Set Level : " + rs.getString("item_set_level") + " : Raw Score : " + rs.getString("raw_score"));*/
-						scoreMap.put(score.getItemSetName(), score);
-						scaleScoreMap.put(score.getContentAreaId(), score);
-					}
-					SqlUtil.close(ps, rs);
-					//Getting scale score
-					if ("TA".equals(PRODUCT_TYPE)) {
-						ps = con.prepareStatement(SQLQuery.SCALE_SCORE_SQL_TA);
-					} else if ("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)) {
-						ps = irscon.prepareStatement(SQLQuery.SCALE_SCORE_SQL);
-					}
-					ps.setInt(1, roster.getStudentId());
-					ps.setInt(2, roster.getTestAdminId());
-					rs = ps.executeQuery();
-					while(rs.next()) {
-						Scores score = scaleScoreMap.get(rs.getString("content_areaid"));
-						//System.out.println("Scale score for Product Id : " + rs.getString("content_areaid") + " is " + rs.getString("scale_score"));
-						if(score != null) {
-							score.setScaleScore(rs.getString("scale_score"));
-						}
-					}
-				   SqlUtil.close(ps, rs);
-					Scores score = scoreMap.get(itemSetName);
-					if(score != null) {
-						Scores scaleScore = scaleScoreMap.get(score.getContentAreaId());
-						if(scaleScore != null) {
-							score.setScaleScore(scaleScore.getScaleScore());
-						}
-					}
-					if(score != null) {
-						response.append(Utility.formatData(score.getLevel()) + "," + Utility.formatData(score.getRawScore())
-							 	  + "," + Utility.formatData(score.getScaleScore()) + SEPARATOR);
-					} else {
-						response.append(",," + SEPARATOR ); 
-					}
+				   Scores score = scoreMap.get(itemSetName);
+				   if(score != null) {
+					   Scores scaleScore = scaleScoreMap.get(score.getContentAreaId());
+					   if(scaleScore != null) {
+						   score.setScaleScore(scaleScore.getScaleScore());
+					   }
+				   }
+				   if(score != null) {
+					   response.append(Utility.formatData(score.getLevel()) + "," + Utility.formatData(score.getRawScore())
+							   + "," + Utility.formatData(score.getScaleScore()) + SEPARATOR);
+				   } else {
+					   response.append(",," + SEPARATOR ); 
+				   }
 				   if("TB".equals(PRODUCT_TYPE) || "TL".equals(PRODUCT_TYPE)) {
 					   ps = con.prepareStatement(SQLQuery.ALL_ITEMS_DETAILS_SQL_TB);
 					   ps.setInt(1, roster.getTestRosterId());
@@ -1259,47 +1250,47 @@ public class DataExportTABE {
 				   String lastItemId = "";
 				   //System.out.println("Item Set Id : " + itemSetId);
 				   while (rs.next()) {
-					  ItemResponses ir = new ItemResponses();
-					  currentSequenceNo = rs.getInt("maxseqnum");
-					  ir.setItemId(rs.getString("item_id"));
-					  ir.setResponseValue(rs.getString("response"));
-					  ir.setOriginalResponse(rs.getString("original_response"));
-					  ir.setResponseTime(rs.getString("response_elapsed_time"));
-					  ir.setOasItemId(rs.getString("oas_item_id"));
-					  ir.setSequenceNo(currentSequenceNo);
-					  ir.setIndex(index++);	
-					  //stoppedItem = rs.getString("item_id");
-					  if(currentSequenceNo > lastSequenceNo + 100000) {
-						  ps1 = con.prepareStatement(SQLQuery.GET_ITEM_RESPONSE_FOR_ITEM);
-						  ps1.setInt(1, roster.getTestRosterId());
-						  ps1.setInt(2, itemSetId);
-						  ps1.setLong(3, currentSequenceNo - 100000);
-						  rs1 = ps1.executeQuery();
-						  //System.out.println("Max seq num : " + rs.getInt("maxseqnum"));
-						  //System.out.println("Last seq num : " + lastSequenceNo);
-						  //System.out.println("Current seq num : " + currentSequenceNo);
-						  if(rs1.next()) {
-							  lastItemId = rs1.getString("item_id");							  
-							  if(!lastItemId.equals(ir.getItemId())) {
-								  itemMap.remove(lastItemId);
-								  if(restartItemNumber == 0) {
-									  restartItemNumber = ir.getIndex() - 1;
-								  }
-							  } else {
-								  if(restartItemNumber == 0) {
-									  restartItemNumber = ir.getIndex();
-								  } 
-							  }
-						  }
-						  SqlUtil.close(ps1, rs1);
-					  }
-					  lastSequenceNo = currentSequenceNo;
-					  itemMap.put(ir.getItemId(), ir);
-					  //tfil.setLastItem(rs.getString(1));   This is according to TABE online logic, We will set this parameter later.
+					   ItemResponses ir = new ItemResponses();
+					   currentSequenceNo = rs.getInt("maxseqnum");
+					   ir.setItemId(rs.getString("item_id"));
+					   ir.setResponseValue(rs.getString("response"));
+					   ir.setOriginalResponse(rs.getString("original_response"));
+					   ir.setResponseTime(rs.getString("response_elapsed_time"));
+					   ir.setOasItemId(rs.getString("oas_item_id"));
+					   ir.setSequenceNo(currentSequenceNo);
+					   ir.setIndex(index++);	
+					   //stoppedItem = rs.getString("item_id");
+					   if(currentSequenceNo > lastSequenceNo + 100000) {
+						   ps1 = con.prepareStatement(SQLQuery.GET_ITEM_RESPONSE_FOR_ITEM);
+						   ps1.setInt(1, roster.getTestRosterId());
+						   ps1.setInt(2, itemSetId);
+						   ps1.setLong(3, currentSequenceNo - 100000);
+						   rs1 = ps1.executeQuery();
+						   //System.out.println("Max seq num : " + rs.getInt("maxseqnum"));
+						   //System.out.println("Last seq num : " + lastSequenceNo);
+						   //System.out.println("Current seq num : " + currentSequenceNo);
+						   if(rs1.next()) {
+							   lastItemId = rs1.getString("item_id");							  
+							   if(!lastItemId.equals(ir.getItemId())) {
+								   itemMap.remove(lastItemId);
+								   if(restartItemNumber == 0) {
+									   restartItemNumber = ir.getIndex() - 1;
+								   }
+							   } else {
+								   if(restartItemNumber == 0) {
+									   restartItemNumber = ir.getIndex();
+								   } 
+							   }
+						   }
+						   SqlUtil.close(ps1, rs1);
+					   }
+					   lastSequenceNo = currentSequenceNo;
+					   itemMap.put(ir.getItemId(), ir);
+					   //tfil.setLastItem(rs.getString(1));   This is according to TABE online logic, We will set this parameter later.
 				   }
 				   //System.out.println("Item count " + index); 
 				   SqlUtil.close(ps, rs);
-				    
+
 				   Set<String> itemSet = itemMap.keySet();
 				   List<String> itemList = new ArrayList<String>(itemSet);
 				   itemCount = itemList.size();
@@ -1319,7 +1310,7 @@ public class DataExportTABE {
 				   for(int i=0; i<itemMaxCountForSubtest-itemCount ;i++) {
 					   itemResposneData.append(SPACE + SEPARATOR);
 				   }
-				   
+
 				   String stoppedItem = String.valueOf(itemList.size());
 				   //System.out.println("Item response size : " + itemList.size());
 				   //System.out.println("Item Count : " + itemCount);
@@ -1340,7 +1331,8 @@ public class DataExportTABE {
 					   itemCountForSubtest = ITEM_COUNT_MAP_TA.get(itemSetName); 
 				   }
 				   //System.out.println("Item count for subtest : " + itemCountForSubtest);
-				   if(timedOut == 0) {  // timedOut = 0 means not IN
+				   //timedOut = 1 means IN
+				   if(timedOut == 0) {  // timedOut = 0 means may be IS, IN
 					   if(itemList.size() < itemCountForSubtest) {  // Test is stopped due to some other reason than IN may be IS
 						   timedOut = 2;
 					   } else {   // If the test is not stopped then stoppedItem is set to blank
@@ -1354,8 +1346,10 @@ public class DataExportTABE {
 				   }
 				   if(itemMap.size() > 0) {
 					   if(restartItemNumber == 0) {
+						   //System.out.println("Restart Flag 0");
 						   response.append("0" + SEPARATOR + "0" + SEPARATOR);
 					   } else {
+						   //System.out.println("Restart Flag 1");
 						   response.append("1" + SEPARATOR + restartItemNumber + SEPARATOR);
 					   }
 					   response.append(timedOut + SEPARATOR);
@@ -1629,7 +1623,7 @@ public class DataExportTABE {
 		
 		public String getPropertyValue(String name)
 		{
-			String value = this.properties.getProperty(name);
+			String value = DataExportTABE.properties.getProperty(name);
 			if ((value == null) || (value.length() == 0)) {
 				return "";
 			}
@@ -1643,6 +1637,6 @@ public class DataExportTABE {
 									"Kindly provide properties file as argument.");
 			}
 			else
-				this.env = args[0].toLowerCase();
+				DataExportTABE.env = args[0].toLowerCase();
 		}
 }
