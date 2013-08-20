@@ -390,7 +390,7 @@ public class SQLQuery {
 	public static final String CONTENT_DOMAIN_SQL_TABE_ADAPTIVE = "SELECT siss.item_set_id, " +
 													"items.item_set_name, " +
 													"items.item_set_level, " +
-													"siss.raw_score, " +
+													"siss.raw_score " +
 													"FROM student_item_set_status siss, item_set items " +
 													"WHERE items.item_set_id = siss.item_set_id " +
 													"AND items.sample = 'F' " +
