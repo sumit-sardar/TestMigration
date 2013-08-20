@@ -1379,7 +1379,15 @@ function getStudentListArray(studentArray) {
 	     return result;
 	}
 	
-	
+	function convertGradeString(grade) 
+	{
+		if ((grade == "All") || (grade == "AD") ||(grade == "JV")) 
+			return grade;
+			
+		var numVal = parseInt(grade);
+		var strVal = String(numVal);
+		return strVal;
+	}
 	
 	function updateFilteredStudentData(){
 		allFilteredStudentRow = [];
@@ -1392,6 +1400,7 @@ function getStudentListArray(studentArray) {
 		var all 			= "";
 		var isFilteredSuccess = false;
 		var indx = 0;
+		
 		if(fgrade==defaultGrade && fcalculator==defaultCalculator && fColorFont ==defaultHasColorFont && ftestPause == defaultTestPause && fscreenReader == defaultScreenReader  && funtimedTest==defaultUntimedTest ){
 			allFilteredStudentRow = allStudentIds;
 			return;
@@ -1400,7 +1409,11 @@ function getStudentListArray(studentArray) {
 		for(var i = 0; i < allStudentIds.length; i++) {	
 		    isFilteredSuccess = true;
 		    var student = allStudentIds[i];
-			if(fgrade!=defaultGrade && fgrade != student.grade){
+		    
+			var fgradeConverted = convertGradeString(fgrade);
+			var studentGradeConverted = convertGradeString(student.grade);
+					    
+			if(fgrade!=defaultGrade && fgradeConverted != studentGradeConverted){
 				isFilteredSuccess =false;
 			} 
 			if (isFilteredSuccess && fcalculator!=defaultCalculator && fcalculator != student.calculator) {
