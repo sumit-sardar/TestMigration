@@ -4739,7 +4739,7 @@ function registerDelegate(tree){
             				
 							for(var i=0; i<data.testElement.length; i++) {
 								row = data.testElement[i];
-								html += '<tr class="sortable" id="'+row.itemSetId+'">';
+								html += '<tr class="sortable" id="'+row.itemSetId+'_viewStatus">';
 								if(row.itemSetType == 'TS') {
 									if(data.subtestValidationAllowed) {
 										html += '<td class="sortable alignCenter">&nbsp;</td>';
@@ -4984,7 +4984,7 @@ function registerDelegate(tree){
 			var rowId = $(this).val();
 			var cell = null;
 			var sel_comment=null;								
-			cell = $("#" + rowId).children('td').eq(2);								
+			cell = $("#" + rowId+"_viewStatus").children('td').eq(2);								
 			if(this.checked) {
 				if ($.trim($(cell).text()) == 'Valid') {											
 					$("#InvalidationText").append(","+rowId);
@@ -5020,9 +5020,9 @@ function registerDelegate(tree){
 									var rowId = $(this).val();
 									var cell = null;
 									if(data.isTabeSession) {
-										cell = $("#" + rowId).children('td').eq(3);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(3);
 									} else {
-										cell = $("#" + rowId).children('td').eq(2);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(2);
 									}
 									if(this.checked) {
 										if($.trim($(cell).text()) == 'Valid') {
@@ -5505,9 +5505,9 @@ function validNumber(str){
 									var rowId = $(this).val();
 									var cell = null;
 									if(data.isTabeSession) {
-										cell = $("#" + rowId).children('td').eq(4);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(4);
 									} else {
-										cell = $("#" + rowId).children('td').eq(3);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(3);
 									}
 									if(this.checked) {
 										if($.trim($(cell).text()) == 'No') {
@@ -5564,9 +5564,9 @@ function validNumber(str){
 									var rowId = $(this).val();
 									var cell = null;
 									if(data.isTabeSession) {
-										cell = $("#" + rowId).children('td').eq(5);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(5);
 									} else {
-										cell = $("#" + rowId).children('td').eq(4);
+										cell = $("#" + rowId+"_viewStatus").children('td').eq(4);
 									}
 									if(this.checked) {
 										if($.trim($(cell).text()) == 'No') {
