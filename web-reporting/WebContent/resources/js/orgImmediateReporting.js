@@ -61,7 +61,7 @@ function populateGridOrg() {
 		viewrecords: true, 
 		sortorder: "asc",
 		height: 415,
-		width: 976,
+		width: $("#jqGrid-content-section").width(),
 		shrinkToFit: false, 
 		caption:$("#imdRptStuListGridCaption").val(),
 		hoverrows: false,
