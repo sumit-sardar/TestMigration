@@ -2487,7 +2487,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
 		    		System.out.println("No. of responses inserted = "+insertCount.length+", for subtestId = "+itemResponseData.get(0).getItemSetId());
 		         	//update siss record for the subtest
 		    		this.studentItemSetStatus.updateSissRecord(itemResponseData.get(0).getTestRosterId(), 
-		    				itemResponseData.get(0).getItemSetId(), itemResponseData.get(0).getStartDateTime(), itemResponseData.get(0).getCompletionDateTime());
+		    				itemResponseData.get(0).getItemSetId());
 		    		System.out.println("Siss record is updated successfully for subtest id = "+itemResponseData.get(0).getItemSetId()+" , for roster id = "+ itemResponseData.get(0).getTestRosterId());
 		    		conn.commit();
 		    		System.out.println("\n\nSuccess: Transaction is committed....");
