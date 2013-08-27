@@ -86,8 +86,9 @@ public class UploadDownloadFormUtils
     /*
     * Create Template in Server path and return byte array 
     */ 
+    //For MQC 67720: MDR columns needs to be removed for nonLaslinks
     public static byte[] createTemplateFile (UserFile userFile, String userName, 
-            UserManagement userManagement, boolean isLaslink) {
+            UserManagement userManagement, boolean islaslinkCustomer) {
         byte []errorData = null;
         try {
             
@@ -100,6 +101,12 @@ public class UploadDownloadFormUtils
             HSSFRow row = null;
             HSSFCell cell = null;
             int userPos = 0;
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            int headerPosFactor = 2;
+        	if(islaslinkCustomer){
+        		headerPosFactor = 3;
+        	}
+        	// END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
             
             for ( int i = 0; i < userFileRow.length; i++ ) {
                 
@@ -109,59 +116,38 @@ public class UploadDownloadFormUtils
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
                     //Insert organization header
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+headerPosFactor) { 	// For MQC 66840 : Upload/Download user/student with MDR
+                        
+                        cell = row.createCell((short)j);
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+                        
+                        cell = row.createCell((short)(j + 1));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+                        
+                        //Start For MQC 66840 : Upload/Download user/student with MDR
+                        // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        if(islaslinkCustomer) {
+                        	cell = row.createCell((short)(j + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(headerNode[k].getMdrNumber());
+                        }
+                        // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        // End For MQC 66840 : Upload/Download user/student with MDR
+               
+                    }
                     
-	                    if (isLaslink){
-	                    	// then add an extra column MDR number 
-	                        for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
-	                            
-	                            cell = row.createCell((short)j);
-	                            style = cell.getCellStyle();
-	                            style.setWrapText(true);
-	                            cell.setCellStyle(style);
-	                            cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                            
-	                            cell = row.createCell((short)(j + 1));
-	                            style = cell.getCellStyle();
-	                            style.setWrapText(true);
-	                            cell.setCellStyle(style);
-	                            cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                            
-	                            cell = row.createCell((short)(j + 2));
-	                            style = cell.getCellStyle();
-	                            style.setWrapText(true);
-	                            cell.setCellStyle(style);
-	                            cell.setCellValue(headerNode[k].getMdrNumber());
-	                            
-	                   
-	                        }
-	                    }
-	                  else {
-	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-	                        
-	                        cell = row.createCell((short)j);
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                        
-	                        cell = row.createCell((short)(j + 1));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                       
-	                        
-	               
-	                    }
-	                 } 
-	                    
                     //Insert User Header
-	                if (isLaslink){
-	                	userPos = headerNode.length * 3;
-	                }
-	                else{
-	                	userPos = headerNode.length * 2;
-	                }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    userPos = headerNode.length * headerPosFactor; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -291,8 +277,8 @@ public class UploadDownloadFormUtils
                     Node []nodeData = userFileRow[i].getOrganizationNodes();
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
-                        
-                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
+                        //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        cellPosition = getCellPosition (headerNode, nodeData[j], islaslinkCustomer);
                         
                         if (cellPosition != -1) {
                             
@@ -310,15 +296,17 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
-                          //create cell for nodeMDRNumber if laslink customer
-                          if(isLaslink) {
-                            cell = row.createCell((short)(cellPosition + 2));
-                            style = cell.getCellStyle();
-                            style.setWrapText(true);
-                            cell.setCellStyle(style);
-                            cell.setCellValue(nodeData[j].getMdrNumber());
-                          }
-                            
+                           // For MQC 66840 : Upload/Download user/student with MDR
+                           // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            if(islaslinkCustomer) {
+                            	cell = row.createCell((short)(cellPosition + 2));
+                                style = cell.getCellStyle();
+                                style.setWrapText(true);
+                                cell.setCellStyle(style);
+                                cell.setCellValue(nodeData[j].getMdrNumber());
+                            }
+                            // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            // For MQC 66840 : Upload/Download user/student with MDR
                         }
                         
                         
@@ -375,8 +363,8 @@ public class UploadDownloadFormUtils
     /*
     * retrive actual cell position by passing header node array and organization detail
     */ 
-    
-    private static int getCellPosition (Node []headerNode, Node node) {
+    //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+    private static int getCellPosition (Node []headerNode, Node node, boolean islaslinkCustomer) {
         
         int cellPosition = 0;
         boolean flag = false;
@@ -395,50 +383,13 @@ public class UploadDownloadFormUtils
                 
             }
             
-            
-           
-        	   cellPosition = cellPosition + 2;
-           
-            
-        }
-        if (flag) {
-            
-            return cellPosition;
-        
-        } else {
-            
-            return -1;
-            
-        }
-        
-        
-    }
-    
-    private static int getCellPositionForLaslink (Node []headerNode, Node node,boolean isLaslink) {
-        
-        int cellPosition = 0;
-        boolean flag = false;
-        for (int i = 0; i < headerNode.length; i++) {
-            
-            Node tempHeaderNode = headerNode[i];
-            
-            if (node.getOrgNodeName() != null && !node.getOrgNodeName().trim().equals("")) {
-                
-                if (tempHeaderNode.getOrgNodeCategoryId().intValue() 
-                    == node.getOrgNodeCategoryId().intValue()) {
-                    flag = true;    
-                    break;
-                
-                }
-                
+           // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+            if(islaslinkCustomer){
+            	 cellPosition = cellPosition + 3; 	// For MQC 66840 : Upload/Download user/student with MDR
+            } else {
+            	 cellPosition = cellPosition + 2; 	// For MQC 66840 : Upload/Download user/student with MDR
             }
-            
-            
-           if (isLaslink) {
-        	   cellPosition = cellPosition + 3;
-           } else{
-        	   cellPosition = cellPosition + 2;   
-           }
+           // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
             
         }
         if (flag) {
@@ -509,12 +460,18 @@ public class UploadDownloadFormUtils
         return buff.toString();  
         
     }
-    
+    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
     public static byte[] downLoadUserDataFile (UserFile userFile, String userName, 
-            UserManagement userManagement,boolean isLaslink) {
+            UserManagement userManagement, boolean islaslinkCustomer) {
         
         
         byte []errorData = null;
+        // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        int headerPosFactor = 2;
+        if(islaslinkCustomer){
+        	headerPosFactor = 3;
+        }
+        // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
         try {
             
             UserFileRow []userFileRow = userFile.getUserFileRows();
@@ -534,54 +491,40 @@ public class UploadDownloadFormUtils
                 if (i == 0) {
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
-                    
-                    
-                  //Insert organization header
-                    if(isLaslink){                    	
-	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {	                        
-	                        cell = row.createCell((short)j);
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                        
-	                        cell = row.createCell((short)(j + 1));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                        
-	                        //MDR Number cell added for Laslink
-	                        cell = row.createCell((short)(j + 2));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getMdrNumber());
-	                   }
-                    	
-                    }else {	                    
-	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {	                        
-	                        cell = row.createCell((short)j);
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                        
-	                        cell = row.createCell((short)(j + 1));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                   }
+                    //Insert organization header
+                    // For MQC 66840 : Upload/Download user/student with MDR
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+headerPosFactor) { 
+                        
+                        cell = row.createCell((short)j);
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+                        
+                        cell = row.createCell((short)(j + 1));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+                        
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        if(islaslinkCustomer){
+                            cell = row.createCell((short)(j + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(headerNode[k].getMdrNumber());
+                        }
+                        // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        // End For MQC 66840 : Upload/Download user/student with MDR
+               
                     }
-                    
                     
                     //Insert User Header
-                    if(isLaslink){
-                    	userPos = headerNode.length * 3;
-                    }else {
-                    	userPos = headerNode.length * 2;
-                    }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    userPos = headerNode.length * headerPosFactor; 	//Start For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -710,8 +653,8 @@ public class UploadDownloadFormUtils
                     Node []nodeData = userFileRow[i].getOrganizationNodes();
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
-                        
-                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
+                        // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        cellPosition = getCellPosition (headerNode, nodeData[j], islaslinkCustomer);
                         
                         if (cellPosition != -1) {
                             
@@ -729,24 +672,22 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
-                            
-                            if(isLaslink){
-	                            //create cell for nodeMDR Number
-	                            cell = row.createCell((short)(cellPosition + 2));
-	                            style = cell.getCellStyle();
-	                            style.setWrapText(true);
-	                            cell.setCellStyle(style);
-	                            cell.setCellValue(nodeData[j].getMdrNumber());
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                          	// START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            if(islaslinkCustomer){
+                                cell = row.createCell((short)(cellPosition + 2));
+                                style = cell.getCellStyle();
+                                style.setWrapText(true);
+                                cell.setCellStyle(style);
+                                cell.setCellValue(nodeData[j].getMdrNumber());
                             }
+                            // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            // End For MQC 66840 : Upload/Download user/student with MDR
                         }
                    
                     } //End for loop
-                    
-                    if(isLaslink){
-                    	cellPosition = headerNode.length * 3;
-                    }else{
-                    	cellPosition = headerNode.length * 2;
-                    }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    cellPosition = headerNode.length * headerPosFactor;    	// Start For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName
                  
@@ -1164,12 +1105,17 @@ public class UploadDownloadFormUtils
     }
     
     //Creating student data file with POI
-    
+    //For MQC 67720: MDR columns needs to be removed for nonLaslinks
     public static byte[] downLoadStudentDataFile (StudentFile studentFile, String userName,
-            UserManagement userManagement,boolean isLaslink) {
+            UserManagement userManagement, boolean islaslinkCustomer ) {
             
             byte []errorData = null;
-        
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        	int headerPosFactor = 2;
+        	if(islaslinkCustomer){
+        		headerPosFactor = 3;
+        	}
+        	// END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
         try{
            
             StudentFileRow []studentFileRow = studentFile.getStudentFileRows();
@@ -1194,58 +1140,38 @@ public class UploadDownloadFormUtils
                 if (i == 0) {
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
-                    
                     //Insert organization header
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+headerPosFactor) { 	// For MQC 66840 : Upload/Download user/student with MDR
+                        
+                        cell = row.createCell((short)j);
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+                        
+                        cell = row.createCell((short)(j + 1));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+                        
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        if(islaslinkCustomer){
+                            cell = row.createCell((short)(j + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(headerNode[k].getMdrNumber());
+                        }
+                        // End For MQC 66840 : Upload/Download user/student with MDR
+               
+                    }
                     
-	                 if(isLaslink){
-	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
-	                        
-	                        cell = row.createCell((short)j);
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                        
-	                        cell = row.createCell((short)(j + 1));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                        
-	                        cell = row.createCell((short)(j + 2));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getMdrNumber());
-	                        
-	               
-	                    }
-                    } 
-	                 else {
-	                	 for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
-		                        
-		                        cell = row.createCell((short)j);
-		                        style = cell.getCellStyle();
-		                        style.setWrapText(true);
-		                        cell.setCellStyle(style);
-		                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-		                        
-		                        cell = row.createCell((short)(j + 1));
-		                        style = cell.getCellStyle();
-		                        style.setWrapText(true);
-		                        cell.setCellStyle(style);
-		                        cell.setCellValue(headerNode[k].getOrgNodeCode());		                        
-		               
-		                    }
-	                	 
-	                 }
-	                 
                     //Insert Student Header
-	                 if(isLaslink){
-	                	 studentPos = headerNode.length * 3;
-	                 }else {
-	                	 studentPos = headerNode.length * 2;
-	                 }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    studentPos = headerNode.length * headerPosFactor; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)studentPos++);
@@ -1425,8 +1351,8 @@ public class UploadDownloadFormUtils
                     Node []nodeData = studentFileRow[i].getOrganizationNodes();
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
-                        
-                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j] , isLaslink);
+                        // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                        cellPosition = getCellPosition (headerNode, nodeData[j], islaslinkCustomer);
                         
                         if (cellPosition != -1) {
                             
@@ -1444,24 +1370,21 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
-                            if(isLaslink){
-                            	//create cell for nodeMDR
-                            	cell = row.createCell((short)(cellPosition + 2));
-                                style = cell.getCellStyle();
-                                style.setWrapText(true);
-                                cell.setCellStyle(style);
-                                cell.setCellValue(nodeData[j].getMdrNumber());
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                          	// For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            if(islaslinkCustomer){
+                            	 cell = row.createCell((short)(cellPosition + 2));
+                                 style = cell.getCellStyle();
+                                 style.setWrapText(true);
+                                 cell.setCellStyle(style);
+                                 cell.setCellValue(nodeData[j].getMdrNumber());
                             }
-                            
+                           // Start For MQC 66840 : Upload/Download user/student with MDR
                         }
                    
                     } //End for loop
-                    
-                    if(isLaslink){
-                    	cellPosition = headerNode.length * 3;
-                    }else{
-                    	cellPosition = headerNode.length * 2;
-                    }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    cellPosition = headerNode.length * headerPosFactor;  	// For MQC 66840 : Upload/Download user/student with MDR  
                     
                     //FirstName
                  
@@ -1824,9 +1747,10 @@ public class UploadDownloadFormUtils
 
         /*
     * Create Template in Server path and return byte array 
-    */ 
+    */
+    // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
     public static byte[] createStudentTemplateFile (StudentFile studentFile, String userName, 
-            UserManagement userManagement,boolean isLaslink) {
+            UserManagement userManagement, boolean islaslinkCustomer) {
         byte []errorData = null;
         try {
             
@@ -1840,6 +1764,12 @@ public class UploadDownloadFormUtils
             HSSFCell cell = null;
             int userPos = 0;
             int colPos = 0;
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            int headerPosFactor = 2;
+        	if(islaslinkCustomer){
+        		headerPosFactor = 3;
+        	}
+        	// END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
             
             for ( int i = 0; i < studentFileRow.length; i++ ) {
                 
@@ -1849,52 +1779,37 @@ public class UploadDownloadFormUtils
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
                     //Insert organization header
-	                if (isLaslink){
-	                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
-	                        
-	                        cell = row.createCell((short)j);
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-	                        
-	                        cell = row.createCell((short)(j + 1));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getOrgNodeCode());
-	                        
-	                        cell = row.createCell((short)(j + 2));
-	                        style = cell.getCellStyle();
-	                        style.setWrapText(true);
-	                        cell.setCellStyle(style);
-	                        cell.setCellValue(headerNode[k].getMdrNumber());                        
-	               
-	                    }
-                   }
-                   else{
-                	   for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {                           
-                           cell = row.createCell((short)j);
-                           style = cell.getCellStyle();
-                           style.setWrapText(true);
-                           cell.setCellStyle(style);
-                           cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
-                           
-                           cell = row.createCell((short)(j + 1));
-                           style = cell.getCellStyle();
-                           style.setWrapText(true);
-                           cell.setCellStyle(style);
-                           cell.setCellValue(headerNode[k].getOrgNodeCode());
-                  
-                       }
-                   }
+                    // For MQC 66840 : Upload/Download user/student with MDR
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+headerPosFactor) {
+                        
+                        cell = row.createCell((short)j);
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCategoryName());
+                        
+                        cell = row.createCell((short)(j + 1));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getOrgNodeCode());
+                        
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        if(islaslinkCustomer) {
+                        	cell = row.createCell((short)(j + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(headerNode[k].getMdrNumber());
+                        }
+                        // End For MQC 66840 : Upload/Download user/student with MDR
+               
+                    }
                     
                     //Insert Student Header
-	                if (isLaslink){
-	                	userPos = headerNode.length * 3;
-	                }else{
-	                	userPos = headerNode.length * 2;
-	                }
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    userPos = headerNode.length * headerPosFactor; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos++);
@@ -2076,8 +1991,8 @@ public class UploadDownloadFormUtils
                     Node []nodeData = studentFileRow[i].getOrganizationNodes();
                     int cellPosition = 0;
                     for (int j = 0; j < nodeData.length; j++) {
-                        
-                        cellPosition = getCellPositionForLaslink (headerNode, nodeData[j],isLaslink);
+                       // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+                        cellPosition = getCellPosition (headerNode, nodeData[j], islaslinkCustomer);
                         
                         if (cellPosition != -1) {
                             
@@ -2095,15 +2010,16 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
-                            if (isLaslink){
-	                            //create cell for mdrNumber
-	                            cell = row.createCell((short)(cellPosition + 2));
-	                            style = cell.getCellStyle();
-	                            style.setWrapText(true);
-	                            cell.setCellStyle(style);
-	                            cell.setCellValue(nodeData[j].getMdrNumber());
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                          	// For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            if(islaslinkCustomer) {
+                            	 cell = row.createCell((short)(cellPosition + 2));
+                                 style = cell.getCellStyle();
+                                 style.setWrapText(true);
+                                 cell.setCellStyle(style);
+                                 cell.setCellValue(nodeData[j].getMdrNumber());
                             }
-                            
+                            // Start For MQC 66840 : Upload/Download user/student with MDR
                         }
                         
                         

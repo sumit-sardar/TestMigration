@@ -1458,14 +1458,15 @@ public interface OrgNode extends JdbcControl
      *                  n1.parent_Region          as parentRegion,
      *                  n1.parent_County          as parentCounty,
      *                  n1.parent_district        as parentDistrict,
-     *                  n1.org_Node_Code          as orgNodeCode
+     *                  n1.org_Node_Code          as orgNodeCode,
+     *                  n1.org_node_mdr_number	  as mdrNumber
      *     FROM org_node n1, Org_Node_Parent p, org_node n2
      *   WHERE n1.customer_Id = {customerId}
      *     AND n1.org_Node_Id = p.org_Node_Id
      *     AND p.parent_Org_Node_Id = n2.org_Node_Id
      *     AND n2.customer_Id <> n1.customer_Id::
      */
-    @JdbcControl.SQL(statement = "SELECT DISTINCT n1.org_Node_Id  as orgNodeId,  n1.customer_Id  as customerId,  n1.org_Node_Category_Id  as orgNodeCategoryId,  n1.org_Node_Name  as orgNodeName,  n1.ext_Qed_Pin  as extQedPin,  n1.ext_Elm_Id  as extElmId,  n1.ext_Org_Node_Type  as extOrgNodeType,  n1.org_Node_Description  as orgNodeDescription,  n1.created_By  as createdBy,  n1.created_Date_Time  as createdDateTime,  n1.updated_By  as updatedBy,  n1.updated_Date_Time  as updatedDateTime,  n1.activation_Status  as activationStatus,  n1.data_Import_History_Id as dataImportHistoryId,  n1.parent_State  as parentState,  n1.parent_Region  as parentRegion,  n1.parent_County  as parentCounty,  n1.parent_district  as parentDistrict,  n1.org_Node_Code  as orgNodeCode  FROM org_node n1, Org_Node_Parent p, org_node n2  WHERE n1.customer_Id = {customerId}  AND n1.org_Node_Id = p.org_Node_Id  AND p.parent_Org_Node_Id = n2.org_Node_Id  AND n2.customer_Id <> n1.customer_Id")
+    @JdbcControl.SQL(statement = "SELECT DISTINCT n1.org_Node_Id  as orgNodeId,  n1.customer_Id  as customerId,  n1.org_Node_Category_Id  as orgNodeCategoryId,  n1.org_Node_Name  as orgNodeName,  n1.ext_Qed_Pin  as extQedPin,  n1.ext_Elm_Id  as extElmId,  n1.ext_Org_Node_Type  as extOrgNodeType,  n1.org_Node_Description  as orgNodeDescription,  n1.created_By  as createdBy,  n1.created_Date_Time  as createdDateTime,  n1.updated_By  as updatedBy,  n1.updated_Date_Time  as updatedDateTime,  n1.activation_Status  as activationStatus,  n1.data_Import_History_Id as dataImportHistoryId,  n1.parent_State  as parentState,  n1.parent_Region  as parentRegion,  n1.parent_County  as parentCounty,  n1.parent_district  as parentDistrict,  n1.org_Node_Code  as orgNodeCode, n1.org_node_mdr_number	  as mdrNumber  FROM org_node n1, Org_Node_Parent p, org_node n2  WHERE n1.customer_Id = {customerId}  AND n1.org_Node_Id = p.org_Node_Id  AND p.parent_Org_Node_Id = n2.org_Node_Id  AND n2.customer_Id <> n1.customer_Id")
     Node getTopOrgNodeForCustomer(Integer customerId) throws SQLException;
     
     

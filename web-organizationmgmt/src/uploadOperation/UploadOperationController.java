@@ -242,7 +242,7 @@ public class UploadOperationController extends PageFlowController {
 
         prepareContentHeader(resp, bodypart);
 
-        data = getTemplate(fileName);
+        data = getTemplate(fileName, this.isLaslinkCustomerUploadDownlod);
             
         try
         {
@@ -614,19 +614,19 @@ public class UploadOperationController extends PageFlowController {
      * @param fileName
      * @returns String
     */
-    private byte [] getTemplate(String fileName) {
+    private byte [] getTemplate(String fileName , boolean islaslinkCustomer) {
         
         String fileContent = "";
         byte[] data = null;
         
         try {
         	
-        	System.out.println("Laslink "+this.isLaslinkCustomerUploadDownlod);
+        	System.out.println("Laslink "+islaslinkCustomer);
             if ( fileName.equals("UserTemplate.xls") ) {
         
                 UserFile userFile = uploadDownloadManagement.
                                     getUserFileTemplate(this.userName );
-                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement , isLaslinkCustomerUploadDownlod);      
+                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement , islaslinkCustomer);      
                 //fileContent = UploadDownloadFormUtils.createTemplate(userFile);                                               
         
             } else {
@@ -635,7 +635,7 @@ public class UploadOperationController extends PageFlowController {
                                     getStudentFileTemplate(this.userName );
                                     
                 data = UploadDownloadFormUtils.createStudentTemplateFile(studentFile,
-                        this.userName, userManagement ,isLaslinkCustomerUploadDownlod);                    
+                        this.userName, userManagement ,islaslinkCustomer);                    
                 //fileContent = UploadDownloadFormUtils.
                                     //createStudentTemplate(studentFile);
         
