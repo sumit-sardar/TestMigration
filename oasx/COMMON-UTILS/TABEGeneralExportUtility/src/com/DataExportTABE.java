@@ -415,7 +415,7 @@ public class DataExportTABE {
 				for (int i=0 ; i<productIds.length ; i++) {
 					clearAllMaps();
 					getProductType(oascon, Integer.parseInt(productIds[i]));
-					//System.out.println("Excution for " + productIds[i] + " Product Id and Product Type " + PRODUCT_TYPE);
+					System.out.println("Execution for Product Id:[" + productIds[i] + "] and Product Type:[" + PRODUCT_TYPE + "]");
 					getAllContentDomain(oascon, Integer.parseInt(productIds[i]));
 					getAllObjectives(oascon);
 					customerDemoList = getCustomerDemographic(oascon);
@@ -437,10 +437,16 @@ public class DataExportTABE {
 						catData.setDateTestingCompleted(roster.getDateTestingCompleted());
 						catData.setTestingSite(roster.getTestingSite());
 						catData.setTestFormId(roster.getTestFormId());
-						if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1){
+						if (roster.getLastMseq() > 1000000 || roster.getRestartNumber() > 1) {
 							catData.setInterrupted("1");
-						}else{
-							catData.setInterrupted("0");
+						} else {
+							String interrupted = isInterrupted(oascon, roster.getTestRosterId().toString());
+							if("1".equals(interrupted)) {
+								catData.setInterrupted("1");
+							}
+							else if("0".equals(interrupted)) {
+								catData.setInterrupted("0");
+							}
 						}
 						getLastItem(oascon, catData, roster);
 						getTimedOut(oascon, catData, roster);
@@ -1153,11 +1159,13 @@ public class DataExportTABE {
 			   }
 			   else if("TA".equals(PRODUCT_TYPE)) {
 				   ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_ADAPTIVE);
+				   //System.out.println("content domain sql : " + SQLQuery.CONTENT_DOMAIN_SQL_TABE_ADAPTIVE);
 			   }
 			   else if("TL".equals(PRODUCT_TYPE)) {
 				   ps = con.prepareStatement(SQLQuery.CONTENT_DOMAIN_SQL_TABE_LOCATOR);
 			   }
 			   ps.setInt(1, roster.getTestRosterId());
+			   //System.out.println("Roster Id : " + roster.getTestRosterId());
 			   rs = ps.executeQuery();
 			   while(rs.next()) {
 				   Scores score = new Scores();
@@ -1604,7 +1612,27 @@ public class DataExportTABE {
 				} finally {
 					SqlUtil.close(ps, rs);
 				}
+		}
+		
+		private String isInterrupted(Connection con, String rosterId) 
+			throws SQLException {
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			String interrupted = "0";
+			try {
+				ps = con.prepareStatement(SQLQuery.IS_INTERRUPTED);
+				ps.setString(1, rosterId);
+				rs = ps.executeQuery();
+				if(rs.next()) {
+					interrupted = "1";
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			} finally {
+				SqlUtil.close(ps, rs);
 			}
+			return interrupted;
+		}	
 		
 		private static Properties loadProperties(String env)
 		{

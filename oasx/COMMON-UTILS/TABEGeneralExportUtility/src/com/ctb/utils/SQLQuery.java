@@ -486,4 +486,9 @@ public class SQLQuery {
 													+ "FROM ITEM_RESPONSE IR "
 													+ "WHERE IR.TEST_ROSTER_ID =?) "
 													+ "AND TEST_ROSTER_ID = ?";
+	
+	public static final String IS_INTERRUPTED = "SELECT *" +
+												" FROM STUDENT_ITEM_SET_STATUS SISS" +
+												" WHERE SISS.COMPLETION_STATUS = 'IN'" +
+												" AND SISS.TEST_ROSTER_ID = ?";
 }
