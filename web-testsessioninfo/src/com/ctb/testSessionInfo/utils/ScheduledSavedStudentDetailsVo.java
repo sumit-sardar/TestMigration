@@ -61,18 +61,20 @@ public class ScheduledSavedStudentDetailsVo implements Serializable{
                 	subtestList.add(subtestVO);
                 }
             }
-            for(int j=0; j<locatorTds.length; j++){
-            	int durationMinutes = locatorTds[j].getTimeLimit().intValue()/60;
-                String duration1 = (durationMinutes == 0) ? "Untimed" : durationMinutes + " mins";
-                locatorSubtests = new SubtestVO(locatorTds[j].getItemSetId(),
-                        String.valueOf(j+1), 
-                        locatorTds[j].getItemSetName(), 
-                        duration1, 
-                        locatorTds[j].getAccessCode(),
-                        locatorTds[j].getSessionDefault(),
-                        locatorTds[j].getItemSetForm(),
-                        false);
-                locatorSubtestList.add(locatorSubtests);
+            if ((locatorTds != null) && (locatorTds.length > 0)) {
+	            for(int j=0; j<locatorTds.length; j++){
+	            	int durationMinutes = locatorTds[j].getTimeLimit().intValue()/60;
+	                String duration1 = (durationMinutes == 0) ? "Untimed" : durationMinutes + " mins";
+	                locatorSubtests = new SubtestVO(locatorTds[j].getItemSetId(),
+	                        String.valueOf(j+1), 
+	                        locatorTds[j].getItemSetName(), 
+	                        duration1, 
+	                        locatorTds[j].getAccessCode(),
+	                        locatorTds[j].getSessionDefault(),
+	                        locatorTds[j].getItemSetForm(),
+	                        false);
+	                locatorSubtestList.add(locatorSubtests);
+	            }
             }
             subtestList = getDefaultSubtestsWithoutLocator(subtestList);
             TestVO testVO = new TestVO( subtestList, locatorSubtest, locatorSubtestList);
