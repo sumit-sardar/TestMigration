@@ -208,6 +208,10 @@ public final class CTBConstants {
     
   //For GACRCT2010CR007 --  	Configuration for Birth Date mandatory and Non mandatory field. 
     public static final String DISABLE_MANDATORY_BIRTH_DATE  =  "Disable_Mandatory_Birth_Date";
+    
+    //Laslink demographic value s
+    public static final String ETHNICITY_LABEL = "Ethnicity";
+    public static final String SUB_ETHNICITY_LABEL = "Sub_Ethnicity";
 
     
  } 

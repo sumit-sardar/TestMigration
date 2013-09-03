@@ -184,6 +184,12 @@ public class UploadStudent extends BatchProcessor.Process
 	 // For  MDR columns needs to be removed for nonLaslinks
 	private int orgPosFact = 2;
 	
+	//changes for defect # 75217
+	private String ethnicityLabel = CTBConstants.ETHNICITY_LABEL;
+	private String subEthnicityLabel = CTBConstants.SUB_ETHNICITY_LABEL;
+   
+	
+	
 	public UploadStudent ( String serverFilePath,String username, 
 			InputStream uploadedStream , 
 			StudentFileRow []studentFileRowHeader,
@@ -1236,6 +1242,11 @@ public class UploadStudent extends BatchProcessor.Process
 		// retrive each cell value for user
 		String msBackGroundColor="";
 		String strCell = "";
+		
+		
+		//Start demographic checking 
+		int start = totalCells - noOfDemographicList ;
+		boolean isDemographicStart = false;
 
 		for ( int i = studentHeaderStartPosition; i < totalCells; i++ ) {
 
@@ -1308,6 +1319,45 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 
 		}
+		
+		
+		boolean isEthnicityPresent = false;
+		boolean isSubEthnicityRequired = false;
+		
+		//Demographic checking for logical error start
+		for (int i=start ; i < totalCells ; i++){
+			HSSFCell cellHeader = rowHeader.getCell((short)i);
+			HSSFCell cell = row.getCell((short)i);
+			strCell = getCellValue(cell);
+			
+			
+				 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.ethnicityLabel)){			 
+					 if (!strCell.trim().equals("")){
+						 isEthnicityPresent = true;
+						 if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")){
+							 isSubEthnicityRequired = true;
+						 }
+					  }
+				 	}
+				 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.subEthnicityLabel)){
+					 
+					 if (isSubEthnicityRequired && strCell.trim().equals("")){
+						 //logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);//commenting out this logical error condition because if ethnicity is having value :"Hispanic or Latino" and sub-ethnicity is not having any value then "Hispanic or Latino" value is to be inserted in DB..This is same as UI.// 2nd September,2013
+						 //System.out.println ("Logical error ethnicity");
+					 }
+					 
+					 if (!isSubEthnicityRequired && !strCell.trim().equals("")){
+						 logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);
+						 //System.out.println ("Logical error ethnicity");
+					 }
+					 
+					 if (!isEthnicityPresent && !strCell.trim().equals("")){
+						 logicalErrorList.add(CTBConstants.SUB_ETHNICITY_LABEL);
+						 //System.out.println ("Logical error sub-ethnicity");
+					 }
+					 
+				 }
+		}//end Demographic checking for logical error
 
 		if ( logicalErrorList.size() == 0 ) {
 
@@ -2214,7 +2264,18 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		= new StudentDemographic[studentDemoMap.size()];
 		StudentDemographicValue [] studentDemographicValues = null;
 		StudentDemographicValue studentDemographicValue = null;
-
+		
+		// added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+		// #75217 , #75292 MQC Defect addressing
+		Integer ethnicityDemoId = new Integer(0);
+		String ethnicityLabelName = null;
+		Boolean subEthnicityToBePresent = false; 
+		Boolean subEthnicityNotPresent = false ;
+		int index = 0;
+		// end : added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+		// #75217 , #75292 MQC Defect addressing
+		
+		
 		for ( int i= 0 ; i < demoList.size() ; i++ ) {
 
 			StudentDemographic studentDemographic 
@@ -2252,12 +2313,48 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 						studentDemographicValues[j++] = studentDemographicValue;
 						studentDemographic.setId(demoGraphicId);
 						studentDemographic.setStudentDemographicValues(studentDemographicValues);
-						studentDemographics[i]= studentDemographic;
+						studentDemographics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing 
 
 					}
 
 				} else {
-
+					// added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+					// #75217 , #75292 MQC Defect addressing
+					
+					if (demoName.equalsIgnoreCase("ETHNICITY") && this.isLasLinksCustomer){
+						if (demoLabelName.equalsIgnoreCase("HISPANIC OR LATINO")){
+							// If the demographic : ethnicity selected is "HISPANIC OR LATINO" for Laslink 
+							// then the subEthnicity value is to be saved.
+							ethnicityDemoId = demoGraphicId ;
+							ethnicityLabelName = demoLabelName;
+							subEthnicityToBePresent = true;	
+							continue;
+						}
+					}
+					if (!subEthnicityToBePresent && demoName.equalsIgnoreCase("SUB_ETHNICITY") && this.isLasLinksCustomer){
+						//If the demographic : ethnicity is not present but sub-ethnicity is present then skip the sub-ethnicity value.
+						//This is handled already in logical error section , This is a second check. Extra caution.
+						studentDemographics = Arrays.copyOf(studentDemographics, (studentDemoMap.size()-1)); 
+						continue;
+					}
+					
+					if (demoName.equalsIgnoreCase("SUB_ETHNICITY") && this.isLasLinksCustomer && subEthnicityToBePresent ){
+						// If the demographic : sub-ethnicity is expected and present then insert this sub-ethnicity value with respect
+						// to ethnicity demographicId. >> Same behaviour as UI. 
+						demoGraphicId = ethnicityDemoId ;
+						subEthnicityToBePresent = false;
+						studentDemographics = Arrays.copyOf(studentDemographics, (studentDemoMap.size()-1));						
+					}
+					if (!demoName.equalsIgnoreCase("ETHNICITY") && this.isLasLinksCustomer &&  subEthnicityToBePresent){
+						// If control enters this loop that indicates that sub-ethnicity value was expected but it has come as Blank.
+						// Because if sub-ethnicity was present then "subEthnicityToBePresent" variable would have turnedinto false.:> See previous block
+						// Hence we will keep track that sub-ethnicity is not present with "subEthnicityNotPresent" variable.
+						subEthnicityToBePresent = false; 
+						subEthnicityNotPresent = true ;						
+					}
+					// end : added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+					// end : #75217 , #75292 MQC Defect addressing
+					
 					studentDemographicValue = new StudentDemographicValue();
 					demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
 					studentDemographicValue.setValueName(demoLabelName);
@@ -2268,16 +2365,79 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					studentDemographic.setId(demoGraphicId);
 					studentDemographic.setStudentDemographicValues(studentDemographicValues);
 					studentDemographic.setId(demoGraphicId);
-					studentDemographics[i]= studentDemographic;
-
+					studentDemographics[index]= studentDemographic;// index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing					
 				}
-
 			}
-
-
-
+			index = index + 1; // index introduced on 3rd sep,2013..#75217 , #75292 MQC Defect addressing
 		}
-
+		
+		// added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+		// #75217 , #75292 MQC Defect addressing
+		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
+		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
+		if(subEthnicityNotPresent){
+			for ( int i= 0 ; i < 1 ; i++ ){
+				StudentDemographic studentDemographic 
+				= new StudentDemographic();
+	
+				if ( demoGraphicMap.containsKey(demoList.get(i)) )  {
+	
+					String demoName = (String)demoList.get(i) ;
+					Integer demoGraphicId 
+					= (Integer)demoGraphicMap.get(demoName);
+					String demoLabelName 
+					= (String) studentDemoMap.get(demoName);
+	
+					String demoCardinality 
+					= (String) demoCardinalityMap.get(demoName);
+	
+					if(demoCardinality.equals(CTBConstants.MULTIPLE_DEMOGRAPHIC)){
+						StringTokenizer stStr = new StringTokenizer(demoLabelName,
+								CTBConstants.DEMOGRAPHIC_VALUSE_SEPARATOR);
+						int j=0;
+						studentDemographicValues 
+						= new StudentDemographicValue[stStr.countTokens()]; 
+						while(stStr.hasMoreTokens()){
+	
+							String demoVal = stStr.nextToken().trim();
+							String demoValue = 
+								getDbDemographicValue(demoName ,demoVal);
+	
+	
+							studentDemographicValue = new StudentDemographicValue();
+							studentDemographicValue.setValueName(demoValue);
+							studentDemographicValue.setVisible("T");
+							studentDemographicValue.setSelectedFlag("true");
+	
+							studentDemographicValues[j++] = studentDemographicValue;
+							studentDemographic.setId(demoGraphicId);
+							studentDemographic.setStudentDemographicValues(studentDemographicValues);
+							studentDemographics[index]= studentDemographic;
+	
+						}	
+					} 
+					else{
+						if (demoName.equalsIgnoreCase("ETHNICITY")  && demoLabelName.equalsIgnoreCase("HISPANIC OR LATINO") && this.isLasLinksCustomer){							
+							//Extra caution here to see if the column is "Ethnicity" and value is "HISPANIC OR LATINO"..Then only insert the value>> Same as UI.
+							studentDemographicValue = new StudentDemographicValue();
+							demoLabelName = getDbDemographicValue(demoName ,demoLabelName); 
+							studentDemographicValue.setValueName(demoLabelName);
+							studentDemographicValue.setVisible("T");
+							studentDemographicValue.setSelectedFlag("true");
+							studentDemographicValues = new StudentDemographicValue[1];     
+							studentDemographicValues[0] = studentDemographicValue;
+							studentDemographic.setId(demoGraphicId);
+							studentDemographic.setStudentDemographicValues(studentDemographicValues);
+							studentDemographic.setId(demoGraphicId);
+							studentDemographics[index]= studentDemographic;	
+						}
+					}
+				}						
+			}
+		}
+		// end : added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
+		// end : #75217 , #75292 MQC Defect addressing
+		
 		return studentDemographics;
 	}
 
