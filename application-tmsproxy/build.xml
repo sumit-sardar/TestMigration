@@ -1,5 +1,5 @@
 <?xml version="1.0" ?> 
-<project name="application-tmsproxy" default="war">
+<project name="application-tmsproxyCAT" default="war">
 
 	<path id="xmlbean.class.path">
 		<pathelement path="server\apache-tomcat-6.0.29\webapps\ROOT\WEB-INF\lib\xbean.jar"/>
@@ -12,7 +12,7 @@
 		<fileset dir="server\apache-tomcat-6.0.29\lib">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="C:\bea10\wlserver_10.3\server\lib">
+		<fileset dir="C:\oracle\Middleware\wlserver_10.3\server\lib">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
