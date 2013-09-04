@@ -1730,6 +1730,8 @@ public class UploadDownloadFormUtils
                         	demoGraphicId = ethnicityDemoId;
                         	msValueCardinality = ethnicityCardinality;
                         }                        
+                                                
+                        demoValue = getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality,demoGraphicHeader[k].getLabelName(),islaslinkCustomer);
                         
                         // If current header is Ethnicity,then we will keep a copy of these demographic Id and cardinality.
                         if (islaslinkCustomer && demoValue.equalsIgnoreCase("Hispanic or Latino"))
@@ -1738,8 +1740,6 @@ public class UploadDownloadFormUtils
                         	ethnicityCardinality = msValueCardinality;
                         }
                         //End : Added on 3 Sep ,2013.. #75217,#75292
-                        
-                        demoValue = getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality,demoGraphicHeader[k].getLabelName(),islaslinkCustomer);
                         
                         // Added on 3 Sep ,2013.. #75217,#75292
                         // If the current header is Sub-Ethnicity and demo-value is "Hispanic or Latino" , then it means that the Ethnicity selected was "Hispanic or Latino"
