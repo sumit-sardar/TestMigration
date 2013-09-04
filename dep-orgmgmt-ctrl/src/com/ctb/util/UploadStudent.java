@@ -2272,6 +2272,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		Boolean subEthnicityToBePresent = false; 
 		Boolean subEthnicityNotPresent = false ;
 		int index = 0;
+		int count = 0;
 		// end : added 3rd  September, 2013 to handle different cases of Ethnicity and Sub-ethnicity combination for laslink customers. 
 		// #75217 , #75292 MQC Defect addressing
 		
@@ -2280,7 +2281,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 			StudentDemographic studentDemographic 
 			= new StudentDemographic();
-
+			count = count + 1;
 			if ( demoGraphicMap.containsKey(demoList.get(i)) )  {
 
 				String demoName = (String)demoList.get(i) ;
@@ -2375,7 +2376,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		// #75217 , #75292 MQC Defect addressing
 		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
 		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
-		if(subEthnicityNotPresent){
+		if(subEthnicityNotPresent || (count == 1)){
 			for ( int i= 0 ; i < 1 ; i++ ){
 				StudentDemographic studentDemographic 
 				= new StudentDemographic();
