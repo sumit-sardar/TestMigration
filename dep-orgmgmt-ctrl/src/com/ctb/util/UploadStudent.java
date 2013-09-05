@@ -1238,7 +1238,7 @@ public class UploadStudent extends BatchProcessor.Process
 			HSSFRow rowHeader, ArrayList logicalErrorList) {
 
 		int totalCells = rowHeader.getPhysicalNumberOfCells();  
-
+		System.out.println("***isLogicalError Call in New UI***");
 		// retrive each cell value for user
 		String msBackGroundColor="";
 		String strCell = "";
@@ -1320,7 +1320,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 		}
 		
-		
+		System.out.println("**Inside logical error..New implement**");
 		boolean isEthnicityPresent = false;
 		boolean isSubEthnicityRequired = false;
 		
@@ -1329,7 +1329,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 			HSSFCell cellHeader = rowHeader.getCell((short)i);
 			HSSFCell cell = row.getCell((short)i);
 			strCell = getCellValue(cell);
-			
+			System.out.println("**Inside logical error..for loop**");
 			
 				 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.ethnicityLabel)){			 
 					 if (!strCell.trim().equals("")){
@@ -1343,16 +1343,18 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					 
 					 if (isSubEthnicityRequired && strCell.trim().equals("")){
 						 //logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);//commenting out this logical error condition because if ethnicity is having value :"Hispanic or Latino" and sub-ethnicity is not having any value then "Hispanic or Latino" value is to be inserted in DB..This is same as UI.// 2nd September,2013
-						 //System.out.println ("Logical error ethnicity");
+						 System.out.println ("**Logical error ethnicity.. do nothing**");
 					 }
 					 
 					 if (!isSubEthnicityRequired && !strCell.trim().equals("")){
 						 logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);
+						 System.out.println("**Inside logical error..!isSubEthnicityRequired && !strCell.trim().equals('')..**");
 						 //System.out.println ("Logical error ethnicity");
 					 }
 					 
 					 if (!isEthnicityPresent && !strCell.trim().equals("")){
 						 logicalErrorList.add(CTBConstants.SUB_ETHNICITY_LABEL);
+						 System.out.println("**Inside logical error..!isEthnicityPresent && !strCell.trim().equals('')**");
 						 //System.out.println ("Logical error sub-ethnicity");
 					 }
 					 
@@ -2326,6 +2328,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 						if (demoLabelName.equalsIgnoreCase("HISPANIC OR LATINO")){
 							// If the demographic : ethnicity selected is "HISPANIC OR LATINO" for Laslink 
 							// then the subEthnicity value is to be saved.
+							System.out.println("**Inside getStudentDemographicData : ETHNICITY && HISPANIC OR LATINO.**");
 							ethnicityDemoId = demoGraphicId ;
 							ethnicityLabelName = demoLabelName;
 							subEthnicityToBePresent = true;	
@@ -2335,6 +2338,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					if (!subEthnicityToBePresent && demoName.equalsIgnoreCase("SUB_ETHNICITY") && this.isLasLinksCustomer){
 						//If the demographic : ethnicity is not present but sub-ethnicity is present then skip the sub-ethnicity value.
 						//This is handled already in logical error section , This is a second check. Extra caution.
+						System.out.println("**Inside getStudentDemographicData : Sub_ETHNICITY && ethnicity not present.**");
 						studentDemographics = Arrays.copyOf(studentDemographics, (studentDemoMap.size()-1)); 
 						continue;
 					}
@@ -2342,6 +2346,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 					if (demoName.equalsIgnoreCase("SUB_ETHNICITY") && this.isLasLinksCustomer && subEthnicityToBePresent ){
 						// If the demographic : sub-ethnicity is expected and present then insert this sub-ethnicity value with respect
 						// to ethnicity demographicId. >> Same behaviour as UI. 
+						System.out.println("**Inside getStudentDemographicData : Sub_ETHNICITY && ethnicity present.**");
 						demoGraphicId = ethnicityDemoId ;
 						subEthnicityToBePresent = false;
 						studentDemographics = Arrays.copyOf(studentDemographics, (studentDemoMap.size()-1));						
@@ -2350,6 +2355,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 						// If control enters this loop that indicates that sub-ethnicity value was expected but it has come as Blank.
 						// Because if sub-ethnicity was present then "subEthnicityToBePresent" variable would have turnedinto false.:> See previous block
 						// Hence we will keep track that sub-ethnicity is not present with "subEthnicityNotPresent" variable.
+						System.out.println("**Inside getStudentDemographicData : other than sub_ethnicity && sub_ethnicity to be present.**"); 
 						subEthnicityToBePresent = false; 
 						subEthnicityNotPresent = true ;						
 					}
@@ -2377,6 +2383,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
 		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
 		if(subEthnicityNotPresent || (count == 1)){
+			System.out.println("** Ethnicity demographic check.. ReEntry in loop as Sub-Etnicity not present **");
 			for ( int i= 0 ; i < 1 ; i++ ){
 				StudentDemographic studentDemographic 
 				= new StudentDemographic();
