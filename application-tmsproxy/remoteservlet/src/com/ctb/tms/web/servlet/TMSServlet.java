@@ -422,10 +422,18 @@ public class TMSServlet extends HttpServlet {
 				    			if(thisSco.getTitle().contains("TABE Locator") && !thisSco.getTitle().contains("Sample")) {
 				    				locatorComplete = true;
 				    				//logger.info("Roster " + rosterId + " completed locator");
+				    				//Fix defect 74687
 				    				if(thisSco.getTitle().contains("Reading"))
                                     {
                                         completedLocatorContain = "Reading";
+                                        completedLocatorContain1 = "";
                                         logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Reading locator").toString());
+                                    } else if(thisSco.getTitle().contains("Computation"))
+                                    {
+                                        completedLocatorContain = "Computation";
+                                        completedLocatorContain1 = "";
+                                        locatorComplete = false;
+                                        logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Mathematics Computation locator").toString());
                                     } else if(thisSco.getTitle().contains("Applied"))
                                     {
                                         completedLocatorContain = "Applied";
@@ -434,6 +442,7 @@ public class TMSServlet extends HttpServlet {
                                     } else if(thisSco.getTitle().contains("Language"))
                                     {
                                         completedLocatorContain = "Language";
+                                        completedLocatorContain1 = "";
                                         logger.info((new StringBuilder("Roster ")).append(rosterId).append("##### completed Language locator").toString());
                                     }
 
