@@ -12,7 +12,7 @@
 		<fileset dir="server\apache-tomcat-6.0.29\lib">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="C:\oracle\Middleware\wlserver_10.3\server\lib">
+		<fileset dir="C:\bea10\wlserver_10.3\server\lib">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
