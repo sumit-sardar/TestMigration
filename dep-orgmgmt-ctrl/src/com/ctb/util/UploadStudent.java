@@ -1230,7 +1230,8 @@ public class UploadStudent extends BatchProcessor.Process
 	 */ 
 	private boolean isLogicalError (int studentHeaderStartPosition, HSSFRow row, 
 			HSSFRow rowHeader, ArrayList logicalErrorList) {
-
+		
+		System.out.println("****OLD UI CALL****");
 		int totalCells = rowHeader.getPhysicalNumberOfCells();  
 
 		// retrive each cell value for user
