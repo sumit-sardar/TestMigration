@@ -138,6 +138,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRosterStartTime(startTime);
 			manifests[i].setRosterEndTime(endTime);
 			manifests[i].setTtsSpeedStatus(ttsSpeedStatus);
+			//Fix defect 75220 
+			manifests[i].setSdsId(manifest.getSdsId());
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
