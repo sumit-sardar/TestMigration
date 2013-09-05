@@ -232,4 +232,8 @@ public final class CTBConstants {
     public static final String CUSTOMER_PRODUCT_FORMC = "Form C";
     public static final String CUSTOMER_PRODUCT_ESPANOLB = "Espanol B";
     
+    //Laslink demographic values
+    public static final String ETHNICITY_LABEL = "Ethnicity";
+    public static final String SUB_ETHNICITY_LABEL = "Sub_Ethnicity";
+    
  } 
