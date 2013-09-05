@@ -422,7 +422,7 @@ public class TMSServlet extends HttpServlet {
 				    			if(thisSco.getTitle().contains("TABE Locator") && !thisSco.getTitle().contains("Sample")) {
 				    				locatorComplete = true;
 				    				//logger.info("Roster " + rosterId + " completed locator");
-				    				//Fix defect 74687
+				    				//Fix defect 74687, 74679
 				    				if(thisSco.getTitle().contains("Reading"))
                                     {
                                         completedLocatorContain = "Reading";
