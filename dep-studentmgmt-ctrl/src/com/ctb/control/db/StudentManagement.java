@@ -845,11 +845,11 @@ public interface StudentManagement extends JdbcControl
      *   select sdd.student_demographic_data_id from student_demographic_data sdd, customer_demographic cd, customer_demographic_value cdv
      *   where sdd.customer_demographic_id = cd.customer_demographic_id
      *   and cd.customer_demographic_id = cdv.customer_demographic_id
-     *   and sdd.value_name = cdv.value_name
+     *   -- and sdd.value_name = cdv.value_name //commenting this condition for #defect 75217. As Ethnicity:->"Hispanic or Latino" demograhic will  have value from Sub-Ethnicity Demographic. Hence if it is not commented then during updation of student the Hispanic or Latino ethnicity will not be deleted and 2 entries will be there against 1 demographic // Changed date 29 Aug,2013
      *   and cd.visible = 'T' and cdv.visible = 'T'
      *   and sdd.student_id = {studentId})  ::
      */
-    @JdbcControl.SQL(statement = "delete  from  student_demographic_data  where student_demographic_data_id in (  select sdd.student_demographic_data_id from student_demographic_data sdd, customer_demographic cd, customer_demographic_value cdv  where sdd.customer_demographic_id = cd.customer_demographic_id  and cd.customer_demographic_id = cdv.customer_demographic_id  and sdd.value_name = cdv.value_name  and cd.visible = 'T' and cdv.visible = 'T'  and sdd.student_id = {studentId})  ")
+    @JdbcControl.SQL(statement = "delete  from  student_demographic_data  where student_demographic_data_id in (  select sdd.student_demographic_data_id from student_demographic_data sdd, customer_demographic cd, customer_demographic_value cdv  where sdd.customer_demographic_id = cd.customer_demographic_id  and cd.customer_demographic_id = cdv.customer_demographic_id  and cd.visible = 'T' and cdv.visible = 'T'  and sdd.student_id = {studentId})  ")
     void deleteVisibleStudentDemographicDataForStudent(Integer studentId) throws SQLException;
 
     /**
