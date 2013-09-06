@@ -28,6 +28,7 @@ var isDataExportBySession = 'false';
 
 function getStudentList() { 
 		var postDataObject = {};
+		postDataObject.frameworkProductId=$('#frameworkProductId').val();
 		
 		
 		$.ajax({
@@ -99,8 +100,8 @@ function load_populate_to_be_export_student_grid(testSessionList){
 		   		{name:'scheduled',			index:'scheduled', 			width:90,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentStop',		index:'studentStop', 		width:100,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'systemStop',			index:'systemStop', 		width:100,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'notTaken',			index:'notTaken', 			width:100,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'incomplete',			index:'incomplete', 		width:100,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'notTaken',			index:'notTaken', 			width:90,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'incomplete',			index:'incomplete', 		width:90,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testAdminId',		index:'testAdminId', 		width:1,   editable: false, align:"left", sortable:false, hidden:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		
 		   		
@@ -303,7 +304,8 @@ function getUnscoredStudentDetails(isDataExportForSelectedSessions) {
 	else{
 		isDataExportBySession = 'false';
 		postDataObject.selectedTestSessionIds = '';
-	}	
+	}
+	postDataObject.frameworkProductId = $('#frameworkProductId').val();	
 	$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -416,8 +418,8 @@ function load_populate_unscored_student_grid(studentList) {
 		   		{name:'studentName',	index:'studentName', 	width:150, editable: true, align:"left", sortable:true, sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testSessionName',index:'testSessionName',width:150, editable: true, align:"left", sortable:true,	sorttype:'text',search: false,	cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',			index:'grade',			width:90,   editable: false,align:"left", sortable:true, sorttype:'text', search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentIdNumber',index:'studentIdNumber',width:150,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'scoringStatus',	index:'scheduled', 		width:150,   editable: false, align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentIdNumber',index:'studentIdNumber',width:150,   editable: false, align:"left", sortable:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'scoringStatus',	index:'scheduled', 		width:150,   editable: false, align:"left", sortable:true,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testAdminId',	index:'testAdminId', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'rosterId',	index:'rosterId', 			width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetIdTC',	index:'itemSetIdTC', 	width:1,   editable: false, hidden:true,  align:"left", sortable:false,	 search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -738,6 +740,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
  function submitJobDetails(){
  		closePopUp('confirmationPopupOnSubmit')
  		var postDataObject = {};
+ 		postDataObject.frameworkId = $('#frameworkProductId').val();
  		postDataObject.isDataExportBySession =  isDataExportBySession;
 		$.ajax({
 			async:		true,
@@ -762,7 +765,8 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  
-							window.location.href="error.do";
+							//window.location.href="error.do";
+							window.location.href="/SessionWeb/logout.do";
 						},
 			complete :  function(XMLHttpRequest, textStatus){
 							 $.unblockUI();  

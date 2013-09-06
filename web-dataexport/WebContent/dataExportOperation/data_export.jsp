@@ -17,12 +17,15 @@
 	<netui-template:setAttribute name="title" value="${bundle.web['data.exports.window.title']}" /> 
  	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.dataExport']}" />		
 <netui-template:section name="bodySection">
-		
+		<%
+		Integer frameworkProductId = Integer.parseInt(request.getAttribute("frameworkProductId").toString());
+		%>
 		<!-- ********************************************************************************************************************* -->
 		<!-- Start Page Content -->
 		<!-- ********************************************************************************************************************* -->
 		<netui:form action="dataExport">
 			<input type="hidden" id="menuId" name="menuId" value="exportDataLink" />
+			<input type="hidden" id="frameworkProductId" name="frameworkProductId" value="<%=frameworkProductId%>" />
 			<input type="hidden" id="captionToBeExportGrid" value=<lb:label key="data.export.caption.export.grid" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="dataExportSearchResultTitle" value=<lb:label key="data.export.search.result" prefix="'" suffix="'"/>/>
 			<input type="hidden" id="exportStudentTestSessionSearchResultEmpty" value=<lb:label key="export.student.testSession.search.result.empty" prefix="'" suffix="'"/>/>

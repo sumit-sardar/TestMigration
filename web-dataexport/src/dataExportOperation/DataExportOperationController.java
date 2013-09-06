@@ -36,6 +36,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.CustomerExportStudentData;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
@@ -74,12 +75,9 @@ public class DataExportOperationController extends PageFlowController {
 	private static final String ACTION_FIND_STUDENT = "findStudent";
 	private static final String ACTION_VIEW_STATUS = "getExportStatus";
 	private static final String STUDENT_STATUS = "Incomplete";
-	private List<Integer> toBeExportedRosterList = null;
-	private List<Integer> toBeExportedRosterListForSessions = null;
 	private CustomerLicense[] customerLicenses = null;
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
-	private Integer totalExportedStudentCount = null;
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
@@ -89,8 +87,19 @@ public class DataExportOperationController extends PageFlowController {
 	private Integer totalStudentCount = 0;
 	private boolean islaslinkCustomer = false;
 	
+	private List<Integer> toBeExportedRosterListLLEAB = null;
+	private Integer totalExportedStudentCountLLEAB = null;
+	private List<Integer> toBeExportedRosterListLL2ND = null;
+	private Integer totalExportedStudentCountLL2ND = null;
 	
+	private List<Integer> toBeExportedRosterListForSessionsLLEAB = null;
+	private List<Integer> toBeExportedRosterListForSessionsLL2ND = null;
     
+	private static final String FORMATITLE = "Student Data Export - Forms A/B Esp A";
+	private static final String FORMBTITLE = "Student Data Export - Enhanced - Forms C/D Esp B";
+	private static final String FORMADESCRIPTION = "Export the student data obtained by the student in standard format for Laslink A/B/Espanol.";
+	private static final String FORMBDESCRIPTION = "Export the student data obtained by the student in standard format for Laslink Enhanced C/D/Espanol-B.";
+	
     public static String CONTENT_TYPE_JSON = "application/json";
 
 	/**
@@ -521,7 +530,8 @@ public class DataExportOperationController extends PageFlowController {
     */
    
 	@Jpf.Action(forwards = { 
-			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
+			@Jpf.Forward(name = "success", path = "data_export.jsp"),
+			@Jpf.Forward(name = "linkPage", path = "dataExportHome.jsp") 
 	 }) 
 	 protected Forward services_dataExport()
 	 {
@@ -529,21 +539,67 @@ public class DataExportOperationController extends PageFlowController {
 
 		 getUserDetails();
 		 
-		this.customerLicenses = getCustomerLicenses();
+		 this.customerLicenses = getCustomerLicenses();
 		 
 		 setupUserPermission();
-
+		 
+		 Integer[] frameProducts = getFrameWorkProductIds(this.customerId);
+		 
 		 List broadcastMessages = BroadcastUtils.getBroadcastMessages(this.message, this.userName);
 		 this.getSession().setAttribute("broadcastMessages", new Integer(broadcastMessages.size()));
 		 
-		 return new Forward("success");
+		 List<CustomerExportStudentData> exportList = new ArrayList<CustomerExportStudentData>();
+		 if(frameProducts.length > 1){
+			 for(int ii = 0; ii < frameProducts.length; ii++){
+				 CustomerExportStudentData export = new CustomerExportStudentData();
+				 if(frameProducts[ii] == 7000){
+					 String url = "/ExportWeb/dataExportOperation/dataExport.do?frameworkId="+frameProducts[ii];
+					 export.setProductId(frameProducts[ii]);
+					 export.setExportURL(url);
+					 export.setExportName(FORMATITLE);
+					 export.setExportDescription(FORMADESCRIPTION);
+					 exportList.add(export);
+				 }else if (frameProducts[ii] == 7500){
+					 String url = "/ExportWeb/dataExportOperation/dataExport.do?frameworkId="+frameProducts[ii];
+					 export.setProductId(frameProducts[ii]);
+					 export.setExportURL(url);
+					 export.setExportName(FORMBTITLE);
+					 export.setExportDescription(FORMBDESCRIPTION);
+					 exportList.add(export);
+				 }
+			 }
+			 this.getRequest().setAttribute("exportList", exportList);
+			 return new Forward("linkPage");
+			 
+		 }else{
+			 this.getRequest().setAttribute("frameworkProductId", frameProducts[0]);
+			 return new Forward("success");
+		 }
+		 
+		 
 	 }
+	
+	
+	
+	private Integer[] getFrameWorkProductIds(Integer customerId) {
+		
+		Integer[] frameworkProductIds =null;
+		try {
+			frameworkProductIds = dataexportManagement.getFrameWorkProductIds(customerId);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return frameworkProductIds;
+	}
+
 	@Jpf.Action(forwards = { 
 			 @Jpf.Forward(name = "success", path = "data_export.jsp") 
 	 }) 
 	 protected Forward dataExport()
 	 {
-		 return new Forward("success");
+		Integer frameworkProductId = Integer.parseInt(this.getRequest().getParameter("frameworkId"));
+		this.getRequest().setAttribute("frameworkProductId", frameworkProductId);
+		return new Forward("success");
 	 }
 	@Jpf.Action()
 	public Forward getStudentForExport() {
@@ -553,6 +609,7 @@ public class DataExportOperationController extends PageFlowController {
 		OutputStream stream = null;
 		ManageTestSessionData mtsData = null;
 		DataExportVO vo = new DataExportVO();
+		Integer frameworkProductId = Integer.parseInt(this.getRequest().getParameter("frameworkProductId").toString());
 		if (this.userName == null) {
 			getLoggedInUserPrincipal();
 			getUserDetails();
@@ -561,16 +618,18 @@ public class DataExportOperationController extends PageFlowController {
 		{	
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
 			Date date = new Date();  
-		        System.out.println(dateFormat.format(date));  
-			
-			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null, this.userName);
+			mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, null, this.userName, frameworkProductId);
 			Date date1 = new Date();  
-	        System.out.println(dateFormat.format(date1));  
 			if ((mtsData != null)) {
 				if( (mtsData.getFilteredCount().intValue() > 0)) {
 					List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
-					this.toBeExportedRosterList = mtsData.getToBeExportedStudentRosterList();
-					this.totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
+					if(frameworkProductId != -1 && frameworkProductId == 7000){
+						this.toBeExportedRosterListLLEAB = mtsData.getToBeExportedStudentRosterList();
+						this.totalExportedStudentCountLLEAB = mtsData.getTotalExportedStudentCount();
+					}else if(frameworkProductId != -1 && frameworkProductId == 7500){
+						this.toBeExportedRosterListLL2ND = mtsData.getToBeExportedStudentRosterList();
+						this.totalExportedStudentCountLL2ND = mtsData.getTotalExportedStudentCount();
+					}
 					vo.setTestSessionList(testSessionList);
 				}
 				vo.setNotCompletedStudentCount(mtsData.getNotCompletedStudentCount());
@@ -631,31 +690,31 @@ public class DataExportOperationController extends PageFlowController {
 		ManageStudent student = null;
 		List<ManageStudent> studentList=new ArrayList<ManageStudent>();
 		DataExportVO vo = new DataExportVO();
-		System.out.println("......"+this.toBeExportedRosterList);
-		/* LAS Online 2013 - 008 - eMetric export - Allow users to select test sessions*/
 		ManageTestSessionData mtsData = null;
-		//List<Integer> selectedTestSessionIds = new ArrayList<Integer>();
 		List<Integer> rosterListForSelectedSessions = null;
 		Integer totalExportedStudentCount = null;
 		String [] selectedTestSessionIdArr = null;
 		Integer [] selectedTestSessionIds = null;
 		String selectedTestSessionIdStr = (String) getRequest().getParameter("selectedTestSessionIds");
+		Integer frameworkId = (getRequest().getParameter("frameworkProductId") == null)?-1:Integer.parseInt(getRequest().getParameter("frameworkProductId").toString());
 		if(selectedTestSessionIdStr != null && !selectedTestSessionIdStr.equalsIgnoreCase("")){			
 			selectedTestSessionIdArr =  selectedTestSessionIdStr.split(",");
 			selectedTestSessionIds  = new Integer[selectedTestSessionIdArr.length];
 			for (int i = 0; i < selectedTestSessionIdArr.length; i++) {
 				selectedTestSessionIds[i] = Integer.parseInt(selectedTestSessionIdArr[i]);
-				System.out.println(selectedTestSessionIdArr[i]);
 			}
 		}
 		try {
 			if(selectedTestSessionIds != null && selectedTestSessionIds.length > 0){
-				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds, this.userName);
+				mtsData = DataExportSearchUtils.getTestSessionsWithUnexportedStudents(this.dataexportManagement, customerId, null, null, null, selectedTestSessionIds, this.userName, frameworkId);
 				if (mtsData != null) {
 					if( (mtsData.getFilteredCount().intValue() > 0)) {
-						//List<ManageTestSession> testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
 						rosterListForSelectedSessions = mtsData.getToBeExportedStudentRosterList();
-						this.toBeExportedRosterListForSessions = rosterListForSelectedSessions;
+						if(frameworkId == 7000){
+							this.toBeExportedRosterListForSessionsLLEAB = rosterListForSelectedSessions;
+						}else if(frameworkId == 7500){
+							this.toBeExportedRosterListForSessionsLL2ND = rosterListForSelectedSessions;
+						}
 						totalExportedStudentCount = mtsData.getTotalExportedStudentCount();
 					}
 					vo.setNotCompletedStudentCount(mtsData.getNotCompletedStudentCount());
@@ -664,9 +723,15 @@ public class DataExportOperationController extends PageFlowController {
 					vo.setStudentBeingExportCount(mtsData.getTotalExportedStudentCount());
 				}
 			}else{
-				rosterListForSelectedSessions = this.toBeExportedRosterList;
-				totalExportedStudentCount = this.totalExportedStudentCount;
+				if(frameworkId == 7000){
+					rosterListForSelectedSessions = this.toBeExportedRosterListLLEAB;
+					totalExportedStudentCount = this.totalExportedStudentCountLLEAB;
+				}else if (frameworkId == 7500){
+					rosterListForSelectedSessions = this.toBeExportedRosterListLL2ND;
+					totalExportedStudentCount = this.totalExportedStudentCountLL2ND;
+				}
 			}
+			System.out.println(" Total student count to exported ::"+ totalExportedStudentCount);
 			msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(rosterListForSelectedSessions,this.dataexportManagement, customerId, null, null, null);
 			if (msData != null && (msData.getFilteredCount() !=null && msData.getFilteredCount().intValue() > 0)) {
 				studentList = DataExportSearchUtils.buildExportStudentList(msData);
@@ -1007,22 +1072,34 @@ public Forward rescoreStudent() {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String isDataExportBySession = getRequest().getParameter("isDataExportBySession");
+		Integer frameworkId = (getRequest().getParameter("frameworkId") == null)?-1:Integer.parseInt(getRequest().getParameter("frameworkId").toString());
 		DataExportVO vo = new DataExportVO();
 		Integer userId = user.getUserId();		
 		Integer studentCount = null;
 		List<Integer> finalExportedRosterList = null;
-	   if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession.equalsIgnoreCase("true")){
-		   studentCount = this.toBeExportedRosterListForSessions.size();
-		   finalExportedRosterList = this.toBeExportedRosterListForSessions;
-	   }	   
-	   else{	   
-		   studentCount = this.toBeExportedRosterList.size();
-		   finalExportedRosterList = this.toBeExportedRosterList;
-	   }	   
-	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
-	   
-	   ExportDataJMSUtil exportDataJMSUtil = null;
-		 try {
+		
+		if(frameworkId != -1){
+			if(isDataExportBySession != null && !isDataExportBySession.equalsIgnoreCase("") && isDataExportBySession.equalsIgnoreCase("true")){
+				if(frameworkId == 7000){
+					studentCount = this.toBeExportedRosterListForSessionsLLEAB.size();
+					finalExportedRosterList = this.toBeExportedRosterListForSessionsLLEAB;
+				} else if (frameworkId == 7500){
+					studentCount = this.toBeExportedRosterListForSessionsLL2ND.size();
+					finalExportedRosterList = this.toBeExportedRosterListForSessionsLL2ND;
+				}
+			} else {
+				if(frameworkId == 7000){
+					studentCount = this.toBeExportedRosterListLLEAB.size();
+					finalExportedRosterList = this.toBeExportedRosterListLLEAB;
+				} else if (frameworkId == 7500){
+					studentCount = this.toBeExportedRosterListLLEAB.size();
+					finalExportedRosterList = this.toBeExportedRosterListLL2ND;
+				}
+			}
+		}
+		Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
+		ExportDataJMSUtil exportDataJMSUtil = null;
+		try {
 			 exportDataJMSUtil = new ExportDataJMSUtil ();
 		     exportDataJMSUtil.initGenerateReportTask (userName, customerId, userId, jobId, finalExportedRosterList);
 		} catch (CTBBusinessException e) {

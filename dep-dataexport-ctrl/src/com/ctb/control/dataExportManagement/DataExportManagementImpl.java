@@ -25,6 +25,7 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.dataExportManagement.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.dataExportManagement.CustomerReportDataNotFoundException;
 import com.ctb.exception.dataExportManagement.JobDataNotFoundException;
+import com.ctb.exception.dataExportManagement.ProductDetailsNotFoundException;
 import com.ctb.exception.dataExportManagement.StudentDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
@@ -88,6 +89,12 @@ public class DataExportManagementImpl implements DataExportManagement
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.DataExportManagement dataExportManagement;
+
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.Product product;
 
 	static final long serialVersionUID = 1L;
 
@@ -364,7 +371,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 	}
 
 	@Override
-	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds, String userName) throws CTBBusinessException{
+	public ManageTestSessionData getTestSessionsWithUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort, Integer[] selectedTestSessionIds, String userName, Integer frameworkId) throws CTBBusinessException{
 		
 		ManageTestSessionData mtsd = new ManageTestSessionData();
 		ManageTestSession[] testSessions = null;
@@ -396,46 +403,49 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		}
         
        try {
-    	   	   if(selectedTestSessionIds != null ){	
-		    	   int loopCounters = selectedTestSessionIds.length / inClauselimit;
-		   		   if((selectedTestSessionIds.length % inClauselimit) > 0){
-		   			   loopCounters = loopCounters + 1;
-		   		   }
-		   		   
-		    	   for(int counter=0; counter<loopCounters; counter++){
-			   			Integer[] newSelectedSessionId = null;
-			   			String inputSessionIds = "";
-			   			if((counter+1)!=loopCounters){
-			   				newSelectedSessionId = new Integer [inClauselimit];
-			   				System.arraycopy(selectedTestSessionIds, (counter*inClauselimit) , newSelectedSessionId, 0, inClauselimit);
-			   			} else {
-			   				int count = selectedTestSessionIds.length % inClauselimit;
-			   				newSelectedSessionId = new Integer [count];
-			   				System.arraycopy(selectedTestSessionIds, ((loopCounters-1)*inClauselimit) , newSelectedSessionId, 0, count);
-			   			}
-			   			inputSessionIds = SQLutils.generateSQLCriteria("TADMIN.TEST_ADMIN_ID IN ",newSelectedSessionId);
-			   			
-			   			//tempTestSessions = dataExportManagement.getSelectedTestSessionDetails(customerId, inputSessionIds);
-			   			tempTestSessions = dataExportManagement.getSelectedTestSessionDetailsForUser(customerId, inputSessionIds, userName);
-			   			testSessionsObjList.add(tempTestSessions);
-		   		  }
-		    	   
-		    	  for (int i = 0; i < testSessionsObjList.size(); i++) {
-		    		  ManageTestSession [] tempTestSessionArray = testSessionsObjList.get(i);
-		    		  for (int j = 0; j < tempTestSessionArray.length; j++) {
-		    			  consolidatedTestSessions.add(tempTestSessionArray[j]); 
-					  }
-				  }
-		    	  testSessions = new ManageTestSession[consolidatedTestSessions.size()];
-		    	  for (int i = 0; i < consolidatedTestSessions.size(); i++) {
-					testSessions[i] = consolidatedTestSessions.get(i);					
-				  }	
-		    	   
-    	   	} else{
-    	   		//testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
-    	   		testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUser(customerId, userName);
-    	   	}
-        	
+    	    if(frameworkId != null ){
+    		   if(selectedTestSessionIds != null ){
+				   int loopCounters = selectedTestSessionIds.length / inClauselimit;
+				   if((selectedTestSessionIds.length % inClauselimit) > 0){
+					   loopCounters = loopCounters + 1;
+				   }
+				   
+				   for(int counter=0; counter<loopCounters; counter++){
+						Integer[] newSelectedSessionId = null;
+						String inputSessionIds = "";
+						if((counter+1)!=loopCounters){
+							newSelectedSessionId = new Integer [inClauselimit];
+							System.arraycopy(selectedTestSessionIds, (counter*inClauselimit) , newSelectedSessionId, 0, inClauselimit);
+						} else {
+							int count = selectedTestSessionIds.length % inClauselimit;
+							newSelectedSessionId = new Integer [count];
+							System.arraycopy(selectedTestSessionIds, ((loopCounters-1)*inClauselimit) , newSelectedSessionId, 0, count);
+						}
+						inputSessionIds = SQLutils.generateSQLCriteria("TADMIN.TEST_ADMIN_ID IN ",newSelectedSessionId);
+						
+						//tempTestSessions = dataExportManagement.getSelectedTestSessionDetails(customerId, inputSessionIds);
+						//tempTestSessions = dataExportManagement.getSelectedTestSessionDetailsForUser(customerId, inputSessionIds, userName);
+						tempTestSessions = dataExportManagement.getSelectedTestSessionDetailsWithFrameworkId(customerId, inputSessionIds, userName, frameworkId);
+						testSessionsObjList.add(tempTestSessions);
+				   }
+				   
+				   for (int i = 0; i < testSessionsObjList.size(); i++) {
+					   ManageTestSession [] tempTestSessionArray = testSessionsObjList.get(i);
+					   for (int j = 0; j < tempTestSessionArray.length; j++) {
+						   consolidatedTestSessions.add(tempTestSessionArray[j]); 
+					   }
+				   }
+				   testSessions = new ManageTestSession[consolidatedTestSessions.size()];
+				   for (int i = 0; i < consolidatedTestSessions.size(); i++) {
+					   testSessions[i] = consolidatedTestSessions.get(i);					
+				   }
+				   
+	    	   } else{
+	    		   //testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
+	    		   //testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUser(customerId, userName);
+	    		   testSessions = dataExportManagement.getTestSessionForExportWithStudentsForUserWithFrameworkId(customerId, userName, frameworkId);
+	    	   }
+    	    }
 			for (int i = 0; i <testSessions.length; i++ ){
 				TestAdminStatusComputer.adjustSessionTimesToLocalTimeZoneForExport(testSessions[i]);
 		         
@@ -526,7 +536,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 			if(page != null) mtsd.applyPaging(page);
 		} 
          catch (SQLException e) {
-			StudentDataNotFoundException tee = new StudentDataNotFoundException("DataExportManagementImpl: findStudentsByCustomerId: " + e.getMessage());
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("DataExportManagementImpl: getTestSessionsWithUnexportedStudents: " + e.getMessage());
 			tee.setStackTrace(e.getStackTrace());
 			throw tee;
 		}
@@ -560,6 +570,24 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 
 	}
 	
+	
+	@Override
+	public Integer[] getFrameWorkProductIds(Integer customerId) throws CTBBusinessException{
+		
+		Integer[] frameworkProductIds = null;
+		try{
+			frameworkProductIds = product.getFrameworkProductIds(customerId);
+		}catch(SQLException e) {
+			ProductDetailsNotFoundException tee = new ProductDetailsNotFoundException(
+					"DataExportManagementImpl: getFrameWorkProductIds: "
+							+ e.getMessage());
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+
+		
+		return frameworkProductIds;
+	}
 	
 } 
 
