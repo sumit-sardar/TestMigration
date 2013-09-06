@@ -69,7 +69,7 @@ public class FileGenerator {
 		+ " and roster.test_roster_id = ? ";
 
 	private static String customerModelLevel = " select max(category_level) as modelLevel"
-		+ " from org_node_category where customer_id = :customerId";
+		+ " from org_node_category where customer_id = :customerId and activation_status = 'AC'";
 
 	private static String testRosterDetails = " select distinct siss.VALIDATION_STATUS as validationStatus,"
 		+ " siss.ITEM_SET_ORDER as itemSetOrder,siss.EXEMPTIONS as testExemptions,"
@@ -155,6 +155,9 @@ public class FileGenerator {
 	private String subtestIndicator = "SELECT CONL.SUBTEST_MODEL  FROM TEST_ROSTER              TR, TEST_ADMIN               TA, CUSTOMER_CONFIGURATION   CC, CUSTOMER_ORGNODE_LICENSE CONL, PRODUCT                  PROD WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND " +
 	"TA.CUSTOMER_ID = CC.CUSTOMER_ID AND CC.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription' AND CC.DEFAULT_VALUE = 'T' AND TA.PRODUCT_ID = PROD.PRODUCT_ID AND CONL.CUSTOMER_ID = CC.CUSTOMER_ID AND CONL.ORG_NODE_ID = TR.ORG_NODE_ID AND CONL.PRODUCT_ID = PROD.PARENT_PRODUCT_ID ";
 	
+	private String getFrameworkProductId = "SELECT PROD.PARENT_PRODUCT_ID FROM PRODUCT PROD, TEST_ADMIN TADMIN, TEST_ROSTER TR WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID AND TADMIN.PRODUCT_ID = PROD.PRODUCT_ID";
+		
+		
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
 	private int classElementNumber = 0;
@@ -209,11 +212,16 @@ public class FileGenerator {
 	
 	public void execute (int customerId, Integer userId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
 
-			this.customerId = customerId;
-			this.fileNameList = fileNameList;
-			this.userId = userId;
+			FileGeneratorForLL2ND fileGen2nd = new FileGeneratorForLL2ND();
 			System.out.println("File generation started.");
-			writeToText( formettedTestRoster);
+			if(isLL2ND(formettedTestRoster)){
+				fileGen2nd.writeToText(formettedTestRoster, new Integer(customerId),  userId, fileNameList);
+			}else{
+				this.customerId = customerId;
+				this.fileNameList = fileNameList;
+				this.userId = userId;
+				writeToText( formettedTestRoster);
+			}
 			System.out.println("File generation completed.");
 
 	}
@@ -292,6 +300,30 @@ public class FileGenerator {
 	 * 
 	 * return myList; }
 	 */
+
+	private boolean isLL2ND(List<String> formettedTestRoster)throws CTBBusinessException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer testRosterId = null;
+		Integer productId = null;
+		try{
+			ps =  SqlUtil.openOASDBcon().prepareStatement(getFrameworkProductId);
+			testRosterId = Integer.parseInt((formettedTestRoster.toArray(new String[formettedTestRoster.size()]))[0]);
+			ps.setInt(1, testRosterId.intValue());
+			rs = ps.executeQuery(); 
+			rs.next();
+			productId = rs.getInt(1);
+			if(productId != null && productId == 7500)
+				return true;
+			else
+				return false;
+		}catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at isLL2ND :"+e.getMessage());
+		}finally {
+			SqlUtil.close(ps, rs);
+		}
+	}
 
 	private List<Tfil> createList(OrderFile orderFile,  List<String> formettedTestRoster) throws CTBBusinessException {
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
