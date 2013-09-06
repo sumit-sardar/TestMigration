@@ -765,8 +765,7 @@ function responseLinkFmatter(cellvalue, options, rowObject){
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();  
-							//window.location.href="error.do";
-							window.location.href="/SessionWeb/logout.do";
+							window.location.href="error.do";
 						},
 			complete :  function(XMLHttpRequest, textStatus){
 							 $.unblockUI();  
