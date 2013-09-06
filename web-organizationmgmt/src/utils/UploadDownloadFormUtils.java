@@ -1725,7 +1725,7 @@ public class UploadDownloadFormUtils
                         // If current header is Sub-Ethnicity,then we will check if ethnicityId is present i.e. !0 and assign those ethnicty demographic Id 
                         // and Cardinality to demoGraphicId and msValueCardinality respectively in order to fetch the ethnicity demo value again. This value will
                         // be shown in place of Sub-ethnicity Cell.                        
-                        if (ethnicityDemoId != 0 && ethnicityCardinality != null && demoGraphicHeader[k].getLabelName().equalsIgnoreCase("SUB_ETHNICITY"))
+                        if (ethnicityDemoId != 0 && ethnicityCardinality != null && demoGraphicHeader[k].getLabelName().equalsIgnoreCase("SUB_ETHNICITY") && islaslinkCustomer)
                         {
                         	demoGraphicId = ethnicityDemoId;
                         	msValueCardinality = ethnicityCardinality;

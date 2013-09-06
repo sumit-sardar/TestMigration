@@ -1320,47 +1320,48 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 		}
 		
-		System.out.println("**Inside logical error..New implement**");
-		boolean isEthnicityPresent = false;
-		boolean isSubEthnicityRequired = false;
-		
-		//Demographic checking for logical error start
-		for (int i=start ; i < totalCells ; i++){
-			HSSFCell cellHeader = rowHeader.getCell((short)i);
-			HSSFCell cell = row.getCell((short)i);
-			strCell = getCellValue(cell);
-			System.out.println("**Inside logical error..for loop**");
+		if (this.isLasLinksCustomer){
+			System.out.println("**Inside logical error..New implement**");
+			boolean isEthnicityPresent = false;
+			boolean isSubEthnicityRequired = false;
 			
-				 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.ethnicityLabel)){			 
-					 if (!strCell.trim().equals("")){
-						 isEthnicityPresent = true;
-						 if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")){
-							 isSubEthnicityRequired = true;
+			//Demographic checking for logical error start
+			for (int i=start ; i < totalCells ; i++){
+				HSSFCell cellHeader = rowHeader.getCell((short)i);
+				HSSFCell cell = row.getCell((short)i);
+				strCell = getCellValue(cell);
+				System.out.println("**Inside logical error..for loop**");
+				
+					 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.ethnicityLabel)){			 
+						 if (!strCell.trim().equals("")){
+							 isEthnicityPresent = true;
+							 if (strCell.equalsIgnoreCase("HISPANIC OR LATINO")){
+								 isSubEthnicityRequired = true;
+							 }
+						  }
+					 	}
+					 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.subEthnicityLabel)){
+						 
+						 if (isSubEthnicityRequired && strCell.trim().equals("")){
+							 //logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);//commenting out this logical error condition because if ethnicity is having value :"Hispanic or Latino" and sub-ethnicity is not having any value then "Hispanic or Latino" value is to be inserted in DB..This is same as UI.// 2nd September,2013
+							 System.out.println ("**Logical error ethnicity.. do nothing**");
 						 }
-					  }
-				 	}
-				 if (cellHeader.getStringCellValue().equalsIgnoreCase(this.subEthnicityLabel)){
-					 
-					 if (isSubEthnicityRequired && strCell.trim().equals("")){
-						 //logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);//commenting out this logical error condition because if ethnicity is having value :"Hispanic or Latino" and sub-ethnicity is not having any value then "Hispanic or Latino" value is to be inserted in DB..This is same as UI.// 2nd September,2013
-						 System.out.println ("**Logical error ethnicity.. do nothing**");
+						 
+						 if (!isSubEthnicityRequired && !strCell.trim().equals("")){
+							 logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);
+							 System.out.println("**Inside logical error..!isSubEthnicityRequired && !strCell.trim().equals('')..**");
+							 //System.out.println ("Logical error ethnicity");
+						 }
+						 
+						 if (!isEthnicityPresent && !strCell.trim().equals("")){
+							 logicalErrorList.add(CTBConstants.SUB_ETHNICITY_LABEL);
+							 System.out.println("**Inside logical error..!isEthnicityPresent && !strCell.trim().equals('')**");
+							 //System.out.println ("Logical error sub-ethnicity");
+						 }
+						 
 					 }
-					 
-					 if (!isSubEthnicityRequired && !strCell.trim().equals("")){
-						 logicalErrorList.add(CTBConstants.ETHNICITY_LABEL);
-						 System.out.println("**Inside logical error..!isSubEthnicityRequired && !strCell.trim().equals('')..**");
-						 //System.out.println ("Logical error ethnicity");
-					 }
-					 
-					 if (!isEthnicityPresent && !strCell.trim().equals("")){
-						 logicalErrorList.add(CTBConstants.SUB_ETHNICITY_LABEL);
-						 System.out.println("**Inside logical error..!isEthnicityPresent && !strCell.trim().equals('')**");
-						 //System.out.println ("Logical error sub-ethnicity");
-					 }
-					 
-				 }
-		}//end Demographic checking for logical error
-
+			}//end Demographic checking for logical error
+		}
 		if ( logicalErrorList.size() == 0 ) {
 
 			return false;
@@ -2382,7 +2383,7 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 		// #75217 , #75292 MQC Defect addressing
 		//This block will be executed if there is "Hispanic or Latino" in place of Ethnicity column and Sub-Ethnicity column is blank.
 		//Then we again traverse to insert "Hispanic or Latino" value in Ethnicity demographic.
-		if(subEthnicityNotPresent || (count == 1)){
+		if((subEthnicityNotPresent || (count == 1)) && this.isLasLinksCustomer){
 			System.out.println("** Ethnicity demographic check.. ReEntry in loop as Sub-Etnicity not present **");
 			for ( int i= 0 ; i < 1 ; i++ ){
 				StudentDemographic studentDemographic 
