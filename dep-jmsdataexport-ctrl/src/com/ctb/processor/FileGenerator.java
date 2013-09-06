@@ -308,7 +308,7 @@ public class FileGenerator {
 		Integer productId = null;
 		try{
 			ps =  SqlUtil.openOASDBcon().prepareStatement(getFrameworkProductId);
-			testRosterId = Integer.parseInt((formettedTestRoster.toArray(new String[formettedTestRoster.size()]))[0]);
+			testRosterId = Integer.parseInt(formettedTestRoster.get(0).split(",")[0]);
 			ps.setInt(1, testRosterId.intValue());
 			rs = ps.executeQuery(); 
 			rs.next();
