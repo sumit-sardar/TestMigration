@@ -14,8 +14,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -32,6 +35,21 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 
 public class UploadDownloadFormUtils 
 { 
+	// Creating a demographic map of Ethnicity: Hispanic or Latino demograhic
+	public static Map<String,String> demoEthnicityMap = new HashMap<String, String>();  
+	static {
+		demoEthnicityMap.put("centroamericano","centroamericano");
+		demoEthnicityMap.put("cubano","cubano");
+		demoEthnicityMap.put("cubano-americano","cubano-americano");
+		demoEthnicityMap.put("dominicano","dominicano");
+		demoEthnicityMap.put("mexicano","mexicano");
+		demoEthnicityMap.put("mexicano-americano","mexicano-americano");
+		demoEthnicityMap.put("otro","otro");
+		demoEthnicityMap.put("puertorriqueño","puertorriqueño");
+		demoEthnicityMap.put("sudamericano","sudamericano");
+	}
+	
+
     
     public static String createFileContent(String excelFile){
         
@@ -1681,11 +1699,17 @@ public class UploadDownloadFormUtils
                     }
 
                
-               ///For Demographic Data
+                    ///For Demographic Data
                     //StudentDemoGraphics []demoGraphicHeader = studentFileRow[0].getStudentDemoGraphics();
                     
                     StudentDemoGraphicsData []demoGraphicData = studentFileRow[i].
                                                                 getStudentDemoGraphicsData();
+                    
+                    
+                    
+                    Integer ethnicityDemoId = new Integer(0);
+                    String ethnicityCardinality = null;
+                    String demoValue = null;
                     
                     for ( int k = 0; k < demoGraphicHeader.length; k++ ) {
                         
@@ -1695,9 +1719,40 @@ public class UploadDownloadFormUtils
                         cell = row.createCell((short)cellPosition++);
                         style = cell.getCellStyle();
                         style.setWrapText(true);
-                        cell.setCellValue(getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality));
+                        
+                        // Added on 3 Sep ,2013.. #75217,#75292
+                        // If current header is Sub-Ethnicity,then we will check if ethnicityId is present i.e. !0 and assign those ethnicty demographic Id 
+                        // and Cardinality to demoGraphicId and msValueCardinality respectively in order to fetch the ethnicity demo value again. This value will
+                        // be shown in place of Sub-ethnicity Cell.                        
+                        if (ethnicityDemoId != 0 && ethnicityCardinality != null && demoGraphicHeader[k].getLabelName().equalsIgnoreCase("SUB_ETHNICITY") && islaslinkCustomer)
+                        {
+                        	demoGraphicId = ethnicityDemoId;
+                        	msValueCardinality = ethnicityCardinality;
+                        }                        
+                                                
+                        demoValue = getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality,demoGraphicHeader[k].getLabelName(),islaslinkCustomer);
+                        
+                        // If current header is Ethnicity,then we will keep a copy of these demographic Id and cardinality.
+                        if (islaslinkCustomer && demoValue.equalsIgnoreCase("Hispanic or Latino"))
+                        {
+                        	ethnicityDemoId = demoGraphicId;
+                        	ethnicityCardinality = msValueCardinality;
+                        }
+                        //End : Added on 3 Sep ,2013.. #75217,#75292
+                        
+                        // Added on 3 Sep ,2013.. #75217,#75292
+                        // If the current header is Sub-Ethnicity and demo-value is "Hispanic or Latino" , then it means that the Ethnicity selected was "Hispanic or Latino"
+                        // and Sub-ethnicity was left blank in case of upload or in UI. Hence to export in the same manner we are 
+                        // populating the Sub-ethnicity cell as Blank.
+                        if (demoGraphicHeader[k].getLabelName().equalsIgnoreCase("SUB_ETHNICITY") && islaslinkCustomer && demoValue.equalsIgnoreCase("Hispanic or Latino")){
+                        	demoValue = "";
+                        }
+                      //End : Added on 3 Sep ,2013.. #75217,#75292
+                        	
+                        cell.setCellValue(demoValue);                       
                         
                     }
+
                
                } //end of else for body part
                
@@ -2516,7 +2571,8 @@ public class UploadDownloadFormUtils
             Integer demoGraphicId = demoGraphicHeader[k].getCustomerDemographicId();
             String msValueCardinality = demoGraphicHeader[k].getValueCardinality();
             
-            buff.append(getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality));
+            buff.append(getDemoGraphicsData(demoGraphicId,demoGraphicData,msValueCardinality,"DEMO",false));// This function is not used anymore. Hence adding dummy entries to match the function signature. Aug 31,2013
+
             buff.append("\t");
             
         }
@@ -2526,7 +2582,7 @@ public class UploadDownloadFormUtils
     
     private static String getDemoGraphicsData (Integer demoGraphicId, 
                                         StudentDemoGraphicsData []demoGraphicData,
-                                        String asCardinality ) {
+                                        String asCardinality ,  String demoHeader , Boolean isLaslink ) {
         
         StringBuffer buffMultipleDemoValue =  new StringBuffer();;
         //retrive demographicValue        
@@ -2536,6 +2592,15 @@ public class UploadDownloadFormUtils
             if ( (demoGraphicId.intValue() 
                     == demoGraphicData[i].getCustomerDemographicId().intValue())
                     && (!asCardinality.equals(CTBConstants.MULTIPLE_DEMOGRAPHIC))) {
+            	// If it is Laslink and the demo Header is "Ethnicity" and value is among one of the values of sub-ethnicity, then we 
+            	// will show "Hispanic or Latino" as value under "Ethnicity" demo-header . The original demo value 
+            	// will be shown under "Sub-ethnicity" header.
+            	// Added on 3 Sep ,2013.. #75217,#75292
+            	if (demoGraphicData[i].getValueName().equalsIgnoreCase(demoEthnicityMap.get(demoGraphicData[i].getValueName().toLowerCase())) && demoHeader.equalsIgnoreCase("ETHNICITY") && isLaslink){
+            		
+            		return "Hispanic or Latino";
+            	}
+
                 
                 return demoGraphicData[i].getValueName();
             
