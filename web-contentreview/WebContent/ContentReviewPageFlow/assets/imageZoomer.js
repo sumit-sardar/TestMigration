@@ -126,12 +126,6 @@ var ddpowerzoomer={
 			},
 			start: function(event,ui) {
 			    //alert(window.isDragging);
-			    if(gScratchpad.visible){
-			    	gController.setAttribute('isMousedownOnScratchpad',true);
-			    }
-			    if(gMaskingRuler.visible){
-			    	gController.setAttribute('isMousedownOnRuler',true);
-			    }
 			    if(isDragging == 0){
 			    isDragging = 1;				
 			    jQuery("#magnifierWindow").css('visibility','hidden');
@@ -158,7 +152,7 @@ var ddpowerzoomer={
 			    if($.browser.safari){
 			    	$('#magnifierWindow').css("cursor", "url('./assets/dragger_press.png'), pointer");
 			    }else{
-			    	$('#magnifierWindow').css( 'cursor', 'move' );
+			    	$('#magnifierWindow').css( 'cursor', "url('./assets/dragger_press.png'), pointer" );
 			    }
 			    if(isMagnifierVisible == false || isMagnifierVisible == 'false') {
 					ddpowerzoomer.$magnifier.outer.hide()
@@ -187,7 +181,8 @@ var ddpowerzoomer={
 					ddpowerzoomer.$magnifier.outer.hide()
 				}
 				$('#magnifierWindow').css( 'cursor', 'pointer' );
-			}
+			},
+			distance:10
 			
 		}) //create magnifier container and add to doc
 		ddpowerzoomer.$magnifier={outer:$magnifier, inner:$($magnifier.find('div:eq(0)')).find('div:eq(0)'), image:null} //reference and remember various parts of magnifier
@@ -250,4 +245,16 @@ jQuery.fn.initMagnify=function(options){
 			ddpowerzoomer.movemagnifier(null, true) //move magnifier
 		}
 
+		$("#magnifierWindow").on("mousedown",function() {
+			$('#scratchpad').blur();
+			$('#maskRuler').trigger("mouseup");
+			$('#scratch').trigger("mouseup");
+			$('#protractor').trigger("mouseup");
+        });
+        $("#magnifierWindow").on("mouseup",function() {
+			$('#scratchpad').blur();
+			$('#maskRuler').trigger("mouseup");
+			$('#scratch').trigger("mouseup");
+			$('#protractor').trigger("mouseup");
+        });
 }
