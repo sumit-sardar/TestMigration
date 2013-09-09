@@ -144,6 +144,10 @@ function getLasAssetPath(){
 	lz.embed.setCanvasAttribute("LASAssetPath", LASAssetPath);
 }
 
+function isAppPreviewer(){
+	lz.embed.setCanvasAttribute("isPreviewer", true);
+}
+
 //This is to revert the change for the header group in javascript side. Because this is not going to be parsed by Flash.
 String.prototype.replaceAll = function(stringToFind,stringToReplace){
     var temp = this;
@@ -766,7 +770,10 @@ function enableEraser(isEnabled){
     			iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
     		}*/
 	    	
-	    	iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
+	    	//iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
+	    	if(gController.htmlFields[0]['ref'].parent instanceof lz.BaseCachablePanel){
+	    		gController.htmlFields[0]['ref'].parent.setAttribute('bgcolor','white');
+	    	}
 	    	/*var xscalefact = (780 * xscalefactorjs)/800;
 	    	var yscalefact = (450 * yscalefactorjs)/462;*/
 	    	var xscalefact = 780/800;
@@ -815,21 +822,26 @@ function isAnswered(){
   function setState(htmlContent,jsonContent,checkedVals){
  	var elem = $("iframe")[0];
  	//console.log("inside setState");
- 	if(elem){	
- 		//console.log("inside if elem of setState");
-     if(elem.contentWindow){
-    	//console.log("inside if elem contentWindow of setState");
-   		if(elem.contentWindow.accomPkg){
-   			//console.log("inside if elem contentWindow accomPkg of setState");
-			elem.contentWindow.accomPkg.setState(htmlContent,jsonContent,checkedVals);
-			//ansSet = true;
-  		}else{
-            setTimeout(function(){
+    if(elem){	
+        if(elem.contentWindow){
+            if(elem.contentWindow.accomPkg){
+                elem.contentWindow.accomPkg.setState(htmlContent,jsonContent,checkedVals);
+            }else{
+                setTimeout(function(){
                 setState(htmlContent,jsonContent,checkedVals);
                 }, 500);
+            }
+        }else{
+            setTimeout(function(){
+            setState(htmlContent,jsonContent,checkedVals);
+            }, 500);
         }
-  	}
-   }          
+    } else{
+        setTimeout(function(){
+        setState(htmlContent,jsonContent,checkedVals);
+        }, 500);
+    }
+   gController.isAnsweredDelegate();         
  }
 
 
