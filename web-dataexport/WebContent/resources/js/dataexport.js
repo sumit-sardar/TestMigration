@@ -1491,7 +1491,7 @@ function viewRubric(itemIdRubric, itemNumber, itemType, testRosterId, itemSetId)
 	
 	function refreshStudentList() { 
 		var postDataObject = {};		
-		
+		postDataObject.frameworkProductId=$('#frameworkProductId').val();
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
