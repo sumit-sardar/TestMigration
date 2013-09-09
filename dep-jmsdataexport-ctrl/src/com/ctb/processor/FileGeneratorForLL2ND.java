@@ -1681,9 +1681,9 @@ public class FileGeneratorForLL2ND {
 						subPercCorrect.setListeningMathematicsScienceTechnical(percentObtained.get(x).toString());
 					}else if("Reading".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidReading){
 						if(Integer.parseInt(pointsObtained.get(x).toString()) < 3 && "K".equalsIgnoreCase(roster.getStudent().getGrade().toString())){
-							subPercCorrect.setReadingMathematicsScienceTechnical(percentObtained.get(x).toString());
-						}else{
 							subPercCorrect.setReadingMathematicsScienceTechnical("XXXXX");
+						}else{
+							subPercCorrect.setReadingMathematicsScienceTechnical(percentObtained.get(x).toString());
 						}
 					}else if("Writing".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidWriting){
 						if(Integer.parseInt(pointsObtained.get(x).toString()) < 3 && "K".equalsIgnoreCase(roster.getStudent().getGrade().toString())){
