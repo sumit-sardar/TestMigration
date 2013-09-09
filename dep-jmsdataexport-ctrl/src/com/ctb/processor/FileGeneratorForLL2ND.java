@@ -1712,17 +1712,9 @@ public class FileGeneratorForLL2ND {
 					}
 				} else if (subSkillName.contains("Foundational Skills") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Reading".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidReading){
-						if(isValidGrade(tfil, subSkillAreaItemCategory.get(subSkillName))){
-							subPercCorrect.setReadingFoundationalSkills(percentObtained.get(x).toString());
-						}else{
-							subPercCorrect.setReadingFoundationalSkills("N/A");
-						}
+						subPercCorrect.setReadingFoundationalSkills(percentObtained.get(x).toString());
 					}else if("Writing".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidWriting){
-						if(isValidGrade(tfil, subSkillAreaItemCategory.get(subSkillName))){
-							subPercCorrect.setWritingFoundationalSkills(percentObtained.get(x).toString());
-						}else{
-							subPercCorrect.setWritingFoundationalSkills("N/A");
-						}
+						subPercCorrect.setWritingFoundationalSkills(percentObtained.get(x).toString());
 					}
 				} else if (subSkillName.contains("Academic") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Speaking".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidSpeaking){
@@ -1737,7 +1729,15 @@ public class FileGeneratorForLL2ND {
 				}
 			}
 		}
-
+		if("3".equals(tfil.getTestLevel()) ||	"4".equals(tfil.getTestLevel()) ||
+					"5".equals(tfil.getTestLevel())){
+			subPercCorrect.setReadingFoundationalSkills("N/A");
+		}
+		if("2".equals(tfil.getTestLevel()) ||	"3".equals(tfil.getTestLevel()) ||
+					"4".equals(tfil.getTestLevel()) || "5".equals(tfil.getTestLevel())){
+			subPercCorrect.setWritingFoundationalSkills("N/A");
+		}
+		
 		tfil.setSubSkillPercentCorrect(subPercCorrect);
 
 		for (String x : pointsObtained.keySet()) {
@@ -1791,17 +1791,9 @@ public class FileGeneratorForLL2ND {
 					}
 				} else if (subSkillName.contains("Foundational Skills") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Reading".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidReading){
-						if(isValidGrade(tfil, subSkillAreaItemCategory.get(subSkillName))){
-							subNumCorrect.setReadingFoundationalSkills(pointsObtained.get(x).toString());
-						}else{
-							subNumCorrect.setReadingFoundationalSkills("N/A");
-						}
+						subNumCorrect.setReadingFoundationalSkills(pointsObtained.get(x).toString());
 					}else if("Writing".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidWriting){
-						if(isValidGrade(tfil, subSkillAreaItemCategory.get(subSkillName))){
-							subNumCorrect.setWritingFoundationalSkills(pointsObtained.get(x).toString());
-						}else{
-							subNumCorrect.setWritingFoundationalSkills("N/A");
-						}
+						subNumCorrect.setWritingFoundationalSkills(pointsObtained.get(x).toString());
 					}
 				} else if (subSkillName.contains("Academic") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 					if("Speaking".equalsIgnoreCase(subSkillAreaItemCategory.get(subSkillName)) && !isInvalidSpeaking){
@@ -1815,6 +1807,14 @@ public class FileGeneratorForLL2ND {
 					}
 				}
 			}
+		}
+		if("3".equals(tfil.getTestLevel()) ||	"4".equals(tfil.getTestLevel()) ||
+				"5".equals(tfil.getTestLevel())){
+			subNumCorrect.setReadingFoundationalSkills("N/A");
+		}
+		if("2".equals(tfil.getTestLevel()) ||	"3".equals(tfil.getTestLevel()) ||
+					"4".equals(tfil.getTestLevel()) || "5".equals(tfil.getTestLevel())){
+			subNumCorrect.setWritingFoundationalSkills("N/A");
 		}
 		tfil.setSubSkillNumberCorrect(subNumCorrect);
 	}
