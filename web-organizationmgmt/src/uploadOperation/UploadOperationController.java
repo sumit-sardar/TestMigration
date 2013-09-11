@@ -409,8 +409,9 @@ public class UploadOperationController extends PageFlowController {
     })
     protected Forward uploadData()
     {       
-    	
+    	System.out.println("[iaa] a.1 readFileContent()");
         String isSuccess = readFileContent();
+        System.out.println("[iaa] a.2 readFileContent(). isSuccess="+isSuccess);
         
         if (!RETURN_SUCCESS.equals(isSuccess))
         {
@@ -429,8 +430,9 @@ public class UploadOperationController extends PageFlowController {
         }
         else
         {
-            
+        	System.out.println("[iaa] b.1 writeFileContent()");
             boolean isSuccessful = writeFileContent();
+            System.out.println("[iaa] b.2 writeFileContent()");
         	System.out.println("isSuccessful=" + isSuccessful);
         	
             if (isSuccessful) 
@@ -530,7 +532,9 @@ public class UploadOperationController extends PageFlowController {
         }
         
         public void run() {
+        	System.out.println("[iaa] t.1 run()");
             invokeService(this.userName, this.fullFilePath, this.uploadFileId, this.instanceURL, 1);
+            System.out.println("[iaa] t.2 run()");
         }
     }
     
@@ -540,13 +544,17 @@ public class UploadOperationController extends PageFlowController {
             String endpoint = instanceURL + "/platform-webservices/UploadDownloadManagement";
             uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
             System.out.println("***** Upload App: using service endpoint: " + endpoint);
+            System.out.println("[iaa] uf.1 uploadDownloadManagementServiceControl.uploadFile()");
             uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
+            System.out.println("[iaa] uf.2 uploadDownloadManagementServiceControl.uploadFile()");
         } catch (com.ctb.webservices.CTBBusinessException e) {
+        	System.out.println("[iaa] uf.x CTBBusinessException. "+e.toString());
             DataFileAudit dataFileAudit = new DataFileAudit();
             dataFileAudit.setStatus("FL");
             try{
                 uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
             } catch (Exception se) {
+            	System.out.println("[iaa] uf.x2 Exception. "+se.toString());
                 se.printStackTrace();
             }
         } catch (Exception e) {
@@ -557,6 +565,7 @@ public class UploadOperationController extends PageFlowController {
             	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
             	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
             	System.out.println(e.getMessage());
+            	System.out.println("[iaa] uf.x3 Exception. "+e.toString());
                 if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
                 								  (e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
                 	System.out.println("Set status to error");
@@ -568,6 +577,7 @@ public class UploadOperationController extends PageFlowController {
 	                    se.printStackTrace();
 	                }
                 }                
+                System.out.println("[iaa] uf.x4 Exception. "+e.toString());
             	e.printStackTrace();
             	System.out.println("****************** end EXCEPTION in invokeService ***************** " + e.fillInStackTrace());
             	throw new RuntimeException(e);
@@ -585,14 +595,18 @@ public class UploadOperationController extends PageFlowController {
         String fullFilePath = CTBConstants.SERVER_FOLDER_NAME + "/" + this.saveFileName;
  
         try{
+        	System.out.println("[iaa] b.c.1 uploadDownloadManagement.addErrorDataFile()");
             Integer uploadDataFileId = uploadDownloadManagement.addErrorDataFile(this.userName, fullFilePath, this.uploadDataFileId);
-                     
+            System.out.println("[iaa] b.c.2 uploadDownloadManagement.addErrorDataFile(). uploadDataFileId="+uploadDataFileId);
+            
             ResourceBundle rb = ResourceBundle.getBundle("security");
             String processURL = rb.getString("processURL");
             
                                     
             final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
+            System.out.println("[iaa] b.d.1 uploadThread.start(). uploadThread.getId()="+uploadThread.getId());
             uploadThread.start();
+            System.out.println("[iaa] b.d.2 uploadThread.start()");
             
             /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 
@@ -601,6 +615,7 @@ public class UploadOperationController extends PageFlowController {
             
             return true;         
         } catch(Exception be ) {
+        	System.out.println("[iaa] b.x inside writeFileContent(). MessageResourceBundle.getMessage(be.getMessage())="+MessageResourceBundle.getMessage(be.getMessage()));
             be.printStackTrace();
             this.uploadMessage = MessageResourceBundle.getMessage(be.getMessage());
             return false;
@@ -707,13 +722,15 @@ public class UploadOperationController extends PageFlowController {
                                           this.userName,  
                                           this.strFileName,
                                           this.userManagement);
-                                          
+ 
+            System.out.println("[iaa] a.b.1 PathFinderUtils.saveFileToDBTemp()");
             this.uploadDataFileId = PathFinderUtils.saveFileToDBTemp(saveFileName, this.theFile, this.uploadDownloadManagement);
-                      
+            System.out.println("[iaa] a.b.2 PathFinderUtils.saveFileToDBTemp()");
+            
             return RETURN_SUCCESS;
         
         } catch (Exception e) {
-        
+        	System.out.println("[iaa] a.x inside readFileContent()");
             e.printStackTrace();    
         
         }

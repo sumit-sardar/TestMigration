@@ -164,6 +164,7 @@ public class UploadProcess extends BatchProcessor.Process
     
     public void run () {
     
+    	System.out.println("[iaa] up.1 inside UploadProcess.run().");
         //POI details Initialize
         POIFSFileSystem pfs = null;
         HSSFSheet sheet = null;
@@ -197,9 +198,10 @@ public class UploadProcess extends BatchProcessor.Process
         try {
             
             
-            
+        	System.out.println("[iaa] up.2 inside UploadProcess.run(). userManagement.getUserUpload()");
             // retrive login userDetail
             user = userManagement.getUserUpload(this.username,this.username);  
+            System.out.println("[iaa] up.3 inside UploadProcess.run(). userManagement.getUserUpload()");
             
             visibleUsers = new HashMap();
             UserData userData = userManagement.getUsersVisibleToUserUpload(
@@ -226,7 +228,7 @@ public class UploadProcess extends BatchProcessor.Process
              
            
             
-            
+            System.out.println("[iaa] up.4 inside UploadProcess.run(). POIFSFileSystem()");
             // Read UploaderFile through POI     
             pfs = new POIFSFileSystem( uploadedStream );
             HSSFWorkbook wb = new HSSFWorkbook(pfs);
@@ -237,6 +239,7 @@ public class UploadProcess extends BatchProcessor.Process
                 totalRows =  sheet.getPhysicalNumberOfRows();
                         
             }
+            System.out.println("[iaa] up.5 inside UploadProcess.run().");
             //retrive each row from uploaded excel sheet for validation
             HSSFRow rowHeader = sheet.getRow(0);
             for ( int i = 1; i < totalRows; i++ ) {
@@ -451,6 +454,7 @@ public class UploadProcess extends BatchProcessor.Process
                 
             } //end outer for 
             
+            System.out.println("[iaa] up.6 inside UploadProcess.run().");
            if (requiredMap.size() > 0 || maxLengthMap.size() > 0 
                     || invalidCharMap.size() > 0 || logicalErrorMap.size() > 0 
                     || hierarchyErrorMap.size() > 0) {
@@ -458,6 +462,7 @@ public class UploadProcess extends BatchProcessor.Process
                 errorExcelCreation (requiredMap, maxLengthMap, invalidCharMap, 
                         logicalErrorMap, hierarchyErrorMap); 
            }
+           System.out.println("[iaa] up.7 inside UploadProcess.run(). before createOrganizationAndUser()");
            //create user and organization
             // For LAS Online – 2013 – Defect 74768 – support MDR number upload-download
              //For  MDR columns needs to be removed for nonLaslinks
@@ -466,11 +471,12 @@ public class UploadProcess extends BatchProcessor.Process
                                             hierarchyErrorMap, userDataMap, 
                                             blankRowMap, isMatchUploadOrgIds, user,
                                             this.userTopOrgNode, isLaslinksCustomer);
-          
+           System.out.println("[iaa] up.7 inside UploadProcess.run(). after createOrganizationAndUser()");
                                             
                                                     
         
         } catch (Exception e) {
+        	System.out.println("[iaa] up.x inside UploadProcess.run(). Exception. "+e.toString());
             e.printStackTrace();    
         }
     
@@ -734,6 +740,7 @@ public class UploadProcess extends BatchProcessor.Process
         int uploadRecordCount = 0;
         boolean isBlankRow = true;
         try {
+        	System.out.println("[iaa] up.coau.1 inside createOrganizationAndUser()");
             //changed for perofrmance on 18/12/2008
             //Customer customer = users.getCustomer(this.username);
             Customer customer = loginUser.getCustomer();
@@ -1099,16 +1106,17 @@ public class UploadProcess extends BatchProcessor.Process
                 isBlankRow = true;
             }
             
-             
+            System.out.println("[iaa] up.coau.2 inside createOrganizationAndUser()"); 
             if ( this.dataFileAudit.getFailedRecordCount() == null || 
                     this.dataFileAudit.getFailedRecordCount().intValue() == 0 )  {
             
+            	System.out.println("[iaa] up.coau.3 inside createOrganizationAndUser(). SC");
                 this.dataFileAudit.setStatus("SC");
                 this.dataFileAudit.setFaildRec(null);
             
             
             } else {
-            	
+            	System.out.println("[iaa] up.coau.4 inside createOrganizationAndUser(). FL");
             	this.dataFileAudit.setStatus("FL");
             }
             
@@ -1123,8 +1131,9 @@ public class UploadProcess extends BatchProcessor.Process
                 sendMail( this.username, CTBConstants.EMAIL_TYPE_WELCOME, loginUserMail);
                 
             }
-            
+            System.out.println("[iaa] up.coau.4 inside createOrganizationAndUser(). after sendMail()");
         } catch (SQLException se) {
+        	System.out.println("[iaa] up.coau.x inside createOrganizationAndUser(). SQLException."+se.toString());
              dataFileAudit.setFaildRec(null);
              dataFileAudit.setStatus("FL");
              dataFileAudit.setFailedRecordCount(new Integer(0));
@@ -1141,6 +1150,7 @@ public class UploadProcess extends BatchProcessor.Process
             throw dataNotFoundException;
             
         } catch (Exception e) {
+        	System.out.println("[iaa] up.coau.x2 inside createOrganizationAndUser(). Exception."+e.toString());
             dataFileAudit.setFaildRec(null);
              dataFileAudit.setStatus("FL");
              dataFileAudit.setFailedRecordCount(new Integer(0));

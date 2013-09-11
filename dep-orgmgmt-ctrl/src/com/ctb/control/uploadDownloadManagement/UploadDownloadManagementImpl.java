@@ -1184,9 +1184,11 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                             throws CTBBusinessException {
         
        try {
-         
+           
+    	   System.out.println("[iaa] uf.a.1 inside uploadFile() before saveFileToDisk(). ");
            saveFileToDisk(serverFilePath, uploadDataFileId);
-        
+           System.out.println("[iaa] uf.a.2 inside uploadFile() after saveFileToDisk(). ");
+           
            Integer customerId = new Integer(0);
            StringBuffer container = new StringBuffer(); 
            int noOfUserColumn = 0;
@@ -1224,9 +1226,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                          throw be;
             }
             
-           
+            System.out.println("[iaa] uf.a.3 inside uploadFile() before uploadDataFile.getUploadFile(). ");
             dataFileAudit = uploadDataFile.getUploadFile(uploadDataFileId);
-          
+            System.out.println("[iaa] uf.a.4 inside uploadFile() after uploadDataFile.getUploadFile(). ");
+            
     /*        dataFileAudit.setDataFileAuditId(uploadDataFile.getNextPK());
             dataFileAudit.setUploadFileName(getExactFileName(serverFilePath));
             dataFileAudit.setCreatedDateTime(new Date());
@@ -1283,6 +1286,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             createTemplateHeader(customer,orgNodeCategory, 
                     studentFileRowHeader, false, isLaslinksCustomer);
             
+            System.out.println("[iaa] uf.a.5 inside uploadFile() fileType="+fileType);
             if ( fileType == "") {
              
                 throw  new CTBBusinessException("Uploaded.Failed") ;
@@ -1291,24 +1295,26 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                 
             if ( fileType .equals("Upload_User_Data" ) ) {	
                 
+            	System.out.println("[iaa] uf.a.6 inside uploadFile() before uploadUserFile().");
                 uploadUserFile(serverFilePath, inputStream, userName ,
                         userFileRowHeader, noOfUserColumn, commonHierarchyMap,
                         fileInputStrean, dataFileAudit, userTopOrgNode);
-           
+                System.out.println("[iaa] uf.a.7 inside uploadFile() after uploadUserFile().");
             }
         
             if ( fileType .equals("Upload_Student_Data" ) ) {
                 
+            	System.out.println("[iaa] uf.a.8 inside uploadFile() before uploadStudentFile().");
                  uploadStudentFile(serverFilePath,inputStream, userName ,
                          studentFileRowHeader,noOfUserColumn,
                          commonHierarchyMap,fileInputStrean,dataFileAudit, userTopOrgNode);
-                
+                 System.out.println("[iaa] uf.a.9 inside uploadFile() after uploadStudentFile().");
             }
             
             
         
         } catch (FileNotFoundException fn) {
-        
+        	System.out.println("[iaa] uf.a.x inside uploadFile() FileNotFoundException.");
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("FileNotFound.Failed");
@@ -1316,13 +1322,14 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             throw fileNotUploadedException;
         
         } catch (FileHeaderException fh) {
+        	System.out.println("[iaa] uf.a.x inside uploadFile() FileHeaderException.");
              FileHeaderException fileHeaderException = 
                                         new FileHeaderException
                                                 ("FileHeader.Failed");
              fileHeaderException.setStackTrace(fh.getStackTrace());
              throw fileHeaderException;
         } catch (CTBBusinessException e) {
-
+        	System.out.println("[iaa] uf.a.x inside uploadFile() CTBBusinessException.");
             FileHeaderException fileHeaderException = 
                                         new FileHeaderException
                                                 ("Uploaded.Failed");
@@ -1330,7 +1337,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             throw fileHeaderException;
         
         } catch (SQLException e) {
-            
+        	System.out.println("[iaa] uf.a.x inside uploadFile() SQLException.");
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
@@ -1338,7 +1345,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             throw fileNotUploadedException;
           
         } catch (Exception e ) {
-        
+        	System.out.println("[iaa] uf.a.x inside uploadFile() Exception.");
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
