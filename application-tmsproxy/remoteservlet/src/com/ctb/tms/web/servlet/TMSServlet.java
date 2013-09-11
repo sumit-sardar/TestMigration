@@ -592,7 +592,6 @@ public class TMSServlet extends HttpServlet {
     		if(nextScoIndex < manifestData.length) {
 	    		NextSco nextSco = saveResponse.getTsdArray(0).getNextSco();
 	        	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
-	        	System.out.println("************next sco : " + nextSco.getId());
 	        	logger.warn("Re-selected next sco due to auto-locator: " + nextSco.getId());
 	        	saveResponse.getTsdArray(0).setNextSco(nextSco);
 	        	//logger.debug("Re-selected next sco due to auto-locator: " + nextSco.getId());
