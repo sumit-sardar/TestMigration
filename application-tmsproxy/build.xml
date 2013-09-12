@@ -25,7 +25,10 @@
 	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="xmlbean.class.path"/>
 	
 	<target name="generate">
-			<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path"/>
+			<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path" javasource="1.6"/>
+		<!--
+			<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path" srcgendir="generated/" javasource="1.6"/>
+		-->
 	</target>
 	
 	<target name="build" depends="generate">
