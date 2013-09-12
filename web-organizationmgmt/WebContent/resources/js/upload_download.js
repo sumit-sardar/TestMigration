@@ -68,6 +68,39 @@ function populateDownloadTemplateListGrid() {
 	 });
 }
 
+function populateDownloadPrescriptionTemplateListGrid() {
+ 		$("#uploadDataListId").jqGrid({         
+         url: 'populateDownloadTemplateListGrid.do', 
+		 type:   'POST',
+		 datatype: "json",         
+          colNames:['Name', 'Description'],
+		   	colModel:[
+		   		{name:'templateName', index:'templateName', width:200, align:"left", editable:false, sortable:false},
+		   		{name:'templateDesc', index:'templateDesc', width:790, align:"left", editable:false, sortable:false}
+		   	],
+		   	loadui: "disable",
+			rowNum:2,
+			loadonce:true, 
+			multiselect:false,
+			viewrecords: true, 
+			height: '30px',  			
+			caption: "Download Template",
+			onSelectRow: function (rowId) {
+				if (rowId == 1)  
+					document.getElementById('downloadFile').value = "prescriptionFile";
+				else 
+					document.getElementById('downloadFile').value = "prescriptionFile2";
+				setAnchorButtonState('exportDataButton', false);
+			},
+			loadComplete: function () {
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				//window.location.href="/SessionWeb/logout.do";
+			}
+	 });
+}
+
 function populateUploadListGrid() {
  		$("#viewUploadsListId").jqGrid({         
          url: 'populateUploadListGrid.do', 
@@ -220,6 +253,18 @@ function uploadFile(element)
 	showLoadingProgress('<br/><b>File Uploading...</b><br/>');
     var element = document.getElementById("downloadFile");
     element.form.action = "uploadData.do";
+    element.form.submit();
+	return false;
+}
+
+function uploadPrescriptionFile(element)
+{
+	if (isButtonDisabled(element)) 
+		return true;
+
+	showLoadingProgress('<br/><b>File Uploading...</b><br/>');
+    var element = document.getElementById("downloadFile");
+    element.form.action = "uploadPrescriptionData.do";
     element.form.submit();
 	return false;
 }

@@ -127,7 +127,19 @@
         			 <li>
         				<a href="#" id="showAccountFileDownloadLink" onClick="gotoMenuAction('services.do', 'showAccountFileDownloadLink');"><lb:label key="session.menu.userAccountsFiles" /></a>
         			 </li>
-        			 </c:if>	
+        			 </c:if>
+        			 <!--	
+        			 <ctb:auth roles="Administrator">
+	        		 <c:if test="${true}">	
+	        			 <li>
+	        			 	<a href="#" style="float:left;"><lb:label key="session.menu.prescriptionLoad" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
+	        				<ul>
+	        					<li><a href="#" id="uploadPrescriptionDataLink" onClick="gotoMenuAction('services.do', 'uploadPrescriptionDataLink');"><lb:label key="session.menu.importprescriptions" /></a></li>	        					
+	        				</ul>
+	        			 </li>
+        			 </c:if>
+        			 </ctb:auth>
+        			 -->
         		</ul>
         	</li>
         </ul>		
