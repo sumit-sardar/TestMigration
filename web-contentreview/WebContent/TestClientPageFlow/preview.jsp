@@ -771,9 +771,6 @@ function enableEraser(isEnabled){
     		}*/
 	    	
 	    	//iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
-	    	if(gController.htmlFields[0]['ref'].parent instanceof lz.BaseCachablePanel){
-	    		gController.htmlFields[0]['ref'].parent.setAttribute('bgcolor','white');
-	    	}
 	    	/*var xscalefact = (780 * xscalefactorjs)/800;
 	    	var yscalefact = (450 * yscalefactorjs)/462;*/
 	    	var xscalefact = 780/800;
