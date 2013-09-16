@@ -9,6 +9,7 @@ public class RostersItem {
 	private String studentResponse = "";
 	private String itemDescriptio = "";
 	private Boolean isItemValidateForScoring = false;
+	private Boolean isSubtestCompleted = false;
 	
 	/**
 	 * @return the itemId
@@ -111,6 +112,16 @@ public class RostersItem {
 			this.isItemValidateForScoring = true;
 	}
 	
+	public boolean isSubtestCompleted() {
+		return isSubtestCompleted;
+	}
+	
+	public void setIsSubtestCompleted(String  isSubtestCompleted) {
+		if(isSubtestCompleted.equalsIgnoreCase("NC"))
+			this.isSubtestCompleted = false;
+		else
+			this.isSubtestCompleted = true;
+	}
 	
 	@Override
 	public String toString() {
