@@ -1092,7 +1092,7 @@ public Forward rescoreStudent() {
 					studentCount = this.toBeExportedRosterListLLEAB.size();
 					finalExportedRosterList = this.toBeExportedRosterListLLEAB;
 				} else if (frameworkId == 7500){
-					studentCount = this.toBeExportedRosterListLLEAB.size();
+					studentCount = this.toBeExportedRosterListLL2ND.size();
 					finalExportedRosterList = this.toBeExportedRosterListLL2ND;
 				}
 			}
