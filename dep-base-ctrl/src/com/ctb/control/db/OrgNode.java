@@ -2048,4 +2048,6 @@ public interface OrgNode extends JdbcControl
     @JdbcControl.SQL(statement = "select parent_org_node_id from org_node_parent where org_node_id = {orgNodeId}")
 	Integer getParentForOrgNode(Integer orgNodeId) throws SQLException;
     
+    @JdbcControl.SQL(statement = "select distinct product_id from org_node_test_catalog where customer_id = {customerId}")
+	String[] getProductIdsForCustomerId(Integer customerId) throws SQLException;
 }
