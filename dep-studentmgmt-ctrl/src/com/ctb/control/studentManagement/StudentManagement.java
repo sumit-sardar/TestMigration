@@ -554,6 +554,9 @@ public interface StudentManagement
 	boolean getIsStudentExtracted (java.lang.Integer studentId) throws com.ctb.exception.CTBBusinessException;
 	
     com.ctb.bean.studentManagement.CustomerConfiguration[] getCustomerConfigurations(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
+    
+    //get list of productIds for a given customerId from org_node_test_catalog
+    String[] getProductIdsForCustomer(Integer customerId) throws CTBBusinessException;
 
 
 } 	

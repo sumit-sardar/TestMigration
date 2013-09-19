@@ -25,7 +25,8 @@ import dto.StudentProfileInformation;
 
 public class StudentPathListUtils 
 { 
-    public static final String TOP = "Top";    
+    public static final String TOP = "Top";
+    public static final String oklahoma_3_To_8_ProductId = "9008";
 
     /**
      * getFullPathNodeName
@@ -582,5 +583,20 @@ public class StudentPathListUtils
         return leafNodeCategoryId;
     }
     
+    public static boolean is_3_To_8_OklahomaCustomer(Integer customerId,
+    												StudentManagement studentManagement) throws CTBBusinessException {
+    	
+    	String productIds[] = studentManagement.getProductIdsForCustomer(customerId);
+    	boolean is3to8OkCustomer = false;
+    	if(productIds != null) {
+	    	for(int i=0 ; i<productIds.length ; i++ ) {
+	    		if(oklahoma_3_To_8_ProductId.equals(productIds[i])) {
+	    			is3to8OkCustomer = true;
+	    			break;
+	    		}
+	    	}
+    	}
+    	return is3to8OkCustomer;
+    }
     
 } 

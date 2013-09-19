@@ -175,7 +175,10 @@ public class BulkMoveOperationController extends PageFlowController {
 			UserNodeData und = StudentPathListUtils.OrgNodehierarchy(this.userName, 
 					this.studentManagement, selectedList.get(0).getOrgNodeId()); 
 			ArrayList<Organization> orgNodesList = StudentPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);
-
+			
+			//set is3to8OkCustomer to true if ProductId = 9008
+			boolean is3to8OkCustomer = StudentPathListUtils.is_3_To_8_OklahomaCustomer(this.customerId, this.studentManagement);
+			
 			for (int i= 0; i < selectedList.size(); i++) {
 
 				if (i == 0) {
@@ -214,6 +217,7 @@ public class BulkMoveOperationController extends PageFlowController {
 					
 			});
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
+			baseTree.setIs3to8OkCustomer(is3to8OkCustomer);
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");

@@ -55,6 +55,7 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerDemographicDataNotFoundException;
+import com.ctb.exception.studentManagement.CustomerProductDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerReportDataNotFoundException;
 import com.ctb.exception.studentManagement.OrgNodeDataNotFoundException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
@@ -3976,5 +3977,21 @@ public class StudentManagementImpl implements StudentManagement
 		}
 
 
+	}
+	
+	public String[] getProductIdsForCustomer(Integer customerId) throws CTBBusinessException
+	{
+		String[] productIds = null;
+		try {
+			productIds = orgNode.getProductIdsForCustomerId(customerId);
+			if(productIds != null) {
+				return productIds;
+			}
+		} catch (SQLException se) {
+			CustomerProductDataNotFoundException tee = new CustomerProductDataNotFoundException("StudentManagementImpl: getProductIdsForCustomer: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		return productIds;
 	}
 } 

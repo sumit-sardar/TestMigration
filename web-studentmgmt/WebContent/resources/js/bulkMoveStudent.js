@@ -8,7 +8,7 @@ var isbulkMoveRoster = null;
 var checkedNodeListObject = null;
 var leafNodePathMap = {};
 var leafNodeTextMap = {};
-
+var is3to8OkCustomer = false;
 
 
 function populateBulkMoveTree() {
@@ -24,6 +24,7 @@ function populateBulkMoveTree() {
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI(); 
 						leafNodeCategoryId = data.leafNodeCategoryId;
+						is3to8OkCustomer = data.is3to8OkCustomer;
 						orgTreeHierarchy = data;
 						jsonData = orgTreeHierarchy.data;
 						getRootNodeDetails();
@@ -84,7 +85,14 @@ function createSingleNodeBulkMoveTree(jsondata) {
 			var topNodeSelected = $(this).parent().attr("cid");
 			if(topNodeSelected == leafNodeCategoryId || topNodeSelected == (leafNodeCategoryId -1)) {
  		    $("#selectedBulkTreeOrgNodeId").val(SelectedOrgNodeId);
- 		     UIBlock();
+		    UIBlock();
+		    
+		   // Added on 17 Sep,2013 for user story : "OK - 3-8 2013 - 023 - Don't allow selection of students across hierarchy"
+		   // Whenever a node is clicked this delegate function for jstree gets called and the selection is reinitialized in order to remove the previous selection.
+		   // This is only for OK 3-8 Customer.
+		    if(is3to8OkCustomer) {
+		    	selectedStudentForMove = {};
+		    }
  		  	if(!bulkMoveGridLoaded) {
  		  		bulkMoveGridLoaded = true;
  		  			populateBulkMoveStudentGrid();

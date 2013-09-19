@@ -16,6 +16,7 @@ public class BaseTree {
 	public CustomerConfiguration [] customerConfiguration = null;
 	public Boolean isOOSConfigured = false;
 	public List<String> demoCategory;
+	public Boolean is3to8OkCustomer = false;
 	/**
 	 * @return the demoCategory
 	 */
@@ -97,5 +98,19 @@ public class BaseTree {
 	}
 	
 	
+
+	/**
+	 * @return the is3to8Customer
+	 */
+	public Boolean getIs3to8OkCustomer() {
+		return is3to8OkCustomer;
+	}
+
+	/**
+	 * @param is3to8Customer the is3to8Customer to set
+	 */
+	public void setIs3to8OkCustomer(Boolean is3to8OkCustomer) {
+		this.is3to8OkCustomer = is3to8OkCustomer;
+	}
 
 }
