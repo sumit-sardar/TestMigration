@@ -275,6 +275,23 @@ public interface Customer extends JdbcControl
     @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer')")
     com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurations(Integer customerId) throws SQLException;
 	//END - Changes for LASLINK Product
+    
+    //[IAA]: story: TABE customer name change in AM UI - Travis story
+    /**
+     * @jc:sql statement::
+     * select    cc.customer_configuration_id   as customerConfigurationId,
+     *           cc.customer_configuration_name as customerConfigurationName,
+     *           cc.editable                    as editable,
+     *           cc.default_value               as defaultValue,
+     *           cc.created_by                  as createdBy,
+     *           cc.created_date_time           as createdDateTime
+     *      from customer_configuration cc
+     *     where cc.customer_id = {customerId}
+     *     and cc.customer_configuration_name in ('TABE_Adaptive_Customer')::
+     */
+    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Adaptive_Customer')")
+    com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurationsTABEType(Integer customerId) throws SQLException;
+    
     /**
      * @jc:sql statement::
      *  select    decon.email_type as emailType,

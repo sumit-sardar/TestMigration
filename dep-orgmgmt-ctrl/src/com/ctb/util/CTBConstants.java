@@ -46,6 +46,7 @@ public final class CTBConstants {
     //START - Changes for TABE ADAPTIVE PRODUCT 
     public static final String TABE_ADAPTIVE_CUSTOMER = "TABE Adaptive Customer";
     public static final String DB_TABE_ADAPTIVE_CUSTOMER = "TABE_Customer";
+    public static final String DB_TABE_ADAPTIVE_CUSTOMER_NEW = "TABE_Adaptive_Customer";
     //END - Changes for TABE ADAPTIVE PRODUCT
     
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);

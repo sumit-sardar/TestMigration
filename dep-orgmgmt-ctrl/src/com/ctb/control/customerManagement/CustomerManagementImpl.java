@@ -737,7 +737,23 @@ public class CustomerManagementImpl implements CustomerManagement
             
             CustomerConfig[] customerConfigurations
                          =  customers.getCustomerConfigurations(selectedCustomerId);
+
+            /*[IAA]: story: TABE customer name change in AM UI - Travis story
+             * We need to know whether it's TABE or TABE Adaptive
+             * If it's TABE Customer, check to see if it's TABE Adaptive Customer.
+             * */
+            if ( customerConfigurations.length > 0 ) {
+                
+                if ( customerConfigurations[0].getCustomerConfigurationName().equals(
+                                CTBConstants.DB_TABE_CUSTOMER)){
                                     
+                   	CustomerConfig[] customerConfigurationsTABEType = customers.getCustomerConfigurationsTABEType(selectedCustomerId);
+                	if ( customerConfigurationsTABEType.length > 0 ) {
+                		customerConfigurations = Arrays.copyOf(customerConfigurationsTABEType, customerConfigurationsTABEType.length);
+                	}
+                }
+            }
+            
             if ( customerConfigurations.length > 0 ) {
                 
                 if ( customerConfigurations[0].getCustomerConfigurationName().equals(
@@ -796,7 +812,7 @@ public class CustomerManagementImpl implements CustomerManagement
                 
               //START - Changes For TABE ADAPTIVE Product
                 else if( customerConfigurations[0].getCustomerConfigurationName().equals(
-                        CTBConstants.DB_TABE_ADAPTIVE_CUSTOMER)){
+                        CTBConstants.DB_TABE_ADAPTIVE_CUSTOMER) || customerConfigurations[0].getCustomerConfigurationName().equals(CTBConstants.DB_TABE_ADAPTIVE_CUSTOMER_NEW)){
                             
                 	customerConfigurations[0].setCustomerConfigurationName(
                         CTBConstants.TABE_ADAPTIVE_CUSTOMER);
