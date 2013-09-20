@@ -473,7 +473,9 @@ public class FileGeneratorForLL2ND {
 						orderFile.setTestName1(EmetricUtil.truncate(
 								"LAS Links", new Integer(10))
 								.toUpperCase());
-				} else if (rs.getString(1).equalsIgnoreCase("ESP B")) {
+					/*[IAA]: Defect#75509 Rename Esp A/B*/
+				//} else if (rs.getString(1).equalsIgnoreCase("ESP B")) {
+				} else if (rs.getString(1).equalsIgnoreCase("Español B")) {
 					tfil.setTestName("LAS Links 2nd Edition Español");
 					tfil.setTestForm("T");
 					if (orderFile.getTestName1() == null)

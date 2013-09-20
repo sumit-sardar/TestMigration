@@ -95,10 +95,11 @@ public class DataExportOperationController extends PageFlowController {
 	private List<Integer> toBeExportedRosterListForSessionsLLEAB = null;
 	private List<Integer> toBeExportedRosterListForSessionsLL2ND = null;
     
-	private static final String FORMATITLE = "Student Data Export - Forms A/B Esp A";
-	private static final String FORMBTITLE = "Student Data Export - Enhanced - Forms C/D Esp B";
-	private static final String FORMADESCRIPTION = "Export the student data obtained by the student in standard format for Laslink A/B/Espanol.";
-	private static final String FORMBDESCRIPTION = "Export the student data obtained by the student in standard format for Laslink Enhanced C/D/Espanol-B.";
+	/*[IAA]: Defect#75509 Rename Esp A/B*/
+	private static final String FORMATITLE = "Student Data Export - Forms A/B Español A";
+	private static final String FORMBTITLE = "Student Data Export - Enhanced - Forms C/D Español B";
+	private static final String FORMADESCRIPTION = "Export the student data obtained by the student in standard format for Laslink A/B/Español A.";
+	private static final String FORMBDESCRIPTION = "Export the student data obtained by the student in standard format for Laslink Enhanced C/D/Español B.";
 	
     public static String CONTENT_TYPE_JSON = "application/json";
 
