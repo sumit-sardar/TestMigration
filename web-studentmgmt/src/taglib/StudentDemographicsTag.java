@@ -20,6 +20,7 @@ public class StudentDemographicsTag extends CTBTag
 	private int tabIndex = 1;
 	private String demoCategory = "";
 	private boolean  selectedEthnicityHispanicOrLatino = false;
+	private boolean isLaslink = false;
 	
     public void setDemographics(List demographics) {
         this.demographics= demographics;
@@ -37,7 +38,10 @@ public class StudentDemographicsTag extends CTBTag
     	this.tabIndex = tabIndex;
     }
     
-    
+	public void setIsLaslink(boolean isLaslink) {
+		this.isLaslink = isLaslink;
+	}
+
 	public int doStartTag() throws JspException 
     {
 		try {
@@ -127,7 +131,11 @@ public class StudentDemographicsTag extends CTBTag
     	displayRowStart();
             displayCellStart("transparent");
             if(!displayName.equals("Sub_Ethnicity")){
-		        writeToPage("<b>" + displayName + "</b>");
+            	if(displayName.equals("Accommodations") && isLaslink){
+            		writeToPage("<b>" + "Accommodations - A/B Only" + "</b>");
+            	}else{
+            		writeToPage("<b>" + displayName + "</b>");
+            	}
             }
     		displayCellEnd();
     	displayRowEnd();  

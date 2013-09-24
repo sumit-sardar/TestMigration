@@ -235,8 +235,8 @@ public class FileGeneratorForLL2ND {
 							.getTestRosterId(), orderFile);
 					
 					//Accommodation
-					Accomodations accomodations = createAccomodations(st.getStudentDemographic(), setAccomodation, customerDemographic, tfil , roster);
-					//tfil.setAccomodations(accomodations);	//::TODO
+					createAccomodations(st.getStudentDemographic(), customerDemographic, tfil , roster);
+					
 					
 					//Invalidation Status
 					createStudentItemStatusDetails(oascon, tfil, roster.getTestRosterId(), roster.getStudentId(), invalidSubtestMap);
@@ -845,9 +845,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberA(String.valueOf(districtMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesA((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesA(rs.getString(3));
+					tfil.setMdrNumA(rs.getString(1));
 					tfil.setOrganizationId("XX" + rs.getString(1));
 					tfil.setElementIdA(rs.getString(1));
 					tfil.setElementStructureLevelA("01");
@@ -870,9 +869,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesB((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesB(rs.getString(3));
+					tfil.setMdrNumB(rs.getString(1));
 					tfil.setElementStructureLevelB("02");
 					tfil.setElementIdB(rs.getString(1));
 				}
@@ -893,9 +891,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberC(String.valueOf(classMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesC((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesC(rs.getString(3));
+					tfil.setMdrNumC(rs.getString(1));
 					tfil.setElementStructureLevelC("03");
 					tfil.setElementIdC(rs.getString(1));
 	
@@ -916,9 +913,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberD(String.valueOf(sectionMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesD((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesD(rs.getString(3));
+					tfil.setMdrNumD(rs.getString(1));
 					tfil.setElementStructureLevelD("04");
 					tfil.setElementIdD(rs.getString(1));
 	
@@ -939,9 +935,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberE(String.valueOf(groupMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesE((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesE(rs.getString(3));
+					tfil.setMdrNumE(rs.getString(1));
 					tfil.setElementStructureLevelE("05");
 					tfil.setElementIdE(rs.getString(1));
 	
@@ -961,9 +956,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberF(String.valueOf(divisionMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesF((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesF(rs.getString(3));
+					tfil.setMdrNumF(rs.getString(1));
 					tfil.setElementStructureLevelF("06");
 					tfil.setElementIdF(rs.getString(1));
 	
@@ -981,9 +975,8 @@ public class FileGeneratorForLL2ND {
 					}
 					tfil.setElementNumberG(String.valueOf(levelMap.get(rs
 							.getString(4))));
-					tfil.setElementSpecialCodesG((rs.getString(3) == null) ? ("          " + rs
-							.getString(1))
-							: (rs.getString(3) + rs.getString(1)));
+					tfil.setElementSpecialCodesG(rs.getString(3));
+					tfil.setMdrNumG(rs.getString(1));
 					tfil.setElementStructureLevelG("07");
 					tfil.setElementIdG(rs.getString(1));
 				}
@@ -1054,14 +1047,12 @@ public class FileGeneratorForLL2ND {
 
 	}
 
-	public Accomodations createAccomodations(Set<StudentDemographic> sd,
-			Set<CustomerDemographic> cd,
-			HashMap<Integer, String> customerDemographic, TfilLL2ND tfil, TestRoster roster) {
+	public void createAccomodations(Set<StudentDemographic> sd,
+					HashMap<Integer, String> customerDemographic, TfilLL2ND tfil, TestRoster roster) {
 
 		TreeMap<String, StudentDemographic> set1 = new TreeMap<String, StudentDemographic>();
 		TreeMap<String, CustomerDemographic> set2 = new TreeMap<String, CustomerDemographic>();
 		HashMap<Integer, String> studentDemographic = new HashMap<Integer, String>();
-		Accomodations accomodations = new Accomodations();
 		SpecialCodes specialCodes = new SpecialCodes();
 
 		for (StudentDemographic studentDem : sd) {
@@ -1080,7 +1071,7 @@ public class FileGeneratorForLL2ND {
 				} else if (customerDemoName.startsWith("USA")) {
 					tfil.setUsaSchoolEnrollment(studentDem.getValueName());
 				} */else if (customerDemoName.startsWith("Home")) {
-					tfil.setHomeLanguage(studentDem.getValue());
+					tfil.setHomeLanguage("English".equals(studentDem.getValueName()) ? "20" : studentDem.getValue());
 				} else if (customerDemoName.startsWith("Program")) {
 					setProgramParticipation(sd, tfil, roster.getProductId());
 				} else if (customerDemoName
@@ -1110,40 +1101,19 @@ public class FileGeneratorForLL2ND {
 					specialCodes.setSpecialCodeT(studentDem.getValueName());
 				} else if (customerDemoName.startsWith("Race")) {
 					setRacefield(sd, tfil);
+				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Speaking")) {
+					tfil.setAccommodationSpeaking(studentDem.getValue());
+				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Listening")) {
+					tfil.setAccommodationListening(studentDem.getValue());
+				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Reading")) {
+					tfil.setAccommodationReading(studentDem.getValue());
+				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Writing")) {
+					tfil.setAccommodationWriting(studentDem.getValue());
 				}
 			}
 			tfil.setSpecialCodes(specialCodes);
 
 		}
-		for (CustomerDemographic customerDem : cd) {
-			set2.put(customerDem.getLabelName(), customerDem);
-		}
-
-		
-		//::TODO For the Accomodation :: Baki ache , Layout clear noy Jai da r sathe discuss korte hobe
-		for (Map.Entry<String, StudentDemographic> entry : set1.entrySet()) {
-			for (Map.Entry<String, CustomerDemographic> entry1 : set2.entrySet()) {
-				
-				Set<CustomerDemographicValue> set = entry1.getValue().getCustomerDemographicValue();
-				for (CustomerDemographicValue value : set) {
-					if (value.getValueCode().trim().equalsIgnoreCase(entry.getKey().trim())) {
-						String string = value.getValueCode().replace('-', '_');
-
-						try {
-							accomodations.getClass().getMethod("set" + string, String.class).invoke(accomodations,"1");
-							break;
-						} catch (Exception e) {
-							e.printStackTrace();
-
-						}
-					}
-				}
-
-			}
-
-		}
-
-		return accomodations;
 	}
 	
 	

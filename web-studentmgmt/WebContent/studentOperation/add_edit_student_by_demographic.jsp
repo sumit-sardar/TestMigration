@@ -5,6 +5,7 @@
 	Boolean viewOnly = (Boolean) request.getAttribute("viewOnly");
 	Boolean studentImported = (Boolean) request.getAttribute("studentImported");
 	String demographicKey = (String)request.getAttribute("currentKey");
+	Boolean isLasLink = (Boolean) request.getAttribute("isLasLinkCustomer");
 	String groupName = "";
 	if(null != demographicKey)
 		groupName = "_" + demographicKey;
@@ -19,7 +20,6 @@
 <ctbweb:studentDemographics demographics = "<%= demographics %>" 
                             viewOnly = "<%= viewOnly %>" 
                             studentImported = "<%= studentImported %>" 
-                            demoCategory = "<%= groupName %>" />
-
-
+                            demoCategory = "<%= groupName %>" 
+							isLaslink = "<%=isLasLink%>" />
 <br/>

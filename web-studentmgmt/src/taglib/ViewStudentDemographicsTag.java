@@ -18,6 +18,7 @@ public class ViewStudentDemographicsTag extends CTBTag
 	private Boolean viewOnly = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
 	private int tabIndex = 1;
+	private boolean isLaslink = false;
 	
     public void setDemographics(List demographics) {
         this.demographics= demographics;
@@ -35,6 +36,9 @@ public class ViewStudentDemographicsTag extends CTBTag
     	this.tabIndex = tabIndex;
     }
     
+    public void setIsLaslink(boolean isLaslink) {
+		this.isLaslink = isLaslink;
+	}
     
 	public int doStartTag() throws JspException 
     {
@@ -124,7 +128,11 @@ public class ViewStudentDemographicsTag extends CTBTag
         
     	displayRowStart();
             displayCellStart("transparent");
-		        writeToPage("<b>" + displayName + "</b>");
+            if(displayName.equals("Accommodations") && isLaslink){
+        		writeToPage("<b>" + "Accommodations - A/B Only" + "</b>");
+        	}else{
+        		writeToPage("<b>" + displayName + "</b>");
+        	}
     		displayCellEnd();
     	displayRowEnd();  
     	

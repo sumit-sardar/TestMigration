@@ -16,6 +16,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelA;
 	private String elementNumberA;
 	private String elementSpecialCodesA;
+	private String mdrNumA;
+	private String elementSpecialCodesRemainderA;
 	private String elementIdA;
 	
 	private String grade;
@@ -27,6 +29,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelB;
 	private String elementNumberB;
 	private String elementSpecialCodesB;
+	private String mdrNumB;
+	private String elementSpecialCodesRemainderB;
 	private String elementIdB;
 	
 	private String elementNameC;
@@ -34,6 +38,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelC;
 	private String elementNumberC;
 	private String elementSpecialCodesC;
+	private String mdrNumC;
+	private String elementSpecialCodesRemainderC;
 	private String elementIdC;
 	
 	private String elementNameD;
@@ -41,6 +47,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelD;
 	private String elementNumberD;
 	private String elementSpecialCodesD;
+	private String mdrNumD;
+	private String elementSpecialCodesRemainderD;
 	private String elementIdD;
 	
 	private String elementNameE;
@@ -48,6 +56,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelE;
 	private String elementNumberE;
 	private String elementSpecialCodesE;
+	private String mdrNumE;
+	private String elementSpecialCodesRemainderE;
 	private String elementIdE;
 	
 	private String elementNameF;
@@ -55,6 +65,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelF;
 	private String elementNumberF;
 	private String elementSpecialCodesF;
+	private String mdrNumF;
+	private String elementSpecialCodesRemainderF;
 	private String elementIdF;
 	
 	private String elementNameG;
@@ -62,6 +74,8 @@ public class TfilLL2ND {
 	private String elementStructureLevelG;
 	private String elementNumberG;
 	private String elementSpecialCodesG;
+	private String mdrNumG;
+	private String elementSpecialCodesRemainderG;
 	private String elementIdG;
 	
 	private String testName;
@@ -109,7 +123,10 @@ public class TfilLL2ND {
 	private String testInvalidationWriting= " ";
 	private String invalidationUnused;
 	
-	private Accomodations accomodations;
+	private String accommodationSpeaking=" ";
+	private String accommodationListening=" ";
+	private String accommodationReading=" ";
+	private String accommodationWriting=" ";
 	private String accomodationUnused;
 	private SpecialCodes specialCodes;
 	private String sbiCtbUseColumns;
@@ -213,7 +230,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesA
 	 */
-	@PositionalField(initialPosition = 66, finalPosition = 91)
+	@PositionalField(initialPosition = 66, finalPosition = 75)
 	public String getElementSpecialCodesA() {
 		return elementSpecialCodesA;
 	}
@@ -222,6 +239,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesA(String elementSpecialCodesA) {
 		this.elementSpecialCodesA = elementSpecialCodesA;
+	}
+	/**
+	 * @return the mdrNumA
+	 */	
+	@PositionalField(initialPosition = 76, finalPosition = 83)
+	public String getMdrNumA() {
+		return mdrNumA;
+	}
+	/**
+	 * @param mdrNumA the mdrNumA to set
+	 */
+	public void setMdrNumA(String mdrNumA) {
+		this.mdrNumA = mdrNumA;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderA
+	 */
+	@PositionalField(initialPosition = 84, finalPosition = 91)
+	public String getElementSpecialCodesRemainderA() {
+		return elementSpecialCodesRemainderA;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderA the elementSpecialCodesRemainderA to set
+	 */
+	public void setElementSpecialCodesRemainderA(
+			String elementSpecialCodesRemainderA) {
+		this.elementSpecialCodesRemainderA = elementSpecialCodesRemainderA;
 	}
 	/**
 	 * @return the grade
@@ -318,7 +362,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesB
 	 */
-	@PositionalField(initialPosition = 180, finalPosition = 205)
+	@PositionalField(initialPosition = 180, finalPosition = 189)
 	public String getElementSpecialCodesB() {
 		return elementSpecialCodesB;
 	}
@@ -327,6 +371,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesB(String elementSpecialCodesB) {
 		this.elementSpecialCodesB = elementSpecialCodesB;
+	}
+	/**
+	 * @return the mdrNumB
+	 */
+	@PositionalField(initialPosition = 190, finalPosition = 197)
+	public String getMdrNumB() {
+		return mdrNumB;
+	}
+	/**
+	 * @param mdrNumB the mdrNumB to set
+	 */
+	public void setMdrNumB(String mdrNumB) {
+		this.mdrNumB = mdrNumB;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderB
+	 */
+	@PositionalField(initialPosition = 198, finalPosition = 205)
+	public String getElementSpecialCodesRemainderB() {
+		return elementSpecialCodesRemainderB;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderB the elementSpecialCodesRemainderB to set
+	 */
+	public void setElementSpecialCodesRemainderB(
+			String elementSpecialCodesRemainderB) {
+		this.elementSpecialCodesRemainderB = elementSpecialCodesRemainderB;
 	}
 	/**
 	 * @return the elementNameC
@@ -384,7 +455,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesC
 	 */
-	@PositionalField(initialPosition = 260, finalPosition = 285)
+	@PositionalField(initialPosition = 260, finalPosition = 269)
 	public String getElementSpecialCodesC() {
 		return elementSpecialCodesC;
 	}
@@ -393,6 +464,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesC(String elementSpecialCodesC) {
 		this.elementSpecialCodesC = elementSpecialCodesC;
+	}
+	/**
+	 * @return the mdrNumC
+	 */
+	@PositionalField(initialPosition = 270, finalPosition = 277)
+	public String getMdrNumC() {
+		return mdrNumC;
+	}
+	/**
+	 * @param mdrNumC the mdrNumC to set
+	 */
+	public void setMdrNumC(String mdrNumC) {
+		this.mdrNumC = mdrNumC;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderC
+	 */
+	@PositionalField(initialPosition = 278, finalPosition = 285)
+	public String getElementSpecialCodesRemainderC() {
+		return elementSpecialCodesRemainderC;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderC the elementSpecialCodesRemainderC to set
+	 */
+	public void setElementSpecialCodesRemainderC(
+			String elementSpecialCodesRemainderC) {
+		this.elementSpecialCodesRemainderC = elementSpecialCodesRemainderC;
 	}
 	/**
 	 * @return the elementNameD
@@ -450,7 +548,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesD
 	 */
-	@PositionalField(initialPosition = 340, finalPosition = 365)
+	@PositionalField(initialPosition = 340, finalPosition = 349)
 	public String getElementSpecialCodesD() {
 		return elementSpecialCodesD;
 	}
@@ -459,6 +557,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesD(String elementSpecialCodesD) {
 		this.elementSpecialCodesD = elementSpecialCodesD;
+	}
+	/**
+	 * @return the mdrNumD
+	 */
+	@PositionalField(initialPosition = 350, finalPosition = 357)
+	public String getMdrNumD() {
+		return mdrNumD;
+	}
+	/**
+	 * @param mdrNumD the mdrNumD to set
+	 */
+	public void setMdrNumD(String mdrNumD) {
+		this.mdrNumD = mdrNumD;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderD
+	 */
+	@PositionalField(initialPosition = 358, finalPosition = 365)
+	public String getElementSpecialCodesRemainderD() {
+		return elementSpecialCodesRemainderD;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderD the elementSpecialCodesRemainderD to set
+	 */
+	public void setElementSpecialCodesRemainderD(
+			String elementSpecialCodesRemainderD) {
+		this.elementSpecialCodesRemainderD = elementSpecialCodesRemainderD;
 	}
 	/**
 	 * @return the elementNameE
@@ -516,7 +641,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesE
 	 */
-	@PositionalField(initialPosition = 420, finalPosition = 445)
+	@PositionalField(initialPosition = 420, finalPosition = 429)
 	public String getElementSpecialCodesE() {
 		return elementSpecialCodesE;
 	}
@@ -525,6 +650,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesE(String elementSpecialCodesE) {
 		this.elementSpecialCodesE = elementSpecialCodesE;
+	}
+	/**
+	 * @return the mdrNumE
+	 */
+	@PositionalField(initialPosition = 430, finalPosition = 437)
+	public String getMdrNumE() {
+		return mdrNumE;
+	}
+	/**
+	 * @param mdrNumE the mdrNumE to set
+	 */
+	public void setMdrNumE(String mdrNumE) {
+		this.mdrNumE = mdrNumE;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderE
+	 */
+	@PositionalField(initialPosition = 438, finalPosition = 445)
+	public String getElementSpecialCodesRemainderE() {
+		return elementSpecialCodesRemainderE;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderE the elementSpecialCodesRemainderE to set
+	 */
+	public void setElementSpecialCodesRemainderE(
+			String elementSpecialCodesRemainderE) {
+		this.elementSpecialCodesRemainderE = elementSpecialCodesRemainderE;
 	}
 	/**
 	 * @return the elementNameF
@@ -582,7 +734,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesF
 	 */
-	@PositionalField(initialPosition = 500, finalPosition = 525)
+	@PositionalField(initialPosition = 500, finalPosition = 509)
 	public String getElementSpecialCodesF() {
 		return elementSpecialCodesF;
 	}
@@ -591,6 +743,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesF(String elementSpecialCodesF) {
 		this.elementSpecialCodesF = elementSpecialCodesF;
+	}
+	/**
+	 * @return the mdrNumF
+	 */
+	@PositionalField(initialPosition = 510, finalPosition = 517)
+	public String getMdrNumF() {
+		return mdrNumF;
+	}
+	/**
+	 * @param mdrNumF the mdrNumF to set
+	 */
+	public void setMdrNumF(String mdrNumF) {
+		this.mdrNumF = mdrNumF;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderF
+	 */
+	@PositionalField(initialPosition = 518, finalPosition = 525)
+	public String getElementSpecialCodesRemainderF() {
+		return elementSpecialCodesRemainderF;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderF the elementSpecialCodesRemainderF to set
+	 */
+	public void setElementSpecialCodesRemainderF(
+			String elementSpecialCodesRemainderF) {
+		this.elementSpecialCodesRemainderF = elementSpecialCodesRemainderF;
 	}
 	/**
 	 * @return the elementNameG
@@ -648,7 +827,7 @@ public class TfilLL2ND {
 	/**
 	 * @return the elementSpecialCodesG
 	 */
-	@PositionalField(initialPosition = 580, finalPosition = 605)
+	@PositionalField(initialPosition = 580, finalPosition = 589)
 	public String getElementSpecialCodesG() {
 		return elementSpecialCodesG;
 	}
@@ -657,6 +836,33 @@ public class TfilLL2ND {
 	 */
 	public void setElementSpecialCodesG(String elementSpecialCodesG) {
 		this.elementSpecialCodesG = elementSpecialCodesG;
+	}
+	/**
+	 * @return the elementSpecialCodesG
+	 */
+	@PositionalField(initialPosition = 590, finalPosition = 597)
+	public String getMdrNumG() {
+		return mdrNumG;
+	}
+	/**
+	 * @param elementSpecialCodesG the elementSpecialCodesG to set
+	 */
+	public void setMdrNumG(String mdrNumG) {
+		this.mdrNumG = mdrNumG;
+	}
+	/**
+	 * @return the elementSpecialCodesRemainderG
+	 */
+	@PositionalField(initialPosition = 598, finalPosition = 605)
+	public String getElementSpecialCodesRemainderG() {
+		return elementSpecialCodesRemainderG;
+	}
+	/**
+	 * @param elementSpecialCodesRemainderG the elementSpecialCodesRemainderG to set
+	 */
+	public void setElementSpecialCodesRemainderG(
+			String elementSpecialCodesRemainderG) {
+		this.elementSpecialCodesRemainderG = elementSpecialCodesRemainderG;
 	}
 	/**
 	 * @return the testName
@@ -1174,17 +1380,56 @@ public class TfilLL2ND {
 		this.invalidationUnused = invalidationUnused;
 	}
 	/**
-	 * @return the accomodations
+	 * @return the accommodationSpeaking
 	 */
-	@PositionalField(initialPosition = 780, finalPosition = 783)
-	public Accomodations getAccomodations() {
-		return accomodations;
+	@PositionalField(initialPosition = 780, finalPosition = 780)
+	public String getAccommodationSpeaking() {
+		return accommodationSpeaking;
 	}
 	/**
-	 * @param accomodations the accomodations to set
+	 * @param  accommodationSpeaking the accommodationSpeaking to set
 	 */
-	public void setAccomodations(Accomodations accomodations) {
-		this.accomodations = accomodations;
+	public void setAccommodationSpeaking(String accommodationSpeaking) {
+		this.accommodationSpeaking = accommodationSpeaking;
+	}
+	/**
+	 * @return the accommodationListening
+	 */
+	@PositionalField(initialPosition = 781, finalPosition = 781)
+	public String getAccommodationListening() {
+		return accommodationListening;
+	}
+	/**
+	 * @param accommodationListening the accommodationListening to set
+	 */
+	public void setAccommodationListening(String accommodationListening) {
+		this.accommodationListening = accommodationListening;
+	}
+	/**
+	 * @return the accommodationReading
+	 */
+	@PositionalField(initialPosition = 782, finalPosition = 782)
+	public String getAccommodationReading() {
+		return accommodationReading;
+	}
+	/**
+	 * @param accommodationReading the accommodationReading to set
+	 */
+	public void setAccommodationReading(String accommodationReading) {
+		this.accommodationReading = accommodationReading;
+	}
+	/**
+	 * @return the accommodationWriting
+	 */
+	@PositionalField(initialPosition = 783, finalPosition = 783)
+	public String getAccommodationWriting() {
+		return accommodationWriting;
+	}
+	/**
+	 * @param accommodationWriting the accommodationWriting to set
+	 */
+	public void setAccommodationWriting(String accommodationWriting) {
+		this.accommodationWriting = accommodationWriting;
 	}
 	/**
 	 * @return the accomodationUnused
