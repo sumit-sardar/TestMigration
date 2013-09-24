@@ -2924,10 +2924,10 @@ public class SessionOperationController extends PageFlowController {
 			boolean licenseProduct = (this.selectedProductType.equals("TL") || this.selectedProductType.equals("PT")) ? false : true;
 			if (this.hasLicenseConfig && licenseProduct) {
 				CustomerLicense[] customerLicenses = getCustomerLicenses(); 
+				Node n = this.orgNode.getOrgNodeById(selectedOrgNodeId);
 				if ((customerLicenses != null) && (customerLicenses.length > 0)) {
 					CustomerLicense cl = customerLicenses[0];
 				    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(selectedOrgNodeId, cl.getProductId(), cl.getSubtestModel());
-				    Node n = this.orgNode.getOrgNodeById(selectedOrgNodeId);
 				    Integer available = (onli.getLicPurchased() != null) ? onli.getLicPurchased() : new Integer(0);
 			        List<Row> rowList = new ArrayList<Row>();
 					Row row = new Row(0);
@@ -2937,6 +2937,19 @@ public class SessionOperationController extends PageFlowController {
 					cells[2] = cl.getSubtestModel();
 					cells[3] = String.valueOf(this.numberSelectedSubtests);	
 					cells[4] = available.toString();
+					row.setCell(cells);			
+					rowList.add(row);
+					base.setRows(rowList);
+				}else{
+					String subtestModel = getCustomerLicensesModel(); 
+					List<Row> rowList = new ArrayList<Row>();
+					Row row = new Row(0);
+					String[] cells = new String[5];
+					cells[0] = selectedOrgNodeId.toString();
+					cells[1] = n.getOrgNodeName();
+					cells[2] = subtestModel;
+					cells[3] = String.valueOf(this.numberSelectedSubtests);	
+					cells[4] = new String("0");
 					row.setCell(cells);			
 					rowList.add(row);
 					base.setRows(rowList);
@@ -4039,6 +4052,21 @@ public class SessionOperationController extends PageFlowController {
         }
      
         return cls;
+    }
+    
+    private String getCustomerLicensesModel()
+    {
+    	String subtestModel = "";
+    	try
+        {
+            subtestModel = this.licensing.getCustomerOrgNodeLicenseModel(this.customerId);
+        }    
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+     
+        return subtestModel;
     }
     
     private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurations) {

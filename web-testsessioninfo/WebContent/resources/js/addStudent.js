@@ -1855,7 +1855,9 @@ function studentInTest(stdId, orgNodeId) {
 			dataType:	'json',
 			data:		postDataObject,
 			success:	function(data, textStatus, XMLHttpRequest){
-							oldestNonZeroPO = data.nonZeroActivePO;
+							if(data != undefined && data != null)
+								oldestNonZeroPO = data.nonZeroActivePO;
+							//$.unblockUI();
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
