@@ -970,7 +970,7 @@ public class StudentOperationController extends PageFlowController {
 							 valueName = sdv2.getValueName().trim();
 							 
 							 //value =sdv2.getValueCode().trim();
-							 //selected = sdv2.getSelectedFlag();
+							 selected = sdv2.getSelectedFlag();
 							 if (valueName.equals("Hispanic or Latino") && selected.equals("true"))
 							 {
 								 //sdv[k].setSelectedFlag("false");
