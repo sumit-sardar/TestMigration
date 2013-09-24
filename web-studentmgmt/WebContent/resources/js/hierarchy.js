@@ -2302,6 +2302,13 @@ function openNode(orgNodeId) {
 		}
 	}
 	
+	function setFontSizeView(size) 
+{
+    var questionBox = document.getElementById("viewQuestionBox");
+    var answerBox = document.getElementById("viewAnswerBox");    
+    questionBox.style.fontSize = size;
+    answerBox.style.fontSize = size;
+}
 	
 	
 	function viewStuDetail(SelectedStudentId){
@@ -2344,7 +2351,7 @@ function openNode(orgNodeId) {
 						$("#orgNodeNameView").text(data.orgNodeNamesStr);
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
-						setViewStudentDetail(rowid);
+						//setViewStudentDetail(rowid);
 						//disableFields('viewStudentDetail', true);
 						$('#viewStudentDetail :checkbox').attr('disabled', true); 
 						$('#viewStudentDetail :radio').attr('disabled', true); 
@@ -2371,6 +2378,7 @@ function openNode(orgNodeId) {
 							 setPopupPosition(isAddStudent);
 							 
 							 isViewStudent = true;
+							 setViewStudentDetail(rowid);
 							 // to handle enabling/disabling of next/prev button 
 							 //when this metod is invoked by view next button
 							if(SelectedStudentId == undefined) { 
@@ -2550,6 +2558,9 @@ function openNode(orgNodeId) {
 	}
 	
 	function setViewStudentDetail(SelectedStudentId) {
+		var isColorFontChecked; 
+   		var isAudioCalmEnabled;
+   		var colorFontSize;
 	
 	if(isViewStudent){
     	assignedOrgNodeIds = "";
@@ -2570,20 +2581,56 @@ function openNode(orgNodeId) {
 		disablenextprev(indexOfId,str.length-1);
 		
       for(var key in stuAccommodation) {
+      		if(key == 'colorFont'){
+    			isColorFontChecked = stuAccommodation[key];
+    		}
+    		if(key == 'auditoryCalming'){
+    			isAudioCalmEnabled = stuAccommodation[key];
+    		}
+    		
+    		if(key == 'fontSize'){
+    			colorFontSize = stuAccommodation[key];
+    		}
       		var keyInUI = getRealValue(key);	// Added as field name and object key has different value
              $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + keyInUI+ "']").attr('checked', stuAccommodation[key]);
 		     $("#view_Student_Accommodation_Information select[name='" + "view" + keyInUI+ "']").val(stuAccommodation[key]);
 		}
+		
+		if(isColorFontChecked){
+			//enableColorSettingsLink("true");		
 			setQuestionColorOptionsInView();
 			setAnswerColorOptionsInView();
+			var quesFontColorElement = document.getElementById("viewquestion_fontColor");
+			var questionBox = document.getElementById("viewQuestionBox");
+			var quesFontColor = stuAccommodation['question_fontColor'];
+			var ansFontColorElement = document.getElementById("viewanswer_fontColor");
+			var answerBox = document.getElementById("viewAnswerBox");
+			var ansFontColor = stuAccommodation['answer_fontColor'];	
+			setSelectedFontColor(quesFontColorElement,quesFontColor);
+			setColor(questionBox, quesFontColor);
+			setSelectedFontColor(ansFontColorElement,ansFontColor);
+			setColor(answerBox, ansFontColor);
+			if(colorFontSize == '1.5'){
+				var largeFont = document.getElementById("viewlargeFont");
+        		largeFont.checked = true;
+				setFontSizeView('18px');
+			}
+			else if(colorFontSize == '1'){
+				var standartFont = document.getElementById("viewstandartFont");
+        		standartFont.checked = true;
+				setFontSizeView('12px');
+			}
+		}else{
+			//enableColorSettingsLink("false");
+		}
 		
 		for(var count=0; count< stuDemographic.length; count++) {
 			if(stuDemographic[count]['studentDemographicValues'].length == 1){
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
 		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
-			     	$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     	$("#view_Student_Additional_Information :checkbox[name='" + "view" + dynKey+ "']").attr('checked', true);
 			     }else {
-			     	$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     	$("#view_Student_Additional_Information :checkbox[name='" + "view" + dynKey+ "']").attr('checked', false);
 			     }
 			     var currenValue = $("#Ethnicity").val();
 					if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
@@ -2597,7 +2644,7 @@ function openNode(orgNodeId) {
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
 				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 				     			//$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
-				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
+				     			var selectElement = document.getElementById("view"+stuDemographic[count]['labelName']);
 			     			    if(selectElement!=null && String(selectElement.options) !="undefined"){
 			     			     setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 			     			    }else{		     			
@@ -2625,9 +2672,9 @@ function openNode(orgNodeId) {
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
 			     		var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] ;
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
-			     		$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     		$("#view_Student_Additional_Information :checkbox[name='" + "view" + dynKey+ "']").attr('checked', true);
 				     }else {
-				     	$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+				     	$("#view_Student_Additional_Information :checkbox[name='" + "view" + dynKey+ "']").attr('checked', false);
 				     }
 				     var currenValue = $("#Ethnicity").val();
 					if(currenValue != undefined && currenValue == 'Hispanic or Latino') {
@@ -2654,6 +2701,11 @@ function openNode(orgNodeId) {
 		}
 		}
 		}
+		
+   		if($('#viewSub_Ethnicity').val()!=undefined && $('#viewSub_Ethnicity').val()!='Please Select') {
+   			$('#viewEthnicity').val("Hispanic or Latino");
+   		}
+
    }
    
    
@@ -2850,7 +2902,14 @@ function openNode(orgNodeId) {
   }
 
 function setSelectedValue(selectObj, valueToSet) {
+	if(valueToSet == 'puertorriqueno') {
+    	valueToSet = 'puertorrique\u00f1o';
+    }
+
     for (var i = 0, j =selectObj.options.length; i < j; i++) {
+    	if(selectObj.options[i].text == 'puertorriqueno') {
+    		selectObj.options[i].text = 'puertorrique\u00f1o';
+    	}
         if (selectObj.options[i].text== valueToSet) {
             selectObj.options[i].selected = true;
             return;
@@ -3455,7 +3514,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 				if(valueCardinality == 'SINGLE'){
 					for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
 						if(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] == 'puertorriqueno'){
-							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] = 'puertorriqueño';
+							stuDemographic[count]['studentDemographicValues'][innerCount]['valueName'] = 'puertorrique\u00f1o';
 						}
 				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 				     			//$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
