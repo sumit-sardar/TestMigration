@@ -363,5 +363,8 @@ public interface License extends JdbcControl
      @JdbcControl.SQL(statement = "call InsertLicenseDataForLaslink({orgNodeId}, {customerId}, {productId}, {available}, {reserved}, {consumed}, {subtestModel})")
      void insertLicenseDataForLaslink(Integer orgNodeId, Integer customerId, Integer productId, Integer available, Integer reserved, Integer consumed, String subtestModel) throws SQLException;
 
+     @JdbcControl.SQL(arrayMaxLength = 1,statement = "SELECT DISTINCT SUBTEST_MODEL FROM CUSTOMER_ORGNODE_LICENSE WHERE CUSTOMER_ID = {customerId}")
+     String getCustomerOrgNodeLicenseModel(Integer customerId) throws SQLException;
+     
 }
 

@@ -547,5 +547,19 @@ public class LicensingImpl implements Licensing
 		}
     	return lasLicenseNode;
     }
+    
+    public String getCustomerOrgNodeLicenseModel(Integer customerId) throws CTBBusinessException {
+    	
+    	String subtestModel = "";
+    	try {
+    		subtestModel = this.license.getCustomerOrgNodeLicenseModel(customerId);
+		} catch (SQLException se) {
+			OrgLicenseDataNotFoundException lde = 
+                new OrgLicenseDataNotFoundException("platformlicence.getCustomerOrgNodeLicenseModel");
+                
+        throw lde;
+		}
+    	return subtestModel;
+    }
 } 
   

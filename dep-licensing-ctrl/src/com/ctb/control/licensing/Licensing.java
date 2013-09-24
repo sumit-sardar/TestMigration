@@ -101,4 +101,5 @@ public interface Licensing
     
     com.ctb.bean.testAdmin.LASLicenseNode[] getLicenseOrderDetailsForCustomer(Integer customerId) throws com.ctb.exception.CTBBusinessException;
 
+    java.lang.String getCustomerOrgNodeLicenseModel(java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
 } 
