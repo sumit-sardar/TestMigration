@@ -2275,7 +2275,7 @@ function registerDelegate(tree){
 						$("#Select_Proctor_Tab").css('display', 'none');	
 						$("#proctorOrgNodeHierarchy").undelegate();
 						var schedulerId = $("#schedulerUserId").val();
-		 				addAllProcsForOklahoma(schedulerId);
+		 				//addAllProcsForOklahoma(schedulerId); -- Changes for Story "OK - 2013 - Fall - 032 - EQ Form visibility" Date: 25Sep,2013
 						returnSelectedProctor(); // Need to update temp variables also
 					}
 			},
