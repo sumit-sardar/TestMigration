@@ -123,11 +123,13 @@
         				<a href="#" id="resetTestSessionLink" onClick="gotoMenuAction('services.do', 'resetTestSessionLink');"><lb:label key="session.menu.resetTestSession" /></a>
         			 </li>
         			 </c:if>
+        			 <!-- Changes for defect #74757
         			 <c:if test="${sessionScope.isAccountFileDownloadVisible}">	
         			 <li>
         				<a href="#" id="showAccountFileDownloadLink" onClick="gotoMenuAction('services.do', 'showAccountFileDownloadLink');"><lb:label key="session.menu.userAccountsFiles" /></a>
         			 </li>
         			 </c:if>
+        			 -->
         			 <!--	
         			 <ctb:auth roles="Administrator">
 	        		 <c:if test="${true}">	
