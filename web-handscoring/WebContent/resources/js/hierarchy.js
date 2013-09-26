@@ -883,6 +883,13 @@ function populateScoringStudentGrid() {
 					$("#showByStudent").attr('disabled',false);
 				}
 				
+				//**[IAA] defect#75454: add title attribute to all gs_testCatalogName select options. Long CatalogNames are cut (in IE)
+				$("#gs_testCatalogName option").each(function(){
+					if (!$(this).attr("title").length>0)
+					$(this).attr("title", $(this).val());
+				});
+				$("#gs_testCatalogName").attr("title", $("#gs_testCatalogName option:selected").val());
+
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
