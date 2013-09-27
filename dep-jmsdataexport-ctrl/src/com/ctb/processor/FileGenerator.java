@@ -1024,7 +1024,7 @@ public class FileGenerator {
 						.getCustomerDemographicId());
 
 				if (customerDemoName.equalsIgnoreCase("Ethnicity")) {
-					setEthnicity(sd, tfil);
+					setEthnicity(sd, tfil,studentDem.getCustomerDemographicId());
 				} else if (customerDemoName.equalsIgnoreCase("Disability")) {
 					setDisabilityCode(sd, tfil);
 				} else if (customerDemoName.startsWith("Home")) {
@@ -1130,45 +1130,47 @@ public class FileGenerator {
 
 	}
 
-	private void setEthnicity(Set<StudentDemographic> sd, Tfil tfil) {
+	private void setEthnicity(Set<StudentDemographic> sd, Tfil tfil, Integer customerDemographicId) {
 
 		for (StudentDemographic studentDemo : sd) {
-			if (studentDemo.getValueName().startsWith("American")) {
-				tfil.setEthinicity("1");
-			} else if (studentDemo.getValueName().startsWith("African")) {
-				tfil.setEthinicity("2");
-			} else if (studentDemo.getValueName().startsWith("Asian")) {
-				tfil.setEthinicity("3");
-			} else if (studentDemo.getValueName().startsWith("Pacific")) {
-				tfil.setEthinicity("4");
-			} else if (studentDemo.getValueName().startsWith("Hispanic")) {
-				tfil.setEthinicity("5");
-			} else if (studentDemo.getValueName().startsWith("White")) {
-				tfil.setEthinicity("6");
-			} else if (studentDemo.getValueName().startsWith("Multiethnic")) {
-				tfil.setEthinicity("7");
-			} else if (studentDemo.getValueName().startsWith("Other")) {
-				tfil.setEthinicity("8");
-			} else if (studentDemo.getValueName().startsWith("mexicano")) {
-				tfil.setEthinicity("1");
-			} else if (studentDemo.getValueName().startsWith(
-			"mexicano-americano")) {
-				tfil.setEthinicity("2");
-			} else if (studentDemo.getValueName().startsWith("cubano")) {
-				tfil.setEthinicity("3");
-			} else if (studentDemo.getValueName()
-					.startsWith("cubano-americano")) {
-				tfil.setEthinicity("4");
-			} else if (studentDemo.getValueName().startsWith("puertorrique")) {
-				tfil.setEthinicity("5");
-			} else if (studentDemo.getValueName().startsWith("dominicano")) {
-				tfil.setEthinicity("6");
-			} else if (studentDemo.getValueName().startsWith("centroamericano")) {
-				tfil.setEthinicity("7");
-			} else if (studentDemo.getValueName().startsWith("sudamericano")) {
-				tfil.setEthinicity("8");
-			} else if (studentDemo.getValueName().startsWith("otro")) {
-				tfil.setEthinicity("9");
+			if(studentDemo.getCustomerDemographicId()==customerDemographicId) {
+				if (studentDemo.getValueName().startsWith("American")) {
+					tfil.setEthinicity("1");
+				} else if (studentDemo.getValueName().startsWith("African")) {
+					tfil.setEthinicity("2");
+				} else if (studentDemo.getValueName().startsWith("Asian")) {
+					tfil.setEthinicity("3");
+				} else if (studentDemo.getValueName().startsWith("Pacific")) {
+					tfil.setEthinicity("4");
+				} else if (studentDemo.getValueName().startsWith("Hispanic")) {
+					tfil.setEthinicity("5");
+				} else if (studentDemo.getValueName().startsWith("White")) {
+					tfil.setEthinicity("6");
+				} else if (studentDemo.getValueName().startsWith("Multiethnic")) {
+					tfil.setEthinicity("7");
+				} else if (studentDemo.getValueName().startsWith("Other")) {
+					tfil.setEthinicity("8");
+				} else if (studentDemo.getValueName().startsWith("mexicano-americano")) {
+					tfil.setEthinicity("2");
+				} else if (studentDemo.getValueName().startsWith(
+				"mexicano")) {
+					tfil.setEthinicity("1");
+				} else if (studentDemo.getValueName().startsWith("cubano-americano")) {
+					tfil.setEthinicity("4");
+				} else if (studentDemo.getValueName()
+						.startsWith("cubano")) {
+					tfil.setEthinicity("3");
+				} else if (studentDemo.getValueName().startsWith("puertorrique")) {
+					tfil.setEthinicity("5");
+				} else if (studentDemo.getValueName().startsWith("dominicano")) {
+					tfil.setEthinicity("6");
+				} else if (studentDemo.getValueName().startsWith("centroamericano")) {
+					tfil.setEthinicity("7");
+				} else if (studentDemo.getValueName().startsWith("sudamericano")) {
+					tfil.setEthinicity("8");
+				} else if (studentDemo.getValueName().startsWith("otro")) {
+					tfil.setEthinicity("9");
+				}
 			}
 		}
 	}
