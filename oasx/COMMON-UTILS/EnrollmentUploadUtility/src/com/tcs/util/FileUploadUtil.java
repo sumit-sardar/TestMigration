@@ -128,6 +128,266 @@ public class FileUploadUtil {
 			return getSaveOrUpdateEnrollmentBySubject(enrollmentTableName);
 	}
 	public static String getSaveOrUpdateEnrollmentByGrade(String enrollmentTableName){
+		String sql = " MERGE INTO "+enrollmentTableName+" ssenrollment USING (select ? AS SITE_SURVEY_ID,  ? AS THIRD_GRADE,? AS FOURTH_GRADE, ? AS FIFTH_GRADE,"+
+               "? AS SIXTH_GRADE, ? AS SEVENTH_GRADE, ? AS EIGHTH_GRADE, ? AS THIRD_GRADE_CHK, "+                                                                                                                                            
+"? AS FOURTH_GRADE_CHK ,"+                                                                                                                                                                                              
+"? AS FIFTH_GRADE_CHK ,  "+                                                                                                                                                                                         
+"? AS SIXTH_GRADE_CHK ,    "+                                                                                                                                                                                       
+"? AS SEVENTH_GRADE_CHK ,    "+                                                                                                                                                                                      
+"? AS EIGHTH_GRADE_CHK "+
+ "         from dual) temp "+
+ "ON (ssenrollment.site_survey_id = temp.site_survey_id)"+
+ " WHEN MATCHED THEN"+
+  " UPDATE"+
+   "   SET THIRD_GRADE         = temp.THIRD_GRADE,"+
+    "      FOURTH_GRADE        = temp.FOURTH_GRADE,"+
+     "     FIFTH_GRADE         = temp.FIFTH_GRADE,"+
+      "    SIXTH_GRADE         = temp.SIXTH_GRADE,"+
+       "   SEVENTH_GRADE       = temp.SEVENTH_GRADE,"+
+        "  EIGHTH_GRADE        = temp.EIGHTH_GRADE,"+
+        
+	  "THIRD_GRADE_CHK  = temp.THIRD_GRADE_CHK,"+                                                                                                                                                                                                           
+"FOURTH_GRADE_CHK   = temp.FOURTH_GRADE_CHK,     "+                                                                                                                                                                                           
+"FIFTH_GRADE_CHK   = temp.FIFTH_GRADE_CHK,         "+                                                                                                                                                                                          
+"SIXTH_GRADE_CHK   = temp.SIXTH_GRADE_CHK,           "+                                                                                                                                                                                              
+"SEVENTH_GRADE_CHK   = temp.SEVENTH_GRADE_CHK,         "+                                                                                                                                                                                               
+"EIGHTH_GRADE_CHK  = temp.EIGHTH_GRADE_CHK ,"+
+
+" UPDATED_DATE_TIME   = SYSDATE,"+
+"TESTSESSION_PER_DAY = ?,"+
+"TOTAL_TESTING_DAYS  = ?"+
+
+" WHEN NOT MATCHED THEN"+
+ "  INSERT"+
+  "   (SITE_SURVEY_ID,"+
+   "   THIRD_GRADE,"+
+    "  FOURTH_GRADE,"+
+     " FIFTH_GRADE,"+
+      "SIXTH_GRADE,"+
+      "SEVENTH_GRADE,"+
+    "  EIGHTH_GRADE,"+
+    
+    "  THIRD_GRADE_CHK   ,  "+                                                                                                                                                                                                 
+"FOURTH_GRADE_CHK         ,   "+                                                                                                                                                                                             
+"FIFTH_GRADE_CHK           ,    "+                                                                                                                                                                                      
+"SIXTH_GRADE_CHK            ,     "+                                                                                                                                                                                          
+"SEVENTH_GRADE_CHK           ,      "+                                                                                                                                                                                         
+"EIGHTH_GRADE_CHK ," +
+"TESTSESSION_PER_DAY,"+
+    "  TOTAL_TESTING_DAYS )"+
+ "  VALUES"+
+  "   (temp. SITE_SURVEY_ID,"+
+   "   temp.THIRD_GRADE,"+
+    "  temp.FOURTH_GRADE,"+
+     " temp.FIFTH_GRADE,"+
+      "temp.SIXTH_GRADE,"+
+  "    temp.SEVENTH_GRADE,"+
+   "   temp.EIGHTH_GRADE,"+
+    
+  "    temp. THIRD_GRADE_CHK   ,"+                                                                                                                                                                                                    
+"temp. FOURTH_GRADE_CHK         , "+                                                                                                                                                                                              
+"temp. FIFTH_GRADE_CHK           ,  "+                                                                                                                                                                                          
+"temp. SIXTH_GRADE_CHK            ,   "+                                                                                                                                                                                         
+"temp. SEVENTH_GRADE_CHK           ,    "+                                                                                                                                                                                       
+"temp. EIGHTH_GRADE_CHK         ," +
+"  ?,"+
+     " ?)";
+		return sql;
+	}
+	
+	public static String getSaveOrUpdateEnrollmentByGrade_wv(String enrollmentTableName){
+		String sql = " MERGE INTO "+enrollmentTableName+" ssenrollment USING (select ? AS SITE_SURVEY_ID,  ? AS THIRD_GRADE,? AS FOURTH_GRADE, ? AS FIFTH_GRADE,"+
+        "? AS SIXTH_GRADE, ? AS SEVENTH_GRADE, ? AS EIGHTH_GRADE, ? AS NINETH_GRADE, ? AS TENTH_GRADE, ? AS ELEVENTH_GRADE,? AS THIRD_GRADE_CHK, "+                                                                                                                                            
+"? AS FOURTH_GRADE_CHK ,"+                                                                                                                                                                                              
+"? AS FIFTH_GRADE_CHK ,  "+                                                                                                                                                                                         
+"? AS SIXTH_GRADE_CHK ,    "+                                                                                                                                                                                       
+"? AS SEVENTH_GRADE_CHK ,    "+                                                                                                                                                                                      
+"? AS EIGHTH_GRADE_CHK ,   "+
+"? AS NINETH_GRADE_CHK ,    "+                                                                                                                                                                                       
+"? AS TENTH_GRADE_CHK ,    "+                                                                                                                                                                                      
+"? AS ELEVENTH_GRADE_CHK   "+
+"         from dual) temp "+
+"ON (ssenrollment.site_survey_id = temp.site_survey_id)"+
+" WHEN MATCHED THEN"+
+" UPDATE"+
+"   SET THIRD_GRADE         = temp.THIRD_GRADE,"+
+"      FOURTH_GRADE        = temp.FOURTH_GRADE,"+
+"     FIFTH_GRADE         = temp.FIFTH_GRADE,"+
+"    SIXTH_GRADE         = temp.SIXTH_GRADE,"+
+"   SEVENTH_GRADE       = temp.SEVENTH_GRADE,"+
+ "  EIGHTH_GRADE        = temp.EIGHTH_GRADE,"+
+ //////////////////start///////////////////////
+ "    NINETH_GRADE         = temp.NINETH_GRADE,"+
+ "   TENTH_GRADE       = temp.TENTH_GRADE,"+
+  "  ELEVENTH_GRADE        = temp.ELEVENTH_GRADE,"+
+ ////////////////END/////////////////
+"THIRD_GRADE_CHK  = temp.THIRD_GRADE_CHK,"+                                                                                                                                                                                                           
+"FOURTH_GRADE_CHK   = temp.FOURTH_GRADE_CHK,     "+                                                                                                                                                                                           
+"FIFTH_GRADE_CHK   = temp.FIFTH_GRADE_CHK,         "+                                                                                                                                                                                          
+"SIXTH_GRADE_CHK   = temp.SIXTH_GRADE_CHK,           "+                                                                                                                                                                                              
+"SEVENTH_GRADE_CHK   = temp.SEVENTH_GRADE_CHK,         "+                                                                                                                                                                                               
+"EIGHTH_GRADE_CHK  = temp.EIGHTH_GRADE_CHK ,"+
+///////////////////////start///////////////////////////////
+"NINETH_GRADE_CHK   = temp.NINETH_GRADE_CHK,           "+                                                                                                                                                                                              
+"TENTH_GRADE_CHK   = temp.TENTH_GRADE_CHK,         "+                                                                                                                                                                                               
+"ELEVENTH_GRADE_CHK  = temp.ELEVENTH_GRADE_CHK ,"+
+
+////////////////////////end//////////////////////
+
+" UPDATED_DATE_TIME   = SYSDATE,"+
+"TESTSESSION_PER_DAY = ?,"+
+"TOTAL_TESTING_DAYS  = ?"+
+
+" WHEN NOT MATCHED THEN"+
+"  INSERT"+
+"   (SITE_SURVEY_ID,"+
+"   THIRD_GRADE,"+
+"  FOURTH_GRADE,"+
+" FIFTH_GRADE,"+
+"SIXTH_GRADE,"+
+"SEVENTH_GRADE,"+
+"  EIGHTH_GRADE,"+
+//////////////start////////
+"NINETH_GRADE,"+
+"TENTH_GRADE,"+
+"  ELEVENTH_GRADE,"+
+///////////end///////////
+"  THIRD_GRADE_CHK   ,  "+                                                                                                                                                                                                 
+"FOURTH_GRADE_CHK         ,   "+                                                                                                                                                                                             
+"FIFTH_GRADE_CHK           ,    "+                                                                                                                                                                                      
+"SIXTH_GRADE_CHK            ,     "+                                                                                                                                                                                          
+"SEVENTH_GRADE_CHK           ,      "+                                                                                                                                                                                         
+"EIGHTH_GRADE_CHK ," +
+/////////////start/////////
+"NINETH_GRADE_CHK            ,     "+                                                                                                                                                                                          
+"TENTH_GRADE_CHK           ,      "+                                                                                                                                                                                         
+"ELEVENTH_GRADE_CHK ," +
+////////end/////////
+"TESTSESSION_PER_DAY,"+
+"  TOTAL_TESTING_DAYS )"+
+"  VALUES"+
+"   (temp. SITE_SURVEY_ID,"+
+"   temp.THIRD_GRADE,"+
+"  temp.FOURTH_GRADE,"+
+" temp.FIFTH_GRADE,"+
+"temp.SIXTH_GRADE,"+
+"    temp.SEVENTH_GRADE,"+
+"   temp.EIGHTH_GRADE,"+
+
+//////////////////start///////////////////////
+"   temp.NINETH_GRADE,"+
+"   temp.TENTH_GRADE,"+
+"   temp.ELEVENTH_GRADE,"+
+////////////////END/////////////////
+
+"temp. THIRD_GRADE_CHK   ,"+                                                                                                                                                                                                    
+"temp. FOURTH_GRADE_CHK         , "+                                                                                                                                                                                              
+"temp. FIFTH_GRADE_CHK           ,  "+                                                                                                                                                                                          
+"temp. SIXTH_GRADE_CHK            ,   "+                                                                                                                                                                                         
+"temp. SEVENTH_GRADE_CHK           ,    "+                                                                                                                                                                                       
+"temp. EIGHTH_GRADE_CHK         ," +
+
+//////////////////////////////////start/////////////////////////
+"temp.NINETH_GRADE_CHK,           "+                                                                                                                                                                                              
+"temp.TENTH_GRADE_CHK,         "+                                                                                                                                                                                               
+"temp.ELEVENTH_GRADE_CHK ,"+
+
+///////////////////////////end/////////////////////////////////////////
+"  ?,"+
+" ?)";
+		return sql;
+	}
+	
+public static String getSaveOrUpdateEnrollmentBySubject(String enrollmentTableName){
+		
+		String sql = "MERGE INTO "+enrollmentTableName+" ssenrollment  "+
+		"  USING (select ? AS SITE_SURVEY_ID,"+
+	              "? AS SUB_ALG1,"+
+	             " ? AS SUB_ALG2,"+
+	             " ? AS SUB_USHIS,"+
+	             " ? AS SUB_BIO,"+
+	              "? AS SUB_GEO,"+
+	              "? AS SUB_ENG2,"+
+	              "? AS SUB_ENG3,"+
+	             " ? AS SUB_ALG1_CHK ,  "+                                                                                                                                                                                                            
+	"? AS SUB_ALG2_CHK,    "+                                                                                                                                                                                                           
+	"? AS SUB_USHIS_CHK ,   "+                                                                                                                                                                                                          
+	"? AS SUB_BIO_CHK ,     "+                                                                                                                                                                                                          
+	"? AS SUB_GEO_CHK ,     "+                                                                                                                                                                                                          
+	"? AS SUB_ENG2_CHK ,    "+                                                                                                                                                                                                         
+	"? AS SUB_ENG3_CHK "+
+	        " from dual) temp "+
+	" ON (ssenrollment.site_survey_id = temp.site_survey_id)"+
+	" WHEN MATCHED THEN "+
+	 " UPDATE "+
+	     " SET SUB_ALG1            = temp.SUB_ALG1,"+
+	      "   SUB_ALG2            = temp.SUB_ALG2,"+
+	      "   SUB_USHIS           = temp.SUB_USHIS,"+
+	      "   SUB_BIO             = temp.SUB_BIO,"+
+	       "  SUB_GEO             = temp.SUB_GEO,"+
+	      "   SUB_ENG2            = temp.SUB_ENG2,"+
+	      "   SUB_ENG3            = temp.SUB_ENG3,"+
+	      
+	        " SUB_ALG1_CHK  = temp.SUB_ALG1_CHK, "+                                                                                                                                                                                                            
+		"SUB_ALG2_CHK = temp.SUB_ALG2_CHK,      "+                                                                                                                                                                                                        
+		"SUB_USHIS_CHK  = temp.SUB_USHIS_CHK, "+                                                                                                                                                                                                           
+		"SUB_BIO_CHK   = temp.SUB_BIO_CHK,    "+                                                                                                                                                                                                         
+		"SUB_GEO_CHK  = temp.SUB_GEO_CHK,    "+                                                                                                                                                                                                          
+		"SUB_ENG2_CHK = temp.SUB_ENG2_CHK,   "+                                                                                                                                                                                                          
+		" SUB_ENG3_CHK = temp.SUB_ENG3_CHK,"+
+		
+		  " UPDATED_DATE_TIME   = SYSDATE,"+
+	        " TESTSESSION_PER_DAY = ?,"+
+	        " TOTAL_TESTING_DAYS  = ? "+
+	        
+	" WHEN NOT MATCHED THEN"+
+	 " INSERT"+
+	   " (SITE_SURVEY_ID,"+
+	     "SUB_ALG1,"+
+	     "SUB_ALG2,"+
+	     "SUB_USHIS,"+
+	     "SUB_BIO,"+
+	    " SUB_GEO,"+
+	    " SUB_ENG2,"+
+	    " SUB_ENG3,"+
+	    
+		"SUB_ALG1_CHK , "+                                                                                                                                                                                                             
+		"SUB_ALG2_CHK ,  "+                                                                                                                                                                                                            
+		"SUB_USHIS_CHK ,   "+                                                                                                                                                                                                          
+		"SUB_BIO_CHK ,       "+                                                                                                                                                                                                        
+		"SUB_GEO_CHK ,         "+                                                                                                                                                                                                      
+		"SUB_ENG2_CHK,           "+                                                                                                                                                                                                   
+		"SUB_ENG3_CHK, "+
+		
+		" TESTSESSION_PER_DAY,"+
+	    " TOTAL_TESTING_DAYS"+
+	    " )"+
+	 " VALUES "+
+	    " (temp. SITE_SURVEY_ID,"+
+	    " temp.SUB_ALG1,"+
+	    " temp.SUB_ALG2,"+
+	    " temp.SUB_USHIS,"+
+	     "temp.SUB_BIO,"+
+	    " temp.SUB_GEO,"+
+	    " temp.SUB_ENG2,"+
+	    " temp.SUB_ENG3,"+
+	
+	"temp.SUB_ALG1_CHK ,"+                                                                                                                                                                                                              
+	"temp.SUB_ALG2_CHK ,  "+                                                                                                                                                                                                            
+	"temp.SUB_USHIS_CHK ,   "+                                                                                                                                                                                                          
+	"temp.SUB_BIO_CHK ,       "+                                                                                                                                                                                                        
+	"temp.SUB_GEO_CHK ,         "+                                                                                                                                                                                                      
+	"temp.SUB_ENG2_CHK,           "+                                                                                                                                                                                                   
+	"temp.SUB_ENG3_CHK, "+
+	
+	" ?,"+
+	" ?"+
+	")";
+		
+		return sql;
+	}
+
+	/*public static String getSaveOrUpdateEnrollmentByGrade(String enrollmentTableName){
 		String sql = " MERGE INTO "+enrollmentTableName+" ssenrollment USING (select ? AS SITE_SURVEY_ID, ? AS THIRD_GRADE, ? AS  FOURTH_GRADE, ? AS FIFTH_GRADE, ? AS SIXTH_GRADE, ? AS SEVENTH_GRADE,  ? AS EIGHTH_GRADE  from dual) temp ON (ssenrollment.site_survey_id = temp.site_survey_id ) WHEN MATCHED THEN   UPDATE  SET THIRD_GRADE  = temp.THIRD_GRADE,  FOURTH_GRADE  = temp.FOURTH_GRADE,  FIFTH_GRADE   = temp.FIFTH_GRADE,   SIXTH_GRADE   = temp.SIXTH_GRADE,  SEVENTH_GRADE  = temp.SEVENTH_GRADE, EIGHTH_GRADE  = temp.EIGHTH_GRADE, UPDATED_DATE_TIME = SYSDATE,TESTSESSION_PER_DAY=?,TOTAL_TESTING_DAYS=? WHEN NOT MATCHED  THEN   INSERT     (SITE_SURVEY_ID,      THIRD_GRADE,      FOURTH_GRADE,      FIFTH_GRADE,      SIXTH_GRADE,      SEVENTH_GRADE,      EIGHTH_GRADE, TESTSESSION_PER_DAY, TOTAL_TESTING_DAYS) VALUES   ( temp. SITE_SURVEY_ID, temp.THIRD_GRADE,   temp.FOURTH_GRADE,   temp.FIFTH_GRADE,  temp.SIXTH_GRADE, temp.SEVENTH_GRADE,  temp.EIGHTH_GRADE,?,?)";
 
 		return sql;
@@ -136,10 +396,10 @@ public class FileUploadUtil {
 		String sql = " MERGE INTO "+enrollmentTableName+" ssenrollment USING (select ? AS SITE_SURVEY_ID, ? AS SUB_ALG1, ? AS  SUB_ALG2, ? AS SUB_USHIS, ? AS SUB_BIO, ? AS SUB_GEO,  ? AS SUB_ENG2, ? AS SUB_ENG3  from dual) temp ON (ssenrollment.site_survey_id = temp.site_survey_id ) WHEN MATCHED THEN   UPDATE  SET SUB_ALG1  = temp.SUB_ALG1,  SUB_ALG2  = temp.SUB_ALG2,  SUB_USHIS   = temp.SUB_USHIS,   SUB_BIO   = temp.SUB_BIO,  SUB_GEO  = temp.SUB_GEO, SUB_ENG2  = temp.SUB_ENG2, SUB_ENG3  = temp.SUB_ENG3, UPDATED_DATE_TIME = SYSDATE,TESTSESSION_PER_DAY=?,TOTAL_TESTING_DAYS=? WHEN NOT MATCHED  THEN   INSERT     (SITE_SURVEY_ID,      SUB_ALG1,      SUB_ALG2,      SUB_USHIS,      SUB_BIO,      SUB_GEO,      SUB_ENG2, SUB_ENG3, TESTSESSION_PER_DAY, TOTAL_TESTING_DAYS) VALUES   ( temp. SITE_SURVEY_ID, temp.SUB_ALG1,   temp.SUB_ALG2,   temp.SUB_USHIS,  temp.SUB_BIO, temp.SUB_GEO,  temp.SUB_ENG2, temp.SUB_ENG3,?,?)";
 
 		return sql;
-	}
+	}*/
 	public static String getSiteSurveyIDBySchoolAndDistrictNo( ) {
-		String sql =  "SELECT DISTINCT S_SITE.SITE_SURVEY_ID  FROM SITE_SURVEY S_SITE, SITE_SURVEY D_SITE WHERE D_SITE.SITE_ID = ? AND UPPER(D_SITE.SITE_TYPE) = UPPER ('CORPORATION') AND   S_SITE.SITE_ID = ?  AND  UPPER(S_SITE.SITE_TYPE) = UPPER ('SCHOOL')  AND TRIM(S_SITE.SITE_PATH) = (D_SITE.SITE_PATH||'/'||TRIM(S_SITE.SITE_NAME)) ";
-		return sql;
+		String sql =  "SELECT DISTINCT S_SITE.SITE_SURVEY_ID  FROM SITE_SURVEY S_SITE, SITE_SURVEY D_SITE WHERE  D_SITE.CUSTOMER_ID= ? AND D_SITE.SITE_ID = ? AND UPPER(D_SITE.SITE_TYPE) = UPPER ('CORPORATION') AND   S_SITE.SITE_ID = ?  AND  UPPER(S_SITE.SITE_TYPE) = UPPER ('SCHOOL')  AND TRIM(S_SITE.SITE_PATH) = (D_SITE.SITE_PATH||'/'||TRIM(S_SITE.SITE_NAME)) ";
+		return sql;   
 	}
 
 	public static String getCustomerIDBySchoolAndDistrictNo( ) {

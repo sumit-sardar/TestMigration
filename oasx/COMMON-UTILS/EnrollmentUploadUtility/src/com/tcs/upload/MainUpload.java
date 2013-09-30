@@ -1,16 +1,19 @@
 package com.tcs.upload;
 
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.tcs.dataaccess.AbstractConnectionManager;
 import com.tcs.dataaccess.ConnectionManager;
 import com.tcs.util.CSVFileReader;
 
 public class MainUpload {
-	
+	private static int CUSTOMER_ID_RTS = 0;
+
 
 	/**
 	 * @param args
@@ -61,6 +64,11 @@ public class MainUpload {
 		}
 		
 		try {
+			Properties prop = new Properties ();
+			prop.load(new FileInputStream (dbprop));
+			CUSTOMER_ID_RTS = Integer.parseInt(prop.getProperty("rts.customerId"));
+		// Integer(ExtractUtil.getDetail("rts.customerId"));
+			
 			
 			con = ConnectionManager.getConnection();
 			con.setAutoCommit(false);
@@ -73,11 +81,17 @@ public class MainUpload {
 			String enrollmentTableName = "site_survey_enrollment";
 			String testSessionPerday = "3";
 			String noTestingDays = "10";
-			for (int i = 0; i < list.size(); i++) {
+			
+			String testSessionPerday_wv = "2";
+			String noTestingDays_wv = "20";
+			
+			String customerType="";
+			for (int i = 1; i < list.size(); i++) {
 				System.out.println("Processing started for row==>"+(i+1));
+				System.out.println("list.size()="+list.size());
 				String rowData[] = (String[])list.get(i);
-				
-				siteSurverId = CSVFileReader.getSiteSurveyIDBySchoolAndDistrictNo(rowData[4], rowData[5], con);
+				System.out.println("Size : "+ list.size()+"  "+rowData[4] +"   "+ rowData[5]);
+				siteSurverId = CSVFileReader.getSiteSurveyIDBySchoolAndDistrictNo(CUSTOMER_ID_RTS,rowData[4], rowData[5], con);
 				System.out.println("siteSurverId===>"+siteSurverId);
 				
 				if ( siteSurverId == 0 ) {
@@ -101,10 +115,21 @@ public class MainUpload {
 						}else						
 							isSubject = false;
 					}
-					testSessionPerday = properties.get("TESTSESSIONPERDAY") == null ? testSessionPerday : properties.get("TESTSESSIONPERDAY");
-					noTestingDays = properties.get("TOTALTESTINGDAYS") == null ? noTestingDays : properties.get("TOTALTESTINGDAYS") ;
+					customerType=properties.get("CUSTOMERTYPE");
+					System.out.println("customerType="+customerType);
+					if(customerType.equalsIgnoreCase("WV"))
+					{
+						testSessionPerday_wv = properties.get("TESTSESSIONPERDAY") == null ? testSessionPerday_wv : properties.get("TESTSESSIONPERDAY");
+						noTestingDays_wv = properties.get("TOTALTESTINGDAYS") == null ? noTestingDays_wv : properties.get("TOTALTESTINGDAYS") ;
+					}else{					
+						testSessionPerday = properties.get("TESTSESSIONPERDAY") == null ? testSessionPerday : properties.get("TESTSESSIONPERDAY");
+						noTestingDays = properties.get("TOTALTESTINGDAYS") == null ? noTestingDays : properties.get("TOTALTESTINGDAYS") ;
+					}
 					if(!isSubject)
-						CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con,enrollmentTableName,false,testSessionPerday,noTestingDays);
+						if(!customerType.equalsIgnoreCase("WV"))
+							CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con,enrollmentTableName,false,testSessionPerday,noTestingDays);
+						else
+							CSVFileReader.saveOrUpdateSiteSurveyEnrollMent_WV(rowData, siteSurverId , year, con,enrollmentTableName,testSessionPerday_wv,noTestingDays_wv);
 					else
 						CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con,enrollmentTableName,true,testSessionPerday,noTestingDays);
 				}			
