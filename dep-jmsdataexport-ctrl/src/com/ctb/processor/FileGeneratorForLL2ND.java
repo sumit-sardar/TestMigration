@@ -1073,7 +1073,7 @@ public class FileGeneratorForLL2ND {
 				} */else if (customerDemoName.startsWith("Home")) {
 					tfil.setHomeLanguage("English".equals(studentDem.getValueName()) ? "20" : studentDem.getValue());
 				} else if (customerDemoName.startsWith("Program")) {
-					setProgramParticipation(sd, tfil, roster.getProductId());
+					setProgramParticipation(sd, tfil, roster.getProductId(),studentDem.getCustomerDemographicId());
 				} else if (customerDemoName
 						.equalsIgnoreCase("Special Education")) {
 					setSpecialEducation(sd, tfil);
@@ -1100,7 +1100,7 @@ public class FileGeneratorForLL2ND {
 				} else if (customerDemoName.endsWith("S-T")) {
 					specialCodes.setSpecialCodeT(studentDem.getValueName());
 				} else if (customerDemoName.startsWith("Race")) {
-					setRacefield(sd, tfil);
+					setRacefield(sd, tfil,studentDem.getCustomerDemographicId());
 				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Speaking")) {
 					tfil.setAccommodationSpeaking(studentDem.getValue());
 				} else if (customerDemoName.startsWith("C/D/EspB") && customerDemoName.endsWith("Listening")) {
@@ -1117,43 +1117,47 @@ public class FileGeneratorForLL2ND {
 	}
 	
 	
-	private void setRacefield(Set<StudentDemographic> sd, TfilLL2ND tfil) {
+	private void setRacefield(Set<StudentDemographic> sd, TfilLL2ND tfil, Integer customerDemographicId) {
 		
 		for (StudentDemographic studentDemo : sd) {
-			if(studentDemo.getValueName().startsWith("American")) {
-				tfil.setRace1("1");
-			} else if(studentDemo.getValueName().startsWith("Asian")) {
-				tfil.setRace2("1");
-			} else if(studentDemo.getValueName().startsWith("Black")) {
-				tfil.setRace3("1");
-			} else if(studentDemo.getValueName().startsWith("Native")) {
-				tfil.setRace4("1");
-			} else if(studentDemo.getValueName().startsWith("White")) {
-				tfil.setRace5("1");
+			if(studentDemo.getCustomerDemographicId()==customerDemographicId) {
+				if(studentDemo.getValueName().startsWith("American")) {
+					tfil.setRace1("1");
+				} else if(studentDemo.getValueName().startsWith("Asian")) {
+					tfil.setRace2("1");
+				} else if(studentDemo.getValueName().startsWith("Black")) {
+					tfil.setRace3("1");
+				} else if(studentDemo.getValueName().startsWith("Native")) {
+					tfil.setRace4("1");
+				} else if(studentDemo.getValueName().startsWith("White")) {
+					tfil.setRace5("1");
+				}
 			}
 		}
 	}
 
 	private void setProgramParticipation(Set<StudentDemographic> sd,
-			TfilLL2ND tfil, Integer productId) {
+			TfilLL2ND tfil, Integer productId, Integer customerDemographicId) {
 
 		for (StudentDemographic studentDemo : sd) {
-			if (studentDemo.getValueName().startsWith("AEL") 
-					&& (productId == 7501)) {
-				tfil.setAcademicEngLearner("1");
-			} else if (studentDemo.getValueName().startsWith("ESEA")) {
-				tfil.setEseaTitle1("1");
-			} else if (studentDemo.getValueName().startsWith("English Language")) {
-				tfil.setEllEseaTitle("1");
-			} else if (studentDemo.getValueName().startsWith("Gifted")) {
-				tfil.setGiftedAndTalented("1");
-			} else if (studentDemo.getValueName().startsWith("Indian Edu")) {
-				tfil.setIndianEducation("1");
-			} else if (studentDemo.getValueName().startsWith("Migrant")) {
-				tfil.setMigrantEducation("1");
-			} else if (studentDemo.getValueName().startsWith("Other")
-					&& (productId == 7501)) {
-				tfil.setOtherDemograph("1");
+			if(studentDemo.getCustomerDemographicId()==customerDemographicId) {
+				if (studentDemo.getValueName().startsWith("AEL") 
+						&& (productId == 7501)) {
+					tfil.setAcademicEngLearner("1");
+				} else if (studentDemo.getValueName().startsWith("ESEA")) {
+					tfil.setEseaTitle1("1");
+				} else if (studentDemo.getValueName().startsWith("English Language")) {
+					tfil.setEllEseaTitle("1");
+				} else if (studentDemo.getValueName().startsWith("Gifted")) {
+					tfil.setGiftedAndTalented("1");
+				} else if (studentDemo.getValueName().startsWith("Indian Edu")) {
+					tfil.setIndianEducation("1");
+				} else if (studentDemo.getValueName().startsWith("Migrant")) {
+					tfil.setMigrantEducation("1");
+				} else if (studentDemo.getValueName().startsWith("Other")
+						&& (productId == 7501)) {
+					tfil.setOtherDemograph("1");
+				}
 			}
 		}
 	}

@@ -1032,7 +1032,7 @@ public class FileGenerator {
 				} else if (customerDemoName.startsWith("USA")) {
 					tfil.setUsaSchoolEnrollment(studentDem.getValueName());
 				} else if (customerDemoName.startsWith("Program")) {
-					setProgramParticipation(sd, tfil);
+					setProgramParticipation(sd, tfil,studentDem.getCustomerDemographicId());
 				} else if (customerDemoName
 						.equalsIgnoreCase("Special Education")) {
 					setSpecialEducation(sd, tfil);
@@ -1206,20 +1206,22 @@ public class FileGenerator {
 		}
 	}
 
-	private void setProgramParticipation(Set<StudentDemographic> sd, Tfil tfil) {
+	private void setProgramParticipation(Set<StudentDemographic> sd, Tfil tfil, Integer customerDemographicId) {
 
 		for (StudentDemographic studentDemo : sd) {
-			if (studentDemo.getValueName().startsWith("ESEA")) {
-				tfil.setEseaTitle1("1");
-			} else if (studentDemo.getValueName()
-					.startsWith("English Language")) {
-				tfil.setEllEseaTitle("1");
-			} else if (studentDemo.getValueName().startsWith("Gifted")) {
-				tfil.setGiftedAndTalented("1");
-			} else if (studentDemo.getValueName().startsWith("Indian Edu")) {
-				tfil.setIndianEducation("1");
-			} else if (studentDemo.getValueName().startsWith("Migrant")) {
-				tfil.setMigrantEducation("1");
+			if(studentDemo.getCustomerDemographicId()==customerDemographicId) {
+				if (studentDemo.getValueName().startsWith("ESEA")) {
+					tfil.setEseaTitle1("1");
+				} else if (studentDemo.getValueName()
+						.startsWith("English Language")) {
+					tfil.setEllEseaTitle("1");
+				} else if (studentDemo.getValueName().startsWith("Gifted")) {
+					tfil.setGiftedAndTalented("1");
+				} else if (studentDemo.getValueName().startsWith("Indian Edu")) {
+					tfil.setIndianEducation("1");
+				} else if (studentDemo.getValueName().startsWith("Migrant")) {
+					tfil.setMigrantEducation("1");
+				}
 			}
 		}
 	}
