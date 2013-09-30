@@ -1908,21 +1908,23 @@ public class FileGeneratorForLL2ND {
 			TreeMap<String, LinkedList<RostersItem>> speakingitem = allItems.get("SPEAKING");
 			
 			/// for sr items
-			if (speakingitem.get("SR") != null) {
+			/*if (speakingitem.get("SR") != null) {
 				speakingMCItems = constractSRItemResponseString(speakingMCItems, speakingitem, 20); 
-			}
+			}*/
 
-			responsesGRT.setSpeakingMCItems(speakingMCItems);
+			//responsesGRT.setSpeakingMCItems(speakingMCItems);
 
 			if (speakingitem.get("CR") != null) {
-				speakingCRItems = constractCRItemResponseString(speakingCRItems, speakingitem, 10); 
+				speakingCRItems = constractCRItemResponseString(speakingCRItems, speakingitem, 20); 
     		}
 
-			responsesGRT.setSpeakingCRItems(speakingCRItems);
+			responsesGRT.setSpeakingMCItems(speakingCRItems);
+			
+			responsesGRT.setSpeakingCRItems("");
 
 		} else {
 			responsesGRT.setSpeakingMCItems("");
-			responsesGRT.setSpeakingMCItems("");
+			responsesGRT.setSpeakingCRItems("");
 		}
 		
 
