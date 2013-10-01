@@ -18,8 +18,10 @@
 					<table id="to_be_export_student_list" class="gridTable"></table>
 					<div id="to_be_export_student_list_pager" class="gridTable"></div>
 					<BR />
+					<lb:label key="data.export.refresh.message" /> <BR /><BR />
 					<input id ="dataExportNextButton" type="button"  class="ui-widget-header" value=<lb:label key="data.export.title.next" prefix="'&nbsp;&nbsp;&nbsp;" suffix="&nbsp;&nbsp;&nbsp;'" /> onClick="getUnscoredStudentDetails('false'); return false;"/>
 					<input id ="dataExportBySession" type="button"  class="ui-widget-header" value="Export by Session" onClick="getUnscoredStudentDetails('true'); return false;"/>
+					<input id ="dataExportRefresh" type="button"  class="ui-widget-header" value="Refresh" onClick="refreshStudentList(); return false;"/>
 				</div>
 			<BR />
 		</td>
