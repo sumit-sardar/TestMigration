@@ -213,6 +213,45 @@ public class TestSessionStatusImpl implements TestSessionStatus
      * @return CustomerReportData
 	 * @throws com.ctb.exception.CTBBusinessException
      */
+    public CustomerReportData getTASCReportData(String userName,Integer orgNodeId, Integer programId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
+        try {
+            validator.validate(userName, null, "testAdmin.getCustomerReportData");
+            CustomerReportData crd = new CustomerReportData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            CustomerReport [] cr = reportBridge.getReportAssignmentsForUser(userName, programId, orgNodeId);
+            for (int i=0; i < cr.length; i++) {
+                String reportURL = cr[i].getReportUrl();
+                String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), cr[i].getSystemKey());
+                String paramsPlainText = "NodeInstanceId="+orgNodeId
+                    +"&LevelId="+cr[i].getCategoryLevel()+"&Timestamp="+(new Date()).toString();
+                String encryptedParams = DESUtils.encrypt(paramsPlainText, cr[i].getCustomerKey());
+                reportURL = reportURL +"?sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1&GetTestSessionWindow=1";
+                cr[i].setReportUrl(reportURL);
+            }
+            crd.setCustomerReports(cr, pageSize);
+            if(filter != null) crd.applyFiltering(filter);
+            if(sort != null) crd.applySorting(sort);
+            if(page != null) crd.applyPaging(page);
+            return crd;
+        } catch (SQLException se) {
+            CustomerReportDataNotFoundException tee = new CustomerReportDataNotFoundException("ScheduleTestImpl: getCustomerReportData: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+    }
+
+    /**
+     * Retrieves the set of online reports available to a user's customer
+     * @common:operation
+     * @param userName - identifies the user
+     * @param orgNodeId - identifies the org node
+     * @param  programId - identifies the program
+     * @return CustomerReportData
+	 * @throws com.ctb.exception.CTBBusinessException
+     */
     public CustomerReportData getCustomerReportData(String userName,Integer orgNodeId, Integer programId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
         try {
             validator.validate(userName, null, "testAdmin.getCustomerReportData");

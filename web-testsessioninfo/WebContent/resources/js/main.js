@@ -89,3 +89,9 @@ $().ready(function(){
 	});
 	
 });
+
+function openPrismApplication(location)
+{
+    window.open(location, "Prism Online Reporting",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=800, height=600');
+    return false;
+}

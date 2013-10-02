@@ -356,6 +356,7 @@ public interface TestSessionStatus
      */
     
     com.ctb.bean.testAdmin.CustomerReportData getCustomerReportData(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer programId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.testAdmin.CustomerReportData getTASCReportData(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer programId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * Retrieves a list of ancestor org nodes of the specified org node

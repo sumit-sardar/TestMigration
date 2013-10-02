@@ -3437,7 +3437,8 @@ public class SessionOperationController extends PageFlowController {
      */    
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "turnLeafReport", path = "turnLeafReport.do"),             
-            @Jpf.Forward(name = "lasLinksReport", path = "lasLinksReport.do")             
+            @Jpf.Forward(name = "lasLinksReport", path = "lasLinksReport.do"),             
+            @Jpf.Forward(name = "prismReport", path = "prismReport.do")             
         }) 
     protected Forward reports()
     {
@@ -3447,12 +3448,45 @@ public class SessionOperationController extends PageFlowController {
 		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
 		setupUserPermission(customerConfigs);
 		
+		if (isTASCCustomer(customerConfigs)) 		
+			return new Forward("prismReport");
+		else
 		if (isLaslinkCustomer(customerConfigs)) 		
 			return new Forward("lasLinksReport");
 		else
 			return new Forward("turnLeafReport");
     }
 
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "prism_report_home.jsp") 
+        })
+    protected Forward prismReport()
+    {
+        if (this.reportManager == null)
+        {
+        	initReportManager();
+        }
+    	
+        Integer programId = this.reportManager.getSelectedProgramId();
+        Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
+
+        List reportList = buildTASCReportList(orgNodeId, programId);
+
+        this.getRequest().setAttribute("reportList", reportList);
+        
+        this.getRequest().setAttribute("programList", this.reportManager.getProgramNames());
+        this.getRequest().setAttribute("program", this.reportManager.getSelectedProgramName());
+
+        this.getRequest().setAttribute("organizationList", this.reportManager.getOrganizationNames());
+        this.getRequest().setAttribute("organization", this.reportManager.getSelectedOrganizationName());
+
+        this.getRequest().setAttribute("multipleProgram", this.reportManager.isMultiplePrograms());
+        this.getRequest().setAttribute("multipleOrganizations", this.reportManager.isMultipleOrganizations());
+        this.getRequest().setAttribute("singleProgOrg", this.reportManager.isSingleProgramAndOrganization());
+        
+        return new Forward("success");
+    }
+    
      
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "home",
@@ -3572,6 +3606,25 @@ public class SessionOperationController extends PageFlowController {
     }
     
     /**
+     * buildTASCReportList
+     */
+    private List buildTASCReportList(Integer orgNodeId, Integer programId)
+    {
+        this.customerReportData = getTASCReportData(orgNodeId, programId);
+        
+        List reportList = new ArrayList();
+        CustomerReport[] crs = this.customerReportData.getCustomerReports();
+               
+        for (int i=0; i < crs.length; i++)
+        {                
+            CustomerReport cr = crs[i];
+       		reportList.add(cr);
+        }           
+              
+        return reportList; 
+    }
+    
+    /**
      * buildReportList
      */
     private List buildReportList(Integer orgNodeId, Integer programId)
@@ -3671,6 +3724,30 @@ public class SessionOperationController extends PageFlowController {
         return new Forward("success");
     }
     
+    private CustomerReportData getTASCReportData(Integer orgNodeId, Integer programId) 
+    {
+        if (orgNodeId == null)
+        {
+            orgNodeId = this.reportManager.setSelectedOrganization(null);
+        }
+        if (programId == null)
+        {
+            programId = this.reportManager.setSelectedProgram(null);
+        }
+        
+        CustomerReportData crd = null;
+        try
+        {      
+            SortParams sort = FilterSortPageUtils.buildSortParams("DisplayName", "asc");            
+            crd = this.testSessionStatus.getTASCReportData(this.userName, orgNodeId, programId, null, null, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return crd;
+    }
+
     private CustomerReportData getCustomerReportData(Integer orgNodeId, Integer programId) 
     {
         if (orgNodeId == null)
@@ -4428,6 +4505,20 @@ public class SessionOperationController extends PageFlowController {
         }
         return new Boolean(hasScoringConfigurable);
     }*/
+    private boolean isTASCCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TASCCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	TASCCustomer = true;
+            }
+        }
+        return TASCCustomer;
+    }
 
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
