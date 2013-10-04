@@ -401,6 +401,8 @@ public class StudentScoringOperationController extends PageFlowController {
 					incompleteItemSetIdMap.put(si.getItemSetId(),si);
 				}
 				totalItemSetIdMap.put(si.getItemSetId(),si);
+				
+				//System.out.println("Parent product id :> " + si.getParentProductId());
 			}
 
 			for (Integer id : totalItemSetIdMap.keySet()){

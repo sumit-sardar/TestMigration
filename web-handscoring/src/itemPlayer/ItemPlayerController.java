@@ -1,6 +1,12 @@
 package itemPlayer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -11,6 +17,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -37,8 +45,15 @@ import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException
 public class ItemPlayerController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
 	
+	//public final String TE_ITEM_FOLDER_PATH = "C:\\workspace94\\web-handscoring\\WebContent\\itemPlayer\\items";
 	
-	   @Control()
+	private String TE_ITEM_FOLDER_PATH = null;
+	
+	//File.separator + "items";;
+	 @Control()
+	    private com.ctb.control.crscoring.TestScoring getParentProductId;
+	  
+	 @Control()
 	    private com.ctb.control.crscoring.TestScoring testScoring;
 
 	/**
@@ -155,21 +170,37 @@ public class ItemPlayerController extends PageFlowController {
         String imageId = getRequest().getParameter("imageId");
         Date createdDateTime = null;
         try{
-        
+        	System.out.println("Inside content servlet >>>>.");
+        	TE_ITEM_FOLDER_PATH  = this.getServletContext().getRealPath("itemPlayer\\items");
+        	System.out.println("path ===="+TE_ITEM_FOLDER_PATH);
             if (method.equals("downloadItem"))
                 result = OK; 
             else 
             if (method.equals("getSubtest"))
                 return new Forward("subtest"); 
             else 
-            if (method.equals("getItem")) {        
-          
-            ItemData item = this.testScoring.getItemXML(itemId);	
+            if (method.equals("getItem")) { 
+            	System.out.println("item ID >>>"+itemId);
+           String ParentProductId = this.testScoring.getParentProductId(itemId) ;	
+           ItemData item;
+           if(ParentProductId.equalsIgnoreCase("7500"))
+            {
+        	    item =  this.testScoring.getItemXMLFromADSDev(itemId);
+            }
+           else
+           {
+             item = this.testScoring.getItemXML(itemId);	
+           }
+            
+            //ItemData item = this.testScoring.getItemXML("DR0015B564");
+           // System.out.println("item >>>"+item.toString());
             createdDateTime = item.getCreatedDateTime();
-       System.out.println("Item XML Length: " + item.getItem().length);
+       //System.out.println("Item XML Length: " + item.getItem().length);
            // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
             String itemXML = new String(item.getItem());
+           // System.out.println("ItemXml1-->"+itemXML);
            itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
+           //System.out.println("ItemXml2-->"+itemXML);
             
            byte [] itemEncodedXML = itemXML.getBytes("UTF-8");
          //  byte [] decryptedContent = item.getItem();
@@ -186,7 +217,7 @@ public class ItemPlayerController extends PageFlowController {
 					 imageId = element.getAttributeValue("id");
 					if (!assetMap.containsKey(imageId) ) {
 					createImageData(imageId, element, createdDateTime );
-						//System.out.println("inside if of image caching process");
+						System.out.println("inside if of image caching process");
 					}else {
 						AssetInfo aAssetInfo = 	(AssetInfo)assetMap.get(imageId);
 						System.out.println("else date: "+ aAssetInfo.getCreatedDateTime());
@@ -199,6 +230,7 @@ public class ItemPlayerController extends PageFlowController {
 				}
 			}
 			String itemxml = updateItem(itemEncodedXML, assetMap);
+			itemxml =  ItemPlayerUtils.doUTF8Chars(itemXML);
 		//aMemoryCache.clearContent();
          //   System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
             
@@ -231,7 +263,7 @@ public class ItemPlayerController extends PageFlowController {
         
         return null; 
     }
-
+    
 
     /**
      * 
@@ -348,18 +380,108 @@ public class ItemPlayerController extends PageFlowController {
     
     private void createImageData(String imageId, Element element, Date createdDateTime){
        	String mimeType = element.getAttributeValue("type");
-		String ext = mimeType.substring(mimeType
-				.lastIndexOf("/") + 1);
-		String b64data = element.getText();
-		b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); //To Escape Base64 special character "+"
-		byte[] imageData = Base64.decode(b64data);
-		AssetInfo aAssetInfo = new AssetInfo();
-		aAssetInfo.setData(imageData);
-		aAssetInfo.setCreatedDateTime(createdDateTime);
-		aAssetInfo.setExt(ext);
-		assetMap.put(imageId, aAssetInfo);
-    
+       	if(!assetMap.containsKey(imageId)){
+       		if(mimeType.contains("zip")){
+				String b64data = element.getText();
+				b64data = b64data.replace(" ", "");
+				AssetInfo aAssetInfo = new AssetInfo();
+				
+				aAssetInfo.setCreatedDateTime(createdDateTime);
+				
+				assetMap.put(imageId, aAssetInfo);
+				try {
+					unzip(imageId, b64data);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+		}else{
+			String ext = mimeType.substring(mimeType
+					.lastIndexOf("/") + 1);
+			String b64data = element.getText();
+			b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); //To Escape Base64 special character "+"
+			byte[] imageData = Base64.decode(b64data);
+			AssetInfo aAssetInfo = new AssetInfo();
+			aAssetInfo.setData(imageData);
+			aAssetInfo.setCreatedDateTime(createdDateTime);
+			aAssetInfo.setExt(ext);
+			assetMap.put(imageId, aAssetInfo);
+		}
+      }
     }
+    
+    
+    
+    
+    
+	private  void unzip(String id,String content) throws Exception{
+		System.out.println("Unzip >>>>>");
+		final int BUFFER_SIZE = 1024;
+		content = content.replace(" ", "");
+		content = ItemPlayerUtils.replaceAll(content,"&#43;","+"); //To Escape Base64 special character "+"
+		//System.out.println("Content >>>>"+content);
+		byte[] decodedBase64 = Base64.decode(content);
+		//System.out.println("decodedBase64"+decodedBase64);
+		System.out.println("teitem path>>>>>"+TE_ITEM_FOLDER_PATH);
+		String filePath = this.TE_ITEM_FOLDER_PATH + File.separator  + id + ".zip";
+		FileOutputStream outStream = null;
+		try {
+			outStream = new FileOutputStream(filePath);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		try {
+			outStream.write(decodedBase64);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			outStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        BufferedOutputStream dest = null;
+        FileInputStream fis = new FileInputStream(filePath);
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+        ZipEntry entry;
+        File destFile;
+        while((entry = zis.getNextEntry()) != null) {               
+
+           // destFile = FilesystemUtils.combineFileNames(destinationDir, entry.getName());
+        	destFile = new File(this.TE_ITEM_FOLDER_PATH,entry.getName());
+
+            if (entry.isDirectory()) {
+                destFile.mkdirs();
+                continue;
+            } else {
+                int count;
+                byte data[] = new byte[BUFFER_SIZE];
+
+                destFile.getParentFile().mkdirs();
+
+                FileOutputStream fos = new FileOutputStream(destFile);
+                dest = new BufferedOutputStream(fos, BUFFER_SIZE);
+                while ((count = zis.read(data, 0, BUFFER_SIZE)) != -1) {
+                    dest.write(data, 0, count);
+                }
+
+                dest.flush();
+                dest.close();
+                fos.close();
+            }
+        }
+        zis.close();
+        fis.close();          
+        File tempFile = new File(this.TE_ITEM_FOLDER_PATH + File.separator +id+ ".zip");
+        if (tempFile.exists()) {
+        	tempFile.delete();
+        }        
+        
+	}
     /***
      * 
      * Update Image content for Item Player
@@ -406,6 +528,7 @@ public class ItemPlayerController extends PageFlowController {
         answerFgColor = answerFgColor.replaceAll("#", "0x");
         String answerFontSize = this.accommodations.getFontSize();*/
         
+    	
         String calculator = "0";
         String magnifier = "0";
         String screenReader = "1";
