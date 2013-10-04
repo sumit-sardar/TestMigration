@@ -171,7 +171,7 @@ public class ItemPlayerController extends PageFlowController {
         Date createdDateTime = null;
         try{
         	System.out.println("Inside content servlet >>>>.");
-        	TE_ITEM_FOLDER_PATH  = this.getServletContext().getRealPath("itemPlayer\\items");
+        	TE_ITEM_FOLDER_PATH  = this.getServletContext().getRealPath("itemPlayer/items");
         	System.out.println("path ===="+TE_ITEM_FOLDER_PATH);
             if (method.equals("downloadItem"))
                 result = OK; 
