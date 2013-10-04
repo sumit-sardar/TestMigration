@@ -5,14 +5,13 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ItemData;
 import com.ctb.bean.testAdmin.RosterElementData;
-import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
+import com.ctb.bean.testAdmin.RubricViewData;
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItemData;
-import com.ctb.bean.testAdmin.ItemData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.testAdmin.ScoringException;
 
 /**
  * Platform control provides functions related to CR item scoring.
@@ -158,6 +157,17 @@ public interface TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	public ItemData getItemXML(String itemId) throws CTBBusinessException;
+	
+	/**
+	 * This method retrieves the item xml data for view the Item 
+	 * @param itemId - item id
+	 * @return ItemData
+	 * @throws CTBBusinessException
+	 */
+	
+	public ItemData getItemXMLFromADSDev(String itemId) throws CTBBusinessException;
+	
+	public String getParentProductId(String itemId) throws CTBBusinessException;
 	
 	public TestSession getTestAdminDetails(Integer testAdminId) throws CTBBusinessException;
 	

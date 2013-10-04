@@ -45,4 +45,13 @@ public interface ADS extends JdbcControl
      */
   @JdbcControl.SQL(statement = "select ITEM_RENDITION_XML as itemXml, CREATED_DATE_TIME as createdDateTime from AA_ITEM_DECRYPTED where AA_ITEM_ID= {itemId}")
   	ScorableItem [] getDecryptedItemXml(String itemId) throws SQLException;
+  /**
+   * Changes for Las Links to get Decrypted Item XML from Item player for 7500 Parent Product Id
+   * 
+   * 
+   * 
+   */
+  @JdbcControl.SQL(statement = "select ITEM_RENDITION_XML as itemXml, CREATED_DATE_TIME as createdDateTime from MVIEW_AA_ITEM_DECRYPTED where AA_ITEM_ID= {itemId}")
+	ScorableItem [] getDecryptedItemXmlFromADSDev(String itemId) throws SQLException;
+  
 }

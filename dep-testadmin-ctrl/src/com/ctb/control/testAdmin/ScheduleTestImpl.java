@@ -201,7 +201,7 @@ public class ScheduleTestImpl implements ScheduleTest
     
     private static final int CTB_CUSTOMER_ID =2;
     
-    static final ResourceBundle rb = ResourceBundle.getBundle("security");
+//    static final ResourceBundle rb = ResourceBundle.getBundle("security");
     
 
     /**

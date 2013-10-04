@@ -56,6 +56,9 @@ public class TestScoringImpl implements TestScoring {
 	
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.testAdmin.ADS ads;
+	
+	@org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.testAdmin.CustomerConfigurations customerConfiguration;
 
 	/**
 	 * Retrieves a filtered, sorted, paged list of active students for a test
@@ -508,7 +511,56 @@ public class TestScoringImpl implements TestScoring {
 			}
 			if(itemXml != null){
 				InputStream is = itemXml.getBinaryStream();
-				Reader reader = 
+				Reader reader =//new InputStreamReader(is, Charset.forName("UTF-8")); 
+					new InputStreamReader(is, Charset.forName("ISO-8859-1"));
+				
+				 int data = reader.read();
+				    while(data != -1){
+				        char dataChar = (char) data;
+				        data = reader.read();
+				        str.append(dataChar);
+				    }
+
+			}
+			item.setItem(str.toString().getBytes());
+			item.setItemId(itemId);
+			item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
+		}
+
+
+		catch (Exception e){
+			OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while retrieving the item.", e);
+		}
+		return item;
+	}
+	
+	/***
+	 * Retrieves Decrypted Item XMl from MVIEW_AA_ITEM_DECRYPTED Database 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	@Override
+	public ItemData getItemXMLFromADSDev(String itemId) throws CTBBusinessException{
+
+		ItemData item = new ItemData();
+		Blob itemXml = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		StringBuilder str = new StringBuilder();
+
+
+		try{
+
+			ScorableItem [] scrItem = 	ads.getDecryptedItemXmlFromADSDev(itemId);
+			if(scrItem != null && scrItem.length > 0){
+				itemXml = scrItem[0].getItemXml();
+
+			}
+			if(itemXml != null){
+				InputStream is = itemXml.getBinaryStream();
+				Reader reader =//new InputStreamReader(is, Charset.forName("UTF-8")); 
 					new InputStreamReader(is, Charset.forName("ISO-8859-1"));
 				
 				 int data = reader.read();
@@ -835,6 +887,19 @@ public class TestScoringImpl implements TestScoring {
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public String getParentProductId(String itemId) throws CTBBusinessException {
+		String productId=null;
+		try {
+		  System.out.println("itemId"+itemId);	
+		  productId = customerConfiguration.getParentProductId(itemId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return productId;
 	}
 
 

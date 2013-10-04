@@ -154,5 +154,8 @@ public interface CustomerConfigurations extends JdbcControl
     @JdbcControl.SQL(statement = "select  ccvalue.customer_configuration_value as customerConfigurationValue, ccvalue.customer_configuration_id as customerConfigurationId,  ccvalue.sort_order as sortOrder from customer_configuration cc, customer_configuration_value ccvalue where cc.customer_configuration_id = ccvalue.customer_configuration_id and cc.customer_configuration_name = {configurationName} and cc.customer_id= {customerId}")
     CustomerConfigurationValue [] getCustomerConfigurationValue(int customerId, String configurationName) throws SQLException;
     
+    @JdbcControl.SQL(statement = "SELECT P.PARENT_PRODUCT_ID FROM ITEM_SET_ITEM ISI, ITEM_SET_ANCESTOR ISA, TEST_CATALOG TC, PRODUCT P WHERE ISI.ITEM_ID = {itemId} AND ISI.ITEM_SET_ID = ISA.ITEM_SET_ID AND ISA.ANCESTOR_ITEM_SET_ID = TC.ITEM_SET_ID AND TC.PRODUCT_ID = P.PRODUCT_ID AND ISA.ANCESTOR_ITEM_SET_TYPE = 'TC'")
+    String  getParentProductId(String itemId) throws SQLException;
+    
     
 }
