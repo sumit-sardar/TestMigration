@@ -101,13 +101,13 @@ public class ItemResponsesGRTLL2ND {
 	@Override
 	public String toString() {
 		String val = "";
-		val += EmetricUtil.getFormatedStringwithBlankValue(speakingMCItems,20 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(speakingCRItems,10 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(listeningMCItems,25 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(readingMCItems,35 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(readingCRItems,10 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(writingMCItems,20 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(writingCRItems,20 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(speakingMCItems,-20 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(speakingCRItems,-10 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(listeningMCItems,-25 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(readingMCItems,-35 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(readingCRItems,-10 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(writingMCItems,-20 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(writingCRItems,-20 );
 		
 		return val;
 	}
