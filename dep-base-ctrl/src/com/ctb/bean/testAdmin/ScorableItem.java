@@ -29,6 +29,7 @@ public class ScorableItem extends CTBBean {
 	private Date createdDateTime;
 	private Integer studentCount; // Added for making items disabled if no students are present
 	private Integer itemSetIdTC;     // Change for  #66660 enhancement
+	private Integer parentProductId ; // Added on 9 Sep :For Laslink FormA/B/Espanol  and Form C/Form D/Espanol-B Item view bifurcation logic
 	
 	
 
@@ -266,6 +267,22 @@ public class ScorableItem extends CTBBean {
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
+
+	/**
+	 * @return the parentProductId
+	 */
+	public Integer getParentProductId() {
+		return parentProductId;
+	}
+
+	/**
+	 * @param parentProductId the parentProductId to set
+	 */
+	public void setParentProductId(Integer parentProductId) {
+		this.parentProductId = parentProductId;
+	}
+
+
 
 	
 }
