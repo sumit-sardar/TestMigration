@@ -113,6 +113,7 @@ var hideStudentDelButton = false; // Only state level admin, admin coordinator, 
 var forceTestBreak = false;
 var selectGE = null;
 
+var isTASCProduct = false; // add for TASC modification
 var isLasLinksProduct = false; // add for laslink modification
 var isLaslinkCustomer = false;
 var isPagesizeLabelpopulated = false;
@@ -1152,7 +1153,7 @@ function registerDelegate(tree){
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
 		    isLasLinksProduct = false;
-		   
+			isTASCProduct = false;		   
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1684,7 +1685,10 @@ function registerDelegate(tree){
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
 					if(optionList[i].isLasLinksProduct){
 					 	isLasLinksProduct = true;
-					 }
+					}
+					if(optionList[i].isTASCProduct){
+					 	isTASCProduct = true;
+					}
 					if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 						isTabeProduct = false;
 						isTabeLocatorProduct=false;
@@ -1895,8 +1899,13 @@ function registerDelegate(tree){
 				if(optionList[i].isLasLinksProduct){ 
 					   isLasLinksProduct = true;
 				} else {
-					    isLasLinksProduct = false;
-					 }	     
+					   isLasLinksProduct = false;
+				}	   
+				if(optionList[i].isTASCProduct){ 
+					   isTASCProduct = true;
+				} else {
+					   isTASCProduct = false;
+				}	   
 				if(!(optionList[i].isTabeProduct || optionList[i].isTabeAdaptiveProduct )) {
 					isTabeProduct = false;
 					isTabeLocatorProduct=false;
@@ -2115,12 +2124,19 @@ function registerDelegate(tree){
  		var levelOrGradeTitle = "None";
  		var istabe = false;
 		var istabeadaptive = false;
-		var islasLinksProduct = false;
-		
-		if(isLasLinksProduct == undefined || isLasLinksProduct =='undefined') {
- 			islasLinksProduct = false;
+		var islasLinks = false;
+		var isTASC = false;
+
+		if(isTASCProduct == undefined || isTASCProduct =='undefined') {
+ 			isTASC = false;
  		} else {
- 			islasLinksProduct = isLasLinksProduct;
+ 			isTASC = isTASCProduct;
+ 		}
+				
+		if(isLasLinksProduct == undefined || isLasLinksProduct =='undefined') {
+ 			islasLinks = false;
+ 		} else {
+ 			islasLinks = isLasLinksProduct;
  		}
 
  		if(isTabeProduct == undefined || isTabeProduct =='undefined') {
@@ -2447,7 +2463,7 @@ function registerDelegate(tree){
 			
 		}
 		
-		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct)){
+		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct || isTASCProduct)){
 		   document.getElementById("modifyTestDiv").style.display = "";
 		} else {
 		 	document.getElementById("modifyTestDiv").style.display = "none";

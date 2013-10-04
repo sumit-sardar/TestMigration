@@ -29,6 +29,7 @@ public class TestSessionUtils
     public static final String TABE_LOCATOR_PRODUCT_TYPE = "tabeLocatorProductType";
     public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
     public static final String LASLINKS_PRODUCT_TYPE = "lasLinksProductType";
+    public static final String TASC_PRODUCT_TYPE = "tascProductType";
 	
 
     /**
@@ -1089,6 +1090,8 @@ public class TestSessionUtils
         	return TABE_ADAPTIVE_PRODUCT_TYPE;
         else if (productType.equals("LL"))
         	return LASLINKS_PRODUCT_TYPE;
+        else if (productType.equals("TS"))
+        	return TASC_PRODUCT_TYPE;
         else
             return GENERIC_PRODUCT_TYPE;
     }
@@ -1100,6 +1103,7 @@ public class TestSessionUtils
     {
         return new Boolean(	(! productType.equals(GENERIC_PRODUCT_TYPE)) && 
         					(! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)) &&
+							(! productType.equals(TASC_PRODUCT_TYPE)) &&
 							(! productType.equals(LASLINKS_PRODUCT_TYPE)));
     }
     
@@ -1145,6 +1149,14 @@ public class TestSessionUtils
         return new Boolean(productType.equals(LASLINKS_PRODUCT_TYPE));
     }
 
+    /**
+     * isTASCProduct
+     */
+    public static Boolean isTASCProduct(String productType)
+    {
+        return new Boolean(productType.equals(TASC_PRODUCT_TYPE));
+    }
+    
 	public static TestElement[] setupSessionSubtests(TestElement[] sessionSubtests,	TestElement[] selectedSubtests) {
 
         List<TestElement> resultList = new ArrayList<TestElement>();
