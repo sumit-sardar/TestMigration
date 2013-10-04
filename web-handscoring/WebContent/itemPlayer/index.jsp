@@ -66,7 +66,7 @@ var xmlDoc;
 %>
  var xscalefactorjs;
 var yscalefactorjs;
-var LASAssetPath = "http:items/"; 
+var LASAssetPath = "/ScoringWeb/itemPlayer/items/"; 
 var currentLasAssetItemId;
 var autoPlayEvent = "false";
 
