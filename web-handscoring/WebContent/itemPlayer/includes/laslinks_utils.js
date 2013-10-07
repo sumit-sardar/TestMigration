@@ -84,7 +84,7 @@ function iframeLoaded(id, iframe){
 			}
 				assetCount++;
 				if(gController.lasAssetArray.length == assetCount){
-					setTimeout("startAutoplay()",500);
+					setTimeout("startAutoplay()",2000);
 					/*if(canNotAnswerFlag == false){
 					 	gController.setAttribute('canNotAnswer',false);
 					}else{
