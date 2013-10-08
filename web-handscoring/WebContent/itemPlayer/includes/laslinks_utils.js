@@ -14,6 +14,7 @@ var autoplayStopped = false;
 
 function iframeLoaded(id, iframe){
 	if(iframe){
+	 	if((iframe.src.indexOf('asset.html') > 0 ) || (iframe.src.indexOf('video.html') > 0)){
 		if(currentLasAssetItemId) {
 			var folderName;
 			var iframeSource;
@@ -94,6 +95,7 @@ function iframeLoaded(id, iframe){
 				}
 			//restrictNavigation('lock');
 			}
+		 }	
 		}		
 	}
 	
