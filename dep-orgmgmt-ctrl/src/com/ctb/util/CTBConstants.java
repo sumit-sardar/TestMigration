@@ -49,6 +49,11 @@ public final class CTBConstants {
     public static final String DB_TABE_ADAPTIVE_CUSTOMER_NEW = "TABE_Adaptive_Customer";
     //END - Changes for TABE ADAPTIVE PRODUCT
     
+    //START - Changes for TASC PRODUCT
+    public static final String TASC_CUSTOMER = "TASC Customer";
+    public static final String DB_TASC_CUSTOMER = "TASC_Customer";
+    //END - Changes for TASC PRODUCT
+    
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);
 	public static final int MAX_PAGE = 5;
     public static final int DEFAULT_STATE_CATEGORY_ID = 1000; 

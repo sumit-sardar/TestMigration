@@ -2077,6 +2077,10 @@ public class ManageCustomerController extends PageFlowController
         //START - Changes for TABE ADAPTIVE PRODUCT
         customerOptions.put(CTBConstants.TABE_ADAPTIVE_CUSTOMER,CTBConstants.TABE_ADAPTIVE_CUSTOMER);
         //END - Changes for TABE ADAPTIVE PRODUCT
+        
+        //START - Changes for TASC PRODUCT
+        customerOptions.put(CTBConstants.TASC_CUSTOMER,CTBConstants.TASC_CUSTOMER);
+        //END - Changes for TASC PRODUCT
         customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);
         
        

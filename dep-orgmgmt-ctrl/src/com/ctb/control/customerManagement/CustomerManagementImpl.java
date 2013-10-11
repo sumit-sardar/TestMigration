@@ -434,6 +434,15 @@ public class CustomerManagementImpl implements CustomerManagement
             }
             //END - Changes for TABE ADAPTIVE PRODUCT
             
+            //START - Changes for TASC PRODUCT 
+            else if(CTBConstants.TASC_CUSTOMER.equalsIgnoreCase
+                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+               
+                customers.createTASCCustomerConfiguration(customerId);
+                    
+            }
+            //END - Changes for TASC PRODUCT
+            
             else if(CTBConstants.OTHER_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                 saveCustomerEmail(customer);
@@ -820,7 +829,16 @@ public class CustomerManagementImpl implements CustomerManagement
        			 }
        			//END - Changes For TABE ADAPTIVE Product
 
-
+                //START - Changes for TASC PRODUCT
+                else if ( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_TASC_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.TASC_CUSTOMER);
+                                                    
+                }
+                //END - Changes for TASC PRODUCT
+                
                 customer.setCustomerConfiguration(customerConfigurations);
             } 
             
