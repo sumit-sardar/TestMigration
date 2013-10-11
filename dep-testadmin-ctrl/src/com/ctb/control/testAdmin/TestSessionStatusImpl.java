@@ -224,11 +224,13 @@ public class TestSessionStatusImpl implements TestSessionStatus
             CustomerReport [] cr = reportBridge.getReportAssignmentsForUser(userName, programId, orgNodeId);
             for (int i=0; i < cr.length; i++) {
                 String reportURL = cr[i].getReportUrl();
+                /*[IAA] Not needed for Prism Report(s)
                 String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), cr[i].getSystemKey());
                 String paramsPlainText = "NodeInstanceId="+orgNodeId
                     +"&LevelId="+cr[i].getCategoryLevel()+"&Timestamp="+(new Date()).toString();
                 String encryptedParams = DESUtils.encrypt(paramsPlainText, cr[i].getCustomerKey());
                 reportURL = reportURL +"?sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1&GetTestSessionWindow=1";
+                */
                 cr[i].setReportUrl(reportURL);
             }
             crd.setCustomerReports(cr, pageSize);

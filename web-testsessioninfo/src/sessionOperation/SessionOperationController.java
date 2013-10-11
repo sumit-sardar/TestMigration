@@ -79,6 +79,7 @@ import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.ManifestUpdateFailException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
+import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.testSessionInfo.data.SubtestVO;
 import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
@@ -115,7 +116,6 @@ import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
 import com.ctb.control.db.OrgNode;
 import com.ctb.control.db.ProductBean;
-
 
 
 
@@ -3471,7 +3471,24 @@ public class SessionOperationController extends PageFlowController {
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
         List reportList = buildTASCReportList(orgNodeId, programId);
-
+        
+        String requestParam = "";
+        for (int i=0; i < reportList.size(); i++) {
+            CustomerReport cr = (CustomerReport)reportList.get(i);
+            if ("Prism".equalsIgnoreCase(cr.getReportName())) {                
+                //[IAA]: process SSO and pass correct parameters to PRISM
+            	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
+            	if (i==0)
+            	{
+            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey());
+                	requestParam = HMACEncrypter.encrypt();
+                	System.out.println("SSOparams=" + requestParam);
+            	}
+            	String reportUrl = cr.getReportUrl().endsWith("?")?"":"?"+requestParam;
+            	cr.setReportUrl(reportUrl);
+            }
+        }
+        
         this.getRequest().setAttribute("reportList", reportList);
         
         this.getRequest().setAttribute("programList", this.reportManager.getProgramNames());
