@@ -1504,6 +1504,12 @@ public class StudentOperationController extends PageFlowController {
 		options.add("Initial Placement");
 		options.add("Annual Assessment");
 		
+		//Added for Story "LAS 2013 – KK UAT – 9-19-13 – Manage-Edit Student new values" on 08102013
+		options.add("Periodic Benchmark");
+		options.add("Formative");
+		options.add("AEL");
+		options.add("Other");
+		
 		return (String [])options.toArray(new String[0]);        
 	}
 	

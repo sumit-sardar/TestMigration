@@ -504,8 +504,13 @@ public class StudentProfileInformation extends SanitizedFormField
         if(student.getTestPurpose() != null) {
         	this.testPurpose = student.getTestPurpose();
         	if (this.testPurpose.equals("1")) this.testPurpose = "Initial Placement";
-            else
-            if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+            else if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+        	
+        	//Added for Story "LAS 2013 – KK UAT – 9-19-13 – Manage-Edit Student new values" on 09102013
+            else if (this.testPurpose.equals("3")) this.testPurpose = "Periodic Benchmark";
+            else if (this.testPurpose.equals("4")) this.testPurpose = "Formative";
+            else if (this.testPurpose.equals("5")) this.testPurpose = "AEL";
+            else if (this.testPurpose.equals("6")) this.testPurpose = "Other";
         }
        //END- (LLO82) StudentManagement Changes For LasLink product
         this.screenMagnifier = student.getScreenMagnifier();
@@ -583,8 +588,13 @@ public class StudentProfileInformation extends SanitizedFormField
         if(student.getTestPurpose() != null) {
         	this.testPurpose = student.getTestPurpose();
         	if (this.testPurpose.equals("1")) this.testPurpose = "Initial Placement";
-            else
-            if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+            else if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+        	
+        	//Added for Story "LAS 2013 – KK UAT – 9-19-13 – Manage-Edit Student new values" on 09102013
+            else if (this.testPurpose.equals("3")) this.testPurpose = "Periodic Benchmark";
+            else if (this.testPurpose.equals("4")) this.testPurpose = "Formative";
+            else if (this.testPurpose.equals("5")) this.testPurpose = "AEL";
+            else if (this.testPurpose.equals("6")) this.testPurpose = "Other";
         }
        //END- (LLO82) StudentManagement Changes For LasLink product
         this.screenMagnifier = student.getScreenMagnifier();
@@ -716,6 +726,12 @@ public class StudentProfileInformation extends SanitizedFormField
         if(testPurpose != null) {
         	if (this.testPurpose.equals("Initial Placement")) copied.setTestPurpose("1");
         	else if (this.testPurpose.equals("Annual Assessment")) copied.setTestPurpose("2");
+        	
+        	//Added for Story "LAS 2013 – KK UAT – 9-19-13 – Manage-Edit Student new values" on 08102013
+        	else if (this.testPurpose.equals("Periodic Benchmark")) copied.setTestPurpose("3");
+        	else if (this.testPurpose.equals("Formative")) copied.setTestPurpose("4");
+        	else if (this.testPurpose.equals("AEL")) copied.setTestPurpose("5");
+        	else if (this.testPurpose.equals("Other")) copied.setTestPurpose("6");
         }
         //END- (LLO82) StudentManagement Changes For LasLink product
         return copied;       
