@@ -52,7 +52,7 @@
 
 <p>
 <table class="transparent">
-<tr class="transparent">
+<%-- <tr class="transparent">
     <td class="transparent"><lb:label key="report.customerProgram" />:</td>
     <td class="transparent">
 <c:if test="${multipleProgram}">    
@@ -62,7 +62,7 @@
         <netui:span value="${requestScope.program}"/>
 </c:if>        
     </td>
-</tr>    
+</tr> --%> 
 <tr class="transparent">
     <td class="transparent"><lb:label key="report.userOrganization" />:</td>
     
