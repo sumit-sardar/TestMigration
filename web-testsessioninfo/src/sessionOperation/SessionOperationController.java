@@ -3780,7 +3780,7 @@ public class SessionOperationController extends PageFlowController {
         try
         {      
             SortParams sort = FilterSortPageUtils.buildSortParams("DisplayName", "asc");            
-            crd = this.testSessionStatus.getCustomerReportData(this.userName, orgNodeId, programId, null, null, sort);
+            crd = this.testSessionStatus.getCustomerReportData(this.userName, orgNodeId, programId, null, null, null);
         }
         catch (CTBBusinessException be)
         {
