@@ -327,7 +327,7 @@ public class CurriculumCollector {
             composites[0].setCompositeType("LL OVERALL COMPOSITE");
             composites[0].setSubject("LL Overall Score");
 
-            if("Espa?ol".equals(form) || "Espanol".equals(form) || "Español".equals(form))
+            if("Espa?ol".equals(form) || "Espanol".equals(form) || "Español".equals(form) || "Espa?ol A".equals(form) || "Espanol A".equals(form) || "Español A".equals(form))
             {
               if(level != null && "K".equals(level)) {
             	composites[0].setAssessmentId(new Long(13337));
@@ -427,7 +427,7 @@ public class CurriculumCollector {
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
             }
-           } else if("ESP B".equals(form)){	
+           } else if("ESP B".equals(form) || "Espa?ol B".equals(form) || "Espanol B".equals(form) || "Español B".equals(form)){	
         	   if(level != null && "K".equals(level)) {
 	           	composites[0].setAssessmentId(new Long(13337));
 	            composites[0].setCompositeId(new Long(58));

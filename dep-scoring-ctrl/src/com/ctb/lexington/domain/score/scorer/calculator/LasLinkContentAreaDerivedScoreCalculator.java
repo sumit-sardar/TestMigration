@@ -50,7 +50,7 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
          if( "6-8".equals(pTestLevel) ){  pTestLevel = "4"; }
          if( "9-12".equals(pTestLevel) ){ pTestLevel = "5"; }
          */
-    	if("C".equals(pDupTestForm) || "D".equals(pDupTestForm) ||  "ESP B".equals(pDupTestForm)){
+    	if("C".equals(pDupTestForm) || "D".equals(pDupTestForm) ||  "ESP B".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm)){
     		
     		if( "K-1".equals(pTestLevel) && "K".equals(pGrade) && !"Listening".equals(event.getContentAreaName())){
     			pTestLevel = "K"; 
@@ -66,17 +66,17 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
         if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "C".equals(pDupTestForm) || "D".equals(pDupTestForm)) { 
         	 pTestForm = pDupTestForm;
         }
-        if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm)) {
+        if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm) || "Espa?ol A".equals(pDupTestForm) || "Espanol A".equals(pDupTestForm) || "Español A".equals(pDupTestForm)) {
         	pTestForm  = "S";
         }
-        if ("Espa?ol2".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Español2".equals(pDupTestForm)) {
+        if ("Espa?ol2".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Español2".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm)) {
         	pTestForm  = "T";
         }
         ContentAreaRawScoreEvent contentAreaRawScoreEvent = (ContentAreaRawScoreEvent)contentAreaRawScoreEvents.get(event.getContentAreaName());
         //System.out.println("===>"+contentAreaRawScoreEvent.getPointsObtained());
         Integer pointObtained = contentAreaRawScoreEvent.getPointsObtained();
         BigDecimal obtained = new BigDecimal(pointObtained.toString());
-        final BigDecimal scaleScore = (("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm)) && 
+        final BigDecimal scaleScore = (("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm)) && 
         		("Comprehension".equals(event.getContentAreaName())|| "Oral".equals(event.getContentAreaName()) 
         				||"Productive".equals(event.getContentAreaName()) ||"Literacy".equals(event.getContentAreaName())))? null :getScore(
     			subtestId,
@@ -90,8 +90,8 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
 				ScoreLookupCode.SCALED_SCORE,
 				null );
         
-       final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel((("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm))?LASLINK_FRAMEWORK_CODE_2ND_EDTN : LASLINK_FRAMEWORK_CODE ), event.getContentAreaName(),
-    		   ("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm))? null : pTestLevel, scaleScore, pGrade, pTestForm);
+       final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel((("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm))?LASLINK_FRAMEWORK_CODE_2ND_EDTN : LASLINK_FRAMEWORK_CODE ), event.getContentAreaName(),
+    		   ("C".equals(pDupTestForm) || "D".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm))? null : pTestLevel, scaleScore, pGrade, pTestForm);
        final PerformanceLevel proficencyLevel = PerformanceLevel.getByCode(String
                 .valueOf(proficencyLevelValue));
        

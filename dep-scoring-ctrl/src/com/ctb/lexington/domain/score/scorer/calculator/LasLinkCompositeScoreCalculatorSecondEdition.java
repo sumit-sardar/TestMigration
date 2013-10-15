@@ -206,11 +206,11 @@ public class LasLinkCompositeScoreCalculatorSecondEdition extends AbstractDerive
        if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm) || "C".equals(pDupTestForm) || "D".equals(pDupTestForm)) { 
     	   pTestForm = pDupTestForm;
        }
-       if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm)) {
+       if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm) || "Espa?ol A".equals(pDupTestForm) || "Espanol A".equals(pDupTestForm) || "Español A".equals(pDupTestForm)) {
     	   pTestForm  = "S";
        }
        
-       if ("Espa?ol2".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Español2".equals(pDupTestForm)) {
+       if ("Espa?ol2".equals(pDupTestForm) || "ESP B".equals(pDupTestForm) || "Español2".equals(pDupTestForm) || "Espa?ol B".equals(pDupTestForm) || "Espanol B".equals(pDupTestForm) || "Español B".equals(pDupTestForm)) {
           	pTestForm  = "T";
         }       	 
         

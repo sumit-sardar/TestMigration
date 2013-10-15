@@ -238,7 +238,7 @@ public class AdminController {
                                           "1".equals(form)?4:
                                           "A".equals(form)?7:
                                           "B".equals(form)?8:
-                                          ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form))?9: // For Laslink Scoring
+                                          ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form) || "Espa?ol A".equals(form)|| "Espanol A".equals(form) || "Español A".equals(form))?9: // For Laslink Scoring
                                           "CAT".equals(form)?13:14)); 
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  

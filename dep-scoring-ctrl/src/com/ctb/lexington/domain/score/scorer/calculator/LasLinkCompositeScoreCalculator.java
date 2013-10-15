@@ -192,7 +192,7 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
         if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm)) { 
         	 pTestForm = pDupTestForm;
          }
-        if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm)) {
+        if ("Espa?ol".equals(pDupTestForm) || "Espanol".equals(pDupTestForm) || "Español".equals(pDupTestForm) || "Espa?ol A".equals(pDupTestForm) || "Espanol A".equals(pDupTestForm) || "Español A".equals(pDupTestForm)) {
         	pTestForm  = "S";
         }
         	 

@@ -128,7 +128,7 @@ public class TestResultDataCollector {
                                && !"IP".equals(subtest.getCompletionStatus())
                                && !"IN".equals(subtest.getCompletionStatus()) || ("Comprehension".equals(contentAreaName) 
                                || "Oral".equals(contentAreaName) || "Productive".equals(contentAreaName) ||"Literacy".equals(contentAreaName) 
-                               && ("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm())))) { // added for laslink second edition
+                               && ("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm()) || "Espa?ol B".equals(contentAreas[i].getSubtestForm()) || "Espanol B".equals(contentAreas[i].getSubtestForm()) || "Español B".equals(contentAreas[i].getSubtestForm())))) { // added for laslink second edition
                 contentAreaList.add(contentAreas[i]);
                 PrimaryObjective [] primObjs = currData.getPrimaryObjectives();
                 for(int j=0;j<primObjs.length;j++) {
@@ -139,7 +139,7 @@ public class TestResultDataCollector {
                         SecondaryObjective [] secObjs = currData.getSecondaryObjectives();
                         for(int k=0;k<secObjs.length;k++) {
                             if(((secObjs[k].getPrimaryObjectiveId() != null && secObjs[k].getPrimaryObjectiveId().equals(primObjs[j].getPrimaryObjectiveId()))||
-                            	(("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm())) && secObjs[k].getSecondaryObjectiveName().contains("Overall")))	&&
+                            	(("C".equals(contentAreas[i].getSubtestForm()) || "ESP B".equals(contentAreas[i].getSubtestForm()) || "Espa?ol B".equals(contentAreas[i].getSubtestForm()) || "Espanol B".equals(contentAreas[i].getSubtestForm()) || "Español B".equals(contentAreas[i].getSubtestForm())) && secObjs[k].getSecondaryObjectiveName().contains("Overall")))	&&
                                 secObjs[k].getSubtestLevel().equals(contentAreas[i].getSubtestLevel())) {
                                 secObjList.add(secObjs[k]);
                                 Item [] items = currData.getItems();

@@ -97,7 +97,10 @@ public class StudentCompositeScoresController {
 	                                          "B".equals(currData.getContentAreas()[0].getSubtestForm())?8:
 	                                         ("Espa?ol".equals(currData.getContentAreas()[0].getSubtestForm()) 
 	                                        		 || "Espanol".equals(currData.getContentAreas()[0].getSubtestForm()) 
-	                                        		 || "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:10));
+	                                        		 || "Español".equals(currData.getContentAreas()[0].getSubtestForm())
+	                                        		 || "Espa?ol A".equals(currData.getContentAreas()[0].getSubtestForm()) 
+	                                        		 || "Espanol A".equals(currData.getContentAreas()[0].getSubtestForm()) 
+	                                        		 || "Español A".equals(currData.getContentAreas()[0].getSubtestForm()))?9:10));
 	                        
 	                        
 	                        newFact.setLevelid(new Long("K".equals(currData.getContentAreas()[0].getSubtestLevel())?16:

@@ -81,12 +81,18 @@ public class StudentItemScoresController {
 							"B".equals(currData.getContentAreas()[0].getSubtestForm())?8:
 								("Espa?ol".equals(currData.getContentAreas()[0].getSubtestForm()) 
 										|| "Espanol".equals(currData.getContentAreas()[0].getSubtestForm()) 
-										|| "Español".equals(currData.getContentAreas()[0].getSubtestForm()))?9:
+										|| "Español".equals(currData.getContentAreas()[0].getSubtestForm())
+										|| "Espa?ol A".equals(currData.getContentAreas()[0].getSubtestForm()) 
+										|| "Espanol A".equals(currData.getContentAreas()[0].getSubtestForm()) 
+										|| "Español A".equals(currData.getContentAreas()[0].getSubtestForm()))?9:
 										"C".equals(currData.getContentAreas()[0].getSubtestForm())?15:
 											"D".equals(currData.getContentAreas()[0].getSubtestForm())?16:
 												("Espa?ol2".equals(currData.getContentAreas()[0].getSubtestForm()) 
 														|| "Espanol2".equals(currData.getContentAreas()[0].getSubtestForm()) 
-														|| "Español2".equals(currData.getContentAreas()[0].getSubtestForm()))?17:10));
+														|| "Español2".equals(currData.getContentAreas()[0].getSubtestForm())
+														|| "Espa?ol B".equals(currData.getContentAreas()[0].getSubtestForm()) 
+														|| "Espanol B".equals(currData.getContentAreas()[0].getSubtestForm()) 
+														|| "Español B".equals(currData.getContentAreas()[0].getSubtestForm()))?17:10));
 						itemFact.setGradeid(contextData.getGradeId());
 						itemFact.setLevelid(new Long("K".equals(currData.getContentAreas()[0].getSubtestLevel())?16:
 							"1".equals(currData.getContentAreas()[0].getSubtestLevel())?17:
