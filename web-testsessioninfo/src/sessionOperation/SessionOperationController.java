@@ -3467,6 +3467,15 @@ public class SessionOperationController extends PageFlowController {
         	initReportManager();
         }
     	
+        String userOrgIndex = this.getRequest().getParameter("userOrgIndex");
+        try{int iuserorgIndex = Integer.parseInt(userOrgIndex);} catch (Exception e){userOrgIndex=null;}
+        if (userOrgIndex != null && userOrgIndex.length()>0)
+        {
+        	this.reportManager.setSelectedOrganization(userOrgIndex);
+        }
+        else
+        	userOrgIndex = "0";
+        
         Integer programId = this.reportManager.getSelectedProgramId();
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
@@ -3480,7 +3489,7 @@ public class SessionOperationController extends PageFlowController {
             	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
             	if (i==0)
             	{
-            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey());
+            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), userOrgIndex);
                 	requestParam = HMACEncrypter.encrypt();
                 	System.out.println("SSOparams=" + requestParam);
             	}
@@ -4530,7 +4539,8 @@ public class SessionOperationController extends PageFlowController {
         {
         	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
-					&& cc.getDefaultValue().equals("T")) {
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
             	TASCCustomer = true;
             }
         }

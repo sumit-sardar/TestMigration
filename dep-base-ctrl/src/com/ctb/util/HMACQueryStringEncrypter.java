@@ -20,6 +20,7 @@ public class HMACQueryStringEncrypter {
 	private String IP 								= "127.0.0.1";
 	private String SECRET_KEY 						= "WPZguVF49hXaRuZfe9L29ItsC2I";//encryptionKey
 	private int SIGNATURE_VALIDITY_SECONDS 			= 60;
+	private String userOrgIndex						="0";
 	
 	User user = null;
 	HMACQueryStringBuilder queryStringBuilder = null;
@@ -30,12 +31,14 @@ public class HMACQueryStringEncrypter {
 	 * @param _user	User object for the currently logged in user
 	 * @param sharedKey	encryption key supplied by PRISM
 	 */
-	public HMACQueryStringEncrypter(User _user, String sharedKey) {
+	public HMACQueryStringEncrypter(User _user, String sharedKey, String _userOrgIndex) {
 		
 		if (_user == null) throw new IllegalArgumentException("User object null.");
 		if (sharedKey == null || sharedKey.length()==0) throw new IllegalArgumentException("sharedKey null or empty.");
+		if (userOrgIndex == null || userOrgIndex.length()==0) throw new IllegalArgumentException("userOrgIndex null or empty.");
 		user = _user;
 		SECRET_KEY = sharedKey;		
+		userOrgIndex = _userOrgIndex;
 		queryStringBuilder = new HMACQueryStringBuilder(SECRET_KEY, SIGNATURE_VALIDITY_SECONDS, ENCODING_ALGORITHM);
 		//timeZone = java.util.TimeZone.getTimeZone(user.getTimeZone()).getDisplayName(false,java.util.TimeZone.SHORT);//"PST";    	
 		queryStringBuilder.setTimeZone(timeZone);
@@ -60,11 +63,22 @@ public class HMACQueryStringEncrypter {
 			//this.userProfile.getOrgNodeNamesString()    		     
 	        if (organizationNodes != null) {
 	            for (int i=0 ; i<organizationNodes.length ; i++) {
-	            	hierarchyLevel++;
-	                Node node = organizationNodes[i];
-	                orgNodeCode = orgNodeCode + (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
-	                if (i < (organizationNodes.length - 1))
-	                	orgNodeCode = orgNodeCode + ", ";
+	            	//hierarchyLevel++;
+	            	if (i==Integer.valueOf(userOrgIndex))
+	            	{
+		                Node node = organizationNodes[i];
+		                String leafNodePath = node.getLeafNodePath();
+		                if (leafNodePath != null && leafNodePath.length()>0)
+		                {
+		                	hierarchyLevel = leafNodePath.split(",").length;
+		                	orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+		                }
+		                /*
+		                orgNodeCode = orgNodeCode + (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+		                if (i < (organizationNodes.length - 1))
+		                	orgNodeCode = orgNodeCode + ", ";
+		                */
+	            	}
 	            }
 	        }
 			Integer customerId = this.user.getCustomer().getCustomerId();    			

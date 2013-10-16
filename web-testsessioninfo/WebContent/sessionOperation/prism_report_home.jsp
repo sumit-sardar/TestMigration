@@ -110,6 +110,27 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	setMenuActive("reports", null);
+	var currURL = window.location.href.split("?")[0];
+	var URLparams = window.location.href.split("?")[1];
+	var params = [];
+	if (!(URLparams == undefined) && URLparams.length>0)
+	{
+		params = window.location.href.split("?")[1].split("&");
+	}
+	var userOrg = 0;
+	for (var i=0;i<params.length;i++)
+	{
+		var param = params[i].split("=");
+		if (param[0] == "userOrgIndex")
+		{
+			userOrg = param[1];
+		}
+	}
+	$("select#organization").change(function () {
+		var currURL = window.location.href.split("?")[0];
+		window.location.href = currURL + "?userOrgIndex="+$("select#organization").prop("selectedIndex");
+	});
+
 });
 </script>
 
