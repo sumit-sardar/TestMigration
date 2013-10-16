@@ -3,6 +3,7 @@ package utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.Normalizer;
 
 
 
@@ -125,7 +126,7 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		studentData.append(getTestAdminStartDateString());
 		studentData.append("\"");
 		studentData.append(",");
-		studentData.append(getFormRe());
+		studentData.append(removeDiacritics(getFormRe()));
 		studentData.append(",");
 		studentData.append(getDistrict());
 		studentData.append(",");
@@ -133,7 +134,7 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		studentData.append(",");
 		studentData.append(getGrade());
 		studentData.append(",");
-		studentData.append(getTestName());
+		studentData.append(removeDiacritics(getTestName()));
 		studentData.append(",");
 		if(getIrsScores() != null) {
 			for(int i = 0; i < getIrsScores().length; i++) {
@@ -153,7 +154,20 @@ public class GroupImmediateCSVReportUtils extends StudentImmediateReportUtils  i
 		}
 	}
 
-	
+	//** Convert all accented characters into their deAccented counterparts
+	private String removeDiacritics(String stringWithSpanishChars)
+	{
+		String normal = Normalizer.normalize(stringWithSpanishChars, Normalizer.Form.NFD);
+		StringBuilder stripped = new StringBuilder();
+		for (int i=0;i<normal.length();++i)
+		{
+			if (Character.getType(normal.charAt(i)) != Character.NON_SPACING_MARK)
+			{
+				stripped.append(normal.charAt(i));
+			}
+		}
+		return stripped.toString();
+	}
 	
 
 }

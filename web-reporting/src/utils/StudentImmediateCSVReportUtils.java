@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.ctb.bean.studentManagement.StudentScoreReport;
+import java.text.Normalizer;
 
 public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils implements ImmediateReport {
 	
@@ -70,7 +71,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		studentData.append(getTestAdminStartDateString());
 		studentData.append("\"");
 		studentData.append(",");
-		studentData.append(getFormRe());
+		studentData.append(removeDiacritics(getFormRe()));
 		studentData.append(",");
 		studentData.append(getDistrict());
 		studentData.append(",");
@@ -78,7 +79,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		studentData.append(",");
 		studentData.append(getGrade());
 		studentData.append(",");
-		studentData.append(getTestName());
+		studentData.append(removeDiacritics(getTestName()));
 		studentData.append(",");
 		studentData.append("\n");
 		cvsOutStream.write(studentData.toString());
@@ -102,7 +103,7 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 			for(int i = 0; i < getIrsScores().length; i++) {
 				if(getIrsScores()[i] != null) {
 					studentScores.append(",");
-					studentScores.append(getIrsScores()[i].getContentAreaName());
+					studentScores.append(removeDiacritics(getIrsScores()[i].getContentAreaName()));
 					studentScores.append(",");
 					studentScores.append(getIrsScores()[i].getRawScore());
 					studentScores.append(",");
@@ -118,4 +119,18 @@ public class StudentImmediateCSVReportUtils extends StudentImmediateReportUtils 
 		}
 	}
 
+	//** Convert all accented characters into their deAccented counterparts
+	private String removeDiacritics(String stringWithSpanishChars)
+	{
+		String normal = Normalizer.normalize(stringWithSpanishChars, Normalizer.Form.NFD);
+		StringBuilder stripped = new StringBuilder();
+		for (int i=0;i<normal.length();++i)
+		{
+			if (Character.getType(normal.charAt(i)) != Character.NON_SPACING_MARK)
+			{
+				stripped.append(normal.charAt(i));
+			}
+		}
+		return stripped.toString();
+	}
 }
