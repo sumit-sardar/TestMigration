@@ -3493,7 +3493,7 @@ public class SessionOperationController extends PageFlowController {
                 	requestParam = HMACEncrypter.encrypt();
                 	System.out.println("SSOparams=" + requestParam);
             	}
-            	String reportUrl = cr.getReportUrl().endsWith("?")?"":"?"+requestParam;
+            	String reportUrl = cr.getReportUrl()+(cr.getReportUrl().endsWith("?")?"":"?")+requestParam;
             	cr.setReportUrl(reportUrl);
             }
         }
