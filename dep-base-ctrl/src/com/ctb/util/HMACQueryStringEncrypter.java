@@ -18,9 +18,10 @@ public class HMACQueryStringEncrypter {
 	private String timeZone 						= "GMT";
 	private String apykey 							= "217907";
 	private String IP 								= "127.0.0.1";
-	private String SECRET_KEY 						= "WPZguVF49hXaRuZfe9L29ItsC2I";//encryptionKey
+	private String SECRET_KEY 						= "";//"WPZguVF49hXaRuZfe9L29ItsC2I";//encryptionKey
 	private int SIGNATURE_VALIDITY_SECONDS 			= 60;
-	private String userOrgIndex						="0";
+	private Integer selectedOrgNodeId				= 0;
+	private String appName 							= "OAS";
 	
 	User user = null;
 	HMACQueryStringBuilder queryStringBuilder = null;
@@ -31,14 +32,14 @@ public class HMACQueryStringEncrypter {
 	 * @param _user	User object for the currently logged in user
 	 * @param sharedKey	encryption key supplied by PRISM
 	 */
-	public HMACQueryStringEncrypter(User _user, String sharedKey, String _userOrgIndex) {
+	public HMACQueryStringEncrypter(User _user, String sharedKey, Integer _selectedOrgNodeId) {
 		
 		if (_user == null) throw new IllegalArgumentException("User object null.");
 		if (sharedKey == null || sharedKey.length()==0) throw new IllegalArgumentException("sharedKey null or empty.");
-		if (userOrgIndex == null || userOrgIndex.length()==0) throw new IllegalArgumentException("userOrgIndex null or empty.");
+		if (_selectedOrgNodeId == null || _selectedOrgNodeId==0) throw new IllegalArgumentException("_selectedOrgNodeId null or empty.");
 		user = _user;
 		SECRET_KEY = sharedKey;		
-		userOrgIndex = _userOrgIndex;
+		selectedOrgNodeId = _selectedOrgNodeId;
 		queryStringBuilder = new HMACQueryStringBuilder(SECRET_KEY, SIGNATURE_VALIDITY_SECONDS, ENCODING_ALGORITHM);
 		//timeZone = java.util.TimeZone.getTimeZone(user.getTimeZone()).getDisplayName(false,java.util.TimeZone.SHORT);//"PST";    	
 		queryStringBuilder.setTimeZone(timeZone);
@@ -59,46 +60,26 @@ public class HMACQueryStringEncrypter {
 		{
 			String orgNodeCode = "";
 			Integer hierarchyLevel = 0;
-			Node[] organizationNodes = user.getOrganizationNodes();
-			//this.userProfile.getOrgNodeNamesString()    		     
+			Node[] organizationNodes = user.getOrganizationNodes();    		     
 	        if (organizationNodes != null) {
 	            for (int i=0 ; i<organizationNodes.length ; i++) {
-	            	//hierarchyLevel++;
-	            	if (i==Integer.valueOf(userOrgIndex))
-	            	{
-		                Node node = organizationNodes[i];
+	                Node node = organizationNodes[i];
+	                if (selectedOrgNodeId.compareTo(node.getOrgNodeId())==0)
+	                {
 		                String leafNodePath = node.getLeafNodePath();
 		                if (leafNodePath != null && leafNodePath.length()>0)
 		                {
 		                	hierarchyLevel = leafNodePath.split(",").length;
 		                	orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
 		                }
-		                /*
-		                orgNodeCode = orgNodeCode + (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
-		                if (i < (organizationNodes.length - 1))
-		                	orgNodeCode = orgNodeCode + ", ";
-		                */
-	            	}
+	                }
 	            }
 	        }
-			Integer customerId = this.user.getCustomer().getCustomerId();    			
-			
-			String appName = "OAS";
-			String sharedKey = "WPZguVF49hXaRuZfe9L29ItsC2I";
+			Integer customerId = this.user.getCustomer().getCustomerId();			
 			String userRole = (isAdminUser()||isAdminCoordinatorUser())?"Admin":"User";
-			/*
-			String userRole = this.user.getRole().getRoleName();
-			if (userName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) ||
-            userName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR))
-				userName = "Admin";
-			else
-				userName = "User";
-			*/
 			String datetimeStamp = "";//in GMT
 			
-			//requestParam = queryStringBuilder.buildAuthenticatedQueryString(apykey, IP);
-			requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, sharedKey, userRole, IP, datetimeStamp);
-			//System.out.println(REQUEST_URL + "?" + requestParam);
+			requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, SECRET_KEY, userRole, IP, datetimeStamp);
 			System.out.println(requestParam);
 		}
 		catch (Exception e)

@@ -3464,7 +3464,7 @@ public class SessionOperationController extends PageFlowController {
     {
         if (this.reportManager == null)
         {
-        	initReportManager();
+        	initReportManager(true);
         }
     	
         String userOrgIndex = this.getRequest().getParameter("userOrgIndex");
@@ -3489,7 +3489,7 @@ public class SessionOperationController extends PageFlowController {
             	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
             	if (i==0)
             	{
-            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), userOrgIndex);
+            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), orgNodeId);
                 	requestParam = HMACEncrypter.encrypt();
                 	System.out.println("SSOparams=" + requestParam);
             	}
@@ -3605,11 +3605,58 @@ public class SessionOperationController extends PageFlowController {
 
     private void initReportManager()
     {
+    	initReportManager(false);
+    }
+    
+    private void initReportManager(Boolean isPrismReport)
+    {
         try
         {            
             SortParams orgNodeNameSort = FilterSortPageUtils.buildSortParams("OrgNodeName", "asc");                        
             this.userTopNodes = this.testSessionStatus.getTopUserNodesForUser(this.userName, null, null, null, orgNodeNameSort);
-                        
+            
+            //** For users associated with multiple nodes:
+            //-	OAS will pick top node
+            //-	If multi top nodes, OAS UI will allow to pick one out of many (dropdown)
+
+            if (isPrismReport)
+            {
+            	int topNodeIndex=0;
+            	int OrgNodeCategoryId = 0;
+            	boolean multipleDifferentUserOrg = false;
+            	UserNode[] userNodes = this.userTopNodes.getUserNodes();                   
+                for (int i=0 ; i<userNodes.length ; i++) {
+                    UserNode userNode = userNodes[i];
+                    if (i==0)
+                    {
+                    	OrgNodeCategoryId = userNode.getOrgNodeCategoryId();
+                    }
+                    if (userNode.getOrgNodeCategoryId().compareTo(OrgNodeCategoryId) != 0)
+                    {
+                    	multipleDifferentUserOrg = true;
+                    }
+                    
+                    if (userNode.getOrgNodeCategoryId() < OrgNodeCategoryId)
+            		{        			
+            			OrgNodeCategoryId = userNode.getOrgNodeCategoryId();
+            			topNodeIndex = i;
+            		}
+                }
+                
+                if (multipleDifferentUserOrg)
+                {
+	                UserNode[] newUserNodes = new UserNode[1];
+	                for (int i=0 ; i<userNodes.length ; i++) {
+	                    UserNode userNode = userNodes[i];
+	                    if (i==topNodeIndex)
+	            		{        			
+	            			newUserNodes[0] = userNodes[i];
+	            		}
+	                }
+	                this.userTopNodes.setUserNodes(newUserNodes, null);
+                }
+            }
+            
             String[] sortNames = new String[2];
             sortNames[0] = "ProductId"; 
             sortNames[1] = "ProgramStartDate"; 
