@@ -277,8 +277,8 @@ public class HMACQueryStringBuilder {
 		builder.append(HIERARCHYLEVEL_PARAMETER_NAME).append(urlEncode(String.valueOf(hierarchyLevel)));
 		builder.append(APPNAME_PARAMETER_NAME).append(urlEncode(applicationName));
 		//builder.append(SHAREDKEY_PARAMETER_NAME).append(urlEncode(sharedKey));
-		builder.append(USERROLE_PARAMETER_NAME).append(urlEncode(userRole));
 		builder.append(EXPIRY_DATE_PARAMETER_NAME).append(urlEncode(validUntilDate));
+		builder.append(USERROLE_PARAMETER_NAME).append(urlEncode(userRole));
 		
 		if(null != ipAddress && ipAddress.trim().length() > 0)
 			builder.append(IP_ADDRESS_PARAMETER_NAME).append(urlEncode(ipAddress));

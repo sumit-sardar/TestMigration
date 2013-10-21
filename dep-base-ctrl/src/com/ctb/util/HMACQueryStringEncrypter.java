@@ -17,7 +17,7 @@ public class HMACQueryStringEncrypter {
 	private String ENCODING_ALGORITHM 				= "HmacSHA1";
 	private String timeZone 						= "GMT";
 	private String apykey 							= "217907";
-	private String IP 								= "127.0.0.1";
+	private String IP 								= null;//"127.0.0.1";
 	private String SECRET_KEY 						= "";//"WPZguVF49hXaRuZfe9L29ItsC2I";//encryptionKey
 	private int SIGNATURE_VALIDITY_SECONDS 			= 60;
 	private Integer selectedOrgNodeId				= 0;
