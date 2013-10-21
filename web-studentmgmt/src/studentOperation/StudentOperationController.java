@@ -59,6 +59,7 @@ import com.ctb.control.db.Students;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
+import com.ctb.prism.web.handler.PrismWebServiceHandler;
 import com.ctb.util.SQLutils;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -574,6 +575,12 @@ public class StudentOperationController extends PageFlowController {
 				if (studentId != null)
 				{
 					result = saveStudentAccommodations(isCreateNew, studentProfile, studentId, customerConfigurations, messageInfo);
+				}
+				//Prism Web Service Call
+				try {
+					PrismWebServiceHandler.editStudent(studentId);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
 			}
