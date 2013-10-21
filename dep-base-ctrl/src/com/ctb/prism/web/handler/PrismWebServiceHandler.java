@@ -17,7 +17,7 @@ import com.ctb.prism.web.controller.SampleWebservice;
 import com.ctb.prism.web.controller.StudentBioTO;
 import com.ctb.prism.web.controller.StudentDetailsTO;
 import com.ctb.prism.web.controller.StudentListTO;
-import com.ctb.prism.web.dbutility.PrismWebServiceUtility;
+import com.ctb.prism.web.dbutility.PrismWebServiceDBUtility;
 import com.ctb.util.OASLogger;
 import com.sun.xml.internal.ws.client.BindingProviderProperties;
 
@@ -102,7 +102,7 @@ public class PrismWebServiceHandler {
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
 		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId);
 		
-		List<Long> rosterIds = PrismWebServiceUtility.getRosterListForStudent(studentId);
+		List<Long> rosterIds = PrismWebServiceDBUtility.getRosterListForStudent(studentId);
 		
 		for(Long rosterID : rosterIds){
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
@@ -123,7 +123,7 @@ public class PrismWebServiceHandler {
 	 */
 	private static StudentDetailsTO getStdentBio(Integer studentId) throws Exception{
 		StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
-		StudentBioTO studentBioTO =  PrismWebServiceUtility.getStudentBio(studentId);
+		StudentBioTO studentBioTO =  PrismWebServiceDBUtility.getStudentBio(studentId);
 		studentDetailsTO.setStudentBioTO(studentBioTO);
 		return studentDetailsTO;
 	}
@@ -135,7 +135,7 @@ public class PrismWebServiceHandler {
 	 */
 	private static CustHierarchyDetailsTO getCustHierarchy(Integer studentId)
 			throws Exception {
-		return PrismWebServiceUtility.getCustomerHigherarchy(studentId);
+		return PrismWebServiceDBUtility.getCustomerHigherarchy(studentId);
 	}
 	
 }
