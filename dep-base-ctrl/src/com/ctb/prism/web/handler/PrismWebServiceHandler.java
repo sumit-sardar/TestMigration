@@ -41,7 +41,7 @@ public class PrismWebServiceHandler {
 	private static SampleWebservice getService() throws Exception {
 		try {
 			if (service == null) {
-				ResourceBundle rb = ResourceBundle.getBundle("PrismWebServiceUrls");
+				ResourceBundle rb = ResourceBundle.getBundle("PrismWebService");
 				String urlLocation = rb.getString("url");
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
 				OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
