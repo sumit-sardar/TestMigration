@@ -21,8 +21,14 @@ import javax.sql.DataSource;
 
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
+import com.ctb.prism.web.controller.DemoTO;
+import com.ctb.prism.web.controller.ItemResponseTO;
+import com.ctb.prism.web.controller.ItemResponsesDetailsTO;
 import com.ctb.prism.web.controller.OrgDetailsTO;
 import com.ctb.prism.web.controller.StudentBioTO;
+import com.ctb.prism.web.controller.StudentDemoTO;
+import com.ctb.prism.web.controller.SubtestAccommodationTO;
+import com.ctb.prism.web.controller.SubtestAccommodationsTO;
 
 
 
@@ -36,7 +42,11 @@ public class PrismWebServiceDBUtility {
 	
 	private static final String GET_STUDENT_BIO = "select stu.student_id as id,       stu.user_name as loginId,       stu.first_name as firstName,       substr(stu.middle_name,1,1) as middleName,       stu.last_name as lastName,       concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,       stu.gender as gender,       to_char(stu.birthdate , 'MM/DD/YYYY') as birthDate,    to_char(stu.birthdate , 'MMDDYY') as birthDateMMDDYY,      stu.grade as grade,       stu.ext_pin1 as studentIdNumber,       stu.ext_pin2 as studentIdNumber2,       stu.test_purpose as testPurpose,       stu.created_by as createdBy,       NVL(stu.out_of_school, 'No') as outOfSchool  from student stu where stu.student_id = ?";
 	private static final String GET_CUST_ORG_HIGR = "select distinct node.org_node_id            as orgNodeId,                node.customer_id            as customerId,                node.org_node_category_id   as orgNodeCategoryId,                node.org_node_name          as orgNodeName,                node.ext_qed_pin            as extQedPin,                node.ext_elm_id             as extElmId,                node.ext_org_node_type      as extOrgNodeType,                node.org_node_description   as orgNodeDescription,                node.created_by             as createdBy,                node.created_date_time      as createdDateTime,                node.updated_by             as updatedBy,                node.updated_date_time      as updatedDateTime,                node.activation_status      as activationStatus,                node.data_import_history_id as dataImportHistoryId,                node.parent_state           as parentState,                node.parent_region          as parentRegion,                node.parent_county          as parentCounty,                node.parent_district        as parentDistrict,                node.org_node_code          as orgNodeCode,                ona.number_of_levels        as numberOfLevels , cat.category_name           as orgType from org_node          node,       org_node_category cat,       org_node_ancestor ona,       org_node_student  ons where ona.ancestor_org_node_id = node.org_node_id   and ona.org_node_id = ONS.ORG_NODE_ID   and ons.student_id = ?   and node.org_node_id not in (1,2) and cat.org_node_category_id = node.org_node_category_id order by ona.number_of_levels desc";
-	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId     from test_roster t   where t.student_id = ?";
+	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId    from test_roster t   where t.student_id = ?";
+	private static final String GET_STUDENT_DEMO = "select t.form_assignment as testForm    from test_roster t   where t.test_roster_id = ? ";
+	private static final String GET_SUBTEST_ACCOM = "SELECT CUSTDEMO.LABEL_CODE AS \"subTestAccom\"  FROM STUDENT_DEMOGRAPHIC_DATA STDDEMO, CUSTOMER_DEMOGRAPHIC CUSTDEMO WHERE STDDEMO.STUDENT_ID = ?   AND STDDEMO.CUSTOMER_DEMOGRAPHIC_ID = CUSTDEMO.CUSTOMER_DEMOGRAPHIC_ID";
+	private static final String GET_ITEM_RESP_SR = "SELECT ITM.ITEM_TYPE           AS ITEMTYPE,       RES.RESPONSE            AS RESPONSE,       ITM.ITEM_ID             AS ITEMID,       SET_ITM.ITEM_SORT_ORDER AS ITEMORDER  FROM ITEM_RESPONSE RES, ITEM_SET_ITEM SET_ITM, ITEM ITM WHERE ITM.ITEM_ID = SET_ITM.ITEM_ID   AND SET_ITM.ITEM_SET_ID = RES.ITEM_SET_ID   AND SET_ITM.ITEM_ID = RES.ITEM_ID   AND RES.TEST_ROSTER_ID = ?   AND RES.ITEM_SET_ID = ?   AND RES.ITEM_RESPONSE_ID =       (SELECT MAX(R.ITEM_RESPONSE_ID)          FROM ITEM_RESPONSE R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = RES.ITEM_ID)   AND ITM.ITEM_TYPE = ? ORDER BY SET_ITM.ITEM_SORT_ORDER";
+	private static final String GET_ITEM_RESP_GR_CR = "SELECT CRITM.ITEM_TYPE            AS ITEMTYPE,       CRRES.CONSTRUCTED_RESPONSE AS RESPONSE,       CRITM.ITEM_ID              AS ITEMID,       CR_SET_ITM.ITEM_SORT_ORDER AS ITEMORDER  FROM ITEM_RESPONSE_CR CRRES, ITEM_SET_ITEM CR_SET_ITM, ITEM CRITM WHERE CRITM.ITEM_ID = CR_SET_ITM.ITEM_ID   AND CR_SET_ITM.ITEM_SET_ID = CRRES.ITEM_SET_ID   AND CR_SET_ITM.ITEM_ID = CRRES.ITEM_ID   AND CRRES.TEST_ROSTER_ID = ?   AND CRRES.ITEM_SET_ID = ?   AND CRRES.TEST_ROSTER_ID =       (SELECT MAX(R.TEST_ROSTER_ID)          FROM ITEM_RESPONSE_CR R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = CRRES.ITEM_ID)   AND CRITM.ITEM_TYPE = ?   ORDER BY CR_SET_ITM.ITEM_SORT_ORDER";
 	
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -125,6 +135,147 @@ public class PrismWebServiceDBUtility {
 			close(con, pst, rs);
 		}
 		return rosterIds;
+	}
+	
+	
+	/**
+	 * Get the student demo data
+	 * @param rosterId
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public static StudentDemoTO getStudentDemo(long rosterId) throws CTBBusinessException{
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		StudentDemoTO studentDemoTO = new StudentDemoTO();
+		List<DemoTO> demoList = studentDemoTO.getCollDemoTO();
+		
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_STUDENT_DEMO);
+			pst.setLong(1, rosterId);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				DemoTO demoTO = new DemoTO();
+				demoTO.setDemoName("Test_Form");
+				demoTO.setDemovalue(rs.getString("testForm"));
+				demoTO.setDemoName("Fld_Tst_Form");
+				demoTO.setDemovalue(rs.getString("testForm"));
+				demoTO.setDemoName("Tst_Platform");
+				demoTO.setDemovalue("0");
+				demoList.add(demoTO);
+			}
+			studentDemoTO.setDataChanged(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return studentDemoTO;
+	}
+	
+	/**
+	 * Get the Sub Test Accommodation
+	 * @param studentId
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public static SubtestAccommodationsTO getSubTestAccommodation(Integer studentId) throws CTBBusinessException{
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		SubtestAccommodationsTO subtestAccommodationsTO = new SubtestAccommodationsTO();
+		List<SubtestAccommodationTO> subtestAccommodationLst = subtestAccommodationsTO.getCollSubtestAccommodationTO(); 
+		
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_SUBTEST_ACCOM);
+			pst.setLong(1, studentId);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				SubtestAccommodationTO subtestAccommodationTO = new SubtestAccommodationTO();
+				subtestAccommodationTO.setName(rs.getString("subTestAccom"));
+				subtestAccommodationTO.setValue("Y");
+				subtestAccommodationLst.add(subtestAccommodationTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return subtestAccommodationsTO;
+	}
+	
+	/**
+	 * Get the Item Response Details
+	 * @param studentId
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public static ItemResponsesDetailsTO getItemResponsesDetail(long rosterID, long itemSetId) throws CTBBusinessException{
+		Connection con = null;
+		PreparedStatement pstSR = null;
+		ResultSet rsSR = null;
+		PreparedStatement pstCR = null;
+		ResultSet rsCR = null;
+		PreparedStatement pstGR = null;
+		ResultSet rsGR = null;
+		ItemResponsesDetailsTO itemResponsesDetailsTO = new ItemResponsesDetailsTO();
+		List<ItemResponseTO> itemResponseTOLst =  itemResponsesDetailsTO.getItemResponseTO();
+		//TODO - Not yet completed.  
+		try {
+			con = openOASDBcon(false);
+			pstSR = con.prepareStatement(GET_ITEM_RESP_SR);
+			pstSR.setLong(1, rosterID);
+			pstSR.setLong(2, itemSetId);
+			pstSR.setLong(3, rosterID);
+			pstSR.setLong(4, itemSetId);
+			pstSR.setString(5, "SR");
+			rsSR = pstSR.executeQuery();
+			while(rsSR.next()){
+				ItemResponseTO itemResponseTO = new ItemResponseTO();
+				//TODO - populate the data in itemResponseTO
+				
+				itemResponseTOLst.add(itemResponseTO);
+			}
+			
+			con.prepareStatement(GET_ITEM_RESP_GR_CR);
+			pstCR.setLong(1, rosterID);
+			pstCR.setLong(2, itemSetId);
+			pstCR.setLong(3, rosterID);
+			pstCR.setLong(4, itemSetId);
+			pstCR.setString(5, "CR");
+			rsCR = pstCR.executeQuery();
+			while(rsSR.next()){
+				ItemResponseTO itemResponseTO = new ItemResponseTO();
+				//TODO - populate the data in itemResponseTO
+				
+				itemResponseTOLst.add(itemResponseTO);
+			}
+			
+			con.prepareStatement(GET_ITEM_RESP_GR_CR);
+			pstCR.setLong(1, rosterID);
+			pstCR.setLong(2, itemSetId);
+			pstCR.setLong(3, rosterID);
+			pstCR.setLong(4, itemSetId);
+			pstCR.setString(5, "GR");
+			rsCR = pstCR.executeQuery();
+			while(rsSR.next()){
+				ItemResponseTO itemResponseTO = new ItemResponseTO();
+				//TODO - populate the data in itemResponseTO
+				
+				itemResponseTOLst.add(itemResponseTO);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstCR, rsCR);
+			close(pstGR, rsGR);
+			close(con, pstSR, rsSR);
+		}
+		return itemResponsesDetailsTO;
 	}
 	
 	/**

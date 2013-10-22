@@ -104,8 +104,9 @@ public class PrismWebServiceHandler {
 		
 		List<Long> rosterIds = PrismWebServiceDBUtility.getRosterListForStudent(studentId);
 		
-		for(Long rosterID : rosterIds){
+		for(long rosterID : rosterIds){
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
 			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
