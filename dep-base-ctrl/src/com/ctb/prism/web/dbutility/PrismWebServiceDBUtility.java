@@ -3,6 +3,8 @@
  */
 package com.ctb.prism.web.dbutility;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +21,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import oracle.sql.CLOB;
+
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.prism.web.constant.PrismWebServiceConstant;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
 import com.ctb.prism.web.controller.DemoTO;
 import com.ctb.prism.web.controller.ItemResponseTO;
@@ -45,13 +50,11 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId    from test_roster t   where t.student_id = ?";
 	private static final String GET_STUDENT_DEMO = "select t.form_assignment as testForm    from test_roster t   where t.test_roster_id = ? ";
 	private static final String GET_SUBTEST_ACCOM = "SELECT CUSTDEMO.LABEL_CODE AS \"subTestAccom\"  FROM STUDENT_DEMOGRAPHIC_DATA STDDEMO, CUSTOMER_DEMOGRAPHIC CUSTDEMO WHERE STDDEMO.STUDENT_ID = ?   AND STDDEMO.CUSTOMER_DEMOGRAPHIC_ID = CUSTDEMO.CUSTOMER_DEMOGRAPHIC_ID";
-	private static final String GET_ITEM_RESP_SR = "SELECT ITM.ITEM_TYPE           AS ITEMTYPE,       RES.RESPONSE            AS RESPONSE,       ITM.ITEM_ID             AS ITEMID,       SET_ITM.ITEM_SORT_ORDER AS ITEMORDER  FROM ITEM_RESPONSE RES, ITEM_SET_ITEM SET_ITM, ITEM ITM WHERE ITM.ITEM_ID = SET_ITM.ITEM_ID   AND SET_ITM.ITEM_SET_ID = RES.ITEM_SET_ID   AND SET_ITM.ITEM_ID = RES.ITEM_ID   AND RES.TEST_ROSTER_ID = ?   AND RES.ITEM_SET_ID = ?   AND RES.ITEM_RESPONSE_ID =       (SELECT MAX(R.ITEM_RESPONSE_ID)          FROM ITEM_RESPONSE R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = RES.ITEM_ID)   AND ITM.ITEM_TYPE = ? ORDER BY SET_ITM.ITEM_SORT_ORDER";
+	private static final String GET_ITEM_RESP_SR = "SELECT ITM.ITEM_TYPE           AS ITEMTYPE,       RES.RESPONSE            AS RESPONSE,       ITM.ITEM_ID             AS ITEMID,       SET_ITM.ITEM_SORT_ORDER AS ITEMORDER, ITM.CORRECT_ANSWER      AS CORRECTANS  FROM ITEM_RESPONSE RES, ITEM_SET_ITEM SET_ITM, ITEM ITM WHERE ITM.ITEM_ID = SET_ITM.ITEM_ID   AND SET_ITM.ITEM_SET_ID = RES.ITEM_SET_ID   AND SET_ITM.ITEM_ID = RES.ITEM_ID   AND RES.TEST_ROSTER_ID = ?   AND RES.ITEM_SET_ID = ?   AND RES.ITEM_RESPONSE_ID =       (SELECT MAX(R.ITEM_RESPONSE_ID)          FROM ITEM_RESPONSE R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = RES.ITEM_ID)   AND ITM.ITEM_TYPE = ? ORDER BY SET_ITM.ITEM_SORT_ORDER";
 	private static final String GET_ITEM_RESP_GR_CR = "SELECT CRITM.ITEM_TYPE            AS ITEMTYPE,       CRRES.CONSTRUCTED_RESPONSE AS RESPONSE,       CRITM.ITEM_ID              AS ITEMID,       CR_SET_ITM.ITEM_SORT_ORDER AS ITEMORDER  FROM ITEM_RESPONSE_CR CRRES, ITEM_SET_ITEM CR_SET_ITM, ITEM CRITM WHERE CRITM.ITEM_ID = CR_SET_ITM.ITEM_ID   AND CR_SET_ITM.ITEM_SET_ID = CRRES.ITEM_SET_ID   AND CR_SET_ITM.ITEM_ID = CRRES.ITEM_ID   AND CRRES.TEST_ROSTER_ID = ?   AND CRRES.ITEM_SET_ID = ?   AND CRRES.TEST_ROSTER_ID =       (SELECT MAX(R.TEST_ROSTER_ID)          FROM ITEM_RESPONSE_CR R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = CRRES.ITEM_ID)   AND CRITM.ITEM_TYPE = ?   ORDER BY CR_SET_ITM.ITEM_SORT_ORDER";
 	
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-	private static final String defaultStartDateStr = "01/01/1900";
-
+	
 	/**
 	 * Get Student Bio Information
 	 * @param studentId
@@ -231,13 +234,31 @@ public class PrismWebServiceDBUtility {
 			pstSR.setLong(2, itemSetId);
 			pstSR.setLong(3, rosterID);
 			pstSR.setLong(4, itemSetId);
-			pstSR.setString(5, "SR");
+			pstSR.setString(5, PrismWebServiceConstant.SRItemResponseSetType);
 			rsSR = pstSR.executeQuery();
+			ItemResponseTO srItemResponseTO = new ItemResponseTO();
+			srItemResponseTO.setItemSetType(PrismWebServiceConstant.SRItemResponseSetType);
+			srItemResponseTO.setItemCode(PrismWebServiceConstant.itemResponseItemCodeMap.get("SR"));
+			
+			StringBuffer stScoreVal = new StringBuffer(); 
+			boolean srItmPresent = false;
 			while(rsSR.next()){
-				ItemResponseTO itemResponseTO = new ItemResponseTO();
-				//TODO - populate the data in itemResponseTO
-				
-				itemResponseTOLst.add(itemResponseTO);
+				srItmPresent = true;
+				String stdRes = rsSR.getString("RESPONSE");
+				String correctAns = rsSR.getString("CORRECTANS");
+				if(stdRes == null || "".equals(stdRes)){
+					stScoreVal.append("-");
+				}else if(correctAns == null || "".equals(correctAns)){
+					stScoreVal.append("-");
+				}else if(stdRes.equals(correctAns)){
+					stScoreVal.append(stdRes);
+				}else{
+					stScoreVal.append(PrismWebServiceConstant.itemResponseSRScoreValMap.get(stdRes.toUpperCase()));
+				}
+			}
+			srItemResponseTO.setScoreValue(stScoreVal.toString());
+			if(srItmPresent){
+				itemResponseTOLst.add(srItemResponseTO);
 			}
 			
 			con.prepareStatement(GET_ITEM_RESP_GR_CR);
@@ -345,9 +366,9 @@ public class PrismWebServiceDBUtility {
 	 */
 	private static String getChronologicalAge(String studentDOB) throws ParseException {
 		if(studentDOB != null && !"".equals(studentDOB)){
-			Date stdDOBDt = dateFormat.parse(studentDOB);
+			Date stdDOBDt = PrismWebServiceConstant.dateFormat.parse(studentDOB);
 			long ageInMillis = new Date().getTime() - stdDOBDt.getTime();
-			Date defaultStartDate = dateFormat.parse(defaultStartDateStr);
+			Date defaultStartDate = PrismWebServiceConstant.dateFormat.parse(PrismWebServiceConstant.defaultStartDateStr);
 			long addedAgeWithDefaultStartDt = defaultStartDate.getTime() + ageInMillis;
 			Date ageWithDefaultStartDate = new Date(addedAgeWithDefaultStartDt);
 			return String.valueOf(ageWithDefaultStartDate.getYear() - defaultStartDate.getYear());
@@ -474,5 +495,30 @@ public class PrismWebServiceDBUtility {
 		close(con);
 		
 	}
+	
+	private static String readOracleClob(CLOB clob) throws SQLException, IOException {
+    	if(clob==null){
+    		return "";
+    	}
+    	// get character stream to retrieve clob data
+        Reader instream = clob.getCharacterStream();
+        StringBuffer sb = new StringBuffer();
+        // create temporary buffer for read
+        char[] buffer = new char[1024];
+
+        // length of characters read
+        int length = 0;
+
+        // fetch data
+        while ((length = instream.read(buffer)) != -1)
+        {
+            sb.append(buffer, 0, length);
+        }
+
+        // Close input stream
+        instream.close();
+
+        return sb.toString();
+    }
 	
 }
