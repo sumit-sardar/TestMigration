@@ -3481,6 +3481,14 @@ public class SessionOperationController extends PageFlowController {
 
         List reportList = buildTASCReportList(orgNodeId, programId);
         
+        //**[IAA] Proctor users should not see PRISM reports
+        if (isProctorUser())
+        {
+        	for (int i=0; i < reportList.size(); i++) {
+        		reportList.remove(i);
+        	}
+        }
+        
         String requestParam = "";
         for (int i=0; i < reportList.size(); i++) {
             CustomerReport cr = (CustomerReport)reportList.get(i);
@@ -4360,9 +4368,16 @@ public class SessionOperationController extends PageFlowController {
 			hasDownloadConfig = false;
 		}
 		
+		//**[IAA] Proctor users should not see PRISM reports
+		boolean TASCProctor = false;
+        if (isTASCCustomer(customerConfigurations) && isProctorUser())
+        {
+        	TASCProctor = true;
+        }
+        
 		//this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
 		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && tabeCustomer));
-		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+		this.getSession().setAttribute("showReportTab", new Boolean((userHasReports().booleanValue()&&!TASCProctor) || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
@@ -4510,7 +4525,7 @@ public class SessionOperationController extends PageFlowController {
         {
             be.printStackTrace();
         }        
-        return new Boolean(hasReports);           
+        return new Boolean(hasReports);         
     }
 
     private boolean isAdminUser() 
@@ -4523,6 +4538,12 @@ public class SessionOperationController extends PageFlowController {
     {               
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
+    }
+    
+    private boolean isProctorUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_PROCTOR); 
     }
     
     @SuppressWarnings("unused")

@@ -554,6 +554,7 @@ public class TestContentOperationController extends PageFlowController {
         CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
         boolean adminUser = isAdminUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
+        boolean TASCCustomer = isTASCCustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	boolean hasResetTestSession = false;
@@ -567,8 +568,15 @@ public class TestContentOperationController extends PageFlowController {
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
         
+		//**[IAA] Proctor users should not see PRISM reports
+		boolean TASCProctor = false;
+        if (TASCCustomer && isProctorUser())
+        {
+        	TASCProctor = true;
+        }
+        
         this.getSession().setAttribute("showReportTab", 
-        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+        		new Boolean((userHasReports().booleanValue() && !TASCProctor) || laslinkCustomer));
         
         this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));   	
         
@@ -703,6 +711,12 @@ public class TestContentOperationController extends PageFlowController {
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
     
+    private boolean isProctorUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_PROCTOR); 
+    }
+    
     private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
     {               
         String roleName = this.user.getRole().getRoleName();        
@@ -785,6 +799,21 @@ public class TestContentOperationController extends PageFlowController {
         return TABECustomer;
     }
     
+    private boolean isTASCCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TASCCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+            	TASCCustomer = true;
+            }
+        }
+        return TASCCustomer;
+    }    
     /**
 	 * Bulk Accommodation
 	 */

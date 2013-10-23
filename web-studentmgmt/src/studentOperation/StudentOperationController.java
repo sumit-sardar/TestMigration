@@ -3089,11 +3089,19 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		customerConfigurations = getCustomerConfigurations();  
 
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigurations);
+        boolean TASCCustomer = false;
         
         setUpAllUserPermission(customerConfigurations);
         
+        //**[IAA] Proctor users should not see PRISM reports
+		boolean TASCProctor = false;
+        if (isTASCCustomer(customerConfigurations) && isProctorUser())
+        {
+        	TASCProctor = true;
+        }
+        
         this.getSession().setAttribute("showReportTab", 
-        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+        		new Boolean((userHasReports().booleanValue() && !TASCProctor) || laslinkCustomer));
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
@@ -3109,13 +3117,32 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 
 	}
 
-
+    private boolean isProctorUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_PROCTOR); 
+    }
     private boolean isAdminUser() 
     {               
         String roleName = this.user.getRole().getRoleName();        
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
 
+    private boolean isTASCCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TASCCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+            	TASCCustomer = true;
+            }
+        }
+        return TASCCustomer;
+    }
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
         boolean laslinkCustomer = false;

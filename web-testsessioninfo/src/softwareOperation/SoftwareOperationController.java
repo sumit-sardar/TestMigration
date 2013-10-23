@@ -565,6 +565,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasScoringConfigurable = false;
     	boolean hasLicenseConfiguration= false;
     	boolean TABECustomer = false;
+    	boolean TASCCustomer = false;
     	boolean adminCoordinatorUser = isAdminCoordinatotUser(); //For Student Registration
     	String roleName = this.user.getRole().getRoleName();
     	boolean hasResetTestSession = false;
@@ -643,6 +644,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            	TABECustomer = true;
 	            	continue;
 	            }
+				// For TASC Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")) {
+					TASCCustomer = true;
+	            	continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Reopen_Subtest") && 
 	            		cc.getDefaultValue().equals("T")	) {
 					hasResetTestSession = true;
@@ -684,7 +690,14 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 			hasDownloadConfig = false;
 		}
 		
-		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+		//**[IAA] Proctor users should not see PRISM reports
+		boolean TASCProctor = false;
+        if (TASCCustomer && isProctorUser())
+        {
+        	TASCProctor = true;
+        }
+		
+		this.getSession().setAttribute("showReportTab", new Boolean((userHasReports().booleanValue()&&!TASCProctor) || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
@@ -726,6 +739,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
 	}
 	
+    private boolean isProctorUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_PROCTOR); 
+    }
+	   
 	private boolean isTopLevelUser(){
 		boolean isUserTopLevel = false;
 		try {
@@ -845,7 +864,22 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         }
         return new Boolean(hasScoringConfigurable);
     }*/
-
+    private boolean isTASCCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TASCCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+            	TASCCustomer = true;
+            }
+        }
+        return TASCCustomer;
+    }
+    
     private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
     {               
         boolean laslinkCustomer = false;

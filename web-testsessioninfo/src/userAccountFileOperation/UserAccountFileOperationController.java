@@ -202,6 +202,11 @@ public class UserAccountFileOperationController extends PageFlowController{
 		String roleName = this.user.getRole().getRoleName();        
 		return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR); 
 	}
+    private boolean isProctorUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_PROCTOR); 
+    }
 	private boolean isTopLevelUser(){
 		boolean isUserTopLevel = false;
 		try {
@@ -218,6 +223,7 @@ public class UserAccountFileOperationController extends PageFlowController{
 		boolean hasOOSConfigurable = false;
 		boolean laslinkCustomer = false;
 		boolean tabeCustomer = false;
+		boolean TASCCustomer = false;
 		boolean adminUser = isAdminUser();
 		boolean adminCoordinatorUser = isAdminCoordinatotUser();
     	boolean hasUploadConfig = false;
@@ -267,6 +273,11 @@ public class UserAccountFileOperationController extends PageFlowController{
 					tabeCustomer = true;
 					continue;
 				}
+				// For TASC Customer
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")) {
+					TASCCustomer = true;
+	            	continue;
+	            }
 				// For Upload Download
 				// For Upload Download
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload")
@@ -336,9 +347,16 @@ public class UserAccountFileOperationController extends PageFlowController{
 			hasDownloadConfig = false;
 		}
 		
+		//**[IAA] Proctor users should not see PRISM reports
+		boolean TASCProctor = false;
+        if (TASCCustomer && isProctorUser())
+        {
+        	TASCProctor = true;
+        }
+        
 		//this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && (tabeCustomer || laslinkCustomer)));
 		this.getSession().setAttribute("showModifyManifest", new Boolean(userScheduleAndFindSessionPermission() && tabeCustomer));
-		this.getSession().setAttribute("showReportTab", new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+		this.getSession().setAttribute("showReportTab", new Boolean((userHasReports().booleanValue() && !TASCProctor) || laslinkCustomer));
 		this.getSession().setAttribute("isBulkAccommodationConfigured",new Boolean(hasBulkStudentConfigurable));
 		this.getSession().setAttribute("isBulkMoveConfigured",new Boolean(hasBulkStudentMoveConfigurable));
 		this.getSession().setAttribute("isOOSConfigured",new Boolean(hasOOSConfigurable));
