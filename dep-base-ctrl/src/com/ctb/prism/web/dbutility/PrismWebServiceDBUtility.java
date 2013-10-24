@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +24,8 @@ import oracle.sql.CLOB;
 
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
+import com.ctb.prism.web.controller.ContentScoreDetailsTO;
+import com.ctb.prism.web.controller.ContentScoreTO;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
 import com.ctb.prism.web.controller.DemoTO;
 import com.ctb.prism.web.controller.ItemResponseTO;
@@ -52,7 +53,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_SUBTEST_ACCOM = "SELECT CUSTDEMO.LABEL_CODE AS \"subTestAccom\"  FROM STUDENT_DEMOGRAPHIC_DATA STDDEMO, CUSTOMER_DEMOGRAPHIC CUSTDEMO WHERE STDDEMO.STUDENT_ID = ?   AND STDDEMO.CUSTOMER_DEMOGRAPHIC_ID = CUSTDEMO.CUSTOMER_DEMOGRAPHIC_ID";
 	private static final String GET_ITEM_RESP_SR = "SELECT ITM.ITEM_TYPE           AS ITEMTYPE,       RES.RESPONSE            AS RESPONSE,       ITM.ITEM_ID             AS ITEMID,       SET_ITM.ITEM_SORT_ORDER AS ITEMORDER, ITM.CORRECT_ANSWER      AS CORRECTANS  FROM ITEM_RESPONSE RES, ITEM_SET_ITEM SET_ITM, ITEM ITM WHERE ITM.ITEM_ID = SET_ITM.ITEM_ID   AND SET_ITM.ITEM_SET_ID = RES.ITEM_SET_ID   AND SET_ITM.ITEM_ID = RES.ITEM_ID   AND RES.TEST_ROSTER_ID = ?   AND RES.ITEM_SET_ID = ?   AND RES.ITEM_RESPONSE_ID =       (SELECT MAX(R.ITEM_RESPONSE_ID)          FROM ITEM_RESPONSE R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = RES.ITEM_ID)   AND ITM.ITEM_TYPE = ? ORDER BY SET_ITM.ITEM_SORT_ORDER";
 	private static final String GET_ITEM_RESP_GR_CR = "SELECT CRITM.ITEM_TYPE            AS ITEMTYPE,       CRRES.CONSTRUCTED_RESPONSE AS RESPONSE,       CRITM.ITEM_ID              AS ITEMID,       CR_SET_ITM.ITEM_SORT_ORDER AS ITEMORDER  FROM ITEM_RESPONSE_CR CRRES, ITEM_SET_ITEM CR_SET_ITM, ITEM CRITM WHERE CRITM.ITEM_ID = CR_SET_ITM.ITEM_ID   AND CR_SET_ITM.ITEM_SET_ID = CRRES.ITEM_SET_ID   AND CR_SET_ITM.ITEM_ID = CRRES.ITEM_ID   AND CRRES.TEST_ROSTER_ID = ?   AND CRRES.ITEM_SET_ID = ?   AND CRRES.TEST_ROSTER_ID =       (SELECT MAX(R.TEST_ROSTER_ID)          FROM ITEM_RESPONSE_CR R         WHERE R.TEST_ROSTER_ID = ?           AND R.ITEM_SET_ID = ?           AND R.ITEM_ID = CRRES.ITEM_ID)   AND CRITM.ITEM_TYPE = ?   ORDER BY CR_SET_ITM.ITEM_SORT_ORDER";
-	
+	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       ''                        AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       ''                        AS hse_scale_score_range  FROM tabe_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND SUBSTR(t.content_areaid, 5) = ?";
 
 	
 	/**
@@ -299,6 +300,71 @@ public class PrismWebServiceDBUtility {
 		return itemResponsesDetailsTO;
 	}
 	
+	
+	/**
+	 * Get the Content Score Details
+	 * @param studentId
+	 * @return
+	 * @throws CTBBusinessException
+	 */
+	public static ContentScoreDetailsTO getContentScoreDetails(Integer studentId, long sessionId, long itemSetId) throws CTBBusinessException{
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
+		List<ContentScoreTO> contentScoreTOLst = contentScoreDetailsTO.getCollContentScoreTO(); 
+		
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_CONTENT_SCORE_DETAILS);
+			pst.setLong(1, studentId);
+			pst.setLong(2, sessionId);
+			pst.setLong(3, itemSetId);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				ContentScoreTO NCcontentScoreTO = new ContentScoreTO();
+				NCcontentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
+				NCcontentScoreTO.setScoreValue(rs.getString("number_correct"));
+				contentScoreTOLst.add(NCcontentScoreTO);
+				
+				ContentScoreTO NPcontentScoreTO = new ContentScoreTO();
+				NPcontentScoreTO.setScoreType(PrismWebServiceConstant.NPContentScoreDetails);
+				NPcontentScoreTO.setScoreValue(rs.getString("number_possible"));
+				contentScoreTOLst.add(NPcontentScoreTO);
+				
+				ContentScoreTO SScontentScoreTO = new ContentScoreTO();
+				SScontentScoreTO.setScoreType(PrismWebServiceConstant.SSContentScoreDetails);
+				SScontentScoreTO.setScoreValue(rs.getString("scale_score"));
+				contentScoreTOLst.add(SScontentScoreTO);
+				
+				ContentScoreTO HSEcontentScoreTO = new ContentScoreTO();
+				HSEcontentScoreTO.setScoreType(PrismWebServiceConstant.HSEContentScoreDetails);
+				HSEcontentScoreTO.setScoreValue(rs.getString("high_school_equiv"));
+				contentScoreTOLst.add(HSEcontentScoreTO);
+				
+				ContentScoreTO PRcontentScoreTO = new ContentScoreTO();
+				PRcontentScoreTO.setScoreType(PrismWebServiceConstant.PRContentScoreDetails);
+				PRcontentScoreTO.setScoreValue(rs.getString("percentile_rank"));
+				contentScoreTOLst.add(PRcontentScoreTO);
+				
+				ContentScoreTO NCEcontentScoreTO = new ContentScoreTO();
+				NCEcontentScoreTO.setScoreType(PrismWebServiceConstant.NCEContentScoreDetails);
+				NCEcontentScoreTO.setScoreValue(rs.getString("normal_curve_equivalent"));
+				contentScoreTOLst.add(NCEcontentScoreTO);
+				
+				ContentScoreTO SSRcontentScoreTO = new ContentScoreTO();
+				SSRcontentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
+				SSRcontentScoreTO.setScoreValue(rs.getString("hse_scale_score_range"));
+				contentScoreTOLst.add(SSRcontentScoreTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return contentScoreDetailsTO;
+	}
+	
 	/**
 	 * Populate the Customer Hierarchy Details TO
 	 * @param rs
@@ -377,6 +443,12 @@ public class PrismWebServiceDBUtility {
 		}
 	}
 	
+	/**
+	 * Get OAS DB connection
+	 * @param isCommitable
+	 * @return
+	 * @throws CTBBusinessException
+	 */
 	private static Connection openOASDBcon(boolean isCommitable)
 			throws CTBBusinessException {
 		Connection conn = null;
@@ -407,6 +479,12 @@ public class PrismWebServiceDBUtility {
 
 	}
 
+	/**
+	 * Get IRS DB connection
+	 * @param isCommitable
+	 * @return
+	 * @throws CTBBusinessException
+	 */
 	private static Connection openIRSDBcon(boolean isCommitable)
 			throws CTBBusinessException {
 
@@ -437,12 +515,22 @@ public class PrismWebServiceDBUtility {
 		return conn;
 	}
 	
+	/**
+	 * 
+	 * @param jndiName
+	 * @return
+	 * @throws NamingException
+	 */
 	private static DataSource locateDataSource(String jndiName ) throws NamingException{
 		Context ctx = new InitialContext();
 		DataSource ds =  (DataSource) ctx.lookup(jndiName);
 		return ds;
 	}
 	
+	/**
+	 * Close connection
+	 * @param con
+	 */
 	private static void close(Connection con) {
 		if (con != null) {
 			try {
@@ -456,6 +544,10 @@ public class PrismWebServiceDBUtility {
 
 	}
 
+	/**
+	 * Close statement
+	 * @param st
+	 */
 	private static void close(Statement st) {
 		if (st != null) {
 			try {
@@ -467,6 +559,10 @@ public class PrismWebServiceDBUtility {
 
 	}
 
+	/**
+	 * Close result set
+	 * @param rs
+	 */
 	private static void close(ResultSet rs) {
 		if (rs != null) {
 			try {
@@ -478,11 +574,23 @@ public class PrismWebServiceDBUtility {
 
 	}
 	
+	/**
+	 * Close statement and result set
+	 * @param st
+	 * @param rs
+	 */
 	private static void close(Statement st, ResultSet rs) {
 		close(rs);
 		close(st);
 
 	}
+	
+	/**
+	 * Close connection, statement and result set 
+	 * @param con
+	 * @param st
+	 * @param rs
+	 */
 	private static void close(Connection con, Statement st, ResultSet rs) {
 		close(rs);
 		close(st);
@@ -490,12 +598,24 @@ public class PrismWebServiceDBUtility {
 
 	}
 
+	/**
+	 * Close connection and statement
+	 * @param con
+	 * @param st
+	 */
 	private static void close(Connection con, Statement st) {
 		close(st);
 		close(con);
 		
 	}
 	
+	/**
+	 * Read the Clob data
+	 * @param clob
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private static String readOracleClob(CLOB clob) throws SQLException, IOException {
     	if(clob==null){
     		return "";

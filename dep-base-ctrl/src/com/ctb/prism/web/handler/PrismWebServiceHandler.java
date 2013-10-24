@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
+import com.ctb.prism.web.constant.PrismWebServiceConstant;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
 import com.ctb.prism.web.controller.RosterDetailsTO;
 import com.ctb.prism.web.controller.SampleWebservice;
@@ -26,12 +27,8 @@ import com.sun.xml.internal.ws.client.BindingProviderProperties;
  * 
  */
 public class PrismWebServiceHandler {
+
 	private static SampleWebservice service = null;
-	private static final int CONNECT_TIMEOUT = 3 * 60 * 1000;
-	private static final int REQUEST_TIMEOUT = 3 * 60 * 1000;
-	private static final String loggerName = "PrismWebService"; 
-	
-	private static final int numberOfFailedHitCnt = 5;
 
 	/**
 	 * Connect with the Prism Web Service
@@ -44,7 +41,7 @@ public class PrismWebServiceHandler {
 				ResourceBundle rb = ResourceBundle.getBundle("PrismWebService");
 				String urlLocation = rb.getString("url");
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
-				OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
+				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
 				URL url = new URL(urlLocation);
 				QName qname = new QName("http://controller.web.prism.ctb.com/",
 						"StudentDataloadService");
@@ -53,12 +50,12 @@ public class PrismWebServiceHandler {
 
 				service = prxyService.getPort(SampleWebservice.class);
 				BindingProvider provider = (BindingProvider) service;
-				provider.getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, REQUEST_TIMEOUT);
-				provider.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", CONNECT_TIMEOUT);	
+				provider.getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, PrismWebServiceConstant.REQUEST_TIMEOUT);
+				provider.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", PrismWebServiceConstant.CONNECT_TIMEOUT);	
 			}
-			OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
+			OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
 		} catch (Exception e) {
-			OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.getService : Unable to connect with Prism Web Service.");
+			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.getService : Unable to connect with Prism Web Service.");
 			e.printStackTrace();
 			throw e;
 		}
@@ -74,16 +71,16 @@ public class PrismWebServiceHandler {
 			getService();
 			if(service != null){
 				service.loadStudentData(studentListTO);
-				OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 			}else{
-				OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
+				OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 				throw new Exception("Prism Web Service is null.");
 			}
 		}catch(Exception e){
-			OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
+			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 			e.printStackTrace();
-			for(int hitCnt = 0 ; hitCnt < numberOfFailedHitCnt ; hitCnt++){
-				OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
+			for(int hitCnt = 0 ; hitCnt < PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
+				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
 				try{
 					getService();
 					service.loadStudentData(studentListTO);
@@ -102,7 +99,7 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static void editStudent(Integer studentId) throws Exception{
-		OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
+		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
 		StudentListTO studentListTO = new StudentListTO();
 		
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
@@ -122,7 +119,7 @@ public class PrismWebServiceHandler {
 		}
 		
 		invokePrismWebService(studentListTO);
-		OASLogger.getLogger(loggerName).debug("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
+		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 	}
 
 	/**
@@ -139,7 +136,7 @@ public class PrismWebServiceHandler {
 	}
 	
 	/**
-	 * 
+	 * Get the customer hierarchy
 	 * @param studentId
 	 * @throws Exception 
 	 */
