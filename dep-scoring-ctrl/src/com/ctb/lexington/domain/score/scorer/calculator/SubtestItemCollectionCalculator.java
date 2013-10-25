@@ -19,6 +19,7 @@ import com.ctb.lexington.domain.score.scorer.Scorer;
 
 public class SubtestItemCollectionCalculator extends Calculator {
     private Integer productId;
+    private String productType;
     private String currentWsTvSubject;
     private String subtestName = null;
     private String subtestIdCA = null;
@@ -37,6 +38,7 @@ public class SubtestItemCollectionCalculator extends Calculator {
 
     public void onEvent(AssessmentStartedEvent event) {
         productId = event.getProductId();
+        productType = event.getProductType().getCode();
     }
 
     public void onEvent(SubtestStartedEvent event) {
@@ -130,12 +132,14 @@ public class SubtestItemCollectionCalculator extends Calculator {
 	        	SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
 		                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items, currentWsTvSubject);
 		        subtestItemsEvent.setProductId(productId);
+		        subtestItemsEvent.setProductType(productType);
 	        	subtestItemsEvent.setContentArea(currentWsTvSubject);
 	        	channel.send(subtestItemsEvent);
 	        } else {
 	        	SubtestItemCollectionEvent subtestItemsEvent = new SubtestItemCollectionEvent(event
 	 	                .getTestRosterId(), event.getItemSetId(), event.getItemSetName(), items);
 	 	        subtestItemsEvent.setProductId(productId);
+	 	        subtestItemsEvent.setProductType(productType);
 	 	        channel.send(subtestItemsEvent);
 	        }
 	    }

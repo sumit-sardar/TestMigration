@@ -17,6 +17,7 @@ public final class ProductType extends StringConstant {
     public static final ProductType TABE_LOCATOR = new ProductType("TL", "TABE Locator");
     public static final ProductType LASLINK = new ProductType("LL", "LasLink");
     public static final ProductType TABE_ADAPTIVE = new ProductType("TA", "TABE Adaptive");
+    public static final ProductType TASC = new ProductType("TS", "TASC"); //Changes for TASC
     
     //Need to add one entry for Laslink
     

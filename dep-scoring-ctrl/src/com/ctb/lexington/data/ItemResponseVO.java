@@ -47,6 +47,11 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
     private Integer conditionCodeId;
     private String comments;
     private Clob constructedResponse;
+    private String varcharConstructedResponse;
+    private String grItemRules;
+    private String grItemCorrectAnswer;
+    private String answerArea;
+    private String itemType;
     private String correctAnswer; // Added for tabe adaptive
 
 	/**
@@ -257,6 +262,66 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
 	}
 	public void setCorrectAnswer(String correctAnswer) {
 		this.correctAnswer = correctAnswer;
+	}
+	/**
+	 * @return the varcharConstructedResponse
+	 */
+	public String getVarcharConstructedResponse() {
+		return varcharConstructedResponse;
+	}
+	/**
+	 * @param varcharConstructedResponse the varcharConstructedResponse to set
+	 */
+	public void setVarcharConstructedResponse(String varcharConstructedResponse) {
+		this.varcharConstructedResponse = varcharConstructedResponse;
+	}
+	/**
+	 * @return the grItemRules
+	 */
+	public String getGrItemRules() {
+		return grItemRules;
+	}
+	/**
+	 * @param grItemRules the grItemRules to set
+	 */
+	public void setGrItemRules(String grItemRules) {
+		this.grItemRules = grItemRules;
+	}
+	/**
+	 * @return the grItemCorrectAnswer
+	 */
+	public String getGrItemCorrectAnswer() {
+		return grItemCorrectAnswer;
+	}
+	/**
+	 * @param grItemCorrectAnswer the grItemCorrectAnswer to set
+	 */
+	public void setGrItemCorrectAnswer(String grItemCorrectAnswer) {
+		this.grItemCorrectAnswer = grItemCorrectAnswer;
+	}
+	/**
+	 * @return the answerArea
+	 */
+	public String getAnswerArea() {
+		return answerArea;
+	}
+	/**
+	 * @param answerArea the answerArea to set
+	 */
+	public void setAnswerArea(String answerArea) {
+		this.answerArea = answerArea;
+	}
+	/**
+	 * @return the itemType
+	 */
+	public String getItemType() {
+		return itemType;
+	}
+	/**
+	 * @param itemType the itemType to set
+	 */
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
 	}
     
 }

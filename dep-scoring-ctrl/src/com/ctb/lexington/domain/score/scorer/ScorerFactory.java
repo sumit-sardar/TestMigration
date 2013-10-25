@@ -59,7 +59,10 @@ public class ScorerFactory {
                 	System.out.println("***** SCORING: ScorerFactory: createScorer: creating a non-do-nothing scorer");
                     // Kick off the events, and replay existing ones
                     scorer.notify(assessment);
-                    new ResponseReplayer(scorer).replaySubtests(assessment.getTestRosterId(), scorer);
+                    ResponseReplayer responseReplayer = new ResponseReplayer(scorer);
+                    responseReplayer.setProductId(assessment.getProductId());
+                    responseReplayer.setProductType(assessment.getProductType().getCode());
+                    responseReplayer.replaySubtests(assessment.getTestRosterId(), scorer);
                 } else {
                 	//setCompletionStatusForUnscoredTest(assessment.getTestRosterId());
                 }

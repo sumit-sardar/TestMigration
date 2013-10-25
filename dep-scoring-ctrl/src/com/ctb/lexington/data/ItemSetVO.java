@@ -144,6 +144,10 @@ public class ItemSetVO implements Persistent, Serializable
     protected String objectiveScore = null;
     protected Integer unscored = null; // Added to handle student stop in case of tabe adaptive
     protected boolean minAnswered = false; // Added to meet same condition as of tabe online
+    
+    protected boolean validationStatusTASC = false; // Added to store score validation Status for TASC
+    protected boolean omissionStatusTASC = false; // Added to store score omission Status for TASC
+    protected boolean suppressionStatusTASC = false; // Added to store score suppression Status for TASC
 
     public ItemSetVO() { }
 
@@ -712,6 +716,48 @@ public class ItemSetVO implements Persistent, Serializable
 
 	public void setMinAnswered(boolean minAnswered) {
 		this.minAnswered = minAnswered;
+	}
+
+	/**
+	 * @return the validationStatusTASC
+	 */
+	public boolean isValidationStatusTASC() {
+		return validationStatusTASC;
+	}
+
+	/**
+	 * @param validationStatusTASC the validationStatusTASC to set
+	 */
+	public void setValidationStatusTASC(boolean validationStatusTASC) {
+		this.validationStatusTASC = validationStatusTASC;
+	}
+
+	/**
+	 * @return the omissionStatusTASC
+	 */
+	public boolean isOmissionStatusTASC() {
+		return omissionStatusTASC;
+	}
+
+	/**
+	 * @param omissionStatusTASC the omissionStatusTASC to set
+	 */
+	public void setOmissionStatusTASC(boolean omissionStatusTASC) {
+		this.omissionStatusTASC = omissionStatusTASC;
+	}
+
+	/**
+	 * @return the suppressionStatusTASC
+	 */
+	public boolean isSuppressionStatusTASC() {
+		return suppressionStatusTASC;
+	}
+
+	/**
+	 * @param suppressionStatusTASC the suppressionStatusTASC to set
+	 */
+	public void setSuppressionStatusTASC(boolean suppressionStatusTASC) {
+		this.suppressionStatusTASC = suppressionStatusTASC;
 	}
 
 }

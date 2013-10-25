@@ -2,23 +2,23 @@ package com.ctb.lexington.db.irsdata;
 
 public class IrsDemographicData{
 	
-	private Long attr1Id;
-	private Long attr2Id;
-	private Long attr3Id;
-	private Long attr4Id;
-	private Long attr5Id;
-	private Long attr6Id;
-	private Long attr7Id;
-	private Long attr8Id;
-	private Long attr9Id;
-	private Long attr10Id;
-	private Long attr11Id;
-	private Long attr12Id;
-	private Long attr13Id;
-	private Long attr14Id;
-	private Long attr15Id;
-	private Long attr16Id;
-	// Added for LasLink - START 
+	private Long attr1Id; //ELL
+	private Long attr2Id; //Ethnicity
+	private Long attr3Id; //Free or Reduced Lunch
+	private Long attr4Id; //Gender
+	private Long attr5Id; //IEP
+	private Long attr6Id; //Labor Force Status
+	private Long attr7Id; //LEP
+	private Long attr8Id; //Migrant
+	private Long attr9Id; //Screen Magnifier
+	private Long attr10Id; //Section 504
+	private Long attr11Id; //Screen Reader
+	private Long attr12Id; //Calculator
+	private Long attr13Id; //Allow Pause
+	private Long attr14Id; //Untimed Test
+	private Long attr15Id; //Adjusted Colors
+	private Long attr16Id; //Adjusted Font Size
+	// Added for LasLink - START
 	private Long attr17Id; // HOME_LANGUAGE
 	private Long attr18Id; // MOBILITY
 	private Long attr19Id; // USA_SCHOOL_ENROLLMENT

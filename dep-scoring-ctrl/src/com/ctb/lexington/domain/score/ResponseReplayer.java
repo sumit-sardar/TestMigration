@@ -12,6 +12,7 @@ import javax.naming.NamingException;
 
 import com.ctb.lexington.data.ItemResponseVO;
 import com.ctb.lexington.data.ItemSetVO;
+import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.data.StudentItemSetStatusRecord;
 import com.ctb.lexington.db.data.TestRosterRecord;
 import com.ctb.lexington.db.mapper.ItemResponseMapper;
@@ -19,6 +20,9 @@ import com.ctb.lexington.db.mapper.ItemSetMapper;
 import com.ctb.lexington.db.mapper.StudentItemSetStatusMapper;
 import com.ctb.lexington.db.mapper.TestRosterMapper;
 import com.ctb.lexington.db.utils.DatabaseHelper;
+import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
+import com.ctb.lexington.domain.score.event.NoResponseEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
@@ -29,6 +33,7 @@ import com.ctb.lexington.domain.teststructure.CompletionStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.EventChannelException;
 import com.ctb.lexington.util.CTBConstants;
+import com.ctb.lexington.util.ValidateGRResponse;
 
 /**
  * <code>ResponseReplayer</code> replays events for a {@link Scorer}. It has two
@@ -67,6 +72,8 @@ public class ResponseReplayer {
     private final TestRosterMapper testRosterMapper;
     private final ItemResponseMapper itemResponseMapper;
     private final StudentItemSetStatusMapper studentItemSetStatusMapper;
+    private Integer productId = null;
+    private String productType = null;
 
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -198,6 +205,24 @@ public class ResponseReplayer {
 	            //System.out.println("isMinumAnswered -> " + isMinumAnswered);
 	            subtest.setMinAnswered(isMinumAnswered);
             }
+            
+            if("TS".equals(this.getProductType())) {
+            	System.out.println("Scorer ***** To check Scoring Status for TASC ***** ");
+            	
+            	List responses = itemResponseMapper.findItemResponsesBySubtest(
+                        asLong(subtest.getItemSetId()), testRosterId);
+            	
+            	//validation or omission rule for TASC should be applied here
+            	subtest.setValidationStatusTASC(checkScoringValidationStatusForTASC(responses));
+            	System.out.println("Scoring Validation Status for TASC is :: " + subtest.isValidationStatusTASC());
+            	
+            	subtest.setOmissionStatusTASC(checkScoringOmissionStatusForTASC(responses));
+            	System.out.println("Scoring Omission Status for TASC is :: " + subtest.isOmissionStatusTASC());
+            	
+            	subtest.setSuppressionStatusTASC(checkScoringSuppressionStatusForTASC(responses));
+            	System.out.println("Scoring Suppression Status for TASC is :: " + subtest.isSuppressionStatusTASC());
+            }
+            
 
             events.addAll(getSubtestEvents(roster.getNormGroup(), roster.getAgeCategory(), subtest, requireSubtestsComplete,
                     itemResponseMapper,
@@ -232,6 +257,107 @@ public class ResponseReplayer {
         }
 
         return (min1Correct || minimun5Answered);
+    }
+    
+    /**
+     * Any 1 operational item answered correctly or any 5 or more
+     * operational items validly marked. Item type (SR/GR).
+     * 
+     * Check 5 or more SR/GR/CR items validly marked or not 
+     * and minimum one answer is correct or not
+     */
+    private static boolean checkScoringValidationStatusForTASC(final List responses) {
+    	 if (responses.isEmpty()) return false;
+         boolean minimun5Answered = false;
+         boolean min1Correct = false;
+         
+         if(responses.size() >= 5 ) {
+         	minimun5Answered = true;
+         } else {
+         	minimun5Answered = false;
+         }
+         
+         min1Correct = isMinimumOneAnswerCorrect(responses);
+         
+         return (min1Correct || minimun5Answered);
+    }
+    
+    /**
+     * Check Response List is empty or not
+     * i.e. zero operational marked or not
+     */
+    private static boolean checkScoringOmissionStatusForTASC(final List responses) {
+    	boolean zeroOperationalItemMarked = false;
+    	
+    	if (responses.isEmpty()) 
+    		zeroOperationalItemMarked = true;
+    	else 
+    		zeroOperationalItemMarked = false;
+    	
+    	return zeroOperationalItemMarked;
+    }
+    
+    /**
+     *  Student attempts 1, 2, 3,or 4 operational items anywhere in the subject area
+     *  and has no correct responses.
+     *  (For all subjects including Writing).
+     *  
+     *  Check Response List size is >= 1 and <=4 or not
+     *  and minimum one answer is correct or not
+     */
+    private static boolean checkScoringSuppressionStatusForTASC(final List responses) {
+    	boolean oneToFourOperationalItemMarked = false;
+    	boolean max0Incorrect = false;
+    	
+    	if (responses.size() >=1 && responses.size() <= 4) {
+    		oneToFourOperationalItemMarked = true;
+    	}
+    	else 
+    		oneToFourOperationalItemMarked = false;
+    	
+    	max0Incorrect = !isMinimumOneAnswerCorrect(responses);
+    	
+    	return ( max0Incorrect && oneToFourOperationalItemMarked );
+    }
+    
+    /**
+     *  This method is implemented to check whether there is minimum one
+     *  correct (SR/CR/GR) response or not
+     */
+    private static boolean isMinimumOneAnswerCorrect(final List responses) {
+    	
+    	boolean min1Correct = false;
+    	
+    	for (final Iterator it = responses.iterator(); it.hasNext();) {
+    		
+			ItemResponseVO tascResponse = (ItemResponseVO) it.next();
+			if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
+				if (null != tascResponse.getAnswerArea()
+						&& "GRID".equals(tascResponse.getAnswerArea())) {
+
+					final String itemId = tascResponse.getItemId();
+					final String actualGrResponse = tascResponse.getVarcharConstructedResponse();
+					final String grItemRules = tascResponse.getGrItemRules();
+					final String grItemCorrectAnswer = tascResponse.getGrItemCorrectAnswer();
+
+					if (actualGrResponse != null && grItemRules != null
+							&& grItemCorrectAnswer != null) {
+						String itemsRawScore = ValidateGRResponse.validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
+						if (itemsRawScore.equals("1")) {
+							min1Correct = true;
+							break;
+						}
+					}
+				}
+			} else {
+				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
+					min1Correct = true;
+					break;
+				}
+			}
+		}
+    	
+    	return min1Correct;
     }
 
     private static StudentItemSetStatusRecord getSubtestStatus(
@@ -444,6 +570,9 @@ public class ResponseReplayer {
         //--- on-line items have no points assigned
         event.setPointsObtained(response.getPoints());
         event.setResponse(response.getResponse());
+        event.setGrResponse(response.getVarcharConstructedResponse());
+        event.setGrItemRules(response.getGrItemRules());
+        event.setGrItemCorrectAnswer(response.getGrItemCorrectAnswer());
         event.setResponseElapsedTime(response.getResponseElapsedTime());
         event.setResponseMethod(response.getResponseMethod());
         event.setResponseSeqNum(response.getResponseSeqNum());
@@ -518,4 +647,32 @@ public class ResponseReplayer {
     private static Long asLong(final Integer number) {
         return DatabaseHelper.asLong(number);
     }
+
+	/**
+	 * @return the productId
+	 */
+	public Integer getProductId() {
+		return productId;
+	}
+
+	/**
+	 * @param productId the productId to set
+	 */
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	/**
+	 * @return the productType
+	 */
+	public String getProductType() {
+		return productType;
+	}
+
+	/**
+	 * @param productType the productType to set
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
 }

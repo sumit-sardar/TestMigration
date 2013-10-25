@@ -227,7 +227,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 
             try {
                 TestResultController controller = null;
-                if(this instanceof TBScorer || this instanceof TLScorer) {
+                if(this instanceof TBScorer || this instanceof TLScorer || this instanceof TSScorer) {
                     controller = new TBTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
 

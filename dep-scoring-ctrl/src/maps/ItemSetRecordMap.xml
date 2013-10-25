@@ -104,6 +104,7 @@
 			and status.completion_status not in ('IN', 'IP')
 			and prod.product_id = ta.product_id
             AND (subtest.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')
+            AND isi.suppressed='F' 
         ORDER BY
             status.ITEM_SET_ORDER
     </select>
