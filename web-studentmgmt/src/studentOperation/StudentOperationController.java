@@ -578,13 +578,13 @@ public class StudentOperationController extends PageFlowController {
 				}
 				
 				//Prism Web Service Call
-				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
+				/*if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					try {
 						PrismWebServiceHandler.editStudent(studentId);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
+				}*/
 				
 				
 			}
