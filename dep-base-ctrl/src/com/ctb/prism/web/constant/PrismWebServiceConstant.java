@@ -37,6 +37,8 @@ public class PrismWebServiceConstant {
 	public static final String NCEContentScoreDetails = "NCE";
 	public static final String SSRContentScoreDetails = "SSR";
 	
+	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
@@ -48,6 +50,14 @@ public class PrismWebServiceConstant {
 		itemResponseSRScoreValMap.put("C", 3);
 		itemResponseSRScoreValMap.put("D", 4);
 		itemResponseSRScoreValMap.put("E", 5);
+		
+		contentDetailsContentCodeMap.put("Reading", 1);
+		contentDetailsContentCodeMap.put("Writing", 2);
+		contentDetailsContentCodeMap.put("ELA", 3);
+		contentDetailsContentCodeMap.put("Mathematics", 4);
+		contentDetailsContentCodeMap.put("Science", 5);
+		contentDetailsContentCodeMap.put("Social Studies", 6);
+		contentDetailsContentCodeMap.put("Overall", 7);
 		
 	}
 }
