@@ -58,6 +58,7 @@ public class ItemVO extends Object implements Persistent, java.io.Serializable, 
     private String name;
     private String displayCode;
     private String itemType;
+    private String answerArea;
     private String onlineCr;
     private Integer minPoints;
     private Integer maxPoints;
@@ -429,4 +430,18 @@ public class ItemVO extends Object implements Persistent, java.io.Serializable, 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
+	/**
+	 * @return the answerArea
+	 */
+	public String getAnswerArea() {
+		return answerArea;
+	}
+
+	/**
+	 * @param answerArea the answerArea to set
+	 */
+	public void setAnswerArea(String answerArea) {
+		this.answerArea = answerArea;
+	}
 }

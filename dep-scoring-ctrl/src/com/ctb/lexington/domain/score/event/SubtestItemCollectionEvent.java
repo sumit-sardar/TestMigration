@@ -3,8 +3,10 @@ package com.ctb.lexington.domain.score.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ctb.lexington.data.ConditionCodes;
@@ -15,7 +17,17 @@ import com.ctb.lexington.util.IndexMap;
 public class SubtestItemCollectionEvent extends SubtestEvent {
     private final IndexMap itemIndex;
     private Integer productId;
+    private String productType;
+    private Map<String,Boolean> GRItemMap = new HashMap<String,Boolean>();
 
+    public void setGRItemMap(String itemId, Boolean isCorrect) {
+    	GRItemMap.put(itemId, isCorrect);
+    }
+    
+    public Boolean getGRItemMap(String itemId) {
+    	return GRItemMap.get(itemId);
+    }
+    
     public SubtestItemCollectionEvent(final Long testRosterId, final Integer itemSetId,
             final String itemSetName, final Collection itemDTOCollection) {
         super(testRosterId, itemSetId);
@@ -261,4 +273,26 @@ public class SubtestItemCollectionEvent extends SubtestEvent {
             return ItemVO.ITEM_TYPE_CR.equals(item.getItemType()) && !isOnlineCr(item.getItemId());
         }
     }
+    
+    /**
+     * @param itemId
+     * @return answerArea for given itemId
+     */
+    public String getAnswerArea(final String itemId) {
+        return getItem(itemId).getAnswerArea();
+    }
+
+	/**
+	 * @return the productType
+	 */
+	public String getProductType() {
+		return productType;
+	}
+
+	/**
+	 * @param productType the productType to set
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
 }

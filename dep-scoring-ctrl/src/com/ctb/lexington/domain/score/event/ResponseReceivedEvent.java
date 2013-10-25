@@ -11,6 +11,9 @@ public class ResponseReceivedEvent extends ResponseEvent {
     /** The answer choice id of the bean. */
     protected String extAnswerChoiceId;//
     protected String response;
+    protected String grResponse;
+    protected String grItemRules;
+    protected String grItemCorrectAnswer;
     protected String responseMethod;
     protected boolean studentMarked;
     // CR items have points if they are scored via key entry or scan and score
@@ -149,4 +152,46 @@ public class ResponseReceivedEvent extends ResponseEvent {
             return null == that.getItemId();
         return getItemId().equals(that.getItemId());
     }
+
+	/**
+	 * @return the grResponse
+	 */
+	public String getGrResponse() {
+		return grResponse;
+	}
+
+	/**
+	 * @param grResponse the grResponse to set
+	 */
+	public void setGrResponse(String grResponse) {
+		this.grResponse = grResponse;
+	}
+
+	/**
+	 * @return the grItemRules
+	 */
+	public String getGrItemRules() {
+		return grItemRules;
+	}
+
+	/**
+	 * @param grItemRules the grItemRules to set
+	 */
+	public void setGrItemRules(String grItemRules) {
+		this.grItemRules = grItemRules;
+	}
+
+	/**
+	 * @return the grItemCorrectAnswer
+	 */
+	public String getGrItemCorrectAnswer() {
+		return grItemCorrectAnswer;
+	}
+
+	/**
+	 * @param grItemCorrectAnswer the grItemCorrectAnswer to set
+	 */
+	public void setGrItemCorrectAnswer(String grItemCorrectAnswer) {
+		this.grItemCorrectAnswer = grItemCorrectAnswer;
+	}
 }

@@ -42,6 +42,7 @@
             I.UPDATED_DATE_TIME as updatedDateTime,
             I.ACTIVATION_STATUS as activationStatus,
             I.VERSION as version,
+            I.ANSWER_AREA  as answerArea,
             ITEM_DISPLAY_NAME as itemDisplayName,
             TEMPLATE_ID as templateId,
             THINK_CODE as thinkCode,
