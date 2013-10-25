@@ -1946,8 +1946,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 				var pointStatus = [];
 				if(rowElement){				
 					
-					var score = rowElement.lastChild.previousSibling.innerHTML;
-					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
+					var score = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+					var status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.previousSibling.innerHTML;
 					if ( isNaN(status)){
 						score = trim(score);
 						status = trim(status);
@@ -1958,8 +1958,8 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 							rowElement = rowElement[0];
 							
 							if(rowElement){
-								score = rowElement.lastChild.innerHTML;
-								status = rowElement.lastChild.previousSibling.previousSibling.innerHTML;
+								score = rowElement.lastChild.previousSibling.innerHTML;
+								status = rowElement.lastChild.previousSibling.previousSibling.previousSibling.innerHTML;
 								score = trim(score);
 								status = trim(status);
 								pointStatus[0] = score;
