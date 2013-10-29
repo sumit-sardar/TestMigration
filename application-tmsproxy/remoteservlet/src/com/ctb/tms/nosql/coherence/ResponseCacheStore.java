@@ -111,7 +111,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			try {
 		    		//if(ird.isReplicate().booleanValue()) {
 		    			sink.putItemResponse(conn, ird);
-			    		conn.commit();
+//			    		conn.commit();
 		    		//}
     			} catch (Exception e) {
     				success = false;
@@ -122,6 +122,12 @@ public class ResponseCacheStore implements OASCacheStore {
 			    	counter++;
     			}
     		}
+    		
+    		//Project Courier(John Wang): Commit here outside of the loop for now. AWR report from DBA. Turn on GC logs.
+    		//Then try to implement JDBC batch update later on. 
+    		//Might want to implement stored procedure for the processing, which will require lots of code changes.
+    		conn.commit();
+    		
     		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {
     		logger.warn("ResponseCacheStore.storeAll (binary): Error storing responses to DB: " + e.getMessage());
@@ -153,7 +159,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			try {
 		    		//if(ird.isReplicate().booleanValue()) {
 		    			sink.putItemResponse(conn, ird);
-			    		conn.commit();
+//			    		conn.commit();
 		    		//}
     			} catch (Exception e) {
     				success = false;
@@ -164,6 +170,11 @@ public class ResponseCacheStore implements OASCacheStore {
 			    	counter++;
     			}
     		}
+    		//Project Courier(John Wang): Commit here outside of the loop for now. AWR report from DBA. Turn on GC logs.
+    		//Then try to implement JDBC batch update later on. 
+    		//Might want to implement stored procedure for the processing, which will require lots of code changes.
+    		conn.commit();
+    		
     		logger.info("ResponseCacheStore.storeAll processed " + counter + " records.");
     	} catch (Exception e) {
     		logger.warn("ResponseCacheStore.storeAll: Error storing responses to DB: " + e.getMessage());
