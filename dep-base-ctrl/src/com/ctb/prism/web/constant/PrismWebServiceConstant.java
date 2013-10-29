@@ -37,6 +37,12 @@ public class PrismWebServiceConstant {
 	public static final String NCEContentScoreDetails = "NCE";
 	public static final String SSRContentScoreDetails = "SSR";
 	
+	public static final String NCObjectiveScoreDetails = "NC";
+	public static final String NPObjectiveScoreDetails = "NP";
+	public static final String SSObjectiveScoreDetails = "SS";
+	public static final String MAObjectiveScoreDetails = "MA";
+	public static final String MRObjectiveScoreDetails = "MR";
+	
 	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
 	
 	static{

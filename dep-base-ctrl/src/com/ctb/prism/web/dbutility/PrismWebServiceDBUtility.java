@@ -32,6 +32,8 @@ import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
 import com.ctb.prism.web.controller.DemoTO;
 import com.ctb.prism.web.controller.ItemResponseTO;
 import com.ctb.prism.web.controller.ItemResponsesDetailsTO;
+import com.ctb.prism.web.controller.ObjectiveScoreDetailsTO;
+import com.ctb.prism.web.controller.ObjectiveScoreTO;
 import com.ctb.prism.web.controller.OrgDetailsTO;
 import com.ctb.prism.web.controller.StudentBioTO;
 import com.ctb.prism.web.controller.StudentDemoTO;
@@ -58,7 +60,10 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       ''                        AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       ''                        AS hse_scale_score_range  FROM tabe_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND SUBSTR(t.content_areaid, 5) = ?";
 	private static final String GET_CONTENT_DETAILS = "SELECT DISTINCT ipp.item_set_name AS \"content_code_name\",                ipp.item_set_id AS \"item_set_id\"  FROM student_item_set_status t,       item_set                s,       item_set_parent         ip,       item_set                ipp WHERE t.test_roster_id = ?   AND s.item_set_id = t.item_set_id   AND ip.item_set_id = s.item_set_id   AND ipp.item_set_id = ip.parent_item_set_id   AND s.SAMPLE = 'F'";
 	private static final String GET_TEST_TAKEN_DATE = "SELECT MAX(r.created_date_time) AS \"test_taken_dt\"  FROM item_response r WHERE r.item_set_id IN (SELECT DISTINCT t.item_set_id                           FROM item_set_parent t, item_response r                          WHERE t.parent_item_set_id = ?                            AND r.item_set_id = t.item_set_id                            AND r.test_roster_id = ?                          GROUP BY t.item_set_id)   AND r.test_roster_id = ?";
-
+	private static final String GET_OBJECTIVE_LIST = "SELECT 'P' AS lvl, prim.item_set_id AS itemsetid, prim.item_set_name AS objname  FROM item_set prim,       item_set_item pisi,       item_set_ancestor pisip,       item_set_category pisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t, item_response r                            WHERE t.parent_item_set_id = ?                              AND r.item_set_id = t.item_set_id                              AND r.test_roster_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = pisi.item_id   AND pisip.item_set_id = pisi.item_set_id   AND pisip.ancestor_item_set_id = prim.item_set_id   AND prim.item_set_category_id = pisc.item_set_category_id   AND pisc.item_set_category_level = prod.scoring_item_set_level   AND prod.product_id IN       (SELECT adm.product_id AS prodid          FROM test_admin adm         WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = pisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') UNION SELECT 'S' AS lvl , sec.item_set_id AS itemsetid, sec.item_set_name AS objname  FROM item_set sec,       item_set_item sisi,       item_set_ancestor sisip,       item_set_category sisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t, item_response r                            WHERE t.parent_item_set_id = ?                              AND r.item_set_id = t.item_set_id                              AND r.test_roster_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = sisi.item_id   AND sisip.item_set_id = sisi.item_set_id   AND sisip.ancestor_item_set_id = sec.item_set_id   AND sec.item_set_category_id = sisc.item_set_category_id   AND sisc.item_set_category_level = prod.sec_scoring_item_set_level   AND prod.product_id IN       (SELECT adm.product_id AS prodid          FROM test_admin adm         WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = sisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND(sub.item_set_level != 'L' OR prod.product_type = 'TL')";
+	private static final String GET_PRIM_OBJ_SCORE = "SELECT t.percent_obtained AS numcorrect,       t.points_possible AS numpossible,       '' AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       '' AS itmattempflag  FROM tabe_prim_obj_fact t WHERE substr(t.prim_objid, 5)  = ? AND t.studentid = ? AND t.sessionid = ?";
+	private static final String GET_SEC_OBJ_SCORE = "SELECT t.percent_obtained AS numcorrect,       t.points_possible AS numpossible,       '' AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       '' AS itmattempflag  FROM tabe_sec_obj_fact t WHERE substr(t.sec_objid, 5) = ?   AND t.studentid = ?   AND t.sessionid = ?";
+	
 	/**
 	 * Get Student Bio Information
 	 * @param studentId
@@ -421,6 +426,9 @@ public class PrismWebServiceDBUtility {
 					ContentScoreDetailsTO contentScoreDetailsTO = getContentScoreDetails(studentId, sessionId, rs.getLong("item_set_id"));
 					contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
 					
+					List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = getObjectiveScoreDetails(rs.getLong("item_set_id"), rosterId, sessionId, studentId);
+					contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
+					
 					//TODO - Set the value
 					contentDetailsTOList.add(contentDetailsTO);
 				}
@@ -435,6 +443,142 @@ public class PrismWebServiceDBUtility {
 		return contentDetailsTOList;
 	}
 	
+	/**
+	 * Get the Objective Score Details
+	 * @param itemSetId
+	 * @param rosterId
+	 * @param sessionId
+	 * @param studentId 
+	 * @return
+	 */
+	private static List<ObjectiveScoreDetailsTO> getObjectiveScoreDetails(
+			long itemSetId, long rosterId, long sessionId, Integer studentId ) {
+		// TODO Auto-generated method stub
+		List<ObjectiveScoreDetailsTO> objectiveScoreDetailsLst = new ArrayList<ObjectiveScoreDetailsTO>();
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection irsCon = null;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_OBJECTIVE_LIST);
+			pst.setLong(1, itemSetId);
+			pst.setLong(2, rosterId);
+			pst.setLong(3, sessionId);
+			pst.setLong(4, itemSetId);
+			pst.setLong(5, rosterId);
+			pst.setLong(6, sessionId);
+			rs = pst.executeQuery();
+			irsCon = openIRSDBcon(false);
+			while(rs.next()){
+				PreparedStatement irsPst = null;
+				ResultSet irsRs = null;
+				ObjectiveScoreDetailsTO objectiveScoreDetails = new ObjectiveScoreDetailsTO();
+				String highLvl = rs.getString("lvl");
+				if("P".equals(highLvl)){
+					try{
+						irsPst = irsCon.prepareStatement(GET_PRIM_OBJ_SCORE);
+						irsPst.setLong(1, rs.getLong("itemsetid"));
+						irsPst.setLong(2, studentId);
+						irsPst.setLong(3, sessionId);
+						irsRs = irsPst.executeQuery();
+						
+						while(irsRs.next()){
+							ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
+							NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
+							NCobjectiveScoreTO.setValue(irsRs.getString("numcorrect"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
+							
+							ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
+							NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
+							NPobjectiveScoreTO.setValue(irsRs.getString("numpossible"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
+							
+							ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
+							SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
+							SSobjectiveScoreTO.setValue(irsRs.getString("scalescore"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
+							
+							ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
+							MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
+							MAobjectiveScoreTO.setValue(irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-");
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
+							
+							ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
+							MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
+							MRobjectiveScoreTO.setValue(irsRs.getString("objmasscalescorerng"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
+							
+							objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
+							
+						}
+						
+						objectiveScoreDetailsLst.add(objectiveScoreDetails);
+						
+					}catch(Exception e){
+						e.printStackTrace();
+					}finally{
+						close(irsPst);
+						close(irsRs);
+					}
+					
+				}else{
+					try{
+						irsPst = irsCon.prepareStatement(GET_SEC_OBJ_SCORE);
+						irsPst.setLong(1, rs.getLong("itemsetid"));
+						irsPst.setLong(2, studentId);
+						irsPst.setLong(3, sessionId);
+						irsRs = irsPst.executeQuery();
+						
+						while(irsRs.next()){
+							ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
+							NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
+							NCobjectiveScoreTO.setValue(irsRs.getString("numcorrect"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
+							
+							ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
+							NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
+							NPobjectiveScoreTO.setValue(irsRs.getString("numpossible"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
+							
+							ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
+							SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
+							SSobjectiveScoreTO.setValue(irsRs.getString("scalescore"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
+							
+							ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
+							MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
+							MAobjectiveScoreTO.setValue(irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-");
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
+							
+							ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
+							MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
+							MRobjectiveScoreTO.setValue(irsRs.getString("objmasscalescorerng"));
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
+							
+							objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
+							
+						}
+						
+						objectiveScoreDetailsLst.add(objectiveScoreDetails);
+						
+					}catch(Exception e){
+						e.printStackTrace();
+					}finally{
+						close(irsPst);
+						close(irsRs);
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}finally{
+			close(irsCon);
+			close(con, pst, rs);
+		}
+		return objectiveScoreDetailsLst;
+	}
+
 	/**
 	 * Populate the Customer Hierarchy Details TO
 	 * @param rs
