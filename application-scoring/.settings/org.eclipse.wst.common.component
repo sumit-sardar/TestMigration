@@ -13,5 +13,8 @@
             <dependent-object>EjbModule_1257457701717</dependent-object>
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="dep-base-ctrl.jar" deploy-path="/" handle="module:/resource/dep-base-ctrl/dep-base-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
     </wb-module>
 </project-modules>

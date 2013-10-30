@@ -6,6 +6,7 @@
 		<project>dep-scoring-ctrl</project>
 		<project>web-scoring</project>
 		<project>dep-scoring-ejb</project>
+		<project>dep-base-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
