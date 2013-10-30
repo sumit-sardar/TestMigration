@@ -12,12 +12,14 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
+import com.ctb.prism.web.controller.ContentDetailsTO;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
 import com.ctb.prism.web.controller.RosterDetailsTO;
 import com.ctb.prism.web.controller.SampleWebservice;
 import com.ctb.prism.web.controller.StudentBioTO;
 import com.ctb.prism.web.controller.StudentDetailsTO;
 import com.ctb.prism.web.controller.StudentListTO;
+import com.ctb.prism.web.controller.SubtestAccommodationsTO;
 import com.ctb.prism.web.dbutility.PrismWebServiceDBUtility;
 import com.ctb.util.OASLogger;
 import com.sun.xml.internal.ws.client.BindingProviderProperties;
@@ -112,6 +114,7 @@ public class PrismWebServiceHandler {
 		for(long rosterID : rosterIds){
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
+			//TODO - get the student survey details and put it in the studentDetailsTO
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
 			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
@@ -120,6 +123,47 @@ public class PrismWebServiceHandler {
 		
 		invokePrismWebService(studentListTO);
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
+		
+		/*List<ContentDetailsTO> list = PrismWebServiceDBUtility.getContentDetailsTO(6808083, new SubtestAccommodationsTO(), 12097455, 187196);
+		System.out.println(list);*/
+	}
+	
+	/**
+	 * Web Service call for Scoring
+	 * @param rosterId
+	 * @param studentId
+	 * @param sessionId
+	 * @throws Exception
+	 */
+	public static void scoring(long rosterId, Integer studentId, long sessionId) throws Exception{
+		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+		StudentListTO studentListTO = new StudentListTO();
+		
+		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
+		
+		RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+		
+
+		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId);
+		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+		
+		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
+		studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
+		//TODO - get the student survey details and put it in the studentDetailsTO
+		rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
+		
+		SubtestAccommodationsTO subtestAccommodationsTO =  PrismWebServiceDBUtility.getSubTestAccommodation(studentId);
+		
+		List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, subtestAccommodationsTO, studentId, sessionId);
+		rosterDetailsTO.getCollContentDetailsTO().addAll(contentDetailsTOList);
+		
+		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
+		rosterDetailsList.add(rosterDetailsTO);
+		
+		invokePrismWebService(studentListTO);
+		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+		
+		
 	}
 
 	/**
@@ -144,5 +188,6 @@ public class PrismWebServiceHandler {
 			throws Exception {
 		return PrismWebServiceDBUtility.getCustomerHigherarchy(studentId);
 	}
+	
 	
 }
