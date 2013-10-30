@@ -85,6 +85,7 @@ public class PrismWebServiceDBUtility {
 			rs = pst.executeQuery();
 			System.out.println("PrismWebServiceDBUtility.getStudentBio : Query for getStudentBio : " + GET_STUDENT_BIO);
 			populateStudentBioTO(rs, std);
+			//TODO - set student id(OAS_Stnt_ID attribute name) in std(Field was not available)
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -360,6 +361,7 @@ public class PrismWebServiceDBUtility {
 				SScontentScoreTO.setScoreValue(rs.getString("scale_score"));
 				contentScoreTOLst.add(SScontentScoreTO);
 				
+				//TODO - data not yet populated. Need the column name in query
 				ContentScoreTO HSEcontentScoreTO = new ContentScoreTO();
 				HSEcontentScoreTO.setScoreType(PrismWebServiceConstant.HSEContentScoreDetails);
 				HSEcontentScoreTO.setScoreValue(rs.getString("high_school_equiv"));
@@ -375,6 +377,7 @@ public class PrismWebServiceDBUtility {
 				NCEcontentScoreTO.setScoreValue(rs.getString("normal_curve_equivalent"));
 				contentScoreTOLst.add(NCEcontentScoreTO);
 				
+				//TODO - data not yet populated. Need the column name in query
 				ContentScoreTO SSRcontentScoreTO = new ContentScoreTO();
 				SSRcontentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
 				SSRcontentScoreTO.setScoreValue(rs.getString("hse_scale_score_range"));
