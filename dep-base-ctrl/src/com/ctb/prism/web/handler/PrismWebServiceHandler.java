@@ -100,7 +100,7 @@ public class PrismWebServiceHandler {
 	 * @param studentId
 	 * @throws Exception
 	 */
-	public static void editStudent(Integer studentId) throws Exception{
+	public static StudentListTO editStudent(Integer studentId) throws Exception{
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
 		StudentListTO studentListTO = new StudentListTO();
 		
@@ -124,6 +124,8 @@ public class PrismWebServiceHandler {
 		invokePrismWebService(studentListTO);
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
+		return studentListTO;
+		
 		/*List<ContentDetailsTO> list = PrismWebServiceDBUtility.getContentDetailsTO(6808083, new SubtestAccommodationsTO(), 12097455, 187196);
 		System.out.println(list);*/
 	}
@@ -135,7 +137,7 @@ public class PrismWebServiceHandler {
 	 * @param sessionId
 	 * @throws Exception
 	 */
-	public static void scoring(long rosterId, Integer studentId, long sessionId) throws Exception{
+	public static StudentListTO scoring(long rosterId, Integer studentId, long sessionId) throws Exception{
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		StudentListTO studentListTO = new StudentListTO();
 		
@@ -163,6 +165,7 @@ public class PrismWebServiceHandler {
 		invokePrismWebService(studentListTO);
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		
+		return studentListTO;
 		
 	}
 

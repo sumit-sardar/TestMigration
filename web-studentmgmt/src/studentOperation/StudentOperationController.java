@@ -59,12 +59,14 @@ import com.ctb.control.db.Students;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
+import com.ctb.prism.web.controller.StudentListTO;
 import com.ctb.prism.web.handler.PrismWebServiceHandler;
 import com.ctb.util.SQLutils;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
 
 import dto.Message;
 import dto.StudentAccommodationsDetail;
@@ -580,7 +582,9 @@ public class StudentOperationController extends PageFlowController {
 				//Prism Web Service Call
 				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					try {
-						PrismWebServiceHandler.editStudent(studentId);
+						StudentListTO studentListTO  = PrismWebServiceHandler.editStudent(studentId);
+						XStream xs = new XStream();
+						System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
