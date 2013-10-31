@@ -84,8 +84,12 @@ public class ContentPublishBO {
 			if (sourcePubId == null || sourcePubId.length() == 0) {
 				throw new SystemException("Parameters are not defined in table");
 			}
-
+            //System.out.println("\n\nBefore Transform xmlFile"+xmlFile);
+            xmlFile = xmlFile.replaceAll("&#x00A0;", " "); // For Question Mark(?) Issue
+            xmlFile = xmlFile.replaceAll("&#160;", " ");// For Question Mark(?) Issue
+            //System.out.println("\n\nReplace String Transform xmlFile"+xmlFile);
 			xmlFile = PublishCommon.transforms(xmlFile, strCfgFileURL);
+			//System.out.println("\n\nAfter Transform xmlFile-->"+xmlFile);
 			if (xmlFile == null || xmlFile.length() == 0) {
 				throw new SystemException(
 						"Error has occurred transforming Item LML using xslt.");
