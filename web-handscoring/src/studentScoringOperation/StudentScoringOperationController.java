@@ -141,8 +141,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward getStudentCountForOrgNode(StudentSessionScoringForm form){
-
+	protected Forward getStudentCountForOrgNode(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		OutputStream stream = null;
 		Integer treeOrgNodeId = Integer.parseInt(getRequest().getParameter("treeOrgNodeId"));
 		HttpServletResponse resp = getResponse();
@@ -176,8 +176,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward getStudentForScoringGrid(StudentSessionScoringForm form){
-
+	protected Forward getStudentForScoringGrid(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
@@ -239,7 +239,8 @@ public class StudentScoringOperationController extends PageFlowController {
     		@Jpf.Forward(name = "success", 
 					path ="")
 	})
-    protected Forward getSessionForScoringGrid(StudentSessionScoringForm form){
+    protected Forward getSessionForScoringGrid(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -296,8 +297,8 @@ public class StudentScoringOperationController extends PageFlowController {
     		@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward findItemDetail(StudentSessionScoringForm form){
-		
+	protected Forward findItemDetail(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -332,8 +333,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward populateGridDropDowns(StudentSessionScoringForm form){
-
+	protected Forward populateGridDropDowns(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -378,9 +379,9 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward beginDisplayStudItemList(StudentSessionScoringForm form)
+	protected Forward beginDisplayStudItemList(StudentSessionScoringForm form) throws IOException, ClassNotFoundException
 	{ 
-
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -464,8 +465,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward getStudentListForScoreByStudent(StudentSessionScoringForm form) {
-		
+	protected Forward getStudentListForScoreByStudent(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -522,8 +523,8 @@ public class StudentScoringOperationController extends PageFlowController {
     		@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward getStudentListForItem(StudentSessionScoringForm form){
-		
+	protected Forward getStudentListForItem(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String json = "";
@@ -561,8 +562,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward showQuestionAnswer(StudentSessionScoringForm form){
-			
+	protected Forward showQuestionAnswer(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();	
 		String jsonResponse = "";
 		String itemId = getRequest().getParameter("itemId");
 		Integer testRosterId = new Integer(getRequest().getParameter("testRosterId"));
@@ -577,7 +578,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
 		RubricViewData[] scr =  getRubricDetails(itemId);
 		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
-				userName, testRosterId, itemSetId, itemId, itemType, this);
+				userName, testRosterId, itemSetId, itemId, itemType);
 		QuestionAnswerData qad = new QuestionAnswerData();
 		qad.setRubricData(scr);
 		qad.setScrContent(scrArea);
@@ -603,8 +604,9 @@ public class StudentScoringOperationController extends PageFlowController {
 	}
 	
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "") })
-	protected Forward saveDetails(StudentSessionScoringForm form) {
+	protected Forward saveDetails(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
 		System.out.println("Save details");
+		explicitlyInitializeAllControls();
 		String jsonMessageResponse = "";
 		if (user == null) {
 			getUserDetails();
@@ -663,7 +665,8 @@ public class StudentScoringOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success",
 					path = "")
 	})
-public Forward rescoreStudent(StudentSessionScoringForm form) {
+public Forward rescoreStudent(StudentSessionScoringForm form) throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		String jsonMessageResponse = "";
 		if (user == null) {
 			getUserDetails();
@@ -712,58 +715,27 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
     private RubricViewData[] getRubricDetails(String itemId){
 
     	RubricViewData[] rubricDetailsData = null;
+    	
     	try {	
-    		if(this.studentManagement == null){
-				ClassLoader cl = this.getClass().getClassLoader();
-				com.ctb.control.studentManagement.StudentManagementBean explicitObj = (com.ctb.control.studentManagement.StudentManagementBean) java.beans.Beans
-					.instantiate(cl,
-							"com.ctb.control.studentManagement.StudentManagementBean");
-				rubricDetailsData = explicitObj.getRubricDetailsData(itemId);    				
-			}else{
-				rubricDetailsData =  this.studentManagement.getRubricDetailsData(itemId);
-			} 
+			rubricDetailsData =  this.studentManagement.getRubricDetailsData(itemId);			 
     		System.out.println("rubricdetails data");
     	}
     	catch(CTBBusinessException be){
     		be.printStackTrace();
-    	}catch (IOException ioe) {
-			// TODO: handle exception
-    		ioe.printStackTrace();
-		}
-    	catch (ClassNotFoundException cnfe) {
-			// TODO: handle exception
-    		cnfe.printStackTrace();
-		}
+    	}
     	return rubricDetailsData;
     }
        
 	private static ScorableCRAnswerContent getIndividualCRResponse(
 			TestScoring testScoring, String userName, Integer testRosterId,
-			Integer deliverableItemSetId, String itemId, String itemType, Object controller) {
+			Integer deliverableItemSetId, String itemId, String itemType) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
-			if(testScoring == null){
-				ClassLoader cl = controller.getClass().getClassLoader();
-				com.ctb.control.crscoring.TestScoringBean explicitObj = (com.ctb.control.crscoring.TestScoringBean) java.beans.Beans
-						.instantiate(cl,
-								"com.ctb.control.crscoring.TestScoringBean");
-				answerArea = explicitObj.getCRItemResponseForScoring(userName,
-						testRosterId, deliverableItemSetId, itemId, itemType);
-			}else{
-				answerArea = testScoring.getCRItemResponseForScoring(userName,
-						testRosterId, deliverableItemSetId, itemId, itemType);
-			}	
+			answerArea = testScoring.getCRItemResponseForScoring(userName,
+						testRosterId, deliverableItemSetId, itemId, itemType);	
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
-		}catch (IOException ioe) {
-			// TODO: handle exception
-    		ioe.printStackTrace();
 		}
-    	catch (ClassNotFoundException cnfe) {
-			// TODO: handle exception
-    		cnfe.printStackTrace();
-		}		
-
 		return answerArea;
 	}
 	
@@ -973,8 +945,8 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 			@Jpf.Forward(name = "success", 
 					path ="")
 	})
-	protected Forward scoringOrgNodeHierarchyList(){
-
+	protected Forward scoringOrgNodeHierarchyList() throws IOException, ClassNotFoundException{
+		explicitlyInitializeAllControls();
 		String jsonTree = "";
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
@@ -1818,9 +1790,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	 * @jpf:action
 	 */
     @Jpf.Action()
-    protected Forward broadcastMessage()
-    {
-        HttpServletRequest req = getRequest();
+    protected Forward broadcastMessage() throws IOException, ClassNotFoundException
+    {	
+        explicitlyInitializeAllControls();
+    	HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
@@ -1882,6 +1855,30 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	{
     	return new Forward("success");
 	}
+    
+    private void explicitlyInitializeAllControls() throws IOException, ClassNotFoundException{
+    	ClassLoader cl = this.getClass().getClassLoader();
+    	if(this.studentManagement == null){
+    		this.studentManagement = (com.ctb.control.studentManagement.StudentManagementBean) java.beans.Beans
+			.instantiate(cl,
+					"com.ctb.control.studentManagement.StudentManagementBean");
+    	}
+    	if(this.testScoring == null){    		
+    		this.testScoring = (com.ctb.control.crscoring.TestScoringBean) java.beans.Beans
+					.instantiate(cl,
+							"com.ctb.control.crscoring.TestScoringBean");
+    	}
+    	if(this.testSessionStatus == null){
+    		this.testSessionStatus = (com.ctb.control.testAdmin.TestSessionStatusBean) java.beans.Beans
+					.instantiate(cl,
+							"com.ctb.control.testAdmin.TestSessionStatusBean");
+    	}
+    	if(this.scheduleTest == null){
+    		this.scheduleTest = (com.ctb.control.testAdmin.ScheduleTestBean) java.beans.Beans
+					.instantiate(cl,
+						"com.ctb.control.testAdmin.ScheduleTestBean");
+    	}    
+    }
     
     /////////////////////////////////////////////////////////////////////////////////////////////
     /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
