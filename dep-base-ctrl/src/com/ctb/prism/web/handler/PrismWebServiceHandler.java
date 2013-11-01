@@ -151,7 +151,7 @@ public class PrismWebServiceHandler {
 		
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
 		studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
-		//TODO - get the student survey details and put it in the studentDetailsTO
+		studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
 		rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
 		
 		SubtestAccommodationsTO subtestAccommodationsTO =  PrismWebServiceDBUtility.getSubTestAccommodation(studentId);

@@ -43,6 +43,8 @@ public class PrismWebServiceConstant {
 	public static final String MAObjectiveScoreDetails = "MA";
 	public static final String MRObjectiveScoreDetails = "MR";
 	
+	public static final String StudentDemoTestName = "TASC";
+	
 	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
 	
 	static{
