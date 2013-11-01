@@ -577,7 +577,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	//	itemId = "0155662";//Had to make it static, since only 2 items are present in database now
 		RubricViewData[] scr =  getRubricDetails(itemId);
 		ScorableCRAnswerContent scrArea = getIndividualCRResponse(testScoring,
-				userName, testRosterId, itemSetId, itemId, itemType);
+				userName, testRosterId, itemSetId, itemId, itemType, this);
 		QuestionAnswerData qad = new QuestionAnswerData();
 		qad.setRubricData(scr);
 		qad.setScrContent(scrArea);
@@ -713,27 +713,56 @@ public Forward rescoreStudent(StudentSessionScoringForm form) {
 
     	RubricViewData[] rubricDetailsData = null;
     	try {	
-    		rubricDetailsData =  this.studentManagement.getRubricDetailsData(itemId);
+    		if(this.studentManagement == null){
+				ClassLoader cl = this.getClass().getClassLoader();
+				com.ctb.control.studentManagement.StudentManagementBean explicitObj = (com.ctb.control.studentManagement.StudentManagementBean) java.beans.Beans
+					.instantiate(cl,
+							"com.ctb.control.studentManagement.StudentManagementBean");
+				rubricDetailsData = explicitObj.getRubricDetailsData(itemId);    				
+			}else{
+				rubricDetailsData =  this.studentManagement.getRubricDetailsData(itemId);
+			} 
     		System.out.println("rubricdetails data");
     	}
     	catch(CTBBusinessException be){
     		be.printStackTrace();
-    	}
+    	}catch (IOException ioe) {
+			// TODO: handle exception
+    		ioe.printStackTrace();
+		}
+    	catch (ClassNotFoundException cnfe) {
+			// TODO: handle exception
+    		cnfe.printStackTrace();
+		}
     	return rubricDetailsData;
     }
-    
-    
+       
 	private static ScorableCRAnswerContent getIndividualCRResponse(
 			TestScoring testScoring, String userName, Integer testRosterId,
-			Integer deliverableItemSetId, String itemId, String itemType) {
+			Integer deliverableItemSetId, String itemId, String itemType, Object controller) {
 		ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
 		try {
-
-			answerArea = testScoring.getCRItemResponseForScoring(userName,
-					testRosterId, deliverableItemSetId, itemId, itemType);
+			if(testScoring == null){
+				ClassLoader cl = controller.getClass().getClassLoader();
+				com.ctb.control.crscoring.TestScoringBean explicitObj = (com.ctb.control.crscoring.TestScoringBean) java.beans.Beans
+						.instantiate(cl,
+								"com.ctb.control.crscoring.TestScoringBean");
+				answerArea = explicitObj.getCRItemResponseForScoring(userName,
+						testRosterId, deliverableItemSetId, itemId, itemType);
+			}else{
+				answerArea = testScoring.getCRItemResponseForScoring(userName,
+						testRosterId, deliverableItemSetId, itemId, itemType);
+			}	
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
+		}catch (IOException ioe) {
+			// TODO: handle exception
+    		ioe.printStackTrace();
 		}
+    	catch (ClassNotFoundException cnfe) {
+			// TODO: handle exception
+    		cnfe.printStackTrace();
+		}		
 
 		return answerArea;
 	}
