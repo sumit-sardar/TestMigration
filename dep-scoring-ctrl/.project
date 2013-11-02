@@ -3,6 +3,7 @@
 	<name>dep-scoring-ctrl</name>
 	<comment></comment>
 	<projects>
+		<project>dep-base-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
