@@ -72,7 +72,7 @@ public class StudentScoringOperationController extends PageFlowController {
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 	
-	@Control()
+	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.OrgNode orgnode;
 	
 		
@@ -84,8 +84,10 @@ public class StudentScoringOperationController extends PageFlowController {
     
     @Control()
     private com.ctb.control.crscoring.TestScoring testScoring;
-	@Control()
+    
+    @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.CRScoring scoring;
+    
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
@@ -118,6 +120,15 @@ public class StudentScoringOperationController extends PageFlowController {
 	})
 	protected Forward begin()
 	{
+		try {
+			explicitlyInitializeAllControls();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new Forward("success");
 	}
 	
@@ -1878,6 +1889,17 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					.instantiate(cl,
 						"com.ctb.control.testAdmin.ScheduleTestBean");
     	}    
+    	if(this.scoring == null){
+    		this.scoring = (com.ctb.control.db.CRScoring) java.beans.Beans
+			.instantiate(cl,
+					"com.ctb.control.db.CRScoringBean");
+    	}
+		if(this.orgnode == null){
+    		this.orgnode = (com.ctb.control.db.OrgNode) java.beans.Beans
+			.instantiate(cl,
+					"com.ctb.control.db.OrgNodeBean");
+    	}
+    	
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////
