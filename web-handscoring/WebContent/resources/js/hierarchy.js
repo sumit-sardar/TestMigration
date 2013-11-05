@@ -1988,7 +1988,7 @@ function viewRubricNewUI (itemIdRubric, itemNumber, itemType, testRosterId, item
 			rowElement = rowElement[0];
 			
 			if(rowElement){
-			var itemSetIdTC = rowElement.lastChild.innerHTML;
+			var itemSetIdTC = rowElement.lastChild.previousSibling.innerHTML;
 			return itemSetIdTC;
 			}
 
