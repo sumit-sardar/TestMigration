@@ -5,7 +5,6 @@ package com.ctb.prism.web.handler;
 
 import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
@@ -13,16 +12,29 @@ import javax.xml.ws.Service;
 
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
 import com.ctb.prism.web.controller.ContentDetailsTO;
+import com.ctb.prism.web.controller.ContentScoreDetailsTO;
+import com.ctb.prism.web.controller.ContentScoreTO;
 import com.ctb.prism.web.controller.CustHierarchyDetailsTO;
+import com.ctb.prism.web.controller.DemoTO;
+import com.ctb.prism.web.controller.ItemResponseTO;
+import com.ctb.prism.web.controller.ItemResponsesDetailsTO;
+import com.ctb.prism.web.controller.ObjectiveScoreDetailsTO;
+import com.ctb.prism.web.controller.ObjectiveScoreTO;
+import com.ctb.prism.web.controller.OrgDetailsTO;
 import com.ctb.prism.web.controller.RosterDetailsTO;
 import com.ctb.prism.web.controller.SampleWebservice;
 import com.ctb.prism.web.controller.StudentBioTO;
+import com.ctb.prism.web.controller.StudentDemoTO;
 import com.ctb.prism.web.controller.StudentDetailsTO;
 import com.ctb.prism.web.controller.StudentListTO;
+import com.ctb.prism.web.controller.StudentSurveyBioTO;
+import com.ctb.prism.web.controller.SubtestAccommodationTO;
 import com.ctb.prism.web.controller.SubtestAccommodationsTO;
+import com.ctb.prism.web.controller.SurveyBioTO;
 import com.ctb.prism.web.dbutility.PrismWebServiceDBUtility;
 import com.ctb.util.OASLogger;
 import com.sun.xml.internal.ws.client.BindingProviderProperties;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * @author TCS
@@ -40,8 +52,7 @@ public class PrismWebServiceHandler {
 	private static void getService() throws Exception {
 		try {
 			if (service == null) {
-				ResourceBundle rb = ResourceBundle.getBundle("PrismWebService");
-				String urlLocation = rb.getString("url");
+				String urlLocation = PrismWebServiceConstant.resourceBundler.getString("url");
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
 				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
 				URL url = new URL(urlLocation);
@@ -70,6 +81,10 @@ public class PrismWebServiceHandler {
 	 */
 	private static void invokePrismWebService(StudentListTO studentListTO) throws Exception{
 		try{
+			//printXMLFromVO(studentListTO);
+			XStream xstream = new XStream();
+			System.out.println(xstream.toXML(studentListTO));
+			
 			getService();
 			if(service != null){
 				service.loadStudentData(studentListTO);
@@ -94,6 +109,7 @@ public class PrismWebServiceHandler {
 		}
 	}
 	
+
 	/**
 	 * Web Service call for Edit Student
 	 * @param userName
@@ -154,9 +170,7 @@ public class PrismWebServiceHandler {
 		studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
 		rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
 		
-		SubtestAccommodationsTO subtestAccommodationsTO =  PrismWebServiceDBUtility.getSubTestAccommodation(studentId);
-		
-		List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, subtestAccommodationsTO, studentId, sessionId);
+		List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, studentId, sessionId);
 		rosterDetailsTO.getCollContentDetailsTO().addAll(contentDetailsTOList);
 		
 		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
@@ -192,5 +206,75 @@ public class PrismWebServiceHandler {
 		return PrismWebServiceDBUtility.getCustomerHigherarchy(studentId);
 	}
 	
+	
+
+	/**
+	 * Print the XML from VO
+	 * @param studentListTO
+	 */
+	private static void printXMLFromVO(StudentListTO studentListTO) {
+		XStream xstream = new XStream();
+		xstream.alias("Student_List", StudentListTO.class);
+		xstream.alias("Roster_Details", RosterDetailsTO.class);
+		xstream.aliasAttribute(RosterDetailsTO.class, "rosterId",  "roster_id"  );
+		xstream.alias("Cust_Hierarchy_Details", CustHierarchyDetailsTO.class);
+		xstream.aliasAttribute(CustHierarchyDetailsTO.class, "customerId",  "Customer_ID");
+		xstream.aliasAttribute(CustHierarchyDetailsTO.class, "maxHierarchy",  "Max_Hierarchy");
+		xstream.aliasAttribute(CustHierarchyDetailsTO.class, "dataChanged",  "IsDataChange");
+		xstream.alias("Org_Details", OrgDetailsTO.class);
+		xstream.aliasAttribute(OrgDetailsTO.class, "orgName",  "Org_Name");
+		xstream.aliasAttribute(OrgDetailsTO.class, "orgLabel",  "Org_Label");
+		xstream.aliasAttribute(OrgDetailsTO.class, "orgLevel", "Org_Level");
+		xstream.aliasAttribute(OrgDetailsTO.class, "orgNodeId",  "Org_Node_Id");
+		xstream.aliasAttribute(OrgDetailsTO.class, "orgCode",  "Org_Code");
+		xstream.aliasAttribute(OrgDetailsTO.class, "parentOrgCode",  "Pr_Org_Code");
+		xstream.alias("Student_Details", StudentDetailsTO.class);
+		xstream.alias("Student_Bio", StudentBioTO.class);
+		xstream.aliasAttribute(StudentBioTO.class, "dataChanged",  "IsDataChange");
+		xstream.aliasAttribute(StudentBioTO.class, "oasStudentId",  "OAS_Stnt_ID");
+		xstream.aliasAttribute(StudentBioTO.class, "lastName",  "Last_Name");
+		xstream.aliasAttribute(StudentBioTO.class, "firstName",  "First_Name");
+		xstream.aliasAttribute(StudentBioTO.class, "middleInit",  "Mdle_Initial");
+		xstream.aliasAttribute(StudentBioTO.class, "gender",  "Gender");
+		xstream.aliasAttribute(StudentBioTO.class, "grade",  "Grade");
+		xstream.aliasAttribute(StudentBioTO.class, "examineeId",  "Examinee_ID");
+		xstream.alias("Student_Demo ", StudentDemoTO.class);
+		xstream.aliasAttribute(StudentDemoTO.class, "dataChanged",  "IsDataChange");
+		xstream.alias("Demo", DemoTO.class);
+		xstream.aliasAttribute(DemoTO.class, "demoName",  "demo_name");
+		xstream.aliasAttribute(DemoTO.class, "demovalue",  "demo_value");
+		xstream.alias("Student_Survey_Bio", StudentSurveyBioTO.class);
+		xstream.aliasAttribute(StudentSurveyBioTO.class, "dataChanged",  "IsDataChange");
+		xstream.alias("Survey_Bio", SurveyBioTO.class);
+		xstream.aliasAttribute(SurveyBioTO.class, "surveyName",  "Survey_name");
+		xstream.aliasAttribute(SurveyBioTO.class, "surveyValue",  "survey_value");
+		xstream.alias("Content_Details ", ContentDetailsTO.class);
+		xstream.aliasAttribute(ContentDetailsTO.class, "contentCode",  "Content_Code");
+		xstream.aliasAttribute(ContentDetailsTO.class, "scoringMethod",  "Scrng_Method");
+		xstream.aliasAttribute(ContentDetailsTO.class, "statusCode",  "Status_code");
+		xstream.aliasAttribute(ContentDetailsTO.class, "dateTestTaken",  "Dt_Tst_Taken");
+		xstream.aliasAttribute(ContentDetailsTO.class, "dataChanged",  "IsDataChange");
+		xstream.alias("Subtest_Accommodations", SubtestAccommodationsTO.class);
+		xstream.alias("Subtest_Accommodation ", SubtestAccommodationTO.class);
+		xstream.aliasAttribute(SubtestAccommodationTO.class, "name",  "name");
+		xstream.aliasAttribute(SubtestAccommodationTO.class, "value",  "value");
+		xstream.alias("Item_Responses_Details", ItemResponsesDetailsTO.class);
+		xstream.alias("Item_Response", ItemResponseTO.class);
+		xstream.aliasAttribute(ItemResponseTO.class, "itemCode",  "item_code");
+		xstream.aliasAttribute(ItemResponseTO.class, "itemSetType",  "item_set_type");
+		xstream.aliasAttribute(ItemResponseTO.class, "scoreValue",  "score_value");
+		xstream.alias("Content_Score_Details", ContentScoreDetailsTO.class);
+		xstream.alias("Content_Score ", ContentScoreTO.class);
+		xstream.aliasAttribute(ContentScoreTO.class, "scoreType",  "Score_Type");
+		xstream.aliasAttribute(ContentScoreTO.class, "scoreValue",  "score_value");
+		xstream.alias("Objective_Score_Details", ObjectiveScoreDetailsTO.class);
+		xstream.aliasAttribute(ObjectiveScoreDetailsTO.class, "objectiveCode",  "Obj_Code");
+		xstream.aliasAttribute(ObjectiveScoreDetailsTO.class, "objectiveName",  "Obj_Name");
+		xstream.alias("Objective_Score", ObjectiveScoreTO.class);
+		xstream.aliasAttribute(ObjectiveScoreTO.class, "scoreType",  "Score_Type");
+		xstream.aliasAttribute(ObjectiveScoreTO.class, "value",  "value");
+				
+		System.out.println("XML forwarded to Prism Web Service >>>>>>>>>>>>>> \n" + xstream.toXML(studentListTO));
+	}
 	
 }

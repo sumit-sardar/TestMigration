@@ -583,8 +583,8 @@ public class StudentOperationController extends PageFlowController {
 				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					try {
 						StudentListTO studentListTO  = PrismWebServiceHandler.editStudent(studentId);
-						XStream xs = new XStream();
-						System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));
+						//XStream xs = new XStream();
+						//System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

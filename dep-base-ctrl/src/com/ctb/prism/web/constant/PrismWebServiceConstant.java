@@ -6,6 +6,7 @@ package com.ctb.prism.web.constant;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author TCS
@@ -47,6 +48,10 @@ public class PrismWebServiceConstant {
 	
 	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
 	
+	public static final  Map<String,String> subTestAccomCatNameMap = new HashMap<String, String>();
+	
+	public static ResourceBundle resourceBundler = null;
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
@@ -66,6 +71,14 @@ public class PrismWebServiceConstant {
 		contentDetailsContentCodeMap.put("Science", 5);
 		contentDetailsContentCodeMap.put("Social Studies", 6);
 		contentDetailsContentCodeMap.put("Overall", 7);
+		
+		subTestAccomCatNameMap.put("Mathematics", "MATH ACCOMMODATION"); 
+		subTestAccomCatNameMap.put("Reading", "READING ACCOMMODATION");
+		subTestAccomCatNameMap.put("Science", "SCIENCE ACCOMMODATION");
+		subTestAccomCatNameMap.put("Social Studies", "SOCIAL STUDIES ACCOMMODATION");
+		subTestAccomCatNameMap.put("Writing", "WRITING ACCOMMODATION");
+		
+		resourceBundler = ResourceBundle.getBundle("PrismWebService");
 		
 	}
 }
