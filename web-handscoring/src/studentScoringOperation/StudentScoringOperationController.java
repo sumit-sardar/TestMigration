@@ -1899,6 +1899,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 			.instantiate(cl,
 					"com.ctb.control.db.OrgNodeBean");
     	}
+		if(this.message == null){
+    		this.message = (com.ctb.control.db.BroadcastMessageLog) java.beans.Beans
+			.instantiate(cl,
+					"com.ctb.control.db.BroadcastMessageLogBean");
+    	}
+		
     	
     }
     
