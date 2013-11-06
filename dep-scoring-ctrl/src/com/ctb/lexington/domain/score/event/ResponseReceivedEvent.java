@@ -20,6 +20,7 @@ public class ResponseReceivedEvent extends ResponseEvent {
     protected Integer pointsObtained;
     protected Integer conditionCodeId;
     protected String comments;
+    private String scoringStatus;
 
     public ResponseReceivedEvent(final Long testRosterId, final String itemId,
             final Integer itemSetId) {

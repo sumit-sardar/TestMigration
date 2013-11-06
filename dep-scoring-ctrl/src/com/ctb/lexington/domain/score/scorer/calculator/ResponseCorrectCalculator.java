@@ -71,7 +71,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					channel.send(new IncorrectResponseEvent(event));
 				}
 			}
-		} else {
+		} /*else {
 			// TODO: how do we handle not SR namely GR and CR item responses?
 			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(itemId))) {
 				// TODO: how do we handle GR item responses?
@@ -111,6 +111,6 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

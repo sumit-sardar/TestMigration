@@ -21,6 +21,8 @@ public class StudentTestData {
                     "Cant find a StudentTestDetails object for null name.");
         }
 
+        System.out.println(" Student Test Detail List size : " + studentTestDetailList.size());
+        
         for (Iterator iter = studentTestDetailList.iterator(); iter.hasNext();) {
             StudentTestDetails detail = (StudentTestDetails) iter.next();
             if (detail.getSubTestName().equals(subtestName)) {

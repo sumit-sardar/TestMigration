@@ -11,7 +11,7 @@ public class ScoreMoveData {
     private StudentTestData testData;
     private OrgNodeData orgNodeData;
     private StudentData studentData;
-    private CurriculumData curriculumData;
+    private CurriculumData curriculumData;		// Test Related data
     private StudentItemScoreData studentItemScoreData;
     private StudentScoreSummaryData studentScoreSummaryData;
     private StudentSubtestScoresData studentSubtestScoresData;
@@ -32,7 +32,20 @@ public class ScoreMoveData {
     private WsTvStudentItemResponseData caResponseWsTv;
     private Map<String,String> caLossHoss;
     private UrlData urlData;
+    private String scoringStatus;
 
+	/**
+	 * @return the scoringStatus
+	 */
+	public String getScoringStatus() {
+		return scoringStatus;
+	}
+	/**
+	 * @param scoringStatus the scoringStatus to set
+	 */
+	public void setScoringStatus(String scoringStatus) {
+		this.scoringStatus = scoringStatus;
+	}
 	/**
 	 * @return Returns the updateContextData.
 	 */

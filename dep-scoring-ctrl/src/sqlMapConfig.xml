@@ -74,6 +74,10 @@
     <sqlMap resource="maps/llfactmaps/IrsLLPrimObjFact.xml"/> 
     <sqlMap resource="maps/llfactmaps/IrsLLSecObjFact.xml"/> 
     <sqlMap resource="maps/llfactmaps/IrsLLItemFact.xml"/> 
-     
-    
+    <sqlMap resource="maps/tsfactmaps/IrsTASCCompositeFact.xml"/>
+    <sqlMap resource="maps/tsfactmaps/IrsTASCContentAreaFact.xml"/>
+    <sqlMap resource="maps/tsfactmaps/IrsTASCItemFact.xml"/>
+    <sqlMap resource="maps/tsfactmaps/IrsTASCPrimObjFact.xml"/>
+    <sqlMap resource="maps/tsfactmaps/IrsTASCSecObjFact.xml"/>
+    <sqlMap resource="maps/tsfactmaps/IrsTASCPredSubjectFact.xml"/>
 </sqlMapConfig>

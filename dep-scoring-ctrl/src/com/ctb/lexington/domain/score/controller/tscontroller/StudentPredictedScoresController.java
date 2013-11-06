@@ -1,4 +1,4 @@
-package com.ctb.lexington.domain.score.controller.tbcontroller;
+package com.ctb.lexington.domain.score.controller.tscontroller;
 
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -8,9 +8,8 @@ import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import java.sql.Connection;
 
 import com.ctb.lexington.db.data.StudentPredictedScoresData;
-import com.ctb.lexington.db.irsdata.irstbdata.IrsTABEPredSubjectFactData;
-import com.ctb.lexington.db.mapper.tbmapper.IrsTABECompositeFactMapper;
-import com.ctb.lexington.db.mapper.tbmapper.IrsTABEPredSubjectFactMapper;
+import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPredSubjectFactData;
+import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPredSubjectFactMapper;
 import com.ctb.lexington.db.mapper.StudentPredictedScoresMapper;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -18,14 +17,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * @author ncohen
+ * @author Dipak Dutta
  * @version $Id$
  */
 public class StudentPredictedScoresController {
     private StudentPredictedScoresData predData;
     private CurriculumData currData;
     private ContextData context;
-    private IrsTABEPredSubjectFactMapper mapper;
+    private IrsTASCPredSubjectFactMapper mapper;
     private Long formid;
 
     public StudentPredictedScoresController(Connection conn, StudentPredictedScoresData predData, CurriculumData currData, ContextData context) {
@@ -38,13 +37,13 @@ public class StudentPredictedScoresController {
         } else {*/
             this.formid = new Long(18);
         //}
-        mapper = new IrsTABEPredSubjectFactMapper(conn);
+        mapper = new IrsTASCPredSubjectFactMapper(conn);
     }
 
     public void run() throws SQLException {
-        IrsTABEPredSubjectFactData [] facts = getPredFactBeans();
+        IrsTASCPredSubjectFactData [] facts = getPredFactBeans();
         for(int i=0;i<facts.length;i++) {
-            IrsTABEPredSubjectFactData newFact = facts[i];
+            IrsTASCPredSubjectFactData newFact = facts[i];
             mapper.delete(newFact);
             if(new Long(1).equals(context.getCurrentResultId()))  {
                 mapper.insert(newFact);
@@ -52,11 +51,11 @@ public class StudentPredictedScoresController {
         }
     }
     
-    public IrsTABEPredSubjectFactData [] getPredFactBeans() {
+    public IrsTASCPredSubjectFactData [] getPredFactBeans() {
         if(predData != null) {
             ArrayList facts = new ArrayList();
                 if(predData.getExpectedGedAverage() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(1));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedAverage().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 380)
@@ -67,7 +66,7 @@ public class StudentPredictedScoresController {
                     facts.add(newFact);
                 }
                 if(predData.getExpectedGedMath() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(2));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedMath().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 330)
@@ -78,7 +77,7 @@ public class StudentPredictedScoresController {
                     facts.add(newFact);
                 }
                 if(predData.getExpectedGedReading() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(3));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedReading().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 320)
@@ -89,7 +88,7 @@ public class StudentPredictedScoresController {
                     facts.add(newFact);
                 }
                 if(predData.getExpectedGedScience() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(4));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedScience().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 320)
@@ -100,7 +99,7 @@ public class StudentPredictedScoresController {
                     facts.add(newFact);
                 }
                 if(predData.getExpectedGedSocialStudies() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(5));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedSocialStudies().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 320)
@@ -111,7 +110,7 @@ public class StudentPredictedScoresController {
                     facts.add(newFact);
                 }
                 if(predData.getExpectedGedWriting() != null) {
-                    IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                    IrsTASCPredSubjectFactData newFact = new IrsTASCPredSubjectFactData();
                     newFact.setPredSubjectid(new Long(6));
                     newFact.setPredictedGed(new Long(predData.getExpectedGedWriting().toBigInteger().intValue()));
                     if(newFact.getPredictedGed().longValue() <= 350)
@@ -123,7 +122,7 @@ public class StudentPredictedScoresController {
                 }
             Iterator factIter = facts.iterator();
             while(factIter.hasNext()) {
-                   IrsTABEPredSubjectFactData newFact = (IrsTABEPredSubjectFactData) factIter.next();
+                   IrsTASCPredSubjectFactData newFact = (IrsTASCPredSubjectFactData) factIter.next();
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setFormid(this.formid);
                    newFact.setCurrentResultid(context.getCurrentResultId());
@@ -151,9 +150,9 @@ public class StudentPredictedScoresController {
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
             }
-            return (IrsTABEPredSubjectFactData []) facts.toArray(new IrsTABEPredSubjectFactData[0]);
+            return (IrsTASCPredSubjectFactData []) facts.toArray(new IrsTASCPredSubjectFactData[0]);
         } else {
-            return new IrsTABEPredSubjectFactData[0];
+            return new IrsTASCPredSubjectFactData[0];
         }
     }
 }

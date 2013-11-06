@@ -32,8 +32,8 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
     protected Double abilityScore;
     protected Double semScore;
     protected Integer scheduledProductId;
+    protected String subtestScoringStatus;
     
-
     public AbstractDerivedScoreCalculator(final Channel channel, final Scorer scorer) {
         super(channel, scorer);
         //TODO: don't subscribe to events in abstract class.... or move this & onEvent() back to
@@ -62,6 +62,7 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
     	abilityScore = event.getAbilityScore();
     	semScore = event.getSemScore();
     	pContentArea = event.getItemSetName();
+    	subtestScoringStatus = event.getScoringStatus();
     }
 
     //  NOTE: Made protected for tests

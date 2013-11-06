@@ -13,7 +13,7 @@ public class IrsDemographicData{
 	private Long attr9Id; //Screen Magnifier
 	private Long attr10Id; //Section 504
 	private Long attr11Id; //Screen Reader
-	private Long attr12Id; //Calculator
+	private Long attr12Id; //Calculator 
 	private Long attr13Id; //Allow Pause
 	private Long attr14Id; //Untimed Test
 	private Long attr15Id; //Adjusted Colors
@@ -26,6 +26,7 @@ public class IrsDemographicData{
 	private String attr21Id; // SPECIAL_EDUCATION
 	private Long attr22Id; // DISABILITY
 	private String attr23Id; // ACCOMMODATIONS
+	private Long attr24Id;  // Program group - Job Corps
 	private Long attr25Id; // SPECIAL_CODES-K
 	private Long attr26Id; // SPECIAL_CODES-L
 	private Long attr27Id; // SPECIAL_CODES-M
@@ -353,5 +354,17 @@ public class IrsDemographicData{
 	}
 	public void setAttr37Id(Long attr37Id) {
 		this.attr37Id = attr37Id;
+	}
+	/**
+	 * @return the attr24Id
+	 */
+	public Long getAttr24Id() {
+		return attr24Id;
+	}
+	/**
+	 * @param attr24Id the attr24Id to set
+	 */
+	public void setAttr24Id(Long attr24Id) {
+		this.attr24Id = attr24Id;
 	}
 }

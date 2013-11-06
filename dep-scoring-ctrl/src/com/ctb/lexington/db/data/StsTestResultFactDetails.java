@@ -116,6 +116,7 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
     private String normGroup;
     private String normYear;
     private String contentAreaName;
+    private String subtestScoringStatus;
     
     private BigDecimal percentileRank;
     private BigDecimal lexileValue; 
@@ -988,6 +989,14 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
 	 */
 	public void setLexileValue(BigDecimal lexileValue) {
 		this.lexileValue = lexileValue;
+	}
+
+	public String getSubtestScoringStatus() {
+		return subtestScoringStatus;
+	}
+
+	public void setSubtestScoringStatus(String subtestScoringStatus) {
+		this.subtestScoringStatus = subtestScoringStatus;
 	}
 
 	/**

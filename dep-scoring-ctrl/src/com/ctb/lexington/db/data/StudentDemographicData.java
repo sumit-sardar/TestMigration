@@ -24,7 +24,28 @@ public class StudentDemographicData{
 	private String musicFileId; // Added for Laslink
 	private String maskingRuler; // Added for Laslink
 	private String magnifyingGlass; // Added for Laslink
-
+	private String maskingTool; // Added for TASC
+	private String highlighter; // Added for TASC
+	private String extendedTime; // Added for TASC
+	
+	public String getExtendedTime() {
+		return extendedTime;
+	}
+	public void setExtendedTime(String extendedTime) {
+		this.extendedTime = extendedTime;
+	}
+	public String getHighlighter() {
+		return highlighter;
+	}
+	public void setHighlighter(String highlighter) {
+		this.highlighter = highlighter;
+	}
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
 	public String getCustomer() {
 		return customer;
 	}

@@ -73,7 +73,7 @@ public class ResponseReplayer {
     private final ItemResponseMapper itemResponseMapper;
     private final StudentItemSetStatusMapper studentItemSetStatusMapper;
     private Integer productId = null;
-    private String productType = null;
+    private static String productType = null;
 
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -213,14 +213,34 @@ public class ResponseReplayer {
                         asLong(subtest.getItemSetId()), testRosterId);
             	
             	//validation or omission rule for TASC should be applied here
-            	subtest.setValidationStatusTASC(checkScoringValidationStatusForTASC(responses));
-            	System.out.println("Scoring Validation Status for TASC is :: " + subtest.isValidationStatusTASC());
             	
-            	subtest.setOmissionStatusTASC(checkScoringOmissionStatusForTASC(responses));
-            	System.out.println("Scoring Omission Status for TASC is :: " + subtest.isOmissionStatusTASC());
+            	boolean validationStatusTASC = checkScoringValidationStatusForTASC(responses); // Added to store score validation Status for TASC
+                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
+                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
+                
+            	//subtest.setValidationStatusTASC(checkScoringValidationStatusForTASC(responses));
+            	//System.out.println("Scoring Validation Status for TASC is :: " + validationStatusTASC);
             	
-            	subtest.setSuppressionStatusTASC(checkScoringSuppressionStatusForTASC(responses));
-            	System.out.println("Scoring Suppression Status for TASC is :: " + subtest.isSuppressionStatusTASC());
+            	//subtest.setOmissionStatusTASC(checkScoringOmissionStatusForTASC(responses));
+            	//System.out.println("Scoring Omission Status for TASC is :: " + omissionStatusTASC);
+            	
+            	//subtest.setSuppressionStatusTASC(checkScoringSuppressionStatusForTASC(responses));
+            	//System.out.println("Scoring Suppression Status for TASC is :: " + suppressionStatusTASC);
+            	
+            	if(validationStatusTASC == true) {
+            		//subtest.setSubtestScoringStatus("VA");
+            		subtest.setSubtestScoringStatus("");
+            	}
+            	else if(omissionStatusTASC == true) {
+            		subtest.setSubtestScoringStatus("OM");
+            	}
+            	else if(suppressionStatusTASC == true) {
+            		subtest.setSubtestScoringStatus("SUP");
+            	}
+            	else {
+            		subtest.setSubtestScoringStatus("INV");
+            	}
+            	System.out.println("Scoring Validation Status "  + subtest.getSubtestScoringStatus());
             }
             
 
@@ -332,7 +352,7 @@ public class ResponseReplayer {
     		
 			ItemResponseVO tascResponse = (ItemResponseVO) it.next();
 			if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
-				if (null != tascResponse.getAnswerArea()
+				/*if (null != tascResponse.getAnswerArea()
 						&& "GRID".equals(tascResponse.getAnswerArea())) {
 
 					final String itemId = tascResponse.getItemId();
@@ -348,7 +368,7 @@ public class ResponseReplayer {
 							break;
 						}
 					}
-				}
+				}*/
 			} else {
 				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
 					min1Correct = true;
@@ -486,6 +506,13 @@ public class ResponseReplayer {
 		                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), null, null));
     		}
         }
+    	else if("TS".equals(productType)) {
+    		System.out.println("Scoring Validation Status "  + itemSet.getSubtestScoringStatus());
+    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
+	        		itemSet.getItemSetId(),
+	                itemSet.getItemSetForm(), itemSet.getItemSetName(),
+	                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), itemSet.getSubtestScoringStatus()));
+    	}
         else
 	        events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 	        		itemSet.getItemSetId(),
@@ -549,6 +576,17 @@ public class ResponseReplayer {
             final String itemSetLevel, final String recommendedLevel, final Double abilityScore, final Double semScore) {
         return new SubtestStartedEvent(testRosterId, itemSetId, itemSetForm, itemSetName,
                 itemSetLevel, normGroup, ageCategory, recommendedLevel, abilityScore, semScore);
+    }
+    
+    private static SubtestStartedEvent createSubtestStartedEvent(
+            final Long testRosterId,
+            final String normGroup,
+			final String ageCategory,
+			final Integer itemSetId,
+            final String itemSetForm, final String itemSetName,
+            final String itemSetLevel, final String recommendedLevel, final String scoringStatus) {
+        return new SubtestStartedEvent(testRosterId, itemSetId, itemSetForm, itemSetName,
+                itemSetLevel, normGroup, ageCategory, recommendedLevel, scoringStatus);
     }
 
     private static SubtestEndedEvent createSubtestEndedEvent(

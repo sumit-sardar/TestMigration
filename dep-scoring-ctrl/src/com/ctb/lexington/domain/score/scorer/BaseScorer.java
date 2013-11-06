@@ -36,6 +36,7 @@ import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultController;
 import com.ctb.lexington.domain.score.controller.tacontroller.TATestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
+import com.ctb.lexington.domain.score.controller.tscontroller.TSTestResultController;
 import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultController;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
@@ -227,7 +228,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 
             try {
                 TestResultController controller = null;
-                if(this instanceof TBScorer || this instanceof TLScorer || this instanceof TSScorer) {
+                if(this instanceof TBScorer || this instanceof TLScorer) {
                     controller = new TBTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
 
@@ -249,6 +250,12 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 
                 	
                 }
+                //START-  For TASC Scoring
+                else if(this instanceof TSScorer) {
+                	controller = new TSTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+                }
+                //STOP-  For TASC Scoring
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
             } catch (Exception e) {
@@ -362,6 +369,8 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         else
         	details.calculatePercentObtained();
         details.setSubtestId(event.getSubtestId());
+        
+        // Added for TASC Product
     }
 
     public void onEvent(ContentAreaRawScoreEvent event) {

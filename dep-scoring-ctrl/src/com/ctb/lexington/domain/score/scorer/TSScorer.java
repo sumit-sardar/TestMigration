@@ -29,12 +29,12 @@ public class TSScorer extends STScorer {
         super();
 
         addCalculator(new ContentAreaNumberCorrectCalculator(channel, this));
-    //    addCalculator(new TASCContentAreaDerivedScoreCalculator(channel, this));
+        addCalculator(new TASCContentAreaDerivedScoreCalculator(channel, this));
      //   addCalculator(new PrimaryObjectivePercentMasteryCalculator(channel, this));
       //  addCalculator(new TASCCompositeScoreCalculator(channel,this));
 
         channel.subscribe(this, ContentAreaNumberCorrectEvent.class);
-      //  channel.subscribe(this, ContentAreaDerivedScoreEvent.class);
+        channel.subscribe(this, ContentAreaDerivedScoreEvent.class);
       //  channel.subscribe(this, SubtestContentAreaCompositeScoreEvent.class);
       //  channel.subscribe(this, PrimaryObjectivePercentMasteryEvent.class);
     }
@@ -67,6 +67,8 @@ public class TSScorer extends STScorer {
         	factDetails.setGradeEquivalent(event.getGradeEquivalent());
         factDetails.setNormGroup(event.getNormGroup());
         factDetails.setNormYear(event.getNormYear());
+        System.out.println("Scoring Status : " + event.getSubtestScoringStatus());
+        factDetails.setSubtestScoringStatus(event.getSubtestScoringStatus());
 //        factDetails.setPerformanceLevelCode(event.getPerformanceLevel().getCode());
 //        factDetails.setPerformanceLevel(event.getPerformanceLevel().getDescription());
     }

@@ -24,6 +24,7 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
     private final String recommendedLevel;
     private BigDecimal percentileRank;
     private BigDecimal lexileValue;
+    private String subtestScoringStatus;
 
     public ContentAreaDerivedScoreEvent(final Long testRosterId, final Long subtestId,
             final Long contentAreaId, final String contentAreaName, final BigDecimal scaleScore,
@@ -80,6 +81,35 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
         this.testLevel = testLevel;
         this.recommendedLevel = recommendedLevel;
         this.lexileValue = lexileValue;
+    }
+    
+    public ContentAreaDerivedScoreEvent(final Long testRosterId, final Long subtestId,
+            final Long contentAreaId, final String contentAreaName, final BigDecimal scaleScore,
+            final BigDecimal standardErrorMeasurement, final BigDecimal normalCurveEquivalent,
+            final String gradeEquivalent, final BigDecimal gradeMeanEquivalent,
+            final BigDecimal nationalStanine, final BigDecimal nationalPercentile,
+            final BigDecimal highNationalPercentile, final BigDecimal lowNationalPercentile,
+            final PerformanceLevel performanceLevel, final String normGroup, final String normYear,
+            final String ageCategory, final String testLevel, final String recommendedLevel, final String subtestScoringStatus) {
+        super(testRosterId, contentAreaId, subtestId);
+        this.subtestId = subtestId;
+        this.contentAreaName = contentAreaName;
+        this.scaleScore = scaleScore;
+        this.standardErrorMeasurement = standardErrorMeasurement;
+        this.normalCurveEquivalent = normalCurveEquivalent;
+        this.gradeEquivalent = gradeEquivalent;
+        this.gradeMeanEquivalent = gradeMeanEquivalent;
+        this.nationalStanine = nationalStanine;
+        this.nationalPercentile = nationalPercentile;
+        this.highNationalPercentile = highNationalPercentile;
+        this.lowNationalPercentile = lowNationalPercentile;
+        this.performanceLevel = performanceLevel;
+        this.normGroup = normGroup;
+        this.normYear = normYear;
+        this.ageCategory = ageCategory;
+        this.testLevel = testLevel;
+        this.recommendedLevel = recommendedLevel;
+        this.subtestScoringStatus = subtestScoringStatus;
     }
      /**
 	 * @return Returns the recommendedLevel.
@@ -169,4 +199,12 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
     public BigDecimal getLexileValue() {
     	return lexileValue;
     }
+
+	public String getSubtestScoringStatus() {
+		return subtestScoringStatus;
+	}
+
+	public void setSubtestScoringStatus(String subtestScoringStatus) {
+		this.subtestScoringStatus = subtestScoringStatus;
+	}
 }

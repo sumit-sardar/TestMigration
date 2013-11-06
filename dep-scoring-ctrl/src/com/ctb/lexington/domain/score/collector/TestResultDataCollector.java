@@ -50,8 +50,9 @@ public class TestResultDataCollector {
     public ScoreMoveData collect(Long oasRosterId, ConnectionProvider connectionProvider)
             throws SecurityException, IllegalStateException,
             CTBSystemException, SQLException, DataException, NamingException {
+    	
+    	System.out.println("***** SCORING: TestResultDataCollector: collect: started collecting context");
         this.oasRosterId = oasRosterId;
-
         oasConnection = connectionProvider.getOASConnection();
 
         ScoreMoveData data = new ScoreMoveData();
