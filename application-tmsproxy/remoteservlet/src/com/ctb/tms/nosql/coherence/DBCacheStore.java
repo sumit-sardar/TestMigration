@@ -39,7 +39,8 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		
 		if("OASRosterCache".equals(cacheName)) this.store = new RosterCacheStore(cacheName); 
 		else if("OASManifestCache".equals(cacheName)) this.store = new ManifestCacheStore(cacheName); 
-		else if("OASResponseCache".equals(cacheName)) this.store = new ResponseCacheStore(cacheName);
+//		else if("OASResponseCache".equals(cacheName)) this.store = new ResponseCacheStore(cacheName);
+		else if("OASResponseCache".equals(cacheName)) this.store = new ResponseBatchCacheStore(cacheName);
 		else if("ADSItemCache".equals(cacheName)) this.store = new ItemCacheStore(cacheName); 
 		else if("ADSItemSetCache".equals(cacheName)) this.store = new ItemSetCacheStore(cacheName);
 		else this.store = null;
