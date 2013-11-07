@@ -45,6 +45,10 @@ import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.DataException;
 import com.ctb.lexington.util.CTBConstants;
 import com.ctb.lexington.util.Timer;
+import com.ctb.prism.web.controller.StudentListTO;
+import com.ctb.prism.web.handler.PrismWebServiceHandler;
+import com.thoughtworks.xstream.XStream;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
@@ -119,6 +123,15 @@ public class TSTestResultController implements TestResultController {
     
         new StudentResultStatusController(conn, context).run();
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
+        
+        //Prism web service is called for scoring
+        try {
+        	StudentListTO studentListTO =  PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId());
+			XStream xStream = new XStream();
+			System.out.println("XML data forwarded to Prism in the scoring web service for the student id: " + studentData.getOasStudentId()  + " >>> roster id : "+ data.getTestRosterId() + " >>> session id : " + adminData.getSessionId()+ " is >>>>>>>>>> \n" + xStream.toXML(studentListTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

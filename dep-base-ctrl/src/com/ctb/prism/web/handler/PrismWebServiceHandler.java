@@ -82,9 +82,8 @@ public class PrismWebServiceHandler {
 	private static void invokePrismWebService(StudentListTO studentListTO) throws Exception{
 		try{
 			//printXMLFromVO(studentListTO);
-			XStream xstream = new XStream();
-			System.out.println(xstream.toXML(studentListTO));
-			
+			/*XStream xstream = new XStream();
+			System.out.println(xstream.toXML(studentListTO));*/
 			getService();
 			if(service != null){
 				service.loadStudentData(studentListTO);
