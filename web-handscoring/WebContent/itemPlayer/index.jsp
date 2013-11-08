@@ -4,8 +4,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<meta http-equiv="X-UA-Compatible" content="IE=9" />
+<!--<meta http-equiv="X-UA-Compatible" content="IE=9" /> -->
+<!--<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9"> -->
+
+
 <TITLE> Presentation Canvas </TITLE>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 <META NAME="Generator" CONTENT="Microsoft FrontPage 4.0">
 <META NAME="Author" CONTENT="">
 <META NAME="Keywords" CONTENT="">
