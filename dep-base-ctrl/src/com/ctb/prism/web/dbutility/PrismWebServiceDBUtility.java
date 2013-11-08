@@ -508,6 +508,16 @@ public class PrismWebServiceDBUtility {
 		ResultSet compTestRS = null;
 		Connection irsCon = null;
 		List<ContentDetailsTO> contentDetailsTOList = new ArrayList<ContentDetailsTO>();
+		
+		ContentDetailsTO elaContentDetailsTO =  new ContentDetailsTO();
+		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
+		contentDetailsTOList.add(elaContentDetailsTO);
+		
+		ContentDetailsTO overAllContentDetailsTO =  new ContentDetailsTO();
+		overAllContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
+		
+		contentDetailsTOList.add(overAllContentDetailsTO);
+		
 		try {
 			irsCon = openIRSDBcon(false);
 			compTestPst = irsCon
@@ -518,11 +528,17 @@ public class PrismWebServiceDBUtility {
 			System.out.println("PrismWebServiceDBUtility.getCompositeContentScoreDetails : Query for getCompositeContentScoreDetails : " + GET_COMPOSITE_CONTENT_DETAILS);
 			ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 			while (compTestRS.next()) {
-				ContentDetailsTO contentDetailsTO = new ContentDetailsTO();
+				ContentDetailsTO contentDetailsTO = null;
 				String contentCodeName = compTestRS.getString("compName");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				if (contentCode != null) {
+					if("ELA".equals(contentCodeName)){
+						contentDetailsTO = elaContentDetailsTO;
+					}else{
+						contentDetailsTO = overAllContentDetailsTO;
+					}
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
+					contentDetailsTO.setStatusCode("");
 				}
 				contentDetailsTO.setDataChanged(true);
 				contentDetailsTO.setDateTestTaken(compTestRS.getString("dtTstTaken"));
@@ -564,9 +580,6 @@ public class PrismWebServiceDBUtility {
 
 				contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
 				// TODO - Set the value status code to contentDetailsTO
-
-				contentDetailsTOList.add(contentDetailsTO);
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

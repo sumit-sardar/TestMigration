@@ -56,6 +56,8 @@ public class PrismWebServiceConstant {
 	
 	public static ResourceBundle resourceBundler = null;
 	
+	public static String NACompositeStatusCode ="NA";
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
