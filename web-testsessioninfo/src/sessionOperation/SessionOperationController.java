@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -192,6 +193,7 @@ public class SessionOperationController extends PageFlowController {
 	private List fileTypeOptions = null;
 	public boolean isLasLinkCustomer = false;
 	public boolean isOKCustomer = false;
+	public boolean isTABECustomer = false;
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
 	private boolean isTABELocatorOnlyTest = false;
@@ -743,6 +745,8 @@ public class SessionOperationController extends PageFlowController {
         	String includeGEStr = RequestUtil.getValueFromRequest(this.getRequest(), "includeGE", false, null);
         	
         	SessionStudent[] restStudent = null;
+        	boolean licenseValidationFailed = false ;
+        	
         	ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
         	TestSessionVO testSessionVO = null;
         	if(currentAction.equalsIgnoreCase("EDIT")){
@@ -785,10 +789,38 @@ public class SessionOperationController extends PageFlowController {
                 		}
                 	}
             		studentCountBeforeSave = session.getStudents().length;
-            		if(restStudent == null || restStudent.length ==0) { 
+            		if(restStudent == null || restStudent.length ==0) {
+            			
+            			/*Checking if the customer has license feature and any license is present is present for that user. If no license is present then
+            			 *throw an error and do not allow to save the session */
+            	
+            		                int productId=session.getTestSession().getProductId();
+            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0) {
+            		                	
+            		                	Set<Integer> orgNodes=new HashSet<Integer>();
+            		                	SessionStudent[] students=session.getStudents();
+            		                	for(int i=0;i<students.length;i++) {
+            		                		orgNodes.add(students[i].getOrgNodeId());
+            		                	}
+            		                	String orgNodeIDstring ="";
+            		                	 for (Iterator<Integer> it = orgNodes.iterator(); it.hasNext(); ) {
+            		                		 Integer orgNodeID = it.next();
+            		                		 orgNodeIDstring = orgNodeIDstring +orgNodeID.toString()+",";
+            		                	 }
+            		                	 orgNodeIDstring = orgNodeIDstring.substring(0,(orgNodeIDstring.length()-1));
+            		                	 System.out.println(">>>>>>>>>>"+orgNodeIDstring);
+            		                     
+				            			 licenseValidationFailed = checkLicenseForCustomer(this.customerId,studentCountBeforeSave,orgNodeIDstring,session);
+				            			 System.out.println("licenseValidationFailed:"+ licenseValidationFailed);
+				            			 if (licenseValidationFailed)
+				            				 throw new InsufficientLicenseQuantityException("Not enough license..") ;
+            		                }
+            			/*end checking license count*/
+            		                   
+            			
             			testAdminId = saveOrUpdateTestSession( session );
-            			RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);
                 		TestSessionData testSessionData = this.testSessionStatus.getTestSessionDetails(this.userName, testAdminId);
+                		RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName, testAdminId, null, null, null);
                 		testSessionVO = new TestSessionVO(testSessionData.getTestSessions()[0]);
             			testSessionVO.setId(testAdminId);
                 		studentCountAfterSave = red.getTotalCount().intValue();  
@@ -1603,6 +1635,85 @@ public class SessionOperationController extends PageFlowController {
 		 }
 		return newTestAdminId;
 	}
+    
+  //------------------------------  
+    private boolean checkLicenseForCustomer(Integer customerId,Integer studentCount,String orgNodeIDs,ScheduledSession session) throws CTBBusinessException {
+    	
+    	boolean hasLicenseFeature = false ;
+    	LASLicenseNode licenseInfo = null;
+    	Integer licenceCount=0;
+    	customerConfigurations = getCustomerConfigurations(customerId);    	
+    	 for (int i=0; i < this.customerConfigurations.length; i++) {
+        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") &&	cc.getDefaultValue().equals("T") ) {
+            	hasLicenseFeature  = true;
+                break;
+            } 
+	     }    	 
+    	 if (hasLicenseFeature) {    		 
+    		 licenseInfo = this.scheduleTest.getLicenseInformation( customerId,orgNodeIDs); 
+    		 
+    		 if (licenseInfo  == null && studentCount > 0){
+    			 return true;
+    		 }
+    		 else if (licenseInfo != null && studentCount > 0){//start 
+    			 licenceCount=Integer.parseInt(licenseInfo.getLicenseQuantity());
+    			 if(licenseInfo.getSubtestModel().equalsIgnoreCase("F")){
+    				 if(licenceCount>studentCount){
+    					 return false;
+    				 }
+    				 else{
+    					 return true;
+    				 }
+    			 }
+    			 else{
+    				 int subtestCount = getSubtestCount(session);
+    				 if(licenceCount>studentCount*subtestCount){
+    					 return false;
+    				 }
+    				 else{
+    					 return true;
+    				 }
+    			 }
+    		 }		//end
+    		 else {
+    			 return false ;
+    		 }
+    	 }
+    	
+    	
+		return true;
+	}
+    //Added for getting subtest count if the customer has license configured as Subtest Model 7/11/2013
+    private int getSubtestCount(ScheduledSession session) {
+		// TODO Auto-generated method stub
+
+   	 	ArrayList<TestElement> subtests =new ArrayList<TestElement>();
+		ArrayList<TestElement> filterSubtest = new ArrayList<TestElement>();
+	    HashMap<Integer,String> locatorSubtestTD = null;
+        TestElement [] scheduledSubtests = session.getScheduledUnits();
+        int subtestCount =0; 
+        for(int ii=0;ii<scheduledSubtests.length;ii++) {
+            subtests.add(scheduledSubtests[ii]);
+        }
+	     if (session.getLocatorSubtestTD() != null)
+	     	locatorSubtestTD = new HashMap<Integer, String>(session.getLocatorSubtestTD());
+	     if(locatorSubtestTD !=null && locatorSubtestTD.size() > 0){
+	     	Iterator iterator = locatorSubtestTD.keySet().iterator();
+		 	for(TestElement subtestlist: subtests){
+	    			if(!subtestlist.getIslocatorChecked().equals("")){
+	    				filterSubtest.add(subtestlist);
+	    			}	
+		 		}
+	     }
+	     else{
+	     	filterSubtest = subtests; 
+	     }
+	     subtestCount = filterSubtest.size();
+	     System.out.println("subtest count>>>"+subtestCount);
+	     return subtestCount;
+    }
+    //--------------------------------------
     private ScheduledSession populateAndValidateSessionRecord(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo, boolean isAddOperation, String action) throws CTBBusinessException
     	    {  
     		 //Integer newTestAdminId = null;
@@ -4282,6 +4393,7 @@ public class SessionOperationController extends PageFlowController {
 				// For TABE Customer
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
 	            	tabeCustomer = true;
+	            	isTABECustomer = true;
 	            	continue;
 	            }
 				// For Upload Download
