@@ -37,7 +37,7 @@
 
 <head>
   	<title>User Login</title>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT">
