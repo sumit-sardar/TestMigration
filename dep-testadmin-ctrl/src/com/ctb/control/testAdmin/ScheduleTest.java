@@ -631,4 +631,6 @@ public interface ScheduleTest
 	LASLicenseNode getNonZeroActivePOForSelectedOrg(Integer customerId,String selectedOrgIds) throws com.ctb.exception.CTBBusinessException;
 
 	LASLicenseNode getNonZeroActivePOForSelectedTest(Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+	
+	LASLicenseNode getLicenseInformation(Integer customerId,String orgNodeIDs) throws com.ctb.exception.CTBBusinessException;
 } 

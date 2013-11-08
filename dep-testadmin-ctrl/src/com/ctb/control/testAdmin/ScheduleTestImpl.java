@@ -4303,4 +4303,19 @@ public class ScheduleTestImpl implements ScheduleTest
 	    	}
 	    	return nonZeroActivePO;
     }
+    
+    
+    public LASLicenseNode getLicenseInformation(Integer customerId,String orgNodeIDs)
+    {	
+	    	LASLicenseNode licenseInfo = null;
+	    	try{
+	    		String OrgIds = " COL.ORG_NODE_ID IN ("+orgNodeIDs+")";
+	    		licenseInfo = this.admins.getLicenseInfo(customerId,OrgIds);
+		    	
+	    	}catch(SQLException se){
+	    		se.printStackTrace();
+	    	}
+	    	return licenseInfo;
+    }
+    
 } 
