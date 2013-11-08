@@ -1682,7 +1682,7 @@ public class SessionOperationController extends PageFlowController {
     	 }
     	
     	
-		return true;
+		return false;
 	}
     //Added for getting subtest count if the customer has license configured as Subtest Model 7/11/2013
     private int getSubtestCount(ScheduledSession session) {
