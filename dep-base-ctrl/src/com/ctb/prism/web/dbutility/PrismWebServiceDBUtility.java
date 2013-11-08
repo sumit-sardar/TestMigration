@@ -741,11 +741,106 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(7, rosterId);
 			rs = pst.executeQuery();
 			System.out.println("PrismWebServiceDBUtility.getStudentSurveyBio : Query for getStudentSurveyBio : " + GET_SURVEY_BIO_RES);
+			String Ethnicity = "";
+			Boolean RaceAmericanIndianAlaskaNative = false;
+			Boolean RaceAsian = false;
+			Boolean RaceBlack = false;
+			Boolean RaceNativeHawaiian = false;
+			Boolean RaceWhite = false;
+			int RaceAnswerCount = 0;
+			String ResolvedEthnicityRace = null;
 			while(rs.next()){
-				SurveyBioTO surveyBioTO = new SurveyBioTO();
-				surveyBioTO.setSurveyName(rs.getString("quesCode"));
-				surveyBioTO.setSurveyValue(readOracleClob(rs.getClob("response")));
-				surveyBioLst.add(surveyBioTO);
+				
+				//** Resolve Ethnicity/Race Values
+				if (rs.getString("quesCode").compareToIgnoreCase("Rslvd_Ethnic") == 0)
+				{
+					switch(Integer.getInteger(rs.getString("quesOrder")))
+					{
+					//1.	What is your ethnicity? Hispanic/Latino//Not Hispanic/Latino
+					case 1:
+						Ethnicity = readOracleClob(rs.getClob("response"));
+						break;
+					//2.	Is your race American Indian or Alaska Native? Yes/No	
+					case 2:
+						RaceAmericanIndianAlaskaNative = readOracleClob(rs.getClob("response")).compareToIgnoreCase("Y")==0?true:false;
+						if (readOracleClob(rs.getClob("response")).length()!=0) RaceAnswerCount++;
+						break;
+					//3.	Is your race Asian? Yes/No
+					case 3:
+						RaceAsian = readOracleClob(rs.getClob("response")).compareToIgnoreCase("Y")==0?true:false;
+						if (readOracleClob(rs.getClob("response")).length()!=0) RaceAnswerCount++;
+						break;	
+					//4.	Is your race Black or African American? Yes/No	
+					case 4:
+						RaceBlack = readOracleClob(rs.getClob("response")).compareToIgnoreCase("Y")==0?true:false;
+						if (readOracleClob(rs.getClob("response")).length()!=0) RaceAnswerCount++;
+						break;	
+					//5.	Is your race Native Hawaiian or other Pacific Islander? Yes/No
+					case 5:
+						RaceNativeHawaiian = readOracleClob(rs.getClob("response")).compareToIgnoreCase("Y")==0?true:false;
+						if (readOracleClob(rs.getClob("response")).length()!=0) RaceAnswerCount++;
+						break;	
+					//6.	Is your race White? Yes/No
+					case 6:
+						RaceWhite = readOracleClob(rs.getClob("response")).compareToIgnoreCase("Y")==0?true:false;
+						if (readOracleClob(rs.getClob("response")).length()!=0) RaceAnswerCount++;
+						break;							
+					}
+				}
+				else
+				{
+					if (ResolvedEthnicityRace == null)
+					{
+						//Are marked 'Not Hispanic' and 'American Indian or Alaska Native' OR Did not mark Hispanic yes or no (left it blank) and are marked ‘American Indian or Alaska Native’
+						if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceAmericanIndianAlaskaNative && RaceAnswerCount==1)
+						{
+							ResolvedEthnicityRace = "American Indian";
+						}
+						//Are marked 'Not Hispanic' and 'Black or African American' OR Did not mark Hispanic yes or no (left it blank) and are marked ‘Black or African American’
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceBlack && RaceAnswerCount==1)
+						{
+							ResolvedEthnicityRace = "Black";
+						}
+						//*Are marked 'Not Hispanic' and 'Asian' OR 1) Did not mark Hispanic yes or no (left it blank) and are marked ‘Asian’
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceAsian && RaceAnswerCount==1)
+						{
+							ResolvedEthnicityRace = "Asian";
+						}	
+						//Are marked 'Hispanic' and any single Race, any combination of 2 or more Races, or No Race 
+						else if (Ethnicity.compareToIgnoreCase("Hispanic")==0 && RaceAnswerCount>=0)
+						{
+							ResolvedEthnicityRace = "Hispanic";
+						}	
+						//Are marked 'Not Hispanic' and 'White' OR Did not mark Hispanic yes or no (left it blank) and are marked ‘White’
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceWhite && RaceAnswerCount==1)
+						{
+							ResolvedEthnicityRace = "White";
+						}	
+						//Are marked 'Not Hispanic' and 'Native Hawaiian/Other Pacific Islander' OR Did not mark Hispanic yes or no (left it blank) and are marked 'Native Hawaiian/Other Pacific Islander'
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceNativeHawaiian && RaceAnswerCount==1)
+						{
+							ResolvedEthnicityRace = "Pacific Islander";
+						}	
+						//Are marked 'Not Hispanic' and any 2 or more Races OR Did not mark Hispanic (yes or no) and marked more than one race
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 || Ethnicity.compareToIgnoreCase("")==0) && RaceAnswerCount>=2)
+						{
+							ResolvedEthnicityRace = "Two or More Races";
+						}		
+						//If ‘Not Hispanic’ is marked and no Race is marked Or Did not mark either ‘Hispanic’ or ‘Not Hispanic’ and no Race is marked. Or If BOTH ‘Hispanic’ and ‘Not Hispanic’ are marked, regardless of what is indicated for Race
+						else if ((Ethnicity.compareToIgnoreCase("Not Hispanic")==0 && RaceAnswerCount==0) || (Ethnicity.compareToIgnoreCase("Hispanic")!=0 && Ethnicity.compareToIgnoreCase("Not Hispanic")!=0 && RaceAnswerCount==0) || (Ethnicity.compareToIgnoreCase("Hispanic")==0 && Ethnicity.compareToIgnoreCase("Not Hispanic")==0 ))
+						{
+							ResolvedEthnicityRace = "";//blank or unknown
+						}
+						SurveyBioTO surveyBioTO = new SurveyBioTO();
+						surveyBioTO.setSurveyName("Rslvd_Ethnic");
+						surveyBioTO.setSurveyValue(ResolvedEthnicityRace);
+						surveyBioLst.add(surveyBioTO);
+					}
+					SurveyBioTO surveyBioTO = new SurveyBioTO();
+					surveyBioTO.setSurveyName(rs.getString("quesCode"));
+					surveyBioTO.setSurveyValue(readOracleClob(rs.getClob("response")));
+					surveyBioLst.add(surveyBioTO);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
