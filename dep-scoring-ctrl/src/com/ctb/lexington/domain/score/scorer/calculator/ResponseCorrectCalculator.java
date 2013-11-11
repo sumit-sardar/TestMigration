@@ -71,7 +71,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					channel.send(new IncorrectResponseEvent(event));
 				}
 			}
-		} /*else {
+		} else {
 			// TODO: how do we handle not SR namely GR and CR item responses?
 			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(itemId))) {
 				// TODO: how do we handle GR item responses?
@@ -84,19 +84,22 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					final String grItemRules = event.getGrItemRules();
 					final String grItemCorrectAnswer = event.getGrItemCorrectAnswer();
 					
-					if(actualGrResponse != null && grItemRules != null && grItemCorrectAnswer != null) {
-						String itemsRawScore = ValidateGRResponse.validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
-						if(itemsRawScore.equals("1")) {
-							sicEvent.setGRItemMap(itemId, true);
-							channel.send(new CorrectResponseEvent(event));
-						} else if(itemsRawScore.equals("0")) {
-							sicEvent.setGRItemMap(itemId, false);
-							channel.send(new IncorrectResponseEvent(event));
-						}
-					} else {
-						channel.send(new NoResponseEvent(event));
+					// 7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
+					//if(grItemRules != null && grItemCorrectAnswer != null) {
+					
+					String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
+					
+					if (itemsRawScore.equals("1")) {
+						sicEvent.setGRItemMap(itemId, true);
+						channel.send(new CorrectResponseEvent(event));
+					} else if (itemsRawScore.equals("0")) {
+						sicEvent.setGRItemMap(itemId, false);
+						channel.send(new IncorrectResponseEvent(event));
 					}
+				} else {
+					channel.send(new NoResponseEvent(event));
 				}
+				/*}
 				//  TODO: how do we handle CR item responses?
 				else {
 					final Integer pointsObtained = event.getPointsObtained();
@@ -109,8 +112,8 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					} else {
 						channel.send(new NoResponseEvent(event));
 					}
-				}
+				}*/
 			}
-		}*/
+		}
 	}
 }

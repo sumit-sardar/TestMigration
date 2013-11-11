@@ -352,7 +352,7 @@ public class ResponseReplayer {
     		
 			ItemResponseVO tascResponse = (ItemResponseVO) it.next();
 			if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
-				/*if (null != tascResponse.getAnswerArea()
+				if (null != tascResponse.getAnswerArea()
 						&& "GRID".equals(tascResponse.getAnswerArea())) {
 
 					final String itemId = tascResponse.getItemId();
@@ -360,15 +360,15 @@ public class ResponseReplayer {
 					final String grItemRules = tascResponse.getGrItemRules();
 					final String grItemCorrectAnswer = tascResponse.getGrItemCorrectAnswer();
 
-					if (actualGrResponse != null && grItemRules != null
-							&& grItemCorrectAnswer != null) {
-						String itemsRawScore = ValidateGRResponse.validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
+					// 7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
+					//if (grItemRules != null && grItemCorrectAnswer != null) {
+						String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
 						if (itemsRawScore.equals("1")) {
 							min1Correct = true;
 							break;
 						}
-					}
-				}*/
+					//}
+				}
 			} else {
 				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
 					min1Correct = true;

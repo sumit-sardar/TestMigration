@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class ValidateGRResponse {
 
-	public static String validateGRResponse(String itemId, String response, String grItemRules, String grItemCorrectAnswer) {
+	public String validateGRResponse(String itemId, String response, String grItemRules, String grItemCorrectAnswer) {
 
 		// Pick up the set of rules against this item
 
@@ -26,6 +26,7 @@ public class ValidateGRResponse {
 		
 		String[] rulesSet=new String[200];
 		String sanitizedString = new String(response);
+		String rawScore = "0";
 
 		int ruleInt=0; 
 		String ruleSetString = grItemRules;
@@ -90,6 +91,22 @@ public class ValidateGRResponse {
 							sanitizedString = RuleSet.Rule10(sanitizedString);
 							System.out.println("Rule 10 Applied");
 							break;
+						case 11:
+							sanitizedString = RuleSet.Rule11(sanitizedString);
+							System.out.println("Rule 11 Applied");
+							break;
+						case 12:
+							sanitizedString = RuleSet.Rule11(sanitizedString);
+							System.out.println("Rule 11 Applied");
+							break;
+						case 14:
+							rawScore = RuleSet.Rule14(itemId, sanitizedString, grItemCorrectAnswer);
+							System.out.println("Rule 14 Applied");
+							return rawScore;
+						case 16:
+							sanitizedString = RuleSet.Rule16(sanitizedString);
+							System.out.println("Rule 16 Applied");
+							break;
 						}
 					}
 				}catch(Exception e){
@@ -102,49 +119,57 @@ public class ValidateGRResponse {
 			e.printStackTrace();
 		}
 		System.out.println("Sanitized Reesponse:" + sanitizedString);
+        
+		
+		// If response is fraction then round off to nearest 5 decimal places
+		sanitizedString=FractionConverstionUtil.roundTo5DecimalPlaces(sanitizedString);
 
 		// Fetch set of correct answers
+		//String answerSetString = grRulesDAO.getCorrectAnswers(itemId);
 		String answerSetString = grItemCorrectAnswer;
-		String[] answerSet = new String[100]; 
-		try{	
-	        if(answerSetString==null||"".equals(answerSetString)){
-	        	System.out.println("No correct answer for the item"+itemId);
-	        }else{
-	        	answerSet=answerSetString.split(",");
-	        	System.out.println("Correct Answer:" + answerSetString);
-	        	for (String answer : answerSet) {
-					if (sanitizedString.equals(answer))
+		String[] answerSet = new String[100];
+		try {
+			if (answerSetString == null || "".equals(answerSetString)) {
+				System.out.println("No correct answer for the item" + itemId);
+			} else {
+				answerSet = answerSetString.split(",");
+				System.out.println("Correct Answer:" + answerSetString);
+				for (String answer : answerSet) {
+//					if (sanitizedString.equals(answer))
+//						return "1";
+					//Check by converting double value
+					if(Double.parseDouble(sanitizedString)==Double.parseDouble(answer))
 						return "1";
-	        	}
-	        }
-	    }catch(Exception e){
-	    	System.out.println("Error in answer validating module");
-	    }
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error in answer validating module");
+		}
 		return "0";
 
 	}
 
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 
 		try {
 			File f = new File("response.txt");
 			BufferedReader bf = new BufferedReader(new FileReader(f));
 			String responseLine = bf.readLine();
-			String itemId=args[0];
-			GrRulesDAO grDAO=new GrRulesDAO();
+			String itemId = args[0];
+			GrRulesDAO grDAO = new GrRulesDAO();
 			// Picking the response from database
-			
-			//String grResponse=grDAO.getGRResponse(itemId);
-			if(responseLine==null){
+
+			//			String grResponse=grDAO.getGRResponse(itemId);
+			if (responseLine == null) {
 				System.out.println("No Valid Response or not GR item");
-			}else{
+			} else {
 				System.out.println("Item id:" + itemId);
 				System.out.println("Response:" + responseLine);
 			}
-			
+
 			System.out.println("Result:"
 					+ new ValidateGRResponse().validateGRResponse(args[0],
-							responseLine));
+							responseLine, null, null));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -154,6 +179,6 @@ public class ValidateGRResponse {
 			e.printStackTrace();
 		}
 
-	}*/
+	}
 
 }

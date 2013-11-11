@@ -23,6 +23,7 @@ public class RuleSet {
 	 * 
 	 */
 	public static String Rule1(String str) {
+		str=str.trim();
 		if(str.indexOf(".")>-1){
 //		    System.out.println(str.indexOf("."));
 			return str;
@@ -57,6 +58,7 @@ public class RuleSet {
 
 	public static String Rule3(String str) {
 
+		str=str.trim();
 		// First check whether there is a special character
 		String patternExpr = ".*?[/%.].*";
 //		String[] patternArray = { "/","%","." };
@@ -279,10 +281,12 @@ public class RuleSet {
 	 * Rule 14 is a special rule where database call is made directly from rule logic
 	 */
 
-	public static String Rule14(String itemId, String response) {
+	public static String Rule14(String itemId, String response, String grItemCorrectAnswer) {
 
-		GrRulesDAO grRulesDAO = new GrRulesDAO();
-		String answerSetString = grRulesDAO.getCorrectAnswers(itemId);
+		//GrRulesDAO grRulesDAO = new GrRulesDAO();
+		//String answerSetString = grRulesDAO.getCorrectAnswers(itemId);
+		
+		String answerSetString = grItemCorrectAnswer;
 		String[] answerSet = new String[2];
 		String[] rangeSet = new String[4];
 		try {
@@ -349,6 +353,7 @@ public class RuleSet {
 	 */
 	public static String Rule16(String str) {
 
+		str=str.trim();
 		//		System.out.println("SubString 1:"+str.substring(0,str.length()-2));
 		//		System.out.println("SubString 2:"+str.substring(str.length()-2));
 		if(str.indexOf(".")>-1)
