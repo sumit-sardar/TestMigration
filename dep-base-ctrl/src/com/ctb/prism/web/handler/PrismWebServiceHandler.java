@@ -122,7 +122,6 @@ public class PrismWebServiceHandler {
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
 		
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
-		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId);
 		
 		List<Long> rosterIds = PrismWebServiceDBUtility.getRosterListForStudent(studentId);
 		
@@ -131,7 +130,7 @@ public class PrismWebServiceHandler {
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
 			//TODO - get the student survey details and put it in the studentDetailsTO
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
-			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+			rosterDetailsTO.setCustHierarchyDetailsTO(getCustHierarchy(studentId,rosterID));
 			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
 			rosterDetailsList.add(rosterDetailsTO);
 		}
@@ -161,7 +160,7 @@ public class PrismWebServiceHandler {
 		RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
 		
 
-		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId);
+		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
 		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 		
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
@@ -198,11 +197,12 @@ public class PrismWebServiceHandler {
 	/**
 	 * Get the customer hierarchy
 	 * @param studentId
+	 * @param rosterID 
 	 * @throws Exception 
 	 */
-	private static CustHierarchyDetailsTO getCustHierarchy(Integer studentId)
+	private static CustHierarchyDetailsTO getCustHierarchy(Integer studentId, long rosterID)
 			throws Exception {
-		return PrismWebServiceDBUtility.getCustomerHigherarchy(studentId);
+		return PrismWebServiceDBUtility.getCustomerHigherarchy(studentId,rosterID);
 	}
 	
 	
