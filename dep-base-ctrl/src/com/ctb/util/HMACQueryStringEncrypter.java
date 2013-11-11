@@ -77,9 +77,10 @@ public class HMACQueryStringEncrypter {
 	        }
 			Integer customerId = this.user.getCustomer().getCustomerId();			
 			String userRole = (isAdminUser()||isAdminCoordinatorUser())?"Admin":"User";
+			String userName = this.user.getUserName();
 			String datetimeStamp = "";//in GMT
 			
-			requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, SECRET_KEY, userRole, IP, datetimeStamp);
+			requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, SECRET_KEY, userRole, userName, IP, datetimeStamp);
 			System.out.println(requestParam);
 		}
 		catch (Exception e)

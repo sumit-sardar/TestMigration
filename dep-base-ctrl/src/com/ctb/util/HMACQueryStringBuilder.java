@@ -42,7 +42,7 @@ public class HMACQueryStringBuilder {
     private static final String APPNAME_PARAMETER_NAME = "&application_name=";
     private static final String SHAREDKEY_PARAMETER_NAME = "&shared_key=";
     private static final String USERROLE_PARAMETER_NAME = "&user_role=";
-    
+    private static final String USERNAME_PARAMETER_NAME = "&user_name=";
 
 	public HMACQueryStringBuilder() {
 	}
@@ -118,13 +118,13 @@ public class HMACQueryStringBuilder {
 	 * @param validUntilDate	iso date in the format yyyy-MM-ddThh:mm:ssZ
 	 * @return the authenticated query string
 	 */
-	public String buildAuthenticatedQueryString(int customerId, String orgNodeCode, int hierarchyLevel, String applicationName, String sharedKey, String userRole, String ipAddress, String validUntilDate) throws Exception
+	public String buildAuthenticatedQueryString(int customerId, String orgNodeCode, int hierarchyLevel, String applicationName, String sharedKey, String userRole, String userName, String ipAddress, String validUntilDate) throws Exception
 	{
 		if (validUntilDate == null || validUntilDate.trim().length() == 0)
 		{
 			validUntilDate = getISO8601UTCDate();
 		}
-		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, applicationName, sharedKey, userRole, ipAddress, validUntilDate);
+		Appendable queryString = buildUnauthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, applicationName, sharedKey, userRole, userName, ipAddress, validUntilDate);
 		String signature = getAuthenticationCode(queryString.toString());
 
 		appendAuthenticationCode(queryString, signature);
@@ -266,7 +266,7 @@ public class HMACQueryStringBuilder {
 	 * @param validUntilDate	iso date in the format yyyy-MM-ddThh:mm:ssZ
 	 * @return query string
 	 */
-	private Appendable buildUnauthenticatedQueryString(int customerId, String orgNodeCode, int hierarchyLevel, String applicationName, String sharedKey, String userRole, String ipAddress, String validUntilDate) throws Exception
+	private Appendable buildUnauthenticatedQueryString(int customerId, String orgNodeCode, int hierarchyLevel, String applicationName, String sharedKey, String userRole, String userName, String ipAddress, String validUntilDate) throws Exception
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -279,6 +279,7 @@ public class HMACQueryStringBuilder {
 		//builder.append(SHAREDKEY_PARAMETER_NAME).append(urlEncode(sharedKey));
 		builder.append(EXPIRY_DATE_PARAMETER_NAME).append(urlEncode(validUntilDate));
 		builder.append(USERROLE_PARAMETER_NAME).append(urlEncode(userRole));
+		builder.append(USERNAME_PARAMETER_NAME).append(urlEncode(userName));
 		
 		if(null != ipAddress && ipAddress.trim().length() > 0)
 			builder.append(IP_ADDRESS_PARAMETER_NAME).append(urlEncode(ipAddress));
