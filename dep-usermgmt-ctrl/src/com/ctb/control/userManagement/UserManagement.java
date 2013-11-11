@@ -4,6 +4,8 @@ package com.ctb.control.userManagement;
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.exception.CTBBusinessException;
+
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 /** 
@@ -345,4 +347,11 @@ public interface UserManagement
     
     // Added for Oklahoma customer
     com.ctb.bean.testAdmin.User[] belowLevelUserList(Integer userId) throws com.ctb.exception.CTBBusinessException;
+    
+    //Added for DEX SSO user stories
+    public boolean isOKEOIUser(String userName) throws CTBBusinessException;
+    
+    public boolean isMappedWith3_8User(String userName) throws CTBBusinessException;
+    
+    public String fetchMapped3to8User(String userName) throws CTBBusinessException;
 } 

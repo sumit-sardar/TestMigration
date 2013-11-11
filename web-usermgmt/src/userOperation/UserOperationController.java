@@ -100,7 +100,13 @@ public class UserOperationController extends PageFlowController
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
-
+	/* Changes for DEX Story - Add intermediate screen : Start */
+    private boolean isEOIUser = false;
+	private boolean isMappedWith3_8User = false;
+	private boolean is3to8Selected = false;
+	private boolean isEOISelected = false;
+	private boolean isUserLinkSelected = false;
+   /* Changes for DEX Story - Add intermediate screen : End */
 	
     /**
      * this method represents the point of entry into the pageflow
@@ -157,7 +163,27 @@ public class UserOperationController extends PageFlowController
      * @throws SQLException 
      */
     private void initialize() 
-    {        
+    {   
+    	/* Changes for DEX Story - Add intermediate screen : Start */
+    	//System.out.println("userName from session in user module >> "+getSession().getAttribute("userName"));
+    	//System.out.println("isDexLogin from session [user module] >> "+getSession().getAttribute("isDexLogin"));
+    	try {
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
+			this.isEOISelected = (getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))? true: false;
+			this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
+			if(this.is3to8Selected)
+				getSession().setAttribute("is3to8Selected", this.is3to8Selected);
+			else if(this.isEOISelected)
+				getSession().setAttribute("isEOISelected", this.isEOISelected);
+			else if(this.isUserLinkSelected)
+				getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+		} catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/* Changes for DEX Story - Add intermediate screen : End */
 		getLoggedInUserPrincipal();
     	
         getUserDetails();
@@ -1097,10 +1123,23 @@ public class UserOperationController extends PageFlowController
     @Jpf.Action()
 	protected Forward assessments_sessionsLink()
 	{
-        try
-        {
-            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/SessionWeb/sessionOperation/assessments_sessions.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
+	            getResponse().sendRedirect(url);
+	    	}    
         } 
         catch (IOException ioe)
         {
@@ -1112,10 +1151,24 @@ public class UserOperationController extends PageFlowController
     @Jpf.Action()
 	protected Forward assessments_programStatusLink()
 	{
-        try
-        {
-            String url = "/SessionWeb/programOperation/assessments_programStatus.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+        	if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/SessionWeb/programOperation/assessments_programStatus.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/SessionWeb/programOperation/assessments_programStatus.do";
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -1163,10 +1216,24 @@ public class UserOperationController extends PageFlowController
     @Jpf.Action()
 	protected Forward organizations_manageOrganizations()
 	{
-        try
-        {
-            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -1178,10 +1245,25 @@ public class UserOperationController extends PageFlowController
     @Jpf.Action()
 	protected Forward organizations_manageStudents()
 	{
-        try
-        {
-            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
+	            //getResponse().setHeader("isRequestFromUserModule", "true");
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -1558,10 +1640,27 @@ public class UserOperationController extends PageFlowController
     /////////////////////////////////////////////////////////////////////////////////////////////    
     private void getLoggedInUserPrincipal()
     {
-        java.security.Principal principal = getRequest().getUserPrincipal();
-        if (principal != null) {
-            this.userName = principal.toString();
-        }        
+    	/* Changes for DEX Story - Add intermediate screen : Start */
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	if(this.isEOIUser && this.isMappedWith3_8User){
+    		//if(getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString())){
+    		if(this.is3to8Selected){
+    			try {
+					this.userName = this.userManagement.fetchMapped3to8User(getRequest().getUserPrincipal().toString());
+				} catch (CTBBusinessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}	
+    		else
+    			this.userName = getRequest().getUserPrincipal().toString();//principle object will always contain EOI user
+    		
+    	}else{
+	    	java.security.Principal principal = getRequest().getUserPrincipal();
+	        if (principal != null) {
+	            this.userName = principal.toString();
+	        } 
+    	}
         getSession().setAttribute("userName", this.userName);
     }
     

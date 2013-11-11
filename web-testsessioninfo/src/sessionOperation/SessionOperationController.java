@@ -235,7 +235,15 @@ public class SessionOperationController extends PageFlowController {
    private String pageSize=null;
    private boolean pageSizeconfig = false;
    private Boolean isLASManageLicense = Boolean.FALSE;
-    
+   
+   /* Changes for DEX Story - Add intermediate screen : Start */
+    private boolean isEOIUser = false;
+	private boolean isMappedWith3_8User = false;
+	private boolean is3to8Selected = false;
+	private boolean isEOISelected = false;
+	private boolean isUserLinkSelected = false;
+   /* Changes for DEX Story - Add intermediate screen : End */
+   
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
 	}
@@ -276,11 +284,106 @@ public class SessionOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
 	        @Jpf.Forward(name = "setTimeZone", path = "setTimeZone.do"),
 			@Jpf.Forward(name = "currentUI", path = "gotoCurrentUI.do"),
-			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do")
+			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do"),
+			@Jpf.Forward(name = "switchUserLogin", path = "switchUserLogin.do")
 	})
 	protected Forward begin()
 	{
 		String forwardName = "currentUI";
+		//System.out.println("userName from session in test-session module >> "+getSession().getAttribute("userName"));
+		/* Changes for DEX Story - Add intermediate screen : Start */
+		getSession().setAttribute("isDexEOILogin", "true");// need to set this value from request parameter from Dex SSO : For logout story		
+		System.out.println("isDexEOILogin set in session [test-session module] >> "+getSession().getAttribute("isDexEOILogin"));
+		try {
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			getSession().setAttribute("isEOIUser",this.isEOIUser);
+			getSession().setAttribute("isMappedWith3_8User",this.isMappedWith3_8User);
+		} catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				   	
+    	if(this.isEOIUser && this.isMappedWith3_8User){
+    		//getSession().setAttribute(arg0, arg1);
+    		forwardName = "switchUserLogin";
+    	} 
+    	else{
+    	/* Changes for DEX Story - Add intermediate screen : End */	
+    		getLoggedInUserPrincipal();		
+    		getUserDetails();
+
+        	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+    		if (accessNewUI(customerConfigs)) {
+    			setupUserPermission(customerConfigs);
+    			
+    			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+    	        	forwardName = "resetPassword";
+    	        }
+    	        else if (this.user.getTimeZone() == null) {
+    	        	forwardName = "setTimeZone";
+    	        }
+    	        
+    		}
+    		else {
+    			forwardName = "legacyUI";	
+    		}    		
+    	} //Changes for DEX Story - Add intermediate screen
+    			
+		return new Forward(forwardName);
+	} 
+	/* Changes for DEX Story - Add intermediate screen : Start */
+	@Jpf.Action(forwards = {
+			@Jpf.Forward(name = "success", path = "switch_user_login.jsp")
+		})
+	protected Forward switchUserLogin()
+	{
+		return new Forward("success");
+	}
+	
+	@Jpf.Action()
+	protected Forward switchToLinkSelected()
+    {
+    	String selectedLink =(String) getRequest().getParameter("selectedLink");
+    	
+    	if(selectedLink.equals("3-8_Link")) {
+    		getSession().setAttribute("is3to8Selected", "true");
+    		this.is3to8Selected = true;
+    	} else if(selectedLink.equals("EOI_Link")) {
+    		getSession().setAttribute("isEOISelected", "true");
+    		this.isEOISelected = true;
+    	} else if(selectedLink.equals("UserLink")){
+    		//do nothing: need to switch to Manage User module with EOI login
+    		getSession().setAttribute("isUserLinkSelected", "true");   
+    		this.isUserLinkSelected = true;
+    	}
+    	
+    	try
+        {
+            String url = "/SessionWeb/sessionOperation/beginForSwitchingUserLogin.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
+	        @Jpf.Forward(name = "setTimeZone", path = "setTimeZone.do"),
+			@Jpf.Forward(name = "currentUI", path = "gotoCurrentUI.do"),
+			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do"),
+			@Jpf.Forward(name = "switchUserLogin", path = "switchUserLogin.do"),
+			@Jpf.Forward(name = "redirectToManageUser", path = "redirectToManageUser.do")
+	})
+	protected Forward beginForSwitchingUserLogin()
+	{
+		String forwardName = "currentUI";
+		
+		if(this.isUserLinkSelected)
+			forwardName = "redirectToManageUser";
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
@@ -289,12 +392,12 @@ public class SessionOperationController extends PageFlowController {
     	if (accessNewUI(customerConfigs)) {
 			setupUserPermission(customerConfigs);
 			
-			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+			/*if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
 	        	forwardName = "resetPassword";
 	        }
 	        else if (this.user.getTimeZone() == null) {
 	        	forwardName = "setTimeZone";
-	        }
+	        }*/
 	        
 		}
 		else {
@@ -303,6 +406,22 @@ public class SessionOperationController extends PageFlowController {
 		
 		return new Forward(forwardName);
 	} 
+	
+	@Jpf.Action()
+	protected Forward redirectToManageUser()
+    {   	
+    	try
+        {
+            String url = "/UserWeb/userOperation/organizations_manageUsers.do?isUserLinkSelected="+this.isUserLinkSelected;
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	/* Changes for DEX Story - Add intermediate screen : End */
 	
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_sessions.do") 
@@ -2823,7 +2942,13 @@ public class SessionOperationController extends PageFlowController {
             @Jpf.Forward(name = "success", path = "assessments_sessions.jsp") 
         }) 
     protected Forward assessments_sessions()
-    {
+    {	if(getSession().getAttribute("is3to8Selected") == null)
+			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
+    	if(getSession().getAttribute("isEOISelected") == null)
+    		this.isEOISelected = (getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))? true: false;
+    	if(getSession().getAttribute("isUserLinkSelected") == null)
+    		this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
+
         return new Forward("success");
     }
     
@@ -2831,7 +2956,7 @@ public class SessionOperationController extends PageFlowController {
     		@Jpf.Forward(name = "success", 
 					path ="assessments_sessions.jsp")
 	})
-    protected Forward getSessionForUserHomeGrid(SessionOperationForm form){
+    protected Forward getSessionForUserHomeGrid(SessionOperationForm form) throws CTBBusinessException{
     	//System.out.println("getSessionForUserHomeGrid START....."+new Date());
 		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
@@ -2851,7 +2976,13 @@ public class SessionOperationController extends PageFlowController {
 	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
 	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
 	        }*/
-			if(this.userName == null ) {
+			if(getSession().getAttribute("isEOIUser") == null)
+				this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+			if(getSession().getAttribute("isMappedWith3_8User") == null)
+				this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+				
+			if(this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
 				getLoggedInUserPrincipal();		
 				getUserDetails();
 			}
@@ -3402,10 +3533,24 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action()
     protected Forward assessments_programStatus()
     {
-        try
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
         {
-            String url = "/SessionWeb/programOperation/assessments_programStatus.do";
-            getResponse().sendRedirect(url);
+        	if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/SessionWeb/programOperation/assessments_programStatus.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/SessionWeb/programOperation/assessments_programStatus.do";
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -3454,10 +3599,24 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action()
 	protected Forward organizations_manageOrganizations()
 	{
-        try
-        {
-            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -3469,10 +3628,24 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action()
 	protected Forward organizations_manageStudents()
 	{
-        try
-        {
-            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
-            getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/StudentWeb/studentOperation/organizations_manageStudents.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
+	            getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
@@ -3499,10 +3672,24 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action() 
 	protected Forward organizations_manageUsers()
 	{
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
 		try
-        {
-            String url = "/UserWeb/userOperation/organizations_manageUsers.do";
-            getResponse().sendRedirect(url);
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/UserWeb/userOperation/organizations_manageUsers.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/UserWeb/userOperation/organizations_manageUsers.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/UserWeb/userOperation/organizations_manageUsers.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+		        String url = "/UserWeb/userOperation/organizations_manageUsers.do";
+		        getResponse().sendRedirect(url);
+		    }
         } 
         catch (IOException ioe)
         {
@@ -3551,8 +3738,14 @@ public class SessionOperationController extends PageFlowController {
             @Jpf.Forward(name = "lasLinksReport", path = "lasLinksReport.do"),             
             @Jpf.Forward(name = "prismReport", path = "prismReport.do")             
         }) 
-    protected Forward reports()
-    {
+    protected Forward reports() throws CTBBusinessException
+    {	
+    	if(getSession().getAttribute("isEOIUser") == null)
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+		if(getSession().getAttribute("isMappedWith3_8User") == null)
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			
     	getLoggedInUserPrincipal();
 		
 		getUserDetails();
@@ -4144,13 +4337,19 @@ public class SessionOperationController extends PageFlowController {
     
     
 	@Jpf.Action()
-    protected Forward broadcastMessage()
+    protected Forward broadcastMessage() throws CTBBusinessException
     {
         HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
-		if (this.userName == null) {
+		if(getSession().getAttribute("isEOIUser") == null)
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+		if(getSession().getAttribute("isMappedWith3_8User") == null)
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			
+		if (this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
 			getLoggedInUserPrincipal();
 			this.userName = (String)getSession().getAttribute("userName");
 		}
@@ -4261,11 +4460,29 @@ public class SessionOperationController extends PageFlowController {
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
     private void getLoggedInUserPrincipal()
-    {
-        java.security.Principal principal = getRequest().getUserPrincipal();
-        if (principal != null) {
-            this.userName = principal.toString();
-        }        
+    {	
+    	/* Changes for DEX Story - Add intermediate screen : Start */
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	if(this.isEOIUser && this.isMappedWith3_8User){
+    		//if(getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString())){
+    		if(this.is3to8Selected){
+    			try {
+					this.userName = this.userManagement.fetchMapped3to8User(getRequest().getUserPrincipal().toString());
+				} catch (CTBBusinessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}	
+    		else
+    			this.userName = getRequest().getUserPrincipal().toString();//principle object will always contain EOI user
+    		
+    	}
+    	else{
+    		java.security.Principal principal = getRequest().getUserPrincipal();
+            if (principal != null) {
+                this.userName = principal.toString();
+            } 
+    	}          
         getSession().setAttribute("userName", this.userName);
     }
     
@@ -4276,9 +4493,9 @@ public class SessionOperationController extends PageFlowController {
              	
         try
         {
-        	if(this.user == null){
+        	if(this.user == null || (this.isEOIUser && this.isMappedWith3_8User)){// need to set user object again for the userName against selected administration
         		this.user = userManagement.getUser(this.userName, this.userName);
-        	}
+        	} 
            // this.user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
             Customer customer = this.user.getCustomer();
             this.customerId = customer.getCustomerId();

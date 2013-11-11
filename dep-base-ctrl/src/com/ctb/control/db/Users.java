@@ -937,5 +937,17 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT COUNT(urole.user_id) FROM test_admin adm, user_role urole, ROLE WHERE adm.test_admin_id = {testAdminId} AND adm.creator_org_node_id = urole.org_node_id AND urole.activation_status = 'AC' AND urole.user_id = {userId} AND urole.role_id = ROLE.role_id AND ROLE.role_name <> 'PROCTOR'",
             arrayMaxLength = 100000)
     Integer checkTopLevelOkAdmin(Integer userId, Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT DECODE(COUNT(U.USER_ID), 0, 0, 1) FROM USERS U, USER_ROLE UR, ORG_NODE ORG, OK_EOI_38_REPLICATE_CONFIG MAPPER WHERE U.USER_ID = UR.USER_ID AND UR.ORG_NODE_ID = ORG.ORG_NODE_ID AND ORG.CUSTOMER_ID = MAPPER.OK_EOI_CUSTOMER_ID and U.USER_NAME = {userName}",
+            arrayMaxLength = 100000)
+    boolean isOKEOIUser(String userName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT DECODE(COUNT(MAPPER.USER_ID_EOI), 0, 0, 1) FROM USERS U, EOI_3TO8_USER_MAPPING MAPPER WHERE U.USER_ID = MAPPER.USER_ID_EOI AND U.USER_NAME = {userName}",
+            arrayMaxLength = 100000)
+    boolean isMappedWith3_8User(String userName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT MAPPER.USERNAME_3TO8 FROM EOI_3TO8_USER_MAPPING MAPPER WHERE MAPPER.USERNAME_EOI = {eoiUserName}",
+            arrayMaxLength = 100000)
+    String fetchMapped3to8User(String eoiUserName) throws SQLException;
 
 }
