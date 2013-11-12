@@ -13,10 +13,10 @@ import com.ctb.lexington.db.mapper.AbstractDBMapper;
 public class IrsTASCCompositeFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_COMP_STUDENT_SESSION = "TSfindByCompStudentSession";
-	private static final String INSERT_INTO_CONTENTAREAFACT = "TSinsertTABECompositeFact";
-	private static final String UPDATE_CONTENTAREAFACT = "TSupdateTABECompositeFact";
+	private static final String INSERT_INTO_COMPOSITEFACT = "TSinsertTASCCompositeFact";
+	private static final String UPDATE_CONTENTAREAFACT = "TSupdateTASCCompositeFact";
 	private static final String DELETE_BY_CONTENTAREAFACTID = "TSdeleteByCompositeFactId";
-    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTABECompositeFactCurrentResult";
+    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCCompositeFactCurrentResult";
     
 	public IrsTASCCompositeFactMapper(Connection conn){
 		super(conn);
@@ -31,7 +31,7 @@ public class IrsTASCCompositeFactMapper extends AbstractDBMapper{
     }
 	
 	public void insert(IrsTASCCompositeFactData record)throws SQLException{
-		insert(INSERT_INTO_CONTENTAREAFACT, record);
+		insert(INSERT_INTO_COMPOSITEFACT, record);
     }	
 	
 	public void update(IrsTASCCompositeFactData record)throws SQLException{

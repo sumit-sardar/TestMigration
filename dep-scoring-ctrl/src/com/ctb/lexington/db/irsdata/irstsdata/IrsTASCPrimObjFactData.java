@@ -15,7 +15,20 @@ public class IrsTASCPrimObjFactData implements Persistent{
 	    private Long formid;
 	    private Long sessionid;
 	    private Long levelid;
-	    private Long attr1id;
+	    private Long gradeid;
+	    private Long pointsAttempted;
+	    private Long percentObtained;
+	    private Long masteryLevelid;
+        private Date testStartTimestamp;
+	    private Date testCompletionTimestamp;
+	    private Long assessmentid;
+	    private Long pointsObtained;
+	    private Long pointsPossible;
+	    private Long programid;
+	    private Long currentResultid;
+	    private Long scaleScore;
+	    
+	    /*private Long attr1id;
 	    private Long attr7id;
 	    private Long attr4id;
 	    private Long attr2id;
@@ -29,19 +42,8 @@ public class IrsTASCPrimObjFactData implements Persistent{
 	    private Long attr14id;
 	    private Long attr15id;
 	    private Long attr16id;
-	    private Long gradeid;
 	    private Long attr9id;
 	    private Long attr8id;
-	    private Long pointsAttempted;
-	    private Long percentObtained;
-	    private Long masteryLevelid;
-        private Date testStartTimestamp;
-	    private Date testCompletionTimestamp;
-	    private Long assessmentid;
-	    private Long pointsObtained;
-	    private Long pointsPossible;
-	    private Long programid;
-	    private Long currentResultid;
 	    private Long attr17id;
 	    private Long attr18id;
 	    private Long attr19id;
@@ -56,16 +58,36 @@ public class IrsTASCPrimObjFactData implements Persistent{
 	    private Long attr29id;
 	    private Long attr30id;
 	    private Long attr36id;
-	    private Long attr37id;
+	    private Long attr37id;*/
 
-	    public boolean equals(Object arg0) {
+	    public Long getScaleScore() {
+			return scaleScore;
+		}
+
+		public void setScaleScore(Long scaleScore) {
+			this.scaleScore = scaleScore;
+		}
+
+		public boolean equals(Object arg0) {
 			return 
 				primObjid.equals(((IrsTASCPrimObjFactData)arg0).getPrimObjid()) &&
                 orgNodeid.equals(((IrsTASCPrimObjFactData)arg0).getOrgNodeid()) &&
                 studentid.equals(((IrsTASCPrimObjFactData)arg0).getStudentid()) &&
                 formid.equals(((IrsTASCPrimObjFactData)arg0).getFormid()) &&
                 sessionid.equals(((IrsTASCPrimObjFactData)arg0).getSessionid()) &&
-                attr1id.equals(((IrsTASCPrimObjFactData)arg0).getAttr1id()) &&
+                gradeid.equals(((IrsTASCPrimObjFactData)arg0).getGradeid()) &&
+                testStartTimestamp.equals(((IrsTASCPrimObjFactData)arg0).getTestStartTimestamp()) &&
+                testCompletionTimestamp.equals(((IrsTASCPrimObjFactData)arg0).getTestCompletionTimestamp()) &&
+                assessmentid.equals(((IrsTASCPrimObjFactData)arg0).getAssessmentid()) &&
+                pointsPossible.equals(((IrsTASCPrimObjFactData)arg0).getPointsPossible()) &&
+                programid.equals(((IrsTASCPrimObjFactData)arg0).getProgramid()) &&
+                currentResultid.equals(((IrsTASCPrimObjFactData)arg0).getCurrentResultid()) &&
+                pointsAttempted.equals(((IrsTASCPrimObjFactData)arg0).getPointsAttempted()) &&
+                pointsObtained.equals(((IrsTASCPrimObjFactData)arg0).getPointsObtained()) &&
+                scaleScore.equals(((IrsTASCPrimObjFactData)arg0).getScaleScore()) &&
+                masteryLevelid.equals(((IrsTASCPrimObjFactData)arg0).getMasteryLevelid());
+                
+                /*&& attr1id.equals(((IrsTASCPrimObjFactData)arg0).getAttr1id()) &&
                 attr7id.equals(((IrsTASCPrimObjFactData)arg0).getAttr7id()) &&
                 attr4id.equals(((IrsTASCPrimObjFactData)arg0).getAttr4id()) &&
                 attr2id.equals(((IrsTASCPrimObjFactData)arg0).getAttr2id()) &&
@@ -79,19 +101,8 @@ public class IrsTASCPrimObjFactData implements Persistent{
                 attr14id.equals(((IrsTASCPrimObjFactData)arg0).getAttr14id()) &&
                 attr15id.equals(((IrsTASCPrimObjFactData)arg0).getAttr15id()) &&
                 attr16id.equals(((IrsTASCPrimObjFactData)arg0).getAttr16id()) &&
-                gradeid.equals(((IrsTASCPrimObjFactData)arg0).getGradeid()) &&
                 attr9id.equals(((IrsTASCPrimObjFactData)arg0).getAttr9id()) &&
                 attr8id.equals(((IrsTASCPrimObjFactData)arg0).getAttr8id()) &&
-                testStartTimestamp.equals(((IrsTASCPrimObjFactData)arg0).getTestStartTimestamp()) &&
-                testCompletionTimestamp.equals(((IrsTASCPrimObjFactData)arg0).getTestCompletionTimestamp()) &&
-                assessmentid.equals(((IrsTASCPrimObjFactData)arg0).getAssessmentid()) &&
-                pointsPossible.equals(((IrsTASCPrimObjFactData)arg0).getPointsPossible()) &&
-                programid.equals(((IrsTASCPrimObjFactData)arg0).getProgramid()) &&
-                currentResultid.equals(((IrsTASCPrimObjFactData)arg0).getCurrentResultid()) &&
-                pointsAttempted.equals(((IrsTASCPrimObjFactData)arg0).getPointsAttempted()) &&
-                pointsObtained.equals(((IrsTASCPrimObjFactData)arg0).getPointsObtained()) &&
-                masteryLevelid.equals(((IrsTASCPrimObjFactData)arg0).getMasteryLevelid())  && 
-                
                 attr17id.equals(((IrsTASCPrimObjFactData)arg0).getAttr17id()) &&
                 attr18id.equals(((IrsTASCPrimObjFactData)arg0).getAttr18id()) &&
                 attr19id.equals(((IrsTASCPrimObjFactData)arg0).getAttr19id()) &&
@@ -105,7 +116,7 @@ public class IrsTASCPrimObjFactData implements Persistent{
                 attr28id.equals(((IrsTASCPrimObjFactData)arg0).getAttr28id()) &&
                 attr29id.equals(((IrsTASCPrimObjFactData)arg0).getAttr29id()) &&
                 attr30id.equals(((IrsTASCPrimObjFactData)arg0).getAttr30id()) &&
-                attr37id.equals(((IrsTASCPrimObjFactData)arg0).getAttr37id());
+                attr37id.equals(((IrsTASCPrimObjFactData)arg0).getAttr37id());*/
         }
         
         public Date getTestStartTimestamp() {
@@ -176,92 +187,12 @@ public class IrsTASCPrimObjFactData implements Persistent{
 	        this.levelid = levelid;
 	    }
 
-	    public Long getAttr1id() {
-	        return attr1id;
-	    }
-
-	    public void setAttr1id(Long attr1id) {
-	        this.attr1id = attr1id;
-	    }
-
-	    public Long getAttr7id() {
-	        return attr7id;
-	    }
-
-	    public void setAttr7id(Long attr7id) {
-	        this.attr7id = attr7id;
-	    }
-
-	    public Long getAttr4id() {
-	        return attr4id;
-	    }
-
-	    public void setAttr4id(Long attr4id) {
-	        this.attr4id = attr4id;
-	    }
-
-	    public Long getAttr2id() {
-	        return attr2id;
-	    }
-
-	    public void setAttr2id(Long attr2id) {
-	        this.attr2id = attr2id;
-	    }
-
-	    public Long getAttr5id() {
-	        return attr5id;
-	    }
-
-	    public void setAttr5id(Long attr5id) {
-	        this.attr5id = attr5id;
-	    }
-
-	    public Long getAttr6id() {
-	        return attr6id;
-	    }
-
-	    public void setAttr6id(Long attr6id) {
-	        this.attr6id = attr6id;
-	    }
-
-	    public Long getAttr3id() {
-	        return attr3id;
-	    }
-
-	    public void setAttr3id(Long attr3id) {
-	        this.attr3id = attr3id;
-	    }
-
-	    public Long getAttr10id() {
-	        return attr10id;
-	    }
-
-	    public void setAttr10id(Long attr10id) {
-	        this.attr10id = attr10id;
-	    }
-
 	    public Long getGradeid() {
 	        return gradeid;
 	    }
 
 	    public void setGradeid(Long gradeid) {
 	        this.gradeid = gradeid;
-	    }
-
-	    public Long getAttr9id() {
-	        return attr9id;
-	    }
-
-	    public void setAttr9id(Long attr9id) {
-	        this.attr9id = attr9id;
-	    }
-
-	    public Long getAttr8id() {
-	        return attr8id;
-	    }
-
-	    public void setAttr8id(Long attr8id) {
-	        this.attr8id = attr8id;
 	    }
 
 	    public Long getPointsAttempted() {
@@ -336,6 +267,86 @@ public class IrsTASCPrimObjFactData implements Persistent{
 	        this.currentResultid = currentResultid;
 	    }
 
+	    /*public Long getAttr1id() {
+	        return attr1id;
+	    }
+
+	    public void setAttr1id(Long attr1id) {
+	        this.attr1id = attr1id;
+	    }
+
+	    public Long getAttr7id() {
+	        return attr7id;
+	    }
+
+	    public void setAttr7id(Long attr7id) {
+	        this.attr7id = attr7id;
+	    }
+
+	    public Long getAttr4id() {
+	        return attr4id;
+	    }
+
+	    public void setAttr4id(Long attr4id) {
+	        this.attr4id = attr4id;
+	    }
+
+	    public Long getAttr2id() {
+	        return attr2id;
+	    }
+
+	    public void setAttr2id(Long attr2id) {
+	        this.attr2id = attr2id;
+	    }
+
+	    public Long getAttr5id() {
+	        return attr5id;
+	    }
+
+	    public void setAttr5id(Long attr5id) {
+	        this.attr5id = attr5id;
+	    }
+
+	    public Long getAttr6id() {
+	        return attr6id;
+	    }
+
+	    public void setAttr6id(Long attr6id) {
+	        this.attr6id = attr6id;
+	    }
+
+	    public Long getAttr3id() {
+	        return attr3id;
+	    }
+
+	    public void setAttr3id(Long attr3id) {
+	        this.attr3id = attr3id;
+	    }
+
+	    public Long getAttr10id() {
+	        return attr10id;
+	    }
+
+	    public void setAttr10id(Long attr10id) {
+	        this.attr10id = attr10id;
+	    }
+	    
+	    public Long getAttr9id() {
+	        return attr9id;
+	    }
+
+	    public void setAttr9id(Long attr9id) {
+	        this.attr9id = attr9id;
+	    }
+
+	    public Long getAttr8id() {
+	        return attr8id;
+	    }
+
+	    public void setAttr8id(Long attr8id) {
+	        this.attr8id = attr8id;
+	    }
+	    
 		public Long getAttr11id() {
 			return attr11id;
 		}
@@ -502,5 +513,5 @@ public class IrsTASCPrimObjFactData implements Persistent{
 
 		public void setAttr37id(Long attr37id) {
 			this.attr37id = attr37id;
-		}
+		}*/
 }

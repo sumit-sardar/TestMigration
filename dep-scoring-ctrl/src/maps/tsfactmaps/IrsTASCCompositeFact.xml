@@ -8,7 +8,7 @@ SELECT
         COMPOSITEID as compositeid,
         STUDENTID as studentid,
         SESSIONID as sessionid,
-        ATTR1ID	as attr1id,
+        <!-- ATTR1ID	as attr1id,
         ATTR2ID as attr2id,
         ATTR3ID as attr3id,
         ATTR4ID as attr4id,
@@ -23,7 +23,7 @@ SELECT
         ATTR13ID as attr13id,
         ATTR14ID as attr14id,
         ATTR15ID as attr15id,
-        ATTR16ID as attr16id,
+        ATTR16ID as attr16id,  -->
         GRADEID	as gradeid,
         NRS_LEVELID as nrsLevelid,
         ORG_NODEID	as orgNodeid,
@@ -32,16 +32,17 @@ SELECT
         CURRENT_RESULTID as currentResultid,
         REC_LEVELID as recLevelid,
         SCALE_SCORE as scaleScore,
-        GRADE_EQUIVALENT as gradeEquivalent,
+        <!-- GRADE_EQUIVALENT as gradeEquivalent, -->
         NORMAL_CURVE_EQUIVALENT as normalCurveEquivalent,
         NATIONAL_PERCENTILE as nationalPercentile,
-        NATIONAL_STANINE as nationalStanine,
+        PROFICIENCY_LEVEL as proficiencyLevel,
+        <!-- NATIONAL_STANINE as nationalStanine, -->
         POINTS_ATTEMPTED as pointsAttempted,
         POINTS_OBTAINED as pointsObtained,
         POINTS_POSSIBLE	as pointsPossible,
         TEST_COMPLETION_TIMESTAMP as testCompletionTimestamp
 FROM
-        TABE_COMPOSITE_FACT  
+        TASC_COMPOSITE_FACT  
 WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND
@@ -50,16 +51,16 @@ WHERE
 	        COMPOSITEID = #compositeid:NUMERIC#
 </select> 
 
-<insert id="TSinsertTABECompositeFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
+<insert id="TSinsertTASCCompositeFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
 	
         INSERT INTO
-            TABE_COMPOSITE_FACT
+            TASC_COMPOSITE_FACT
                 (
                 FACTID,
 	    	    COMPOSITEID,
     	    	STUDENTID,
 		        SESSIONID,
-		        ATTR1ID,
+		        <!-- ATTR1ID,
 		        ATTR2ID,
 		        ATTR3ID,
 		        ATTR4ID,
@@ -74,7 +75,7 @@ WHERE
     		    ATTR13ID,
 		        ATTR14ID,
 		        ATTR15ID,
-		        ATTR16ID,
+		        ATTR16ID, -->
 		        GRADEID,
 		        NRS_LEVELID,
 		        ORG_NODEID,
@@ -83,10 +84,11 @@ WHERE
 		        CURRENT_RESULTID,
 		        REC_LEVELID,
 		        SCALE_SCORE,
-		        GRADE_EQUIVALENT,
+		        <!-- GRADE_EQUIVALENT,  -->
 		        NORMAL_CURVE_EQUIVALENT,
 		        NATIONAL_PERCENTILE,
-		        NATIONAL_STANINE,
+		        PROFICIENCY_LEVEL,
+		        <!-- NATIONAL_STANINE,  -->
 		        POINTS_ATTEMPTED,
 		        POINTS_OBTAINED,
 		        POINTS_POSSIBLE,
@@ -98,7 +100,7 @@ WHERE
 		        #compositeid:NUMERIC#,
 		        #studentid:NUMERIC#,
 		        #sessionid:NUMERIC#,
-		        #attr1id:NUMERIC#,
+		        <!-- #attr1id:NUMERIC#,
 		        #attr2id:NUMERIC#,
 		        #attr3id:NUMERIC#,
 		        #attr4id:NUMERIC#,
@@ -113,7 +115,7 @@ WHERE
 		        #attr13id:NUMERIC#,
 		        #attr14id:NUMERIC#,
 		        #attr15id:NUMERIC#,
-		        #attr16id:NUMERIC#,
+		        #attr16id:NUMERIC#, -->
 		        #gradeid:NUMERIC#,
 		        #nrsLevelid:NUMERIC#,
 		        #orgNodeid:NUMERIC#,
@@ -124,7 +126,7 @@ WHERE
                         NVL(to_number(
                             TO_CHAR(
                                 to_timestamp(
-                                    to_char((select max(test_completion_timestamp) from tabe_composite_fact
+                                    to_char((select max(test_completion_timestamp) from tasc_composite_fact
                                         where sessionid != #sessionid:NUMERIC#
                                         and studentid = #studentid:NUMERIC#
                                         and assessmentid = #assessmentid:NUMERIC#
@@ -154,23 +156,24 @@ WHERE
                 ),
                 #recLevelid:NUMERIC#,
 		        #scaleScore:NUMERIC#,
-		        #gradeEquivalent:VARCHAR#,
+		        <!-- #gradeEquivalent:VARCHAR#, -->
 		        #normalCurveEquivalent:NUMERIC#,
 		        #nationalPercentile:NUMERIC#,
-		        #nationalStanine:NUMERIC#,
+		        #proficiencyLevel:NUMERIC#,
+		        <!-- #nationalStanine:NUMERIC#, -->
 		        #pointsAttempted:NUMERIC#,
 		        #pointsObtained:NUMERIC#,
 		        #pointsPossible:NUMERIC#,
 		        #testCompletionTimestamp:TIMESTAMP#
                 )        
 </insert>
-<update id="TSupdateTABECompositeFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
+<update id="TSupdateTASCCompositeFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
        
         UPDATE
-                TABE_COMPOSITE_FACT
+                TASC_COMPOSITE_FACT
         SET
 				FACTID = #factid:NUMERIC#,		
-		        ATTR1ID	= #attr1id:NUMERIC#,		
+		        <!-- ATTR1ID	= #attr1id:NUMERIC#,		
 		        ATTR2ID	= #attr2id:NUMERIC#,		
 		        ATTR3ID	= #attr3id:NUMERIC#,		
 		        ATTR4ID	= #attr4id:NUMERIC#,		
@@ -185,7 +188,7 @@ WHERE
 				ATTR13ID = #attr13id:NUMERIC#,
 		        ATTR14ID = #attr14id:NUMERIC#,
 				ATTR15ID = #attr15id:NUMERIC#,
-				ATTR16ID = #attr16id:NUMERIC#,		
+				ATTR16ID = #attr16id:NUMERIC#, -->	
 		        GRADEID = #gradeid:NUMERIC#,		
 		        NRS_LEVELID = #nrsLevelid:NUMERIC#,		
 		        ORG_NODEID = #orgNodeid:NUMERIC#,		
@@ -194,10 +197,11 @@ WHERE
 		        CURRENT_RESULTID = #currentResultid:NUMERIC#,				       
 		        REC_LEVELID = #recLevelid:NUMERIC#,		
 		        SCALE_SCORE = #scaleScore:NUMERIC#,		
-		        GRADE_EQUIVALENT = #gradeEquivalent:VARCHAR#,		
+		        <!-- GRADE_EQUIVALENT = #gradeEquivalent:VARCHAR#, -->		
 		        NORMAL_CURVE_EQUIVALENT = #normalCurveEquivalent:NUMERIC#,	
-		        NATIONAL_PERCENTILE = #nationalPercentile:NUMERIC#,		
-		        NATIONAL_STANINE = #nationalStanine:NUMERIC#,		
+		        NATIONAL_PERCENTILE = #nationalPercentile:NUMERIC#,
+		        PROFICIENCY_LEVEL = #proficiencyLevel:NUMERIC#,	
+		        <!-- NATIONAL_STANINE = #nationalStanine:NUMERIC#, -->		
 		        POINTS_ATTEMPTED = #pointsAttempted:NUMERIC#,
 		        POINTS_OBTAINED	 = #pointsObtained:NUMERIC#,		
 		        POINTS_POSSIBLE =  #pointsPossible:NUMERIC#,
@@ -209,10 +213,10 @@ WHERE
 		AND		
 	        COMPOSITEID = #compositeid:NUMERIC#
 </update>
-<update id="TSupdateTABECompositeFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
+<update id="TSupdateTASCCompositeFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
        
         UPDATE
-                TABE_COMPOSITE_FACT fact
+                TASC_COMPOSITE_FACT fact
         SET	
 		        CURRENT_RESULTID = #currentResultid:NUMERIC#	
         WHERE 
@@ -238,7 +242,7 @@ WHERE
 <delete id="TSdeleteByCompositeFactId" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
 
 	DELETE FROM
-			TABE_COMPOSITE_FACT
+			TASC_COMPOSITE_FACT
 	WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND

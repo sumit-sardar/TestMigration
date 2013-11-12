@@ -78,30 +78,30 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 				if (null != sicEvent.getProductType()
 						&& "TS".equals(sicEvent.getProductType())
 						&& null != sicEvent.getAnswerArea(itemId)
-						&& "GRID".equals(sicEvent.getAnswerArea(itemId))) {
-					
-					final String actualGrResponse = event.getGrResponse();
-					final String grItemRules = event.getGrItemRules();
-					final String grItemCorrectAnswer = event.getGrItemCorrectAnswer();
-					
-					// 7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
+							&& "GRID".equals(sicEvent.getAnswerArea(itemId))) {
+						
+						final String actualGrResponse = event.getGrResponse();
+						final String grItemRules = event.getGrItemRules();
+						final String grItemCorrectAnswer = event.getGrItemCorrectAnswer();
+						
+					//7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
 					//if(grItemRules != null && grItemCorrectAnswer != null) {
-					
-					String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
-					
-					if (itemsRawScore.equals("1")) {
-						sicEvent.setGRItemMap(itemId, true);
-						channel.send(new CorrectResponseEvent(event));
-					} else if (itemsRawScore.equals("0")) {
-						sicEvent.setGRItemMap(itemId, false);
-						channel.send(new IncorrectResponseEvent(event));
+					if(actualGrResponse != null) {
+						
+						String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
+						if (itemsRawScore.equals("1")) {
+							sicEvent.setGRItemMap(itemId, true);
+							channel.send(new CorrectResponseEvent(event));
+						} else if (itemsRawScore.equals("0")) {
+							sicEvent.setGRItemMap(itemId, false);
+							channel.send(new IncorrectResponseEvent(event));
+						}
+					} else {
+						channel.send(new NoResponseEvent(event));
 					}
-				} else {
-					channel.send(new NoResponseEvent(event));
 				}
-				/*}
 				//  TODO: how do we handle CR item responses?
-				else {
+				/*else {
 					final Integer pointsObtained = event.getPointsObtained();
 					if (pointsObtained != null) {
 						if (pointsObtained > 0) {

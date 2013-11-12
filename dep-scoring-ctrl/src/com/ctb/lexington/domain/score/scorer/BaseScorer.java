@@ -371,6 +371,23 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         details.setSubtestId(event.getSubtestId());
         
         // Added for TASC Product
+        if(productType.equals("TS")) {
+        	Long pointsAttempted = new Long(event.getPointsAttempted());
+        	Long pointsPossible = new Long(event.getPointsPossible());
+        	
+        	if(pointsAttempted == pointsPossible) {
+        		details.setObjectiveScoringStatus("ALL");
+        	}
+        	else if(pointsAttempted < pointsPossible && pointsAttempted > 0) {
+        		details.setObjectiveScoringStatus("SOME");
+        	}
+        	else if(pointsAttempted == 0) {
+        		details.setObjectiveScoringStatus("NO");
+        	}
+        	System.out.println("Objective Subtest Id : " + event.getSubtestId() + " : Objective Scoring Status : " + details.getObjectiveScoringStatus());
+        }
+        
+        // Added for TASC Product
     }
 
     public void onEvent(ContentAreaRawScoreEvent event) {

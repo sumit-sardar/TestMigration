@@ -27,8 +27,17 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
     private Long subtestId;
 	private Long numCorrect;
 	private Long numAttempted;
+	private String objectiveScoringStatus;
 
-    public void calculatePercentObtained() {
+    public String getObjectiveScoringStatus() {
+		return objectiveScoringStatus;
+	}
+
+	public void setObjectiveScoringStatus(String objectiveScoringStatus) {
+		this.objectiveScoringStatus = objectiveScoringStatus;
+	}
+
+	public void calculatePercentObtained() {
         setPercentObtained(new Long(ScorerHelper.calculatePercentage(
                 getPointsObtained().intValue(),
                 pointsPossible.intValue())));

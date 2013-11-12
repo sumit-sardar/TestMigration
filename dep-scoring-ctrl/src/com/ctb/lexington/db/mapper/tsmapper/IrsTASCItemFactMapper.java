@@ -1,6 +1,5 @@
 package com.ctb.lexington.db.mapper.tsmapper;
 
-import com.ctb.lexington.db.irsdata.irstbdata.IrsTABEItemFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 
 import java.sql.Connection;
@@ -16,10 +15,10 @@ import com.ctb.lexington.db.mapper.AbstractDBMapper;
 public class IrsTASCItemFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_ITEM_STUDENT_SESSION = "TSfindByItemStudentSession";
-	private static final String INSERT_INTO_TABEITEMFACT = "TSinsertTABEItemFact";
+	private static final String INSERT_INTO_TASCITEMFACT = "TSinsertTASCItemFact";
 	private static final String UPDATE_BY_FACTID = "TSupdateTABEItemFact";
 	private static final String DELETE_BY_FACTID = "TSdeleteByItemFactId";
-    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTABEItemFactCurrentResult";
+    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCItemFactCurrentResult";
     
     public IrsTASCItemFactMapper(Connection conn){
 		super(conn);
@@ -34,7 +33,7 @@ public class IrsTASCItemFactMapper extends AbstractDBMapper{
     }
 	
 	public void insert(IrsTASCItemFactData record)throws SQLException{
-		insert(INSERT_INTO_TABEITEMFACT, record);
+		insert(INSERT_INTO_TASCITEMFACT, record);
     }	
 	
 	public void update(IrsTASCItemFactData record)throws SQLException{

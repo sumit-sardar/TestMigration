@@ -66,7 +66,7 @@ public class TSTestResultController implements TestResultController {
 
     public void run(ValidationStatus rosterValidationStatus) throws IOException, DataException, CTBSystemException, SQLException {
         // gather collected data
-    	IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
+    	//IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
         OrgNodeData orgNodeData = data.getOrgNodeData();
         StudentData studentData = data.getStudentData();
         AdminData adminData = data.getAdminData();
@@ -104,7 +104,7 @@ public class TSTestResultController implements TestResultController {
         context.setAssessmentId(adminData.getAssessmentId());
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
-        context.setDemographicData(demographicData);
+        //context.setDemographicData(demographicData);
         
         new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");

@@ -67,9 +67,9 @@ public class StudentContentAreaScoresController {
                                             "9".equals(contentAreas[i].getSubtestForm())?1:
                                             "10".equals(contentAreas[i].getSubtestForm())?2:1));*/
                    newFact.setFormid(new Long(18));
-                   if(fact.getGradeEquivalent() != null) {
+                   /*if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replace('+', '9'))));
-                   }
+                   }*/
                    newFact.setGradeid(context.getGradeId());
                    newFact.setLevelid(new Long(
                                             "L".equals(contentAreas[i].getSubtestLevel())?1:
@@ -78,7 +78,7 @@ public class StudentContentAreaScoresController {
                                             "D".equals(contentAreas[i].getSubtestLevel())?4:
                                             "A".equals(contentAreas[i].getSubtestLevel())?5:6));
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null:new Long(fact.getNationalPercentile().longValue()));
-                   newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
+                   //newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
                    if(fact.getScaleScore() != null && "Reading".equals(contentAreas[i].getContentAreaName())) {
                             if (fact.getScaleScore().longValue() <= 367)
@@ -108,7 +108,8 @@ public class StudentContentAreaScoresController {
                             newFact.setNrsLevelid(new Long(0));
                    }
                    newFact.setOrgNodeid(context.getOrgNodeId());
-                   newFact.setPercentageMastery((fact.getPercentObjectiveMastery()==null)?null:fact.getPercentObjectiveMastery());
+                   //newFact.setPercentageMastery((fact.getPercentObjectiveMastery()==null)?null:fact.getPercentObjectiveMastery());
+                   //newFact.setProficiencyLevel(Long.valueOf(fact.getPerformanceLevel().toBigInteger().longValue()));
                    newFact.setPercentObtained(fact.getPercentObtained());
                    newFact.setPointsAttempted(fact.getPointsAttempted());
                    newFact.setPointsObtained(fact.getPointsObtained());
@@ -122,7 +123,8 @@ public class StudentContentAreaScoresController {
                    Timestamp subtestTime = testData.getBySubtestId(contentAreas[i].getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                    if(subtestTime == null) subtestTime = context.getTestCompletionTimestamp();
                    newFact.setTestCompletionTimestamp(subtestTime);
-                   newFact.setAttr1id(context.getDemographicData().getAttr1Id());
+                   
+                   /*newFact.setAttr1id(context.getDemographicData().getAttr1Id());
                    newFact.setAttr2id(context.getDemographicData().getAttr2Id());
                    newFact.setAttr3id(context.getDemographicData().getAttr3Id());
                    newFact.setAttr4id(context.getDemographicData().getAttr4Id());
@@ -163,7 +165,7 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr29id(context.getDemographicData().getAttr29Id());
                    newFact.setAttr30id(context.getDemographicData().getAttr30Id());
                    newFact.setAttr36id(context.getDemographicData().getAttr36Id());
-                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());
+                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
                    
                    System.out.println(" Scoring Status " + fact.getSubtestScoringStatus());
                    newFact.setSubtestScoringStatus(fact.getSubtestScoringStatus());

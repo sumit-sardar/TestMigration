@@ -25,12 +25,14 @@ public class ValidateGRResponse {
 		//String sanitizedString = new String(response);
 		
 		String[] rulesSet=new String[200];
-		String sanitizedString = new String(response);
+		String sanitizedString = null;
 		String rawScore = "0";
 
 		int ruleInt=0; 
 		String ruleSetString = grItemRules;
 		try{
+			System.out.println("Resposne is : " + response);
+			sanitizedString=new String(response);
 			if(ruleSetString==null||"".equals(ruleSetString)){
 				System.out.println("No rules defined for item:"+itemId);
 			}else{

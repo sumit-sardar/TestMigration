@@ -14,10 +14,10 @@ import com.ctb.lexington.db.mapper.AbstractDBMapper;
 public class IrsTASCSecObjFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_OBJ_STUDENT_SESSION = "TSfindBySecObjStudentSession";
-	private static final String INSERT_INTO_TABESECOBJFACT = "TSinsertTABESecObjFact";
-	private static final String UPDATE_BY_SECOBJFACTID = "TSupdateTABESecObjFact";
+	private static final String INSERT_INTO_TASCSECOBJFACT = "TSinsertTASCSecObjFact";
+	private static final String UPDATE_BY_SECOBJFACTID = "TSupdateTASCSecObjFact";
 	private static final String DELETE_BY_SECOBJFACTID = "TSdeleteBySecObjFactId";
-    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTABESecObjFactCurrentResult";
+    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCSecObjFactCurrentResult";
     
     public IrsTASCSecObjFactMapper(Connection conn){
 		super(conn);
@@ -32,7 +32,7 @@ public class IrsTASCSecObjFactMapper extends AbstractDBMapper{
     }
 	
 	public void insert(IrsTASCSecObjFactData record)throws SQLException{
-		insert(INSERT_INTO_TABESECOBJFACT, record);
+		insert(INSERT_INTO_TASCSECOBJFACT, record);
     }	
 	
 	public void update(IrsTASCSecObjFactData record)throws SQLException{

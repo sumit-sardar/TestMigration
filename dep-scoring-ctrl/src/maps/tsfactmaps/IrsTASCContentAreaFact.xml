@@ -9,7 +9,7 @@ SELECT
         STUDENTID as studentid,        
         FORMID as formid,
         SESSIONID as sessionid,
-        ATTR1ID	as attr1id,
+        <!-- ATTR1ID	as attr1id,
         ATTR2ID as attr2id,
         ATTR3ID as attr3id,
         ATTR4ID as attr4id,
@@ -24,7 +24,7 @@ SELECT
         ATTR13ID as attr13id,
         ATTR14ID as attr14id,
         ATTR15ID as attr15id,
-        ATTR16ID as attr16id,
+        ATTR16ID as attr16id, -->
         GRADEID	as gradeid,
         LEVELID	as levelid,
         NRS_LEVELID as nrsLevelid,
@@ -38,6 +38,7 @@ SELECT
         NORMAL_CURVE_EQUIVALENT as normalCurveEquivalent,
         PERCENTAGE_MASTERY as percentageMastery,
         NATIONAL_PERCENTILE as nationalPercentile,
+        PROFICIENCY_LEVEL as proficiencyLevel,
         NATIONAL_STANINE as nationalStanine,
         POINTS_ATTEMPTED as pointsAttempted,
         PERCENT_OBTAINED as percentObtained,
@@ -53,17 +54,17 @@ WHERE
 	        CONTENT_AREAID = #contentAreaid:NUMERIC#
 </select> 
 
-<insert id="TSinsertTABEContentAreaFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
+<insert id="TSinsertTASCContentAreaFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
 
         INSERT INTO
-            TABE_CONTENT_AREA_FACT
+            TASC_CONTENT_AREA_FACT
                 (
                 FACTID,
 	    	    CONTENT_AREAID,
     	    	STUDENTID,        
 		        FORMID,
 		        SESSIONID,
-		        ATTR1ID,
+		        <!-- ATTR1ID,
 		        ATTR2ID,
 		        ATTR3ID,
 		        ATTR4ID,
@@ -78,28 +79,29 @@ WHERE
     		    ATTR13ID,
 		        ATTR14ID,
 		        ATTR15ID,
-		        ATTR16ID,
+		        ATTR16ID, -->
 		        GRADEID,
 		        LEVELID,
-		        NRS_LEVELID,
+		        <!-- NRS_LEVELID, -->
 		        ORG_NODEID,
 		        ASSESSMENTID,
 		        PROGRAMID,	
 		        CURRENT_RESULTID,
 		        SUBJECTID,
 		        SCALE_SCORE,
-		        GRADE_EQUIVALENT,
+		        <!-- GRADE_EQUIVALENT, -->
 		        NORMAL_CURVE_EQUIVALENT,
-		        PERCENTAGE_MASTERY,
+		        <!-- PERCENTAGE_MASTERY, -->
 		        NATIONAL_PERCENTILE,
-		        NATIONAL_STANINE,
+		        PROFICIENCY_LEVEL,
+		        <!-- NATIONAL_STANINE, -->
 		        POINTS_ATTEMPTED,
 		        PERCENT_OBTAINED,
 		        POINTS_OBTAINED,
                 POINTS_POSSIBLE,
 		        TEST_COMPLETION_TIMESTAMP,
-		        SCORING_STATUS,
-		        ATTR17ID,
+		        SCORING_STATUS
+		        <!-- ATTR17ID,
 		        ATTR18ID,
 		        ATTR19ID,
 		        ATTR20ID,
@@ -113,7 +115,7 @@ WHERE
 		        ATTR29ID,
     		    ATTR30ID,
 		        ATTR36ID,
-		        ATTR37ID
+		        ATTR37ID -->
                 )
         VALUES
                 (
@@ -122,7 +124,7 @@ WHERE
 		        #studentid:NUMERIC#,        
 		        #formid:NUMERIC#,
 		        #sessionid:NUMERIC#,
-		        #attr1id:NUMERIC#,
+		        <!-- #attr1id:NUMERIC#,
 		        #attr2id:NUMERIC#,
 		        #attr3id:NUMERIC#,
 		        #attr4id:NUMERIC#,
@@ -137,10 +139,10 @@ WHERE
 		        #attr13id:NUMERIC#,
 		        #attr14id:NUMERIC#,
 		        #attr15id:NUMERIC#,
-                #attr16id:NUMERIC#,
+                #attr16id:NUMERIC#, -->
 		        #gradeid:NUMERIC#,
 		        #levelid:NUMERIC#,
-		        #nrsLevelid:NUMERIC#,
+		        <!-- #nrsLevelid:NUMERIC#, -->
 		        #orgNodeid:NUMERIC#,
 		        #assessmentid:NUMERIC#,
 		        #programid:NUMERIC#,	
@@ -149,7 +151,7 @@ WHERE
                         NVL(to_number(
                             TO_CHAR(
                                 to_timestamp(
-                                    to_char((select max(test_completion_timestamp) from tabe_content_area_fact
+                                    to_char((select max(test_completion_timestamp) from tasc_content_area_fact
                                         where sessionid != #sessionid:NUMERIC#
                                         and studentid = #studentid:NUMERIC#
                                         and assessmentid = #assessmentid:NUMERIC#
@@ -179,18 +181,19 @@ WHERE
                 ),
 		        #subjectid:NUMERIC#,
 		        #scaleScore:NUMERIC#,
-		        #gradeEquivalent:NUMERIC#,
+		        <!-- #gradeEquivalent:NUMERIC#, -->
 		        #normalCurveEquivalent:NUMERIC#,
-		        #percentageMastery:NUMERIC#,
+		        <!-- #percentageMastery:NUMERIC#, -->
 		        #nationalPercentile:NUMERIC#,
-		        #nationalStanine:NUMERIC#,
+		        #proficiencyLevel:NUMERIC#,
+		        <!-- #nationalStanine:NUMERIC#, -->
 		        #pointsAttempted:NUMERIC#,
 		        #percentObtained:NUMERIC#,
 		        #pointsObtained:NUMERIC#,
                 #pointsPossible:NUMERIC#,
 		        #testCompletionTimestamp:TIMESTAMP#,
-		        #subtestScoringStatus:VARCHAR#,
-				#attr17id:NUMERIC#,
+		        #subtestScoringStatus:VARCHAR#
+				<!-- #attr17id:NUMERIC#,
 				#attr18id:NUMERIC#,
 				#attr19id:NUMERIC#,
 				#attr20id:NUMERIC#,
@@ -204,11 +207,11 @@ WHERE
 				#attr29id:NUMERIC#,
 				#attr30id:NUMERIC#,
 				#attr36id:NUMERIC#,
-				#attr37id:NUMERIC#
+				#attr37id:NUMERIC# -->
                 )        
 </insert>
 
-<select id="TSisTABECAFactCurrent" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
+<select id="TSisTASCCAFactCurrent" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
 select decode(
                     sign( 
                         NVL(to_number(
@@ -243,14 +246,14 @@ select decode(
                 ) as currentResultid from dual
 </select>
 
-<update id="TSupdateTABEContentAreaFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
+<update id="TSupdateTASCContentAreaFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
        
         UPDATE
                 TABE_CONTENT_AREA_FACT
         SET
 				FACTID = #factid:NUMERIC#,		
 		        FORMID = #formid:NUMERIC#,		
-		        ATTR1ID	= #attr1id:NUMERIC#,		
+		        <!-- ATTR1ID	= #attr1id:NUMERIC#,		
 		        ATTR2ID	= #attr2id:NUMERIC#,		
 		        ATTR3ID	= #attr3id:NUMERIC#,		
 		        ATTR4ID	= #attr4id:NUMERIC#,		
@@ -266,7 +269,6 @@ select decode(
 		        ATTR14ID = #attr14id:NUMERIC#,
 				ATTR15ID = #attr15id:NUMERIC#,
 				ATTR16ID = #attr16id:NUMERIC#,
-				
 				ATTR17ID = #attr17id:NUMERIC#,
 				ATTR18ID = #attr18id:NUMERIC#,
 				ATTR19ID = #attr19id:NUMERIC#,
@@ -281,7 +283,7 @@ select decode(
 				ATTR29ID = #attr29id:NUMERIC#,
 				ATTR30ID = #attr30id:NUMERIC#,
 				ATTR36ID = #attr36id:NUMERIC#,
-				ATTR37ID = #attr37id:NUMERIC#,
+				ATTR37ID = #attr37id:NUMERIC#, -->
 					
 		        GRADEID = #gradeid:NUMERIC#,		
 		        LEVELID	= #levelid:NUMERIC#,		
@@ -292,11 +294,12 @@ select decode(
 		        CURRENT_RESULTID = #currentResultid:NUMERIC#,				       
 		        SUBJECTID = #subjectid:NUMERIC#,		
 		        SCALE_SCORE = #scaleScore:NUMERIC#,		
-		        GRADE_EQUIVALENT = #gradeEquivalent:NUMERIC#,		
+		        <!-- GRADE_EQUIVALENT = #gradeEquivalent:NUMERIC#, -->		
 		        NORMAL_CURVE_EQUIVALENT = #normalCurveEquivalent:NUMERIC#,		
-		        PERCENTAGE_MASTERY = #percentageMastery:NUMERIC#,		
-		        NATIONAL_PERCENTILE = #nationalPercentile:NUMERIC#,		
-		        NATIONAL_STANINE = #nationalStanine:NUMERIC#,		
+		        <!-- PERCENTAGE_MASTERY = #percentageMastery:NUMERIC#, -->
+		        NATIONAL_PERCENTILE = #nationalPercentile:NUMERIC#,
+		        PROFICIENCY_LEVEL = #proficiencyLevel:NUMERIC#,	
+		        <!-- NATIONAL_STANINE = #nationalStanine:NUMERIC#, -->		
 		        POINTS_ATTEMPTED = #pointsAttempted:NUMERIC#,		
 		        PERCENT_OBTAINED = #percentObtained:NUMERIC#,		
 		        POINTS_OBTAINED	 = #pointsObtained:NUMERIC#,		
@@ -308,9 +311,9 @@ select decode(
 		AND		
 	        CONTENT_AREAID = #contentAreaid:NUMERIC#
 </update>
-<update id="TSupdateTABEContentAreaFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData"> 
+<update id="TSupdateTASCContentAreaFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData"> 
         UPDATE
-                TABE_CONTENT_AREA_FACT fact
+                TASC_CONTENT_AREA_FACT fact
         SET	
 		        CURRENT_RESULTID = #currentResultid:NUMERIC#	
         WHERE 
@@ -334,7 +337,7 @@ select decode(
 <delete id="TSdeleteByContentAreaFactId" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
 
 	DELETE FROM
-			TABE_CONTENT_AREA_FACT
+			TASC_CONTENT_AREA_FACT
 	WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND

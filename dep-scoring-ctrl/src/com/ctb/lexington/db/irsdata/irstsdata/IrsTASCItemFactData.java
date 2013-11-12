@@ -13,23 +13,6 @@ public class IrsTASCItemFactData implements Persistent{
     private Long studentid;
     private Long formid;
     private Long sessionid;
-    private Long attr1id;
-    private Long attr7id;
-    private Long attr4id;
-    private Long attr2id;
-    private Long attr5id;
-    private Long attr6id;
-    private Long attr3id;
-    private Long attr10id;
-    private Long attr11id;
-    private Long attr12id;
-    private Long attr13id;
-    private Long attr14id;
-    private Long attr15id;
-    private Long attr16id;
-    private Long gradeid;
-    private Long attr9id;
-    private Long attr8id;
     private Long levelid;
     private Long pointsObtained;
     private Date itemResponseTimestamp;
@@ -43,6 +26,24 @@ public class IrsTASCItemFactData implements Persistent{
     private Long programid;
     private Long currentResultid;
     private String subtestName;
+    private Long gradeid;
+    
+    /*private Long attr1id;
+    private Long attr7id;
+    private Long attr4id;
+    private Long attr2id;
+    private Long attr5id;
+    private Long attr6id;
+    private Long attr3id;
+    private Long attr10id;
+    private Long attr11id;
+    private Long attr12id;
+    private Long attr13id;
+    private Long attr14id;
+    private Long attr15id;
+    private Long attr16id;
+    private Long attr9id;
+    private Long attr8id;
     private Long attr17id;
     private Long attr18id;
     private Long attr19id;
@@ -57,7 +58,7 @@ public class IrsTASCItemFactData implements Persistent{
     private Long attr29id;
     private Long attr30id;
     private Long attr36id;
-    private Long attr37id;
+    private Long attr37id;*/
     
 	public boolean equals(Object arg0) {
 			return 
@@ -66,7 +67,17 @@ public class IrsTASCItemFactData implements Persistent{
                 studentid.equals(((IrsTASCItemFactData)arg0).getStudentid()) &&
                 formid.equals(((IrsTASCItemFactData)arg0).getFormid()) &&
                 sessionid.equals(((IrsTASCItemFactData)arg0).getSessionid()) &&
-                attr1id.equals(((IrsTASCItemFactData)arg0).getAttr1id()) &&
+                testStartTimestamp.equals(((IrsTASCItemFactData)arg0).getTestStartTimestamp()) &&
+                testCompletionTimestamp.equals(((IrsTASCItemFactData)arg0).getTestCompletionTimestamp()) &&
+                assessmentid.equals(((IrsTASCItemFactData)arg0).getAssessmentid()) &&
+                pointsPossible.equals(((IrsTASCItemFactData)arg0).getPointsPossible()) &&
+                programid.equals(((IrsTASCItemFactData)arg0).getProgramid()) &&
+                currentResultid.equals(((IrsTASCItemFactData)arg0).getCurrentResultid()) &&
+                pointsObtained.equals(((IrsTASCItemFactData)arg0).getPointsObtained()) &&
+                responseid.equals(((IrsTASCItemFactData)arg0).getResponseid()) &&
+                gradeid.equals(((IrsTASCItemFactData)arg0).getGradeid());
+                
+                /*&&  attr1id.equals(((IrsTASCItemFactData)arg0).getAttr1id()) &&
                 attr7id.equals(((IrsTASCItemFactData)arg0).getAttr7id()) &&
                 attr4id.equals(((IrsTASCItemFactData)arg0).getAttr4id()) &&
                 attr2id.equals(((IrsTASCItemFactData)arg0).getAttr2id()) &&
@@ -80,18 +91,8 @@ public class IrsTASCItemFactData implements Persistent{
                 attr14id.equals(((IrsTASCItemFactData)arg0).getAttr14id()) &&
                 attr15id.equals(((IrsTASCItemFactData)arg0).getAttr15id()) &&
                 attr16id.equals(((IrsTASCItemFactData)arg0).getAttr16id()) &&
-                gradeid.equals(((IrsTASCItemFactData)arg0).getGradeid()) &&
                 attr9id.equals(((IrsTASCItemFactData)arg0).getAttr9id()) &&
                 attr8id.equals(((IrsTASCItemFactData)arg0).getAttr8id()) &&
-                testStartTimestamp.equals(((IrsTASCItemFactData)arg0).getTestStartTimestamp()) &&
-                testCompletionTimestamp.equals(((IrsTASCItemFactData)arg0).getTestCompletionTimestamp()) &&
-                assessmentid.equals(((IrsTASCItemFactData)arg0).getAssessmentid()) &&
-                pointsPossible.equals(((IrsTASCItemFactData)arg0).getPointsPossible()) &&
-                programid.equals(((IrsTASCItemFactData)arg0).getProgramid()) &&
-                currentResultid.equals(((IrsTASCItemFactData)arg0).getCurrentResultid()) &&
-                pointsObtained.equals(((IrsTASCItemFactData)arg0).getPointsObtained()) &&
-                responseid.equals(((IrsTASCItemFactData)arg0).getResponseid()) && 
-                
                 attr17id.equals(((IrsTASCItemFactData)arg0).getAttr17id()) &&
                 attr18id.equals(((IrsTASCItemFactData)arg0).getAttr18id()) &&
                 attr19id.equals(((IrsTASCItemFactData)arg0).getAttr19id()) &&
@@ -106,7 +107,7 @@ public class IrsTASCItemFactData implements Persistent{
                 attr29id.equals(((IrsTASCItemFactData)arg0).getAttr29id()) &&
                 attr30id.equals(((IrsTASCItemFactData)arg0).getAttr30id()) &&
                 attr36id.equals(((IrsTASCItemFactData)arg0).getAttr36id()) &&
-                attr37id.equals(((IrsTASCItemFactData)arg0).getAttr37id());
+                attr37id.equals(((IrsTASCItemFactData)arg0).getAttr37id());*/
     }
 
     public Date getTestStartTimestamp() {
@@ -153,7 +154,111 @@ public class IrsTASCItemFactData implements Persistent{
         this.sessionid = sessionid;
     }
 
-    public Long getAttr1id() {
+    public Long getLevelid() {
+        return levelid;
+    }
+
+    public void setLevelid(Long levelid) {
+        this.levelid = levelid;
+    }
+
+    public Long getPointsObtained() {
+        return pointsObtained;
+    }
+
+    public void setPointsObtained(Long pointsObtained) {
+        this.pointsObtained = pointsObtained;
+    }
+
+    public Date getItemResponseTimestamp() {
+        return itemResponseTimestamp;
+    }
+
+    public void setItemResponseTimestamp(Date itemResponseTimestamp) {
+        this.itemResponseTimestamp = itemResponseTimestamp;
+    }
+
+    public Date getTestCompletionTimestamp() {
+        return testCompletionTimestamp;
+    }
+
+    public void setTestCompletionTimestamp(Date testCompletionTimestamp) {
+        this.testCompletionTimestamp = testCompletionTimestamp;
+    }
+
+    public Long getResponseid() {
+        return responseid;
+    }
+
+    public void setResponseid(Long responseid) {
+        this.responseid = responseid;
+    }
+
+    public Long getItemid() {
+        return itemid;
+    }
+
+    public void setItemid(Long itemid) {
+        this.itemid = itemid;
+    }
+    
+    public Long getGradeid() {
+        return gradeid;
+    }
+
+    public void setGradeid(Long gradeid) {
+        this.gradeid = gradeid;
+    }
+    
+    public String getSubtestName() {
+        return this.subtestName;
+    }
+    
+    public void setSubtestName(String subtestName) {
+        this.subtestName = subtestName;
+    }
+
+    public Long getOrgNodeid() {
+        return orgNodeid;
+    }
+
+    public void setOrgNodeid(Long orgNodeid) {
+        this.orgNodeid = orgNodeid;
+    }
+
+    public Long getAssessmentid() {
+        return assessmentid;
+    }
+
+    public void setAssessmentid(Long assessmentid) {
+        this.assessmentid = assessmentid;
+    }
+
+    public Long getPointsPossible() {
+        return pointsPossible;
+    }
+
+    public void setPointsPossible(Long pointsPossible) {
+        this.pointsPossible = pointsPossible;
+    }
+
+    public Long getProgramid() {
+        return programid;
+    }
+
+    public void setProgramid(Long programid) {
+        this.programid = programid;
+    }
+
+    public Long getCurrentResultid() {
+        return currentResultid;
+    }
+
+    public void setCurrentResultid(Long currentResultid) {
+        this.currentResultid = currentResultid;
+    }
+    
+    /*public Long getAttr1id() {
         return attr1id;
     }
 
@@ -217,14 +322,6 @@ public class IrsTASCItemFactData implements Persistent{
         this.attr10id = attr10id;
     }
     
-    public Long getGradeid() {
-        return gradeid;
-    }
-
-    public void setGradeid(Long gradeid) {
-        this.gradeid = gradeid;
-    }
-
     public Long getAttr9id() {
         return attr9id;
     }
@@ -239,94 +336,6 @@ public class IrsTASCItemFactData implements Persistent{
 
     public void setAttr8id(Long attr8id) {
         this.attr8id = attr8id;
-    }
-
-    public Long getLevelid() {
-        return levelid;
-    }
-
-    public void setLevelid(Long levelid) {
-        this.levelid = levelid;
-    }
-
-    public Long getPointsObtained() {
-        return pointsObtained;
-    }
-
-    public void setPointsObtained(Long pointsObtained) {
-        this.pointsObtained = pointsObtained;
-    }
-
-    public Date getItemResponseTimestamp() {
-        return itemResponseTimestamp;
-    }
-
-    public void setItemResponseTimestamp(Date itemResponseTimestamp) {
-        this.itemResponseTimestamp = itemResponseTimestamp;
-    }
-
-    public Date getTestCompletionTimestamp() {
-        return testCompletionTimestamp;
-    }
-
-    public void setTestCompletionTimestamp(Date testCompletionTimestamp) {
-        this.testCompletionTimestamp = testCompletionTimestamp;
-    }
-
-    public Long getResponseid() {
-        return responseid;
-    }
-
-    public void setResponseid(Long responseid) {
-        this.responseid = responseid;
-    }
-
-    public Long getItemid() {
-        return itemid;
-    }
-
-    public void setItemid(Long itemid) {
-        this.itemid = itemid;
-    }
-
-    public Long getOrgNodeid() {
-        return orgNodeid;
-    }
-
-    public void setOrgNodeid(Long orgNodeid) {
-        this.orgNodeid = orgNodeid;
-    }
-
-    public Long getAssessmentid() {
-        return assessmentid;
-    }
-
-    public void setAssessmentid(Long assessmentid) {
-        this.assessmentid = assessmentid;
-    }
-
-    public Long getPointsPossible() {
-        return pointsPossible;
-    }
-
-    public void setPointsPossible(Long pointsPossible) {
-        this.pointsPossible = pointsPossible;
-    }
-
-    public Long getProgramid() {
-        return programid;
-    }
-
-    public void setProgramid(Long programid) {
-        this.programid = programid;
-    }
-
-    public Long getCurrentResultid() {
-        return currentResultid;
-    }
-
-    public void setCurrentResultid(Long currentResultid) {
-        this.currentResultid = currentResultid;
     }
 
 	public Long getAttr11id() {
@@ -376,12 +385,7 @@ public class IrsTASCItemFactData implements Persistent{
 	public void setAttr16id(Long attr16id) {
 		this.attr16id = attr16id;
 	}
-    public String getSubtestName() {
-        return this.subtestName;
-    }
-    public void setSubtestName(String subtestName) {
-        this.subtestName = subtestName;
-    }
+	
     public Long getAttr17id() {
 		return attr17id;
 	}
@@ -500,5 +504,5 @@ public class IrsTASCItemFactData implements Persistent{
 
 	public void setAttr37id(Long attr37id) {
 		this.attr37id = attr37id;
-	}
+	}*/
 }

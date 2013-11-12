@@ -15,10 +15,10 @@ import com.ctb.lexington.db.mapper.AbstractDBMapper;;
 public class IrsTASCContentAreaFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_CA_STUDENT_SESSION = "TSfindByCAStudentSession";
-	private static final String INSERT_INTO_CONTENTAREAFACT = "TSinsertTABEContentAreaFact";
-	private static final String UPDATE_CONTENTAREAFACT = "TSupdateTABEContentAreaFact";
+	private static final String INSERT_INTO_CONTENTAREAFACT = "TSinsertTASCContentAreaFact";
+	private static final String UPDATE_CONTENTAREAFACT = "TSupdateTASCContentAreaFact";
 	private static final String DELETE_BY_CONTENTAREAFACTID = "TSdeleteByContentAreaFactId";
-    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTABEContentAreaFactCurrentResult";
+    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCContentAreaFactCurrentResult";
     
 	public IrsTASCContentAreaFactMapper(Connection conn){
 		super(conn);
@@ -33,7 +33,7 @@ public class IrsTASCContentAreaFactMapper extends AbstractDBMapper{
     }
     
     public Long isTASCCAFactCurrent(IrsTASCContentAreaFactData fact) {
-        return ((IrsTASCContentAreaFactData) find("TSisTABECAFactCurrent", fact)).getCurrentResultid();
+        return ((IrsTASCContentAreaFactData) find("TSisTASCCAFactCurrent", fact)).getCurrentResultid();
     }
 	
 	public void insert(IrsTASCContentAreaFactData record)throws SQLException{

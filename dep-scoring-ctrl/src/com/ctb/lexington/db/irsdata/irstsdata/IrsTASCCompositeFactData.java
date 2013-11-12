@@ -16,7 +16,27 @@ public class IrsTASCCompositeFactData implements Persistent {
 	private Long studentid;
 	private Long formid;
 	private Long sessionid;
-	private Long attr1id;
+	private Long gradeid;
+	private Long nrsLevelid;
+	private Long scaleScore;
+	//private String gradeEquivalent;
+	private Long normalCurveEquivalent;
+	//private Long percentageMastery;
+	private Long nationalPercentile;
+	//private Long nationalStanine;
+	//private Long predictedGed;
+	private Long proficiencyLevel;
+	private Date testCompletionTimestamp;
+    private Date testStartTimestamp;
+	private Long assessmentid;
+	private Long pointsPossible;
+	private Long programid;
+	private Long currentResultid;
+	private Long pointsAttempted;
+	private Long pointsObtained;
+	private Long recLevelid;
+	
+	/*private Long attr1id;
 	private Long attr7id;
 	private Long attr4id;
 	private Long attr2id;
@@ -30,26 +50,8 @@ public class IrsTASCCompositeFactData implements Persistent {
     private Long attr14id;
     private Long attr15id;
     private Long attr16id;
-	private Long gradeid;
-	private Long attr9id;
+    private Long attr9id;
 	private Long attr8id;
-	private Long nrsLevelid;
-	private Long scaleScore;
-	private String gradeEquivalent;
-	private Long normalCurveEquivalent;
-	private Long percentageMastery;
-	private Long nationalPercentile;
-	private Long nationalStanine;
-	private Long predictedGed;
-	private Date testCompletionTimestamp;
-    private Date testStartTimestamp;
-	private Long assessmentid;
-	private Long pointsPossible;
-	private Long programid;
-	private Long currentResultid;
-	private Long pointsAttempted;
-	private Long pointsObtained;
-	private Long recLevelid;
 	private Long attr17id;
     private Long attr18id;
     private Long attr19id;
@@ -64,7 +66,7 @@ public class IrsTASCCompositeFactData implements Persistent {
     private Long attr29id;
     private Long attr30id;
     private Long attr36id;
-    private Long attr37id;
+    private Long attr37id;*/
     
     public boolean equals(Object arg0) {
 			return 
@@ -73,7 +75,27 @@ public class IrsTASCCompositeFactData implements Persistent {
                 studentid.equals(((IrsTASCCompositeFactData)arg0).getStudentid()) &&
                 formid.equals(((IrsTASCCompositeFactData)arg0).getFormid()) &&
                 sessionid.equals(((IrsTASCCompositeFactData)arg0).getSessionid()) &&
-                attr1id.equals(((IrsTASCCompositeFactData)arg0).getAttr1id()) &&
+                gradeid.equals(((IrsTASCCompositeFactData)arg0).getGradeid()) &&
+                nrsLevelid.equals(((IrsTASCCompositeFactData)arg0).getNrsLevelid()) &&
+                scaleScore.equals(((IrsTASCCompositeFactData)arg0).getScaleScore()) &&
+                //gradeEquivalent.equals(((IrsTASCCompositeFactData)arg0).getGradeEquivalent()) &&
+                normalCurveEquivalent.equals(((IrsTASCCompositeFactData)arg0).getNormalCurveEquivalent()) &&
+                //percentageMastery.equals(((IrsTASCCompositeFactData)arg0).getPercentageMastery()) &&
+                nationalPercentile.equals(((IrsTASCCompositeFactData)arg0).getNationalPercentile()) &&
+                //nationalStanine.equals(((IrsTASCCompositeFactData)arg0).getNationalStanine()) &&
+                //predictedGed.equals(((IrsTASCCompositeFactData)arg0).getPredictedGed()) &&
+                testStartTimestamp.equals(((IrsTASCCompositeFactData)arg0).getTestStartTimestamp()) &&
+                testCompletionTimestamp.equals(((IrsTASCCompositeFactData)arg0).getTestCompletionTimestamp()) &&
+                assessmentid.equals(((IrsTASCCompositeFactData)arg0).getAssessmentid()) &&
+                pointsPossible.equals(((IrsTASCCompositeFactData)arg0).getPointsPossible()) &&
+                programid.equals(((IrsTASCCompositeFactData)arg0).getProgramid()) &&
+                currentResultid.equals(((IrsTASCCompositeFactData)arg0).getCurrentResultid()) &&
+                pointsAttempted.equals(((IrsTASCCompositeFactData)arg0).getPointsAttempted()) &&
+                pointsObtained.equals(((IrsTASCCompositeFactData)arg0).getPointsObtained()) &&
+                proficiencyLevel.equals(((IrsTASCCompositeFactData)arg0).getProficiencyLevel()) &&
+                recLevelid.equals(((IrsTASCCompositeFactData)arg0).getRecLevelid()); 
+                
+                /*attr1id.equals(((IrsTASCCompositeFactData)arg0).getAttr1id()) &&
                 attr7id.equals(((IrsTASCCompositeFactData)arg0).getAttr7id()) &&
                 attr4id.equals(((IrsTASCCompositeFactData)arg0).getAttr4id()) &&
                 attr2id.equals(((IrsTASCCompositeFactData)arg0).getAttr2id()) &&
@@ -87,27 +109,8 @@ public class IrsTASCCompositeFactData implements Persistent {
                 attr14id.equals(((IrsTASCCompositeFactData)arg0).getAttr14id()) &&
                 attr15id.equals(((IrsTASCCompositeFactData)arg0).getAttr15id()) &&
                 attr16id.equals(((IrsTASCCompositeFactData)arg0).getAttr16id()) &&
-                gradeid.equals(((IrsTASCCompositeFactData)arg0).getGradeid()) &&
                 attr9id.equals(((IrsTASCCompositeFactData)arg0).getAttr9id()) &&
                 attr8id.equals(((IrsTASCCompositeFactData)arg0).getAttr8id()) &&
-                nrsLevelid.equals(((IrsTASCCompositeFactData)arg0).getNrsLevelid()) &&
-                scaleScore.equals(((IrsTASCCompositeFactData)arg0).getScaleScore()) &&
-                gradeEquivalent.equals(((IrsTASCCompositeFactData)arg0).getGradeEquivalent()) &&
-                normalCurveEquivalent.equals(((IrsTASCCompositeFactData)arg0).getNormalCurveEquivalent()) &&
-                percentageMastery.equals(((IrsTASCCompositeFactData)arg0).getPercentageMastery()) &&
-                nationalPercentile.equals(((IrsTASCCompositeFactData)arg0).getNationalPercentile()) &&
-                nationalStanine.equals(((IrsTASCCompositeFactData)arg0).getNationalStanine()) &&
-                predictedGed.equals(((IrsTASCCompositeFactData)arg0).getPredictedGed()) &&
-                testStartTimestamp.equals(((IrsTASCCompositeFactData)arg0).getTestStartTimestamp()) &&
-                testCompletionTimestamp.equals(((IrsTASCCompositeFactData)arg0).getTestCompletionTimestamp()) &&
-                assessmentid.equals(((IrsTASCCompositeFactData)arg0).getAssessmentid()) &&
-                pointsPossible.equals(((IrsTASCCompositeFactData)arg0).getPointsPossible()) &&
-                programid.equals(((IrsTASCCompositeFactData)arg0).getProgramid()) &&
-                currentResultid.equals(((IrsTASCCompositeFactData)arg0).getCurrentResultid()) &&
-                pointsAttempted.equals(((IrsTASCCompositeFactData)arg0).getPointsAttempted()) &&
-                pointsObtained.equals(((IrsTASCCompositeFactData)arg0).getPointsObtained()) &&
-                recLevelid.equals(((IrsTASCCompositeFactData)arg0).getRecLevelid()) && 
-                
                 attr17id.equals(((IrsTASCCompositeFactData)arg0).getAttr17id()) &&
                 attr18id.equals(((IrsTASCCompositeFactData)arg0).getAttr18id()) &&
                 attr19id.equals(((IrsTASCCompositeFactData)arg0).getAttr19id()) &&
@@ -122,7 +125,7 @@ public class IrsTASCCompositeFactData implements Persistent {
                 attr29id.equals(((IrsTASCCompositeFactData)arg0).getAttr29id()) &&
                 attr30id.equals(((IrsTASCCompositeFactData)arg0).getAttr30id()) &&
                 attr36id.equals(((IrsTASCCompositeFactData)arg0).getAttr36id()) &&
-                attr37id.equals(((IrsTASCCompositeFactData)arg0).getAttr37id());
+                attr37id.equals(((IrsTASCCompositeFactData)arg0).getAttr37id())*/
     }
 
     public Date getTestStartTimestamp() {
@@ -185,7 +188,15 @@ public class IrsTASCCompositeFactData implements Persistent {
 		this.sessionid = sessionid;
 	}
 
-	public Long getAttr1id() {
+	public Long getGradeid() {
+		return gradeid;
+	}
+
+	public void setGradeid(Long gradeid) {
+		this.gradeid = gradeid;
+	}
+
+	/*public Long getAttr1id() {
 		return attr1id;
 	}
 
@@ -248,15 +259,7 @@ public class IrsTASCCompositeFactData implements Persistent {
 	public void setAttr10id(Long attr10id) {
 		this.attr10id = attr10id;
 	}
-
-	public Long getGradeid() {
-		return gradeid;
-	}
-
-	public void setGradeid(Long gradeid) {
-		this.gradeid = gradeid;
-	}
-
+	
 	public Long getAttr9id() {
 		return attr9id;
 	}
@@ -271,7 +274,7 @@ public class IrsTASCCompositeFactData implements Persistent {
 
 	public void setAttr8id(Long attr8id) {
 		this.attr8id = attr8id;
-	}
+	}*/
 
 	public Long getNrsLevelid() {
 		return nrsLevelid;
@@ -289,13 +292,13 @@ public class IrsTASCCompositeFactData implements Persistent {
 		this.scaleScore = scaleScore;
 	}
 
-	public String getGradeEquivalent() {
+	/*public String getGradeEquivalent() {
 		return gradeEquivalent;
 	}
 
 	public void setGradeEquivalent(String gradeEquivalent) {
 		this.gradeEquivalent = gradeEquivalent;
-	}
+	}*/
 
 	public Long getNormalCurveEquivalent() {
 		return normalCurveEquivalent;
@@ -305,13 +308,13 @@ public class IrsTASCCompositeFactData implements Persistent {
 		this.normalCurveEquivalent = normalCurveEquivalent;
 	}
 
-	public Long getPercentageMastery() {
+	/*public Long getPercentageMastery() {
 		return percentageMastery;
 	}
 
 	public void setPercentageMastery(Long percentageMastery) {
 		this.percentageMastery = percentageMastery;
-	}
+	}*/
 
 	public Long getNationalPercentile() {
 		return nationalPercentile;
@@ -321,7 +324,7 @@ public class IrsTASCCompositeFactData implements Persistent {
 		this.nationalPercentile = nationalPercentile;
 	}
 
-	public Long getNationalStanine() {
+	/*public Long getNationalStanine() {
 		return nationalStanine;
 	}
 
@@ -335,7 +338,7 @@ public class IrsTASCCompositeFactData implements Persistent {
 
 	public void setPredictedGed(Long predictedGed) {
 		this.predictedGed = predictedGed;
-	}
+	}*/
 
 	public Date getTestCompletionTimestamp() {
 		return testCompletionTimestamp;
@@ -401,7 +404,15 @@ public class IrsTASCCompositeFactData implements Persistent {
 		this.recLevelid = recLevelid;
 	}
 
-	public Long getAttr11id() {
+	public Long getProficiencyLevel() {
+		return proficiencyLevel;
+	}
+
+	public void setProficiencyLevel(Long proficiencyLevel) {
+		this.proficiencyLevel = proficiencyLevel;
+	}
+
+	/*public Long getAttr11id() {
 		return attr11id;
 	}
 
@@ -567,5 +578,5 @@ public class IrsTASCCompositeFactData implements Persistent {
 
 	public void setAttr37id(Long attr37id) {
 		this.attr37id = attr37id;
-	}
+	}*/
 }

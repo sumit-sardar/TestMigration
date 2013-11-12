@@ -56,12 +56,12 @@ public class StudentCompositeScoresController {
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setCompositeid(composites[i].getCompositeId());
                    newFact.setCurrentResultid(context.getCurrentResultId());
-                   if(total.getGradeEquivalent() != null) {
+                   /*if(total.getGradeEquivalent() != null) {
                     newFact.setGradeEquivalent( total.getGradeEquivalent().replace('+', '9') ) ;
-                   }
+                   }*/
                    newFact.setGradeid(context.getGradeId());
                    newFact.setNationalPercentile((total.getNationalPercentile()==null)?null:new Long(total.getNationalPercentile().longValue()));
-                   newFact.setNationalStanine((total.getNationalStanine()==null)?null:new Long(total.getNationalStanine().longValue()));
+                   //newFact.setNationalStanine((total.getNationalStanine()==null)?null:new Long(total.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((total.getNormalCurveEquivalent()==null)?null:new Long(total.getNormalCurveEquivalent().longValue()));
                    if(total.getScaleScore() != null && "Total Mathematics".equals(composites[i].getCompositeName())) {
                         if (total.getScaleScore().longValue() <= 313)
@@ -79,7 +79,8 @@ public class StudentCompositeScoresController {
                         newFact.setNrsLevelid(new Long(0));
                    }
                    newFact.setOrgNodeid(context.getOrgNodeId());
-                   newFact.setPercentageMastery((total.getPercentObjectiveMastery()==null)?null:total.getPercentObjectiveMastery());
+                   //newFact.setPercentageMastery((total.getPercentObjectiveMastery()==null)?null:total.getPercentObjectiveMastery());
+                   newFact.setProficiencyLevel(Long.valueOf(total.getProficencyLevel().toBigInteger().longValue()));
                    newFact.setPointsAttempted(total.getPointsAttempted());
                    newFact.setPointsObtained(total.getPointsObtained());
                    newFact.setPointsPossible(composites[i].getCompositePointsPossible());
@@ -90,7 +91,8 @@ public class StudentCompositeScoresController {
                    newFact.setStudentid(context.getStudentId());
                    newFact.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
                    newFact.setTestStartTimestamp(context.getTestStartTimestamp());
-                   newFact.setAttr1id(context.getDemographicData().getAttr1Id());
+                   
+                   /*newFact.setAttr1id(context.getDemographicData().getAttr1Id());
                    newFact.setAttr2id(context.getDemographicData().getAttr2Id());
                    newFact.setAttr3id(context.getDemographicData().getAttr3Id());
                    newFact.setAttr4id(context.getDemographicData().getAttr4Id());
@@ -106,7 +108,6 @@ public class StudentCompositeScoresController {
                    newFact.setAttr14id(context.getDemographicData().getAttr14Id());
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
-                   
                    newFact.setAttr17id(context.getDemographicData().getAttr17Id());
                    newFact.setAttr18id(context.getDemographicData().getAttr18Id());
                    newFact.setAttr19id(context.getDemographicData().getAttr19Id());
@@ -121,7 +122,7 @@ public class StudentCompositeScoresController {
                    newFact.setAttr29id(context.getDemographicData().getAttr29Id());
                    newFact.setAttr30id(context.getDemographicData().getAttr30Id());
                    newFact.setAttr36id(context.getDemographicData().getAttr36Id());
-                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());
+                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
                    
                    facts.add(newFact);
                }

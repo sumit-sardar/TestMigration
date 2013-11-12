@@ -8,7 +8,7 @@ SELECT
         STUDENTID as studentid,        
         FORMID as formid,
         SESSIONID as sessionid,
-        ATTR1ID	as attr1id,
+        <!-- ATTR1ID	as attr1id,
         ATTR2ID as attr2id,
         ATTR3ID as attr3id,
         ATTR4ID as attr4id,
@@ -23,7 +23,7 @@ SELECT
         ATTR13ID as attr13id,
         ATTR14ID as attr14id,
         ATTR15ID as attr15id,
-        ATTR16ID as attr16id,
+        ATTR16ID as attr16id, -->
         GRADEID	as gradeid,
         LEVELID	as levelid,
         ITEMID as itemid,
@@ -46,16 +46,16 @@ WHERE
 	        ITEMID = #itemid:NUMERIC#
 </select> 
 
-<insert id="TSinsertTABEItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
+<insert id="TSinsertTASCItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
 
         INSERT INTO
-            TABE_ITEM_FACT
+            TASC_ITEM_FACT
                 (
                 FACTID,
         		STUDENTID,        
 		        FORMID,
         		SESSIONID,
-		        ATTR1ID,
+		        <!-- ATTR1ID,
         		ATTR2ID,
 		        ATTR3ID,
         		ATTR4ID,
@@ -70,7 +70,7 @@ WHERE
     		    ATTR13ID,
 		        ATTR14ID,
 		        ATTR15ID,
-		        ATTR16ID,
+		        ATTR16ID, -->
         		GRADEID,
 		        LEVELID,
 		        ITEMID,
@@ -82,8 +82,8 @@ WHERE
 		        ITEM_RESPONSE_TIMESTAMP,
         		TEST_COMPLETION_TIMESTAMP,
 		        RESPONSEID,
-        		POINTS_POSSIBLE,
-		        ATTR17ID,
+        		POINTS_POSSIBLE
+		        <!-- ATTR17ID,
 		        ATTR18ID,
 		        ATTR19ID,
 		        ATTR20ID,
@@ -97,7 +97,7 @@ WHERE
 		        ATTR29ID,
     		    ATTR30ID,
 		        ATTR36ID,
-		        ATTR37ID
+		        ATTR37ID -->
                 )
         VALUES
                 (
@@ -105,7 +105,7 @@ WHERE
                 #studentid:NUMERIC#,
                 #formid:NUMERIC#,
                 #sessionid:NUMERIC#,
-                #attr1id:NUMERIC#,
+                <!-- #attr1id:NUMERIC#,
                 #attr2id:NUMERIC#,
                 #attr3id:NUMERIC#,
                 #attr4id:NUMERIC#,
@@ -120,7 +120,7 @@ WHERE
 		        #attr13id:NUMERIC#,
 		        #attr14id:NUMERIC#,
 		        #attr15id:NUMERIC#,
-		        #attr16id:NUMERIC#,
+		        #attr16id:NUMERIC#, -->
                 #gradeid:NUMERIC#,
                 #levelid:NUMERIC#,
                 #itemid:NUMERIC#,
@@ -132,7 +132,7 @@ WHERE
                         NVL(to_number(
                             TO_CHAR(
                                 to_timestamp(
-                                    to_char((select max(test_completion_timestamp) from tabe_item_fact fact,
+                                    to_char((select max(test_completion_timestamp) from tasc_item_fact fact,
                                         item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_area_dim condim
                                         where fact.sessionid != #sessionid:NUMERIC#
                                         and fact.studentid = #studentid:NUMERIC#
@@ -169,8 +169,8 @@ WHERE
                 #itemResponseTimestamp:TIMESTAMP#,
                 #testCompletionTimestamp:TIMESTAMP#,
                 #responseid:NUMERIC#,
-                #pointsPossible:NUMERIC#,
-                #attr17id:NUMERIC#,
+                #pointsPossible:NUMERIC#
+                <!-- #attr17id:NUMERIC#,
 				#attr18id:NUMERIC#,
 				#attr19id:NUMERIC#,
 				#attr20id:NUMERIC#,
@@ -184,18 +184,18 @@ WHERE
 				#attr29id:NUMERIC#,
 				#attr30id:NUMERIC#,
 				#attr36id:NUMERIC#,
-				#attr37id:NUMERIC#
+				#attr37id:NUMERIC# -->
                 )        
 </insert>
 
-<update id="TSupdateTABEItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
+<update id="TSupdateTASCItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
        
         UPDATE
-                TABE_ITEM_FACT
+                TASC_ITEM_FACT
         SET
         	FACTID = #factid:NUMERIC#,
         	FORMID = #formid:NUMERIC#,
-			ATTR1ID = #attr1id:NUMERIC#,
+			<!-- ATTR1ID = #attr1id:NUMERIC#,
 			ATTR2ID	= #attr2id:NUMERIC#,
 			ATTR3ID = #attr3id:NUMERIC#,
 			ATTR4ID	= #attr4id:NUMERIC#,
@@ -211,7 +211,6 @@ WHERE
 		    ATTR14ID = #attr14id:NUMERIC#,
 			ATTR15ID = #attr15id:NUMERIC#,
 			ATTR16ID = #attr16id:NUMERIC#,
-			
 			ATTR17ID = #attr17id:NUMERIC#,
 			ATTR18ID = #attr18id:NUMERIC#,
 			ATTR19ID = #attr19id:NUMERIC#,
@@ -226,7 +225,7 @@ WHERE
 			ATTR29ID = #attr29id:NUMERIC#,
 			ATTR30ID = #attr30id:NUMERIC#,
 			ATTR36ID = #attr36id:NUMERIC#,
-			ATTR37ID = #attr37id:NUMERIC#,
+			ATTR37ID = #attr37id:NUMERIC#, -->
 			
 			GRADEID = #gradeid:NUMERIC#,
 			LEVELID	= #levelid:NUMERIC#,
@@ -247,10 +246,10 @@ WHERE
 	        ITEMID = #itemid:NUMERIC#
 </update>
 
-<update id="TSupdateTABEItemFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
+<update id="TSupdateTASCItemFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
        
         UPDATE
-                TABE_ITEM_FACT fact
+                TASC_ITEM_FACT fact
         SET	
 		        CURRENT_RESULTID = #currentResultid:NUMERIC#	
         WHERE 
@@ -285,7 +284,7 @@ WHERE
 <delete id="TSdeleteByItemFactId" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
 
 	DELETE FROM
-			TABE_ITEM_FACT
+			TASC_ITEM_FACT
 	WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND

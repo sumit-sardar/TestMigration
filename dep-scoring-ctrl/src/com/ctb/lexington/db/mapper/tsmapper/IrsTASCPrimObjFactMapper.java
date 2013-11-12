@@ -14,10 +14,10 @@ import com.ctb.lexington.db.mapper.AbstractDBMapper;
 public class IrsTASCPrimObjFactMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_OBJ_STUDENT_SESSION = "TSfindByPrimObjStudentSession";
-	private static final String INSERT_INTO_PRIMSECOBJFACT = "TSinsertTABEPrimObjFact";
-	private static final String UPDATE_BY_PRIMOBJFACTID = "TSupdateTABEPrimObjFact";
+	private static final String INSERT_INTO_PRIMOBJFACT = "TSinsertTASCPrimObjFact";
+	private static final String UPDATE_BY_PRIMOBJFACTID = "TSupdateTASCPrimObjFact";
 	private static final String DELETE_BY_PRIMOBJFACTID = "TSdeleteByPrimObjFactId";
-    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTABEPrimObjectCurrentResult";
+    private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCPrimObjectCurrentResult";
     
 	public IrsTASCPrimObjFactMapper(Connection conn){
 		super(conn);
@@ -32,7 +32,7 @@ public class IrsTASCPrimObjFactMapper extends AbstractDBMapper{
     }
 	
 	public void insert(IrsTASCPrimObjFactData record)throws SQLException{
-		insert(INSERT_INTO_PRIMSECOBJFACT, record);
+		insert(INSERT_INTO_PRIMOBJFACT, record);
     }	
 	
 	public void update(IrsTASCPrimObjFactData record)throws SQLException{
