@@ -98,10 +98,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			cluster = com.tangosol.net.CacheFactory.ensureCluster();
 			clusterName = cluster.getClusterName();
 
-			logger.info("*****  Starting active roster check background thread . . .");
-			TestDeliveryContextListener.rosterThread = getRosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
-			TestDeliveryContextListener.rosterThread.start();
-			logger.info(" started.");
+//			logger.info("*****  Starting active roster check background thread . . .");
+//			TestDeliveryContextListener.rosterThread = getRosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
+//			TestDeliveryContextListener.rosterThread.start();
+//			logger.info(" started.");
 			
 			logger.info("*****  Starting scoring queue thread . . .");
 			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<ScoringMessage>();

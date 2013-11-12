@@ -1,12 +1,13 @@
-<!DOCTYPE pof-config SYSTEM "pof-config.dtd">
-
-<pof-config>
+<pof-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://xmlns.oracle.com/coherence/coherence-pof-config"
+              xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-pof-config coherence-pof-config.xsd">
    <user-type-list>
       <include>coherence-pof-config.xml</include>
+	  <!--
       <include>coherence-common-pof-config.xml</include>
       <include>coherence-messagingpattern-pof-config.xml</include>
       <include>coherence-pushreplicationpattern-pof-config.xml</include>
-
+	-->
     <user-type>
       <type-id>123451</type-id>
       <class-name>com.ctb.tms.bean.login.RosterData</class-name>

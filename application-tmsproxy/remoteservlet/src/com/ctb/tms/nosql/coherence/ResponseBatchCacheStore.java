@@ -103,6 +103,9 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 	}
 
 	public void storeAll(java.util.Set<BinaryEntry> setBinEntries) throws RuntimeException {
+//		logger.warn("Entering ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries)");		
+		
+		
 		Connection conn = null;
 PreparedStatement storeResponseStatement = null;
 PreparedStatement deleteCRResponseStatement = null;
@@ -145,7 +148,7 @@ storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
 try{
 	storeResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore storeResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();             
     for (int i = 0; i < updateCounts.length; i++) {
@@ -170,7 +173,7 @@ try{
 try{
 	deleteCRResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore deleteCRResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();            
     for (int i = 0; i < updateCounts.length; i++) {
@@ -194,7 +197,7 @@ try{
 try {
 	storeCRResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore storeCRResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();             
     for (int i = 0; i < updateCounts.length; i++) {
@@ -260,6 +263,8 @@ try {
 	}
 	
 	public void storeAll(Map mapEntries) throws RuntimeException {
+//		logger.warn("Entering ResponseBatchCacheStore storeAll(Map mapEntries)");		
+		
 		Connection conn = null;
 PreparedStatement storeResponseStatement = null;
 PreparedStatement deleteCRResponseStatement = null;
@@ -301,7 +306,7 @@ storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
 try{
 	storeResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore storeResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();             
     for (int i = 0; i < updateCounts.length; i++) {
@@ -325,7 +330,7 @@ try{
 try{
 	deleteCRResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore deleteCRResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseCacheStore storeAll(Map mapEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();             
     for (int i = 0; i < updateCounts.length; i++) {
@@ -350,7 +355,7 @@ try{
 try {
 	storeCRResponseStatement.executeBatch();
 } catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore storeCRResponseStatement: Contents of BatchUpdateException:");
+    logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
     logger.warn(" Update counts: ");
     int [] updateCounts = buex.getUpdateCounts();             
     for (int i = 0; i < updateCounts.length; i++) {
