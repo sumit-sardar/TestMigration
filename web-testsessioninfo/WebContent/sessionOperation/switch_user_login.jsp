@@ -74,34 +74,34 @@
         <table class="simpleBlock" width="100%" cellpadding="5">
             <tr>
                 <td colspan="2">
-                <br/><h1>Select Administration</h1>
-                <p style="color: #476CB5;">Click any of the below links to navigate to the "EOI Administration" or "6-8 Administration" or "Manage Users with EOI Login".</p>
-                </td>
-                
+                	<br/><h1>Select Administration</h1>
+                	<p style="color: #476CB5;">Click any of the below links to navigate to the "EOI Administration" or "6-8 Administration" or "Manage Users with EOI Login".</p>
+                </td>                
             </tr>
+         </table>
+         <table style="margin-left:40px;">          
             <tr>
                 <td><h4>
-                <li style="list-style-type: square;">
-                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage by OK EOI online test administration</a>
-                </li>
+	                <li style="list-style-type: square;">
+	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage by OK EOI online test administration</a>
+	                </li>
                 </h4></td>
-                </tr>
-                <tr>
-                <td><h4>
-                <li style="list-style-type: square;">
-                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage by OK 6-8 online test administration</a>
-                </li>
-                </h4></td>
-                </tr>
-                <tr>
+            </tr>
+            <tr>
+	            <td><h4>
+	                <li style="list-style-type: square;">
+	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage by OK 6-8 online test administration</a>
+	                </li>
+	            </h4></td>
+            </tr>
+            <tr>
                 <td><h4>
                 <li style="list-style-type: square;">	
                 	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage Users</a>
                 </li>
-                </h4></td>
-                </tr>
-                </table>
-                		
+            	</h4></td>
+            </tr>
+         </table>       		
         <!--End content-->
     </td>
  

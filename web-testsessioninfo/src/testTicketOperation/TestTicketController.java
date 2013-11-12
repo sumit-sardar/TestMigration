@@ -61,7 +61,9 @@ public class TestTicketController extends PageFlowController
      */
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
-
+    
+    @Control()
+    private com.ctb.control.userManagement.UserManagement userManagement;
     /**
      * @common:control
      */
@@ -90,7 +92,13 @@ public class TestTicketController extends PageFlowController
 	private boolean isMultiIndividualTkt = false;
 	private String filename = "attachment; filename=TestTicketIndividual.pdf ";
 	//END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
-	
+	/* Changes for DEX Story - Add intermediate screen : Start */
+    private boolean isEOIUser = false;
+	private boolean isMappedWith3_8User = false;
+	private boolean is3to8Selected = false;
+	private boolean isEOISelected = false;
+	private boolean isUserLinkSelected = false;
+   /* Changes for DEX Story - Add intermediate screen : End */
 
 // Uncomment this declaration to access Global.app.
     // 
@@ -116,17 +124,42 @@ public class TestTicketController extends PageFlowController
     }
     
     private void init()
-    {
-        java.security.Principal principal = getRequest().getUserPrincipal();
-        this.userName = principal.toString();
-        
-        getSession().setAttribute("userName", this.userName);
-        
-        // START- Added for CR GA2011CR001
-        getCustomerConfigurations();  
-        isGeorgiaCustomer();
+    {	
+    	try {
+	    	if(getSession().getAttribute("isEOIUser") != null)
+				this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+			else
+				this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+	
+			if(getSession().getAttribute("isMappedWith3_8User") != null)
+				this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+			else
+				this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			
+	    	/* Changes for DEX Story - Add intermediate screen : Start */
+	    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+	    	if(this.isEOIUser && this.isMappedWith3_8User){
+	    		//if(getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString())){
+	    		if(this.is3to8Selected)    			
+						this.userName = this.userManagement.fetchMapped3to8User(getRequest().getUserPrincipal().toString());
+	    		else
+	    			this.userName = getRequest().getUserPrincipal().toString();//principle object will always contain EOI user
+	    		
+	    	}
+	    	else{
+		        java.security.Principal principal = getRequest().getUserPrincipal();
+		        this.userName = principal.toString();
+	    	}
+	        getSession().setAttribute("userName", this.userName);
+	        
+	        // START- Added for CR GA2011CR001
+	        getCustomerConfigurations();  
+	        isGeorgiaCustomer();
         // END- Added for CR GA2011CR001
-        
+    	}catch (CTBBusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
     }    
     

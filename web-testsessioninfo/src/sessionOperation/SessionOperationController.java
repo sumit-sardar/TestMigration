@@ -290,10 +290,11 @@ public class SessionOperationController extends PageFlowController {
 	protected Forward begin()
 	{
 		String forwardName = "currentUI";
+		clearSessionAttributes(); // reset OK SSO related session variables
 		//System.out.println("userName from session in test-session module >> "+getSession().getAttribute("userName"));
 		/* Changes for DEX Story - Add intermediate screen : Start */
-		getSession().setAttribute("isDexEOILogin", "true");// need to set this value from request parameter from Dex SSO : For logout story		
-		System.out.println("isDexEOILogin set in session [test-session module] >> "+getSession().getAttribute("isDexEOILogin"));
+		//getSession().setAttribute("isDexEOILogin", "true");// need to set this value from request parameter from Dex SSO : For logout story		
+		//System.out.println("isDexEOILogin set in session [test-session module] >> "+getSession().getAttribute("isDexEOILogin"));
 		try {
 			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
@@ -332,6 +333,15 @@ public class SessionOperationController extends PageFlowController {
     			
 		return new Forward(forwardName);
 	} 
+	
+	private void clearSessionAttributes(){
+		if(getSession().getAttribute("is3to8Selected") != null)
+			getSession().removeAttribute("is3to8Selected");
+		if(getSession().getAttribute("isEOISelected") != null)
+			getSession().removeAttribute("isEOISelected");
+		if(getSession().getAttribute("isUserLinkSelected") != null)
+			getSession().removeAttribute("isUserLinkSelected");
+	}
 	/* Changes for DEX Story - Add intermediate screen : Start */
 	@Jpf.Action(forwards = {
 			@Jpf.Forward(name = "success", path = "switch_user_login.jsp")
@@ -2976,10 +2986,14 @@ public class SessionOperationController extends PageFlowController {
 	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
 	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
 	        }*/
-			if(getSession().getAttribute("isEOIUser") == null)
+			if(getSession().getAttribute("isEOIUser") != null)
+				this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+			else
 				this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 
-			if(getSession().getAttribute("isMappedWith3_8User") == null)
+			if(getSession().getAttribute("isMappedWith3_8User") != null)
+				this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+			else
 				this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 				
 			if(this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
@@ -3740,12 +3754,16 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward reports() throws CTBBusinessException
     {	
-    	if(getSession().getAttribute("isEOIUser") == null)
+    	if(getSession().getAttribute("isEOIUser") != null)
+			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+		else
 			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 
-		if(getSession().getAttribute("isMappedWith3_8User") == null)
+		if(getSession().getAttribute("isMappedWith3_8User") != null)
+			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+		else
 			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
-			
+		
     	getLoggedInUserPrincipal();
 		
 		getUserDetails();
@@ -4343,12 +4361,16 @@ public class SessionOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		
-		if(getSession().getAttribute("isEOIUser") == null)
+		if(getSession().getAttribute("isEOIUser") != null)
+			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+		else
 			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 
-		if(getSession().getAttribute("isMappedWith3_8User") == null)
+		if(getSession().getAttribute("isMappedWith3_8User") != null)
+			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+		else
 			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
-			
+						
 		if (this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
 			getLoggedInUserPrincipal();
 			this.userName = (String)getSession().getAttribute("userName");
