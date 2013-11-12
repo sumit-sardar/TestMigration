@@ -51,21 +51,23 @@ public class PrismWebServiceDBUtility {
 	private static final String irsDtataSourceJndiName = "irsDataSource";
 	
 	private static final String GET_STUDENT_BIO = "select stu.student_id as id,       stu.user_name as loginId,       stu.first_name as firstName,       substr(stu.middle_name,1,1) as middleName,       stu.last_name as lastName,       concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,       stu.gender as gender,       to_char(stu.birthdate , 'MM/DD/YYYY') as birthDate,    to_char(stu.birthdate , 'MMDDYY') as birthDateMMDDYY,      stu.grade as grade,       stu.ext_pin1 as studentIdNumber,       stu.ext_pin2 as studentIdNumber2,       stu.test_purpose as testPurpose,       stu.created_by as createdBy,       NVL(stu.out_of_school, 'No') as outOfSchool  from student stu where stu.student_id = ?";
-	private static final String GET_CUST_ORG_HIGR = "SELECT DISTINCT node.org_node_id            AS orgnodeid,                node.customer_id            AS customerid,                node.org_node_category_id   AS orgnodecategoryid,                node.org_node_name          AS orgnodename,                node.ext_qed_pin            AS extqedpin,                node.ext_elm_id             AS extelmid,                node.ext_org_node_type      AS extorgnodetype,                node.org_node_description   AS orgnodedescription,                node.created_by             AS createdby,                node.created_date_time      AS createddatetime,                node.updated_by             AS updatedby,                node.updated_date_time      AS updateddatetime,                node.activation_status      AS activationstatus,                node.data_import_history_id AS dataimporthistoryid,                node.parent_state           AS parentstate,                node.parent_region          AS parentregion,                node.parent_county          AS parentcounty,                node.parent_district        AS parentdistrict,                node.org_node_code          AS orgnodecode,                ona.number_of_levels        AS numberoflevels,                cat.category_name           AS orgtype  FROM org_node          node,       org_node_category cat,       org_node_ancestor ona,       org_node_student  ons,       test_roster    tr WHERE ona.ancestor_org_node_id = node.org_node_id   AND ona.org_node_id = ons.org_node_id   AND ons.org_node_id = tr.Org_Node_Id   AND tr.student_id  = ?   AND tr.test_roster_id = ?   AND node.org_node_id NOT IN (1, 2)   AND cat.org_node_category_id = node.org_node_category_id ORDER BY ona.number_of_levels DESC";
+	private static final String GET_CUST_ORG_HIGR = "SELECT DISTINCT node.org_node_id            AS orgnodeid,                node.customer_id            AS customerid,                node.org_node_category_id   AS orgnodecategoryid,                node.org_node_name          AS orgnodename,                node.ext_qed_pin            AS extqedpin,                node.ext_elm_id             AS extelmid,                node.ext_org_node_type      AS extorgnodetype,                node.org_node_description   AS orgnodedescription,                node.created_by             AS createdby,                node.created_date_time      AS createddatetime,                node.updated_by             AS updatedby,                node.updated_date_time      AS updateddatetime,                node.activation_status      AS activationstatus,                node.data_import_history_id AS dataimporthistoryid,                node.parent_state           AS parentstate,                node.parent_region          AS parentregion,                node.parent_county          AS parentcounty,                node.parent_district        AS parentdistrict,                node.org_node_code          AS orgnodecode,                ona.number_of_levels        AS numberoflevels,                cat.category_name           AS orgtype  FROM org_node          node,       org_node_category cat,       org_node_ancestor ona,       org_node_student  ons,       test_roster    tr WHERE ona.ancestor_org_node_id = node.org_node_id   AND ona.org_node_id = ons.org_node_id   AND ons.org_node_id = tr.Org_Node_Id   AND tr.student_id  = ?   AND tr.test_roster_id = ?   AND node.org_node_id NOT IN (1, 2)   AND cat.org_node_category_id = node.org_node_category_id AND ons.activation_status = 'AC' ORDER BY ona.number_of_levels DESC";
 	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId    from test_roster t   where t.student_id = ?";
 	private static final String GET_STUDENT_DEMO = "select t.form_assignment as testForm    from test_roster t   where t.test_roster_id = ? ";
 	private static final String GET_SUBTEST_ACCOM = "SELECT custdemo.label_code AS \"subTestAccom\",       decode((SELECT COUNT(1)                FROM student_demographic_data stddemo               WHERE stddemo.student_id = ?                 AND stddemo.customer_demographic_id =                     custdemo.customer_demographic_id),              0,              'N',              'Y') AS \"subTestAccomVal\"  FROM customer_demographic custdemo WHERE custdemo.customer_id =       (SELECT s.customer_id FROM student s WHERE s.student_id = ?)       AND (upper(custdemo.demo_category) = ?  OR custdemo.demo_category IS NULL) ";
 	private static final String GET_ITEM_RESP_SR = "SELECT tab.itemtype   AS itemtype,       tab.response   AS response,       tab.itemid     AS itemid,       tab.itemorder  AS itemorder,       tab.correctans AS correctans  FROM (SELECT itm.item_type           AS itemtype,               res.response            AS response,               itm.item_id             AS itemid,               set_itm.item_sort_order AS itemorder,               itm.correct_answer      AS correctans          FROM item_response res, item_set_item set_itm, item itm         WHERE itm.item_id = set_itm.item_id           AND set_itm.item_set_id = res.item_set_id           AND set_itm.item_id = res.item_id           AND res.test_roster_id = ?           AND itm.item_type = ?           AND res.item_set_id IN               (SELECT DISTINCT t.item_set_id                  FROM item_set_parent t, item_response r                 WHERE t.parent_item_set_id = ?                   AND r.item_set_id = t.item_set_id                   AND r.test_roster_id = ?                 GROUP BY t.item_set_id)           AND res.item_response_id =               (SELECT MAX(r.item_response_id)                  FROM item_response r                 WHERE r.test_roster_id = ?                   AND r.item_set_id IN                       (SELECT DISTINCT t.item_set_id                          FROM item_set_parent t, item_response r                         WHERE t.parent_item_set_id = ?                           AND r.item_set_id = t.item_set_id                           AND r.test_roster_id = ?                         GROUP BY t.item_set_id)                   AND r.item_id = res.item_id)                UNION        SELECT itm.item_type AS itemtype,               '' AS response,               itm.item_id AS itemid,               t.item_sort_order AS itemorder,               itm.correct_answer AS correctans          FROM item_set_item t, item itm         WHERE t.item_set_id IN (SELECT DISTINCT t.item_set_id                                   FROM item_set_parent t, item_response r                                  WHERE t.parent_item_set_id = ?                                    AND r.item_set_id = t.item_set_id                                   AND r.test_roster_id = ?                                  GROUP BY t.item_set_id)           AND t.item_id = itm.item_id           AND itm.item_type = ?          AND NOT EXISTS (SELECT 1                  FROM item_response res                 WHERE res.test_roster_id = ?                   AND res.item_set_id =t.item_set_id                   AND res.item_id = t.item_id                   AND rownum = 1)) tab ORDER BY itemorder";
-	private static final String GET_ITEM_RESP_CR = "SELECT to_char(SUM(decode(length(TRIM(translate(p.final_score,                                                ' +-.0123456789',                                                ' '))),                          NULL,                          p.final_score,                          0)),               '09') AS \"crScore\",       p.item_id AS \"itemId\",       setitm.item_sort_order AS \"iremOrder\"  FROM item_datapoint_score p, item_set_item setitm WHERE p.item_reader_id = (SELECT MAX(item_reader_id)                             FROM item_datapoint_score c                            WHERE c.test_roster_id = ?                              AND c.item_id = p.item_id)   AND p.test_roster_id = ?   AND p.item_id = setitm.item_id   AND setitm.item_set_id IN       ((SELECT DISTINCT t.item_set_id           FROM item_set_parent t, item_response r          WHERE t.parent_item_set_id = ?            AND r.item_set_id = t.item_set_id            AND r.test_roster_id = ?          GROUP BY t.item_set_id))   AND p.student_id = ? GROUP BY p.item_id, setitm.item_sort_order ORDER BY setitm.item_sort_order";
-	private static final String GET_ITEM_RESP_GR = "SELECT tab.itemtype  AS itemtype,       tab.response  AS response,       tab.itemid    AS itemid,       tab.itemorder AS itemorder  FROM (                SELECT 'GR' AS itemtype,                utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                 length(crres.constructed_response),                                                 1)) AS response,                critm.item_id AS itemid,                cr_set_itm.item_sort_order AS itemorder          FROM item_response_cr crres, item_set_item cr_set_itm, item critm         WHERE critm.item_id = cr_set_itm.item_id           AND cr_set_itm.item_set_id = crres.item_set_id           AND cr_set_itm.item_id = crres.item_id           AND crres.test_roster_id = ?           AND crres.item_set_id IN               (SELECT DISTINCT t.item_set_id                  FROM item_set_parent t, item_response r                 WHERE t.parent_item_set_id = ?                   AND r.item_set_id = t.item_set_id                   AND r.test_roster_id = ?                 GROUP BY t.item_set_id)           AND crres.test_roster_id =               (SELECT MAX(r.test_roster_id)                  FROM item_response_cr r                 WHERE r.test_roster_id = ?                   AND r.item_set_id IN                       (SELECT DISTINCT t.item_set_id                          FROM item_set_parent t, item_response r                         WHERE t.parent_item_set_id = ?                           AND r.item_set_id = t.item_set_id                           AND r.test_roster_id = ?                         GROUP BY t.item_set_id)                   AND r.item_id = crres.item_id)           AND critm.answer_area = ?        UNION        SELECT 'GR' AS itemtype,               '                ' AS response,               itm.item_id AS itemid,               t.item_sort_order AS itemorder          FROM item_set_item t, item itm         WHERE t.item_set_id IN (SELECT DISTINCT t.item_set_id                                   FROM item_set_parent t, item_response r                                 WHERE t.parent_item_set_id = ?                                    AND r.item_set_id = t.item_set_id                                    ANDr.test_roster_id = ?                                  GROUP BY t.item_set_id)           AND t.item_id = itm.item_id           AND itm.answer_area =?          AND NOT EXISTS (SELECT 1                  FROM item_response_cr res                 WHERE res.test_roster_id = ?                   AND res.item_set_id=t.item_set_id                   AND res.item_id = t.item_id                   AND rownum = 1)) tab ORDER BY itemorder";
-	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       ''                        AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       ''                        AS hse_scale_score_range  FROM tabe_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND SUBSTR(t.content_areaid, 5) = ?";
+	private static final String GET_ITEM_RESP_CR = "SELECT to_char(SUM(decode(length(TRIM(translate(p.final_score,                                                ' +-.0123456789',                                                ' '))),                          NULL,                          p.final_score,                          0)),               '09') AS \"crScore\",       p.item_id AS \"itemId\",       setitm.item_sort_order AS \"iremOrder\"  FROM item_datapoint_score p, item_set_item setitm WHERE p.item_reader_id = (SELECT MAX(item_reader_id)                             FROM item_datapoint_score c                            WHERE c.test_roster_id = ?                              AND c.item_id = p.item_id)   AND p.test_roster_id = ?   AND p.item_id = setitm.item_id   AND setitm.item_set_id IN       ((SELECT DISTINCT t.item_set_id           FROM item_set_parent t, item_response_cr  r          WHERE t.parent_item_set_id = ?            AND r.item_set_id = t.item_set_id            AND r.test_roster_id = ?          GROUP BY t.item_set_id))   AND p.student_id = ? GROUP BY p.item_id, setitm.item_sort_order ORDER BY setitm.item_sort_order";
+	private static final String GET_ITEM_RESP_GR = "SELECT tab.itemtype  AS itemtype,       tab.response  AS response,       tab.itemid    AS itemid,       tab.itemorder AS itemorder  FROM (                SELECT 'GR' AS itemtype,                utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                 length(crres.constructed_response),                                                 1)) AS response,                critm.item_id AS itemid,                cr_set_itm.item_sort_order AS itemorder          FROM item_response_cr crres, item_set_item cr_set_itm, item critm         WHERE critm.item_id = cr_set_itm.item_id           AND cr_set_itm.item_set_id = crres.item_set_id           AND cr_set_itm.item_id = crres.item_id           AND crres.test_roster_id = ?           AND crres.item_set_id IN               (SELECT DISTINCT t.item_set_id                  FROM item_set_parent t, item_response_cr r                 WHERE t.parent_item_set_id = ?                   AND r.item_set_id = t.item_set_id                   AND r.test_roster_id = ?                 GROUP BY t.item_set_id)           AND crres.test_roster_id =               (SELECT MAX(r.test_roster_id)                  FROM item_response_cr r                 WHERE r.test_roster_id = ?                   AND r.item_set_id IN                       (SELECT DISTINCT t.item_set_id                          FROM item_set_parent t, item_response_cr r                         WHERE t.parent_item_set_id = ?                           AND r.item_set_id = t.item_set_id                           AND r.test_roster_id = ?                         GROUP BY t.item_set_id)                   AND r.item_id = crres.item_id)           AND critm.answer_area = ?        UNION        SELECT 'GR' AS itemtype,               '                ' AS response,               itm.item_id AS itemid,               t.item_sort_order AS itemorder          FROM item_set_item t, item itm         WHERE t.item_set_id IN (SELECT DISTINCT t.item_set_id                                   FROM item_set_parent t, item_response_cr r                                 WHERE t.parent_item_set_id = ?                                    AND r.item_set_id = t.item_set_id                                    ANDr.test_roster_id = ?                                  GROUP BY t.item_set_id)           AND t.item_id = itm.item_id           AND itm.answer_area =?          AND NOT EXISTS (SELECT 1                  FROM item_response_cr res                 WHERE res.test_roster_id = ?                   AND res.item_set_id=t.item_set_id                   AND res.item_id = t.item_id                   AND rownum = 1)) tab ORDER BY itemorder";
+	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       ''                        AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       ''                        AS hse_scale_score_range, t.scoring_status AS scoring_status  FROM tabe_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND SUBSTR(t.content_areaid, 5) = ?";
 	private static final String GET_CONTENT_DETAILS = "SELECT DISTINCT ipp.item_set_name AS \"content_code_name\",                ipp.item_set_id AS \"item_set_id\"  FROM student_item_set_status t,       item_set                s,       item_set_parent         ip,       item_set                ipp WHERE t.test_roster_id = ?   AND s.item_set_id = t.item_set_id   AND ip.item_set_id = s.item_set_id   AND ipp.item_set_id = ip.parent_item_set_id   AND s.SAMPLE = 'F'";
 	private static final String GET_COMPOSITE_CONTENT_DETAILS = "SELECT t.points_obtained AS \"ncScoreVal\",       t.points_possible AS \"npScoreVal\",       t.scale_score AS \"ssScoreVal\",       '' AS \"hseScoreVal\",       t.national_percentile AS \"prScoreVal\",       t.normal_curve_equivalent AS \"nceScoreVal\",       '' AS \"ssrScoreVal\",       com.name AS \"compName\" ,     t.test_completion_timestamp AS \"dtTstTaken\"  FROM tabe_composite_fact t, composite_dim com WHERE t.studentid = ?   AND t.sessionid = ?   AND com.compositeid = t.compositeid";
 	private static final String GET_TEST_TAKEN_DATE = "SELECT to_char(MAX(r.created_date_time),'MMDDYY') AS \"test_taken_dt\"  FROM item_response r WHERE r.item_set_id IN (SELECT DISTINCT t.item_set_id                           FROM item_set_parent t, item_response r                          WHERE t.parent_item_set_id = ?                            AND r.item_set_id = t.item_set_id                            AND r.test_roster_id = ?                          GROUP BY t.item_set_id)   AND r.test_roster_id = ?";
-	private static final String GET_OBJECTIVE_LIST = "SELECT 'P' AS lvl, prim.item_set_id AS itemsetid, prim.item_set_name AS objname  FROM item_set prim,       item_set_item pisi,       item_set_ancestor pisip,       item_set_category pisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t, item_response r                            WHERE t.parent_item_set_id = ?                              AND r.item_set_id = t.item_set_id                              AND r.test_roster_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = pisi.item_id   AND pisip.item_set_id = pisi.item_set_id   AND pisip.ancestor_item_set_id = prim.item_set_id   AND prim.item_set_category_id = pisc.item_set_category_id   AND pisc.item_set_category_level = prod.scoring_item_set_level   AND prod.product_id IN       (SELECT adm.product_id AS prodid          FROM test_admin adm         WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = pisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') UNION SELECT 'S' AS lvl , sec.item_set_id AS itemsetid, sec.item_set_name AS objname  FROM item_set sec,       item_set_item sisi,       item_set_ancestor sisip,       item_set_category sisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t, item_response r                            WHERE t.parent_item_set_id = ?                              AND r.item_set_id = t.item_set_id                              AND r.test_roster_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = sisi.item_id   AND sisip.item_set_id = sisi.item_set_id   AND sisip.ancestor_item_set_id = sec.item_set_id   AND sec.item_set_category_id = sisc.item_set_category_id   AND sisc.item_set_category_level = prod.sec_scoring_item_set_level   AND prod.product_id IN       (SELECT adm.product_id AS prodid          FROM test_admin adm         WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = sisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND(sub.item_set_level != 'L' OR prod.product_type = 'TL')";
+	private static final String GET_SUBTEST_STATUS = "SELECT t.validation_status AS status  FROM student_item_set_status t WHERE t.test_roster_id = ?   AND t.item_set_id IN (SELECT DISTINCT it.item_set_id                           FROM item_set_parent it                          WHERE it.parent_item_set_id = ?                          GROUP BY it.item_set_id)";
+	private static final String GET_OBJECTIVE_LIST = "SELECT 'P' AS lvl,       prim.item_set_id AS itemsetid,       prim.item_set_name AS objname  FROM item_set prim,       item_set_item pisi,       item_set_ancestor pisip,       item_set_category pisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = pisi.item_id   AND pisip.item_set_id = pisi.item_set_id   AND pisip.ancestor_item_set_id = prim.item_set_id   AND prim.item_set_category_id = pisc.item_set_category_id   AND pisc.item_set_category_level = prod.scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                            WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = pisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') UNION SELECT 'S' AS lvl,       sec.item_set_id AS itemsetid,       sec.item_set_name AS objname  FROM item_set sec,       item_set_item sisi,       item_set_ancestor sisip,       item_set_category sisc,       item_set sub,       item_set_item isi,       product prod,       item WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = sisi.item_id   AND sisip.item_set_id = sisi.item_set_id   AND sisip.ancestor_item_set_id = sec.item_set_id   AND sec.item_set_category_id = sisc.item_set_category_id   AND sisc.item_set_category_level = prod.sec_scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                           WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = sisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   ANDitem.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL')";
 	private static final String GET_PRIM_OBJ_SCORE = "SELECT t.percent_obtained AS numcorrect,       t.points_possible AS numpossible,       '' AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       '' AS itmattempflag  FROM tabe_prim_obj_fact t WHERE substr(t.prim_objid, 5)  = ? AND t.studentid = ? AND t.sessionid = ?";
 	private static final String GET_SEC_OBJ_SCORE = "SELECT t.percent_obtained AS numcorrect,       t.points_possible AS numpossible,       '' AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       '' AS itmattempflag  FROM tabe_sec_obj_fact t WHERE substr(t.sec_objid, 5) = ?   AND t.studentid = ?   AND t.sessionid = ?";
 	private static final String GET_SURVEY_BIO_RES = "SELECT tab. \"response\" AS \"response\",       tab. \"quesId\" AS \"quesId\",       tab. \"quesOrder\" AS \"quesOrder\",       tab. \"quesCode\" AS \"quesCode\",       tab. \"quesType\" AS \"quesType\"  FROM (SELECT to_clob(serop.question_option_prism) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'SR' AS \"quesType\"          FROM item_response res, student_survey_question serq, item itm, STUDENT_SURVEY_QUESTION_OPTION serop         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND res.item_id = serq.question_id           AND res.test_roster_id = ?           AND res.item_response_id =               (SELECT MAX(t.item_response_id)                  FROM item_response t                 WHERE t.test_roster_id = ?                   AND t.item_id = res.item_id)           AND itm.item_id = res.item_id           AND serop.question_option_oas = res.response           AND serop.question_id = res.item_id           AND serop.question_order = serq.question_order           AND itm.item_type = 'SR'         UNION ALL         SELECT crres.constructed_response AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'GR' AS \"quesType\"          FROM item_response_cr        crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id          AND itm.item_type = 'GR'         UNION ALL         SELECT crres.constructed_response AS \"response\",               serq.question_id AS \"quesId\",              serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'CR' AS \"quesType\"          FROM item_response_cr       crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECTtstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   ANDtstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           ANDcrres.test_roster_id = ?           AND itm.item_id = crres.item_id           AND itm.item_type = 'CR') tab ORDER BY tab. \"quesOrder\"";
+	private static final String CHECK_CR_SCORE_PRESENT = "SELECT count(1) AS count_row FROM item_datapoint_score t WHERE t.test_roster_id = ? AND ROWNUM = 1";
 	
 	/**
 	 * Get Student Bio Information
@@ -73,7 +75,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static StudentBioTO getStudentBio(java.lang.Integer studentId) throws CTBBusinessException{
+	public static StudentBioTO getStudentBio(java.lang.Integer studentId){
 		//StudentManagement studentManagement = new StudentManagementImpl();
 		//return studentManagement.getManageStudent(userName, studentId);
 		
@@ -104,7 +106,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static CustHierarchyDetailsTO  getCustomerHigherarchy(Integer studentId, long rosterID) throws CTBBusinessException{
+	public static CustHierarchyDetailsTO  getCustomerHigherarchy(Integer studentId, long rosterID){
 		//StudentManagement studentManagement = new StudentManagementImpl();
 		//return studentManagement.getAncestorOrganizationNodesForOrgNode(orgNodeId);
 		CustHierarchyDetailsTO custHierarchyDetailsTO = new CustHierarchyDetailsTO();
@@ -136,7 +138,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static List<Long> getRosterListForStudent(Integer studentId) throws CTBBusinessException{
+	public static List<Long> getRosterListForStudent(Integer studentId) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -165,7 +167,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static StudentDemoTO getStudentDemo(long rosterId) throws CTBBusinessException{
+	public static StudentDemoTO getStudentDemo(long rosterId) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -186,8 +188,6 @@ public class PrismWebServiceDBUtility {
 				demoTO.setDemovalue(rs.getString("testForm"));
 				demoTO.setDemoName("Tst_Platform");
 				demoTO.setDemovalue("0");
-				demoTO.setDemoName("Test_Name");
-				demoTO.setDemovalue(PrismWebServiceConstant.StudentDemoTestName);
 				demoList.add(demoTO);
 			}
 			studentDemoTO.setDataChanged(true);
@@ -205,7 +205,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static SubtestAccommodationsTO getSubTestAccommodation(Integer studentId, String contentCodeName) throws CTBBusinessException{
+	public static SubtestAccommodationsTO getSubTestAccommodation(Integer studentId, String contentCodeName) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -243,7 +243,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static ItemResponsesDetailsTO getItemResponsesDetail(long rosterID, long itemSetId, Integer studentId) throws CTBBusinessException{
+	public static ItemResponsesDetailsTO getItemResponsesDetail(long rosterID, long itemSetId, Integer studentId) {
 		Connection con = null;
 		PreparedStatement pstSR = null;
 		ResultSet rsSR = null;
@@ -345,7 +345,7 @@ public class PrismWebServiceDBUtility {
 				grItmPresent = true;
 				grScoreVal.append(rsGR.getString("response"));
 			}
-			grItemResponseTO.setScoreValue(grScoreVal.toString());
+			grItemResponseTO.setEditedResponse(formatResponse(grScoreVal.toString()));
 			if(grItmPresent){
 				itemResponseTOLst.add(grItemResponseTO);
 			}
@@ -360,19 +360,36 @@ public class PrismWebServiceDBUtility {
 		return itemResponsesDetailsTO;
 	}
 	
-	
+	/**
+	 * Format the response
+	 * @param res
+	 * @return
+	 */
+	private static String formatResponse(String res) {
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0 ; i < 16 - res.length() ; i++){
+			sb.append(" ");
+		}
+		sb.append(res);
+		return sb.toString();
+	}
+
 	/**
 	 * Get the Content Score Details
 	 * @param studentId
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static ContentScoreDetailsTO getContentScoreDetails(Integer studentId, long sessionId, long itemSetId) throws CTBBusinessException{
+	public static Object[] getContentScoreDetails(Integer studentId, long sessionId, long itemSetId) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
 		ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 		List<ContentScoreTO> contentScoreTOLst = contentScoreDetailsTO.getCollContentScoreTO(); 
+		
+		String scoringStatus = "";
+		
+		Object[] retObj = new Object[2];
 		
 		try {
 			con = openIRSDBcon(false);
@@ -419,13 +436,18 @@ public class PrismWebServiceDBUtility {
 				SSRcontentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
 				SSRcontentScoreTO.setScoreValue(rs.getString("hse_scale_score_range"));
 				contentScoreTOLst.add(SSRcontentScoreTO);
+				
+				scoringStatus = rs.getString("scoring_status");
 			}
+			
+			retObj[0] = contentScoreDetailsTO;
+			retObj[1] = scoringStatus;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
 		}
-		return contentScoreDetailsTO;
+		return retObj;
 	}
 	
 	
@@ -436,12 +458,10 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws CTBBusinessException
 	 */
-	public static List<ContentDetailsTO> getContentDetailsTO(long rosterId,  Integer studentId, long sessionId) throws CTBBusinessException{
+	public static List<ContentDetailsTO> getContentDetailsTO(long rosterId,  Integer studentId, long sessionId) {
 		Connection con = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
-		PreparedStatement testTakenPst = null;
-		ResultSet testTakenRS = null;
 		
 		List<ContentDetailsTO> contentDetailsTOList = new ArrayList<ContentDetailsTO>(); 
 		
@@ -459,17 +479,21 @@ public class PrismWebServiceDBUtility {
 				if(contentCode != null){
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
 					
-					testTakenPst = con.prepareStatement(GET_TEST_TAKEN_DATE);
-					testTakenPst.setLong(1, rs.getLong("item_set_id"));
-					testTakenPst.setLong(2, rosterId);
-					testTakenPst.setLong(3, rosterId);
-					testTakenRS = testTakenPst.executeQuery();
-					System.out.println("PrismWebServiceDBUtility.getContentDetailsTO : Query for getContentDetailsTO : " + GET_TEST_TAKEN_DATE);
-					
-					while(testTakenRS.next()){
-						contentDetailsTO.setDateTestTaken(testTakenRS.getString("test_taken_dt"));
-					}
 					contentDetailsTO.setDataChanged(true);
+					
+					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
+					if(contentCode == 2){
+						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
+						if(!isCRScorePresent){
+							contentDetailsTO.setStatusCode(PrismWebServiceConstant.OmitedContentStatusCode);
+							contentDetailsTOList.add(contentDetailsTO);
+							continue;
+						}
+					}
+					
+					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, rs.getLong("item_set_id")));
+					
+					contentDetailsTO.setStatusCode(getContentStatusCode(rosterId, rs.getLong("item_set_id")));
 					
 					if(PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName) != null){
 						SubtestAccommodationsTO subtestAccommodationsTO =  PrismWebServiceDBUtility.getSubTestAccommodation(studentId, contentCodeName);
@@ -478,13 +502,20 @@ public class PrismWebServiceDBUtility {
 					ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId);
 					contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 					
-					ContentScoreDetailsTO contentScoreDetailsTO = getContentScoreDetails(studentId, sessionId, rs.getLong("item_set_id"));
+					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, rs.getLong("item_set_id"));
+					
+					ContentScoreDetailsTO contentScoreDetailsTO = (ContentScoreDetailsTO) contentScoreDetailsObjs[0];
 					contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
+					
+					String scoringStatus = (String) contentScoreDetailsObjs[1];
+					
+					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
+						contentDetailsTO.setStatusCode(scoringStatus);
+					}
 					
 					List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = getObjectiveScoreDetails(rs.getLong("item_set_id"), rosterId, sessionId, studentId);
 					contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 					
-					//TODO - Set the value status code to contentDetailsTO
 					contentDetailsTOList.add(contentDetailsTO);
 				}
 			}
@@ -497,13 +528,102 @@ public class PrismWebServiceDBUtility {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			close(testTakenPst);
-			close(testTakenRS);
 			close(con, pst, rs);
 		}
 		return contentDetailsTOList;
 	}
 	
+	/**
+	 * Check The CR scoring availability
+	 * @param rosterId
+	 * @return
+	 */
+	private static boolean checkCRScoreAvailablility(long rosterId) {
+		
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		boolean checkCRScorePresent = false;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(CHECK_CR_SCORE_PRESENT);
+			pst.setLong(1, rosterId);
+			rs = pst.executeQuery();
+			System.out.println("PrismWebServiceDBUtility.checkCRScoreAvailablility : Query for checkCRScoreAvailablility : " + CHECK_CR_SCORE_PRESENT);
+			if(rs.next() && rs.getInt("count_row") >= 1){
+				checkCRScorePresent	= true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return checkCRScorePresent;
+	}
+
+	/**
+	 * Get Content Test Taken Date
+	 * @param rosterId
+	 * @param itemSetId
+	 * @return
+	 */
+	public static String getContentTestTakenDt(long rosterId, long itemSetId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		String testTakenDt = "";
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_TEST_TAKEN_DATE);
+			pst.setLong(1, itemSetId);
+			pst.setLong(2, rosterId);
+			pst.setLong(3, rosterId);
+			rs = pst.executeQuery();
+			System.out.println("PrismWebServiceDBUtility.getContentTestTakenDt : Query for getContentTestTakenDt : " + GET_TEST_TAKEN_DATE);
+			while(rs.next()){
+				testTakenDt = rs.getString("test_taken_dt");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return testTakenDt;
+	}
+	
+	/**
+	 * Get the content status code
+	 * @param rosterId
+	 * @param itemSetId
+	 * @return
+	 */
+	private static String getContentStatusCode(long rosterId, long itemSetId) {
+		PreparedStatement subTestStatusPst = null;
+		ResultSet subTestStatusRS = null;
+		Connection con = null;
+		try {
+			con = openOASDBcon(false);
+			subTestStatusPst = con.prepareStatement(GET_SUBTEST_STATUS);
+			subTestStatusPst.setLong(1, rosterId);
+			subTestStatusPst.setLong(2, itemSetId);
+			System.out.println("PrismWebServiceDBUtility.getContentStatusCode : Query for getContentStatusCode : " + GET_SUBTEST_STATUS);
+			subTestStatusRS = subTestStatusPst.executeQuery();
+
+			while (subTestStatusRS.next()) {
+				if (subTestStatusRS.getString("status") != null && PrismWebServiceConstant.InvalidContentStatus.equalsIgnoreCase(subTestStatusRS.getString("status"))) {
+					return PrismWebServiceConstant.InvalidContentStatusCode;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			close(con, subTestStatusPst,  subTestStatusRS);
+		}
+		return "";
+	}
+	
+	
+
 	/**
 	 * Get the composite content score details
 	 * @param studentId
@@ -619,11 +739,9 @@ public class PrismWebServiceDBUtility {
 			con = openOASDBcon(false);
 			pst = con.prepareStatement(GET_OBJECTIVE_LIST);
 			pst.setLong(1, itemSetId);
-			pst.setLong(2, rosterId);
-			pst.setLong(3, sessionId);
-			pst.setLong(4, itemSetId);
-			pst.setLong(5, rosterId);
-			pst.setLong(6, sessionId);
+			pst.setLong(2, sessionId);
+			pst.setLong(3, itemSetId);
+			pst.setLong(4, sessionId);
 			rs = pst.executeQuery();
 			System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_OBJECTIVE_LIST);
 			irsCon = openIRSDBcon(false);
@@ -907,7 +1025,7 @@ public class PrismWebServiceDBUtility {
 		custHierarchyDetailsTO.setDataChanged(true);		
 		custHierarchyDetailsTO.setMaxHierarchy(String.valueOf(maxHighrCount));
 		custHierarchyDetailsTO.setCustomerId(String.valueOf(customerID));
-		
+		custHierarchyDetailsTO.setTestName(PrismWebServiceConstant.CustHierarchyDetailsTestName);
 	}
 
 	/**

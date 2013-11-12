@@ -35,99 +35,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CustHierarchyDetailsTO }
-     * 
-     */
-    public CustHierarchyDetailsTO createCustHierarchyDetailsTO() {
-        return new CustHierarchyDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link StudentSurveyBioTO }
-     * 
-     */
-    public StudentSurveyBioTO createStudentSurveyBioTO() {
-        return new StudentSurveyBioTO();
-    }
-
-    /**
      * Create an instance of {@link SubtestAccommodationsTO }
      * 
      */
     public SubtestAccommodationsTO createSubtestAccommodationsTO() {
         return new SubtestAccommodationsTO();
-    }
-
-    /**
-     * Create an instance of {@link ContentScoreDetailsTO }
-     * 
-     */
-    public ContentScoreDetailsTO createContentScoreDetailsTO() {
-        return new ContentScoreDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link ItemResponseTO }
-     * 
-     */
-    public ItemResponseTO createItemResponseTO() {
-        return new ItemResponseTO();
-    }
-
-    /**
-     * Create an instance of {@link LoadStudentDataResponse }
-     * 
-     */
-    public LoadStudentDataResponse createLoadStudentDataResponse() {
-        return new LoadStudentDataResponse();
-    }
-
-    /**
-     * Create an instance of {@link ContentScoreTO }
-     * 
-     */
-    public ContentScoreTO createContentScoreTO() {
-        return new ContentScoreTO();
-    }
-
-    /**
-     * Create an instance of {@link SubtestAccommodationTO }
-     * 
-     */
-    public SubtestAccommodationTO createSubtestAccommodationTO() {
-        return new SubtestAccommodationTO();
-    }
-
-    /**
-     * Create an instance of {@link DemoTO }
-     * 
-     */
-    public DemoTO createDemoTO() {
-        return new DemoTO();
-    }
-
-    /**
-     * Create an instance of {@link ItemResponsesDetailsTO }
-     * 
-     */
-    public ItemResponsesDetailsTO createItemResponsesDetailsTO() {
-        return new ItemResponsesDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link ObjectiveScoreDetailsTO }
-     * 
-     */
-    public ObjectiveScoreDetailsTO createObjectiveScoreDetailsTO() {
-        return new ObjectiveScoreDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link StudentBioTO }
-     * 
-     */
-    public StudentBioTO createStudentBioTO() {
-        return new StudentBioTO();
     }
 
     /**
@@ -139,51 +51,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StudentListTO }
+     * Create an instance of {@link DemoTO }
      * 
      */
-    public StudentListTO createStudentListTO() {
-        return new StudentListTO();
+    public DemoTO createDemoTO() {
+        return new DemoTO();
     }
 
     /**
-     * Create an instance of {@link StudentDetailsTO }
+     * Create an instance of {@link ContentDetailsTO }
      * 
      */
-    public StudentDetailsTO createStudentDetailsTO() {
-        return new StudentDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link LoadStudentData }
-     * 
-     */
-    public LoadStudentData createLoadStudentData() {
-        return new LoadStudentData();
-    }
-
-    /**
-     * Create an instance of {@link RosterDetailsTO }
-     * 
-     */
-    public RosterDetailsTO createRosterDetailsTO() {
-        return new RosterDetailsTO();
-    }
-
-    /**
-     * Create an instance of {@link ObjectiveScoreTO }
-     * 
-     */
-    public ObjectiveScoreTO createObjectiveScoreTO() {
-        return new ObjectiveScoreTO();
-    }
-
-    /**
-     * Create an instance of {@link StudentDemoTO }
-     * 
-     */
-    public StudentDemoTO createStudentDemoTO() {
-        return new StudentDemoTO();
+    public ContentDetailsTO createContentDetailsTO() {
+        return new ContentDetailsTO();
     }
 
     /**
@@ -195,11 +75,139 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ContentDetailsTO }
+     * Create an instance of {@link SubtestAccommodationTO }
      * 
      */
-    public ContentDetailsTO createContentDetailsTO() {
-        return new ContentDetailsTO();
+    public SubtestAccommodationTO createSubtestAccommodationTO() {
+        return new SubtestAccommodationTO();
+    }
+
+    /**
+     * Create an instance of {@link RosterDetailsTO }
+     * 
+     */
+    public RosterDetailsTO createRosterDetailsTO() {
+        return new RosterDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link ItemResponseTO }
+     * 
+     */
+    public ItemResponseTO createItemResponseTO() {
+        return new ItemResponseTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentDetailsTO }
+     * 
+     */
+    public StudentDetailsTO createStudentDetailsTO() {
+        return new StudentDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link CustHierarchyDetailsTO }
+     * 
+     */
+    public CustHierarchyDetailsTO createCustHierarchyDetailsTO() {
+        return new CustHierarchyDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentBioTO }
+     * 
+     */
+    public StudentBioTO createStudentBioTO() {
+        return new StudentBioTO();
+    }
+
+    /**
+     * Create an instance of {@link ItemResponsesDetailsTO }
+     * 
+     */
+    public ItemResponsesDetailsTO createItemResponsesDetailsTO() {
+        return new ItemResponsesDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentDemoTO }
+     * 
+     */
+    public StudentDemoTO createStudentDemoTO() {
+        return new StudentDemoTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentSurveyBioTO }
+     * 
+     */
+    public StudentSurveyBioTO createStudentSurveyBioTO() {
+        return new StudentSurveyBioTO();
+    }
+
+    /**
+     * Create an instance of {@link ObjectiveScoreDetailsTO }
+     * 
+     */
+    public ObjectiveScoreDetailsTO createObjectiveScoreDetailsTO() {
+        return new ObjectiveScoreDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link ObjectiveScoreTO }
+     * 
+     */
+    public ObjectiveScoreTO createObjectiveScoreTO() {
+        return new ObjectiveScoreTO();
+    }
+
+    /**
+     * Create an instance of {@link LoadStudentData }
+     * 
+     */
+    public LoadStudentData createLoadStudentData() {
+        return new LoadStudentData();
+    }
+
+    /**
+     * Create an instance of {@link LoadStudentDataResponse }
+     * 
+     */
+    public LoadStudentDataResponse createLoadStudentDataResponse() {
+        return new LoadStudentDataResponse();
+    }
+
+    /**
+     * Create an instance of {@link ContentScoreDetailsTO }
+     * 
+     */
+    public ContentScoreDetailsTO createContentScoreDetailsTO() {
+        return new ContentScoreDetailsTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentListTO }
+     * 
+     */
+    public StudentListTO createStudentListTO() {
+        return new StudentListTO();
+    }
+
+    /**
+     * Create an instance of {@link StudentDataLoadTO }
+     * 
+     */
+    public StudentDataLoadTO createStudentDataLoadTO() {
+        return new StudentDataLoadTO();
+    }
+
+    /**
+     * Create an instance of {@link ContentScoreTO }
+     * 
+     */
+    public ContentScoreTO createContentScoreTO() {
+        return new ContentScoreTO();
     }
 
     /**

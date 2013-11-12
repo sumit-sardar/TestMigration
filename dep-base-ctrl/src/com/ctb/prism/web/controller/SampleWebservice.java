@@ -27,13 +27,13 @@ public interface SampleWebservice {
      * 
      * @param studentListTO
      * @return
-     *     returns java.lang.String
+     *     returns com.ctb.prism.web.controller.StudentDataLoadTO
      */
     @WebMethod
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "loadStudentData", targetNamespace = "http://controller.web.prism.ctb.com/", className = "com.ctb.prism.web.controller.LoadStudentData")
     @ResponseWrapper(localName = "loadStudentDataResponse", targetNamespace = "http://controller.web.prism.ctb.com/", className = "com.ctb.prism.web.controller.LoadStudentDataResponse")
-    public String loadStudentData(
+    public StudentDataLoadTO loadStudentData(
         @WebParam(name = "StudentListTO", targetNamespace = "")
         StudentListTO studentListTO);
 

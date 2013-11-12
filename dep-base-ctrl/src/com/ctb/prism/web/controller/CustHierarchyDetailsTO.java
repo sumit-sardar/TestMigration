@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="customerId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dataChanged" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="maxHierarchy" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="testName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,7 +37,8 @@ import javax.xml.bind.annotation.XmlType;
     "collOrgDetailsTO",
     "customerId",
     "dataChanged",
-    "maxHierarchy"
+    "maxHierarchy",
+    "testName"
 })
 public class CustHierarchyDetailsTO {
 
@@ -45,6 +47,7 @@ public class CustHierarchyDetailsTO {
     protected String customerId;
     protected boolean dataChanged;
     protected String maxHierarchy;
+    protected String testName;
 
     /**
      * Gets the value of the collOrgDetailsTO property.
@@ -137,6 +140,30 @@ public class CustHierarchyDetailsTO {
      */
     public void setMaxHierarchy(String value) {
         this.maxHierarchy = value;
+    }
+
+    /**
+     * Gets the value of the testName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getTestName() {
+        return testName;
+    }
+
+    /**
+     * Sets the value of the testName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setTestName(String value) {
+        this.testName = value;
     }
 
 }

@@ -10,6 +10,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
+import weblogic.utils.StringUtils;
+
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
 import com.ctb.prism.web.controller.ContentDetailsTO;
 import com.ctb.prism.web.controller.ContentScoreDetailsTO;
@@ -24,6 +26,7 @@ import com.ctb.prism.web.controller.OrgDetailsTO;
 import com.ctb.prism.web.controller.RosterDetailsTO;
 import com.ctb.prism.web.controller.SampleWebservice;
 import com.ctb.prism.web.controller.StudentBioTO;
+import com.ctb.prism.web.controller.StudentDataLoadTO;
 import com.ctb.prism.web.controller.StudentDemoTO;
 import com.ctb.prism.web.controller.StudentDetailsTO;
 import com.ctb.prism.web.controller.StudentListTO;
@@ -86,8 +89,13 @@ public class PrismWebServiceHandler {
 			System.out.println(xstream.toXML(studentListTO));*/
 			getService();
 			if(service != null){
-				service.loadStudentData(studentListTO);
-				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+				/*if(responseTO.getStatusCode() == 1){ //Success
+					OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+				}else{ //Failure
+					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
+					throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
+				}*/
 			}else{
 				OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 				throw new Exception("Prism Web Service is null.");
@@ -99,7 +107,12 @@ public class PrismWebServiceHandler {
 				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
 				try{
 					getService();
-					service.loadStudentData(studentListTO);
+					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+					if(responseTO.getStatusCode() == 1){ //Success
+						OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+					}else{ //Failure
+						OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
+					}
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}

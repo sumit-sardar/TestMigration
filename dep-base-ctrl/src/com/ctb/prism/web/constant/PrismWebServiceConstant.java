@@ -48,7 +48,7 @@ public class PrismWebServiceConstant {
 	public static final String MAObjectiveScoreDetails = "MA";
 	public static final String MRObjectiveScoreDetails = "MR";
 	
-	public static final String StudentDemoTestName = "TASC";
+	public static final String CustHierarchyDetailsTestName = "TASC";
 	
 	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
 	
@@ -56,7 +56,15 @@ public class PrismWebServiceConstant {
 	
 	public static ResourceBundle resourceBundler = null;
 	
-	public static String NACompositeStatusCode ="NA";
+	public static final String NACompositeStatusCode ="NA";
+	
+	public static final String VAScoringStatus = "VA";
+	
+	public static final String InvalidContentStatus = "IN";
+	
+	public static final String InvalidContentStatusCode = "INV";
+	
+	public static final String OmitedContentStatusCode = "OM";
 	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");

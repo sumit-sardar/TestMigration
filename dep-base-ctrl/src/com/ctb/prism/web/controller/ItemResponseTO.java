@@ -16,8 +16,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="editedResponse" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="itemCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="itemSetType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="responseStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="scoreValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -29,15 +31,43 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "itemResponseTO", propOrder = {
+    "editedResponse",
     "itemCode",
     "itemSetType",
+    "responseStatus",
     "scoreValue"
 })
 public class ItemResponseTO {
 
+    protected String editedResponse;
     protected String itemCode;
     protected String itemSetType;
+    protected String responseStatus;
     protected String scoreValue;
+
+    /**
+     * Gets the value of the editedResponse property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getEditedResponse() {
+        return editedResponse;
+    }
+
+    /**
+     * Sets the value of the editedResponse property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setEditedResponse(String value) {
+        this.editedResponse = value;
+    }
 
     /**
      * Gets the value of the itemCode property.
@@ -85,6 +115,30 @@ public class ItemResponseTO {
      */
     public void setItemSetType(String value) {
         this.itemSetType = value;
+    }
+
+    /**
+     * Gets the value of the responseStatus property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getResponseStatus() {
+        return responseStatus;
+    }
+
+    /**
+     * Sets the value of the responseStatus property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setResponseStatus(String value) {
+        this.responseStatus = value;
     }
 
     /**
