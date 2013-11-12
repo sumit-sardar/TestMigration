@@ -279,7 +279,7 @@ public class HMACQueryStringBuilder {
 		//builder.append(SHAREDKEY_PARAMETER_NAME).append(urlEncode(sharedKey));
 		builder.append(EXPIRY_DATE_PARAMETER_NAME).append(urlEncode(validUntilDate));
 		builder.append(USERROLE_PARAMETER_NAME).append(urlEncode(userRole));
-		builder.append(USERNAME_PARAMETER_NAME).append(urlEncode(userName));
+		//builder.append(USERNAME_PARAMETER_NAME).append(urlEncode(userName));
 		
 		if(null != ipAddress && ipAddress.trim().length() > 0)
 			builder.append(IP_ADDRESS_PARAMETER_NAME).append(urlEncode(ipAddress));
