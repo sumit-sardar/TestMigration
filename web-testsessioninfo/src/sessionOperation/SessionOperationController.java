@@ -3825,6 +3825,8 @@ public class SessionOperationController extends PageFlowController {
             	}
             	String reportUrl = cr.getReportUrl()+(cr.getReportUrl().endsWith("?")?"":"?")+requestParam;
             	cr.setReportUrl(reportUrl);
+            	//String encodedReportURL = URLEncoder.encode(reportUrl);
+            	//cr.setReportUrl("/SessionWeb/sessionOperation/prism_report.jsp?rpt="+encodedReportURL);
             }
         }
         

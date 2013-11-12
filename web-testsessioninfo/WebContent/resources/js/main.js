@@ -90,9 +90,45 @@ $().ready(function(){
 	
 });
 
+var PrismOnlineReporting;
 function openPrismApplication(location)
 {
-	//[IAA]: defect#75805: IE disallows spaces and other characters in window name (second argument). "Prism Online Reporting" => "PrismOnlineReporting"
-    window.open(location, "PrismOnlineReporting",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=800, height=600');
+	//**[IAA] defect#76008: TASC - 2013 Op - 07 - SSO to Prism parameters :-Session Time out  Message is not getting displayed on clicking on the  Prism Online Report link on Report page even when the TAS appication is kept idle for more than  20 min on the Report page
+	var sc_null = false;
+	var _date = new Date();
+	var _timer = _date.getTime();
+	$.ajax({
+		async: false,
+		type: "get",
+		url: "/SessionWeb/sessionOperation/check_session.jsp?t="+_timer,
+		success: function(response,status,xhr){
+			sessionCookie = getCookie("_WL_AUTHCOOKIE_TAS_SESSIONID");
+			if (sessionCookie == null)
+			{
+				if (PrismOnlineReporting && !PrismOnlineReporting.closed) PrismOnlineReporting.close();
+				window.location.href='/SessionWeb/logout2.jsp?timeout=true';
+				sc_null = true;
+				return false;
+			}
+		},
+		error: function() {}
+	});
+	
+	if (!sc_null)
+	{
+		//[IAA]: defect#75805: IE disallows spaces and other characters in window name (second argument). "Prism Online Reporting" => "PrismOnlineReporting"
+    	PrismOnlineReporting = window.open(location, "PrismOnlineReporting",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=800, height=600');
+    }
     return false;
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+       var c = ca[i];
+       while (c.charAt(0)==' ') c = c.substring(1,c.length);
+       if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
 }
