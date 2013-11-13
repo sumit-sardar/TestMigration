@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>web-student</name>
+	<name>web-studentmgmt</name>
 	<comment></comment>
 	<projects>
 		<project>dep-weblib-webutils</project>
 		<project>dep-weblib-taglib</project>
 		<project>dep-base-ctrl</project>
 		<project>dep-studentmgmt-ctrl</project>
+		<project>dep-usermgmt-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
