@@ -314,7 +314,7 @@ public class PrismWebServiceDBUtility {
 			boolean crItmPresent = false;
 			while(rsCR.next()){
 				crItmPresent = true;
-				crScoreVal.append(rsCR.getString("crScore"));
+				crScoreVal.append(formatResponse(rsCR.getString("crScore"), 2));
 			}
 			crItemResponseTO.setScoreValue(crScoreVal.toString());
 			if(crItmPresent){
@@ -345,7 +345,7 @@ public class PrismWebServiceDBUtility {
 				grItmPresent = true;
 				grScoreVal.append(rsGR.getString("response"));
 			}
-			grItemResponseTO.setEditedResponse(formatResponse(grScoreVal.toString()));
+			grItemResponseTO.setEditedResponse(formatResponse(grScoreVal.toString(), 16));
 			if(grItmPresent){
 				itemResponseTOLst.add(grItemResponseTO);
 			}
@@ -363,11 +363,12 @@ public class PrismWebServiceDBUtility {
 	/**
 	 * Format the response
 	 * @param res
+	 * @param count 
 	 * @return
 	 */
-	private static String formatResponse(String res) {
+	private static String formatResponse(String res, int count) {
 		StringBuffer sb = new StringBuffer();
-		for(int i = 0 ; i < 16 - res.length() ; i++){
+		for(int i = 0 ; i < count - res.length() ; i++){
 			sb.append(" ");
 		}
 		sb.append(res);
