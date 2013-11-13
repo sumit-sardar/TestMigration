@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-report-group-config coherence-report-group-config.xsd">
 
   <frequency>1m</frequency>
-  <output-directory>/tmp/CoherenceReports</output-directory>
+  <output-directory>/var/tmp/cohReports/CoherenceReports</output-directory>
   <report-list>
     <report-config>
       <location>reports/report-node.xml</location>
