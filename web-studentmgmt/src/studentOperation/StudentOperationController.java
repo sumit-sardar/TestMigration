@@ -71,7 +71,7 @@ import com.thoughtworks.xstream.XStream;
 import dto.Message;
 import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
-import com.ctb.control.userManagement.UserManagement;
+
 
 @Jpf.Controller()
 public class StudentOperationController extends PageFlowController {
@@ -86,9 +86,6 @@ public class StudentOperationController extends PageFlowController {
 
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.BroadcastMessageLog message;
-    
-    @Control()
-    private com.ctb.control.userManagement.UserManagement userManagement;
 
     
 	private String userName = null;
@@ -824,8 +821,8 @@ public class StudentOperationController extends PageFlowController {
     	//System.out.println("userName from session in user module >> "+getSession().getAttribute("userName"));
     	//System.out.println("isDexLogin from session [user module] >> "+getSession().getAttribute("isDexLogin"));
     	try {
-			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
-			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isEOIUser = this.studentManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isMappedWith3_8User = this.studentManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
 			this.isEOISelected = (getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))? true: false;
 			this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
@@ -3174,7 +3171,7 @@ public class StudentOperationController extends PageFlowController {
     		//if(getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString())){
     		if(this.is3to8Selected){
     			try {
-					this.userName = this.userManagement.fetchMapped3to8User(getRequest().getUserPrincipal().toString());
+					this.userName = this.studentManagement.fetchMapped3to8User(getRequest().getUserPrincipal().toString());
 				} catch (CTBBusinessException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3502,12 +3499,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		if(getSession().getAttribute("isEOIUser") != null)
 			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
 		else
-			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isEOIUser = this.studentManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 
 		if(getSession().getAttribute("isMappedWith3_8User") != null)
 			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
 		else
-			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+			this.isMappedWith3_8User = this.studentManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 		
 		if (this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
 			getLoggedInUserPrincipal();
