@@ -66,6 +66,8 @@ public class PrismWebServiceConstant {
 	
 	public static final String OmitedContentStatusCode = "OM";
 	
+	public static final  Map<String,String> contentDetailsStausCodeMap = new HashMap<String, String>();
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
@@ -91,6 +93,10 @@ public class PrismWebServiceConstant {
 		subTestAccomCatNameMap.put("Science", "SCIENCE ACCOMMODATION");
 		subTestAccomCatNameMap.put("Social Studies", "SOCIAL STUDIES ACCOMMODATION");
 		subTestAccomCatNameMap.put("Writing", "WRITING ACCOMMODATION");
+		
+		contentDetailsStausCodeMap.put(OmitedContentStatusCode, "3");
+		contentDetailsStausCodeMap.put(InvalidContentStatusCode, "5");
+		contentDetailsStausCodeMap.put("SUP", "6");
 		
 		resourceBundler = ResourceBundle.getBundle("PrismWebService");
 		
