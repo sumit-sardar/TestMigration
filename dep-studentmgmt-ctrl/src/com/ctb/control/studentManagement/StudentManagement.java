@@ -557,7 +557,13 @@ public interface StudentManagement
     
     //get list of productIds for a given customerId from org_node_test_catalog
     String[] getProductIdsForCustomer(Integer customerId) throws CTBBusinessException;
-
+    
+  //Added for DEX SSO user stories
+    public boolean isOKEOIUser(String userName) throws CTBBusinessException;
+    
+    public boolean isMappedWith3_8User(String userName) throws CTBBusinessException;
+    
+    public String fetchMapped3to8User(String userName) throws CTBBusinessException;
 
 } 	
 

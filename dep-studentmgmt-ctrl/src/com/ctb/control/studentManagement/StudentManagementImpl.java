@@ -3994,4 +3994,37 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return productIds;
 	}
+	
+	public boolean isOKEOIUser(String userName) throws CTBBusinessException{
+    	boolean result = false;
+    	try {
+			result = users.isOKEOIUser(userName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return result;
+    }
+
+    public boolean isMappedWith3_8User(String userName)throws CTBBusinessException{
+    	boolean result = false;
+    	try {
+			result = users.isMappedWith3_8User(userName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return result;
+    }
+    
+    public String fetchMapped3to8User(String eoiUserName)throws CTBBusinessException{
+    	String userName3to8 = null;
+    	try {
+    		userName3to8 = users.fetchMapped3to8User(eoiUserName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return userName3to8;
+    }
 } 
