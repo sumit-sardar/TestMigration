@@ -6,6 +6,7 @@ import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.StudentReportIrsScore;
+import java.sql.Clob;
 
 /** 
  * Defines a new database control. 
@@ -42,4 +43,6 @@ public interface ImmediateReportingIrs extends JdbcControl{
 	@JdbcControl.SQL(statement = "SELECT SOD.NAME  AS contentAreaName, LSOF.POINTS_OBTAINED  AS PtsObtained, LSOF.POINTS_POSSIBLE  AS PtsPossible, LSOF.PERCENT_OBTAINED AS PerCorrect FROM SEC_OBJ_DIM SOD, LASLINK_SEC_OBJ_FACT LSOF WHERE LSOF.STUDENTID = {studentId} AND LSOF.SESSIONID = {testAdminId} AND SOD.SEC_OBJID = LSOF.SEC_OBJID")
     StudentReportIrsScore [] getScoreDataForAcademicReport(Integer studentId, Integer testAdminId) throws SQLException;
 	
+	@JdbcControl.SQL(statement = "call wipeout_scoring_after_reset({studentIds},{testAdminId},{contentAreaId}, {contentAreaName})")
+    void wipeOutStudentsScoring(Clob studentIds, Integer testAdminId, Long contentAreaId, String contentAreaName) throws SQLException;
 }

@@ -1,5 +1,8 @@
 package com.ctb.control.customerServiceManagement;
 
+import java.io.IOException;
+import java.io.Writer;
+import oracle.sql.CLOB;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,6 +72,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	com.ctb.control.db.StudentItemSetStatus studentItemSetStatus;
+
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	com.ctb.control.db.ImmediateReportingIrs reportIrs;
 	
 	/**
 	 * @common:control
@@ -540,6 +549,49 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 			throw studentDataNotFoundException;
 		} 
 		
+	}
+	
+	@Override
+	public void wipeOutScoringData(Integer testAdminId, String studentIds, Integer itemSetId) throws CTBBusinessException{
+		
+		CallableStatement cstmt = null;
+		Connection conn = null;
+		String contentAreaId = null;
+		try {
+			TestElement te = itemSets.getContentAreaId(testAdminId, itemSetId);
+			conn = reportIrs.getConnection();
+			if (te != null) {
+				
+				CLOB studentListClob = null;					
+				// If the temporary CLOB has not yet been created, create new
+				studentListClob = CLOB.createTemporary(conn, true, CLOB.DURATION_SESSION); 
+				// Open the temporary CLOB in readwrite mode to enable writing
+				studentListClob.open(CLOB.MODE_READWRITE); 
+				// Get the output stream to write
+				Writer tempClobWriter = studentListClob.getCharacterOutputStream(); 
+				// Write the data into the temporary CLOB
+				tempClobWriter.write(studentIds); 
+				// Flush and close the stream
+				tempClobWriter.flush();
+				tempClobWriter.close(); 
+				// Close the temporary CLOB 
+				studentListClob.close(); 
+				reportIrs.wipeOutStudentsScoring(studentListClob, testAdminId, Long.parseLong(te.getExtCmsItemSetId()), te.getItemSetName());
+			}
+		}catch (SQLException se) {
+			se.printStackTrace();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		finally{			
+				try {
+					if(cstmt != null)
+						cstmt.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 
 }

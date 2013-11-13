@@ -82,6 +82,7 @@ public class ResetOperationController extends PageFlowController {
     private CustomerLicense[] customerLicenses = null;
     private Map<String, StudentSessionStatusVO> studentDetailsMap = null;
     
+    private boolean isLasLinkCustomer = false;
     
     public static String CONTENT_TYPE_JSON = "application/json";
     
@@ -1044,6 +1045,11 @@ public class ResetOperationController extends PageFlowController {
 						itemSetId,
 						creatorOrgId,
 						null);
+				
+				if(this.isLasLinkCustomer){
+					wipeOutScoringData(testAdminId, resetStudentDataList);
+				}
+				
 			}
 			
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
@@ -1079,6 +1085,37 @@ public class ResetOperationController extends PageFlowController {
 	}
 	
 	
+	private void wipeOutScoringData(Integer testAdminId,
+			List<StudentSessionStatusVO> resetStudentDataList) {
+		
+		String studentIds = null;
+		Integer itemSetIdTD = null;
+		
+		for(StudentSessionStatusVO st : resetStudentDataList){
+			if (studentIds == null){
+				studentIds = st.getStudentId().toString();
+			}else{
+				studentIds += "," + st.getStudentId().toString();
+			}
+			
+			if (itemSetIdTD == null){
+				itemSetIdTD = st.getItemSetId();
+			}
+		}
+		if (studentIds.endsWith(",")){
+			studentIds = studentIds.substring(0, studentIds.length()-1);
+		}
+		System.out.println("StudentIds >> " + studentIds);
+		try {
+			
+			customerServiceManagement.wipeOutScoringData(testAdminId, studentIds, itemSetIdTD);
+			
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	@Jpf.Action()
 	protected Forward resetSubtestForAStudent(){
 		
@@ -1139,6 +1176,10 @@ public class ResetOperationController extends PageFlowController {
 						itemSetId,
 						creatorOrgId,
 						studentId);
+				
+				if(this.isLasLinkCustomer){
+					customerServiceManagement.wipeOutScoringData(testAdminId, studentId.toString(), itemSetId);
+				}
 			}
 			
 			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
@@ -1400,7 +1441,7 @@ public class ResetOperationController extends PageFlowController {
     	boolean hasUploadDownloadConfig = false;
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
-    	        
+    	this.isLasLinkCustomer = laslinkCustomer;        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
