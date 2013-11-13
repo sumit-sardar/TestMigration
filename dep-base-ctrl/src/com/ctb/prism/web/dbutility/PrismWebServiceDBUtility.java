@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -1064,7 +1065,7 @@ public class PrismWebServiceDBUtility {
 	 * @return
 	 * @throws ParseException 
 	 */
-	private static String getChronologicalAge(String studentDOB) throws ParseException {
+	private static String getChronologicalAge_(String studentDOB) throws ParseException {
 		if(studentDOB != null && !"".equals(studentDOB)){
 			Date stdDOBDt = PrismWebServiceConstant.dateFormat.parse(studentDOB);
 			long ageInMillis = new Date().getTime() - stdDOBDt.getTime();
@@ -1072,6 +1073,32 @@ public class PrismWebServiceDBUtility {
 			long addedAgeWithDefaultStartDt = defaultStartDate.getTime() + ageInMillis;
 			Date ageWithDefaultStartDate = new Date(addedAgeWithDefaultStartDt);
 			return String.valueOf(ageWithDefaultStartDate.getYear() - defaultStartDate.getYear());
+		}else{
+			return "";
+		}
+	}
+	
+	/**
+	 * Get the Chronological  Age
+	 * @param studentDOB
+	 * @return
+	 * @throws ParseException 
+	 */
+	private static String getChronologicalAge(String studentDOB) throws ParseException {
+		if(studentDOB != null && !"".equals(studentDOB)){
+			Calendar dob = Calendar.getInstance();
+			Calendar today = Calendar.getInstance();
+			dob.setTime(PrismWebServiceConstant.dateFormat.parse(studentDOB));
+			int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+			if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH))
+			{
+				age--;
+			}
+			else if (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH) && today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH))
+			{
+				age--;
+			}
+			return String.valueOf(age);
 		}else{
 			return "";
 		}
