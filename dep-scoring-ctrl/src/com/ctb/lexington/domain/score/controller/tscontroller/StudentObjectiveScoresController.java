@@ -40,14 +40,14 @@ public class StudentObjectiveScoresController {
     }
 
     public void run() throws SQLException {
-        IrsTASCPrimObjFactData [] pfacts = getPrimObjFactBeans();
+        /*IrsTASCPrimObjFactData [] pfacts = getPrimObjFactBeans();
         for(int i=0;i<pfacts.length;i++) {
             IrsTASCPrimObjFactData newFact = pfacts[i];
             poMapper.delete(newFact);
             if(new Long(1).equals(contextData.getCurrentResultId()))  {
                 poMapper.insert(newFact);
             }
-        }
+        }*/
         
         IrsTASCSecObjFactData [] sfacts = getSecObjFactBeans();
         for(int i=0;i<sfacts.length;i++) {
