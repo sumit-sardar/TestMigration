@@ -17,17 +17,52 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 
 	public void onEvent(ResponseReceivedEvent event) {
 		validateItemSetId(event.getItemSetId());
-
-		if (sicEvent.isAttempted(event)) {
-			final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
-			final Integer obtained = computePointsObtained(event);
-
-			channel.send(new PointEvent(event.getTestRosterId(), event
-					.getItemId(), event.getItemSetId(), attempted, obtained));
-		} else { //if (!(ItemLocal.ITEM_TYPE_CR.equals(sicEvent.getType(event.getItemId())) && sicEvent.isOnlineCr(event.getItemId()))) {
-			channel.send(new PointEvent(event.getTestRosterId(), event
-					.getItemId(), event.getItemSetId(), new Integer(0),
-					new Integer(0)));
+		
+		if ("TS".equals(sicEvent.getProductType())){
+			if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(event.getItemId()))) {
+				if (null != sicEvent.getAnswerArea(event.getItemId())
+						&& "GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
+					if(null != event.getGrResponse()  && !"".equals(event.getGrResponse())){
+						final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
+						final Integer obtained = computePointsObtained(event);
+			
+						channel.send(new PointEvent(event.getTestRosterId(), event
+								.getItemId(), event.getItemSetId(), attempted, obtained));
+					}
+					else {
+						channel.send(new PointEvent(event.getTestRosterId(), event
+								.getItemId(), event.getItemSetId(), new Integer(0),
+								new Integer(0)));
+					}
+				}
+			}
+			if(ItemVO.ITEM_TYPE_SR.equals(sicEvent.getType(event.getItemId()))){
+				if(null != event.getResponse() && !"".equals(event.getResponse()) && !"-".equals(event.getResponse())){
+					final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
+					final Integer obtained = computePointsObtained(event);
+		
+					channel.send(new PointEvent(event.getTestRosterId(), event
+							.getItemId(), event.getItemSetId(), attempted, obtained));
+				}
+				else {
+					channel.send(new PointEvent(event.getTestRosterId(), event
+							.getItemId(), event.getItemSetId(), new Integer(0),
+							new Integer(0)));
+				}
+			}
+		}
+		else {
+			if (sicEvent.isAttempted(event)) {
+				final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
+				final Integer obtained = computePointsObtained(event);
+	
+				channel.send(new PointEvent(event.getTestRosterId(), event
+						.getItemId(), event.getItemSetId(), attempted, obtained));
+			} else { //if (!(ItemLocal.ITEM_TYPE_CR.equals(sicEvent.getType(event.getItemId())) && sicEvent.isOnlineCr(event.getItemId()))) {
+				channel.send(new PointEvent(event.getTestRosterId(), event
+						.getItemId(), event.getItemSetId(), new Integer(0),
+						new Integer(0)));
+			}
 		}
 	}
 

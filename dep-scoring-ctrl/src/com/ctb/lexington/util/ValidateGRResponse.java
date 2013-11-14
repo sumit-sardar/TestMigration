@@ -105,6 +105,11 @@ public class ValidateGRResponse {
 							rawScore = RuleSet.Rule14(itemId, sanitizedString, grItemCorrectAnswer);
 							System.out.println("Rule 14 Applied");
 							return rawScore;
+						case 15:
+							boolean status = RuleSet.Rule15(sanitizedString);
+							System.out.println("Rule 15 Applied");
+							if(status==false)
+								return "0";
 						case 16:
 							sanitizedString = RuleSet.Rule16(sanitizedString);
 							System.out.println("Rule 16 Applied");
@@ -124,7 +129,7 @@ public class ValidateGRResponse {
         
 		
 		// If response is fraction then round off to nearest 5 decimal places
-		sanitizedString=FractionConverstionUtil.roundTo5DecimalPlaces(sanitizedString);
+		sanitizedString=FractionConverstionUtil.roundTo4DecimalPlaces(sanitizedString);
 
 		// Fetch set of correct answers
 		//String answerSetString = grRulesDAO.getCorrectAnswers(itemId);

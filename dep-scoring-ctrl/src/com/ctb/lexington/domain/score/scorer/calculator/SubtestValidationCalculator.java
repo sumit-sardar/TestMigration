@@ -176,6 +176,32 @@ public class SubtestValidationCalculator extends Calculator {
         		return false;
         }
         
+        // Added for TASC Product (Type TS)
+        if("TS".equalsIgnoreCase(productType)) {
+        	String valid = "IN";
+        	Connection conn = null;
+            try {
+                conn = scorer.getOASConnection();
+                StudentItemSetStatusMapper mapper = new StudentItemSetStatusMapper(conn);
+                valid = mapper.getSubtestValidationStatusForTestRosterAndItemSetId(this.testRosterId, 
+                		DatabaseHelper.asLong(this.ItemSetId));
+                
+                System.out.println(this.ItemSetId + " ==== >>" + valid);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    scorer.close(true, conn);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        	if(valid.equals("VA"))
+        		return true;
+        	else
+        		return false;
+        }
+        
         int attemptedItems = 0;
         int correctAnswers = 0;
         java.util.Set<String> attemptedSet = new java.util.HashSet<String>();

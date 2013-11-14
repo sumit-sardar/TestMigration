@@ -304,8 +304,8 @@ public class RuleSet {
 					return "0";
 				} else {
 					
-					// If response is fraction then round off to nearest 5 decimal places
-					response=FractionConverstionUtil.roundTo5DecimalPlaces(response);
+					// If response is fraction then round off to nearest 4 decimal places
+					response=FractionConverstionUtil.roundTo4DecimalPlaces(response);
 					
 					if ((Double.parseDouble(response) >= Double
 							.parseDouble(rangeSet[0]))

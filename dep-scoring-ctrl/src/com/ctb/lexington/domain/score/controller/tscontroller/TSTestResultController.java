@@ -110,7 +110,7 @@ public class TSTestResultController implements TestResultController {
         System.out.println("***** SCORING: Persisted dimension data.");
         
         // persist scores
-        new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
+        //new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
         new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");

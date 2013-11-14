@@ -90,7 +90,8 @@
 		                       1)) AS varcharConstructedResponse,
 		       GIR.GR_ITEM_RULES AS grItemRules,
 		       GIR.GR_ITEM_CORRECT_ANSWER AS grItemCorrectAnswer,
-		       ITEM.ANSWER_AREA AS answerArea
+		       ITEM.ANSWER_AREA AS answerArea,
+		       ITEM.ITEM_TYPE AS itemType
         FROM
             ITEM_RESPONSE IR,
 		       ITEM_RESPONSE_CR IRC,

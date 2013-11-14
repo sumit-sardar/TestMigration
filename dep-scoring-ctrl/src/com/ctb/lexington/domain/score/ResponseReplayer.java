@@ -74,6 +74,7 @@ public class ResponseReplayer {
     private final StudentItemSetStatusMapper studentItemSetStatusMapper;
     private Integer productId = null;
     private static String productType = null;
+    private static int validResponseCount = 0;
 
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -287,19 +288,36 @@ public class ResponseReplayer {
      * and minimum one answer is correct or not
      */
     private static boolean checkScoringValidationStatusForTASC(final List responses) {
-    	 if (responses.isEmpty()) return false;
-         boolean minimun5Answered = false;
-         boolean min1Correct = false;
-         
-         if(responses.size() >= 5 ) {
-         	minimun5Answered = true;
-         } else {
-         	minimun5Answered = false;
-         }
-         
-         min1Correct = isMinimumOneAnswerCorrect(responses);
-         
-         return (min1Correct || minimun5Answered);
+		 if (responses.isEmpty()) return false;
+	     boolean minimun5Answered = false;
+	     boolean min1Correct = false;
+	     int validResponseCount = 0;
+	     
+	 	 for (final Iterator it = responses.iterator(); it.hasNext();) {
+	 		ItemResponseVO tascResponse = (ItemResponseVO) it.next();
+	 		if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
+				if (null != tascResponse.getAnswerArea() && "GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getVarcharConstructedResponse()  && !"".equals(tascResponse.getVarcharConstructedResponse())) {
+						validResponseCount++;
+					}
+				}
+	 		}
+	 		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
+ 				if(null != tascResponse.getResponse()  && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
+ 					validResponseCount++;
+ 				}
+ 			}
+	 	}
+	     
+	     if(validResponseCount >= 5 ) {
+	     	minimun5Answered = true;
+	     } else {
+	     	minimun5Answered = false;
+	     }
+	     
+	     min1Correct = isMinimumOneAnswerCorrect(responses);
+	     
+	     return (min1Correct || minimun5Answered);
     }
     
     /**
@@ -309,7 +327,25 @@ public class ResponseReplayer {
     private static boolean checkScoringOmissionStatusForTASC(final List responses) {
     	boolean zeroOperationalItemMarked = false;
     	
-    	if (responses.isEmpty()) 
+    	int validResponseCount = 0;
+	     
+	 	 for (final Iterator it = responses.iterator(); it.hasNext();) {
+	 		ItemResponseVO tascResponse = (ItemResponseVO) it.next();
+	 		if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
+				if (null != tascResponse.getAnswerArea() && "GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getVarcharConstructedResponse() && !"".equals(tascResponse.getVarcharConstructedResponse())) {
+						validResponseCount++;
+					}
+				}
+	 		}
+	 		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
+ 				if(null != tascResponse.getResponse() && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
+ 					validResponseCount++;
+ 				}
+	 		}
+	 	}
+    	
+    	if (validResponseCount == 0) 
     		zeroOperationalItemMarked = true;
     	else 
     		zeroOperationalItemMarked = false;
@@ -328,8 +364,25 @@ public class ResponseReplayer {
     private static boolean checkScoringSuppressionStatusForTASC(final List responses) {
     	boolean oneToFourOperationalItemMarked = false;
     	boolean max0Incorrect = false;
+    	int validResponseCount = 0;
+    	for (final Iterator it = responses.iterator(); it.hasNext();) {
+    		ItemResponseVO tascResponse = (ItemResponseVO) it.next();
+    		
+    		if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
+				if (null != tascResponse.getAnswerArea() && "GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getVarcharConstructedResponse() && !"".equals(tascResponse.getVarcharConstructedResponse())) {
+						validResponseCount++;
+					}
+				}
+    		}
+    		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
+				if(null != tascResponse.getResponse() && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
+					validResponseCount++;
+				}
+			}
+    	}
     	
-    	if (responses.size() >=1 && responses.size() <= 4) {
+    	if (validResponseCount >=1 && validResponseCount <= 4) {
     		oneToFourOperationalItemMarked = true;
     	}
     	else 
@@ -362,12 +415,13 @@ public class ResponseReplayer {
 
 					// 7th Nov 2013 Not a valid production scenario uncomment this part once actual rules are defined
 					//if (grItemRules != null && grItemCorrectAnswer != null) {
+					if (actualGrResponse != null) {
 						String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
 						if (itemsRawScore.equals("1")) {
 							min1Correct = true;
 							break;
 						}
-					//}
+					}
 				}
 			} else {
 				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
