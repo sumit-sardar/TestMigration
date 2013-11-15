@@ -110,6 +110,7 @@ public class ValidateGRResponse {
 							System.out.println("Rule 15 Applied");
 							if(status==false)
 								return "0";
+							break;
 						case 16:
 							sanitizedString = RuleSet.Rule16(sanitizedString);
 							System.out.println("Rule 16 Applied");
