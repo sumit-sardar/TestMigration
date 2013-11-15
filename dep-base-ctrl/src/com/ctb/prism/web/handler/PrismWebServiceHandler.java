@@ -90,12 +90,12 @@ public class PrismWebServiceHandler {
 			getService();
 			if(service != null){
 				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
-				/*if(responseTO.getStatusCode() == 1){ //Success
+				if(responseTO.getStatusCode() == 1){ //Success
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
-				}*/
+				}
 			}else{
 				OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 				throw new Exception("Prism Web Service is null.");
