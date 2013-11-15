@@ -854,6 +854,16 @@ public class CurriculumData {
         return matches;
     }
     
+    public String getContentAreaNameById(Long id) {
+        String name =null;
+        for(int i=0;i<contentAreas.length;i++) {
+            if(id == contentAreas[i].getContentAreaId()) {
+            	name = contentAreas[i].getContentAreaName();
+            }
+        }
+        return name;
+    }
+    
 	/**
 	 * @return Returns the composites.
 	 */

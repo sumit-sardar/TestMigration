@@ -2,11 +2,14 @@ package com.ctb.lexington.domain.score.controller.tscontroller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
+import com.ctb.lexington.db.data.StsTestResultFactData;
+import com.ctb.lexington.db.data.StsTestResultFactDetails;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.StudentTestData;
@@ -17,20 +20,20 @@ import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCPrimObjFactMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCSecObjFactMapper;
 
-import java.sql.Timestamp;
-
 
 public class StudentObjectiveScoresController {
     private StudentScoreSummaryData studentScoreSummaryData;
     private CurriculumData currData;
+    private StsTestResultFactData factData;
     private StudentTestData testData;
     private AdminData adminData;
     private ContextData contextData;
     private IrsTASCPrimObjFactMapper poMapper;
     private IrsTASCSecObjFactMapper soMapper;
 
-    public StudentObjectiveScoresController(Connection conn, StudentScoreSummaryData studentScoreSummaryData, CurriculumData currData, StudentTestData testData, AdminData adminData, ContextData contextData) {
-        this.studentScoreSummaryData = studentScoreSummaryData;
+    public StudentObjectiveScoresController(Connection conn, StsTestResultFactData factData, StudentScoreSummaryData studentScoreSummaryData, CurriculumData currData, StudentTestData testData, AdminData adminData, ContextData contextData) {
+        this.factData = factData;
+    	this.studentScoreSummaryData = studentScoreSummaryData;
         this.currData = currData;
         this.testData = testData;
         this.adminData = adminData;
@@ -40,6 +43,9 @@ public class StudentObjectiveScoresController {
     }
 
     public void run() throws SQLException {
+    	
+    	// Do not insert in Prim Obj Fact for TASC
+    	
         /*IrsTASCPrimObjFactData [] pfacts = getPrimObjFactBeans();
         for(int i=0;i<pfacts.length;i++) {
             IrsTASCPrimObjFactData newFact = pfacts[i];
@@ -169,91 +175,110 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<secs.length;i++) {
             SecondaryObjective sec = currData.getSecObjById(secs[i].getSecondaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(secs[i].getSecondaryObjectiveId());
-            if(details != null && !"F".equals(details.getAtsArchive())) {
-                IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
-                secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
-                secObjFact.setPointsObtained(details.getPointsObtained());
-                secObjFact.setPointsPossible(details.getPointsPossible());
-                secObjFact.setMasteryLevelid( new Long( 
-                                                    "Not Mastered".equals(details.getMasteryLevel())?1:
-                                                    "Partially Mastered".equals(details.getMasteryLevel())?2:
-                                                    "Mastered".equals(details.getMasteryLevel())?3:4 ));
-                secObjFact.setPercentObtained(details.getPercentObtained());
-                secObjFact.setPointsAttempted(details.getPointsAttempted());
-
-                // dim ids from context
-                secObjFact.setAssessmentid(contextData.getAssessmentId());
-                secObjFact.setCurrentResultid(contextData.getCurrentResultId());
-                secObjFact.setFormid(new Long(
-                                        "9".equals(sec.getSubtestForm())?1:
-                                        "10".equals(sec.getSubtestForm())?2:3));
-                secObjFact.setGradeid(contextData.getGradeId());
-                secObjFact.setLevelid(new Long(
-                                        "L".equals(sec.getSubtestLevel())?1:
-                                        "E".equals(sec.getSubtestLevel())?2:
-                                        "M".equals(sec.getSubtestLevel())?3:
-                                        "D".equals(sec.getSubtestLevel())?4:
-                                        "A".equals(sec.getSubtestLevel())?5:6));
-                secObjFact.setOrgNodeid(contextData.getOrgNodeId());
-                secObjFact.setProgramid(contextData.getProgramId());
-                secObjFact.setSessionid(contextData.getSessionId());
-                secObjFact.setStudentid(contextData.getStudentId());
-                secObjFact.setTestStartTimestamp(contextData.getTestStartTimestamp());
-                //Timestamp subtestTime = null; //testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
-                Timestamp subtestTime = testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
-                System.out.println("Sub test Id " + sec.getSubtestId() + " Subtest Level " + sec.getSubtestLevel());
-                if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
-                secObjFact.setTestCompletionTimestamp(subtestTime);
-                
-                /*secObjFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
-                secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
-                secObjFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
-                secObjFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
-                secObjFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
-                secObjFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
-                secObjFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
-                secObjFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
-                secObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
-                secObjFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
-                secObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
-                secObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
-                secObjFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
-                secObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
-                secObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
-                secObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
-                
-                secObjFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
-                secObjFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
-                secObjFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
-                if(contextData.getDemographicData().getAttr20Id() != null) {
-                	secObjFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
-                } else {
-                	secObjFact.setAttr20id(null);
-                }
-                if(contextData.getDemographicData().getAttr21Id() != null) {
-                	secObjFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
-                } else {
-                	secObjFact.setAttr21id(null);
-                }
-                //secObjFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
-                //secObjFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
-                secObjFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
-                secObjFact.setAttr24id(contextData.getDemographicData().getAttr24Id());
-                secObjFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
-                secObjFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
-                secObjFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
-                secObjFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
-                secObjFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
-                secObjFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
-                secObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
-                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
-                
-                secObjFact.setSubtestName(sec.getSubtestName());
+            String contentAreaId = sec.getProductId().toString()+sec.getPrimaryObjectiveId().toString();
+            StsTestResultFactDetails factDetails = factData.get(getContentAreaName(new Long(contentAreaId)));
             
-                secondaries.add(secObjFact);
+            // Do not insert in Sec Obj Fact for TASC if SubtestScoringStatus is Suppressed
+            
+            if(!"SUP".equals(factDetails.getSubtestScoringStatus())){
+            	
+	            if(details != null && !"F".equals(details.getAtsArchive())) {
+	                IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
+	                secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
+	                secObjFact.setPointsObtained(details.getPointsObtained());
+	                secObjFact.setPointsPossible(details.getPointsPossible());
+	                secObjFact.setMasteryLevelid( new Long( 
+	                                                    "Not Mastered".equals(details.getMasteryLevel())?1:
+	                                                    "Partially Mastered".equals(details.getMasteryLevel())?2:
+	                                                    "Mastered".equals(details.getMasteryLevel())?3:4 ));
+	                secObjFact.setPercentObtained(details.getPercentObtained());
+	                secObjFact.setPointsAttempted(details.getPointsAttempted());
+	
+	                // dim ids from context
+	                secObjFact.setAssessmentid(contextData.getAssessmentId());
+	                secObjFact.setCurrentResultid(contextData.getCurrentResultId());
+	                secObjFact.setFormid(new Long(
+	                                        "9".equals(sec.getSubtestForm())?1:
+	                                        "10".equals(sec.getSubtestForm())?2:3));
+	                secObjFact.setGradeid(contextData.getGradeId());
+	                secObjFact.setLevelid(new Long(
+	                                        "L".equals(sec.getSubtestLevel())?1:
+	                                        "E".equals(sec.getSubtestLevel())?2:
+	                                        "M".equals(sec.getSubtestLevel())?3:
+	                                        "D".equals(sec.getSubtestLevel())?4:
+	                                        "A".equals(sec.getSubtestLevel())?5:6));
+	                secObjFact.setOrgNodeid(contextData.getOrgNodeId());
+	                secObjFact.setProgramid(contextData.getProgramId());
+	                secObjFact.setSessionid(contextData.getSessionId());
+	                secObjFact.setStudentid(contextData.getStudentId());
+	                secObjFact.setTestStartTimestamp(contextData.getTestStartTimestamp());
+	                //Timestamp subtestTime = null; //testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
+	                Timestamp subtestTime = testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
+	                System.out.println("Sub test Id " + sec.getSubtestId() + " Subtest Level " + sec.getSubtestLevel());
+	                if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
+	                secObjFact.setTestCompletionTimestamp(subtestTime);
+	                
+	                /*secObjFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
+	                secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
+	                secObjFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
+	                secObjFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
+	                secObjFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
+	                secObjFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
+	                secObjFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
+	                secObjFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
+	                secObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
+	                secObjFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
+	                secObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
+	                secObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
+	                secObjFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
+	                secObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
+	                secObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
+	                secObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
+	                
+	                secObjFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
+	                secObjFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
+	                secObjFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
+	                if(contextData.getDemographicData().getAttr20Id() != null) {
+	                	secObjFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
+	                } else {
+	                	secObjFact.setAttr20id(null);
+	                }
+	                if(contextData.getDemographicData().getAttr21Id() != null) {
+	                	secObjFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
+	                } else {
+	                	secObjFact.setAttr21id(null);
+	                }
+	                //secObjFact.setAttr20id(Long.parseLong(contextData.getDemographicData().getAttr20Id()));
+	                //secObjFact.setAttr21id(Long.parseLong(contextData.getDemographicData().getAttr21Id()));
+	                secObjFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
+	                secObjFact.setAttr24id(contextData.getDemographicData().getAttr24Id());
+	                secObjFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
+	                secObjFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
+	                secObjFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
+	                secObjFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
+	                secObjFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
+	                secObjFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
+	                secObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
+	                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
+	                
+	                secObjFact.setSubtestName(sec.getSubtestName());
+	            
+	                secondaries.add(secObjFact);
+	            }
             }
         }
         return (IrsTASCSecObjFactData[]) secondaries.toArray(new IrsTASCSecObjFactData[0]);
 
+    }
+    
+    
+    private String getContentAreaName(Long contentAreaId) {
+        for(int i=0;i<currData.getContentAreas().length;i++) {
+            if(contentAreaId.equals(currData.getContentAreas()[i].getContentAreaId())) {
+            	System.out.println("Subtest Area Name : " + currData.getContentAreas()[i].getContentAreaName());
+                return currData.getContentAreas()[i].getContentAreaName();
+            }
+        }
+        return null;
     }
 }

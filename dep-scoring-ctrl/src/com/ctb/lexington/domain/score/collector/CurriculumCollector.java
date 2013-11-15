@@ -31,7 +31,13 @@ public class CurriculumCollector {
         if ("TA".equalsIgnoreCase(productType)) {
         	data.setContentAreas(getContentAreasForAdaptive(oasRosterId));
         	data.setPrimaryObjectives(getPrimaryObjectivesForTabeCat(oasRosterId));   
-        } else {       
+        }
+        // Condition applied for TASC Product Suppression check
+        else if("TS".equalsIgnoreCase(productType)) {
+        	data.setContentAreas(getContentAreasForTASC(oasRosterId));	  
+        	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
+        }
+        else {       
         	data.setContentAreas(getContentAreas(oasRosterId));	  
         	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
         }
@@ -608,6 +614,148 @@ public class CurriculumCollector {
             "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " + 
             "   td.item_Set_level, " + 
             "   td.item_Set_id";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+            	productId =  rs.getInt("productId");
+            	subtestLevel = rs.getString("subtestLevel");
+            	subtestForm = rs.getString("subtestForm");
+                ContentArea contentArea = new ContentArea();
+                contentArea.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                contentArea.setContentAreaName(rs.getString("contentAreaName"));
+                contentArea.setContentAreaType(rs.getString("contentAreaType"));
+                contentArea.setSubject(rs.getString("subject"));
+                contentArea.setContentAreaNumItems(new Long(rs.getLong("contentAreaNumItems")));
+                contentArea.setContentAreaPointsPossible(new Long(rs.getLong("contentAreaPointsPossible")));
+                contentArea.setSubtestId(new Long(rs.getLong("subtestId")));
+                contentArea.setSubtestForm(rs.getString("subtestForm"));
+                contentArea.setSubtestLevel(rs.getString("subtestLevel"));
+
+                String key = contentArea.getContentAreaName() + "||" + contentArea.getSubtestLevel();
+
+                if(caMap.containsKey(key)) {
+                    ContentArea ca1 = (ContentArea) caMap.get(key);
+                    Long numItems = new Long(ca1.getContentAreaNumItems().longValue() + contentArea.getContentAreaNumItems().longValue());
+                    Long points = new Long(ca1.getContentAreaPointsPossible().longValue() + contentArea.getContentAreaPointsPossible().longValue());
+                    contentArea.setContentAreaNumItems(numItems);
+                    contentArea.setContentAreaPointsPossible(points);
+                    ca1.setContentAreaNumItems(numItems);
+                    ca1.setContentAreaPointsPossible(points);
+                }   
+                caMap.put(key, contentArea);    
+                contentAreas.add(contentArea);
+                i++;
+            }
+            System.out.println("Content Area Size " + i);
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        if(productId == 7501 || productId == 7502){
+        	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
+        }
+        System.out.println("Content Area Size Array " + contentAreas.toArray(new ContentArea[0]).length);
+        return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
+    }
+    
+    //Condition applied for TASC Product Supression check
+    public ContentArea [] getContentAreasForTASC(Long oasRosterId) throws SQLException {
+    	Integer productId =null;
+    	String subtestLevel="", subtestForm="";
+        HashMap caMap = new HashMap();
+        ArrayList<ContentArea> contentAreas = new ArrayList<ContentArea>();
+        final String casql = 
+        	"select productid," +
+        	"       contentareaid," +
+        	"       contentareaname," +
+        	"       contentareatype," +
+        	"       subject," +
+        	"       sum(derived1.max_points) as contentareapointspossible," +
+        	"       contentareanumitems," +
+        	"       subtestform," +
+        	"       subtestlevel," +
+        	"       subtestid" +
+        	"  from (select distinct dp.item_id," +
+        	"                        dp.max_points," +
+        	"                        productid," +
+        	"                        contentareaid," +
+        	"                        contentareaname," +
+        	"                        contentareatype," +
+        	"                        subject," +
+        	"                        contentareanumitems," +
+        	"                        subtestform," +
+        	"                        subtestlevel," +
+        	"                        subtestid" +
+        	"          from (select distinct prod.product_id as productid," +
+        	"                                prod.product_id || ca.item_set_id as contentareaid," +
+        	"                                ca.item_set_name as contentareaname," +
+        	"                                prod.product_type || ' CONTENT AREA' as contentareatype," +
+        	"                                prod.product_type || ' ' || ca.item_set_name as subject," +
+        	"                                count(distinct item.item_id) as contentareanumitems," +
+        	"                                td.item_set_form as subtestform," +
+        	"                                td.item_set_level as subtestlevel," +
+        	"                                td.item_set_id as subtestid" +
+        	"                  from item," +
+        	"                       item_set ca," +
+        	"                       item_set_category cacat," +
+        	"                       item_set_ancestor caisa," +
+        	"                       item_set_item caisi," +
+        	"                       item_set_ancestor tcisa," +
+        	"                       item_set_item tcisi," +
+        	"                       test_roster ros," +
+        	"                       test_admin adm," +
+        	"                       test_catalog tc," +
+        	"                       product prod," +
+        	"                       item_set td" +
+        	"                 where ros.test_roster_id = ?" +
+        	"                   and adm.test_admin_id = ros.test_admin_id" +
+        	"                   and tc.test_catalog_id = adm.test_catalog_id" +
+        	"                   and prod.product_id = tc.product_id" +
+        	"                   and item.activation_status = 'AC'" +
+        	"                   and tc.activation_status = 'AC'" +
+        	"                   and ca.item_set_id = caisa.ancestor_item_set_id" +
+        	"                   and ca.item_set_type = 'RE'" +
+        	"                   and caisa.item_set_id = caisi.item_set_id" +
+        	"                   and item.item_id = caisi.item_id" +
+        	"                   and tcisi.suppressed = 'F'" +
+        	"                   and tcisi.item_id = item.item_id" +
+        	"                   and tcisa.item_set_id = tcisi.item_set_id" +
+        	"                   and adm.item_set_id = tcisa.ancestor_item_set_id" +
+        	"                   and cacat.item_set_category_id = ca.item_set_category_id" +
+        	"                   and cacat.item_set_category_level =" +
+        	"                       prod.content_area_level" +
+        	"                   and td.item_set_id = tcisi.item_set_id" +
+        	"                   and td.sample = 'F'" +
+        	"                   and (td.item_set_level != 'L' or prod.product_type = 'TL')" +
+        	"                   and cacat.framework_product_id = prod.parent_product_id" +
+        	"                 group by prod.product_id," +
+        	"                          prod.product_id || ca.item_set_id," +
+        	"                          ca.item_set_name," +
+        	"                          prod.product_type || ' CONTENT AREA'," +
+        	"                          prod.product_type || ' ' || ca.item_set_name," +
+        	"                          td.item_set_form," +
+        	"                          td.item_set_level," +
+        	"                          td.item_set_id) derived," +
+        	"               datapoint dp," +
+        	"               item_set_item isi" +
+        	"         where isi.item_set_id = derived.subtestid" +
+        	"           and isi.suppressed = 'F'" +
+        	"           and dp.item_id = isi.item_id) derived1" +
+        	" group by productid," +
+        	"          contentareaid," +
+        	"          contentareaname," +
+        	"          contentareatype," +
+        	"          subject," +
+        	"          contentareanumitems," +
+        	"          subtestform," +
+        	"          subtestlevel," +
+        	"          subtestid";
         
         PreparedStatement ps = null;
         ResultSet rs = null;

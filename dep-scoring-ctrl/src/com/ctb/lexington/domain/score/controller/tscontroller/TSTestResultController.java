@@ -116,7 +116,7 @@ public class TSTestResultController implements TestResultController {
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
         new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
-        new StudentObjectiveScoresController(conn, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
+        new StudentObjectiveScoresController(conn, factData, studentScoreSummaryData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted objective fact data.");
         new StudentItemScoresController(conn, studentItemScoreData, studentItemResponseData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted item fact data.");

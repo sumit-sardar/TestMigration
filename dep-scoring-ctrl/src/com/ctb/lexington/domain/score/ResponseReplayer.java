@@ -423,7 +423,7 @@ public class ResponseReplayer {
 						}
 					}
 				}
-			} else {
+			} else if (ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())) {
 				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
 					min1Correct = true;
 					break;
