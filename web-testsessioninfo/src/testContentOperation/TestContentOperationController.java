@@ -89,7 +89,7 @@ public class TestContentOperationController extends PageFlowController {
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success", path = "downloadTest.do")
     })
-    protected Forward begin()
+    protected Forward begin() throws CTBBusinessException
     {   
     	/*if(getSession().getAttribute("is3to8Selected") == null)
 			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
@@ -104,6 +104,16 @@ public class TestContentOperationController extends PageFlowController {
 			getSession().setAttribute("isEOISelected", this.isEOISelected);
 		else if(this.isUserLinkSelected)
 			getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+    	
+    	if(getSession().getAttribute("isEOIUser") != null)
+			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+		else
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+		if(getSession().getAttribute("isMappedWith3_8User") != null)
+			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+		else
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
     	
 		getLoggedInUserPrincipal();
 		
@@ -173,10 +183,23 @@ public class TestContentOperationController extends PageFlowController {
     @Jpf.Action()
     protected Forward assessments_sessionsLink()
     {
-    	try
-    	{
-    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
-    		getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/SessionWeb/sessionOperation/assessments_sessions.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+				 String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
+				 getResponse().sendRedirect(url);
+	    	}
     	} 
     	catch (IOException ioe)
     	{
@@ -188,10 +211,24 @@ public class TestContentOperationController extends PageFlowController {
     @Jpf.Action()
     protected Forward assessments_programStatus()
     {
-    	try
-    	{
-    		String url = "/SessionWeb/programOperation/assessments_programStatus.do";
-    		getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+		this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+		this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+	    {	
+	    	if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/SessionWeb/programOperation/assessments_programStatus.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+				 String url = "/SessionWeb/programOperation/assessments_programStatus.do";
+				 getResponse().sendRedirect(url);
+	    	}
     	} 
     	catch (IOException ioe)
     	{
@@ -206,10 +243,24 @@ public class TestContentOperationController extends PageFlowController {
     @Jpf.Action()
     protected Forward assessments_studentRegistrationLink()
     {
-        try
-        {
-        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
-        	getResponse().sendRedirect(url);
+    	this.is3to8Selected = (getSession().getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(getSession().getAttribute("is3to8Selected").toString()))? true: false;
+    	this.isEOISelected = (getSession().getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isEOISelected").toString()))? true: false;
+    	this.isUserLinkSelected = (getSession().getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(getSession().getAttribute("isUserLinkSelected").toString()))? true: false;
+		try
+        {	
+			if(this.isEOIUser && this.isMappedWith3_8User && this.is3to8Selected){
+	        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do?is3to8Selected="+this.is3to8Selected;
+	        	getResponse().sendRedirect(url);
+	        }else if(this.isEOIUser && this.isMappedWith3_8User && this.isEOISelected){
+	    		String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do?isEOISelected="+this.isEOISelected;
+	    		getResponse().sendRedirect(url);
+	    	}else if(this.isEOIUser && this.isMappedWith3_8User && this.isUserLinkSelected){
+	    		String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do?isUserLinkSelected="+this.isUserLinkSelected;
+	    		getResponse().sendRedirect(url);
+	    	}else{
+	        	String url = "/RegistrationWeb/registrationOperation/beginStudentRegistration.do";
+	        	getResponse().sendRedirect(url);
+	    	}
         } 
         catch (IOException ioe)
         {
