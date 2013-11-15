@@ -305,31 +305,32 @@ public class SessionOperationController extends PageFlowController {
 			e.printStackTrace();
 		}
 				   	
-    	if(this.isEOIUser && this.isMappedWith3_8User){
-    		//getSession().setAttribute(arg0, arg1);
-    		forwardName = "switchUserLogin";
-    	} 
-    	else{
-    	/* Changes for DEX Story - Add intermediate screen : End */	
-    		getLoggedInUserPrincipal();		
-    		getUserDetails();
+    /* Changes for DEX Story - Add intermediate screen : End */	
+		getLoggedInUserPrincipal();		
+		getUserDetails();
 
-        	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
-    		if (accessNewUI(customerConfigs)) {
-    			setupUserPermission(customerConfigs);
-    			
-    			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
-    	        	forwardName = "resetPassword";
-    	        }
-    	        else if (this.user.getTimeZone() == null) {
-    	        	forwardName = "setTimeZone";
-    	        }
-    	        
-    		}
-    		else {
-    			forwardName = "legacyUI";	
-    		}    		
-    	} //Changes for DEX Story - Add intermediate screen
+    	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+		if (accessNewUI(customerConfigs)) {
+			setupUserPermission(customerConfigs);
+			
+			if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+	        	forwardName = "resetPassword";
+	        }
+	        else if (this.user.getTimeZone() == null) {
+	        	forwardName = "setTimeZone";
+	        }
+	        
+		}
+		else {
+			forwardName = "legacyUI";	
+		}    		
+	 //Changes for DEX Story - Add intermediate screen
+		if(!(forwardName.equals("resetPassword") || forwardName.equals("setTimeZone"))) {
+			if(this.isEOIUser && this.isMappedWith3_8User){
+	    		//getSession().setAttribute(arg0, arg1);
+	    		forwardName = "switchUserLogin";
+	    	}
+		}
     			
 		return new Forward(forwardName);
 	} 
@@ -489,7 +490,8 @@ public class SessionOperationController extends PageFlowController {
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success", path = "gotoCurrentUI.do"),
-        @Jpf.Forward(name = "error", path = "reset_password.jsp") 
+        @Jpf.Forward(name = "error", path = "reset_password.jsp"),
+        @Jpf.Forward(name = "switchUserLogin", path = "switchUserLogin.do")
     })
     protected Forward savePassword()
     {
@@ -599,6 +601,19 @@ public class SessionOperationController extends PageFlowController {
 			 forwardName = "error";
 		 }
 		 
+		 if(forwardName.equals("success")) {
+			if(getSession().getAttribute("isEOIUser") != null)
+				this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+				
+			if(getSession().getAttribute("isMappedWith3_8User") != null)
+				this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+			
+			if(this.isEOIUser && this.isMappedWith3_8User){
+				//getSession().setAttribute(arg0, arg1);
+				forwardName = "switchUserLogin";
+			}
+		 }
+		
         return new Forward(forwardName);
     }    
     
@@ -640,7 +655,8 @@ public class SessionOperationController extends PageFlowController {
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success", path = "gotoCurrentUI.do"),
-        @Jpf.Forward(name = "error", path = "set_timezone.jsp") 
+        @Jpf.Forward(name = "error", path = "set_timezone.jsp"),
+        @Jpf.Forward(name = "switchUserLogin", path = "switchUserLogin.do")
     })
     protected Forward saveTimeZone()
     {
@@ -662,6 +678,19 @@ public class SessionOperationController extends PageFlowController {
 		}
 				
         this.getRequest().setAttribute("organizationNodes", this.userProfile.getOrganizationNodes());
+        
+        if(forwardName.equals("success")) {
+			if(getSession().getAttribute("isEOIUser") != null)
+				this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+				
+			if(getSession().getAttribute("isMappedWith3_8User") != null)
+				this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+			
+			if(this.isEOIUser && this.isMappedWith3_8User){
+				//getSession().setAttribute(arg0, arg1);
+				forwardName = "switchUserLogin";
+			}
+		 }
         
         return new Forward(forwardName);    	
     }
