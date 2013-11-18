@@ -313,6 +313,62 @@ public class CSVFileReader {
 		}
 
 	}*/
+	
+	public static Integer getSiteSurveyId(int customerIdRts,String Id,Connection con) throws Exception
+	{
+		PreparedStatement preStatement = null;
+		Integer siteSurveyId = 0;
+		try {
+			preStatement = con.prepareStatement(FileUploadUtil
+					.getSiteSurveyId());
+			
+			preStatement.setInt(1, customerIdRts);
+			preStatement.setString(2, Id);			
+			ResultSet rs = preStatement.executeQuery();
+			
+			if (rs.next()) {
+				siteSurveyId = rs.getInt("SITE_SURVEY_ID");
+			}	
+		} finally {
+			if (preStatement != null) {
+				preStatement.close();
+			}
+		}
+		
+		return siteSurveyId;
+	
+	}
+	
+	public static Map<Integer,String> getSiteSurveyIdAndType(int customerIdRts,String Id,Connection con) throws Exception
+	{
+		PreparedStatement preStatement = null;
+		Map<Integer,String> map=new HashMap<Integer, String>();
+		Integer siteSurveyId = 0;
+		String SiteType="";
+		try {
+			preStatement = con.prepareStatement(FileUploadUtil
+					.getTypeAndId());
+			
+			preStatement.setInt(1, customerIdRts);
+			preStatement.setString(2, Id);			
+			ResultSet rs = preStatement.executeQuery();
+			
+			if (rs.next()) {
+				siteSurveyId = rs.getInt("SITE_SURVEY_ID");
+				SiteType=rs.getString("SITE_TYPE");
+			}
+			map.put(siteSurveyId, SiteType);
+		} finally {
+			if (preStatement != null) {
+				preStatement.close();
+			}
+		}
+		
+		return map;
+	
+	}
+
+	
 
 	public static Integer getSiteSurveyIDBySchoolAndDistrictNo(int CUSTOMER_ID_RTS,
 			String districtNo, String schoolNo, Connection con)
@@ -339,6 +395,26 @@ public class CSVFileReader {
 		
 
 		return siteSurveyId;
+	}
+	
+	public static String getCustomerId(String id, Connection con) throws Exception{
+		PreparedStatement preStatement = null;
+		String customerId = null;
+		try {
+			preStatement = con.prepareStatement(FileUploadUtil.getSiteSurveyCustomerId());
+			preStatement.setString(1, id);
+			ResultSet rs = preStatement.executeQuery();
+			
+			if (rs.next()) {
+				customerId = rs.getString("CUSTOMER_ID");
+			}				
+		} finally {
+			if (preStatement != null) {
+				preStatement.close();
+			}
+		}
+		
+		return customerId;
 	}
 
 	public static String getCustomerId(String districtNo, String schoolNo, Connection con) throws Exception{
