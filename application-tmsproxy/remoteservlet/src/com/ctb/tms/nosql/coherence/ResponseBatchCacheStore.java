@@ -107,18 +107,18 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 		
 		
 		Connection conn = null;
-PreparedStatement storeResponseStatement = null;
-PreparedStatement deleteCRResponseStatement = null;
-PreparedStatement storeCRResponseStatement = null;
+		PreparedStatement storeResponseStatement = null;
+		PreparedStatement deleteCRResponseStatement = null;
+		PreparedStatement storeCRResponseStatement = null;
 
     	try {
     		OASRDBBatchSink sink = RDBBatchStorageFactory.getOASBatchSink();
 		    conn = sink.getOASConnection();
 		    conn.setAutoCommit(false);
 
-storeResponseStatement = sink.getStoreResponseStatement(conn);
-deleteCRResponseStatement = sink.getDeleteCRResponseStatement(conn);
-storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
+			storeResponseStatement = sink.getStoreResponseStatement(conn);
+			deleteCRResponseStatement = sink.getDeleteCRResponseStatement(conn);
+			storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
 
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		    int counter = 0;
@@ -145,80 +145,79 @@ storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
     		//Then try to implement JDBC batch update later on. 
     		//Might want to implement stored procedure for the processing, which will require lots of code changes.
 
-try{
-	storeResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();             
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());     
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
-    
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+			try {
+				storeResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
 
-try{
-	deleteCRResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();            
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());    
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
-try {
-	storeCRResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();             
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());     
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
-    
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+			try {
+				deleteCRResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
+			try {
+				storeCRResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseBatchCacheStore storeAll(Set<BinaryEntry> setBinEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
+
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
     		conn.commit();
 
@@ -266,18 +265,18 @@ try {
 //		logger.warn("Entering ResponseBatchCacheStore storeAll(Map mapEntries)");		
 		
 		Connection conn = null;
-PreparedStatement storeResponseStatement = null;
-PreparedStatement deleteCRResponseStatement = null;
-PreparedStatement storeCRResponseStatement = null;
+		PreparedStatement storeResponseStatement = null;
+		PreparedStatement deleteCRResponseStatement = null;
+		PreparedStatement storeCRResponseStatement = null;
 
     	try {
     		OASRDBBatchSink sink = RDBBatchStorageFactory.getOASBatchSink();
 		    conn = sink.getOASConnection();
 		    conn.setAutoCommit(false);
 
-storeResponseStatement = sink.getStoreResponseStatement(conn);
-deleteCRResponseStatement = sink.getDeleteCRResponseStatement(conn);
-storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
+			storeResponseStatement = sink.getStoreResponseStatement(conn);
+			deleteCRResponseStatement = sink.getDeleteCRResponseStatement(conn);
+			storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
 
     		Iterator it = mapEntries.keySet().iterator();
 		    int counter = 0;
@@ -303,79 +302,79 @@ storeCRResponseStatement = sink.getStoreCRResponseStatement(conn);
     			}
     		}
 
-try{
-	storeResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();             
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());     
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+			try {
+				storeResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
-try{
-	deleteCRResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore storeAll(Map mapEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();             
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());     
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
+			try {
+				deleteCRResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseCacheStore storeAll(Map mapEntries) deleteCRResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
 
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
-try {
-	storeCRResponseStatement.executeBatch();
-} catch(BatchUpdateException buex) {
-    logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
-    logger.warn(" Update counts: ");
-    int [] updateCounts = buex.getUpdateCounts();             
-    for (int i = 0; i < updateCounts.length; i++) {
-      logger.warn("  Statement " + i + ":" + updateCounts[i]);
-    }
-    logger.warn(" Message: " + buex.getMessage());     
-    logger.warn(" SQLSTATE: " + buex.getSQLState());
-    logger.warn(" Error code: " + buex.getErrorCode());
-    SQLException ex = buex.getNextException();                
-    while (ex != null) {                                      
-      logger.warn("SQL exception:");
-      logger.warn(" Message: " + ex.getMessage());
-      logger.warn(" SQLSTATE: " + ex.getSQLState());
-      logger.warn(" Error code: " + ex.getErrorCode());
-      ex = ex.getNextException();
-    }
-    
-    conn.rollback(); //review this in the future
-    throw new RuntimeException(buex.getMessage());
-}
+			try {
+				storeCRResponseStatement.executeBatch();
+			} catch (BatchUpdateException buex) {
+				logger.warn("ResponseCacheStore storeAll(Map mapEntries) storeCRResponseStatement: Contents of BatchUpdateException:");
+				logger.warn(" Update counts: ");
+				int[] updateCounts = buex.getUpdateCounts();
+				for (int i = 0; i < updateCounts.length; i++) {
+					logger.warn("  Statement " + i + ":" + updateCounts[i]);
+				}
+				logger.warn(" Message: " + buex.getMessage());
+				logger.warn(" SQLSTATE: " + buex.getSQLState());
+				logger.warn(" Error code: " + buex.getErrorCode());
+				SQLException ex = buex.getNextException();
+				while (ex != null) {
+					logger.warn("SQL exception:");
+					logger.warn(" Message: " + ex.getMessage());
+					logger.warn(" SQLSTATE: " + ex.getSQLState());
+					logger.warn(" Error code: " + ex.getErrorCode());
+					ex = ex.getNextException();
+				}
+
+				conn.rollback(); // review this in the future
+				throw new RuntimeException(buex.getMessage());
+			}
 
     		conn.commit();
 

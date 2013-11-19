@@ -162,7 +162,7 @@ public class ManifestCacheStore implements OASCacheStore {
 	    		try {
 		    		//if(value.isReplicate().booleanValue()) {
 		    			sink.putManifest(conn, key, value.getManifests());
-			    		conn.commit();
+//			    		conn.commit();
 		    		//} 
 	    		} catch (Exception e) {
     				success = false;
@@ -173,6 +173,10 @@ public class ManifestCacheStore implements OASCacheStore {
 			    	counter++;
     			}
     		}
+
+		    //Project Courier(John Wang): Commit here outside of the loop
+		    conn.commit();
+		    
             logger.info("ManifestCacheStore.storeAll processed " + counter + " records.");
     	} catch (Exception e) {
     		logger.warn("ManifestCacheStore.storeAll: Error storing manifests to DB: " + e.getMessage());
@@ -212,7 +216,7 @@ public class ManifestCacheStore implements OASCacheStore {
 				try {
 					//if(wrapper.isReplicate().booleanValue()) {
 						sink.putManifest(conn, key, wrapper.getManifests());
-						conn.commit();
+//						conn.commit();
 					//}
 				} catch (Exception e) {
     				success = false;
@@ -223,7 +227,11 @@ public class ManifestCacheStore implements OASCacheStore {
 			    	counter++;
     			}
 		    }
-        	logger.info("ManifestCacheStore.storeAll (binary) processed " + counter + " records.");
+
+		    //Project Courier(John Wang): Commit here outside of the loop
+		    conn.commit();
+		    
+		    logger.info("ManifestCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {
     		logger.warn("ManifestCacheStore.storeAll (binary): Error storing manifests to DB: " + e.getMessage());
 			throw new RuntimeException(e.getMessage());
