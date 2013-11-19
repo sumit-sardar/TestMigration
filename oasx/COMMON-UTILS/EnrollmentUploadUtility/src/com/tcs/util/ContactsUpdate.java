@@ -80,19 +80,22 @@ public class ContactsUpdate {
 		Map<String, String> properties=null;
 		for (Contects indvRecord : record) {
 			try {
-				String id="";
-				if(!indvRecord.getDistrictNumber().equals(""))
-					id=indvRecord.getDistrictNumber();
-				else if(!indvRecord.getSchoolNumber().equals(""))
-					 id=indvRecord.getSchoolNumber();
-				siteSurveyId=CSVFileReader.getSiteSurveyId(this.rtsCustomerId, id , connection);
+				String schoolId="";				
+				String districtId="";
+				districtId=indvRecord.getDistrictNumber();
+				if(!indvRecord.getSchoolNumber().equals(""))
+					 schoolId=indvRecord.getSchoolNumber();
+				siteSurveyId=CSVFileReader.getSiteSurveyId(this.rtsCustomerId, schoolId ,districtId, connection);
 				switch (siteSurveyId) {
 				case 0:
 					logger.info("Given Contact Update combination does not matches in DB :district id [" +indvRecord.getDistrictNumber()+"], school id ["+indvRecord.getSchoolNumber()+"]. Skipping processing of this row.");
 					break;
 
 				default:
-					customerId = CSVFileReader.getCustomerId(id, connection);
+					if(!schoolId.equals(""))
+					customerId = CSVFileReader.getCustomerId(schoolId, connection);
+					else
+					 customerId = CSVFileReader.getCustomerId(districtId, connection);	
 					if(customerId==null)
 						logger.info("Given Contact Update information combination does not matches in DB :district id [" +indvRecord.getDistrictNumber()+"], school id ["+indvRecord.getSchoolNumber()+"]. Skipping processing of this row.");
 					else{

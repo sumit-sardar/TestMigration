@@ -74,13 +74,13 @@ public class NetworkUpdate {
 
 		;
 		for (Network network : networks) {
-			String id = "";
-			if (!network.getDistNumber().equals(""))
-				id = network.getDistNumber();
-			else if (!network.getSchoolNumber().equals(""))
-				id = network.getSchoolNumber();
+			String schoolId = "";
+			String distId="";
+				distId = network.getDistNumber();
+			if (!network.getSchoolNumber().equals(""))
+				schoolId = network.getSchoolNumber();
 			Map<Integer, String> map = CSVFileReader.getSiteSurveyIdAndType(
-					rtsCustomerId, id, connection);
+					rtsCustomerId, schoolId,distId, connection);
 
 			if (map.containsKey(0))
 				logger.info("Network And workstation update information combination does not matches in DB :district id ["

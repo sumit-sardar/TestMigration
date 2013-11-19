@@ -398,17 +398,19 @@ public static String getSaveOrUpdateEnrollmentBySubject(String enrollmentTableNa
 		return sql;
 	}*/
 
-	public static String getTypeAndId(){
-		String sql="SELECT DISTINCT SITE_SURVEY_ID, SITE_TYPE FROM SITE_SURVEY WHERE CUSTOMER_ID = ? AND SITE_ID = ?";
-		return sql;
-	}
 
 	public static String getSiteSurveyId(){
-		String sql="SELECT DISTINCT SITE_SURVEY_ID  FROM SITE_SURVEY WHERE CUSTOMER_ID = ? AND SITE_ID = ?";
+		String sql="SELECT distinct S_SITE.SITE_SURVEY_ID ,S_SITE.site_type  FROM SITE_SURVEY S_SITE, SITE_SURVEY D_SITE WHERE  D_SITE.CUSTOMER_ID= ? AND D_SITE.SITE_ID = ? AND UPPER(D_SITE.SITE_TYPE) = UPPER ('CORPORATION') AND   S_SITE.SITE_ID = ?  AND  UPPER(S_SITE.SITE_TYPE) = UPPER ('SCHOOL')  AND TRIM(S_SITE.SITE_PATH) = (D_SITE.SITE_PATH||'/'||TRIM(S_SITE.SITE_NAME)) ";
 		return sql;
 	}
+	public static String getSiteSurveyIdforDsitrct()
+	{
+		String sql="SELECT distinct S_SITE.SITE_SURVEY_ID ,S_SITE.site_type  FROM SITE_SURVEY S_SITE, SITE_SURVEY D_SITE WHERE  D_SITE.CUSTOMER_ID= ? AND D_SITE.SITE_ID = ? AND UPPER(D_SITE.SITE_TYPE) = UPPER ('CORPORATION') AND TRIM(S_SITE.SITE_PATH) = (D_SITE.SITE_PATH)";
+		return sql;
+	}
+	//SELECT DISTINCT S_SITE.SITE_SURVEY_ID ,S_SITE.site_type  FROM SITE_SURVEY S_SITE, SITE_SURVEY D_SITE WHERE  D_SITE.CUSTOMER_ID= ? AND D_SITE.SITE_ID = ? AND UPPER(D_SITE.SITE_TYPE) = UPPER ('CORPORATION')
 	public static String getSiteSurveyCustomerId(){
-		String sql="SELECT DISTINCT CUSTOMER_ID FROM SITE_SURVEY WHERE SITE_ID = ?";
+		String sql="SELECT CUSTOMER_ID FROM SITE_SURVEY WHERE SITE_ID = ?";
 		return sql;
 	}
 	

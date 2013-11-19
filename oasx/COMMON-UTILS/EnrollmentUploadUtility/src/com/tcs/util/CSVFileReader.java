@@ -314,16 +314,20 @@ public class CSVFileReader {
 
 	}*/
 	
-	public static Integer getSiteSurveyId(int customerIdRts,String Id,Connection con) throws Exception
+	public static Integer getSiteSurveyId(int customerIdRts,String schoolId,String districtId,Connection con) throws Exception
 	{
 		PreparedStatement preStatement = null;
 		Integer siteSurveyId = 0;
 		try {
+			if(schoolId.equals(""))
+			preStatement=con.prepareStatement(FileUploadUtil.getSiteSurveyIdforDsitrct());
+			else
 			preStatement = con.prepareStatement(FileUploadUtil
-					.getSiteSurveyId());
-			
+					.getSiteSurveyId());			
 			preStatement.setInt(1, customerIdRts);
-			preStatement.setString(2, Id);			
+			preStatement.setString(2, districtId);
+			if(!schoolId.equals(""))			
+			preStatement.setString(3, schoolId);			
 			ResultSet rs = preStatement.executeQuery();
 			
 			if (rs.next()) {
@@ -339,18 +343,23 @@ public class CSVFileReader {
 	
 	}
 	
-	public static Map<Integer,String> getSiteSurveyIdAndType(int customerIdRts,String Id,Connection con) throws Exception
+	public static Map<Integer,String> getSiteSurveyIdAndType(int customerIdRts,String schoolId,String distId,Connection con) throws Exception
 	{
 		PreparedStatement preStatement = null;
 		Map<Integer,String> map=new HashMap<Integer, String>();
 		Integer siteSurveyId = 0;
 		String SiteType="";
 		try {
-			preStatement = con.prepareStatement(FileUploadUtil
-					.getTypeAndId());
+			if(schoolId.equals(""))
+				preStatement=con.prepareStatement(FileUploadUtil.getSiteSurveyIdforDsitrct());
+				else
+				preStatement = con.prepareStatement(FileUploadUtil
+						.getSiteSurveyId());		
 			
 			preStatement.setInt(1, customerIdRts);
-			preStatement.setString(2, Id);			
+			preStatement.setString(2, distId);
+			if(!schoolId.equals(""))			
+			preStatement.setString(3, schoolId);	
 			ResultSet rs = preStatement.executeQuery();
 			
 			if (rs.next()) {
