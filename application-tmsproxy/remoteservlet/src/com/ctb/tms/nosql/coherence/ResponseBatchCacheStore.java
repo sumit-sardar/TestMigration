@@ -168,6 +168,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 				}
 				
 				int i = 0;
+				logger.warn("    setBinEntries.size()="+setBinEntries.size());
 				for (Object each : setBinEntries) {
 					BinaryEntry b = (BinaryEntry) each;
 					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
@@ -203,6 +204,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 				}
 				
 				int i = 0;
+				logger.warn("    setBinEntries.size()="+setBinEntries.size());
 				for (Object each : setBinEntries) {
 					BinaryEntry b = (BinaryEntry) each;
 					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
@@ -238,6 +240,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 				}
 				
 				int i = 0;
+				logger.warn("    setBinEntries.size()="+setBinEntries.size());
 				for (Object each : setBinEntries) {
 					BinaryEntry b = (BinaryEntry) each;
 					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
@@ -246,7 +249,6 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 					}
 					i++;
 				}
-				
 
 				conn.rollback(); // review this in the future
 				throw new RuntimeException(buex.getMessage());

@@ -352,7 +352,8 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 		    		if(subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
 		    			seed = new Integer(manifest.getRandomDistractorSeed());
 		    		}
-		    		if(seed != null && !"".equals(seed)) {
+//		    		if(seed != null && !"".equals(seed)) {  // seed is an Integer
+		    		if(seed != null) {
 		    			stmt2.setInt(9, seed);
 		    		} else {
 		    			stmt2.setObject(9, null);
