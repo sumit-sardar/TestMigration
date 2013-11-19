@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- SBLAIS Remove the following line 
+<!--   Remove the following line 
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 -->
-<!-- SBLAIS Added the schemalocation and namespace definition -->
+<!--   Added the schemalocation and namespace definition -->
 <cache-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://xmlns.oracle.com/coherence/coherence-cache-config"
               xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-cache-config coherence-cache-config.xsd">
@@ -55,7 +55,7 @@
    			<high-units>268435456</high-units>
    			<unit-calculator>BINARY</unit-calculator>
    			<expiry-delay>12h</expiry-delay>
-   			<!-- SBLAIS Does not exist <flush-delay>1h</flush-delay> -->
+   			<!--   Does not exist <flush-delay>1h</flush-delay> -->
 		</local-scheme>
 		<local-scheme>
    			<scheme-name>FrontMemoryScheme</scheme-name>
@@ -116,10 +116,10 @@
         <distributed-scheme>            
             <scheme-name>TieredDistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
-            <thread-count>60</thread-count>    <!-- SBLAIS Moved before local-storage -->
+            <thread-count>60</thread-count>    <!--   Moved before local-storage -->
             <local-storage>true</local-storage>
-            <partition-count>509</partition-count>  <!-- SBLAIS Moved just after local-storage -->
-            <backup-count>1</backup-count> <!-- SBLAIS Moved -->
+            <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
+            <backup-count>1</backup-count> <!--   Moved -->
             <backup-count-after-writebehind>0</backup-count-after-writebehind>
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
@@ -131,10 +131,10 @@
         <distributed-scheme>            
             <scheme-name>ResponseDistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
-            <thread-count>60</thread-count>    <!-- SBLAIS Moved before local-storage -->
+            <thread-count>60</thread-count>    <!--   Moved before local-storage -->
             <local-storage>true</local-storage>
-            <partition-count>509</partition-count>  <!-- SBLAIS Moved just after local-storage -->
-            <backup-count>1</backup-count> <!-- SBLAIS Moved -->
+            <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
+            <backup-count>1</backup-count> <!--   Moved -->
             <backup-count-after-writebehind>0</backup-count-after-writebehind>
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
