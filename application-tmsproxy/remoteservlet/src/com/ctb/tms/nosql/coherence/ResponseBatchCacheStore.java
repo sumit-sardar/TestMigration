@@ -58,6 +58,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			if(conn != null) conn.close();
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     	}
     }
@@ -165,6 +166,16 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 					logger.warn(" Error code: " + ex.getErrorCode());
 					ex = ex.getNextException();
 				}
+				
+				int i = 0;
+				for (Object each : setBinEntries) {
+					BinaryEntry b = (BinaryEntry) each;
+					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
+						logger.warn("    Statement " + i + ":" + updateCounts[i]
+								+ " Failing key=" + b.getKey());
+					}
+					i++;
+				}
 
 				conn.rollback(); // review this in the future
 				throw new RuntimeException(buex.getMessage());
@@ -190,6 +201,17 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 					logger.warn(" Error code: " + ex.getErrorCode());
 					ex = ex.getNextException();
 				}
+				
+				int i = 0;
+				for (Object each : setBinEntries) {
+					BinaryEntry b = (BinaryEntry) each;
+					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
+						logger.warn("    Statement " + i + ":" + updateCounts[i]
+								+ " Failing key=" + b.getKey());
+					}
+					i++;
+				}
+				
 				conn.rollback(); // review this in the future
 				throw new RuntimeException(buex.getMessage());
 			}
@@ -214,6 +236,17 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 					logger.warn(" Error code: " + ex.getErrorCode());
 					ex = ex.getNextException();
 				}
+				
+				int i = 0;
+				for (Object each : setBinEntries) {
+					BinaryEntry b = (BinaryEntry) each;
+					if (updateCounts[i] == java.sql.Statement.EXECUTE_FAILED) {
+						logger.warn("    Statement " + i + ":" + updateCounts[i]
+								+ " Failing key=" + b.getKey());
+					}
+					i++;
+				}
+				
 
 				conn.rollback(); // review this in the future
 				throw new RuntimeException(buex.getMessage());
@@ -233,6 +266,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     		try {
     			if(deleteCRResponseStatement!= null) {
@@ -241,6 +275,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     		try {
     			if(storeCRResponseStatement!= null) {
@@ -249,6 +284,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     		try {
     			if(conn != null) {
@@ -257,6 +293,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     	}
 	}
@@ -322,6 +359,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 					logger.warn(" Error code: " + ex.getErrorCode());
 					ex = ex.getNextException();
 				}
+				
 				conn.rollback(); // review this in the future
 				throw new RuntimeException(buex.getMessage());
 			}
@@ -391,6 +429,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     		try {
     			if(deleteCRResponseStatement!= null) {
@@ -399,6 +438,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     		try {
     			if(storeCRResponseStatement!= null) {
@@ -407,6 +447,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
 
     		try {
@@ -416,6 +457,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     			}
     		} catch (SQLException sqe) {
     			// do nothing
+    			logger.warn(sqe.getMessage());
     		}
     	}
 	}
