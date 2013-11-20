@@ -116,8 +116,12 @@ function openPrismApplication(location)
 	
 	if (!sc_null)
 	{
+	 	var windowHeight = $(window).height() - 50;
+    	var windowWidth = $(window).width() - 100;
+    	var left = (screen.width/2)-(windowWidth/2);
+  		var top = (screen.height/2)-(windowHeight/2);
 		//[IAA]: defect#75805: IE disallows spaces and other characters in window name (second argument). "Prism Online Reporting" => "PrismOnlineReporting"
-    	PrismOnlineReporting = window.open(location, "PrismOnlineReporting",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=800, height=600');
+    	PrismOnlineReporting = window.open(location, "PrismOnlineReporting",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width='+windowWidth+', height='+windowHeight+', top='+top+', left='+left);
     }
     return false;
 }
