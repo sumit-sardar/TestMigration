@@ -98,8 +98,8 @@ public class ValidateGRResponse {
 							System.out.println("Rule 11 Applied");
 							break;
 						case 12:
-							sanitizedString = RuleSet.Rule11(sanitizedString);
-							System.out.println("Rule 11 Applied");
+							sanitizedString = RuleSet.Rule12(sanitizedString);
+							System.out.println("Rule 12 Applied");
 							break;
 						case 14:
 							rawScore = RuleSet.Rule14(itemId, sanitizedString, grItemCorrectAnswer);
@@ -143,10 +143,15 @@ public class ValidateGRResponse {
 				answerSet = answerSetString.split(",");
 				System.out.println("Correct Answer:" + answerSetString);
 				for (String answer : answerSet) {
-//					if (sanitizedString.equals(answer))
+//					if (sanitizedString.equals(answer)){
 //						return "1";
-					//Check by converting double value
-					if(Double.parseDouble(sanitizedString)==Double.parseDouble(answer))
+//					}
+					// Check if there is % sign in answer
+					if(sanitizedString.indexOf("%")>-1){
+						if (sanitizedString.equals(answer)){
+							return "1";
+						}
+					}else if(Double.parseDouble(sanitizedString)==Double.parseDouble(answer))    //Check by converting double value
 						return "1";
 				}
 			}
