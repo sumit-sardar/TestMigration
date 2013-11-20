@@ -24,11 +24,11 @@ public class ContactsUpdate {
 	private int rtsCustomerId;
 	private Connection connection;
 	private String sql=" merge into site_survey t using (select 1 from DUAL) s on (t.SITE_SURVEY_ID = ?)  when matched then"+
-	" update set t.SITE_ID = ?, t.SITE_NAME = ?, t.SITE_TYPE = ? , t.TEST_COORD_FIRST = ? , t.TEST_COORD_LAST = ?,"+
+	" update set t.SITE_ID = ?, t.SITE_TYPE = ? , t.TEST_COORD_FIRST = ? , t.TEST_COORD_LAST = ?,"+
 	 " t.TEST_COORD_EMAIL = ?, t.TEST_COORD_PHONE= ?, t.TECH_COORD_FIRST = ?, t.TECH_COORD_LAST = ?, t.TECH_COORD_EMAIL = ?,"+
-	 " t.TECH_COORD_PHONE = ? when not matched then insert  (SITE_SURVEY_ID, SITE_ID, SITE_NAME , SITE_TYPE , TEST_COORD_FIRST , TEST_COORD_LAST,"+
+	 " t.TECH_COORD_PHONE = ? when not matched then insert  (SITE_SURVEY_ID, SITE_ID, SITE_TYPE , TEST_COORD_FIRST , TEST_COORD_LAST,"+
 	 " TEST_COORD_EMAIL, TEST_COORD_PHONE, TECH_COORD_FIRST , TECH_COORD_LAST , TECH_COORD_EMAIL , TECH_COORD_PHONE)"+
-	 " values (?, ?, ? , ? , ? , ?,?, ?, ? , ? , ? , ?)";
+	 " values (?, ?, ? , ? , ?,?, ?, ? , ? , ? , ?)";
 
 	public ContactsUpdate(String dbprop, String csv, String year,
 			String marketType) {
@@ -82,45 +82,19 @@ public class ContactsUpdate {
 			try {
 				String schoolId="";				
 				String districtId="";
-				districtId=indvRecord.getDistrictNumber();
+				districtId=indvRecord.getDistrictNumber().trim();
 				if(!indvRecord.getSchoolNumber().equals(""))
-					 schoolId=indvRecord.getSchoolNumber();
+					 schoolId=indvRecord.getSchoolNumber().trim();
 				siteSurveyId=CSVFileReader.getSiteSurveyId(this.rtsCustomerId, schoolId ,districtId, connection);
 				switch (siteSurveyId) {
 				case 0:
 					logger.info("Given Contact Update combination does not matches in DB :district id [" +indvRecord.getDistrictNumber()+"], school id ["+indvRecord.getSchoolNumber()+"]. Skipping processing of this row.");
 					break;
 
-				default:
-					if(!schoolId.equals(""))
-					customerId = CSVFileReader.getCustomerId(schoolId, connection);
-					else
-					 customerId = CSVFileReader.getCustomerId(districtId, connection);	
-					if(customerId==null)
-						logger.info("Given Contact Update information combination does not matches in DB :district id [" +indvRecord.getDistrictNumber()+"], school id ["+indvRecord.getSchoolNumber()+"]. Skipping processing of this row.");
-					else{
-						properties = CSVFileReader.getCustomerPropValuesById(customerId, connection);	
-						if(null == properties){
-							isSubject = false; //old corporation/district might not have properties
-						}else{
-							if(properties.get("ENROLLMENTBYSUBJECT") != null && 
-									properties.get("ENROLLMENTBYSUBJECT").equalsIgnoreCase("TRUE")){
-								
-								isSubject = true;								
-							}else{						
-								isSubject = false;								
-							}
-						}
-						customerType=properties.get("CUSTOMERTYPE");
-						//logger.info("CustomerType From Databse------------------->="+customerType);	
-						if(!isSubject){
-							UpdateContactHelper contactHelpher=new UpdateContactHelper(preparedStatement);
-							contactHelpher.processEachRecordForOkhlahama(siteSurveyId, indvRecord, customerId);
-						}else{
-							//logic will come in future if by something is dependent on enrollment of okhlahama by subject
-						}
+				default:			
 						
-					}						
+							UpdateContactHelper contactHelpher=new UpdateContactHelper(preparedStatement);
+							contactHelpher.processEachRecordForOkhlahama(siteSurveyId, indvRecord, customerId);											
 					break;//this is switch case break;
 				}
 				
