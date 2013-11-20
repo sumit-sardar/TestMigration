@@ -9,30 +9,6 @@ a development mode.
             xmlns="http://xmlns.oracle.com/coherence/coherence-operational-config"
             xsi:schemaLocation="http://xmlns.oracle.com/coherence/coherence-operational-config coherence-operational-config.xsd"
             xml-override="/tangosol-coherence-override.xml">    
-	<cluster-config>
-    <member-identity>
-      <cluster-name system-property="tangosol.coherence.cluster">tms</cluster-name>
-      <site-name    system-property="tangosol.coherence.site"></site-name>
-      <rack-name    system-property="tangosol.coherence.rack"></rack-name>
-      <machine-name system-property="tangosol.coherence.machine"></machine-name>
-      <process-name system-property="tangosol.coherence.process"></process-name>
-      <member-name  system-property="tangosol.coherence.member"></member-name>
-      <role-name    system-property="tangosol.coherence.role"></role-name>
-      <priority     system-property="tangosol.coherence.priority"></priority>
-    </member-identity>
-	
-    <unicast-listener>
-      <address system-property="tangosol.coherence.localhost">localhost</address>
-      <port system-property="tangosol.coherence.localport">23101</port>
-      <port-auto-adjust system-property="tangosol.coherence.localport.adjust">false</port-auto-adjust>
-
-    </unicast-listener>
-
-    <multicast-listener>
-      <address system-property="tangosol.coherence.clusteraddress">237.0.0.1</address>
-      <port system-property="tangosol.coherence.clusterport">23198</port>
-    </multicast-listener>
-</cluster-config>
 
   <logging-config>
     <severity-level system-property="tangosol.coherence.log.level">5</severity-level>
