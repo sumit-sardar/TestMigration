@@ -538,11 +538,13 @@ public class PrismWebServiceDBUtility {
 			rs = pst.executeQuery();
 			System.out.println("PrismWebServiceDBUtility.getContentDetailsTO : Query for getContentDetailsTO : " + GET_CONTENT_DETAILS);
 			
+			Map<Integer, ContentDetailsTO> contentDetailsTOMap = getContentDetailsTOMap();
+					
 			while(rs.next()){
-				ContentDetailsTO contentDetailsTO = new ContentDetailsTO();
-				contentDetailsTO.setDataChanged(true);
 				String contentCodeName = rs.getString("content_code_name");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
+				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
+				contentDetailsTO.setDataChanged(true);
 				if(contentCode != null){
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
 					
@@ -595,16 +597,13 @@ public class PrismWebServiceDBUtility {
 					
 					List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = getObjectiveScoreDetails(rs.getLong("item_set_id"), rosterId, sessionId, studentId, contentCode);
 					contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
-					
-					contentDetailsTOList.add(contentDetailsTO);
 				}
 			}
 			
-			//Get the composite content score details
-			List<ContentDetailsTO> compContentDetails = getCompositeContentScoreDetails(studentId, sessionId);
-			contentDetailsTOList.addAll(compContentDetails);
+			//Set the composite content score details
+			setCompositeContentScoreDetails(studentId, sessionId, contentDetailsTOMap);
 			
-			
+			contentDetailsTOList.addAll(contentDetailsTOMap.values());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -613,6 +612,51 @@ public class PrismWebServiceDBUtility {
 		return contentDetailsTOList;
 	}
 	
+	/**
+	 * Get the Content Details TO map
+	 * @return
+	 */
+	private static Map<Integer, ContentDetailsTO> getContentDetailsTOMap() {
+		Map<Integer, ContentDetailsTO> contentDetailsTOMap =  new HashMap<Integer, ContentDetailsTO>();
+		
+		ContentDetailsTO readingContentDetailsTO = new ContentDetailsTO();
+		readingContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		readingContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading") , readingContentDetailsTO);
+		
+		ContentDetailsTO writingContentDetailsTO = new ContentDetailsTO();
+		writingContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		writingContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing") , writingContentDetailsTO);
+		
+		ContentDetailsTO elaContentDetailsTO = new ContentDetailsTO();
+		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		elaContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA") ,elaContentDetailsTO);
+		
+		ContentDetailsTO mathContentDetailsTO = new ContentDetailsTO();
+		mathContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		mathContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics") , mathContentDetailsTO);
+		
+		ContentDetailsTO scienceContentDetailsTO = new ContentDetailsTO();
+		scienceContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		scienceContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science") , scienceContentDetailsTO);
+		
+		ContentDetailsTO soclStudContentDetailsTO = new ContentDetailsTO();
+		soclStudContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		soclStudContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies") , soclStudContentDetailsTO);
+		
+		ContentDetailsTO overallContentDetailsTO = new ContentDetailsTO();
+		overallContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		overallContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall")));
+		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall") , overallContentDetailsTO);
+		
+		return contentDetailsTOMap;
+	}
+
 	/**
 	 * Get the Content Area ID Map
 	 * @param rosterId
@@ -732,26 +776,27 @@ public class PrismWebServiceDBUtility {
 	
 
 	/**
-	 * Get the composite content score details
+	 * Set the composite content score details
 	 * @param studentId
 	 * @param sessionId
+	 * @param contentDetailsTOMap 
 	 * @return
 	 * @throws CTBBusinessException
 	 * @throws SQLException
 	 */
-	private static List<ContentDetailsTO> getCompositeContentScoreDetails(
-			Integer studentId, long sessionId) {
+	private static List<ContentDetailsTO> setCompositeContentScoreDetails(
+			Integer studentId, long sessionId, Map<Integer, ContentDetailsTO> contentDetailsTOMap) {
 		PreparedStatement compTestPst = null;
 		ResultSet compTestRS = null;
 		Connection irsCon = null;
 		List<ContentDetailsTO> contentDetailsTOList = new ArrayList<ContentDetailsTO>();
 		
-		ContentDetailsTO elaContentDetailsTO =  new ContentDetailsTO();
+		ContentDetailsTO elaContentDetailsTO =  contentDetailsTOMap.get(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA"));
 		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
 		elaContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA")));
 		contentDetailsTOList.add(elaContentDetailsTO);
 		
-		ContentDetailsTO overAllContentDetailsTO =  new ContentDetailsTO();
+		ContentDetailsTO overAllContentDetailsTO =  contentDetailsTOMap.get(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall"));
 		overAllContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
 		overAllContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall")));
 		contentDetailsTOList.add(overAllContentDetailsTO);
