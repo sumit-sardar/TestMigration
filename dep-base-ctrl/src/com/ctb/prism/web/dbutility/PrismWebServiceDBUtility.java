@@ -544,8 +544,8 @@ public class PrismWebServiceDBUtility {
 				String contentCodeName = rs.getString("content_code_name");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
-				contentDetailsTO.setDataChanged(true);
-				if(contentCode != null){
+				if(contentCode != null && contentDetailsTO != null){
+					contentDetailsTO.setDataChanged(true);
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
 					
 					contentDetailsTO.setDataChanged(true);
