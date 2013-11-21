@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ctb.bean.Contects;
 import com.ctb.bean.Network;
+import com.ctb.bean.WorkStation;
 
 final public class DataFormater {
 
@@ -42,20 +43,30 @@ final public class DataFormater {
 			String record[] = (String[]) list.get(i);
 			Network network=new Network();
 			network.setDistNumber(record[0]);
-			network.setSchoolNumber(record[1]);
-			network.setTypeOfWorkstation(record[2]);
-			network.setNumberOfWorkstation(record[3]);
-			network.setOperatingSystem(record[4]);
-			network.setProcessorSpeed(record[5]);
-			network.setMemory(record[6]);
-			network.setInternetConnectionType(record[7]);
-			network.setUpSpeed(record[8]);
-			network.setDownSpeed(record[9]);
+			network.setSchoolNumber(record[1]);	
+			network.setInternetConnectionType(record[2]);
+			network.setDownSpeed(record[3]);
+			network.setUpSpeed(record[4]);			
 			networkList.add(network);			
 		}// end of loop
 		return networkList;
 	}// end of method
 
-	
+	public List<WorkStation> getWorkStationList(List list) {
+		List<WorkStation> WorkStationList = new ArrayList<WorkStation>();
+		for (int i = 1; i < list.size(); i++) {
+			String record[] = (String[]) list.get(i);
+			WorkStation network=new WorkStation();
+			network.setDistNumber(record[0]);
+			network.setSchoolNumber(record[1]);
+			network.setTypeOfWorkstation(record[2]);
+			network.setNumberOfWorkstation(record[3]);
+			network.setOperatingSystem(record[4]);
+			network.setProcessorSpeed(record[5]);
+			network.setMemory(record[6]);		
+			WorkStationList.add(network);			
+		}// end of loop
+		return WorkStationList;
+	}// end of method
 	
 }// end of class

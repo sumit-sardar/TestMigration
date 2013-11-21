@@ -4,12 +4,8 @@ public class Network
 {
 	private String distNumber;	
 	private String schoolNumber;
-	private String siteType;
-	private String typeOfWorkstation;
-	private String numberOfWorkstation;
-	private String operatingSystem;
-	private String processorSpeed;
-	private String memory;
+	
+	
 	private String internetConnectionType;
 	private String downSpeed;
 	private String upSpeed;
@@ -32,56 +28,8 @@ public class Network
 
 	public void setSchoolNumber(String schoolNumber) {
 		this.schoolNumber = schoolNumber;
-	}
-
-	public String getSiteType() {
-		return siteType;
-	}
-
-	public void setSiteType(String siteType) {
-		this.siteType = siteType;
-	}
-
-	public String getTypeOfWorkstation() {
-		return typeOfWorkstation;
-	}
-
-	public void setTypeOfWorkstation(String typeOfWorkstation) {
-		this.typeOfWorkstation = typeOfWorkstation;
-	}
-
-	public String getNumberOfWorkstation() {
-		return numberOfWorkstation;
-	}
-
-	public void setNumberOfWorkstation(String numberOfWorkstation) {
-		this.numberOfWorkstation = numberOfWorkstation;
-	}
-
-	public String getOperatingSystem() {
-		return operatingSystem;
-	}
-
-	public void setOperatingSystem(String operatingSystem) {
-		this.operatingSystem = operatingSystem;
-	}
-
-	public String getProcessorSpeed() {
-		return processorSpeed;
-	}
-
-	public void setProcessorSpeed(String processorSpeed) {
-		this.processorSpeed = processorSpeed;
-	}
-
-	public String getMemory() {
-		return memory;
-	}
-
-	public void setMemory(String memory) {
-		this.memory = memory;
-	}
-
+	}	
+	
 	public String getInternetConnectionType() {
 		return internetConnectionType;
 	}

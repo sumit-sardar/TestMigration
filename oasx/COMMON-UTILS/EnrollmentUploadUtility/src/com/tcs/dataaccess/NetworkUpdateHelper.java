@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import com.ctb.bean.Network;
+import com.ctb.bean.WorkStation;
 
 public class NetworkUpdateHelper {
 
@@ -14,10 +15,16 @@ public class NetworkUpdateHelper {
 
 	private Integer surveyId;
 	private Network network;
+	private WorkStation workStation;
 
 	public NetworkUpdateHelper(Integer siteSurveyID, Network network) {
 		this.surveyId = siteSurveyID;
 		this.network = network;
+	}
+
+	public NetworkUpdateHelper(Integer siteSurveyID, WorkStation workStation) {
+		this.surveyId = siteSurveyID;
+		this.workStation = workStation;
 	}
 
 	public boolean updateSiteSurveyTable(PreparedStatement preparedStatement)
@@ -26,53 +33,81 @@ public class NetworkUpdateHelper {
 		return false;
 	}
 
-	public int updateSiteSurveyNetowkTable(
-			PreparedStatement preparedStatement) throws SQLException {
-		preparedStatement.setString(1, network.getInternetConnectionType());
-
+	public int updateSiteSurveyNetowkTable(PreparedStatement preparedStatement)
+			throws SQLException {
+		
+		preparedStatement.setInt(1, this.surveyId);
+		
+		preparedStatement.setString(2, network.getInternetConnectionType());
 		if (!network.getUpSpeed().equals(""))
-			preparedStatement.setString(2, network.getUpSpeed());
-		else
-			preparedStatement.setString(2, "--");
-		if (!network.getDownSpeed().equals(""))
-			preparedStatement.setString(3, network.getDownSpeed());
+			preparedStatement.setString(3,  network.getDownSpeed());
 		else
 			preparedStatement.setString(3, "--");
-		preparedStatement.setInt(4, this.surveyId);
+		if (!network.getDownSpeed().equals(""))
+			preparedStatement.setString(4,network.getUpSpeed());
+		else
+			preparedStatement.setString(4, "--");
+		preparedStatement.setInt(5, this.surveyId);
+		preparedStatement.setString(6, network.getInternetConnectionType());
+		if (!network.getUpSpeed().equals(""))
+			preparedStatement.setString(7, network.getDownSpeed());
+		else
+			preparedStatement.setString(7, "--");
+		if (!network.getDownSpeed().equals(""))
+			preparedStatement.setString(8, network.getUpSpeed());
+		else
+			preparedStatement.setString(8, "--");
+		
 		int flag = preparedStatement.executeUpdate();
-		if(flag==0)
-			logger.info("Network record not updated for "+this.surveyId+" There is no network for this id");
+		if (flag == 0)
+			logger.info("Network record not updated for " + this.surveyId);
 		return flag;
 	}
 
 	public int updateSiteSurveyWorkstationTable(
 			PreparedStatement preparedStatement) throws SQLException {
-		// update site_survey_workstation ws set ws.workstation_type = ? ,
-		// ws.WORKSTATION_COUNT = ? ,
-		// ws.OPERATING_SYSTEM = ?,
-		// ws.PROCESSOR = ?
-		// ws.PHYSICAL_MEMORY = ? where ws.SITE_SURVEY_ID = ?
-		preparedStatement.setString(1, network.getTypeOfWorkstation());
-		if(!network.getNumberOfWorkstation().equals(""))
-		preparedStatement.setString(2, network.getNumberOfWorkstation());
+
+		preparedStatement.setInt(1, this.surveyId);
+		preparedStatement.setString(2, workStation.getOperatingSystem());
+		preparedStatement.setString(3, workStation.getTypeOfWorkstation());
+		if (!workStation.getNumberOfWorkstation().equals(""))
+			preparedStatement
+					.setString(4, workStation.getNumberOfWorkstation());
 		else
-		preparedStatement.setString(2, "0");
-		if(!network.getOperatingSystem().equals(""))
-		preparedStatement.setString(3, network.getOperatingSystem());
-		else
-			preparedStatement.setString(3, "--");
-		if(!network.getProcessorSpeed().equals(""))
-		preparedStatement.setString(4, network.getProcessorSpeed());
-		else
-		preparedStatement.setString(4,"--");
-		if(!network.getMemory().equals(""))
-		preparedStatement.setString(5, network.getMemory());
+			preparedStatement.setString(4, "0");
+		if (!workStation.getProcessorSpeed().equals(""))
+			preparedStatement.setString(5, workStation.getProcessorSpeed());
 		else
 			preparedStatement.setString(5, "--");
-		preparedStatement.setInt(6, this.surveyId);
+		if (!workStation.getMemory().equals(""))
+			preparedStatement.setString(6, workStation.getMemory());
+		else
+			preparedStatement.setString(6, "--");
+
+		preparedStatement.setInt(7, this.surveyId);
+		if (!workStation.getOperatingSystem().equals(""))
+			preparedStatement.setString(8, workStation.getOperatingSystem());
+		else
+			preparedStatement.setString(8, "--");
+
+		preparedStatement.setString(9, workStation.getTypeOfWorkstation());
+		if (!workStation.getNumberOfWorkstation().equals(""))
+			preparedStatement.setString(10,
+					workStation.getNumberOfWorkstation());
+		else
+			preparedStatement.setString(10, "0");
+		if (!workStation.getProcessorSpeed().equals(""))
+			preparedStatement.setString(11, workStation.getProcessorSpeed());
+		else
+			preparedStatement.setString(11, "--");
+		if (!workStation.getMemory().equals(""))
+			preparedStatement.setString(12, workStation.getMemory());
+		else
+			preparedStatement.setString(12, "--");
 		int flag = preparedStatement.executeUpdate();
-		if(flag==0)
-			logger.info("Workstation record not updated for "+this.surveyId+" There is no workstation for this id");
+		if (flag == 0)
+			logger.info("Workstation record not updated for " + this.surveyId
+					+ " There is no workstation for this id");
 		return flag;
 	}
 
