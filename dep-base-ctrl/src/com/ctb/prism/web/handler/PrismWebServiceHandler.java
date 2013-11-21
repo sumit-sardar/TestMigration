@@ -289,4 +289,19 @@ public class PrismWebServiceHandler {
 		System.out.println("XML forwarded to Prism Web Service >>>>>>>>>>>>>> \n" + xstream.toXML(studentListTO));
 	}
 	
+	/**
+	 * Test the web service standalone
+	 * @param args
+	 * @throws NumberFormatException
+	 * @throws Exception
+	 */
+	public static void main(String[] args) throws NumberFormatException, Exception {
+		//Edit Student
+		if("1".equals(args[0])){
+			editStudent(Integer.valueOf(args[1]));
+		}else{//Scoring 
+			scoring(Long.valueOf(args[1]), Integer.valueOf(args[2]), Long.valueOf(args[3]));
+		}
+	}
+	
 }
