@@ -623,39 +623,48 @@ public class PrismWebServiceDBUtility {
 	private static Map<Integer, ContentDetailsTO> getContentDetailsTOMap() {
 		Map<Integer, ContentDetailsTO> contentDetailsTOMap =  new HashMap<Integer, ContentDetailsTO>();
 		
+		String omitedStatusCode = String.valueOf(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
+		
 		ContentDetailsTO readingContentDetailsTO = new ContentDetailsTO();
-		readingContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		readingContentDetailsTO.setStatusCode(omitedStatusCode);
 		readingContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading")));
+		readingContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading") , readingContentDetailsTO);
 		
 		ContentDetailsTO writingContentDetailsTO = new ContentDetailsTO();
-		writingContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		writingContentDetailsTO.setStatusCode(omitedStatusCode);
 		writingContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing")));
+		writingContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing") , writingContentDetailsTO);
 		
 		ContentDetailsTO elaContentDetailsTO = new ContentDetailsTO();
-		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		elaContentDetailsTO.setStatusCode(omitedStatusCode);
 		elaContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA")));
+		elaContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA") ,elaContentDetailsTO);
 		
 		ContentDetailsTO mathContentDetailsTO = new ContentDetailsTO();
-		mathContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		mathContentDetailsTO.setStatusCode(omitedStatusCode);
 		mathContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics")));
+		mathContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics") , mathContentDetailsTO);
 		
 		ContentDetailsTO scienceContentDetailsTO = new ContentDetailsTO();
-		scienceContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		scienceContentDetailsTO.setStatusCode(omitedStatusCode);
 		scienceContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science")));
+		scienceContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science") , scienceContentDetailsTO);
 		
 		ContentDetailsTO soclStudContentDetailsTO = new ContentDetailsTO();
-		soclStudContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		soclStudContentDetailsTO.setStatusCode(omitedStatusCode);
 		soclStudContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies")));
+		soclStudContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies") , soclStudContentDetailsTO);
 		
 		ContentDetailsTO overallContentDetailsTO = new ContentDetailsTO();
-		overallContentDetailsTO.setStatusCode(PrismWebServiceConstant.OmittedContentStatusCode);
+		overallContentDetailsTO.setStatusCode(omitedStatusCode);
 		overallContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall")));
+		overallContentDetailsTO.setDataChanged(true);
 		contentDetailsTOMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall") , overallContentDetailsTO);
 		
 		return contentDetailsTOMap;
