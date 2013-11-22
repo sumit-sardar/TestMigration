@@ -451,7 +451,7 @@ public class PrismWebServiceDBUtility {
 		ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 		List<ContentScoreTO> contentScoreTOLst = contentScoreDetailsTO.getCollContentScoreTO(); 
 		
-		String scoringStatus = "";
+		String scoringStatus = PrismWebServiceConstant.OmittedContentStatusCode;
 		
 		Object[] retObj = new Object[2];
 		
@@ -564,7 +564,9 @@ public class PrismWebServiceDBUtility {
 					
 					
 					String statusCode = getContentStatusCode(rosterId, rs.getLong("item_set_id"));
-					contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
+					if(statusCode != null && !"".equals(statusCode)){
+						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
+					}
 					
 					if(PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName) != null){
 						SubtestAccommodationsTO subtestAccommodationsTO =  PrismWebServiceDBUtility.getSubTestAccommodation(studentId, contentCodeName);
@@ -587,6 +589,8 @@ public class PrismWebServiceDBUtility {
 							contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}
+					}else{
+						contentDetailsTO.setStatusCode("");
 					}
 					
 					ContentScoreDetailsTO contentScoreDetailsTO = (ContentScoreDetailsTO) contentScoreDetailsObjs[0];
