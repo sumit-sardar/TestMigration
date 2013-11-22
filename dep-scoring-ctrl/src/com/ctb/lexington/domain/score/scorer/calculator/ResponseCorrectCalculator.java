@@ -101,7 +101,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					}
 				}
 				//  TODO: how do we handle CR item responses?
-				/*else {
+				else {
 					final Integer pointsObtained = event.getPointsObtained();
 					if (pointsObtained != null) {
 						if (pointsObtained > 0) {
@@ -112,7 +112,7 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
 					} else {
 						channel.send(new NoResponseEvent(event));
 					}
-				}*/
+				}
 			}
 		}
 	}
