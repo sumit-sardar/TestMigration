@@ -100,6 +100,7 @@ public class PrismWebServiceConstant {
 		contentDetailsStausCodeMap.put(OmittedContentStatusCode, "3");
 		contentDetailsStausCodeMap.put(InvalidContentStatusCode, "5");
 		contentDetailsStausCodeMap.put(SuppressedContentStatusCode, "6");
+		contentDetailsStausCodeMap.put(NACompositeStatusCode, "7");
 		
 		resourceBundler = ResourceBundle.getBundle("PrismWebService");
 		

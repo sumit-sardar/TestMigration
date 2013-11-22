@@ -623,7 +623,7 @@ public class PrismWebServiceDBUtility {
 	private static Map<Integer, ContentDetailsTO> getContentDetailsTOMap() {
 		Map<Integer, ContentDetailsTO> contentDetailsTOMap =  new HashMap<Integer, ContentDetailsTO>();
 		
-		String omitedStatusCode = String.valueOf(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
+		String omitedStatusCode = PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode);
 		
 		ContentDetailsTO readingContentDetailsTO = new ContentDetailsTO();
 		readingContentDetailsTO.setStatusCode(omitedStatusCode);
@@ -805,12 +805,12 @@ public class PrismWebServiceDBUtility {
 		List<ContentDetailsTO> contentDetailsTOList = new ArrayList<ContentDetailsTO>();
 		
 		ContentDetailsTO elaContentDetailsTO =  contentDetailsTOMap.get(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA"));
-		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
+		elaContentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.NACompositeStatusCode));
 		elaContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA")));
 		contentDetailsTOList.add(elaContentDetailsTO);
 		
 		ContentDetailsTO overAllContentDetailsTO =  contentDetailsTOMap.get(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall"));
-		overAllContentDetailsTO.setStatusCode(PrismWebServiceConstant.NACompositeStatusCode);
+		overAllContentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.NACompositeStatusCode));
 		overAllContentDetailsTO.setContentCode(String.valueOf(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall")));
 		contentDetailsTOList.add(overAllContentDetailsTO);
 		
