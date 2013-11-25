@@ -2987,6 +2987,11 @@ public class SessionOperationController extends PageFlowController {
     		this.isEOISelected = (getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))? true: false;
     	if(getSession().getAttribute("isUserLinkSelected") == null)
     		this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
+    	
+    	getLoggedInUserPrincipal();
+        getUserDetails();
+        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+        setupUserPermission(customerConfigs);
 
         return new Forward("success");
     }
