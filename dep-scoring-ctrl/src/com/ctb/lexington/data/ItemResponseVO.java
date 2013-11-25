@@ -53,6 +53,8 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
     private String answerArea;
     private String itemType;
     private String correctAnswer; // Added for tabe adaptive
+    private Integer crResponse;	//Added for TASC
+    private String conditionCode;	// Added for TASC
 
 	/**
 	 * @return Returns the constructedResponse.
@@ -322,6 +324,30 @@ public class ItemResponseVO implements Persistent, Serializable, java.lang.Clone
 	 */
 	public void setItemType(String itemType) {
 		this.itemType = itemType;
+	}
+	/**
+	 * @return the crResponse
+	 */
+	public Integer getCrResponse() {
+		return crResponse;
+	}
+	/**
+	 * @return the conditionCode
+	 */
+	public String getConditionCode() {
+		return conditionCode;
+	}
+	/**
+	 * @param crResponse the crResponse to set
+	 */
+	public void setCrResponse(Integer crResponse) {
+		this.crResponse = crResponse;
+	}
+	/**
+	 * @param conditionCode the conditionCode to set
+	 */
+	public void setConditionCode(String conditionCode) {
+		this.conditionCode = conditionCode;
 	}
     
 }
