@@ -64,47 +64,29 @@ public class NetworkUpdateHelper {
 		return flag;
 	}
 
-	public int updateSiteSurveyWorkstationTable(
+	public int insertSiteSurveyWorkstationTable(
 			PreparedStatement preparedStatement) throws SQLException {
-
-		preparedStatement.setInt(1, this.surveyId);
-		preparedStatement.setString(2, workStation.getOperatingSystem());
-		preparedStatement.setString(3, workStation.getTypeOfWorkstation());
+		//insert into site_survey_workstation sw (sw.site_survey_id, sw.workstation_count,sw.workstation_type,sw.operating_system,sw.processor,sw.physical_memory) values (?, ?, ?, ?, ?, ?)
+			preparedStatement.setInt(1, this.surveyId);
 		if (!workStation.getNumberOfWorkstation().equals(""))
-			preparedStatement
-					.setString(4, workStation.getNumberOfWorkstation());
+			preparedStatement.setString(2, workStation.getNumberOfWorkstation());
 		else
-			preparedStatement.setString(4, "0");
+			preparedStatement.setString(2, "0");		
+		preparedStatement.setString(3, workStation.getTypeOfWorkstation());
+		
+		if (!workStation.getOperatingSystem().equals(""))
+			preparedStatement.setString(4, workStation.getOperatingSystem());
+		else
+			preparedStatement.setString(4, "--");
 		if (!workStation.getProcessorSpeed().equals(""))
-			preparedStatement.setString(5, workStation.getProcessorSpeed());
+		preparedStatement.setString(5, workStation.getProcessorSpeed());
 		else
 			preparedStatement.setString(5, "--");
 		if (!workStation.getMemory().equals(""))
-			preparedStatement.setString(6, workStation.getMemory());
+		    preparedStatement.setString(6, workStation.getMemory());
 		else
 			preparedStatement.setString(6, "--");
-
-		preparedStatement.setInt(7, this.surveyId);
-		if (!workStation.getOperatingSystem().equals(""))
-			preparedStatement.setString(8, workStation.getOperatingSystem());
-		else
-			preparedStatement.setString(8, "--");
-
-		preparedStatement.setString(9, workStation.getTypeOfWorkstation());
-		if (!workStation.getNumberOfWorkstation().equals(""))
-			preparedStatement.setString(10,
-					workStation.getNumberOfWorkstation());
-		else
-			preparedStatement.setString(10, "0");
-		if (!workStation.getProcessorSpeed().equals(""))
-			preparedStatement.setString(11, workStation.getProcessorSpeed());
-		else
-			preparedStatement.setString(11, "--");
-		if (!workStation.getMemory().equals(""))
-			preparedStatement.setString(12, workStation.getMemory());
-		else
-			preparedStatement.setString(12, "--");
-		int flag = preparedStatement.executeUpdate();
+			int flag = preparedStatement.executeUpdate();
 		if (flag == 0)
 			logger.info("Workstation record not updated for " + this.surveyId
 					+ " There is no workstation for this id");

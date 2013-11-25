@@ -1,15 +1,12 @@
 package com.ctb.bean;
 
-public class Network 
-{
-	private String distNumber;	
+public class Network {
+	private String distNumber;
 	private String schoolNumber;
-	
-	
 	private String internetConnectionType;
 	private String downSpeed;
 	private String upSpeed;
-	
+
 	public Network() {
 		// TODO Auto-generated constructor stub
 	}
@@ -28,8 +25,8 @@ public class Network
 
 	public void setSchoolNumber(String schoolNumber) {
 		this.schoolNumber = schoolNumber;
-	}	
-	
+	}
+
 	public String getInternetConnectionType() {
 		return internetConnectionType;
 	}
@@ -53,7 +50,5 @@ public class Network
 	public void setUpSpeed(String upSpeed) {
 		this.upSpeed = upSpeed;
 	}
-	
-	
-	
-}//end of class
+
+}// end of class

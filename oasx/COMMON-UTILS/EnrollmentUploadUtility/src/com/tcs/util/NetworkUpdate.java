@@ -23,15 +23,10 @@ public class NetworkUpdate {
 	private String marketType;
 	private int rtsCustomerId;
 	private Connection connection;
-	//private final String netWorkSql = "update site_survey_network sn SET sn.INET_CONN_TYPE = ?, sn.INET_DOWN_SPEED = ?, sn.INET_UP_SPEED = ? where sn.SITE_SURVEY_ID = ?";
 	private final String netWorkSql=" merge into site_survey_network t using (select 1 from DUAL) s on (t.SITE_SURVEY_ID = ?)  when matched then"+
 	" update set t.INET_CONN_TYPE = ?, t.INET_DOWN_SPEED = ? , t.INET_UP_SPEED = ? "+
 	 " when not matched then insert  (SITE_SURVEY_ID, INET_CONN_TYPE, INET_DOWN_SPEED , INET_UP_SPEED ) values (?, ?, ?, ?)";
-	//private final String workStationSql = "UPDATE site_survey_workstation  SET workstation_type = ? , WORKSTATION_COUNT = ? , OPERATING_SYSTEM = ?, PROCESSOR = ?, PHYSICAL_MEMORY = ? where SITE_SURVEY_ID = ?";
-	private final String workStationSql="merge into site_survey_workstation t using (select 1 from DUAL) s on (t.SITE_SURVEY_ID = ? and t.OPERATING_SYSTEM = ?)  when matched then"+
-	" update set t.workstation_type = ?, t.WORKSTATION_COUNT = ? , t.PROCESSOR = ? , t.PHYSICAL_MEMORY = ? "+
-	 " when not matched then insert  (SITE_SURVEY_ID, OPERATING_SYSTEM, workstation_type , WORKSTATION_COUNT , PROCESSOR,"+
-	 " PHYSICAL_MEMORY) values (?, ?, ?, ?, ?, ?)";
+	private final String workStationSql = "insert into site_survey_workstation sw (sw.site_survey_id, sw.workstation_count,sw.workstation_type,sw.operating_system,sw.processor,sw.physical_memory) values (?, ?, ?, ?, ?, ?)";	
 
 	public NetworkUpdate() {
 
@@ -52,17 +47,12 @@ public class NetworkUpdate {
 
 			this.rtsCustomerId = Integer.parseInt(AbstractConnectionManager
 					.getCustomerId());
-
 			this.connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(false);
-
-			PreparedStatement workStationStatement = connection
-					.prepareStatement(this.workStationSql);
 			PreparedStatement netWorkStatement = connection
 					.prepareStatement(this.netWorkSql);
 			Map<String, PreparedStatement> stamentMap = new HashMap<String, PreparedStatement>();
-			stamentMap.put("network", netWorkStatement);
-			stamentMap.put("workStation", workStationStatement);
+			stamentMap.put("network", netWorkStatement);			
 			List list = CSVFileReader.getFileContent(this.csv);
 			DataFormater dataFormater = new DataFormater();
 			List<Network> networks = dataFormater.getNetworkList(list);
@@ -73,7 +63,7 @@ public class NetworkUpdate {
 			logger.info(e);
 		}
 	}// end of method
-	public void updateWorkstatinInformation() {
+	public void insertWorkstatinInformation() {
 		try {
 			AbstractConnectionManager.processProperties(dbProperties);
 
@@ -84,9 +74,7 @@ public class NetworkUpdate {
 			connection.setAutoCommit(false);
 
 			PreparedStatement workStationStatement = connection
-					.prepareStatement(this.workStationSql);
-			PreparedStatement netWorkStatement = connection
-					.prepareStatement(this.netWorkSql);
+					.prepareStatement(this.workStationSql);			
 			Map<String, PreparedStatement> stamentMap = new HashMap<String, PreparedStatement>();			
 			stamentMap.put("workStation", workStationStatement);
 			List list = CSVFileReader.getFileContent(this.csv);
@@ -103,8 +91,6 @@ public class NetworkUpdate {
 	private void processWorkStationRecord(List<WorkStation> workStations,
 			Map<String, PreparedStatement> stmtMap) throws Exception {
 		Integer siteSurveyId = 0;
-		String customerId = null;
-		Map<String, String> properties = null;		
 		for (WorkStation workStation : workStations) {
 			String schoolId = "";
 			String distId="";
@@ -125,11 +111,11 @@ public class NetworkUpdate {
 				NetworkUpdateHelper helper = new NetworkUpdateHelper(
 						siteSurveyId, workStation);
 				if (value.equalsIgnoreCase("Corporation"))
-					helper.updateSiteSurveyWorkstationTable(stmtMap.get("workStation"));					
+					helper.insertSiteSurveyWorkstationTable(stmtMap.get("workStation"));					
 				else if (value.equalsIgnoreCase("School")) {
 					/*helper.updateSiteSurveyWorkstationTable(stmtMap
 							.get("workStation"));*/
-					helper.updateSiteSurveyWorkstationTable(stmtMap.get("workStation"));					
+					helper.insertSiteSurveyWorkstationTable(stmtMap.get("workStation"));					
 					
 				}
 

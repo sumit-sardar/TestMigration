@@ -18,6 +18,7 @@ public class MainUpload {
 	private static int CUSTOMER_ID_RTS = 0;
 	private static final String updateTypeNetowrk = "NT";
 	private static final String updateTypeContact = "CON";
+	private static final String updateTypeWork = "WOR";
 	private static final Logger logger = Logger.getLogger(MainUpload.class);
 
 	/**
@@ -25,7 +26,6 @@ public class MainUpload {
 	 */
 	public static void main(String... args) throws Exception {
 		// TODO Auto-generated method stub
-
 		Connection con = null;
 		String dbprop = null;
 		String csv = null;
@@ -33,8 +33,7 @@ public class MainUpload {
 		String marketType = null;
 		String updateType = null;
 		if (args.length != 3) {
-			if (args.length == 5) {
-				
+			if (args.length == 5) {				
 				dbprop = args[0];// getting db properties
 				csv = args[1];
 				year = args[2];
@@ -48,7 +47,11 @@ public class MainUpload {
 				} else if (updateType.equalsIgnoreCase(updateTypeNetowrk)) {
 					NetworkUpdate networkUpdate = new NetworkUpdate(dbprop,
 							csv, year, marketType);
-					networkUpdate.updateDatabase();
+					networkUpdate.updateNetworkInformation();
+				}
+				else if(updateType.equalsIgnoreCase(updateTypeWork)){
+					NetworkUpdate workNetworkUpdate=new NetworkUpdate(dbprop, csv, year, marketType);
+					workNetworkUpdate.insertWorkstatinInformation();
 				}
 			} else {
 				logger.info("Incorrect argument....");

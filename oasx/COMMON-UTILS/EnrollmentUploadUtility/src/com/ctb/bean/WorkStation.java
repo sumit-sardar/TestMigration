@@ -3,16 +3,12 @@ package com.ctb.bean;
 public class WorkStation 
 {
 	private String distNumber;	
-	private String schoolNumber;
-	private String siteType;
+	private String schoolNumber;	
 	private String typeOfWorkstation;
 	private String numberOfWorkstation;
 	private String operatingSystem;
 	private String processorSpeed;
-	private String memory;
-	private String internetConnectionType;
-	private String downSpeed;
-	private String upSpeed;
+	private String memory;	
 	
 	public WorkStation() {
 		// TODO Auto-generated constructor stub
@@ -32,14 +28,6 @@ public class WorkStation
 
 	public void setSchoolNumber(String schoolNumber) {
 		this.schoolNumber = schoolNumber;
-	}
-
-	public String getSiteType() {
-		return siteType;
-	}
-
-	public void setSiteType(String siteType) {
-		this.siteType = siteType;
 	}
 
 	public String getTypeOfWorkstation() {
@@ -80,32 +68,5 @@ public class WorkStation
 
 	public void setMemory(String memory) {
 		this.memory = memory;
-	}
-
-	public String getInternetConnectionType() {
-		return internetConnectionType;
-	}
-
-	public void setInternetConnectionType(String internetConnectionSpeed) {
-		this.internetConnectionType = internetConnectionSpeed;
-	}
-
-	public String getDownSpeed() {
-		return downSpeed;
-	}
-
-	public void setDownSpeed(String downSpeed) {
-		this.downSpeed = downSpeed;
-	}
-
-	public String getUpSpeed() {
-		return upSpeed;
-	}
-
-	public void setUpSpeed(String upSpeed) {
-		this.upSpeed = upSpeed;
-	}
-	
-	
-	
+	}	
 }//end of class
