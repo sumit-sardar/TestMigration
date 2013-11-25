@@ -63,7 +63,7 @@
     <select id="findItemResponsesByItemSetIdAndRosterIdForTASC"
         parameterClass="java.util.Map"
         resultClass="com.ctb.lexington.data.ItemResponseVO">
-		     SELECT
+		 <!-- SELECT
             IR.ITEM_RESPONSE_ID as itemResponseId,
             IR.ITEM_SET_ID as itemSetId,
             IR.TEST_ROSTER_ID as testRosterId,
@@ -95,7 +95,7 @@
 		       ITEM.CORRECT_ANSWER as correctAnswer
         FROM
             ITEM_RESPONSE IR,
-		       ITEM_RESPONSE_CR IRC,
+		    ITEM_RESPONSE_CR IRC,
 			ITEM_RESPONSE_POINTS IRP,
 			ITEM_SET_ITEM ISI,
 			ITEM,
@@ -106,15 +106,13 @@
 		       GR_ITEM_RULES GIR
         WHERE IR.ITEM_RESPONSE_ID = IRP.ITEM_RESPONSE_ID (+)
                 AND IR.ITEM_ID = IRC.ITEM_ID(+)
-          		   AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+)
-          		   AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+)
-          		   AND IR.ITEM_ID = GIR.GR_ITEM_ID(+)
-                 <!-- AND IR.ITEM_SET_ID IN #itemSetId:VARCHAR# -->
-                 <!-- AND IR.ITEM_SET_ID IN -->
-                 <dynamic>
-                 <iterate prepend=" AND IR.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
+          		AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+)
+          		AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+)
+          		AND IR.ITEM_ID = GIR.GR_ITEM_ID(+)
+                <dynamic>
+                	<iterate prepend=" AND IR.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
 					#itemSetId[]#
-				</iterate>
+					</iterate>
 				</dynamic>
                 AND IR.TEST_ROSTER_ID = #testRosterId:NUMERIC#
                 AND ITEM.ITEM_ID = IR.ITEM_ID
@@ -141,12 +139,127 @@
                 AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
                 AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
         ORDER BY               
-               IR.RESPONSE_SEQ_NUM ASC
+               IR.RESPONSE_SEQ_NUM ASC -->
+               
+                 <!-- AND IR.ITEM_SET_ID IN #itemSetId:VARCHAR# -->
+                 <!-- AND IR.ITEM_SET_ID IN -->
+                 
+                 SELECT DISTINCT DERIVED.ITEMRESPONSEID as itemResponseId,
+	                DERIVED.ITEMSETID as itemSetId,
+	                DERIVED.TESTROSTERID as testRosterId,
+	                DERIVED.RESPONSEMETHOD as responseMethod,
+	                DERIVED.RESPONSE as response,
+	                DERIVED.RESPONSEELAPSEDTIME as responseElapsedTime,
+	                DERIVED.RESPONSESEQNUM as responseSeqNum,
+	                DERIVED.CREATEDDATETIME as createdDateTime,
+	                DERIVED.ITEMID as itemId,
+	                DERIVED.EXTANSWERCHOICEID as extAnswerChoiceId,
+	                DERIVED.STUDENTMARKED as studentMarked,
+	                DERIVED.CREATEDBY as createdBy,
+	                DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse,
+	                DERIVED.GRITEMRULES as grItemRules,
+	                DERIVED.GRITEMCORRECTANSWER as grItemCorrectAnswer,
+	                DERIVED.ANSWERAREA as answerArea,
+	                DERIVED.ITEMTYPE as itemType,
+	                DERIVED.CORRECTANSWER as correctAnswer,
+	                DERIVED2.CRRESPONSE as crResponse,
+	                DERIVED2.CONDITIONCODE as conditionCode
+	  FROM (SELECT IR.ITEM_RESPONSE_ID AS ITEMRESPONSEID,
+	               IR.ITEM_SET_ID AS ITEMSETID,
+	               IR.TEST_ROSTER_ID AS TESTROSTERID,
+	               IR.RESPONSE_METHOD AS RESPONSEMETHOD,
+	               NVL(IR.RESPONSE, '-') AS RESPONSE,
+	               IR.RESPONSE_ELAPSED_TIME AS RESPONSEELAPSEDTIME,
+	               IR.RESPONSE_SEQ_NUM AS RESPONSESEQNUM,
+	               IR.CREATED_DATE_TIME AS CREATEDDATETIME,
+	               IR.ITEM_ID AS ITEMID,
+	               IR.EXT_ANSWER_CHOICE_ID AS EXTANSWERCHOICEID,
+	               IR.STUDENT_MARKED AS STUDENTMARKED,
+	               IR.CREATED_BY AS CREATEDBY,
+	               UTL_URL.UNESCAPE(DBMS_LOB.SUBSTR(DECODE(ITEM.ANSWER_AREA,
+	                                                       'GRID',
+	                                                       IRC.CONSTRUCTED_RESPONSE,
+	                                                       NULL),
+	                                                LENGTH(DECODE(ITEM.ANSWER_AREA,
+	                                                              'GRID',
+	                                                              IRC.CONSTRUCTED_RESPONSE,
+	                                                              NULL)),
+	                                                1)) AS VARCHARCONSTRUCTEDRESPONSE,
+	               GIR.GR_ITEM_RULES AS GRITEMRULES,
+	               GIR.GR_ITEM_CORRECT_ANSWER AS GRITEMCORRECTANSWER,
+	               ITEM.ANSWER_AREA AS ANSWERAREA,
+	               ITEM.ITEM_TYPE AS ITEMTYPE,
+	               ITEM.CORRECT_ANSWER AS CORRECTANSWER,
+	               NULL AS CRRESPONSE
+	          FROM ITEM_RESPONSE IR,
+	               ITEM_RESPONSE_CR IRC,
+	               ITEM_SET_ITEM ISI,
+	               ITEM,
+	               TEST_ROSTER TR,
+	               ITEM_SET ISET,
+	               TEST_ADMIN ADM,
+	               PRODUCT PROD,
+	               GR_ITEM_RULES GIR
+	         WHERE IR.ITEM_ID = IRC.ITEM_ID(+)
+	           AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+)
+	           AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+)
+	           AND IR.ITEM_ID = GIR.GR_ITEM_ID(+)
+	           <!-- AND IR.ITEM_SET_ID = #itemSetId:NUMERIC# -->
+	           <dynamic>
+                	<iterate prepend=" AND IR.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
+					#itemSetId[]#
+					</iterate>
+			   </dynamic>
+	           AND IR.TEST_ROSTER_ID = #testRosterId:NUMERIC#
+	           AND ITEM.ITEM_ID = IR.ITEM_ID
+	           AND ISI.ITEM_SET_ID = IR.ITEM_SET_ID
+	           AND ISI.ITEM_ID = ITEM.ITEM_ID
+	           AND ISI.SUPPRESSED = 'F'
+	           AND ITEM.ITEM_TYPE NOT IN ('RQ', 'NI')
+	           AND IR.RESPONSE_SEQ_NUM =
+	               (SELECT MAX(RESPONSE_SEQ_NUM)
+	                  FROM ITEM_RESPONSE
+	                 WHERE TEST_ROSTER_ID = IR.TEST_ROSTER_ID
+	                   AND ITEM_ID = IR.ITEM_ID)
+	           AND ISET.ITEM_SET_ID = ISI.ITEM_SET_ID
+	           AND TR.TEST_ROSTER_ID = IR.TEST_ROSTER_ID
+	           AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
+	           AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
+	           AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
+	         ORDER BY IR.RESPONSE_SEQ_NUM ASC) DERIVED,
+	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,    <!-- SUM() -->
+	                                                '0123456789',
+	                                                ' '))),
+	                          NULL,
+	                          FINAL_SCORE,
+	                          0) AS CRRESPONSE,
+	               ITEM_ID AS ITEMID,
+	               DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,
+	                                                '0123456789',
+	                                                ' '))),
+	                          NULL,
+	                          ' ',
+	                          FINAL_SCORE)  AS CONDITIONCODE
+	          FROM ITEM_DATAPOINT_SCORE
+	         WHERE ITEM_READER_ID IN
+	               (SELECT MAX(IDS1.ITEM_READER_ID)
+	                  FROM ITEM_DATAPOINT_SCORE IDS1, ITEM_SET_ITEM ISI1
+	                 WHERE IDS1.TEST_ROSTER_ID = #testRosterId:NUMERIC#
+	                   <!-- AND ISI1.ITEM_SET_ID = #testRosterId:NUMERIC# -->
+	                   <dynamic>
+	                	<iterate prepend=" AND ISI1.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
+						#itemSetId[]#
+						</iterate>
+					   </dynamic>
+	                   AND IDS1.ITEM_ID = ISI1.ITEM_ID
+	                 GROUP BY IDS1.DATA_POINT, IDS1.ITEM_NO)
+	         GROUP BY ITEM_ID,FINAL_SCORE) DERIVED2
+	 WHERE DERIVED.ITEMID = DERIVED2.ITEMID(+)
     </select>
     
     <select id="findItemResponsesByItemSetIdAndRosterIdForTASCOrg"
         parameterClass="java.util.Map"
-        resultClass="com.ctb.lexington.data.ItemResponseVO">
+        resultClass="com.ctb.lexington.data.ItemResponseVO"><!--
 		    SELECT
             IR.ITEM_RESPONSE_ID as itemResponseId,
             IR.ITEM_SET_ID as itemSetId,
@@ -220,7 +333,109 @@
                 AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
         ORDER BY               
                IR.RESPONSE_SEQ_NUM ASC
-    </select>
+    -->
+	    SELECT DISTINCT DERIVED.ITEMRESPONSEID as itemResponseId,
+	                DERIVED.ITEMSETID as itemSetId,
+	                DERIVED.TESTROSTERID as testRosterId,
+	                DERIVED.RESPONSEMETHOD as responseMethod,
+	                DERIVED.RESPONSE as response,
+	                DERIVED.RESPONSEELAPSEDTIME as responseElapsedTime,
+	                DERIVED.RESPONSESEQNUM as responseSeqNum,
+	                DERIVED.CREATEDDATETIME as createdDateTime,
+	                DERIVED.ITEMID as itemId,
+	                DERIVED.EXTANSWERCHOICEID as extAnswerChoiceId,
+	                DERIVED.STUDENTMARKED as studentMarked,
+	                DERIVED.CREATEDBY as createdBy,
+	                DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse,
+	                DERIVED.GRITEMRULES as grItemRules,
+	                DERIVED.GRITEMCORRECTANSWER as grItemCorrectAnswer,
+	                DERIVED.ANSWERAREA as answerArea,
+	                DERIVED.ITEMTYPE as itemType,
+	                DERIVED.CORRECTANSWER as correctAnswer,
+	                DERIVED2.CRRESPONSE as crResponse,
+	                DERIVED2.CONDITIONCODE as conditionCode
+	  FROM (SELECT IR.ITEM_RESPONSE_ID AS ITEMRESPONSEID,
+	               IR.ITEM_SET_ID AS ITEMSETID,
+	               IR.TEST_ROSTER_ID AS TESTROSTERID,
+	               IR.RESPONSE_METHOD AS RESPONSEMETHOD,
+	               NVL(IR.RESPONSE, '-') AS RESPONSE,
+	               IR.RESPONSE_ELAPSED_TIME AS RESPONSEELAPSEDTIME,
+	               IR.RESPONSE_SEQ_NUM AS RESPONSESEQNUM,
+	               IR.CREATED_DATE_TIME AS CREATEDDATETIME,
+	               IR.ITEM_ID AS ITEMID,
+	               IR.EXT_ANSWER_CHOICE_ID AS EXTANSWERCHOICEID,
+	               IR.STUDENT_MARKED AS STUDENTMARKED,
+	               IR.CREATED_BY AS CREATEDBY,
+	               UTL_URL.UNESCAPE(DBMS_LOB.SUBSTR(DECODE(ITEM.ANSWER_AREA,
+	                                                       'GRID',
+	                                                       IRC.CONSTRUCTED_RESPONSE,
+	                                                       NULL),
+	                                                LENGTH(DECODE(ITEM.ANSWER_AREA,
+	                                                              'GRID',
+	                                                              IRC.CONSTRUCTED_RESPONSE,
+	                                                              NULL)),
+	                                                1)) AS VARCHARCONSTRUCTEDRESPONSE,
+	               GIR.GR_ITEM_RULES AS GRITEMRULES,
+	               GIR.GR_ITEM_CORRECT_ANSWER AS GRITEMCORRECTANSWER,
+	               ITEM.ANSWER_AREA AS ANSWERAREA,
+	               ITEM.ITEM_TYPE AS ITEMTYPE,
+	               ITEM.CORRECT_ANSWER AS CORRECTANSWER,
+	               NULL AS CRRESPONSE
+	          FROM ITEM_RESPONSE IR,
+	               ITEM_RESPONSE_CR IRC,
+	               ITEM_SET_ITEM ISI,
+	               ITEM,
+	               TEST_ROSTER TR,
+	               ITEM_SET ISET,
+	               TEST_ADMIN ADM,
+	               PRODUCT PROD,
+	               GR_ITEM_RULES GIR
+	         WHERE IR.ITEM_ID = IRC.ITEM_ID(+)
+	           AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+)
+	           AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+)
+	           AND IR.ITEM_ID = GIR.GR_ITEM_ID(+)
+	           AND IR.ITEM_SET_ID = #itemSetId:NUMERIC#
+	           AND IR.TEST_ROSTER_ID = #testRosterId:NUMERIC#
+	           AND ITEM.ITEM_ID = IR.ITEM_ID
+	           AND ISI.ITEM_SET_ID = IR.ITEM_SET_ID
+	           AND ISI.ITEM_ID = ITEM.ITEM_ID
+	           AND ISI.SUPPRESSED = 'F'
+	           AND ITEM.ITEM_TYPE NOT IN ('RQ', 'NI')
+	           AND IR.RESPONSE_SEQ_NUM =
+	               (SELECT MAX(RESPONSE_SEQ_NUM)
+	                  FROM ITEM_RESPONSE
+	                 WHERE TEST_ROSTER_ID = IR.TEST_ROSTER_ID
+	                   AND ITEM_ID = IR.ITEM_ID)
+	           AND ISET.ITEM_SET_ID = ISI.ITEM_SET_ID
+	           AND TR.TEST_ROSTER_ID = IR.TEST_ROSTER_ID
+	           AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
+	           AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
+	           AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
+	         ORDER BY IR.RESPONSE_SEQ_NUM ASC) DERIVED,
+	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,		<!-- SUM() -->
+	                                                '0123456789',
+	                                                ' '))),
+	                          NULL,
+	                          FINAL_SCORE,
+	                          0) AS CRRESPONSE,
+	               ITEM_ID AS ITEMID,
+	               DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,
+	                                                '0123456789',
+	                                                ' '))),
+	                          NULL,
+	                          ' ',
+	                          FINAL_SCORE)  AS CONDITIONCODE
+	          FROM ITEM_DATAPOINT_SCORE
+	         WHERE ITEM_READER_ID IN
+	               (SELECT MAX(IDS1.ITEM_READER_ID)
+	                  FROM ITEM_DATAPOINT_SCORE IDS1, ITEM_SET_ITEM ISI1
+	                 WHERE IDS1.TEST_ROSTER_ID = #testRosterId:NUMERIC#
+	                   AND ISI1.ITEM_SET_ID = #itemSetId:NUMERIC#
+	                   AND IDS1.ITEM_ID = ISI1.ITEM_ID
+	                 GROUP BY IDS1.DATA_POINT, IDS1.ITEM_NO)
+	         GROUP BY ITEM_ID,FINAL_SCORE) DERIVED2
+	 WHERE DERIVED.ITEMID = DERIVED2.ITEMID(+)
+ </select>
     
     <select id="findItemResponsesByRosterId"
         parameterClass="java.util.Map"

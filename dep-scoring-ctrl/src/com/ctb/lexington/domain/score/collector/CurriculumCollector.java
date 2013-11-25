@@ -1754,7 +1754,8 @@ public class CurriculumCollector {
                "item.description as itemText, " +  
                "tdisi.item_sort_order as itemIndex, " +  
                "item.item_type as itemType, " +  
-               "item.correct_answer as itemCorrectResponse, " +  
+               "item.correct_answer as itemCorrectResponse, " +
+               "item.answer_area as answerArea, " +
                "dp.max_points as itemPointsPossible, " +  
                "td.item_set_form as subtestForm, " + 
                "td.item_set_level as subtestLevel, " + 
@@ -1810,7 +1811,8 @@ public class CurriculumCollector {
                "item.description, " +  
                "tdisi.item_sort_order, " +  
                "item.item_type, " +  
-               "item.correct_answer, " +  
+               "item.correct_answer, " + 
+               "item.answer_area, " +
                "dp.max_points, " +  
                "td.item_set_form, " + 
                "td.item_set_level, " + 
@@ -1843,6 +1845,7 @@ public class CurriculumCollector {
                 item.setSubtestForm(rs.getString("subtestForm"));
                 item.setSubtestLevel(rs.getString("subtestLevel"));
                 item.setSubtestName(rs.getString("subtestName"));
+                item.setAnswerArea(rs.getString("answerArea"));
                 if(rs.getBigDecimal("nationalAverage") != null) {
                     item.setNationalAverage(rs.getString("pvalNormGroup") + String.valueOf(rs.getInt("pvalGrade")), rs.getBigDecimal("nationalAverage"));
                 }      

@@ -34,6 +34,20 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 								.getItemId(), event.getItemSetId(), new Integer(0),
 								new Integer(0)));
 					}
+				} else if (null == sicEvent.getAnswerArea(event.getItemId())
+						&& !"GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
+					if(null != event.getCrResponse()  && !"".equals(event.getCrResponse())){
+						final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
+						final Integer obtained = computePointsObtained(event);
+			
+						channel.send(new PointEvent(event.getTestRosterId(), event
+								.getItemId(), event.getItemSetId(), attempted, obtained));
+					}
+					else {
+						channel.send(new PointEvent(event.getTestRosterId(), event
+								.getItemId(), event.getItemSetId(), new Integer(0),
+								new Integer(0)));
+					}
 				}
 			}
 			if(ItemVO.ITEM_TYPE_SR.equals(sicEvent.getType(event.getItemId()))){
@@ -82,18 +96,24 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 			} else if (ItemVO.ITEM_TYPE_CR.equals(itemType)) {
 				// Point calculation for GR items
 				if (null != sicEvent.getProductType()
-						&& "TS".equals(sicEvent.getProductType())
-						&& null != sicEvent.getAnswerArea(event.getItemId())
+						&& "TS".equals(sicEvent.getProductType())) {
+						
+					if(null != sicEvent.getAnswerArea(event.getItemId())
 						&& "GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
 					
-					if (null != sicEvent.getGRItemMap(event.getItemId())
-							&& sicEvent.getGRItemMap(event.getItemId()).booleanValue()) {
-						
-						pointsObtained = sicEvent.getMaxPoints(event.getItemId());
-					} else if (null != sicEvent.getGRItemMap(event.getItemId())
-							&& !sicEvent.getGRItemMap(event.getItemId()).booleanValue()) {
-						
-						pointsObtained = sicEvent.getMinPoints(event.getItemId());
+						if (null != sicEvent.getGRItemMap(event.getItemId())
+								&& sicEvent.getGRItemMap(event.getItemId()).booleanValue()) {
+							
+							pointsObtained = sicEvent.getMaxPoints(event.getItemId());
+						} else if (null != sicEvent.getGRItemMap(event.getItemId())
+								&& !sicEvent.getGRItemMap(event.getItemId()).booleanValue()) {
+							
+							pointsObtained = sicEvent.getMinPoints(event.getItemId());
+						}
+					}
+					else if(null == sicEvent.getAnswerArea(event.getItemId())
+							&& !"GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
+						pointsObtained = event.getCrResponse();
 					}
 				}
 				// Point calculation for CR items

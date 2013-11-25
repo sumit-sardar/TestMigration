@@ -189,6 +189,16 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
 	// END For Laslink Scoring
     
     // START For TASC Scoring
+    protected String getTASCScaleScoreRangeForCutScore(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal destScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getTASCScaleScoreRangeForCutScore(frameworkCode, destScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
     
     protected BigDecimal getTASCPerformanceLevel(String frameworkCode, String contentArea, String testLevel,
             BigDecimal sourceScoreValue, String grade, String testForm) {

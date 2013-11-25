@@ -117,6 +117,7 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
     private String normYear;
     private String contentAreaName;
     private String subtestScoringStatus;
+    private String proficiencyRange;
     
     private BigDecimal percentileRank;
     private BigDecimal lexileValue; 
@@ -997,6 +998,20 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
 
 	public void setSubtestScoringStatus(String subtestScoringStatus) {
 		this.subtestScoringStatus = subtestScoringStatus;
+	}
+
+	/**
+	 * @return the proficiencyRange
+	 */
+	public String getProficiencyRange() {
+		return proficiencyRange;
+	}
+
+	/**
+	 * @param proficiencyRange the proficiencyRange to set
+	 */
+	public void setProficiencyRange(String proficiencyRange) {
+		this.proficiencyRange = proficiencyRange;
 	}
 
 	/**

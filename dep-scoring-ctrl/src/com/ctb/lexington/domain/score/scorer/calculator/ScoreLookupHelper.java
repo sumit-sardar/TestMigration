@@ -132,6 +132,16 @@ public class ScoreLookupHelper {
     }
     
     // START For TASC Scoring
+    public String getTASCScaleScoreRangeForCutScore(String frameworkCode, BigDecimal destScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findTASCScaleScoreRange(frameworkCode, destScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public BigDecimal getTASCPerformanceLevel(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
             String testLevel, String grade, String testForm, Connection conn) {
         try {

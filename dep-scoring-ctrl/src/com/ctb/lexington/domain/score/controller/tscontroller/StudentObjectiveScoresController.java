@@ -276,7 +276,8 @@ public class StudentObjectiveScoresController {
 	            	}
 	                secObjFact.setObjectiveScoringStatus(details.getObjectiveScoringStatus());
 	                secObjFact.setScaleScore(details.getScaleScore());
-	            
+	                secObjFact.setConditionCode(details.getConditionCode());
+	                
 	                secondaries.add(secObjFact);
 	            } else{
 	            	IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();

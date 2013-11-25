@@ -97,6 +97,15 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
 				null,
 				pDupTestForm);
         
+        final String proficiencyRange = getTASCScaleScoreRangeForCutScore(
+        		TASC_FRAMEWORK_CODE,
+        		event.getContentAreaName(),
+        		pTestLevel,
+        		proficencyLevelValue,
+				//(pGrade != null)?pGrade:null,
+				null,
+				pDupTestForm);
+        
         final PerformanceLevel proficencyLevel = ("0".equals(proficencyLevelValue.toString()))? null :PerformanceLevel.getByCode(String.valueOf(proficencyLevelValue));
         
         channel.send(new ContentAreaDerivedScoreEvent(
@@ -114,6 +123,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
 				null,
 				null,
 				proficencyLevel,
+				proficiencyRange,
 				pNormGroup,
                 pNormYear,
 				pAgeCategory,

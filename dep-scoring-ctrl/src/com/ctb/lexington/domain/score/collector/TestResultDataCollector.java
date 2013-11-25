@@ -3,6 +3,7 @@ package com.ctb.lexington.domain.score.collector;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import com.ctb.lexington.data.ItemResponseVO;
+import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.data.StudentItemSetStatusRecord;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -70,7 +72,7 @@ public class TestResultDataCollector {
 			SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
         }
         ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
-        data.setCurriculumData(filterCurricula(cachedCurriculumData));
+        data.setCurriculumData(filterCurricula(cachedCurriculumData, data.getAdminData().getAssessmentType()));
         data.getCurriculumData().setAllContentAreas(allContentArea);
               
         data.setUserData(getUserData());
@@ -106,7 +108,7 @@ public class TestResultDataCollector {
         return data;
     }
 
-    private CurriculumData filterCurricula(CurriculumData currData) {
+    private CurriculumData filterCurricula(CurriculumData currData, String productType) {
         StudentItemSetStatusMapper mapper = new StudentItemSetStatusMapper(oasConnection);
         Map subtestMap = mapper.getMapOfSubtestStatusForTestRoster(oasRosterId);
         
@@ -120,6 +122,7 @@ public class TestResultDataCollector {
         ArrayList primObjList = new ArrayList();
         ArrayList secObjList = new ArrayList();
         ArrayList itemList = new ArrayList();
+        Map crItemMap = new HashMap();
         
         for(int i=0;i<contentAreas.length;i++) {
             StudentItemSetStatusRecord subtest = (StudentItemSetStatusRecord) subtestMap.get(contentAreas[i].getSubtestId());
@@ -148,6 +151,11 @@ public class TestResultDataCollector {
                                     if(items[l].getSecondaryObjectiveId().equals(secObjs[k].getSecondaryObjectiveId()) &&
                                         items[l].getSubtestLevel().equals(contentAreas[i].getSubtestLevel())) {
                                         itemList.add(items[l]);
+                                        if("TS".equalsIgnoreCase(productType)){
+                                        	if(ItemVO.ITEM_TYPE_CR.equals(items[l].getItemType())
+                                        			&& !"GRID".equals(items[l].getAnswerArea()))
+                                        		crItemMap.put(items[l].getOasItemId(), items[l]);
+                                        }
                                     }
                                 }
                             }
@@ -160,7 +168,7 @@ public class TestResultDataCollector {
         filteredCurrData.setPrimaryObjectives((PrimaryObjective[]) primObjList.toArray(new PrimaryObjective[0]));
         filteredCurrData.setSecondaryObjectives((SecondaryObjective[]) secObjList.toArray(new SecondaryObjective[0]));
         filteredCurrData.setItems((Item[]) itemList.toArray(new Item[0]));
-        
+        filteredCurrData.setCrItemMap(crItemMap);
         return filteredCurrData;
     }
 

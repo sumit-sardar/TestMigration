@@ -94,6 +94,7 @@ WHERE
 		        <!-- PERCENTAGE_MASTERY, -->
 		        NATIONAL_PERCENTILE,
 		        PROFICIENCY_LEVEL,
+		        SCALE_SCORE_RANGE,
 		        <!-- NATIONAL_STANINE, -->
 		        POINTS_ATTEMPTED,
 		        PERCENT_OBTAINED,
@@ -186,6 +187,7 @@ WHERE
 		        <!-- #percentageMastery:NUMERIC#, -->
 		        #nationalPercentile:NUMERIC#,
 		        #proficiencyLevel:NUMERIC#,
+		        #proficiencyRange:VARCHAR#,
 		        <!-- #nationalStanine:NUMERIC#, -->
 		        #pointsAttempted:NUMERIC#,
 		        #percentObtained:NUMERIC#,

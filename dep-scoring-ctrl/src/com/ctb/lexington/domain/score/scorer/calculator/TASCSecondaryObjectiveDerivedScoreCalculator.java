@@ -33,7 +33,6 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
         channel.subscribe(this, SubtestStartedEvent.class);
         channel.subscribe(this, ObjectiveRawScoreEvent.class);
 //        mustPrecede(SubtestEndedEvent.class, ObjectiveRawScoreEvent.class);
-        //channel.subscribe(this, ObjectivePrimaryCumulativeNumberCorrectEvent.class);
     }
 	
 	public void onEvent(AssessmentStartedEvent event) {
@@ -46,10 +45,6 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
         pTestLevel = event.getItemSetLevel();
         pTestForm = event.getItemSetForm();
     }
-    
-    /*public void onEvent(ObjectiveRawScoreEvent event) {
-    	secondaryObjectiveRawScoreEventsList.put(event.getObjectiveId().toString(), event);
-    }*/
     
     public void onEvent(ObjectiveRawScoreEvent event) {
 

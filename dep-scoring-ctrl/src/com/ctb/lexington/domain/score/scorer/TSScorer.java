@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.db.data.CurriculumData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
 import com.ctb.lexington.db.data.StsTestResultFactDetails;
@@ -18,6 +19,7 @@ import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentSubtestScoresDetails;
 import com.ctb.lexington.db.data.SubtestContentAreaCompositeAndDerivedScore;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
+import com.ctb.lexington.db.data.CurriculumData.Item;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
@@ -25,6 +27,7 @@ import com.ctb.lexington.domain.score.event.ContentAreaDerivedScoreEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.ObjectiveRawScoreEvent;
 import com.ctb.lexington.domain.score.event.PrimaryObjectivePercentMasteryEvent;
+import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SecondaryObjectiveDerivedScoreEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaCompositeAndDerivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaCompositeScoreEvent;
@@ -47,7 +50,6 @@ public class TSScorer extends STScorer {
 
         addCalculator(new ContentAreaNumberCorrectCalculator(channel, this));
         addCalculator(new TASCContentAreaDerivedScoreCalculator(channel, this));
-     //   addCalculator(new PrimaryObjectivePercentMasteryCalculator(channel, this));
         addCalculator(new TASCSecondaryObjectiveDerivedScoreCalculator(channel, this));
       	addCalculator(new TASCCompositeScoreCalculator(channel,this));
       	
@@ -57,9 +59,6 @@ public class TSScorer extends STScorer {
         channel.subscribe(this, SecondaryObjectiveDerivedScoreEvent.class);
       	channel.subscribe(this, SubtestContentAreaCompositeScoreEvent.class);
         channel.subscribe(this, SubtestContentAreaCompositeAndDerivedEvent.class);
-      //  channel.subscribe(this, PrimaryObjectivePercentMasteryEvent.class);
-        
-//        mustPrecede(ObjectiveRawScoreEvent.class, SecondaryObjectiveDerivedScoreEvent.class);
     }
 
     public void onEvent(AssessmentStartedEvent event) {
@@ -98,6 +97,7 @@ public class TSScorer extends STScorer {
         factDetails.setSubtestScoringStatus(event.getSubtestScoringStatus());
         factDetails.setPerformanceLevelCode(event.getPerformanceLevel().getCode());
         factDetails.setPerformanceLevel(event.getPerformanceLevel().getDescription());
+        factDetails.setProficiencyRange(event.getProficiencyRange());
     }
 
     public void onEvent(PrimaryObjectivePercentMasteryEvent popmEvent) {
@@ -194,6 +194,24 @@ public class TSScorer extends STScorer {
     	}
     }
     
+    public void onEvent(ResponseReceivedEvent event){
+    	StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
+    	StudentItemScoreData itemData = getResultHolder().getStudentItemScoreData();
+    	CurriculumData currData = getResultHolder().getCurriculumData();
+    	Map crItemMap = (Map)currData.getCrItemMap();
+    	Item item = null;
+    	if(crItemMap.containsKey(event.getItemId())){
+    		item = (Item)crItemMap.get(event.getItemId());
+    	}
+    	// Considering one secondary objective has single  
+    	if (item != null){
+	    	StudentScoreSummaryDetails details = summaryData.get(item.getSecondaryObjectiveId());
+	    	if(event.getConditionCode()!= null) {
+	    		details.setConditionCode(event.getConditionCode().toString());
+	    	}
+    	}
+    }
+    
     private void markObjectiveAndItemsForSubtest(String contentArea, String validScore ){
         StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
         StudentItemScoreData itemData = getResultHolder().getStudentItemScoreData();
@@ -209,14 +227,12 @@ public class TSScorer extends STScorer {
 		                if(CTBConstants.VALID_SCORE.equals(validScore) && computeValidSubtestScoreFlag(ca.getSubtestId().intValue())) { 
 		                     if(caid.longValue() == (new Long(sec[i].getProductId().toString()+sec[i].getPrimaryObjectiveId().toString())).longValue()) {
 		                         summaryData.get(sec[i].getSecondaryObjectiveId()).setAtsArchive("T");
-//		                         break;
 		                     }
 		                     
 		                }
 		              else {
 		            	  if(caid.longValue() == (new Long(sec[i].getProductId().toString()+sec[i].getPrimaryObjectiveId().toString())).longValue()) {
 		                      summaryData.get(sec[i].getSecondaryObjectiveId()).setAtsArchive("F");
-//		                      break;
 		                  }
 		             }
                  }

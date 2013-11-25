@@ -28,8 +28,9 @@ public class IrsTASCSecObjFactData implements Persistent{
     private Long programid;
     private Long currentResultid;
     private String subtestName;
-    private Long scaleScore;
-    private String objectiveScoringStatus;
+    private Long scaleScore; //Added for TASC
+    private String objectiveScoringStatus; //Added for TASC
+    private String conditionCode; //Added for TASC
     
     /*private Long attr1id;
     private Long attr7id;
@@ -292,6 +293,20 @@ public class IrsTASCSecObjFactData implements Persistent{
     public void setSubtestName(String subtestName) {
         this.subtestName = subtestName;
     }
+
+	/**
+	 * @return the conditionCode
+	 */
+	public String getConditionCode() {
+		return conditionCode;
+	}
+
+	/**
+	 * @param conditionCode the conditionCode to set
+	 */
+	public void setConditionCode(String conditionCode) {
+		this.conditionCode = conditionCode;
+	}
     
     /*public Long getAttr1id() {
         return attr1id;

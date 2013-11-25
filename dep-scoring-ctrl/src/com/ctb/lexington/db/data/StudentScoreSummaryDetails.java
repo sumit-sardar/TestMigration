@@ -27,8 +27,9 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
     private Long subtestId;
 	private Long numCorrect;
 	private Long numAttempted;
-	private Long scaleScore;
-	private String objectiveScoringStatus;
+	private Long scaleScore; //Added for TASC
+	private String objectiveScoringStatus; //Added for TASC
+	private String conditionCode; //Added for TASC
 
     public String getObjectiveScoringStatus() {
 		return objectiveScoringStatus;
@@ -267,6 +268,20 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
 	 */
 	public void setScaleScore(Long scaleScore) {
 		this.scaleScore = scaleScore;
+	}
+
+	/**
+	 * @return the conditionCode
+	 */
+	public String getConditionCode() {
+		return conditionCode;
+	}
+
+	/**
+	 * @param conditionCode the conditionCode to set
+	 */
+	public void setConditionCode(String conditionCode) {
+		this.conditionCode = conditionCode;
 	}
 
 	

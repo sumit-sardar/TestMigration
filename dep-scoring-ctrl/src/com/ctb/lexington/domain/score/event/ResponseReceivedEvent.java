@@ -11,9 +11,9 @@ public class ResponseReceivedEvent extends ResponseEvent {
     /** The answer choice id of the bean. */
     protected String extAnswerChoiceId;//
     protected String response;
-    protected String grResponse;
-    protected String grItemRules;
-    protected String grItemCorrectAnswer;
+    protected String grResponse; //Added for TASC
+    protected String grItemRules; //Added for TASC
+    protected String grItemCorrectAnswer; //Added for TASC
     protected String responseMethod;
     protected boolean studentMarked;
     // CR items have points if they are scored via key entry or scan and score
@@ -21,6 +21,10 @@ public class ResponseReceivedEvent extends ResponseEvent {
     protected Integer conditionCodeId;
     protected String comments;
     private String scoringStatus;
+    private Integer crResponse;	//Added for TASC
+    private String conditionCode; //Added for TASC
+    private String answerArea; //Added for TASC
+    private String itemType; //Added for TASC
 
     public ResponseReceivedEvent(final Long testRosterId, final String itemId,
             final Integer itemSetId) {
@@ -195,4 +199,61 @@ public class ResponseReceivedEvent extends ResponseEvent {
 	public void setGrItemCorrectAnswer(String grItemCorrectAnswer) {
 		this.grItemCorrectAnswer = grItemCorrectAnswer;
 	}
+
+	/**
+	 * @return the crResponse
+	 */
+	public Integer getCrResponse() {
+		return crResponse;
+	}
+
+	/**
+	 * @return the conditionCode
+	 */
+	public String getConditionCode() {
+		return conditionCode;
+	}
+
+	/**
+	 * @param crResponse the crResponse to set
+	 */
+	public void setCrResponse(Integer crResponse) {
+		this.crResponse = crResponse;
+	}
+
+	/**
+	 * @param conditionCode the conditionCode to set
+	 */
+	public void setConditionCode(String conditionCode) {
+		this.conditionCode = conditionCode;
+	}
+
+	/**
+	 * @return the answerArea
+	 */
+	public String getAnswerArea() {
+		return answerArea;
+	}
+
+	/**
+	 * @return the itemType
+	 */
+	public String getItemType() {
+		return itemType;
+	}
+
+	/**
+	 * @param answerArea the answerArea to set
+	 */
+	public void setAnswerArea(String answerArea) {
+		this.answerArea = answerArea;
+	}
+
+	/**
+	 * @param itemType the itemType to set
+	 */
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CurriculumData {
     
@@ -646,6 +647,7 @@ public class CurriculumData {
         private String subtestLevel;
         private String subtestName;
         private HashMap nationalAverage;
+        private String answerArea;
         
         public Item () {
             this.nationalAverage = new HashMap(30);
@@ -808,6 +810,19 @@ public class CurriculumData {
 		public void setSecondaryObjectiveId(Long secondaryObjectiveId) {
 			this.secondaryObjectiveId = secondaryObjectiveId;
 		}
+		/**
+		 * @return the answerArea
+		 */
+		public String getAnswerArea() {
+			return answerArea;
+		}
+
+		/**
+		 * @param answerArea the answerArea to set
+		 */
+		public void setAnswerArea(String answerArea) {
+			this.answerArea = answerArea;
+		}
     }
     
     private Composite [] composites;
@@ -816,6 +831,7 @@ public class CurriculumData {
     private PrimaryObjective [] primaryObjectives;
     private SecondaryObjective [] secondaryObjectives;
     private Item [] items;
+    private Map crItemMap;
     
     public Item getItemForOASItemId(String oasItemId) {
         for(int i=0;i<items.length;i++) {
@@ -935,5 +951,17 @@ public class CurriculumData {
 	 */
 	public void setSecondaryObjectives(SecondaryObjective[] secondaryObjectives) {
 		this.secondaryObjectives = secondaryObjectives;
+	}
+	/**
+	 * @return Returns the crItemsTASC.
+	 */
+	public Map getCrItemMap() {
+		return crItemMap;
+	}
+	/**
+	 * @param crItemsTASC The crItemsTASC to set.
+	 */
+	public void setCrItemMap(Map crItemMap) {
+		this.crItemMap = crItemMap;
 	}
 }

@@ -86,7 +86,8 @@ WHERE
         		TEST_COMPLETION_TIMESTAMP,
 		        POINTS_POSSIBLE,
 		        SCORING_STATUS,
-		        SCALE_SCORE
+		        SCALE_SCORE,
+		        CONDITION_CODE
 		        <!-- ATTR17ID,
 		        ATTR18ID,
 		        ATTR19ID,
@@ -175,7 +176,8 @@ WHERE
                 #testCompletionTimestamp:TIMESTAMP#,
                 #pointsPossible:NUMERIC#,
                 #objectiveScoringStatus:VARCHAR#,
-                #scaleScore:NUMERIC#
+                #scaleScore:NUMERIC#,
+                #conditionCode:VARCHAR#
                 <!-- #attr17id:NUMERIC#,
 				#attr18id:NUMERIC#,
 				#attr19id:NUMERIC#,

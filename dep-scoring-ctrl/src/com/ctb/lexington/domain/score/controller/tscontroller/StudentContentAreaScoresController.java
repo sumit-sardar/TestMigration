@@ -170,8 +170,15 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr36id(context.getDemographicData().getAttr36Id());
                    newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
                    
-                   System.out.println(" Scoring Status " + fact.getSubtestScoringStatus());
                    newFact.setSubtestScoringStatus(fact.getSubtestScoringStatus());
+                   newFact.setProficiencyRange(fact.getProficiencyRange());
+                   facts.add(newFact);
+               } else {
+            	   IrsTASCContentAreaFactData newFact = new IrsTASCContentAreaFactData();
+            	   newFact.setSessionid(context.getSessionId());
+                   newFact.setStudentid(context.getStudentId());
+                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
+                   newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
                } else {
             	   IrsTASCContentAreaFactData newFact = new IrsTASCContentAreaFactData();

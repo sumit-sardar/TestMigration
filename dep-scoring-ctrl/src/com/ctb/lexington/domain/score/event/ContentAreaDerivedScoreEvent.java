@@ -25,6 +25,7 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
     private BigDecimal percentileRank;
     private BigDecimal lexileValue;
     private String subtestScoringStatus;
+    private String proficiencyRange;
 
     public ContentAreaDerivedScoreEvent(final Long testRosterId, final Long subtestId,
             final Long contentAreaId, final String contentAreaName, final BigDecimal scaleScore,
@@ -90,7 +91,7 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
             final String gradeEquivalent, final BigDecimal gradeMeanEquivalent,
             final BigDecimal nationalStanine, final BigDecimal nationalPercentile,
             final BigDecimal highNationalPercentile, final BigDecimal lowNationalPercentile,
-            final PerformanceLevel performanceLevel, final String normGroup, final String normYear,
+            final PerformanceLevel performanceLevel, final String proficiencyRange, final String normGroup, final String normYear,
             final String ageCategory, final String testLevel, final String recommendedLevel, final String subtestScoringStatus) {
         super(testRosterId, contentAreaId, subtestId);
         this.subtestId = subtestId;
@@ -105,6 +106,7 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
         this.highNationalPercentile = highNationalPercentile;
         this.lowNationalPercentile = lowNationalPercentile;
         this.performanceLevel = performanceLevel;
+        this.proficiencyRange = proficiencyRange;
         this.normGroup = normGroup;
         this.normYear = normYear;
         this.ageCategory = ageCategory;
@@ -207,5 +209,19 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
 
 	public void setSubtestScoringStatus(String subtestScoringStatus) {
 		this.subtestScoringStatus = subtestScoringStatus;
+	}
+
+	/**
+	 * @return the proficiencyRange
+	 */
+	public String getProficiencyRange() {
+		return proficiencyRange;
+	}
+
+	/**
+	 * @param proficiencyRange the proficiencyRange to set
+	 */
+	public void setProficiencyRange(String proficiencyRange) {
+		this.proficiencyRange = proficiencyRange;
 	}
 }

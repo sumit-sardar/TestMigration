@@ -77,8 +77,7 @@ public class ResponseReplayer {
     private final StudentItemSetStatusMapper studentItemSetStatusMapper;
     private Integer productId = null;
     private static String productType = null;
-    //private HashMap subtestMapBySubject = new SafeHashMap(String.class, String.class);
-    private static HashMap subtestMapBySubject = new SafeHashMap(String.class, ArrayList.class);
+    private HashMap subtestMapBySubject = new SafeHashMap(String.class, ArrayList.class);
     
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
@@ -200,35 +199,18 @@ public class ResponseReplayer {
 
         TestRosterRecord roster = testRosterMapper.findTestRoster(testRosterId);
         
-        /*String id[] = new String[5];
-        int i = 0;*/
         //Changes for duplicate content area for different TD for TASC
-        
         if("TS".equals(this.getProductType())) {
 	        for (final Iterator it = subtests.iterator(); it.hasNext();) {
 	        	final ItemSetVO subtest = (ItemSetVO) it.next();
 	        	if (subtestMapBySubject.containsKey(subtest.getSubject())){
-	        		
-	        		//String id = subtestMapBySubject.get(subtest.getSubject()).toString();
-	        		//id = "," + subtest.getSubject().toString();
-	        		
 	        		ArrayList arr = (ArrayList)subtestMapBySubject.get(subtest.getSubject());//.toString(); 
-	        		//id += "," + subtest.getItemSetId().toString();
-	        		
 	        		arr.add(subtest.getItemSetId());
-	        		
-	        		//subtestMapBySubject.put(subtest.getSubject(), id);
-	        		
 	        		subtestMapBySubject.put(subtest.getSubject(), arr);
-	        		//System.out.println(">>>>>>>>>>>>>>>>>>>>> item set id varchar ===>>> " + subtest.getSubject() + "  --  " + id);
 	        	}else{
 	        		ArrayList arr = new ArrayList();
 	        		arr.add(subtest.getItemSetId());
-	        		//subtestMapBySubject.put(subtest.getSubject(), subtest.getItemSetId().toString());
-	        		
 	        		subtestMapBySubject.put(subtest.getSubject(), arr);
-	        		
-	        		//System.out.println(">>>>>>>>>>>>>>>>>>>>> item set id varchar ===>>> " + subtest.getSubject() + "  --  " + subtest.getItemSetId().toString());
 	        	}
 	        }
         }
@@ -239,19 +221,14 @@ public class ResponseReplayer {
 	                    asLong(subtest.getItemSetId()), testRosterId);
 	            
 	            boolean isMinumAnswered = checkResponseForAdaptive(responses);
-	            //System.out.println("isMinumAnswered -> " + isMinumAnswered);
 	            subtest.setMinAnswered(isMinumAnswered);
             }
             
             if("TS".equals(this.getProductType())) {
-            	System.out.println("Scorer ***** To check Scoring Status for TASC ***** ");
-            	//System.out.println("Checking Scoring status for Subtest named ==> Display Name :: " + subtest.getItemSetDisplayName() + " :: ItemSet Name :: " + subtest.getItemSetName());
-            	
             	if(subtestMapBySubject.containsKey(subtest.getSubject())){
             		List responses = itemResponseMapper.findItemResponsesBySubtestForTASC(
             				(ArrayList)subtestMapBySubject.get(subtest.getSubject()), testRosterId);
             		
-	              	//validation or omission rule for TASC should be applied here
 	              	boolean validationStatusTASC = checkScoringValidationStatusForTASC(responses); // Added to store score validation Status for TASC
 	                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
 	                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
@@ -331,6 +308,11 @@ public class ResponseReplayer {
 						validResponseCount++;
 					}
 				}
+				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getCrResponse()){
+						validResponseCount++;
+					}
+				}
 	 		}
 	 		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
  				if(null != tascResponse.getResponse()  && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
@@ -364,6 +346,11 @@ public class ResponseReplayer {
 	 		if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
 				if (null != tascResponse.getAnswerArea() && "GRID".equals(tascResponse.getAnswerArea())) {
 					if(null != tascResponse.getVarcharConstructedResponse() && !"".equals(tascResponse.getVarcharConstructedResponse())) {
+						validResponseCount++;
+					}
+				}
+				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getCrResponse() && !"A".equals(tascResponse.getConditionCode())){
 						validResponseCount++;
 					}
 				}
@@ -401,6 +388,11 @@ public class ResponseReplayer {
     		if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
 				if (null != tascResponse.getAnswerArea() && "GRID".equals(tascResponse.getAnswerArea())) {
 					if(null != tascResponse.getVarcharConstructedResponse() && !"".equals(tascResponse.getVarcharConstructedResponse())) {
+						validResponseCount++;
+					}
+				}
+				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getCrResponse()){
 						validResponseCount++;
 					}
 				}
@@ -483,12 +475,7 @@ public class ResponseReplayer {
         final List events = new ArrayList();
 
         addSubtestStartedEvent(subtestStatus.getTestRosterId(), normGroup, ageCategory, events, itemSet);
-       /* if(itemSet.getAbsent() != null && itemSet.getExemptions() != null){
-        	if(itemSet.getValidationStatus().equals("VA") && itemSet.getAbsent().equals("N") && itemSet.getExemptions().equals("N"))
-        		addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
-        } else */
         if(itemSet.getObjectiveScore() != null) {
-        	//System.out.println("-------Instead of addResponseEvent-------");
         	if(itemSet.getValidationStatus().equals("VA") && itemSet.isMinAnswered())
         		addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
         }
@@ -563,8 +550,6 @@ public class ResponseReplayer {
     	if("TS".equals(productType)) {
 	        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
 	        		asLong(itemSet.getItemSetId()), testRosterId)));
-//    		events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASC
-//    				((ArrayList)subtestMapBySubject.get(itemSet.getSubject()), testRosterId)));
     	} else {
 	    	events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtest(
 	                asLong(itemSet.getItemSetId()), testRosterId)));
@@ -710,6 +695,8 @@ public class ResponseReplayer {
         event.setStudentMarked(
                 CTBConstants.TRUE.equals(response.getStudentMarked()));
         event.setComments(response.getComments());
+        event.setCrResponse(response.getCrResponse());
+        event.setConditionCode(response.getConditionCode());
 
         return event;
     }

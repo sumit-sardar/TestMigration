@@ -40,6 +40,7 @@ public class IrsTASCContentAreaFactData implements Persistent{
     private Long currentResultid;
     private String subtestScoringStatus;
     private Long proficiencyLevel;
+    private String proficiencyRange;
     
     /*private Long attr1id;
     private Long attr7id;
@@ -376,6 +377,20 @@ public class IrsTASCContentAreaFactData implements Persistent{
 	
 	public void setSubtestScoringStatus(String subtestScoringStatus) {
 		this.subtestScoringStatus = subtestScoringStatus;
+	}
+
+	/**
+	 * @return the proficiencyRange
+	 */
+	public String getProficiencyRange() {
+		return proficiencyRange;
+	}
+
+	/**
+	 * @param proficiencyRange the proficiencyRange to set
+	 */
+	public void setProficiencyRange(String proficiencyRange) {
+		this.proficiencyRange = proficiencyRange;
 	}
     
     /*public Long getAttr1id() {
