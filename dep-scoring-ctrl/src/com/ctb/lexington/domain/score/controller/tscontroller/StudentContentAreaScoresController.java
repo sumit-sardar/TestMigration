@@ -180,13 +180,6 @@ public class StudentContentAreaScoresController {
                    newFact.setContentAreaid(contentAreas[i].getContentAreaId());
                    newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
-               } else {
-            	   IrsTASCContentAreaFactData newFact = new IrsTASCContentAreaFactData();
-            	   newFact.setSessionid(context.getSessionId());
-                   newFact.setStudentid(context.getStudentId());
-                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
-                   newFact.setCurrentResultid(new Long (2));
-                   facts.add(newFact);
                }
             }
         return (IrsTASCContentAreaFactData []) facts.toArray(new IrsTASCContentAreaFactData[0]);
