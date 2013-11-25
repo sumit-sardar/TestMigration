@@ -187,7 +187,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     }
 
     private void handleAssessmentStartedEvent(Event event) throws CTBSystemException {
-    	System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent");
+    	//System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent");
         if (resultHolder == null) {
             if (event instanceof AssessmentStartedEvent) {
                 try {
@@ -371,22 +371,24 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         details.setSubtestId(event.getSubtestId());
         
         // Added for TASC Product
-        if(productType.equals("TS")) {
+        /*if(productType.equals("TS")) {
         	Long pointsAttempted = new Long(event.getPointsAttempted());
         	Long pointsPossible = new Long(event.getPointsPossible());
         	
         	if(pointsAttempted == pointsPossible) {
-        		details.setObjectiveScoringStatus("ALL");
+        		//details.setObjectiveScoringStatus("ALL");
+        		details.setObjectiveScoringStatus("");
         	}
         	else if(pointsAttempted < pointsPossible && pointsAttempted > 0) {
-        		details.setObjectiveScoringStatus("SOME");
+        		//details.setObjectiveScoringStatus("SOME");
+        		details.setObjectiveScoringStatus("*");
         	}
         	else if(pointsAttempted == 0) {
-        		details.setObjectiveScoringStatus("NO");
+        		//details.setObjectiveScoringStatus("NO");
+        		details.setObjectiveScoringStatus("");
         	}
         	System.out.println("Objective Subtest Id : " + event.getSubtestId() + " : Objective Scoring Status : " + details.getObjectiveScoringStatus());
-        }
-        
+        }*/
         // Added for TASC Product
     }
 

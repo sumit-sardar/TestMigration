@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABEItemFact">
+<sqlMap namespace="IrsTASCItemFact">
 
 <select id="TSfindByItemStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData">
 SELECT 
@@ -37,7 +37,7 @@ SELECT
         RESPONSEID as responseid,
         POINTS_POSSIBLE as pointsPossible
 FROM
-        TABE_ITEM_FACT  
+        TASC_ITEM_FACT  
 WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND
@@ -258,7 +258,7 @@ WHERE
             SESSIONID != #sessionid:NUMERIC#
         AND
 			(itemID in (select curritemdim.itemID 
-                                from TABE_item_FACT itemfact, 
+                                from TASC_item_FACT itemfact, 
                                 item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_Area_dim condim,
                                 prim_obj_dim currprimdim, sec_obj_dim currsecdim, item_dim curritemdim
                                 where itemfact.sessionid = #sessionid:NUMERIC#
@@ -273,7 +273,7 @@ WHERE
                         )
             OR #currentResultid:NUMERIC# = 1)
         AND
-            test_completion_timestamp = (select max(test_completion_timestamp) from tabe_item_fact
+            test_completion_timestamp = (select max(test_completion_timestamp) from tasc_item_fact
                         where sessionid != #sessionid:NUMERIC#
                         and studentid = #studentid:NUMERIC#
                         and itemid = fact.itemid

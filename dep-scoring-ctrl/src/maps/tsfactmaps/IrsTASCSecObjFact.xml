@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABESecObjFact">
+<sqlMap namespace="IrsTASCSecObjFact">
 
 <select id="TSfindBySecObjStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCSecObjFactData">
 SELECT 
@@ -38,7 +38,7 @@ SELECT
         TEST_COMPLETION_TIMESTAMP as testCompletionTimestamp,
         POINTS_POSSIBLE as pointsPossible
 FROM
-        TABE_SEC_OBJ_FACT  
+        TASC_SEC_OBJ_FACT  
 WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND
@@ -84,7 +84,9 @@ WHERE
 		        PERCENT_OBTAINED,
 		        POINTS_OBTAINED,
         		TEST_COMPLETION_TIMESTAMP,
-		        POINTS_POSSIBLE
+		        POINTS_POSSIBLE,
+		        SCORING_STATUS,
+		        SCALE_SCORE
 		        <!-- ATTR17ID,
 		        ATTR18ID,
 		        ATTR19ID,
@@ -171,7 +173,9 @@ WHERE
                 #percentObtained:NUMERIC#,
                 #pointsObtained:NUMERIC#,
                 #testCompletionTimestamp:TIMESTAMP#,
-                #pointsPossible:NUMERIC#
+                #pointsPossible:NUMERIC#,
+                #objectiveScoringStatus:VARCHAR#,
+                #scaleScore:NUMERIC#
                 <!-- #attr17id:NUMERIC#,
 				#attr18id:NUMERIC#,
 				#attr19id:NUMERIC#,
@@ -259,7 +263,7 @@ WHERE
             SESSIONID != #sessionid:NUMERIC#
         AND
 			(sec_objID in (select currsecdim.sec_objID 
-                                from TABE_sec_obj_FACT secfact, 
+                                from TASC_sec_obj_FACT secfact, 
                                 sec_obj_dim secdim, prim_obj_dim primdim, content_Area_dim condim,
                                 prim_obj_dim currprimdim, sec_obj_dim currsecdim
                                 where secfact.sessionid = #sessionid:NUMERIC#
@@ -272,7 +276,7 @@ WHERE
                         )
             OR #currentResultid:NUMERIC# = 1)
         AND
-            test_completion_timestamp = (select max(test_completion_timestamp) from tabe_sec_obj_fact
+            test_completion_timestamp = (select max(test_completion_timestamp) from tasc_sec_obj_fact
                         where sessionid != #sessionid:NUMERIC#
                         and studentid = #studentid:NUMERIC#
                         and assessmentid = fact.assessmentid

@@ -59,7 +59,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<sfacts.length;i++) {
             IrsTASCSecObjFactData newFact = sfacts[i];
             soMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 soMapper.insert(newFact);
             }
         }
@@ -180,7 +180,8 @@ public class StudentObjectiveScoresController {
             
             // Do not insert in Sec Obj Fact for TASC if SubtestScoringStatus is Suppressed
             
-            if(!"SUP".equals(factDetails.getSubtestScoringStatus())){
+            if(!"SUP".equals(factDetails.getSubtestScoringStatus())
+            		&& !"OM".equals(factDetails.getSubtestScoringStatus())){
             	
 	            if(details != null && !"F".equals(details.getAtsArchive())) {
 	                IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
@@ -214,7 +215,7 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setTestStartTimestamp(contextData.getTestStartTimestamp());
 	                //Timestamp subtestTime = null; //testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
 	                Timestamp subtestTime = testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
-	                System.out.println("Sub test Id " + sec.getSubtestId() + " Subtest Level " + sec.getSubtestLevel());
+	                //System.out.println("Sub test Id " + sec.getSubtestId() + " Subtest Level " + sec.getSubtestLevel());
 	                if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
 	                secObjFact.setTestCompletionTimestamp(subtestTime);
 	                
@@ -234,7 +235,6 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
 	                secObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
 	                secObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
-	                
 	                secObjFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
 	                secObjFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
 	                secObjFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
@@ -262,9 +262,37 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
 	                
 	                secObjFact.setSubtestName(sec.getSubtestName());
+	                Long pointsAttempted = new Long(details.getPointsAttempted());
+	            	Long pointsPossible = new Long(details.getPointsPossible());
+	            	
+	            	if(pointsAttempted == pointsPossible) {
+	            		details.setObjectiveScoringStatus(""); // All items attempted
+	            	}
+	            	else if(pointsAttempted < pointsPossible && pointsAttempted > 0) {
+	            		details.setObjectiveScoringStatus("*"); // Some items attempted
+	            	}
+	            	else if(pointsAttempted == 0) {
+	            		details.setObjectiveScoringStatus(""); // No item attempted
+	            	}
+	                secObjFact.setObjectiveScoringStatus(details.getObjectiveScoringStatus());
+	                secObjFact.setScaleScore(details.getScaleScore());
 	            
 	                secondaries.add(secObjFact);
+	            } else{
+	            	IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
+	            	secObjFact.setSessionid(contextData.getSessionId());
+	            	secObjFact.setStudentid(contextData.getStudentId());
+	            	secObjFact.setCurrentResultid(new Long (2));
+	            	secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
+	            	secondaries.add(secObjFact);
 	            }
+            } else{
+            	IrsTASCSecObjFactData secObjFact = new IrsTASCSecObjFactData();
+            	secObjFact.setSessionid(contextData.getSessionId());
+            	secObjFact.setStudentid(contextData.getStudentId());
+            	secObjFact.setCurrentResultid(new Long (2));
+            	secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
+            	secondaries.add(secObjFact);
             }
         }
         return (IrsTASCSecObjFactData[]) secondaries.toArray(new IrsTASCSecObjFactData[0]);
@@ -275,7 +303,6 @@ public class StudentObjectiveScoresController {
     private String getContentAreaName(Long contentAreaId) {
         for(int i=0;i<currData.getContentAreas().length;i++) {
             if(contentAreaId.equals(currData.getContentAreas()[i].getContentAreaId())) {
-            	System.out.println("Subtest Area Name : " + currData.getContentAreas()[i].getContentAreaName());
                 return currData.getContentAreas()[i].getContentAreaName();
             }
         }

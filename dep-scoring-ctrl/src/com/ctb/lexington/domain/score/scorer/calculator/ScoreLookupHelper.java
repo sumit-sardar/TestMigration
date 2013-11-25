@@ -130,6 +130,39 @@ public class ScoreLookupHelper {
             throw new RuntimeException(e);
         }
     }
+    
+    // START For TASC Scoring
+    public BigDecimal getTASCPerformanceLevel(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findTASCPerformanceLevel(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public BigDecimal getTASCNCE(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findTASCNCE(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BigDecimal getTASCPR(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findTASCPR(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    // END For TASC Scoring
 
     public ScoreLookupRecord getTerraNovaCompositeScore(BigDecimal sourceScoreValue,
             ScoreLookupCode sourceScoreType, ScoreLookupCode destScoreType, String normGroup, String normYear,
@@ -217,7 +250,7 @@ public class ScoreLookupHelper {
         return buildGradeEquivalent(record);
     }
 
-    private BigDecimal getScore(final Long itemSetId, final String contentArea,
+    public BigDecimal getScore(final Long itemSetId, final String contentArea,
             final String normGroup, final String testForm, final String testLevel,
             final String grade, final ScoreLookupCode sourceScoreType,
             final BigDecimal sourceScoreValue, final ScoreLookupCode destScoreType,

@@ -23,6 +23,10 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_HIGH_MODERATE_MASTERY = "findScoreLookupForHighMasteryRange";
     private static final String FIND_LOW_MODERATE_MASTERY = "findScoreLookupForLowMasteryRange";
     private static final String FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SETTN3 = "findScoreLookupForItemSetAndUniqueKeyTN3";
+    private static final String FIND_TS_PERFORMANCE_LEVEL = "findTASCPerformanceLevel";
+    private static final String FIND_TS_NCE = "findTASCNCE";  // For TASC Scoring
+    private static final String FIND_TS_PR = "findTASCPR";	// For TASC Scoring
+    private static final String FIND_TS_PERFORMANCE_LEVEL_RANGE = "findTSperformanceLevelRange";  // For TASC Scoring
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -374,4 +378,102 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             return ((ScoreLookupRecord) results.get(0)).getDestScoreValue().intValue();
         }
     }
+    
+    // START For TASC Scoring
+    public String findTASCPerformanceLevelRabge(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+        int scaleScoreValue = 0;
+        String scaleScoreRange = null;
+        List results = findMany(FIND_TS_PERFORMANCE_LEVEL_RANGE,template);
+        if (results==null || results.isEmpty()) {
+            StringBuffer buf = new StringBuffer("Unable to find Scalescore Range value for: ");
+            buf.append("\n\tparams: " + contentArea);
+            buf.append(" | " + grade);
+            buf.append(" | " + testLevel);
+            buf.append(" | " + testForm);
+            buf.append("\n(continuing)\n");
+            System.err.println(buf.toString());
+            return null;
+        }else {
+        	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
+				if(slr != null && slr.getSourceScoreValue()!= null) {
+					if(scaleScoreRange == null && scaleScoreValue == 0){
+						scaleScoreRange = "001-"+slr.getSourceScoreValue().toString();
+						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
+					}else{
+						scaleScoreRange = scaleScoreRange + new Integer(scaleScoreValue).toString()+"-"+slr.getSourceScoreValue().toString();
+						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
+					}
+					scaleScoreValue++;
+				}else{
+					return null;
+				}
+        	}
+        	return scaleScoreRange;
+        }
+    }
+    
+    public BigDecimal findTASCPerformanceLevel(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord perfLevel = (ScoreLookupRecord) find(FIND_TS_PERFORMANCE_LEVEL,
+                template);
+        if (null != perfLevel && null != perfLevel.getDestScoreValue())
+            return perfLevel.getDestScoreValue();
+        else
+            return new BigDecimal("0");
+    }
+    
+    public BigDecimal findTASCNCE(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord normaCurveEq = (ScoreLookupRecord) find(FIND_TS_NCE,
+                template);
+        if (null != normaCurveEq && null != normaCurveEq.getDestScoreValue())
+            return normaCurveEq.getDestScoreValue();
+        else
+            return new BigDecimal("0");
+    }
+
+    public BigDecimal findTASCPR(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord percentileRank = (ScoreLookupRecord) find(FIND_TS_PR,
+                template);
+        if (null != percentileRank && null != percentileRank.getDestScoreValue())
+            return percentileRank.getDestScoreValue();
+        else
+            return new BigDecimal("0");
+    }
+    
+    // END For TASC Scoring
 }

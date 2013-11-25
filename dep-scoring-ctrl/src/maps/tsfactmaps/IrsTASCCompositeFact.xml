@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABECompositeFact">
+<sqlMap namespace="IrsTASCCompositeFact">
 
 <select id="TSfindByCompStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">
 SELECT 
@@ -25,7 +25,7 @@ SELECT
         ATTR15ID as attr15id,
         ATTR16ID as attr16id,  -->
         GRADEID	as gradeid,
-        NRS_LEVELID as nrsLevelid,
+        <!-- NRS_LEVELID as nrsLevelid, -->
         ORG_NODEID	as orgNodeid,
         ASSESSMENTID as assessmentid,
         PROGRAMID as programid,	
@@ -77,7 +77,7 @@ WHERE
 		        ATTR15ID,
 		        ATTR16ID, -->
 		        GRADEID,
-		        NRS_LEVELID,
+		        <!-- NRS_LEVELID, -->
 		        ORG_NODEID,
 		        ASSESSMENTID,
 		        PROGRAMID,	
@@ -117,7 +117,7 @@ WHERE
 		        #attr15id:NUMERIC#,
 		        #attr16id:NUMERIC#, -->
 		        #gradeid:NUMERIC#,
-		        #nrsLevelid:NUMERIC#,
+		        <!-- #nrsLevelid:NUMERIC#, -->
 		        #orgNodeid:NUMERIC#,
 		        #assessmentid:NUMERIC#,
 		        #programid:NUMERIC#,	
@@ -225,7 +225,7 @@ WHERE
             SESSIONID != #sessionid:NUMERIC#
         AND
 			(COMPOSITEID in (select COMPOSITEID 
-                                from TABE_COMPOSITE_FACT 
+                                from TASC_COMPOSITE_FACT 
                                 where sessionid = #sessionid:NUMERIC#
                                 and studentid = #studentid:NUMERIC#)
             OR #currentResultid:NUMERIC# = 1)

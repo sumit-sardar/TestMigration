@@ -14,6 +14,8 @@ import com.ctb.lexington.util.SQLUtil;
 
 public class ItemResponseMapper extends AbstractDBMapper {
     public static final String FIND_MANY_BY_ITEM_SET_ID = "findItemResponsesByItemSetIdAndRosterId";
+    public static final String FIND_MANY_BY_ITEM_SET_ID_TASC = "findItemResponsesByItemSetIdAndRosterIdForTASC";
+    public static final String FIND_MANY_BY_ITEM_SET_ID_TASC_ORG = "findItemResponsesByItemSetIdAndRosterIdForTASCOrg";
     public static final String FIND_MANY_BY_ROSTER_ID = "findItemResponsesByRosterId";
     public static final String FIND_SCORED_OFFLINE_ITEMS = "findOfflineItemsThatAreScored";
     public static final String FIND_SCORED_ITEMS = "findItemsThatAreScored";
@@ -31,6 +33,22 @@ public class ItemResponseMapper extends AbstractDBMapper {
         map.put("testRosterId", testRosterId);
     	return findMany(FIND_MANY_BY_ITEM_SET_ID, map);
     }
+    
+    //Added for TASC 
+    public List findItemResponsesBySubtestForTASC(final ArrayList itemSetId, final Long testRosterId) {
+        HashMap map = new HashMap();
+        map.put("itemSetId", itemSetId);
+        map.put("testRosterId", testRosterId);
+    	return findMany(FIND_MANY_BY_ITEM_SET_ID_TASC, map);
+    }
+    
+    public List findItemResponsesBySubtestForTASCOrg(final Long itemSetId, final Long testRosterId) {
+        HashMap map = new HashMap();
+        map.put("itemSetId", itemSetId);
+        map.put("testRosterId", testRosterId);
+    	return findMany(FIND_MANY_BY_ITEM_SET_ID_TASC_ORG, map);
+    }
+    
     //Added for tabe adaptive
     public List findItemResponsesBySubtestForAdaptive(final Long itemSetId, final Long testRosterId) {
         HashMap map = new HashMap();

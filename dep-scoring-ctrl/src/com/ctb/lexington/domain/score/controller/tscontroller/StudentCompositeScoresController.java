@@ -8,6 +8,7 @@ import com.ctb.lexington.db.data.StsTotalStudentScoreDetail;
 import java.sql.Connection;
 
 import com.ctb.lexington.db.data.StudentPredictedScoresData;
+import com.ctb.lexington.db.irsdata.irslldata.IrsLLContentAreaFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCCompositeFactMapper;
 import com.ctb.lexington.db.mapper.StudentPredictedScoresMapper;
@@ -21,14 +22,14 @@ import java.util.ArrayList;
  */
 public class StudentCompositeScoresController {
     private StsTotalStudentScoreData totalData;
-    private StudentPredictedScoresData predData;
+    //private StudentPredictedScoresData predData;
     private CurriculumData currData;
     private ContextData context;
     private IrsTASCCompositeFactMapper mapper;
 
-    public StudentCompositeScoresController(Connection conn, StsTotalStudentScoreData totalData, StudentPredictedScoresData predData, CurriculumData currData, ContextData context) {
+    public StudentCompositeScoresController(Connection conn, StsTotalStudentScoreData totalData, /*StudentPredictedScoresData predData,*/ CurriculumData currData, ContextData context) {
         this.totalData = totalData;
-        this.predData = predData;
+        //this.predData = predData;
         this.currData = currData;
         this.context = context;
         mapper = new IrsTASCCompositeFactMapper(conn);
@@ -39,7 +40,7 @@ public class StudentCompositeScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTASCCompositeFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 mapper.insert(newFact);
             }
         }
@@ -63,27 +64,12 @@ public class StudentCompositeScoresController {
                    newFact.setNationalPercentile((total.getNationalPercentile()==null)?null:new Long(total.getNationalPercentile().longValue()));
                    //newFact.setNationalStanine((total.getNationalStanine()==null)?null:new Long(total.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((total.getNormalCurveEquivalent()==null)?null:new Long(total.getNormalCurveEquivalent().longValue()));
-                   if(total.getScaleScore() != null && "Total Mathematics".equals(composites[i].getCompositeName())) {
-                        if (total.getScaleScore().longValue() <= 313)
-                            newFact.setNrsLevelid(new Long(1));
-                        else if (total.getScaleScore().longValue() <= 441)
-                            newFact.setNrsLevelid(new Long(2));
-                        else if (total.getScaleScore().longValue() <= 505)
-                            newFact.setNrsLevelid(new Long(3));
-                        else if (total.getScaleScore().longValue() <= 565)
-                            newFact.setNrsLevelid(new Long(4));
-                        else if (total.getScaleScore().longValue() <= 594)
-                            newFact.setNrsLevelid(new Long(5));
-                        else newFact.setNrsLevelid(new Long(6));
-                   } else {
-                        newFact.setNrsLevelid(new Long(0));
-                   }
                    newFact.setOrgNodeid(context.getOrgNodeId());
                    //newFact.setPercentageMastery((total.getPercentObjectiveMastery()==null)?null:total.getPercentObjectiveMastery());
                    newFact.setProficiencyLevel(Long.valueOf(total.getProficencyLevel().toBigInteger().longValue()));
                    newFact.setPointsAttempted(total.getPointsAttempted());
                    newFact.setPointsObtained(total.getPointsObtained());
-                   newFact.setPointsPossible(composites[i].getCompositePointsPossible());
+                   newFact.setPointsPossible(total.getPointsPossible());
                    newFact.setProgramid(context.getProgramId());
                    newFact.setRecLevelid((total.getRecommendedLevelId() == null)?new Long(6):total.getRecommendedLevelId());
                    newFact.setScaleScore((total.getScaleScore()==null)?null:new Long(total.getScaleScore().longValue()));
@@ -124,6 +110,13 @@ public class StudentCompositeScoresController {
                    newFact.setAttr36id(context.getDemographicData().getAttr36Id());
                    newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
                    
+                   facts.add(newFact);
+               } else {
+            	   IrsTASCCompositeFactData newFact = new IrsTASCCompositeFactData();
+            	   newFact.setCompositeid(composites[i].getCompositeId());
+            	   newFact.setSessionid(context.getSessionId());
+                   newFact.setStudentid(context.getStudentId());
+                   newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
                }
             }

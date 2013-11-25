@@ -144,6 +144,7 @@ public class ItemSetVO implements Persistent, Serializable
     protected String objectiveScore = null;
     protected Integer unscored = null; // Added to handle student stop in case of tabe adaptive
     protected boolean minAnswered = false; // Added to meet same condition as of tabe online
+    protected String subject = ""; // Added for TASC product 
     
     protected String subtestScoringStatus = null;
 
@@ -724,4 +725,13 @@ public class ItemSetVO implements Persistent, Serializable
 		this.subtestScoringStatus = subtestScoringStatus;
 	}
 
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	
 }

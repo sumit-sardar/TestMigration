@@ -27,6 +27,7 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
     private Long subtestId;
 	private Long numCorrect;
 	private Long numAttempted;
+	private Long scaleScore;
 	private String objectiveScoringStatus;
 
     public String getObjectiveScoringStatus() {
@@ -252,6 +253,20 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
 	 */
 	public void setDecimalPercentObtained(Float decimalPercentObtained) {
 		this.decimalPercentObtained = decimalPercentObtained;
+	}
+
+	/**
+	 * @return the scaleScore
+	 */
+	public Long getScaleScore() {
+		return scaleScore;
+	}
+
+	/**
+	 * @param scaleScore the scaleScore to set
+	 */
+	public void setScaleScore(Long scaleScore) {
+		this.scaleScore = scaleScore;
 	}
 
 	

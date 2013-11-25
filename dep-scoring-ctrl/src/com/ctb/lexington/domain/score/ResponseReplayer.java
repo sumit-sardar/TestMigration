@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.ctb.lexington.data.ItemResponseVO;
 import com.ctb.lexington.data.ItemSetVO;
 import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.data.StudentItemSetStatusRecord;
+import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.TestRosterRecord;
 import com.ctb.lexington.db.mapper.ItemResponseMapper;
 import com.ctb.lexington.db.mapper.ItemSetMapper;
@@ -33,6 +35,7 @@ import com.ctb.lexington.domain.teststructure.CompletionStatus;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.exception.EventChannelException;
 import com.ctb.lexington.util.CTBConstants;
+import com.ctb.lexington.util.SafeHashMap;
 import com.ctb.lexington.util.ValidateGRResponse;
 
 /**
@@ -74,8 +77,9 @@ public class ResponseReplayer {
     private final StudentItemSetStatusMapper studentItemSetStatusMapper;
     private Integer productId = null;
     private static String productType = null;
-    private static int validResponseCount = 0;
-
+    //private HashMap subtestMapBySubject = new SafeHashMap(String.class, String.class);
+    private static HashMap subtestMapBySubject = new SafeHashMap(String.class, ArrayList.class);
+    
     /**
      * Constructs a new <code>ResponseReplayer</code> with the given
      * <var>provider</var>.  This is the inverse of {@link
@@ -196,6 +200,38 @@ public class ResponseReplayer {
 
         TestRosterRecord roster = testRosterMapper.findTestRoster(testRosterId);
         
+        /*String id[] = new String[5];
+        int i = 0;*/
+        //Changes for duplicate content area for different TD for TASC
+        
+        if("TS".equals(this.getProductType())) {
+	        for (final Iterator it = subtests.iterator(); it.hasNext();) {
+	        	final ItemSetVO subtest = (ItemSetVO) it.next();
+	        	if (subtestMapBySubject.containsKey(subtest.getSubject())){
+	        		
+	        		//String id = subtestMapBySubject.get(subtest.getSubject()).toString();
+	        		//id = "," + subtest.getSubject().toString();
+	        		
+	        		ArrayList arr = (ArrayList)subtestMapBySubject.get(subtest.getSubject());//.toString(); 
+	        		//id += "," + subtest.getItemSetId().toString();
+	        		
+	        		arr.add(subtest.getItemSetId());
+	        		
+	        		//subtestMapBySubject.put(subtest.getSubject(), id);
+	        		
+	        		subtestMapBySubject.put(subtest.getSubject(), arr);
+	        		//System.out.println(">>>>>>>>>>>>>>>>>>>>> item set id varchar ===>>> " + subtest.getSubject() + "  --  " + id);
+	        	}else{
+	        		ArrayList arr = new ArrayList();
+	        		arr.add(subtest.getItemSetId());
+	        		//subtestMapBySubject.put(subtest.getSubject(), subtest.getItemSetId().toString());
+	        		
+	        		subtestMapBySubject.put(subtest.getSubject(), arr);
+	        		
+	        		//System.out.println(">>>>>>>>>>>>>>>>>>>>> item set id varchar ===>>> " + subtest.getSubject() + "  --  " + subtest.getItemSetId().toString());
+	        	}
+	        }
+        }
         for (final Iterator it = subtests.iterator(); it.hasNext();) {
             final ItemSetVO subtest = (ItemSetVO) it.next();
             if(subtest.getObjectiveScore() != null) {
@@ -209,37 +245,31 @@ public class ResponseReplayer {
             
             if("TS".equals(this.getProductType())) {
             	System.out.println("Scorer ***** To check Scoring Status for TASC ***** ");
+            	//System.out.println("Checking Scoring status for Subtest named ==> Display Name :: " + subtest.getItemSetDisplayName() + " :: ItemSet Name :: " + subtest.getItemSetName());
             	
-            	List responses = itemResponseMapper.findItemResponsesBySubtest(
-                        asLong(subtest.getItemSetId()), testRosterId);
-            	
-            	//validation or omission rule for TASC should be applied here
-            	
-            	boolean validationStatusTASC = checkScoringValidationStatusForTASC(responses); // Added to store score validation Status for TASC
-                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
-                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
-                
-            	//subtest.setValidationStatusTASC(checkScoringValidationStatusForTASC(responses));
-            	//System.out.println("Scoring Validation Status for TASC is :: " + validationStatusTASC);
-            	
-            	//subtest.setOmissionStatusTASC(checkScoringOmissionStatusForTASC(responses));
-            	//System.out.println("Scoring Omission Status for TASC is :: " + omissionStatusTASC);
-            	
-            	//subtest.setSuppressionStatusTASC(checkScoringSuppressionStatusForTASC(responses));
-            	//System.out.println("Scoring Suppression Status for TASC is :: " + suppressionStatusTASC);
-            	
-            	if(validationStatusTASC == true) {
-            		//subtest.setSubtestScoringStatus("VA");
-            		subtest.setSubtestScoringStatus("");
-            	}
-            	else if(omissionStatusTASC == true) {
-            		subtest.setSubtestScoringStatus("OM");
-            	}
-            	else if(suppressionStatusTASC == true) {
-            		subtest.setSubtestScoringStatus("SUP");
-            	}
-            	else {
-            		subtest.setSubtestScoringStatus("INV");
+            	if(subtestMapBySubject.containsKey(subtest.getSubject())){
+            		List responses = itemResponseMapper.findItemResponsesBySubtestForTASC(
+            				(ArrayList)subtestMapBySubject.get(subtest.getSubject()), testRosterId);
+            		
+	              	//validation or omission rule for TASC should be applied here
+	              	boolean validationStatusTASC = checkScoringValidationStatusForTASC(responses); // Added to store score validation Status for TASC
+	                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
+	                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
+	                  
+	                  subtest.setSubtestScoringStatus(""); // Setting 
+	              	if(validationStatusTASC == true) {
+	              		subtest.setSubtestScoringStatus("");
+	              	}
+	              	else if(omissionStatusTASC == true) {
+	              		subtest.setSubtestScoringStatus("OM");
+	              	}
+	              	else if(suppressionStatusTASC == true) {
+	              		subtest.setSubtestScoringStatus("SUP");
+	              	}
+	              	else {
+	              		subtest.setSubtestScoringStatus("INV");
+	              	}
+	              	
             	}
             	System.out.println("Scoring Validation Status "  + subtest.getSubtestScoringStatus());
             }
@@ -529,8 +559,16 @@ public class ResponseReplayer {
 
     private static void addResponseEvents(final Long testRosterId, final List events, final ItemSetVO itemSet,
             final ItemResponseMapper itemResponseMapper) {
-        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtest(
-                asLong(itemSet.getItemSetId()), testRosterId)));
+    	
+    	if("TS".equals(productType)) {
+	        events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASCOrg(
+	        		asLong(itemSet.getItemSetId()), testRosterId)));
+//    		events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtestForTASC
+//    				((ArrayList)subtestMapBySubject.get(itemSet.getSubject()), testRosterId)));
+    	} else {
+	    	events.addAll(getResponseEvents(itemResponseMapper.findItemResponsesBySubtest(
+	                asLong(itemSet.getItemSetId()), testRosterId)));
+    	}
     }
     
     private static void addSubtestEndedEvent(final List events,

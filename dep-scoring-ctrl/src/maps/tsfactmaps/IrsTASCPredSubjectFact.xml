@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABEPredSubjectFact">
+<sqlMap namespace="IrsTASCPredSubjectFact">
 
-<insert id="TSinsertTABEPredSubjFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPredSubjectFactData">
+<insert id="TSinsertTASCPredSubjFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPredSubjectFactData">
 	
         INSERT INTO
             TABE_PRED_SUBJECT_FACT

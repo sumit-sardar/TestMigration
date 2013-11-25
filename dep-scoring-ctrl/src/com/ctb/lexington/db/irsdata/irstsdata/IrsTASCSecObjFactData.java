@@ -29,6 +29,7 @@ public class IrsTASCSecObjFactData implements Persistent{
     private Long currentResultid;
     private String subtestName;
     private Long scaleScore;
+    private String objectiveScoringStatus;
     
     /*private Long attr1id;
     private Long attr7id;
@@ -61,6 +62,20 @@ public class IrsTASCSecObjFactData implements Persistent{
     private Long attr30id;
     private Long attr36id;
     private Long attr37id;*/
+
+	/**
+	 * @return the objectiveScoringStatus
+	 */
+	public String getObjectiveScoringStatus() {
+		return objectiveScoringStatus;
+	}
+
+	/**
+	 * @param objectiveScoringStatus the objectiveScoringStatus to set
+	 */
+	public void setObjectiveScoringStatus(String objectiveScoringStatus) {
+		this.objectiveScoringStatus = objectiveScoringStatus;
+	}
 
 	public Long getScaleScore() {
 		return scaleScore;

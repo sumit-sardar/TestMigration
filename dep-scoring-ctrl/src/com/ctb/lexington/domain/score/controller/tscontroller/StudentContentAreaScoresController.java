@@ -13,6 +13,7 @@ import java.util.Iterator;
 import com.ctb.lexington.db.data.StudentSubtestScoresData;
 import com.ctb.lexington.db.data.StudentSubtestScoresDetails;
 import com.ctb.lexington.db.data.StudentTestData;
+import com.ctb.lexington.db.irsdata.irslldata.IrsLLContentAreaFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData;
 import com.ctb.lexington.db.mapper.IrsContentAreaDimMapper;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCContentAreaFactMapper;
@@ -41,11 +42,13 @@ public class StudentContentAreaScoresController {
 
     public void run() throws SQLException {
     	IrsTASCContentAreaFactData [] facts = getContentAreaFactBeans();
-        for(int i=0;i<facts.length;i++) {
+        /*if(facts.length > 0 ){
+        	mapper.wipeOutScoreForRoster(facts[0]);
+        }*/
+    	for(int i=0;i<facts.length;i++) {
             IrsTASCContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
-                System.out.println("TASCCAFact record currency: " + mapper.isTASCCAFactCurrent(newFact));
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 mapper.insert(newFact);
             }
         }
@@ -57,7 +60,7 @@ public class StudentContentAreaScoresController {
             for(int i=0;i<contentAreas.length;i++) {
                StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
                if(fact != null && 
-                    ("TS CONTENT AREA".equals(contentAreas[i].getContentAreaType()) || "T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
+                    (/*"TS CONTENT AREA".equals(contentAreas[i].getContentAreaType()) || */"T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
                    StudentSubtestScoresDetails subtest = subtestData.get(contentAreas[i].getSubtestId());
                    IrsTASCContentAreaFactData newFact = new IrsTASCContentAreaFactData();
                    newFact.setAssessmentid(context.getAssessmentId());
@@ -80,7 +83,7 @@ public class StudentContentAreaScoresController {
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null:new Long(fact.getNationalPercentile().longValue()));
                    //newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
-                   if(fact.getScaleScore() != null && "Reading".equals(contentAreas[i].getContentAreaName())) {
+                   /*if(fact.getScaleScore() != null && "Reading".equals(contentAreas[i].getContentAreaName())) {
                             if (fact.getScaleScore().longValue() <= 367)
                                 newFact.setNrsLevelid(new Long(1));
                             else if (fact.getScaleScore().longValue() <= 460)
@@ -106,10 +109,10 @@ public class StudentContentAreaScoresController {
                             else newFact.setNrsLevelid(new Long(6));
                    } else {
                             newFact.setNrsLevelid(new Long(0));
-                   }
+                   }*/
                    newFact.setOrgNodeid(context.getOrgNodeId());
                    //newFact.setPercentageMastery((fact.getPercentObjectiveMastery()==null)?null:fact.getPercentObjectiveMastery());
-                   //newFact.setProficiencyLevel(Long.valueOf(fact.getPerformanceLevel().toBigInteger().longValue()));
+                   newFact.setProficiencyLevel((fact.getPerformanceLevelCode()==null)?null:new Long(fact.getPerformanceLevelCode()));
                    newFact.setPercentObtained(fact.getPercentObtained());
                    newFact.setPointsAttempted(fact.getPointsAttempted());
                    newFact.setPointsObtained(fact.getPointsObtained());
@@ -169,6 +172,13 @@ public class StudentContentAreaScoresController {
                    
                    System.out.println(" Scoring Status " + fact.getSubtestScoringStatus());
                    newFact.setSubtestScoringStatus(fact.getSubtestScoringStatus());
+                   facts.add(newFact);
+               } else {
+            	   IrsTASCContentAreaFactData newFact = new IrsTASCContentAreaFactData();
+            	   newFact.setSessionid(context.getSessionId());
+                   newFact.setStudentid(context.getStudentId());
+                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
+                   newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
                }
             }

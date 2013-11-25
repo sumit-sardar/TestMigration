@@ -78,7 +78,7 @@ public class TSTestResultController implements TestResultController {
         StsTestResultFactData factData = data.getStsTestResultFactData();
         UserData userData = data.getUserData();
         StsTotalStudentScoreData totalStudentScoreData = data.getStsTotalStudentScoreData();
-        StudentPredictedScoresData predictedData = data.getStudentPredictedScoresData();
+        //StudentPredictedScoresData predictedData = data.getStudentPredictedScoresData();
         StudentItemResponseData studentItemResponseData = data.getStudentItemResponseData();
         // persist context
         new OrgNodeController(conn, orgNodeData, adminData).run();
@@ -111,8 +111,8 @@ public class TSTestResultController implements TestResultController {
         
         // persist scores
         //new StudentPredictedScoresController(conn, predictedData, curriculumData, context).run();
-        System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
-        new StudentCompositeScoresController(conn, totalStudentScoreData, predictedData, curriculumData, context).run();
+        //System.out.println("***** SCORING: TestResultController: Persisted predicted fact data.");
+        new StudentCompositeScoresController(conn, totalStudentScoreData, /*predictedData,*/ curriculumData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted composite fact data.");
         new StudentContentAreaScoresController(conn, studentSubtestScoresData, factData, curriculumData, testData, adminData, context).run();
         System.out.println("***** SCORING: TestResultController: Persisted content area fact data.");
@@ -125,13 +125,13 @@ public class TSTestResultController implements TestResultController {
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
         //Prism web service is called for scoring
-        try {
+        /*try {
         	StudentListTO studentListTO =  PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId());
 			XStream xStream = new XStream();
 			System.out.println("XML data forwarded to Prism in the scoring web service for the student id: " + studentData.getOasStudentId()  + " >>> roster id : "+ data.getTestRosterId() + " >>> session id : " + adminData.getSessionId()+ " is >>>>>>>>>> \n" + xStream.toXML(studentListTO));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){

@@ -83,6 +83,7 @@ public class ContentAreaDerivedScoreEvent extends ObjectiveEvent {
         this.lexileValue = lexileValue;
     }
     
+    // Content Area Derived Score Calculator for TASC Product
     public ContentAreaDerivedScoreEvent(final Long testRosterId, final Long subtestId,
             final Long contentAreaId, final String contentAreaName, final BigDecimal scaleScore,
             final BigDecimal standardErrorMeasurement, final BigDecimal normalCurveEquivalent,

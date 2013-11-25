@@ -30,6 +30,7 @@ import com.ctb.lexington.domain.score.event.ScoreTypeEvent;
 import com.ctb.lexington.domain.score.event.ScoreTypeNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.ScoreTypeRawScoreEvent;
 import com.ctb.lexington.domain.score.event.ScoringStatusEvent;
+import com.ctb.lexington.domain.score.event.SecondaryObjectiveDerivedScoreEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaCompositeAndDerivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaCompositeScoreEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaItemCollectionEvent;
@@ -158,6 +159,9 @@ public abstract class EventProcessor implements EventRecipient {
         //For TABE Adaptive
         if (event instanceof SubtestScoreReceivedEvent)
         	this.onEvent((SubtestScoreReceivedEvent) event);
+        //For TASC
+        if (event instanceof SecondaryObjectiveDerivedScoreEvent)
+        	this.onEvent((SecondaryObjectiveDerivedScoreEvent) event);
     }
 
     /**
@@ -473,6 +477,13 @@ public abstract class EventProcessor implements EventRecipient {
 	 * @param event
 	 */
 	public void onEvent(SubtestScoreReceivedEvent event) {
+		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void onEvent(SecondaryObjectiveDerivedScoreEvent event) {
 		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
 	}
 }

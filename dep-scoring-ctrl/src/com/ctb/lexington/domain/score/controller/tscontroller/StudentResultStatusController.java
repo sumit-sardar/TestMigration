@@ -46,58 +46,58 @@ public class StudentResultStatusController{
     public void run() throws IOException, DataException, CTBSystemException, SQLException {
         Long priorResult = new Long(1).equals(context.getCurrentResultId())?new Long(2):new Long(1);
                 
-        IrsTASCPredSubjectFactData tabePredSubjectFactData = new IrsTASCPredSubjectFactData();
+        /*IrsTASCPredSubjectFactData tabePredSubjectFactData = new IrsTASCPredSubjectFactData();
         tabePredSubjectFactData.setStudentid(context.getStudentId());
         tabePredSubjectFactData.setSessionid(context.getSessionId());
         tabePredSubjectFactData.setCurrentResultid(priorResult);
         tabePredSubjectFactData.setAssessmentid(context.getAssessmentId());
         tabePredSubjectFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
         tabePredSubjectFactData.setProgramid(context.getProgramId());
-        irsTASCPredSubjectFactMapper.updateCurrentResultStatus(tabePredSubjectFactData);
+        irsTASCPredSubjectFactMapper.updateCurrentResultStatus(tabePredSubjectFactData);*/
         
-        IrsTASCCompositeFactData tabeCompositeFactdata = new IrsTASCCompositeFactData();
-        tabeCompositeFactdata.setStudentid(context.getStudentId());
-        tabeCompositeFactdata.setSessionid(context.getSessionId());
-        tabeCompositeFactdata.setCurrentResultid(priorResult);
-        tabeCompositeFactdata.setAssessmentid(context.getAssessmentId());
-        tabeCompositeFactdata.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabeCompositeFactdata.setProgramid(context.getProgramId());
-        irsTASCCompositeFactMapper.updateCurrentResultStatus(tabeCompositeFactdata);
+        IrsTASCCompositeFactData tascCompositeFactdata = new IrsTASCCompositeFactData();
+        tascCompositeFactdata.setStudentid(context.getStudentId());
+        tascCompositeFactdata.setSessionid(context.getSessionId());
+        tascCompositeFactdata.setCurrentResultid(priorResult);
+        tascCompositeFactdata.setAssessmentid(context.getAssessmentId());
+        tascCompositeFactdata.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
+        tascCompositeFactdata.setProgramid(context.getProgramId());
+        irsTASCCompositeFactMapper.updateCurrentResultStatus(tascCompositeFactdata);
         
-        IrsTASCContentAreaFactData tabeContentAreaFactData = new IrsTASCContentAreaFactData();
-        tabeContentAreaFactData.setStudentid(context.getStudentId());
-        tabeContentAreaFactData.setSessionid(context.getSessionId());
-        tabeContentAreaFactData.setCurrentResultid(priorResult);
-        tabeContentAreaFactData.setAssessmentid(context.getAssessmentId());
-        tabeContentAreaFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabeContentAreaFactData.setProgramid(context.getProgramId());
-        irsTASCContentAreaFactMapper.updateCurrentResultStatus(tabeContentAreaFactData);
+        IrsTASCContentAreaFactData tascContentAreaFactData = new IrsTASCContentAreaFactData();
+        tascContentAreaFactData.setStudentid(context.getStudentId());
+        tascContentAreaFactData.setSessionid(context.getSessionId());
+        tascContentAreaFactData.setCurrentResultid(priorResult);
+        tascContentAreaFactData.setAssessmentid(context.getAssessmentId());
+        tascContentAreaFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
+        tascContentAreaFactData.setProgramid(context.getProgramId());
+        irsTASCContentAreaFactMapper.updateCurrentResultStatus(tascContentAreaFactData);
         
-        IrsTASCPrimObjFactData tabePrimObjFactData = new IrsTASCPrimObjFactData();
+        /*IrsTASCPrimObjFactData tabePrimObjFactData = new IrsTASCPrimObjFactData();
         tabePrimObjFactData.setStudentid(context.getStudentId());
         tabePrimObjFactData.setSessionid(context.getSessionId());
         tabePrimObjFactData.setCurrentResultid(priorResult);
         tabePrimObjFactData.setAssessmentid(context.getAssessmentId());
         tabePrimObjFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
         tabePrimObjFactData.setProgramid(context.getProgramId());
-        irsTASCPrimObjFactMapper.updateCurrentResultStatus(tabePrimObjFactData);
+        irsTASCPrimObjFactMapper.updateCurrentResultStatus(tabePrimObjFactData);*/
         
-        IrsTASCSecObjFactData tabeSecObjFactData = new IrsTASCSecObjFactData();
-        tabeSecObjFactData.setStudentid(context.getStudentId());
-        tabeSecObjFactData.setSessionid(context.getSessionId());
-        tabeSecObjFactData.setCurrentResultid(priorResult);
-        tabeSecObjFactData.setAssessmentid(context.getAssessmentId());
-        tabeSecObjFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabeSecObjFactData.setProgramid(context.getProgramId());
-        irsTASCSecObjFactMapper.updateCurrentResultStatus(tabeSecObjFactData);
+        IrsTASCSecObjFactData tascSecObjFactData = new IrsTASCSecObjFactData();
+        tascSecObjFactData.setStudentid(context.getStudentId());
+        tascSecObjFactData.setSessionid(context.getSessionId());
+        tascSecObjFactData.setCurrentResultid(priorResult);
+        tascSecObjFactData.setAssessmentid(context.getAssessmentId());
+        tascSecObjFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
+        tascSecObjFactData.setProgramid(context.getProgramId());
+        irsTASCSecObjFactMapper.updateCurrentResultStatus(tascSecObjFactData);
         
-        IrsTASCItemFactData tabeItemFactData = new IrsTASCItemFactData();
-        tabeItemFactData.setStudentid(context.getStudentId());
-        tabeItemFactData.setSessionid(context.getSessionId());
-        tabeItemFactData.setCurrentResultid(priorResult);
-        tabeItemFactData.setAssessmentid(context.getAssessmentId());
-        tabeItemFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-        tabeItemFactData.setProgramid(context.getProgramId());
-        irsTASCItemFactMapper.updateCurrentResultStatus(tabeItemFactData);
+        IrsTASCItemFactData tascItemFactData = new IrsTASCItemFactData();
+        tascItemFactData.setStudentid(context.getStudentId());
+        tascItemFactData.setSessionid(context.getSessionId());
+        tascItemFactData.setCurrentResultid(priorResult);
+        tascItemFactData.setAssessmentid(context.getAssessmentId());
+        tascItemFactData.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
+        tascItemFactData.setProgramid(context.getProgramId());
+        irsTASCItemFactMapper.updateCurrentResultStatus(tascItemFactData);
     }
 } 

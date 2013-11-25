@@ -72,5 +72,4 @@ public class ContentAreaRawScoreEvent extends Event {
 	public int getItemSetId() {
 		return itemSetId;
 	}
-
 }

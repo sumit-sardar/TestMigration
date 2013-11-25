@@ -14,6 +14,7 @@ import java.util.Iterator;
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.StudentTestData;
+import com.ctb.lexington.db.irsdata.irslldata.IrsLLItemFactData;
 import com.ctb.lexington.db.irsdata.irstsdata.IrsTASCItemFactData;
 import com.ctb.lexington.db.mapper.tsmapper.IrsTASCItemFactMapper;
 import com.ctb.lexington.db.mapper.StudentItemScoreMapper;
@@ -44,7 +45,7 @@ public class StudentItemScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTASCItemFactData newFact = facts[i];
             ifMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 ifMapper.insert(newFact);
             }
             //System.out.println("***** SCORING: StudentItemScoresController: Persisted item fact: " + newFact.getItemid());
@@ -140,7 +141,14 @@ public class StudentItemScoresController {
 		                
 		                itemFact.setSubtestName(item.getSubtestName());
 		                itemFacts.add(itemFact);
-	                }
+	                }  else if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && "F".equals(scoreDetails.getAtsArchive())) {
+	                	IrsTASCItemFactData itemFact = new IrsTASCItemFactData();
+						itemFact.setItemid(item.getItemId());
+						itemFact.setSessionid(contextData.getSessionId());
+						itemFact.setStudentid(contextData.getStudentId());
+						itemFact.setCurrentResultid(new Long (2));
+						itemFacts.add(itemFact);
+					}
                 }
                 }
             }

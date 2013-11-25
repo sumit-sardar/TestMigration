@@ -35,15 +35,19 @@ public class CurriculumCollector {
         // Condition applied for TASC Product Suppression check
         else if("TS".equalsIgnoreCase(productType)) {
         	data.setContentAreas(getContentAreasForTASC(oasRosterId));	  
-        	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
+        	data.setPrimaryObjectives(getPrimaryObjectivesForTASC(oasRosterId));
         }
         else {       
         	data.setContentAreas(getContentAreas(oasRosterId));	  
         	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
         }
-        
-        data.setSecondaryObjectives(getSecondaryObjectives(oasRosterId));
-        data.setItems(getItems(oasRosterId));
+        if("TS".equalsIgnoreCase(productType)) {
+        	data.setSecondaryObjectives(getSecondaryObjectivesForTASC(oasRosterId));
+            data.setItems(getItemsForTASC(oasRosterId));
+        } else {
+		    data.setSecondaryObjectives(getSecondaryObjectives(oasRosterId));
+		    data.setItems(getItems(oasRosterId));
+        }
         
         return data;
     }
@@ -548,6 +552,26 @@ public class CurriculumCollector {
      	   
      	   
      	  return composites;
+        } else if ("TS".equals(productType)){
+        	Composite [] composites = new Composite[2];
+        	 composites[0] = new Composite();
+        	 composites[0].setCompositeId(new Long(70));
+        	 composites[0].setCompositeName("Overall score");
+             composites[0].setCompositeType("TS COMPOSITE");
+             composites[0].setSubject("TS Overall Score");
+//             composites[0].setCompositeNumItems(new Long(100));
+//             composites[0].setCompositePointsPossible(new Long(315));
+             
+             composites[1] = new Composite();
+        	 composites[1].setCompositeId(new Long(71));
+        	 composites[1].setCompositeName("ELA (Composite of Reading and Writing)");
+             composites[1].setCompositeType("TS COMPOSITE");
+             //composites[1].setSubject("TS ELA (Composite of Reading and Writing)");
+             composites[1].setSubject("TS ELA Score");
+//             composites[1].setCompositeNumItems(new Long(100));
+//             composites[1].setCompositePointsPossible(new Long(315));
+             
+             return composites;
         }
         return new Composite[0];
     }
@@ -1083,6 +1107,143 @@ public class CurriculumCollector {
     }
 	
 	
+	public PrimaryObjective [] getPrimaryObjectivesForTASC(Long oasRosterId) throws SQLException {
+        ArrayList primaryObjectives = new ArrayList();
+        HashMap poMap = new HashMap();
+        Integer productId = null;
+        String subtestLevel ="", subtestForm ="";
+        Long objectiveIndex = new Long(0);
+        
+        final String casql = 
+        	"select primaryObjectiveId, " + 
+            "  rownum as primaryObjectiveIndex, " + 
+            "  contentAreaId, " + 
+            "  primaryObjectiveName, " +  
+            "  primaryObjectiveType, " + 
+            "  primaryPointsPossible, " + 
+            "  primaryNumItems, " +  
+            "  subtestForm, " + 
+            "  subtestLevel, " + 
+            "  subtestId, " +
+            "  productId, " +
+            "  monarchId " +  
+            " from (select distinct " +
+            "   prim.item_Set_id as primaryObjectiveId, " +
+            "   prod.product_id || ca.item_Set_id as contentAreaId, " +
+            "   prim.item_set_name as primaryObjectiveName, " + 
+            "   primcat.ITEM_SET_CATEGORY_NAME as primaryObjectiveType, " +
+            "   sum(dp.max_points) as primaryPointsPossible, " +
+            "   count(distinct item.item_id) as primaryNumItems, " + 
+            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form) as subtestForm, " +
+            "   td.item_set_level as subtestLevel, " +
+            "   td.item_set_id as subtestId, " +
+            "   prod.product_id as productId, " +
+            "	prim.ext_cms_item_set_id as monarchId " + 
+            "from " +  
+            "   item, " +
+            "   item_set prim, " +
+            "   item_Set_category primcat, " +
+            "   item_Set_ancestor primisa, " +
+            "   item_set ca, " +
+            "   item_Set_category cacat, " +
+            "   item_Set_ancestor caisa, " +
+            "   item_set_item primisi, " +
+            "   item_Set_ancestor tcisa, " +
+            "   item_set_item tcisi, " + 
+            "   datapoint dp, " + 
+            "   test_roster ros, " + 
+            "   test_Admin adm, " + 
+            "   test_catalog tc, " + 
+            "   product prod, " +
+            "   item_set td " +
+            "where " + 
+            "   ros.test_roster_id = ? " +
+            "   and adm.test_admin_id = ros.test_admin_id " +
+            "   and tc.test_catalog_id = adm.test_catalog_id " +
+            "   and prod.product_id = tc.product_id " +
+            "   and item.ACTIVATION_STATUS = 'AC' " + 
+            "   and tc.ACTIVATION_STATUS = 'AC' " + 
+            "   and prim.item_Set_id = primisa.ancestor_item_Set_id " +
+            "   and prim.item_set_type = 'RE' " + 
+            "   and primisa.item_set_id = primisi.item_Set_id " +
+            "   and item.item_id = primisi.item_id " +
+            "   and tcisi.item_id = item.item_id " +
+            "   and tcisi.suppressed = 'F'" +
+            "   and tcisa.item_set_id = tcisi.item_set_id " +
+            "   and adm.item_set_id = tcisa.ancestor_item_set_id " +
+            "   and primcat.item_Set_category_id = prim.item_set_category_id " + 
+            "   and primcat.item_set_category_level = prod.scoring_item_Set_level " +
+            "   and dp.item_id = item.item_id " +
+            "   and dp.item_set_id = primisi.item_Set_id " +
+            "   and caisa.item_Set_id = prim.item_Set_id " +
+            "   and ca.item_set_id = caisa.ancestor_item_Set_id " +
+            "   and cacat.item_Set_category_id = ca.item_set_category_id " + 
+            "   and cacat.item_set_category_level = prod.content_area_level " +
+            "   and td.item_set_id = tcisi.item_set_id " +
+            "   and td.sample = 'F' " +
+            "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
+            "   and primcat.framework_product_id = prod.PARENT_PRODUCT_ID " +
+            " group by " +
+            "   prim.item_Set_id, " +
+            "   prod.product_id || ca.item_set_id, " +
+            "   prim.item_set_name, " + 
+            "   primcat.ITEM_SET_CATEGORY_NAME, " + 
+            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " +
+            "   td.item_Set_level, " + 
+            "   td.item_Set_id, " +
+            "   prod.product_id, " +
+            "	prim.ext_cms_item_set_id)";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+            	productId = rs.getInt("productId");
+            	subtestLevel = rs.getString("subtestLevel");
+            	subtestForm = rs.getString("subtestForm");
+                PrimaryObjective primaryObjective = new PrimaryObjective();
+                primaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
+                primaryObjective.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                primaryObjective.setPrimaryObjectiveName(rs.getString("primaryObjectiveName"));
+                primaryObjective.setPrimaryObjectiveType(rs.getString("primaryObjectiveType"));
+                primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
+                primaryObjective.setPrimaryObjectivePointsPossible(new Long(rs.getLong("primaryPointsPossible")));
+                primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
+                primaryObjective.setSubtestForm(rs.getString("subtestForm"));
+                primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
+                primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                primaryObjective.setMonarchId(rs.getString("monarchId"));
+                
+                String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();
+                
+                if(poMap.containsKey(key)) {
+                    PrimaryObjective po1 = (PrimaryObjective) poMap.get(key);
+                    primaryObjective.setPrimaryObjectiveNumItems(new Long(po1.getPrimaryObjectiveNumItems().longValue() + primaryObjective.getPrimaryObjectiveNumItems().longValue()));
+                    primaryObjective.setPrimaryObjectivePointsPossible(new Long(po1.getPrimaryObjectivePointsPossible().longValue() + primaryObjective.getPrimaryObjectivePointsPossible().longValue()));
+                }   
+                poMap.put(key, primaryObjective);    
+                primaryObjectives.add(primaryObjective);
+                objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
+                i++;
+            }
+            if(productId == 7501 || productId == 7502){
+            	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
+            }
+            System.out.println("Primary Objective Size " + i);
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        System.out.println("Primary Objective size " + primaryObjectives.toArray(new PrimaryObjective[0]).length);
+        return (PrimaryObjective []) primaryObjectives.toArray(new PrimaryObjective[0]);
+    }
+	
+	
 	private ArrayList getVirtualPrimaryObjectiveForLaslinkSecEdition(
 			ArrayList<PrimaryObjective> primaryObjectives, Integer productId, String subtestLevel, String subtestForm, Long objectiveIndex) throws SQLException{
     	 ArrayList<PrimaryObjective> tempPrimList = new ArrayList<PrimaryObjective>();
@@ -1359,6 +1520,118 @@ public class CurriculumCollector {
         return (SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]);
     }
     
+    
+    public SecondaryObjective [] getSecondaryObjectivesForTASC(Long oasRosterId) throws SQLException {
+        ArrayList<SecondaryObjective> secondaryObjectives = new ArrayList<SecondaryObjective>();
+        Integer productId = null;
+        final String casql = 
+        	"select distinct " +
+            "   sec.item_Set_id as secondaryObjectiveId, " +
+            "   prim.item_set_id as primaryObjectiveId, " + 
+            "   sec.item_set_name as secondaryObjectiveName, " + 
+            "   seccat.ITEM_SET_CATEGORY_NAME as secondaryObjectiveType, " +
+            "   sum(dp.max_points) as secondaryPointsPossible, " +
+            "   count(distinct item.item_id) as secondaryNumItems, " + 
+            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form) as subtestForm, " +
+            "   td.item_set_level as subtestLevel, " +
+            "   td.item_set_id as subtestId, " +
+            "   td.item_set_name as subtestName, " +
+            "   prod.product_id as productId, " +
+            "	sec.ext_cms_item_set_id as monarchId " + 
+            "from " +  
+            "   item, " +
+            "   item_set sec, " +
+            "   item_Set_category seccat, " +
+            "   item_Set_ancestor secisa, " +
+            "   item_set prim, " +
+            "   item_Set_category primcat, " +
+            "   item_Set_ancestor primisa, " +
+            "   item_set_item secisi, " +
+            "   item_Set_ancestor tcisa, " +
+            "   item_set_item tcisi, " + 
+            "   datapoint dp, " + 
+            "   test_roster ros, " + 
+            "   test_Admin adm, " + 
+            "   test_catalog tc, " + 
+            "   product prod, " +
+            "   item_set td " + 
+            "where " + 
+            "   ros.test_roster_id = ? " +
+            "   and adm.test_admin_id = ros.test_admin_id " +
+            "   and tc.test_catalog_id = adm.test_catalog_id " +
+            "   and prod.product_id = tc.product_id " +
+            "   and item.ACTIVATION_STATUS = 'AC' " + 
+            "   and tc.ACTIVATION_STATUS = 'AC' " + 
+            "   and sec.item_Set_id = secisa.ancestor_item_Set_id " +
+            "   and sec.item_set_type = 'RE' " + 
+            "   and secisa.item_set_id = secisi.item_Set_id " +
+            "   and item.item_id = secisi.item_id " +
+            "   and tcisi.item_id = item.item_id " +
+            "   and tcisi.suppressed = 'F'" +
+            "   and tcisa.item_set_id = tcisi.item_set_id " +
+            "   and adm.item_set_id = tcisa.ancestor_item_set_id " +
+            "   and seccat.item_Set_category_id = sec.item_set_category_id " + 
+            "   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " +
+            "   and dp.item_id = item.item_id " +
+            "   and primisa.item_Set_id = sec.item_Set_id " +
+            "   and prim.item_set_id = primisa.ancestor_item_Set_id " +
+            "   and primcat.item_Set_category_id = prim.item_set_category_id " + 
+            "   and primcat.item_set_category_level = prod.scoring_item_Set_level " +
+            "   and td.item_set_id = tcisi.item_set_id " +
+            "   and td.sample = 'F' " +
+            "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
+            "   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID " +
+            " group by " +
+            "   sec.item_Set_id, " +
+            "   prim.item_set_id, " + 
+            "   sec.item_set_name, " + 
+            "   seccat.ITEM_SET_CATEGORY_NAME, " + 
+            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " +
+            "   td.item_Set_level, " + 
+            "   td.item_Set_id, " +
+            "   td.item_set_name, " +
+            "   prod.product_id, " +
+            "	sec.ext_cms_item_set_id";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+            	productId = rs.getInt("productId");
+                SecondaryObjective secondaryObjective = new SecondaryObjective();
+                secondaryObjective.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
+                secondaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
+                secondaryObjective.setSecondaryObjectiveName(rs.getString("secondaryObjectiveName"));
+                secondaryObjective.setSecondaryObjectiveType(rs.getString("secondaryObjectiveType"));
+                secondaryObjective.setSecondaryObjectiveNumItems(new Long(rs.getLong("secondaryNumItems")));
+                secondaryObjective.setSecondaryObjectivePointsPossible(new Long(rs.getLong("secondaryPointsPossible")));
+                secondaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
+                secondaryObjective.setSubtestForm(rs.getString("subtestForm"));
+                secondaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                secondaryObjective.setSubtestName(rs.getString("subtestName"));
+                secondaryObjective.setProductId(new Long(rs.getLong("productId")));
+                secondaryObjective.setMonarchId(rs.getString("monarchId"));
+                
+                secondaryObjectives.add(secondaryObjective);
+                i++;
+            }
+            if(productId == 7501 || productId == 7502){
+            	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
+            }
+            System.out.println("Secondary Objective Size " + i);
+            
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        System.out.println("The secondaryObjectives length of array---->"+ secondaryObjectives.toArray(new SecondaryObjective[0]).length);
+        return (SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]);
+    }
+    
     public Item [] getItems(Long oasRosterId) throws SQLException {
         HashMap items = new HashMap();
         final String casql = 
@@ -1404,6 +1677,120 @@ public class CurriculumCollector {
                "and sec.item_set_type = 'RE' " +  
                "and secisa.item_set_id = secisi.item_Set_id " + 
                "and item.item_id = secisi.item_id " + 
+               "and tdisi.item_id = item.item_id " + 
+               "and td.item_set_id = tdisi.item_set_id " + 
+               "and td.item_set_type = 'TD' " + 
+               "and tdisa.item_set_id = td.item_set_id " + 
+               "and adm.item_set_id = tdisa.ancestor_item_set_id " + 
+               "and seccat.item_Set_category_id = sec.item_set_category_id " +  
+               "and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " + 
+               "and dp.item_id = item.item_id " + 
+               "and td.sample = 'F' " + 
+               "AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " + 
+               "and seccat.framework_product_id = prod.PARENT_PRODUCT_ID " +
+               "and prog.program_id = adm.program_id " +
+               "and pval.item_display_name (+) = item.item_id " +
+            "group by " +
+               "sec.item_set_id, " + 
+               "item.item_id, " +  
+               "item.description, " +  
+               "tdisi.item_sort_order, " +  
+               "item.item_type, " +  
+               "item.correct_answer, " +  
+               "dp.max_points, " +  
+               "td.item_set_form, " + 
+               "td.item_set_level, " + 
+               "td.item_set_id, " + 
+               "td.item_set_name, " +
+               "pval.grade, " +
+               "pval.norm_group, " +
+               "pval.p_value " +
+           "order by " +  
+               "tdisi.item_sort_order";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+                Item item = (Item) items.get(rs.getString("oasItemId"));
+                if(item == null) item = new Item();
+                item.setOasItemId(rs.getString("oasItemId"));
+                item.setSecondaryObjectiveId(new Long(rs.getLong("secondaryObjectiveId")));
+                item.setItemCorrectResponse(rs.getString("itemCorrectResponse"));
+                item.setItemIndex(new Long(rs.getLong("itemIndex")));
+                item.setItemPointsPossible(new Long(rs.getLong("itemPointsPossible")));          
+                item.setItemText(rs.getString("itemIndex"));
+                item.setItemType(rs.getString("itemType"));
+                item.setSubtestId(new Long(rs.getLong("subtestId")));
+                item.setSubtestForm(rs.getString("subtestForm"));
+                item.setSubtestLevel(rs.getString("subtestLevel"));
+                item.setSubtestName(rs.getString("subtestName"));
+                if(rs.getBigDecimal("nationalAverage") != null) {
+                    item.setNationalAverage(rs.getString("pvalNormGroup") + String.valueOf(rs.getInt("pvalGrade")), rs.getBigDecimal("nationalAverage"));
+                }      
+                items.put(rs.getString("oasItemId"), item);
+                i++;
+            }
+            System.out.println("Item List Size " + i);
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        System.out.println("Item Array List size ---> " + items.values().toArray(new Item[0]).length);
+        return (Item []) items.values().toArray(new Item[0]);
+    }
+    
+    
+    public Item [] getItemsForTASC(Long oasRosterId) throws SQLException {
+        HashMap items = new HashMap();
+        final String casql = 
+        	"select distinct " + 
+               "sec.item_set_id as secondaryObjectiveId, " + 
+               "item.item_id as oasItemId, " +  
+               "item.description as itemText, " +  
+               "tdisi.item_sort_order as itemIndex, " +  
+               "item.item_type as itemType, " +  
+               "item.correct_answer as itemCorrectResponse, " +  
+               "dp.max_points as itemPointsPossible, " +  
+               "td.item_set_form as subtestForm, " + 
+               "td.item_set_level as subtestLevel, " + 
+               "td.item_set_id as subtestId, " + 
+               "td.item_set_name as subtestName, " +
+               "pval.grade as pvalGrade, " +
+               "pval.norm_group as pvalNormGroup, " +
+               "round(pval.p_value * 100, 1) as nationalAverage " +
+            "from " +   
+               "item, " +  
+               "item_set sec, " +  
+               "item_Set_category seccat, " +  
+               "item_set_ancestor secisa, " + 
+               "item_Set_item secisi, " + 
+               "item_set td, " + 
+               "item_set_ancestor tdisa, " + 
+               "item_set_item tdisi, " +   
+               "datapoint dp, " +  
+               "test_roster ros, " +  
+               "test_Admin adm, " +  
+               "test_catalog tc, " +  
+               "product prod, " +
+               "program prog, " +
+               "item_p_value pval " +
+            "where " +  
+               "ros.test_roster_id = ? " + 
+               "and adm.test_admin_id = ros.test_admin_id " + 
+               "and tc.test_catalog_id = adm.test_catalog_id " + 
+               "and prod.product_id = tc.product_id " + 
+               "and item.ACTIVATION_STATUS = 'AC' " +  
+               "and tc.ACTIVATION_STATUS = 'AC' " +  
+               "and sec.item_Set_id = secisa.ancestor_item_Set_id " + 
+               "and sec.item_set_type = 'RE' " +  
+               "and secisa.item_set_id = secisi.item_Set_id " + 
+               "and item.item_id = secisi.item_id " + 
+               "and secisi.suppressed = 'F'" +
                "and tdisi.item_id = item.item_id " + 
                "and td.item_set_id = tdisi.item_set_id " + 
                "and td.item_set_type = 'TD' " + 

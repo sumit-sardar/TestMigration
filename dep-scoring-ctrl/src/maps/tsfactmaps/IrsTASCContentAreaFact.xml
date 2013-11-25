@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABEContentAreaFact">
+<sqlMap namespace="IrsTASCContentAreaFact">
 
 <select id="TSfindByCAStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCContentAreaFactData">
 SELECT 
@@ -45,7 +45,7 @@ SELECT
         POINTS_OBTAINED as pointsObtained,
         TEST_COMPLETION_TIMESTAMP as testCompletionTimestamp
 FROM
-        TABE_CONTENT_AREA_FACT  
+        TASC_CONTENT_AREA_FACT  
 WHERE 
 			STUDENTID = #studentid:NUMERIC#
 		AND
@@ -217,7 +217,7 @@ select decode(
                         NVL(to_number(
                             TO_CHAR(
                                 to_timestamp(
-                                    to_char((select max(test_completion_timestamp) from tabe_content_area_fact
+                                    to_char((select max(test_completion_timestamp) from tasc_content_area_fact
                                         where sessionid != #sessionid:NUMERIC#
                                         and studentid = #studentid:NUMERIC#
                                         and assessmentid = #assessmentid:NUMERIC#
@@ -322,7 +322,7 @@ select decode(
             SESSIONID != #sessionid:NUMERIC#
         AND
 			(content_areaID in (select content_AreaID 
-                                from TABE_CONTENT_AREA_FACT 
+                                from TASC_CONTENT_AREA_FACT 
                                 where sessionid = #sessionid:NUMERIC#
                                 and studentid = #studentid:NUMERIC#)
              OR #currentResultid:NUMERIC# = 1)

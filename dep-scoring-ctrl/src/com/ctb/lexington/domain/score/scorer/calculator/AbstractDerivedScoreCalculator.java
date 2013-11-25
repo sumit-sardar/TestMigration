@@ -91,6 +91,20 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
             closeConnection(conn);
         }
     }
+    
+    // for TASC Objective Level Scoring
+    protected BigDecimal getObjectiveScore(Long secObjectiveId, String contentArea, String normGroup,
+            String testForm, String testLevel, String grade, ScoreLookupCode sourceScoreType,
+            BigDecimal sourceScoreValue, ScoreLookupCode destScoreType, String ageCategory) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getScore(secObjectiveId, contentArea, normGroup, testForm,
+                    testLevel, grade, sourceScoreType, sourceScoreValue, destScoreType,
+                    ageCategory, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
 
     protected String getGradeEquivalent(Integer itemSetId, String contentArea,
             String normGroup, String testForm, String testLevel, String grade,
@@ -173,6 +187,43 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         }
     }
 	// END For Laslink Scoring
+    
+    // START For TASC Scoring
+    
+    protected BigDecimal getTASCPerformanceLevel(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getTASCPerformanceLevel(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    
+    protected BigDecimal getTASCNCE(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getTASCNCE(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    
+    protected BigDecimal getTASCPR(String frameworkCode, String contentArea, String testLevel,
+            BigDecimal sourceScoreValue, String grade, String testForm) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getTASCPR(frameworkCode, sourceScoreValue,
+                    contentArea, testLevel, grade, testForm, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    // END For TASC Scoring
+    
     protected Connection getOASConnection() {
         try {
             return scorer.getOASConnection();

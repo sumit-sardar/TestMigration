@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="IrsTABEItemFact">
+<sqlMap namespace="IrsTASCItemFact">
 
 <select id="TSfindByPrimObjStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPrimObjFactData" resultClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCPrimObjFactData">
 SELECT 
@@ -259,7 +259,7 @@ WHERE
             SELECT 
                 distinct fact.factid
             FROM
-                TABE_PRIM_OBJ_FACT fact,
+                TASC_PRIM_OBJ_FACT fact,
                 PRIM_OBJ_DIM dim
             WHERE 
                 STUDENTID = #studentid:NUMERIC#
