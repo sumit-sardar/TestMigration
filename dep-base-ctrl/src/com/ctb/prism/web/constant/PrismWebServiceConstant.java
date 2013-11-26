@@ -48,6 +48,7 @@ public class PrismWebServiceConstant {
 	public static final String MAObjectiveScoreDetails = "MA";
 	public static final String MRObjectiveScoreDetails = "MR";
 	public static final String INRCObjectiveScoreDetails = "INRC";
+	public static final String CCObjectiveScoreDetails = "CC";
 	
 	public static final String CustHierarchyDetailsTestName = "TASC";
 	
@@ -70,6 +71,8 @@ public class PrismWebServiceConstant {
 	public static final String SuppressedContentStatusCode = "SUP";
 	
 	public static final  Map<String,String> contentDetailsStausCodeMap = new HashMap<String, String>();
+	
+	public static final String fontBackGrClrAttrName = "Acc_Ft_Bk_Cr";
 	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
