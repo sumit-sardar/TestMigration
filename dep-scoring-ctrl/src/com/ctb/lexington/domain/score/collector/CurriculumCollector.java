@@ -645,7 +645,6 @@ public class CurriculumCollector {
             ps = conn.prepareStatement(casql);
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
-            int i = 0;
             while (rs.next()) {
             	productId =  rs.getInt("productId");
             	subtestLevel = rs.getString("subtestLevel");
@@ -674,9 +673,7 @@ public class CurriculumCollector {
                 }   
                 caMap.put(key, contentArea);    
                 contentAreas.add(contentArea);
-                i++;
             }
-            System.out.println("Content Area Size " + i);
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
@@ -684,7 +681,6 @@ public class CurriculumCollector {
         if(productId == 7501 || productId == 7502){
         	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
         }
-        System.out.println("Content Area Size Array " + contentAreas.toArray(new ContentArea[0]).length);
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
     }
     
@@ -822,9 +818,6 @@ public class CurriculumCollector {
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
-        }
-        if(productId == 7501 || productId == 7502){
-        	contentAreas = getVirtualContentAreaForLaslinkSecEdition(contentAreas, productId, subtestLevel, subtestForm);
         }
         System.out.println("Content Area Size Array " + contentAreas.toArray(new ContentArea[0]).length);
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
@@ -1063,7 +1056,6 @@ public class CurriculumCollector {
             ps = conn.prepareStatement(casql);
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
-            int i = 0;
             while (rs.next()) {
             	productId = rs.getInt("productId");
             	subtestLevel = rs.getString("subtestLevel");
@@ -1092,17 +1084,14 @@ public class CurriculumCollector {
                 poMap.put(key, primaryObjective);    
                 primaryObjectives.add(primaryObjective);
                 objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
-                i++;
             }
             if(productId == 7501 || productId == 7502){
             	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
             }
-            System.out.println("Primary Objective Size " + i);
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
-        System.out.println("Primary Objective size " + primaryObjectives.toArray(new PrimaryObjective[0]).length);
         return (PrimaryObjective []) primaryObjectives.toArray(new PrimaryObjective[0]);
     }
 	
@@ -1230,9 +1219,6 @@ public class CurriculumCollector {
                 primaryObjectives.add(primaryObjective);
                 objectiveIndex = primaryObjective.getPrimaryObjectiveIndex();
                 i++;
-            }
-            if(productId == 7501 || productId == 7502){
-            	primaryObjectives = getVirtualPrimaryObjectiveForLaslinkSecEdition(primaryObjectives, productId, subtestLevel, subtestForm, ++objectiveIndex);
             }
             System.out.println("Primary Objective Size " + i);
         } finally {
@@ -1487,7 +1473,6 @@ public class CurriculumCollector {
             ps = conn.prepareStatement(casql);
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
-            int i = 0;
             while (rs.next()) {
             	productId = rs.getInt("productId");
                 SecondaryObjective secondaryObjective = new SecondaryObjective();
@@ -1505,18 +1490,15 @@ public class CurriculumCollector {
                 secondaryObjective.setMonarchId(rs.getString("monarchId"));
                 
                 secondaryObjectives.add(secondaryObjective);
-                i++;
             }
             if(productId == 7501 || productId == 7502){
             	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
             }
-            System.out.println("Secondary Objective Size " + i);
             
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
-        System.out.println("The secondaryObjectives length of array---->"+ secondaryObjectives.toArray(new SecondaryObjective[0]).length);
         return (SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]);
     }
     
@@ -1619,9 +1601,6 @@ public class CurriculumCollector {
                 secondaryObjectives.add(secondaryObjective);
                 i++;
             }
-            if(productId == 7501 || productId == 7502){
-            	secondaryObjectives = calculateAcademicScore((SecondaryObjective []) secondaryObjectives.toArray(new SecondaryObjective[0]), oasRosterId);
-            }
             System.out.println("Secondary Objective Size " + i);
             
         } finally {
@@ -1714,7 +1693,6 @@ public class CurriculumCollector {
             ps = conn.prepareStatement(casql);
             ps.setLong(1, oasRosterId.longValue());
             rs = ps.executeQuery();
-            int i = 0;
             while (rs.next()) {
                 Item item = (Item) items.get(rs.getString("oasItemId"));
                 if(item == null) item = new Item();
@@ -1733,14 +1711,11 @@ public class CurriculumCollector {
                     item.setNationalAverage(rs.getString("pvalNormGroup") + String.valueOf(rs.getInt("pvalGrade")), rs.getBigDecimal("nationalAverage"));
                 }      
                 items.put(rs.getString("oasItemId"), item);
-                i++;
             }
-            System.out.println("Item List Size " + i);
         } finally {
             SQLUtil.close(rs);
             ConnectionFactory.getInstance().release(ps);
         }
-        System.out.println("Item Array List size ---> " + items.values().toArray(new Item[0]).length);
         return (Item []) items.values().toArray(new Item[0]);
     }
     

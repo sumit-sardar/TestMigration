@@ -75,8 +75,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
     			event.getContentAreaName(),
  				pTestLevel,
  				scaleScore,
- 				//(pGrade != null)?pGrade:null,
- 				null,
+ 				(pGrade != null)?pGrade:null,
  				pDupTestForm);
          
         final BigDecimal nationalPercentile = (scaleScore==null) ? null : getTASCPR(
@@ -84,8 +83,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
        			event.getContentAreaName(),
        			pTestLevel,
     			scaleScore,
-    			//(pGrade != null)?pGrade:null,
-    			null,
+    			(pGrade != null)?pGrade:null,
     			pDupTestForm);
         
         final BigDecimal proficencyLevelValue = getTASCPerformanceLevel(
@@ -93,8 +91,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		event.getContentAreaName(),
         		pTestLevel,
 				scaleScore,
-				//(pGrade != null)?pGrade:null,
-				null,
+				(pGrade != null)?pGrade:null,
 				pDupTestForm);
         
         final String proficiencyRange = getTASCScaleScoreRangeForCutScore(
@@ -102,8 +99,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		event.getContentAreaName(),
         		pTestLevel,
         		proficencyLevelValue,
-				//(pGrade != null)?pGrade:null,
-				null,
+				(pGrade != null)?pGrade:null,
 				pDupTestForm);
         
         final PerformanceLevel proficencyLevel = ("0".equals(proficencyLevelValue.toString()))? null :PerformanceLevel.getByCode(String.valueOf(proficencyLevelValue));

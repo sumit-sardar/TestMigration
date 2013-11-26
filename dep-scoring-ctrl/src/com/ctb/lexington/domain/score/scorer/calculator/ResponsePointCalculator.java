@@ -36,7 +36,8 @@ public class ResponsePointCalculator extends AbstractResponseCalculator {
 					}
 				} else if (null == sicEvent.getAnswerArea(event.getItemId())
 						&& !"GRID".equals(sicEvent.getAnswerArea(event.getItemId()))) {
-					if(null != event.getCrResponse()  && !"".equals(event.getCrResponse())){
+					//if(null != event.getActualCrResponse()  && !"".equals(event.getActualCrResponse())){
+					if(!"A".equals(event.getConditionCode())){
 						final Integer attempted = sicEvent.getMaxPoints(event.getItemId());
 						final Integer obtained = computePointsObtained(event);
 			

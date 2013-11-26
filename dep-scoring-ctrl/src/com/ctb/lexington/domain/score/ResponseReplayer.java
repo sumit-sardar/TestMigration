@@ -309,7 +309,8 @@ public class ResponseReplayer {
 					}
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
-					if(null != tascResponse.getCrResponse()){
+					//if(null != tascResponse.getActualCrResponse()){
+					if(!"A".equals(tascResponse.getConditionCode())){
 						validResponseCount++;
 					}
 				}
@@ -350,7 +351,8 @@ public class ResponseReplayer {
 					}
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
-					if(null != tascResponse.getCrResponse() && !"A".equals(tascResponse.getConditionCode())){
+					//if(null != tascResponse.getActualCrResponse() && !"A".equals(tascResponse.getConditionCode())){
+					if(!"A".equals(tascResponse.getConditionCode())){
 						validResponseCount++;
 					}
 				}
@@ -392,7 +394,8 @@ public class ResponseReplayer {
 					}
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
-					if(null != tascResponse.getCrResponse()){
+					//if(null != tascResponse.getActualCrResponse()){
+					if(!"A".equals(tascResponse.getConditionCode())){
 						validResponseCount++;
 					}
 				}
@@ -440,6 +443,16 @@ public class ResponseReplayer {
 					if (actualGrResponse != null) {
 						String itemsRawScore = new ValidateGRResponse().validateGRResponse(itemId, actualGrResponse, grItemRules, grItemCorrectAnswer);
 						if (itemsRawScore.equals("1")) {
+							min1Correct = true;
+							break;
+						}
+					}
+				}
+				else if (null == tascResponse.getAnswerArea()
+						&& !"GRID".equals(tascResponse.getAnswerArea())) {
+					if(!"A".equals(tascResponse.getConditionCode())){
+						final Integer crItemRawScore = tascResponse.getCrResponse();
+						if(crItemRawScore > 0) {
 							min1Correct = true;
 							break;
 						}
@@ -697,6 +710,7 @@ public class ResponseReplayer {
         event.setComments(response.getComments());
         event.setCrResponse(response.getCrResponse());
         event.setConditionCode(response.getConditionCode());
+        event.setActualCrResponse(response.getActualCrResponse());
 
         return event;
     }

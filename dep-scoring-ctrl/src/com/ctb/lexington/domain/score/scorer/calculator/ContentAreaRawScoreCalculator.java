@@ -1,7 +1,5 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
-import gscode.Score;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +14,6 @@ import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.PointEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
-import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
@@ -34,7 +31,6 @@ public class ContentAreaRawScoreCalculator extends Calculator {
     private final Map possibleMap = new SafeHashMap(String.class, Integer.class);
     private SubtestContentAreaItemCollectionEvent subtestContentArea = null;
     private Set contenAreaSet = new HashSet();
-    private SubtestItemCollectionEvent sicEvent;
     /**
      * Constructor for ContentAreaRawScoreCalculator.
      * 
@@ -43,7 +39,6 @@ public class ContentAreaRawScoreCalculator extends Calculator {
      */
     public ContentAreaRawScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
-        channel.subscribe(this, SubtestItemCollectionEvent.class);
         channel.subscribe(this, SubtestContentAreaItemCollectionEvent.class);
         channel.subscribe(this, PointEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
@@ -51,10 +46,6 @@ public class ContentAreaRawScoreCalculator extends Calculator {
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, SubtestEndedEvent.class);
     }
    
-    public void onEvent(SubtestItemCollectionEvent event) {
-        super.onEvent(event);
-        sicEvent = event;
-    }
     
     public void onEvent(SubtestContentAreaItemCollectionEvent event) {
         subtestContentArea = event;
@@ -86,11 +77,7 @@ public class ContentAreaRawScoreCalculator extends Calculator {
     }
  //  For Laslink Scoring
     public void onEvent(SubtestEndedEvent event) {
-    	/*if("TS".equals(sicEvent.getProductType())){
-    		calculateAndSendRawScoreEventForTASC(event.getTestRosterId(), contentAreas, event.getItemSetId());
-    	}else{*/
-    		calculateAndSendRawScoreEvent(event.getTestRosterId(), contentAreas, event.getItemSetId());   //  For Laslink Scoring
-    	//}
+    	calculateAndSendRawScoreEvent(event.getTestRosterId(), contentAreas, event.getItemSetId());   //  For Laslink Scoring
     }
 
     private void setItemPointsForContentArea(final Map map, final String contentArea,
@@ -166,63 +153,4 @@ public class ContentAreaRawScoreCalculator extends Calculator {
         }
     }
     
-    //For TASC Scoring
-    private void calculateAndSendRawScoreEventForTASC(final Long testRosterId, final Map contentAreaMap, final Integer itemSetId ) {
-    	HashMap<String, Object[]> contentAreaPoints = new HashMap<String, Object[]>();
-    	for (final Iterator it = contentAreaMap.entrySet().iterator(); it.hasNext();) {
-            final Map.Entry entry = (Map.Entry) it.next();
-            final String contentArea = (String) entry.getKey();
-            final Map itemMap = (Map) entry.getValue();
-
-            int pointsObtained = 0;
-            int pointsAttempted = 0;
-
-            for (final Iterator scoreIt = itemMap.values().iterator(); scoreIt.hasNext();) {
-                final ItemScore score = (ItemScore) scoreIt.next();
-
-                if (score != null && score.getPointsObtained() != null)
-                    pointsObtained += score.getPointsObtained().intValue();
-                if (score != null && score.getPointsAttempted() != null)
-                    pointsAttempted += score.getPointsAttempted().intValue();
-            }
-            
-            if(contentAreaPoints.containsKey(contentArea)){
-            	Object [] points = contentAreaPoints.get(contentArea);
-            	Integer pointsObtainedObj = (Integer)points[0];
-            	Integer pointsAttemptedObj = (Integer)points[1];
-            	pointsObtainedObj += pointsObtained;
-            	pointsAttemptedObj += pointsAttempted;
-            	points[0] = pointsObtainedObj;
-            	points[1] = pointsAttemptedObj;
-            	contentAreaPoints.remove(contentArea);
-            	contentAreaPoints.put(contentArea, points);
-            }else{
-            	Object [] obj = new Object[2];
-                obj[0] = pointsObtained;
-                obj[1] = pointsAttempted;
-                contentAreaPoints.put(contentArea,obj);
-            }
-            
-//            final int pointsPossible = getPointsPossibleFor(contentArea);
-
-//            channel.send(new ContentAreaRawScoreEvent(testRosterId, contentArea, pointsObtained,
-//                    pointsAttempted, ScorerHelper.calculatePercentage(pointsObtained,
-//                            pointsPossible), pointsPossible, contentAreaMap, itemSetId)); 
-        }
-    	for(final Iterator it = contentAreaMap.entrySet().iterator(); it.hasNext();){
-    		final Map.Entry entry = (Map.Entry) it.next();
-    		final String contentArea = (String) entry.getKey();
-    		Object[] points = contentAreaPoints.get(contentArea);
-    		Integer pointsObtained = (Integer)points[0];
-        	Integer pointsAttempted = (Integer)points[1];
-            final int pointsPossible = getPointsPossibleFor(contentArea);
-            
-            channel.send(new ContentAreaRawScoreEvent(testRosterId, contentArea, pointsObtained.intValue(),
-                  pointsAttempted.intValue(), ScorerHelper.calculatePercentage(pointsObtained,
-                          pointsPossible), pointsPossible, contentAreaMap, itemSetId));
-    	}
-
-        contentAreas.clear();
-        possibleMap.clear();
-    }
 }

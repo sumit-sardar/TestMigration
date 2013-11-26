@@ -19,7 +19,6 @@ public class IrsTASCContentAreaFactMapper extends AbstractDBMapper{
 	private static final String UPDATE_CONTENTAREAFACT = "TSupdateTASCContentAreaFact";
 	private static final String DELETE_BY_CONTENTAREAFACTID = "TSdeleteByContentAreaFactId";
     private static final String UPDATE_CURRENTRESULT_STATUS = "TSupdateTASCContentAreaFactCurrentResult";
-    private static final String DELETE_BY_ROSTER = "TSdeleteTASCContentAreaFactByRoster";
     
 	public IrsTASCContentAreaFactMapper(Connection conn){
 		super(conn);
@@ -53,9 +52,4 @@ public class IrsTASCContentAreaFactMapper extends AbstractDBMapper{
 		if(record != null)
 			delete(DELETE_BY_CONTENTAREAFACTID, record);
     }
-	
-//	public void wipeOutScoreForRoster(IrsTASCContentAreaFactData record) throws SQLException {
-//		if(record != null)
-//			delete(DELETE_BY_ROSTER, record);
-//    }
 }
