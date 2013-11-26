@@ -710,7 +710,6 @@ public class ResponseReplayer {
         event.setComments(response.getComments());
         event.setCrResponse(response.getCrResponse());
         event.setConditionCode(response.getConditionCode());
-        event.setActualCrResponse(response.getActualCrResponse());
 
         return event;
     }
