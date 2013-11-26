@@ -953,7 +953,7 @@ public class SessionOperationController extends PageFlowController {
             			 *throw an error and do not allow to save the session */
             	
             		                int productId=session.getTestSession().getProductId();
-            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0) {
+            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0 && isTABECustomer) {
             		                	
             		                	Set<Integer> orgNodes=new HashSet<Integer>();
             		                	SessionStudent[] students=session.getStudents();
