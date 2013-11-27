@@ -78,6 +78,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_GR_RESP_STATUS = "SELECT decode(t.points_obtained, 1, 'R', 'W') AS respstatus,       t.points_obtained AS origresp,       t.itemid AS itmid  FROM tasc_item_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND t.itemid IN ";
 	private static final String GET_CONTENT_AREA_ID = "SELECT DISTINCT productid,       contentareaid,       contentareaname  FROM (SELECT DISTINCT dp.item_id,                        dp.max_points,                        productid,                        contentareaid,                        contentareaname,                        contentareatype,                        subject,                        contentareanumitems,                        subtestform,                        subtestlevel,                        subtestid          FROM (SELECT DISTINCT prod.product_id AS productid,                                prod.product_id || ca.item_set_id AS contentareaid,                                ca.item_set_name AS contentareaname,                                prod.product_type || ' CONTENT AREA' AS contentareatype,                                prod.product_type || ' ' || ca.item_set_name AS subject,                                COUNT(DISTINCT item.item_id) AS contentareanumitems,                                td.item_set_form AS subtestform,                                td.item_set_level AS subtestlevel,                                td.item_set_id AS subtestid                  FROM item,                       item_set ca,                       item_set_category cacat,                       item_set_ancestor caisa,                       item_set_item caisi,                       item_set_ancestor tcisa,                       item_set_item tcisi,                       test_roster ros,                       test_admin adm,                       test_catalog tc,                       product prod,                       item_set td                 WHERE ros.test_roster_id = ?                   AND adm.test_admin_id = ros.test_admin_id                   AND tc.test_catalog_id = adm.test_catalog_id                   AND prod.product_id = tc.product_id                   AND item.activation_status = 'AC'                   AND tc.activation_status = 'AC'                   AND ca.item_set_id = caisa.ancestor_item_set_id                   AND ca.item_set_type = 'RE'                   AND caisa.item_set_id = caisi.item_set_id                  AND item.item_id = caisi.item_id                   AND tcisi.suppressed = 'F'                   AND tcisi.item_id = item.item_id                  AND tcisa.item_set_id = tcisi.item_set_id                   AND adm.item_set_id = tcisa.ancestor_item_set_id                   AND cacat.item_set_category_id = ca.item_set_category_id                   AND cacat.item_set_category_level =                      prod.content_area_level                   AND td.item_set_id = tcisi.item_set_id                   AND td.SAMPLE = 'F'                  AND (td.item_set_level != 'L' OR prod.product_type = 'TL')                   AND cacat.framework_product_id = prod.parent_product_id                GROUP BY prod.product_id,                          prod.product_id || ca.item_set_id,                          ca.item_set_name,                         prod.product_type || ' CONTENT AREA',                          prod.product_type || ' ' || ca.item_set_name,                         td.item_set_form,                          td.item_set_level,                          td.item_set_id) derived,               datapoint dp,              item_set_item isi         WHERE isi.item_set_id = derived.subtestid           AND isi.suppressed = 'F'           AND dp.item_id =isi.item_id) derived1 GROUP BY productid,          contentareaid,          contentareaname";
 	private static final String GET_CUST_CONF_ACCOMMODATION = "SELECT * FROM student_accommodation t WHERE t.student_id = ? ";
+	private static final String GET_CUSTOMER_KEY = "select distinct  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey from  customer_report_bridge bridge where  bridge.customer_id = ? and bridge.product_id = 4500 and bridge.report_name='Prism' ";
 	
 	/**
 	 * Get Student Bio Information
@@ -1347,6 +1348,34 @@ public class PrismWebServiceDBUtility {
 		}else{
 			return "";
 		}
+	}
+	
+	/**
+	 * Get Customer Key
+	 * @param rosterId
+	 * @param itemSetId
+	 * @return
+	 */
+	public static String getCustomerKey(Integer customerId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		String customerKey = "";
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_CUSTOMER_KEY);
+			pst.setInt(1, customerId);
+			rs = pst.executeQuery();
+			System.out.println("PrismWebServiceDBUtility.getCustomerKey : Query for getCustomerKey : " + GET_CUSTOMER_KEY);
+			while(rs.next()){
+				customerKey = rs.getString("customerKey");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return customerKey;
 	}
 	
 	/**

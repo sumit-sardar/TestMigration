@@ -26,11 +26,16 @@ public class HMACQueryStringEncrypter {
 	User user = null;
 	HMACQueryStringBuilder queryStringBuilder = null;
 
+	int CustomerId=0;
+	String OrgNodeCode=null;
+	int HeirarchyLevel=0;
+	boolean WebServiceSSO = false;
 	//public HMACQueryStringEncoder() {}
 
 	/**
 	 * @param _user	User object for the currently logged in user
 	 * @param sharedKey	encryption key supplied by PRISM
+	 * @param _selectedOrgNodeId	orgNodeId for current user
 	 */
 	public HMACQueryStringEncrypter(User _user, String sharedKey, Integer _selectedOrgNodeId) {
 		
@@ -40,6 +45,26 @@ public class HMACQueryStringEncrypter {
 		user = _user;
 		SECRET_KEY = sharedKey;		
 		selectedOrgNodeId = _selectedOrgNodeId;
+		queryStringBuilder = new HMACQueryStringBuilder(SECRET_KEY, SIGNATURE_VALIDITY_SECONDS, ENCODING_ALGORITHM);
+		//timeZone = java.util.TimeZone.getTimeZone(user.getTimeZone()).getDisplayName(false,java.util.TimeZone.SHORT);//"PST";    	
+		queryStringBuilder.setTimeZone(timeZone);
+		queryStringBuilder.setENCODING_ALGORITHM(ENCODING_ALGORITHM);
+		queryStringBuilder.setURL_ENCODING(URL_ENCODING);
+	}
+	
+	/**
+	 * @param sharedKey	encryption key supplied by PRISM
+	 * @param _user	User object for the currently logged in user
+	 */
+	public HMACQueryStringEncrypter(String sharedKey, int _customerId, String _orgNodeCode, int _heirarchyLevel) {
+		
+		if (sharedKey == null || sharedKey.length()==0) throw new IllegalArgumentException("sharedKey null or empty.");
+		//if (_selectedOrgNodeId == null || _selectedOrgNodeId==0) throw new IllegalArgumentException("_selectedOrgNodeId null or empty.");
+		WebServiceSSO = true;
+		SECRET_KEY = sharedKey;
+		CustomerId = _customerId;
+		OrgNodeCode = _orgNodeCode;
+		HeirarchyLevel = _heirarchyLevel;
 		queryStringBuilder = new HMACQueryStringBuilder(SECRET_KEY, SIGNATURE_VALIDITY_SECONDS, ENCODING_ALGORITHM);
 		//timeZone = java.util.TimeZone.getTimeZone(user.getTimeZone()).getDisplayName(false,java.util.TimeZone.SHORT);//"PST";    	
 		queryStringBuilder.setTimeZone(timeZone);
@@ -58,30 +83,41 @@ public class HMACQueryStringEncrypter {
 		String requestParam = "";
 		try
 		{
-			String orgNodeCode = "";
-			Integer hierarchyLevel = 0;
-			Node[] organizationNodes = user.getOrganizationNodes();    		     
-	        if (organizationNodes != null) {
-	            for (int i=0 ; i<organizationNodes.length ; i++) {
-	                Node node = organizationNodes[i];
-	                if (selectedOrgNodeId.compareTo(node.getOrgNodeId())==0)
-	                {
-		                String leafNodePath = node.getLeafNodePath();
-		                if (leafNodePath != null && leafNodePath.length()>0)
+			if (!WebServiceSSO)
+			{
+				String orgNodeCode = "";
+				Integer hierarchyLevel = 0;
+				Node[] organizationNodes = user.getOrganizationNodes();    		     
+		        if (organizationNodes != null) {
+		            for (int i=0 ; i<organizationNodes.length ; i++) {
+		                Node node = organizationNodes[i];
+		                if (selectedOrgNodeId.compareTo(node.getOrgNodeId())==0)
 		                {
-		                	hierarchyLevel = leafNodePath.split(",").length;
-		                	orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+			                String leafNodePath = node.getLeafNodePath();
+			                if (leafNodePath != null && leafNodePath.length()>0)
+			                {
+			                	hierarchyLevel = leafNodePath.split(",").length;
+			                	orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+			                }
 		                }
-	                }
-	            }
-	        }
-			Integer customerId = this.user.getCustomer().getCustomerId();			
-			String userRole = (isAdminUser()||isAdminCoordinatorUser())?"Admin":"User";
-			String userName = this.user.getUserName();
-			String datetimeStamp = "";//in GMT
-			
-			requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, SECRET_KEY, userRole, userName, IP, datetimeStamp);
-			System.out.println(requestParam);
+		            }
+		        }
+				Integer customerId = this.user.getCustomer().getCustomerId();			
+				String userRole = (isAdminUser()||isAdminCoordinatorUser())?"Admin":"User";
+				String userName = this.user.getUserName();
+				String datetimeStamp = "";//in GMT
+				
+				requestParam = queryStringBuilder.buildAuthenticatedQueryString(customerId, orgNodeCode, hierarchyLevel, appName, SECRET_KEY, userRole, userName, IP, datetimeStamp);
+				System.out.println("PRISM Report Link SSO: "+requestParam);
+			}
+			else
+			{
+				String userRole = "Admin";
+				String userName = "oas_user";
+				String datetimeStamp = "";//in GMT
+				requestParam = queryStringBuilder.buildAuthenticatedQueryString(CustomerId, OrgNodeCode, HeirarchyLevel, appName, SECRET_KEY, userRole, userName, IP, datetimeStamp);
+				System.out.println("Web Service SSO: "+requestParam);
+			}			
 		}
 		catch (Exception e)
 		{

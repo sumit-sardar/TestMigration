@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 
@@ -35,6 +36,7 @@ import com.ctb.prism.web.controller.SubtestAccommodationTO;
 import com.ctb.prism.web.controller.SubtestAccommodationsTO;
 import com.ctb.prism.web.controller.SurveyBioTO;
 import com.ctb.prism.web.dbutility.PrismWebServiceDBUtility;
+import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.util.OASLogger;
 import com.sun.xml.internal.ws.client.BindingProviderProperties;
 import com.thoughtworks.xstream.XStream;
@@ -52,7 +54,7 @@ public class PrismWebServiceHandler {
 	 * @return
 	 * @throws Exception
 	 */
-	private static void getService() throws Exception {
+	private static void getService(String customerId, String orgNodeCode, String heirarchyLevel) throws Exception {
 		try {
 			if (service == null) {
 				String urlLocation = PrismWebServiceConstant.resourceBundler.getString("url");
@@ -61,11 +63,31 @@ public class PrismWebServiceHandler {
 				URL url = new URL(urlLocation);
 				QName qname = new QName("http://controller.web.prism.ctb.com/",
 						"StudentDataloadService");
-
+				
+				//**[IAA] append SSO parameters with signature
+				String requestParam = "";
+				if (true)
+            	{
+            		String customerKey = PrismWebServiceDBUtility.getCustomerKey(Integer.parseInt(customerId));
+            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(customerKey, Integer.parseInt(customerId), orgNodeCode, Integer.parseInt(heirarchyLevel));
+                	requestParam = HMACEncrypter.encrypt()+"&clienttype=SOAP";
+                	System.out.println("WS_SSOparams=" + requestParam);
+                	OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service WS_SSOparams : " + requestParam);
+                	//urlLocation = urlLocation.split("[?]")[0]+"?"+requestParam;
+                	//System.out.println("WS_URL=" + urlLocation);
+            	}
 				Service prxyService = Service.create(url, qname);
 
 				service = prxyService.getPort(SampleWebservice.class);
 				BindingProvider provider = (BindingProvider) service;
+				
+				//**[IAA]: append SOAP header to SOAP envelope
+				Binding binding = provider.getBinding();
+				List handlers = provider.getBinding().getHandlerChain();
+				handlers.add(new PrismSOAPHandler(requestParam));
+				binding.setHandlerChain(handlers);
+				//**[IAA]
+				
 				provider.getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, PrismWebServiceConstant.REQUEST_TIMEOUT);
 				provider.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", PrismWebServiceConstant.CONNECT_TIMEOUT);	
 			}
@@ -82,12 +104,12 @@ public class PrismWebServiceHandler {
 	 * @param studentListTO
 	 * @throws Exception
 	 */
-	private static void invokePrismWebService(StudentListTO studentListTO) throws Exception{
+	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel) throws Exception{
 		try{
 			//printXMLFromVO(studentListTO);
 			/*XStream xstream = new XStream();
 			System.out.println(xstream.toXML(studentListTO));*/
-			getService();
+			getService(customerId, orgNodeCode, heirarchyLevel);
 			if(service != null){
 				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
 				if(responseTO.getStatusCode() == 1){ //Success
@@ -106,7 +128,7 @@ public class PrismWebServiceHandler {
 			for(int hitCnt = 0 ; hitCnt < PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
 				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
 				try{
-					getService();
+					getService(customerId, orgNodeCode, heirarchyLevel);
 					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
 					if(responseTO.getStatusCode() == 1){ //Success
 						OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
@@ -138,17 +160,29 @@ public class PrismWebServiceHandler {
 		
 		List<Long> rosterIds = PrismWebServiceDBUtility.getRosterListForStudent(studentId);
 		
+		String customerId = null;
+		String orgNodeCode = null;
+		String heirarchyLevel = null;
 		for(long rosterID : rosterIds){
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
 			//TODO - get the student survey details and put it in the studentDetailsTO
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
-			rosterDetailsTO.setCustHierarchyDetailsTO(getCustHierarchy(studentId,rosterID));
+			//rosterDetailsTO.setCustHierarchyDetailsTO(getCustHierarchy(studentId,rosterID));
+			
+			CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
+			customerId = custHierarchyDetailsTO.getCustomerId();
+			OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
+			orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();			
+			heirarchyLevel = orgDetails.getOrgLevel();
+			
+			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+			
 			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
 			rosterDetailsList.add(rosterDetailsTO);
 		}
 		
-		invokePrismWebService(studentListTO);
+		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
 		return studentListTO;
@@ -172,8 +206,14 @@ public class PrismWebServiceHandler {
 		
 		RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
 		
-
+		String customerId = null;
+		String orgNodeCode = null;
+		String heirarchyLevel = null;
 		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
+		customerId = custHierarchyDetailsTO.getCustomerId();
+		OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size());
+		orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();
+		heirarchyLevel = orgDetails.getOrgLevel();
 		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 		
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
@@ -187,7 +227,7 @@ public class PrismWebServiceHandler {
 		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
 		rosterDetailsList.add(rosterDetailsTO);
 		
-		invokePrismWebService(studentListTO);
+		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
 		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		
 		return studentListTO;
