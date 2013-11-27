@@ -1066,6 +1066,7 @@ public class DownloadOperationController extends PageFlowController {
     	Integer dataExportVisibilityLevel = 1; 
     	
     	this.isLaslinkCustomerUploadDownlod =  laslinkCustomer ;
+        this.islaslinkCustomer = laslinkCustomer;
        
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
