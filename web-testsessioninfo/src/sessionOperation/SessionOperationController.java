@@ -100,6 +100,7 @@ import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.testSessionInfo.utils.Row;
+import com.ctb.testSessionInfo.utils.SSOSig;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
 import com.ctb.testSessionInfo.utils.ScheduledSavedStudentDetailsVo;
 import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
@@ -8434,6 +8435,87 @@ public class SessionOperationController extends PageFlowController {
 	 		    return null;
 			}
 ////	
+			
+			@Jpf.Action()
+		    protected Forward ssoSig()
+		    {
+		        HttpServletRequest req = getRequest();
+				HttpServletResponse resp = getResponse();
+				OutputStream stream = null;
+				
+				String reportUrl = "";
+				if (true)
+				{
+			        if (this.reportManager == null)
+			        {
+			        	initReportManager(true);
+			        }
+			    	
+			        String userOrgIndex = this.getRequest().getParameter("userOrgIndex");
+			        try{int iuserorgIndex = Integer.parseInt(userOrgIndex);} catch (Exception e){userOrgIndex=null;}
+			        if (userOrgIndex != null && userOrgIndex.length()>0)
+			        {
+			        	this.reportManager.setSelectedOrganization(userOrgIndex);
+			        }
+			        else
+			        	userOrgIndex = "0";
+			        
+			        Integer programId = this.reportManager.getSelectedProgramId();
+			        Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
+
+			        List reportList = buildTASCReportList(orgNodeId, programId);
+			        
+			        //**[IAA] Proctor users should not see PRISM reports
+			        if (isProctorUser())
+			        {
+			        	for (int i=0; i < reportList.size(); i++) {
+			        		reportList.remove(i);
+			        	}
+			        }
+			        
+			        String requestParam = "";
+			        for (int i=0; i < reportList.size(); i++) {
+			            CustomerReport cr = (CustomerReport)reportList.get(i);
+			            if ("Prism".equalsIgnoreCase(cr.getReportName())) {                
+			                //[IAA]: process SSO and pass correct parameters to PRISM
+			            	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
+			            	if (i==0)
+			            	{
+			            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), orgNodeId);
+			                	requestParam = HMACEncrypter.encrypt();
+			                	System.out.println("HMACEncrypter.encrypt()->SSOparams=" + requestParam);
+			            	}
+			            	reportUrl = cr.getReportUrl()+(cr.getReportUrl().endsWith("?")?"":"?")+requestParam;
+			            	//cr.setReportUrl(reportUrl);
+			            }
+			        }	
+				}
+				
+				SSOSig sig = new SSOSig();	
+				sig.ssoParams = reportUrl;
+
+		        Gson gson = new Gson();
+		        String jsonData = gson.toJson(sig);		        
+		        System.out.println("Gson: "+gson.fromJson(jsonData, SSOSig.class).ssoParams);
+		        
+				try{
+			       	try {
+			   			resp.setContentType("application/json");
+		 	   			stream = resp.getOutputStream();
+			   			stream.write(jsonData.getBytes("UTF-8"));
+			   			resp.flushBuffer();
+			   		} catch (IOException e) {
+			   			e.printStackTrace();
+			   		} 
+				} 
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+		        return null;
+		    }
+			
+			////	
 			
 			/**
 			 * This method checks whether customer is configured to display class name in individual, multiple 

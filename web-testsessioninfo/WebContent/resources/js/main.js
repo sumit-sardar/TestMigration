@@ -100,8 +100,10 @@ function openPrismApplication(location)
 	$.ajax({
 		async: false,
 		type: "get",
-		url: "/SessionWeb/sessionOperation/check_session.jsp?t="+_timer,
+		//url: "/SessionWeb/sessionOperation/check_session.jsp?t="+_timer,
+		url: "/SessionWeb/sessionOperation/ssoSig.do?t="+_timer,
 		success: function(response,status,xhr){
+			location = response.ssoParams;
 			sessionCookie = getCookie("_WL_AUTHCOOKIE_TAS_SESSIONID");
 			if (sessionCookie == null)
 			{
