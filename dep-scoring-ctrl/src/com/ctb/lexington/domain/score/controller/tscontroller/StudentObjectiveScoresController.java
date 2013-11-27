@@ -190,7 +190,7 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setPointsPossible(details.getPointsPossible());
 	                secObjFact.setPercentObtained(details.getPercentObtained());
 	                secObjFact.setPointsAttempted(details.getPointsAttempted());
-	                secObjFact.setMasteryLevelid( new Long(details.getMasteryLevel().toString()));
+	                secObjFact.setMasteryLevelid((details.getMasteryLevel() == null)?null: new Long(details.getMasteryLevel().toString()));
 	
 	                // dim ids from context
 	                secObjFact.setAssessmentid(contextData.getAssessmentId());

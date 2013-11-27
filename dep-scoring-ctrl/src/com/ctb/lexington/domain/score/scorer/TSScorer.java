@@ -220,7 +220,9 @@ public class TSScorer extends STScorer {
 		                         summaryData.get(sec[i].getSecondaryObjectiveId()).setAtsArchive("T");
 		                     }
 		                     
-		                     if("Writing".equalsIgnoreCase(ca.getContentAreaName())&& "Essay Writing".equals(sec[i].getSecondaryObjectiveName())&&
+		                     if("Writing".equalsIgnoreCase(ca.getContentAreaName())&& "Essay Writing".equals(sec[i].getSecondaryObjectiveName())
+		                    		 && factData.get(ca.getContentAreaName()).getPerformanceLevelCode() != null 
+		                    		 && summaryData.get(sec[i].getSecondaryObjectiveId()).getMasteryLevel() != null &&
 		                    		 (new Integer(summaryData.get(sec[i].getSecondaryObjectiveId()).getMasteryLevel()).intValue() 
 		                    		 < new Integer(factData.get(ca.getContentAreaName()).getPerformanceLevelCode()).intValue())){
 		                    	 factData.get(ca.getContentAreaName()).setPerformanceLevelCode(summaryData.get(sec[i].getSecondaryObjectiveId()).getMasteryLevel());
