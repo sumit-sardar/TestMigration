@@ -26,13 +26,13 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 
 	private final Map secondaryObjectiveRawScoreEventsList = new SafeHashMap(String.class, ObjectiveRawScoreEvent.class);
 	private static Map secondaryObjectivePointObtained = new SafeHashMap(Long.class, Integer.class);
+	private static final String TASC_FRAMEWORK_CODE = "TASC";
+	
 	public TASCSecondaryObjectiveDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
-
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, SubtestStartedEvent.class);
         channel.subscribe(this, ObjectiveRawScoreEvent.class);
-//        mustPrecede(SubtestEndedEvent.class, ObjectiveRawScoreEvent.class);
     }
 	
 	public void onEvent(AssessmentStartedEvent event) {
@@ -60,18 +60,35 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 	    	String objectiveName = getObjectiveName(event.getObjectiveId());
 	    	Integer pointObtained = (Integer)secondaryObjectivePointObtained.get(event.getObjectiveId());
 	    	
-        	final BigDecimal scaleScore = getObjectiveScore(
+        	final BigDecimal scaleScore = getScoreForTASC(
         			event.getObjectiveId(),
         			objectiveName,
     				null,
     				pTestForm,
     				pTestLevel,
-    				(pGrade != null)?pGrade:null,
+    				pGrade,
     				ScoreLookupCode.SUBTEST_NUMBER_CORRECT,
-    				//getSecondaryObjecrivePointsObtained(event.getObjectiveId()), // If it is wrong then we can use [new BigDecimal(event.getNumberCorrect())],
     				new BigDecimal(pointObtained.intValue()),
     				ScoreLookupCode.SCALED_SCORE,
-    				pAgeCategory );
+    				null );
+	        
+	        final BigDecimal masteryLevelValue = (scaleScore==null) ? null : getTASCObjectiveMasteryLevel(
+	        		TASC_FRAMEWORK_CODE,
+	        		objectiveName,
+	        		null, 
+	        		pTestForm,
+	        	    pTestLevel,
+	        	    pGrade,
+	        	    scaleScore,
+	        	    null);
+	        
+	        final String scaleScoreRangeForMastery = getTASCScaleScoreRangeForCutScore(
+	        		TASC_FRAMEWORK_CODE,
+	        		objectiveName,
+	        		pTestLevel,
+	        		masteryLevelValue,
+	        		pGrade,
+	        		pTestForm);
 	        
 	        
 	        channel.send(new SecondaryObjectiveDerivedScoreEvent(
@@ -80,7 +97,8 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 					event.getObjectiveId(), 
 					objectiveName, 
 					scaleScore,
-					null));
+					masteryLevelValue,
+					scaleScoreRangeForMastery));
     	}
     }
     

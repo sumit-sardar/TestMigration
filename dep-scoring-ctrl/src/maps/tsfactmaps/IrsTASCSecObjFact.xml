@@ -87,7 +87,8 @@ WHERE
 		        POINTS_POSSIBLE,
 		        SCORING_STATUS,
 		        SCALE_SCORE,
-		        CONDITION_CODE
+		        CONDITION_CODE,
+		        SCALE_SCORE_RANGE
 		        <!-- ATTR17ID,
 		        ATTR18ID,
 		        ATTR19ID,
@@ -177,7 +178,8 @@ WHERE
                 #pointsPossible:NUMERIC#,
                 #objectiveScoringStatus:VARCHAR#,
                 #scaleScore:NUMERIC#,
-                #conditionCode:VARCHAR#
+                #conditionCode:VARCHAR#,
+                #scaleScoreRangeForMasteryLevel:VARCHAR#
                 <!-- #attr17id:NUMERIC#,
 				#attr18id:NUMERIC#,
 				#attr19id:NUMERIC#,

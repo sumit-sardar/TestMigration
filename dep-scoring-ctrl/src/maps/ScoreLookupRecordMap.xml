@@ -699,4 +699,26 @@
         </isNotNull>
     </select>
     
+    <select id="findTASCObjectiveMasteryLevel" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT
+            MIN(SL.DEST_SCORE_VALUE) as destScoreValue
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+        	SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+            AND SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
+            AND SL.DEST_SCORE_TYPE_CODE = 'PL'
+            AND SL.SOURCE_SCORE_VALUE >= #sourceScoreValue:NUMERIC#
+            AND SL.CONTENT_AREA = #contentArea:VARCHAR#
+            AND SL.TEST_FORM = #testForm:VARCHAR#
+        ]]>
+        <isNotNull property="grade" prepend="and ">
+        	SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+        <isNotNull property="testLevel" prepend="and ">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
+    
 </sqlMap>

@@ -30,6 +30,7 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
 	private Long scaleScore; //Added for TASC
 	private String objectiveScoringStatus; //Added for TASC
 	private String conditionCode; //Added for TASC
+	private String scaleScoreRangeForMastery; //Added for TASC
 
     public String getObjectiveScoringStatus() {
 		return objectiveScoringStatus;
@@ -284,5 +285,18 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
 		this.conditionCode = conditionCode;
 	}
 
+	/**
+	 * @return the scaleScoreRangeForMastery
+	 */
+	public String getScaleScoreRangeForMastery() {
+		return scaleScoreRangeForMastery;
+	}
+
+	/**
+	 * @param scaleScoreRangeForMastery the scaleScoreRangeForMastery to set
+	 */
+	public void setScaleScoreRangeForMastery(String scaleScoreRangeForMastery) {
+		this.scaleScoreRangeForMastery = scaleScoreRangeForMastery;
+	}
 	
 }

@@ -27,6 +27,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_TS_SCALESCORE_RANGE_FOR_PROFICIENCY = "findTASCScaleScoreRangeforProficieancy"; // For TASC Scoring
     private static final String FIND_TS_NCE = "findTASCNCE";  // For TASC Scoring
     private static final String FIND_TS_PR = "findTASCPR";	// For TASC Scoring
+    private static final String FIND_TS_OBJECTIVE_MASTERY_LEVEL = "findTASCObjectiveMasteryLevel"; // For TASC Scoring
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -380,6 +381,25 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     }
     
     // START For TASC Scoring
+    public BigDecimal findTASCObjectiveMasteryLevel (final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm){
+
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
+
+        final ScoreLookupRecord masteryLevel = (ScoreLookupRecord) find(FIND_TS_OBJECTIVE_MASTERY_LEVEL,
+                template);
+        if (null != masteryLevel && null != masteryLevel.getDestScoreValue())
+            return masteryLevel.getDestScoreValue();
+        else
+            return new BigDecimal("1");
+    }
+    
     public String findTASCScaleScoreRange(final String frameworkCode, final BigDecimal sourceScoreValue,
             final String testLevel, final String contentArea, final String grade, final String testForm) {
         final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,

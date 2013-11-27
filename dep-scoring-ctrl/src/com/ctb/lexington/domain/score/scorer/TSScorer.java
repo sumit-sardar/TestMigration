@@ -131,21 +131,6 @@ public class TSScorer extends STScorer {
         detail.setNormYear(event.getNormYear());
         detail.setValidScore(event.getValidScore());
 
-//        if (event.hasExpectedGedScores()) {
-//            StudentPredictedScoresData predictedGedScores = getResultHolder().getOrCreateStudentPredictedScoresData();
-//            if (event.getExpectedAverageGed()!=null)
-//                predictedGedScores.setExpectedGedAverage(event.getExpectedAverageGed());
-//            if (event.getExpectedMathGed()!=null)
-//                predictedGedScores.setExpectedGedMath(event.getExpectedMathGed());
-//            if (event.getExpectedReadingGed()!=null)
-//                predictedGedScores.setExpectedGedReading(event.getExpectedReadingGed());
-//            if (event.getExpectedScienceGed()!=null)
-//                predictedGedScores.setExpectedGedScience(event.getExpectedScienceGed());
-//            if (event.getExpectedSocialStudiesGed()!=null)
-//                predictedGedScores.setExpectedGedSocialStudies(event.getExpectedSocialStudiesGed());
-//            if (event.getExpectedWritingGed()!=null)
-//                predictedGedScores.setExpectedGedWriting(event.getExpectedWritingGed());
-//        }
     }
     
     public void onEvent(SubtestValidEvent event) {
@@ -192,6 +177,12 @@ public class TSScorer extends STScorer {
     	if(event.getScaleScore()!= null) {
     		details.setScaleScore(Long.valueOf(event.getScaleScore().toBigInteger().longValue()));
     	}
+    	if(event.getMasteryLevel() != null){
+    		details.setMasteryLevel(event.getMasteryLevel().toString());
+    	}
+    	if(event.getScaleScoreRangeForMastery() != null){
+    		details.setScaleScoreRangeForMastery(event.getScaleScoreRangeForMastery().toString());
+    	}
     }
     
     public void onEvent(ResponseReceivedEvent event){
@@ -203,7 +194,7 @@ public class TSScorer extends STScorer {
     	if(crItemMap.containsKey(event.getItemId())){
     		item = (Item)crItemMap.get(event.getItemId());
     	}
-    	// Considering one secondary objective has single  
+    	// Considering one secondary objective has single Item
     	if (item != null){
 	    	StudentScoreSummaryDetails details = summaryData.get(item.getSecondaryObjectiveId());
 	    	if(event.getConditionCode()!= null) {
@@ -217,7 +208,7 @@ public class TSScorer extends STScorer {
         StudentItemScoreData itemData = getResultHolder().getStudentItemScoreData();
     	CurriculumData currData = getResultHolder().getCurriculumData();
         SecondaryObjective[] sec = currData.getSecondaryObjectives();
-        
+        StsTestResultFactData factData = getResultHolder().getStsTestResultFactData();
     	List contentAreas = currData.getContentAreasByName(contentArea);
     	Iterator caIter = contentAreas.iterator();
     	 while(caIter.hasNext()) {
@@ -227,6 +218,12 @@ public class TSScorer extends STScorer {
 		                if(CTBConstants.VALID_SCORE.equals(validScore) && computeValidSubtestScoreFlag(ca.getSubtestId().intValue())) { 
 		                     if(caid.longValue() == (new Long(sec[i].getProductId().toString()+sec[i].getPrimaryObjectiveId().toString())).longValue()) {
 		                         summaryData.get(sec[i].getSecondaryObjectiveId()).setAtsArchive("T");
+		                     }
+		                     
+		                     if("Writing".equalsIgnoreCase(ca.getContentAreaName())&& "Essay Writing".equals(sec[i].getSecondaryObjectiveName())&&
+		                    		 (new Integer(summaryData.get(sec[i].getSecondaryObjectiveId()).getMasteryLevel()).intValue() 
+		                    		 < new Integer(factData.get(ca.getContentAreaName()).getPerformanceLevelCode()).intValue())){
+		                    	 factData.get(ca.getContentAreaName()).setPerformanceLevelCode(summaryData.get(sec[i].getSecondaryObjectiveId()).getMasteryLevel());
 		                     }
 		                     
 		                }

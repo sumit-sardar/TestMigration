@@ -238,7 +238,7 @@
 	                                                '0123456789',
 	                                                ' '))),
 	                          NULL,
-	                          ' ',
+	                          NULL,
 	                          FINAL_SCORE)  AS CONDITIONCODE
 	          FROM ITEM_DATAPOINT_SCORE
 	         WHERE ITEM_READER_ID IN
@@ -423,7 +423,7 @@
 	                                                '0123456789',
 	                                                ' '))),
 	                          NULL,
-	                          ' ',
+	                          NULL,
 	                          FINAL_SCORE)  AS CONDITIONCODE
 	          FROM ITEM_DATAPOINT_SCORE
 	         WHERE ITEM_READER_ID IN

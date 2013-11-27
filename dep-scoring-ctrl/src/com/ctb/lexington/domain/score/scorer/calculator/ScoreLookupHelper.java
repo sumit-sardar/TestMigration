@@ -132,6 +132,16 @@ public class ScoreLookupHelper {
     }
     
     // START For TASC Scoring
+    public BigDecimal getTASCObjectiveMasteryLevel(String frameworkCode, String contentArea, String normGroup, String testForm,
+            String testLevel, String grade, BigDecimal sourceScoreValue, String ageCategory, Connection conn) {
+        try {
+            final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+            return mapper.findTASCObjectiveMasteryLevel(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public String getTASCScaleScoreRangeForCutScore(String frameworkCode, BigDecimal destScoreValue, String contentArea,
             String testLevel, String grade, String testForm, Connection conn) {
         try {
@@ -291,6 +301,38 @@ public class ScoreLookupHelper {
 
         return record.getDestScoreValue();
     }
+    
+    public BigDecimal getScoreForTASC(final Long itemSetId, final String contentArea,
+            final String normGroup, final String testForm, final String testLevel,
+            final String grade, final ScoreLookupCode sourceScoreType,
+            final BigDecimal sourceScoreValue, final ScoreLookupCode destScoreType,
+            final String ageCategory, final Connection conn) {
+        ScoreLookupRecord record = getScoreLookupForTASC(itemSetId, contentArea, normGroup, testForm,
+                testLevel, grade, sourceScoreType, sourceScoreValue, destScoreType, ageCategory,
+                conn);
+
+        if (record == null) {
+            // Only report failure
+            StringBuffer buf = new StringBuffer("Looking for score lookup value for: ");
+            buf.append("\n\tparams: " + itemSetId);
+            buf.append(" | " + contentArea);
+            buf.append(" | " + normGroup);
+            buf.append(" | " + testForm);
+            buf.append(" | " + testLevel);
+            buf.append(" | " + grade);
+            buf.append(" | " + sourceScoreType.getCode());
+            buf.append(" | " + sourceScoreValue);
+            buf.append(" | " + destScoreType.getCode());
+            buf.append(" | " + ageCategory);
+            buf.append("\n(continuing)\n");
+
+            System.err.println(buf.toString());
+
+            return null;
+        }
+
+        return record.getDestScoreValue();
+    }
 
     private BigDecimal getScore(Long itemSetId, String normGroup, ScoreLookupCode sourceScoreType,
             BigDecimal sourceScoreValue, ScoreLookupCode destScoreType, String ageCategory,
@@ -388,5 +430,19 @@ public class ScoreLookupHelper {
             }
         }
         return gradeEquivalent;
+    }
+    
+    private ScoreLookupRecord getScoreLookupForTASC(Long itemSetId, String contentArea, String normGroup,
+            String testForm, String testLevel, String grade, ScoreLookupCode sourceScoreType,
+            BigDecimal sourceScoreValue, ScoreLookupCode destScoreType, String ageCategory,
+            Connection conn) {
+        try {
+            ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
+                return mapper.findScoreLookupByItemSetIdAndNumberCorrect(itemSetId.longValue(),
+                        sourceScoreType.getCode(), destScoreType.getCode(), sourceScoreValue,
+                        testForm, testLevel, grade, contentArea, normGroup, ageCategory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

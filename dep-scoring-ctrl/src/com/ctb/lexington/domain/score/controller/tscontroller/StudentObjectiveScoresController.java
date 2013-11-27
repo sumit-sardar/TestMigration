@@ -188,12 +188,9 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
 	                secObjFact.setPointsObtained(details.getPointsObtained());
 	                secObjFact.setPointsPossible(details.getPointsPossible());
-	                secObjFact.setMasteryLevelid( new Long( 
-	                                                    "Not Mastered".equals(details.getMasteryLevel())?1:
-	                                                    "Partially Mastered".equals(details.getMasteryLevel())?2:
-	                                                    "Mastered".equals(details.getMasteryLevel())?3:4 ));
 	                secObjFact.setPercentObtained(details.getPercentObtained());
 	                secObjFact.setPointsAttempted(details.getPointsAttempted());
+	                secObjFact.setMasteryLevelid( new Long(details.getMasteryLevel().toString()));
 	
 	                // dim ids from context
 	                secObjFact.setAssessmentid(contextData.getAssessmentId());
@@ -277,6 +274,7 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setObjectiveScoringStatus(details.getObjectiveScoringStatus());
 	                secObjFact.setScaleScore(details.getScaleScore());
 	                secObjFact.setConditionCode(details.getConditionCode());
+	                secObjFact.setScaleScoreRangeForMasteryLevel(details.getScaleScoreRangeForMastery());
 	                
 	                secondaries.add(secObjFact);
 	            } else{

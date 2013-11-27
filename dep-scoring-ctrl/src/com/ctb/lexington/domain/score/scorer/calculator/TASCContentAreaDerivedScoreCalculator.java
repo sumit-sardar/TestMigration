@@ -52,30 +52,28 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
         
         
-        System.out.println("Content Area name in  ContentAreaNumberCorrectEvent event ::: "+ event.getContentAreaName());
         ContentAreaRawScoreEvent contentAreaRawScoreEvent = (ContentAreaRawScoreEvent)contentAreaRawScoreEvents.get(event.getContentAreaName());
         Integer obtainedNumber = contentAreaRawScoreEvent.getPointsObtained();
         BigDecimal pointsObtained = new BigDecimal(obtainedNumber.toString());
        
-        
-        final BigDecimal scaleScore = getScore(
-    			subtestId,
+        final BigDecimal scaleScore = getScoreForTASC(
+    			new Long(subtestId),
     			event.getContentAreaName(),
 				null,
 				pDupTestForm,
 				pTestLevel,
-				(pGrade != null)?pGrade:null,
+				pGrade,
 				ScoreLookupCode.SUBTEST_NUMBER_CORRECT,
 				pointsObtained, // If it is wrong then we can use [new BigDecimal(event.getNumberCorrect())],
 				ScoreLookupCode.SCALED_SCORE,
-				pAgeCategory );
+				null);
         
         final BigDecimal normalCurveEquivalent = (scaleScore==null) ? null : getTASCNCE(
         		TASC_FRAMEWORK_CODE,
     			event.getContentAreaName(),
  				pTestLevel,
  				scaleScore,
- 				(pGrade != null)?pGrade:null,
+ 				pGrade,
  				pDupTestForm);
          
         final BigDecimal nationalPercentile = (scaleScore==null) ? null : getTASCPR(
@@ -83,7 +81,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
        			event.getContentAreaName(),
        			pTestLevel,
     			scaleScore,
-    			(pGrade != null)?pGrade:null,
+    			pGrade,
     			pDupTestForm);
         
         final BigDecimal proficencyLevelValue = getTASCPerformanceLevel(
@@ -91,7 +89,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		event.getContentAreaName(),
         		pTestLevel,
 				scaleScore,
-				(pGrade != null)?pGrade:null,
+				pGrade,
 				pDupTestForm);
         
         final String proficiencyRange = getTASCScaleScoreRangeForCutScore(
@@ -99,7 +97,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		event.getContentAreaName(),
         		pTestLevel,
         		proficencyLevelValue,
-				(pGrade != null)?pGrade:null,
+				pGrade,
 				pDupTestForm);
         
         final PerformanceLevel proficencyLevel = ("0".equals(proficencyLevelValue.toString()))? null :PerformanceLevel.getByCode(String.valueOf(proficencyLevelValue));

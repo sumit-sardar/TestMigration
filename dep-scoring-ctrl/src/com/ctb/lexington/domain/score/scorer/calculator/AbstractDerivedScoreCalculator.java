@@ -92,20 +92,6 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         }
     }
     
-    // for TASC Objective Level Scoring
-    protected BigDecimal getObjectiveScore(Long secObjectiveId, String contentArea, String normGroup,
-            String testForm, String testLevel, String grade, ScoreLookupCode sourceScoreType,
-            BigDecimal sourceScoreValue, ScoreLookupCode destScoreType, String ageCategory) {
-        final Connection conn = getOASConnection();
-        try {
-            return getScoreLookupHelper().getScore(secObjectiveId, contentArea, normGroup, testForm,
-                    testLevel, grade, sourceScoreType, sourceScoreValue, destScoreType,
-                    ageCategory, conn);
-        } finally {
-            closeConnection(conn);
-        }
-    }
-
     protected String getGradeEquivalent(Integer itemSetId, String contentArea,
             String normGroup, String testForm, String testLevel, String grade,
             ScoreLookupCode sourceScoreType, BigDecimal sourceScoreValue,
@@ -189,6 +175,31 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
 	// END For Laslink Scoring
     
     // START For TASC Scoring
+    
+    protected BigDecimal getScoreForTASC(Long secObjectiveId, String contentArea, String normGroup,
+            String testForm, String testLevel, String grade, ScoreLookupCode sourceScoreType,
+            BigDecimal sourceScoreValue, ScoreLookupCode destScoreType, String ageCategory) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getScoreForTASC(secObjectiveId, contentArea, normGroup, testForm,
+                    testLevel, grade, sourceScoreType, sourceScoreValue, destScoreType,
+                    ageCategory, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+    
+    protected BigDecimal getTASCObjectiveMasteryLevel(String frameworkCode, String contentArea, String normGroup,
+	    String testForm, String testLevel, String grade, BigDecimal sourceScoreValue, String ageCategory) {
+		final Connection conn = getOASConnection();
+		try {
+		    return getScoreLookupHelper().getTASCObjectiveMasteryLevel(frameworkCode, contentArea, normGroup, testForm,
+		            testLevel, grade, sourceScoreValue, ageCategory, conn);
+		} finally {
+		    closeConnection(conn);
+		}
+	}
+    
     protected String getTASCScaleScoreRangeForCutScore(String frameworkCode, String contentArea, String testLevel,
             BigDecimal destScoreValue, String grade, String testForm) {
         final Connection conn = getOASConnection();

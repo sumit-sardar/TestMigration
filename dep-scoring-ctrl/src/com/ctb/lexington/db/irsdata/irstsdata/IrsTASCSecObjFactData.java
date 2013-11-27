@@ -31,6 +31,7 @@ public class IrsTASCSecObjFactData implements Persistent{
     private Long scaleScore; //Added for TASC
     private String objectiveScoringStatus; //Added for TASC
     private String conditionCode; //Added for TASC
+    private String scaleScoreRangeForMasteryLevel; //Added for TASC
     
     /*private Long attr1id;
     private Long attr7id;
@@ -306,6 +307,21 @@ public class IrsTASCSecObjFactData implements Persistent{
 	 */
 	public void setConditionCode(String conditionCode) {
 		this.conditionCode = conditionCode;
+	}
+
+	/**
+	 * @return the scaleScoreRangeForMasteryLevel
+	 */
+	public String getScaleScoreRangeForMasteryLevel() {
+		return scaleScoreRangeForMasteryLevel;
+	}
+
+	/**
+	 * @param scaleScoreRangeForMasteryLevel the scaleScoreRangeForMasteryLevel to set
+	 */
+	public void setScaleScoreRangeForMasteryLevel(
+			String scaleScoreRangeForMasteryLevel) {
+		this.scaleScoreRangeForMasteryLevel = scaleScoreRangeForMasteryLevel;
 	}
     
     /*public Long getAttr1id() {

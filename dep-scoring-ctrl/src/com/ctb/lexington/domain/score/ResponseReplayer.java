@@ -233,7 +233,6 @@ public class ResponseReplayer {
 	                boolean omissionStatusTASC = checkScoringOmissionStatusForTASC(responses); // Added to store score omission Status for TASC
 	                boolean suppressionStatusTASC = checkScoringSuppressionStatusForTASC(responses); // Added to store score suppression Status for TASC
 	                  
-	                  subtest.setSubtestScoringStatus(""); // Setting 
 	              	if(validationStatusTASC == true) {
 	              		subtest.setSubtestScoringStatus("");
 	              	}
@@ -452,7 +451,7 @@ public class ResponseReplayer {
 						&& !"GRID".equals(tascResponse.getAnswerArea())) {
 					if(!"A".equals(tascResponse.getConditionCode())){
 						final Integer crItemRawScore = tascResponse.getCrResponse();
-						if(crItemRawScore > 0) {
+						if(null != crItemRawScore && crItemRawScore > 0) {
 							min1Correct = true;
 							break;
 						}
