@@ -40,6 +40,8 @@ public class UploadDataToDB {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//String fileName= "C:/Documents and Settings/370755/Desktop/Rubric_Data_Input_Template.xls";
+		
+		// args should be the location of property file. Such as:: C:\importExcelSheetsToDBForRubric\src\config.properties
 		if (args.length==0 || args[0].trim().length()==0 ){
 			System.err.println("Please provide envirion file path..");
 			System.exit(0);
