@@ -22,7 +22,7 @@ public class DBUtil extends BaseConnection {
 			String desc = rubricViewdata.getRubricDescription();
 			desc = desc.replaceAll("”", "\"");
 			desc = desc.replaceAll("“", "\"");
-			desc = desc.replaceAll("’", "&apos");
+			desc = desc.replaceAll("’", "''");
 			String s = "insert into " + name + " values(" + "'" + 
 				rubricViewdata.getItemId() + "'" + "," +  "'" + rubricViewdata.getScore() + "'" + ","  + "'" + 
 				desc + "'" + ")";
@@ -43,12 +43,12 @@ public class DBUtil extends BaseConnection {
 			String responseSample = rubricViewdata.getSampleResponse();
 			responseSample = responseSample.replaceAll("”", "\"");
 			responseSample = responseSample.replaceAll("“", "\"");
-			responseSample = responseSample.replaceAll("’", "&apos");
+			responseSample = responseSample.replaceAll("’", "''");
 			
 			String desc = rubricViewdata.getRubricExplanation();
 			desc = desc.replaceAll("”", "\"");
 			desc = desc.replaceAll("“", "\"");
-			desc = desc.replaceAll("’", "&apos");
+			desc = desc.replaceAll("’", "''");
 			String s = "insert into " + name + " values(" + "'" + 
 				rubricViewdata.getItemId() + "'" + "," +  "'" + rubricViewdata.getScore() + "'" + ","  + "'" + responseSample + "'" + ","
 				+ "'" + 
