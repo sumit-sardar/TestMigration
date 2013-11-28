@@ -90,9 +90,11 @@ public class UploadDataToDB {
 		
 		UploadDataToDB uploadDataToDB = new UploadDataToDB(db_ip,db_user, db_pass, db_sid);
 		uploadDataToDB.readFirstSheet(fileName,0);
+		System.out.println("Rubric Loaded Successfully ....");
 		uploadDataToDB.readSecondSheet(fileName,1);
+		System.out.println("Exemplars Loaded Successfully ....");
 		
-		System.out.println("Finished Successfully ....");
+		System.out.println("File Loading Finished Successfully ....");
 	}
     
 	
@@ -127,7 +129,7 @@ public class UploadDataToDB {
 								cells = row.getCell((short)i);
 								if (cells.getStringCellValue().equals("ITEM ID")) {
 									System.out.println(cells.getStringCellValue());
-									rubViewD.setItemId(dataRow.getCell((short)i).getStringCellValue());
+									rubViewD.setItemId(dataRow.getCell((short)i).getStringCellValue().trim());
 								}
 								if (cells.getStringCellValue().equals("SCORE")) {
 									System.out.println(cells.getStringCellValue());
@@ -207,7 +209,7 @@ public class UploadDataToDB {
 								cells = row.getCell((short)i);
 	
 								if (cells.getStringCellValue().equals("ITEM ID")) {
-									rubViewD.setItemId(dataRow.getCell((short)i).getStringCellValue());
+									rubViewD.setItemId(dataRow.getCell((short)i).getStringCellValue().trim());
 								}
 								if (cells.getStringCellValue().equals("SCORE")) {
 									Double d = dataRow.getCell((short)i).getNumericCellValue();
