@@ -27,6 +27,7 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, SubtestStartedEvent.class);
         channel.subscribe(this, ObjectiveRawScoreEvent.class);
+        mustPrecede(SubtestEndedEvent.class, ObjectiveRawScoreEvent.class);
     }
 	
 	public void onEvent(AssessmentStartedEvent event) {
