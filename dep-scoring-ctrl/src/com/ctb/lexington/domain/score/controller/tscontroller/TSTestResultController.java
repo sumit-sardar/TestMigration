@@ -135,6 +135,11 @@ public class TSTestResultController implements TestResultController {
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){
+    	final IrsDemographicData details = new IrsDemographicData();
+    	return details;
+    }
+    
+    /*public IrsDemographicData getIrsDemographics(StudentDemographicData data){
     		final IrsDemographicData details = new IrsDemographicData();
     		Map rd = data.getResearchData();
         
@@ -228,5 +233,5 @@ public class TSTestResultController implements TestResultController {
     		}
          
     	 return details;
-    }
+    }*/
 }

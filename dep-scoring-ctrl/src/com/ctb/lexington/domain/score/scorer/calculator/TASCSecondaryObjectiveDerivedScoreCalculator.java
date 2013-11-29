@@ -1,16 +1,10 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.Map;
 
-import com.ctb.lexington.db.data.StudentScoreSummaryData;
-import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.CurriculumData.SecondaryObjective;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
-import com.ctb.lexington.domain.score.event.ContentAreaDerivedScoreEvent;
-import com.ctb.lexington.domain.score.event.ContentAreaNumberCorrectEvent;
-import com.ctb.lexington.domain.score.event.ContentAreaRawScoreEvent;
 import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectiveRawScoreEvent;
 import com.ctb.lexington.domain.score.event.SecondaryObjectiveDerivedScoreEvent;
@@ -18,14 +12,14 @@ import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
+import com.ctb.lexington.domain.score.scorer.ScorerHelper;
 import com.ctb.lexington.domain.teststructure.ScoreLookupCode;
 import com.ctb.lexington.util.SafeHashMap;
 
 public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 		AbstractDerivedScoreCalculator {
 
-	private final Map secondaryObjectiveRawScoreEventsList = new SafeHashMap(String.class, ObjectiveRawScoreEvent.class);
-	private static Map secondaryObjectivePointObtained = new SafeHashMap(Long.class, Integer.class);
+	private static Map<Long,ObjectiveRawScoreEvent> secondaryObjectivePointObtained = new SafeHashMap(Long.class, ObjectiveRawScoreEvent.class);
 	private static final String TASC_FRAMEWORK_CODE = "TASC";
 	
 	public TASCSecondaryObjectiveDerivedScoreCalculator(Channel channel, Scorer scorer) {
@@ -48,19 +42,33 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
     
     public void onEvent(ObjectiveRawScoreEvent event) {
 
-        if(!secondaryObjectivePointObtained.containsKey(event.getObjectiveId())) {
-        	secondaryObjectivePointObtained.put(event.getObjectiveId(), new Integer(event.getPointsObtained()));
-        } else {
-            Integer pointObtained = (Integer)secondaryObjectivePointObtained.get(event.getObjectiveId());
-            pointObtained = pointObtained.intValue() + event.getPointsObtained();
-            secondaryObjectivePointObtained.put(event.getObjectiveId(), pointObtained);
-        }
-        
     	if(Objective.SECONDARY.equals(event.getReportingLevel())){
+    		
+	        if(!secondaryObjectivePointObtained.containsKey(event.getObjectiveId())) {
+	        	secondaryObjectivePointObtained.put(event.getObjectiveId(), new ObjectiveRawScoreEvent(event.getTestRosterId(), event.getObjectiveId(),
+	                    event.getReportingLevel(), event.getPointsPossible(), event.getPointsObtained(), event.getPointsAttempted(),
+	                    ScorerHelper.calculatePercentage(
+	                    		event.getPointsObtained(),
+	                    		event.getPointsPossible()), event.getSubtestId()));
+	        } else {
+	        	ObjectiveRawScoreEvent  objEvent = (ObjectiveRawScoreEvent) secondaryObjectivePointObtained.get(event.getObjectiveId());
+	        	if(!objEvent.getSubtestId().equals(event.getSubtestId())){
+	        		Integer pointObtained = new Integer(objEvent.getPointsObtained());
+	        		pointObtained = pointObtained.intValue() + event.getPointsObtained();
+	        		secondaryObjectivePointObtained.put(event.getObjectiveId(), new ObjectiveRawScoreEvent(event.getTestRosterId(), event.getObjectiveId(),
+	                        event.getReportingLevel(), event.getPointsPossible(), pointObtained.intValue(), event.getPointsAttempted(),
+	                        ScorerHelper.calculatePercentage(
+	                        		pointObtained.intValue(),
+	                        		event.getPointsPossible()), event.getSubtestId()));
+	        	}
+	        }
+        
+    	
 	    	String objectiveName = getObjectiveName(event.getObjectiveId());
-	    	Integer pointObtained = (Integer)secondaryObjectivePointObtained.get(event.getObjectiveId());
+	    	ObjectiveRawScoreEvent  objEvent = (ObjectiveRawScoreEvent) secondaryObjectivePointObtained.get(event.getObjectiveId());
+	    	Integer pointObtained = new Integer(objEvent.getPointsObtained()); 
 	    	
-        	final BigDecimal scaleScore = getScoreForTASC(
+        	final BigDecimal scaleScore = (objectiveName == null )? null :getScoreForTASC(
         			event.getObjectiveId(),
         			objectiveName,
     				null,
@@ -72,6 +80,7 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
     				ScoreLookupCode.SCALED_SCORE,
     				null );
 	        
+        	System.out.println( "Objective Name :: "+objectiveName+" || Raw Score :: "+new BigDecimal(pointObtained.intValue())+" || Scale Score :: "+scaleScore );
 	        final BigDecimal masteryLevelValue = (scaleScore==null) ? null : getTASCObjectiveMasteryLevel(
 	        		TASC_FRAMEWORK_CODE,
 	        		objectiveName,
@@ -82,11 +91,11 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 	        	    scaleScore,
 	        	    null);
 	        
-	        final String scaleScoreRangeForMastery = getTASCScaleScoreRangeForCutScore(
+	        final String scaleScoreRangeForMastery = (objectiveName == null)? null : getTASCScaleScoreRangeForCutScore(
 	        		TASC_FRAMEWORK_CODE,
 	        		objectiveName,
 	        		pTestLevel,
-	        		masteryLevelValue,
+	        		null,
 	        		pGrade,
 	        		pTestForm);
 	        
@@ -111,9 +120,4 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
             }
         return null;
     }
-    
-    /*private BigDecimal getSecondaryObjecrivePointsObtained(Long objectiveId) {
-    	ObjectiveRawScoreEvent objRaw = (ObjectiveRawScoreEvent) secondaryObjectiveRawScoreEventsList.get(objectiveId.toString());
-    	return new BigDecimal(objRaw.getPointsObtained());
-    }*/
 }

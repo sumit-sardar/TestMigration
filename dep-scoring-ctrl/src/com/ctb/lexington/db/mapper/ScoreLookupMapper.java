@@ -403,7 +403,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     public String findTASCScaleScoreRange(final String frameworkCode, final BigDecimal sourceScoreValue,
             final String testLevel, final String contentArea, final String grade, final String testForm) {
         final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
-                sourceScoreValue, null);
+                null, null);
         template.setTestLevel(testLevel);
         template.setContentArea(contentArea);
         template.setGrade(grade);
@@ -426,10 +426,15 @@ public class ScoreLookupMapper extends AbstractDBMapper {
 				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
 				if(slr != null && slr.getSourceScoreValue()!= null) {
 					if(scaleScoreValue == 0 && scaleScoreRange == null) {
-						scaleScoreRange = "001-"+slr.getSourceScoreValue().toString();
+						String scaleScoreRange1 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
+						//scaleScoreRange = "001-"+slr.getSourceScoreValue().toString();
+						scaleScoreRange = "001-"+scaleScoreRange1;
 						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
 					} else {
-						scaleScoreRange = scaleScoreRange + new Integer(scaleScoreValue).toString()+"-"+slr.getSourceScoreValue().toString();
+						String scaleScoreRange1 = "000".substring(new Integer(scaleScoreValue).toString().length())+new Integer(scaleScoreValue).toString();
+						String scaleScoreRange2 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
+						//scaleScoreRange = scaleScoreRange + new Integer(scaleScoreValue).toString()+"-"+slr.getSourceScoreValue().toString();
+						scaleScoreRange = scaleScoreRange + scaleScoreRange1+"-"+scaleScoreRange2;
 						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
 					}
 					scaleScoreValue++;

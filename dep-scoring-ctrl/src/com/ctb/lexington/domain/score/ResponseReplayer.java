@@ -309,8 +309,10 @@ public class ResponseReplayer {
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
 					//if(null != tascResponse.getActualCrResponse()){
-					if(!"A".equals(tascResponse.getConditionCode())){
-						validResponseCount++;
+					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
+						if(!"A".equals(tascResponse.getConditionCode())){
+							validResponseCount++;
+						}
 					}
 				}
 	 		}
@@ -351,8 +353,10 @@ public class ResponseReplayer {
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
 					//if(null != tascResponse.getActualCrResponse() && !"A".equals(tascResponse.getConditionCode())){
-					if(!"A".equals(tascResponse.getConditionCode())){
-						validResponseCount++;
+					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
+						if(!"A".equals(tascResponse.getConditionCode())){
+							validResponseCount++;
+						}
 					}
 				}
 	 		}
@@ -394,8 +398,10 @@ public class ResponseReplayer {
 				}
 				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
 					//if(null != tascResponse.getActualCrResponse()){
-					if(!"A".equals(tascResponse.getConditionCode())){
-						validResponseCount++;
+					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
+						if(!"A".equals(tascResponse.getConditionCode())){
+							validResponseCount++;
+						}
 					}
 				}
     		}
@@ -451,7 +457,7 @@ public class ResponseReplayer {
 						&& !"GRID".equals(tascResponse.getAnswerArea())) {
 					if(!"A".equals(tascResponse.getConditionCode())){
 						final Integer crItemRawScore = tascResponse.getCrResponse();
-						if(null != crItemRawScore && crItemRawScore > 0) {
+						if(null != crItemRawScore && crItemRawScore.intValue() > 0) {
 							min1Correct = true;
 							break;
 						}

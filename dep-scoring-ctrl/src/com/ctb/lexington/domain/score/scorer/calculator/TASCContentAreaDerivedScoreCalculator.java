@@ -96,7 +96,7 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		TASC_FRAMEWORK_CODE,
         		event.getContentAreaName(),
         		pTestLevel,
-        		proficencyLevelValue,
+        		null,
 				pGrade,
 				pDupTestForm);
         

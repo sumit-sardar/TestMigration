@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.lexington.db.data.SubtestContentAreaCompositeAndDerivedScore;
+import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
@@ -55,8 +56,8 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     private final Map contentAreaSubtestId = new SafeHashMap(String.class,String.class);
     private final Map contentAreaScaleScore = new SafeHashMap(String.class,Integer.class);
     
-    private final ArrayList contentAreaNamesRequiredForOverallComposite = new ArrayList();
-    private final ArrayList contentAreaNamesRequiredForELAComposite = new ArrayList();
+    private final ArrayList<String> contentAreaNamesRequiredForOverallComposite = new ArrayList<String>();
+    private final ArrayList<String> contentAreaNamesRequiredForELAComposite = new ArrayList<String>();
 
     
     private boolean OverallCompositeDerivedScoresCalculated;
@@ -345,11 +346,21 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
     private void publishScores(final String scoreType, final Long testRosterId,
             final CompositeScoreHolder scores) {
-        if (null != scores.scaleScore || 0 != scores.pointsPossible || scores.hasPredictedGed()) {
-            channel.send(new SubtestContentAreaCompositeScoreEvent(testRosterId, scoreType,
-                    scores.scaleScore, scores.normalCurveEquivalent, null,
-                    null, scores.nationalPercentile, pNormGroup, pNormYear,
-                    null, null, null,
+    	
+    	
+    	if (ELA_COMPOSITE_TYPE.equals(scoreType) && validateELACompositeScore()){
+	      channel.send(new SubtestContentAreaCompositeScoreEvent(testRosterId, scoreType,
+	                    scores.scaleScore, scores.normalCurveEquivalent, null, null, 
+	                    scores.nationalPercentile, pNormGroup, pNormYear, null, null, null,
+	                    null, null,
+	                    null, scores.getPointsObtained(), scores
+	                            .getPointsAttempted(), scores.getPointsPossible(), scores
+	                            .getPercentObtained(), null, scores.validScore, scores.proficencyLevel));
+	      
+    	}else if (OVERALL_COMPOSITE_TYPE.equals(scoreType) && validateOverallCompositeScore()){
+    		channel.send(new SubtestContentAreaCompositeScoreEvent(testRosterId, scoreType,
+                    scores.scaleScore, scores.normalCurveEquivalent, null, null, 
+                    scores.nationalPercentile, pNormGroup, pNormYear, null, null, null,
                     null, null,
                     null, scores.getPointsObtained(), scores
                             .getPointsAttempted(), scores.getPointsPossible(), scores
@@ -403,7 +414,52 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
 
 
-
+    private boolean validateELACompositeScore(){
+    	
+    	if (scorer.getResultHolder().getCurriculumData().getContentAreas().length > 0) {
+    		int ELAContentAreaCount = 0;
+    		
+    		for(String contentAreaName : contentAreaNamesRequiredForELAComposite){
+	    		for (int indx =0; indx < scorer.getResultHolder().getCurriculumData().getContentAreas().length; indx++) {
+	    			ContentArea ca = scorer.getResultHolder().getCurriculumData().getContentAreas()[indx];
+	    			if(ca.getContentAreaName().equals(contentAreaName.toString())){
+	    				ELAContentAreaCount++;
+	    				break;
+	    			}
+	    		}
+    		}
+			if(ELAContentAreaCount == 2){
+				return true;
+			}else{
+				return false;
+			}
+    	}else{
+    		return false;
+    	}
+    }
+    
+    private boolean validateOverallCompositeScore(){
+    	if(scorer.getResultHolder().getCurriculumData().getContentAreas().length > 0){
+    		int OverallContentAreaCount = 0;
+    		
+    		for(String contentAreaName : contentAreaNamesRequiredForOverallComposite){
+	    		for (int indx =0; indx < scorer.getResultHolder().getCurriculumData().getContentAreas().length; indx++) {
+	    			ContentArea ca = scorer.getResultHolder().getCurriculumData().getContentAreas()[indx];
+	    			if(ca.getContentAreaName().equals(contentAreaName.toString())){
+	    				OverallContentAreaCount++;
+	    				break;
+	    			}
+	    		}
+    		}
+			if(OverallContentAreaCount == 5){
+				return true;
+			}else{
+				return false;
+			}
+       	}else{
+    		return false;
+    	}
+    }
     /*private boolean isContentAreaEligibleForExpextedGed(String contentAreaName) {
         if (contentAreaDerivedScoreEvents.keySet().contains(contentAreaName)) {
         	ContentAreaDerivedScoreEvent derivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(contentAreaName);

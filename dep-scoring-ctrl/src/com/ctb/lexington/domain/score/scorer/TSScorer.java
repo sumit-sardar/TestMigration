@@ -174,11 +174,20 @@ public class TSScorer extends STScorer {
     public void onEvent(SecondaryObjectiveDerivedScoreEvent event){
     	StudentScoreSummaryData summaryData = getResultHolder().getStudentScoreSummaryData();
     	StudentScoreSummaryDetails details = summaryData.get(event.getObjectiveId());
-    	if(event.getScaleScore()!= null) {
-    		details.setScaleScore(Long.valueOf(event.getScaleScore().toBigInteger().longValue()));
+    	
+    	if(event.getScaleScore()!= null){
+	    	if(details.getScaleScore() == null) {
+	    		details.setScaleScore(Long.valueOf(event.getScaleScore().toBigInteger().longValue()));
+	    	}else if (!details.getSubtestId().equals(event.getSubtestId())){
+	    		details.setScaleScore(Long.valueOf(event.getScaleScore().toBigInteger().longValue()));
+	    	}
     	}
-    	if(event.getMasteryLevel() != null){
-    		details.setMasteryLevel(event.getMasteryLevel().toString());
+    	if(event.getMasteryLevel() != null ){
+	    	if(details.getMasteryLevel() == null){
+	    		details.setMasteryLevel(event.getMasteryLevel().toString());
+	    	}else if (!details.getSubtestId().equals(event.getSubtestId())){
+	    		details.setMasteryLevel(event.getMasteryLevel().toString());
+	    	}
     	}
     	if(event.getScaleScoreRangeForMastery() != null){
     		details.setScaleScoreRangeForMastery(event.getScaleScoreRangeForMastery().toString());

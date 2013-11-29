@@ -36,7 +36,7 @@ public class FractionConverstionUtil {
 				}
 			}catch(Exception e){
 				System.out.println("Problem in rounding...");
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		
 		return nonRoundedString;
