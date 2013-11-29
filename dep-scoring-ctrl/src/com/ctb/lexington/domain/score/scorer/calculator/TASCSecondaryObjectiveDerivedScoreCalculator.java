@@ -8,7 +8,6 @@ import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
 import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectiveRawScoreEvent;
 import com.ctb.lexington.domain.score.event.SecondaryObjectiveDerivedScoreEvent;
-import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
@@ -27,7 +26,6 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, SubtestStartedEvent.class);
         channel.subscribe(this, ObjectiveRawScoreEvent.class);
-        mustPrecede(SubtestEndedEvent.class, ObjectiveRawScoreEvent.class);
     }
 	
 	public void onEvent(AssessmentStartedEvent event) {
