@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
-
+import javax.xml.ws.handler.*;
 import weblogic.utils.StringUtils;
 
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
@@ -83,7 +83,7 @@ public class PrismWebServiceHandler {
 				
 				//**[IAA]: append SOAP header to SOAP envelope
 				Binding binding = provider.getBinding();
-				List handlers = provider.getBinding().getHandlerChain();
+				List<Handler> handlers = provider.getBinding().getHandlerChain();
 				handlers.add(new PrismSOAPHandler(requestParam));
 				binding.setHandlerChain(handlers);
 				//**[IAA]
@@ -211,7 +211,7 @@ public class PrismWebServiceHandler {
 		String heirarchyLevel = null;
 		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
 		customerId = custHierarchyDetailsTO.getCustomerId();
-		OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size());
+		OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
 		orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();
 		heirarchyLevel = orgDetails.getOrgLevel();
 		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
