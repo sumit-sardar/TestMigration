@@ -74,6 +74,8 @@ public class PrismWebServiceConstant {
 	
 	public static final String fontBackGrClrAttrName = "Acc_Ft_Bk_Cr";
 	
+	public static final String AddStdInfoSubTestAcc = "ADDITIONAL STUDENT INFORMATION";
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
