@@ -26,6 +26,7 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
     private final Long pointsPossible;
     private final String validScore;
     private final BigDecimal proficencyLevel; // For Laslink Scoring
+    private String scaleScoreRange;
 
     public SubtestContentAreaCompositeScoreEvent(final Long testRosterId, final String type,
             final BigDecimal scaleScore, final BigDecimal normalCurveEquivalent,
@@ -58,6 +59,41 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
         this.decimalPercentObtained = decimalPercentObtained;
         this.validScore = validScore;
         this.proficencyLevel = proficencyLevel;  // For Laslink Scoring
+    }
+    
+    public SubtestContentAreaCompositeScoreEvent(final Long testRosterId, final String type,
+            final BigDecimal scaleScore, final BigDecimal normalCurveEquivalent,
+            final String gradeEquivalent, final BigDecimal nationalStanine,
+            final BigDecimal nationalPercentile, final String normGroup, final String normYear,
+            final BigDecimal expectedMathGed, final BigDecimal expectedReadingGed,
+            final BigDecimal expectedWritingGed, final BigDecimal expectedSocialStudiesGed,
+            final BigDecimal expectedScienceGed, final BigDecimal expectedAverageGed,
+            final Long pointsObtained, final Long pointsAttempted, final Long pointsPossible,
+            final Long percentObtained, final Float decimalPercentObtained, final String validScore,
+            final BigDecimal proficencyLevel, final String scaleScoreRange) {
+        super(testRosterId);
+        this.scaleScore = scaleScore;
+        this.type = type;
+        this.normalCurveEquivalent = normalCurveEquivalent;
+        this.gradeEquivalent = gradeEquivalent;
+        this.nationalStanine = nationalStanine;
+        this.nationalPercentile = nationalPercentile;
+        this.normGroup = normGroup;
+        this.normYear = normYear;
+        this.expectedMathGed = expectedMathGed;
+        this.expectedReadingGed = expectedReadingGed;
+        this.expectedWritingGed = expectedWritingGed;
+        this.expectedSocialStudiesGed = expectedSocialStudiesGed;
+        this.expectedScienceGed = expectedScienceGed;
+        this.expectedAverageGed = expectedAverageGed;
+        this.pointsObtained = pointsObtained;
+        this.pointsAttempted = pointsAttempted;
+        this.pointsPossible = pointsPossible;
+        this.percentObtained = percentObtained;
+        this.decimalPercentObtained = decimalPercentObtained;
+        this.validScore = validScore;
+        this.proficencyLevel = proficencyLevel;  // For Laslink Scoring
+        this.scaleScoreRange = scaleScoreRange;  // Addded for TASC
     }
 
     public BigDecimal getScaleScore() {
@@ -159,5 +195,9 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
 	 */
 	public Float getDecimalPercentObtained() {
 		return decimalPercentObtained;
+	}
+
+	public String getScaleScoreRange() {
+		return scaleScoreRange;
 	}
 }

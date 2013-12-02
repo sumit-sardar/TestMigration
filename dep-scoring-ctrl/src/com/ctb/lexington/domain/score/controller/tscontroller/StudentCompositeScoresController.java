@@ -77,6 +77,7 @@ public class StudentCompositeScoresController {
                    newFact.setStudentid(context.getStudentId());
                    newFact.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
                    newFact.setTestStartTimestamp(context.getTestStartTimestamp());
+                   newFact.setScaleScoreRangeForProficiency(total.getScaleScoreRangeForProficiency());
                    
                    /*newFact.setAttr1id(context.getDemographicData().getAttr1Id());
                    newFact.setAttr2id(context.getDemographicData().getAttr2Id());

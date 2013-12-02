@@ -35,6 +35,7 @@ public class IrsTASCCompositeFactData implements Persistent {
 	private Long pointsAttempted;
 	private Long pointsObtained;
 	private Long recLevelid;
+	private String scaleScoreRangeForProficiency; //Added for TASC
 	
 	/*private Long attr1id;
 	private Long attr7id;
@@ -68,7 +69,16 @@ public class IrsTASCCompositeFactData implements Persistent {
     private Long attr36id;
     private Long attr37id;*/
     
-    public boolean equals(Object arg0) {
+    public String getScaleScoreRangeForProficiency() {
+		return scaleScoreRangeForProficiency;
+	}
+
+	public void setScaleScoreRangeForProficiency(
+			String scaleScoreRangeForProficiency) {
+		this.scaleScoreRangeForProficiency = scaleScoreRangeForProficiency;
+	}
+
+	public boolean equals(Object arg0) {
 			return 
 				compositeid.equals(((IrsTASCCompositeFactData)arg0).getCompositeid()) &&
                 orgNodeid.equals(((IrsTASCCompositeFactData)arg0).getOrgNodeid()) &&

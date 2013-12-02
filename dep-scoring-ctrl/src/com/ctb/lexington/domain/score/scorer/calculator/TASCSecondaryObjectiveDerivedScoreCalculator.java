@@ -18,7 +18,7 @@ import com.ctb.lexington.util.SafeHashMap;
 public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 		AbstractDerivedScoreCalculator {
 
-	private static Map<Long,ObjectiveRawScoreEvent> secondaryObjectivePointObtained = new SafeHashMap(Long.class, ObjectiveRawScoreEvent.class);
+	private final Map<Long,ObjectiveRawScoreEvent> secondaryObjectivePointObtained = new SafeHashMap(Long.class, ObjectiveRawScoreEvent.class);
 	private static final String TASC_FRAMEWORK_CODE = "TASC";
 	
 	public TASCSecondaryObjectiveDerivedScoreCalculator(Channel channel, Scorer scorer) {
@@ -26,6 +26,7 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
         channel.subscribe(this, AssessmentStartedEvent.class);
         channel.subscribe(this, SubtestStartedEvent.class);
         channel.subscribe(this, ObjectiveRawScoreEvent.class);
+        mustPrecede(AssessmentStartedEvent.class, ObjectiveRawScoreEvent.class);
     }
 	
 	public void onEvent(AssessmentStartedEvent event) {
@@ -79,7 +80,7 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
     				ScoreLookupCode.SCALED_SCORE,
     				null );
 	        
-        	System.out.println( "Objective Name :: "+objectiveName+" || Raw Score :: "+new BigDecimal(pointObtained.intValue())+" || Scale Score :: "+scaleScore );
+//        	System.out.println( "Objective Name :: "+objectiveName+" || Raw Score :: "+new BigDecimal(pointObtained.intValue())+" || Scale Score :: "+scaleScore );
 	        final BigDecimal masteryLevelValue = (scaleScore==null) ? null : getTASCObjectiveMasteryLevel(
 	        		TASC_FRAMEWORK_CODE,
 	        		objectiveName,

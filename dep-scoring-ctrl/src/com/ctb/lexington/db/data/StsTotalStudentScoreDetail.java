@@ -33,6 +33,7 @@ public class StsTotalStudentScoreDetail implements Persistent, ValidatedScoreRec
     private String validScore;
     private Long recommendedLevelId;
     private BigDecimal proficencyLevel;   //Added for LASLINK Scoring
+    private String scaleScoreRangeForProficiency; //Added for TASC
 
     public Long getRecommendedLevelId() {
         return recommendedLevelId;
@@ -262,6 +263,15 @@ public class StsTotalStudentScoreDetail implements Persistent, ValidatedScoreRec
 	 */
 	public void setProficencyLevel(BigDecimal proficencyLevel) {
 		this.proficencyLevel = proficencyLevel;
+	}
+
+	public String getScaleScoreRangeForProficiency() {
+		return scaleScoreRangeForProficiency;
+	}
+
+	public void setScaleScoreRangeForProficiency(
+			String scaleScoreRangeForProficiency) {
+		this.scaleScoreRangeForProficiency = scaleScoreRangeForProficiency;
 	}
 
 }

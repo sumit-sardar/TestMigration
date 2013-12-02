@@ -130,7 +130,7 @@ public class TSScorer extends STScorer {
         
         detail.setNormYear(event.getNormYear());
         detail.setValidScore(event.getValidScore());
-
+        detail.setScaleScoreRangeForProficiency(event.getScaleScoreRange());
     }
     
     public void onEvent(SubtestValidEvent event) {

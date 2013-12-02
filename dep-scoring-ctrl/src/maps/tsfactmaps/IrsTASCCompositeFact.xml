@@ -92,7 +92,8 @@ WHERE
 		        POINTS_ATTEMPTED,
 		        POINTS_OBTAINED,
 		        POINTS_POSSIBLE,
-		        TEST_COMPLETION_TIMESTAMP
+		        TEST_COMPLETION_TIMESTAMP,
+		        SCALE_SCORE_RANGE
                 )
         VALUES
                 (
@@ -164,7 +165,8 @@ WHERE
 		        #pointsAttempted:NUMERIC#,
 		        #pointsObtained:NUMERIC#,
 		        #pointsPossible:NUMERIC#,
-		        #testCompletionTimestamp:TIMESTAMP#
+		        #testCompletionTimestamp:TIMESTAMP#,
+		        #scaleScoreRangeForProficiency:VARCHAR#
                 )        
 </insert>
 <update id="TSupdateTASCCompositeFact" parameterClass="com.ctb.lexington.db.irsdata.irstsdata.IrsTASCCompositeFactData">

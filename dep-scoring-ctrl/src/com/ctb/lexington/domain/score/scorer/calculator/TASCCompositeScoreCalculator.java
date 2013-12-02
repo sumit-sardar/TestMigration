@@ -3,14 +3,12 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.ctb.lexington.db.data.SubtestContentAreaCompositeAndDerivedScore;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
-import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.AssessmentStartedEvent;
 import com.ctb.lexington.domain.score.event.ContentAreaDerivedScoreEvent;
@@ -49,12 +47,12 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
     private static final String TASC_FRAMEWORK_CODE = "TASC";
 
-    private static final List ALLOWED_TEST_LEVELS_FOR_GED_CALCS = Arrays.asList(new String[] {"A", "D"});
+    //private static final List<String> ALLOWED_TEST_LEVELS_FOR_GED_CALCS = Arrays.asList(new String[] {"A", "D"});
 
-    private final Map contentAreaDerivedScoreEvents = new SafeHashMap(String.class, ContentAreaDerivedScoreEvent.class);
-    private final Map contentAreaRawScoreEvents = new SafeHashMap(String.class, ContentAreaRawScoreEvent.class);
-    private final Map contentAreaSubtestId = new SafeHashMap(String.class,String.class);
-    private final Map contentAreaScaleScore = new SafeHashMap(String.class,Integer.class);
+    private final Map<String,ContentAreaDerivedScoreEvent> contentAreaDerivedScoreEvents = new SafeHashMap(String.class, ContentAreaDerivedScoreEvent.class);
+    private final Map<String,ContentAreaRawScoreEvent> contentAreaRawScoreEvents = new SafeHashMap(String.class, ContentAreaRawScoreEvent.class);
+    private final Map<String,String> contentAreaSubtestId = new SafeHashMap(String.class,String.class);
+    private final Map<String,Integer> contentAreaScaleScore = new SafeHashMap(String.class,Integer.class);
     
     private final ArrayList<String> contentAreaNamesRequiredForOverallComposite = new ArrayList<String>();
     private final ArrayList<String> contentAreaNamesRequiredForELAComposite = new ArrayList<String>();
@@ -65,9 +63,9 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
     private final CompositeScoreHolder OverallCompositeScores;
     private final CompositeScoreHolder ELACompositeScores;
-    private List invalidSubtestIds;
+    private List<Integer> invalidSubtestIds;
     
-    private final Map SubtestContentAreaCompositeAndDerivedScore = new SafeHashMap(String.class,SubtestContentAreaCompositeAndDerivedScore.class);
+    private final Map<String,SubtestContentAreaCompositeAndDerivedScore> SubtestContentAreaCompositeAndDerivedScore = new SafeHashMap(String.class,SubtestContentAreaCompositeAndDerivedScore.class);
 
     public TASCCompositeScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
@@ -97,7 +95,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     public void onEvent(AssessmentStartedEvent event) {
         super.onEvent(event);
         pNormGroup = null;
-        invalidSubtestIds = new ArrayList();
+        invalidSubtestIds = new ArrayList<Integer>();
     }
 
     public void onEvent(ContentAreaDerivedScoreEvent event) {
@@ -173,6 +171,9 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
  	    		   pTestLevel, ELAScaleScore, (pGrade != null)?pGrade:null, pDupTestForm);
  	       	if(ELACompositeScores.normalCurveEquivalent == null)
  	       		ELACompositeScores.normalCurveEquivalent = new BigDecimal(0);
+ 	       	
+ 	       ELACompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME, 
+ 	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);
  	    }
     	
     	if(contentAreaScaleScore.containsKey(OVERALL_CONTENT_AREA_NAME)){
@@ -191,6 +192,9 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
   	    		   pTestLevel, overallScaleScore, (pGrade != null)?pGrade:null, pDupTestForm);
   	       	if(OverallCompositeScores.normalCurveEquivalent == null)
   	       		OverallCompositeScores.normalCurveEquivalent = new BigDecimal(0);
+  	       	
+  	      OverallCompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, OVERALL_CONTENT_AREA_NAME, 
+	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);
   	    }
 
     }
@@ -211,7 +215,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     private void calculateOverallCompositeRawScores() {
         
     	if (OverallCompositeScores.pointsPossible == 0  && validOverallCompositeScoreFlag()) {
-            for (Iterator i = contentAreaRawScoreEvents.values().iterator(); i.hasNext();) {
+            for (Iterator<ContentAreaRawScoreEvent> i = contentAreaRawScoreEvents.values().iterator(); i.hasNext();) {
                 ContentAreaRawScoreEvent event = (ContentAreaRawScoreEvent) i.next();
                 if (contentAreaNamesRequiredForOverallComposite.contains(event.getContentAreaName())) {
                 	OverallCompositeScores.pointsAttempted += event.getPointsAttempted();
@@ -304,7 +308,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     
     private boolean validOverallCompositeScoreFlag() {
     	boolean validFlag = false;
-    	Iterator itr = contentAreaNamesRequiredForOverallComposite.iterator();
+    	Iterator<String> itr = contentAreaNamesRequiredForOverallComposite.iterator();
     		while(itr.hasNext()) {  
     			String contentArea = (String)itr.next(); 
     			validFlag = computeValidSubtestScoreFlag(contentArea);
@@ -317,7 +321,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
     private boolean validELACompositeScoreFlag() {
     	boolean validFlag = false;
-    	Iterator itr = contentAreaNamesRequiredForELAComposite.iterator();
+    	Iterator<String> itr = contentAreaNamesRequiredForELAComposite.iterator();
     		while(itr.hasNext()) {  
     			String contentArea = (String)itr.next(); 
     			validFlag = computeValidSubtestScoreFlag(contentArea);
@@ -326,22 +330,6 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     		}
     		return validFlag;
     	
-    }
-    
-    private String computeValidScoreFlag(final List contentAreaNames) {
-        for (Iterator iter = contentAreaNames.iterator(); iter.hasNext();) {
-            String contentAreaName = (String) iter.next();
-            if (contentAreaDerivedScoreEvents.containsKey(contentAreaName)) {
-                ContentAreaDerivedScoreEvent derivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(contentAreaName);
-                Integer subtestId = DatabaseHelper.asInteger(derivedScoreEvent.getSubtestId());
-                if (invalidSubtestIds.contains(subtestId)) {
-                    return CTBConstants.INVALID_SCORE;
-                }
-            } else {
-            	return CTBConstants.INVALID_SCORE;
-            }
-        }
-        return CTBConstants.VALID_SCORE;
     }
 
     private void publishScores(final String scoreType, final Long testRosterId,
@@ -355,7 +343,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 	                    null, null,
 	                    null, scores.getPointsObtained(), scores
 	                            .getPointsAttempted(), scores.getPointsPossible(), scores
-	                            .getPercentObtained(), null, scores.validScore, scores.proficencyLevel));
+	                            .getPercentObtained(), null, scores.validScore, scores.proficencyLevel, scores.scaleScoreRange));
 	      
     	}else if (OVERALL_COMPOSITE_TYPE.equals(scoreType) && validateOverallCompositeScore()){
     		channel.send(new SubtestContentAreaCompositeScoreEvent(testRosterId, scoreType,
@@ -364,7 +352,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
                     null, null,
                     null, scores.getPointsObtained(), scores
                             .getPointsAttempted(), scores.getPointsPossible(), scores
-                            .getPercentObtained(), null, scores.validScore, scores.proficencyLevel));
+                            .getPercentObtained(), null, scores.validScore, scores.proficencyLevel, scores.scaleScoreRange));
         }
     }
     
@@ -460,23 +448,13 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     		return false;
     	}
     }
-    /*private boolean isContentAreaEligibleForExpextedGed(String contentAreaName) {
-        if (contentAreaDerivedScoreEvents.keySet().contains(contentAreaName)) {
-        	ContentAreaDerivedScoreEvent derivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(contentAreaName);
-            Integer subtestId = DatabaseHelper.asInteger(derivedScoreEvent.getSubtestId());
-            if (!invalidSubtestIds.contains(subtestId)) {
-            	return ALLOWED_TEST_LEVELS_FOR_GED_CALCS.contains(getContentAreaLevel(contentAreaName));
-            }
-        }
-        return false;
-    }*/
 
 
     protected void AddInSubtestContentAreaCompositeAndDerivedScoreMap() {
-    	for (final Iterator it = contentAreaScaleScore.entrySet().iterator(); it.hasNext();) {
+    	for (final Iterator<Map.Entry<String,Integer>> it = contentAreaScaleScore.entrySet().iterator(); it.hasNext();) {
             final Map.Entry entry = (Map.Entry) it.next();
             final String contentArea = (String) entry.getKey();
-            final Integer scaleScore = (Integer) entry.getValue();
+            //final Integer scaleScore = (Integer) entry.getValue();
             
             SubtestContentAreaCompositeAndDerivedScore subtestContentAreaCompositeAndDerived =new SubtestContentAreaCompositeAndDerivedScore();
             if (SubtestContentAreaCompositeAndDerivedScore.containsKey(contentArea)) {
@@ -540,37 +518,23 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
         BigDecimal scaleScore;
         BigDecimal proficencyLevel;
         BigDecimal normalCurveEquivalent;
-        String gradeEquivalent;
-        BigDecimal nationalStanine;
         BigDecimal nationalPercentile;
-        BigDecimal expectedMathGed;
-        BigDecimal expectedReadingGed;
-        BigDecimal expectedWritingGed;
-        BigDecimal expectedSocialStudiesGed;
-        BigDecimal expectedScienceGed;
-        BigDecimal expectedAverageGed;
         int pointsObtained;
         int pointsAttempted;
         int pointsPossible;
         String validScore;
+        String scaleScoreRange;
 
         CompositeScoreHolder() {
             scaleScore = null;
             proficencyLevel = null;
             normalCurveEquivalent = null;
-            gradeEquivalent = null;
-            nationalStanine = null;
             nationalPercentile = null;
-            expectedAverageGed = null;
-            expectedMathGed = null;
-            expectedReadingGed = null;
-            expectedScienceGed = null;
-            expectedSocialStudiesGed = null;
-            expectedWritingGed = null;
             pointsAttempted = 0;
             pointsObtained = 0;
             pointsPossible = 0;
             validScore = null;
+            scaleScoreRange = null;
         }
 
         Long toLong(int score) {
@@ -597,12 +561,6 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 
             float percent = ((float) pointsObtained / (float) pointsPossible) * 100;
             return new Long(Math.round(percent));
-        }
-
-        public boolean hasPredictedGed() {
-            return (null != expectedAverageGed || null != expectedMathGed
-                    || null != expectedReadingGed || null != expectedScienceGed
-                    || null != expectedSocialStudiesGed || null != expectedWritingGed);
         }
     }
 }

@@ -409,9 +409,9 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         template.setGrade(grade);
         template.setTestForm(testForm);
         template.setFrameworkCode(frameworkCode);
-        int scaleScoreValue = 0;
-        String scaleScoreRange = null;
-        List results = findMany(FIND_TS_SCALESCORE_RANGE_FOR_PROFICIENCY,template);
+        int scaleScoreValue = 1;
+        String scaleScoreRange = "";
+        List<ScoreLookupRecord> results = findMany(FIND_TS_SCALESCORE_RANGE_FOR_PROFICIENCY,template);
         if (results==null || results.isEmpty()) {
             StringBuffer buf = new StringBuffer("Unable to find Scalescore Range value for: ");
             buf.append("\n\tparams: " + contentArea);
@@ -422,21 +422,13 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             System.err.println(buf.toString());
             return null;
         } else {
-        	for (Iterator iterator = results.iterator(); iterator.hasNext();) {
-				ScoreLookupRecord slr = (ScoreLookupRecord) iterator.next();
+        	for (Iterator<ScoreLookupRecord> iterator = results.iterator(); iterator.hasNext();) {
+				ScoreLookupRecord slr = iterator.next();
 				if(slr != null && slr.getSourceScoreValue()!= null) {
-					if(scaleScoreValue == 0 && scaleScoreRange == null) {
-						String scaleScoreRange1 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
-						//scaleScoreRange = "001-"+slr.getSourceScoreValue().toString();
-						scaleScoreRange = "001-"+scaleScoreRange1;
-						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
-					} else {
-						String scaleScoreRange1 = "000".substring(new Integer(scaleScoreValue).toString().length())+new Integer(scaleScoreValue).toString();
-						String scaleScoreRange2 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
-						//scaleScoreRange = scaleScoreRange + new Integer(scaleScoreValue).toString()+"-"+slr.getSourceScoreValue().toString();
-						scaleScoreRange = scaleScoreRange + scaleScoreRange1+"-"+scaleScoreRange2;
-						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
-					}
+					String scaleScoreRange1 = "000".substring(new Integer(scaleScoreValue).toString().length())+new Integer(scaleScoreValue).toString();
+					String scaleScoreRange2 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
+					scaleScoreRange = scaleScoreRange + scaleScoreRange1+"-"+scaleScoreRange2;
+					scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
 					scaleScoreValue++;
 				} else {
 					return null;
