@@ -554,6 +554,18 @@ public class PrismWebServiceDBUtility {
 					
 					contentDetailsTO.setDataChanged(true);
 					
+					if(custConfgAccommodationLst == null){
+						custConfgAccommodationLst = getCustConfAccommodations(studentId);
+					}
+					
+					if(PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName) != null){
+						SubtestAccommodationsTO subtestAccommodationsTO =  getSubTestAccommodation(studentId, contentCodeName);
+						contentDetailsTO.setSubtestAccommodationsTO(subtestAccommodationsTO);
+						if(custConfgAccommodationLst != null){
+							subtestAccommodationsTO.getCollSubtestAccommodationTO().addAll(custConfgAccommodationLst);
+						}
+					}
+					
 					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
 					if(contentCode == 2){
 						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
@@ -570,19 +582,12 @@ public class PrismWebServiceDBUtility {
 					String statusCode = getContentStatusCode(rosterId, rs.getLong("item_set_id"));
 					if(statusCode != null && !"".equals(statusCode)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
-					}
-					
-					if(custConfgAccommodationLst == null){
-						custConfgAccommodationLst = getCustConfAccommodations(studentId);
-					}
-					
-					if(PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName) != null){
-						SubtestAccommodationsTO subtestAccommodationsTO =  getSubTestAccommodation(studentId, contentCodeName);
-						contentDetailsTO.setSubtestAccommodationsTO(subtestAccommodationsTO);
-						if(custConfgAccommodationLst != null){
-							subtestAccommodationsTO.getCollSubtestAccommodationTO().addAll(custConfgAccommodationLst);
+						if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test skipp the rest part
+							continue;
 						}
 					}
+					
+					
 					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, rs.getLong("item_set_id"), contentAreaID.get(contentCodeName));
 					
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
@@ -592,12 +597,12 @@ public class PrismWebServiceDBUtility {
 						if(PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Omitted Content 
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
-							contentDetailsTOList.add(contentDetailsTO);
+							//contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
-							contentDetailsTOList.add(contentDetailsTO);
+							//contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}
 					}else{
