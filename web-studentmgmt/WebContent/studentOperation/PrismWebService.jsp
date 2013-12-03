@@ -45,10 +45,10 @@ id="studentId"/>
 <input type="button" id="editStd" value="Edit Student"/>
 <div>---------------------------------------------------------------------</div>
 <h1>Score</h1>
-Roster Id : <input type="text"
-id="rosterId"/><br/>
 Student Id : <input type="text"
 id="stdID"/><br/>
+Roster Id : <input type="text"
+id="rosterId"/><br/>
 Session Id : <input type="text"
 id="sessionId"/>
 <input type="button" id="scoring" value="Score"/>
