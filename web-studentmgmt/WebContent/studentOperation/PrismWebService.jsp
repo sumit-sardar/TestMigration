@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-<script src="http://code.jquery.com/jquery-1.4.4.js" type="text/javascript"></script>
+<script src="/StudentWeb/resources/js/jquery-1.4.4.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $( document ).ready(function() {
 	$( "#editStd").click(function() {
