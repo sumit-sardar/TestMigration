@@ -3544,5 +3544,54 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	{
 
 	}	
+	
+	
+	//Added for Edit Student Web Service Call
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/previewer/PreviewerController.jpf")
+	})
+	protected Forward editStudentWS()
+	{      
+		String studentID = getRequest().getParameter("studentID").trim();
+		System.out.println("Edit Student WS Called for Student ID >>>>>>>>>>>>>>>>>> " + studentID);
+		try {
+			StudentListTO studentListTO = PrismWebServiceHandler.editStudent(Integer.valueOf(studentID));
+			XStream xs  = new XStream();
+			System.out.println("XML for Edit Student :::::: \n" + xs.toXML(studentListTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	//Added for Scoring Web Service Call
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/previewer/PreviewerController.jpf")
+	})
+	protected Forward scoringWS()
+	{      
+		String rosterId = getRequest().getParameter("rosterId").trim();
+		String stdID = getRequest().getParameter("stdID").trim();
+		String sessionId = getRequest().getParameter("sessionId").trim();
+		System.out.println("Edit Student WS Called for Roster Id>>>>>>>>>>>>>>>>>> " + rosterId + " >>>>> Student ID >>>>> " + stdID + " >>>>>> Session Id >>>>>> " + sessionId);
+		try {
+			StudentListTO studentListTO = PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId));
+			XStream xs  = new XStream();
+			System.out.println("XML for Scoring :::::: \n" + xs.toXML(studentListTO));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 
