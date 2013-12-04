@@ -44,7 +44,9 @@ $( document ).ready(function() {
 Student Id : <input type="text"
 id="studentId"/>
 <input type="button" id="editStd" value="Invoke Edit Student Web Service"/>
-<div>---------------------------------------------------------------------</div>
+<br/><br/>
+<hr></hr>
+<hr></hr>
 <h2>Scoring Web Service</h2>
 Student Id : <input type="text"
 id="stdID"/><br/>
