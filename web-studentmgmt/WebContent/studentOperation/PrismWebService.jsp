@@ -43,15 +43,15 @@ $( document ).ready(function() {
 <h2>Edit Student Web Service</h2>
 Student Id : <input type="text"
 id="studentId"/>
-<input type="button" id="editStd" value="Edit Student"/>
+<input type="button" id="editStd" value="Invoke Edit Student Web Service"/>
 <div>---------------------------------------------------------------------</div>
-<h2>Score Web Service</h2>
+<h2>Scoring Web Service</h2>
 Student Id : <input type="text"
 id="stdID"/><br/>
 Roster Id : <input type="text"
 id="rosterId"/><br/>
 Session Id : <input type="text"
 id="sessionId"/>
-<input type="button" id="scoring" value="Score"/>
+<input type="button" id="scoring" value="Invoke Scoring Web Service"/>
 </body>
 </html>
