@@ -247,7 +247,7 @@ public class ResponseReplayer {
 	              	}
 	              	
             	}
-            	System.out.println("Scoring Validation Status "  + subtest.getSubtestScoringStatus());
+            	//System.out.println("Scoring Validation Status "  + subtest.getSubtestScoringStatus());
             }
             
 
@@ -602,7 +602,7 @@ public class ResponseReplayer {
     		}
         }
     	else if("TS".equals(productType)) {
-    		System.out.println("Scoring Validation Status "  + itemSet.getSubtestScoringStatus());
+    		//System.out.println("Scoring Validation Status "  + itemSet.getSubtestScoringStatus());
     		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
 	        		itemSet.getItemSetId(),
 	                itemSet.getItemSetForm(), itemSet.getItemSetName(),

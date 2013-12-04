@@ -162,18 +162,19 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
  	       	if(ELACompositeScores.proficencyLevel == null)
  	       		ELACompositeScores.proficencyLevel = new BigDecimal(0);
  	       	
- 	       ELACompositeScores.nationalPercentile = getTASCPR(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME,
+ 	       	ELACompositeScores.nationalPercentile = getTASCPR(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME,
  	    		   pTestLevel, ELAScaleScore, (pGrade != null)?pGrade:null, pDupTestForm);
  	       	if(ELACompositeScores.nationalPercentile == null)
  	       		ELACompositeScores.nationalPercentile = new BigDecimal(0);
  	       	
- 	       ELACompositeScores.normalCurveEquivalent = getTASCNCE(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME,
+ 	       	ELACompositeScores.normalCurveEquivalent = getTASCNCE(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME,
  	    		   pTestLevel, ELAScaleScore, (pGrade != null)?pGrade:null, pDupTestForm);
  	       	if(ELACompositeScores.normalCurveEquivalent == null)
  	       		ELACompositeScores.normalCurveEquivalent = new BigDecimal(0);
  	       	
- 	       ELACompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME, 
- 	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);
+ 	       	/*ELACompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, ELA_CONTENT_AREA_NAME, 
+ 	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);*/
+ 	       	ELACompositeScores.scaleScoreRange = "";
  	    }
     	
     	if(contentAreaScaleScore.containsKey(OVERALL_CONTENT_AREA_NAME)){
@@ -193,8 +194,10 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
   	       	if(OverallCompositeScores.normalCurveEquivalent == null)
   	       		OverallCompositeScores.normalCurveEquivalent = new BigDecimal(0);
   	       	
-  	      OverallCompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, OVERALL_CONTENT_AREA_NAME, 
-	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);
+  	       	/*OverallCompositeScores.scaleScoreRange = getTASCScaleScoreRangeForCutScore(TASC_FRAMEWORK_CODE, OVERALL_CONTENT_AREA_NAME, 
+	    		   pTestLevel, null, (pGrade != null)?pGrade:null, pDupTestForm);*/
+  	       	
+  	       	OverallCompositeScores.scaleScoreRange = "";
   	    }
 
     }

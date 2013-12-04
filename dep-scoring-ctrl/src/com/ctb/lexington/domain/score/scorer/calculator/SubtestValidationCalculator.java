@@ -186,7 +186,7 @@ public class SubtestValidationCalculator extends Calculator {
                 valid = mapper.getSubtestValidationStatusForTestRosterAndItemSetId(this.testRosterId, 
                 		DatabaseHelper.asLong(this.ItemSetId));
                 
-                System.out.println(this.ItemSetId + " ==== >>" + valid);
+                //System.out.println(this.ItemSetId + " ==== >>" + valid);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             } finally {
