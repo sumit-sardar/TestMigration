@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Execute Prism Web Services</title>
 <script src="/StudentWeb/resources/js/jquery-1.4.4.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $( document ).ready(function() {
@@ -14,10 +14,10 @@ $( document ).ready(function() {
 			url: "editStudentWS.do?studentID="+$("#studentId").val(),
 			type: "POST",
 			success : function(data, textStatus, XMLHttpReques){
-				alert("success");
+				alert("done");
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown){
-				alert("Error");
+				alert("done");
 			}
 		});
 	});
@@ -28,10 +28,10 @@ $( document ).ready(function() {
 			url: "scoringWS.do?rosterId="+$("#rosterId").val()+"&stdID="+$('#stdID').val()+"&sessionId="+$('#sessionId').val(),
 			type: "POST",
 			success : function(data, textStatus, XMLHttpReques){
-				alert("success");
+				alert("done");
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown){
-				alert("Error");
+				alert("done");
 			}
 		});
 	});
@@ -39,12 +39,13 @@ $( document ).ready(function() {
 </script>
 </head>
 <body>
-<h1>Edit Student</h1>
+<h1>Execute Prism Web Services</h1>
+<h2>Edit Student Web Service</h2>
 Student Id : <input type="text"
 id="studentId"/>
 <input type="button" id="editStd" value="Edit Student"/>
 <div>---------------------------------------------------------------------</div>
-<h1>Score</h1>
+<h2>Score Web Service</h2>
 Student Id : <input type="text"
 id="stdID"/><br/>
 Roster Id : <input type="text"
