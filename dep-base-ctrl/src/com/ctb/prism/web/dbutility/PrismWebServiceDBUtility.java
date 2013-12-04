@@ -1289,7 +1289,7 @@ public class PrismWebServiceDBUtility {
 			orgDetailList.add(orgDetailsTO);	
 			maxHighrCount++;
 			customerID = rs.getLong("customerId");
-			parentOrgNodeCode = rs.getString("orgNodeId");
+			parentOrgNodeCode = rs.getString("orgNodeCode");
 		}
 		custHierarchyDetailsTO.setDataChanged(true);		
 		custHierarchyDetailsTO.setMaxHierarchy(String.valueOf(maxHighrCount));

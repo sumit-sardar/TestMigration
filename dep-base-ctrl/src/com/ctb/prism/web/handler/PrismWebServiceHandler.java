@@ -59,7 +59,7 @@ public class PrismWebServiceHandler {
 			if (service == null) {
 				String urlLocation = PrismWebServiceConstant.resourceBundler.getString("url");
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
-				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
+				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
 				URL url = new URL(urlLocation);
 				QName qname = new QName("http://controller.web.prism.ctb.com/",
 						"StudentDataloadService");
@@ -72,7 +72,7 @@ public class PrismWebServiceHandler {
             		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(customerKey, Integer.parseInt(customerId), orgNodeCode, Integer.parseInt(heirarchyLevel));
                 	requestParam = HMACEncrypter.encrypt()+"&clienttype=SOAP";
                 	System.out.println("WS_SSOparams=" + requestParam);
-                	OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service WS_SSOparams : " + requestParam);
+                	System.out.println("PrismWebServiceHandler.getService : Prism Web Service WS_SSOparams : " + requestParam);
                 	//urlLocation = urlLocation.split("[?]")[0]+"?"+requestParam;
                 	//System.out.println("WS_URL=" + urlLocation);
             	}
@@ -91,7 +91,7 @@ public class PrismWebServiceHandler {
 				provider.getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, PrismWebServiceConstant.REQUEST_TIMEOUT);
 				provider.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", PrismWebServiceConstant.CONNECT_TIMEOUT);	
 			}
-			OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
+			System.out.println("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
 		} catch (Exception e) {
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.getService : Unable to connect with Prism Web Service.");
 			e.printStackTrace();
@@ -112,8 +112,10 @@ public class PrismWebServiceHandler {
 			getService(customerId, orgNodeCode, heirarchyLevel);
 			if(service != null){
 				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+				System.out.println("Prism Process Id : " + responseTO.getProcessId());
+				System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 				if(responseTO.getStatusCode() == 1){ //Success
-					OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
@@ -126,14 +128,17 @@ public class PrismWebServiceHandler {
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 			e.printStackTrace();
 			for(int hitCnt = 0 ; hitCnt < PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
-				OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
+				System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
 				try{
 					getService(customerId, orgNodeCode, heirarchyLevel);
 					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+					System.out.println("Prism Process Id : " + responseTO.getProcessId());
+					System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 					if(responseTO.getStatusCode() == 1){ //Success
-						OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+						System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 					}else{ //Failure
 						OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
+						throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					}
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -151,7 +156,7 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static StudentListTO editStudent(Integer studentId) throws Exception{
-		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
+		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
 		StudentListTO studentListTO = new StudentListTO();
 		
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
@@ -183,7 +188,7 @@ public class PrismWebServiceHandler {
 		}
 		
 		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
-		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
+		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
 		return studentListTO;
 		
@@ -199,7 +204,7 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static StudentListTO scoring(long rosterId, Integer studentId, long sessionId) throws Exception{
-		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		StudentListTO studentListTO = new StudentListTO();
 		
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
@@ -228,7 +233,7 @@ public class PrismWebServiceHandler {
 		rosterDetailsList.add(rosterDetailsTO);
 		
 		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
-		OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		
 		return studentListTO;
 		
