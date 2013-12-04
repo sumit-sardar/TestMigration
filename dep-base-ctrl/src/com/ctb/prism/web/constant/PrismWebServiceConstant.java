@@ -30,6 +30,7 @@ public class PrismWebServiceConstant {
 	public static final String GRIDItemResponseSetType = "GRID";
 	
 	public static final String  GREditedResponseTxt = "GR Edited Response";
+	public static final String  GRStatusTxt = "GR Status";
 	
 	public static final  Map<String,String> itemResponseItemCodeMap = new HashMap<String, String>();
 	public static final  Map<String,Integer> itemResponseSRScoreValMap = new HashMap<String, Integer>();

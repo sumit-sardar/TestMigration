@@ -379,8 +379,14 @@ public class PrismWebServiceDBUtility {
 			
 			grItemResponseTO.setEditedResponse(grScoreVal.toString());
 			if(grItmPresent){
-				respStatusMap = getGRResponseStatus(wrRespStatusItmId, studentId, sessionId, respStatusMap);
-				grItemResponseTO.setResponseStatus(StringUtils.join(respStatusMap.values().toArray(new String[0]), ""));
+				if(wrRespStatusItmId != null && wrRespStatusItmId.length() > 0){
+					respStatusMap = getGRResponseStatus(wrRespStatusItmId, studentId, sessionId, respStatusMap);
+				}
+				ItemResponseTO grResponseStatusTO = new ItemResponseTO();
+				grResponseStatusTO.setItemSetType(PrismWebServiceConstant.GRItemResponseSetType);
+				grResponseStatusTO.setItemCode(PrismWebServiceConstant.itemResponseItemCodeMap.get(PrismWebServiceConstant.GRStatusTxt));
+				grResponseStatusTO.setResponseStatus(StringUtils.join(respStatusMap.values().toArray(new String[0]), ""));
+				itemResponseTOLst.add(grResponseStatusTO);
 				
 				itemResponseTOLst.add(grItemResponseTO);
 			}
