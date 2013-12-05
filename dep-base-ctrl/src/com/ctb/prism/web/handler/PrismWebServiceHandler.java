@@ -127,7 +127,9 @@ public class PrismWebServiceHandler {
 		}catch(Exception e){
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 			e.printStackTrace();
-			for(int hitCnt = 0 ; hitCnt < PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
+			boolean success = false;
+			for(int hitCnt = 2 ; hitCnt <= PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
+				Thread.sleep(PrismWebServiceConstant.retryWaitTime);
 				System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
 				try{
 					getService(customerId, orgNodeCode, heirarchyLevel);
@@ -136,6 +138,8 @@ public class PrismWebServiceHandler {
 					System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 					if(responseTO.getStatusCode() == 1){ //Success
 						System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+						success = true;
+						break;
 					}else{ //Failure
 						OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 						throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
@@ -144,7 +148,9 @@ public class PrismWebServiceHandler {
 					ex.printStackTrace();
 				}
 			}
-			throw e;
+			if(!success){
+				throw e;
+			}
 		}
 	}
 	
@@ -161,7 +167,6 @@ public class PrismWebServiceHandler {
 		
 		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
 		
-		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
 		
 		List<Long> rosterIds = PrismWebServiceDBUtility.getRosterListForStudent(studentId);
 		
@@ -170,6 +175,8 @@ public class PrismWebServiceHandler {
 		String heirarchyLevel = null;
 		for(long rosterID : rosterIds){
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+			
+			StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
 			//TODO - get the student survey details and put it in the studentDetailsTO
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);

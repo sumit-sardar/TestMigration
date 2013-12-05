@@ -18,7 +18,8 @@ public class PrismWebServiceConstant {
 	public static final int REQUEST_TIMEOUT = 3 * 60 * 1000;
 	public static final String loggerName = "PrismWebService"; 
 	
-	public static final int numberOfFailedHitCnt = 5;
+	public static int numberOfFailedHitCnt = 0;
+	public static long retryWaitTime = 0;
 	
 	
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -109,6 +110,9 @@ public class PrismWebServiceConstant {
 		contentDetailsStausCodeMap.put(NACompositeStatusCode, "7");
 		
 		resourceBundler = ResourceBundle.getBundle("PrismWebService");
+		
+		numberOfFailedHitCnt = Integer.valueOf(resourceBundler.getString("retrycount"));
+		retryWaitTime = Long.valueOf(resourceBundler.getString("retrywait"));
 		
 	}
 }
