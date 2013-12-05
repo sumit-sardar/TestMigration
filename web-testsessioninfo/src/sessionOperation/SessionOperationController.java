@@ -1818,7 +1818,7 @@ public class SessionOperationController extends PageFlowController {
     		 else if (licenseInfo != null && studentCount > 0){//start 
     			 licenceCount=Integer.parseInt(licenseInfo.getLicenseQuantity());
     			 if(licenseInfo.getSubtestModel().equalsIgnoreCase("F")){
-    				 if(licenceCount>studentCount){
+    				 if(licenceCount>=studentCount){
     					 return false;
     				 }
     				 else{
@@ -1827,7 +1827,7 @@ public class SessionOperationController extends PageFlowController {
     			 }
     			 else{
     				 int subtestCount = getSubtestCount(session);
-    				 if(licenceCount>studentCount*subtestCount){
+    				 if(licenceCount>=(studentCount*subtestCount)){
     					 return false;
     				 }
     				 else{
