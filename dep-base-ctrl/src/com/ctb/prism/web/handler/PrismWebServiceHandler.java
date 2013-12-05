@@ -130,7 +130,7 @@ public class PrismWebServiceHandler {
 			boolean success = false;
 			for(int hitCnt = 2 ; hitCnt <= PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
 				Thread.sleep(PrismWebServiceConstant.retryWaitTime);
-				System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + (hitCnt+1));
+				System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + hitCnt);
 				try{
 					getService(customerId, orgNodeCode, heirarchyLevel);
 					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
