@@ -60,7 +60,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_STUDENT_BIO = "select stu.student_id as id,       stu.user_name as loginId,       stu.first_name as firstName,       substr(stu.middle_name,1,1) as middleName,       stu.last_name as lastName,       concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,       stu.gender as gender,       to_char(stu.birthdate , 'MM/DD/YYYY') as birthDate,    to_char(stu.birthdate , 'MMDDYY') as birthDateMMDDYY,      stu.grade as grade,       stu.ext_pin1 as studentIdNumber,       stu.ext_pin2 as studentIdNumber2,       stu.test_purpose as testPurpose,       stu.created_by as createdBy,       NVL(stu.out_of_school, 'No') as outOfSchool  from student stu where stu.student_id = ?";
 	private static final String GET_CUST_ORG_HIGR = "SELECT DISTINCT node.org_node_id            AS orgnodeid,                node.customer_id            AS customerid,                node.org_node_category_id   AS orgnodecategoryid,                node.org_node_name          AS orgnodename,                node.ext_qed_pin            AS extqedpin,                node.ext_elm_id             AS extelmid,                node.ext_org_node_type      AS extorgnodetype,                node.org_node_description   AS orgnodedescription,                node.created_by             AS createdby,                node.created_date_time      AS createddatetime,                node.updated_by             AS updatedby,                node.updated_date_time      AS updateddatetime,                node.activation_status      AS activationstatus,                node.data_import_history_id AS dataimporthistoryid,                node.parent_state           AS parentstate,                node.parent_region          AS parentregion,                node.parent_county          AS parentcounty,                node.parent_district        AS parentdistrict,                node.org_node_code          AS orgnodecode,                ona.number_of_levels        AS numberoflevels,                cat.category_name           AS orgtype  FROM org_node          node,       org_node_category cat,       org_node_ancestor ona,       org_node_student  ons,       test_roster    tr WHERE ona.ancestor_org_node_id = node.org_node_id   AND ona.org_node_id = ons.org_node_id   AND ons.org_node_id = tr.Org_Node_Id   AND tr.student_id  = ?   AND tr.test_roster_id = ?   AND node.org_node_id NOT IN (1, 2)   AND cat.org_node_category_id = node.org_node_category_id /*AND ons.activation_status = 'AC'*/ AND ons.student_id = tr.student_id ORDER BY ona.number_of_levels DESC";
 	private static final String GET_ROSTER_LIST_FOR_STUDENT = "select t.test_roster_id as rosterId    from test_roster t   where t.student_id = ?";
-	private static final String GET_STUDENT_DEMO = "SELECT  s.item_set_form AS fldtestform, t.form_assignment AS testform                   FROM student_item_set_status st,                        item_set                s,                        item_set_parent         ip,                        item_set                ipp,test_roster t                  WHERE st.test_roster_id =  t.test_roster_id                    AND s.item_set_id = st.item_set_id                    AND ip.item_set_id = s.item_set_id                    AND ipp.item_set_id = ip.parent_item_set_id                    AND s.SAMPLE = 'F'                    AND t.test_roster_id = ?                    AND ROWNUM = 1 ";
+	private static final String GET_STUDENT_DEMO = "SELECT  s.item_set_form AS fldtestform, t.form_assignment AS testform     , ta.product_id AS prodid              FROM student_item_set_status st,                        item_set                s,                        item_set_parent         ip,                        item_set                ipp,test_roster t,    test_admin              ta              WHERE st.test_roster_id =  t.test_roster_id                    AND s.item_set_id = st.item_set_id                    AND ip.item_set_id = s.item_set_id                    AND ipp.item_set_id = ip.parent_item_set_id                    AND s.SAMPLE = 'F'                    AND t.test_roster_id = ?        AND ta.test_admin_id = t.test_admin_id            AND ROWNUM = 1 ";
 	private static final String GET_SUBTEST_ACCOM = "SELECT custdemo.label_code AS \"subTestAccom\",       decode((SELECT COUNT(1)                FROM student_demographic_data stddemo               WHERE stddemo.student_id = ?                 AND stddemo.customer_demographic_id =                     custdemo.customer_demographic_id),              0,              'N',              'Y') AS \"subTestAccomVal\"  FROM customer_demographic custdemo WHERE custdemo.customer_id =       (SELECT s.customer_id FROM student s WHERE s.student_id = ?)       AND (upper(custdemo.demo_category) = ?  OR upper(custdemo.demo_category) = ? ) ";
 	private static final String GET_ITEM_RESP_SR = "SELECT tab.itemtype   AS itemtype,       tab.response   AS response,       tab.itemid     AS itemid,       tab.itemorder  AS itemorder,       tab.correctans AS correctans,       tab.fieldtest  AS fieldtest,       tab.suppressed AS suppressed  FROM (SELECT itm.item_type           AS itemtype,               res.response            AS response,               itm.item_id             AS itemid,               set_itm.item_sort_order AS itemorder,               itm.correct_answer      AS correctans,               set_itm.field_test      AS fieldtest,               set_itm.suppressed      AS suppressed          FROM item_response res, item_set_item set_itm, item itm         WHERE itm.item_id = set_itm.item_id           AND set_itm.item_set_id = res.item_set_id           AND set_itm.item_id = res.item_id           AND res.test_roster_id = ?           AND itm.item_type = ?           AND res.item_set_id IN               (SELECT DISTINCT t.item_set_id                  FROM item_set_parent t, item_response r, item_set itst                 WHERE t.parent_item_set_id = ?                   AND r.item_set_id = t.item_set_id                   AND r.test_roster_id = ?                   AND itst.item_set_id = t.item_set_id                   AND itst.SAMPLE <> 'T'                 GROUP BY t.item_set_id)           AND res.item_response_id =               (SELECT MAX(r.item_response_id)                  FROM item_response r                 WHERE r.test_roster_id = ?                   AND r.item_set_id IN                       (SELECT DISTINCT t.item_set_id                          FROM item_set_parent t,                               item_response   r,                               item_set        itst                         WHERE t.parent_item_set_id = ?                           AND r.item_set_id = t.item_set_id                           AND r.test_roster_id = ?                           AND itst.item_set_id = t.item_set_id                           AND itst.SAMPLE <> 'T'                         GROUP BY t.item_set_id)                   AND r.item_id = res.item_id)         UNION         SELECT itm.item_type AS itemtype,               '' ASresponse,               itm.item_id AS itemid,               t.item_sort_order AS itemorder,               itm.correct_answer AS correctans,              t.field_test AS fieldtest,               t.suppressed AS suppressed          FROM item_set_item t, item itm         WHERE t.item_set_id IN (SELECT DISTINCT t.item_set_id                                   FROM item_set_parent t, item_set itst                                  WHERE t.parent_item_set_id = ?                                    AND itst.item_set_id = t.item_set_id                                    AND itst.SAMPLE <> 'T'                                  GROUP BY t.item_set_id)           AND t.item_id = itm.item_id           AND itm.item_type = ?           AND NOT EXISTS (SELECT 1                  FROM item_response res                 WHERE res.test_roster_id = ?                   AND res.item_set_id = t.item_set_id                   AND res.item_id = t.item_id                   AND rownum = 1)) tab ORDER BY itemorder";
 	private static final String GET_ITEM_RESP_CR = "SELECT /*to_char(SUM(decode(length(TRIM(translate(p.final_score,                                                ' +-.0123456789',                                                ' '))),                          NULL,                          p.final_score,                          0)),               '09')*/ p.final_score AS \"crScore\",       p.item_id AS \"itemId\",       setitm.item_sort_order AS \"iremOrder\"  FROM item_datapoint_score p, item_set_item setitm WHERE p.item_reader_id = (SELECT MAX(item_reader_id)                             FROM item_datapoint_score c                            WHERE c.test_roster_id = ?                              AND c.item_id = p.item_id   AND c.student_id = p.student_id)   AND p.test_roster_id = ?   AND p.item_id = setitm.item_id   AND setitm.item_set_id IN       ((SELECT DISTINCT t.item_set_id           FROM item_set_parent t, item_response_cr  r          WHERE t.parent_item_set_id = ?            AND r.item_set_id = t.item_set_id            AND r.test_roster_id = ?          GROUP BY t.item_set_id))   AND p.student_id = ? AND setitm.field_test <> 'T' /*GROUP BY p.item_id, setitm.item_sort_order*/ ORDER BY setitm.item_sort_order";
@@ -103,6 +103,7 @@ public class PrismWebServiceDBUtility {
 			populateStudentBioTO(rs, std);
 			//TODO - set student id(OAS_Stnt_ID attribute name) in std(Field was not available)
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getStudentBio() method to execute query : \n " +  GET_STUDENT_BIO);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -135,6 +136,7 @@ public class PrismWebServiceDBUtility {
 			System.out.println("PrismWebServiceDBUtility.getCustomerHigherarchy : Query for getCustomerHigherarchy : " + GET_CUST_ORG_HIGR);
 			populateCustHierarchyDetailsTO(rs, custHierarchyDetailsTO);
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getCustomerHigherarchy() method to execute query : \n " +  GET_CUST_ORG_HIGR);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -164,6 +166,7 @@ public class PrismWebServiceDBUtility {
 				rosterIds.add(rs.getLong("rosterId"));
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getRosterListForStudent() method to execute query : \n " +  GET_ROSTER_LIST_FOR_STUDENT);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -194,19 +197,40 @@ public class PrismWebServiceDBUtility {
 			while(rs.next()){
 				DemoTO demoTOTstFrm = new DemoTO();
 				demoTOTstFrm.setDemoName("Test_Form");
-				demoTOTstFrm.setDemovalue(rs.getString("testForm"));
+				String testForm = rs.getString("testForm");
+				if(testForm != null && testForm.startsWith("A")){
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.ATestFormStr);
+				}else if(testForm != null && testForm.startsWith("B")){
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.BTestFormStr);
+				}else{
+					demoTOTstFrm.setDemovalue(PrismWebServiceConstant.CTestFormStr);
+				}
 				demoList.add(demoTOTstFrm);
+				
 				DemoTO demoTOFldTstFrm = new DemoTO();
 				demoTOFldTstFrm.setDemoName("Fld_Tst_Form");
 				demoTOFldTstFrm.setDemovalue(rs.getString("fldtestform"));
 				demoList.add(demoTOFldTstFrm);
+				
 				DemoTO demoTOTstPltFrm = new DemoTO();
 				demoTOTstPltFrm.setDemoName("Tst_Platform");
 				demoTOTstPltFrm.setDemovalue("0");
 				demoList.add(demoTOTstPltFrm);
+				try{
+					String testLang = PrismWebServiceConstant.resourceBundler.getString(rs.getString("prodid"));
+					if(testLang != null && !"".equals(testLang)){
+						DemoTO demoTOTstLang = new DemoTO();
+						demoTOTstLang.setDemoName("TestLan");
+						demoTOTstLang.setDemovalue(testLang);
+						demoList.add(demoTOTstLang);
+					}
+				}catch(Exception e){
+					System.err.println("Error to find the test language in property file for product id : " + rs.getString("prodid") + " for the roster : " + rosterId);
+				}
 			}
 			studentDemoTO.setDataChanged(true);
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getStudentDemo() method to execute query : \n " +  GET_STUDENT_DEMO);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -245,6 +269,7 @@ public class PrismWebServiceDBUtility {
 				subtestAccommodationLst.add(subtestAccommodationTO);
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getSubTestAccommodation() method to execute query : \n " +  GET_SUBTEST_ACCOM);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -392,6 +417,7 @@ public class PrismWebServiceDBUtility {
 			}
 			
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getItemResponsesDetail() method");
 			e.printStackTrace();
 		} finally {
 			close(pstCR, rsCR);
@@ -426,6 +452,7 @@ public class PrismWebServiceDBUtility {
 				respStatusMap.put(rs.getString("itmid"), rs.getString("respstatus"));
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getGRResponseStatus() method to execute query : \n " +  GET_GR_RESP_STATUS);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -519,6 +546,7 @@ public class PrismWebServiceDBUtility {
 			retObj[0] = contentScoreDetailsTO;
 			retObj[1] = scoringStatus;
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getContentScoreDetails() method to execute query : \n " +  GET_CONTENT_SCORE_DETAILS);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -635,6 +663,7 @@ public class PrismWebServiceDBUtility {
 			
 			contentDetailsTOList.addAll(contentDetailsTOMap.values());
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getContentDetailsTO() method to execute query : \n " +  GET_CONTENT_DETAILS);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -686,6 +715,7 @@ public class PrismWebServiceDBUtility {
 				custConfAccommodations.add(accommodationTO);
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getCustConfAccommodations() method to execute query : \n " +  GET_CUST_CONF_ACCOMMODATION);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -767,6 +797,7 @@ public class PrismWebServiceDBUtility {
 				contentAreaID.put(rs.getString("contentareaname"), rs.getLong("contentareaid"));
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getContentAreaIDMap() method to execute query : \n " +  GET_CONTENT_AREA_ID);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -795,6 +826,7 @@ public class PrismWebServiceDBUtility {
 				checkCRScorePresent	= true;
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.checkCRScoreAvailablility() method to execute query : \n " +  CHECK_CR_SCORE_PRESENT);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -825,6 +857,7 @@ public class PrismWebServiceDBUtility {
 				testTakenDt = rs.getString("test_taken_dt");
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getContentTestTakenDt() method to execute query : \n " +  GET_TEST_TAKEN_DATE);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -856,6 +889,7 @@ public class PrismWebServiceDBUtility {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getContentStatusCode() method to execute query : \n " +  GET_SUBTEST_STATUS);
 			e.printStackTrace();
 		}finally{
 			close(con, subTestStatusPst,  subTestStatusRS);
@@ -957,6 +991,7 @@ public class PrismWebServiceDBUtility {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getCompositeContentScoreDetails() method to execute query : \n " +  GET_COMPOSITE_CONTENT_DETAILS);
 			e.printStackTrace();
 		} finally {
 			close(irsCon, compTestPst, compTestRS);
@@ -1047,6 +1082,7 @@ public class PrismWebServiceDBUtility {
 						objectiveScoreDetailsLst.add(objectiveScoreDetails);
 						
 					}catch(Exception e){
+						System.err.println("Error in the PrismWebServiceDBUtility.getObjectiveScoreDetails() method to execute query : \n " +  GET_PRIM_OBJ_SCORE);
 						e.printStackTrace();
 					}finally{
 						close(irsPst);
@@ -1110,6 +1146,7 @@ public class PrismWebServiceDBUtility {
 						objectiveScoreDetailsLst.add(objectiveScoreDetails);
 						
 					}catch(Exception e){
+						System.err.println("Error in the PrismWebServiceDBUtility.getObjectiveScoreDetails() method to execute query : \n " +  GET_SEC_OBJ_SCORE);
 						e.printStackTrace();
 					}finally{
 						close(irsPst);
@@ -1253,6 +1290,7 @@ public class PrismWebServiceDBUtility {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getStudentSurveyBio() method to execute query : \n " +  GET_SURVEY_BIO_RES);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
@@ -1388,6 +1426,7 @@ public class PrismWebServiceDBUtility {
 				customerKey = rs.getString("customerKey");
 			}
 		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getCustomerKey() method to execute query : \n " +  GET_CUSTOMER_KEY);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);

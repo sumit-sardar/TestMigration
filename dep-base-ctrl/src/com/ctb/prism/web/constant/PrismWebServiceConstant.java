@@ -52,6 +52,10 @@ public class PrismWebServiceConstant {
 	public static final String INRCObjectiveScoreDetails = "INRC";
 	public static final String CCObjectiveScoreDetails = "CC";
 	
+	public static final String ATestFormStr = "A";
+	public static final String BTestFormStr = "B";
+	public static final String CTestFormStr = "C";
+	
 	public static final String CustHierarchyDetailsTestName = "TASC";
 	
 	public static final  Map<String,Integer> contentDetailsContentCodeMap = new HashMap<String, Integer>();
