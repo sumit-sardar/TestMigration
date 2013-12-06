@@ -4,7 +4,11 @@
 package com.ctb.prism.web.handler;
 
 import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
@@ -64,34 +68,48 @@ public class PrismWebServiceHandler {
 				QName qname = new QName("http://controller.web.prism.ctb.com/",
 						"StudentDataloadService");
 				
-				//**[IAA] append SSO parameters with signature
-				String requestParam = "";
-				if (true)
-            	{
-            		String customerKey = PrismWebServiceDBUtility.getCustomerKey(Integer.parseInt(customerId));
-            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(customerKey, Integer.parseInt(customerId), orgNodeCode, Integer.parseInt(heirarchyLevel));
-                	requestParam = HMACEncrypter.encrypt()+"&clienttype=SOAP";
-                	System.out.println("WS_SSOparams=" + requestParam);
-                	System.out.println("PrismWebServiceHandler.getService : Prism Web Service WS_SSOparams : " + requestParam);
-                	//urlLocation = urlLocation.split("[?]")[0]+"?"+requestParam;
-                	//System.out.println("WS_URL=" + urlLocation);
-            	}
 				Service prxyService = Service.create(url, qname);
-
 				service = prxyService.getPort(SampleWebservice.class);
-				BindingProvider provider = (BindingProvider) service;
-				
-				//**[IAA]: append SOAP header to SOAP envelope
-				Binding binding = provider.getBinding();
-				List<Handler> handlers = provider.getBinding().getHandlerChain();
-				handlers.add(new PrismSOAPHandler(requestParam));
-				binding.setHandlerChain(handlers);
-				//**[IAA]
-				
+				BindingProvider provider = (BindingProvider) service;				
 				provider.getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, PrismWebServiceConstant.REQUEST_TIMEOUT);
 				provider.getRequestContext().put("com.sun.xml.internal.ws.connect.timeout", PrismWebServiceConstant.CONNECT_TIMEOUT);	
 			}
-			System.out.println("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
+			
+			if (true)
+			{
+				//**[IAA] Create SSO parameters with signature
+				String requestParam = "";
+        		String customerKey = PrismWebServiceDBUtility.getCustomerKey(Integer.parseInt(customerId));
+        		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(customerKey, Integer.parseInt(customerId), orgNodeCode, Integer.parseInt(heirarchyLevel));
+            	requestParam = HMACEncrypter.encrypt()+"&clienttype=SOAP";
+            	System.out.println("WS_SSOparams=" + requestParam);
+            	OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service WS_SSOparams : " + requestParam);
+
+				BindingProvider provider = (BindingProvider) service;
+				
+				//**[IAA]: append SOAP header to SOAP envelope
+				if (false)
+				{
+					Binding binding = provider.getBinding();
+					List<Handler> handlers = provider.getBinding().getHandlerChain();
+					handlers.add(new PrismSOAPHandler(requestParam));
+					binding.setHandlerChain(handlers);
+				}
+				else
+				{
+					Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
+					String[] pairs = requestParam.split("&");
+					for (String pair: pairs)
+					{
+						int idx = pair.indexOf("=");
+						requestHeaders.put(pair.substring(0, idx), Collections.singletonList(pair.substring(idx+1)));
+						System.out.println(pair.substring(0, idx)+"="+ pair.substring(idx+1));
+					}
+					provider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
+				}
+				//**[IAA]
+			}			
+			OASLogger.getLogger(PrismWebServiceConstant.loggerName).info("PrismWebServiceHandler.getService : Prism Web Service successfully connected.");
 		} catch (Exception e) {
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.getService : Unable to connect with Prism Web Service.");
 			e.printStackTrace();
