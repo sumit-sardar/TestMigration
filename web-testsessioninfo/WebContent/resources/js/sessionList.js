@@ -985,6 +985,8 @@ function registerDelegate(tree){
  		  postDataObject.selectedTestId = $("#selectedTestId").val();
  		  postDataObject.blockOffGradeTesting = blockOffGradeTesting;
  		  postDataObject.selectedLevel = selectedLevel;
+ 		  postDataObject.productType =$("#productType").val();
+ 		  
  		  
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json',mtype:'POST'});    
 	       var urlVal = 'getStudentForList.do';

@@ -954,7 +954,7 @@ public class SessionOperationController extends PageFlowController {
             			 *throw an error and do not allow to save the session */
             	
             		                int productId=session.getTestSession().getProductId();
-            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0 && isTABECustomer) {
+            		                if(!(productId== 4008 || productId==4013) && session.getStudents().length!=0 && isTABECustomer && isAddOperation) {
             		                	
             		                	Set<Integer> orgNodes=new HashSet<Integer>();
             		                	SessionStudent[] students=session.getStudents();
@@ -3177,9 +3177,20 @@ public class SessionOperationController extends PageFlowController {
 		String blockOffGrade = getRequest().getParameter("blockOffGradeTesting");
 		String selectedLevel = getRequest().getParameter("selectedLevel");
 		String testAdminIdString = getRequest().getParameter("testAdminId");
+		String productType = getRequest().getParameter("productType");
+		
 		Integer selectedOrgNodeId = null;
 		Integer selectedTestId = null;
 		Integer testAdminId = null;
+		
+		if(productType.equalsIgnoreCase("genericProductType")){
+			this.selectedProductType = "PT";
+		}else if(productType.equalsIgnoreCase("tabeLocatorProductType")){
+			this.selectedProductType = "TL";
+		}else if(productType.equalsIgnoreCase("tabeBatterySurveyProductType")){
+			this.selectedProductType = "TB";
+		}
+		
 		if(treeOrgNodeId != null)
 			selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
 		if(testId != null)
