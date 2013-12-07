@@ -220,7 +220,7 @@ public class PrismWebServiceDBUtility {
 					String testLang = PrismWebServiceConstant.resourceBundler.getString(rs.getString("prodid"));
 					if(testLang != null && !"".equals(testLang)){
 						DemoTO demoTOTstLang = new DemoTO();
-						demoTOTstLang.setDemoName("TestLan");
+						demoTOTstLang.setDemoName("Test_Lan");
 						demoTOTstLang.setDemovalue(testLang);
 						demoList.add(demoTOTstLang);
 					}
