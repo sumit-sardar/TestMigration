@@ -82,6 +82,8 @@ public class PrismWebServiceConstant {
 	
 	public static final String AddStdInfoSubTestAcc = "ADDITIONAL STUDENT INFORMATION";
 	
+	public static final Map<String,String> rslvdEthnicityMap = new HashMap<String, String>(); 
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
@@ -112,6 +114,15 @@ public class PrismWebServiceConstant {
 		contentDetailsStausCodeMap.put(InvalidContentStatusCode, "5");
 		contentDetailsStausCodeMap.put(SuppressedContentStatusCode, "6");
 		contentDetailsStausCodeMap.put(NACompositeStatusCode, "7");
+		
+		rslvdEthnicityMap.put("Black", "1");
+		rslvdEthnicityMap.put("American Indian", "2");
+		rslvdEthnicityMap.put("Hispanic", "3");
+		rslvdEthnicityMap.put("Asian", "4");
+		rslvdEthnicityMap.put("Pacific Islander", "5");
+		rslvdEthnicityMap.put("White", "6");
+		rslvdEthnicityMap.put("Two or More Races", "7");
+		
 		
 		resourceBundler = ResourceBundle.getBundle("PrismWebService");
 		
