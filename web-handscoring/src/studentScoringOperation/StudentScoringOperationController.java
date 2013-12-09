@@ -812,9 +812,9 @@ public Forward rescoreStudent(StudentSessionScoringForm form) throws IOException
             for (int i=0 ; i<testItemDetails.length ; i++) {
             	ScorableItem itemDetail = (ScorableItem)testItemDetails[i];
                 if (itemDetail != null) {
-                	if("A".equals(itemDetail.getAnswered())) {
+                	if(itemDetail.getAnswered().equals("A")) {
                 		itemDetail.setAnswered("Answered");
-                		if("Incomplete".equalsIgnoreCase(itemDetail.getScoreStatus())) {
+                		if(itemDetail.getScoreStatus().equalsIgnoreCase("Incomplete")) {
                 			itemDetail.setScorePoint("-");
                 		}
                 	} else {
