@@ -195,14 +195,14 @@ public class StudentAcademicExcelReportUtils extends StudentImmediateReportUtils
 		addCell(row, count++, irsScore.getContentAreaName(), objArea);
 		addCell(row, count++, "", rightBar);
 		if(irsScore.getContentAreaName().contains("Foundational")){
-			addCell(row, count++, irsScore.getSpPtsObtained(), blackCell);
+			addCell(row, count++, irsScore.getSpPtsPossible(), blackCell);
 			addCell(row, count++, irsScore.getSpPtsObtained(), blackCell);
 			addCell(row, count++, irsScore.getSpPerCorrect(), blackCell);
 			addCell(row, count++, irsScore.getLnPtsPossible(), blackCell);
 			addCell(row, count++, irsScore.getLnPtsObtained(), blackCell);
 			addCell(row, count++, irsScore.getLnPerCorrect(), blackCell);
 		}else{
-			addCell(row, count++, irsScore.getSpPtsObtained(), c0s);
+			addCell(row, count++, irsScore.getSpPtsPossible(), c0s);
 			addCell(row, count++, irsScore.getSpPtsObtained(), c0s);
 			addCell(row, count++, irsScore.getSpPerCorrect(), rightBar);
 			addCell(row, count++, irsScore.getLnPtsPossible(), c0s);
