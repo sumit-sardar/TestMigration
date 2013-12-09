@@ -122,17 +122,22 @@ public class PrismWebServiceHandler {
 	 * @param studentListTO
 	 * @throws Exception
 	 */
-	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel) throws Exception{
+	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel, Integer studentId, long rosterId, long sessionId, String wsType) throws Exception{
+		long errorLogKey = 0;
+		String errorMessage = "";
 		try{
 			//printXMLFromVO(studentListTO);
 			/*XStream xstream = new XStream();
 			System.out.println(xstream.toXML(studentListTO));*/
+			errorLogKey = PrismWebServiceDBUtility.insertWSErrorLog(studentId, rosterId, sessionId, wsType);
+			System.out.println("Prism web service error log key : " + errorLogKey);
 			getService(customerId, orgNodeCode, heirarchyLevel);
 			if(service != null){
 				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
 				System.out.println("Prism Process Id : " + responseTO.getProcessId());
 				System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 				if(responseTO.getStatusCode() == 1){ //Success
+					PrismWebServiceDBUtility.deleteWSErrorLog(errorLogKey);
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
@@ -145,16 +150,19 @@ public class PrismWebServiceHandler {
 		}catch(Exception e){
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 			e.printStackTrace();
+			errorMessage =  e.getMessage();
 			boolean success = false;
 			for(int hitCnt = 2 ; hitCnt <= PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
 				Thread.sleep(PrismWebServiceConstant.retryWaitTime);
 				System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + hitCnt);
 				try{
+					PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCnt, errorMessage, "Progress");
 					getService(customerId, orgNodeCode, heirarchyLevel);
 					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
 					System.out.println("Prism Process Id : " + responseTO.getProcessId());
 					System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 					if(responseTO.getStatusCode() == 1){ //Success
+						PrismWebServiceDBUtility.deleteWSErrorLog(errorLogKey);
 						System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 						success = true;
 						break;
@@ -163,10 +171,12 @@ public class PrismWebServiceHandler {
 						throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					}
 				}catch(Exception ex){
+					errorMessage =  e.getMessage();
 					ex.printStackTrace();
 				}
 			}
 			if(!success){
+				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed");
 				throw e;
 			}
 		}
@@ -212,7 +222,7 @@ public class PrismWebServiceHandler {
 			rosterDetailsList.add(rosterDetailsTO);
 		}
 		
-		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
+		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student");
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
 		return studentListTO;
@@ -257,7 +267,7 @@ public class PrismWebServiceHandler {
 		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
 		rosterDetailsList.add(rosterDetailsTO);
 		
-		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel);
+		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring");
 		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		
 		return studentListTO;

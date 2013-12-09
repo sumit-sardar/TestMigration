@@ -5,6 +5,7 @@ package com.ctb.prism.web.dbutility;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,6 +82,9 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_CUST_CONF_ACCOMMODATION = "SELECT * FROM student_accommodation t WHERE t.student_id = ? ";
 	private static final String GET_CUSTOMER_KEY = "select distinct  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey from  customer_report_bridge bridge where  bridge.customer_id = ? and bridge.product_id = 4500 and bridge.report_name='Prism' ";
 	
+	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message,     additional_info) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   1,   ?,   '',   '') RETURNING ws_error_log_key INTO ?}";
+	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
+	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ? WHERE ws_error_log_key = ?";
 	/**
 	 * Get Student Bio Information
 	 * @param studentId
@@ -1436,6 +1441,87 @@ public class PrismWebServiceDBUtility {
 	}
 	
 	/**
+	 * Insert the WS Error Log table
+	 * @param studentId
+	 * @param rosterId
+	 * @param sessionId
+	 * @param wsType
+	 * @return
+	 */
+	public static long insertWSErrorLog(Integer studentId, long rosterId, long sessionId, String wsType){
+		CallableStatement cst  = null;
+		Connection con = null;
+		long wsErrorLogKey = 0;
+		try {
+			con = openOASDBcon(false);
+			cst  = con.prepareCall(INSERT_WS_ERROR_LOG);
+			cst.setLong(1, studentId);
+			cst.setLong(2, rosterId);
+			cst.setLong(3, sessionId);
+			cst.setString(4, wsType);
+			cst.registerOutParameter(5, Types.NUMERIC);
+			int count = cst.executeUpdate();
+			System.out.println("PrismWebServiceDBUtility.insertWSErrorLog : Query for insertWSErrorLog : " + INSERT_WS_ERROR_LOG);
+			if(count > 0){
+				wsErrorLogKey = cst.getLong(5);
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.insertWSErrorLog() method to execute query : \n " +  INSERT_WS_ERROR_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, cst);
+		}
+		return wsErrorLogKey;
+	}
+	
+	/**
+	 * Delete WS Error Log table
+	 * @param wsErrorLogKey
+	 */
+	public static void deleteWSErrorLog(long wsErrorLogKey){
+		PreparedStatement pst  = null;
+		Connection con = null;
+		try {
+			con = openOASDBcon(false);
+			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
+			pst.setLong(1, wsErrorLogKey);
+			pst.executeUpdate();
+			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.deleteWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, pst);
+		}
+	}
+	
+	
+	/**
+	 * Update WS Error Log table
+	 * @param wsErrorLogKey
+	 */
+	public static void updateWSErrorLog(long wsErrorLogKey, int invokeCount, String message, String status){
+		PreparedStatement pst  = null;
+		Connection con = null;
+		try {
+			con = openOASDBcon(false);
+			pst  = con.prepareCall(UPDATE_WS_ERROR_LOG);
+			pst.setLong(1, invokeCount);
+			pst.setString(2, subString(message, 3500));
+			pst.setString(3, status);
+			pst.setLong(4, wsErrorLogKey);
+			pst.executeUpdate();
+			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Query for deleteWSEupdateWSErrorLogrrorLog : " + UPDATE_WS_ERROR_LOG);
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.updateWSErrorLog() method to execute query : \n " +  UPDATE_WS_ERROR_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, pst);
+		}
+	}
+	
+
+	/**
 	 * Get OAS DB connection
 	 * @param isCommitable
 	 * @return
@@ -1632,5 +1718,24 @@ public class PrismWebServiceDBUtility {
 
         return sb.toString();
     }
+	
+
+	/**
+	 * Sub String
+	 * @param message
+	 * @param maxLength
+	 * @return
+	 */
+	private static String subString(String message, int maxLength) {
+		String returnMsg = "";
+		if(message != null && !"".equals(message)){
+			if(message.length() > maxLength){
+				returnMsg = message.substring(0, maxLength);
+			}else{
+				returnMsg = message;
+			}
+		}
+		return returnMsg;
+	}
 	
 }
