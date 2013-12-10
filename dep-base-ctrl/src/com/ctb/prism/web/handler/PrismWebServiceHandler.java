@@ -125,10 +125,12 @@ public class PrismWebServiceHandler {
 	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel, Integer studentId, long rosterId, long sessionId, String wsType) throws Exception{
 		long errorLogKey = 0;
 		String errorMessage = "";
+		StudentDataLoadTO responseTO = null;
+		String additionalInfo = "";
 		try{
 			getService(customerId, orgNodeCode, heirarchyLevel);
 			if(service != null){
-				StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+				responseTO = service.loadStudentData(studentListTO);
 				System.out.println("Prism Process Id : " + responseTO.getProcessId());
 				System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 				if(responseTO.getStatusCode() == 1){ //Success
@@ -145,7 +147,8 @@ public class PrismWebServiceHandler {
 			OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Unable to invoke Prism Web Service.");
 			e.printStackTrace();
 			errorMessage =  e.getMessage();
-			errorLogKey = PrismWebServiceDBUtility.insertWSErrorLog(studentId, rosterId, sessionId, wsType, errorMessage);
+			additionalInfo = createAdditionalInfo(responseTO);
+			errorLogKey = PrismWebServiceDBUtility.insertWSErrorLog(studentId, rosterId, sessionId, wsType, errorMessage, additionalInfo);
 			System.out.println("Prism web service error log key : " + errorLogKey);
 			boolean success = false;
 			for(int hitCnt = 2 ; hitCnt <= PrismWebServiceConstant.numberOfFailedHitCnt ; hitCnt++){
@@ -153,7 +156,7 @@ public class PrismWebServiceHandler {
 					Thread.sleep(PrismWebServiceConstant.retryWaitTime);
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Retry to invoke Prism Web Service. Count - " + hitCnt);
 					getService(customerId, orgNodeCode, heirarchyLevel);
-					StudentDataLoadTO responseTO = service.loadStudentData(studentListTO);
+					responseTO = service.loadStudentData(studentListTO);
 					System.out.println("Prism Process Id : " + responseTO.getProcessId());
 					System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 					if(responseTO.getStatusCode() == 1){ //Success
@@ -166,18 +169,27 @@ public class PrismWebServiceHandler {
 						throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					}
 				}catch(Exception ex){
-					PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCnt, errorMessage, "Progress");
+					additionalInfo = createAdditionalInfo(responseTO);
+					PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCnt, errorMessage, "Progress", additionalInfo);
 					errorMessage =  e.getMessage();
 					ex.printStackTrace();
 				}
 			}
 			if(!success){
-				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed");
+				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", createAdditionalInfo(responseTO));
 				throw e;
 			}
 		}
 	}
 	
+
+	private static String createAdditionalInfo(StudentDataLoadTO responseTO) {
+		String additionalinfo = "";
+		if(responseTO != null){
+			additionalinfo = "Process Id : " + responseTO.getProcessId() + " Partition Name : " + responseTO.getPartitionName();
+		}
+		return additionalinfo;
+	}
 
 	/**
 	 * Web Service call for Edit Student
