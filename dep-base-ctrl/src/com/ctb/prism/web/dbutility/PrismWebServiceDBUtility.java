@@ -82,7 +82,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_CUST_CONF_ACCOMMODATION = "SELECT * FROM student_accommodation t WHERE t.student_id = ? ";
 	private static final String GET_CUSTOMER_KEY = "select distinct  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey from  customer_report_bridge bridge where  bridge.customer_id = ? and bridge.product_id = 4500 and bridge.report_name='Prism' ";
 	
-	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message,     additional_info) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   1,   ?,   '',   '') RETURNING ws_error_log_key INTO ?}";
+	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   1,   ?,   ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ? WHERE ws_error_log_key = ?";
 	/**
@@ -1448,7 +1448,7 @@ public class PrismWebServiceDBUtility {
 	 * @param wsType
 	 * @return
 	 */
-	public static long insertWSErrorLog(Integer studentId, long rosterId, long sessionId, String wsType){
+	public static long insertWSErrorLog(Integer studentId, long rosterId, long sessionId, String wsType, String errorMsg){
 		CallableStatement cst  = null;
 		Connection con = null;
 		long wsErrorLogKey = 0;
@@ -1459,7 +1459,8 @@ public class PrismWebServiceDBUtility {
 			cst.setLong(2, rosterId);
 			cst.setLong(3, sessionId);
 			cst.setString(4, wsType);
-			cst.registerOutParameter(5, Types.NUMERIC);
+			cst.setString(5, errorMsg);
+			cst.registerOutParameter(6, Types.NUMERIC);
 			int count = cst.executeUpdate();
 			System.out.println("PrismWebServiceDBUtility.insertWSErrorLog : Query for insertWSErrorLog : " + INSERT_WS_ERROR_LOG);
 			if(count > 0){
