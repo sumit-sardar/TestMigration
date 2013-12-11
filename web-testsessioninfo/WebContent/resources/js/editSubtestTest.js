@@ -27,7 +27,7 @@
 	var LASLINKS_WRINTING = "Writing";
 	var deselectSubtest = new Map();
 	
-	
+	var TASC_BACKGROUND_QUESTIONS = "Student Background Questions";
 	
 	function getCopy(array) {
 	    var tmpArray = new Array();
@@ -771,6 +771,11 @@
 	        }
 	        chosenRow = null;
 	    } else {
+            if (isTASCProduct && $(row).text().toUpperCase() == TASC_BACKGROUND_QUESTIONS.toUpperCase())
+		    {
+		    	chosenRow = null;
+		    	return true;
+		    }
 	        if (chosenRow != null) {
 	            chosenRow.className = 'dynamic';
 	        }
@@ -886,7 +891,7 @@
 	    }
 	    
 	    if (chosenRow != null) {
-	        if (isFirstVisibleRow(chosenRow)) {
+	        if (isFirstVisibleRow(chosenRow)||(isTASCProduct && isSecondVisibleRow(chosenRow))) {
 	            moveUp.setAttribute("disabled", "true");
 	            if ($(moveUp).hasClass("ui-widget-header")) {
 	                $(moveUp).removeClass("ui-widget-header");
@@ -1106,7 +1111,17 @@
 	        var desId = "des_row_" + i;
 	        var desRow = document.getElementById(desId);
 	        if (isRowVisible(desRow)) {
-	            removeSubtestSelectedRow(desRow);
+	        	if(isTASCProduct)
+	        	{
+		        	if($(desRow).text().toUpperCase() != TASC_BACKGROUND_QUESTIONS.toUpperCase())
+		        	{
+		            	removeSubtestSelectedRow(desRow);
+		            }
+	            }
+	            else
+	            {
+	            	removeSubtestSelectedRow(desRow);
+	            }
 	        }
 	    }
 	    
@@ -1214,7 +1229,17 @@
 	    }
 	    return false;
 	}
-	
+
+	function isSecondVisibleRow(desRow) {
+	    var table = desRow.parentNode;
+	    if (table.rows.length >= 1) {
+	        var row = table.rows[1];
+	        if (row.id == desRow.id)
+	            return true;
+	    }
+	    return false;
+	}
+		
 	function unSelectItem() {
 	    if (chosenRow != null) {
 	        chosenRow.className = 'dynamic';
