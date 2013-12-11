@@ -198,6 +198,7 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static StudentListTO editStudent(Integer studentId) throws Exception{
+		long startTime = System.currentTimeMillis();
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
 		StudentListTO studentListTO = new StudentListTO();
 		
@@ -233,6 +234,9 @@ public class PrismWebServiceHandler {
 		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student");
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
+		long stopTime = System.currentTimeMillis();
+		System.out.println("Time taken to call the Edit Student Web Service : " + (stopTime - startTime) + "ms");
+		
 		return studentListTO;
 		
 		/*List<ContentDetailsTO> list = PrismWebServiceDBUtility.getContentDetailsTO(6808083, new SubtestAccommodationsTO(), 12097455, 187196);
@@ -247,6 +251,7 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static StudentListTO scoring(long rosterId, Integer studentId, long sessionId) throws Exception{
+		long startTime = System.currentTimeMillis();
 		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		StudentListTO studentListTO = new StudentListTO();
 		
@@ -277,6 +282,9 @@ public class PrismWebServiceHandler {
 		
 		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring");
 		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+		
+		long stopTime = System.currentTimeMillis();
+		System.out.println("Time taken to call the Scoring Web Service : " + (stopTime - startTime) + "ms");
 		
 		return studentListTO;
 		

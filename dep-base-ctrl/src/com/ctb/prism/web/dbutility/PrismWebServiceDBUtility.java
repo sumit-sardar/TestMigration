@@ -1515,7 +1515,7 @@ public class PrismWebServiceDBUtility {
 			pst.setString(4, additionalInfo);
 			pst.setLong(5, wsErrorLogKey);
 			pst.executeUpdate();
-			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Query for deleteWSEupdateWSErrorLogrrorLog : " + UPDATE_WS_ERROR_LOG);
+			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Query for updateWSErrorLog : " + UPDATE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.updateWSErrorLog() method to execute query : \n " +  UPDATE_WS_ERROR_LOG);
 			e.printStackTrace();
