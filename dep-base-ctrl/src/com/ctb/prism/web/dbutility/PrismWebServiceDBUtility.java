@@ -1466,7 +1466,7 @@ public class PrismWebServiceDBUtility {
 			int count = cst.executeUpdate();
 			System.out.println("PrismWebServiceDBUtility.insertWSErrorLog : Query for insertWSErrorLog : " + INSERT_WS_ERROR_LOG);
 			if(count > 0){
-				wsErrorLogKey = cst.getLong(6);
+				wsErrorLogKey = cst.getLong(7);
 			}
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.insertWSErrorLog() method to execute query : \n " +  INSERT_WS_ERROR_LOG);
