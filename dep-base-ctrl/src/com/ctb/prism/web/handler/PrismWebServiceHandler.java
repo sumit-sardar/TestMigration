@@ -4,7 +4,6 @@
 package com.ctb.prism.web.handler;
 
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,9 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
-import javax.xml.ws.handler.*;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.MessageContext;
+
 import weblogic.utils.StringUtils;
 
 import com.ctb.prism.web.constant.PrismWebServiceConstant;
@@ -172,8 +173,8 @@ public class PrismWebServiceHandler {
 					}
 				}catch(Exception ex){
 					additionalInfo = createAdditionalInfo(responseTO);
-					PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCnt, errorMessage, "Progress", additionalInfo);
 					errorMessage =  e.getMessage();
+					PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCnt, errorMessage, "Progress", additionalInfo);
 					ex.printStackTrace();
 				}
 			}
