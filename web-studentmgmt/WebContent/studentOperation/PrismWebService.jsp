@@ -14,10 +14,8 @@ $( document ).ready(function() {
 			url: "editStudentWS.do?studentID="+$("#studentId").val(),
 			type: "POST",
 			success : function(data, textStatus, XMLHttpReques){
-				alert("done");
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown){
-				alert("done");
 			}
 		});
 	});
@@ -28,10 +26,8 @@ $( document ).ready(function() {
 			url: "scoringWS.do?rosterId="+$("#rosterId").val()+"&stdID="+$('#stdID').val()+"&sessionId="+$('#sessionId').val(),
 			type: "POST",
 			success : function(data, textStatus, XMLHttpReques){
-				alert("done");
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown){
-				alert("done");
 			}
 		});
 	});
