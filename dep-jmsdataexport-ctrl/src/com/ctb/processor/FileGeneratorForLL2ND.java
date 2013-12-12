@@ -463,15 +463,19 @@ public class FileGeneratorForLL2ND {
 					tfil.setTestName("LAS Links 2nd Edition");
 					tfil.setTestForm("C");
 					if (orderFile.getTestName1() == null)
+						//Change for Story "LAS Links Online - 2013 - TAS - Fix Export file 
+						//for Forms C-D-Esp B" from "LAS Links" to "LAS Links2"
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links", new Integer(10))
+								"LAS Links2", new Integer(11))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("D")) {
 					tfil.setTestName("LAS Links 2nd Edition");
 					tfil.setTestForm("D");
 					if (orderFile.getTestName1() == null)
+						//Change for Story "LAS Links Online - 2013 - TAS - Fix Export file 
+						//for Forms C-D-Esp B" from "LAS Links" to "LAS Links2"
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links", new Integer(10))
+								"LAS Links2", new Integer(11))
 								.toUpperCase());
 					/*[IAA]: Defect#75509 Rename Esp A/B*/
 				//} else if (rs.getString(1).equalsIgnoreCase("ESP B")) {
