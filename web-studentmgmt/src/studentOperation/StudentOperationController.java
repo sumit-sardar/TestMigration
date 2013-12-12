@@ -599,8 +599,8 @@ public class StudentOperationController extends PageFlowController {
 				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					try {
 						StudentListTO studentListTO  = PrismWebServiceHandler.editStudent(studentId);
-						XStream xs = new XStream();
-						System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));
+						/*XStream xs = new XStream();
+						System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));*/
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -3561,8 +3561,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		System.out.println("Edit Student WS Called for Student ID >>>>>>>>>>>>>>>>>> " + studentID);
 		try {
 			StudentListTO studentListTO = PrismWebServiceHandler.editStudent(Integer.valueOf(studentID));
-			XStream xs  = new XStream();
-			System.out.println("XML for Edit Student :::::: \n" + xs.toXML(studentListTO));
+			/*XStream xs  = new XStream();
+			System.out.println("XML for Edit Student :::::: \n" + xs.toXML(studentListTO));*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3586,8 +3586,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		System.out.println("Edit Student WS Called for Roster Id>>>>>>>>>>>>>>>>>> " + rosterId + " >>>>> Student ID >>>>> " + stdID + " >>>>>> Session Id >>>>>> " + sessionId);
 		try {
 			StudentListTO studentListTO = PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId));
-			XStream xs  = new XStream();
-			System.out.println("XML for Scoring :::::: \n" + xs.toXML(studentListTO));
+			/*XStream xs  = new XStream();
+			System.out.println("XML for Scoring :::::: \n" + xs.toXML(studentListTO));*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

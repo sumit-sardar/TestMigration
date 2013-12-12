@@ -127,8 +127,8 @@ public class TSTestResultController implements TestResultController {
         //Prism web service is called for scoring
         try {
         	StudentListTO studentListTO =  PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId());
-			XStream xStream = new XStream();
-			System.out.println("XML data forwarded to Prism in the scoring web service for the student id: " + studentData.getOasStudentId()  + " >>> roster id : "+ data.getTestRosterId() + " >>> session id : " + adminData.getSessionId()+ " is >>>>>>>>>> \n" + xStream.toXML(studentListTO));
+			/*XStream xStream = new XStream();
+			System.out.println("XML data forwarded to Prism in the scoring web service for the student id: " + studentData.getOasStudentId()  + " >>> roster id : "+ data.getTestRosterId() + " >>> session id : " + adminData.getSessionId()+ " is >>>>>>>>>> \n" + xStream.toXML(studentListTO));*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -123,6 +123,8 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel, Integer studentId, long rosterId, long sessionId, String wsType) throws Exception{
+		XStream xstream = new XStream();
+		System.out.println("Data forwarded XML structure for student id : " + studentId + " roster id : " + rosterId + " session id : " + sessionId  + "\n" + xstream.toXML(studentListTO));
 		long errorLogKey = 0;
 		String errorMessage = "";
 		StudentDataLoadTO responseTO = null;
