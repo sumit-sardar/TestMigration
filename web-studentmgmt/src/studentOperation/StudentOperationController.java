@@ -597,13 +597,20 @@ public class StudentOperationController extends PageFlowController {
 				
 				//Prism Web Service Call
 				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
-					try {
-						StudentListTO studentListTO  = PrismWebServiceHandler.editStudent(studentId);
-						/*XStream xs = new XStream();
-						System.out.println("XML data forwarded to Prism in the edit student web service for the student id  " + studentId + " is >>>>>>>>>> \n" + xs.toXML(studentListTO));*/
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					
+					final Integer tempStudentId = studentId;
+					
+					(new Thread() {
+						public void run(){
+							try {
+								PrismWebServiceHandler.editStudent(tempStudentId);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}).start();
+					
 				}
 				
 				
@@ -3557,15 +3564,20 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	})
 	protected Forward editStudentWS()
 	{      
-		String studentID = getRequest().getParameter("studentID").trim();
+		final String studentID = getRequest().getParameter("studentID").trim();
 		System.out.println("Edit Student WS Called for Student ID >>>>>>>>>>>>>>>>>> " + studentID);
-		try {
-			StudentListTO studentListTO = PrismWebServiceHandler.editStudent(Integer.valueOf(studentID));
-			/*XStream xs  = new XStream();
-			System.out.println("XML for Edit Student :::::: \n" + xs.toXML(studentListTO));*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			
+		(new Thread() {
+			public void run(){
+				try {
+					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+			
 		return null;
 	}
 	
@@ -3580,17 +3592,21 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	})
 	protected Forward scoringWS()
 	{      
-		String rosterId = getRequest().getParameter("rosterId").trim();
-		String stdID = getRequest().getParameter("stdID").trim();
-		String sessionId = getRequest().getParameter("sessionId").trim();
+		final String rosterId = getRequest().getParameter("rosterId").trim();
+		final String stdID = getRequest().getParameter("stdID").trim();
+		final String sessionId = getRequest().getParameter("sessionId").trim();
 		System.out.println("Edit Student WS Called for Roster Id>>>>>>>>>>>>>>>>>> " + rosterId + " >>>>> Student ID >>>>> " + stdID + " >>>>>> Session Id >>>>>> " + sessionId);
-		try {
-			StudentListTO studentListTO = PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId));
-			/*XStream xs  = new XStream();
-			System.out.println("XML for Scoring :::::: \n" + xs.toXML(studentListTO));*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		(new Thread() {
+			public void run(){
+				try {
+					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 		return null;
 	}
 }
