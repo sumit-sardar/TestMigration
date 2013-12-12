@@ -561,7 +561,7 @@ public class PrismWebServiceDBUtility {
 	
 	
 	/**
-	 * Get the Sub Test Accommodation
+	 * Get content details
 	 * @param rosterId
 	 * @param subtestAccommodationsTO
 	 * @return
@@ -574,7 +574,7 @@ public class PrismWebServiceDBUtility {
 		
 		List<ContentDetailsTO> contentDetailsTOList = new ArrayList<ContentDetailsTO>(); 
 		
-		List<SubtestAccommodationTO> custConfgAccommodationLst = null;
+		Map<Integer,List<SubtestAccommodationTO>> custConfAccommodationsMap = null;
 		
 		try {
 			Map<String, Long> contentAreaID = getContentAreaIDMap(rosterId);
@@ -597,15 +597,15 @@ public class PrismWebServiceDBUtility {
 					
 					contentDetailsTO.setDataChanged(true);
 					
-					if(custConfgAccommodationLst == null){
-						custConfgAccommodationLst = getCustConfAccommodations(studentId);
+					if(custConfAccommodationsMap == null){
+						custConfAccommodationsMap = getCustConfAccommodations(studentId);
 					}
 					
 					if(PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName) != null){
 						SubtestAccommodationsTO subtestAccommodationsTO =  getSubTestAccommodation(studentId, contentCodeName);
 						contentDetailsTO.setSubtestAccommodationsTO(subtestAccommodationsTO);
-						if(custConfgAccommodationLst != null){
-							subtestAccommodationsTO.getCollSubtestAccommodationTO().addAll(custConfgAccommodationLst);
+						if(custConfAccommodationsMap != null){
+							subtestAccommodationsTO.getCollSubtestAccommodationTO().addAll(custConfAccommodationsMap.get(contentCode));
 						}
 					}
 					
@@ -638,8 +638,8 @@ public class PrismWebServiceDBUtility {
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) : "");
 						if(PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Omitted Content 
-							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
-							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+							//ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
+							//contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							//contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
@@ -681,12 +681,17 @@ public class PrismWebServiceDBUtility {
 	 * @param studentId
 	 * @return
 	 */
-	private static List<SubtestAccommodationTO> getCustConfAccommodations(
+	private static Map<Integer,List<SubtestAccommodationTO>> getCustConfAccommodations(
 			Integer studentId) {
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
-		List<SubtestAccommodationTO> custConfAccommodations = new ArrayList<SubtestAccommodationTO>();
+		Map<Integer,List<SubtestAccommodationTO>> custConfAccommodationsMap = new HashMap<Integer, List<SubtestAccommodationTO>>();
+		List<SubtestAccommodationTO> custConfAccommodationsMath = new ArrayList<SubtestAccommodationTO>();
+		List<SubtestAccommodationTO> custConfAccommodationsRead = new ArrayList<SubtestAccommodationTO>();
+		List<SubtestAccommodationTO> custConfAccommodationsSci = new ArrayList<SubtestAccommodationTO>();
+		List<SubtestAccommodationTO> custConfAccommodationsSoc = new ArrayList<SubtestAccommodationTO>();
+		List<SubtestAccommodationTO> custConfAccommodationsWrit = new ArrayList<SubtestAccommodationTO>();
 		try {
 			con = openOASDBcon(false);
 			pst = con.prepareStatement(GET_CUST_CONF_ACCOMMODATION);
@@ -701,31 +706,69 @@ public class PrismWebServiceDBUtility {
 				  try{
 					  String oasAttrName = PrismWebServiceConstant.resourceBundler.getString(name.toUpperCase());
 					  if(oasAttrName != null && !"".equals(oasAttrName)){
-						  SubtestAccommodationTO accommodationTO = new SubtestAccommodationTO();
-						  accommodationTO.setName(oasAttrName);
 						  if(rs.getString(name) != null && ("T".equalsIgnoreCase(rs.getString(name)) || "1.5".equalsIgnoreCase(rs.getString(name)))){
-							  accommodationTO.setValue("Y");
+							  custConfAccommodationsMath.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"), "Y"));
+							  custConfAccommodationsRead.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), "Y"));
+							  custConfAccommodationsSci.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), "Y"));
+							  custConfAccommodationsSoc.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), "Y"));
+							  custConfAccommodationsWrit.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), "Y"));
+						  }else{
+							  custConfAccommodationsMath.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"), null));
+							  custConfAccommodationsRead.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), null));
+							  custConfAccommodationsSci.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), null));
+							  custConfAccommodationsSoc.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), null));
+							  custConfAccommodationsWrit.add(buildSTAccommodation(oasAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), null));
 						  }
-						  custConfAccommodations.add(accommodationTO);
 					  }
 				  }catch(Exception e){
-					  //Do nothing
+					  //Do nothing,just to avoid exception as some of the columns are not used and hence they are not defined in property file 
 				  }
 				}
-				SubtestAccommodationTO accommodationTO = new SubtestAccommodationTO();
-				accommodationTO.setName(PrismWebServiceConstant.fontBackGrClrAttrName);
+				
 				if(rs.getString("question_background_color") != null && !"".equals(rs.getString("question_background_color"))){
-					accommodationTO.setValue("Y");
+					 custConfAccommodationsMath.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"),"Y"));
+					 custConfAccommodationsRead.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), "Y"));
+					 custConfAccommodationsSci.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), "Y"));
+					 custConfAccommodationsSoc.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), "Y"));
+					 custConfAccommodationsWrit.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), "Y"));
+				}else{
+					 custConfAccommodationsMath.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"), null));
+					 custConfAccommodationsRead.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), null));
+					 custConfAccommodationsSci.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), null));
+					 custConfAccommodationsSoc.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), null));
+					 custConfAccommodationsWrit.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), null));
 				}
-				custConfAccommodations.add(accommodationTO);
+				
+				
 			}
+			
+			custConfAccommodationsMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"), custConfAccommodationsMath);
+			custConfAccommodationsMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), custConfAccommodationsRead);
+			custConfAccommodationsMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), custConfAccommodationsSci);
+			custConfAccommodationsMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), custConfAccommodationsSoc);
+			custConfAccommodationsMap.put(PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), custConfAccommodationsWrit);
+			
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getCustConfAccommodations() method to execute query : \n " +  GET_CUST_CONF_ACCOMMODATION);
 			e.printStackTrace();
 		} finally {
 			close(con, pst, rs);
 		}
-		return custConfAccommodations;
+		return custConfAccommodationsMap;
+	}
+	
+	/**
+	 * builds SubtestAccommodationTO
+	 * @param oasAttrName
+	 * @param contentCode
+	 * @param value
+	 * @return
+	 */
+	private static SubtestAccommodationTO buildSTAccommodation(String oasAttrName, Integer contentCode, String value){
+		SubtestAccommodationTO accommodationTO = new SubtestAccommodationTO();
+		accommodationTO.setName(oasAttrName+"_"+String.valueOf(contentCode.intValue()));
+		accommodationTO.setValue(value);
+		return accommodationTO;
 	}
 
 	/**
