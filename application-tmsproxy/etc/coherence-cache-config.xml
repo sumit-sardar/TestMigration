@@ -25,7 +25,7 @@
     <caching-scheme-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
-	        <scheme-name>TieredScheme</scheme-name>
+	        <scheme-name>ADSTieredScheme</scheme-name>
         </cache-mapping>
         <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
@@ -34,13 +34,14 @@
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASManifest*</cache-name>
-	        <scheme-name>TieredScheme</scheme-name>
+	        <scheme-name>ManifestTieredScheme</scheme-name>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASRoster*</cache-name>
-	        <scheme-name>TieredScheme</scheme-name>
+	        <scheme-name>RosterTieredScheme</scheme-name>
         </cache-mapping>
     </caching-scheme-mapping>
+	
     <caching-schemes>  
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
@@ -88,8 +89,80 @@
 		  <write-batch-factor>1</write-batch-factor>  
 		  <write-requeue-threshold>2147483647</write-requeue-threshold>
 		</read-write-backing-map-scheme>
-		<read-write-backing-map-scheme>
 	
+        <read-write-backing-map-scheme>
+		  <scheme-name>ADSTieredDBScheme</scheme-name>
+		  <internal-cache-scheme>
+		    <local-scheme>
+		      <scheme-ref>TieredBackMemoryScheme</scheme-ref>
+		    </local-scheme>
+		  </internal-cache-scheme>
+		  <write-max-batch-size>256</write-max-batch-size>
+		  <cachestore-scheme>
+		    <class-scheme>
+			  <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
+		      <init-params>
+		        <init-param>
+		          <param-type>java.lang.String</param-type>
+		          <param-value>{cache-name}</param-value>
+		        </init-param>
+		      </init-params>
+		    </class-scheme>
+		  </cachestore-scheme>
+		  <write-delay>1s</write-delay>
+		  <write-batch-factor>1</write-batch-factor>  
+		  <write-requeue-threshold>2147483647</write-requeue-threshold>
+		</read-write-backing-map-scheme>
+		
+		<read-write-backing-map-scheme>
+		  <scheme-name>ManifestTieredDBScheme</scheme-name>
+		  <internal-cache-scheme>
+		    <local-scheme>
+		      <scheme-ref>TieredBackMemoryScheme</scheme-ref>
+		    </local-scheme>
+		  </internal-cache-scheme>
+		  <write-max-batch-size>256</write-max-batch-size>
+		  <cachestore-scheme>
+		    <class-scheme>
+			  <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
+		      <init-params>
+		        <init-param>
+		          <param-type>java.lang.String</param-type>
+		          <param-value>{cache-name}</param-value>
+		        </init-param>
+		      </init-params>
+		    </class-scheme>
+		  </cachestore-scheme>
+		  <write-delay>1s</write-delay>
+		  <write-batch-factor>1</write-batch-factor>  
+		  <write-requeue-threshold>2147483647</write-requeue-threshold>
+		</read-write-backing-map-scheme>
+
+		<read-write-backing-map-scheme>
+		  <scheme-name>RosterTieredDBScheme</scheme-name>
+		  <internal-cache-scheme>
+		    <local-scheme>
+		      <scheme-ref>TieredBackMemoryScheme</scheme-ref>
+		    </local-scheme>
+		  </internal-cache-scheme>
+		  <write-max-batch-size>256</write-max-batch-size>
+		  <cachestore-scheme>
+		    <class-scheme>
+			  <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
+		      <init-params>
+		        <init-param>
+		          <param-type>java.lang.String</param-type>
+		          <param-value>{cache-name}</param-value>
+		        </init-param>
+		      </init-params>
+		    </class-scheme>
+		  </cachestore-scheme>
+		  <write-delay>1s</write-delay>
+		  <write-batch-factor>1</write-batch-factor>  
+		  <write-requeue-threshold>2147483647</write-requeue-threshold>
+		</read-write-backing-map-scheme>
+		
+		<read-write-backing-map-scheme>
 		  <scheme-name>ResponseDBScheme</scheme-name>
 		  <internal-cache-scheme>
 		    <local-scheme>
@@ -112,10 +185,11 @@
 		  <write-batch-factor>1</write-batch-factor>  
 		  <write-requeue-threshold>2147483647</write-requeue-threshold>
 		</read-write-backing-map-scheme>
+		
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
             <scheme-name>TieredDistributedScheme</scheme-name>
-            <service-name>PartitionedCache</service-name> 
+            <service-name>TieredDistributedCache</service-name> 
             <thread-count>60</thread-count>    <!--   Moved before local-storage -->
             <local-storage>true</local-storage>
             <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
@@ -128,9 +202,58 @@
             </backing-map-scheme>
             <autostart>true</autostart>
         </distributed-scheme>
+		
+        <distributed-scheme>            
+            <scheme-name>ADSTieredDistributedScheme</scheme-name>
+            <service-name>ADSTieredDistributedCache</service-name> 
+            <thread-count>60</thread-count>    <!--   Moved before local-storage -->
+            <local-storage>true</local-storage>
+            <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
+            <backup-count>1</backup-count> <!--   Moved -->
+            <backup-count-after-writebehind>0</backup-count-after-writebehind>
+            <backing-map-scheme>                
+                <read-write-backing-map-scheme>                    
+                    <scheme-ref>ADSTieredDBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+            <autostart>true</autostart>
+        </distributed-scheme>
+		
+        <distributed-scheme>            
+            <scheme-name>ManifestTieredDistributedScheme</scheme-name>
+            <service-name>ManifestTieredDistributedCache</service-name> 
+            <thread-count>60</thread-count>    <!--   Moved before local-storage -->
+            <local-storage>true</local-storage>
+            <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
+            <backup-count>1</backup-count> <!--   Moved -->
+            <backup-count-after-writebehind>0</backup-count-after-writebehind>
+            <backing-map-scheme>                
+                <read-write-backing-map-scheme>                    
+                    <scheme-ref>ManifestTieredDBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+            <autostart>true</autostart>
+        </distributed-scheme>
+		
+        <distributed-scheme>            
+            <scheme-name>RosterTieredDistributedScheme</scheme-name>
+            <service-name>RosterTieredDistributedCache</service-name> 
+            <thread-count>60</thread-count>    <!--   Moved before local-storage -->
+            <local-storage>true</local-storage>
+            <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
+            <backup-count>1</backup-count> <!--   Moved -->
+            <backup-count-after-writebehind>0</backup-count-after-writebehind>
+            <backing-map-scheme>                
+                <read-write-backing-map-scheme>                    
+                    <scheme-ref>RosterTieredDBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+            <autostart>true</autostart>
+        </distributed-scheme>
+		
         <distributed-scheme>            
             <scheme-name>ResponseDistributedScheme</scheme-name>
-            <service-name>PartitionedCache</service-name> 
+            <service-name>ResponseDistributedCache</service-name> 
             <thread-count>60</thread-count>    <!--   Moved before local-storage -->
             <local-storage>true</local-storage>
             <partition-count>509</partition-count>  <!--   Moved just after local-storage -->
@@ -158,6 +281,48 @@
 				</distributed-scheme>
 			</back-scheme>
 		</near-scheme> 
-	
+		
+		<near-scheme>
+        	<scheme-name>ADSTieredScheme</scheme-name>
+        	<front-scheme>    
+        		<local-scheme>
+        			<scheme-ref>FrontMemoryScheme</scheme-ref>
+        		</local-scheme>  
+        	</front-scheme>  
+        	<back-scheme>
+				<distributed-scheme>
+					<scheme-ref>ADSTieredDistributedScheme</scheme-ref>
+				</distributed-scheme>
+			</back-scheme>
+		</near-scheme> 
+		
+		<near-scheme>
+        	<scheme-name>RosterTieredScheme</scheme-name>
+        	<front-scheme>    
+        		<local-scheme>
+        			<scheme-ref>FrontMemoryScheme</scheme-ref>
+        		</local-scheme>  
+        	</front-scheme>  
+        	<back-scheme>
+				<distributed-scheme>
+					<scheme-ref>RosterTieredDistributedScheme</scheme-ref>
+				</distributed-scheme>
+			</back-scheme>
+		</near-scheme> 
+		
+		<near-scheme>
+        	<scheme-name>ManifestTieredScheme</scheme-name>
+        	<front-scheme>    
+        		<local-scheme>
+        			<scheme-ref>FrontMemoryScheme</scheme-ref>
+        		</local-scheme>  
+        	</front-scheme>  
+        	<back-scheme>
+				<distributed-scheme>
+					<scheme-ref>ManifestTieredDistributedScheme</scheme-ref>
+				</distributed-scheme>
+			</back-scheme>
+		</near-scheme> 
+		
     </caching-schemes>
 </cache-config>
