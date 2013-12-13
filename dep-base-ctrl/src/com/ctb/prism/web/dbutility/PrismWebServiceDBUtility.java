@@ -614,7 +614,6 @@ public class PrismWebServiceDBUtility {
 						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
 						if(!isCRScorePresent){
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
-							contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}
 					}
@@ -980,8 +979,8 @@ public class PrismWebServiceDBUtility {
 			compTestPst.setLong(2, sessionId);
 			compTestRS = compTestPst.executeQuery();
 			System.out.println("PrismWebServiceDBUtility.getCompositeContentScoreDetails : Query for getCompositeContentScoreDetails : " + GET_COMPOSITE_CONTENT_DETAILS);
-			ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 			while (compTestRS.next()) {
+				ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 				ContentDetailsTO contentDetailsTO = null;
 				String contentCodeName = compTestRS.getString("compName");
 				Integer contentCode = 0;
