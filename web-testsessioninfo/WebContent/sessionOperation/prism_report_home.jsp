@@ -86,7 +86,7 @@
 			<td class="transparent">
             	<netui-data:getData resultId="reportUrl" value="${container.item.reportUrl}"/>  
 				<li style="list-style-type: square;">
-					<a onclick="return openPrismApplication(this.href);" href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
+					<a onclick="return openPrismApplication(this);" href="<%= pageContext.getAttribute("reportUrl") %>" style="display: inline;">
 						<netui:content value="${container.item.displayName}" defaultValue="&nbsp;" />
 					</a>
 				</li>

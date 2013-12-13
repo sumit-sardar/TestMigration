@@ -91,8 +91,9 @@ $().ready(function(){
 });
 
 var PrismOnlineReporting;
-function openPrismApplication(location)
+function openPrismApplication(thisLink)
 {
+	var location = thisLink.href;
 	//**[IAA] defect#76008: TASC - 2013 Op - 07 - SSO to Prism parameters :-Session Time out  Message is not getting displayed on clicking on the  Prism Online Report link on Report page even when the TAS appication is kept idle for more than  20 min on the Report page
 	var sc_null = false;
 	var _date = new Date();
@@ -118,6 +119,8 @@ function openPrismApplication(location)
 	
 	if (!sc_null)
 	{
+		//** Update link href with newly generated value
+		thisLink.href = location;
 	 	var windowHeight = $(window).height() - 50;
     	var windowWidth = $(window).width() - 100;
     	var left = (screen.width/2)-(windowWidth/2);
