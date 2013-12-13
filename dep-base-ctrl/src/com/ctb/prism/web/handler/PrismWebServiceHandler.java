@@ -213,7 +213,10 @@ public class PrismWebServiceHandler {
 		String customerId = null;
 		String orgNodeCode = null;
 		String heirarchyLevel = null;
+		
+		boolean rosterAvailable = false;
 		for(long rosterID : rosterIds){
+			rosterAvailable = true;
 			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
 			
 			StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
@@ -234,7 +237,11 @@ public class PrismWebServiceHandler {
 			rosterDetailsList.add(rosterDetailsTO);
 		}
 		
-		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student");
+		if(rosterAvailable){
+			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student");
+		}else{
+			System.out.println("PrismWebServiceHandler.editStudent : No Roster availabe for the student id : " + studentId + ". Web Service not invoked.");
+		}
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student ended for student id - " + studentId);
 		
 		long stopTime = System.currentTimeMillis();
