@@ -227,9 +227,19 @@ public class PrismWebServiceHandler {
 			
 			CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
 			customerId = custHierarchyDetailsTO.getCustomerId();
-			OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
-			orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();			
-			heirarchyLevel = orgDetails.getOrgLevel();
+			String orgNodeCodeList = "";
+			for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
+			{
+				//OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
+				//orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();
+				//heirarchyLevel = orgDetails.getOrgLevel();
+				OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
+				if (i>0) orgNodeCodeList += "~";
+            	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
+				heirarchyLevel = orgDetails.getOrgLevel();
+			}
+			orgNodeCode = orgNodeCodeList;
+			System.out.println("WS/EditStudent orgNodeCodeList: "+orgNodeCodeList);
 			
 			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 			
@@ -273,10 +283,21 @@ public class PrismWebServiceHandler {
 		String orgNodeCode = null;
 		String heirarchyLevel = null;
 		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
-		customerId = custHierarchyDetailsTO.getCustomerId();
-		OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
-		orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();
-		heirarchyLevel = orgDetails.getOrgLevel();
+		customerId = custHierarchyDetailsTO.getCustomerId();		
+		String orgNodeCodeList = "";
+		for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
+		{
+			//OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(custHierarchyDetailsTO.getCollOrgDetailsTO().size()-1);
+			//orgNodeCode = (orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode();
+			//heirarchyLevel = orgDetails.getOrgLevel();
+			OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
+			if (i>0) orgNodeCodeList += "~";
+        	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
+			heirarchyLevel = orgDetails.getOrgLevel();
+		}
+		orgNodeCode = orgNodeCodeList;
+		System.out.println("WS/Scoring orgNodeCodeList: "+orgNodeCodeList);
+		
 		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 		
 		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);

@@ -3935,7 +3935,7 @@ public class SessionOperationController extends PageFlowController {
             	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
             	if (i==0)
             	{
-            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), orgNodeId);
+            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, this.orgNode, cr.getCustomerKey(), orgNodeId);
                 	requestParam = HMACEncrypter.encrypt();
                 	System.out.println("SSOparams=" + requestParam);
             	}
@@ -8492,7 +8492,7 @@ public class SessionOperationController extends PageFlowController {
 			            	//Story: TASC - 2013 Op - 07 - SSO to Prism parameters (frontend)
 			            	if (i==0)
 			            	{
-			            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, cr.getCustomerKey(), orgNodeId);
+			            		HMACQueryStringEncrypter HMACEncrypter = new HMACQueryStringEncrypter(this.user, this.orgNode, cr.getCustomerKey(), orgNodeId);
 			                	requestParam = HMACEncrypter.encrypt();
 			                	System.out.println("HMACEncrypter.encrypt()->SSOparams=" + requestParam);
 			            	}

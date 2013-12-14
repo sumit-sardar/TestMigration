@@ -1,7 +1,11 @@
 package com.ctb.util;
 
+import org.apache.beehive.controls.api.bean.Control;
+
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrganizationNode;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.control.db.OrgNode;
 
 
 public class HMACQueryStringEncrypter {
@@ -24,6 +28,7 @@ public class HMACQueryStringEncrypter {
 	private String appName 							= "OAS";
 	
 	User user = null;
+	OrgNode orgNode = null;
 	HMACQueryStringBuilder queryStringBuilder = null;
 
 	int CustomerId=0;
@@ -31,18 +36,21 @@ public class HMACQueryStringEncrypter {
 	int HeirarchyLevel=0;
 	boolean WebServiceSSO = false;
 	//public HMACQueryStringEncoder() {}
-
+	 
 	/**
 	 * @param _user	User object for the currently logged in user
+	 * @param _orgNode	orgNode object for the currently logged in user
 	 * @param sharedKey	encryption key supplied by PRISM
 	 * @param _selectedOrgNodeId	orgNodeId for current user
 	 */
-	public HMACQueryStringEncrypter(User _user, String sharedKey, Integer _selectedOrgNodeId) {
+	public HMACQueryStringEncrypter(User _user, OrgNode _orgNode, String sharedKey, Integer _selectedOrgNodeId) {
 		
 		if (_user == null) throw new IllegalArgumentException("User object null.");
+		if (_orgNode == null) throw new IllegalArgumentException("OrgNode object null.");
 		if (sharedKey == null || sharedKey.length()==0) throw new IllegalArgumentException("sharedKey null or empty.");
 		if (_selectedOrgNodeId == null || _selectedOrgNodeId==0) throw new IllegalArgumentException("_selectedOrgNodeId null or empty.");
 		user = _user;
+		orgNode = _orgNode;
 		SECRET_KEY = sharedKey;		
 		selectedOrgNodeId = _selectedOrgNodeId;
 		queryStringBuilder = new HMACQueryStringBuilder(SECRET_KEY, SIGNATURE_VALIDITY_SECONDS, ENCODING_ALGORITHM);
@@ -97,7 +105,20 @@ public class HMACQueryStringEncrypter {
 			                if (leafNodePath != null && leafNodePath.length()>0)
 			                {
 			                	hierarchyLevel = leafNodePath.split(",").length;
-			                	orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+			                	System.out.println("leafNodePath (orgNodeIds): "+leafNodePath);
+			                	//** 12/12/2013 PRISM Requirements changed.
+			                	//** We need to pass ord_node_code for all user org_nodes not only the top one.
+			                	String[] leafNodes = leafNodePath.split(",");
+			                	String orgNodeCodeList = "";
+			                	for (int l=0;l<leafNodes.length;l++)
+			                	{
+				                	Node nd = orgNode.getOrgNodeById(Integer.parseInt(leafNodes[l]));
+				                	if (l>0) orgNodeCodeList += "~";
+				                	orgNodeCodeList += (nd.getOrgNodeCode() == null?"":nd.getOrgNodeCode());
+			                	}
+			                	System.out.println("orgNodeCodeList: "+orgNodeCodeList);
+			                	//orgNodeCode = (node.getOrgNodeCode() == null?"":node.getOrgNodeCode());
+			                	orgNodeCode = orgNodeCodeList;
 			                }
 		                }
 		            }
