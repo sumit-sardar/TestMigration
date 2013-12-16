@@ -204,6 +204,18 @@
 										
 										</td>
 									</tr>
+									
+								   	<tr style="display:none" id="testSessionRow" class="transparent">
+								   		<td width="110" class="transparent alignRight" style="vertical-align: top;">
+								   				<lb:label key="stu.info.session" suffix=":"/>
+								   		</td>
+										<td class="transparent-small" style="padding: 5px 5px 0 3px" >
+											<div id="testSessionName" style="overflow-y:auto; width:200px; height:86px; border: 1px solid #A6C9E2 !important;" >
+												<table id="scrollTable"></table>
+											</div>
+										</td>
+									</tr>
+								   
 								</tbody>
 								</table>
 								</td>

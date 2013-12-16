@@ -62,6 +62,7 @@ import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
 import com.ctb.exception.studentManagement.StudentDataNotFoundException;
 import com.ctb.exception.studentManagement.StudentDataUpdateException;
+import com.ctb.exception.studentManagement.TestSessionAssignedToStudentNotFoundException;
 import com.ctb.exception.studentManagement.UserDataNotFoundException;
 import com.ctb.exception.studentManagement.ScoringException;
 import com.ctb.exception.validation.ValidationException;
@@ -4027,4 +4028,20 @@ public class StudentManagementImpl implements StudentManagement
 		}
     	return userName3to8;
     }
+    
+    public String[] getTestSessionsAssignedToStudent(Integer studentId) throws CTBBusinessException
+	{
+		String[] testSessionName = null;
+		try {
+			testSessionName = studentManagement.getTestSessionsAssignedToStudent(studentId);
+			if(testSessionName != null) {
+				return testSessionName;
+			}
+		} catch (SQLException se) {
+			TestSessionAssignedToStudentNotFoundException tee = new TestSessionAssignedToStudentNotFoundException("StudentManagementImpl: getTestSessionsAssignedToStudent : " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		return testSessionName;
+	}
 } 

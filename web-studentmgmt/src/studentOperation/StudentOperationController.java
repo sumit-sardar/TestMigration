@@ -693,6 +693,21 @@ public class StudentOperationController extends PageFlowController {
 		studentProfileData.setStuAccommodation(getStudentAccommodations(studentId, customerConfigurations));
 		try {
 			
+			/* 
+			 * Changes for "Story OK - TAS cross reference sessions from student list" 
+			 * Part "OK TAS - Display Test Session in Student Profile" on 10th Dec 2013
+			*/
+			
+			boolean isDisplayTestSessionInStudentProfile = getDisplayTestSession(customerConfigurations);
+			
+			if(isDisplayTestSessionInStudentProfile == true) {
+				studentProfileData.setTestSessionName(getTestSessionsAssignedToStudent(studentId));
+				studentProfileData.setDisplayTestSession(isDisplayTestSessionInStudentProfile);
+			}
+			/*else if(isDisplayTestSessionInStudentProfile == false) {
+				studentProfileData.setTestSessionName("");
+			}*/
+			
 			OptionList optionList = new OptionList();
 			optionList.setGradeOptions(getGradeOptions(ACTION_ADD_STUDENT));
 			optionList.setGenderOptions(getGenderOptions(ACTION_ADD_STUDENT));
@@ -3489,6 +3504,37 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         return (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) ||
                 roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR) ||
                 roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOUNT_MANAGER));
+    }
+    
+    /*
+     * Take list CustomerConfiguration as argument and returns whether 
+     * Display_Test_Session CustomerConfiguration is true or false
+     */
+    private boolean getDisplayTestSession(CustomerConfiguration[] customerConfigs)
+    {
+    	boolean isDisplayTestSessionInStudentProfile = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Display_Test_Session")
+					&& cc.getDefaultValue().equals("T")) {
+            	isDisplayTestSessionInStudentProfile = true;
+            	break;
+            }
+        }
+        return isDisplayTestSessionInStudentProfile;
+    }
+    
+    private String[] getTestSessionsAssignedToStudent(Integer studentId) {
+    	String[] testSessionName = null;
+		try {
+			testSessionName = this.studentManagement.getTestSessionsAssignedToStudent(studentId);
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		return testSessionName;
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    

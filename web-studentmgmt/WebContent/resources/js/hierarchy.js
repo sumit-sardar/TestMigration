@@ -67,6 +67,8 @@ var demographicGroupIds = {};
 var studentExtracted = false;
 var hasLockHierarchyEditConfigured = false;
 var hierarchyLockLevel;
+var isDisplayTestSessionInStudentProfile = false; // For "OK TAS - Display Test Session in Student Profile"
+var testSessionName = []; // For "OK TAS - Display Test Session in Student Profile" to store TestSessionName
 
 
 $(document).bind('keydown', function(event) {
@@ -1193,6 +1195,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 		reset();
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
+		if(isAddStudent) {
+			$("#testSessionRow").hide();
+		}
 		$("#addEditStudentDetail").dialog({  
 			title:$("#addStuID").val(),  
 		 	resizable:false,
@@ -1272,8 +1277,15 @@ function getValue(keyVal) {
 
 
 	function setPopupPosition(isAddStudent){
-				var toppos = ($(window).height() - 610) /2 + 'px';
-				var leftpos = ($(window).width() - 760) /2 + 'px';
+				var toppos;
+				var leftpos;
+				if(!isAddStudent && isDisplayTestSessionInStudentProfile) {							 	
+								toppos = (($(window).height() - 670) / 2) + 'px';
+								leftpos = ($(window).width() - 760) /2 + 'px';
+				}else{
+					toppos = ($(window).height() - 610) /2 + 'px';
+					leftpos = ($(window).width() - 760) /2 + 'px';
+				}
 				$("#addEditStudentDetail").parent().css("top",toppos);
 				$("#addEditStudentDetail").parent().css("left",leftpos);		 	 
 				$("#viewStudentDetail").parent().css("top",toppos);
@@ -1364,6 +1376,22 @@ function fillDropDown( elementId, optionList) {
 	$(ddl).html(optionHtml);
 	
 }
+
+	function fillDivForTestSessionName(elementId, optionList) {
+		var ddl = document.getElementById(elementId);
+		var optionHtml = "";
+		optionHtml += "<tbody>";
+		for(var i = 0; i < optionList.length; i++) {
+			if(i%2 == 0) {
+				optionHtml += "<tr style='background-color:#FFFFFF; padding-right: auto;'><td><label>"+optionList[i]+"</label></td></tr>";
+			}
+			else {
+				optionHtml += "<tr style='background-color:#EBF1FD; padding-right: auto;'><td><label>"+optionList[i]+"</label></td></tr>";
+			}
+		}
+		optionHtml += "</tbody>";
+		$(ddl).html(optionHtml);
+	}
 
 function fillselectedOrgNode( elementId, orgList) {
 	var ddl = document.getElementById(elementId);
@@ -2122,6 +2150,7 @@ function openNode(orgNodeId) {
 						notTestingOption = data.optionList.notTestingOption;
 						loginId = data.userName;
 						isEditStudentImported = data.isStudentImported;
+						isDisplayTestSessionInStudentProfile = data.isDisplayTestSession;
 						fillDropDown("gradeOptions", gradeOptions);
 						fillDropDown("genderOptions", genderOptions);
 						fillDropDown("dayOptions", dayOptions);
@@ -2131,6 +2160,11 @@ function openNode(orgNodeId) {
 						if($("#isLasLinkCustomer").val() =="true")
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 							
+						if(!isAddStudent && isDisplayTestSessionInStudentProfile) {
+							$("#testSessionRow").show();
+							testSessionName = data.testSessionName;
+							fillDivForTestSessionName("scrollTable",testSessionName);
+						}
 						$("#studentFirstName").val(data.firstName);
 						$("#studentMiddleName").val(data.middleName);
 						$("#studentLastName").val(data.lastName);
@@ -2257,6 +2291,7 @@ function openNode(orgNodeId) {
 													 	});	
 													 	 
 							setPopupPosition(isAddStudent);
+							isDisplayTestSessionInStudentProfile = false;
 							checkOpenNode(organizationNodes);
 	  						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();
   						}

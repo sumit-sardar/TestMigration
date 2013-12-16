@@ -564,6 +564,9 @@ public interface StudentManagement
     public boolean isMappedWith3_8User(String userName) throws CTBBusinessException;
     
     public String fetchMapped3to8User(String userName) throws CTBBusinessException;
+    
+    // Added to get Test Session Name from TEST_ADMIN table where input is studentId
+    public String[] getTestSessionsAssignedToStudent(Integer studentId) throws CTBBusinessException;
 
 } 	
 

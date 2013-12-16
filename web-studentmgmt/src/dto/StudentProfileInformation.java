@@ -39,7 +39,12 @@ public class StudentProfileInformation extends SanitizedFormField
     //START- (LLO82) StudentManagement Changes For LasLink product
     private String testPurpose;
     //END- (LLO82) StudentManagement Changes For LasLink product
-
+    
+    //START-OK TAS - Display Test Session in Student Profile
+    private String[] testSessionName;
+    private boolean isDisplayTestSession;
+    //END-OK TAS - Display Test Session in Student Profile
+    
     private Integer createBy;
     private OptionList optionList;
     private List stuDemographic;
@@ -1197,6 +1202,36 @@ public class StudentProfileInformation extends SanitizedFormField
 	public void setStudentExtracted(boolean isStudentExtracted) {
 		this.isStudentExtracted = isStudentExtracted;
 	}
-	
-	
+
+
+	/**
+	 * @return the testSessionName
+	 */
+	public String[] getTestSessionName() {
+		return testSessionName;
+	}
+
+
+	/**
+	 * @param testSessionName the testSessionName to set
+	 */
+	public void setTestSessionName(String[] testSessionName) {
+		this.testSessionName = testSessionName;
+	}
+
+
+	/**
+	 * @return the isDisplayTestSession
+	 */
+	public boolean isDisplayTestSession() {
+		return isDisplayTestSession;
+	}
+
+
+	/**
+	 * @param isDisplayTestSession the isDisplayTestSession to set
+	 */
+	public void setDisplayTestSession(boolean isDisplayTestSession) {
+		this.isDisplayTestSession = isDisplayTestSession;
+	}
 } 
