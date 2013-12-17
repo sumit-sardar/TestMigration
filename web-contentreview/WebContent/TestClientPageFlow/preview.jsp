@@ -946,9 +946,15 @@ body {
                   }
                   function loadSwfApplication(){
                       lz.embed.resizeWindow('100%', '100%');
-	                  lz.embed.swf({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?&lzr=swf10&servletUrl=<%=url%>&eliminatorResource=http://oascqa-ewdc.ctb.com/ContentReviewWeb/resources/eliminator.swf', allowfullscreen: 'true', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer', wmode: 'transparent'});
+	                  lz.embed.swf({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?&lzr=swf10&isPrev=true&servletUrl=<%=url%>&eliminatorResource=http://oascqa-ewdc.ctb.com/ContentReviewWeb/resources/eliminator.swf', allowfullscreen: 'true', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer', wmode: 'transparent'});
 					  //lz.embed.swf({url: 'TestClient.lzx.swf?&lzr=swf10&folder=calif&servletUrl=http://192.168.2.2:12345/servlet/fixed&eliminatorResource=resources/eliminator.swf', allowfullscreen: 'false', bgcolor: '#6691B4', width: '100%', height: '100%', id: 'lzapp', accessible: 'false', cancelmousewheel: false, appenddivid: 'appcontainer'});
-					  	
+
+                      setTimeout(function(){
+                      removeStatusDiv();
+                        }, 500);
+                        	
+
+	/*	  	
 	                  lz.embed.applications.lzapp.onloadstatus = function loadstatus(p) {
 	                    // called with a percentage (0-100) indicating load progress
 	                    var el = document.getElementById('lzsplashtext');
@@ -963,7 +969,7 @@ body {
 	                        }
 	                    }
 	                  }
-	
+	*/
 	                  lz.embed.applications.lzapp.onload = function loaded() {
 	                    // called when this application is done loading and the 
 	                    // canvas has initted
