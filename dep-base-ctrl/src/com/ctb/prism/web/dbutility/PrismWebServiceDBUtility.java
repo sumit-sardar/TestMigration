@@ -738,6 +738,19 @@ public class PrismWebServiceDBUtility {
 					 custConfAccommodationsWrit.add(buildSTAccommodation(PrismWebServiceConstant.fontBackGrClrAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), null));
 				}
 				
+				if(rs.getString("music_file_id") != null && !"".equals(rs.getString("music_file_id"))){
+					 custConfAccommodationsMath.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"),"Y"));
+					 custConfAccommodationsRead.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), "Y"));
+					 custConfAccommodationsSci.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), "Y"));
+					 custConfAccommodationsSoc.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), "Y"));
+					 custConfAccommodationsWrit.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), "Y"));
+				}else{
+					 custConfAccommodationsMath.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Mathematics"), null));
+					 custConfAccommodationsRead.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Reading"), null));
+					 custConfAccommodationsSci.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Science"), null));
+					 custConfAccommodationsSoc.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Social Studies"), null));
+					 custConfAccommodationsWrit.add(buildSTAccommodation(PrismWebServiceConstant.musicPlayerAttrName, PrismWebServiceConstant.contentDetailsContentCodeMap.get("Writing"), null));
+				}
 				
 			}
 			

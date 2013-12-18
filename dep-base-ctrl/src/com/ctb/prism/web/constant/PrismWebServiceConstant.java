@@ -79,6 +79,7 @@ public class PrismWebServiceConstant {
 	public static final  Map<String,String> contentDetailsStausCodeMap = new HashMap<String, String>();
 	
 	public static final String fontBackGrClrAttrName = "Acc_Ft_Bk_Cr";
+	public static final String musicPlayerAttrName = "Acc_Msc_Plr";
 	
 	public static final String AddStdInfoSubTestAcc = "ADDITIONAL STUDENT INFORMATION";
 	
