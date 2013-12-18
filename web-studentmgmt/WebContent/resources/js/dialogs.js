@@ -5,6 +5,21 @@ var profileHintQuesOptions=[];
 var dbProfileDetails;
 var isProfileChanged = false;
  
+function viewSwitchPrograms() {
+	$('#switchProgramsDialogId').dialog({
+										autoOpen: true,
+										modal: true,
+									    title:"Switch Programs", 
+										width: "800px",
+										resizable: false,
+										open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+									});
+}
+
+function closeSwitchPrograms() {
+	$('#switchProgramsDialogId').dialog("close");
+}
+
 function viewBroadcastMessage() {
 	
 	var param = "param";

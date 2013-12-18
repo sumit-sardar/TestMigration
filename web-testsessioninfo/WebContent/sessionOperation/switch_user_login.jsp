@@ -75,7 +75,7 @@
             <tr>
                 <td colspan="2">
                 	<br/><h1>Select Administration</h1>
-                	<p style="color: #476CB5;">Click any of the below links to navigate to the "EOI Administration" or "6-8 Administration" or "Manage Users with EOI Login".</p>
+                	<p style="color: #476CB5;">Click one of the links below to manage the EOI or 6-8 online test administration.</p>
                 </td>                
             </tr>
          </table>
@@ -83,21 +83,21 @@
             <tr>
                 <td><h4>
 	                <li style="list-style-type: square;">
-	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage by OK EOI online test administration</a>
+	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage the Oklahoma EOI online test administration</a>
 	                </li>
                 </h4></td>
             </tr>
             <tr>
 	            <td><h4>
 	                <li style="list-style-type: square;">
-	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage by OK 6-8 online test administration</a>
+	                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage the Oklahoma 6-8 online test administration</a>
 	                </li>
 	            </h4></td>
             </tr>
             <tr>
                 <td><h4>
                 <li style="list-style-type: square;">	
-                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage Users</a>
+                	<a onclick="showLoading();" href="/SessionWeb/sessionOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage user accounts (shared between EOI and 6-8)</a>
                 </li>
             	</h4></td>
             </tr>

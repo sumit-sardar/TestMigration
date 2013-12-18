@@ -645,15 +645,35 @@ public class BulkOperationController extends PageFlowController {
     	try {
 			this.isEOIUser = this.studentManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
 			this.isMappedWith3_8User = this.studentManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
-			//this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
-			//this.isEOISelected = (getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))? true: false;
-			//this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
-			if(this.is3to8Selected)
+
+			if((getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))) {
+				this.is3to8Selected = true;
+				this.isEOISelected = false;
+				this.isUserLinkSelected = false;
+				
 				getSession().setAttribute("is3to8Selected", this.is3to8Selected);
-			else if(this.isEOISelected)
 				getSession().setAttribute("isEOISelected", this.isEOISelected);
-			else if(this.isUserLinkSelected)
 				getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+			}
+			if((getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))) {
+				this.is3to8Selected = false;
+				this.isEOISelected = true;
+				this.isUserLinkSelected = false;
+				
+				getSession().setAttribute("is3to8Selected", this.is3to8Selected);
+				getSession().setAttribute("isEOISelected", this.isEOISelected);
+				getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+			}
+			if((getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))) {
+				this.is3to8Selected = false;
+				this.isEOISelected = false;
+				this.isUserLinkSelected = true;
+				
+				getSession().setAttribute("is3to8Selected", this.is3to8Selected);
+				getSession().setAttribute("isEOISelected", this.isEOISelected);
+				getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+			}
+			
 		} catch (CTBBusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -948,6 +968,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean laslinkCustomer = false;
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1;
+    	boolean hasBlockUserManagement = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -1038,6 +1059,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 					dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
 					continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_User_Management_3to8") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		hasBlockUserManagement = Boolean.TRUE;
+				}
 			}
 			
 		}
@@ -1073,6 +1098,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	//Done for 3to8 customer to block user module
+     	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

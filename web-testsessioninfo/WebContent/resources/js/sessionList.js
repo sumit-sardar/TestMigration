@@ -2713,6 +2713,14 @@ function registerDelegate(tree){
 		
 		if(!isTestSelected){
 			requiredFields = "";
+			requiredFieldCount += 1;            
+			requiredFields = buildErrorString("Test Name", requiredFieldCount, requiredFields);
+			setMessage("Missing required field", requiredFields, "errorMessage", $("#reqTextmsg").val());
+			return false;
+		}
+		
+		if(!isTestSelected){
+			requiredFields = "";
 			if ( testSessionName.length == 0 ) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test Name", requiredFieldCount, requiredFields);

@@ -1,13 +1,26 @@
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
-	if (broadcastMessages == null) broadcastMessages = new Integer(0);		
+	if (broadcastMessages == null) broadcastMessages = new Integer(0);
+	
+	boolean is3to8Selected=(session.getAttribute("is3to8Selected") != null && "true".equalsIgnoreCase(session.getAttribute("is3to8Selected").toString()))? true: false;
+	boolean isEOISelected=(session.getAttribute("isEOISelected") != null && "true".equalsIgnoreCase(session.getAttribute("isEOISelected").toString()))? true: false;
+	boolean isUserLinkSelected=(session.getAttribute("isUserLinkSelected") != null && "true".equalsIgnoreCase(session.getAttribute("isUserLinkSelected").toString()))? true: false;
+	
 %>
 
 
 <table class="headerLayout">
 	<tr>
+		<% if(is3to8Selected || isEOISelected || isUserLinkSelected) {%>
+		<td align="left" width="65%" style="padding: 3px 0px 0px 3px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+		<% } else { %>
 		<td align="left" width="70%" style="padding: 3px 0px 0px 3px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+		<%} %>
+		<% if(is3to8Selected || isEOISelected || isUserLinkSelected) {%>
+		<td align="left" width="35%">
+		<% } else { %>
 		<td align="left" width="30%">
+		<%} %>
 			<table border="0" cellpadding="0" cellspacing="0">
 			<tr height="22">
 				<td align="center">
@@ -18,14 +31,25 @@
 				<td>
 					<div class="roundedHeader">
 					&nbsp;&nbsp;
+					<% 
+						if(is3to8Selected || isEOISelected || isUserLinkSelected) {
+					%>
+						<a href="#" onclick="viewSwitchPrograms();"><b>Switch Programs</b></a>&nbsp;
+						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% } %>
 					<a href="#" onclick="viewBroadcastMessage();"><b>Messages</b></a>
 					<% if (broadcastMessages.intValue() > 0) { %>
 						<span class="messageheader"><%=broadcastMessages.toString()%></span>
 					<% } %>
 					&nbsp;								
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
-					<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
-					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% 
+						Boolean hasBlockUserManagement=(Boolean)session.getAttribute("hasBlockUserManagement");
+						if((hasBlockUserManagement==null) || (hasBlockUserManagement!=null && hasBlockUserManagement==false) || ((session.getAttribute("is3to8Selected") != null) && !is3to8Selected)) {
+					%>
+						<a href="#" onClick="viewMyProfile();"><b>My Profile</b></a>&nbsp;&nbsp;
+						<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
+					<% } %>
                 	<a href="<netui-template:attribute name="helpLink"/>" onClick="return showHelpWindow(this.href);"><b>Help</b></a>&nbsp;&nbsp;
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
 					<a href="#" onclick="gotoAction('logout.do');"><b>Logout</b></a>&nbsp;&nbsp;
@@ -37,6 +61,67 @@
 	</tr>
 </table>
 
+ 
+ <!-- Switch Programs Dialog for EOI user login -->
+<div id="switchProgramsDialogId"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<br>
+	<div class="feature" style="padding: 10px; background-color: #ffffff;" id="switchProgramsBody">
+		<table class="simpleBlock" width="100%" cellpadding="5">
+            <tr>
+                <td colspan="2">
+                	<br/><h1>Select Administration</h1>
+                	 <% 
+                	 	String custName="";
+						if(is3to8Selected) {
+							custName="EOI";
+						} else {
+							custName="6-8";
+						}
+					%>
+                	<p style="color: #476CB5;">Click any of the below links to navigate to the "<%=custName%> Administration" or "Manage Users with EOI Login".</p>
+                </td>                
+            </tr>
+         </table>
+		<table style="margin-left:40px;">       
+		   <% 
+				if(is3to8Selected) {
+			%>
+            <tr>
+                <td><h4>
+	                <li style="list-style-type: square;">
+	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/orgOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage my OK EOI online administration</a>
+	                </li>
+                </h4></td>
+            </tr>
+            <% } else { %>
+            <tr>
+	            <td><h4>
+	                <li style="list-style-type: square;">
+	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/orgOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage by OK 6-8 online administration</a>
+	                </li>
+	            </h4></td>
+            </tr>
+            <% } %>
+            <tr>
+                <td><h4>
+                <li style="list-style-type: square;">	
+                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/orgOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage Users</a>
+                </li>
+            	</h4></td>
+            </tr>
+         </table>
+	</div>
+	<br>
+	<div>
+		<table cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr align="center"><td>
+					<input type="button" value="&nbsp;Close&nbsp;" onclick="javascript:closeSwitchPrograms(); return false;" class="ui-widget-header" style="width:60px">
+				</td></tr>
+				<tr><td>&nbsp;</td></tr>
+		</table>
+	</div>	
+</div>
  
 <!-- Broadcast Message Dialog -->
 <div id="broadcastMsgDialogId"

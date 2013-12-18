@@ -98,13 +98,34 @@ public class TestContentOperationController extends PageFlowController {
 		if(getSession().getAttribute("isUserLinkSelected") == null)
 			this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
     	 */
-    	if(this.is3to8Selected)
+    	if((getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))) {
+			this.is3to8Selected = true;
+			this.isEOISelected = false;
+			this.isUserLinkSelected = false;
+			
 			getSession().setAttribute("is3to8Selected", this.is3to8Selected);
-		else if(this.isEOISelected)
 			getSession().setAttribute("isEOISelected", this.isEOISelected);
-		else if(this.isUserLinkSelected)
 			getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
-    	
+		}
+		if((getRequest().getParameter("isEOISelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isEOISelected").toString()))) {
+			this.is3to8Selected = false;
+			this.isEOISelected = true;
+			this.isUserLinkSelected = false;
+			
+			getSession().setAttribute("is3to8Selected", this.is3to8Selected);
+			getSession().setAttribute("isEOISelected", this.isEOISelected);
+			getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+		}
+		if((getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))) {
+			this.is3to8Selected = false;
+			this.isEOISelected = false;
+			this.isUserLinkSelected = true;
+			
+			getSession().setAttribute("is3to8Selected", this.is3to8Selected);
+			getSession().setAttribute("isEOISelected", this.isEOISelected);
+			getSession().setAttribute("isUserLinkSelected", this.isUserLinkSelected);
+		}
+		
     	if(getSession().getAttribute("isEOIUser") != null)
 			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
 		else
@@ -891,6 +912,7 @@ public class TestContentOperationController extends PageFlowController {
     	boolean hasUploadDownloadConfig = false;
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
+    	boolean hasBlockUserManagement = false;
         
 		//**[IAA] Proctor users should not see PRISM reports
 		boolean TASCProctor = false;
@@ -966,6 +988,10 @@ public class TestContentOperationController extends PageFlowController {
 				dataExportVisibilityLevel = Integer.parseInt(cc.getDefaultValue());
 				continue;
             }
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_User_Management_3to8") && 
+            		cc.getDefaultValue().equals("T")) {
+        		hasBlockUserManagement = Boolean.TRUE;
+            }
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -984,7 +1010,8 @@ public class TestContentOperationController extends PageFlowController {
 		this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
-		
+		//Done for 3to8 customer to block user module
+		this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){

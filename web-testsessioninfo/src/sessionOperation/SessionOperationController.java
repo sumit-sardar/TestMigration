@@ -361,13 +361,25 @@ public class SessionOperationController extends PageFlowController {
     	if(selectedLink.equals("3-8_Link")) {
     		getSession().setAttribute("is3to8Selected", "true");
     		this.is3to8Selected = true;
+    		getSession().setAttribute("isEOISelected", "false");
+    		this.isEOISelected = false;
+    		getSession().setAttribute("isUserLinkSelected", "false");   
+    		this.isUserLinkSelected = false;
     	} else if(selectedLink.equals("EOI_Link")) {
     		getSession().setAttribute("isEOISelected", "true");
     		this.isEOISelected = true;
+    		getSession().setAttribute("is3to8Selected", "false");
+    		this.is3to8Selected = false;
+    		getSession().setAttribute("isUserLinkSelected", "false");   
+    		this.isUserLinkSelected = false;
     	} else if(selectedLink.equals("UserLink")){
     		//do nothing: need to switch to Manage User module with EOI login
     		getSession().setAttribute("isUserLinkSelected", "true");   
     		this.isUserLinkSelected = true;
+    		getSession().setAttribute("isEOISelected", "false");
+    		this.isEOISelected = false;
+    		getSession().setAttribute("is3to8Selected", "false");
+    		this.is3to8Selected = false;
     	}
     	
     	try
@@ -390,12 +402,23 @@ public class SessionOperationController extends PageFlowController {
 			@Jpf.Forward(name = "switchUserLogin", path = "switchUserLogin.do"),
 			@Jpf.Forward(name = "redirectToManageUser", path = "redirectToManageUser.do")
 	})
-	protected Forward beginForSwitchingUserLogin()
+	protected Forward beginForSwitchingUserLogin() throws CTBBusinessException
 	{
 		String forwardName = "currentUI";
 		
 		if(this.isUserLinkSelected)
 			forwardName = "redirectToManageUser";
+		
+		if(getSession().getAttribute("isEOIUser") != null)
+			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+		else
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+		if(getSession().getAttribute("isMappedWith3_8User") != null)
+			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+		else
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+		
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
@@ -785,11 +808,14 @@ public class SessionOperationController extends PageFlowController {
           try
         {    	  
         	userTimeZone =  userManagement.getUserTimeZone(this.userName);
-            if (!isPopulatedSuccessfully){
+            if (!isPopulatedSuccessfully || (this.isEOIUser && this.isMappedWith3_8User)){
             	TestProductData testProductData  = this.getTestProductDataForUser();
             	tps = testProductData.getTestProducts();
             	 if( tps!=null ) {
             		//vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
+            		 if(this.isEOIUser && this.isMappedWith3_8User) {
+            			 vo=new ScheduleTestVo();
+            		 }
             		vo.populate(userName, tps, itemSet, scheduleTest);
                  	vo.populateTopOrgnode(this.topNodesMap);
                  	vo.populateLevelOptions();
@@ -1106,7 +1132,9 @@ public class SessionOperationController extends PageFlowController {
     
     	@Jpf.Action()
         protected Forward getUserProductsDetails(SessionOperationForm form) {
-    		
+    		if((this.isEOIUser && this.isMappedWith3_8User)) {
+    			initialize();
+    		}
     		String jsonData = "";
     		OutputStream stream = null;
     		String selectedProductId = "";
@@ -1123,10 +1151,13 @@ public class SessionOperationController extends PageFlowController {
     	    
     	    try {
 
-    	    	if (!isPopulatedSuccessfully){
+    	    	if (!isPopulatedSuccessfully || (this.isEOIUser && this.isMappedWith3_8User)){
                 	TestProductData testProductData  = this.getTestProductDataForUser();
                 	tps = testProductData.getTestProducts();
                 	 if( tps!=null ) {
+                		 if(this.isEOIUser && this.isMappedWith3_8User) {
+                			 this.vo=new ScheduleTestVo();
+                		 }
                 		 this.vo.populate(userName, tps, itemSet, scheduleTest);
                 		 this.vo.populateTopOrgnode(this.topNodesMap);
                 		 this.vo.populateLevelOptions();
@@ -2880,16 +2911,16 @@ public class SessionOperationController extends PageFlowController {
 
 
 	private void initialize() {
-		java.security.Principal principal = getRequest().getUserPrincipal();
-		this.userName = principal.toString();
-
-		getSession().setAttribute("userName", this.userName);
+		getLoggedInUserPrincipal();
 		UserNodeData und = null;
 
 		try {
-			if(this.user == null || this.topNodesMap == null || (this.topNodesMap!=null && this.topNodesMap.size()==0 ) ) {
-				if(this.user ==null)
+			if(this.user == null || (this.isEOIUser && this.isMappedWith3_8User) || this.topNodesMap == null || (this.topNodesMap!=null && this.topNodesMap.size()==0 ) ) {
+				if(this.user ==null || (this.isEOIUser && this.isMappedWith3_8User))
 					this.user =  userManagement.getUser(this.userName, this.userName);
+				if((this.isEOIUser && this.isMappedWith3_8User)) {
+					this.topNodesMap = new LinkedHashMap<Integer, String>();
+	    		}
 				und = this.scheduleTest.getTopUserNodesForUser(this.userName, null,
 						null, null, null);
 		        SortParams sortParams = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.ORGNODE_DEFAULT_SORT, FilterSortPageUtils.ASCENDING, null, null);            
@@ -2981,7 +3012,7 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_sessions.jsp") 
         }) 
-    protected Forward assessments_sessions()
+    protected Forward assessments_sessions()  throws CTBBusinessException
     {	if(getSession().getAttribute("is3to8Selected") == null)
 			this.is3to8Selected = (getRequest().getParameter("is3to8Selected") != null && "true".equalsIgnoreCase(getRequest().getParameter("is3to8Selected").toString()))? true: false; 
     	if(getSession().getAttribute("isEOISelected") == null)
@@ -2989,6 +3020,16 @@ public class SessionOperationController extends PageFlowController {
     	if(getSession().getAttribute("isUserLinkSelected") == null)
     		this.isUserLinkSelected = (getRequest().getParameter("isUserLinkSelected") != null && "true".equalsIgnoreCase(getRequest().getParameter("isUserLinkSelected").toString()))? true: false;
     	
+    	if(getSession().getAttribute("isEOIUser") != null)
+			this.isEOIUser = new Boolean(getSession().getAttribute("isEOIUser").toString()).booleanValue();
+		else
+			this.isEOIUser = this.userManagement.isOKEOIUser(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+
+		if(getSession().getAttribute("isMappedWith3_8User") != null)
+			this.isMappedWith3_8User = new Boolean(getSession().getAttribute("isMappedWith3_8User").toString()).booleanValue();
+		else
+			this.isMappedWith3_8User = this.userManagement.isMappedWith3_8User(getRequest().getUserPrincipal().toString()); //need to check and populate this flag
+		
     	getLoggedInUserPrincipal();
         getUserDetails();
         CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
@@ -4856,6 +4897,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
+    	boolean hasBlockUserManagement = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -4965,6 +5007,10 @@ public class SessionOperationController extends PageFlowController {
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("License_Yearly_Expiry")) {
 	        		this.isLASManageLicense = Boolean.TRUE;
 	            } 
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Block_User_Management_3to8") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		hasBlockUserManagement = Boolean.TRUE;
+	            }
 			}
 			
 		}
@@ -5006,6 +5052,9 @@ public class SessionOperationController extends PageFlowController {
 		
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
+     	
+     	//Done for 3to8 customer to block user module
+     	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
     }
    
     private boolean checkUserLevel(Integer defaultVisibilityLevel){
@@ -6192,11 +6241,10 @@ public class SessionOperationController extends PageFlowController {
 	    protected Forward viewIndividualReport()
 	    {			
 	        try {
-	        	if (this.userName == null) {	        		
-	        		 java.security.Principal principal = getRequest().getUserPrincipal();
-	        	        if (principal != null) 
-	        	            this.userName = principal.toString();  
-	        	}
+	        	if (this.userName == null || (this.isEOIUser && this.isMappedWith3_8User)) {
+	    			getLoggedInUserPrincipal();
+	    			this.userName = (String)getSession().getAttribute("userName");
+	    		}
 
 	        	String accessBy = getRequest().getParameter("accessBy");
 	        	String rosterId = getRequest().getParameter("rosterId");

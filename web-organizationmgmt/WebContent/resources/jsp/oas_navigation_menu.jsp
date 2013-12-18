@@ -41,11 +41,13 @@
         					</c:if>
         				</ul>
         			 </li>
-        			 <ctb:auth roles="Administrator">	
-        			 <li>
-        				<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><lb:label key="org.menu.users" /></a>
-        			 </li>
-        			 </ctb:auth>
+        			 <c:if test="${!sessionScope.hasBlockUserManagement}">
+	        			 <ctb:auth roles="Administrator">	
+	        			 <li>
+	        				<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><lb:label key="org.menu.users" /></a>
+	        			 </li>
+	        			 </ctb:auth>
+        			 </c:if>
 					 <ctb:auth roles="Administrator">	
         			 <li>
         				<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><lb:label key="org.menu.manageOrgs" /></a>	
