@@ -1278,14 +1278,9 @@ function getValue(keyVal) {
 
 	function setPopupPosition(isAddStudent){
 				var toppos;
-				var leftpos;
-				if(!isAddStudent && isDisplayTestSessionInStudentProfile) {							 	
-								toppos = (($(window).height() - 670) / 2) + 'px';
-								leftpos = ($(window).width() - 760) /2 + 'px';
-				}else{
-					toppos = ($(window).height() - 610) /2 + 'px';
-					leftpos = ($(window).width() - 760) /2 + 'px';
-				}
+				var leftpos;							 	
+				toppos = (($(window).height() - 640) / 2) + 'px';
+				leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditStudentDetail").parent().css("top",toppos);
 				$("#addEditStudentDetail").parent().css("left",leftpos);		 	 
 				$("#viewStudentDetail").parent().css("top",toppos);

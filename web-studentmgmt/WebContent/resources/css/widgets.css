@@ -1357,5 +1357,6 @@ table.p table.pager .textField {
 #Student_Information
 {
 	height: 340px;
-	overflow:auto;
+	*height: 350px;
+	*overflow:visible !important;
 }
