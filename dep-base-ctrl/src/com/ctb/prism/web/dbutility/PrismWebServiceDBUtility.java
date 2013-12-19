@@ -638,6 +638,7 @@ public class PrismWebServiceDBUtility {
 							//ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							//contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							//contentDetailsTOList.add(contentDetailsTO);
+							contentDetailsTO.setDateTestTaken(null);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
