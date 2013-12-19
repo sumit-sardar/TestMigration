@@ -1565,6 +1565,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean isTascCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasLockHierarchyEdit = false;
     	String hierarchyLockLevel = "-1";
@@ -1670,6 +1671,13 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
+				//Added for story Config Reset Test for TASC top level admin
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+						//[IAA]&& cc.getDefaultValue().equals("T")) {
+	            		){
+					isTascCustomer = true;
+					continue;
+	            }
 			}
 			
 		}
@@ -1698,7 +1706,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer &&(adminUser || adminCoordinatorUser) ));//For Student Registration
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	

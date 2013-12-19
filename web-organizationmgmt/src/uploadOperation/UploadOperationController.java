@@ -1535,6 +1535,7 @@ public class UploadOperationController extends PageFlowController {
     	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean isTascCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasUploadConfig = false;
     	boolean hasDownloadConfig = false;
@@ -1612,6 +1613,13 @@ public class UploadOperationController extends PageFlowController {
             		cc.getDefaultValue().equals("T")) {
         		hasBlockUserManagement = Boolean.TRUE;
             }
+			//Added for story Config Reset Test for TASC top level admin
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TASC_Customer")
+					//[IAA]&& cc.getDefaultValue().equals("T")) {
+            		){
+				isTascCustomer = true;
+				continue;
+            }
 		}        
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -1626,7 +1634,7 @@ public class UploadOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));
 		
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
 		//show Account file download link      	
