@@ -96,7 +96,7 @@
 <input type="hidden" id="copyTestSn" name="copyTestSn" value=<lb:label key="sessionList.copyTest.title" prefix="'" suffix="'"/>/>
 
 
-
+<input type="hidden" id="noTASCSubtestMsg" name = "noTASCSubtestMsg" value=<lb:label key="session.noTASCSubtest.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="noSubtestMsg" name = "noSubtestMsg" value=<lb:label key="session.noSubtest.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="languageDependencyMsg" name = "languageDependencyMsg" value=<lb:label key="session.languageDependency.message" prefix="'" suffix="'"/>/>
 <input type="hidden" id="languageLevelMsg" name = "languageLevelMsg" value=<lb:label key="session.languageLevel.message" prefix="'" suffix="'"/>/>

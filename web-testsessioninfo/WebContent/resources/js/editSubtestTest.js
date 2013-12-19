@@ -51,6 +51,8 @@
 	    	isValidated = validateTABESubtest(tmpSelectedSubtests, validateLevels, false);
 	    } else if(isTabeAdaptiveProduct ) {
 	    	isValidated = validationTABE_ADAPTIVE(tmpSelectedSubtests, false);
+	    } else if(isTASCProduct){
+	    	isValidated = validateTASCSubtest();
 	    }
 	    
 	    if(isLasLinksProduct){
@@ -130,6 +132,15 @@
 	    return - 1;
 	}
 	
+	function validateTASCSubtest(){
+		var isValid = true;
+		var numberOfRows = getVisibleRows("des_row_");
+		if(numberOfRows<2){
+			isValid=false;
+			setSubtestValidationMessage($("#subtestValidationFailedMsg").val(), $("#noTASCSubtestMsg").val());
+		}
+		return isValid;
+	}
 	
 	function validationTABE_ADAPTIVE (subtests , isForStudentMsm) { 
 		var isValid = true;
