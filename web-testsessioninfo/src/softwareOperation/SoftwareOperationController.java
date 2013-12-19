@@ -1063,7 +1063,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
 		this.getRequest().setAttribute("isISTEPCustomer", isISTEPCustomer);
 	
 		//System.out.println(laslinkCustomer);

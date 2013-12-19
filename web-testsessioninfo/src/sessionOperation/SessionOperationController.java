@@ -4894,6 +4894,7 @@ public class SessionOperationController extends PageFlowController {
     	boolean hasResetTestSessionForAdmin = false;
     	//boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean isTascCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1; 
@@ -5012,7 +5013,7 @@ public class SessionOperationController extends PageFlowController {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
 			}
-			
+			isTascCustomer = isTASCCustomer(customerConfigurations);
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -5044,7 +5045,7 @@ public class SessionOperationController extends PageFlowController {
 		this.getSession().setAttribute("hasLicenseConfigured",new Boolean(this.hasLicenseConfig && adminUser));
 		this.getSession().setAttribute("adminUser", new Boolean(adminUser));
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(tabeCustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)|| (isTascCustomer && isTopLevelAdmin))));
 		
 
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);

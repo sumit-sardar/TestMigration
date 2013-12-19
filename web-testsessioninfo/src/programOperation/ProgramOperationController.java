@@ -1589,7 +1589,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("canRegisterStudent", new Boolean(TABECustomer && validUser));
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer&&(adminUser || adminCoordinatorUser) ));
-		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+		this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(TASCCustomer && isTopLevelAdmin))));
 	 
 		//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab",new Boolean((isTopLevelUser() && laslinkCustomer) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
