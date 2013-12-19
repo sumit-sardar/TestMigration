@@ -3277,6 +3277,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasResetTestSessionForAdmin = false;
     	boolean isOKCustomer = false;
     	boolean isGACustomer = false;
+    	boolean isTascCustomer = false;
     	boolean isTopLevelAdmin = new Boolean(isTopLevelUser() && isAdminUser());
     	boolean laslinkCustomer = false;
     	boolean hasLockHierarchyEdit = false;
@@ -3400,7 +3401,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
 			}
-			
+			isTascCustomer = isTASCCustomer(customerConfigurations);
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -3437,7 +3438,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		//System.out.println(laslinkCustomer);
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));
-     	this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser))));
+     	this.getSession().setAttribute("hasResetTestSession", new Boolean((hasResetTestSession && hasResetTestSessionForAdmin) && ((isOKCustomer && isTopLevelAdmin)||(laslinkCustomer && isTopLevelAdmin)||(isGACustomer && adminUser)||(isTascCustomer && isTopLevelAdmin))));
 		
      	//show Account file download link      	
      	this.getSession().setAttribute("isAccountFileDownloadVisible", new Boolean(laslinkCustomer && isTopLevelAdmin));
