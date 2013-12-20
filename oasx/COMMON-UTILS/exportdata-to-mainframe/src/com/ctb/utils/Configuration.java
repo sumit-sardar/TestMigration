@@ -8,7 +8,7 @@ public class Configuration {
 	static String ftppassword = "";
 	static String ftpFilepath = "";
 	static String ftpPort = "";
-	static String isClassNodeRequired = "";
+	static String requiredClassNodeDummyName = "";
 
 	static {
 
@@ -18,7 +18,7 @@ public class Configuration {
 		ftppassword = ExtractUtil.getDetail("oas.exportdata.ftppassword");
 		ftpFilepath = ExtractUtil.getDetail("oas.exportdata.ftp.filepath");
 		ftpPort = ExtractUtil.getDetail("oas.exportdata.ftp.port");
-		isClassNodeRequired = ExtractUtil.getDetail("isClassNodeRequired");
+		requiredClassNodeDummyName = ExtractUtil.getDetail("requiredClassNodeDummyName");
 	}
 
 	
@@ -68,8 +68,8 @@ public class Configuration {
 	/**
 	 * @return the isClassNodeRequired
 	 */
-	public static String getIsClassNodeRequired() {
-		return isClassNodeRequired;
+	public static String getIsClassNodeRequiredDummyName() {
+		return requiredClassNodeDummyName;
 	}
 
 }

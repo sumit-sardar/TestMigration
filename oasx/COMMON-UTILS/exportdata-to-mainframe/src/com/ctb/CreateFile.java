@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import org.ffpojo.exception.FFPojoException;
@@ -47,12 +47,7 @@ import com.ctb.utils.EmetricUtil;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.SftpUtil;
 import com.ctb.utils.SqlUtil;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 
 public class CreateFile {
 
@@ -154,54 +149,84 @@ public class CreateFile {
 	private String subtestIndicator = "SELECT CONL.SUBTEST_MODEL  FROM TEST_ROSTER              TR, TEST_ADMIN               TA, CUSTOMER_CONFIGURATION   CC, CUSTOMER_ORGNODE_LICENSE CONL, PRODUCT                  PROD WHERE TR.TEST_ROSTER_ID = ? AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND " +
 	"TA.CUSTOMER_ID = CC.CUSTOMER_ID AND CC.CUSTOMER_CONFIGURATION_NAME = 'Allow_Subscription' AND CC.DEFAULT_VALUE = 'T' AND TA.PRODUCT_ID = PROD.PRODUCT_ID AND CONL.CUSTOMER_ID = CC.CUSTOMER_ID AND CONL.ORG_NODE_ID = TR.ORG_NODE_ID AND CONL.PRODUCT_ID = PROD.PARENT_PRODUCT_ID ";
 	
-	private String modifiedQueryToFetchRosters = "SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
-										                 "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
-										                 "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
-										                 "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
-										                 "ROS.STUDENT_ID             AS STUDENT_ID, "+
-										                 "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
-													  "FROM TEST_ROSTER ROS "+
-													 "WHERE ROS.CUSTOMER_ID = ? "+
-													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
-													   "AND ROS.TEST_COMPLETION_STATUS = 'CO' "+
-													
-													"UNION "+
-													
-													"SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
-											                "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
-											                "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
-											                "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
-											                "ROS.STUDENT_ID             AS STUDENT_ID, "+
-											                "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
-													  "FROM TEST_ROSTER ROS, STUDENT_ITEM_SET_STATUS SIS "+
-													 "WHERE ROS.CUSTOMER_ID = ? "+
-													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
-													   "AND ROS.TEST_COMPLETION_STATUS = 'IC' "+
-													   "AND SIS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
-													   "AND EXISTS (SELECT 1 "+
-													          "FROM STUDENT_ITEM_SET_STATUS SISS "+
-													         "WHERE SISS.COMPLETION_STATUS IN ('CO', 'IS') "+
-													           "AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID) "+
-													   "AND NOT EXISTS "+
-													 "(SELECT 1 "+
-													          "FROM STUDENT_ITEM_SET_STATUS SI "+
-													         "WHERE SI.COMPLETION_STATUS = 'IN' "+
-													           "AND SI.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID) "+
-													
-													"UNION "+
-													
-													"SELECT DISTINCT ROS.TEST_ROSTER_ID AS TEST_ROSTER_ID, "+
-											                "ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS, "+
-											                "ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS, "+
-											                "ROS.CUSTOMER_ID            AS CUSTOMER_ID, "+
-											                "ROS.STUDENT_ID             AS STUDENT_ID, "+
-											                "ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID "+
-													  "FROM TEST_ROSTER ROS, STUDENT_ITEM_SET_STATUS SISS "+
-													 "WHERE ROS.CUSTOMER_ID = ? "+
-													   "AND ROS.ACTIVATION_STATUS = 'AC' "+
-													   "AND ROS.TEST_COMPLETION_STATUS = 'IS' "+
-													   "AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
-													   "AND SISS.COMPLETION_STATUS = 'CO'";
+	private String modifiedQueryToFetchRosters = 	" SELECT TEST_ROSTER_ID, " +
+													" 		 ACTIVATION_STATUS, " +
+													" 	  	 TEST_COMPLETION_STATUS, " +
+													" 		 CUSTOMER_ID, " +
+													" 		 STUDENT_ID, " +
+													" 		 TEST_ADMIN_ID, " +
+													" 		 PRODUCT_ID, " +
+													" 		 COMPLETION_DATE" +
+													"   FROM (SELECT DISTINCT ROS.TEST_ROSTER_ID         AS TEST_ROSTER_ID,"+
+													"                 ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS,"+
+													"                 ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS,"+
+													"                 ROS.CUSTOMER_ID            AS CUSTOMER_ID,"+
+													"                 ROS.STUDENT_ID             AS STUDENT_ID,"+
+													"                 ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID,"+
+													"                 TA.PRODUCT_ID              AS PRODUCT_ID, " +
+													"				  ROS.COMPLETION_DATE_TIME   AS COMPLETION_DATE "+
+													"   FROM TEST_ROSTER ROS, TEST_ADMIN TA, PRODUCT PROD "+
+													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
+													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"    AND PROD.PARENT_PRODUCT_ID = ? "+
+													"    AND ROS.CUSTOMER_ID = ? "+
+													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
+													"    AND ROS.TEST_COMPLETION_STATUS = 'CO'"+
+											
+													" UNION"+
+											
+													" SELECT DISTINCT ROS.TEST_ROSTER_ID         AS TEST_ROSTER_ID,"+
+													"                 ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS,"+
+													"                 ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS,"+
+													"                 ROS.CUSTOMER_ID            AS CUSTOMER_ID,"+
+													"                 ROS.STUDENT_ID             AS STUDENT_ID,"+
+													"                 ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID,"+
+													"                 TA.PRODUCT_ID              AS PRODUCT_ID, " +
+													"				  ROS.COMPLETION_DATE_TIME   AS COMPLETION_DATE "+
+													"   FROM TEST_ROSTER             ROS,"+
+													"        STUDENT_ITEM_SET_STATUS SIS,"+
+													"        TEST_ADMIN              TA,"+
+													"        PRODUCT                 PROD "+
+													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
+													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"    AND PROD.PARENT_PRODUCT_ID = ? "+
+													"    AND ROS.CUSTOMER_ID = ? "+
+													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
+													"    AND ROS.TEST_COMPLETION_STATUS = 'IC'"+
+													"    AND SIS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
+													"    AND EXISTS (SELECT 1 "+
+													"           FROM STUDENT_ITEM_SET_STATUS SISS "+
+													"          WHERE SISS.COMPLETION_STATUS IN ('CO', 'IS')"+
+													"            AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID)"+
+													"    AND NOT EXISTS"+
+													"  (SELECT 1 "+
+													"           FROM STUDENT_ITEM_SET_STATUS SI"+
+													"          WHERE SI.COMPLETION_STATUS = 'IN'"+
+													"            AND SI.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID)"+
+											
+													" UNION"+
+											
+													" SELECT DISTINCT ROS.TEST_ROSTER_ID         AS TEST_ROSTER_ID,"+
+													"                 ROS.ACTIVATION_STATUS      AS ACTIVATION_STATUS,"+
+													"                 ROS.TEST_COMPLETION_STATUS AS TEST_COMPLETION_STATUS,"+
+													"                 ROS.CUSTOMER_ID            AS CUSTOMER_ID,"+
+													"                 ROS.STUDENT_ID             AS STUDENT_ID,"+
+													"                 ROS.TEST_ADMIN_ID          AS TEST_ADMIN_ID,"+
+													"                 TA.PRODUCT_ID              AS PRODUCT_ID, " +
+													" 				  ROS.COMPLETION_DATE_TIME   AS COMPLETION_DATE "+
+													"   FROM TEST_ROSTER             ROS,"+
+													"        STUDENT_ITEM_SET_STATUS SISS,"+
+													"        TEST_ADMIN              TA,"+
+													"        PRODUCT                 PROD "+
+													"  WHERE TA.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID "+
+													"    AND TA.PRODUCT_ID = PROD.PRODUCT_ID "+
+													"    AND PROD.PARENT_PRODUCT_ID = ? "+
+													"    AND ROS.CUSTOMER_ID = ? "+
+													"    AND ROS.ACTIVATION_STATUS = 'AC'"+
+													"    AND ROS.TEST_COMPLETION_STATUS = 'IS'"+
+													"    AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
+													"    AND SISS.COMPLETION_STATUS = 'CO') ROSTER " +
+													"  WHERE ROSTER.TEST_ROSTER_ID IS NOT NULL";
 	
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
@@ -227,9 +252,22 @@ public class CreateFile {
 	private boolean isInvalidListeing = false;
 	private boolean isInvalidReading = false;
 	private boolean isInvalidWriting = false;
-
+	private boolean isValidStartDate = false;
+	private boolean isValidEndDate = false;
+	
+	
+	private String extractSpanStartDate = new String(ExtractUtil
+			.getDetail("oas.extractSpanStartDate"));
+	private String extractSpanEndDate = new String(ExtractUtil
+			.getDetail("oas.extractSpanEndDate"));
+	
 	private Integer customerId = new Integer(ExtractUtil
 			.getDetail("oas.customerId"));
+	private Integer frameworkProductId = new Integer(ExtractUtil
+			.getDetail("oas.frameworkProductId"));
+	
+	private String MFid = new String(ExtractUtil
+			.getDetail("oas.mainFrameId"));
 	static TreeMap<String, String> wrongMap = new TreeMap<String, String>();
 	
 	
@@ -243,10 +281,65 @@ public class CreateFile {
 	
 	
 	public static void main(String[] args) {
+		ExtractUtil.loadExternalProperties(args[0], args[1]);
 		CreateFile example = new CreateFile();
+		CreateFiles2ndEdition example2 = new CreateFiles2ndEdition();
+		String MFid = null;
 		try {
 			System.out.println("Making TXT from POJO...");
-			example.writeToText();
+			
+			//Checking MF id
+			if(null == example.MFid || example.MFid.trim().length()==0){
+				System.err.println("Please provide valid MF id in property file).\nExecution forcefully stoped.");
+				System.exit(1);
+			}else if(example.MFid.trim().length() != 10){
+				System.err.println("Please provide valid MF id in property file. Length must be 10 charater.\nExecution forcefully stoped.");
+				System.exit(1);
+			}else{
+				System.out.println("MF Id is "+example.MFid.trim()+"\nContinuing...");
+				//Continue...
+			}
+			
+			//Checking start_date
+			if(null == example.extractSpanStartDate || "".equals(example.extractSpanStartDate)){
+				System.err.println("Optional Start_Date field  is blank.");
+				System.out.println("\nContinuing...");
+			}else if(!validateDateString(example.extractSpanStartDate)){
+				System.err.println("Please provide extract span start date in valid format (MM/DD/YYYY) or provide blank.\nExecution forcefully stoped.");
+				System.exit(1);
+			}else {
+				example.isValidStartDate = true;
+				example2.isValidStartDate = true;
+				System.out.println("Start Date (MM/DD/YYYY) Of Extract Date Span : " + example.extractSpanStartDate);
+			}
+			
+			//Checking end_date
+			if(null == example.extractSpanEndDate || "".equals(example.extractSpanEndDate)){
+				System.err.println("Optional End_Date field  is blank.");
+				System.out.println("\nContinuing...");
+			}else if(!validateDateString(example.extractSpanEndDate)){
+				System.err.println("Please provide extract span end date in valid format (MM/DD/YYYY) or provide blank.\nExecution forcefully stoped.");
+				System.exit(1);
+			}else{
+				example.isValidEndDate = true;
+				example2.isValidEndDate = true;
+				System.out.println("End Date (MM/DD/YYYY) Of Extract Date Span : " + example.extractSpanEndDate);
+			}
+			
+			//Checking product_id
+			if(null == example.frameworkProductId || "".equals(example.frameworkProductId)){
+				System.err.println("Framework Product Id field is madatory.");
+			}else {
+				if(example.frameworkProductId == 7500){
+					example2.writeToText();
+				}else if(example.frameworkProductId == 7000){
+					example.writeToText();
+				}
+				else{
+					System.err.println("Framework Product Id is ivalid. \nExecution forcefully stoped.");
+					System.exit(1);
+				}
+			}
 
 			System.out.println("END !");
 		} catch (IOException e) {
@@ -261,32 +354,22 @@ public class CreateFile {
 		}
 	}
 	
-	public void execute (int customerId){
-		try {
-			this.customerId = customerId;
-			System.out.println("Making TXT from POJO...");
-			writeToText();
-
-			System.out.println("END !");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (FFPojoException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+		
 	private void writeToText() throws IOException, FFPojoException, SQLException,Exception {
 
 		OrderFile orderFile = new OrderFile();
+		System.out.println("Collecting data for report....");
 		List<Tfil> myList = createList(orderFile);
+		if(null == myList){
+			System.err.println("No roster found to extract.\nExecution forcefully stoped.");
+			System.exit(1);
+		}
+		System.out.println("Data collecting process complete.");
 		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
-		System.out.println("localFilePath >> "+localFilePath);
+		System.out.println("LocalFilePath :: "+localFilePath);
 		String fileName = customerState + "_" + testDate.substring(0,6) + "_" 
-		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
+		//+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
+		+ MFid.trim() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
 		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
 		+ ".dat";
@@ -304,7 +387,7 @@ public class CreateFile {
 			orderFile.setDataFileName(EmetricUtil.truncate(fileName,
 					new Integer(100)).substring(0, fileName.length()));
 			System.out.println("Completed Writing");
-			System.out.println("Preparing Order File");
+			System.out.println("Preparing Order File...");
 			prepareOrderFile(orderFile, localFilePath, fileName);
 		} finally {
 			if(ffWriter!=null){
@@ -315,8 +398,6 @@ public class CreateFile {
 		/* SFTP the generated data file: Start */
 		Configuration config = new Configuration();
 		String destinationDir = config.getFtpFilepath();
-		//String sourceDir ="C:\\emetric";
-		//String fileName = "sftp_ftp_test.txt";
 		Session session = null;
 		try{
 			session = SftpUtil.getSFtpSession(config);
@@ -357,8 +438,13 @@ public class CreateFile {
 		Connection irscon = null;
 
 		try {
+			System.out.println("Processing started For Laslink First Edition...");
 			oascon = SqlUtil.openOASDBconnectionForResearch();
 			irscon = SqlUtil.openIRSDBconnectionForResearch();
+			myrosterList = getTestRoster(oascon);
+			if(myrosterList.size() == 0){
+				return null;
+			}
 			generateModelLevel(oascon);
 			customerDemoList = getCustomerDemographic(oascon);
 			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
@@ -372,24 +458,32 @@ public class CreateFile {
 				customerDemographic.put(c.getCustomerDemographicId(), c
 						.getLabelName());
 			}
-
-			myrosterList = getTestRoster(oascon);
 			populateCustomer(oascon, orderFile);
 			for (TestRoster roster : myrosterList) {
 				Tfil tfil = new Tfil();
 				
-				//tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
+				tfil.setTestRosterId(String.valueOf(roster.getTestRosterId()));
 				Student st = roster.getStudent();
-				System.out.println("Student Id :: "+ st.getStudentId() +" :: "+ roster.getTestRosterId());
+				//System.out.println("Student Id :: "+ st.getStudentId() +" :: "+ roster.getTestRosterId());
 				setStudentList(tfil, st);
 
 				// Accomodations
-			Accomodations accomodations = createAccomodations(st
+				Accomodations accomodations = createAccomodations(st
 						.getStudentDemographic(), setAccomodation,
 						customerDemographic, tfil);
 				tfil.setAccomodations(accomodations);
 
-				tfil.setModelLevel(customerModelLevelValue);
+				String isClassNodeRequiredDummyName = "";
+				isClassNodeRequiredDummyName = Configuration.getIsClassNodeRequiredDummyName();
+				if(null != isClassNodeRequiredDummyName && !"".equalsIgnoreCase(isClassNodeRequiredDummyName)
+						&& Integer.valueOf(this.customerModelLevelValue).intValue() < 7){
+					int value = Integer.valueOf(this.customerModelLevelValue).intValue();
+					value++;
+					tfil.setModelLevel(new Integer(value).toString());
+				}
+				else{
+					tfil.setModelLevel(this.customerModelLevelValue);
+				}
 				tfil.setState(this.customerState);
 				tfil.setCity(this.customerCity);
 				//System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
@@ -683,11 +777,21 @@ public class CreateFile {
 		ResultSet rs = null;
 		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
 		try{
-			//ps = con.prepareStatement(testRosterSql);
+			if(this.isValidStartDate) {
+				String START_DATE = this.extractSpanStartDate.replaceAll("/", "").toString().trim();
+				modifiedQueryToFetchRosters += " AND TRUNC(ROSTER.COMPLETION_DATE) >= TO_DATE('" + START_DATE + "', 'MMDDYYYY')";
+			}
+			if(this.isValidEndDate) {
+				String END_DATE = this.extractSpanEndDate.replaceAll("/", "").toString().trim();
+				modifiedQueryToFetchRosters += " AND TRUNC(ROSTER.COMPLETION_DATE) <= TO_DATE('" + END_DATE + "', 'MMDDYYYY')";
+			}
 			ps = con.prepareStatement(modifiedQueryToFetchRosters);
-			ps.setInt(1, customerId);
+			ps.setInt(1, frameworkProductId);
 			ps.setInt(2, customerId);
-			ps.setInt(3, customerId);
+			ps.setInt(3, frameworkProductId);
+			ps.setInt(4, customerId);
+			ps.setInt(5, frameworkProductId);
+			ps.setInt(6, customerId);
 			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
 			while (rs.next()){
@@ -1228,7 +1332,7 @@ public class CreateFile {
 								.getString(4))));
 						if (rs.getString(3) != null)
 							tfil.setElementSpecialCodesA(rs.getString(3));
-						tfil.setOrganizationId("XX" + rs.getString(1));
+						//tfil.setOrganizationId("XX" + rs.getString(1));
 						tfil.setCustomerId(rs.getString(1));
 						tfil.setElementStructureLevelA("01");
 						if (orderFile.getCustomerId() == null)
@@ -1398,7 +1502,7 @@ public class CreateFile {
 		
 		//Added for expand to 7 level.
 		if (tfil.getElementNameF() == null) {
-			tfil.setOrganizationId("XX" + tfil.getLeafLevelId());
+			//tfil.setOrganizationId("XX" + tfil.getLeafLevelId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getLeafLevelId());
 			if (orderFile.getCustomerName() == null)
@@ -1406,7 +1510,7 @@ public class CreateFile {
 						.getElementNameG(), 30));
 			
 		}else if (tfil.getElementNameE() == null) {
-			tfil.setOrganizationId("XX" + tfil.getDivisionId());
+			//tfil.setOrganizationId("XX" + tfil.getDivisionId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getDivisionId());
 			if (orderFile.getCustomerName() == null)
@@ -1414,7 +1518,7 @@ public class CreateFile {
 						.getElementNameF(), 30));
 			
 		}else if (tfil.getElementNameD() == null) {
-			tfil.setOrganizationId("XX" + tfil.getGroupId());
+			//tfil.setOrganizationId("XX" + tfil.getGroupId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getGroupId());
 			if (orderFile.getCustomerName() == null)
@@ -1422,7 +1526,7 @@ public class CreateFile {
 						.getElementNameE(), 30));
 			
 		}else if (tfil.getElementNameC() == null) {
-			tfil.setOrganizationId("XX" + tfil.getSectionId());
+			//tfil.setOrganizationId("XX" + tfil.getSectionId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getSectionId());
 			if (orderFile.getCustomerName() == null)
@@ -1430,7 +1534,7 @@ public class CreateFile {
 						.getElementNameD(), 30));
 			
 		}else if (tfil.getElementNameB() == null) {
-			tfil.setOrganizationId("XX" + tfil.getClassId());
+			//tfil.setOrganizationId("XX" + tfil.getClassId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getClassId());
 			if (orderFile.getCustomerName() == null)
@@ -1438,7 +1542,7 @@ public class CreateFile {
 						.getElementNameC(), 30));
 			
 		}else if (tfil.getElementNameA() == null) {
-			tfil.setOrganizationId("XX" + tfil.getSchoolId());
+			//tfil.setOrganizationId("XX" + tfil.getSchoolId());
 			if (orderFile.getCustomerId() == null)
 				orderFile.setCustomerId(tfil.getSchoolId());
 			if (orderFile.getCustomerName() == null)
@@ -1447,6 +1551,8 @@ public class CreateFile {
 			
 		}		
 
+		if (null != MFid)
+			tfil.setOrganizationId(MFid.trim()); //set mainFrameId as OrganizationId
 		if (orderFile.getOrgTestingProgram() == null)
 			orderFile.setOrgTestingProgram(tfil.getOrganizationId());
 		if (orderFile.getCustomerName() == null)
@@ -1455,17 +1561,17 @@ public class CreateFile {
 		
 		/* Added for Mainframe-OAS Blended Reporting : Add class level node based on flag isClassNodeRequired */
 		//start ::
-		String isClassNodeRequired = "false";
-		isClassNodeRequired = Configuration.getIsClassNodeRequired();
-		System.out.println("isClassNodeRequired >> "+isClassNodeRequired);
-		if(isClassNodeRequired.equalsIgnoreCase("true") && organizationMap.size() < 7){
+		String isClassNodeRequiredDummyName = "";
+		isClassNodeRequiredDummyName = Configuration.getIsClassNodeRequiredDummyName();
+		//System.out.println("isClassNodeRequired >> "+isClassNodeRequired);
+		if(null != isClassNodeRequiredDummyName && !"".equalsIgnoreCase(isClassNodeRequiredDummyName) && organizationMap.size() < 7){
 			/* shift each element to its immediate upper level... */
 			if (tfil.getElementNameB() != null){
 				tfil.setElementNameA(tfil.getElementNameB());
 				tfil.setElementALabel(tfil.getElementBLabel());
 				tfil.setElementNumberA(tfil.getElementNumberB());
 				tfil.setElementSpecialCodesA(tfil.getElementSpecialCodesB());
-				tfil.setOrganizationId("XX" + tfil.getSchoolId());
+				//tfil.setOrganizationId("XX" + tfil.getSchoolId());
 				tfil.setCustomerId(tfil.getSchoolId());
 				tfil.setElementStructureLevelA("01");
 				//orderFile.setCustomerId(tfil.getSchoolId());
@@ -1521,7 +1627,7 @@ public class CreateFile {
 				//orderFile.setCustomerId(tfil.getLeafLevelId());
 				
 				/* push the dummy class node at leaf level... */
-				tfil.setElementNameG("Dummy_Class");
+				tfil.setElementNameG(isClassNodeRequiredDummyName);
 				tfil.setElementGLabel("Class");
 				//tfil.setElementNumberG(tfil.getElementNumberG());
 				tfil.setElementNumberG("");// blank for now
@@ -2251,6 +2357,7 @@ public class CreateFile {
 				writer.close();
 			}
 		}
+		System.out.println("Order file successfully generated:["+orderFileName+"]");
 		/* SFTP the generated order file: Start */
 		Configuration config = new Configuration();
 		String destinationDir = config.getFtpFilepath();
@@ -2386,5 +2493,119 @@ public class CreateFile {
 		}
 
 	}*/
+	
+	private Date getDateFromString(String date) throws Exception{
+        Date result = null;
+        if (date == null || "".equals(date))
+            return result;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMddyy");
+        try{
+            result = sdf.parse(date.trim());
+        }
+        catch (Exception e){
+        	Exception exp = null;
+        	exp = new Exception(" Date format is not correct. " + "\n" + e.getMessage());
+            throw exp;
+        }
+        //System.out.println(" Date in Format --- >>"+ result);
+        return result;
+    } 
+	
+	public static boolean validateDateString(String dateStr)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("MM/dd/yyyy");
+        try{
+            Date temp = sdf.parse(dateStr);
+        }
+        catch (Exception e){
+            //e.printStackTrace();
+            return false;
+        }
+        
+        
+        StringTokenizer tokenizer = new StringTokenizer(dateStr, "/");
+        int i = 0;
+        int month = 0;
+        int day = 0;
+        int year = 0;
+        
+        try {
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                int value = new Integer(token).intValue();
+                if (i==0) {
+                    if ( value > 12 || value <= 0 ) {
+                        
+                        return false;
+                    
+                    }
+                    month=value;
+                } else if ( i == 1 ) {
+                    if ( value > 31 || value <= 0 ) {
+                     
+                        return false;
+                    
+                    }
+                    day = value;
+                } else if ( i == 2 ) {
+                    
+                    year = value;
+                    
+                }
+                i++;
+            }
+            year = 2000+year;
+            if ( month == 4 || month == 6 || month == 9 || month == 11 ) {
+                
+                if ( day > 30) {
+                 
+                    return false;
+                
+                }
+            }
+            else if (month ==2) {
+                if ( isLeapYear(year) && day > 29) {
+                    
+                    return false;
+                } else if ( !isLeapYear(year) && day > 28) {
+                    
+                    return false;
+                
+                }
+            }        
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        
+        return true;
+    }
+	
+	public static boolean isLeapYear(int year) {
+		if ( year%100 == 0 ) {
+            
+			if ( year%400 == 0 ) {
+                
+				return true;
+            
+            } else {
+			
+            	return false;
+            
+            }
+		} 
+		if ( year%4 == 0 ) {
+		
+        	return true;
+        
+        } else {
+		
+        	return false;
+        
+        }
+	}
 
 }

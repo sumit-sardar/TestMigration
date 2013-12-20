@@ -16,7 +16,7 @@ public class EmetricUtil {
 		StringBuffer sb = new StringBuffer();
 		sb.append(birthDate);
 		String currentDate = birthDateFormat.format(new Date());
-		System.out.println("Age:sb :   " + sb.toString());
+		//System.out.println("Age:sb :   " + sb.toString());
 		int dd1 = Integer.parseInt(sb.toString().substring(8, 10));
 		int mm1 = Integer.parseInt(sb.toString().substring(5, 7));
 		int yy1 = Integer.parseInt(sb.toString().substring(0, 4));
@@ -192,7 +192,9 @@ public class EmetricUtil {
 	}
 	
 	public static String getNumberFormatedString(String val) {
-		if (val != null && val.trim().length() != 0) {
+		if (val != null && (val.equalsIgnoreCase("XXXXX") || val.equalsIgnoreCase("N/A"))){
+			//do nothing
+		}else  if (val != null && val.trim().length() != 0) {
 			DecimalFormat df = new DecimalFormat("##0.0");
 			try {
 				val = df.format(Double.parseDouble(val.trim()));
@@ -229,7 +231,7 @@ public class EmetricUtil {
 			date = (Date) formatter.parse(str_date);
 			TimeZone tz = TimeZone.getTimeZone(Timezon);
 			formatter.setTimeZone(tz);
-			System.out.println(formatter.format(date));
+			//System.out.println(formatter.format(date));
 			Date tempDate = (Date) formatter.parse(formatter.format(date));
 			if (dateType) {
 				formatter = new SimpleDateFormat("MMddyy HH:mm:ss");
