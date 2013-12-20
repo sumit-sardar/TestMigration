@@ -98,7 +98,6 @@ public class CreateFiles2ndEdition {
 														"    AND ROS.CUSTOMER_ID = ? "+
 														"    AND ROS.ACTIVATION_STATUS = 'AC'"+
 														"    AND ROS.TEST_COMPLETION_STATUS = 'CO'"+
-														"	 AND ros.TEST_rOSTER_ID = 7282651 "+
 													
 														" UNION"+
 													
@@ -119,7 +118,6 @@ public class CreateFiles2ndEdition {
 														"    AND PROD.PARENT_PRODUCT_ID = ? "+
 														"    AND ROS.CUSTOMER_ID = ? "+
 														"    AND ROS.ACTIVATION_STATUS = 'AC'"+
-														"	 AND ros.TEST_rOSTER_ID = 7282651 "+
 														"    AND ROS.TEST_COMPLETION_STATUS = 'IC'"+
 														"    AND SIS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
 														"    AND EXISTS (SELECT 1 "+
@@ -151,7 +149,6 @@ public class CreateFiles2ndEdition {
 														"    AND PROD.PARENT_PRODUCT_ID = ? "+
 														"    AND ROS.CUSTOMER_ID = ? "+
 														"    AND ROS.ACTIVATION_STATUS = 'AC'"+
-														"	 AND ros.TEST_rOSTER_ID = 7282651 "+
 														"    AND ROS.TEST_COMPLETION_STATUS = 'IS'"+
 														"    AND SISS.TEST_ROSTER_ID = ROS.TEST_ROSTER_ID "+
 														"    AND SISS.COMPLETION_STATUS = 'CO') ROSTER " +
