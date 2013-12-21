@@ -623,6 +623,8 @@ public class PrismWebServiceDBUtility {
 					if(statusCode != null && !"".equals(statusCode)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
 						if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test skipp the rest part
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
+							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							continue;
 						}
 					}
@@ -1007,7 +1009,7 @@ public class PrismWebServiceDBUtility {
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
 					contentDetailsTO.setStatusCode("");
 					contentDetailsTO.setDataChanged(true);
-					contentDetailsTO.setDateTestTaken(compTestRS.getString("dtTstTaken"));
+					//contentDetailsTO.setDateTestTaken(compTestRS.getString("dtTstTaken"));
 	
 					ContentScoreTO ncContentScoreTO = new ContentScoreTO();
 					ncContentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
