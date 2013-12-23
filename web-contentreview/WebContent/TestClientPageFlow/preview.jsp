@@ -112,6 +112,36 @@ img {
 	src: local('OASmathv3 Italic'), url('ctbmodules/resources/fonts/OASmathv3Italic.svg') format('svg'); 
     font-style: italic;
 }
+/* CachableTextfield selectors */
+.standardText {
+	padding: 0px;
+	line-height: 19px;
+}		
+.largeText {
+	padding: 0px;
+	line-height: 28px;
+}
+
+.largeTableCellMulti {
+    padding-top: 10px;
+	line-height: 22px;
+}
+.tableTitleStandard {
+	font-family: CTB; 
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+	white-space: pre-wrap;
+	word-break: keep-all;
+}
+.tableTitleLarge {
+	line-height: 21px;
+	text-align: center;
+	text-align: center;
+	font-weight: bold;
+	white-space: pre-wrap;
+	word-break: keep-all;	
+}
 </style>
 <!--[if IE]>
         <style type="text/css">
