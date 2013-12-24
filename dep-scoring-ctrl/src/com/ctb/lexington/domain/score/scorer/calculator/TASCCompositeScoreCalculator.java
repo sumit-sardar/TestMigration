@@ -114,6 +114,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
     		ContentAreaRawScoreEvent eventObj = (ContentAreaRawScoreEvent)contentAreaRawScoreEvents.get(event.getContentAreaName());
     		int pointObtained = eventObj.getPointsObtained() + event.getPointsObtained();
     		int pointAttempted = eventObj.getPointsAttempted() + event.getPointsAttempted();
+    		int pointPossible = eventObj.getPointsPossible() + event.getPointsPossible();
     		contentAreaRawScoreEvents
 					.put(event.getContentAreaName(),
 							new ContentAreaRawScoreEvent(event
@@ -122,7 +123,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 									pointAttempted, ScorerHelper
 											.calculatePercentage(pointObtained,
 													event.getPointsPossible()),
-									event.getPointsPossible(), event
+									pointPossible, event
 											.getContentAreaMap(), event
 											.getItemSetId()));
     	}else{
