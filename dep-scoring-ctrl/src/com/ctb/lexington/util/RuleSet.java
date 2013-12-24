@@ -134,14 +134,49 @@ public class RuleSet {
 		
 		str=str.trim();						// Doesn't work if there are leading and trailing spaces
 		if (str.indexOf("/") > 0) {
-			String tmpStr = str.substring(str.indexOf("/") + 1);
-			// System.out.println(tmpStr);
-			if ((Double.parseDouble(tmpStr)) == 0) {
-				return str.substring(0, str.indexOf("/")).replaceAll("0*$", "")
+			String tmpStr=new String();
+			if(str.indexOf("/")==str.lastIndexOf("/")){
+				tmpStr=str.substring(str.indexOf("/") + 1);
+//				System.out.println("tempStr1:"+tmpStr);
+				if("".equals(tmpStr))
+					return (((str.substring(0, str.indexOf("/"))).indexOf(".")<0)?str.substring(0, str.indexOf("/")):str.substring(0, str.indexOf("/")).replaceAll("0*$", ""))
+					+ "/" + tmpStr;
+				else{
+					try{
+						if ((Double.parseDouble(tmpStr)) == 0) 
+							return (((str.substring(0, str.indexOf("/"))).indexOf(".")<0)?str.substring(0, str.indexOf("/")):str.substring(0, str.indexOf("/")).replaceAll("0*$", ""))
+								+ "/" + "0";
+					}catch(Exception e){
+						return (((str.substring(0, str.indexOf("/"))).indexOf(".")<0)?str.substring(0, str.indexOf("/")):str.substring(0, str.indexOf("/")).replaceAll("0*$", ""))
 						+ "/" + tmpStr;
-			} else
-				return str.substring(0, str.indexOf("/")) + "/"
-						+ tmpStr.replaceAll("0*$", "");
+					}
+				} 
+				return (((str.substring(0, str.indexOf("/"))).indexOf(".")<0)?str.substring(0, str.indexOf("/")):str.substring(0, str.indexOf("/")).replaceAll("0*$", ""))
+				+ "/"+ (tmpStr.indexOf(".")<0?tmpStr:tmpStr.replaceAll("0*$", ""));
+//					return str.substring(0, str.indexOf("/")) + "/"
+//							+ (tmpStr.indexOf(".")<0?tmpStr:tmpStr.replaceAll("0*$", ""));
+//							+ tmpStr.replaceAll("0*$", "");
+			
+			}else{
+			    tmpStr=str.substring(str.lastIndexOf("/")+1);
+//			    System.out.println("tempStr2:"+tmpStr);
+			    if("".equals(tmpStr))
+					return ((str.substring(0, str.lastIndexOf("/"))).indexOf(".")<0?str.substring(0, str.lastIndexOf("/")):str.substring(0, str.lastIndexOf("/")).replaceAll("0*$", ""))
+					+ "/" + tmpStr;
+			    else{
+			    	try{
+				    	if ((Double.parseDouble(tmpStr)) == 0)
+				    		return ((str.substring(0, str.lastIndexOf("/"))).indexOf(".")<0?str.substring(0, str.lastIndexOf("/")):str.substring(0, str.lastIndexOf("/")).replaceAll("0*$", ""))
+								+ "/" + "0";
+				    }catch(Exception e){
+				    	return ((str.substring(0, str.lastIndexOf("/"))).indexOf(".")<0?str.substring(0, str.lastIndexOf("/")):str.substring(0, str.lastIndexOf("/")).replaceAll("0*$", ""))
+						+ "/" + tmpStr;
+				    }
+				} 
+					return ((str.substring(0, str.lastIndexOf("/"))).indexOf(".")<0?str.substring(0, str.lastIndexOf("/")):str.substring(0, str.lastIndexOf("/")).replaceAll("0*$", "")) 
+					+ "/"+ (tmpStr.indexOf(".")<0?tmpStr:tmpStr.replaceAll("0*$", ""));
+//							+ tmpStr.replaceAll("0*$", "");
+			}
 		} else{
 //			return str.indexOf(".") < 0 ? str : str.replaceAll("0*$", "");
 		// Implementation includes % signs as well.
