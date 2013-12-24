@@ -97,7 +97,7 @@ public class TestRuleSet {
 							System.out.println("Rule 12 Applied:"+sanitizedString);
 							break;
 						case 14:
-							rawScore = RuleSet.Rule14(itemId, sanitizedString, null);
+							rawScore = RuleSet.Rule14(itemId, sanitizedString,null);
 							System.out.println("Rule 14 Applied:"+sanitizedString);
 							System.out.println("Raw Score"+rawScore);
 						case 16:
