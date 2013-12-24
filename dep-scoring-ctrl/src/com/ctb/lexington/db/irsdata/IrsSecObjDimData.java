@@ -28,12 +28,22 @@ public class IrsSecObjDimData implements Persistent{
     public boolean equals(Object arg0) {
 		return 
 			name.equals(((IrsSecObjDimData)arg0).getName()) &&
-			(((IrsSecObjDimData)arg0).getPrimObjid()== null || primObjid.equals(((IrsSecObjDimData)arg0).getPrimObjid())) &&
+			primObjid.equals(((IrsSecObjDimData)arg0).getPrimObjid()) &&
 			(secObjIndex == null || secObjIndex.equals(((IrsSecObjDimData)arg0).getSecObjIndex())) &&
 			secObjType.equals(((IrsSecObjDimData)arg0).getSecObjType()) &&
 			numItems.equals(((IrsSecObjDimData)arg0).getNumItems()) &&
 			pointsPossible.equals(((IrsSecObjDimData)arg0).getPointsPossible()) &&
 			assessmentid.equals(((IrsSecObjDimData)arg0).getAssessmentid()) &&
+            (nationalAverage == null || nationalAverage.equals(((IrsSecObjDimData)arg0).getNationalAverage()));
+	}
+    
+    public boolean equalsSec(Object arg0) {
+		return 
+			name.equals(((IrsSecObjDimData)arg0).getName()) &&
+			(secObjIndex == null || secObjIndex.equals(((IrsSecObjDimData)arg0).getSecObjIndex())) &&
+			secObjType.equals(((IrsSecObjDimData)arg0).getSecObjType()) &&
+			numItems.equals(((IrsSecObjDimData)arg0).getNumItems()) &&
+			pointsPossible.equals(((IrsSecObjDimData)arg0).getPointsPossible()) &&
             (nationalAverage == null || nationalAverage.equals(((IrsSecObjDimData)arg0).getNationalAverage()));
 	}
 

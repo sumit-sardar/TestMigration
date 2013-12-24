@@ -126,16 +126,31 @@ public class CurriculumController {
         IrsSecObjDimData [] secondaryObjectives = getIrsSecObjBeans(data);
         for(int i=0;i<secondaryObjectives.length;i++) {
             IrsSecObjDimData newSecObj = secondaryObjectives[i];
-            // check for existing secondary objective record
-            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
-            if(secObj == null) {
-                // insert new secondary objective record
-                soMapper.insert(newSecObj);
-            } else {
-                if(!newSecObj.equals(secObj)) {
-                    // update existing secondary objective record
-                    soMapper.update(newSecObj);
-                }
+            
+            if(adminData != null && adminData.getProductId()== 7500){
+	            // check for existing secondary objective record
+	            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
+	            if(secObj == null) {
+	                // insert new secondary objective record
+	                soMapper.insert(newSecObj);
+	            } else {
+	                if(!newSecObj.equalsSec(secObj)) {
+	                    // update existing secondary objective record matching with assessment 
+	                    soMapper.updateSec(newSecObj);
+	                }
+	            }
+            }else{
+	            // check for existing secondary objective record
+	            IrsSecObjDimData secObj = soMapper.findBySecObjId(newSecObj.getSecObjid());
+	            if(secObj == null) {
+	                // insert new secondary objective record
+	                soMapper.insert(newSecObj);
+	            } else {
+	                if(!newSecObj.equals(secObj)) {
+	                    // update existing secondary objective record
+	                    soMapper.update(newSecObj);
+	                }
+	            }
             }
         }
         

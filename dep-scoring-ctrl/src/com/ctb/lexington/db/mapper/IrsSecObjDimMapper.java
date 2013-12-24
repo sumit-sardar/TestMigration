@@ -16,6 +16,7 @@ public class IrsSecObjDimMapper extends AbstractDBMapper{
 	private static final String INSERT_INTO_SECOBJDIM = "insertSecObjDim";
     private static final String UPDATE_BY_SECOBJID = "updateSecObjDim";
     private static final String DELETE_BY_SECOBJID = "deleteSecObjDim";
+    private static final String UPDATE_BY_SECOBJID_ASSESSMENT = "updateSecObjDimAssessment";
   
 	public IrsSecObjDimMapper(Connection conn){
 		super(conn);
@@ -39,4 +40,9 @@ public class IrsSecObjDimMapper extends AbstractDBMapper{
 	public void delete(Long secObjId)throws SQLException{
 		delete(DELETE_BY_SECOBJID, secObjId);
 	}
+	
+	public void updateSec(IrsSecObjDimData record)throws SQLException{
+        update(UPDATE_BY_SECOBJID_ASSESSMENT, record);
+    }
+	
 }

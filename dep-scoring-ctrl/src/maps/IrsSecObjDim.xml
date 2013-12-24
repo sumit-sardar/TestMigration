@@ -71,4 +71,21 @@ WHERE
 	WHERE	
 			 SEC_OBJID = #secObjid:NUMERIC#
 </delete>
+
+<update id="updateSecObjDimAssessment" parameterClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData">
+       
+	UPDATE
+	        SEC_OBJ_DIM
+	SET
+	    NAME = #name:VARCHAR#,
+	    SEC_OBJ_INDEX = #secObjIndex:NUMERIC#,
+	    SEC_OBJ_TYPE = #secObjType:VARCHAR#,
+	    NUM_ITEMS = #numItems:NUMERIC#,
+	    POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+	    NATIONAL_AVERAGE =  #nationalAverage:NUMERIC#,
+	    PRIM_OBJID =   #primObjid:NUMERIC#
+	WHERE
+	    SEC_OBJID = #secObjid:NUMERIC#
+	AND assessmentid = #assessmentid:NUMERIC#
+</update>
 </sqlMap>
