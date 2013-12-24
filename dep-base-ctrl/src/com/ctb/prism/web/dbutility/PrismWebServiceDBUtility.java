@@ -75,7 +75,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_OBJECTIVE_LIST = "SELECT 'S' AS lvl,       prim.item_set_id AS itemsetid,       prim.item_set_name AS objname, objdet.content_code || objdet.objective_code AS objcode  FROM item_set prim,       item_set_item pisi,       item_set_ancestor pisip,       item_set_category pisc,       item_set sub,       item_set_item isi,       product prod,       item, objective_details objdet WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = pisi.item_id   AND pisip.item_set_id = pisi.item_set_id   AND pisip.ancestor_item_set_id = prim.item_set_id   AND prim.item_set_category_id = pisc.item_set_category_id   AND pisc.item_set_category_level = prod.scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                            WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = pisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') AND objdet.content_code = ?   AND upper(objdet.objective_title) = upper(prim.item_set_name)    UNION     SELECT 'S' AS lvl,       sec.item_set_id AS itemsetid,       sec.item_set_name AS objname, objdet.content_code || objdet.objective_code AS objcode  FROM item_set sec,       item_set_item sisi,       item_set_ancestor sisip,       item_set_category sisc,       item_set sub,       item_set_item isi,       product prod,       item, objective_details objdet WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = sisi.item_id   AND sisip.item_set_id = sisi.item_set_id   AND sisip.ancestor_item_set_id = sec.item_set_id   AND sec.item_set_category_id = sisc.item_set_category_id   AND sisc.item_set_category_level = prod.sec_scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                           WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = sisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') AND objdet.content_code = ?   AND upper(objdet.objective_title) = upper(sec.item_set_name) ";
 	private static final String GET_PRIM_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       t.scoring_status AS itmattempflag  FROM tasc_prim_obj_fact t WHERE substr(t.prim_objid, 5)  = ? AND t.studentid = ? AND t.sessionid = ?";
 	private static final String GET_SEC_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       t.scale_score_range AS objmasscalescorerng,       t.scoring_status AS itmattempflag ,       t.condition_code    AS conditioncode  FROM tasc_sec_obj_fact t WHERE substr(t.sec_objid, 5) = ?   AND t.studentid = ?   AND t.sessionid = ?";
-	private static final String GET_SURVEY_BIO_RES = "SELECT tab.\"response\" AS \"response\",       tab.\"quesId\" AS \"quesId\",       tab.\"quesOrder\" AS \"quesOrder\",       tab.\"quesCode\" AS \"quesCode\",       tab.\"quesType\" AS \"quesType\"  FROM (SELECT to_clob(serop.question_option_prism) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'SR' AS \"quesType\"          FROM item_response res, student_survey_question serq, item itm, STUDENT_SURVEY_QUESTION_OPTION serop         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND res.item_id = serq.question_id           AND res.test_roster_id = ?           AND res.item_response_id =               (SELECT MAX(t.item_response_id)                  FROM item_response t                 WHERE t.test_roster_id = ?                   AND t.item_id = res.item_id)           AND itm.item_id = res.item_id           AND serop.question_option_oas = res.response           AND serop.question_id = res.item_id           AND serop.question_order = serq.question_order           AND itm.item_type = 'SR'         UNION ALL         SELECT  to_clob(utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                length(crres.constructed_response),                                                1))) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'GR' AS \"quesType\"          FROM item_response_cr        crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id          AND   itm.answer_area = 'GRID'    UNION ALL         SELECT crres.constructed_response AS \"response\",               serq.question_id AS \"quesId\",              serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'CR' AS \"quesType\"          FROM item_response_cr       crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id           AND itm.item_type = 'CR' AND (itm.answer_area is null  OR upper(itm.answer_area) = 'AUDIOITEM')) tab ORDER BY tab.\"quesOrder\"";
+	private static final String GET_SURVEY_BIO_RES = "SELECT tab.\"response\" AS \"response\",       tab.\"quesId\" AS \"quesId\",       tab.\"quesOrder\" AS \"quesOrder\",       tab.\"quesCode\" AS \"quesCode\",       tab.\"quesType\" AS \"quesType\"  FROM (SELECT to_clob(serop.question_option_prism) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'SR' AS \"quesType\"          FROM item_response res, student_survey_question serq, item itm, STUDENT_SURVEY_QUESTION_OPTION serop         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND res.item_id = serq.question_id           AND res.test_roster_id = ?           AND res.item_response_id =               (SELECT MAX(t.item_response_id)                  FROM item_response t                 WHERE t.test_roster_id = ?                   AND t.item_id = res.item_id)           AND itm.item_id = res.item_id           AND serop.question_option_oas = res.response           AND serop.question_id = res.item_id           AND serop.question_order = serq.question_order           AND itm.item_type = 'SR'         UNION ALL         SELECT  to_clob(utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                length(crres.constructed_response),                                                1))) AS \"response\",               serq.question_id AS \"quesId\",               serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'GR' AS \"quesType\"          FROM item_response_cr        crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id          AND   itm.answer_area = 'GRID'    UNION ALL         SELECT  to_clob(utl_url.unescape(dbms_lob.substr(crres.constructed_response,length(crres.constructed_response),1))) AS \"response\",               serq.question_id AS \"quesId\",              serq.question_order AS \"quesOrder\",               serq.question_code AS \"quesCode\",               'CR' AS \"quesType\"          FROM item_response_cr       crres,               student_survey_question serq,               item                    itm         WHERE serq.product_id =               (SELECT tstad.product_id                  FROM test_roster ros, test_admin tstad                 WHERE ros.test_roster_id = ?                   AND tstad.test_admin_id = ros.test_admin_id                   AND rownum = 1)           AND crres.item_id = serq.question_id           AND crres.test_roster_id = ?           AND itm.item_id = crres.item_id           AND itm.item_type = 'CR' AND (itm.answer_area is null  OR upper(itm.answer_area) = 'AUDIOITEM')) tab ORDER BY tab.\"quesOrder\"";
 	private static final String CHECK_CR_SCORE_PRESENT = "SELECT count(1) AS count_row FROM item_datapoint_score t WHERE t.test_roster_id = ? AND ROWNUM = 1";
 	private static final String GET_GR_RESP_STATUS = "SELECT decode(t.points_obtained, 1, 'R', 'W') AS respstatus,       t.points_obtained AS origresp,       dim.oas_itemid AS itmid  FROM tasc_item_fact t, item_dim dim WHERE t.studentid = ?   AND t.sessionid = ?  AND t.itemid = dim.itemid  AND dim.oas_itemid IN ";
 	private static final String GET_CONTENT_AREA_ID = "SELECT DISTINCT productid,       contentareaid,       contentareaname  FROM (SELECT DISTINCT dp.item_id,                        dp.max_points,                        productid,                        contentareaid,                        contentareaname,                        contentareatype,                        subject,                        contentareanumitems,                        subtestform,                        subtestlevel,                        subtestid          FROM (SELECT DISTINCT prod.product_id AS productid,                                prod.product_id || ca.item_set_id AS contentareaid,                                ca.item_set_name AS contentareaname,                                prod.product_type || ' CONTENT AREA' AS contentareatype,                                prod.product_type || ' ' || ca.item_set_name AS subject,                                COUNT(DISTINCT item.item_id) AS contentareanumitems,                                td.item_set_form AS subtestform,                                td.item_set_level AS subtestlevel,                                td.item_set_id AS subtestid                  FROM item,                       item_set ca,                       item_set_category cacat,                       item_set_ancestor caisa,                       item_set_item caisi,                       item_set_ancestor tcisa,                       item_set_item tcisi,                       test_roster ros,                       test_admin adm,                       test_catalog tc,                       product prod,                       item_set td                 WHERE ros.test_roster_id = ?                   AND adm.test_admin_id = ros.test_admin_id                   AND tc.test_catalog_id = adm.test_catalog_id                   AND prod.product_id = tc.product_id                   AND item.activation_status = 'AC'                   AND tc.activation_status = 'AC'                   AND ca.item_set_id = caisa.ancestor_item_set_id                   AND ca.item_set_type = 'RE'                   AND caisa.item_set_id = caisi.item_set_id                  AND item.item_id = caisi.item_id                   AND tcisi.suppressed = 'F'                   AND tcisi.item_id = item.item_id                  AND tcisa.item_set_id = tcisi.item_set_id                   AND adm.item_set_id = tcisa.ancestor_item_set_id                   AND cacat.item_set_category_id = ca.item_set_category_id                   AND cacat.item_set_category_level =                      prod.content_area_level                   AND td.item_set_id = tcisi.item_set_id                   AND td.SAMPLE = 'F'                  AND (td.item_set_level != 'L' OR prod.product_type = 'TL')                   AND cacat.framework_product_id = prod.parent_product_id                GROUP BY prod.product_id,                          prod.product_id || ca.item_set_id,                          ca.item_set_name,                         prod.product_type || ' CONTENT AREA',                          prod.product_type || ' ' || ca.item_set_name,                         td.item_set_form,                          td.item_set_level,                          td.item_set_id) derived,               datapoint dp,              item_set_item isi         WHERE isi.item_set_id = derived.subtestid           AND isi.suppressed = 'F'           AND dp.item_id =isi.item_id) derived1 GROUP BY productid,          contentareaid,          contentareaname";
@@ -1345,9 +1345,18 @@ public class PrismWebServiceDBUtility {
 							surveyBioLst.add(surveyBioTO);
 						}
 					}
+					
 					SurveyBioTO surveyBioTO = new SurveyBioTO();
 					surveyBioTO.setSurveyName(rs.getString("quesCode"));
-					surveyBioTO.setSurveyValue(readOracleClob(rs.getClob("response")));
+					String surveyValue = "";
+					
+					if(rs.getString("quesType").equalsIgnoreCase("CR")){
+						surveyValue= removeXMLTags(readOracleClob(rs.getClob("response")));
+					}else{
+						surveyValue = readOracleClob(rs.getClob("response"));
+					}
+					
+					surveyBioTO.setSurveyValue(formatSurveyValue(rs.getString("quesOrder"),surveyValue));
 					surveyBioLst.add(surveyBioTO);
 				}
 			}
@@ -1364,10 +1373,78 @@ public class PrismWebServiceDBUtility {
 	}
 	
 	/**
+	 * Remove XML tags in Constructed Responses
+	 * @param sVal
+	 * @return
+	 */
+	public static String removeXMLTags(String sVal) {
+		String CDATA = "<![CDATA[";
+		String END_CDATA = "]]>";
+		String surveyValue = "";
+		if (trim(sVal) != "" && sVal.indexOf(CDATA) > 0
+				&& sVal.lastIndexOf(END_CDATA) > 0) {
+			surveyValue = sVal.substring(sVal.indexOf(CDATA) + 9, sVal
+					.lastIndexOf(END_CDATA));
+		}
+		return surveyValue;
+	}
+	
+	/**
+	 * Format the surveyValue based on the question order
+	 * @param quesOrder
+	 * @param returnStr
+	 * @return 
+	 */
+	public static String formatSurveyValue(String quesOrder, String sVal) {
+		String HYPEN = "-";
+		String surveryValue = "";
+		StringBuilder sb = new StringBuilder();
+		if (quesOrder.equals("7")) {// Phone no formatting
+			sb.append(sVal.substring(0, 3));
+			sb.append(HYPEN);
+			sb.append(sVal.substring(3, 6));
+			sb.append(HYPEN);
+			sb.append(sVal.substring(6, sVal.length()));
+			surveryValue = sb.toString();
+		} else if (quesOrder.equals("12")) {// Zip code formatting
+			sb.append(sVal.substring(0, 5));
+			sb.append(HYPEN);
+			sb.append(sVal.substring(5, sVal.length()));
+			surveryValue = sb.toString();
+		} else if (quesOrder.equals("24")) {
+			surveryValue = trim(sVal);
+		} else if (quesOrder.equals("55")) {// Highest level of education
+			Integer i = stringToInteger(trim(sVal));
+			if (i != null) {
+				if (i.intValue() == 0) {
+					surveryValue = "KG";
+				} else if (i.intValue() > 0 && i.intValue() < 13) {
+					surveryValue = String.format("%02d", i);
+				}
+			}
+		} else if (quesOrder.equals("56")) {// Home Language
+			Integer i = stringToInteger(trim(sVal));
+			if (i != null && i.intValue() > 0 && i.intValue() < 18) {
+				surveryValue = String.format("%02d", i);
+			}
+		} else if (new Integer(quesOrder) > 60 && new Integer(quesOrder) < 81) {
+			// Local Use Fields (state questions)
+			surveryValue = trim(sVal);
+			if (surveryValue.length() > 1) {
+				surveryValue = HYPEN;
+			}
+		}else{
+			surveryValue = sVal;
+		}
+		return surveryValue;
+	}
+	
+
+	/**
 	 * Populate the Customer Hierarchy Details TO
 	 * @param rs
 	 * @param custHierarchyDetailsTO
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	private static void populateCustHierarchyDetailsTO(ResultSet rs,
 			CustHierarchyDetailsTO custHierarchyDetailsTO) throws SQLException {
@@ -1798,4 +1875,31 @@ public class PrismWebServiceDBUtility {
 		return returnMsg;
 	}
 	
+	/**
+	 * Trims String
+	 * @param message
+	 * @return
+	 */
+	private static String trim(String message){
+		String returnMsg = "";
+		if(message != null && !"".equals(message)){
+			returnMsg = message.trim();
+		}
+		return returnMsg;
+	}
+	
+	/**
+	 * String to Integer
+	 * @param value
+	 * @return
+	 */
+	public static Integer stringToInteger(String value){
+		Integer i = null;
+		try {
+			i = Integer.parseInt(value);
+		} catch (Exception e) {
+			return i;
+		}
+		return i;
+	}
 }
