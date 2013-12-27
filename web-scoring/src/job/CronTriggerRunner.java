@@ -11,6 +11,7 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.ctb.prismws.PrismWebServiceHelper;
 import com.ctb.schedular.Configuration;
 
 
@@ -36,6 +37,15 @@ public class CronTriggerRunner {
 	
 	    // schedule a job with JobDetail and Trigger
 	    scheduler.scheduleJob(jobDetail, trigger);
+	    
+	    // Initiate JobDetail with job name, job group, and executable job class
+	    JobDetail wsJobDetail = newJob(PrismWSJob.class)
+	    							.withIdentity("PrismWebServiceJob", "PrismWebServiceGroup").build();
+	    CronTrigger wsTrigger = newTrigger().withIdentity("trigger1", "PrismWebServiceGroup")
+				.withSchedule(cronSchedule(new PrismWebServiceHelper().getPrismWSCronExpression()))
+				.build();
+	    // schedule a job with JobDetail and Trigger
+	    scheduler.scheduleJob(wsJobDetail, wsTrigger);
 	    
 	    // start the scheduler
 	    scheduler.start();

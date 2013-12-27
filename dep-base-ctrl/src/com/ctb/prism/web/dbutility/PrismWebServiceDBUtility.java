@@ -48,6 +48,7 @@ import com.ctb.prism.web.controller.StudentSurveyBioTO;
 import com.ctb.prism.web.controller.SubtestAccommodationTO;
 import com.ctb.prism.web.controller.SubtestAccommodationsTO;
 import com.ctb.prism.web.controller.SurveyBioTO;
+import com.ctb.prism.web.handler.PrismWebServiceHandler;
 
 
 
@@ -85,6 +86,8 @@ public class PrismWebServiceDBUtility {
 	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message, ADDITIONAL_INFO) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   1,   ?,   ?,  ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
+	private static final String SELECT_WS_ERROR_LOG = "SELECT ws_error_log_key as logkey, invoke_count invkcount, student_id stdid, roster_id rstrid, session_id sessionid, ws_type wstyp FROM ws_error_log    WHERE status = 'Progress'";
+	
 	/**
 	 * Get Student Bio Information
 	 * @param studentId
@@ -92,8 +95,6 @@ public class PrismWebServiceDBUtility {
 	 * @throws CTBBusinessException
 	 */
 	public static StudentBioTO getStudentBio(java.lang.Integer studentId){
-		//StudentManagement studentManagement = new StudentManagementImpl();
-		//return studentManagement.getManageStudent(userName, studentId);
 		
 		PreparedStatement pst = null;
 		Connection con = null;
@@ -124,8 +125,7 @@ public class PrismWebServiceDBUtility {
 	 * @throws CTBBusinessException
 	 */
 	public static CustHierarchyDetailsTO  getCustomerHigherarchy(Integer studentId, long rosterID){
-		//StudentManagement studentManagement = new StudentManagementImpl();
-		//return studentManagement.getAncestorOrganizationNodesForOrgNode(orgNodeId);
+		
 		CustHierarchyDetailsTO custHierarchyDetailsTO = new CustHierarchyDetailsTO();
 		
 		PreparedStatement pst = null;
@@ -300,7 +300,6 @@ public class PrismWebServiceDBUtility {
 		ResultSet rsGR = null;
 		ItemResponsesDetailsTO itemResponsesDetailsTO = new ItemResponsesDetailsTO();
 		List<ItemResponseTO> itemResponseTOLst =  itemResponsesDetailsTO.getItemResponseTO();
-		//TODO - Not yet completed.  
 		try {
 			con = openOASDBcon(false);
 			
@@ -637,15 +636,11 @@ public class PrismWebServiceDBUtility {
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) : "");
 						if(PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Omitted Content 
-							//ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
-							//contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
-							//contentDetailsTOList.add(contentDetailsTO);
 							contentDetailsTO.setDateTestTaken(null);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
-							//contentDetailsTOList.add(contentDetailsTO);
 							continue;
 						}
 					}else{
@@ -1009,7 +1004,6 @@ public class PrismWebServiceDBUtility {
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
 					contentDetailsTO.setStatusCode("");
 					contentDetailsTO.setDataChanged(true);
-					//contentDetailsTO.setDateTestTaken(compTestRS.getString("dtTstTaken"));
 	
 					ContentScoreTO ncContentScoreTO = new ContentScoreTO();
 					ncContentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
@@ -1658,6 +1652,49 @@ public class PrismWebServiceDBUtility {
 	}
 	
 
+
+	/**
+	 * Update WS Error Log table
+	 * @param wsErrorLogKey
+	 */
+	public static void retryWSProgress(){
+		PreparedStatement pst  = null;
+		Connection con = null;
+		ResultSet rs = null;
+		long logkey = 0L;
+		int invkcount = 0;
+		Integer stdid = 0; 
+		long rstrid = 0L;
+		long sessionid = 0L;
+		String wstyp = "";
+		try {
+			con = openOASDBcon(false);
+			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
+			rs = pst.executeQuery();
+			System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
+			while(rs.next()){
+				logkey = rs.getLong("logkey");
+				invkcount = rs.getInt("invkcount");
+				stdid = rs.getInt("stdid");
+				rstrid = rs.getLong("rstrid");
+				sessionid = rs.getLong("sessionid");
+				wstyp = rs.getString("wstyp");
+				invkcount++;
+				System.out.println("Prism Web Service retring for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
+				if(wstyp != null && !"".equals(wstyp) && "Scoring".equalsIgnoreCase(wstyp)){
+					PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey);
+				}else{
+					PrismWebServiceHandler.editStudent(stdid, invkcount, logkey);
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getWSErrorLogProgress() method to execute query : \n " +  SELECT_WS_ERROR_LOG);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+	}
+	
 	/**
 	 * Get OAS DB connection
 	 * @param isCommitable

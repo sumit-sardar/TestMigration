@@ -628,7 +628,7 @@ public class StudentOperationController extends PageFlowController {
 					(new Thread() {
 						public void run(){
 							try {
-								PrismWebServiceHandler.editStudent(tempStudentId);
+								PrismWebServiceHandler.editStudent(tempStudentId, 0, 0);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -3669,7 +3669,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		(new Thread() {
 			public void run(){
 				try {
-					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID));
+					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID), 0, 0);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3694,11 +3694,11 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		final String rosterId = getRequest().getParameter("rosterId").trim();
 		final String stdID = getRequest().getParameter("stdID").trim();
 		final String sessionId = getRequest().getParameter("sessionId").trim();
-		System.out.println("Edit Student WS Called for Roster Id>>>>>>>>>>>>>>>>>> " + rosterId + " >>>>> Student ID >>>>> " + stdID + " >>>>>> Session Id >>>>>> " + sessionId);
+		System.out.println("Scoring WS Called for Roster Id>>>>>>>>>>>>>>>>>> " + rosterId + " >>>>> Student ID >>>>> " + stdID + " >>>>>> Session Id >>>>>> " + sessionId);
 		(new Thread() {
 			public void run(){
 				try {
-					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId));
+					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId), 0, 0);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
