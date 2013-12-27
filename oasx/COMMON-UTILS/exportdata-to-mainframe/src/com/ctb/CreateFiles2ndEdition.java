@@ -558,14 +558,14 @@ public class CreateFiles2ndEdition {
 					tfil.setTestForm("C");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links2", new Integer(11))
+								"LASLinks2", new Integer(11))
 								.toUpperCase());
 				} else if ("D".equalsIgnoreCase(rs.getString(1))) {
 					tfil.setTestName("LAS Links 2nd Edition");
 					tfil.setTestForm("D");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"LAS Links2", new Integer(11))
+								"LASLinks2", new Integer(11))
 								.toUpperCase());
 				} else if ("ESP B".equalsIgnoreCase(rs.getString(1)) || 
 						"Español B".equalsIgnoreCase(rs.getString(1))) {
