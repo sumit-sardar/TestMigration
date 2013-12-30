@@ -464,7 +464,7 @@ public class FileGeneratorForLL2ND {
 					tfil.setTestForm("C");
 					if (orderFile.getTestName1() == null)
 						//Change for Story "LAS Links Online - 2013 - TAS - Fix Export file 
-						//for Forms C-D-Esp B" from "LAS Links" to "LAS Links2"
+						//for Forms C-D-Esp B" from "LAS Links" to "LASLinks2"
 						orderFile.setTestName1(EmetricUtil.truncate(
 								"LASLinks2", new Integer(11))
 								.toUpperCase());
@@ -473,7 +473,7 @@ public class FileGeneratorForLL2ND {
 					tfil.setTestForm("D");
 					if (orderFile.getTestName1() == null)
 						//Change for Story "LAS Links Online - 2013 - TAS - Fix Export file 
-						//for Forms C-D-Esp B" from "LAS Links" to "LAS Links2"
+						//for Forms C-D-Esp B" from "LAS Links" to "LASLinks2"
 						orderFile.setTestName1(EmetricUtil.truncate(
 								"LASLinks2", new Integer(11))
 								.toUpperCase());
@@ -482,9 +482,10 @@ public class FileGeneratorForLL2ND {
 				} else if (rs.getString(1).equalsIgnoreCase("Español B")) {
 					tfil.setTestName("LAS Links 2nd Edition Español");
 					tfil.setTestForm("T");
+					// Fix for Defect #76619
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"ESPANOL", new Integer(10))
+								"LASLinks2", new Integer(11))
 								.toUpperCase());
 				}
 
