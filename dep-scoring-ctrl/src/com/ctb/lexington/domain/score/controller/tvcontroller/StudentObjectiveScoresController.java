@@ -52,6 +52,10 @@ public class StudentObjectiveScoresController {
             		if(new Long(1).equals(newFact.getCurrentResultid())) {
             			poMapper.insert(newFact);
             		}
+            	} else if(adminData.getProductId() == 3500) {	//Changes for defect #76589
+            		if(new Long(1).equals(newFact.getCurrentResultid())) {
+            			poMapper.insert(newFact);
+            		}
             	} else {
             		poMapper.insert(newFact);
             	}
@@ -116,7 +120,12 @@ public class StudentObjectiveScoresController {
                     primObjFacts[i].setCurrentResultid(new Long(2));
                 } else {
                 	if(adminData.getProductId() == 3700) {
-                		 primObjFacts[i].setCurrentResultid(new Long(1));
+                		primObjFacts[i].setCurrentResultid(new Long(1));
+                	}else if(adminData.getProductId() == 3500){		//Changes for defect #76589
+                		Objective tvPrimObjective = (Objective)ObjectiveRawScoreCalculator.tvSubtestObjectiveMap.get(prims[i].getPrimaryObjectiveId());
+                		if(tvPrimObjective.getNumberOfItems().intValue() < 4){
+                			primObjFacts[i].setCurrentResultid(new Long(2));
+                		}
                 	}
                 }
                 // dim ids from context
