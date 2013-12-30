@@ -573,7 +573,7 @@ public class CreateFiles2ndEdition {
 					tfil.setTestForm("T");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"ESPANOL", new Integer(10))
+								"LASLinks2", new Integer(11))
 								.toUpperCase());
 				}
 
