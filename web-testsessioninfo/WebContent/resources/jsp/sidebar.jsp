@@ -2,18 +2,11 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<%
-	Boolean bulkAcc = (Boolean)session.getAttribute("isBulkAccommodationConfigured");
-	if (bulkAcc == null) bulkAcc = new Boolean(false);
-	Boolean hasReport = (Boolean)session.getAttribute("userHasReports");
-	if (hasReport == null) hasReport = new Boolean(false);
-	String scheduleTestURL = "/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" + 
-							"?bulkAcc=" + bulkAcc.toString() + "&hasReport=" + hasReport.toString();
-%>
+
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
     <h1>Tests</h1>
     <ul>
-        <li><a href="<%= scheduleTestURL  %>"><span>Schedule Test Session</span></a></li>
+        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf"><span>Schedule Test Session</span></a></li>
         <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf"><span>Find Test Session</span></a></li>
     </ul>
 </ctb:auth>
@@ -26,11 +19,6 @@
     <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
 </ctb:auth>
     <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
-<ctb:auth roles="Administrator, Administrative Coordinator">
-	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
-		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
-	</c:if>
-</ctb:auth>      
 </ul>
 </ctb:auth>
 
@@ -69,16 +57,6 @@
 </ul>
 </ctb:auth>
 
-<c:if test="${ sessionScope.isScoringConfigured}">    
-<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
-	<h1>Score</h1>
-	<ul>
-     
-        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do"><span>Student Scoring</span></a></li>
-    
-	</ul>
-</ctb:auth>
-</c:if>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>
@@ -99,18 +77,4 @@
 </ul>
 </ctb:auth>
 
-<ctb:auth roles="Administrator">
-<c:if test="${ sessionScope.isTopLevelUser }">
-<h1>Export</h1>
-<ul>
-    <li><a href="/DataExportWeb/dataExportPageFlow/begin.do"><span>Export Data</span></a></li>
-    <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do"><span>View Status</span></a></li>
-    
-</ul>
- </c:if>
-</ctb:auth>
 
-<h1>New TAS UI</h1>
-<ul>
-    <li><a href="/TestSessionInfoWeb/homepage/HomePageController.jpf"><span>New Landing Page</span></a></li>
-</ul>

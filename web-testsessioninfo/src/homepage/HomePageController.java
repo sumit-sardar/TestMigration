@@ -12,41 +12,27 @@ import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
-import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.NodeData;
-import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.testSessionInfo.dto.FileInfo;
 import com.ctb.testSessionInfo.dto.ReportManager;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
-import com.ctb.testSessionInfo.utils.JsonUtils;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
-
-
-import com.ctb.testSessionInfo.utils.DateUtils;
-import com.google.gson.Gson;
       
 /**
  * @jpf:controller
@@ -68,12 +54,7 @@ public class HomePageController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
    
-   // LLO- 118 - Change for Ematrix UI
-	@org.apache.beehive.controls.api.bean.Control()
-	private com.ctb.control.db.OrgNode orgnode;
-
-	
-	
+    
     private String userName = null;
     private User user = null;
     private UserNodeData userTopNodes = null;
@@ -82,66 +63,44 @@ public class HomePageController extends PageFlowController
     private CustomerReportData customerReportData = null;                
 
     public ReportManager reportManager = null;
-    private CustomerLicense[] customerLicenses = null;
-    private boolean hasLicenseConfig = false;  //change for defect 66353
-    // LLO- 118 - Change for Ematrix UI
-	private boolean isTopLevelUser = false;
-	private boolean islaslinkCustomer = false;
     
     /**
-	 * @return the islaslinkCustomer
-	 */
-	public boolean isIslaslinkCustomer() {
-		return islaslinkCustomer;
-	}
-
-	/**
-	 * @param islaslinkCustomer the islaslinkCustomer to set
-	 */
-	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
-		this.islaslinkCustomer = islaslinkCustomer;
-	}
-
-	/**
-	 * @return the hasLicenseConfig
-	 */
-	public boolean isHasLicenseConfig() {
-		return hasLicenseConfig;
-	}
-
-	/**
-	 * @param hasLicenseConfig the hasLicenseConfig to set
-	 */
-	public void setHasLicenseConfig(boolean hasLicenseConfig) {
-		this.hasLicenseConfig = hasLicenseConfig;
-	}
-
-	/**
      * This method represents the point of entry into the pageflow
+     * @jpf:action
+     * @jpf:forward name="success" path="home_page.do"
+     * @jpf:forward name="resetPassword" path="resetPassword.do"
+     * @jpf:forward name="editTimeZone" path="setTimeZone.do"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "home_page", path = "home_page.do"), 
-        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
-        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do")
+        @Jpf.Forward(name = "success",
+                     path = "home_page.do"), 
+        @Jpf.Forward(name = "resetPassword",
+                     path = "resetPassword.do"), 
+        @Jpf.Forward(name = "editTimeZone",
+                     path = "setTimeZone.do")
     })
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
-    	getUserDetails();            
-
-        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
+        getUserDetails();
+                         
+        HomePageForm form = new HomePageForm();
+        form.init();
+        
+        if ("T".equals(this.user.getResetPassword()))
         {
-       		return new Forward("resetPassword");
+            return new Forward("resetPassword", form);
         }
+        
+        /*Changed for DEx defect # 57562 & 57563*/ 
         else if (this.user.getTimeZone() == null)
         {
-       		return new Forward("editTimeZone");
+            return new Forward("editTimeZone", form);
+            
         }
         else
         {
-        	HomePageForm form = new HomePageForm();
-        	form.init();
-    		return new Forward("home_page", form);
+            return new Forward("success", form);
         }
     }
 
@@ -149,7 +108,7 @@ public class HomePageController extends PageFlowController
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward resetPassword()
+    protected Forward resetPassword(HomePageForm form)
     {               
         try
         {
@@ -167,11 +126,11 @@ public class HomePageController extends PageFlowController
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward setTimeZone()
+    protected Forward setTimeZone(HomePageForm form)
     {               
         try
         {
-            String url = "/UserWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
+            String url = "/UserManagementWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -181,7 +140,6 @@ public class HomePageController extends PageFlowController
         return null;
     }
 
-    
     /**
      * @jpf:action
      * @jpf:forward name="success" path="home_page.do"
@@ -214,8 +172,11 @@ public class HomePageController extends PageFlowController
                                               path = "logout.do"))
     protected Forward home_page(HomePageForm form)
     {
+    	
         if (this.user.getRole().getRoleName().equals("ACCOUNT MANAGER"))
         {
+
+
             // get CTB broadcast messages
             List broadcastMessages = getBroadcastMessages(true);
             this.getRequest().setAttribute("broadcastMessages", broadcastMessages);
@@ -227,11 +188,10 @@ public class HomePageController extends PageFlowController
             
             return new Forward("accountManagerHomePage", form);
         }
-              
+        
+        
         form.resetValuesForAction();        
         form.validateValues();
-        
-        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.user.getCustomer().getCustomerId());
         
         // retrieve information for user test sessions
         FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, form.getUserSessionFilterTab());
@@ -273,33 +233,20 @@ public class HomePageController extends PageFlowController
         this.getRequest().setAttribute("proctorSessionPagerSummary", proctorPagerSummary);
         this.getRequest().setAttribute("proctorOrgCategoryName", proctorOrgCategoryName);        
 
+        this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
 
         // get licenses
-        if (this.customerLicenses == null)
-        	this.customerLicenses = getCustomerLicenses();
-        
-        if ((this.customerLicenses != null) && (this.customerLicenses.length > 0))
+        CustomerLicense[] customerLicenses = getCustomerLicenses();
+        if ((customerLicenses != null) && (customerLicenses.length > 0))
         {
-            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
-           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
+            this.getRequest().setAttribute("customerLicenses", customerLicenses);
         }
-       /* else {
-            this.getSession().setAttribute("hasLicenseConfig", new Boolean(false));        	
-        }*/
-       //START - change for defect 66353
-        this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs); 
-        if(this.hasLicenseConfig) {
-        	 this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
-        } else {
-        	 this.getSession().setAttribute("hasLicenseConfig", new Boolean(false));  
-        }
-       //END - change for defect 66353
-        
+
         //check avaliable license count for Register Student
-        registerStudentEnable(this.customerLicenses, sessionList);
+        registerStudentEnable(customerLicenses, sessionList);
        
         //check avaliable license count for Register Student
-        registerStudentEnable(this.customerLicenses, proctorSessionList); 
+        registerStudentEnable(customerLicenses, proctorSessionList); 
         
         // get CTB broadcast messages
         List broadcastMessages = getBroadcastMessages(false);
@@ -310,8 +257,7 @@ public class HomePageController extends PageFlowController
          
         this.getSession().setAttribute("userHasReports", userHasReports());
 
-        Boolean canRegisterStudent = canRegisterStudent(customerConfigs);
-        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent);
+        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent());
         
         String userSessionFilterTab = form.getUserSessionFilterTab();
         if (userSessionFilterTab.equalsIgnoreCase("PA"))
@@ -321,11 +267,6 @@ public class HomePageController extends PageFlowController
         else
         {
             this.getRequest().setAttribute("enableUserRegisterStudent", Boolean.TRUE);
-        }
-        if (canRegisterStudent.booleanValue() && (userSessionFilterTab.equalsIgnoreCase("CU") || userSessionFilterTab.equalsIgnoreCase("PA")))
-        {
-            // comment out generate PDF in 9.0 release
-            // this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
         }
         
         String proctorSessionFilterTab = form.getProctorSessionFilterTab();
@@ -337,43 +278,11 @@ public class HomePageController extends PageFlowController
         {
             this.getRequest().setAttribute("enableProctorRegisterStudent", Boolean.TRUE);
         }
-        if (canRegisterStudent.booleanValue() && (proctorSessionFilterTab.equalsIgnoreCase("CU") || proctorSessionFilterTab.equalsIgnoreCase("PA")))
-        {
-            // comment out generate PDF in 9.0 release
-            // this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
-        }
-        
-        //Bulk Accommodation
-        this.getSession().setAttribute("isBulkAccommodationConfigured", customerHasBulkAccommodation(customerConfigs));
-      //For hand scoring changes
-        this.getSession().setAttribute("isScoringConfigured", customerHasScoring(customerConfigs));
-        
-        isTopLevelUser();
-        
+
         form.setActionElement("none");   
-        
         return new Forward("success", form);
     }
-     //LLO- 118 - Change for Ematrix UI
-    private void isTopLevelUser(){
-		
-		boolean isUserTopLevel = false;
-		boolean isLaslinkUserTopLevel = false;
-		boolean isLaslinkUser = false;
-		isLaslinkUser = this.islaslinkCustomer;
-		try {
-			if(isLaslinkUser) {
-				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
-				if(isUserTopLevel){
-					isLaslinkUserTopLevel = true;				
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
-	}
-    
+  
     private void getLoggedInUserPrincipal()
     {
         java.security.Principal principal = getRequest().getUserPrincipal();
@@ -426,89 +335,7 @@ public class HomePageController extends PageFlowController
             be.printStackTrace();
         }
     }
-    
-    
-    /**
-     * getLicenseQuantitiesByOrg
-     */    
-    private CustomerLicense getLicenseQuantitiesByOrg() {
-    	
-    	CustomerLicense cl = null;
-
-        try {
-            int licReserved = 0;
-            int licUsed = 0;
-            int licPurchased = 0;
-        	
-	        CustomerLicense cusLicense = getCustomerLicenseByProduct();
-	        Integer productId = cusLicense.getProductId();
-	        String productName = cusLicense.getProductName();
-	        String subtestModel = cusLicense.getSubtestModel();
-        	
-	    	NodeData und = this.testSessionStatus.getTopNodesForUser(this.userName, null, null, null);
-	        Node[] nodes = und.getNodes();    
-	        
-	        for (int i=0 ; i<nodes.length ; i++) {
-		        Node node = nodes[i];
-		        Integer orgNodeId = node.getOrgNodeId();
-	        
-		        OrgNodeLicenseInfo onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
-																				                    orgNodeId, 
-																				                    productId, 
-																				                    subtestModel);
-		        licReserved += onli.getLicReserved();
-		        licUsed += onli.getLicUsed();
-		        licPurchased += onli.getLicPurchased();
-	        }
-	        
-	        cl = new CustomerLicense();
-	        cl.setProductName(productName);
-	        cl.setReservedLicense(licReserved);
-	        cl.setConsumedLicense(licUsed);
-	        cl.setAvailable(licPurchased);
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        
-        return cl;
-    }
-    
-    /**
-     * getCustomerLicenseByProduct
-     */
-    private CustomerLicense getCustomerLicenseByProduct()
-    {
-        for (int i=0 ; i<this.customerLicenses.length ; i++) {
-            CustomerLicense license = (CustomerLicense)this.customerLicenses[i];
-            if (license.getProductId().intValue() == 4000) {
-                return license;
-            }
-        }
-        return this.customerLicenses[0];        
-    }
-    
-     /*
-      * START- added for Deferred defect #52645
-      * 
-      */
-     
-    private boolean isUserPasswordExpired(){
-    	
-    	boolean pwdExpiredStatus = false;
-    	
-    	Date passwordExpirationDate = this.user.getPasswordExpirationDate();
-    	Date CurrentDate = new Date();
-    	
-    	
-    	if (CurrentDate.compareTo(passwordExpirationDate)> 0 ){
-    		pwdExpiredStatus = true;
-    	}
-    	//System.out.println("passwordExpirationDate==>" +passwordExpirationDate  +"\n CurrentDate==> "+CurrentDate+ "\n pwdExpiredStatus==> "+pwdExpiredStatus);
-    	return pwdExpiredStatus;
-    } 
-    //END- added for Deferred defect #52645
-    
+      
     private void prepareSessionSelection(List sessionList, HomePageForm form, String sessionDisableType)
     {
         String sessionId = null;
@@ -553,7 +380,7 @@ public class HomePageController extends PageFlowController
 
         try
         {
-            cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
+            cls = this.licensing.getCustomerLicenseData(this.userName, null);
         }    
         catch (CTBBusinessException be)
         {
@@ -562,26 +389,27 @@ public class HomePageController extends PageFlowController
      
         return cls;
     }
-    
-   
-    //change for defect 66353
-    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
-    {               
-    	 boolean hasLicenseConfiguration = false;
 
-        for (int i=0; i < customerConfigs.length; i++)
+    /**
+     * hasLicenseConfig
+     */
+    private Boolean hasLicenseConfig()
+    {
+        Boolean hasLicenseConfig = Boolean.FALSE;       
+      
+        try
         {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
-            		cc.getDefaultValue().equals("T")	) {
-            	hasLicenseConfiguration = true;
-                break;
-            } 
-        }
-       
-        return new Boolean(hasLicenseConfiguration);
+            CustomerLicense[] cls = this.licensing.getCustomerLicenseData(this.userName, null);            
+            hasLicenseConfig = new Boolean(cls.length > 0);
+        }    
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }     
+        
+        return hasLicenseConfig;
     }
-    
+
     private Boolean userHasReports() 
     {
         boolean hasReports = false;
@@ -622,100 +450,34 @@ public class HomePageController extends PageFlowController
         return crd;
     }
 
-    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
+    private Boolean canRegisterStudent() 
     {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
         String roleName = this.user.getRole().getRoleName();        
         boolean validCustomer = false; 
 
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-            CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
-            {
-                validCustomer = true; 
-            }               
-        }
-        
-        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
-        
-        return new Boolean(validCustomer && validUser);
-    }
-    
-    /*
-     * Bulk accommodation
-     */
-    private Boolean customerHasBulkAccommodation(CustomerConfiguration [] customerConfigs)
-    {               
-        boolean hasBulkStudentConfigurable = false;
-
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
-            		cc.getDefaultValue().equals("T")	) {
-                hasBulkStudentConfigurable = true;
-                break;
-            } 
-        }
-       
-        return new Boolean(hasBulkStudentConfigurable);
-    }
-    
-  //changes for scoring
-	
-	/**
-	 * This method checks whether customer is configured to access the scoring feature or not.
-	 * @return Return Boolean 
-	 */
-    
-    private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
-    {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
-        boolean hasScoringConfigurable = false;
-        boolean isLaslinkCustomer = false;
-
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
-            		cc.getDefaultValue().equals("T")	) {
-            	hasScoringConfigurable = true;
-               // break;
-            } 
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
-					&& cc.getDefaultValue().equals("T")) {
-				isLaslinkCustomer = true;
-				//break;
-            }
-
-        }
-        this.setIslaslinkCustomer(isLaslinkCustomer);
-        return new Boolean(hasScoringConfigurable);
-        
- 
-    }
-    
-    
-
-    /*
-     * getCustomerConfigurations
-     */
-    private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
-    {               
-        CustomerConfiguration [] ccArray = null;
         try
         {      
-            ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            for (int i=0; i < ccArray.length; i++)
+            {
+                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
+                {
+                    validCustomer = true; 
+                }
+            }
         }
         catch (CTBBusinessException be)
         {
             be.printStackTrace();
         }        
         
-       
-        return ccArray;
+        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
+        
+        return new Boolean(validCustomer && validUser);
     }
-    
+ 
     private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
     {
         TestSessionData tsd = new TestSessionData();                
@@ -1030,6 +792,8 @@ public class HomePageController extends PageFlowController
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
         
+        System.out.println(" #####  programId = " + programId + "       orgNodeId = " + orgNodeId);
+        
         List reportList = buildReportList(orgNodeId, programId);
 
         this.getRequest().setAttribute("reportList", reportList);
@@ -1153,7 +917,7 @@ public class HomePageController extends PageFlowController
         return null;
     }
 
-     /**
+    /**
      * @jpf:action
      */
 	@Jpf.Action()
@@ -1170,41 +934,7 @@ public class HomePageController extends PageFlowController
         }
         return null;
     }
-	
-	 /**
-     * @jpf:action
-     * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
-     */
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
-    })
-    protected Forward goto_generate_report_file_user(HomePageForm form)
-    {
-        String sessionId = form.getUserSessionId();
-        getSession().setAttribute("sessionId", sessionId);
-        getSession().setAttribute("callerId", "generate_report_file");
-        
-        return new Forward("success");
-    }
 
-	 /**
-     * @jpf:action
-     * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
-     */
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
-    })
-    protected Forward goto_generate_report_file_proctor(HomePageForm form)
-    {
-        String sessionId = form.getProctorSessionId();
-        getSession().setAttribute("sessionId", sessionId);
-        getSession().setAttribute("callerId", "generate_report_file");
-        
-        return new Forward("success");
-    }
-	
 	/**
      * FormData get and set methods may be overwritten by the Form Bean editor.
      */

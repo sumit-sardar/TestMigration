@@ -11,7 +11,7 @@ var req;
  */
 function getReportList() 
 {
-    var url = "/SessionWeb/sessionOperation/getReportList.do";    
+    var url = "/TestSessionInfoWeb/homepage/getReportList.do";    
     
     var programIndex = 0;
     var programControl = getSafeElement("wlw-select_key:{requestScope.program}");          
@@ -39,16 +39,16 @@ function processgetReportList()
         if (req.status == 200) {
             var value = req.responseText;  
             if (isValidResponse(value)) {
-            	document.getElementById('reportlists').innerHTML = value;
+                $('reportlists').innerHTML = value;
             }
             else {
                 // redirect to logout page
-				window.location.href="/SessionWeb/logout.do";
+                document.location.href='logout.do';
             }
         } 
         else {
             // there was a problem retrieving the XML data
-			window.location.href="/SessionWeb/logout.do";
+            alert("There was a problem retrieving the data from server.");
         }
     }
 } 
@@ -76,6 +76,28 @@ function executeXhr(callback, url, programIndex, organizationIndex)
 
 
 /**
+ * $()
+ */
+function $() 
+{
+    var elements = new Array();
+  
+    for (var i = 0; i < arguments.length; i++) {
+        var element = arguments[i];
+        if (typeof element == 'string')
+            element = document.getElementById(element);
+
+        if (arguments.length == 1) 
+            return element;
+      
+        elements.push(element);
+    }
+  
+    return elements;
+}
+
+
+/**
  * isValidResponse
  */
 function isValidResponse(responseText) 
@@ -84,13 +106,9 @@ function isValidResponse(responseText)
     if (index > 0) {                
         return false;   // this is logout page
     }
-    index = responseText.indexOf("[[ERROR]]");
+    var index = responseText.indexOf("[[ERROR]]");
     if (index > 0) {                
         return false;   // error text returned from server
-    }
-    index = responseText.indexOf("system error has occurred");
-    if (index > 0) {                
-        return false;   // error text returned from jsp
     }
     return true;
 }

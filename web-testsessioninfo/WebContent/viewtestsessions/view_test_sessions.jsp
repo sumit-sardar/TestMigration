@@ -29,10 +29,7 @@
     <netui:hidden dataSource="actionForm.sessionMaxPage"/>
     <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
 
-    <netui-data:getData resultId="visibleRegisterStudent" value="${requestScope.visibleRegisterStudent}"/>
-    <netui-data:getData resultId="visiableScoreByStudent" value="${requestScope.visiableScoreByStudent}"/>
-    <netui-data:getData resultId="showGenerateReportFile" value="${requestScope.showGenerateReportFile}"/>
-   
+    <netui-data:getData resultId="enableRegisterStudent" value="${requestScope.enableRegisterStudent}"/>
 	<!-- Change for License Management LM14 -->
     <table width="100%" border="0">
         <tr valign="top">
@@ -169,39 +166,6 @@
                     			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'registerStudent', this);" 
                     			  disabled="true"/>
                 </c:if>
-                <c:if test="${showGenerateReportFile}">                
-                   <netui:button styleClass="button" 
-                   				 tagId="generateReportFile" 
-                   				 value="${bundle.widgets['button.generateReportFile']}" 
-                   				 type="button" 
-                    			 onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'generateReportFile', this);" 
-                   				 disabled="true"/>
-                </c:if>                    
-                
-                 <!--  START :Change for HandScoring: score by student  -->
-            <netui-data:getData resultId="tabType" value="${actionForm.sessionFilterTab}"/> 
-         	
-         	 <c:if test="${tabType !='FU'}">  
-                <c:if test="${sessionScope.isScoringConfigured}"> 
-                <netui:button styleClass="button" 
-                    			  tagId="scoringByStudent" 
-                    			  value="${bundle.widgets['button.scoringByStudent']}" 
-                    			  type="button" 
-                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'scoringByStudent', this);" 
-                    			  disabled="true"/>
-                    			  </c:if>
-                    			    </c:if>	  
-                   <!-- END :Change for HandScoring: score by student  -->  
-              <c:if test="${tabType !='FU'}">  
-        		  <c:if test="${sessionScope.isScoringConfigured}"> 
-                <netui:button styleClass="button" 
-                    			  tagId="scoringByItem" 
-                    			  value="${bundle.widgets['button.scoringByItem']}" 
-                    			  type="button" 
-                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'scoringByItem', this);" 
-                    			  disabled="true"/>
-                    	 </c:if>	  
-                    	</c:if>		     
                 </td>
             </tr>
             </table>
@@ -230,29 +194,15 @@
     
         <tr class="sortable">
             <td class="sortable alignCenter">
-            <c:if test="${visibleRegisterStudent}">
-            	<c:if test="${visiableScoreByStudent}">
-            	  <netui:radioButtonGroup dataSource="actionForm.sessionId">
-		                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); enableButton(this.alt,getNetuiTagName('registerStudent')); enableButton(this.alt,getNetuiTagName('generateReportFile')); enableButton(this.alt,getNetuiTagName('scoringByStudent')); enableButton(this.alt,getNetuiTagName('scoringByItem'));">&nbsp;</netui:radioButtonOption> 
-		                </netui:radioButtonGroup>
-            	</c:if>
-            	<c:if test="${!visiableScoreByStudent}">
-            	  	<netui:radioButtonGroup dataSource="actionForm.sessionId">
-		           		&nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); enableButton(this.alt,getNetuiTagName('registerStudent')); enableButton(this.alt,getNetuiTagName('generateReportFile'));">&nbsp;</netui:radioButtonOption> 
-		          	</netui:radioButtonGroup>
-            	</c:if>
+            <c:if test="${enableRegisterStudent}">                                    
+                <netui:radioButtonGroup dataSource="actionForm.sessionId">
+                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); enableButton(this.alt,getNetuiTagName('registerStudent'));">&nbsp;</netui:radioButtonOption> <!-- Changes for RegisterAnotherStudent Button -->
+                </netui:radioButtonGroup>
             </c:if>
-            <c:if test="${!visibleRegisterStudent}">
-            	<c:if test="${visiableScoreByStudent}">
-            		<netui:radioButtonGroup dataSource="actionForm.sessionId">
-		            	&nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); enableButton(this.alt,getNetuiTagName('scoringByStudent')); enableButton(this.alt,getNetuiTagName('scoringByItem')); enableButton(this.alt,getNetuiTagName('generateReportFile'));">&nbsp;</netui:radioButtonOption> 
-		          	</netui:radioButtonGroup>
-            	</c:if>
-            	<c:if test="${!visiableScoreByStudent}">
-            	  	<netui:radioButtonGroup dataSource="actionForm.sessionId">
-		            	&nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); enableButton(this.alt,getNetuiTagName('generateReportFile'));">&nbsp;</netui:radioButtonOption> 
-		          	</netui:radioButtonGroup>
-            	</c:if>
+            <c:if test="${! enableRegisterStudent}">                                    
+                <netui:radioButtonGroup dataSource="actionForm.sessionId">
+                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" onClick="enableElementById(getNetuiTagName('sessionViewStatus')); enableElementById(getNetuiTagName('sessionEdit')); ">&nbsp;</netui:radioButtonOption>
+                </netui:radioButtonGroup>
             </c:if>
             </td>
             <td class="sortable">
@@ -307,7 +257,7 @@
 </table>
 
 </netui:form>
-<br/><br/>
+
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
 <!-- ********************************************************************************************************************* -->

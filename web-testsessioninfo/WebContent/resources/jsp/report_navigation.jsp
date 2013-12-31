@@ -4,11 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 
-
 <div id="legacyNav">
     <table class="legacyNavLayout">
     <tr>
-        <td width="*">
+        <td>
             <table class="legacyNavLinks floatLeft">
             <tr>
                 <td><a href="/TestSessionInfoWeb/homepage/HomePageController.jpf">home |</a></td>
@@ -20,7 +19,7 @@
             </tr>
             </table>
         </td>
-        <td width="80">
+        <td>
             <table class="legacyNavLinks floatRight">
             <tr>
                 <td><a href="/help/index.html#about_the_home_page.htm" onClick="return showHelpWindow(this.href);">help</a></td>

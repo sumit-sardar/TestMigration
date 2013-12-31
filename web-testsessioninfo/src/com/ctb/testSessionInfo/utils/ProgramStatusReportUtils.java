@@ -34,7 +34,7 @@ public class ProgramStatusReportUtils {
     private static final String PROGRAM_STATUS = "Program Status";
     private static final String CUSTOMER = "Customer";
     private static final String PROGRAM = "Program";
-    private static final String ORGANIZATION = "Group";
+    private static final String ORGANIZATION = "Organization";
     private static final String TEST = "Test";
     private static final String SUBTEST = "Subtest";
     private static final String SUBTEST_STATUS = "Subtest Status";
@@ -110,11 +110,11 @@ public class ProgramStatusReportUtils {
         this.createFilterRow(row++, TEST, vo.getTest());
         this.createFilterRow(row++, SUBTEST, vo.getSubtest());
         this.createFilterRow(row++, SUBTEST_STATUS, vo.getSubtestStatus());
-//        this.createFilterRow(row++, SESSION_NAME, vo.getSessionNameFilter(), vo.getSessionNameValue());
-//        this.createFilterRow(row++, SESSION_NUMBER, vo.getSessionNumberFilter(), vo.getSessionNumberValue());
-//        this.createFilterRow(row++, LOGIN_ID, vo.getLoginIdFilter(), vo.getLoginIdValue());
-//        this.createFilterRow(row++, PASSWORD, vo.getPasswordFilter(), vo.getPasswordValue());
-//        this.createFilterRow(row++, ACCESS_CODE, vo.getAccessCodeFilter(), vo.getAccessCodeValue());
+        this.createFilterRow(row++, SESSION_NAME, vo.getSessionNameFilter(), vo.getSessionNameValue());
+        this.createFilterRow(row++, SESSION_NUMBER, vo.getSessionNumberFilter(), vo.getSessionNumberValue());
+        this.createFilterRow(row++, LOGIN_ID, vo.getLoginIdFilter(), vo.getLoginIdValue());
+        this.createFilterRow(row++, PASSWORD, vo.getPasswordFilter(), vo.getPasswordValue());
+        this.createFilterRow(row++, ACCESS_CODE, vo.getAccessCodeFilter(), vo.getAccessCodeValue());
 	}
 	
     private void createFilterRow(int rowNumber,

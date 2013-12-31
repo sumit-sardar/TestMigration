@@ -37,8 +37,6 @@ public class DateUtils
         timeZoneHashtable.put("(GMT-05:00) Indiana (East)", "America/Indianapolis");
         timeZoneHashtable.put("(GMT-05:00) Eastern Time (US and Canada)", "America/New_York");
         timeZoneHashtable.put("(GMT) Greenwich Mean Time", "GMT");
-        timeZoneHashtable.put("(GMT+08:00) China Standard Time", "Asia/Shanghai");
-        timeZoneHashtable.put("(GMT+09:00) Korea Standard Time", "Asia/Pyongyang");
     }
     
     public static Date getDateFromTimeString(String date){
@@ -230,8 +228,6 @@ public class DateUtils
         result.add("(GMT-06:00) Central Time (US and Canada)");
         result.add("(GMT-05:00) Indiana (East)");
         result.add("(GMT-05:00) Eastern Time (US and Canada)");
-        result.add("(GMT+08:00) China Standard Time");
-        result.add("(GMT+09:00) Korea Standard Time");
 
         return result;
     }
@@ -281,24 +277,6 @@ public class DateUtils
             result.add(buf.toString());        
         }
         return result;
-    }
-
-	public static boolean isToday(Date date, String timezone) {
-
-        if (date == null)
-            return false;
-        Date today = new Date(System.currentTimeMillis());
-        today = com.ctb.util.DateUtils.getAdjustedDate(today, TimeZone.getDefault().getID(), timezone, today);
-        return com.ctb.util.DateUtils.dateEquals(date, today);  
-		
-	}
-
-	public static boolean isAfterToday(Date date,	String timezone) {
-		 if (date == null)
-	            return false;
-	        Date today = new Date(System.currentTimeMillis());
-	        today = com.ctb.util.DateUtils.getAdjustedDate(today, TimeZone.getDefault().getID(), timezone, today);
-	        return com.ctb.util.DateUtils.dateAfter(date, today); 
-	}     
+    }     
     
 } 

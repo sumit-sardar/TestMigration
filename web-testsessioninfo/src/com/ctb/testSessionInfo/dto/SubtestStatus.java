@@ -17,9 +17,6 @@ public class SubtestStatus implements java.io.Serializable
     private String completed = null;
     private Boolean isParent = null;
     private Boolean hasLink = null;
-    private Boolean hasScheduledLink = null;
-    private Boolean hasAttemptedLink = null;
-    private Boolean hasCompletedLink = null;
         
     public SubtestStatus() {
         this.name = "";
@@ -49,9 +46,6 @@ public class SubtestStatus implements java.io.Serializable
         this.completed = testStatus.getCompletedCount().toString();
         this.isParent = Boolean.FALSE;
         this.hasLink = hasLink;
-        this.hasScheduledLink = this.getHasScheduledLink();
-        this.hasAttemptedLink = this.getHasAttemptedLink();
-        this.hasCompletedLink = this.getHasCompletedLink();
     }   
    public String getId() {
         return this.id != null ? this.id : "" ;
@@ -107,14 +101,5 @@ public class SubtestStatus implements java.io.Serializable
         return new Boolean(this.hasLink.booleanValue() && 
                            new Integer(this.completed).intValue() > 0);
     }
-	public void setHasScheduledLink(Boolean hasScheduledLink) {
-		this.hasScheduledLink = hasScheduledLink;
-	}
-	public void setHasAttemptedLink(Boolean hasAttemptedLink) {
-		this.hasAttemptedLink = hasAttemptedLink;
-	}
-	public void setHasCompletedLink(Boolean hasCompletedLink) {
-		this.hasCompletedLink = hasCompletedLink;
-	}
    
 } 

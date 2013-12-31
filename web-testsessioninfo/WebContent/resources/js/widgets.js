@@ -230,17 +230,14 @@ function constrainEnterKeyEvent( e ) {
 var termsWindow  = null;
 var coppaWindow  = null;
 var policyWindow = null;
- 
-function showHelpWindow(location)
+var helpWindow = null;
+
+function showHelpWindow(location_)
 {
-	if (location.indexOf("https://localhost:7002") >= 0) {
-		location = location.replace("https://localhost:7002", "https://oastest.ctb.com");
-	}
-	if (location.indexOf("https:") >= 0) {
-		location = location.replace("https:", "http:");
-	}
-	var title = location.substring(location.indexOf("#")+1, location.length-4);
-   	var helpWindow = window.open(location, title, 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
+    if( helpWindow != null ){
+        helpWindow.close();
+    }
+    helpWindow = window.open(location_,"help",'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');
     helpWindow.focus();
     return false;
 }
@@ -1190,150 +1187,3 @@ function moveSelectedOption(elementId, moveDirection)
     
         return true;   
     }    
-
-/************************* Multiple Selection For Report ***********************/
-
-function ajaxSelectAllCheckboxes() { 
-
-	var param = "&action="+$("#selectAll").val();	
-	
-		$.ajax({
-				async:			false,
-				beforeSend :	function(){
-								},
-				url:		'selectAllStudents.do',
-				type:		'POST',
-				data:		param,
-				dataType:	'json',
-				success:	function(data, textStatus, XMLHttpRequest){	
-								alert("done");
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								window.location.href="/SessionWeb/logout.do";
-							}
-				
-				}
-			);
-}
-
-
-function selectAllCheckboxes() { 
-    var total = 0;
-    var inputs = document.getElementsByTagName("input");
-    for(var i=0; i < inputs.length; i++) {
-        if(inputs[i].getAttribute("type") == "checkbox"){
-          inputs[i].checked=true;
-          total++;
-        }
-    }
-
-    var total_elm = document.getElementById("selectedRosterIds");
-    total_elm.innerHTML = total;
-
-    enableElementById('generateReportFile');
-    
-}
-
-
-function clearAllCheckboxes() { 
-    var d=document;
-    var inputs = document.getElementsByTagName("input");
-    for(var i=0; i < inputs.length; i++) {
-        if(inputs[i].getAttribute("type") == "checkbox"){
-          inputs[i].checked=false;
-        }
-    }
-
-    var total = 0;
-    var total_elm = document.getElementById("selectedRosterIds");
-    total_elm.innerHTML = total;
-    
-    disableElementById('generateReportFile');
-}
-
-
-function getRosterId(ctrl) { 
-    var elm = document.getElementById("selectedRosterIds");
-
-    var total_elm = document.getElementById("selectedRosterIds");
-    var total = parseInt(total_elm.innerHTML);
-
-    if (ctrl.checked == true) 
-       total = total + 1;
-    else
-       total = total - 1;
-    
-    total_elm.innerHTML = total;
-
-    if (total > 0)    
-        enableElementById('generateReportFile');
-    else
-        disableElementById('generateReportFile');
-}
-
-function validateInfo() {
-    
-    if (! validateFileName()) {
-        return true;
-    }
-    
-    if (! validateEmail()) {
-        return true;
-    }
-    
-	setElementValue('{actionForm.currentAction}', 'generateReportFile', true);   
-    
-    return true;
-}
-
-function validateFileName() {
-    
-    var element = document.getElementById("fileName");
-    var filename = element.value;
-    
-    if ((filename == null) || (filename.length == 0)) {
-        alert ("File name required.");      
-        return false;
-    }
-
-    if (filename.length <= 4) {
-		alert ("Invalid File Name. Valid characters are: a-z, A-Z, 0-9, '.' (period), '_' (underscore), and '-' (dash). Valid File Name must use a '.zip' extension.");      
-        return false;
-    }
-    
-    var extension = filename.substr(filename.length-4, filename.length);
-    if (extension.toLowerCase() != ".zip") {
-		alert ("Invalid File Name Extension. File Name must use a '.zip' extension.");      
-        return false;
-    }
-
-    
-    var invalid = (/[^a-z0-9/./_/-]/gi.test(filename));
-    if (invalid) {
-		alert ("Invalid File Name. Valid characters are: a-z, A-Z, 0-9, '.' (period), '_' (underscore), and '-' (dash). Valid File Name must use a '.zip' extension.");      
-        return false;
-    }
-    
-    return true;
-}
-
-
-
-function validateEmail() {   
-    var element = document.getElementById("email");
-    var email = element.value;
-	
-    if ((email == null) || (email.length == 0)) {
-		return true;
-	}
-	
-    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;   
-    if (! emailPattern.test(email)) {
-		alert("Invalid Email. Valid characters are a-z, A-Z, 0-9, and for user name, '.' (period), '_' (underscore), and '-' (dash). Domain name must contain from 2 - 4 valid characters.");
-        return false;
-    }
-    
-    return true;
-}  
-
-    

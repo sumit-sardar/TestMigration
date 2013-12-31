@@ -27,51 +27,7 @@ public class SubtestDetail implements java.io.Serializable
     private String validationStatus = null;
     private String customStatus = null;
     
-    //START- ADDED for LLO-109
-    private String testExemptions = null;
-    private String absent = null;
-    private String invalidationReason = null;
-    
-    private String hasLocatorTDs = null;
-    
-    public String getInvalidationReason() {
-		return invalidationReason;
-	}
-
-	public void setInvalidationReason(String invalidationReason) {
-		this.invalidationReason = invalidationReason;
-	}
-
-	/**
-	 * @return the testExemptions
-	 */
-	public String getTestExemptions() {
-		return testExemptions;
-	}
-
-	/**
-	 * @param testExemptions the testExemptions to set
-	 */
-	public void setTestExemptions(String testExemptions) {
-		this.testExemptions = testExemptions;
-	}
-
-	/**
-	 * @return the absent
-	 */
-	public String getAbsent() {
-		return absent;
-	}
-
-	/**
-	 * @param absent the absent to set
-	 */
-	public void setAbsent(String absent) {
-		this.absent = absent;
-	}
-	//END- ADDED for LLO-109
-	
-	public SubtestDetail() 
+    public SubtestDetail() 
     {
     }
  
@@ -82,7 +38,6 @@ public class SubtestDetail implements java.io.Serializable
         this.grade = te.getGrade();
         this.level = te.getItemSetLevel();     
         this.accessCode = te.getAccessCode();
-        this.hasLocatorTDs = te.getIslocatorChecked();
         this.subtestName = te.getItemSetName();
         this.sequence = new Integer(sequence);
         if (te.getTimeLimit().intValue() == 0)
@@ -212,11 +167,5 @@ public class SubtestDetail implements java.io.Serializable
     public void setCustomStatus(String customStatus) {
         this.customStatus = customStatus;
     }
-	public String getHasLocatorTDs() {
-		return hasLocatorTDs;
-	}
-	public void setHasLocatorTDs(String hasLocatorTDs) {
-		this.hasLocatorTDs = hasLocatorTDs;
-	}
     
 } 

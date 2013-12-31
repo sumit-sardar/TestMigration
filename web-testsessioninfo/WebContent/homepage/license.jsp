@@ -17,7 +17,6 @@
                     <netui:content value="${container.item.productName}" defaultValue="&nbsp;"/>
                 </th>
             </tr>
-            <!-- 
             <tr class="transparent">    
                 <td class="transparent-medium">&nbsp;</td>
                 <td class="transparent-medium"><netui:content value="${bundle.web['licenses.reserved']}"/>:</td>
@@ -28,7 +27,6 @@
                 <td class="transparent-medium"><netui:content value="${bundle.web['licenses.consumed']}"/>:</td>
                 <td class="transparent-medium"><netui:content value="${container.item.consumedLicense}" defaultValue="&nbsp;"/></td>
             </tr>
-            -->
             <tr class="transparent">    
                 <td class="transparent-medium">&nbsp;</td>
                 <td class="transparent-medium"><netui:content value="${bundle.web['licenses.available']}"/>:</td>

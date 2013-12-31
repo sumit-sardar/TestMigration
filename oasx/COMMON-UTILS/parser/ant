@@ -1,2 +1,0 @@
-set CLASSPATH=.:$JAVA_HOME:/lib/tools.jar:lib/ant.jar:lib/ant-launcher.jar:lib/junit-3.8.1.jar:$CLASSPATH
-java -cp $CLASSPATH org.apache.tools.ant.Main $*

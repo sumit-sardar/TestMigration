@@ -2,14 +2,9 @@ package downloadclient;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import com.ctb.bean.testAdmin.CustomerResourceData;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.OASLogger;
-
 import java.sql.SQLException;
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
-
-import weblogic.logging.NonCatalogLogger;
 
 /**
  * @jpf:controller
@@ -19,14 +14,12 @@ public class DownloadClientController extends PageFlowController
 {
 
     static final long serialVersionUID = 1L;
-    private String userName = null;
 
     /**
      * @common:control
      */
     @Control()
-    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
-    
+    private com.ctb.control.db.CustomerResource customerResource;
 
     // Uncomment this declaration to access Global.app.
     // 
@@ -47,15 +40,9 @@ public class DownloadClientController extends PageFlowController
     })
     protected Forward begin()
     {
-    	
-    	java.security.Principal principal = getRequest().getUserPrincipal();
-        if (principal != null) 
-            this.userName = principal.toString();
-        getSession().setAttribute("userName", this.userName);
-    	
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
-        String LINUX_URI = "'" + getdownloadURI("TDCINSTLIN") + "'";
+        String LINUX_URI = "'" + getdownloadURI("TDCINSTLINUX") + "'";
         
         this.getRequest().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
         this.getRequest().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
@@ -80,21 +67,51 @@ public class DownloadClientController extends PageFlowController
 
     
    /**
-     * getdownloadURI: download installer URL based on user and OS 
+     * getdownloadURI: download installer URL based on customer and OS 
     */
     private String getdownloadURI(String resourceTypeCode) 
     {
-    	NonCatalogLogger logger =OASLogger.getLogger(this.getClass().getName());
-   	 	logger.info("Entering getdownloadURI()");
-   	 	String uri = "";
-        try {      
-            //Changes for OAS – Alternate URL - Part I-TAS
-        	uri = this.testSessionStatus.getParentResourceUriForUser(this.userName, resourceTypeCode);
+        try {
+            CustomerResourceData[] crds = null;
+            CustomerResourceData crd = null;
+            Integer customerId = (Integer)getSession().getAttribute("customerId");               
+            if (customerId == null) 
+                customerId = new Integer(2);    // CTB customer
+                
+            crds = this.customerResource.getCustomerResource(customerId);
+            if (crds != null) {
+                for (int i=0 ; i<crds.length ; i++) {
+                    crd = crds[i];
+                    if (crd.getResourceTypeCode().equalsIgnoreCase(resourceTypeCode))
+                        return crd.getResourceURI();
+                }
+            }
+
+            customerId = new Integer(2);    // CTB customer
+            crds = this.customerResource.getCustomerResource(customerId);
+            if (crds != null) {
+                for (int i=0 ; i<crds.length ; i++) {
+                    crd = crds[i];
+                    if (crd.getResourceTypeCode().equalsIgnoreCase(resourceTypeCode))
+                        return crd.getResourceURI();
+                }
+            }
         }    
-        catch( CTBBusinessException e ) {
+        catch( SQLException e ) {
             System.err.print(e.getStackTrace());
         }
-        return uri;
+        
+        // should not get here anyway
+        if (resourceTypeCode.equals("TDCINSTPC")) 
+            return "/downloadfiles/InstallOnlineAsmt.exe";
+        else            
+        if (resourceTypeCode.equals("TDCINSTMAC")) 
+            return "/downloadfiles/InstallOnlineAsmt.zip";        
+        else            
+        if (resourceTypeCode.equals("TDCINSTLINUX")) 
+            return "/downloadfiles/InstallOnlineAsmt.bin";        
+        else            
+        return "/downloadfiles/InstallOnlineAsmt.exe";
     }
     
 }

@@ -18,8 +18,6 @@ public class TestRosterVO implements java.io.Serializable
     private String testStatus = null;
     private String customerFlagStatus = null;
     private String scoringStatus = null;
-    private String dnsStatus = null;
-    private String assignedForm = null; 
     
     public TestRosterVO()
     {
@@ -37,16 +35,8 @@ public class TestRosterVO implements java.io.Serializable
         this.testStatus = rElt.getTestCompletionStatus();
         this.customerFlagStatus = rElt.getCustomerFlagStatus();
         this.scoringStatus = rElt.getScoringStatus();
-        this.dnsStatus =  rElt.getDnsStatus();
-        this.assignedForm = rElt.getAssignedForm();
-    }
-    public String getDnsStatus() {
-		return dnsStatus;
-	}
-	public void setDnsStatus(String dnsStatus) {
-		this.dnsStatus = dnsStatus;
-	}
-	public String getFirstName() {
+    }    
+    public String getFirstName() {
         return firstName;
     }
     public void setFirstName(String firstName) {
@@ -112,12 +102,6 @@ public class TestRosterVO implements java.io.Serializable
     public void setScoringStatus(String scoringStatus) {
         this.scoringStatus = scoringStatus;
     }
-	public String getAssignedForm() {
-		return assignedForm;
-	}
-	public void setAssignedForm(String assignedForm) {
-		this.assignedForm = assignedForm;
-	}
     
     
 } 

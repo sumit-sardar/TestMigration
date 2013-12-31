@@ -1,5 +1,4 @@
 package viewmonitorstatus;
-
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import com.ctb.bean.request.FilterParams;
@@ -7,7 +6,6 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
-import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -28,16 +26,7 @@ import com.ctb.testSessionInfo.dto.TestRosterVO;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.utils.DateUtils;
-import com.ctb.testSessionInfo.utils.JsonUtils;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -45,34 +34,26 @@ import com.ctb.widgets.bean.ColumnSortEntry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
-
 
 /**
  * @jpf:controller
  *  */
-@Jpf.Controller(simpleActions = { @Jpf.SimpleAction(name = "begin", path = "index.jsp") })
+@Jpf.Controller()
 public class ViewMonitorStatusController extends PageFlowController
-{/*
+{
     static final long serialVersionUID = 1L;
-    
-    *//**
+
+    /**
      * @common:control
-     *//*
+     */
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
     
-    *//**
+    /**
      * @common:control
-     *//*
+     */
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
 
@@ -97,31 +78,23 @@ public class ViewMonitorStatusController extends PageFlowController
     private boolean showStudentReportButton = false;
     private List studentStatusSubtests = null;
     private List TABETestElements = null;
-    
-    //  Added for LLO-109 
-    public boolean isLasLinkCustomer = false;
-   
-	CustomerConfiguration[] customerConfigurations = null;
-	CustomerConfigurationValue[] customerConfigurationsValue = null;
-	private String studentIdLabelName = "Student ID";
-	           
-	private List selectedRosterIds = null;
-	private List rosterList = null;
-    private String fileName = null;
-    private String fileType = null;
-    private String userEmail = null;
-    private List fileTypeOptions = null;    
-	
-    *//**
+                 
+    // Uncomment this declaration to access Global.app.
+    // 
+    //     protected global.Global globalApp;
+    // 
+
+    // For an example of page flow exception handling see the example "catch" and "exception-handler"
+    // annotations in {project}/WEB-INF/src/global/Global.app
+
+    /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="view_monitor_status.do"
-     *//* 
+     */ 
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "viewStatus",
-                     path = "view_monitor_status.do"),
-        @Jpf.Forward(name = "generateReportFile",
-        			 path = "generate_report_file.do")
+        @Jpf.Forward(name = "success",
+                     path = "view_monitor_status.do")
     })
     protected Forward begin()
     {
@@ -129,33 +102,24 @@ public class ViewMonitorStatusController extends PageFlowController
         this.testRosterFilter = new TestRosterFilter();            
         ViewMonitorStatusForm form = new ViewMonitorStatusForm();
         form.init();
-        getCustomerConfigurations();  
-
+        
         this.sessionDetailsShowScores = isSessionDetailsShowScores();
 
         this.subtestValidationAllowed = isSubtestValidationAllowed();
         this.studentStatusSubtests = new ArrayList();
                         
         this.showStudentReportButton = showStudentReportButton();
-
-        this.selectedRosterIds = new ArrayList();
-        
-        if ("generate_report_file".equals(this.callerId)) {   
-        	initGenerateReportFile();
-            return new Forward("generateReportFile", form);
-        }
-        else {
-        	return new Forward("viewStatus", form);
-        }
+                        
+        return new Forward("success", form);
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="viewDetails" path="to_view_subtests_detail.do"
      * @jpf:forward name="validationDetails" path="to_validate_subtests_detail.do"
      * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
      * @jpf:forward name="success" path="view_monitor_status.jsp"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "viewDetails",
                      path = "to_view_subtests_detail.do"), 
@@ -181,17 +145,15 @@ public class ViewMonitorStatusController extends PageFlowController
             this.savedForm = form.createClone();
             return new Forward(forwardName, form);
         }
-        // START- Added for CR GA2011CR001
-        isGeorgiaCustomer(form);
-        // END- Added for CR GA2011CR001
+
         RosterElementData red = getRosterForTestSession(this.sessionId, form);
-        this.rosterList = buildRosterList(red);        
-        this.getRequest().setAttribute("rosterList", this.rosterList);
+        List rosterList = buildRosterList(red);        
+        this.getRequest().setAttribute("rosterList", rosterList);
         
-        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested(), false);
+        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested());
         this.getRequest().setAttribute("pagerSummary", pagerSummary);
 
-        prepareStudentSelection(this.rosterList, form.getTestRosterId());
+        prepareStudentSelection(rosterList, form.getTestRosterId());
         form.setMaxPage(red.getFilteredPages());
 
         getRequest().setAttribute("totalStudents", red.getTotalCount().toString());
@@ -220,393 +182,7 @@ public class ViewMonitorStatusController extends PageFlowController
         form.setActionElement("none");   
         return new Forward("success");
     }
-    
-    *//**
-     * @jpf:action
-     * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
-     * @jpf:forward name="success" path="generate_report_file.jsp"
-     *//*
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "generateReportFile",
-                     path = "generateReportFile.do"), 
-        @Jpf.Forward(name = "success",
-                     path = "generate_report_file.jsp")
-    })
-    protected Forward generate_report_file(ViewMonitorStatusForm form)
-    {
-        String testAdminId = getRequest().getParameter("testAdminId");
-        if (testAdminId != null)
-            this.sessionId = Integer.valueOf(testAdminId);
-        form.resetValuesForAction();        
-        form.validateValues();
-        FormFieldValidator.validateFilterForm(form, getRequest());
-                
-        updateSelectedStudents(form);
-        
-        String forwardName = handleGenerateReportFileAction(form);
-        if (forwardName != null)
-        {                
-            this.savedForm = form.createClone();
-            return new Forward(forwardName, form);
-        }
 
-        RosterElementData red = getReportableRosterForTestSession(this.sessionId, form, FilterSortPageUtils.PAGESIZE_10);
-        this.rosterList = buildRosterList(red);
-        
-        this.getRequest().setAttribute("rosterList", this.rosterList);
-        
-        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested(), true);
-        this.getRequest().setAttribute("pagerSummary", pagerSummary);
-
-        prepareSelectedRosters(this.rosterList, form);
-        form.setMaxPage(red.getFilteredPages());
-
-        getRequest().setAttribute("totalStudents", red.getTotalCount().toString());
-        getRequest().setAttribute("selectedRosterIds", new Integer(this.selectedRosterIds.size()));
-        
-        TestElementData ted = getTestElementsForTestSession(this.sessionId); 
-        
-        List subtestList = buildSubtestList(ted);
-        getRequest().setAttribute("subtestList", subtestList);
-                
-        Integer breakCount = ted.getBreakCount();
-        if ((breakCount != null) && (breakCount.intValue() > 0))
-        {
-            if (isSameAccessCode(subtestList)) 
-                getRequest().setAttribute("hasBreak", "singleAccesscode");
-            else
-                getRequest().setAttribute("hasBreak", "multiAccesscodes");
-        }
-        else
-        {
-            getRequest().setAttribute("hasBreak", "false");
-        }
-
-        TestSessionVO testSession = getTestSessionDetails(this.sessionId);
-        getRequest().setAttribute("testSession", testSession);
-
-        prepareGenerateReportFileButton();
-        
-        form.setActionElement("none");   
-        return new Forward("success", form);
-    }
-    
-    private String handleGenerateReportFileAction(ViewMonitorStatusForm form)
-    {
-        String forwardName = null;
-        String actionElement = form.getActionElement();
-        String currentAction = form.getCurrentAction();
-        
-        if (actionElement.equals("{actionForm.currentAction}"))
-        {
-            if (currentAction.equals("selectAll"))
-            {
-            	selectAllStudents();
-            }
-            if (currentAction.equals("deselectAll"))
-            {
-            	deselectAllStudents();
-            }
-            if (currentAction.equals("generateReportFile"))
-            {
-                forwardName = "generateReportFile";
-            }
-        }
-        return forwardName;
-    }
-
-    private void initGenerateReportFile() {
-    	
-		try {
-			User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
-			Date currentDate = new Date();
-			String strDate = DateUtils.formatDateToDateString(currentDate);
-			strDate = strDate.replace('/', '_');
-			String fileName = user.getUserName() + "_" + strDate + ".zip";
-	    	setFileName(fileName);
-	    	setUserEmail(user.getEmail());
-		} catch (CTBBusinessException e) {
-			e.printStackTrace();
-		}
-    	
-        this.fileTypeOptions = new ArrayList();
-        this.fileTypeOptions.add("One file for all students");
-        this.fileTypeOptions.add("One file per student");
-    	setFileType((String)this.fileTypeOptions.get(0));
-        
-    }
-    
-	private void selectAllStudents() {
-			
-		ViewMonitorStatusForm form = new ViewMonitorStatusForm();
-		form.setPageRequested(new Integer(1));
-		form.setSortColumn(FilterSortPageUtils.TESTROSTER_DEFAULT_SORT);
-		form.setSortOrderBy(FilterSortPageUtils.ASCENDING);
-		
-        RosterElementData red = getReportableRosterForTestSession(this.sessionId, form, FilterSortPageUtils.MAX_RECORDS);
-        RosterElement[] rosterElements = red.getRosterElements();
-
-        this.selectedRosterIds = new ArrayList();
-        for (int i=0; i < rosterElements.length; i++) {
-            RosterElement rosterElt = rosterElements[i];
-            if (rosterElt != null) {
-        		this.selectedRosterIds.add(rosterElt.getTestRosterId());		    					
-            }
-        }   
-	}
-
-	private void deselectAllStudents() {
-		
-        this.selectedRosterIds = new ArrayList();
-	}
-	
-    private void updateSelectedStudents(ViewMonitorStatusForm form)
-    {
-    	String[] selectedTestRosterIds = form.getSelectedTestRosterIds();
-    	
-    	// remove unselected students from list
-    	if (selectedTestRosterIds[0] != null) {
-			for (int i=0 ; i<this.rosterList.size() ; i++) {
-				TestRosterVO vo = (TestRosterVO)this.rosterList.get(i);
-				for (int j=0 ; j<this.selectedRosterIds.size() ; j++) {
-					Integer id = (Integer)this.selectedRosterIds.get(j);
-					if (vo.getTestRosterId().intValue() == id.intValue()) {
-						this.selectedRosterIds.remove(j);
-						break;
-					}
-				}
-			}    	
-    	}
-    	
-    	// add select students to list
-    	if (selectedTestRosterIds[0] != null) {
-	    	for (int i=0 ; i<selectedTestRosterIds.length ; i++) {
-    			Integer rosterId = new Integer(selectedTestRosterIds[i]);
-    			
-	    		for (int j=0 ; j<this.rosterList.size() ; j++) {
-	    			TestRosterVO vo = (TestRosterVO)this.rosterList.get(j);
-	    			if (vo.getTestRosterId().intValue() == rosterId.intValue()) {
-	    				boolean found = false;
-	    				for (int k=0 ; k<this.selectedRosterIds.size() ; k++) {
-	    					Integer id = (Integer)this.selectedRosterIds.get(k);
-	    					if (id.intValue() == rosterId.intValue()) {
-	    						found = true;
-	    						break;
-	    					}
-	    				}
-	    				if (! found) {
-			    			this.selectedRosterIds.add(rosterId);		    					
-	    				}
-	    				break;
-	    			}
-	    		}
-	    	}
-    	}
-    }
-    
-    *//**
-     * @jpf:action
-     * @jpf:forward name="report" path="multiple_student_IPR.jsp"
-     * @jpf:forward name="error" path="/error.jsp"
-     *//*
-	@Jpf.Action(
-		forwards = { 
-			@Jpf.Forward(name = "success", path = "report_queue.jsp"), 
-			@Jpf.Forward(name = "error", path = "/error.jsp")
-		}
-	)
-    protected Forward generateReportFile(ViewMonitorStatusForm form)
-    {
-        try {
-        	if (this.userName == null) {
-        		 java.security.Principal principal = getRequest().getUserPrincipal();
-        	        if (principal != null) 
-        	            this.userName = principal.toString();  
-       	        getSession().setAttribute("userName", this.userName);
-        	}
-
-        	String reportUrl = null;        	
-    		Integer[] testRosterIds = new Integer[this.selectedRosterIds.size()];
-        	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
-        		Integer rosterId = (Integer)this.selectedRosterIds.get(i);
-        		System.out.println("rosterId = " + rosterId.toString());
-        		testRosterIds[i] = rosterId;
-        	}
-    		
-            reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds, this.fileName, this.fileType, this.userEmail);    
-            
-            try {
-	    		URL url = new URL(reportUrl);
-	    		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	    		connection.setRequestMethod("GET");
-	    		connection.setDoOutput(true);
-	    		connection.setDoInput(true);
-	    		connection.setUseCaches(false);
-	    		//System.out.println(connection.getResponseCode());
-    		
-            } catch (Exception e) { }
-            
-			String reportParam = this.testSessionStatus.getReportParams(this.userName);
-			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
-			String sys = st.nextToken(); 
-			String parms = st.nextToken(); 
-
-			String url = this.testSessionStatus.getReportOpenAPI_URL("RequestQueue");
-            reportUrl = url + "?sys=" + sys + "&parms="+ parms;
-              
-            this.getRequest().setAttribute("reportUrl", reportUrl);
-            System.out.println("RequestQueue URL: " + reportUrl);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Forward("error");
-        }
-                    
-        return new Forward("success");
-    }
-
-    *//**
-     * @jpf:action
-     * @jpf:forward name="success" path="report_queue.jsp"
-     *//*
-	@Jpf.Action(
-		forwards = { 
-			@Jpf.Forward(name = "success", path = "report_queue.jsp")
-		}
-	)
-    protected Forward reportQueue()
-    {
-        try {
-        	if (this.userName == null) {
-       		 java.security.Principal principal = getRequest().getUserPrincipal();
-       	        if (principal != null) 
-       	            this.userName = principal.toString();  
-        	}
-    	
-			String reportParam = this.testSessionStatus.getReportParams(this.userName);
-			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
-			String sys = st.nextToken(); 
-			String parms = st.nextToken(); 
-
-			String url = this.testSessionStatus.getReportOpenAPI_URL("RequestQueue");
-            String reportUrl = url + "?sys=" + sys + "&parms="+ parms;
-              
-            this.getRequest().setAttribute("reportUrl", reportUrl);
-            System.out.println("RequestQueue URL: " + reportUrl);
-		
-		} catch (CTBBusinessException e) {
-			e.printStackTrace();
-		}    
-        
-        return new Forward("success");
-    }
-
-	
-    *//**
-	 * New method added for CR - GA2011CR001
-	 * isGeorgiaCustomer
-	 *//*
-    private void isGeorgiaCustomer(ViewMonitorStatusForm form) 
-    {     
-		 boolean isStudentIdConfigurable = false;
-		 Integer configId=0;
-		 String []valueForStudentId = new String[8] ;
-			for (int i=0; i < this.customerConfigurations.length; i++)
-		        {
-		            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-		          
-		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
-					{
-						isStudentIdConfigurable = true; 
-						configId = cc.getId();
-						customerConfigurationValues(configId);
-						//By default there should be 3 entries for customer configurations
-						valueForStudentId = new String[8];
-						for(int j=0; j<this.customerConfigurationsValue.length; j++){
-							int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
-							valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-						}	
-						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "Student ID" ;
-						this.studentIdLabelName = valueForStudentId[0];
-						form.setStudentIdLabelName(this.studentIdLabelName );
-						
-						
-					}
-		            
-		         }
-			
-			this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
-	        this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
-		
-		
-		 
-    }
-   
-    *//**
-	 * New method added for CR - GA2011CR001
-	 * getCustomerConfigurations
-	 *//*
-	private void getCustomerConfigurations()
-	{
-		try {
-				User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
-				Customer customer = user.getCustomer();
-				Integer customerId = customer.getCustomerId();
-				this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-	}
-	
-	
-	 * New method added for CR - GA2011CR001
-	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 
-	private void customerConfigurationValues(Integer configId)
-	{
-		try {
-				this.customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
-			
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-	}
-	
-	
-	 * New method added for CR - GA2011CR001
-	 * this method can be used in future for setting default value of configurable_StudentId configuration.
-	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 
-	private String[] getDefaultValue(String [] arrValue, String labelName, ViewMonitorStatusForm form)
-	{
-		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
-		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
-		if(labelName.equals("Student ID")){
-			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
-			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
-				{ 
-					arrValue[2]  = "F";
-				}
-			this.studentIdLabelName = arrValue[0];
-			form.setStudentIdLabelName(this.studentIdLabelName );
-			
-		}
-		
-		// check for numeric conversion of maxlength
-		try {
-			int maxLength = Integer.valueOf(arrValue[1]);
-		} catch (NumberFormatException nfe){
-			arrValue[1] = "32" ;
-		}
-		
-		
-		
-		return arrValue;
-	}
-	 // END- Added for CR GA2011CR001 
-	  
     private boolean retrieveInfoFromSession()
     {
         boolean success = true;
@@ -701,8 +277,8 @@ public class ViewMonitorStatusController extends PageFlowController
     {
     }
 
-    *//**
-     *//* 
+    /**
+     */ 
     protected boolean prepareSubtestsDetailInformation(ViewMonitorStatusForm form, boolean validation)
     {
         RosterElement re = getTestRosterDetails(form.getTestRosterId());
@@ -714,15 +290,11 @@ public class ViewMonitorStatusController extends PageFlowController
         boolean isTabeSession = isTabeSession(testProduct.getProductType());
         
         boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
-       
-        // START- Added for LLO-109 
-        isLasLinkCustomer();
-        boolean isLaslinkSession  = this.isLasLinkCustomer;
-        
+
         boolean testSessionCompleted = isTestSessionCompleted(testSession);
                                 
-        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession, isLaslinkSession);       
-       
+        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession);
+                
         String testGrade = getTestGrade(this.studentStatusSubtests);
         String testLevel = getTestLevel(this.studentStatusSubtests);
         
@@ -742,7 +314,7 @@ public class ViewMonitorStatusController extends PageFlowController
         
         getRequest().setAttribute("testCompletionStatus", FilterSortPageUtils.testStatus_CodeToString(re.getTestCompletionStatus()));
         getRequest().setAttribute("studentStatusSubtests", this.studentStatusSubtests);
-        getRequest().setAttribute("isLaslinkSession", new Boolean(isLaslinkSession));
+
         getRequest().setAttribute("isTabeSession", new Boolean(isTabeSession));
         
         boolean showStudentFeedback = false;
@@ -759,10 +331,6 @@ public class ViewMonitorStatusController extends PageFlowController
             numberColumn += 1;
         if (isShowScores)
             numberColumn += 3;
-        if (isLaslinkSession)
-        	numberColumn += 2;
-        	
-       // END- Added for LLO-109 
         if (validation)
         {
             numberColumn += 1;
@@ -776,10 +344,10 @@ public class ViewMonitorStatusController extends PageFlowController
         return true;
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="success" path="view_subtests_detail.jsp"
-     *//* 
+     */ 
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "view_subtests_detail.jsp")
@@ -791,11 +359,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success", form);
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="done" path="from_view_subtests_detail.do"
      * @jpf:forward name="success" path="validate_subtests_detail.jsp"
-     *//* 
+     */ 
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "done",
                      path = "from_view_subtests_detail.do"), 
@@ -866,16 +434,6 @@ public class ViewMonitorStatusController extends PageFlowController
         {
             toggleSubtestValidationStatus(form);
         }
-         // END- Added for LLO-109 
-        else if (currentAction.equals("toggleSubtestExemption"))
-        {
-        	toggleSubtestExemptionStatus(form);
-        }
-        else if (currentAction.equals("toggleSubtestAbsent"))
-        {
-        	toggleSubtestAbsentStatus(form);
-        }
-         // START- Added for LLO-109 
         else if (currentAction.equals("toggleSubtestCustom"))
         {
             toggleSubtestCustomerFlagStatus(form);
@@ -896,10 +454,10 @@ public class ViewMonitorStatusController extends PageFlowController
             this.getRequest().setAttribute("disableToogleButton", "true");
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="success" path="view_monitor_status.do"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "view_monitor_status.do")
@@ -935,36 +493,20 @@ public class ViewMonitorStatusController extends PageFlowController
         return isValidationAllowed;
     }
     
-     // START- Added for LLO-109 
-  //isLasLink customer
-	private void isLasLinkCustomer()
-    {               
-        
-        boolean isLasLinkCustomer = false;
-
-            
-			 for (int i=0; i < this.customerConfigurations.length; i++)
-            {
-            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-            	//isLasLink customer
-                if (cc.getCustomerConfigurationName().equalsIgnoreCase("LASLINK_Customer") && cc.getDefaultValue().equals("T")	)
-                {
-                	isLasLinkCustomer = true;
-                    break;
-                } 
-            }
-       
-        this.isLasLinkCustomer = isLasLinkCustomer;
-       
-    }
-     // END- Added for LLO-109 
     private boolean isSessionDetailsShowScores() 
     {               
         boolean showScores = false; 
 
-       	for (int i=0; i < this.customerConfigurations.length; i++)
+        try
+        {      
+            User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+            Customer customer = user.getCustomer();
+            Integer customerId = customer.getCustomerId();
+            
+            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            for (int i=0; i < ccArray.length; i++)
             {
-                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Details_Show_Scores") && cc.getDefaultValue().equalsIgnoreCase("T"))
                 {
                     showScores = true; 
@@ -977,7 +519,12 @@ public class ViewMonitorStatusController extends PageFlowController
             }
             this.getRequest().setAttribute("setCustomerFlagToogleButton", setCustomerFlagToogleButton);  
                 
-      
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+
         return showScores;
     }
     
@@ -985,15 +532,27 @@ public class ViewMonitorStatusController extends PageFlowController
     {               
         boolean showButton = false; 
 
-        for (int i=0; i < this.customerConfigurations.length; i++)
+        try
+        {      
+            User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+            Customer customer = user.getCustomer();
+            Integer customerId = customer.getCustomerId();
+            
+            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            for (int i=0; i < ccArray.length; i++)
             {
-                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Status_Student_Reports") && cc.getDefaultValue().equalsIgnoreCase("T"))
                 {
                     showButton = true; 
                 }
             }     
-      
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+
         return showButton;
     }
 
@@ -1083,8 +642,7 @@ public class ViewMonitorStatusController extends PageFlowController
         return subtestList;
     }
 
- //  Added for LLO-109 
-    private List buildStudentStatusSubtests(Integer studentId, Integer testAdminId, boolean testSessionCompleted, boolean isTabeSession, boolean isTabeLocatorSession,boolean isLaslinkSession)
+    private List buildStudentStatusSubtests(Integer studentId, Integer testAdminId, boolean testSessionCompleted, boolean isTabeSession, boolean isTabeLocatorSession)
     {
         this.TABETestElements = null;        
         String userTimeZone = (String)getSession().getAttribute("userTimeZone"); 
@@ -1188,16 +746,7 @@ public class ViewMonitorStatusController extends PageFlowController
                             String tdSubtestName = sd_TD.getSubtestName();
                             String sn = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         tdSubtestName;
-                            sd_TD.setSubtestName(sn);
-                               
-                            // START- Added for LLO-109 
-                            if(isLaslinkSession)
-                            {
-                               	sd_TD.setTestExemptions(sss.getTestExemptions());
-                            	sd_TD.setAbsent(sss.getAbsent());
-                             }
-                             // END- Added for LLO-109 
-                             
+                            sd_TD.setSubtestName(sn);   
                             if (!isLocatorTD)
                             {                                
                                 subtestList.add(sd_TD);
@@ -1384,23 +933,6 @@ public class ViewMonitorStatusController extends PageFlowController
         return red;
     }
 
-    private RosterElementData getReportableRosterForTestSession(Integer sessionId, ViewMonitorStatusForm form, int pageSize) 
-    {
-        PageParams page = FilterSortPageUtils.buildPageParams(form.getPageRequested(), pageSize);
-        SortParams sort = FilterSortPageUtils.buildSortParams(form.getSortColumn(), form.getSortOrderBy());
-        
-        RosterElementData red = null;
-        try
-        {      
-            red = this.testSessionStatus.getReportableRosterForTestSession(this.userName, sessionId, null, page, sort);
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }        
-        return red;
-    }
-    
     private List buildRosterList(RosterElementData red)
     {
         List rosterList = new ArrayList();    
@@ -1418,31 +950,18 @@ public class ViewMonitorStatusController extends PageFlowController
         }
         return rosterList;
     }
-
-    private PagerSummary buildTestRosterPagerSummary(RosterElementData red, Integer pageRequested, boolean isReport)
+    
+    private PagerSummary buildTestRosterPagerSummary(RosterElementData red, Integer pageRequested)
     {
         PagerSummary pagerSummary = new PagerSummary();
         pagerSummary.setCurrentPage(pageRequested);
         pagerSummary.setTotalObjects(red.getTotalCount());
         pagerSummary.setTotalPages(red.getFilteredPages());
-        if (! isReport)
-        	pagerSummary.setTotalFilteredObjects(red.getFilteredCount());        
+        pagerSummary.setTotalFilteredObjects(red.getFilteredCount());        
         
         return pagerSummary;
     }
 
-    private void prepareGenerateReportFileButton()
-    {            
-        Boolean disableGenerateReportFileButton = new Boolean(this.selectedRosterIds.size() == 0);
-        this.getRequest().setAttribute("disableGenerateReportFileButton", disableGenerateReportFileButton.toString());
-    	
-        Boolean disableSelectAllButton = new Boolean(this.rosterList.size() == 0);
-        this.getRequest().setAttribute("disableSelectAllButton", disableSelectAllButton.toString());
-
-        Boolean disableDeselectAllButton = new Boolean(this.rosterList.size() == 0);
-        this.getRequest().setAttribute("disableDeselectAllButton", disableDeselectAllButton.toString());
-    }
-     
     private void prepareStudentSelection(List rosterList, Integer testRosterId)
     {            
         boolean found = false;
@@ -1468,32 +987,10 @@ public class ViewMonitorStatusController extends PageFlowController
             this.getRequest().setAttribute("disableRefreshButton", "false");
     }
 
-    private void prepareSelectedRosters(List rosterList, ViewMonitorStatusForm form)
-    {   
-    	List rosterIds = new ArrayList();
-    	
-        for (int i=0; i < rosterList.size(); i++) {
-            TestRosterVO vo = (TestRosterVO)rosterList.get(i);
-            for (int j=0 ; j<this.selectedRosterIds.size() ; j++) {
-            	Integer testRosterId = (Integer)this.selectedRosterIds.get(j);
-            	if (vo.getTestRosterId().intValue() == testRosterId.intValue()) {
-            		rosterIds.add(testRosterId.toString());
-            		break;
-            	}
-            }
-        }
-        
-    	String[] rosterIdStrs = new String[1];
-    	if (rosterIds.size() > 0) {
-    		rosterIdStrs = (String[]) rosterIds.toArray(new String[0]);
-    	}
-        form.setSelectedTestRosterIds(rosterIdStrs);
-    }
-
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="success" path="/homepage/HomePageController.jpf"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "goto_homepage.do")
@@ -1504,10 +1001,10 @@ public class ViewMonitorStatusController extends PageFlowController
     }
     
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="success" path="/homepage/HomePageController.jpf"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "/homepage/HomePageController.jpf")
@@ -1517,10 +1014,10 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="success" path="/viewtestsessions/ViewTestSessionsController.jpf"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "/viewtestsessions/ViewTestSessionsController.jpf")
@@ -1530,11 +1027,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="goto_homepage" path="goto_homepage.do"
      * @jpf:forward name="goto_viewtestsessions" path="goto_viewtestsessions.do"
-     *//*
+     */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "goto_homepage",
                      path = "goto_homepage.do"), 
@@ -1552,9 +1049,9 @@ public class ViewMonitorStatusController extends PageFlowController
             return new Forward("goto_viewtestsessions");
     }
 
-    *//**
+    /**
      * @jpf:action
-     *//*
+     */
 	@Jpf.Action()
     protected Forward goto_session_information()
     {
@@ -1577,11 +1074,11 @@ public class ViewMonitorStatusController extends PageFlowController
         return null;
     }
     
-    *//**
+    /**
      * @jpf:action
      * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
      * @jpf:forward name="error" path="/error.jsp"
-     *//*
+     */
 	@Jpf.Action(
 		forwards = { 
 			@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
@@ -1731,48 +1228,21 @@ public class ViewMonitorStatusController extends PageFlowController
             e.printStackTrace();
         }       
     }
-  // START- Added for LLO-109 
+
     private void toggleSubtestValidationStatus(ViewMonitorStatusForm form) 
     {        
         Integer testRosterId = form.getTestRosterId();
         Integer[] itemSetIds = getSelectedSubtestIds(form);
 
         try {    
-            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ValidationStatus" );
+            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds);
         }
         catch (Exception e) {
             e.printStackTrace();
         }                
     }
     
-    
-    private void toggleSubtestExemptionStatus(ViewMonitorStatusForm form) 
-    {        
-        Integer testRosterId = form.getTestRosterId();
-        Integer[] itemSetIds = getSelectedSubtestIds(form);
-        
-        try {    
-            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ExemptionStatus" );
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }                
-    }
-     
-    
-    private void toggleSubtestAbsentStatus(ViewMonitorStatusForm form) 
-    {        
-        Integer testRosterId = form.getTestRosterId();
-        Integer[] itemSetIds = getSelectedSubtestIds(form);
-        
-        try {    
-            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "AbsentStatus" );
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }                
-    }
-    // END- Added for LLO-109 
+
     private void toggleSubtestCustomerFlagStatus(ViewMonitorStatusForm form) 
     {
         Integer testRosterId = form.getTestRosterId();
@@ -1804,9 +1274,9 @@ public class ViewMonitorStatusController extends PageFlowController
         }
     }
     
-    *//**
+    /**
      * FormData get and set methods may be overwritten by the Form Bean editor.
-     *//*
+     */
     public static class ViewMonitorStatusForm extends SanitizedFormData
     {
 		private static final long serialVersionUID = 1L;
@@ -1827,10 +1297,7 @@ public class ViewMonitorStatusController extends PageFlowController
         private String currentAction = null;
         
         private Integer maxPage = null;
-        private String studentIdLabelName = "Student ID";
-        
-        private String[] selectedTestRosterIds = null;
-        
+
         public ViewMonitorStatusForm()
         {
         }
@@ -1851,10 +1318,7 @@ public class ViewMonitorStatusController extends PageFlowController
             
             this.testRosterFilter = new TestRosterFilter();   
             this.currentAction = "none";  
-            this.selectedItemSetIds = new String[1];   
-            
-            this.selectedTestRosterIds = new String[1];
-            
+            this.selectedItemSetIds = new String[1];       
         }
         
         public ViewMonitorStatusForm createClone()
@@ -1872,8 +1336,6 @@ public class ViewMonitorStatusController extends PageFlowController
             copied.setCurrentAction(this.currentAction);        
             copied.setMaxPage(this.maxPage);
             copied.setSelectedItemSetIds(this.selectedItemSetIds);
-            copied.setSelectedTestRosterIds(this.selectedTestRosterIds);
-            
             return copied;
         }
                 
@@ -2032,32 +1494,7 @@ public class ViewMonitorStatusController extends PageFlowController
             }                 
             return this.selectedItemSetIds;
         }
-        public void setSelectedTestRosterIds(String[] selectedTestRosterIds)
-        {
-            this.selectedTestRosterIds = selectedTestRosterIds;
-        }
-        public String[] getSelectedTestRosterIds()
-        {
-            if(this.selectedTestRosterIds == null || this.selectedTestRosterIds.length == 0) {
-                this.selectedTestRosterIds = new String[1];
-            }                 
-            return this.selectedTestRosterIds;
-        }
-
-		*//**
-		 * @return the studentIdLabelName
-		 *//*
-		public String getStudentIdLabelName() {
-			return studentIdLabelName;
-		}
-
-		*//**
-		 * @param studentIdLabelName the studentIdLabelName to set
-		 *//*
-		public void setStudentIdLabelName(String studentIdLabelName) {
-			this.studentIdLabelName = studentIdLabelName;
-		}
-
+           
     }
 
 	public String getSetCustomerFlagToogleButton() {
@@ -2160,78 +1597,5 @@ public class ViewMonitorStatusController extends PageFlowController
 	public void setSessionDetailsShowScores(boolean sessionDetailsShowScores) {
 		this.sessionDetailsShowScores = sessionDetailsShowScores;
 	}
-
-	*//**
-	 * @return the customerConfigurationsValue
-	 *//*
-	public CustomerConfigurationValue[] getCustomerConfigurationsValue() {
-		return customerConfigurationsValue;
-	}
-
-	*//**
-	 * @param customerConfigurationsValue the customerConfigurationsValue to set
-	 *//*
-	public void setCustomerConfigurationsValue(
-			CustomerConfigurationValue[] customerConfigurationsValue) {
-		this.customerConfigurationsValue = customerConfigurationsValue;
-	}
-
-	*//**
-	 * @return the studentIdLabelName
-	 *//*
-	public String getStudentIdLabelName() {
-		return studentIdLabelName;
-	}
-
-	*//**
-	 * @param studentIdLabelName the studentIdLabelName to set
-	 *//*
-	public void setStudentIdLabelName(String studentIdLabelName) {
-		this.studentIdLabelName = studentIdLabelName;
-	}
-
-	*//**
-	 * @param customerConfigurations the customerConfigurations to set
-	 *//*
-	public void setCustomerConfigurations(
-			CustomerConfiguration[] customerConfigurations) {
-		this.customerConfigurations = customerConfigurations;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getFileType() {
-		return fileType;
-	}
-
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
-
-	public String getUserEmail() {
-		return userEmail;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
-
-	public List getFileTypeOptions() {
-		return fileTypeOptions;
-	}
-
-	public void setFileTypeOptions(List fileTypeOptions) {
-		this.fileTypeOptions = fileTypeOptions;
-	}
-
-	
-	
-	
-*/}
+}
  
