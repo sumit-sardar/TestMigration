@@ -19,8 +19,6 @@ public class PrismWebServiceConstant {
 	public static final String loggerName = "PrismWebService"; 
 	
 	public static int numberOfFailedHitCnt = 0;
-	public static long retryWaitTime = 0;
-	
 	
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	public static final String defaultStartDateStr = "01/01/1900";
@@ -130,7 +128,6 @@ public class PrismWebServiceConstant {
 		resourceBundler = ResourceBundle.getBundle("PrismWebService");
 		
 		numberOfFailedHitCnt = Integer.valueOf(resourceBundler.getString("retrycount"));
-		retryWaitTime = Long.valueOf(resourceBundler.getString("retrywait"));
 		
 		retryReqRowCount = Integer.valueOf(resourceBundler.getString("retryreqrowcnt"));
 		
