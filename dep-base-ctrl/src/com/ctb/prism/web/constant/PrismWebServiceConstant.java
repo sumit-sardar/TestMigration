@@ -83,6 +83,8 @@ public class PrismWebServiceConstant {
 	
 	public static final String AddStdInfoSubTestAcc = "ADDITIONAL STUDENT INFORMATION";
 	
+	public static int retryReqRowCount = 50;
+	
 	public static final Map<String,String> rslvdEthnicityMap = new HashMap<String, String>(); 
 	
 	static{
@@ -129,6 +131,8 @@ public class PrismWebServiceConstant {
 		
 		numberOfFailedHitCnt = Integer.valueOf(resourceBundler.getString("retrycount"));
 		retryWaitTime = Long.valueOf(resourceBundler.getString("retrywait"));
+		
+		retryReqRowCount = Integer.valueOf(resourceBundler.getString("retryreqrowcnt"));
 		
 	}
 }
