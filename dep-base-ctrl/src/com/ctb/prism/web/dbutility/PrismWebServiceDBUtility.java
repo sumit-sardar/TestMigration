@@ -1672,6 +1672,7 @@ public class PrismWebServiceDBUtility {
 			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
+			rs.setFetchSize(1);
 			System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
