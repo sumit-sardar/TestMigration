@@ -87,7 +87,6 @@ public class PrismWebServiceDBUtility {
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
 	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) ";
-	private static final String LOCK_WS_ERROR_LOG = "SELECT 1 FROM ws_error_log t WHERE t.ws_error_log_key = ? FOR UPDATE SKIP LOCKED";
 	
 	/**
 	 * Get Student Bio Information
@@ -1668,9 +1667,6 @@ public class PrismWebServiceDBUtility {
 		long rstrid = 0L;
 		long sessionid = 0L;
 		String wstyp = "";
-		Connection lockCon = null;
-		PreparedStatement lockPst  = null;
-		ResultSet LockRs = null;
 		try {
 			con = openOASDBcon(false);
 			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
@@ -1685,24 +1681,11 @@ public class PrismWebServiceDBUtility {
 				sessionid = rs.getLong("sessionid");
 				wstyp = rs.getString("wstyp");
 				invkcount++;
-				try{
-					lockCon = openOASDBcon(false);
-					lockPst = lockCon.prepareCall(LOCK_WS_ERROR_LOG);
-					lockPst.setLong(1, logkey);
-					LockRs = lockPst.executeQuery();
-					if(LockRs.next()){
-						System.out.println("Prism Web Service retring for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
-						if(wstyp != null && !"".equals(wstyp) && "Scoring".equalsIgnoreCase(wstyp)){
-							PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey);
-						}else{
-							PrismWebServiceHandler.editStudent(stdid, invkcount, logkey);
-						}
-					}
-				}catch(Exception e){
-					System.err.println("Error in the PrismWebServiceDBUtility.getWSErrorLogProgress() method to execute query : \n " +  LOCK_WS_ERROR_LOG);
-					e.printStackTrace();
-				} finally {
-					close(lockCon, lockPst, LockRs);
+				System.out.println("Prism Web Service retring for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
+				if(wstyp != null && !"".equals(wstyp) && "Scoring".equalsIgnoreCase(wstyp)){
+					PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey);
+				}else{
+					PrismWebServiceHandler.editStudent(stdid, invkcount, logkey);
 				}
 			}
 		} catch (Exception e) {
