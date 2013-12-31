@@ -2,6 +2,7 @@
 <%@ page import="com.ctb.util.web.sanitizer.JavaScriptSanitizer"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="label.tld" prefix="lb" %>
+<%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <lb:bundle baseName="testsessionApplicationResource" />
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -94,6 +95,7 @@
 	                </li>
 	            </h4></td>
             </tr>
+            <ctb:auth roles="Administrator">
             <tr>
                 <td><h4>
                 <li style="list-style-type: square;">	
@@ -101,6 +103,7 @@
                 </li>
             	</h4></td>
             </tr>
+            </ctb:auth>
          </table>       		
         <!--End content-->
     </td>

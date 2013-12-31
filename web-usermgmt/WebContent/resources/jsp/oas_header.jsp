@@ -1,3 +1,5 @@
+<%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+
 <%
 	Integer broadcastMessages = (Integer)session.getAttribute("broadcastMessages");
 	if (broadcastMessages == null) broadcastMessages = new Integer(0);
@@ -78,7 +80,7 @@
 							custName="6-8";
 						}
 					%>
-                	<p style="color: #476CB5;">Click any of the below links to navigate to the "<%=custName%> Administration" or "Manage Users with EOI Login".</p>
+                	<p style="color: #476CB5;">Click one of the links below to manage the <%=custName%> online test administration.</p>
                 </td>                
             </tr>
          </table>
@@ -89,7 +91,7 @@
             <tr>
                 <td><h4>
 	                <li style="list-style-type: square;">
-	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage my OK EOI online administration</a>
+	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=EOI_Link">Manage the Oklahoma EOI online test administration</a>
 	                </li>
                 </h4></td>
             </tr>
@@ -97,18 +99,20 @@
             <tr>
 	            <td><h4>
 	                <li style="list-style-type: square;">
-	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage by OK 6-8 online administration</a>
+	                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=3-8_Link">Manage the Oklahoma 6-8 online test administration</a>
 	                </li>
 	            </h4></td>
             </tr>
             <% } %>
+            <ctb:auth roles="Administrator">
             <tr>
                 <td><h4>
                 <li style="list-style-type: square;">	
-                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage Users</a>
+                	<a onclick="showLoading();" href="<%=request.getContextPath()%>/userOperation/switchToLinkSelected.do?selectedLink=UserLink">Manage user accounts (shared between EOI and 6-8)</a>
                 </li>
             	</h4></td>
             </tr>
+            </ctb:auth>
          </table>
 	</div>
 	<br>
