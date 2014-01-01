@@ -76,13 +76,13 @@
 		<table class="simpleBlock" width="100%" cellpadding="5">
             <tr>
                 <td colspan="2">
-                	<br/><h1>Select Administration</h1>
+                	<br/><h1>Switch Administration</h1>
                 	  <% 
                 	 	String custName="";
 						if(is3to8Selected) {
 							custName="EOI";
 						} else {
-							custName="6-8";
+							custName="grade 6-8";
 						}
 					%>
                 	<p style="color: #476CB5;">Click one of the links below to manage the <%=custName%> online test administration.</p>

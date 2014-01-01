@@ -75,8 +75,8 @@
         <table class="simpleBlock" width="100%" cellpadding="5">
             <tr>
                 <td colspan="2">
-                	<br/><h1>Select Administration</h1>
-                	<p style="color: #476CB5;">Click one of the links below to manage the EOI or 6-8 online test administration.</p>
+                	<br/><h1>Switch Administration</h1>
+                	<p style="color: #476CB5;">Click one of the links below to manage the EOI or grade 6-8 online test administration.</p>
                 </td>                
             </tr>
          </table>
