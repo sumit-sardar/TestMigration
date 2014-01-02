@@ -298,8 +298,9 @@ function setManipState(args){
 	lz.embed.setCanvasAttribute('manipstate',args);
 }
 
-function setTTStext(args){
-	lz.embed.setCanvasAttribute('ttstext',args);
+function setTTSText(text){
+	if(text && canvas.readable)
+		gReadableText.read(text,false);
 }
 
 function setAnswerNow(args){
@@ -803,6 +804,7 @@ function enableEraser(isEnabled){
 	    	//iframe.contentWindow.accomPkg.setVisualAccessFeatures(fontObj.fgcolor, '12px',bgColorObj);
 	    	/*var xscalefact = (780 * xscalefactorjs)/800;
 	    	var yscalefact = (450 * yscalefactorjs)/462;*/
+	    	iframe.contentWindow.isReadable(canvas.readable);
 	    	var xscalefact = 780/800;
 	    	var yscalefact = 450/462;
 	    	iframe.contentWindow.translate(xscalefact, yscalefact);
