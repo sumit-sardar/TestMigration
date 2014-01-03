@@ -4,6 +4,7 @@
 package com.ctb.prism.web.handler;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -110,9 +111,10 @@ public class PrismWebServiceHandler {
 	 * Invoke the Prism Web Service
 	 * @param studentListTO
 	 * @param logkey 
+	 * @param con 
 	 * @throws Exception
 	 */
-	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel, Integer studentId, long rosterId, long sessionId, String wsType, int hitCount, long logkey) throws Exception{
+	private static void invokePrismWebService(StudentListTO studentListTO, String customerId, String orgNodeCode, String heirarchyLevel, Integer studentId, long rosterId, long sessionId, String wsType, int hitCount, long logkey, Connection con) throws Exception{
 		XStream xstream = new XStream();
 		System.out.println("Data forwarded XML structure for student id : " + studentId + " roster id : " + rosterId + " session id : " + sessionId  + "\n" + xstream.toXML(studentListTO));
 		long errorLogKey = 0;
@@ -145,10 +147,10 @@ public class PrismWebServiceHandler {
 				System.out.println("Prism web service error log key : " + errorLogKey);
 			}else if(hitCount  < PrismWebServiceConstant.numberOfFailedHitCnt){
 				errorLogKey = logkey;
-				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCount , errorMessage, "Progress", additionalInfo);
+				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCount , errorMessage, "Progress", additionalInfo, con);
 			}else{
 				errorLogKey = logkey;
-				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", createAdditionalInfo(responseTO));
+				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", createAdditionalInfo(responseTO), con);
 			}
 		}
 	}
@@ -167,9 +169,10 @@ public class PrismWebServiceHandler {
 	 * @param userName
 	 * @param studentId
 	 * @param logkey 
+	 * @param con 
 	 * @throws Exception
 	 */
-	public static void editStudent(Integer studentId, int hitCount, long logkey) throws Exception{
+	public static void editStudent(Integer studentId, int hitCount, long logkey, Connection con) throws Exception{
 		long startTime = System.currentTimeMillis();
 		System.out.println("PrismWebServiceHandler.editStudent : Prism Web Service Edit Student started for student id - " + studentId);
 		StudentListTO studentListTO = new StudentListTO();
@@ -213,7 +216,7 @@ public class PrismWebServiceHandler {
 		}
 		
 		if(rosterAvailable){
-			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student", hitCount, logkey);
+			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student", hitCount, logkey, con);
 		}else{
 			System.out.println("PrismWebServiceHandler.editStudent : No Roster availabe for the student id : " + studentId + ". Web Service not invoked.");
 		}
@@ -230,9 +233,10 @@ public class PrismWebServiceHandler {
 	 * @param studentId
 	 * @param sessionId
 	 * @param logkey 
+	 * @param con 
 	 * @throws Exception
 	 */
-	public static void scoring(long rosterId, Integer studentId, long sessionId, int hitCount, long logkey) throws Exception{
+	public static void scoring(long rosterId, Integer studentId, long sessionId, int hitCount, long logkey, Connection con) throws Exception{
 		long startTime = System.currentTimeMillis();
 		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		StudentListTO studentListTO = new StudentListTO();
@@ -270,7 +274,7 @@ public class PrismWebServiceHandler {
 		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
 		rosterDetailsList.add(rosterDetailsTO);
 		
-		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring", hitCount, logkey);
+		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring", hitCount, logkey, con);
 		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 		
 		long stopTime = System.currentTimeMillis();

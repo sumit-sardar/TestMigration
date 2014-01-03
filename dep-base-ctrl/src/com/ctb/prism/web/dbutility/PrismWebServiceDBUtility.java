@@ -86,7 +86,7 @@ public class PrismWebServiceDBUtility {
 	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message, ADDITIONAL_INFO) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   0,   ?,   ?,  ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
-	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) ";
+	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	
 	/**
 	 * Get Student Bio Information
@@ -1603,12 +1603,17 @@ public class PrismWebServiceDBUtility {
 	/**
 	 * Update WS Error Log table
 	 * @param wsErrorLogKey
+	 * @param lockcon 
 	 */
-	public static void updateWSErrorLog(long wsErrorLogKey, int invokeCount, String message, String status, String additionalInfo){
+	public static void updateWSErrorLog(long wsErrorLogKey, int invokeCount, String message, String status, String additionalInfo, Connection lockcon){
 		PreparedStatement pst  = null;
 		Connection con = null;
 		try {
-			con = openOASDBcon(false);
+			if(lockcon != null){
+				con = lockcon;
+			}else{
+				con = openOASDBcon(false);
+			}
 			pst  = con.prepareCall(UPDATE_WS_ERROR_LOG);
 			pst.setLong(1, invokeCount);
 			pst.setString(2, subString(message, 3500));
@@ -1621,7 +1626,11 @@ public class PrismWebServiceDBUtility {
 			System.err.println("Error in the PrismWebServiceDBUtility.updateWSErrorLog() method to execute query : \n " +  UPDATE_WS_ERROR_LOG);
 			e.printStackTrace();
 		} finally {
-			close(con, pst);
+			if(lockcon != null){
+				close(pst);
+			}else{
+				close(con, pst);
+			}
 		}
 	}
 	
@@ -1658,9 +1667,9 @@ public class PrismWebServiceDBUtility {
 				invkcount++;
 				System.out.println("Prism Web Service retring for WS_ERROR_LOG key : " + logkey + " WS Type :"+ wstyp + " retry count : " + invkcount);
 				if(wstyp != null && !"".equals(wstyp) && "Scoring".equalsIgnoreCase(wstyp)){
-					PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey);
+					PrismWebServiceHandler.scoring(rstrid,  stdid, sessionid, invkcount, logkey, con);
 				}else{
-					PrismWebServiceHandler.editStudent(stdid, invkcount, logkey);
+					PrismWebServiceHandler.editStudent(stdid, invkcount, logkey, con);
 				}
 			}
 		} catch (Exception e) {
