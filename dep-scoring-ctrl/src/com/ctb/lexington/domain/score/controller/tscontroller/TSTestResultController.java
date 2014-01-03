@@ -126,7 +126,7 @@ public class TSTestResultController implements TestResultController {
         
         //Prism web service is called for scoring
         try {
-        	PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId(), 0, 0);
+        	PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId(), 0, 0, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
