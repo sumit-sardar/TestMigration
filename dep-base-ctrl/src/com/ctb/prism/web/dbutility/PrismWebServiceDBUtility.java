@@ -1639,8 +1639,9 @@ public class PrismWebServiceDBUtility {
 	/**
 	 * Update WS Error Log table
 	 * @param wsErrorLogKey
+	 * @throws SQLException 
 	 */
-	public static void retryWSProgress(){
+	public static void retryWSProgress() throws SQLException{
 		PreparedStatement pst  = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -1651,7 +1652,7 @@ public class PrismWebServiceDBUtility {
 		long sessionid = 0L;
 		String wstyp = "";
 		try {
-			con = openOASDBcon(false);
+			con = openOASDBcon(true);
 			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
@@ -1676,6 +1677,7 @@ public class PrismWebServiceDBUtility {
 			System.err.println("Error in the PrismWebServiceDBUtility.getWSErrorLogProgress() method to execute query : \n " +  SELECT_WS_ERROR_LOG);
 			e.printStackTrace();
 		} finally {
+			con.commit();
 			close(con, pst, rs);
 		}
 	}
