@@ -628,7 +628,7 @@ public class StudentOperationController extends PageFlowController {
 					(new Thread() {
 						public void run(){
 							try {
-								PrismWebServiceHandler.editStudent(tempStudentId, 0, 0);
+								PrismWebServiceHandler.editStudent(tempStudentId, 0, 0, null);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -3669,7 +3669,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		(new Thread() {
 			public void run(){
 				try {
-					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID), 0, 0);
+					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID), 0, 0, null);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3698,7 +3698,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		(new Thread() {
 			public void run(){
 				try {
-					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId), 0, 0);
+					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId), 0, 0, null);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
