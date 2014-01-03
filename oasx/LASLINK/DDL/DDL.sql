@@ -1,4 +1,4 @@
-/* New Columns were added in student_item_set_status table */
+ New Columns were added in student_item_set_status table */
 /* Two new columns exemptions and absent were added  in table student_item_set_status */
 
 ALTER TABLE student_item_set_status ADD exemptions VARCHAR2(1)
