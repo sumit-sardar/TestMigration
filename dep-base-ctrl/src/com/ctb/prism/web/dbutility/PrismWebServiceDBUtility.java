@@ -105,7 +105,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_STUDENT_BIO);
 			pst.setLong(1, studentId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getStudentBio : Query for getStudentBio : " + GET_STUDENT_BIO);
+			//System.out.println("PrismWebServiceDBUtility.getStudentBio : Query for getStudentBio : " + GET_STUDENT_BIO);
 			populateStudentBioTO(rs, std);
 			//TODO - set student id(OAS_Stnt_ID attribute name) in std(Field was not available)
 		} catch (Exception e) {
@@ -138,7 +138,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(1, studentId);
 			pst.setLong(2, rosterID);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getCustomerHigherarchy : Query for getCustomerHigherarchy : " + GET_CUST_ORG_HIGR);
+			//System.out.println("PrismWebServiceDBUtility.getCustomerHigherarchy : Query for getCustomerHigherarchy : " + GET_CUST_ORG_HIGR);
 			populateCustHierarchyDetailsTO(rs, custHierarchyDetailsTO);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getCustomerHigherarchy() method to execute query : \n " +  GET_CUST_ORG_HIGR);
@@ -166,7 +166,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_ROSTER_LIST_FOR_STUDENT);
 			pst.setLong(1, studentId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getRosterListForStudent : Query for getRosterListForStudent : " + GET_ROSTER_LIST_FOR_STUDENT);
+			//System.out.println("PrismWebServiceDBUtility.getRosterListForStudent : Query for getRosterListForStudent : " + GET_ROSTER_LIST_FOR_STUDENT);
 			while(rs.next()){
 				rosterIds.add(rs.getLong("rosterId"));
 			}
@@ -198,7 +198,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_STUDENT_DEMO);
 			pst.setLong(1, rosterId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getStudentDemo : Query for getStudentDemo : " + GET_STUDENT_DEMO);
+			//System.out.println("PrismWebServiceDBUtility.getStudentDemo : Query for getStudentDemo : " + GET_STUDENT_DEMO);
 			while(rs.next()){
 				DemoTO demoTOTstFrm = new DemoTO();
 				demoTOTstFrm.setDemoName("Test_Form");
@@ -264,7 +264,7 @@ public class PrismWebServiceDBUtility {
 			pst.setString(3, PrismWebServiceConstant.subTestAccomCatNameMap.get(contentCodeName));
 			//pst.setString(4, PrismWebServiceConstant.AddStdInfoSubTestAcc);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getSubTestAccommodation : Query for getSubTestAccommodation : " + GET_SUBTEST_ACCOM);
+			//System.out.println("PrismWebServiceDBUtility.getSubTestAccommodation : Query for getSubTestAccommodation : " + GET_SUBTEST_ACCOM);
 			while(rs.next()){
 				SubtestAccommodationTO subtestAccommodationTO = new SubtestAccommodationTO();
 				subtestAccommodationTO.setName(rs.getString("subTestAccom"));
@@ -316,7 +316,7 @@ public class PrismWebServiceDBUtility {
 			pstSR.setString(9, PrismWebServiceConstant.SRItemResponseSetType);
 			pstSR.setLong(10, rosterID);
 			rsSR = pstSR.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail SR : " + GET_ITEM_RESP_SR);
+			//System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail SR : " + GET_ITEM_RESP_SR);
 			ItemResponseTO srItemResponseTO = new ItemResponseTO();
 			srItemResponseTO.setItemSetType(PrismWebServiceConstant.SRItemResponseSetType);
 			srItemResponseTO.setItemCode(PrismWebServiceConstant.itemResponseItemCodeMap.get(PrismWebServiceConstant.SRItemResponseSetType));
@@ -354,7 +354,7 @@ public class PrismWebServiceDBUtility {
 			pstCR.setLong(4, rosterID);
 			pstCR.setLong(5, studentId);
 			rsCR = pstCR.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail CR : " + GET_ITEM_RESP_CR);
+			//System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail CR : " + GET_ITEM_RESP_CR);
 			
 			ItemResponseTO crItemResponseTO = new ItemResponseTO();
 			crItemResponseTO.setItemSetType(PrismWebServiceConstant.CRItemResponseSetType);
@@ -383,7 +383,7 @@ public class PrismWebServiceDBUtility {
 			pstGR.setString(9, PrismWebServiceConstant.GRIDItemResponseSetType);
 			pstGR.setLong(10, rosterID);
 			rsGR = pstGR.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail GR : " + GET_ITEM_RESP_GR);
+			//System.out.println("PrismWebServiceDBUtility.getItemResponsesDetail : Query for getItemResponsesDetail GR : " + GET_ITEM_RESP_GR);
 			ItemResponseTO grItemResponseTO = new ItemResponseTO();
 			grItemResponseTO.setItemSetType(PrismWebServiceConstant.GRItemResponseSetType);
 			grItemResponseTO.setItemCode(PrismWebServiceConstant.itemResponseItemCodeMap.get(PrismWebServiceConstant.GREditedResponseTxt));
@@ -451,7 +451,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(1, studentId);
 			pst.setLong(2, sessionId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getGRResponseStatus : Query for getGRResponseStatus : " + GET_GR_RESP_STATUS);
+			//System.out.println("PrismWebServiceDBUtility.getGRResponseStatus : Query for getGRResponseStatus : " + GET_GR_RESP_STATUS);
 			while(rs.next()){
 				respStatusMap.put(rs.getString("itmid"), rs.getString("respstatus"));
 			}
@@ -506,7 +506,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(2, sessionId);
 			pst.setLong(3, reItemSetId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getContentScoreDetails : Query for getContentScoreDetails : " + GET_CONTENT_SCORE_DETAILS);
+			//System.out.println("PrismWebServiceDBUtility.getContentScoreDetails : Query for getContentScoreDetails : " + GET_CONTENT_SCORE_DETAILS);
 			while(rs.next()){
 				ContentScoreTO NCcontentScoreTO = new ContentScoreTO();
 				NCcontentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
@@ -582,7 +582,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_CONTENT_DETAILS);
 			pst.setLong(1, rosterId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getContentDetailsTO : Query for getContentDetailsTO : " + GET_CONTENT_DETAILS);
+			//System.out.println("PrismWebServiceDBUtility.getContentDetailsTO : Query for getContentDetailsTO : " + GET_CONTENT_DETAILS);
 			
 			Map<Integer, ContentDetailsTO> contentDetailsTOMap = getContentDetailsTOMap();
 					
@@ -692,7 +692,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_CUST_CONF_ACCOMMODATION);
 			pst.setLong(1, studentId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getCustConfAccommodations : Query for getCustConfAccommodations : " + GET_CUST_CONF_ACCOMMODATION);
+			//System.out.println("PrismWebServiceDBUtility.getCustConfAccommodations : Query for getCustConfAccommodations : " + GET_CUST_CONF_ACCOMMODATION);
 			if(rs.next()){
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int columnCount = rsmd.getColumnCount();
@@ -848,7 +848,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_CONTENT_AREA_ID);
 			pst.setLong(1, rosterId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getContentAreaIDMap : Query for getContentAreaIDMap : " + GET_CONTENT_AREA_ID);
+			//System.out.println("PrismWebServiceDBUtility.getContentAreaIDMap : Query for getContentAreaIDMap : " + GET_CONTENT_AREA_ID);
 			while(rs.next()){
 				contentAreaID.put(rs.getString("contentareaname"), rs.getLong("contentareaid"));
 			}
@@ -877,7 +877,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(CHECK_CR_SCORE_PRESENT);
 			pst.setLong(1, rosterId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.checkCRScoreAvailablility : Query for checkCRScoreAvailablility : " + CHECK_CR_SCORE_PRESENT);
+			//System.out.println("PrismWebServiceDBUtility.checkCRScoreAvailablility : Query for checkCRScoreAvailablility : " + CHECK_CR_SCORE_PRESENT);
 			if(rs.next() && rs.getInt("count_row") >= 1){
 				checkCRScorePresent	= true;
 			}
@@ -907,7 +907,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(1, rosterId);
 			pst.setLong(2, itemSetId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getContentTestTakenDt : Query for getContentTestTakenDt : " + GET_TEST_TAKEN_DATE);
+			//System.out.println("PrismWebServiceDBUtility.getContentTestTakenDt : Query for getContentTestTakenDt : " + GET_TEST_TAKEN_DATE);
 			while(rs.next()){
 				testTakenDt = rs.getString("test_taken_dt");
 			}
@@ -987,7 +987,7 @@ public class PrismWebServiceDBUtility {
 			compTestPst.setLong(1, studentId);
 			compTestPst.setLong(2, sessionId);
 			compTestRS = compTestPst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getCompositeContentScoreDetails : Query for getCompositeContentScoreDetails : " + GET_COMPOSITE_CONTENT_DETAILS);
+			//System.out.println("PrismWebServiceDBUtility.getCompositeContentScoreDetails : Query for getCompositeContentScoreDetails : " + GET_COMPOSITE_CONTENT_DETAILS);
 			while (compTestRS.next()) {
 				ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
 				ContentDetailsTO contentDetailsTO = null;
@@ -1080,7 +1080,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(5, sessionId);
 			pst.setString(6, String.valueOf(contentCode));
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_OBJECTIVE_LIST);
+			//System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_OBJECTIVE_LIST);
 			irsCon = openIRSDBcon(false);
 			while(rs.next()){
 				PreparedStatement irsPst = null;
@@ -1094,7 +1094,7 @@ public class PrismWebServiceDBUtility {
 						irsPst.setLong(2, studentId);
 						irsPst.setLong(3, sessionId);
 						irsRs = irsPst.executeQuery();
-						System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_PRIM_OBJ_SCORE);
+						//System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_PRIM_OBJ_SCORE);
 						
 						while(irsRs.next()){
 							//TODO - SSObjectiveScoreDetails, MRObjectiveScoreDetails is pending
@@ -1150,7 +1150,7 @@ public class PrismWebServiceDBUtility {
 						irsPst.setLong(2, studentId);
 						irsPst.setLong(3, sessionId);
 						irsRs = irsPst.executeQuery();
-						System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_SEC_OBJ_SCORE);
+						//System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_SEC_OBJ_SCORE);
 						
 						while(irsRs.next()){
 							ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
@@ -1241,7 +1241,7 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(6, rosterId);
 			pst.setLong(7, rosterId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getStudentSurveyBio : Query for getStudentSurveyBio : " + GET_SURVEY_BIO_RES);
+			//System.out.println("PrismWebServiceDBUtility.getStudentSurveyBio : Query for getStudentSurveyBio : " + GET_SURVEY_BIO_RES);
 			String Ethnicity = "";
 			Boolean RaceAmericanIndianAlaskaNative = false;
 			Boolean RaceAsian = false;
@@ -1528,7 +1528,7 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_CUSTOMER_KEY);
 			pst.setInt(1, customerId);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getCustomerKey : Query for getCustomerKey : " + GET_CUSTOMER_KEY);
+			//System.out.println("PrismWebServiceDBUtility.getCustomerKey : Query for getCustomerKey : " + GET_CUSTOMER_KEY);
 			while(rs.next()){
 				customerKey = rs.getString("customerKey");
 			}
@@ -1656,7 +1656,7 @@ public class PrismWebServiceDBUtility {
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
 			rs.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
-			System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
+			//System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
 				invkcount = rs.getInt("invkcount");
