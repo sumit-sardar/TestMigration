@@ -3,6 +3,7 @@
  */
 package com.ctb.prismws;
 
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
@@ -15,7 +16,11 @@ public class PrismWebServiceHelper {
 	 * Retry the in progress WS call  
 	 */
 	public void retryWSProgress(){
-		com.ctb.prism.web.dbutility.PrismWebServiceDBUtility.retryWSProgress();
+		try {
+			com.ctb.prism.web.dbutility.PrismWebServiceDBUtility.retryWSProgress();
+		} catch (SQLException e) {
+			//Do Nothing
+		}
 	}
 	
 	public String getPrismWSCronExpression(){
