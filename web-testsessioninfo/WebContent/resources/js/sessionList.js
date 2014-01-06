@@ -2465,7 +2465,7 @@ function registerDelegate(tree){
 			
 		}
 		
-		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct || isTASCProduct)){
+		if(allSubtests.length > 1 &&  (isTabeProduct || isTabeAdaptiveProduct || isLasLinksProduct /*|| isTASCProduct*/)){
 		   document.getElementById("modifyTestDiv").style.display = "";
 		} else {
 		 	document.getElementById("modifyTestDiv").style.display = "none";
