@@ -45,10 +45,10 @@ public class CronTriggerRunner {
 				.withSchedule(cronSchedule(new PrismWebServiceHelper().getPrismWSCronExpression()))
 				.build();
 	    // schedule a job with JobDetail and Trigger
-	    scheduler.scheduleJob(wsJobDetail, wsTrigger);
+	    scheduler.scheduleJob(wsJobDetail, wsTrigger);*/
 	    
 	    // start the scheduler
-	    scheduler.start();*/
+	    scheduler.start();
 	}
 	
 	public static void stop()  throws SchedulerException {
