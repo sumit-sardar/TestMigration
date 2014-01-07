@@ -1611,6 +1611,7 @@ public class PrismWebServiceDBUtility {
 		Connection con = null;
 		try {
 			if(lockcon != null){
+				System.out.println("Lock connection is available.");
 				con = lockcon;
 			}else{
 				con = openOASDBcon(false);
@@ -1622,6 +1623,7 @@ public class PrismWebServiceDBUtility {
 			pst.setString(4, additionalInfo);
 			pst.setLong(5, wsErrorLogKey);
 			pst.executeUpdate();
+			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Update invoked for the error log key : " + wsErrorLogKey + " with Status : " + status);
 			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Query for updateWSErrorLog : " + UPDATE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.updateWSErrorLog() method to execute query : \n " +  UPDATE_WS_ERROR_LOG);
