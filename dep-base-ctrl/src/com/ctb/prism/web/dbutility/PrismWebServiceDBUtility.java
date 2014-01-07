@@ -1654,10 +1654,11 @@ public class PrismWebServiceDBUtility {
 		String wstyp = "";
 		try {
 			con = openOASDBcon(true);
+			con.setAutoCommit(false);
 			pst  = con.prepareCall(SELECT_WS_ERROR_LOG);
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
+			pst.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
-			rs.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
 			//System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
@@ -1679,6 +1680,7 @@ public class PrismWebServiceDBUtility {
 			e.printStackTrace();
 		} finally {
 			con.commit();
+			con.setAutoCommit(true);
 			close(con, pst, rs);
 		}
 	}
