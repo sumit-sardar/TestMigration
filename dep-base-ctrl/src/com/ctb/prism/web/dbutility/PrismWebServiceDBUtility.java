@@ -1566,7 +1566,7 @@ public class PrismWebServiceDBUtility {
 			cst.setString(6, additionalInfo);
 			cst.registerOutParameter(7, Types.NUMERIC);
 			int count = cst.executeUpdate();
-			System.out.println("PrismWebServiceDBUtility.insertWSErrorLog : Query for insertWSErrorLog : " + INSERT_WS_ERROR_LOG);
+			//System.out.println("PrismWebServiceDBUtility.insertWSErrorLog : Query for insertWSErrorLog : " + INSERT_WS_ERROR_LOG);
 			if(count > 0){
 				wsErrorLogKey = cst.getLong(7);
 			}
@@ -1591,7 +1591,7 @@ public class PrismWebServiceDBUtility {
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
 			pst.executeUpdate();
-			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
+			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.deleteWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
 			e.printStackTrace();
@@ -1624,7 +1624,6 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(5, wsErrorLogKey);
 			pst.executeUpdate();
 			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Update invoked for the error log key : " + wsErrorLogKey + " with Status : " + status);
-			System.out.println("PrismWebServiceDBUtility.updateWSErrorLog : Query for updateWSErrorLog : " + UPDATE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.updateWSErrorLog() method to execute query : \n " +  UPDATE_WS_ERROR_LOG);
 			e.printStackTrace();
