@@ -1,7 +1,13 @@
 package com.ctb.tms.web.listener;
 
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
 
@@ -144,9 +150,6 @@ public class TestDeliveryContextListener implements
 				int fetchedCount = 0;
 				try {
 					conn = oasDBSource.getOASConnection();
-					Exception lastError = null;
-					int errorCount = 0;
-					int storedCount = 0;
 					fetchedCount = 0;
 
 					Member localMember = cluster.getLocalMember();
@@ -155,78 +158,128 @@ public class TestDeliveryContextListener implements
 					oasDBSource.markActiveRosters(conn, clusterName, nodeId);
 					StudentCredentials[] creds = oasDBSource.getActiveRosters(
 							conn, clusterName, nodeId);
-					fetchedCount = creds.length;
-					for (int i = 0; i < creds.length; i++) {
-						try {
-							if (creds[i] != null) {
-								String key = creds[i].getUsername() + ":"
-										+ creds[i].getPassword() + ":"
-										+ creds[i].getAccesscode();
-								if (creds[i].getUsername() == null
-										|| creds[i].getPassword() == null
-										|| creds[i].getAccesscode() == null) {
-									if (creds[i].getTestRosterId() != null) {
-										logger.info("Invalid or deleted roster in pre-pop table, marking manifest unusable for roster: "
-												+ creds[i].getTestRosterId());
-										ManifestWrapper wrapper = oasSource
-												.getAllManifests(creds[i]
-														.getTestRosterId());
-										Manifest[] manifests = wrapper
-												.getManifests();
-										for (int j = 0; j < manifests.length; j++) {
-											manifests[j].setUsable(false);
-										}
-										wrapper.setManifests(manifests);
-										oasSink.putAllManifests(
-												creds[i].getTestRosterId(),
-												wrapper, false);
-									}
-								} else {
-									if (creds[i].getUsername().startsWith(
-											"pt-student")
-											&& creds[i].getAccesscode()
-													.startsWith("PTest")) {
-										oasSink.deleteAllItemResponses(Integer
-												.parseInt(creds[i]
+
+					class PrepopulateResult {
+						public int errorCount = 0;
+						public int storedCount = 0;
+						public Exception lastError = null;
+					}
+
+					PrepopulateResult resultCounts = new PrepopulateResult();
+
+					if ((creds != null) && (creds.length > 0)) {
+						ThreadPoolExecutor executor = new ThreadPoolExecutor(
+								10, 10, 10, TimeUnit.SECONDS,
+								new LinkedBlockingQueue<Runnable>());
+
+						fetchedCount = creds.length;
+
+						class PrepopulateRunner implements Runnable {
+							private StudentCredentials cred;
+							private PrepopulateResult resultCounts;
+
+							PrepopulateRunner(PrepopulateResult resultCounts,
+									StudentCredentials cred) {
+
+								this.cred = cred;
+								this.resultCounts = resultCounts;
+							}
+
+							public void run() {
+								Connection conn = null;
+								try {
+									conn = oasDBSource.getOASConnection();
+
+									if (cred != null) {
+										String key = cred.getUsername() + ":"
+												+ cred.getPassword() + ":"
+												+ cred.getAccesscode();
+										if (cred.getUsername() == null
+												|| cred.getPassword() == null
+												|| cred.getAccesscode() == null) {
+											if (cred.getTestRosterId() != null) {
+												logger.info("Invalid or deleted roster in pre-pop table, marking manifest unusable for roster: "
+														+ cred.getTestRosterId());
+												ManifestWrapper wrapper = oasSource
+														.getAllManifests(cred
+																.getTestRosterId());
+												Manifest[] manifests = wrapper
+														.getManifests();
+												for (int j = 0; j < manifests.length; j++) {
+													manifests[j]
+															.setUsable(false);
+												}
+												wrapper.setManifests(manifests);
+												oasSink.putAllManifests(
+														cred.getTestRosterId(),
+														wrapper, false);
+											}
+										} else {
+											if (cred.getUsername().startsWith(
+													"pt-student")
+													&& cred.getAccesscode()
+															.startsWith("PTest")) {
+												oasSink.deleteAllItemResponses(Integer.parseInt(cred
 														.getTestRosterId()));
+											}
+											RosterData rd = oasDBSource
+													.getRosterData(conn, key);
+											Manifest[] manifests = oasDBSource
+													.getManifest(conn, cred
+															.getTestRosterId());
+											if (manifests != null
+													&& manifests.length > 0) {
+												oasSink.putRosterData(cred, rd,
+														false);
+												oasSink.putAllManifests(cred
+														.getTestRosterId(),
+														new ManifestWrapper(
+																manifests),
+														false);
+												rd = null;
+												manifests = null;
+												resultCounts.storedCount++;
+											} else {
+												resultCounts.errorCount++;
+												resultCounts.lastError = new Exception(
+														"Couldn't retrieve manifest for "
+																+ key);
+											}
+										}
+										key = null;
 									}
-									RosterData rd = oasDBSource.getRosterData(
-											conn, key);
-									Manifest[] manifests = oasDBSource
-											.getManifest(conn,
-													creds[i].getTestRosterId());
-									if (manifests != null
-											&& manifests.length > 0) {
-										oasSink.putRosterData(creds[i], rd,
-												false);
-										oasSink.putAllManifests(
-												creds[i].getTestRosterId(),
-												new ManifestWrapper(manifests),
-												false);
-										rd = null;
-										manifests = null;
-										storedCount++;
-									} else {
-										errorCount++;
-										lastError = new Exception(
-												"Couldn't retrieve manifest for "
-														+ key);
+								} catch (Exception e) {
+									resultCounts.errorCount++;
+									resultCounts.lastError = e;
+								} finally {
+									if (conn != null) {
+										try {
+											conn.close();
+										} catch (Exception ex) {
+										}
 									}
 								}
-								key = null;
 							}
-						} catch (Exception e) {
-							errorCount++;
-							lastError = e;
+
 						}
+
+						for (int i = 0; i < creds.length; i++) {
+							executor.execute(new PrepopulateRunner(
+									resultCounts, creds[i]));
+						}
+
+						// join the thread pool back when it's done executing
+						executor.shutdown();
 					}
-					if (errorCount > 0) {
+
+					if (resultCounts.errorCount > 0) {
 						logger.warn("Failed to store data in cache for "
-								+ errorCount + " rosters! Last exception: "
-								+ lastError.getMessage());
+								+ resultCounts.errorCount
+								+ " rosters! Last exception: "
+								+ resultCounts.lastError.getMessage());
 					}
-					logger.info("Stored data in cache for " + storedCount
-							+ " rosters.");
+					logger.info("Stored data in cache for "
+							+ resultCounts.storedCount + " rosters.");
 					creds = null;
 					oasDBSource.sweepActiveRosters(conn, clusterName, nodeId);
 					localMember = null;
