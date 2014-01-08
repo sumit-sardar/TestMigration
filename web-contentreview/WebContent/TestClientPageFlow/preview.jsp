@@ -124,7 +124,7 @@ img {
 
 .largeTableCellMulti {
     padding-top: 10px;
-	line-height: 22px;
+	line-height: 19px;
 }
 .tableTitleStandard {
 	font-family: CTB; 
