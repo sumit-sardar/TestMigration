@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
-// SBLAIS import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -210,6 +209,7 @@ public class ManifestCacheStore implements OASCacheStore {
         // ASSUMPTION -- StoreAll is only called by a single thread!
         // This synchronized will protect us, but does slow it down a tiny bit
         synchronized (this) {
+        	long startTime = System.currentTimeMillis();
             // This will reset all the connections
             m_storeAllConnnectionPool.rollback();
             ThreadPoolResult result = new ThreadPoolResult();
@@ -224,11 +224,18 @@ public class ManifestCacheStore implements OASCacheStore {
                 // This will commit everything and reset the connections
                 m_storeAllConnnectionPool.commit();
 
-                logger.info("ManifestCacheStore.storeAll processed " + result.storedCount + " records.");
+                logger.info("ManifestCacheStore.storeAll(binary) processed " + result.storedCount + " records.Time spent: " +(System.currentTimeMillis()-startTime)+" ms.");
+                
+                //the following shouldn't happen, but print log just in case.
+                if (result.errorCount > 0) {
+                    logger.error(
+                            String.format("ManifestCacheStore.storeAll(binary) has errors: SuccessCount(%s) ErrorCount(%s) lastError(%s)", result.storedCount, result.errorCount, (result.lastError != null ? result.lastError.getMessage() : "(unknown error)"))
+                    );
+                }                
             } catch (Exception e) {
-                logger.warn("ManifestCacheStore.storeAll: Error storing manifests to DB, ROLLBACK OCCURED!: " + e.getMessage());
+                logger.warn("ManifestCacheStore.storeAll(binary): Error storing manifests to DB, ROLLBACK OCCURED!: " + e.getMessage());
                 m_storeAllConnnectionPool.rollback();
-
+                logger.warn("ManifestCacheStore.storeAll(binary): Rollback completed. Time spent: " +(System.currentTimeMillis()-startTime)+" ms.");
                 throw new RuntimeException(e.getMessage());
             }
         }
@@ -348,9 +355,10 @@ public class ManifestCacheStore implements OASCacheStore {
         private ThreadLocal<Connection> m_storeAllConnectionPool = new ThreadLocal<Connection>();
         private List<Connection> m_allConnections = new LinkedList<Connection>();
 
-        public Connection getConnection() throws SQLException {
+        public synchronized Connection getConnection() throws SQLException {
             Connection conn = m_storeAllConnectionPool.get();
             if ((conn == null || conn.isClosed())) {
+            	m_allConnections.remove(conn);
                 m_storeAllConnectionPool.remove();
 
                 OASRDBSink sink = RDBStorageFactory.getOASSink();
@@ -366,19 +374,27 @@ public class ManifestCacheStore implements OASCacheStore {
             return conn;
         }
 
-        public void commit() throws SQLException {
+        public synchronized void commit() throws SQLException {
+            if (this.m_allConnections == null) {
+                return;
+            }
+
             for (Iterator<Connection> i = m_allConnections.iterator(); i.hasNext();) {
                 Connection conn = i.next();
                 try {
                     conn.commit();
                 } catch (SQLException ex) {
                     // if any one commit fails, everything fails
-                    rollback();
+                	logger.error("commit() failed: "+ ex.getMessage());
+//                    rollback();
                     throw ex;
                 } finally {
                     try {
                         //i.remove();
-                        conn.close();
+//                        conn.close();
+                    	
+                    	closeConnection(conn);
+                    	
                     } catch (SQLException ex) {
                     }
                 }
@@ -386,28 +402,44 @@ public class ManifestCacheStore implements OASCacheStore {
             this.m_allConnections.clear();
         }
 
-        public void rollback() {
-            //System.out.println("We got here!");
-        	logger.warn("ROLLBACK is called.");
-            for (Iterator<Connection> i = m_allConnections.iterator(); i.hasNext();) {
+        public synchronized void rollback() {
+        	logger.debug("ROLLBACK is called.");
+        	if (this.m_allConnections == null) {
+                return;
+            }
+
+        	for (Iterator<Connection> i = m_allConnections.iterator(); i.hasNext();) {
                 Connection conn = i.next();
                 try {
                     try {
                         conn.rollback();
                     } catch (SQLException ex) {
+                    	logger.error("rollback() failed: "+ ex.getMessage());
                     }
                 } finally {
                     try {
                         //i.remove();
-                        if (!conn.isClosed()) {
-                            conn.close();
-                        }
+//                        if (conn!=null && !conn.isClosed()) {
+//                            conn.close();
+//                        }
+                    	
+                    	closeConnection(conn);
+                    	
                     } catch (SQLException ex) {
                     }
                 }
             }
             this.m_allConnections.clear();
         }
+        
+        private synchronized void closeConnection(Connection conn) throws SQLException {
+            logger.info("ManifestCacheStore.storeAll: request close connection");
+            if (!conn.isClosed()) {
+                logger.info("ManifestCacheStore.storeAll: closing connection");
+                conn.close();
+            }
+        }
+        
 
     }
 
@@ -437,6 +469,7 @@ public class ManifestCacheStore implements OASCacheStore {
                 Connection conn = m_pool.getConnection();
                 OASRDBSink sink = RDBStorageFactory.getOASSink();
                 sink.putManifest(conn, m_manifestKey, m_manifestWrapper.getManifests());
+                m_result.storedCount++;
             } catch (Exception e) {
                 m_result.errorCount++;
                 m_result.lastError = e;
