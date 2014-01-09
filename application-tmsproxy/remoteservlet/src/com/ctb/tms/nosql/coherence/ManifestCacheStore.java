@@ -24,6 +24,7 @@ import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.util.BinaryEntry;
 import java.util.concurrent.RejectedExecutionException;
 import com.tangosol.net.cache.ReadWriteBackingMap.Entry;
+import java.util.concurrent.Future;
 
 public class ManifestCacheStore implements OASCacheStore {
 
@@ -176,15 +177,16 @@ public class ManifestCacheStore implements OASCacheStore {
             // This will reset all the connections
             m_storeAllConnnectionPool.rollback();
             ThreadPoolResult result = new ThreadPoolResult();
-
+            List<Future> futureList = new LinkedList<Future>();
             try {
 
                 for (Map.Entry e : (Set<Map.Entry>)mapEntries.entrySet()) {
-                   add2ThreadPool(result, (String)e.getKey(), (ManifestWrapper) e.getValue());
+                   Future f = add2ThreadPool(result, (String)e.getKey(), (ManifestWrapper) e.getValue());
+                   futureList.add(f);
                 }
 
-                this.rendezVousPoint(result);
-
+                rendezVousPoint(futureList,result);
+                
                 // This will commit everything and reset the connections
                 m_storeAllConnnectionPool.commit();
 
@@ -212,14 +214,16 @@ public class ManifestCacheStore implements OASCacheStore {
         	long startTime = System.currentTimeMillis();
             // This will reset all the connections
             m_storeAllConnnectionPool.rollback();
+            List<Future> futureList = new LinkedList<Future>();
             ThreadPoolResult result = new ThreadPoolResult();
 
             try {
                 for (Object each : setBinEntries) {
                     BinaryEntry entry = (BinaryEntry) each;
-                    add2ThreadPool(result, (String) entry.getKey(), (ManifestWrapper)entry.getValue());
+                    Future f = add2ThreadPool(result, (String) entry.getKey(), (ManifestWrapper)entry.getValue());
+                    futureList.add(f);
                 }
-                rendezVousPoint(result);
+                rendezVousPoint(futureList,result);
 
                 // This will commit everything and reset the connections
                 m_storeAllConnnectionPool.commit();
@@ -241,27 +245,30 @@ public class ManifestCacheStore implements OASCacheStore {
         }
     }
 
-    private void add2ThreadPool(ThreadPoolResult result, String key, ManifestWrapper wrapper) {
+    private Future add2ThreadPool(ThreadPoolResult result, String key, ManifestWrapper wrapper) {
         boolean tryAgain = true;
+        Future future=null;
         while (tryAgain) {
             try {
-                m_storeAllThreadPool.execute(new PutManifestSink(m_storeAllConnnectionPool, result, key, wrapper));
+                future=m_storeAllThreadPool.submit(new PutManifestSink(m_storeAllConnnectionPool, result, key, wrapper));
+               
                 tryAgain = false;
             } catch (RejectedExecutionException x) {
                 // This exception is being thrown because the thread pool is full. In this case,
                 // we simply want to wait, and try again.
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(30);
                 } catch (InterruptedException ex) {
                     logger.fatal(ex);
                 }
             }
         }
+        return future;
     }
 
-    private void rendezVousPoint(ThreadPoolResult result) {
+    private void rendezVousPoint(List fList, ThreadPoolResult result) {
         try {
-            while (!m_storeAllThreadPool.getQueue().isEmpty()  && this.m_storeAllThreadPool.getActiveCount() != 0 ) {
+            while (!m_storeAllThreadPool.getQueue().isEmpty() && this.m_storeAllThreadPool.getActiveCount() != 0) {
                 // This is going to cause a spin lock.  We could optimize based on size?
                 int size = m_storeAllThreadPool.getQueue().size();
                 int sleep = size / m_storeAllThreadPool_ThreadCount;
@@ -276,10 +283,25 @@ public class ManifestCacheStore implements OASCacheStore {
             }
         } catch (InterruptedException interrupt) {
             // If we are interrupted, something wants us to shut down
-            logger.fatal("Writeback thread was interrupted!");
+            logger.error("Writeback thread was interrupted!");
             result.errorCount++;
             result.lastError = interrupt;
         }
+        boolean notDone = true;
+        while (notDone){
+            notDone =false;
+            for (Future f : (LinkedList<Future>)fList){
+                if (!f.isDone()){
+                    notDone = true;
+                }
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException ex) {
+                logger.fatal(ex);
+            }
+        }
+        
         if (result.errorCount > 0) {
             logger.warn(
                     String.format("ManifestCacheStore.storeAll has errors: SuccessCount(%s) ErrorCount(%s) lastError(%s)", result.storedCount, result.errorCount, (result.lastError != null ? result.lastError.getMessage() : "(unknown error)"))
@@ -350,10 +372,10 @@ public class ManifestCacheStore implements OASCacheStore {
      }
     
      */
-    private class ThreadLocalConnection {
+     class ThreadLocalConnection {
 
-        private ThreadLocal<Connection> m_storeAllConnectionPool = new ThreadLocal<Connection>();
-        private List<Connection> m_allConnections = new LinkedList<Connection>();
+        private final ThreadLocal<Connection> m_storeAllConnectionPool = new ThreadLocal<Connection>();
+        private final List<Connection> m_allConnections = new LinkedList<Connection>();
 
         public synchronized Connection getConnection() throws SQLException {
             Connection conn = m_storeAllConnectionPool.get();
@@ -366,7 +388,13 @@ public class ManifestCacheStore implements OASCacheStore {
                     conn = sink.getOASConnection();
                     m_allConnections.add(conn);
                     m_storeAllConnectionPool.set(conn);
+                    if (conn.isClosed())
+                        logger.info("Obtained a new CLOSED connection");
+                    else
+                        logger.info("Obtained a new OPENED connection");
+                                
                 } catch (Exception err) {
+                    logger.fatal("We can't obtain a new connection");
                     throw new SQLException(err.getMessage(), err);
                 }
             }
@@ -376,6 +404,7 @@ public class ManifestCacheStore implements OASCacheStore {
 
         public synchronized void commit() throws SQLException {
             if (this.m_allConnections == null) {
+                logger.fatal("We can't commit as we don't have any connection.");
                 return;
             }
 
@@ -390,12 +419,9 @@ public class ManifestCacheStore implements OASCacheStore {
                     throw ex;
                 } finally {
                     try {
-                        //i.remove();
-//                        conn.close();
-                    	
-                    	closeConnection(conn);
-                    	
+                        this.closeConnection("commit", conn);
                     } catch (SQLException ex) {
+                        logger.fatal("We received an exception trying to close the connection.");
                     }
                 }
             }
@@ -405,6 +431,7 @@ public class ManifestCacheStore implements OASCacheStore {
         public synchronized void rollback() {
         	logger.debug("ROLLBACK is called.");
         	if (this.m_allConnections == null) {
+                    logger.info("We can't rollback because we don't have any connection opened.");
                 return;
             }
 
@@ -418,28 +445,22 @@ public class ManifestCacheStore implements OASCacheStore {
                     }
                 } finally {
                     try {
-                        //i.remove();
-//                        if (conn!=null && !conn.isClosed()) {
-//                            conn.close();
-//                        }
-                    	
-                    	closeConnection(conn);
-                    	
+                        closeConnection("rollback",conn);
                     } catch (SQLException ex) {
                     }
                 }
             }
             this.m_allConnections.clear();
         }
-        
-        private synchronized void closeConnection(Connection conn) throws SQLException {
-            logger.info("ManifestCacheStore.storeAll: request close connection");
+
+        private void closeConnection(String caller, Connection conn) throws SQLException {
+            logger.info("ManifestCacheStore.storeAll:["+caller+"] request close connection");
             if (!conn.isClosed()) {
-                logger.info("ManifestCacheStore.storeAll: closing connection");
+                logger.info("ManifestCacheStore.storeAll:["+caller+"] closing connection");
                 conn.close();
             }
+
         }
-        
 
     }
 
@@ -450,7 +471,7 @@ public class ManifestCacheStore implements OASCacheStore {
         public Exception lastError = null;
     }
 
-    private class PutManifestSink implements Runnable {
+     class PutManifestSink implements Runnable {
 
         ThreadLocalConnection m_pool;
         String m_manifestKey;
