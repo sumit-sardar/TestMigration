@@ -32,12 +32,13 @@ public class StudentPredictedScoresController {
         this.predData = predData;
         this.currData = currData;
         this.context = context;
-        /*if(currData != null && currData.getContentAreas() != null && currData.getContentAreas().length > 0) {
+        //Uncomment because of defect #76757 
+        if(currData != null && currData.getContentAreas() != null && currData.getContentAreas().length > 0) {
             this.formid = new Long("9".equals(currData.getContentAreas()[0].getSubtestForm())?1:
                  "10".equals(currData.getContentAreas()[0].getSubtestForm())?2:3);
-        } else {*/
-            this.formid = new Long(18);
-        //}
+        } else {
+            this.formid = new Long(3);
+        }
         mapper = new IrsTABEPredSubjectFactMapper(conn);
     }
 
