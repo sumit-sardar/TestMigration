@@ -10,7 +10,16 @@ public class BaseTree {
 	private String isStudentExist;
 	private boolean showAccessCode;
 	private boolean hasPrintClassName;
+	private boolean isWVCustomer;
 	
+
+	public boolean isWVCustomer() {
+		return isWVCustomer;
+	}
+
+	public void setWVCustomer(boolean isWVCustomer) {
+		this.isWVCustomer = isWVCustomer;
+	}
 
 	public String getIsStudentExist() {
 		return isStudentExist;

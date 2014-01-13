@@ -58,28 +58,30 @@
 	<p>	
 	<lb:label key="testTicket.sessionDocs.message"/><br>
 	</p>
-	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionIndividualTestTicket"/></a>
-	&nbsp;
-	<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
-	<br/>
-	<lb:label key="testTicket.sessionDocsInd.message"/>
-	<br>
-	
-	</p>
-	
-	<!--START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
-	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketMultiple(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionMultipleTestTicket"/></a>
-	&nbsp;
-	<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
-	<br/>
-	<lb:label key="testTicket.sessionDocsMulti.message"/>
-	</p>
-	<!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
-	
-	<p>
+	<div id = "IndividualTestTicketLink">
+		<p>
+		<a href="#" style="text-decoration:underline;color:blue;" onclick="openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionIndividualTestTicket"/></a>
+		&nbsp;
+		<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
+		<br/>
+		<lb:label key="testTicket.sessionDocsInd.message"/>
+		<br>
 		
+		</p>
+	</div>
+	
+	<div id = "MultipleTestTicketLink">
+	<!--START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
+		<p>
+		<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketMultiple(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><lb:label key="testTicket.sessionMultipleTestTicket"/></a>
+		&nbsp;
+		<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
+		<br/>
+		<lb:label key="testTicket.sessionDocsMulti.message"/>
+		</p>
+		<!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
+		<p>
+	</div>	
 		<span  style="color:blue;">
 			<lb:label  key="testTicket.sessionSummaryTestTicket" /> 
 		</span>

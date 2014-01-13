@@ -243,6 +243,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean is3to8Selected = false;
 	private boolean isEOISelected = false;
 	private boolean isUserLinkSelected = false;
+	private boolean disableStudentIndividualAndMultipleTestTicket = false;
    /* Changes for DEX Story - Add intermediate screen : End */
    
 	public LinkedHashMap getTimeZoneOptions() {
@@ -3507,6 +3508,7 @@ public class SessionOperationController extends PageFlowController {
 			});
 			baseTree.setShowAccessCode(customerHasAccessCode(testAdminId));
 			baseTree.setHasPrintClassName(customerHasPrintClassName());
+			baseTree.setWVCustomer(isWVCustomer());
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
@@ -8599,6 +8601,21 @@ public class SessionOperationController extends PageFlowController {
 		        }
 		       
 		        return hasPrintClassName;
+		    }
+			
+			private boolean isWVCustomer()
+		    {               
+		        boolean WVCustomer = false;
+		        for (int i=0; i < this.customerConfigurations.length; i++)
+		        {
+		        	CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer") && 
+		            		cc.getDefaultValue().equals("T")) {
+		            	WVCustomer = true;
+		                break;
+		            } 
+		        }
+		        return WVCustomer;
 		    }
 			
 			private void initializeCustomerConfigurations()

@@ -92,8 +92,17 @@ function populateTestTicketTree() {
 						//alert('in');
 						//$.unblockUI();  
 						//leafNodeCategoryId = data.leafNodeCategoryId;
-						initDisplayAccessCodeOnTicket();
-						initializePrintClassName();
+						var isWVCustomer = data.isWVCustomer;
+						if(isWVCustomer != undefined && isWVCustomer === true)
+						{						 
+						 	$("#displayAccessCodes").hide();
+						 	$("#printClassNameMsg").hide();
+						 	$("#IndividualTestTicketLink").hide();
+						 	$("#MultipleTestTicketLink").hide();
+						}else{							
+						 	initDisplayAccessCodeOnTicket();
+						 	initializePrintClassName();
+						}
 						if(data.isStudentExist == "false"){
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
@@ -110,19 +119,24 @@ function populateTestTicketTree() {
 							$("#studentExists").css('display', 'block');
 							$("#orgNodeHierarchy").css("visibility","visible");	
 							$("#printTestTicket").css("height",'430px');
-							displayAccessCode = data.showAccessCode;
-							if(displayAccessCode != undefined && (displayAccessCode || displayAccessCode == 'true')) {
-								$("#displayAccessCodes").show();
-							} else {
-								$("#displayAccessCodes").hide();
-							}
-							var hasPrintClassName = data.hasPrintClassName;
-							if(hasPrintClassName != undefined && hasPrintClassName == true){
-								//$('#printClassNameMsg').show();
-								printClassNameOnTicket = true;
+							
+							if(isWVCustomer != undefined && isWVCustomer === true){
+							//do nothing
+							}else{
+								displayAccessCode = data.showAccessCode;
+								if(displayAccessCode != undefined && (displayAccessCode || displayAccessCode == 'true')) {
+									$("#displayAccessCodes").show();
+								} else {
+									$("#displayAccessCodes").hide();
+								}
+								var hasPrintClassName = data.hasPrintClassName;
+								if(hasPrintClassName != undefined && hasPrintClassName == true){
+									//$('#printClassNameMsg').show();
+									printClassNameOnTicket = true;
+								}	
+								else
+									$('#printClassNameMsg').hide();	
 							}	
-							else
-								$('#printClassNameMsg').hide();	
 						}
 						$("#ticktSearchheader").css("visibility","visible");	
 						$("#printTestTicket").dialog({
