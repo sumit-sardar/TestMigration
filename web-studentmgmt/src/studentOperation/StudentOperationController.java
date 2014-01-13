@@ -621,7 +621,7 @@ public class StudentOperationController extends PageFlowController {
 				}
 				
 				//Prism Web Service Call
-				/*if(!isCreateNew && isTASCCustomer(customerConfigurations)){
+				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					
 					final Integer tempStudentId = studentId;
 					
@@ -636,7 +636,7 @@ public class StudentOperationController extends PageFlowController {
 						}
 					}).start();
 					
-				}*/
+				}
 				
 				
 			}
@@ -3669,7 +3669,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		(new Thread() {
 			public void run(){
 				try {
-					//PrismWebServiceHandler.editStudent(Integer.valueOf(studentID), 0, 0, null);
+					PrismWebServiceHandler.editStudent(Integer.valueOf(studentID), 0, 0, null);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3698,7 +3698,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		(new Thread() {
 			public void run(){
 				try {
-					//PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId), 0, 0, null);
+					PrismWebServiceHandler.scoring(Long.valueOf(rosterId), Integer.valueOf(stdID), Long.valueOf(sessionId), 0, 0, null);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
