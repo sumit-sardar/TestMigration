@@ -237,48 +237,52 @@ public class PrismWebServiceHandler {
 	 * @throws Exception
 	 */
 	public static void scoring(long rosterId, Integer studentId, long sessionId, int hitCount, long logkey, Connection con) throws Exception{
-		long startTime = System.currentTimeMillis();
-		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
-		StudentListTO studentListTO = new StudentListTO();
-		
-		List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
-		
-		RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
-		
-		String customerId = null;
-		String orgNodeCode = null;
-		String heirarchyLevel = null;
-		CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
-		customerId = custHierarchyDetailsTO.getCustomerId();		
-		String orgNodeCodeList = "";
-		for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
-		{
-			OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
-			if (i>0) orgNodeCodeList += "~";
-        	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
-			heirarchyLevel = orgDetails.getOrgLevel();
+		if(PrismWebServiceDBUtility.checkValidRosterStatus(rosterId)){
+			long startTime = System.currentTimeMillis();
+			System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring started for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+			StudentListTO studentListTO = new StudentListTO();
+			
+			List<RosterDetailsTO> rosterDetailsList = studentListTO.getRosterDetailsTO();
+			
+			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+			
+			String customerId = null;
+			String orgNodeCode = null;
+			String heirarchyLevel = null;
+			CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterId);
+			customerId = custHierarchyDetailsTO.getCustomerId();		
+			String orgNodeCodeList = "";
+			for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
+			{
+				OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
+				if (i>0) orgNodeCodeList += "~";
+	        	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
+				heirarchyLevel = orgDetails.getOrgLevel();
+			}
+			orgNodeCode = orgNodeCodeList;
+			System.out.println("WS/Scoring orgNodeCodeList: "+orgNodeCodeList);
+			
+			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+			
+			StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
+			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
+			studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
+			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
+			
+			List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, studentId, sessionId);
+			rosterDetailsTO.getCollContentDetailsTO().addAll(contentDetailsTOList);
+			
+			rosterDetailsTO.setRosterId(String.valueOf(rosterId));
+			rosterDetailsList.add(rosterDetailsTO);
+			
+			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring", hitCount, logkey, con);
+			System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
+			
+			long stopTime = System.currentTimeMillis();
+			System.out.println("Time taken to call the Scoring Web Service : " + (stopTime - startTime) + "ms");
+		}else{
+			System.out.println("Web Service is not invoked. Roster is in SC or NT status. Roster Id : " + rosterId);
 		}
-		orgNodeCode = orgNodeCodeList;
-		System.out.println("WS/Scoring orgNodeCodeList: "+orgNodeCodeList);
-		
-		rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
-		
-		StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
-		studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
-		studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
-		rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
-		
-		List<ContentDetailsTO> contentDetailsTOList =  PrismWebServiceDBUtility.getContentDetailsTO(rosterId, studentId, sessionId);
-		rosterDetailsTO.getCollContentDetailsTO().addAll(contentDetailsTOList);
-		
-		rosterDetailsTO.setRosterId(String.valueOf(rosterId));
-		rosterDetailsList.add(rosterDetailsTO);
-		
-		invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring", hitCount, logkey, con);
-		System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
-		
-		long stopTime = System.currentTimeMillis();
-		System.out.println("Time taken to call the Scoring Web Service : " + (stopTime - startTime) + "ms");
 		
 	}
 

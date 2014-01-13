@@ -89,6 +89,8 @@ public class PrismWebServiceDBUtility {
 	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	//private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM ws_error_log_bkp WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM ws_error_log_bkp                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	
+	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
+	
 	/**
 	 * Get Student Bio Information
 	 * @param studentId
@@ -1323,12 +1325,13 @@ public class PrismWebServiceDBUtility {
 				ResolvedEthnicityRace = "";// blank or unknown
 			}
 
+			SurveyBioTO surveyBioTO = new SurveyBioTO();
+			surveyBioTO.setSurveyName("Rslvd_Ethnic");
 			if (ResolvedEthnicityRace != null && PrismWebServiceConstant.rslvdEthnicityMap.get(ResolvedEthnicityRace) != null) {
-				SurveyBioTO surveyBioTO = new SurveyBioTO();
-				surveyBioTO.setSurveyName("Rslvd_Ethnic");
 				surveyBioTO.setSurveyValue(PrismWebServiceConstant.rslvdEthnicityMap.get(ResolvedEthnicityRace));
-				surveyBioLst.add(0, surveyBioTO);
 			}
+			surveyBioLst.add(0, surveyBioTO);
+			
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getStudentSurveyBio() method to execute query : \n " +  GET_SURVEY_BIO_RES);
 			e.printStackTrace();
@@ -1685,6 +1688,36 @@ public class PrismWebServiceDBUtility {
 			close(con, pst, rs);
 		}
 	}
+	
+	
+	/**
+	 * Check Roster status. If Roster is in SC and NT status then returning false else true
+	 * 
+	 * @param rosterID
+	 * @return
+	 */
+	public static boolean checkValidRosterStatus(long rosterID){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		boolean validRoster = true;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(CHECK_ROSTER_STATUS);
+			pst.setLong(1, rosterID);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				validRoster = false;
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.checkRosterStatus() method to execute query : \n " +  CHECK_ROSTER_STATUS);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return validRoster;
+	}
+	
 	
 	/**
 	 * Get OAS DB connection
