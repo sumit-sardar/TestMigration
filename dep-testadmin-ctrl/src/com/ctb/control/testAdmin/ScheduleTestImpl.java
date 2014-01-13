@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
+import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.LASLicenseNode;
@@ -4316,6 +4318,46 @@ public class ScheduleTestImpl implements ScheduleTest
 	    		se.printStackTrace();
 	    	}
 	    	return licenseInfo;
+    }
+    
+    public Map<String,ArrayList> getScheduledStudentsClassHierarchy(String userName) throws CTBBusinessException {
+    	ClassHierarchy[] classHierarchy = null;
+    	
+    	Map<String,ArrayList> hierarchyMap = new HashMap <String,ArrayList>();
+    	List<String> parentOrgNodeList = null;
+    	Integer [] orgNodeIds = null;
+    
+    	try {
+    		orgNodeIds = students.getorgeNodesForUsers(userName);
+    		if(null != orgNodeIds){
+	    		for(int j=0; j<orgNodeIds.length;j++){
+		    		classHierarchy =  students.getScheduledStudentsClassHierarchy(userName, orgNodeIds[j]);
+		    		ArrayList<ClassHierarchy> innerList = new ArrayList(Arrays.asList(classHierarchy));
+		    		Iterator classItr = innerList.iterator();
+		    		String selectedOrgNodeId = "";
+		    		while(classItr.hasNext()) {
+		    			ClassHierarchy ch = (ClassHierarchy) classItr.next();
+		    			String orgNodeId = ch.getOrgNodeId().toString();
+		    			String parentOrgNodeName = ch.getParentOrgNodeName();
+		    			if(!orgNodeId.equalsIgnoreCase(selectedOrgNodeId)) {
+		    				parentOrgNodeList = new ArrayList();
+		    				selectedOrgNodeId = orgNodeId;
+		    				parentOrgNodeList.add(parentOrgNodeName);
+		    			}else {
+		    				parentOrgNodeList.add(parentOrgNodeName);
+		    			}
+		    			if(orgNodeId.equalsIgnoreCase(ch.getParentOrgNodeId())) {
+		    				hierarchyMap.put(orgNodeId, (ArrayList) parentOrgNodeList);
+		    			}
+		    		}
+	    		}
+    		}
+    	}
+    	catch (Exception e) {
+    		
+    	}
+		return hierarchyMap;
+    	
     }
     
 } 

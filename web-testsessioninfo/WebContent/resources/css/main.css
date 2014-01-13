@@ -586,6 +586,23 @@ table.ts{
 	position: absolute;
 	z-index: 1100;
 }
+.hierarchyLegendDiv {
+	background-color: #FFFFCC;
+	position: absolute;
+	z-index: 1100;
+}
+
+.hierarchyLegendTable {
+	background-color: #FFFFCC;
+	border-color: #000000;
+	border-style: solid;
+	border-width: 1px;
+	color: #000000;
+	font-family: Arial,Helvetica,Sans Serif;
+	font-size: 12px;
+	font-weight: normal;
+	padding: 5px 5px 5px 5px;
+}
 
 .statusLegendTable td {
 	padding: 0px 10px 5px 5px;

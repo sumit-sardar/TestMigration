@@ -2,6 +2,7 @@ package com.ctb.control.testAdmin;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -633,4 +634,6 @@ public interface ScheduleTest
 	LASLicenseNode getNonZeroActivePOForSelectedTest(Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 	
 	LASLicenseNode getLicenseInformation(Integer customerId,String orgNodeIDs) throws com.ctb.exception.CTBBusinessException;
+	
+	Map<String,ArrayList> getScheduledStudentsClassHierarchy(String userName) throws com.ctb.exception.CTBBusinessException;
 } 

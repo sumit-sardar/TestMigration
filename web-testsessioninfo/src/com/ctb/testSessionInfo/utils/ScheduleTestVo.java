@@ -42,8 +42,40 @@ public class ScheduleTestVo implements Serializable{
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
+	Map<String,ArrayList> classHierarchyMap;
+	private boolean hasShowRosterAccomAndHierarchy = false;
 	
 	
+	/**
+	 * @return the classHierarchyMap
+	 */
+	public Map<String, ArrayList> getClassHierarchyMap() {
+		return this.classHierarchyMap;
+	}
+
+
+	/**
+	 * @param classHierarchyMap the classHierarchyMap to set
+	 */
+	public void setClassHierarchyMap(Map<String, ArrayList> classHierarchyMap) {
+		this.classHierarchyMap = classHierarchyMap;
+	}
+
+
+	/**
+	 * @return the hasShowRosterAccomAndHierarchy
+	 */
+	public boolean isHasShowRosterAccomAndHierarchy() {
+		return this.hasShowRosterAccomAndHierarchy;
+	}
+
+
+	/**
+	 * @param hasShowRosterAccomAndHierarchy the hasShowRosterAccomAndHierarchy to set
+	 */
+	public void setHasShowRosterAccomAndHierarchy(boolean hasShowRosterAccomAndHierarchy) {
+		this.hasShowRosterAccomAndHierarchy = hasShowRosterAccomAndHierarchy;
+	}
 	
 	public List<ObjectIdName> getLevelDropList(String[] levels) {
 		List<String> result = new ArrayList<String>();

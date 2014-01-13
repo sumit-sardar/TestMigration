@@ -136,6 +136,11 @@ var selectedLocatorMap = new Map();
 var isTestSessionHasStudents = false;
 var studentDeleted = false;
 
+var accommodationMapForRoster = {};
+var orgNodeHierarchyMapForRoster = {};
+var hasShowRosterAccomAndHierarchyConfig = false;
+var classHierarchyMap_editSession={};
+
 $(document).bind('keydown', function(event) {		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
@@ -1155,7 +1160,9 @@ function registerDelegate(tree){
 			isTabeProduct = false;
 		    isTabeAdaptiveProduct = false; 
 		    isLasLinksProduct = false;
-			isTASCProduct = false;		   
+			isTASCProduct = false;		
+			classHierarchyMap_editSession={};   
+			hasShowRosterAccomAndHierarchyConfig=false;
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1229,6 +1236,96 @@ function registerDelegate(tree){
 		$('#showSaveTestMessage').hide();
 	}	
 	
+	function showAccoToolTipForRoster(rowId,event){
+		if(accommodationMapForRoster[rowId]){
+			var obj = accommodationMapForRoster[rowId];
+			for(var key in obj){
+				if(obj[key] == "T"){
+					$("#"+key+"ViewStatus").show();
+				}else {
+					$("#"+key+"ViewStatus").hide();
+				}
+			}
+			showAccoToolTipPopUpViewStatus(event);
+		}
+	}
+	
+	
+		function showToolTipForClassHierarchy(rowId,event){
+		if(orgNodeHierarchyMapForRoster[rowId]){
+			var obj = orgNodeHierarchyMapForRoster[rowId];
+		
+			var innerHtml="";
+			var widthCounter = obj.length;
+			var count = 0;
+			for(var key in obj){
+				if(obj[key] != null && obj[key] != undefined){
+					innerHtml=innerHtml+'<tr><td align="left">';
+					for(var i=0;i<count;i++){
+						innerHtml=innerHtml+"&nbsp;&nbsp;&nbsp;";
+					}
+					innerHtml=innerHtml+obj[key].parentOrgNodeName+"</td>";
+					innerHtml=innerHtml+"</tr>";
+					count = count+1;
+				}
+		 	}
+		 	$("#classHierarchyToolTipValues").html(innerHtml);
+		 	showClassHierarchyToolTipPopUp(event);
+		}
+	}
+	
+	function showClassToolTipEditSession(orgNodeId,event){
+		if(classHierarchyMap_editSession[orgNodeId] && hasShowRosterAccomAndHierarchyConfig && hasShowRosterAccomAndHierarchyConfig!=undefined){
+			var obj = classHierarchyMap_editSession[orgNodeId];
+			var innerHtml="<table class=\"hierarchyLegendTable\" >";
+			var count = 0;
+			for(var key in obj){
+				if(obj[key] != null && obj[key] != undefined){
+					innerHtml=innerHtml+'<tr><td align="left">';
+					for(var i=0;i<count;i++){
+						innerHtml=innerHtml+"&nbsp;&nbsp;&nbsp;";
+					}
+					innerHtml=innerHtml+obj[key]+"</td>";
+					innerHtml=innerHtml+"</tr>";
+					count = count+1;
+				}
+			}
+			innerHtml=innerHtml+"</table>";
+			$("#classHierarchyToolTip_editSession").html(innerHtml);
+		 	showClassHierarchyEditSessToolTipPopUp(event);
+		}
+	}
+	
+	function showClassHierarchyEditSessToolTipPopUp(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("classHierarchyToolTip_editSession");		
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		//$("li","#classHierarchyToolTipValues").css('padding-top','0px');
+		//$("li:visible","#classHierarchyToolTipValues").eq(0).css('padding','5px');
+		htimer = setTimeout("hideClassHierarchyEditSessToolTipPopUp()", 50000);
+	}
+	
+	function hideClassHierarchyEditSessToolTipPopUp() {
+		if(hasShowRosterAccomAndHierarchyConfig && hasShowRosterAccomAndHierarchyConfig!=undefined){
+			clearTimeout(htimer);
+			document.getElementById("classHierarchyToolTip_editSession").style.display = "none";
+		}
+	}
 	
 	function showAccoToolTip(rowId,event){
 		if(accomodationMap[rowId]){
@@ -1287,7 +1384,64 @@ function registerDelegate(tree){
 		$("tr[id$='Status']","#accommodationToolTip").hide();
 		document.getElementById("accommodationToolTip").style.display = "none";
 	}
+	function showAccoToolTipPopUpViewStatus(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("accommodationToolTipViewStatus");		
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		$("td","#accommodationToolTipViewStatus").css('padding-top','0px');
+		$("td:visible","#accommodationToolTipViewStatus").eq(0).css('padding-top','5px');
+		htimer = setTimeout("hideAccoToolTipPopUp()", 50000);
+	}
 	
+	function hideAccoToolTipPopUpViewStatus() {
+		clearTimeout(htimer);
+		$("tr[id$='Status']","#accommodationToolTipViewStatus").hide();
+		document.getElementById("accommodationToolTipViewStatus").style.display = "none";
+	}
+	
+	function showClassHierarchyToolTipPopUp(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("classHierarchyToolTip");		
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		//$("td","#classHierarchyToolTipValues").css('padding-top','0px');
+		//$("td:visible","#classHierarchyToolTipValues").eq(0).css('padding','5px');
+		htimer = setTimeout("hideClassHierarchyToolTipPopUp()", 50000);
+	}
+	
+	function hideClassHierarchyToolTipPopUp() {
+		clearTimeout(htimer);
+		document.getElementById("classHierarchyToolTip").style.display = "none";
+	}
 	var selectAllRow = false;
 	var studentCheckCounter = 0;
 	function populateSelectedStudent() {
@@ -1314,7 +1468,12 @@ function registerDelegate(tree){
 						}	
 						return returnStr;				
 		   		}},
-		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
+		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, 
+		   		cellattr: function (rowId, tv, rawObject, cm, rdata) { 
+		   				var returnStr = '';
+						returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showClassToolTipEditSession('+rawObject.orgNodeId+',event);" onmouseout="hideClassHierarchyEditSessToolTipPopUp();"' ;
+						return returnStr;				
+		   		}},
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;' } },
 		   		{name:'testCompletionStatus',index:'testCompletionStatus',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor:pointer;width=0px!important' } },
@@ -1604,7 +1763,8 @@ function registerDelegate(tree){
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
-						
+						classHierarchyMap_editSession = data.classHierarchyMap;
+						hasShowRosterAccomAndHierarchyConfig = data.hasShowRosterAccomAndHierarchy
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
 							document.getElementById("testDiv").style.display = "none";
@@ -4310,6 +4470,10 @@ function registerDelegate(tree){
 		$("#buttonTbl").width(924);
 		$("#subtestSectionHeader").unbind("click");
 		$("#viewTestSessionAccordion").accordion("destroy");
+		accommodationMapForRoster = {};
+		orgNodeHierarchyMapForRoster = {};
+		hasShowRosterAccomAndHierarchyConfig = false;
+		$("#classHierarchyToolTipValues").html("");
 		pageSizeSelected = 10;	
 		isPagesizeLabelpopulated = false;
 		rosterFormMapOld.clear();
@@ -4331,7 +4495,7 @@ function registerDelegate(tree){
           mtype:   "POST",
 		  datatype: "json",
 		  postData:	postDataObject,
-          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val(), $("#rosterFormLbl").val()],
+          colNames:[ $("#lastNameLbl").val(),$("#firstNameLbl").val(),$("#studentIdLbl").val(),$("#loginIdLbl").val(),$("#passwordLbl").val(),$("#validationStatusLbl").val(),$("#onlineTestStausLbl").val(), $("#dnsLbl").val(), $("#rosterFormLbl").val(),$("#hasAccomodationLbl").val(), $("#orgNodeNameLbl").val()],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -4341,7 +4505,23 @@ function registerDelegate(tree){
 		   		{name:'validationStatus',index:'validationStatus', width:120, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testStatus',index:'testStatus', width:120, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'dnsStatus',index:'dnsStatus', width:70, hidden: true, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'assignedForm',index:'assignedForm', width:70, hidden: true, eidtable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }}
+		   		{name:'assignedForm',index:'assignedForm', width:70, hidden: true, eidtable: true, align:"left", sorttype:'text', sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }},
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:135, editable: false, hidden: true, align:"left",  sorttype:'text', sortable:true, title:false,
+		   			cellattr: function (rowId, tv, rawObject, cm, rdata) { 
+		   				var returnStr = '';
+						if(rawObject.hasAccommodations == 'Yes'){
+							returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showAccoToolTipForRoster('+rawObject.studentId+',event);" onmouseout="hideAccoToolTipPopUpViewStatus();"' ;
+						}else {
+							returnStr = 'style="white-space: normal;cursor:pointer;"' ;
+						}
+						return returnStr;				
+		   		}},
+		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:120, align:"left", hidden: true, sortable:true, sorttype:'text', title:false,
+		   		 cellattr: function (rowId, tv, rawObject, cm, rdata) {
+		   		 		var returnStr = '';
+		   		 		returnStr = 'style="white-space: normal;cursor:pointer;" onmouseover="showToolTipForClassHierarchy('+rawObject.orgNodeId+',event);" onmouseout="hideClassHierarchyToolTipPopUp();"' ;
+		   		 		return returnStr;
+		   		  }},
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
@@ -4349,6 +4529,9 @@ function registerDelegate(tree){
 		   		 var toggleIsOkCustomer = JSON.stringify(obj.isOkCustomer);
 		   		 assignedFormList = obj.assignFormList;
 		   		 hasAssignFormConfig = obj.hasAssignFormRosterConfig;
+		   		 hasShowRosterAccomAndHierarchyConfig = obj.hasShowRosterAccomAndHierarchyConfig;
+		   		 accommodationMapForRoster = obj.accomodationMap;
+		   		 orgNodeHierarchyMapForRoster = obj.orgNodeIdMap;
 		   		 if(toggleIsOkCustomer == 'true') {
 		   		 	isOkCustomer = true;
 		   		 } else {
@@ -4391,6 +4574,15 @@ function registerDelegate(tree){
 				 } else {
 					$("#rosterList").jqGrid("hideCol","assignedForm"); 
 					$("#assignFormButton").hide(); 
+				 }
+				 
+				  if(hasShowRosterAccomAndHierarchyConfig && hasShowRosterAccomAndHierarchyConfig!=undefined) {
+					$("#rosterList").jqGrid("showCol","hasAccommodations");
+					$("#rosterList").jqGrid("showCol","orgNodeName");
+					
+				 } else {
+					$("#rosterList").jqGrid("hideCol","hasAccommodations"); 
+					$("#rosterList").jqGrid("showCol","orgNodeName");
 				 }
 				 var donotScoreAllowed = JSON.stringify(obj.donotScoreAllowed);
 				 if(donotScoreAllowed == 'true') {

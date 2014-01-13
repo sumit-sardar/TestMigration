@@ -2,6 +2,8 @@ package com.ctb.control.db;
 
 import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
+import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.SchedulingStudent;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student; 
@@ -747,6 +749,12 @@ public interface Students extends JdbcControl
 	 
 	 @JdbcControl.SQL(statement = "select count(1) from test_roster ros, test_admin adm where ros.test_admin_id = adm.test_admin_id and ros.activation_status = 'AC' and adm.test_admin_id = {testAdminId}", arrayMaxLength = 100000)
 	 boolean isSessionHasStudents(Integer testAdminId) throws SQLException;
+	 
+	 @JdbcControl.SQL(statement = "select org.org_node_id      as orgNodeId, org.org_node_name    as orgNodeName, anc.org_node_id      as parentOrgNodeId, anc.org_node_name    as parentOrgNodeName, ona.number_of_levels as categoryLevel from users             u, user_role         ur, org_node_category onc, org_node          urorg, org_node          org, org_node_ancestor ona, org_node          anc where u.user_id = ur.user_id and ur.org_node_id = urorg.org_node_id and ur.activation_status = 'AC' and u.activation_status = 'AC' and urorg.activation_status = 'AC' and org.activation_status = 'AC' and urorg.customer_id = onc.customer_id and onc.activation_status = 'AC' and onc.activation_status = 'AC' and onc.category_level = (select max(category_level) from org_node_category where customer_id = urorg.customer_id) and onc.org_node_category_id = org.org_node_category_id and org.org_node_id = ona.org_node_id and anc.org_node_id = ona.ancestor_org_node_id and u.user_name = {userName} and ona.number_of_levels < = ((select max(onc.category_level) as hierarchylevel from users             u, user_role         ur, org_node_category onc, org_node          userorg where ur.user_id = u.user_id and ur.org_node_id = userorg.org_node_id and userorg.customer_id = onc.customer_id and u.user_name = {userName}) - (select onc.category_level as usertoplevel from users             u, user_role         ur, org_node_category onc, org_node          userorg where ur.user_id = u.user_id and ur.org_node_id = userorg.org_node_id and userorg.org_node_category_id = onc.org_node_category_id and u.user_name = {userName} and userorg.org_node_id = {orgNodeId})) and upper(anc.org_node_name) not in ('ROOT', 'CTB') AND EXISTS (SELECT 1 FROM ORG_NODE_ANCESTOR ONAI WHERE ONAI.ORG_NODE_ID = ona.org_node_id AND ONAI.ANCESTOR_ORG_NODE_ID = {orgNodeId}) group by org.org_node_id, org.org_node_name, anc.org_node_id, anc.org_node_name, ona.number_of_levels order by org.org_node_id" ,arrayMaxLength = 100000)
+	 ClassHierarchy[] getScheduledStudentsClassHierarchy(String userName, Integer orgNodeId) throws SQLException;
+	 
+	 @JdbcControl.SQL(statement = "select org.org_node_id from users u, user_role ur, org_node org where u.user_name = {userName} and u.activation_status = 'AC' and u.user_id = ur.user_id and ur.activation_status = 'AC' and ur.org_node_id = org.org_node_id and org.activation_status = 'AC' and not exists((select org.org_node_id from users u, user_role ur, org_node org where u.user_name = {userName} and u.activation_status = 'AC' and u.user_id = ur.user_id and ur.activation_status = 'AC' and ur.org_node_id = org.org_node_id and org.activation_status = 'AC') intersect (select parentnode.org_node_id from org_node parentnode, org_node_ancestor ona where ona.org_node_id = org.org_node_id and ona.ancestor_org_node_id <> ona.org_node_id and ona.ancestor_org_node_id = parentnode.org_node_id and parentnode.activation_status = 'AC' and upper(parentnode.org_node_name) not in ('ROOT', 'CTB')))")
+	 Integer[] getorgeNodesForUsers (String userName) throws SQLException;
 	 
 	static final long serialVersionUID = 1L;
 

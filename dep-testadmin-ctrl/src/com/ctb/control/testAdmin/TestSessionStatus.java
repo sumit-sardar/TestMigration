@@ -2,6 +2,7 @@ package com.ctb.control.testAdmin;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
@@ -9,6 +10,7 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.ItemResponseData;
 import com.ctb.exception.CTBBusinessException;
@@ -162,7 +164,8 @@ public interface TestSessionStatus
     
     com.ctb.bean.testAdmin.RosterElementData getRosterForTestSession(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
     com.ctb.bean.testAdmin.RosterElementData getReportableRosterForTestSession(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
-
+    com.ctb.bean.testAdmin.RosterElementData getRosterForTestSessionWithShowRosterAccom(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    HashMap<Integer, ArrayList<ClassHierarchy>> buildOrgNodeIdMap(java.lang.String userName, java.lang.Integer test_admin_id) throws com.ctb.exception.CTBBusinessException;
     /**
      * Retrieves a roster elements by testRosterId
      * @param testRosterId - identifies the test roster

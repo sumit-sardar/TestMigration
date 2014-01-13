@@ -1,5 +1,8 @@
 package com.ctb.testSessionInfo.dto; 
 
+import java.util.ArrayList;
+
+import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 
@@ -9,6 +12,7 @@ public class TestRosterVO implements java.io.Serializable
 
     private Integer testRosterId = null;
     private Integer studentId = null;
+    private Integer orgNodeId = null;
     private String firstName = null;
     private String lastName = null;
     private String studentNumber = null;
@@ -20,6 +24,9 @@ public class TestRosterVO implements java.io.Serializable
     private String scoringStatus = null;
     private String dnsStatus = null;
     private String assignedForm = null; 
+    private String hasAccommodations;
+    private String orgNodeName;
+    private ArrayList<Node> orgList;
     
     public TestRosterVO()
     {
@@ -39,6 +46,10 @@ public class TestRosterVO implements java.io.Serializable
         this.scoringStatus = rElt.getScoringStatus();
         this.dnsStatus =  rElt.getDnsStatus();
         this.assignedForm = rElt.getAssignedForm();
+        this.hasAccommodations = rElt.getHasAccommodations();
+        this.orgNodeName = rElt.getOrgNodeName();
+        this.orgList = rElt.getOrgList();
+        this.orgNodeId = rElt.getOrgNodeId();
     }
     public String getDnsStatus() {
 		return dnsStatus;
@@ -117,6 +128,54 @@ public class TestRosterVO implements java.io.Serializable
 	}
 	public void setAssignedForm(String assignedForm) {
 		this.assignedForm = assignedForm;
+	}
+	/**
+	 * @return the hasAccommodations
+	 */
+	public String getHasAccommodations() {
+		return hasAccommodations;
+	}
+	/**
+	 * @param hasAccommodations the hasAccommodations to set
+	 */
+	public void setHasAccommodations(String hasAccommodations) {
+		this.hasAccommodations = hasAccommodations;
+	}
+	/**
+	 * @return the orgNodeName
+	 */
+	public String getOrgNodeName() {
+		return orgNodeName;
+	}
+	/**
+	 * @param orgNodeName the orgNodeName to set
+	 */
+	public void setOrgNodeName(String orgNodeName) {
+		this.orgNodeName = orgNodeName;
+	}
+	/**
+	 * @return the orgList
+	 */
+	public ArrayList<Node> getOrgList() {
+		return orgList;
+	}
+	/**
+	 * @param orgList the orgList to set
+	 */
+	public void setOrgList(ArrayList<Node> orgList) {
+		this.orgList = orgList;
+	}
+	/**
+	 * @return the orgNodeId
+	 */
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+	/**
+	 * @param orgNodeId the orgNodeId to set
+	 */
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
     
     

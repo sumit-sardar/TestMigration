@@ -275,6 +275,51 @@
 	</tbody>
 </table>  
 </div>
+<div id="accommodationToolTipViewStatus" style="display:none;" class="statusLegendDiv">
+<table border="0" class="statusLegendTable"  cellspacing="0">
+	<tbody>
+		<tr align="center" id="screenReaderViewStatus" style="display: none;">
+			<td align="left" style="padding-top:5px;"><lb:label key="student.accommodationToolTip.screenReader" /></td>
+		</tr>
+		<tr align="center" id="calculatorViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.calculator" /></td>
+		</tr>
+		<tr align="center" id="testPauseViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.testPause" /></td>
+		</tr>
+		<tr align="center" id="untimedTestViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.untimedTest" /></td>
+		</tr>
+		<tr align="center" id="highLighterViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.highlighter" /></td>
+		</tr>
+		<tr align="center" id="maskingRularViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.maskingRuler" /></td>
+		</tr>
+		<tr align="center" id="magnifyingGlassViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.magnifyingGlass" /></td>
+		</tr>
+		<tr align="center" id="hasColorFontAccommodationsViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.colorNFont" /></td>
+		</tr>
+		<tr align="center" id="auditoryCalmingViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.auditoryCalming" /></td>
+		</tr>
+		<tr align="center" id="extendedTimeAccomViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.extendedTime" /></td>
+		</tr>
+		<tr align="center" id="maskingToolViewStatus" style="display: none;">
+			<td align="left"><lb:label key="student.accommodationToolTip.maskingTool" /></td>
+		</tr>
+	</tbody>
+</table>  
+</div>
+<div id="classHierarchyToolTip" style="display:none;" class="hierarchyLegendDiv" >
+<table id="classHierarchyToolTipValues" class="hierarchyLegendTable" >
+</table>
+</div>
+
+<div id="classHierarchyToolTip_editSession" style="display:none;" class="hierarchyLegendDiv"/>
 
 <div id="deleteSessionPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

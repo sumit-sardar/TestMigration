@@ -119,6 +119,8 @@
 		<input type="hidden" name="dNSConfirmationPopupLbl" id="dNSConfirmationPopupLbl" value=<lb:label key="viewStatus.text.dNSConfirmationPopupLbl" prefix="'" suffix="'"/>/>
 		<input type="hidden" name="rosterFormLbl" id="rosterFormLbl" value=<lb:label key="viewStatus.text.formLbl" prefix="'" suffix="'"/>/>		
 		<input type="hidden" name="assignFormPopupLbl" id="assignFormPopupLbl" value=<lb:label key="viewStatus.assignRosterForm.text" prefix="'" suffix="'"/>/>
+		<input type="hidden" name="hasAccomodationLbl" id="hasAccomodationLbl" value=<lb:label key="viewStatus.text.hasAccomodationLbl" prefix="'" suffix="'"/>/>
+		<input type="hidden" name="orgNodeNameLbl" id="orgNodeNameLbl" value=<lb:label key="viewStatus.text.orgNodeNameLbl" prefix="'" suffix="'"/>/>
 	</div>
 </td>
 </tr>

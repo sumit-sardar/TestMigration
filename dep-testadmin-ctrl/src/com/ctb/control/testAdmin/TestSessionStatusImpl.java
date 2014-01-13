@@ -27,6 +27,7 @@ import com.ctb.bean.testAdmin.ActiveSessionData;
 import com.ctb.bean.testAdmin.ActiveTest;
 import com.ctb.bean.testAdmin.ActiveTestData;
 import com.ctb.bean.testAdmin.BroadcastMessageData;
+import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
@@ -1233,9 +1234,78 @@ public class TestSessionStatusImpl implements TestSessionStatus
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
         }
-    }     
+    } 
+    
+    
+    public RosterElementData getRosterForTestSessionWithShowRosterAccom(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+    // validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+        try {
+          	
+            RosterElementData red = new RosterElementData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            red.setRosterElements(roster.getRosterForTestSession(testAdminId), pageSize);
+            //System.out.println("red>>>"+red.toString());
+            red = setHasAccomodationAttribute(red,pageSize);
+            if(filter != null) red.applyFiltering(filter);
+            if(sort != null) red.applySorting(sort);
+            if(page != null) red.applyPaging(page);
+            return red;
+        } catch (SQLException se) {
+            RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: getRosterElementsForTestSession: " + se.getMessage());
+            rde.setStackTrace(se.getStackTrace());
+            throw rde;  
+        }
+    } 
 
-    public RosterElementData getReportableRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    public HashMap<Integer,ArrayList<ClassHierarchy>> buildOrgNodeIdMap(String userName,Integer test_admin_id) throws CTBBusinessException
+    {
+    	Integer [] orgNodeIds = null;
+    	HashMap<Integer,ArrayList<ClassHierarchy>> orgNodeIdMap = new HashMap<Integer,ArrayList<ClassHierarchy>>();
+		try {
+			
+			orgNodeIds = roster.getOrgNodeIdForUser(userName);	
+			if(null != orgNodeIds){	
+				for(int j=0;j<orgNodeIds.length;j++){
+					ClassHierarchy[] clasHierarchyForUser = roster.getOrgNodeHierachy(userName,test_admin_id, orgNodeIds[j]);		
+					if(null != clasHierarchyForUser && clasHierarchyForUser.length > 0 ) 
+					   	for(int i=0;i<clasHierarchyForUser.length;i++) {
+					   		ArrayList<ClassHierarchy> nodeList = null;
+					   		if (orgNodeIdMap.containsKey(clasHierarchyForUser[i].getOrgNodeId())){
+					   			nodeList = (ArrayList<ClassHierarchy>)orgNodeIdMap.get(clasHierarchyForUser[i].getOrgNodeId());
+					   			nodeList.add(clasHierarchyForUser[i]);
+					   			orgNodeIdMap.remove(clasHierarchyForUser[i].getOrgNodeId());
+					   			orgNodeIdMap.put(clasHierarchyForUser[i].getOrgNodeId(), nodeList);
+					   		}else{
+					   			nodeList = new ArrayList<ClassHierarchy>();
+					   			nodeList.add(clasHierarchyForUser[i]);
+					   			orgNodeIdMap.put(clasHierarchyForUser[i].getOrgNodeId(), nodeList);
+					   		}
+					      }
+				}
+			}
+		} catch (SQLException se) {
+			RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: getRosterElementsForTestSession: " + se.getMessage());
+            rde.setStackTrace(se.getStackTrace());
+            throw rde; 
+		}
+		return orgNodeIdMap;
+    }
+    
+    private RosterElementData setHasAccomodationAttribute(RosterElementData red, Integer pageSize) {
+		// TODO Auto-generated method stub
+    	RosterElement[] re = red.getRosterElements();
+    	for(int i=0;i<re.length;i++){
+    		re[i].setHasAccommodations(re[i].getHasAccommodations());
+    	}
+		 red.setRosterElements(re,pageSize);
+		 return red;
+	}
+
+	public RosterElementData getReportableRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
     // validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
         try {

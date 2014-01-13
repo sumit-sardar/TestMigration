@@ -42,6 +42,9 @@ public class ScheduledSavedTestVo implements Serializable {
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
 	private boolean isTestSessionHasStudents;
+	Map<String,ArrayList> classHierarchyMap;
+	private boolean hasShowRosterAccomAndHierarchy = false;
+	
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -295,5 +298,32 @@ public class ScheduledSavedTestVo implements Serializable {
 	 */
 	public void setTestSessionHasStudents(boolean isTestSessionHasStudents) {
 		this.isTestSessionHasStudents = isTestSessionHasStudents;
+	}
+	
+	public Map<String, ArrayList> getClassHierarchyMap() {
+		return classHierarchyMap;
+	}
+	
+	/**
+	 * @param setClassHierarchyMap the setClassHierarchyMap to set
+	 */
+	
+	public void setClassHierarchyMap(Map<String, ArrayList> classHierarchyMap) {
+		this.classHierarchyMap = classHierarchyMap;
+	}
+
+	/**
+	 * @return the hasShowRosterAccomAndHierarchy
+	 */
+	public boolean isHasShowRosterAccomAndHierarchy() {
+		return hasShowRosterAccomAndHierarchy;
+	}
+
+	/**
+	 * @param hasShowRosterAccomAndHierarchy the hasShowRosterAccomAndHierarchy to set
+	 */
+	public void setHasShowRosterAccomAndHierarchy(
+			boolean hasShowRosterAccomAndHierarchy) {
+		this.hasShowRosterAccomAndHierarchy = hasShowRosterAccomAndHierarchy;
 	}
 }

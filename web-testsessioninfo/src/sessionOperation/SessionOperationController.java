@@ -38,6 +38,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
+import com.ctb.bean.testAdmin.ClassHierarchy;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -109,6 +110,7 @@ import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
 import com.ctb.testSessionInfo.utils.UserPasswordUtils;
 import com.ctb.testSessionInfo.utils.WebUtils;
+import com.ctb.util.HMACQueryStringEncrypter;
 import com.ctb.util.OperationStatus;
 import com.ctb.util.SuccessInfo;
 import com.ctb.util.ValidationFailedInfo;
@@ -246,6 +248,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean disableStudentIndividualAndMultipleTestTicket = false;
    /* Changes for DEX Story - Add intermediate screen : End */
    
+	private boolean hasShowRosterAccomAndHierarchy = false;
 	public LinkedHashMap getTimeZoneOptions() {
 		return timeZoneOptions;
 	}
@@ -801,6 +804,7 @@ public class SessionOperationController extends PageFlowController {
         //String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  null;
         String userTimeZone = null;
+        Map<String,ArrayList> classHierarchy = new HashMap<String,ArrayList>();
         /*if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
@@ -870,6 +874,11 @@ public class SessionOperationController extends PageFlowController {
             else
             	vo.setSelectGE(null);
             
+            if(this.hasShowRosterAccomAndHierarchy){
+	    		classHierarchy = this.scheduleTest.getScheduledStudentsClassHierarchy(this.userName);
+	    		vo.setHasShowRosterAccomAndHierarchy(this.hasShowRosterAccomAndHierarchy);	    		
+	    	}
+            vo.setClassHierarchyMap(classHierarchy);
             Gson gson = new Gson();
         	jsonData = gson.toJson(vo);
         	//System.out.println(jsonData);
@@ -1447,6 +1456,7 @@ public class SessionOperationController extends PageFlowController {
     	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
     	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
     	    Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+    	    Map<String,ArrayList> classHierarchy = new HashMap<String,ArrayList>();
     	    OperationStatus status = new OperationStatus();
     	    vo.setOperationStatus(status) ;
     	    //added for copy test session
@@ -1464,6 +1474,11 @@ public class SessionOperationController extends PageFlowController {
     	    		studentsList = buildStudentList(students, accomodationMap);
     	    	}
     	    	vo.setSavedStudentsDetails(studentsList);
+    	    	if(this.hasShowRosterAccomAndHierarchy){
+    	    		classHierarchy = this.scheduleTest.getScheduledStudentsClassHierarchy(this.userName);
+    	    		vo.setHasShowRosterAccomAndHierarchy(this.hasShowRosterAccomAndHierarchy);
+    	    	}
+    	    	vo.setClassHierarchyMap(classHierarchy);
                 status.setSuccess(true);
                
                 
@@ -4778,6 +4793,82 @@ public class SessionOperationController extends PageFlowController {
     	   return false;
     }
     
+	private void buildRosterList(RosterElement[] rosterElementData, Map<Integer, Map> accomodationMap) 
+    {
+        //List<SessionStudent> studentList = new ArrayList<SessionStudent>();
+        Map<String,String> innerMap;
+        for (int i=0 ; i<rosterElementData.length; i++) {
+        	innerMap = new HashMap<String,String>();
+        	RosterElement ss = (RosterElement)rosterElementData[i];
+            
+            if (ss != null) {                
+                StringBuffer buf = new StringBuffer();
+                if ("T".equals(ss.getCalculator())) {
+                    if ("true".equals(ss.getHasColorFontAccommodations()) ||
+                        "T".equals(ss.getScreenReader()) ||
+                        "T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("Calculator, ");
+                    else
+                        buf.append("Calculator");
+                }
+                if(ss.getMusicFileId() == null || "".equals(ss.getMusicFileId().trim())){
+                	ss.setAuditoryCalming("F");
+                }else {
+                	ss.setAuditoryCalming("T");
+                }
+                
+                if ("true".equals(ss.getHasColorFontAccommodations())) {
+                    if ("T".equals(ss.getScreenReader()) ||
+                        "T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("Color/Font, ");
+                    else
+                        buf.append("Color/Font");
+                }
+                if ("T".equals(ss.getScreenReader())) {
+                    if ("T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("ScreenReader, ");
+                    else
+                        buf.append("ScreenReader");
+                }
+                if ("T".equals(ss.getTestPause())) {
+                    if ("T".equals(ss.getUntimedTest()))
+                        buf.append("TestPause, ");
+                    else
+                        buf.append("TestPause");
+                }
+                if ("T".equals(ss.getUntimedTest())) {
+                    buf.append("UntimedTest");
+                }
+                buf.append(".");
+                ss.setHasColorFontAccommodations(getHasColorFontAccommodations(ss));
+                 if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
+                	ss.setMiddleName( ss.getMiddleName().substring(0,1));
+                 
+                 innerMap.put("screenMagnifier", ss.getScreenMagnifier());
+                 innerMap.put("screenReader", ss.getScreenReader());
+                 innerMap.put("calculator", ss.getCalculator());
+                 innerMap.put("testPause", ss.getTestPause());
+                 innerMap.put("untimedTest", ss.getUntimedTest());
+                 innerMap.put("highLighter", ss.getHighLighter());
+                 innerMap.put("maskingRular", ss.getMaskingRular());
+                 innerMap.put("maskingTool", ss.getMaskingTool());
+                 innerMap.put("auditoryCalming", ss.getAuditoryCalming());
+                 innerMap.put("magnifyingGlass", ss.getMagnifyingGlass());
+                 
+                 if("T".equals(ss.getExtendedTimeAccom()) || (ss.getExtendedTimeAccom() != null && !ss.getExtendedTimeAccom().equals("") && !ss.getExtendedTimeAccom().equals("F"))){
+                	 innerMap.put("extendedTimeAccom","T");
+            	 }else {
+            		 innerMap.put("extendedTimeAccom","F");
+            	 }
+                 innerMap.put("hasColorFontAccommodations",getHasColorFontAccommodations(ss));
+                 accomodationMap.put(ss.getStudentId(), innerMap);
+
+            }
+        }
+    }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
@@ -5014,6 +5105,10 @@ public class SessionOperationController extends PageFlowController {
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
+				if(cc.getCustomerConfigurationName().equalsIgnoreCase("Show_Roster_Accom_Hierarchy") && 
+						cc.getDefaultValue().equals("T")) {
+					this.hasShowRosterAccomAndHierarchy = Boolean.TRUE;
+				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 		}
@@ -5832,6 +5927,17 @@ public class SessionOperationController extends PageFlowController {
         return result;
     }
     
+    public String getHasColorFontAccommodations(RosterElement ss) {
+        String result = "F";
+        if( ss.getQuestionBackgroundColor() != null ||
+        	ss.getQuestionFontColor() != null ||
+        	ss.getQuestionFontSize() != null ||
+        	ss.getAnswerBackgroundColor() != null ||
+        	ss.getAnswerFontColor() != null ||
+        	ss.getAnswerFontSize() != null)
+            result = "T";
+        return result;
+    }
     
     public String studentHasAccommodation(SessionStudent  sa){
 		 String hasAccommodations = "No";
@@ -6562,8 +6668,13 @@ public class SessionOperationController extends PageFlowController {
 	        
 	        RosterElementData red = null;
 	        try
-	        {      
-	            red = this.testSessionStatus.getRosterForTestSession(this.userName, sessionId, filter, page, sort);
+	        	{    
+	        		if(!this.hasShowRosterAccomAndHierarchy){  
+	            		red = this.testSessionStatus.getRosterForTestSession(this.userName, sessionId, filter, page, sort);
+	        		}
+			     else{
+			    	 red = this.testSessionStatus.getRosterForTestSessionWithShowRosterAccom(this.userName, sessionId, filter, page, sort); 	
+			     }
 	        }
 	        catch (CTBBusinessException be)
 	        {
@@ -7025,6 +7136,24 @@ public class SessionOperationController extends PageFlowController {
 				if (hasAssignFormRosterConfig()) {
 					base.setAssignFormList(getRosterFormList(testAdminId));
 				}
+				
+			
+				if(this.hasShowRosterAccomAndHierarchy){
+					Map<Integer,Map> accomodationMap = new HashMap<Integer, Map>();
+					HashMap<Integer,ArrayList<ClassHierarchy>> orgNodeIdMap = new HashMap<Integer,ArrayList<ClassHierarchy>>();
+					if(null != red){
+						buildRosterList(red.getRosterElements(), accomodationMap);
+					}
+					base.setAccomodationMap(accomodationMap);
+					try {
+						orgNodeIdMap = this.testSessionStatus.buildOrgNodeIdMap(this.userName,this.sessionId);
+					} catch (CTBBusinessException e) {
+						e.printStackTrace();
+					}
+					base.setOrgNodeIdMap(orgNodeIdMap);
+					base.setHasShowRosterAccomAndHierarchyConfig(this.hasShowRosterAccomAndHierarchy);
+				}
+				
 				/*Integer breakCount = ted.getBreakCount();
 		        if ((breakCount != null) && (breakCount.intValue() > 0)) {
 		            if (isSameAccessCode(subtestList)) 

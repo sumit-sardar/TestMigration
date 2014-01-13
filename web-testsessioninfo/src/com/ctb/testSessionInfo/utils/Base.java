@@ -1,8 +1,12 @@
 package com.ctb.testSessionInfo.utils; 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ctb.bean.testAdmin.ClassHierarchy;
+import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
@@ -44,11 +48,13 @@ public class Base {
 	Map<Integer,Map> sessionListPAMap;
 	Map<Integer,Map> sessionListCUFUMap;
 	Map<Integer,Map> accomodationMap;
+	HashMap<Integer,ArrayList<ClassHierarchy>> orgNodeIdMap;
 	private boolean isOkCustomer; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean isTopLevelAdmin; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean isTopLevelAdminCord; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean hasAssignFormRosterConfig; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 	private List assignFormList; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
+	private boolean hasShowRosterAccomAndHierarchyConfig;
 	
 	public boolean isDonotScoreAllowed() {
 		return donotScoreAllowed;
@@ -327,5 +333,31 @@ public class Base {
 	public void setAssignFormList(List assignFormList) {
 		this.assignFormList = assignFormList;
 	}
+	/**
+	 * @return the hasShowRosterAccomAndHierarchyConfig
+	 */
+	public boolean isHasShowRosterAccomAndHierarchyConfig() {
+		return hasShowRosterAccomAndHierarchyConfig;
+	}
+	/**
+	 * @param hasShowRosterAccomAndHierarchyConfig the hasShowRosterAccomAndHierarchyConfig to set
+	 */
+	public void setHasShowRosterAccomAndHierarchyConfig(
+			boolean hasShowRosterAccomAndHierarchyConfig) {
+		this.hasShowRosterAccomAndHierarchyConfig = hasShowRosterAccomAndHierarchyConfig;
+	}
+	/**
+	 * @return the orgNodeIdMap
+	 */
+	public HashMap<Integer, ArrayList<ClassHierarchy>> getOrgNodeIdMap() {
+		return orgNodeIdMap;
+	}
+	/**
+	 * @param orgNodeIdMap the orgNodeIdMap to set
+	 */
+	public void setOrgNodeIdMap(HashMap<Integer, ArrayList<ClassHierarchy>> orgNodeIdMap) {
+		this.orgNodeIdMap = orgNodeIdMap;
+	}
+
 	
 }

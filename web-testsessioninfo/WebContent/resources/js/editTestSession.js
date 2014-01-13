@@ -498,6 +498,8 @@
 									cacheObjVal.indexValue = "studentDetails";
 									editDataCache.put(index,cacheObjVal);
 									accomodationMapExisting = data.accomodationMap;
+									classHierarchyMap_editSession = data.classHierarchyMap;
+									hasShowRosterAccomAndHierarchyConfig = data.hasShowRosterAccomAndHierarchy
 									AddStudentLocaldata = data.savedStudentsDetails;
 									studentMap = new Map();
 									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									

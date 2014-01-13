@@ -1,7 +1,9 @@
 package com.ctb.bean.testAdmin; 
 
-import com.ctb.bean.CTBBean;
+import java.util.ArrayList;
 import java.util.Date;
+
+import com.ctb.bean.CTBBean;
 
 /**
  * Data bean representing the contents of the OAS.TEST_ROSTER table
@@ -49,8 +51,29 @@ public class RosterElement extends CTBBean
   private String studentName;
   private String studentUserName;
   private String className;
-  
-  private String assignedForm; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
+  private String screenMagnifier;
+  private String screenReader;
+  private String calculator; 
+  private String testPause;
+  private String untimedTest;
+  private String questionBackgroundColor;
+  private String questionFontColor;
+  private String questionFontSize;
+  private String answerBackgroundColor;
+  private String answerFontColor;
+  private String answerFontSize;
+  private String hasAccommodations;
+  private String orgNodeName;
+  private String highLighter; 
+  private String extendedTimeAccom; 
+  private String  maskingRular;
+  private String  maskingTool;
+  private String  magnifyingGlass;
+  private String  musicFileId;
+  private String auditoryCalming;
+  private String assignedForm;
+  private ArrayList<Node> orgList;
+  private String hasColorFontAccommodations;
 
 	public String getDnsStatus() {
 		return dnsStatus;
@@ -510,5 +533,169 @@ public class RosterElement extends CTBBean
 	public void setAssignedForm(String assignedForm) {
 		this.assignedForm = assignedForm;
 	}
+	public String getScreenMagnifier() {
+		return screenMagnifier;
+	}
+	public void setScreenMagnifier(String screenMagnifier) {
+		this.screenMagnifier = screenMagnifier;
+	}
+	public String getScreenReader() {
+		return screenReader;
+	}
+	public void setScreenReader(String screenReader) {
+		this.screenReader = screenReader;
+	}
+	public String getCalculator() {
+		return calculator;
+	}
+	public void setCalculator(String calculator) {
+		this.calculator = calculator;
+	}
+	public String getTestPause() {
+		return testPause;
+	}
+	public void setTestPause(String testPause) {
+		this.testPause = testPause;
+	}
+	public String getUntimedTest() {
+		return untimedTest;
+	}
+	public void setUntimedTest(String untimedTest) {
+		this.untimedTest = untimedTest;
+	}
+	public String getQuestionBackgroundColor() {
+		return questionBackgroundColor;
+	}
+	public void setQuestionBackgroundColor(String questionBackgroundColor) {
+		this.questionBackgroundColor = questionBackgroundColor;
+	}
+	public String getQuestionFontColor() {
+		return questionFontColor;
+	}
+	public void setQuestionFontColor(String questionFontColor) {
+		this.questionFontColor = questionFontColor;
+	}
+	public String getQuestionFontSize() {
+		return questionFontSize;
+	}
+	public void setQuestionFontSize(String questionFontSize) {
+		this.questionFontSize = questionFontSize;
+	}
+	public String getAnswerBackgroundColor() {
+		return answerBackgroundColor;
+	}
+	public void setAnswerBackgroundColor(String answerBackgroundColor) {
+		this.answerBackgroundColor = answerBackgroundColor;
+	}
+	public String getAnswerFontColor() {
+		return answerFontColor;
+	}
+	public void setAnswerFontColor(String answerFontColor) {
+		this.answerFontColor = answerFontColor;
+	}
+	public String getAnswerFontSize() {
+		return answerFontSize;
+	}
+	public void setAnswerFontSize(String answerFontSize) {
+		this.answerFontSize = answerFontSize;
+	}
+	public String getHasAccommodations() {
+		   String result = "No";
+	        if( "T".equals(this.screenMagnifier) ||
+	            "T".equals(this.screenReader) ||
+	            "T".equals(this.calculator) ||
+	            "T".equals(this.testPause) ||
+	            "T".equals(this.untimedTest) ||
+	            "T".equals(this.highLighter) ||
+	            "T".equals(this.extendedTimeAccom) ||
+	            "T".equals(this.maskingRular) ||
+	            "T".equals(this.maskingTool) ||
+	            "T".equals(this.magnifyingGlass) ||
+	            (this.musicFileId!=null && this.musicFileId.trim().length()!=0)||
+	            (this.extendedTimeAccom != null &&
+	            !this.extendedTimeAccom.equals("") &&
+	            !this.extendedTimeAccom.equals("F")) || // change for defect #66723
+	            this.questionBackgroundColor != null ||
+	            this.questionFontColor != null ||
+	            this.questionFontSize != null ||
+	            this.answerBackgroundColor != null ||
+	            this.answerFontColor != null ||
+	            this.answerFontSize != null)
+	            result = "Yes";
+	        return result;
+	}
+	public void setHasAccommodations(String hasAccommodations) {
+		this.hasAccommodations = hasAccommodations;
+	}
+	public String getOrgNodeName() {
+		return orgNodeName;
+	}
+	public void setOrgNodeName(String orgNodeName) {
+		this.orgNodeName = orgNodeName;
+	}
+	public String getHighLighter() {
+		return highLighter;
+	}
+	public void setHighLighter(String highLighter) {
+		this.highLighter = highLighter;
+	}
+	public String getExtendedTimeAccom() {
+		return extendedTimeAccom;
+	}
+	public void setExtendedTimeAccom(String extendedTimeAccom) {
+		this.extendedTimeAccom = extendedTimeAccom;
+	}
+	public String getMaskingRular() {
+		return maskingRular;
+	}
+	public void setMaskingRular(String maskingRular) {
+		this.maskingRular = maskingRular;
+	}
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+	public String getMusicFileId() {
+		return musicFileId;
+	}
+	public void setMusicFileId(String musicFileId) {
+		this.musicFileId = musicFileId;
+	}
+	public String getAuditoryCalming() {
+		return auditoryCalming;
+	}
+	public void setAuditoryCalming(String auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+	public ArrayList<Node> getOrgList() {
+		return orgList;
+	}
+	public void setOrgList(ArrayList<Node> orgList) {
+		this.orgList = orgList;
+	}
 	
+	public String getHasColorFontAccommodations() {
+        String result = "F";
+        if( this.getQuestionBackgroundColor() != null ||
+        	this.getQuestionFontColor() != null ||
+        	this.getQuestionFontSize() != null ||
+        	this.getAnswerBackgroundColor() != null ||
+        	this.getAnswerFontColor() != null ||
+        	this.getAnswerFontSize() != null)
+            result = "T";
+        return result;
+    }
+	
+	public void setHasColorFontAccommodations(String hasColorFontAccommodations) {
+        this.hasColorFontAccommodations = hasColorFontAccommodations;
+    }
+	  
 } 
