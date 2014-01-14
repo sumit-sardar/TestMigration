@@ -3285,6 +3285,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
     	boolean hasDataExportVisibilityConfig = false;
     	Integer dataExportVisibilityLevel = 1;
     	boolean hasBlockUserManagement = false;
+    	boolean isWVCustomer = false;
     	
 		if( customerConfigurations != null ) {
 			for (int i=0; i < customerConfigurations.length; i++) {
@@ -3400,6 +3401,10 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            		cc.getDefaultValue().equals("T")) {
 	        		hasBlockUserManagement = Boolean.TRUE;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer") && 
+	            		cc.getDefaultValue().equals("T")) {
+	        		isWVCustomer = Boolean.TRUE;
+	            }
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 		}
@@ -3428,9 +3433,15 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
         this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
 		
 		this.getRequest().setAttribute("isMandatoryBirthDate", mandatoryBirthdateValue);
-		boolean addDeleteStudentEnabled = addDeleteStudentEnable(roleName);
-		this.getSession().setAttribute("addStudentEnable", addDeleteStudentEnabled);
-		this.getSession().setAttribute("deleteStudentEnable", addDeleteStudentEnabled);
+
+			boolean addDeleteStudentEnabled = addDeleteStudentEnable(roleName);
+			if(!(isWVCustomer && isTopLevelUser() && addDeleteStudentEnable(roleName)))
+			{
+				addDeleteStudentEnabled = false;
+			}
+			this.getSession().setAttribute("addStudentEnable", addDeleteStudentEnabled);
+			this.getSession().setAttribute("deleteStudentEnable", addDeleteStudentEnabled);
+			this.getSession().setAttribute("isWVCustomer",isWVCustomer);
 		this.getSession().setAttribute("isClassReassignable",multiOrgAssociationValid);	// Changes for defect #67959 imported student's organization
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		
