@@ -95,6 +95,20 @@
 			<div id="testDetailId">
 				<h3><a href="#" ><lb:label key="session.accordion.testDetail" /></a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
+					<div id="defaultWindowMsgInfo" style="display:none;"> 
+						<table>
+							<tr>
+								<td rowspan="3" valign="top" width="18">
+			                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif" border="0" width="16" height="16">
+								</td>
+								<td>
+									<table>
+										<tr><td><div id="defaultWindowMsg">	</div></td></tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</div>
 					<div align="center">
 						<jsp:include page="/sessionOperation/test_details.jsp" />
 					</div>

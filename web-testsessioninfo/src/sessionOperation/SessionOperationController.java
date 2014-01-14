@@ -247,6 +247,7 @@ public class SessionOperationController extends PageFlowController {
 	private boolean isUserLinkSelected = false;
 	private boolean disableStudentIndividualAndMultipleTestTicket = false;
    /* Changes for DEX Story - Add intermediate screen : End */
+	private boolean hasDefaultTestingWindowConfig = false; //Added for user story : GA – TAS default new session duration to 5 days
    
 	private boolean hasShowRosterAccomAndHierarchy = false;
 	public LinkedHashMap getTimeZoneOptions() {
@@ -836,7 +837,21 @@ public class SessionOperationController extends PageFlowController {
                      vo.populateAccessCode(scheduleTest);
                      vo.setUserTimeZone(DateUtils.getUITimeZone(userTimeZone));
                      vo.populateTimeZone();
-                     vo.populateDefaultDateAndTime(userTimeZone);
+                     if(this.hasDefaultTestingWindowConfig){
+                    	 Integer days = getDefaultTestingWindowValue();
+                    	 if(null != days){
+	                    	 if(days.intValue() == 1){
+	                    		 vo.populateDefaultDateAndTime(userTimeZone);
+	                    	 }else{
+		                    	 vo.populateDefaultDateAndTime(userTimeZone, days);
+		                    	 vo.setTestingWindowDefaultDays(days);
+	                    	 }
+	                     }else{
+	                    	 vo.populateDefaultDateAndTime(userTimeZone);
+	                     }
+                     }else{
+                    	 vo.populateDefaultDateAndTime(userTimeZone);
+                     }
                 }
           /* } */
             if(tps.length<=0) {
@@ -1307,6 +1322,15 @@ public class SessionOperationController extends PageFlowController {
                     Date now = new Date(System.currentTimeMillis());
                     Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZoneCopySession, now);
                     Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZoneCopySession, now);
+                    if(this.hasDefaultTestingWindowConfig){
+                    	Integer days = getDefaultTestingWindowValue();
+                    	if(null != days){
+	                		if(days.intValue() != 1){
+	                			tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + ((24*(days.intValue()-1)) * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZoneCopySession, now);
+	                		}
+	                		vo.setTestingWindowDefaultDays(days);
+                    	}
+                    }
                     if(ovLoginStart != null && !DateUtils.isBeforeToday(ovLoginStart, this.user.getTimeZone())){
                     	Date loginEndDate = (Date) ovLoginStart.clone();
                     	loginEndDate.setDate(loginEndDate.getDate() + 1);
@@ -5109,6 +5133,10 @@ public class SessionOperationController extends PageFlowController {
 						cc.getDefaultValue().equals("T")) {
 					this.hasShowRosterAccomAndHierarchy = Boolean.TRUE;
 				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Default_Testing_Window_Days") && 
+						null != cc.getDefaultValue() && !"0".equalsIgnoreCase(cc.getDefaultValue())){
+					this.hasDefaultTestingWindowConfig = Boolean.TRUE;
+				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
 		}
@@ -6386,7 +6414,22 @@ public class SessionOperationController extends PageFlowController {
 	        return new Forward("report");
 	    }
 		
-	    
+		
+		private Integer getDefaultTestingWindowValue() {
+			
+			CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+			for (int i=0; i < customerConfigs.length; i++)
+            {
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Default_Testing_Window_Days"))
+	            {
+	            	Integer value = Integer.valueOf(cc.getDefaultValue());
+	            	return (null == value || value.intValue() == 0)?null:value;
+	            } 
+            }
+			return null;
+		}
+		
 	    private void prepareValidateButtons(String[] itemSetIds)
 	    {            
 	        if ((itemSetIds != null) && (itemSetIds.length > 0) && (itemSetIds[0] != null))

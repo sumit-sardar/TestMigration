@@ -146,3 +146,4 @@
 <input type="hidden" id="checkComputationMsg" name="checkComputationMsg" value=<lb:label key="scheduleTest.addComputationConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="uncheckAppliedMsg" name="uncheckAppliedMsg" value=<lb:label key="scheduleTest.removeAppliedConfirmation.message" prefix="'" suffix="'"/> />
 <input type="hidden" id="checkAppliedMsg" name="checkAppliedMsg" value=<lb:label key="scheduleTest.addAppliedConfirmation.message" prefix="'" suffix="'"/> />
+<input type="hidden" id="defualtTestWindowMsg" name="defualtTestWindowMsg" value=<lb:label key="scheduleTest.defualtTestingWindow.message" prefix="'" suffix="'"/> />

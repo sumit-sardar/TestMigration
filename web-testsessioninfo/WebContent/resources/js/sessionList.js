@@ -1763,6 +1763,7 @@ function registerDelegate(tree){
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
+						defaultDays = data.testingWindowDefaultDays;						
 						classHierarchyMap_editSession = data.classHierarchyMap;
 						hasShowRosterAccomAndHierarchyConfig = data.hasShowRosterAccomAndHierarchy
 						if(ProductData.noTestExists == true){
@@ -2455,6 +2456,12 @@ function registerDelegate(tree){
 						var schedulerId = $("#schedulerUserId").val();
 		 				//addAllProcsForOklahoma(schedulerId); -- Changes for Story "OK - 2013 - Fall - 032 - EQ Form visibility" Date: 25Sep,2013
 						returnSelectedProctor(); // Need to update temp variables also
+					}
+					if(state != 'EDIT' && defaultDays != undefined){
+						var msg = $('#defualtTestWindowMsg').val();
+						msg = msg.replace('?',defaultDays);
+						$("#defaultWindowMsg").html(msg);
+		    			$('#defaultWindowMsgInfo').show();
 					}
 			},
 			loadComplete: function () {
@@ -3777,7 +3784,8 @@ function registerDelegate(tree){
 	function closeScheduleSessionPopup() {
 	    closePopUp('closeScheduleSessionPopup');
 		closePopUp('scheduleSession');
-	
+		$('#defaultWindowMsgInfo').hide();
+		defaultDays = undefined;
 	}
 	 
 	function openCloseScheduleSessionPopup(){
@@ -3810,10 +3818,14 @@ function registerDelegate(tree){
 				openCloseScheduleSessionPopup();
 			}else{
 				closePopUp('scheduleSession');
+				$('#defaultWindowMsgInfo').hide();
+				defaultDays = undefined;
 			}
     	}else{		
 	    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
 	    		closePopUp('scheduleSession');
+	    		$('#defaultWindowMsgInfo').hide();
+	    		defaultDays = undefined;
 	    	} else {
 	    		openCloseScheduleSessionPopup();
 	    	}
@@ -4048,6 +4060,8 @@ function registerDelegate(tree){
 								} 
 							  
 					  	}
+					  	$('#defaultWindowMsgInfo').hide();
+					  	defaultDays = undefined;
 					  	},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
@@ -6451,5 +6465,19 @@ function validNumber(str){
 			}*/
 	} 
 	
-	
+	function changeDefaultEndDate(){
+		if((isCopySession || state != 'EDIT') && defaultDays != undefined && defaultDays != null){
+			var startDate = $("#startDate").val();
+			var endDate = $("#endDate").val();
+			var start = new Date(startDate);
+			var defualtEndDate = new Date(endDate);
+			if(defaultDays == 1 || defaultDays == '1'){
+				defualtEndDate.setTime(start.getTime()+ parseInt(1000*60*60*24));
+			}else{
+				defualtEndDate.setTime(start.getTime()+ parseInt((parseInt(defaultDays)-1)*1000*60*60*24));
+			}
+			var newEndDate = ("0" + (defualtEndDate.getMonth() + 1)).slice(-2) + "/" + ("0" + defualtEndDate.getDate()).slice(-2) + "/" + ("0" + defualtEndDate.getFullYear()).slice(-2);
+			document.getElementById("endDate").value = newEndDate;
+		}
+	}
 	

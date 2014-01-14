@@ -44,6 +44,7 @@ public class ScheduledSavedTestVo implements Serializable {
 	private boolean isTestSessionHasStudents;
 	Map<String,ArrayList> classHierarchyMap;
 	private boolean hasShowRosterAccomAndHierarchy = false;
+	private Integer testingWindowDefaultDays = null;
 	
 	
 	private static final long serialVersionUID = 1L;
@@ -325,5 +326,19 @@ public class ScheduledSavedTestVo implements Serializable {
 	public void setHasShowRosterAccomAndHierarchy(
 			boolean hasShowRosterAccomAndHierarchy) {
 		this.hasShowRosterAccomAndHierarchy = hasShowRosterAccomAndHierarchy;
+	}
+	
+	/**
+	 * @return the testingWindowDefaultDays
+	 */
+	public Integer getTestingWindowDefaultDays() {
+		return testingWindowDefaultDays;
+	}
+
+	/**
+	 * @param testingWindowDefaultDays the testingWindowDefaultDays to set
+	 */
+	public void setTestingWindowDefaultDays(Integer testingWindowDefaultDays) {
+		this.testingWindowDefaultDays = testingWindowDefaultDays;
 	}
 }

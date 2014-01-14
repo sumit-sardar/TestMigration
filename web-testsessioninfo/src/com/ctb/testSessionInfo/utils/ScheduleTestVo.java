@@ -44,6 +44,7 @@ public class ScheduleTestVo implements Serializable{
 	private LASLicenseNode nonZeroActivePO = null;
 	Map<String,ArrayList> classHierarchyMap;
 	private boolean hasShowRosterAccomAndHierarchy = false;
+	private Integer testingWindowDefaultDays = null;
 	
 	
 	/**
@@ -509,6 +510,38 @@ public class ScheduleTestVo implements Serializable{
         }
 		
 	}
+	
+	@SuppressWarnings("deprecation")
+	public void populateDefaultDateAndTime(String timeZone, Integer defualtDay) {
+		Date now = new Date(System.currentTimeMillis());
+        Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
+        Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + ((24*(defualtDay.intValue()-1)) * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZone, now);
+        for(ProductBean productBean :  this.product) {
+	        for(TestVO testVO : productBean.getTestSessionList()) {
+	        	if (testVO.getOverrideLoginStartDate() != null && !(DateUtils.isBeforeToday(testVO.getOverrideLoginStartDate(), timeZone ))) {
+	        		Date loginEndDate = (Date)testVO.getOverrideLoginStartDate().clone();
+	                loginEndDate.setDate(loginEndDate.getDate() + 1);
+	                testVO.setStartDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginStartDate()));
+	                testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+	        	
+	        	} else {
+	        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
+	        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+	        	}
+	        	
+	        	if(testVO.getOverrideLoginEndDate()!= null && !(DateUtils.isAfterToday(testVO.getOverrideLoginEndDate(), timeZone )) ) {
+	        		testVO.setStartDate(DateUtils.formatDateToDateString(today)); // setting today as start day
+	        		testVO.setEndDate(DateUtils.formatDateToDateString(today));    // setting today as end day
+	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+	        		
+	        	} else if(testVO.getOverrideLoginEndDate()!= null ){
+	        		testVO.setMinLoginEndDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginEndDate()));
+	        	}
+	        }
+        }
+		
+	}
+	
 	public void populateLevelOptions() {
 		levelOptions = new ArrayList<String>();
 		levelOptions.add("E");
@@ -570,6 +603,22 @@ public class ScheduleTestVo implements Serializable{
 	 */
 	public void setNonZeroActivePO(LASLicenseNode nonZeroActivePO) {
 		this.nonZeroActivePO = nonZeroActivePO;
+	}
+
+
+	/**
+	 * @return the testingWindowDefaultDays
+	 */
+	public Integer getTestingWindowDefaultDays() {
+		return testingWindowDefaultDays;
+	}
+
+
+	/**
+	 * @param testingWindowDefaultDays the testingWindowDefaultDays to set
+	 */
+	public void setTestingWindowDefaultDays(Integer testingWindowDefaultDays) {
+		this.testingWindowDefaultDays = testingWindowDefaultDays;
 	}
 }
 

@@ -27,6 +27,7 @@
 	var forceTestBreak = false;
 	var selectGE = null;
 	var savedAssignedRole = "Owner";
+	var defaultDays;
 		
   function editTestSession(action){  
   	var activeJQGrid;
@@ -235,7 +236,15 @@
 							});	
 						setPopupPosition();
 						updateLocatorSubtestsList();
-							$('#ssAccordion').accordion('activate', 1 );	
+							$('#ssAccordion').accordion('activate', 1 );
+							
+						if(isCopySession && data.testingWindowDefaultDays != null && data.testingWindowDefaultDays != undefined){
+							defaultDays = data.testingWindowDefaultDays;
+							var msg = $('#defualtTestWindowMsg').val();
+							msg = msg.replace('?',defaultDays);
+							$("#defaultWindowMsg").html(msg);
+			    			$('#defaultWindowMsgInfo').show();
+						}	
 						$.unblockUI(); 
 									
 					},

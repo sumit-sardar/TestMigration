@@ -4,7 +4,7 @@
 <lb:bundle baseName="testsessionApplicationResource" />
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
- <br>
+ 
  	<table>
 			<tr>
 				<td>
@@ -30,7 +30,7 @@
 					</tr>
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="testDet.label.startDate" /></td>
-					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10" readonly="readonly"  /></td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10" readonly="readonly" onchange="changeDefaultEndDate()"  /></td>
 					</tr>
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="testDet.label.endDate" /></td>
