@@ -129,6 +129,9 @@ public class PrismWebServiceHandler {
 				System.out.println("Prism Partition Name : " + responseTO.getPartitionName());
 				if(responseTO.getStatusCode() == 1){ //Success
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
+					if(logkey != 0){
+						PrismWebServiceDBUtility.deleteWSErrorLog(logkey);
+					}
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
 					throw new Exception(StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));

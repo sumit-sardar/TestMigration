@@ -1594,6 +1594,7 @@ public class PrismWebServiceDBUtility {
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
 			pst.executeUpdate();
+			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
 			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.deleteWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
