@@ -63,7 +63,7 @@
     <select id="findItemResponsesByItemSetIdAndRosterIdForTASC"
         parameterClass="java.util.Map"
         resultClass="com.ctb.lexington.data.ItemResponseVO">
-		 <!-- SELECT
+	   <!-- SELECT
             IR.ITEM_RESPONSE_ID as itemResponseId,
             IR.ITEM_SET_ID as itemSetId,
             IR.TEST_ROSTER_ID as testRosterId,
@@ -138,11 +138,8 @@
                 AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
                 AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
                 AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
-        ORDER BY               
+       		   ORDER BY               
                IR.RESPONSE_SEQ_NUM ASC -->
-               
-                 <!-- AND IR.ITEM_SET_ID IN #itemSetId:VARCHAR# -->
-                 <!-- AND IR.ITEM_SET_ID IN -->
                  
                  SELECT DISTINCT DERIVED.ITEMRESPONSEID as itemResponseId,
 	                DERIVED.ITEMSETID as itemSetId,
@@ -156,7 +153,8 @@
 	                DERIVED.EXTANSWERCHOICEID as extAnswerChoiceId,
 	                DERIVED.STUDENTMARKED as studentMarked,
 	                DERIVED.CREATEDBY as createdBy,
-	                DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse,
+	                DECODE(TRIM(DERIVED.VARCHARCONSTRUCTEDRESPONSE),'','',DERIVED.VARCHARCONSTRUCTEDRESPONSE) as varcharConstructedResponse,
+	                <!-- DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse, -->
 	                DERIVED.GRITEMRULES as grItemRules,
 	                DERIVED.GRITEMCORRECTANSWER as grItemCorrectAnswer,
 	                DERIVED.ANSWERAREA as answerArea,
@@ -204,7 +202,6 @@
 	           AND IR.ITEM_SET_ID = IRC.ITEM_SET_ID(+)
 	           AND IR.TEST_ROSTER_ID = IRC.TEST_ROSTER_ID(+)
 	           AND IR.ITEM_ID = GIR.GR_ITEM_ID(+)
-	           <!-- AND IR.ITEM_SET_ID = #itemSetId:NUMERIC# -->
 	           <dynamic>
                 	<iterate prepend=" AND IR.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
 					#itemSetId[]#
@@ -227,7 +224,7 @@
 	           AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
 	           AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
 	         ORDER BY IR.RESPONSE_SEQ_NUM ASC) DERIVED,
-	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,    <!-- SUM() -->
+	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,
 	                                                '0123456789',
 	                                                ' '))),
 	                          NULL,
@@ -245,7 +242,6 @@
 	               (SELECT MAX(IDS1.ITEM_READER_ID)
 	                  FROM ITEM_DATAPOINT_SCORE IDS1, ITEM_SET_ITEM ISI1
 	                 WHERE IDS1.TEST_ROSTER_ID = #testRosterId:NUMERIC#
-	                   <!-- AND ISI1.ITEM_SET_ID = #testRosterId:NUMERIC# -->
 	                   <dynamic>
 	                	<iterate prepend=" AND ISI1.ITEM_SET_ID IN " property="itemSetId" open="(" close=")" conjunction=",">
 						#itemSetId[]#
@@ -259,8 +255,8 @@
     
     <select id="findItemResponsesByItemSetIdAndRosterIdForTASCOrg"
         parameterClass="java.util.Map"
-        resultClass="com.ctb.lexington.data.ItemResponseVO"><!--
-		    SELECT
+        resultClass="com.ctb.lexington.data.ItemResponseVO">
+		<!--SELECT
             IR.ITEM_RESPONSE_ID as itemResponseId,
             IR.ITEM_SET_ID as itemSetId,
             IR.TEST_ROSTER_ID as testRosterId,
@@ -331,9 +327,9 @@
                 AND ADM.TEST_ADMIN_ID = TR.TEST_ADMIN_ID
                 AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
                 AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
-        ORDER BY               
-               IR.RESPONSE_SEQ_NUM ASC
-    -->
+        	ORDER BY               
+               IR.RESPONSE_SEQ_NUM ASC -->
+    	
 	    SELECT DISTINCT DERIVED.ITEMRESPONSEID as itemResponseId,
 	                DERIVED.ITEMSETID as itemSetId,
 	                DERIVED.TESTROSTERID as testRosterId,
@@ -346,7 +342,8 @@
 	                DERIVED.EXTANSWERCHOICEID as extAnswerChoiceId,
 	                DERIVED.STUDENTMARKED as studentMarked,
 	                DERIVED.CREATEDBY as createdBy,
-	                DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse,
+	                DECODE(TRIM(DERIVED.VARCHARCONSTRUCTEDRESPONSE),'','',DERIVED.VARCHARCONSTRUCTEDRESPONSE) as varcharConstructedResponse,
+	                <!-- DERIVED.VARCHARCONSTRUCTEDRESPONSE as varcharConstructedResponse, -->
 	                DERIVED.GRITEMRULES as grItemRules,
 	                DERIVED.GRITEMCORRECTANSWER as grItemCorrectAnswer,
 	                DERIVED.ANSWERAREA as answerArea,
@@ -412,7 +409,7 @@
 	           AND PROD.PRODUCT_ID = ADM.PRODUCT_ID
 	           AND (ISET.ITEM_SET_LEVEL != 'L' OR PROD.PRODUCT_TYPE = 'TL')
 	         ORDER BY IR.RESPONSE_SEQ_NUM ASC) DERIVED,
-	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,		<!-- SUM() -->
+	       (SELECT DECODE(LENGTH(TRIM(TRANSLATE(FINAL_SCORE,
 	                                                '0123456789',
 	                                                ' '))),
 	                          NULL,
