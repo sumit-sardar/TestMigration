@@ -69,6 +69,7 @@ var hasLockHierarchyEditConfigured = false;
 var hierarchyLockLevel;
 var isDisplayTestSessionInStudentProfile = false; // For "OK TAS - Display Test Session in Student Profile"
 var testSessionName = []; // For "OK TAS - Display Test Session in Student Profile" to store TestSessionName
+var isDisableEditForWV = false;
 
 
 $(document).bind('keydown', function(event) {
@@ -410,7 +411,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 		$("#innerID").delegate("li a","click", 
 			function(e) {
-				if((profileEditable === "false"  && $("#classReassignable").val() === "true") || studentExtracted) {
+				if((profileEditable === "false"  && $("#classReassignable").val() === "true") || studentExtracted || isDisableEditForWV) {
 					return true;
 				}
 				styleClass = $(this.parentNode).attr('class');
@@ -465,12 +466,12 @@ function createMultiNodeSelectedTree(jsondata) {
 			    	var currentlySelectedNode="";
 					var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
 					//console.log("isChecked" + isChecked);
-					if(isChecked && studentExtracted) {
+					if((isChecked && studentExtracted) || (isChecked && isDisableEditForWV)) {
 						$(d.rslt[0]).removeClass("jstree-checked").addClass("jstree-unchecked");
 						checkedListObject[d.rslt[0].getAttribute("id")] = "unchecked";
 						return true;
 					}
-					else if (studentExtracted){
+					else if (studentExtracted || isDisableEditForWV){
 						$(d.rslt[0]).removeClass("jstree-unchecked").addClass("jstree-checked");
 						checkedListObject[d.rslt[0].getAttribute("id")] = "checked";
 						return true;
@@ -1101,6 +1102,7 @@ function AddStudentDetail(){
 isAddStudent = true;
 isPopUp = true;
 studentExtracted=false;
+isDisableEditForWV = false;
 profileEditable = "true";//to see fields enabled if a new student is added after editing a imported student.
 resetDisabledFields();
 resetSubEthnicityRadioButtons();
@@ -1707,7 +1709,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	var showStudentInGrid = false;
 	updateAccomodationMap = {};
 		
-	if(profileEditable === "false" || isEditStudentImported || studentExtracted) {
+	if(profileEditable === "false" || isEditStudentImported || studentExtracted || isDisableEditForWV) {
 		resetDisabledFields();
 	}
 	
@@ -1847,7 +1849,7 @@ function fillselectedOrgNode( elementId, orgList) {
         											if(profileEditable === "false") { //Changes For defect #72680
 														disableAllNonEdFlds();
 													} else {
-														if(studentExtracted) {
+														if(studentExtracted || isDisableEditForWV) {
 															$('#Student_Information :checkbox').attr('disabled', true); 
 															$('#Student_Information :radio').attr('disabled', true); 
 															$('#Student_Information select').attr('disabled', true);
@@ -1875,7 +1877,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			if(profileEditable === "false") { //Changes For defect #72680
 				disableAllNonEdFlds();
 			} else {
-				if(studentExtracted) {
+				if(studentExtracted || isDisableEditForWV) {
 					$('#Student_Information :checkbox').attr('disabled', true); 
 					$('#Student_Information :radio').attr('disabled', true); 
 					$('#Student_Information select').attr('disabled', true);
@@ -2066,7 +2068,7 @@ function openNode(orgNodeId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
 	    		  if(profileEditable === "false" && $("#classReassignable").val() === "true") {
-		    			if(!studentExtracted)
+		    			if(!studentExtracted || !isDisableEditForWV)
 		    				$("a ins.jstree-checkbox", this).first().hide();
 		    		}
 	  	});
@@ -2182,7 +2184,12 @@ function openNode(orgNodeId) {
 						} else {
 							studentExtracted = false;
 						}
-						
+						if(data.isDisableEditForWV) {
+							profileEditable = "false";
+							isDisableEditForWV = true;
+						} else {
+							isDisableEditForWV = false;
+						}						
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
 						organizationNodes = data.organizationNodes;
@@ -2273,6 +2280,27 @@ function openNode(orgNodeId) {
 									resetDisabledFields();
 								}
 							}
+														
+							if(isDisableEditForWV) {
+								$('#Student_Information :checkbox').attr('disabled', true); 
+								$('#Student_Information :radio').attr('disabled', true); 
+								$('#Student_Information select').attr('disabled', true);
+								$('#Student_Information :input').attr('disabled', true);
+																
+								$('#Student_Additional_Information :checkbox').attr('disabled', true); 
+								$('#Student_Additional_Information :radio').attr('disabled', true); 
+								$('#Student_Additional_Information select').attr('disabled', true);
+								$('#Student_Additional_Information :input').attr('disabled', true);
+								
+								$('#Student_Accommodation_Information :checkbox').attr('disabled', true); 
+								$('#Student_Accommodation_Information :radio').attr('disabled', true); 
+								$('#Student_Accommodation_Information select').attr('disabled', true);
+								$('#Student_Accommodation_Information :input').attr('disabled', true);
+								
+								$('#colorFont').attr('disabled', false);
+								toogleColorSettingsLink('colorFont');
+							}
+							
 							//$.unblockUI();  
 							$("#addEditStudentDetail").dialog({  
 														title:$("#editStuID").val(),  
@@ -3181,7 +3209,7 @@ function setSelectedValue(selectObj, valueToSet) {
 		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		if(profileEditable === "false"  && $("#classReassignable").val() === "true") {
-			if(!studentExtracted)
+			if(!studentExtracted || !isDisableEditForWV)
 				liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
 		}
 		ulElement.appendChild(liElement);

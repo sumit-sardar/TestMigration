@@ -91,7 +91,7 @@ public class StudentProfileInformation extends SanitizedFormField
     
     private boolean isStudentExtracted; // Added For OK - 3-8 - 2013 - 005 - No Student bio edits after extract
     
-
+    private boolean isDisableEditForWV;
     /**
 	 * @return the hasAccommodations
 	 */
@@ -1233,5 +1233,15 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setDisplayTestSession(boolean isDisplayTestSession) {
 		this.isDisplayTestSession = isDisplayTestSession;
+	}
+
+
+	public boolean isDisableEditForWV() {
+		return isDisableEditForWV;
+	}
+
+
+	public void setDisableEditForWV(boolean isDisableEditForWV) {
+		this.isDisableEditForWV = isDisableEditForWV;
 	}
 } 

@@ -756,7 +756,8 @@ public class StudentOperationController extends PageFlowController {
 				//System.out.println("org_node_id -->" + tobeDisabled);
 				studentProfileData.setStudentExtracted(tobeDisabled);
 			}
-			
+			boolean isWVCustomer = (getSession().getAttribute("isWVCustomer") != null && "true".equalsIgnoreCase(getSession().getAttribute("isWVCustomer").toString()))? true: false;
+			studentProfileData.setDisableEditForWV(new Boolean(isWVCustomer) && !isTopLevelUser());
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(studentProfileData);
@@ -3464,6 +3465,8 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
      	
      	//Done for 3to8 customer to block user module
      	this.getSession().setAttribute("hasBlockUserManagement", new Boolean(hasBlockUserManagement));
+     	
+     	this.getSession().setAttribute("isWVCustomer", new Boolean(isWVCustomer));
 	}
 	
 	private boolean checkUserLevel(Integer defaultVisibilityLevel){
