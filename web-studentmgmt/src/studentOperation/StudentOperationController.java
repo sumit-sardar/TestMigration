@@ -3435,9 +3435,12 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getRequest().setAttribute("isMandatoryBirthDate", mandatoryBirthdateValue);
 
 			boolean addDeleteStudentEnabled = addDeleteStudentEnable(roleName);
-			if(!(isWVCustomer && isTopLevelUser() && addDeleteStudentEnable(roleName)))
+			if (isWVCustomer)
 			{
-				addDeleteStudentEnabled = false;
+				if(!(isTopLevelUser() && addDeleteStudentEnable(roleName)))
+				{
+					addDeleteStudentEnabled = false;
+				}
 			}
 			this.getSession().setAttribute("addStudentEnable", addDeleteStudentEnabled);
 			this.getSession().setAttribute("deleteStudentEnable", addDeleteStudentEnabled);
