@@ -1586,7 +1586,7 @@ public class PrismWebServiceDBUtility {
 	 * Delete WS Error Log table
 	 * @param wsErrorLogKey
 	 */
-	public static void deleteWSErrorLog(long wsErrorLogKey, Connection lockcon){
+	public static void delWSErrorLog(long wsErrorLogKey, Connection lockcon){
 		PreparedStatement pst  = null;
 		Connection con = null;
 		try {
@@ -1598,12 +1598,12 @@ public class PrismWebServiceDBUtility {
 			}
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
-			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
+			System.out.println("PrismWebServiceDBUtility.delWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
 			pst.executeUpdate();
-			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Successfully deleted WS Error Log Key : " + wsErrorLogKey);
+			System.out.println("PrismWebServiceDBUtility.delWSErrorLog : Successfully deleted WS Error Log Key : " + wsErrorLogKey);
 			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {
-			System.err.println("Error in the PrismWebServiceDBUtility.deleteWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
+			System.err.println("Error in the PrismWebServiceDBUtility.delWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
 			e.printStackTrace();
 		} finally {
 			if(lockcon != null){

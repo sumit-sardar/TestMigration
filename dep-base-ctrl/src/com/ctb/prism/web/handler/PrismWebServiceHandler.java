@@ -131,7 +131,10 @@ public class PrismWebServiceHandler {
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 					if(logkey != 0){
 						System.out.println("Prism Web Service Successfully invoked for ws error log key : " + logkey);
-						PrismWebServiceDBUtility.deleteWSErrorLog(logkey, con);
+						if(con != null){
+							System.out.println("------ invokePrismWebService ::::::::::: LOCK Connection is available -------");
+						}
+						PrismWebServiceDBUtility.delWSErrorLog(logkey, con);
 					}
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
@@ -218,7 +221,9 @@ public class PrismWebServiceHandler {
 			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
 			rosterDetailsList.add(rosterDetailsTO);
 		}
-		
+		if(con != null){
+			System.out.println("------ editStudent ::::::::::: LOCK Connection is available -------");
+		}
 		if(rosterAvailable){
 			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student", hitCount, logkey, con);
 		}else{
@@ -278,7 +283,9 @@ public class PrismWebServiceHandler {
 			
 			rosterDetailsTO.setRosterId(String.valueOf(rosterId));
 			rosterDetailsList.add(rosterDetailsTO);
-			
+			if(con != null){
+				System.out.println("------ scoring ::::::::::: LOCK Connection is available -------");
+			}
 			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, rosterId, sessionId, "Scoring", hitCount, logkey, con);
 			System.out.println("PrismWebServiceHandler.scoring : Prism Web Service Scoring ended for student id - " + studentId + " rosterId - " + rosterId + " sessionId - " + sessionId);
 			
