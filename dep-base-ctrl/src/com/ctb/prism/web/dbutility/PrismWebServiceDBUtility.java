@@ -1591,20 +1591,25 @@ public class PrismWebServiceDBUtility {
 		Connection con = null;
 		try {
 			if(lockcon != null){
+				System.out.println("Lock connection is available.");
 				con = lockcon;
 			}else{
 				con = openOASDBcon(false);
 			}
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
-			pst.executeUpdate();
 			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
+			pst.executeUpdate();
 			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.deleteWSErrorLog() method to execute query : \n " +  DELETE_WS_ERROR_LOG);
 			e.printStackTrace();
 		} finally {
-			close(con, pst);
+			if(lockcon != null){
+				close(pst);
+			}else{
+				close(con, pst);
+			}
 		}
 	}
 	
