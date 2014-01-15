@@ -180,10 +180,12 @@
                     	<h2><netui:content value="${bundle.web['installClient.standardInstall.header']}"/></h2>
                     </td>
                     <td class="transparent-top" width="10%">&nbsp;</td>
+                     <% if (!isLasLinkCustomer.booleanValue()) { %>
                     <td class="transparent-top" width="5%">&nbsp;</td>
                     <td class="transparent" width="40%">
                     	<h2><netui:content value="${bundle.web['installClient.customInstall.header']}"/></h2>
                     </td>
+                     <% } %>
                 </tr>
             
             	<%-- PC --%>
@@ -200,6 +202,7 @@
 	                	</a>                	                                    
                     </td>
                     <td class="transparent-top" width="10%">&nbsp;</td>
+                     <% if (!isLasLinkCustomer.booleanValue()) { %>
                     <td class="transparent-top" width="5%">
                         <img class="transparent-top" src="../resources/images/legacy/icon_pc.gif" width="52" height="33"/>
                     </td>
@@ -211,6 +214,7 @@
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText2']}"/>
 	                	</a>                	                                    
                     </td>
+                    <% } %>
                 </tr>         
                 
                 <tr class="transparent">
@@ -231,6 +235,7 @@
 	                	</a>                	                                    
 		            </td>
                     <td class="transparent-top" width="10%">&nbsp;</td>
+                     <% if (!isLasLinkCustomer.booleanValue()) { %>
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_macX.gif"/>
 		            </td>
@@ -242,6 +247,7 @@
 	                		<netui:content value="${bundle.web['installClient.windows.buttonText2']}"/>
 	                	</a>                	                                    
 		            </td>
+		            <% } %>
 		        </tr>     
 
                 <tr class="transparent">
@@ -249,6 +255,7 @@
                 </tr>
                 
             	<%-- Linux --%>
+    <% if (!isLasLinkCustomer.booleanValue()) { %>            	
 		        <tr id="installLinuxClientRow" class="transparent">
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_linux.png"/>
@@ -291,6 +298,7 @@ Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return s
 </div>		     		                
 		            </td>
 		        </tr>     
+ <% } %>
 
             </table>
 			
