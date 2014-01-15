@@ -1586,14 +1586,18 @@ public class PrismWebServiceDBUtility {
 	 * Delete WS Error Log table
 	 * @param wsErrorLogKey
 	 */
-	public static void deleteWSErrorLog(long wsErrorLogKey){
+	public static void deleteWSErrorLog(long wsErrorLogKey, Connection lockcon){
 		PreparedStatement pst  = null;
 		Connection con = null;
 		try {
-			con = openOASDBcon(false);
+			if(lockcon != null){
+				con = lockcon;
+			}else{
+				con = openOASDBcon(false);
+			}
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
-			pst.execute();
+			pst.executeUpdate();
 			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
 			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {
@@ -1615,7 +1619,6 @@ public class PrismWebServiceDBUtility {
 		Connection con = null;
 		try {
 			if(lockcon != null){
-				System.out.println("Lock connection is available.");
 				con = lockcon;
 			}else{
 				con = openOASDBcon(false);

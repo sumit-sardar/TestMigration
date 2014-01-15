@@ -131,7 +131,7 @@ public class PrismWebServiceHandler {
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 					if(logkey != 0){
 						System.out.println("Prism Web Service Successfully invoked for ws error log key : " + logkey);
-						PrismWebServiceDBUtility.deleteWSErrorLog(logkey);
+						PrismWebServiceDBUtility.deleteWSErrorLog(logkey, con);
 					}
 				}else{ //Failure
 					OASLogger.getLogger(PrismWebServiceConstant.loggerName).error("PrismWebServiceHandler.invokePrismWebService : Prism Web Service call failed and error message is ::::: " + StringUtils.join(responseTO.getErrorMessages().toArray(new String[0]) , "------------------------------- ********************* --------------------------\n"));
