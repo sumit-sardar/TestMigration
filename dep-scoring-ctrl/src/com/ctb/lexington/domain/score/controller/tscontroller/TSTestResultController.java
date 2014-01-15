@@ -83,7 +83,7 @@ public class TSTestResultController implements TestResultController {
         // persist context
         new OrgNodeController(conn, orgNodeData, adminData).run();
         new StudentController(conn, studentData).run();
-        new AdminController(conn, adminData, curriculumData, new Long(studentData.getGrade().equals("AD")?1:2)).run();
+        new AdminController(conn, adminData, curriculumData, new Long(studentData.getGrade().equals("AD")?31:32)).run();
         
         // gather context dim ids for fact records
         ContextData context = new ContextData();
@@ -100,7 +100,7 @@ public class TSTestResultController implements TestResultController {
         context.setStudentId(studentData.getOasStudentId());
         context.setSessionId(adminData.getSessionId());
         context.setCurrentResultId(new Long(rosterValidationStatus.isValid()?1:2));
-        context.setGradeId(new Long(studentData.getGrade().equals("AD")?1:2));
+        context.setGradeId(new Long(studentData.getGrade().equals("AD")?31:32));
         context.setAssessmentId(adminData.getAssessmentId());
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());

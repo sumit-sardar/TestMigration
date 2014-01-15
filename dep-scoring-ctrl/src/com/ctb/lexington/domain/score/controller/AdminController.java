@@ -162,7 +162,8 @@ public class AdminController {
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4: // For Laslink Scoring
-            "TA".equals(data.getAssessmentType())?5:3)); // For Tabe Adaptive Scoring
+            "TA".equals(data.getAssessmentType())?5: // For Tabe Adaptive Scoring
+    		"TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -205,7 +206,8 @@ public class AdminController {
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4:
-            "TA".equals(data.getAssessmentType())?5:3)); // For Laslink Scoring
+            "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
+            "TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
     	return productData;
     }
     
@@ -222,7 +224,8 @@ public class AdminController {
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
             "LL".equals(data.getAssessmentType())?4:
-            "TA".equals(data.getAssessmentType())?5:3)); // For Laslink Scoring
+            "TA".equals(data.getAssessmentType())?5: // For Laslink Scoring
+        	"TS".equals(data.getAssessmentType())?6:3)); // For TASC Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -240,6 +243,12 @@ public class AdminController {
                                           "B".equals(form)?8:
                                           ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form) || "Espa?ol A".equals(form)|| "Espanol A".equals(form) || "Español A".equals(form))?9: // For Laslink Scoring
                                           "CAT".equals(form)?13:14)); 
+                                          
+        if("TS".equals(data.getAssessmentType())) {
+        	assessmentData.setFormid(new Long("A1".equals(form)?18:
+        									  "B1".equals(form)?19:
+        									  "C1".equals(form)?20:21));
+        }
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
                                           new Long(
@@ -270,9 +279,16 @@ public class AdminController {
             assessmentData.setLevelid(                                  
                                           new Long(
                                         	"Adaptive".equals(level)?23:24 ));
-        } else {
-            assessmentData.setLevelid(new Long(6));
-        }
-    	return assessmentData;
+       }
+       // For TASC Scoring
+       else if("TS".equals(data.getAssessmentType())) {
+    	   assessmentData.setLevelid(                                  
+    			   new Long(
+    					   "21-22".equals(level)?34:35 ));
+       } 
+       else {
+    	   assessmentData.setLevelid(new Long(6));
+       }
+       return assessmentData;
     }
 }

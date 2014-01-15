@@ -77,17 +77,13 @@ public class StudentItemScoresController {
 		                                            
 		                itemFact.setAssessmentid(contextData.getAssessmentId());
 		                itemFact.setCurrentResultid(contextData.getCurrentResultId());
-		                /*itemFact.setFormid(new Long(
-		                                        "9".equals(item.getSubtestForm())?1:
-		                                        "10".equals(item.getSubtestForm())?2:1));*/
-		                itemFact.setFormid(new Long(18));
+		                itemFact.setFormid(new Long(
+		                                        "A1".equals(item.getSubtestForm())?18:
+		                                        "B1".equals(item.getSubtestForm())?19:
+		                                        "C1".equals(item.getSubtestForm())?20:21));
 		                itemFact.setGradeid(contextData.getGradeId());
 		                itemFact.setLevelid(new Long(
-		                                        "L".equals(item.getSubtestLevel())?1:
-		                                        "E".equals(item.getSubtestLevel())?2:
-		                                        "M".equals(item.getSubtestLevel())?3:
-		                                        "D".equals(item.getSubtestLevel())?4:
-		                                        "A".equals(item.getSubtestLevel())?5:6));
+		                                        "21-22".equals(item.getSubtestLevel())?34:35));
 		                itemFact.setOrgNodeid(contextData.getOrgNodeId());
 		                itemFact.setProgramid(contextData.getProgramId());
 		                itemFact.setSessionid(contextData.getSessionId());

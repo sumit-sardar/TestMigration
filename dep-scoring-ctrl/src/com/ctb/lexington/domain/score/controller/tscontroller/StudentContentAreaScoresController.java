@@ -66,20 +66,16 @@ public class StudentContentAreaScoresController {
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setContentAreaid(contentAreas[i].getContentAreaId());
                    newFact.setCurrentResultid(context.getCurrentResultId());
-                   /*newFact.setFormid(new Long(
-                                            "9".equals(contentAreas[i].getSubtestForm())?1:
-                                            "10".equals(contentAreas[i].getSubtestForm())?2:1));*/
-                   newFact.setFormid(new Long(18));
+                   newFact.setFormid(new Long(
+                                            "A1".equals(contentAreas[i].getSubtestForm())?18:
+                                            "B1".equals(contentAreas[i].getSubtestForm())?19:
+                                            "C1".equals(contentAreas[i].getSubtestForm())?20:21));
                    /*if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replace('+', '9'))));
                    }*/
                    newFact.setGradeid(context.getGradeId());
                    newFact.setLevelid(new Long(
-                                            "L".equals(contentAreas[i].getSubtestLevel())?1:
-                                            "E".equals(contentAreas[i].getSubtestLevel())?2:
-                                            "M".equals(contentAreas[i].getSubtestLevel())?3:
-                                            "D".equals(contentAreas[i].getSubtestLevel())?4:
-                                            "A".equals(contentAreas[i].getSubtestLevel())?5:6));
+                                            "21-22".equals(contentAreas[i].getSubtestLevel())?34:35));
                    newFact.setNationalPercentile((fact.getNationalPercentile()==null)?null:new Long(fact.getNationalPercentile().longValue()));
                    //newFact.setNationalStanine((fact.getNationalStanine()==null)?null:new Long(fact.getNationalStanine().longValue()));
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));

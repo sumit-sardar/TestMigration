@@ -94,17 +94,13 @@ public class StudentObjectiveScoresController {
                 // dim ids from context
                 primObjFact.setAssessmentid(contextData.getAssessmentId());
                 primObjFact.setCurrentResultid(contextData.getCurrentResultId());
-                /*primObjFact.setFormid(new Long(
-                                        "9".equals(prim.getSubtestForm())?1:
-                                        "10".equals(prim.getSubtestForm())?2:3));*/
-                primObjFact.setFormid(new Long(18));
+                primObjFact.setFormid(new Long(
+                                        "A1".equals(prim.getSubtestForm())?18:
+                                        "B1".equals(prim.getSubtestForm())?19:
+                                        "C1".equals(prim.getSubtestForm())?20:21));
                 primObjFact.setGradeid(contextData.getGradeId());
                 primObjFact.setLevelid(new Long(
-                                        "L".equals(prim.getSubtestLevel())?1:
-                                        "E".equals(prim.getSubtestLevel())?2:
-                                        "M".equals(prim.getSubtestLevel())?3:
-                                        "D".equals(prim.getSubtestLevel())?4:
-                                        "A".equals(prim.getSubtestLevel())?5:6));
+                                        "21-22".equals(prim.getSubtestLevel())?34:35));
                 primObjFact.setOrgNodeid(contextData.getOrgNodeId());
                 primObjFact.setProgramid(contextData.getProgramId());
                 primObjFact.setSessionid(contextData.getSessionId());
@@ -196,15 +192,12 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setAssessmentid(contextData.getAssessmentId());
 	                secObjFact.setCurrentResultid(contextData.getCurrentResultId());
 	                secObjFact.setFormid(new Long(
-	                                        "9".equals(sec.getSubtestForm())?1:
-	                                        "10".equals(sec.getSubtestForm())?2:3));
+	                                        "A1".equals(sec.getSubtestForm())?18:
+	                                        "B1".equals(sec.getSubtestForm())?19:
+	                                        "C1".equals(sec.getSubtestForm())?20:21));
 	                secObjFact.setGradeid(contextData.getGradeId());
 	                secObjFact.setLevelid(new Long(
-	                                        "L".equals(sec.getSubtestLevel())?1:
-	                                        "E".equals(sec.getSubtestLevel())?2:
-	                                        "M".equals(sec.getSubtestLevel())?3:
-	                                        "D".equals(sec.getSubtestLevel())?4:
-	                                        "A".equals(sec.getSubtestLevel())?5:6));
+	                                        "21-22".equals(sec.getSubtestLevel())?34:35));
 	                secObjFact.setOrgNodeid(contextData.getOrgNodeId());
 	                secObjFact.setProgramid(contextData.getProgramId());
 	                secObjFact.setSessionid(contextData.getSessionId());
