@@ -1593,7 +1593,7 @@ public class PrismWebServiceDBUtility {
 			con = openOASDBcon(false);
 			pst  = con.prepareCall(DELETE_WS_ERROR_LOG);
 			pst.setLong(1, wsErrorLogKey);
-			pst.executeUpdate();
+			pst.execute();
 			System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : WS Error Log Key : " + wsErrorLogKey);
 			//System.out.println("PrismWebServiceDBUtility.deleteWSErrorLog : Query for deleteWSErrorLog : " + DELETE_WS_ERROR_LOG);
 		} catch (Exception e) {

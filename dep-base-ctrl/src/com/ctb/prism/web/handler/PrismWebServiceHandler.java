@@ -130,6 +130,7 @@ public class PrismWebServiceHandler {
 				if(responseTO.getStatusCode() == 1){ //Success
 					System.out.println("PrismWebServiceHandler.invokePrismWebService : Prism Web Service successfully invoked.");
 					if(logkey != 0){
+						System.out.println("Prism Web Service Successfully invoked for ws error log key : " + logkey);
 						PrismWebServiceDBUtility.deleteWSErrorLog(logkey);
 					}
 				}else{ //Failure
