@@ -256,13 +256,13 @@ public class StudentObjectiveScoresController {
 	            	Long pointsPossible = new Long(details.getPointsPossible());
 	            	
 	            	if(pointsAttempted == pointsPossible) {
-	            		details.setObjectiveScoringStatus(""); // All items attempted
+	            		details.setObjectiveScoringStatus("A"); // All items attempted
 	            	}
 	            	else if(pointsAttempted < pointsPossible && pointsAttempted > 0) {
-	            		details.setObjectiveScoringStatus("*"); // Some items attempted
+	            		details.setObjectiveScoringStatus("S"); // Some items attempted
 	            	}
 	            	else if(pointsAttempted == 0) {
-	            		details.setObjectiveScoringStatus(""); // No item attempted
+	            		details.setObjectiveScoringStatus("N"); // No item attempted
 	            	}
 	                secObjFact.setObjectiveScoringStatus(details.getObjectiveScoringStatus());
 	                secObjFact.setScaleScore(details.getScaleScore());
