@@ -85,6 +85,14 @@ public class PrismWebServiceConstant {
 	
 	public static final Map<String,String> rslvdEthnicityMap = new HashMap<String, String>(); 
 	
+	public static final String AllItmAtmtdVal = "A";
+	public static final String SomeItmAtmtdVal = "S";
+	public static final String NoneItmAtmtdVal = "N";
+	
+	public static final String AllItmAttmtdScoreVal = "";
+	public static final String SomeItmAttmtdScoreVal = "*";
+	public static final String NoneItmAttmtdScoreVal = "-";
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");

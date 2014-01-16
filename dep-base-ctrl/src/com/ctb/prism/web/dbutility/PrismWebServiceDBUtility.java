@@ -938,7 +938,7 @@ public class PrismWebServiceDBUtility {
 			subTestStatusPst = con.prepareStatement(GET_SUBTEST_STATUS);
 			subTestStatusPst.setLong(1, rosterId);
 			subTestStatusPst.setLong(2, itemSetId);
-			System.out.println("PrismWebServiceDBUtility.getContentStatusCode : Query for getContentStatusCode : " + GET_SUBTEST_STATUS);
+			//System.out.println("PrismWebServiceDBUtility.getContentStatusCode : Query for getContentStatusCode : " + GET_SUBTEST_STATUS);
 			subTestStatusRS = subTestStatusPst.executeQuery();
 
 			while (subTestStatusRS.next()) {
@@ -1156,35 +1156,44 @@ public class PrismWebServiceDBUtility {
 						//System.out.println("PrismWebServiceDBUtility.getObjectiveScoreDetails : Query for getObjectiveScoreDetails : " + GET_SEC_OBJ_SCORE);
 						
 						while(irsRs.next()){
+							String itmAttempFlag = irsRs.getString("itmattempflag");
+							boolean noneItmAttmtd = false;
+							ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
+							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.INRCObjectiveScoreDetails);
+							if(PrismWebServiceConstant.NoneItmAtmtdVal.equalsIgnoreCase(itmAttempFlag)){
+								INRCobjectiveScoreTO.setValue(PrismWebServiceConstant.NoneItmAttmtdScoreVal);
+								noneItmAttmtd = true;
+							}else if(PrismWebServiceConstant.SomeItmAtmtdVal.equalsIgnoreCase(itmAttempFlag)){
+								INRCobjectiveScoreTO.setValue(PrismWebServiceConstant.SomeItmAttmtdScoreVal);
+							}else{
+								INRCobjectiveScoreTO.setValue(PrismWebServiceConstant.AllItmAttmtdScoreVal);
+							}
+							objectiveScoreDetails.getCollObjectiveScoreTO().add(INRCobjectiveScoreTO);
+							
 							ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
 							NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
-							NCobjectiveScoreTO.setValue(irsRs.getString("numcorrect"));
+							NCobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("numcorrect") : "");
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
 							
 							ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
 							NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
-							NPobjectiveScoreTO.setValue(irsRs.getString("numpossible"));
+							NPobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("numpossible") : "");
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
 							
 							ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
 							SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
-							SSobjectiveScoreTO.setValue(irsRs.getString("scalescore"));
+							SSobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("scalescore") : "");
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
 							
 							ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
 							MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
-							MAobjectiveScoreTO.setValue(irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-");
+							MAobjectiveScoreTO.setValue(!noneItmAttmtd ? (irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-") : "");
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
 							
 							ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
 							MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
-							MRobjectiveScoreTO.setValue(irsRs.getString("objmasscalescorerng"));
+							MRobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("objmasscalescorerng") : "");
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
-							
-							ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
-							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.INRCObjectiveScoreDetails);
-							INRCobjectiveScoreTO.setValue(irsRs.getString("itmattempflag"));
-							objectiveScoreDetails.getCollObjectiveScoreTO().add(INRCobjectiveScoreTO);
 							
 							ObjectiveScoreTO CCCobjectiveScoreTO = new ObjectiveScoreTO();
 							String conditionCode = irsRs.getString("conditioncode");
@@ -1591,7 +1600,6 @@ public class PrismWebServiceDBUtility {
 		Connection con = null;
 		try {
 			if(lockcon != null){
-				System.out.println("Lock connection is available.");
 				con = lockcon;
 			}else{
 				con = openOASDBcon(false);
