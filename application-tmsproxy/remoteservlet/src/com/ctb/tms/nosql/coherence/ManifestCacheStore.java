@@ -2,6 +2,7 @@ package com.ctb.tms.nosql.coherence;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
@@ -29,6 +31,9 @@ import java.util.concurrent.Future;
 public class ManifestCacheStore implements OASCacheStore {
 
     static Logger logger = Logger.getLogger(ManifestCacheStore.class);
+//    static {
+//    	logger.setLevel(Level.DEBUG);
+//    }
     private ThreadPoolExecutor m_storeAllThreadPool;
     private final ThreadLocalConnection m_storeAllConnnectionPool = new ThreadLocalConnection();
     private int m_storeAllThreadPool_ThreadCount;
@@ -187,6 +192,7 @@ public class ManifestCacheStore implements OASCacheStore {
 
                 rendezVousPoint(futureList,result);
                 
+                // logger.debug("Calling m_storeAllConnnectionPool.commit()");
                 // This will commit everything and reset the connections
                 m_storeAllConnnectionPool.commit();
 
@@ -218,13 +224,15 @@ public class ManifestCacheStore implements OASCacheStore {
             ThreadPoolResult result = new ThreadPoolResult();
 
             try {
+            	//logger.debug("setBinEntries.size()="+setBinEntries.size());
                 for (Object each : setBinEntries) {
                     BinaryEntry entry = (BinaryEntry) each;
                     Future f = add2ThreadPool(result, (String) entry.getKey(), (ManifestWrapper)entry.getValue());
                     futureList.add(f);
                 }
                 rendezVousPoint(futureList,result);
-
+                
+                //logger.debug("Calling m_storeAllConnnectionPool.commit()");
                 // This will commit everything and reset the connections
                 m_storeAllConnnectionPool.commit();
 
@@ -278,7 +286,7 @@ public class ManifestCacheStore implements OASCacheStore {
                 if (sleep < 1) {
                     sleep = 1;
                 }
-
+                //logger.debug("rendezVousPoint sleeping for "+sleep +" ms");
                 Thread.sleep(sleep);
             }
         } catch (InterruptedException interrupt) {
@@ -296,6 +304,7 @@ public class ManifestCacheStore implements OASCacheStore {
                 }
             }
             try {
+//                logger.debug("rendezVousPoint future check sleeping for 20 ms");
                 Thread.sleep(20);
             } catch (InterruptedException ex) {
                 logger.fatal(ex);
@@ -386,12 +395,19 @@ public class ManifestCacheStore implements OASCacheStore {
                 OASRDBSink sink = RDBStorageFactory.getOASSink();
                 try {
                     conn = sink.getOASConnection();
+                    
+
                     m_allConnections.add(conn);
                     m_storeAllConnectionPool.set(conn);
                     if (conn.isClosed())
-                        logger.info("Obtained a new CLOSED connection");
+                        logger.debug("Obtained a new CLOSED connection "+conn.toString());
                     else
-                        logger.info("Obtained a new OPENED connection");
+                        logger.debug("Obtained a new OPENED connection "+conn.toString());
+                    
+//                    conn.setAutoCommit(false);
+//                    Savepoint sp = conn.setSavepoint();
+//                    logger.debug("setSavepoint " + sp.toString());
+
                                 
                 } catch (Exception err) {
                     logger.fatal("We can't obtain a new connection");
@@ -403,6 +419,7 @@ public class ManifestCacheStore implements OASCacheStore {
         }
 
         public synchronized void commit() throws SQLException {
+        	//logger.debug("commit is called.");
             if (this.m_allConnections == null) {
                 logger.fatal("We can't commit as we don't have any connection.");
                 return;
@@ -412,6 +429,7 @@ public class ManifestCacheStore implements OASCacheStore {
                 Connection conn = i.next();
                 try {
                     conn.commit();
+                    logger.debug("commit() done for "+conn.toString());
                 } catch (SQLException ex) {
                     // if any one commit fails, everything fails
                 	logger.error("commit() failed: "+ ex.getMessage());
@@ -440,6 +458,8 @@ public class ManifestCacheStore implements OASCacheStore {
                 try {
                     try {
                         conn.rollback();
+                        logger.debug("rollback() done for "+conn.toString());
+
                     } catch (SQLException ex) {
                     	logger.error("rollback() failed: "+ ex.getMessage());
                     }
@@ -454,9 +474,10 @@ public class ManifestCacheStore implements OASCacheStore {
         }
 
         private void closeConnection(String caller, Connection conn) throws SQLException {
-            logger.info("ManifestCacheStore.storeAll:["+caller+"] request close connection");
+            //logger.debug("ManifestCacheStore.storeAll:["+caller+"] request close connection");
             if (!conn.isClosed()) {
-                logger.info("ManifestCacheStore.storeAll:["+caller+"] closing connection");
+                logger.debug("ManifestCacheStore.storeAll:["+caller+"] closing connection");
+                //conn.setAutoCommit(true);
                 conn.close();
             }
 
@@ -488,13 +509,22 @@ public class ManifestCacheStore implements OASCacheStore {
         public void run() {
             try {
                 Connection conn = m_pool.getConnection();
+                
+                //logger.debug("PutManifestSink.run:  Got connection " + conn.toString());
+                
+                //see if we need to move setSavepoint() to getConnection() 
+                //it's called for each run() here vs. called only once for each getConnection()
+//                Savepoint sp = conn.setSavepoint();
+//                logger.debug("PutManifestSink.run:  setSavepoint " + sp.toString());
+                
                 OASRDBSink sink = RDBStorageFactory.getOASSink();
                 sink.putManifest(conn, m_manifestKey, m_manifestWrapper.getManifests());
+                logger.debug("PutManifestSink.run:  put manifest to DB for key " + m_manifestKey);
                 m_result.storedCount++;
             } catch (Exception e) {
                 m_result.errorCount++;
                 m_result.lastError = e;
-                logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for key " + m_manifestKey + ": " + e.getMessage());
+                logger.warn("PutManifestSink.run: Error storing manifest to DB for key " + m_manifestKey + ": " + e.getMessage());
             }
         }
     }
