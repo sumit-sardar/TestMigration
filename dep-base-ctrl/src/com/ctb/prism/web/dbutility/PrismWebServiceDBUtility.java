@@ -82,6 +82,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_CONTENT_AREA_ID = "SELECT DISTINCT productid,       contentareaid,       contentareaname  FROM (SELECT DISTINCT dp.item_id,                        dp.max_points,                        productid,                        contentareaid,                        contentareaname,                        contentareatype,                        subject,                        contentareanumitems,                        subtestform,                        subtestlevel,                        subtestid          FROM (SELECT DISTINCT prod.product_id AS productid,                                prod.product_id || ca.item_set_id AS contentareaid,                                ca.item_set_name AS contentareaname,                                prod.product_type || ' CONTENT AREA' AS contentareatype,                                prod.product_type || ' ' || ca.item_set_name AS subject,                                COUNT(DISTINCT item.item_id) AS contentareanumitems,                                td.item_set_form AS subtestform,                                td.item_set_level AS subtestlevel,                                td.item_set_id AS subtestid                  FROM item,                       item_set ca,                       item_set_category cacat,                       item_set_ancestor caisa,                       item_set_item caisi,                       item_set_ancestor tcisa,                       item_set_item tcisi,                       test_roster ros,                       test_admin adm,                       test_catalog tc,                       product prod,                       item_set td                 WHERE ros.test_roster_id = ?                   AND adm.test_admin_id = ros.test_admin_id                   AND tc.test_catalog_id = adm.test_catalog_id                   AND prod.product_id = tc.product_id                   AND item.activation_status = 'AC'                   AND tc.activation_status = 'AC'                   AND ca.item_set_id = caisa.ancestor_item_set_id                   AND ca.item_set_type = 'RE'                   AND caisa.item_set_id = caisi.item_set_id                  AND item.item_id = caisi.item_id                   AND tcisi.suppressed = 'F'                   AND tcisi.item_id = item.item_id                  AND tcisa.item_set_id = tcisi.item_set_id                   AND adm.item_set_id = tcisa.ancestor_item_set_id                   AND cacat.item_set_category_id = ca.item_set_category_id                   AND cacat.item_set_category_level =                      prod.content_area_level                   AND td.item_set_id = tcisi.item_set_id                   AND td.SAMPLE = 'F'                  AND (td.item_set_level != 'L' OR prod.product_type = 'TL')                   AND cacat.framework_product_id = prod.parent_product_id                GROUP BY prod.product_id,                          prod.product_id || ca.item_set_id,                          ca.item_set_name,                         prod.product_type || ' CONTENT AREA',                          prod.product_type || ' ' || ca.item_set_name,                         td.item_set_form,                          td.item_set_level,                          td.item_set_id) derived,               datapoint dp,              item_set_item isi         WHERE isi.item_set_id = derived.subtestid           AND isi.suppressed = 'F'           AND dp.item_id =isi.item_id) derived1 GROUP BY productid,          contentareaid,          contentareaname";
 	private static final String GET_CUST_CONF_ACCOMMODATION = "SELECT * FROM student_accommodation t WHERE t.student_id = ? ";
 	private static final String GET_CUSTOMER_KEY = "select distinct  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey from  customer_report_bridge bridge where  bridge.customer_id = ? and bridge.product_id = 4500 and bridge.report_name='Prism' ";
+	private static final String GET_PRISMWS_URL = " SELECT DISTINCT resource_URI as resourceURL  from customer_resource Where customer_id = ? and Resource_type_code = 'PRISMWSURL' and ROWNUM = 1 ";
 	
 	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message, ADDITIONAL_INFO) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   0,   ?,   ?,  ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
@@ -90,6 +91,33 @@ public class PrismWebServiceDBUtility {
 	//private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM ws_error_log_bkp WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM ws_error_log_bkp                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
+	
+	/**
+	 * Get Prism Web Service URL
+	 * @param customerId
+	 * @return
+	 */
+	public static String getPrismWSURL(Integer customerId){
+		PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		String customerURL = "";
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_PRISMWS_URL);
+			pst.setInt(1, customerId);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				customerURL = rs.getString("resourceURL");
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getPrismWSURL() method to execute query : \n " +  GET_PRISMWS_URL);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return customerURL;
+	}
 	
 	/**
 	 * Get Student Bio Information
@@ -1233,6 +1261,65 @@ public class PrismWebServiceDBUtility {
 		return objectiveScoreDetailsLst;
 	}
 
+	private static List<ObjectiveScoreDetailsTO> getObjectivesForOmSupInvStatus(long itemSetId, long sessionId, Integer conCode, String conStatus) {
+		List<ObjectiveScoreDetailsTO> objectiveScoreDetailsLst = new ArrayList<ObjectiveScoreDetailsTO>();
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_OBJECTIVE_LIST);
+			pst.setLong(1, itemSetId);
+			pst.setLong(2, sessionId);
+			pst.setString(3, String.valueOf(conCode));
+			pst.setLong(4, itemSetId);
+			pst.setLong(5, sessionId);
+			pst.setString(6, String.valueOf(conCode));
+			rs = pst.executeQuery();
+			while(rs.next()){
+				ObjectiveScoreDetailsTO objectiveScoreDetails = new ObjectiveScoreDetailsTO();
+				ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
+				NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
+							
+				ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
+				NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
+							
+				ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
+				SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
+							
+				ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
+				MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
+							
+				ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
+				MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
+							
+				ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
+				OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
+				if(conStatus.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
+					OSCobjectiveScoreTO.setValue("-");
+				}
+				
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(OSCobjectiveScoreTO);
+							
+				objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
+				objectiveScoreDetails.setObjectiveCode(rs.getString("objcode"));
+							
+				objectiveScoreDetailsLst.add(objectiveScoreDetails);
+			}
+		}catch(Exception ex){
+			System.err.println("Error in the PrismWebServiceDBUtility.getObjectivesForOmSupInvStatus() method to execute query : \n " +  GET_OBJECTIVE_LIST);
+			ex.printStackTrace();
+		}finally{
+			close(con, pst, rs);
+		}
+		return objectiveScoreDetailsLst;
+	}
+	
 	/**
 	 * Get Student Survey Bio Response
 	 * @param rosterId
