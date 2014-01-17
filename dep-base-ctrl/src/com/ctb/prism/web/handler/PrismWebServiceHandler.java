@@ -51,7 +51,7 @@ public class PrismWebServiceHandler {
 	private static void getService(String customerId, String orgNodeCode, String heirarchyLevel) throws Exception {
 		try {
 			if (service == null) {
-				String urlLocation = PrismWebServiceConstant.resourceBundler.getString("url");
+				String urlLocation = PrismWebServiceDBUtility.getPrismWSURL(Integer.parseInt(customerId));
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
 				URL url = new URL(urlLocation);
