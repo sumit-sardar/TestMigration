@@ -409,7 +409,9 @@ public class PrismWebServiceDBUtility {
 				}
 			}
 			
-			grItemResponseTO.setEditedResponse(grScoreVal.toString());
+			//Code commented for layout change on 01/16/2014
+			//grItemResponseTO.setEditedResponse(grScoreVal.toString());
+			grItemResponseTO.setScoreValue(grScoreVal.toString());
 			if(grItmPresent){
 				if(wrRespStatusItmId != null && wrRespStatusItmId.length() > 0){
 					respStatusMap = getGRResponseStatus(wrRespStatusItmId, studentId, sessionId, respStatusMap);
@@ -417,7 +419,9 @@ public class PrismWebServiceDBUtility {
 				ItemResponseTO grResponseStatusTO = new ItemResponseTO();
 				grResponseStatusTO.setItemSetType(PrismWebServiceConstant.GRItemResponseSetType);
 				grResponseStatusTO.setItemCode(PrismWebServiceConstant.itemResponseItemCodeMap.get(PrismWebServiceConstant.GRStatusTxt));
-				grResponseStatusTO.setResponseStatus(StringUtils.join(respStatusMap.values().toArray(new String[0]), ""));
+				//Code commented for layout change on 01/16/2014
+				//grResponseStatusTO.setResponseStatus(StringUtils.join(respStatusMap.values().toArray(new String[0]), ""));
+				grResponseStatusTO.setScoreValue(StringUtils.join(respStatusMap.values().toArray(new String[0]), ""));
 				itemResponseTOLst.add(grResponseStatusTO);
 				
 				itemResponseTOLst.add(grItemResponseTO);
@@ -1127,7 +1131,7 @@ public class PrismWebServiceDBUtility {
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO); 
 							
 							ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
-							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.INRCObjectiveScoreDetails);
+							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 							INRCobjectiveScoreTO.setValue(irsRs.getString("itmattempflag"));
 							objectiveScoreDetails.getCollObjectiveScoreTO().add(INRCobjectiveScoreTO);
 							
@@ -1159,7 +1163,7 @@ public class PrismWebServiceDBUtility {
 							String itmAttempFlag = irsRs.getString("itmattempflag");
 							boolean noneItmAttmtd = false;
 							ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
-							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.INRCObjectiveScoreDetails);
+							INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 							if(PrismWebServiceConstant.NoneItmAtmtdVal.equalsIgnoreCase(itmAttempFlag)){
 								INRCobjectiveScoreTO.setValue(PrismWebServiceConstant.NoneItmAttmtdScoreVal);
 								noneItmAttmtd = true;

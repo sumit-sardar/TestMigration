@@ -47,7 +47,7 @@ public class PrismWebServiceConstant {
 	public static final String SSObjectiveScoreDetails = "SS";
 	public static final String MAObjectiveScoreDetails = "MA";
 	public static final String MRObjectiveScoreDetails = "MR";
-	public static final String INRCObjectiveScoreDetails = "INRC";
+	public static final String OSCObjectiveScoreDetails = "OSC";
 	public static final String CCObjectiveScoreDetails = "CC";
 	
 	public static final String ATestFormStr = "A";
