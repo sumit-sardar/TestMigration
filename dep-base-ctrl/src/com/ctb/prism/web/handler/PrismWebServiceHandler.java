@@ -53,7 +53,6 @@ public class PrismWebServiceHandler {
 			if (service == null) {
 				String urlLocation = PrismWebServiceDBUtility.getPrismWSURL(Integer.parseInt(customerId));
 				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : -> " + urlLocation);
-				System.out.println("PrismWebServiceHandler.getService : Prism Web Service URL Location : " + urlLocation);
 				URL url = new URL(urlLocation);
 				QName qname = new QName("http://controller.web.prism.ctb.com/",
 						"StudentDataloadService");
