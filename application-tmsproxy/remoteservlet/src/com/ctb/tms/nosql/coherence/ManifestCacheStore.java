@@ -404,7 +404,7 @@ public class ManifestCacheStore implements OASCacheStore {
                     else
                         logger.debug("Obtained a new OPENED connection "+conn.toString());
                     
-//                    conn.setAutoCommit(false);
+                    conn.setAutoCommit(false);
 //                    Savepoint sp = conn.setSavepoint();
 //                    logger.debug("setSavepoint " + sp.toString());
 
@@ -507,9 +507,10 @@ public class ManifestCacheStore implements OASCacheStore {
         }
 
         public void run() {
+        	Connection conn=null;
             try {
-                Connection conn = m_pool.getConnection();
-                
+            	conn = m_pool.getConnection();
+            	conn.setAutoCommit(false);
                 //logger.debug("PutManifestSink.run:  Got connection " + conn.toString());
                 
                 //see if we need to move setSavepoint() to getConnection() 
@@ -519,12 +520,20 @@ public class ManifestCacheStore implements OASCacheStore {
                 
                 OASRDBSink sink = RDBStorageFactory.getOASSink();
                 sink.putManifest(conn, m_manifestKey, m_manifestWrapper.getManifests());
-                logger.debug("PutManifestSink.run:  put manifest to DB for key " + m_manifestKey);
+                conn.commit();
+                logger.debug("PutManifestSink.run:  Put manifest to DB for key " + m_manifestKey);
                 m_result.storedCount++;
             } catch (Exception e) {
-                m_result.errorCount++;
-                m_result.lastError = e;
-                logger.warn("PutManifestSink.run: Error storing manifest to DB for key " + m_manifestKey + ": " + e.getMessage());
+            	try {
+            		if (conn != null)
+            			conn.rollback();
+	                m_result.errorCount++;
+	                m_result.lastError = e;
+	                logger.warn("PutManifestSink.run: Error storing manifest to DB for key " + m_manifestKey + ": " + e.getMessage());
+            	}
+            	catch (SQLException ex) {
+            		logger.error("Rollback failed: "+ex.getMessage());
+            	}
             }
         }
     }
