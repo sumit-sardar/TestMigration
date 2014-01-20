@@ -252,8 +252,10 @@ public class StudentObjectiveScoresController {
 	                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
 	                
 	                secObjFact.setSubtestName(sec.getSubtestName());
-	                Long pointsAttempted = new Long(details.getPointsAttempted());
-	            	Long pointsPossible = new Long(details.getPointsPossible());
+	                long pointsAttempted = 0;
+	                long pointsPossible = 0;
+	                if(null != details.getPointsAttempted()) pointsAttempted = details.getPointsAttempted().longValue();
+	                if(null != details.getPointsPossible()) pointsPossible = details.getPointsPossible().longValue();
 	            	
 	            	if(pointsAttempted == pointsPossible) {
 	            		details.setObjectiveScoringStatus("A"); // All items attempted
