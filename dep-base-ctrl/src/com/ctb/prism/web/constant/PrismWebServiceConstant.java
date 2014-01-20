@@ -93,6 +93,10 @@ public class PrismWebServiceConstant {
 	public static final String SomeItmAttmtdScoreVal = "*";
 	public static final String NoneItmAttmtdScoreVal = "-";
 	
+	public static final String wr2ndObjName = "Essay";
+	
+	public static final int wrContentCode = 2;
+	
 	static{
 		itemResponseItemCodeMap.put("SR", "01");
 		itemResponseItemCodeMap.put("CR", "02");
@@ -106,7 +110,7 @@ public class PrismWebServiceConstant {
 		itemResponseSRScoreValMap.put("E", 5);
 		
 		contentDetailsContentCodeMap.put("Reading", 1);
-		contentDetailsContentCodeMap.put("Writing", 2);
+		contentDetailsContentCodeMap.put("Writing", wrContentCode);
 		contentDetailsContentCodeMap.put("ELA", 3);
 		contentDetailsContentCodeMap.put("Mathematics", 4);
 		contentDetailsContentCodeMap.put("Science", 5);
