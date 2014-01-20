@@ -245,7 +245,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
 				count++;
 			}
 			if(count != 0 )  {
-				ELAScaleScore = ELAScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_FLOOR);
+				ELAScaleScore = ELAScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_HALF_UP);
 			}
 
 			if(count == 0 ) 
@@ -292,7 +292,7 @@ public class TASCCompositeScoreCalculator extends AbstractDerivedScoreCalculator
      	       
      	     }
    	         if(count != 0 )  {
-   	        	 OverallScaleScore = OverallScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_FLOOR);
+   	        	 OverallScaleScore = OverallScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_HALF_UP);
    	         }
    	         
    	         if(count == 0 ) 
