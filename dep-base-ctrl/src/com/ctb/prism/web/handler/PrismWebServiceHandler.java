@@ -121,6 +121,7 @@ public class PrismWebServiceHandler {
 		StudentDataLoadTO responseTO = null;
 		String additionalInfo = "";
 		try{
+			service=null; // to build the service each time 
 			getService(customerId, orgNodeCode, heirarchyLevel);
 			if(service != null){
 				responseTO = service.loadStudentData(studentListTO);
