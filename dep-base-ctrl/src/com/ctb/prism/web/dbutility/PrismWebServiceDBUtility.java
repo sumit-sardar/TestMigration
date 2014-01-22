@@ -619,6 +619,9 @@ public class PrismWebServiceDBUtility {
 			rs = pst.executeQuery();
 			//System.out.println("PrismWebServiceDBUtility.getContentDetailsTO : Query for getContentDetailsTO : " + GET_CONTENT_DETAILS);
 			
+			boolean sendELA = true;
+			boolean sendOverAll = true;			
+			
 			Map<Integer, ContentDetailsTO> contentDetailsTOMap = getContentDetailsTOMap();
 					
 			while(rs.next()){
@@ -642,10 +645,12 @@ public class PrismWebServiceDBUtility {
 					}
 					
 					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
-					if(contentCode == 2){
+					if(contentCode == PrismWebServiceConstant.wrContentCode){
 						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
 						if(!isCRScorePresent){
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
+							sendELA = false;
+							sendOverAll = false;
 							continue;
 						}
 					}
@@ -659,6 +664,10 @@ public class PrismWebServiceDBUtility {
 						if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test skipp the rest part
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
+								sendELA = false;
+							}
+							sendOverAll = false;
 							continue;
 						}
 					}
@@ -671,11 +680,19 @@ public class PrismWebServiceDBUtility {
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) : "");
 						if(PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Omitted Content 
+							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
+								sendELA = false;
+							}
+							sendOverAll = false;
 							contentDetailsTO.setDateTestTaken(null);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
 							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
+								sendELA = false;
+							}
+							sendOverAll = false;
 							continue;
 						}
 					}else{
@@ -694,7 +711,7 @@ public class PrismWebServiceDBUtility {
 			}
 			
 			//Set the composite content score details
-			setCompositeContentScoreDetails(studentId, sessionId, contentDetailsTOMap);
+			setCompositeContentScoreDetails(studentId, sessionId, contentDetailsTOMap, sendELA, sendOverAll);
 			
 			contentDetailsTOList.addAll(contentDetailsTOMap.values());
 		} catch (Exception e) {
@@ -994,12 +1011,14 @@ public class PrismWebServiceDBUtility {
 	 * @param studentId
 	 * @param sessionId
 	 * @param contentDetailsTOMap 
+	 * @param sendELA 
+	 * @param sendOverAll 
 	 * @return
 	 * @throws CTBBusinessException
 	 * @throws SQLException
 	 */
 	private static List<ContentDetailsTO> setCompositeContentScoreDetails(
-			Integer studentId, long sessionId, Map<Integer, ContentDetailsTO> contentDetailsTOMap) {
+			Integer studentId, long sessionId, Map<Integer, ContentDetailsTO> contentDetailsTOMap,boolean sendELA, boolean sendOverAll) {
 		PreparedStatement compTestPst = null;
 		ResultSet compTestRS = null;
 		Connection irsCon = null;
@@ -1016,6 +1035,8 @@ public class PrismWebServiceDBUtility {
 		contentDetailsTOList.add(overAllContentDetailsTO);
 		
 		try {
+			
+			if(sendELA || sendOverAll){				
 			irsCon = openIRSDBcon(false);
 			compTestPst = irsCon
 					.prepareStatement(GET_COMPOSITE_CONTENT_DETAILS);
@@ -1024,60 +1045,77 @@ public class PrismWebServiceDBUtility {
 			compTestRS = compTestPst.executeQuery();
 			//System.out.println("PrismWebServiceDBUtility.getCompositeContentScoreDetails : Query for getCompositeContentScoreDetails : " + GET_COMPOSITE_CONTENT_DETAILS);
 			while (compTestRS.next()) {
-				ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
+					ContentDetailsTO contentDetailsTO = null;
+					String contentCodeName = compTestRS.getString("compName");
+					Integer contentCode = 0;
+					if(contentCodeName != null && contentCodeName.indexOf("ELA") >= 0){
+						contentDetailsTO = elaContentDetailsTO;
+						if(!sendELA){
+							contentDetailsTO.setContentScoreDetailsTO(buildEmptyContentScoreDetailsTO());
+							continue;						
+						}
+						contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA");
+					}else if(contentCodeName != null && contentCodeName.indexOf("Overall") >= 0){
+						contentDetailsTO = overAllContentDetailsTO;
+						if(!sendOverAll){
+							contentDetailsTO.setContentScoreDetailsTO(buildEmptyContentScoreDetailsTO());
+							continue;						
+						}
+						contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall");
+					}
+					if(contentDetailsTO != null){
+							ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
+							contentDetailsTO.setContentCode(String.valueOf(contentCode));
+							contentDetailsTO.setStatusCode("");
+							contentDetailsTO.setDataChanged(true);
+			
+							ContentScoreTO ncContentScoreTO = new ContentScoreTO();
+							ncContentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
+							ncContentScoreTO.setScoreValue(compTestRS.getString("ncScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(ncContentScoreTO);
+			
+							ContentScoreTO npContentScoreTO = new ContentScoreTO();
+							npContentScoreTO.setScoreType(PrismWebServiceConstant.NPContentScoreDetails);
+							npContentScoreTO.setScoreValue(compTestRS.getString("npScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(npContentScoreTO);
+			
+							ContentScoreTO ssContentScoreTO = new ContentScoreTO();
+							ssContentScoreTO.setScoreType(PrismWebServiceConstant.SSContentScoreDetails);
+							ssContentScoreTO.setScoreValue(compTestRS.getString("ssScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(ssContentScoreTO);
+			
+							ContentScoreTO hseContentScoreTO = new ContentScoreTO();
+							hseContentScoreTO.setScoreType(PrismWebServiceConstant.HSEContentScoreDetails);
+							hseContentScoreTO.setScoreValue(compTestRS.getString("hseScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(hseContentScoreTO);
+			
+							ContentScoreTO prContentScoreTO = new ContentScoreTO();
+							prContentScoreTO.setScoreType(PrismWebServiceConstant.PRContentScoreDetails);
+							prContentScoreTO.setScoreValue(compTestRS.getString("prScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(prContentScoreTO);
+			
+							ContentScoreTO nceContentScoreTO = new ContentScoreTO();
+							nceContentScoreTO.setScoreType(PrismWebServiceConstant.NCEContentScoreDetails);
+							nceContentScoreTO.setScoreValue(compTestRS.getString("nceScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(nceContentScoreTO);
+			
+							ContentScoreTO ssrContentScoreTO = new ContentScoreTO();
+							ssrContentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
+							ssrContentScoreTO.setScoreValue(compTestRS.getString("ssrScoreVal"));
+							contentScoreDetailsTO.getCollContentScoreTO().add(ssrContentScoreTO);
+			
+							contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
+					}
+				}	
+			}else{
 				ContentDetailsTO contentDetailsTO = null;
-				String contentCodeName = compTestRS.getString("compName");
-				Integer contentCode = 0;
-				if(contentCodeName != null && contentCodeName.indexOf("ELA") >= 0){
-					contentDetailsTO = elaContentDetailsTO;
-					contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get("ELA");
-				}else if(contentCodeName != null && contentCodeName.indexOf("Overall") >= 0){
-					contentDetailsTO = overAllContentDetailsTO;
-					contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get("Overall");
-				}
-				if(contentDetailsTO != null){
-					contentDetailsTO.setContentCode(String.valueOf(contentCode));
-					contentDetailsTO.setStatusCode("");
-					contentDetailsTO.setDataChanged(true);
-	
-					ContentScoreTO ncContentScoreTO = new ContentScoreTO();
-					ncContentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
-					ncContentScoreTO.setScoreValue(compTestRS.getString("ncScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(ncContentScoreTO);
-	
-					ContentScoreTO npContentScoreTO = new ContentScoreTO();
-					npContentScoreTO.setScoreType(PrismWebServiceConstant.NPContentScoreDetails);
-					npContentScoreTO.setScoreValue(compTestRS.getString("npScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(npContentScoreTO);
-	
-					ContentScoreTO ssContentScoreTO = new ContentScoreTO();
-					ssContentScoreTO.setScoreType(PrismWebServiceConstant.SSContentScoreDetails);
-					ssContentScoreTO.setScoreValue(compTestRS.getString("ssScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(ssContentScoreTO);
-	
-					ContentScoreTO hseContentScoreTO = new ContentScoreTO();
-					hseContentScoreTO.setScoreType(PrismWebServiceConstant.HSEContentScoreDetails);
-					hseContentScoreTO.setScoreValue(compTestRS.getString("hseScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(hseContentScoreTO);
-	
-					ContentScoreTO prContentScoreTO = new ContentScoreTO();
-					prContentScoreTO.setScoreType(PrismWebServiceConstant.PRContentScoreDetails);
-					prContentScoreTO.setScoreValue(compTestRS.getString("prScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(prContentScoreTO);
-	
-					ContentScoreTO nceContentScoreTO = new ContentScoreTO();
-					nceContentScoreTO.setScoreType(PrismWebServiceConstant.NCEContentScoreDetails);
-					nceContentScoreTO.setScoreValue(compTestRS.getString("nceScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(nceContentScoreTO);
-	
-					ContentScoreTO ssrContentScoreTO = new ContentScoreTO();
-					ssrContentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
-					ssrContentScoreTO.setScoreValue(compTestRS.getString("ssrScoreVal"));
-					contentScoreDetailsTO.getCollContentScoreTO().add(ssrContentScoreTO);
-	
-					contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
-					// TODO - Set the value status code to contentDetailsTO
-				}
+				contentDetailsTO = elaContentDetailsTO;
+				contentDetailsTO.setContentScoreDetailsTO(buildEmptyContentScoreDetailsTO());
+				
+				contentDetailsTO = null;
+				contentDetailsTO = overAllContentDetailsTO;
+				contentDetailsTO.setContentScoreDetailsTO(buildEmptyContentScoreDetailsTO());
+				
 			}
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getCompositeContentScoreDetails() method to execute query : \n " +  GET_COMPOSITE_CONTENT_DETAILS);
@@ -1087,7 +1125,48 @@ public class PrismWebServiceDBUtility {
 		}
 		return contentDetailsTOList;
 	}
+	
+	
+	/**
+	 * Create the empty Content Score details Object
+	 * @return
+	 */
+	private static ContentScoreDetailsTO buildEmptyContentScoreDetailsTO(){
+		
+		ContentScoreDetailsTO contentScoreDetailsTO = new ContentScoreDetailsTO();
+		
+		ContentScoreTO ncContentScoreTO = new ContentScoreTO();
+		ncContentScoreTO.setScoreType(PrismWebServiceConstant.NCContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(ncContentScoreTO);
 
+		ContentScoreTO npContentScoreTO = new ContentScoreTO();
+		npContentScoreTO.setScoreType(PrismWebServiceConstant.NPContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(npContentScoreTO);
+
+		ContentScoreTO ssContentScoreTO = new ContentScoreTO();
+		ssContentScoreTO.setScoreType(PrismWebServiceConstant.SSContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(ssContentScoreTO);
+
+		ContentScoreTO hseContentScoreTO = new ContentScoreTO();
+		hseContentScoreTO.setScoreType(PrismWebServiceConstant.HSEContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(hseContentScoreTO);
+
+		ContentScoreTO prContentScoreTO = new ContentScoreTO();
+		prContentScoreTO.setScoreType(PrismWebServiceConstant.PRContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(prContentScoreTO);
+
+		ContentScoreTO nceContentScoreTO = new ContentScoreTO();
+		nceContentScoreTO.setScoreType(PrismWebServiceConstant.NCEContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(nceContentScoreTO);
+
+		ContentScoreTO ssrContentScoreTO = new ContentScoreTO();
+		ssrContentScoreTO.setScoreType(PrismWebServiceConstant.SSRContentScoreDetails);
+		contentScoreDetailsTO.getCollContentScoreTO().add(ssrContentScoreTO);
+		
+		return contentScoreDetailsTO;
+	}
+	
+	
 	/**
 	 * Get the Objective Score Details
 	 * @param itemSetId
