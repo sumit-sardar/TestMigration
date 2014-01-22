@@ -154,7 +154,7 @@ public class PrismWebServiceHandler {
 				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, hitCount , errorMessage, "Progress", additionalInfo, con);
 			}else{
 				errorLogKey = logkey;
-				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", createAdditionalInfo(responseTO), con);
+				PrismWebServiceDBUtility.updateWSErrorLog(errorLogKey, PrismWebServiceConstant.numberOfFailedHitCnt , errorMessage, "Failed", additionalInfo, con);
 			}
 		}
 	}
