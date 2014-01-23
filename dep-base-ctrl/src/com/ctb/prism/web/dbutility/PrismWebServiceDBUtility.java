@@ -626,8 +626,10 @@ public class PrismWebServiceDBUtility {
 					
 			while(rs.next()){
 				String contentCodeName = rs.getString("content_code_name");
+				long itemSetId = rs.getLong("item_set_id");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
+				List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = new ArrayList<ObjectiveScoreDetailsTO>();
 				if(contentCode != null && contentDetailsTO != null){
 					contentDetailsTO.setDataChanged(true);
 					contentDetailsTO.setContentCode(String.valueOf(contentCode));
@@ -651,29 +653,33 @@ public class PrismWebServiceDBUtility {
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
 							sendELA = false;
 							sendOverAll = false;
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
 					}
 					
-					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, rs.getLong("item_set_id")));
+					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, itemSetId));
 					
 					
-					String statusCode = getContentStatusCode(rosterId, rs.getLong("item_set_id"));
+					String statusCode = getContentStatusCode(rosterId, itemSetId);
 					if(statusCode != null && !"".equals(statusCode)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
 						if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test skipp the rest part
-							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
 								sendELA = false;
 							}
 							sendOverAll = false;
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
 					}
 					
 					
-					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, rs.getLong("item_set_id"), contentAreaID.get(contentCodeName));
+					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, itemSetId, contentAreaID.get(contentCodeName));
 					
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
 					
@@ -685,14 +691,18 @@ public class PrismWebServiceDBUtility {
 							}
 							sendOverAll = false;
 							contentDetailsTO.setDateTestTaken(null);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
-							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
 							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
 								sendELA = false;
 							}
 							sendOverAll = false;
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
 					}else{
@@ -702,10 +712,10 @@ public class PrismWebServiceDBUtility {
 					ContentScoreDetailsTO contentScoreDetailsTO = (ContentScoreDetailsTO) contentScoreDetailsObjs[0];
 					contentDetailsTO.setContentScoreDetailsTO(contentScoreDetailsTO);
 					
-					ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, rs.getLong("item_set_id"),studentId, sessionId);
+					ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
 					contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
 					
-					List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = getObjectiveScoreDetails(rs.getLong("item_set_id"), rosterId, sessionId, studentId, contentCode);
+					objectiveScoreDetailsList = getObjectiveScoreDetails(itemSetId, rosterId, sessionId, studentId, contentCode);
 					contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 				}
 			}
@@ -1346,7 +1356,7 @@ public class PrismWebServiceDBUtility {
 		return objectiveScoreDetailsLst;
 	}
 
-	private static List<ObjectiveScoreDetailsTO> getObjectivesForOmSupInvStatus(long itemSetId, long sessionId, Integer conCode, String conStatus, Integer contentCode) {
+	private static List<ObjectiveScoreDetailsTO> getObjectivesForOmSupInvStatus(long itemSetId, long sessionId, String statusCode, Integer contentCode) {
 		List<ObjectiveScoreDetailsTO> objectiveScoreDetailsLst = new ArrayList<ObjectiveScoreDetailsTO>();
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1356,10 +1366,10 @@ public class PrismWebServiceDBUtility {
 			pst = con.prepareStatement(GET_OBJECTIVE_LIST);
 			pst.setLong(1, itemSetId);
 			pst.setLong(2, sessionId);
-			pst.setString(3, String.valueOf(conCode));
+			pst.setString(3, String.valueOf(contentCode));
 			pst.setLong(4, itemSetId);
 			pst.setLong(5, sessionId);
-			pst.setString(6, String.valueOf(conCode));
+			pst.setString(6, String.valueOf(contentCode));
 			rs = pst.executeQuery();
 			while(rs.next()){
 				String objName = rs.getString("objname");
@@ -1387,7 +1397,7 @@ public class PrismWebServiceDBUtility {
 				if(!(PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase()))){
 					ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
 					OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
-					if(conStatus.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
+					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
 						OSCobjectiveScoreTO.setValue("-");
 					}
 					
