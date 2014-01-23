@@ -118,6 +118,8 @@ public class StudentOperationController extends PageFlowController {
 	private boolean isUserLinkSelected = false;
    /* Changes for DEX Story - Add intermediate screen : End */
 	
+	private boolean isTASC = false;
+	
 	/**
 	 * @return the user
 	 */
@@ -1719,7 +1721,7 @@ public class StudentOperationController extends PageFlowController {
 		List options = new ArrayList();
 		if ( action.equals(ACTION_FIND_STUDENT) )
 			options.add(FilterSortPageUtils.FILTERTYPE_ANY_GRADE);
-		if ( action.equals(ACTION_ADD_STUDENT) || action.equals(ACTION_EDIT_STUDENT) )
+		if ( !isTASC && (action.equals(ACTION_ADD_STUDENT) || action.equals(ACTION_EDIT_STUDENT)) )
 			options.add(FilterSortPageUtils.FILTERTYPE_SELECT_A_GRADE);
 
 		for (int i=0 ; i<grades.length ; i++) {        
@@ -3408,6 +3410,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 	            }
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
+			this.isTASC = isTascCustomer;
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {
@@ -3450,6 +3453,7 @@ private void setUpAllUserPermission(CustomerConfiguration [] customerConfigurati
 		this.getSession().setAttribute("hasRapidRagistrationConfigured", new Boolean(TABECustomer && (adminUser || adminCoordinatorUser) ));//For Student Registration
 		
 		this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+		this.getRequest().setAttribute("isTascCustomer", isTascCustomer);
 		//System.out.println(laslinkCustomer);
      	//this.getSession().setAttribute("showDataExportTab",laslinkCustomer);
 		this.getSession().setAttribute("showDataExportTab", new Boolean((laslinkCustomer && isTopLevelUser()) || (hasDataExportVisibilityConfig && checkUserLevel(dataExportVisibilityLevel))));

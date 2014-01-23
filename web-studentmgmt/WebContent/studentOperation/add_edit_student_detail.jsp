@@ -6,6 +6,7 @@
 <%
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
+	Boolean isTascCustomer = (Boolean) request.getAttribute("isTascCustomer");
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
 	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable");
 	Boolean isOOSConfigured = (Boolean)session.getAttribute("isOOSConfigured");
@@ -39,6 +40,7 @@
 %>
 <div>
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
+<input type="hidden" id="isTascCustomer"  value = '<%=isTascCustomer %>' />
 <input type="hidden" id="isOOSConfigured"  value = '<%=isOOSConfigured %>' />
 <input type="hidden" id="isMandatoryBirthDate"  value = '<%=isMandatoryBirthDate %>' />
 <input type="hidden" id="isMandatoryStudentId" value = '<%=isMandatoryStudentId %>' />
@@ -153,7 +155,7 @@
 											<span class="asterisk">*</span>&nbsp;
 										  <%} %>	
 										 <%if(isStudentIdConfigurable) {%> 
-											 <%=studentIdArrValue[0] %>	:
+											 <%=studentIdArrValue[0] %>:
 										 <%} else {%> 
 											<lb:label key="stu.info.studentID" suffix=":"/>	
 										 <%} %>
@@ -165,7 +167,7 @@
 									<tr class="transparent">
 										<td  width="110" class="transparent alignRight">
 										<%if(isStudentId2Configurable) {%> 
-											<%=studentId2ArrValue[0] %>	: 
+											<%=studentId2ArrValue[0] %>: 
 										<%} else {%> 
 										<lb:label key="stu.info.studentID2" suffix=":"/>
 										<%} %>

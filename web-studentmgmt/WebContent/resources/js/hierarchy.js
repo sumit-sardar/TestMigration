@@ -1149,6 +1149,13 @@ document.getElementById('displayMessageMain').style.display = "none";
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						
+						//** For TASC, hide grade row
+						//** [IAA] Story: TASC - Op 2014 - Add Student - Changes in Grade & Examinee ID
+						if($("#isTascCustomer").val() == "true")
+						{
+							$("select#gradeOptions").closest("tr").hide();
+						}
+							
 						$("#addEditStudentDetail").dialog({  
 													title:$("#addStuID").val(),  
 												 	resizable:false,
