@@ -665,23 +665,26 @@ public class PrismWebServiceDBUtility {
 					String statusCode = getContentStatusCode(rosterId, itemSetId);
 					if(statusCode != null && !"".equals(statusCode)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
-						if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test skipp the rest part
-							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
-							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
-							if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
-								sendELA = false;
-							}
-							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode);
-							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
-							continue;
-						}
 					}
 					
 					
 					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, itemSetId, contentAreaID.get(contentCodeName));
 					
 					String scoringStatus = (String) contentScoreDetailsObjs[1];
+					
+					if(PrismWebServiceConstant.InvalidContentStatusCode.equalsIgnoreCase(statusCode)){//For the invalid test special handling
+						if(!(scoringStatus != null && !"".equals(scoringStatus) && PrismWebServiceConstant.OmittedContentStatusCode.equalsIgnoreCase(scoringStatus))){//If scoring status is not omitted then set the item response 
+							ItemResponsesDetailsTO itemResponsesDetailsTO = getItemResponsesDetail(rosterId, itemSetId,studentId, sessionId);
+							contentDetailsTO.setItemResponsesDetailsTO(itemResponsesDetailsTO);
+						}
+						if(contentCode == PrismWebServiceConstant.readingContentCode || contentCode == PrismWebServiceConstant.wrContentCode){
+							sendELA = false;
+						}
+						sendOverAll = false;
+						objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode);
+						contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
+						continue;
+					}
 					
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(scoringStatus) : "");
