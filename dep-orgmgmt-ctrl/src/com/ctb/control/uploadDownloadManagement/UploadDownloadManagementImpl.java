@@ -3357,7 +3357,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					arrValue[2]  = "F";
 				}
 			//START- GACR005 
-			arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
+			arrValue[3] = (arrValue[3] != null)? arrValue[3]   : "0" ;
 			try {
 				int minLength = Integer.valueOf(arrValue[3]);
 			} catch (NumberFormatException nfe){
@@ -3377,7 +3377,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		
 		if(labelName.equals("Student ID2")){
 			//START- GACR005 
-			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
+			arrValue[2] = (arrValue[2] != null)? arrValue[2]   : "0" ;
 			try {
 				int minLength = Integer.valueOf(arrValue[2]);
 			} catch (NumberFormatException nfe){
