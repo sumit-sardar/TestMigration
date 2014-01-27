@@ -1400,15 +1400,16 @@ public class PrismWebServiceDBUtility {
 				MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
 				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 					
+				
+				ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
+				OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 				if(!(PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase()))){
-					ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
-					OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
 						OSCobjectiveScoreTO.setValue("-");
 					}
-					
-					objectiveScoreDetails.getCollObjectiveScoreTO().add(OSCobjectiveScoreTO);
 				}
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(OSCobjectiveScoreTO);
+				
 							
 				objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
 				objectiveScoreDetails.setObjectiveCode(rs.getString("objcode"));
@@ -1504,6 +1505,10 @@ public class PrismWebServiceDBUtility {
 			objectiveScoreDetails.getCollObjectiveScoreTO().add(CCCobjectiveScoreTO);
 			NCobjectiveScoreTO.setValue("");
 		}
+		
+		ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
+		INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);		
+		objectiveScoreDetails.getCollObjectiveScoreTO().add(INRCobjectiveScoreTO);
 		
 	}
 
