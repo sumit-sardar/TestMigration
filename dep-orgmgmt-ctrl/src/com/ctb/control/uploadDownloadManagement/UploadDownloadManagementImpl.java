@@ -3349,7 +3349,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
 		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
 		
-		
+		System.out.println(" Student labelName : "+ labelName);
 		if(labelName.equals("Student ID")){
 			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
 			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
@@ -3357,12 +3357,15 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					arrValue[2]  = "F";
 				}
 			//START- GACR005 
+			System.out.println("Before arrValue[3] "+ arrValue[3]);
 			arrValue[3] = (arrValue[3] != null)? arrValue[3]   : "0" ;
+			System.out.println("After arrValue[3] "+ arrValue[3]);
 			try {
 				int minLength = Integer.valueOf(arrValue[3]);
 			} catch (NumberFormatException nfe){
 				arrValue[3] = "0" ;
 			}
+			System.out.println("After numberFormatException arrValue[3] : "+ arrValue[3]);
 			this.studentIdMinLength = arrValue[3];
 			arrValue[4] = arrValue[4] != null ? arrValue[4]   : "AN" ;
 			if(!arrValue[4].equals("NU") && !arrValue[4].equals("AN"))
@@ -3376,13 +3379,16 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		}
 		
 		if(labelName.equals("Student ID2")){
-			//START- GACR005 
+			//START- GACR005
+			System.out.println("Before arrValue[2] "+ arrValue[2]);
 			arrValue[2] = (arrValue[2] != null)? arrValue[2]   : "0" ;
+			System.out.println("After if condition arrValue[2] "+ arrValue[2]);
 			try {
 				int minLength = Integer.valueOf(arrValue[2]);
 			} catch (NumberFormatException nfe){
 				arrValue[2] = "0" ;
 			}
+			System.out.println("After numberFormatException arrValue[2] : "+ arrValue[2]);
 			this.studentId2MinLength = arrValue[2];
 			arrValue[3] = arrValue[3] != null ? arrValue[3]   : "AN" ;
 			if(!arrValue[3].equals("NU") && !arrValue[3].equals("AN"))
@@ -3402,6 +3408,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		} catch (NumberFormatException nfe){
 			arrValue[1] = "32" ;
 		}
+		System.out.println("After numberFormatException arrValue[1] : "+ arrValue[1]);
 		
 		
 		
