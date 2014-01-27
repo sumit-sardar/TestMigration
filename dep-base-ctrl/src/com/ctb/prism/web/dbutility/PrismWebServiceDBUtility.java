@@ -359,7 +359,7 @@ public class PrismWebServiceDBUtility {
 				String stdRes = rsSR.getString("RESPONSE");
 				String correctAns = rsSR.getString("CORRECTANS");
 				String fieldTest = rsSR.getString("fieldtest");
-				String suppressed = rsSR.getString("suppressed");
+				//String suppressed = rsSR.getString("suppressed");
 				if(!("F".equalsIgnoreCase(fieldTest) /*&& "F".equalsIgnoreCase(suppressed)*/)){//suppressed is commented for defect 76233
 					stScoreVal.append(" ");//Set the blank value Field Test SR item
 				}else if(stdRes == null || "".equals(stdRes)){
@@ -653,7 +653,7 @@ public class PrismWebServiceDBUtility {
 							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
 							sendELA = false;
 							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode, studentId);
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
@@ -681,7 +681,7 @@ public class PrismWebServiceDBUtility {
 							sendELA = false;
 						}
 						sendOverAll = false;
-						objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode);
+						objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode, studentId);
 						contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 						continue;
 					}
@@ -694,7 +694,7 @@ public class PrismWebServiceDBUtility {
 							}
 							sendOverAll = false;
 							contentDetailsTO.setDateTestTaken(null);
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode, studentId);
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}else if(PrismWebServiceConstant.SuppressedContentStatusCode.equalsIgnoreCase(scoringStatus)){//Special Handling for Suppressed Content
@@ -704,7 +704,7 @@ public class PrismWebServiceDBUtility {
 								sendELA = false;
 							}
 							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, scoringStatus, contentCode, studentId);
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
@@ -1359,7 +1359,7 @@ public class PrismWebServiceDBUtility {
 		return objectiveScoreDetailsLst;
 	}
 
-	private static List<ObjectiveScoreDetailsTO> getObjectivesForOmSupInvStatus(long itemSetId, long sessionId, String statusCode, Integer contentCode) {
+	private static List<ObjectiveScoreDetailsTO> getObjectivesForOmSupInvStatus(long itemSetId, long sessionId, String statusCode, Integer contentCode, Integer studentId) {
 		List<ObjectiveScoreDetailsTO> objectiveScoreDetailsLst = new ArrayList<ObjectiveScoreDetailsTO>();
 		Connection con = null;
 		PreparedStatement pst = null;
@@ -1384,6 +1384,9 @@ public class PrismWebServiceDBUtility {
 				ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
 				NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
 				objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
+				if((PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())&& statusCode.equals(PrismWebServiceConstant.SuppressedContentStatusCode))){
+					NPobjectiveScoreTO.setValue(getNPForWRObj2(rs.getLong("itemsetid"),sessionId,studentId));
+				}
 							
 				ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
 				SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
@@ -1419,6 +1422,37 @@ public class PrismWebServiceDBUtility {
 			close(con, pst, rs);
 		}
 		return objectiveScoreDetailsLst;
+	}
+	
+	/**
+	 * Get the NP score for WR 2nd Objective
+	 * @param itemSetId
+	 * @param sessionId
+	 * @param studentId
+	 * @return
+	 */
+	private static String getNPForWRObj2(long itemSetId, long sessionId,Integer studentId){
+		PreparedStatement irsPst = null;
+		ResultSet irsRs = null;
+		Connection irsCon = null;
+		String NPForWR2ncObj = "";
+		try{
+		irsCon = openIRSDBcon(false);
+		irsPst = irsCon.prepareStatement(GET_SEC_OBJ_SCORE);
+		irsPst.setLong(1, itemSetId);
+		irsPst.setLong(2, studentId);
+		irsPst.setLong(3, sessionId);
+		irsRs = irsPst.executeQuery();
+		while(irsRs.next()){
+			NPForWR2ncObj=irsRs.getString("numpossible");
+		}
+		}catch(Exception e){
+			System.err.println("Error in the PrismWebServiceDBUtility.getNPForWRObj2() method to execute query : \n " +  GET_SEC_OBJ_SCORE);
+			e.printStackTrace();
+		}finally{
+			close(irsCon, irsPst, irsRs);
+		}
+		return NPForWR2ncObj;
 	}
 	
 	/**
