@@ -313,6 +313,13 @@
     	  }else{
     	  removeDisableInEdit();    	  
     	  }
+    	 /* To set force test break on Test change: start */
+		 if (forceTestBreak) {
+		 	//setTestBreakForCustomer();
+		 	$("#testBreak").attr('checked',true);
+		 	$("#testBreak").attr('disabled',true);
+		 }
+		 /* To set force test break on Test change: end */
     	  isPopUp = true;
   		  wizard.accordion("activate", index);		
     }else{

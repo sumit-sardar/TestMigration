@@ -2019,7 +2019,13 @@ function registerDelegate(tree){
 		  	isStdDetClicked = true;
 		 }
 		 selectedAccessCodeMap = new Map();
-		
+		 /* To set force test break on Test change: start */
+		 if (forceTestBreak) {
+		 	setTestBreakForCustomer();
+		 	//$("#testBreak").attr('checked',true);
+		 	//$("#testBreak").attr('disabled',true);
+		 }
+		 /* To set force test break on Test change: end */
 	}
 	
 	function closeProductConfirmPopup() {
