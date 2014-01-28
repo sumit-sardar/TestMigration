@@ -1779,7 +1779,19 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
    //     Integer customerId = new Integer(0);
 
          // get user info
-        User user = users.getUserDetails(userName);
+        User user=new User();
+        System.out.println("Before getDataFileAuditData() userName : "+ userName);
+        try{
+        if(users!=null){
+        	user = users.getUserDetails(userName);
+        }else{
+        	 System.out.println("Users Object is Null ");
+        }
+        }catch(Exception e){
+        	System.out.println(" Exception in user details fetching");
+        }
+        System.out.println("After getDataFileAuditData() userName : "+ userName);
+        
         Integer pageSize = null;
         
         if ( page != null ) {
@@ -3359,8 +3371,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					arrValue[2]  = "F";
 				}
 			//START- GACR005 
-			arrValue[3] = (arrValue[3] != null)? arrValue[3]   : "0" ;
 			try {
+				arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
 				int minLength = Integer.valueOf(arrValue[3]);
 			} catch (NumberFormatException nfe){
 				arrValue[3] = "0" ;
@@ -3379,8 +3391,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		
 		if(labelName.equals("Student ID2")){
 			//START- GACR005
-			arrValue[2] = (arrValue[2] != null)? arrValue[2]   : "0" ;
 			try {
+				arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
 				int minLength = Integer.valueOf(arrValue[2]);
 			} catch (NumberFormatException nfe){
 				arrValue[2] = "0" ;
