@@ -1324,14 +1324,14 @@ public class PrismWebServiceDBUtility {
 								MRobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("objmasscalescorerng") : "");
 								objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 								
-								ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
+								/*ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
 								CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
 								String conditionCode = irsRs.getString("conditioncode");
 								if(conditionCode != null && !"".equals(conditionCode)){
 									CCobjectiveScoreTO.setValue(conditionCode);
 									NCobjectiveScoreTO.setValue("");
 								}
-								objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
+								objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);*/
 								
 							}
 							
@@ -1401,10 +1401,16 @@ public class PrismWebServiceDBUtility {
 				MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
 				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 					
-				
+				if(PrismWebServiceConstant.wrContentCode == contentCode 
+						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())){
+					ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
+					CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
+					objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
+				}
 				ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
 				OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
-				if(!(PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase()))){
+				if(!(PrismWebServiceConstant.wrContentCode == contentCode 
+						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase()))){
 					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
 						OSCobjectiveScoreTO.setValue("-");
 					}
