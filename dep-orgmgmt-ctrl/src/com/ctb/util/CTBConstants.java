@@ -71,8 +71,6 @@ public final class CTBConstants {
     public static final String ADDRESS_LINE_3 = "Address Line 3";
     public static final String STUDENT_ID = "Student ID";
     public static final String STUDENT_ID2 = "Student ID2";
-    public static final String TASC_ID = "TASC ID";
-    public static final String TASC_ID2 = "TASC ID2";
     public static final String EXT_PIN1 = "External User Id";
     
     public static final String SCREEN_READER = "Allow Screen Reader";

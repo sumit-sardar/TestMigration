@@ -3304,7 +3304,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 						this.valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 					}
 					
-					this.valueForStudentId2 = getDefaultValue(valueForStudentId2, CTBConstants.TASC_ID2);
+					this.valueForStudentId2 = getDefaultValue(valueForStudentId2, CTBConstants.STUDENT_ID2);
 					
 				}
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
@@ -3319,7 +3319,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 					}	
 					
-					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.TASC_ID);
+					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.STUDENT_ID);
 					
 				}
 			   //For TABE-BAUM Unique Student Id
@@ -3338,8 +3338,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				("UploadDownloadManagement.Failed");
 			dataNotfoundException.setStackTrace(e.getStackTrace());                                    
 
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
         	System.out.println("Inside isStudentIDConfigurableCustomer()" + e);
             e.printStackTrace();    
         
@@ -3353,7 +3352,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
 		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
 		
-		if(labelName.equals("TASC ID")){
+		if(labelName.equals("Student ID")){
 			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
 			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
 				{ 
@@ -3374,11 +3373,11 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				}
 			this.isStudentIdNumeric = arrValue[4];
 			//END- GACR005 
-			System.out.println("TASC ID" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3] +"..."+arrValue[4] );
+			System.out.println("Student ID " + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3] +"..."+arrValue[4] );
 			
 		}
 		
-		if(labelName.equals("TASC ID2")){
+		if(labelName.equals("Student ID2")){
 			//START- GACR005
 			arrValue[2] = (arrValue[2] != null)? arrValue[2]   : "0" ;
 			try {
@@ -3394,7 +3393,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				}
 			this.isStudentId2Numeric = arrValue[3];
 			//END- GACR005 
-			System.out.println("TASC ID 2" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3]  );
+			System.out.println("Student ID2 " + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3]  );
 			
 		}
 		
