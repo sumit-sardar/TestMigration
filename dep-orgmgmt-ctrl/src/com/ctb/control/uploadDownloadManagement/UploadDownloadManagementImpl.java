@@ -3339,8 +3339,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 			dataNotfoundException.setStackTrace(e.getStackTrace());                                    
 
 		} 
-	
-	
+		catch (Exception e) {
+        	System.out.println("Inside isStudentIDConfigurableCustomer()" + e);
+            e.printStackTrace();    
+        
+        }
+        
 	
      }
    //Changes for GA2011CR001 
