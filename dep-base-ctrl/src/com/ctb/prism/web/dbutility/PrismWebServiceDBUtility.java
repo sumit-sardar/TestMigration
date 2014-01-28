@@ -1385,9 +1385,6 @@ public class PrismWebServiceDBUtility {
 				ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
 				NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
 				objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
-				if((PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())&& statusCode.equals(PrismWebServiceConstant.SuppressedContentStatusCode))){
-					NPobjectiveScoreTO.setValue(getNPForWRObj2(rs.getLong("itemsetid"),sessionId,studentId));
-				}
 							
 				ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
 				SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
@@ -1400,6 +1397,14 @@ public class PrismWebServiceDBUtility {
 				ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
 				MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
 				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
+				
+				if((PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())&& statusCode.equals(PrismWebServiceConstant.SuppressedContentStatusCode))){
+					Map<String,String> scoreMap = getSecScoreForWRObj2(rs.getLong("itemsetid"),sessionId,studentId);
+					if(scoreMap != null && scoreMap.size() > 0){
+						NPobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.NPObjectiveScoreDetails));
+						MRobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.MRObjectiveScoreDetails));
+					}
+				}
 					
 				if(PrismWebServiceConstant.wrContentCode == contentCode 
 						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())){
@@ -1433,17 +1438,17 @@ public class PrismWebServiceDBUtility {
 	}
 	
 	/**
-	 * Get the NP score for WR 2nd Objective
+	 * Get the NP, MR score for WR 2nd Objective
 	 * @param itemSetId
 	 * @param sessionId
 	 * @param studentId
-	 * @return
+	 * @return Map<String, String>
 	 */
-	private static String getNPForWRObj2(long itemSetId, long sessionId,Integer studentId){
+	private static Map<String, String> getSecScoreForWRObj2(long itemSetId, long sessionId,Integer studentId){
 		PreparedStatement irsPst = null;
 		ResultSet irsRs = null;
-		Connection irsCon = null;
-		String NPForWR2ncObj = "";
+		Connection irsCon = null;		
+		Map<String, String> scoreMap = new HashMap<String, String>();
 		try{
 		irsCon = openIRSDBcon(false);
 		irsPst = irsCon.prepareStatement(GET_SEC_OBJ_SCORE);
@@ -1452,15 +1457,17 @@ public class PrismWebServiceDBUtility {
 		irsPst.setLong(3, sessionId);
 		irsRs = irsPst.executeQuery();
 		while(irsRs.next()){
-			NPForWR2ncObj=irsRs.getString("numpossible");
+			scoreMap.put(PrismWebServiceConstant.NPObjectiveScoreDetails, irsRs.getString("numpossible"));
+			scoreMap.put(PrismWebServiceConstant.MRObjectiveScoreDetails, irsRs.getString("objmasscalescorerng"));
 		}
 		}catch(Exception e){
-			System.err.println("Error in the PrismWebServiceDBUtility.getNPForWRObj2() method to execute query : \n " +  GET_SEC_OBJ_SCORE);
+			System.err.println("Error in the PrismWebServiceDBUtility.getSecScoreForWRObj2() method to execute query : \n " +  GET_SEC_OBJ_SCORE);
 			e.printStackTrace();
 		}finally{
 			close(irsCon, irsPst, irsRs);
 		}
-		return NPForWR2ncObj;
+		
+		return scoreMap;
 	}
 	
 	/**
