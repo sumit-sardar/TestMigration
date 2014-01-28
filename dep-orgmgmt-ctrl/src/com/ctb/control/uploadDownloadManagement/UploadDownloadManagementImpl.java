@@ -1393,7 +1393,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                               PageParams page , 
                                               SortParams sort)
                                               throws CTBBusinessException {
-                                                
+	   System.out.println("Before getUploadHistory() userName : "+ userName);                            
         DataFileAuditData dataFileAuditData = null;
         try {
              dataFileAuditData = getDataFileAuditData(userName, page, sort);
@@ -1411,6 +1411,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             fileHistoryException.setStackTrace(be.getStackTrace());
             throw fileHistoryException;
         }
+        System.out.println("After getUploadHistory() userName : "+ userName); 
         return dataFileAuditData;
     }
     
@@ -1774,7 +1775,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                                    SortParams sort) 
                                                    throws SQLException, 
                                                    CTBBusinessException {
-
+    	System.out.println("Before getDataFileAuditData() userName : "+ userName);
         DataFileAuditData dataFileAuditData = new DataFileAuditData();
    //     Integer customerId = new Integer(0);
 
