@@ -600,6 +600,7 @@ public class UploadOperationController extends PageFlowController {
             uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
             System.out.println("***** Upload App: using service endpoint: " + endpoint);
             System.out.println("[iaa] uf.1 uploadDownloadManagementServiceControl.uploadFile()");
+            System.out.println("fullFilePath : "+ fullFilePath +" vs uploadFileId : "+ uploadFileId);
             uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
             System.out.println("[iaa] uf.2 uploadDownloadManagementServiceControl.uploadFile()");
         } catch (com.ctb.webservices.CTBBusinessException e) {
