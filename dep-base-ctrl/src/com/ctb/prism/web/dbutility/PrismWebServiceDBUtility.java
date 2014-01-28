@@ -1324,14 +1324,15 @@ public class PrismWebServiceDBUtility {
 								MRobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("objmasscalescorerng") : "");
 								objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 								
-								ObjectiveScoreTO CCCobjectiveScoreTO = new ObjectiveScoreTO();
+								ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
+								CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
 								String conditionCode = irsRs.getString("conditioncode");
 								if(conditionCode != null && !"".equals(conditionCode)){
-									CCCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
-									CCCobjectiveScoreTO.setValue(conditionCode);
-									objectiveScoreDetails.getCollObjectiveScoreTO().add(CCCobjectiveScoreTO);
+									CCobjectiveScoreTO.setValue(conditionCode);
 									NCobjectiveScoreTO.setValue("");
 								}
+								objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
+								
 							}
 							
 							objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
@@ -1497,14 +1498,14 @@ public class PrismWebServiceDBUtility {
 		MRobjectiveScoreTO.setValue(irsRs.getString("objmasscalescorerng"));
 		objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 		
-		ObjectiveScoreTO CCCobjectiveScoreTO = new ObjectiveScoreTO();
+		ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
+		CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
 		String conditionCode = irsRs.getString("conditioncode");
 		if(conditionCode != null && !"".equals(conditionCode)){
-			CCCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
-			CCCobjectiveScoreTO.setValue(conditionCode);
-			objectiveScoreDetails.getCollObjectiveScoreTO().add(CCCobjectiveScoreTO);
+			CCobjectiveScoreTO.setValue(conditionCode);
 			NCobjectiveScoreTO.setValue("");
 		}
+		objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
 		
 		ObjectiveScoreTO INRCobjectiveScoreTO = new ObjectiveScoreTO();
 		INRCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);		
