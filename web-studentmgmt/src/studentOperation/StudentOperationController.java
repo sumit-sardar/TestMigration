@@ -570,7 +570,7 @@ public class StudentOperationController extends PageFlowController {
 		
 			if (result) {
 				if (isValidationForUniqueStudentIDRequired(studentProfile, customerConfigurations)) {
-					result = validateUniqueStudentId(isCreateNew, null, studentProfile);
+					result = validateUniqueStudentId(isCreateNew, studentId, studentProfile); // Changed for Defect #76910
 					if (!result) {
 						String messageTitle = studentIdConfigurable ? Message.VALIDATE_STUDENT_ID_TITLE
 								.replace("<#studentId#>", studentIdLabelName)
