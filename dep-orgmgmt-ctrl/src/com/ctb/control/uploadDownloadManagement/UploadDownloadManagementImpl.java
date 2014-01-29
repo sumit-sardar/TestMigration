@@ -1393,7 +1393,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                               PageParams page , 
                                               SortParams sort)
                                               throws CTBBusinessException {
-	   System.out.println("Before getUploadHistory() userName : "+ userName);                            
+                                                
         DataFileAuditData dataFileAuditData = null;
         try {
              dataFileAuditData = getDataFileAuditData(userName, page, sort);
@@ -1411,7 +1411,6 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             fileHistoryException.setStackTrace(be.getStackTrace());
             throw fileHistoryException;
         }
-        System.out.println("After getUploadHistory() userName : "+ userName); 
         return dataFileAuditData;
     }
     
@@ -1775,24 +1774,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                                    SortParams sort) 
                                                    throws SQLException, 
                                                    CTBBusinessException {
-    	System.out.println("Before getDataFileAuditData() userName : "+ userName);
+
         DataFileAuditData dataFileAuditData = new DataFileAuditData();
    //     Integer customerId = new Integer(0);
 
          // get user info
-        User user=new User();
-        System.out.println("Before getDataFileAuditData() userName : "+ userName);
-        try{
-        if(users!=null){
-        	user = users.getUserDetails(userName);
-        }else{
-        	 System.out.println("Users Object is Null ");
-        }
-        }catch(Exception e){
-        	System.out.println(" Exception in user details fetching");
-        }
-        System.out.println("After getDataFileAuditData() userName : "+ userName);
-        
+        User user = users.getUserDetails(userName);
         Integer pageSize = null;
         
         if ( page != null ) {
@@ -3351,12 +3338,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				("UploadDownloadManagement.Failed");
 			dataNotfoundException.setStackTrace(e.getStackTrace());                                    
 
-		} catch (Exception e) {
-        	System.out.println("Inside isStudentIDConfigurableCustomer()" + e);
-            e.printStackTrace();    
-        
-        }
-        
+		} 
+	
+	
 	
      }
    //Changes for GA2011CR001 
@@ -3364,6 +3348,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	{
 		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
 		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
 		
 		if(labelName.equals("Student ID")){
 			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
@@ -3411,11 +3396,14 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		}
 		
 		// check for numeric conversion of maxlength
+
 		try {
 			int maxLength = Integer.valueOf(arrValue[1]);
 		} catch (NumberFormatException nfe){
 			arrValue[1] = "32" ;
-		}		
+		}
+		
+		
 		
 		return arrValue;
 	}
