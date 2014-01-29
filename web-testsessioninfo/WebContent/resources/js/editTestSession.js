@@ -316,8 +316,12 @@
     	 /* To set force test break on Test change: start */
 		 if (forceTestBreak) {
 		 	//setTestBreakForCustomer();
-		 	$("#testBreak").attr('checked',true);
 		 	$("#testBreak").attr('disabled',true);
+		 	if(selectedSubtests != null && selectedSubtests != undefined && selectedSubtests.length > 1) {
+		 		if(locatorOnlyTest == null || locatorOnlyTest == undefined || !locatorOnlyTest) {
+		 			$("#testBreak").attr('checked',true);
+		 		}
+		 	}
 		 }
 		 /* To set force test break on Test change: end */
     	  isPopUp = true;
