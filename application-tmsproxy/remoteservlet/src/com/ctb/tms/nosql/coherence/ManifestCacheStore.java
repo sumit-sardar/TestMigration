@@ -34,6 +34,17 @@ public class ManifestCacheStore implements OASCacheStore {
 //    static {
 //    	logger.setLevel(Level.DEBUG);
 //    }
+    
+    private static int MANIFEST_THREAD_COUNT = 10; //default to 10
+    static {
+    	try {
+    		MANIFEST_THREAD_COUNT = Integer.valueOf(System.getProperty("MANIFEST_THREAD_COUNT", "10")).intValue();
+    	}
+    	catch (NumberFormatException nfe) {
+    		logger.error("Incorrect system property MANIFEST_THREAD_COUNT: "+nfe.getMessage());    		
+    	}
+    	logger.info("MANIFEST_THREAD_COUNT="+MANIFEST_THREAD_COUNT);
+    }
     private ThreadPoolExecutor m_storeAllThreadPool;
     private final ThreadLocalConnection m_storeAllConnnectionPool = new ThreadLocalConnection();
     private int m_storeAllThreadPool_ThreadCount;
@@ -45,7 +56,7 @@ public class ManifestCacheStore implements OASCacheStore {
     public ManifestCacheStore() {
         super();
 
-        m_storeAllThreadPool_ThreadCount = 5;
+        m_storeAllThreadPool_ThreadCount = MANIFEST_THREAD_COUNT;
         m_storeAllThreadPool = new ThreadPoolExecutor(
                 m_storeAllThreadPool_ThreadCount,
                 m_storeAllThreadPool_ThreadCount,

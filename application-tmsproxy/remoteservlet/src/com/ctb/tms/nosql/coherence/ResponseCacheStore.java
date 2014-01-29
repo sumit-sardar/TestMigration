@@ -128,6 +128,12 @@ public class ResponseCacheStore implements OASCacheStore {
     		//Might want to implement stored procedure for the processing, which will require lots of code changes.
     		conn.commit();
     		
+            // Remove all the entries from the cache after a successful write into the DB. 
+//            for (BinaryEntry each : setBinEntries) {
+//                each.remove(false);
+//            }
+//    		
+    		
     		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {
     		logger.warn("ResponseCacheStore.storeAll (binary): Error storing responses to DB: " + e.getMessage());

@@ -137,7 +137,7 @@ public class ResponseBatchCacheStore implements OASCacheStore {
     				logger.warn("ResponseBatchCacheStore.storeAll (binary): Error storing response to DB for key " + entry.getKey() + ": " + e.getMessage());
     			}
     			if(success) {
-		    		it.remove();
+//		    		it.remove();  //remove later after commit
 			    	counter++;
     			}
     		}
@@ -255,6 +255,12 @@ public class ResponseBatchCacheStore implements OASCacheStore {
 			}
 
     		conn.commit();
+    		
+            // Remove all the entries from the cache after a successful write into the DB. 
+    		//logger.debug("Remove all the entries in setBinEntries "+setBinEntries.size());
+    		for (BinaryEntry each : setBinEntries) {
+    			each.remove(false);
+    		}
 
     		logger.info("ResponseBatchCacheStore.storeAll (binary) processed " + counter + " records.");
     	} catch (Exception e) {
