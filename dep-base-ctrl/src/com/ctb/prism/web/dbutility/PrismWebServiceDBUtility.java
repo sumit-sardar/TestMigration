@@ -1378,40 +1378,36 @@ public class PrismWebServiceDBUtility {
 			while(rs.next()){
 				String objName = rs.getString("objname");
 				ObjectiveScoreDetailsTO objectiveScoreDetails = new ObjectiveScoreDetailsTO();
+				
 				ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
 				NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
 							
 				ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
 				NPobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NPObjectiveScoreDetails);
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
 							
 				ObjectiveScoreTO SSobjectiveScoreTO = new ObjectiveScoreTO();
 				SSobjectiveScoreTO.setScoreType(PrismWebServiceConstant.SSObjectiveScoreDetails);
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
 							
 				ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
 				MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
 							
 				ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
 				MRobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MRObjectiveScoreDetails);
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
 				
-				if((PrismWebServiceConstant.wrContentCode == contentCode && objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())&& statusCode.equals(PrismWebServiceConstant.SuppressedContentStatusCode))){
+				if(PrismWebServiceConstant.wrContentCode == contentCode 
+						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())){
+					ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
+					CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
+					objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
+					
+					//if WR Obj2 scores available for OM, SUP, INV status then NP and MR will be reported to PRISM
 					Map<String,String> scoreMap = getSecScoreForWRObj2(rs.getLong("itemsetid"),sessionId,studentId);
 					if(scoreMap != null && scoreMap.size() > 0){
 						NPobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.NPObjectiveScoreDetails));
 						MRobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.MRObjectiveScoreDetails));
 					}
 				}
-					
-				if(PrismWebServiceConstant.wrContentCode == contentCode 
-						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase())){
-					ObjectiveScoreTO CCobjectiveScoreTO = new ObjectiveScoreTO();
-					CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
-					objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
-				}
+				
 				ObjectiveScoreTO OSCobjectiveScoreTO = new ObjectiveScoreTO();
 				OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 				if(!(PrismWebServiceConstant.wrContentCode == contentCode 
@@ -1420,8 +1416,13 @@ public class PrismWebServiceDBUtility {
 						OSCobjectiveScoreTO.setValue("-");
 					}
 				}
-				objectiveScoreDetails.getCollObjectiveScoreTO().add(OSCobjectiveScoreTO);
 				
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(NPobjectiveScoreTO);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(SSobjectiveScoreTO);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(MRobjectiveScoreTO);
+				objectiveScoreDetails.getCollObjectiveScoreTO().add(OSCobjectiveScoreTO);
 							
 				objectiveScoreDetails.setObjectiveName(rs.getString("objname"));
 				objectiveScoreDetails.setObjectiveCode(rs.getString("objcode"));
