@@ -32,12 +32,35 @@ public final class CTBConstants {
     public static final String LLESPANOL_CUSTOMER = "LLEspanol Customer";
     public static final String DB_LLESPANOL_CUSTOMER = "LLESPANOL_Customer";
     //END - Changes for LLESPANOL PRODUCT
+    
+    //START - Changes for LASLINK FORM C-D PRODUCT
+    public static final String LASLINK_FORMC_CUSTOMER = "LasLink Customer";
+    public static final String DB_LASLINK_FORMC_CUSTOMER = "LL_Customer";
+    //END - Changes for LASLINK FORM C-D PRODUCT
+    
+  //START - Changes for LLESPANOL B PRODUCT 
+    public static final String LLESPANOLB_CUSTOMER = "LLEspanol Customer";
+    public static final String DB_LLESPANOLB_CUSTOMER = "LLESPANOL_Customer";
+    //END - Changes for LLESPANOL B PRODUCT
+    
+    //START - Changes for TABE ADAPTIVE PRODUCT 
+    public static final String TABE_ADAPTIVE_CUSTOMER = "TABE Adaptive Customer";
+    public static final String DB_TABE_ADAPTIVE_CUSTOMER = "TABE_Customer";
+    public static final String DB_TABE_ADAPTIVE_CUSTOMER_NEW = "TABE_Adaptive_Customer";
+    //END - Changes for TABE ADAPTIVE PRODUCT
+    
+    //START - Changes for TASC PRODUCT
+    public static final String TASC_CUSTOMER = "TASC Customer";
+    public static final String DB_TASC_CUSTOMER = "TASC_Customer";
+    //END - Changes for TASC PRODUCT
+    
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);
 	public static final int MAX_PAGE = 5;
     public static final int DEFAULT_STATE_CATEGORY_ID = 1000; 
 	public static final Integer EMAIL_TYPE_WELCOME = new Integer(1);
     public static final Integer EMAIL_TYPE_PASSWORD = new Integer(2);
     public static final Integer EMAIL_TYPE_NOTIFICATION = new Integer(3);
+    public static final Integer EMAIL_TYPE_LICENSE_NOTIFICATION = new Integer(5);
     public static final String OAS_QA_URL = "https://oastest1.ctb.com/"; 
     public static final String OAS_PRODUCTION_URL = "https://oas.ctb.com/"; 
     public static final String STATE_KEY = "STATES";
@@ -208,10 +231,15 @@ public final class CTBConstants {
     
   //For GACRCT2010CR007 --  	Configuration for Birth Date mandatory and Non mandatory field. 
     public static final String DISABLE_MANDATORY_BIRTH_DATE  =  "Disable_Mandatory_Birth_Date";
+
+    public static final String CUSTOMER_PRODUCT_FORMA 	= "Form A";
+    public static final String CUSTOMER_PRODUCT_FORMB 	= "Form B";
+    public static final String CUSTOMER_PRODUCT_ESPANOL = "Espanol";
+    public static final String CUSTOMER_PRODUCT_FORMC = "Form C";
+    public static final String CUSTOMER_PRODUCT_ESPANOLB = "Espanol B";
     
-    //Laslink demographic value s
+    //Laslink demographic values
     public static final String ETHNICITY_LABEL = "Ethnicity";
     public static final String SUB_ETHNICITY_LABEL = "Sub_Ethnicity";
-
     
  } 
