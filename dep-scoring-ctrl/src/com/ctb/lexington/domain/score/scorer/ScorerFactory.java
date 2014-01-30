@@ -318,8 +318,8 @@ public class ScorerFactory {
             SQLUtil.close(rs, ps);
             SQLUtil.close(conn);
         }
-        
-        if(productId != null) {
+        //To prevent TASC scoring firing commented for Jan 31st, 2014 Production Release
+        if(productId != null && !"TS".equals(productType)) {
 	        if (runInBackGround) {
 	        	System.out.println("***** SCORING: ScorerFactory: invokeScoring: scoring in background");
 	            scoreWithEventsInBackground(DatabaseHelper.asLong(testRosterId), productId, productType, studentGrade, updateContextData, performMatching);
