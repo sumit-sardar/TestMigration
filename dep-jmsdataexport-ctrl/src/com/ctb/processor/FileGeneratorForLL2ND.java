@@ -218,7 +218,7 @@ public class FileGeneratorForLL2ND {
 					System.out.println("Processing started for roster:"+roster.getTestRosterId());
 					HashMap<String, Object[]> invalidSubtestMap = new HashMap<String, Object[]>();
 					TfilLL2ND tfil = new TfilLL2ND();
-					tfil.setModelLevel(this.customerModelLevelValue);
+					tfil.setModelLevel((Integer.valueOf(this.customerModelLevelValue).intValue() < 3)?"3":this.customerModelLevelValue);
 					tfil.setState(this.customerState);
 					tfil.setCity(this.customerCity);
 					
@@ -1050,6 +1050,24 @@ public class FileGeneratorForLL2ND {
 			orderFile.setCustomerName(EmetricUtil.truncate(tfil
 					.getElementNameA(), 30));
 
+		//Changes for minimum 3 level support 
+		if(tfil.getElementNameF() == null){
+			tfil.setElementNameF(tfil.getElementNameG());
+			tfil.setElementLabelF(tfil.getElementLabelG());
+			tfil.setElementNumberF(tfil.getElementNumberG());
+			tfil.setElementSpecialCodesF(tfil.getElementSpecialCodesG());
+			tfil.setMdrNumF(tfil.getMdrNumG());
+			tfil.setElementStructureLevelF("06");
+			tfil.setElementIdF(tfil.getElementIdG());
+		}else if (tfil.getElementNameE() == null){
+			tfil.setElementNameE(tfil.getElementNameF());
+			tfil.setElementLabelE(tfil.getElementLabelF());
+			tfil.setElementNumberE(tfil.getElementNumberF());
+			tfil.setElementSpecialCodesE(tfil.getElementSpecialCodesF());
+			tfil.setMdrNumE(tfil.getMdrNumF());
+			tfil.setElementStructureLevelE("05");
+			tfil.setElementIdE(tfil.getElementIdF());
+		}
 	}
 
 	public void createAccomodations(Set<StudentDemographic> sd,

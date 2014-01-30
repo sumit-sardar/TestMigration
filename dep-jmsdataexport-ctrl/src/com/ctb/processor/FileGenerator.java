@@ -378,7 +378,7 @@ public class FileGenerator {
 							customerDemographic, tfil);
 					tfil.setAccomodations(accomodations);
 
-					tfil.setModelLevel(customerModelLevelValue);
+					tfil.setModelLevel((Integer.valueOf(customerModelLevelValue).intValue() < 3)?"3":customerModelLevelValue);
 					tfil.setState(this.customerState);
 					tfil.setCity(this.customerCity);
 					// System.out.println("roster id "+ roster.getTestRosterId()
@@ -1546,6 +1546,24 @@ public class FileGenerator {
 		if (orderFile.getCustomerName() == null)
 			orderFile.setCustomerName(EmetricUtil.truncate(tfil
 					.getElementNameA(), 30));
+		
+		//Changes for minimum 3 level support 
+		if(tfil.getElementNameF() == null){
+			tfil.setElementNameF(tfil.getElementNameG());
+			tfil.setElementFLabel(tfil.getElementGLabel());
+			tfil.setElementNumberF(tfil.getElementNumberG());
+			tfil.setElementSpecialCodesF(tfil.getElementSpecialCodesG());
+			tfil.setElementStructureLevelF("06");
+			tfil.setDivisionId(tfil.getLeafLevelId());
+
+		}else if (tfil.getElementNameE() == null){
+			tfil.setElementNameE(tfil.getElementNameF());
+			tfil.setElementELabel(tfil.getElementFLabel());
+			tfil.setElementNumberE(tfil.getElementNumberF());
+			tfil.setElementSpecialCodesE(tfil.getElementSpecialCodesF());
+			tfil.setElementStructureLevelE("05");
+			tfil.setGroupId(tfil.getDivisionId());
+		}
 
 	}
 
