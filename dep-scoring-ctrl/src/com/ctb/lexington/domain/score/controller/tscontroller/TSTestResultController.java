@@ -125,11 +125,11 @@ public class TSTestResultController implements TestResultController {
         System.out.println("***** SCORING: Marked prior results non-current as necessary.");
         
         //Prism web service is called for scoring
-        try {
+        /*try {
         	PrismWebServiceHandler.scoring(data.getTestRosterId(), studentData.getOasStudentId().intValue(), adminData.getSessionId(), 0, 0, null);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
     }
     
     public IrsDemographicData getIrsDemographics(StudentDemographicData data){
