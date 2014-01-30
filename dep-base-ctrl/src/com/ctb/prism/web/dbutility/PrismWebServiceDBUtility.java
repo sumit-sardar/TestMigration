@@ -1316,7 +1316,7 @@ public class PrismWebServiceDBUtility {
 								
 								ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
 								MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
-								MAobjectiveScoreTO.setValue(!noneItmAttmtd ? (irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-") : "");
+								MAobjectiveScoreTO.setValue(!noneItmAttmtd ? (irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "") : "");
 								objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
 								
 								ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
@@ -1489,7 +1489,7 @@ public class PrismWebServiceDBUtility {
 		
 		ObjectiveScoreTO NCobjectiveScoreTO = new ObjectiveScoreTO();
 		NCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.NCObjectiveScoreDetails);
-		NCobjectiveScoreTO.setValue(!noneItmAttmtd ? irsRs.getString("numcorrect") : "");
+		NCobjectiveScoreTO.setValue(irsRs.getString("numcorrect"));
 		objectiveScoreDetails.getCollObjectiveScoreTO().add(NCobjectiveScoreTO);
 		
 		ObjectiveScoreTO NPobjectiveScoreTO = new ObjectiveScoreTO();
@@ -1504,7 +1504,7 @@ public class PrismWebServiceDBUtility {
 		
 		ObjectiveScoreTO MAobjectiveScoreTO = new ObjectiveScoreTO();
 		MAobjectiveScoreTO.setScoreType(PrismWebServiceConstant.MAObjectiveScoreDetails);
-		MAobjectiveScoreTO.setValue(!noneItmAttmtd ? (irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "-") : "");
+		MAobjectiveScoreTO.setValue(irsRs.getString("mastery") != null ? irsRs.getString("mastery") : "");
 		objectiveScoreDetails.getCollObjectiveScoreTO().add(MAobjectiveScoreTO);
 		
 		ObjectiveScoreTO MRobjectiveScoreTO = new ObjectiveScoreTO();
@@ -1517,7 +1517,7 @@ public class PrismWebServiceDBUtility {
 		String conditionCode = irsRs.getString("conditioncode");
 		if(conditionCode != null && !"".equals(conditionCode)){
 			CCobjectiveScoreTO.setValue(conditionCode);
-			NCobjectiveScoreTO.setValue("");
+			//NCobjectiveScoreTO.setValue("");
 		}
 		objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
 		
