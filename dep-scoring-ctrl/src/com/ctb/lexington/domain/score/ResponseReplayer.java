@@ -297,6 +297,7 @@ public class ResponseReplayer {
 		 if (responses.isEmpty()) return false;
 	     boolean minimun5Answered = false;
 	     boolean min1Correct = false;
+	     boolean validCR = false;
 	     int validResponseCount = 0;
 	     
 	 	 for (final Iterator it = responses.iterator(); it.hasNext();) {
@@ -307,14 +308,15 @@ public class ResponseReplayer {
 						validResponseCount++;
 					}
 				}
-				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
+				// Changes for defect #76962 :: Jan 30, 2014
+				/*if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
 					//if(null != tascResponse.getActualCrResponse()){
 					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
 						if(!"A".equals(tascResponse.getConditionCode())){
 							validResponseCount++;
 						}
 					}
-				}
+				}*/
 	 		}
 	 		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
  				if(null != tascResponse.getResponse()  && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
@@ -330,8 +332,9 @@ public class ResponseReplayer {
 	     }
 	     
 	     min1Correct = isMinimumOneAnswerCorrect(responses);
+	     validCR = attemptedCRItems(responses); //Changes for defect #76962 :: Jan 30, 2014
 	     
-	     return (min1Correct || minimun5Answered);
+	     return (min1Correct || minimun5Answered || validCR);
     }
     
     /**
@@ -386,6 +389,7 @@ public class ResponseReplayer {
     private static boolean checkScoringSuppressionStatusForTASC(final List responses) {
     	boolean oneToFourOperationalItemMarked = false;
     	boolean max0Incorrect = false;
+    	boolean validCR = false;
     	int validResponseCount = 0;
     	for (final Iterator it = responses.iterator(); it.hasNext();) {
     		ItemResponseVO tascResponse = (ItemResponseVO) it.next();
@@ -396,14 +400,15 @@ public class ResponseReplayer {
 						validResponseCount++;
 					}
 				}
-				if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
+				// Changes for defect #76962 :: Jan 30, 2014
+				/*if(null == tascResponse.getAnswerArea() && !"GRID".equals(tascResponse.getAnswerArea())) {
 					//if(null != tascResponse.getActualCrResponse()){
 					if(null != tascResponse.getConditionCode() || null != tascResponse.getCrResponse()){
 						if(!"A".equals(tascResponse.getConditionCode())){
 							validResponseCount++;
 						}
 					}
-				}
+				}*/
     		}
     		else if(ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())){
 				if(null != tascResponse.getResponse() && !"".equals(tascResponse.getResponse()) && !"-".equals(tascResponse.getResponse())) {
@@ -419,8 +424,35 @@ public class ResponseReplayer {
     		oneToFourOperationalItemMarked = false;
     	
     	max0Incorrect = !isMinimumOneAnswerCorrect(responses);
+    	validCR = !attemptedCRItems(responses); //Changes for defect #76962 :: Jan 30, 2014
     	
-    	return ( max0Incorrect && oneToFourOperationalItemMarked );
+    	return ( max0Incorrect && oneToFourOperationalItemMarked && validCR);
+    }
+    
+    /**
+     *  This method is implemented to check whether there is minimum one
+     *  correct (SR/CR/GR) response or not
+     */
+    private static boolean attemptedCRItems(final List responses) {
+    	
+    	boolean valid = false;
+    	for (final Iterator it = responses.iterator(); it.hasNext();) {
+    		
+			ItemResponseVO tascResponse = (ItemResponseVO) it.next();
+			if (ItemVO.ITEM_TYPE_CR.equals(tascResponse.getItemType())) {
+				
+				if (null == tascResponse.getAnswerArea()
+						&& !"GRID".equals(tascResponse.getAnswerArea())) {
+					if(null != tascResponse.getCrResponse()){
+						if(!"A".equals(tascResponse.getConditionCode())){
+							valid = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+    	return valid;
     }
     
     /**
@@ -453,7 +485,8 @@ public class ResponseReplayer {
 						}
 					}
 				}
-				else if (null == tascResponse.getAnswerArea()
+				//Changes for defect #76962 :: Jan 30, 2014
+				/*else if (null == tascResponse.getAnswerArea()
 						&& !"GRID".equals(tascResponse.getAnswerArea())) {
 					if(!"A".equals(tascResponse.getConditionCode())){
 						final Integer crItemRawScore = tascResponse.getCrResponse();
@@ -462,7 +495,7 @@ public class ResponseReplayer {
 							break;
 						}
 					}
-				}
+				}*/
 			} else if (ItemVO.ITEM_TYPE_SR.equals(tascResponse.getItemType())) {
 				if (tascResponse.getResponse().equals(tascResponse.getCorrectAnswer())) {
 					min1Correct = true;
