@@ -330,9 +330,9 @@ public class ImportScoreProcessor {
 					finalScore = read1;
 				}else{//
 					if(isValidNumericScore(read3)){//checking if read3 is one digit numeric value
-						/*deriveScore = 2 * Integer.parseInt(read3);
-						finalScore = deriveScore.toString();*/
-						finalScore = read3; // Rule: final score -> Numeric value of third read in this case
+						deriveScore = new Integer( 2 * Integer.parseInt(read3));
+						finalScore = deriveScore.toString();
+						//finalScore = read3; // Rule: final score -> Numeric value of third read in this case /* Commented as rule changed, the score needs to be doubled in this case*/
 					}else if(isValidConditionCode(read3)){//read3 is valid condition code
 						finalScore = read3; //Rule: All third reads that have a condition code will have the condition code stand as the final score.
 					}else{
