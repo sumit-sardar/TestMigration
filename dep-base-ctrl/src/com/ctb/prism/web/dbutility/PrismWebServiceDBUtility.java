@@ -394,7 +394,8 @@ public class PrismWebServiceDBUtility {
 			boolean crItmPresent = false;
 			while(rsCR.next()){
 				crItmPresent = true;
-				crScoreVal.append(formatResponse(rsCR.getString("crScore"), 2));
+				//crScoreVal.append(formatResponse(rsCR.getString("crScore"), 2));
+				crScoreVal.append(rsCR.getString("crScore"));
 			}
 			crItemResponseTO.setScoreValue(crScoreVal.toString());
 			if(crItmPresent){
@@ -509,10 +510,10 @@ public class PrismWebServiceDBUtility {
 	private static String formatResponse(String res, int count) {
 		StringBuffer sb = new StringBuffer();
 		String resTemp =  res != null ? res : "";
+		sb.append(resTemp);
 		for(int i = 0 ; i < count - resTemp.length() ; i++){
 			sb.append(" ");
 		}
-		sb.append(resTemp);
 		return sb.toString();
 	}
 
