@@ -5089,6 +5089,8 @@ function registerDelegate(tree){
 							}
 							$("#subtestList").html(html);
 							if(data.subtestValidationAllowed) {
+								 var isTASCCustomer = $('#isTASCCustomer').val();
+								 var isAdmin = $('#isAdminUser').val();
 								if(isOkCustomer) { // Added for Oklahoma customer as only state level admin can invalidate a student.
 									if(isOKAdmin || isOKAdminCord) {
 										$("#toggleValidationSubTest").show();
@@ -5096,6 +5098,8 @@ function registerDelegate(tree){
 									} else {
 										$("#toggleValidationSubTest").hide();
 									}
+								} else if(isTASCCustomer == 'true' && isAdmin == 'false'){
+									$("#toggleValidationSubTest").hide();
 								} else {
 									$("#toggleValidationSubTest").show();
 									setAnchorButtonState('toggleValidationSubtestButton', true);

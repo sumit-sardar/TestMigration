@@ -19,6 +19,9 @@
 	 String pageSize = (String)session.getAttribute("pageSize");
 	 Boolean pageConfigPresent = (Boolean) session.getAttribute("pageConfigPresent");
 	 
+	 Boolean isTASCCustomer = (Boolean)session.getAttribute("isTascCustomer");
+	 Boolean isAdminUser = (Boolean)session.getAttribute("adminUser");
+	 
 %>
 	
 	<input type="hidden" id="userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
@@ -36,6 +39,9 @@
 	<input type="hidden" id="loggedInLastName" name = "loggedInLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="pageSize" name = "pageSize" value='<%=pageSize %>'/>
 	<input type="hidden" id="pageConfig" name = "pageConfig" value='<%=pageConfigPresent%>'/>
+	
+	<input type="hidden" id="isTASCCustomer" name="isTASCCustomer" value='<%=isTASCCustomer%>' />
+	<input type="hidden" id="isAdminUser" name="isAdminUser" value='<%=isAdminUser%>' />
 	 
 	<table width="100%" cellspacing="0" cellpadding="0"> 
 		<tr>
