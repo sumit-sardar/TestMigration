@@ -2185,9 +2185,6 @@ function openNode(orgNodeId) {
 						
 						outOfSchoolValue = data.outOfSchool;
 						profileEditable = String(data.optionList.profileEditable);
-						if($("#isTascCustomer").val() =="true"){
-							profileEditable = "false";
-						}	
 						if(data.isStudentExtracted) {
 							profileEditable = "false";
 							studentExtracted = true;
