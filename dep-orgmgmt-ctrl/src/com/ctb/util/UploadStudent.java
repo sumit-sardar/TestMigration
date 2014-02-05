@@ -1153,14 +1153,16 @@ public class UploadStudent extends BatchProcessor.Process
 
 		asBackgroundColor = asBackgroundColor.trim().toUpperCase();
 		asFontColor = asFontColor.trim().toUpperCase();
-
+		System.out.println("asBackgroundColor : "+ asBackgroundColor + " asFontColor "+asFontColor);
 		if( !(asBackgroundColor==null || "".equals(asBackgroundColor.trim()))
 				&& !(asFontColor==null || "".equals(asFontColor.trim()))){
 
 			ArrayList colorList = (ArrayList) colorCombinationMap.get(asBackgroundColor);
-
+			for(int i=0; i<colorList.size();i++){
+				System.out.println("colorList.get(i) : "+ colorList.get(i));
+			}
 			if ( !colorList.contains(asFontColor) ) {
-
+				System.out.println("colorList.contains(asFontColor) : "+ colorList.contains(asFontColor));
 				return false;
 
 			}
@@ -1281,7 +1283,7 @@ public class UploadStudent extends BatchProcessor.Process
 						equals(CTBConstants.QUESTION_FONT_COLOR)
 						&& !strCell.trim().equals("")
 						&& !isValidColorCombination(msBackGroundColor,strCell)){
-					
+					System.out.println("Qusettion cellHeader.getStringCellValue() " + cellHeader.getStringCellValue() +" msBackGroundColor : " +msBackGroundColor +" strCell : "+ strCell);
 					logicalErrorList.add(CTBConstants.QUESTION_FONT_COLOR);
 				}
 
@@ -1298,7 +1300,7 @@ public class UploadStudent extends BatchProcessor.Process
 						&& !strCell.trim().equals("")
 						&& !isValidColorCombination(
 								msBackGroundColor,strCell ) ) {
-
+					System.out.println("Answer cellHeader.getStringCellValue() " + cellHeader.getStringCellValue() +" msBackGroundColor : " +msBackGroundColor +" strCell : "+ strCell);
 					logicalErrorList.add(CTBConstants.ANSWER_FONT_COLOR);
 
 				}
