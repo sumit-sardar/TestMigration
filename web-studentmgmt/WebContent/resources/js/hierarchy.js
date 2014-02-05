@@ -70,6 +70,7 @@ var hierarchyLockLevel;
 var isDisplayTestSessionInStudentProfile = false; // For "OK TAS - Display Test Session in Student Profile"
 var testSessionName = []; // For "OK TAS - Display Test Session in Student Profile" to store TestSessionName
 var isDisableEditForWV = false;
+var isEditGroupTASC=false;
 
 
 $(document).bind('keydown', function(event) {
@@ -1865,6 +1866,12 @@ function fillselectedOrgNode( elementId, orgList) {
 															resetDisabledFields();
 														}
 													}
+													if(isEditGroupTASC){
+														$('#Student_Information :checkbox').attr('disabled', false); 
+														$('#Student_Information :radio').attr('disabled', false); 
+														$('#Student_Information select').attr('disabled', false);
+														$('#Student_Information :input').attr('disabled', false);
+													}
         											$.unblockUI();
         										}
 																								
@@ -1893,6 +1900,12 @@ function fillselectedOrgNode( elementId, orgList) {
 					resetDisabledFields();
 				}
 			}
+		if(isEditGroupTASC){
+			$('#Student_Information :checkbox').attr('disabled', false); 
+			$('#Student_Information :radio').attr('disabled', false); 
+			$('#Student_Information select').attr('disabled', false);
+			$('#Student_Information :input').attr('disabled', false);
+		}
 	}
 	}
 	
@@ -2185,6 +2198,10 @@ function openNode(orgNodeId) {
 						
 						outOfSchoolValue = data.outOfSchool;
 						profileEditable = String(data.optionList.profileEditable);
+						if($("#isTascCustomer").val() =="true"){
+							profileEditable = "false";
+							isEditGroupTASC=true;
+						}	
 						if(data.isStudentExtracted) {
 							profileEditable = "false";
 							studentExtracted = true;
@@ -2308,6 +2325,12 @@ function openNode(orgNodeId) {
 								toogleColorSettingsLink('colorFont');
 							}
 							
+							if(isEditGroupTASC){
+								$('#Student_Information :checkbox').attr('disabled', false); 
+								$('#Student_Information :radio').attr('disabled', false); 
+								$('#Student_Information select').attr('disabled', false);
+								$('#Student_Information :input').attr('disabled', false);
+							}
 							//$.unblockUI();  
 							$("#addEditStudentDetail").dialog({  
 														title:$("#editStuID").val(),  
