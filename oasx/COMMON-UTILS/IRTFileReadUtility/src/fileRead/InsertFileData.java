@@ -12,12 +12,14 @@ import java.util.Date;
 import fileUtil.DBUtil;
 import fileUtil.ExtractUtil;
 import fileUtil.LasFileUtil;
+import fileUtil.TASCFileUtil;
 
 
 public class InsertFileData {
 	
 	private static final String terranova = "Terra Nova";
 	private static final String laslink = "Laslink";
+	private static final String tasc = "TASC";
 	
 	public static void main(String[] args) {
 		
@@ -45,6 +47,14 @@ public class InsertFileData {
 				Date date = new Date();
 				System.out.println("START -> " + dateFormat.format(date));
 				writesuccessfulinOAS = LasFileUtil.writeInOASDBLas(filePath);
+				Date date1 = new Date();
+				System.out.println("END -> " + dateFormat.format(date1));
+			}
+			else if (product_type.equals(tasc)) { // For TASC 
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Date date = new Date();
+				System.out.println("START -> " + dateFormat.format(date));
+				writesuccessfulinOAS = TASCFileUtil.writeInOASDBTasc(filePath);
 				Date date1 = new Date();
 				System.out.println("END -> " + dateFormat.format(date1));
 			}

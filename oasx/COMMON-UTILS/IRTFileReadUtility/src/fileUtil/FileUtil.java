@@ -23,6 +23,10 @@ public class FileUtil {
 	public static String insertScore_lookupQuery="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
 			"source_score_value,dest_score_value,test_form,test_level,content_area,norm_year,framework_code,product_internal_display_name) " +
 			"VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+	public static String insertScore_lookupQuery_withGrade="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
+	"source_score_value,dest_score_value,test_form,test_level,content_area,norm_year,framework_code,product_internal_display_name,grade) " +
+	"VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+	
 	private static String insertScore_lookupQuery_withNorms="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
 		"source_score_value,dest_score_value,test_form,test_level,grade,content_area,norm_group,norm_year,framework_code,product_internal_display_name) " +
 		"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -32,6 +36,20 @@ public class FileUtil {
 	public static String itemSetIDQuery=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
 			"where tc.product_id = ? and tc.item_set_id = isa.ancestor_item_Set_id and isa.item_set_id = iset.item_set_id " +
 			"and iset.item_set_type = 'TD' and iset.sample = 'F' and upper(iset.subject) = ? and iset.item_set_level = ? ";
+	//Added for TASC
+	public static String itemSetIDQueryTASC=" select iset.item_set_id from item_set iset, item_set_ancestor isa, test_catalog tc " +
+	"where tc.product_id = ? and tc.item_set_id = isa.ancestor_item_Set_id and isa.item_set_id = iset.item_set_id " +
+	"and iset.item_set_type = 'TD' and iset.sample = 'F' and upper(iset.subject) = ? and iset.item_set_level = ?  and iset.item_set_form = ?";
+
+	//Added for TASC
+	public static String itemSetIDQueryTASCObjectiveLevel=" SELECT ISET.item_set_id  FROM ITEM_SET ISET, ITEM_SET_CATEGORY ISC, PRODUCT P " +
+	" WHERE P.PRODUCT_ID = ? AND P.PARENT_PRODUCT_ID = ISC.FRAMEWORK_PRODUCT_ID AND ISC.ITEM_SET_CATEGORY_LEVEL = P.SEC_SCORING_ITEM_SET_LEVEL " +
+	" AND ISC.ITEM_SET_CATEGORY_ID = ISET.ITEM_SET_CATEGORY_ID  AND ISET.ITEM_SET_TYPE = 'RE' AND UPPER(ISET.ITEM_SET_NAME) = ?  and iset.item_set_level = ? ";
+	//Added for TASC
+	public static String insertScore_lookupQuery_TASC="INSERT INTO score_lookup(Source_score_type_code,dest_Score_type_code,score_lookup_id," +
+	"source_score_value,dest_score_value,test_form,test_level,content_area,norm_year,framework_code,product_internal_display_name,grade) " +
+	"VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+
 	private static String itemSetIdGEQuery = "SELECT iset.item_set_id FROM item_set iset, item_set_ancestor isa, test_catalog tc, " +
 			"product prod WHERE prod.parent_product_id = 3700 AND prod.product_id = tc.product_id AND tc.item_set_id = isa.ancestor_item_set_id AND " +
 			"isa.item_set_id = iset.item_set_id AND iset.item_set_type = 'TD' AND iset.SAMPLE = 'F' AND iset.subject = ?";
@@ -134,8 +152,8 @@ public class FileUtil {
 			for (File inFile: files ) 
 			{    
 				if(inFile.getName().substring(0,2).equals("NS") && levels.contains(inFile.getName().substring(4,6)))
-				{
-					/*File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+				{// For Raw Score to Scale Score Conversion
+					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
@@ -185,10 +203,10 @@ public class FileUtil {
 						}
 						successInScore_lookup_item_set=writeInScore_lookup_item_set(score_lookup_id,itemSetIdList);
 					}
-					*/
+					
 				} else if(inFile.getName().substring(0,2).equals("SE") && levels.contains(inFile.getName().substring(4,6))) {
 					
-					/*File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
+					File_name="";Content_area_initial  = "";  Product_type = ""; product_id = "";
 					
 					Source_score_type_code="";dest_Score_type_code="";score_lookup_id="";
 					test_form = " ";Test_Level = "";Content_area="";framework_code = "";product_internal_display_name =" ";
@@ -221,8 +239,8 @@ public class FileUtil {
 						contentOfFile=readFileDataSE(file_location,matchingFileMap);
 						
 						successInSCORE_LOOKUP=writeInSCORE_LOOKUP(contentOfFile,Source_score_type_code,dest_Score_type_code,score_lookup_id,test_form,Test_Level,Content_area,framework_code,product_internal_display_name);
-					}*/
-				} else if(inFile.getName().substring(0,3).equals("NCE")) {/*
+					}
+				} else if(inFile.getName().substring(0,3).equals("NCE")) {
 						File_name = inFile.getName();
 						System.out.println("File_name -> "+File_name);
 						file_location=path+"\\"+File_name;
@@ -236,7 +254,7 @@ public class FileUtil {
 						contentOfFile = readFileData(file_location);
 						writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 								null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("NP")) {/*
+				} else if (inFile.getName().substring(0,2).equals("NP")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -250,7 +268,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_NCENP(contentOfFile, Source_score_type_code, dest_Score_type_code, score_lookup_id, 
 							null, null, Content_area, framework_code, null, Content_area_initial);
-				*/} else if (inFile.getName().substring(0,2).equals("GE")) {
+				} else if (inFile.getName().substring(0,2).equals("GE")) {
 					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
@@ -266,7 +284,7 @@ public class FileUtil {
 							score_lookup_id,test_form,null,Content_area,framework_code,
 							null, Content_area_initial);
 				} else if (inFile.getName().substring(4,7).equals("OPI")) {
-/*					File_name = inFile.getName();
+					File_name = inFile.getName();
 					System.out.println("File_name -> "+File_name);
 					file_location=path+"\\"+File_name;
 					Content_area_initial=File_name.substring(0,2);
@@ -281,7 +299,7 @@ public class FileUtil {
 					contentOfFile = readFileData(file_location);
 					writeInSCORE_LOOKUP_Mastery_Range(contentOfFile,Source_score_type_code, dest_Score_type_code,
 							score_lookup_id, test_form,Content_area, framework_code, Content_area_initial, 
-							Integer.parseInt(product_id), Product_type);*/
+							Integer.parseInt(product_id), Product_type);
 				}
 				
 			}
@@ -470,7 +488,7 @@ public class FileUtil {
 			ps.setString(6, test_form);
 			ps.setString(7, Test_Level);
 			ps.setString(8, Content_area);
-			ps.setString(9, "");
+			ps.setString(9, "2013");
 			ps.setString(10, framework_code);
 			ps.setString(11,product_internal_display_name);
 			save=ps.executeUpdate();
@@ -566,7 +584,7 @@ public class FileUtil {
 			try {
 				con.rollback();
 				save=0;
-				System.out.println("Data are not saved in Score_lookup_item_set table.");
+				System.out.println("Data are not saved in Score_lookup_item_set_tasc table.");
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
