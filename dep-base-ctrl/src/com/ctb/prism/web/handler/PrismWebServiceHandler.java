@@ -192,31 +192,33 @@ public class PrismWebServiceHandler {
 		
 		boolean rosterAvailable = false;
 		for(long rosterID : rosterIds){
-			rosterAvailable = true;
-			RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
-			
-			StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
-			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
-			//TODO - get the student survey details and put it in the studentDetailsTO
-			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
-			
-			CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
-			customerId = custHierarchyDetailsTO.getCustomerId();
-			String orgNodeCodeList = "";
-			for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
-			{
-				OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
-				if (i>0) orgNodeCodeList += "~";
-            	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
-				heirarchyLevel = orgDetails.getOrgLevel();
+			if (PrismWebServiceDBUtility.checkValidRosterStatus(rosterID)){
+				rosterAvailable = true;
+				RosterDetailsTO rosterDetailsTO = new RosterDetailsTO();
+				
+				StudentDetailsTO studentDetailsTO = getStudentBio(studentId);
+				studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterID));
+				//TODO - get the student survey details and put it in the studentDetailsTO
+				rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
+				
+				CustHierarchyDetailsTO custHierarchyDetailsTO = getCustHierarchy(studentId,rosterID);
+				customerId = custHierarchyDetailsTO.getCustomerId();
+				String orgNodeCodeList = "";
+				for (int i=0;i<custHierarchyDetailsTO.getCollOrgDetailsTO().size();i++)
+				{
+					OrgDetailsTO orgDetails = custHierarchyDetailsTO.getCollOrgDetailsTO().get(i);
+					if (i>0) orgNodeCodeList += "~";
+	            	orgNodeCodeList += ((orgDetails.getOrgCode()==null)?"":orgDetails.getOrgCode());
+					heirarchyLevel = orgDetails.getOrgLevel();
+				}
+				orgNodeCode = orgNodeCodeList;
+				System.out.println("WS/EditStudent orgNodeCodeList: "+orgNodeCodeList);
+				
+				rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
+				
+				rosterDetailsTO.setRosterId(String.valueOf(rosterID));
+				rosterDetailsList.add(rosterDetailsTO);
 			}
-			orgNodeCode = orgNodeCodeList;
-			System.out.println("WS/EditStudent orgNodeCodeList: "+orgNodeCodeList);
-			
-			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
-			
-			rosterDetailsTO.setRosterId(String.valueOf(rosterID));
-			rosterDetailsList.add(rosterDetailsTO);
 		}
 		if(rosterAvailable){
 			invokePrismWebService(studentListTO, customerId, orgNodeCode, heirarchyLevel, studentId, 0, 0, "Edit Student", hitCount, logkey, con);
@@ -267,7 +269,7 @@ public class PrismWebServiceHandler {
 			
 			rosterDetailsTO.setCustHierarchyDetailsTO(custHierarchyDetailsTO);
 			
-			StudentDetailsTO studentDetailsTO = getStdentBio(studentId);
+			StudentDetailsTO studentDetailsTO = getStudentBio(studentId);
 			studentDetailsTO.setStudentDemoTO(PrismWebServiceDBUtility.getStudentDemo(rosterId));
 			studentDetailsTO.setStudentSurveyBioTO(PrismWebServiceDBUtility.getStudentSurveyBio(rosterId));
 			rosterDetailsTO.setStudentDetailsTO(studentDetailsTO);
@@ -294,7 +296,7 @@ public class PrismWebServiceHandler {
 	 * @param studentId
 	 * @throws Exception
 	 */
-	private static StudentDetailsTO getStdentBio(Integer studentId) throws Exception{
+	private static StudentDetailsTO getStudentBio(Integer studentId) throws Exception{
 		StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
 		StudentBioTO studentBioTO =  PrismWebServiceDBUtility.getStudentBio(studentId);
 		studentDetailsTO.setStudentBioTO(studentBioTO);
