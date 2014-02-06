@@ -623,7 +623,7 @@ public class StudentOperationController extends PageFlowController {
 				}
 				
 				//Prism Web Service Call
-				if(!isCreateNew && isTASCCustomer(customerConfigurations)){
+				/*if(!isCreateNew && isTASCCustomer(customerConfigurations)){
 					
 					final Integer tempStudentId = studentId;
 					
@@ -638,7 +638,7 @@ public class StudentOperationController extends PageFlowController {
 						}
 					}).start();
 					
-				}
+				}*/
 				
 				
 			}
