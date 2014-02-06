@@ -1,3 +1,0 @@
-Project: @project@
-Build: @now@
-Date: @date@

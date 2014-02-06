@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Created-By: TCS
-Main-Class: com.Main
-Class-Path:  ./lib ./lib/classes12.jar ./lib/log4j.jar 
-
-
-

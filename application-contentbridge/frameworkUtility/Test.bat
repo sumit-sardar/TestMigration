@@ -1,1 +1,0 @@
-Framework.bat Test Path=%*
