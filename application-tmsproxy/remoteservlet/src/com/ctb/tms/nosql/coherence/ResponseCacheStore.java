@@ -98,6 +98,8 @@ public class ResponseCacheStore implements OASCacheStore {
 
 	public void storeAll(java.util.Set<BinaryEntry> setBinEntries) throws RuntimeException {
 		Connection conn = null;
+    	long startTime = System.currentTimeMillis();
+
     	try {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
@@ -134,7 +136,7 @@ public class ResponseCacheStore implements OASCacheStore {
 //            }
 //    		
     		
-    		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " records.");
+    		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " records. Time spent: " +(System.currentTimeMillis()-startTime)+" ms.");
     	} catch (Exception e) {
     		logger.warn("ResponseCacheStore.storeAll (binary): Error storing responses to DB: " + e.getMessage());
 			throw new RuntimeException(e.getMessage());
