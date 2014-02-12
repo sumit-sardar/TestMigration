@@ -83,7 +83,7 @@ public class ResetOperationController extends PageFlowController {
     private Map<String, StudentSessionStatusVO> studentDetailsMap = null;
     
     private boolean isLasLinkCustomer = false;
-    
+    private boolean isTASCCustomer = false;
     public static String CONTENT_TYPE_JSON = "application/json";
     
     /* Changes for DEX Story - Add intermediate screen : Start */
@@ -1069,7 +1069,9 @@ public class ResetOperationController extends PageFlowController {
 				if(this.isLasLinkCustomer){
 					wipeOutScoringData(testAdminId, resetStudentDataList);
 				}
-				
+				else if(this.isTASCCustomer){
+					wipeOutScoringDataForTASC(testAdminId, resetStudentDataList);
+				}
 			}
 			
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
@@ -1129,6 +1131,36 @@ public class ResetOperationController extends PageFlowController {
 		try {
 			
 			customerServiceManagement.wipeOutScoringData(testAdminId, studentIds, itemSetIdTD);
+			
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void wipeOutScoringDataForTASC(Integer testAdminId,
+			List<StudentSessionStatusVO> resetStudentDataList) {
+		
+		String studentIds = null;
+		Integer itemSetIdTD = null;
+		
+		for(StudentSessionStatusVO st : resetStudentDataList){
+			if (studentIds == null){
+				studentIds = st.getStudentId().toString();
+			}else{
+				studentIds += "," + st.getStudentId().toString();
+			}
+			
+			if (itemSetIdTD == null){
+				itemSetIdTD = st.getItemSetId();
+			}
+		}
+		if (studentIds.endsWith(",")){
+			studentIds = studentIds.substring(0, studentIds.length()-1);
+		}
+		try {
+			
+			customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentIds, itemSetIdTD);
 			
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
@@ -1199,6 +1231,9 @@ public class ResetOperationController extends PageFlowController {
 				
 				if(this.isLasLinkCustomer){
 					customerServiceManagement.wipeOutScoringData(testAdminId, studentId.toString(), itemSetId);
+				}
+				else if(this.isTASCCustomer){
+					customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentId.toString(), itemSetId);
 				}
 			}
 			
@@ -1550,6 +1585,7 @@ public class ResetOperationController extends PageFlowController {
 			hasDownloadConfig = false;
 		}
 		
+		this.isTASCCustomer = isTascCustomer;
 		this.getSession().setAttribute("hasUploadConfigured",new Boolean(hasUploadConfig && adminUser));
 		this.getSession().setAttribute("hasDownloadConfigured",new Boolean(hasDownloadConfig && adminUser));
 		this.getSession().setAttribute("hasUploadDownloadConfigured",new Boolean(hasUploadDownloadConfig && adminUser));

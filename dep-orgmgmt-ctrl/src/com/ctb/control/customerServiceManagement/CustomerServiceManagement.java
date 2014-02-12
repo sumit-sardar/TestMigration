@@ -24,4 +24,5 @@ public interface CustomerServiceManagement {
 	void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)	throws CTBBusinessException;
 	void wipeOutSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)	throws CTBBusinessException;
 	void wipeOutScoringData(java.lang.Integer testAdminId, java.lang.String studentList, java.lang.Integer itemSetId) throws CTBBusinessException;
+	void wipeOutScoringDataForTASC(java.lang.Integer testAdminId, java.lang.String studentList, java.lang.Integer itemSetId) throws CTBBusinessException;
 }

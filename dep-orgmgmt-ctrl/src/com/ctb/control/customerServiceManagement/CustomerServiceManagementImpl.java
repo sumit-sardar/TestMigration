@@ -594,6 +594,46 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 		}
 	}
 
+	@Override
+	public void wipeOutScoringDataForTASC(Integer testAdminId, String studentIds, Integer itemSetId) throws CTBBusinessException{
+		
+		CallableStatement cstmt = null;
+		Connection conn = null;
+		try {
+			TestElement te = itemSets.getContentAreaIdForTASC(testAdminId, itemSetId);
+			conn = reportIrs.getConnection();
+			if (null != te) {
+				
+				CLOB studentListClob = null;					
+				// If the temporary CLOB has not yet been created, create new
+				studentListClob = CLOB.createTemporary(conn, true, CLOB.DURATION_SESSION); 
+				// Open the temporary CLOB in readwrite mode to enable writing
+				studentListClob.open(CLOB.MODE_READWRITE); 
+				// Get the output stream to write
+				Writer tempClobWriter = studentListClob.getCharacterOutputStream(); 
+				// Write the data into the temporary CLOB
+				tempClobWriter.write(studentIds); 
+				// Flush and close the stream
+				tempClobWriter.flush();
+				tempClobWriter.close(); 
+				// Close the temporary CLOB 
+				studentListClob.close(); 
+				reportIrs.wipeOutStudentsScoringForTASC(studentListClob, Long.parseLong(testAdminId.toString()), Long.parseLong(te.getExtCmsItemSetId()), te.getItemSetName());
+			}
+		}catch (SQLException se) {
+			se.printStackTrace();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		finally{			
+				try {
+					if(cstmt != null)
+						cstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
 }
 
 

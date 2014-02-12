@@ -45,4 +45,7 @@ public interface ImmediateReportingIrs extends JdbcControl{
 	
 	@JdbcControl.SQL(statement = "call wipeout_scoring_after_reset({studentIds},{testAdminId},{contentAreaId}, {contentAreaName})")
     void wipeOutStudentsScoring(Clob studentIds, Integer testAdminId, Long contentAreaId, String contentAreaName) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "call wipeout_scoring_after_reset_ts({studentIds},{testAdminId},{contentAreaId}, {contentAreaName})")
+    void wipeOutStudentsScoringForTASC(Clob studentIds, Long testAdminId, Long contentAreaId, String contentAreaName) throws SQLException;
 }
