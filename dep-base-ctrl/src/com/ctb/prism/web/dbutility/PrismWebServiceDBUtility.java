@@ -1980,7 +1980,7 @@ public class PrismWebServiceDBUtility {
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
 			pst.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
-			//System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
+			System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
 				invkcount = rs.getInt("invkcount");
