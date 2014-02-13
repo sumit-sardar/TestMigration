@@ -87,7 +87,7 @@ public class PrismWebServiceDBUtility {
 	private static final String INSERT_WS_ERROR_LOG = "{CALL INSERT INTO ws_error_log  (ws_error_log_key,   student_id,   roster_id,   session_id,   status,   invoke_count,   ws_type,   message, ADDITIONAL_INFO) VALUES  (SEQ_WS_ERROR_LOG_KEY.NEXTVAL,   ?,   ?,   ?,   'Progress',   0,   ?,   ?,  ?) RETURNING ws_error_log_key INTO ?}";
 	private static final String DELETE_WS_ERROR_LOG = "DELETE WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY = ?";
 	private static final String UPDATE_WS_ERROR_LOG = "UPDATE ws_error_log   SET invoke_count = ?, message = ?, updated_date = SYSDATE, status = ?, ADDITIONAL_INFO = ? WHERE ws_error_log_key = ?";
-	private static final String SELECT_WS_ERROR_LOG = "SELECT * FROM ( SELECT UPDATED_DATE UPDATEDATE,  WS_ERROR_LOG_KEY LOGKEY,  INVOKE_COUNT INVKCOUNT,  STUDENT_ID STDID,  ROSTER_ID RSTRID,  SESSION_ID SESSIONID,  WS_TYPE WSTYP FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY FROM WS_ERROR_LOG WHERE STATUS = 'Progress') ORDER BY UPDATED_DATE ASC ) WHERE ROWNUM < = ? FOR UPDATE SKIP LOCKED";
+	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	//private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM ws_error_log_bkp WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM ws_error_log_bkp                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
@@ -1980,7 +1980,7 @@ public class PrismWebServiceDBUtility {
 			pst.setInt(1, PrismWebServiceConstant.retryReqRowCount);
 			pst.setFetchSize(PrismWebServiceConstant.retryReqRowCount);
 			rs = pst.executeQuery();
-			System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
+			//System.out.println("PrismWebServiceDBUtility.getWSErrorLogProgress : Query for getWSErrorLogProgress : " + SELECT_WS_ERROR_LOG);
 			while(rs.next()){
 				logkey = rs.getLong("logkey");
 				invkcount = rs.getInt("invkcount");
