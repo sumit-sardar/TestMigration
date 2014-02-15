@@ -1151,21 +1151,19 @@ public class ResetOperationController extends PageFlowController {
 				studentIds += "," + st.getStudentId().toString();
 			}
 			
-			if (itemSetIdTD == null){
-				itemSetIdTD = st.getItemSetId();
+			itemSetIdTD = st.getItemSetId();
+		
+			if (studentIds.endsWith(",")){
+				studentIds = studentIds.substring(0, studentIds.length()-1);
+			}
+			try {
+				if (null != itemSetIdTD){
+					customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentIds, itemSetIdTD);
+				}
+			} catch (CTBBusinessException e) {
+				e.printStackTrace();
 			}
 		}
-		if (studentIds.endsWith(",")){
-			studentIds = studentIds.substring(0, studentIds.length()-1);
-		}
-		try {
-			
-			customerServiceManagement.wipeOutScoringDataForTASC(testAdminId, studentIds, itemSetIdTD);
-			
-		} catch (CTBBusinessException e) {
-			e.printStackTrace();
-		}
-		
 	}
 
 	@Jpf.Action()
