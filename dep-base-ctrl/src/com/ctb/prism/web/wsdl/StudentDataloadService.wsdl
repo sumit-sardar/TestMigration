@@ -4,7 +4,7 @@
 </wsp:Policy>
 <types>
 <xsd:schema>
-<xsd:import namespace="http://controller.web.prism.ctb.com/" schemaLocation="http://10.160.23.12:8080/tasc/StudentDataloadService?xsd=1"></xsd:import>
+<xsd:import namespace="http://controller.web.prism.ctb.com/" schemaLocation="http://172.16.80.132/tasc/StudentDataloadService?xsd=1"></xsd:import>
 </xsd:schema>
 </types>
 <message name="loadStudentData">
@@ -34,7 +34,7 @@
 </binding>
 <service name="StudentDataloadService">
 <port name="SampleWebservicePort" binding="tns:SampleWebservicePortBinding">
-<soap:address location="http://10.160.23.12:8080/tasc/StudentDataloadService"></soap:address>
+<soap:address location="http://172.16.80.132/tasc/StudentDataloadService"></soap:address>
 </port>
 </service>
 </definitions>
