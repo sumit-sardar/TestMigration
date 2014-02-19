@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
+import com.ctb.lexington.db.irsdata.IrsFormDimData;
 import com.ctb.lexington.db.irsdata.IrsSessionDimData;
 import com.ctb.lexington.db.irsdata.IrsAssessmentDimData;
 import com.ctb.lexington.db.irsdata.IrsProductDimData;
@@ -13,6 +14,7 @@ import com.ctb.lexington.db.irsdata.IrsCustomerDimData;
 import com.ctb.lexington.db.irsdata.IrsProgramDimData;
 import com.ctb.lexington.db.irsdata.IrsSchedulerDimData;
 
+import com.ctb.lexington.db.mapper.IrsFormDimMapper;
 import com.ctb.lexington.db.mapper.IrsSessionDimMapper;
 import com.ctb.lexington.db.mapper.IrsAssessmentDimMapper;
 import com.ctb.lexington.db.mapper.IrsProductDimMapper;
@@ -38,6 +40,7 @@ public class AdminController {
 	private IrsProductDimMapper irsProductDimMapper;
 	private IrsCustomerDimMapper irsCustomerDimMapper;
 	private IrsProgramDimMapper irsProgramDimMapper;
+	private IrsFormDimMapper irsFormDimMapper;
 	
 	public AdminController(Connection conn, AdminData adminData, CurriculumData currData, Long studentGradeId){
 		this.data = adminData;
@@ -47,6 +50,18 @@ public class AdminController {
 	}
 	  
     public void run() throws SQLException {
+    	
+    	if("TS".equals(data.getAssessmentType())) {
+	    	this.irsFormDimMapper = new IrsFormDimMapper(conn);
+	    	IrsFormDimData newForm = getIrsFormBean(data);
+	    	IrsFormDimData form = irsFormDimMapper.findByFormNameAndProductTypeId(newForm); // Find formid by Form Name and Product Type Id (6)
+	    	if(form == null) {
+	    		System.out.println("Form Name for TASC Does not exist in FORM_DIM Table");
+	    		throw new RuntimeException("Critical Error in scoring! Form Name for TASC Does not exist in FORM_DIM Table.");
+	    	}
+	    	data.setFormId(form.getFormid());
+    	}
+    	
     	this.irsCustomerDimMapper = new IrsCustomerDimMapper(conn);
     	IrsCustomerDimData newCustomer = getIrsCustomerBean(data);
     	
@@ -140,6 +155,17 @@ public class AdminController {
     	}
     }	
 
+    private IrsFormDimData getIrsFormBean(AdminData data) {
+    	IrsFormDimData form = new IrsFormDimData();
+    	String formName = "N/A";
+        if(currData != null && currData.getContentAreas() != null && currData.getContentAreas().length > 0) {
+        	formName = currData.getContentAreas()[0].getSubtestForm();
+        }
+        form.setName(formName);
+        form.setProductTypeId(new Long(6));
+        return form;
+    }
+    
     private IrsCustomerDimData getIrsCustomerBean(AdminData data) {
             IrsCustomerDimData customer = new IrsCustomerDimData();
             customer.setCustomerid(data.getCustomerId());
@@ -245,9 +271,10 @@ public class AdminController {
                                           "CAT".equals(form)?13:14)); 
                                           
         if("TS".equals(data.getAssessmentType())) {
-        	assessmentData.setFormid(new Long("A1".equals(form)?18:
+        	/*assessmentData.setFormid(new Long("A1".equals(form)?18:
         									  "B1".equals(form)?19:
-        									  "C1".equals(form)?20:21));
+        									  "C1".equals(form)?20:21));*/
+        	assessmentData.setFormid(data.getFormId());
         }
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
@@ -291,4 +318,5 @@ public class AdminController {
        }
        return assessmentData;
     }
+	
 }

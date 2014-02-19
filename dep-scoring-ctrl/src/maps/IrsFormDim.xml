@@ -11,6 +11,17 @@ FROM
 WHERE 
         FORMID = #formid:NUMERIC#
 </select>
+<select id="findByFormNameProductTypeId" parameterClass="com.ctb.lexington.db.irsdata.IrsFormDimData" resultClass="com.ctb.lexington.db.irsdata.IrsFormDimData">
+SELECT 
+        FORMID as formid,
+        NAME as name,
+        PRODUCT_TYPEID as productTypeId
+FROM
+        FORM_DIM
+WHERE 
+        NAME = #name:VARCHAR#
+AND		PRODUCT_TYPEID = #productTypeId:NUMERIC#
+</select>
 <insert id="insertFormDim" parameterClass="com.ctb.lexington.db.irsdata.IrsFormDimData">
     INSERT INTO
         FORM_DIM

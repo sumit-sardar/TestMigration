@@ -47,6 +47,11 @@ public class AdminData{
 	 /*IrsProductDim
 	  * */
 	// private Long productid;
+     
+     /* IrsFormDim
+      * */
+     private Long formId;
+     
 	 private String productName;
 	/**
 	 * @return the assessmentId
@@ -307,6 +312,12 @@ public class AdminData{
 	}
 	public void setShowGE(Long showGE) {
 		this.showGE = showGE;
+	}
+	public Long getFormId() {
+		return formId;
+	}
+	public void setFormId(Long formId) {
+		this.formId = formId;
 	}
 	
 	

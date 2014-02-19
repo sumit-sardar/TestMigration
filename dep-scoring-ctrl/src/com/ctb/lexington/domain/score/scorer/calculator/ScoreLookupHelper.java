@@ -143,10 +143,10 @@ public class ScoreLookupHelper {
     }
     
     public String getTASCScaleScoreRangeForCutScore(String frameworkCode, BigDecimal destScoreValue, String contentArea,
-            String testLevel, String grade, String testForm, Connection conn) {
+            String testLevel, String grade, String testForm, Long objectiveId, Connection conn) {
         try {
             final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
-            return mapper.findTASCScaleScoreRange(frameworkCode, destScoreValue, testLevel, contentArea, grade, testForm);
+            return mapper.findTASCScaleScoreRange(frameworkCode, destScoreValue, testLevel, contentArea, grade, testForm, objectiveId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

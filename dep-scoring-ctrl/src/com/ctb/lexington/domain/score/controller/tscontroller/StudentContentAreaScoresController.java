@@ -66,10 +66,11 @@ public class StudentContentAreaScoresController {
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setContentAreaid(contentAreas[i].getContentAreaId());
                    newFact.setCurrentResultid(context.getCurrentResultId());
-                   newFact.setFormid(new Long(
+                   newFact.setFormid(adminData.getFormId());
+                   /*newFact.setFormid(new Long(
                                             "A1".equals(contentAreas[i].getSubtestForm())?18:
                                             "B1".equals(contentAreas[i].getSubtestForm())?19:
-                                            "C1".equals(contentAreas[i].getSubtestForm())?20:21));
+                                            "C1".equals(contentAreas[i].getSubtestForm())?20:21));*/
                    /*if(fact.getGradeEquivalent() != null) {
                         newFact.setGradeEquivalent( new Float(Float.parseFloat(fact.getGradeEquivalent().replace('+', '9'))));
                    }*/

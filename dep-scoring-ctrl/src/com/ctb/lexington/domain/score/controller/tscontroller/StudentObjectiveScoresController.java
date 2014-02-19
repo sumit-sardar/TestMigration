@@ -191,10 +191,11 @@ public class StudentObjectiveScoresController {
 	                // dim ids from context
 	                secObjFact.setAssessmentid(contextData.getAssessmentId());
 	                secObjFact.setCurrentResultid(contextData.getCurrentResultId());
-	                secObjFact.setFormid(new Long(
+	                secObjFact.setFormid(adminData.getFormId());
+	                /*secObjFact.setFormid(new Long(
 	                                        "A1".equals(sec.getSubtestForm())?18:
 	                                        "B1".equals(sec.getSubtestForm())?19:
-	                                        "C1".equals(sec.getSubtestForm())?20:21));
+	                                        "C1".equals(sec.getSubtestForm())?20:21));*/
 	                secObjFact.setGradeid(contextData.getGradeId());
 	                secObjFact.setLevelid(new Long(
 	                                        "21-22".equals(sec.getSubtestLevel())?34:35));

@@ -201,11 +201,11 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
 	}
     
     protected String getTASCScaleScoreRangeForCutScore(String frameworkCode, String contentArea, String testLevel,
-            BigDecimal destScoreValue, String grade, String testForm) {
+            BigDecimal destScoreValue, String grade, String testForm, Long objectiveId) {
         final Connection conn = getOASConnection();
         try {
             return getScoreLookupHelper().getTASCScaleScoreRangeForCutScore(frameworkCode, destScoreValue,
-                    contentArea, testLevel, grade, testForm, conn);
+                    contentArea, testLevel, grade, testForm, objectiveId, conn);
         } finally {
             closeConnection(conn);
         }

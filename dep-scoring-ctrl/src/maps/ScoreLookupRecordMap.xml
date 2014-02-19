@@ -721,4 +721,26 @@
         </isNotNull>
     </select>
     
+    <select id="findMinScaleScoreValueByUniqueItemSet" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT MIN(SL.DEST_SCORE_VALUE) as destScoreValue
+		  FROM SCORE_LOOKUP SL, SCORE_LOOKUP_ITEM_SET SLIS
+		 WHERE SL.SCORE_LOOKUP_ID = SLIS.SCORE_LOOKUP_ID
+		   AND SLIS.ITEM_SET_ID = #itemSetId:NUMERIC#
+		   AND SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+		   AND SL.SOURCE_SCORE_TYPE_CODE = 'NSC'
+		   AND SL.DEST_SCORE_TYPE_CODE = 'SCL'
+		   AND SL.CONTENT_AREA = #contentArea:VARCHAR#
+		]]>
+		<isNotNull property="testForm" prepend="and ">
+		   SL.TEST_FORM = #testForm:VARCHAR#
+		</isNotNull>
+		<isNotNull property="grade" prepend="and ">
+           SL.GRADE = #grade:VARCHAR#
+        </isNotNull>
+        <isNotNull property="testLevel" prepend="and ">
+           SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
+    
 </sqlMap>

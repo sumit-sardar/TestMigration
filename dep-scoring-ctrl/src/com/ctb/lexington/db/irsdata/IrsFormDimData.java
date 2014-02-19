@@ -7,6 +7,7 @@ import com.ctb.lexington.db.record.Persistent;
 public class IrsFormDimData implements Persistent{
 	private Long formid;
     private String name;
+    private Long productTypeId;
 
     public Long getFormid() {
         return formid;
@@ -23,5 +24,13 @@ public class IrsFormDimData implements Persistent{
     public void setName(String name) {
         this.name = name;
     }
+
+	public Long getProductTypeId() {
+		return productTypeId;
+	}
+
+	public void setProductTypeId(Long productTypeId) {
+		this.productTypeId = productTypeId;
+	}
 
 }

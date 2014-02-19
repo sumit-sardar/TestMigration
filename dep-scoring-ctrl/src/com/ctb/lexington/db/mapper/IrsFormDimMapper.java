@@ -13,6 +13,7 @@ import com.ctb.lexington.db.irsdata.IrsFormDimData;
 public class IrsFormDimMapper extends AbstractDBMapper{
 	
 	private static final String FIND_BY_FORMID = "findByFormID";
+	private static final String FIND_BY_FORMNAME_PRODUCTTYPEID = "findByFormNameProductTypeId";
 	private static final String INSERT_INTO_FORMDIM = "insertFormDim";
 	private static final String UPDATE_BY_FORMID = "updateFormDim";
     private static final String DELETE_BY_FORMID = "deleteFormDim";
@@ -25,6 +26,13 @@ public class IrsFormDimMapper extends AbstractDBMapper{
 		IrsFormDimData template = new IrsFormDimData();
 		template.setFormid(formId);
 		return (IrsFormDimData) find(FIND_BY_FORMID,template);    
+    }
+	
+	public IrsFormDimData findByFormNameAndProductTypeId(IrsFormDimData newForm){
+		IrsFormDimData template = new IrsFormDimData();
+		template.setName(newForm.getName());
+		template.setProductTypeId(newForm.getProductTypeId());
+		return (IrsFormDimData) find(FIND_BY_FORMNAME_PRODUCTTYPEID,template);
     }
 	
 	public IrsFormDimData insert(IrsFormDimData record)throws SQLException{

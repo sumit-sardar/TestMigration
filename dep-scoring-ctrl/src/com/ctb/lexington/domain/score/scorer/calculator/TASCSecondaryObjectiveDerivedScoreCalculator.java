@@ -97,7 +97,8 @@ public class TASCSecondaryObjectiveDerivedScoreCalculator extends
 	        		pTestLevel,
 	        		null,
 	        		pGrade,
-	        		pTestForm);
+	        		pTestForm,
+	        		event.getObjectiveId());
 	        
 	        
 	        channel.send(new SecondaryObjectiveDerivedScoreEvent(

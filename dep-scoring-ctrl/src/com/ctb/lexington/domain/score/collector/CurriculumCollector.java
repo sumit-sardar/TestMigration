@@ -555,21 +555,28 @@ public class CurriculumCollector {
         } else if ("TS".equals(productType)){
         	Composite [] composites = new Composite[2];
         	 composites[0] = new Composite();
-        	 composites[0].setCompositeId(new Long(70));
         	 composites[0].setCompositeName("Overall score");
              composites[0].setCompositeType("TS COMPOSITE");
              composites[0].setSubject("TS Overall Score");
-//             composites[0].setCompositeNumItems(new Long(100));
-//             composites[0].setCompositePointsPossible(new Long(315));
+             //composites[0].setCompositeNumItems(new Long(100));
+             //composites[0].setCompositePointsPossible(new Long(315));
              
              composites[1] = new Composite();
-        	 composites[1].setCompositeId(new Long(71));
         	 composites[1].setCompositeName("ELA (Composite of Reading and Writing)");
              composites[1].setCompositeType("TS COMPOSITE");
-             //composites[1].setSubject("TS ELA (Composite of Reading and Writing)");
              composites[1].setSubject("TS ELA Score");
-//             composites[1].setCompositeNumItems(new Long(100));
-//             composites[1].setCompositePointsPossible(new Long(315));
+             //composites[1].setSubject("TS ELA (Composite of Reading and Writing)");
+             //composites[1].setCompositeNumItems(new Long(100));
+             //composites[1].setCompositePointsPossible(new Long(315));
+             
+             if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") ) && form.endsWith("-S") ) { // Spanish Forms
+            	 composites[0].setCompositeId(new Long(72));
+            	 composites[1].setCompositeId(new Long(73));
+             }
+             else if ( null != form && ( form.startsWith("A") || form.startsWith("B") || form.startsWith("C") ) ) { // English Forms
+            	 composites[0].setCompositeId(new Long(70));
+            	 composites[1].setCompositeId(new Long(71));
+             }
              
              return composites;
         }
@@ -750,6 +757,7 @@ public class CurriculumCollector {
         	"                   and cacat.item_set_category_id = ca.item_set_category_id" +
         	"                   and cacat.item_set_category_level =" +
         	"                       prod.content_area_level" +
+        	"					and td.item_set_form = ros.form_assignment" +
         	"                   and td.item_set_id = tcisi.item_set_id" +
         	"                   and td.sample = 'F'" +
         	"                   and (td.item_set_level != 'L' or prod.product_type = 'TL')" +
@@ -1168,6 +1176,7 @@ public class CurriculumCollector {
             "   and ca.item_set_id = caisa.ancestor_item_Set_id " +
             "   and cacat.item_Set_category_id = ca.item_set_category_id " + 
             "   and cacat.item_set_category_level = prod.content_area_level " +
+            "	and td.item_set_form = ros.form_assignment " +
             "   and td.item_set_id = tcisi.item_set_id " +
             "   and td.sample = 'F' " +
             "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
@@ -1559,6 +1568,7 @@ public class CurriculumCollector {
             "   and prim.item_set_id = primisa.ancestor_item_Set_id " +
             "   and primcat.item_Set_category_id = prim.item_set_category_id " + 
             "   and primcat.item_set_category_level = prod.scoring_item_Set_level " +
+            "	and td.item_set_form = ros.form_assignment " +
             "   and td.item_set_id = tcisi.item_set_id " +
             "   and td.sample = 'F' " +
             "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
@@ -1774,6 +1784,7 @@ public class CurriculumCollector {
                "and adm.item_set_id = tdisa.ancestor_item_set_id " + 
                "and seccat.item_Set_category_id = sec.item_set_category_id " +  
                "and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " + 
+               "and td.item_set_form = ros.form_assignment " +
                "and dp.item_id = item.item_id " + 
                "and td.sample = 'F' " + 
                "AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " + 

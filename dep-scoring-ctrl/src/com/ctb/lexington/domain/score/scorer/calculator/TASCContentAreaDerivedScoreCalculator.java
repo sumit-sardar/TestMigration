@@ -98,7 +98,8 @@ public class TASCContentAreaDerivedScoreCalculator extends AbstractDerivedScoreC
         		pTestLevel,
         		null,
 				pGrade,
-				pDupTestForm);
+				pDupTestForm,
+				new Long(subtestId));
         
         final PerformanceLevel proficencyLevel = ("0".equals(proficencyLevelValue.toString()))? null :PerformanceLevel.getByCode(String.valueOf(proficencyLevelValue));
         

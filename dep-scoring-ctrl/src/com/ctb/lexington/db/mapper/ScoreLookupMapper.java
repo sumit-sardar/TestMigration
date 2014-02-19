@@ -28,6 +28,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_TS_NCE = "findTASCNCE";  // For TASC Scoring
     private static final String FIND_TS_PR = "findTASCPR";	// For TASC Scoring
     private static final String FIND_TS_OBJECTIVE_MASTERY_LEVEL = "findTASCObjectiveMasteryLevel"; // For TASC Scoring
+    private static final String FIND_TS_MIN_SCALE_SCORE_VALUE = "findMinScaleScoreValueByUniqueItemSet"; // For TASC Scoring
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -401,7 +402,7 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     }
     
     public String findTASCScaleScoreRange(final String frameworkCode, final BigDecimal sourceScoreValue,
-            final String testLevel, final String contentArea, final String grade, final String testForm) {
+            final String testLevel, final String contentArea, final String grade, final String testForm, Long objectiveId) {
         final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
                 null, null);
         template.setTestLevel(testLevel);
@@ -409,32 +410,48 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         template.setGrade(grade);
         template.setTestForm(testForm);
         template.setFrameworkCode(frameworkCode);
-        int scaleScoreValue = 1;
-        String scaleScoreRange = "";
-        List<ScoreLookupRecord> results = findMany(FIND_TS_SCALESCORE_RANGE_FOR_PROFICIENCY,template);
-        if (results==null || results.isEmpty()) {
-            StringBuffer buf = new StringBuffer("Unable to find Scalescore Range value for: ");
+        template.setItemSetId(objectiveId);
+        
+        final ScoreLookupRecord lookUpData = (ScoreLookupRecord) find(FIND_TS_MIN_SCALE_SCORE_VALUE, template);
+        int scaleScoreValue;
+        if(null != lookUpData && null != lookUpData.getDestScoreValue()){
+	        String scaleScoreRange = "";
+	        scaleScoreValue = new Integer(lookUpData.getDestScoreValue().toString()).intValue();
+	        List<ScoreLookupRecord> results = findMany(FIND_TS_SCALESCORE_RANGE_FOR_PROFICIENCY,template);
+	        if (results==null || results.isEmpty()) {
+	            StringBuffer buf = new StringBuffer("Unable to find Scalescore Range value for: ");
+	            buf.append("\n\tparams: " + contentArea);
+	            buf.append(" | " + grade);
+	            buf.append(" | " + testLevel);
+	            buf.append(" | " + testForm);
+	            buf.append("\n(continuing)\n");
+	            System.err.println(buf.toString());
+	            return null;
+	        } else {
+	        	for (Iterator<ScoreLookupRecord> iterator = results.iterator(); iterator.hasNext();) {
+					ScoreLookupRecord slr = iterator.next();
+					if(slr != null && slr.getSourceScoreValue()!= null) {
+						String scaleScoreRange1 = "000".substring(new Integer(scaleScoreValue).toString().length())+new Integer(scaleScoreValue).toString();
+						String scaleScoreRange2 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
+						scaleScoreRange = scaleScoreRange + scaleScoreRange1+"-"+scaleScoreRange2;
+						scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
+						scaleScoreValue++;
+					} else {
+						return null;
+					}
+	        	}
+	        	return scaleScoreRange;
+	        }
+        } else {
+        	StringBuffer buf = new StringBuffer("Unable to find minimum Scalescore value for: ");
             buf.append("\n\tparams: " + contentArea);
             buf.append(" | " + grade);
             buf.append(" | " + testLevel);
             buf.append(" | " + testForm);
+            buf.append(" | " + objectiveId);
             buf.append("\n(continuing)\n");
             System.err.println(buf.toString());
-            return null;
-        } else {
-        	for (Iterator<ScoreLookupRecord> iterator = results.iterator(); iterator.hasNext();) {
-				ScoreLookupRecord slr = iterator.next();
-				if(slr != null && slr.getSourceScoreValue()!= null) {
-					String scaleScoreRange1 = "000".substring(new Integer(scaleScoreValue).toString().length())+new Integer(scaleScoreValue).toString();
-					String scaleScoreRange2 = "000".substring(slr.getSourceScoreValue().toString().length())+slr.getSourceScoreValue().toString();
-					scaleScoreRange = scaleScoreRange + scaleScoreRange1+"-"+scaleScoreRange2;
-					scaleScoreValue = new Integer(slr.getSourceScoreValue().toString()).intValue();
-					scaleScoreValue++;
-				} else {
-					return null;
-				}
-        	}
-        	return scaleScoreRange;
+        	return null;
         }
     }
     
