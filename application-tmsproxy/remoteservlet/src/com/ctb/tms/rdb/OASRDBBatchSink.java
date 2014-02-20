@@ -18,6 +18,8 @@ public interface OASRDBBatchSink {
 	public PreparedStatement getDeleteCRResponseStatement(Connection conn) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
 		
 	public PreparedStatement getStoreCRResponseStatement(Connection conn) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
+	
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException, IOException, ClassNotFoundException;
 
 	public void putItemResponse(Connection conn, PreparedStatement storeResponseStatement, PreparedStatement deleteCRResponseStatement, PreparedStatement storeCRResponseStatement, ItemResponseData ird) throws NumberFormatException, SQLException, IOException, ClassNotFoundException;
 

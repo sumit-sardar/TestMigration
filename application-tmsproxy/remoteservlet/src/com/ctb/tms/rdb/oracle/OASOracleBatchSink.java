@@ -70,6 +70,7 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 		}
 
 
+	//called in store()
 	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException, IOException, ClassNotFoundException {		
 		String response = ird.getResponse();
 		String CRresponse = null;
@@ -196,6 +197,7 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 
 
 
+	//called in store()
 	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws SQLException {
 		logger.debug("\n***** OASOracleBatchSink: Called storeResponse for roster: " + testRosterId + ", item: " + itemId);
 		PreparedStatement stmt1 = null;
@@ -214,9 +216,10 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 			logger.debug("\n***** OASOracleBatchSink: Stored response record in DB for roster " + testRosterId + ", mseq " + mseq + ", response: " + response);
 		} catch (SQLException e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
-				logger.debug("dupe response for roster: " + testRosterId + ", item: " + itemId);
+				logger.warn("dupe response for roster: " + testRosterId + ", item: " + itemId + ", mseq " + mseq);
+				throw(e);
 			} else {
-				logger.info("other error for roster: " + testRosterId + ", item: " + itemId + ": " + e.getMessage());
+				logger.info("other error for roster: " + testRosterId + ", item: " + itemId + ", mseq " + mseq + ": " + e.getMessage());
 				throw(e);
 			}
 		} finally {
@@ -392,6 +395,7 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 		}
 	}
 	
+	//called in store()
 	private void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws SQLException {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
@@ -433,7 +437,10 @@ public class OASOracleBatchSink implements OASRDBBatchSink {
 		} catch (SQLException e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
+				logger.warn("dupe cr response for roster: " + testRosterId + ", item: " + itemId + ", mseq " + mseq);
+				throw(e);
 			} else {
+				logger.info("other error for roster: " + testRosterId + ", item: " + itemId + ", mseq " + mseq + ": " + e.getMessage());
 				throw(e);
 			}
 		} finally {
