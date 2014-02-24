@@ -40,8 +40,8 @@ html,body { /* http://www.quirksmode.org/css/100percheight.html */
 	margin: 0;
 	padding: 0;
 	border: 0 none;
-	text-rendering: optimizeLegibility;
-	font-family: CTB !important;
+	/*text-rendering:optimizeLegibility;*/
+                font-family: CTB!important;
 }
 
 body {
@@ -142,6 +142,12 @@ img {
 	white-space: pre-wrap;
 	word-break: keep-all;	
 }
+.lzswftext{
+				font-family: CTB!important;
+			}
+			.lzswfinputtext{
+				font-family: CTB!important;
+			}
 </style>
 <!--[if IE]>
         <style type="text/css">
@@ -557,7 +563,90 @@ function getCRcolor(){
 }
 
 <!-- End CR item scrolledittext scrollbar functions-->
-
+function disableTabKey() {
+	if(event.which == 9 && gController.scratchpadOpen) { 
+		//console.log("TAB!!!!!!!!!!!!");
+		event.preventDefault();
+		event.stopPropagation();
+	}
+	
+	if(window.top.isMagnifierVisible == "true" && isMagnifierMouseovered == true){
+		hotKeysHandle();
+	}
+	
+	/*added to restrict undo redo using hot keys in DHTML client starts*/
+	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
+	
+	if (event.ctrlKey || event.metaKey || event.which == 91 || event.which == 17 || event.which == 93) {
+		switch(keystroke){
+			case 'z' :
+				event.preventDefault(); // disable Ctrl+Z
+				event.stopPropagation();
+				break;
+			case 'y' :
+				event.preventDefault(); // disable Ctrl+Y
+				event.stopPropagation();
+				break;
+			default:
+				break;
+		}
+	}
+	/*added to restrict undo redo using hot keys in DHTML client ends*/
+}
+function hotKeysHandle() {
+var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
+		if (event.ctrlKey) {
+			switch(keystroke){
+				case 'l':
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.toggleMark();
+						event.preventDefault(); // disable Ctrl+L
+					}	
+					break;
+				case 's':
+					event.preventDefault();
+					 if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+					 	hideMagnify();
+				    	gHotKeys.stop();
+						event.preventDefault(); // disable Ctrl+S
+					}	
+					break;
+				case 'u':
+				    if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.pause();
+						event.preventDefault(); // disable Ctrl+U
+					}	
+					break;
+				case 'o':
+					if((gItemInterface.visible == true || gItemInterface.visible == 'true') &&  gRevisitFalsePopup.visible == false && gPleaseWaitPopup.visible == false && gController.iskeyEnabled) {
+						gHotKeys.toggleTimer();
+						event.preventDefault(); // disable Ctrl+O
+					}
+					break;
+				case 'j':
+					if(gController.iskeyEnabled) {
+						gHotKeys.goBack();
+						event.preventDefault(); // disable Ctrl+J
+					}
+					break;			
+				case 'k' :
+					if(gController.iskeyEnabled) {
+						gHotKeys.goOn();
+						event.preventDefault(); // disable Ctrl+K
+					}
+					break;
+				case 'f' :
+					if(gController.iskeyEnabled) {
+						hideMagnify();
+						gHotKeys.finish();
+						event.preventDefault(); // disable Ctrl+F
+					}
+					break;
+				default:
+					break;
+			}
+		}
+}
 <!-- following functions are using for scratchpad scrollbar-->
 
 function hideScrollbar(arg){
@@ -884,6 +973,8 @@ body {
 }
 #magnifierWindow {cursor: pointer;}
 </style>
+<script type="text/javascript" src="includes/diff_match_patch.js"></script>
+<script type="text/javascript" src="includes/TextHistory.js"></script>
 </HEAD>
 
 <!--SA041005 start -->
