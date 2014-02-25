@@ -570,28 +570,6 @@ function disableTabKey() {
 		event.stopPropagation();
 	}
 	
-	if(window.top.isMagnifierVisible == "true" && isMagnifierMouseovered == true){
-		hotKeysHandle();
-	}
-	
-	/*added to restrict undo redo using hot keys in DHTML client starts*/
-	var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
-	
-	if (event.ctrlKey || event.metaKey || event.which == 91 || event.which == 17 || event.which == 93) {
-		switch(keystroke){
-			case 'z' :
-				event.preventDefault(); // disable Ctrl+Z
-				event.stopPropagation();
-				break;
-			case 'y' :
-				event.preventDefault(); // disable Ctrl+Y
-				event.stopPropagation();
-				break;
-			default:
-				break;
-		}
-	}
-	/*added to restrict undo redo using hot keys in DHTML client ends*/
 }
 function hotKeysHandle() {
 var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
@@ -647,6 +625,7 @@ var keystroke = String.fromCharCode(event.keyCode).toLowerCase();
 			}
 		}
 }
+// higlighter for nonTE items
 <!-- following functions are using for scratchpad scrollbar-->
 
 function hideScrollbar(arg){
@@ -729,8 +708,11 @@ function isSPRequired(){
 	return isSP;
 }
 function enableHotKeys(arg) {
-	gHotKeys.handleHtmlKeyPress(arg);
+	if ( 0 == gController.uisemaphore ) {
+		gHotKeys.handleHtmlKeyPress(arg);
+	}
 }
+
 function enableManipBar(arg) {
 	lz.embed.setCanvasAttribute('enableManipBar',arg);
 }
