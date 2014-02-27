@@ -56,7 +56,6 @@ public class TestResultDataCollector {
     	System.out.println("***** SCORING: TestResultDataCollector: collect: started collecting context");
         this.oasRosterId = oasRosterId;
         oasConnection = connectionProvider.getOASConnection();
-
         ScoreMoveData data = new ScoreMoveData();
 
         data.setTestData(getTestData());
@@ -64,12 +63,19 @@ public class TestResultDataCollector {
         data.setAdminData(getAdminData());
         data.setOrgNodeData(getOrgNodeData());
         data.setStudentData(getStudentData());
-                
-        String key = String.valueOf(data.getAdminData().getAssessmentId());
-        CurriculumData cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
-        if(cachedCurriculumData == null) {
+
+        CurriculumData cachedCurriculumData = null;
+        String productType = data.getAdminData().getAssessmentType();
+        if(!"TS".equals(productType)) {
+	        String key = String.valueOf(data.getAdminData().getAssessmentId());
+	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
+	        if(cachedCurriculumData == null) {
+	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
+				SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
+	        }
+        }
+        else if("TS".equals(productType)) {
         	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
-			SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
         }
         ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
         data.setCurriculumData(filterCurricula(cachedCurriculumData, data.getAdminData().getAssessmentType()));

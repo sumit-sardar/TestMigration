@@ -63,6 +63,9 @@ public class SubtestItemCollectionCalculator extends Calculator {
      	                    .getItemSetId()));
             	 }
             	
+            } else if ("TS".equals(scorer.getResultHolder().getAdminData().getAssessmentType())) {
+            	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
+                        .getItemSetId()), DatabaseHelper.asLong(this.productId));
             } else {
             	items = new ItemMapper(oasConnection).findItemByItemSetId(DatabaseHelper.asLong(event
                         .getItemSetId()));

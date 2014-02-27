@@ -62,6 +62,7 @@ public class ItemVO extends Object implements Persistent, java.io.Serializable, 
     private String onlineCr;
     private Integer minPoints;
     private Integer maxPoints;
+    private Long productId;
 
     private String activationStatus; // r2.3
     private String templateId;      // r2.3
@@ -443,5 +444,19 @@ public class ItemVO extends Object implements Persistent, java.io.Serializable, 
 	 */
 	public void setAnswerArea(String answerArea) {
 		this.answerArea = answerArea;
+	}
+
+	/**
+	 * @return the productId
+	 */
+	public Long getProductId() {
+		return productId;
+	}
+
+	/**
+	 * @param productId the productId to set
+	 */
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 }

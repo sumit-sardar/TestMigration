@@ -19,6 +19,7 @@ public class ItemMapper extends AbstractDBMapper {
     private static final String FIND_ITEM_GROUP_BY_CONTENT_AREA_AND_PRODUCT = "findItemGroupByContentAreaForItemSetAndProduct";
     private static final String FIND_ITEM_PEIDS_WSTV_BY_ITEM_SET_ID = "findItemIdPeIdsForWSTV";
     private static final String FIND_VIRTUAL_CONTENT_FOR_LASLINK = "findVirtualContentForLaslink";
+    private static final String FIND_ITEM_BY_ITEM_SET_ID_NAME_TS = "findItemByItemSetIdTASC";
 
     /**
      * @param conn
@@ -38,6 +39,16 @@ public class ItemMapper extends AbstractDBMapper {
         template.setItemSetId(itemSetId);
 
         List result = findMany(FIND_ITEM_BY_ITEM_SET_ID_NAME, template);
+        addConditionCodeIDs(result, itemSetId);
+        return result;
+    }
+    
+    public List findItemByItemSetId(Long itemSetId, Long productId) {
+        ItemVO template = new ItemVO();
+        template.setItemSetId(itemSetId);
+        template.setProductId(productId);
+
+        List result = findMany(FIND_ITEM_BY_ITEM_SET_ID_NAME_TS, template);
         addConditionCodeIDs(result, itemSetId);
         return result;
     }

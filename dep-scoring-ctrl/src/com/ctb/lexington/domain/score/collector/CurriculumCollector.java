@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import com.ctb.lexington.db.ConnectionFactory;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -727,7 +728,8 @@ public class CurriculumCollector {
         	"                                count(distinct item.item_id) as contentareanumitems," +
         	"                                td.item_set_form as subtestform," +
         	"                                td.item_set_level as subtestlevel," +
-        	"                                td.item_set_id as subtestid" +
+        	"                                td.item_set_id as subtestid," +
+        	"								 obj.item_Set_id as objectiveid " +
         	"                  from item," +
         	"                       item_set ca," +
         	"                       item_set_category cacat," +
@@ -739,7 +741,9 @@ public class CurriculumCollector {
         	"                       test_admin adm," +
         	"                       test_catalog tc," +
         	"                       product prod," +
-        	"                       item_set td" +
+        	"                       item_set td," +
+        	"						item_set obj," +
+        	"						item_set_category objcat" +
         	"                 where ros.test_roster_id = ?" +
         	"                   and adm.test_admin_id = ros.test_admin_id" +
         	"                   and tc.test_catalog_id = adm.test_catalog_id" +
@@ -762,6 +766,9 @@ public class CurriculumCollector {
         	"                   and td.sample = 'F'" +
         	"                   and (td.item_set_level != 'L' or prod.product_type = 'TL')" +
         	"                   and cacat.framework_product_id = prod.parent_product_id" +
+        	"                   and objcat.framework_product_id = prod.parent_product_id" +
+        	"					and objcat.item_set_Category_level = prod.sec_scoring_item_set_level" +
+        	"					and obj.item_Set_category_id = objcat.item_Set_category_id" +
         	"                 group by prod.product_id," +
         	"                          prod.product_id || ca.item_set_id," +
         	"                          ca.item_set_name," +
@@ -769,12 +776,14 @@ public class CurriculumCollector {
         	"                          prod.product_type || ' ' || ca.item_set_name," +
         	"                          td.item_set_form," +
         	"                          td.item_set_level," +
-        	"                          td.item_set_id) derived," +
+        	"                          td.item_set_id," +
+        	"						   obj.item_Set_id) derived," +
         	"               datapoint dp," +
         	"               item_set_item isi" +
         	"         where isi.item_set_id = derived.subtestid" +
         	"           and isi.suppressed = 'F'" +
-        	"           and dp.item_id = isi.item_id) derived1" +
+        	"           and dp.item_id = isi.item_id " +
+        	"			and dp.item_set_id = derived.objectiveid) derived1" +
         	" group by productid," +
         	"          contentareaid," +
         	"          contentareaname," +
@@ -1112,85 +1121,131 @@ public class CurriculumCollector {
         Long objectiveIndex = new Long(0);
         
         final String casql = 
-        	"select primaryObjectiveId, " + 
-            "  rownum as primaryObjectiveIndex, " + 
-            "  contentAreaId, " + 
-            "  primaryObjectiveName, " +  
-            "  primaryObjectiveType, " + 
-            "  primaryPointsPossible, " + 
-            "  primaryNumItems, " +  
-            "  subtestForm, " + 
-            "  subtestLevel, " + 
-            "  subtestId, " +
-            "  productId, " +
-            "  monarchId " +  
-            " from (select distinct " +
-            "   prim.item_Set_id as primaryObjectiveId, " +
-            "   prod.product_id || ca.item_Set_id as contentAreaId, " +
-            "   prim.item_set_name as primaryObjectiveName, " + 
-            "   primcat.ITEM_SET_CATEGORY_NAME as primaryObjectiveType, " +
-            "   sum(dp.max_points) as primaryPointsPossible, " +
-            "   count(distinct item.item_id) as primaryNumItems, " + 
-            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form) as subtestForm, " +
-            "   td.item_set_level as subtestLevel, " +
-            "   td.item_set_id as subtestId, " +
-            "   prod.product_id as productId, " +
-            "	prim.ext_cms_item_set_id as monarchId " + 
-            "from " +  
-            "   item, " +
-            "   item_set prim, " +
-            "   item_Set_category primcat, " +
-            "   item_Set_ancestor primisa, " +
-            "   item_set ca, " +
-            "   item_Set_category cacat, " +
-            "   item_Set_ancestor caisa, " +
-            "   item_set_item primisi, " +
-            "   item_Set_ancestor tcisa, " +
-            "   item_set_item tcisi, " + 
-            "   datapoint dp, " + 
-            "   test_roster ros, " + 
-            "   test_Admin adm, " + 
-            "   test_catalog tc, " + 
-            "   product prod, " +
-            "   item_set td " +
-            "where " + 
-            "   ros.test_roster_id = ? " +
-            "   and adm.test_admin_id = ros.test_admin_id " +
-            "   and tc.test_catalog_id = adm.test_catalog_id " +
-            "   and prod.product_id = tc.product_id " +
-            "   and item.ACTIVATION_STATUS = 'AC' " + 
-            "   and tc.ACTIVATION_STATUS = 'AC' " + 
-            "   and prim.item_Set_id = primisa.ancestor_item_Set_id " +
-            "   and prim.item_set_type = 'RE' " + 
-            "   and primisa.item_set_id = primisi.item_Set_id " +
-            "   and item.item_id = primisi.item_id " +
-            "   and tcisi.item_id = item.item_id " +
-            "   and tcisi.suppressed = 'F'" +
-            "   and tcisa.item_set_id = tcisi.item_set_id " +
-            "   and adm.item_set_id = tcisa.ancestor_item_set_id " +
-            "   and primcat.item_Set_category_id = prim.item_set_category_id " + 
-            "   and primcat.item_set_category_level = prod.scoring_item_Set_level " +
-            "   and dp.item_id = item.item_id " +
-            "   and dp.item_set_id = primisi.item_Set_id " +
-            "   and caisa.item_Set_id = prim.item_Set_id " +
-            "   and ca.item_set_id = caisa.ancestor_item_Set_id " +
-            "   and cacat.item_Set_category_id = ca.item_set_category_id " + 
-            "   and cacat.item_set_category_level = prod.content_area_level " +
-            "	and td.item_set_form = ros.form_assignment " +
-            "   and td.item_set_id = tcisi.item_set_id " +
-            "   and td.sample = 'F' " +
-            "   AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
-            "   and primcat.framework_product_id = prod.PARENT_PRODUCT_ID " +
-            " group by " +
-            "   prim.item_Set_id, " +
-            "   prod.product_id || ca.item_set_id, " +
-            "   prim.item_set_name, " + 
-            "   primcat.ITEM_SET_CATEGORY_NAME, " + 
-            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " +
-            "   td.item_Set_level, " + 
-            "   td.item_Set_id, " +
-            "   prod.product_id, " +
-            "	prim.ext_cms_item_set_id)";
+        	 "select primaryobjectiveid, " +
+        	 "        rownum as primaryobjectiveindex, " +
+        	 "        contentareaid, " +
+        	 "        primaryobjectivename, " +
+        	 "        primaryobjectivetype, " +
+        	 "        primarypointspossible, " +
+        	 "        primarynumitems, " +
+        	 "        subtestform, " +
+        	 "        subtestlevel, " +
+        	 "        subtestid, " +
+        	 "        productid, " +
+        	 "        monarchid " +
+        	 "   from (select primaryobjectiveid, " +
+        	 "                contentareaid, " +
+        	 "                primaryobjectivename, " +
+        	 "                primaryobjectivetype, " +
+        	 "                sum(derived1.max_points) as primarypointspossible, " +
+        	 "                primarynumitems, " +
+        	 "                subtestform, " +
+        	 "                subtestlevel, " +
+        	 "                subtestid, " +
+        	 "                productid, " +
+        	 "                monarchid " +
+        	 "           from (select distinct dp.item_id, " +
+        	 "                                 dp.max_points, " +
+        	 "                                 primaryobjectiveid, " +
+        	 "                                 contentareaid, " +
+        	 "                                 primaryobjectivename, " +
+        	 "                                 primaryobjectivetype, " +
+        	 "                                 primarynumitems, " +
+        	 "                                 subtestform, " +
+        	 "                                 subtestlevel, " +
+        	 "                                 subtestid, " +
+        	 "                                 productid, " +
+        	 "                                 monarchid " +
+        	 "                   from (select distinct prim.item_set_id as primaryobjectiveid, " +
+        	 "                                         prod.product_id || ca.item_set_id as contentareaid, " +
+        	 "                                         prim.item_set_name as primaryobjectivename, " +
+        	 "                                         primcat.item_set_category_name as primaryobjectivetype, " +
+        	 "                                         count(distinct item.item_id) as primarynumitems, " +
+        	 "                                         td.item_set_form as subtestForm, " +
+        	 "                                         td.item_set_level as subtestlevel, " +
+        	 "                                         td.item_set_id as subtestid, " +
+        	 "                                         prod.product_id as productid, " +
+        	 "                                         prim.ext_cms_item_set_id as monarchid, " +
+        	 "                                         sec.item_Set_id AS secobjectiveid " +
+        	 "                           from item, " +
+        	 "                                item_set prim, " +
+        	 "                                item_set_category primcat, " +
+        	 "                                item_set_ancestor primisa, " +
+        	 "                                item_set ca, " +
+        	 "                                item_set_category cacat, " +
+        	 "                                item_set_ancestor caisa, " +
+        	 "                                item_set_item primisi, " +
+        	 "                                item_set_ancestor tcisa, " +
+        	 "                                item_set_item tcisi, " +
+        	 "                                datapoint dp, " +
+        	 "                                test_roster ros, " +
+        	 "                                test_admin adm, " +
+        	 "                                test_catalog tc, " +
+        	 "                                product prod, " +
+        	 "                                item_set td, " +
+        	 "                                Item_Set_Category seccat, " +
+        	 "                                item_Set sec " +
+        	 "                          where ros.test_roster_id = ? " +
+        	 "                            and adm.test_admin_id = ros.test_admin_id " +
+        	 "                            and tc.test_catalog_id = adm.test_catalog_id " +
+        	 "                            and prod.product_id = tc.product_id " +
+        	 "                            and item.activation_status = 'AC' " +
+        	 "                            and tc.activation_status = 'AC' " +
+        	 "                            and prim.item_set_id = primisa.ancestor_item_set_id " +
+        	 "                            and prim.item_set_type = 'RE' " +
+        	 "                            and primisa.item_set_id = primisi.item_set_id " +
+        	 "                            and item.item_id = primisi.item_id " +
+        	 "                            and tcisi.item_id = item.item_id " +
+        	 "                            and tcisi.suppressed = 'F' " +
+        	 "                            and tcisa.item_set_id = tcisi.item_set_id " +
+        	 "                            and adm.item_set_id = tcisa.ancestor_item_set_id " +
+        	 "                            and primcat.item_set_category_id = " +
+        	 "                                prim.item_set_category_id " +
+        	 "                            and primcat.item_set_category_level = " +
+        	 "                                prod.scoring_item_set_level " +
+        	 "                            and dp.item_id = item.item_id " +
+        	 "                            and dp.item_set_id = primisi.item_set_id " +
+        	 "                            and caisa.item_set_id = prim.item_set_id " +
+        	 "                            and ca.item_set_id = caisa.ancestor_item_set_id " +
+        	 "                            and cacat.item_set_category_id = ca.item_set_category_id " +
+        	 "                            and cacat.item_set_category_level = prod.content_area_level " +
+        	 "                            and td.item_set_form = ros.form_assignment " +
+        	 "                            and td.item_set_id = tcisi.item_set_id " +
+        	 "                            and td.sample = 'F' " +
+        	 "                            and (td.item_set_level != 'L' or " +
+        	 "                                prod.product_type = 'TL') " +
+        	 "                            and primcat.framework_product_id = " +
+        	 "                                prod.parent_product_id " +
+        	 "                            AND seccat.framework_product_id = " +
+        	 "                                prod.parent_product_id " +
+        	 "                            AND seccat.item_set_category_level = prod.sec_scoring_item_set_level " +
+        	 "                            AND seccat.item_Set_category_id = sec.item_Set_category_id " +
+        	 "                          group by prim.item_set_id, " +
+        	 "                                   prod.product_id || ca.item_set_id, " +
+        	 "                                   prim.item_set_name, " +
+        	 "                                   primcat.item_set_category_name, " +
+        	 "                                   td.item_set_form, " +
+        	 "                                   td.item_set_level, " +
+        	 "                                   td.item_set_id, " +
+        	 "                                   prod.product_id, " +
+        	 "                                   prim.ext_cms_item_set_id, " +
+        	 "                                   sec.item_Set_id) derived, " +
+        	 "                        datapoint dp, " +
+        	 "                        item_set_item isi " +
+        	 "                  where isi.item_set_id = derived.subtestid " +
+        	 "                    and isi.suppressed = 'F' " +
+        	 "                    and dp.item_id = isi.item_id " +
+        	 "                    AND dp.item_Set_id = derived.secobjectiveid) derived1 " +
+        	 "          group by primaryobjectiveid, " +
+        	 "                   contentareaid, " +
+        	 "                   primaryobjectivename, " +
+        	 "                   primaryobjectivetype, " +
+        	 "                   primarynumitems, " +
+        	 "                   subtestform, " +
+        	 "                   subtestlevel, " +
+        	 "                   subtestid, " +
+        	 "                   productid, " +
+        	 "                   monarchid)";
         
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1514,6 +1569,7 @@ public class CurriculumCollector {
     
     public SecondaryObjective [] getSecondaryObjectivesForTASC(Long oasRosterId) throws SQLException {
         ArrayList<SecondaryObjective> secondaryObjectives = new ArrayList<SecondaryObjective>();
+        Map<Long, SecondaryObjective> secObjMap = new HashMap<Long, SecondaryObjective>();
         Integer productId = null;
         final String casql = 
         	"select distinct " +
@@ -1523,7 +1579,7 @@ public class CurriculumCollector {
             "   seccat.ITEM_SET_CATEGORY_NAME as secondaryObjectiveType, " +
             "   sum(dp.max_points) as secondaryPointsPossible, " +
             "   count(distinct item.item_id) as secondaryNumItems, " + 
-            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form) as subtestForm, " +
+            "   td.item_set_form as subtestForm, " +
             "   td.item_set_level as subtestLevel, " +
             "   td.item_set_id as subtestId, " +
             "   td.item_set_name as subtestName, " +
@@ -1564,6 +1620,7 @@ public class CurriculumCollector {
             "   and seccat.item_Set_category_id = sec.item_set_category_id " + 
             "   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " +
             "   and dp.item_id = item.item_id " +
+            "	and dp.item_set_id = sec.item_Set_id " +
             "   and primisa.item_Set_id = sec.item_Set_id " +
             "   and prim.item_set_id = primisa.ancestor_item_Set_id " +
             "   and primcat.item_Set_category_id = prim.item_set_category_id " + 
@@ -1578,7 +1635,7 @@ public class CurriculumCollector {
             "   prim.item_set_id, " + 
             "   sec.item_set_name, " + 
             "   seccat.ITEM_SET_CATEGORY_NAME, " + 
-            "   decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', td.item_set_form), " +
+            "   td.item_set_form, " +
             "   td.item_Set_level, " + 
             "   td.item_Set_id, " +
             "   td.item_set_name, " +
@@ -1608,8 +1665,27 @@ public class CurriculumCollector {
                 secondaryObjective.setProductId(new Long(rs.getLong("productId")));
                 secondaryObjective.setMonarchId(rs.getString("monarchId"));
                 
-                secondaryObjectives.add(secondaryObjective);
+                if(secObjMap.containsKey(secondaryObjective.getSecondaryObjectiveId())){
+                	SecondaryObjective secObj = (SecondaryObjective)secObjMap.get(secondaryObjective.getSecondaryObjectiveId());
+                	secondaryObjective.setSecondaryObjectiveNumItems(new Long(
+							secondaryObjective.getSecondaryObjectiveNumItems()
+									.longValue()
+									+ secObj.getSecondaryObjectiveNumItems()
+											.longValue()));
+                	secondaryObjective.setSecondaryObjectivePointsPossible(new Long(
+							secondaryObjective.getSecondaryObjectivePointsPossible()
+									.longValue()
+									+ secObj.getSecondaryObjectivePointsPossible()
+											.longValue()));
+                	secObjMap.remove(secondaryObjective.getSecondaryObjectiveId());
+                	secObjMap.put(secondaryObjective.getSecondaryObjectiveId(), secondaryObjective);
+                }else{
+                	secObjMap.put(secondaryObjective.getSecondaryObjectiveId(), secondaryObjective);
+                }
                 i++;
+            }
+            for(Long key : secObjMap.keySet()) {
+            	secondaryObjectives.add(secObjMap.get(key));
             }
             System.out.println("Secondary Objective Size " + i);
             
@@ -1785,7 +1861,8 @@ public class CurriculumCollector {
                "and seccat.item_Set_category_id = sec.item_set_category_id " +  
                "and seccat.item_set_category_level = prod.sec_scoring_item_Set_level " + 
                "and td.item_set_form = ros.form_assignment " +
-               "and dp.item_id = item.item_id " + 
+               "and dp.item_id = item.item_id " +
+               "and dp.item_set_id = sec.item_set_id " + 
                "and td.sample = 'F' " + 
                "AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " + 
                "and seccat.framework_product_id = prod.PARENT_PRODUCT_ID " +
