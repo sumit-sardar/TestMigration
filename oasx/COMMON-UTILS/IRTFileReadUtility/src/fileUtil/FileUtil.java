@@ -584,7 +584,7 @@ public class FileUtil {
 			try {
 				con.rollback();
 				save=0;
-				System.out.println("Data are not saved in Score_lookup_item_set_tasc table.");
+				System.out.println("Data are not saved in Score_lookup_item_set table.");
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
