@@ -636,4 +636,14 @@ public interface ScheduleTest
 	LASLicenseNode getLicenseInformation(Integer customerId,String orgNodeIDs) throws com.ctb.exception.CTBBusinessException;
 	
 	Map<String,ArrayList> getScheduledStudentsClassHierarchy(String userName) throws com.ctb.exception.CTBBusinessException;
+	
+	/**
+	 * Checks for the form status and returns a boolean accordingly
+	 * @param customerId
+	 * @param itemsetIdTC
+	 * @param orgNodeId
+	 * @return boolean
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	boolean checkSelectedTestInvalid(Integer customerId,Integer itemsetIdTC,Integer orgNodeId)throws com.ctb.exception.CTBBusinessException;
 } 

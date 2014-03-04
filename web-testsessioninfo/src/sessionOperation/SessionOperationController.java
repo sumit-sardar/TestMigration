@@ -197,6 +197,7 @@ public class SessionOperationController extends PageFlowController {
 	public boolean isLasLinkCustomer = false;
 	public boolean isOKCustomer = false;
 	public boolean isTABECustomer = false;
+	public boolean isTASCCustomer = false;
 	private boolean forceTestBreak = false;
 	private boolean selectGE = false;
 	private boolean isTABELocatorOnlyTest = false;
@@ -1313,9 +1314,13 @@ public class SessionOperationController extends PageFlowController {
     	    	}
     	    	//added for copy test session
     	    	TestElement selectedTest = this.scheduleTest.getTestElementMinInfoByIds(this.getCustomerId(), 
-    	    			scheduledSession.getTestSession().getItemSetId(), scheduledSession.getTestSession().getCreatorOrgNodeId()); 
-    	    	Date ovLoginStart = selectedTest.getOverrideLoginStartDate();
-    	    	Date ovLoginEnd = selectedTest.getOverrideLoginEndDate();
+    	    			scheduledSession.getTestSession().getItemSetId(), scheduledSession.getTestSession().getCreatorOrgNodeId());
+    	    	Date ovLoginStart = null;
+    	    	Date ovLoginEnd = null;
+    	    	if(selectedTest!=null){
+    	    		ovLoginStart = selectedTest.getOverrideLoginStartDate();
+    	    		ovLoginEnd = selectedTest.getOverrideLoginEndDate();
+    	    	}
                 if (action != null && action.equals("copySession"))
                 { 
                 	String timeZoneCopySession = scheduledSession.getTestSession().getTimeZone();
@@ -1435,6 +1440,18 @@ public class SessionOperationController extends PageFlowController {
                 else
                 	vo.setSelectGE(null);
     	    	
+                if(this.isTASCCustomer){   	    	 
+	       	    	 boolean isSeletedTestInvalid = this.scheduleTest.checkSelectedTestInvalid(this.getCustomerId(),
+	       	    			 			scheduledSession.getTestSession().getItemSetId(), scheduledSession.getTestSession().getCreatorOrgNodeId());
+	       	    	 if(isSeletedTestInvalid){
+	       	    		 status.setSuccess(false);
+	           	    	 status.setSystemError(true);
+	           	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+	           	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.TestForm.Disabled"));
+	           			 status.setValidationFailedInfo(validationFailedInfo); 
+	           	     }		
+                }
+                
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
     	    	 status.setSystemError(true);
@@ -5139,6 +5156,7 @@ public class SessionOperationController extends PageFlowController {
 				}
 			}
 			isTascCustomer = isTASCCustomer(customerConfigurations);
+			this.isTASCCustomer = isTascCustomer;
 		}
 		
 		if (hasUploadConfig && hasDownloadConfig) {

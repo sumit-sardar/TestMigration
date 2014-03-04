@@ -4360,4 +4360,20 @@ public class ScheduleTestImpl implements ScheduleTest
     	
     }
     
+    public boolean checkSelectedTestInvalid(Integer customerId,Integer itemsetIdTC,Integer orgNodeId)throws com.ctb.exception.CTBBusinessException{
+ 	   
+ 	   boolean isSeletedTestInvalid = true;
+ 	   String activationStatus = null;
+ 	   try{
+ 		   activationStatus = itemSet.getSelectedTestActivationStatus(customerId,itemsetIdTC,orgNodeId);  
+ 		   if(activationStatus != null && !activationStatus.equalsIgnoreCase("IN")){
+ 			   isSeletedTestInvalid = false;
+ 		   }
+ 	   }catch(SQLException se){
+ 		   se.printStackTrace(); 
+ 	   }
+ 	   
+ 	   return isSeletedTestInvalid;
+    }
+    
 } 
