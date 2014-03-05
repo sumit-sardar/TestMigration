@@ -638,10 +638,10 @@ public class PrismWebServiceDBUtility {
 					if(contentCode == PrismWebServiceConstant.wrContentCode){
 						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
 						if(!isCRScorePresent){
-							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.OmittedContentStatusCode));
+							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.ScoringInProgressCode));
 							sendELA = false;
 							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.OmittedContentStatusCode, contentCode, studentId);
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.ScoringInProgressCode, contentCode, studentId);
 							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 							continue;
 						}
@@ -1368,7 +1368,7 @@ public class PrismWebServiceDBUtility {
 					CCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.CCObjectiveScoreDetails);
 					objectiveScoreDetails.getCollObjectiveScoreTO().add(CCobjectiveScoreTO);
 					
-					//if WR Obj2 scores available for OM, SUP, INV status then NP and MR will be reported to PRISM
+					//if WR Obj2 scores available for OM, SUP, INV, SIP status then NP and MR will be reported to PRISM
 					Map<String,String> scoreMap = getSecScoreForWRObj2(rs.getLong("itemsetid"),sessionId,studentId);
 					if(scoreMap != null && scoreMap.size() > 0){
 						NPobjectiveScoreTO.setValue(scoreMap.get(PrismWebServiceConstant.NPObjectiveScoreDetails));
@@ -1380,7 +1380,8 @@ public class PrismWebServiceDBUtility {
 				OSCobjectiveScoreTO.setScoreType(PrismWebServiceConstant.OSCObjectiveScoreDetails);
 				if(!(PrismWebServiceConstant.wrContentCode == contentCode 
 						&& objName.toLowerCase().contains(PrismWebServiceConstant.wr2ndObjName.toLowerCase()))){
-					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)){
+					if(statusCode.equalsIgnoreCase(PrismWebServiceConstant.OmittedContentStatusCode)
+							||statusCode.equalsIgnoreCase(PrismWebServiceConstant.ScoringInProgressCode)){
 						OSCobjectiveScoreTO.setValue("-");
 					}
 				}
