@@ -74,6 +74,8 @@ public class PrismWebServiceConstant {
 	
 	public static final String SuppressedContentStatusCode = "SUP";
 	
+	public static final String ScoringInProgressCode = "SIP";
+	
 	public static final  Map<String,String> contentDetailsStausCodeMap = new HashMap<String, String>();
 	
 	public static final String fontBackGrClrAttrName = "Acc_Ft_Bk_Cr";
@@ -127,6 +129,7 @@ public class PrismWebServiceConstant {
 		contentDetailsStausCodeMap.put(InvalidContentStatusCode, "5");
 		contentDetailsStausCodeMap.put(SuppressedContentStatusCode, "6");
 		contentDetailsStausCodeMap.put(NACompositeStatusCode, "7");
+		contentDetailsStausCodeMap.put(ScoringInProgressCode, "8");
 		
 		rslvdEthnicityMap.put("Black", "1");
 		rslvdEthnicityMap.put("American Indian", "2");
