@@ -33,4 +33,22 @@ public class PasswordGenerator
 
         return password;
     }
+    
+    public static String generatePasswordForWV(String fName, String lName) throws CTBBusinessException{
+    	String password = null;
+    	
+    	fName=fName.replaceAll("[^a-zA-Z0-9]+","");
+    	if(fName.length()==0) {
+    		fName="0";
+    	}
+    	lName=lName.replaceAll("[^a-zA-Z0-9]+","");
+    	    	
+    	while(lName.length() < 4) {
+    		lName += "0";
+		}
+    	
+		password = fName.substring(0,1)+ lName.substring(0,4);
+		password = password.toUpperCase();
+    	return password;
+    }
 } 

@@ -630,4 +630,6 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "select org.org_node_id from users u, user_role ur, org_node org where u.user_name = {userName} and u.activation_status = 'AC' and u.user_id = ur.user_id and ur.activation_status = 'AC' and ur.org_node_id = org.org_node_id and org.activation_status = 'AC' and not exists((select org.org_node_id from users u, user_role ur, org_node org where u.user_name = {userName} and u.activation_status = 'AC' and u.user_id = ur.user_id and ur.activation_status = 'AC' and ur.org_node_id = org.org_node_id and org.activation_status = 'AC') intersect (select parentnode.org_node_id from org_node parentnode, org_node_ancestor ona where ona.org_node_id = org.org_node_id and ona.ancestor_org_node_id <> ona.org_node_id and ona.ancestor_org_node_id = parentnode.org_node_id and parentnode.activation_status = 'AC' and upper(parentnode.org_node_name) not in ('ROOT', 'CTB')))")
     Integer [] getOrgNodeIdForUser(String userName) throws SQLException;
     
+    @JdbcControl.SQL(statement = "select count(1) from customer_configuration cc where cc.customer_id = {customerId} and cc.customer_configuration_name = 'WV_Customer' and cc.default_value = 'T' ")
+	Boolean isWVCustomer(Integer customerId) throws SQLException;
 }
