@@ -928,4 +928,6 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select contact_email from customer where customer_id = {customerId}")
     String getEmailIdForCustomer(Integer customerId) throws SQLException;
     
+    @JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1),0,0,1) FROM CUSTOMER_CONFIGURATION WHERE CUSTOMER_CONFIGURATION_NAME = 'WV_Customer' AND CUSTOMER_ID = {customerId}")
+    int isWVCustomer(Integer customerId) throws SQLException;
 }

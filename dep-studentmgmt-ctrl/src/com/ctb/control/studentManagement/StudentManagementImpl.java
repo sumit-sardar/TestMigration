@@ -1406,7 +1406,13 @@ public class StudentManagementImpl implements StudentManagement
 			if(manageStudent.getBirthDate() == null)
 				studentLoginIdSequence = students.getStudentLoginIdSequence();
 
-			String studentUserName = generateUniqueStudentUserName(student, studentLoginIdSequence);
+			String studentUserName = null;
+			if((users.isWVCustomer(user.getCustomer().getCustomerId()) == 1)?Boolean.TRUE:Boolean.FALSE){
+				studentUserName = generateUniqueStudentUserNameForWVCustomer(student, studentLoginIdSequence);
+			}else{
+				studentUserName = generateUniqueStudentUserName(student, studentLoginIdSequence);
+			}
+			
 			student.setUserName(studentUserName);
 			students.createNewStudent(student);
 
@@ -2036,6 +2042,18 @@ public class StudentManagementImpl implements StudentManagement
 
 	}  
 
+	private String generateUniqueStudentUserNameForWVCustomer(Student student, String studentLoginIdSequence) throws SQLException{
+
+		String userName = student.getExtPin1().toString();
+		int count = 0;
+		while (studentManagement.isExistingStudentUserName(userName)) {
+			count++;
+			String suffix = "-"+count;
+			userName = student.getExtPin1().toString() + suffix; 
+		}
+		return userName;
+
+	}
 
 	/**
 	 * New method added for CR - GA2011CR001
