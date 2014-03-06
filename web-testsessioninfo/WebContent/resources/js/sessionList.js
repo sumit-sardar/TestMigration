@@ -3912,6 +3912,18 @@ function registerDelegate(tree){
 	 		param = param+"&includeGE=GE-No";
 	 }
 	 
+	 param = param + "&firstLastName=";
+	 
+	 var flName = "";
+	 for (var i=0; i<AddStudentLocaldata.length; i++) {
+	 	flName += "studentId=" + AddStudentLocaldata[i].studentId + ":firstName=" + escapeSpecialChars(AddStudentLocaldata[i].firstName) + ":lastName=" + escapeSpecialChars(AddStudentLocaldata[i].lastName);
+	 	if(i!=(AddStudentLocaldata.length-1)) {
+	 		flName += "#";
+	 	}
+	 }
+	
+	 param=param+flName;
+	 
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -6489,5 +6501,15 @@ function validNumber(str){
 			var newEndDate = ("0" + (defualtEndDate.getMonth() + 1)).slice(-2) + "/" + ("0" + defualtEndDate.getDate()).slice(-2) + "/" + ("0" + defualtEndDate.getFullYear()).slice(-2);
 			document.getElementById("endDate").value = newEndDate;
 		}
+	}
+	
+	function escapeSpecialChars(str) {
+		return encodeURIComponent(str)
+	 			.replace(/!/g, '%21')
+	 			.replace(/'/g, '%27')
+	 			.replace(/\(/g, '%28')
+	 			.replace(/\)/g, '%29')
+	 			.replace(/\*/g, '%2A')
+	 			.replace(/~/g, '%7E');
 	}
 	

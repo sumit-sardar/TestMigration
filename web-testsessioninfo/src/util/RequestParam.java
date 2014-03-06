@@ -52,4 +52,6 @@ public interface RequestParam {
 	String STUDENT_ORG_NODE_ID		    = "studentOrgNodeId";
 	
 	String LOCATOR_CHECKBOX = "locatorCheckbox";
+	
+	String FIRST_LAST_NAME = "firstLastName";
 }

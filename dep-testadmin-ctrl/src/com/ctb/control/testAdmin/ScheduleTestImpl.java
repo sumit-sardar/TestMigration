@@ -2410,6 +2410,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             //Integer userId = new Integer(Integer.parseInt(newSession.getTestSession().getCreatedBy()));
             Integer customerId = newSession.getTestSession().getCustomerId();
+            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
             String form = newSession.getTestSession().getPreferredForm();
@@ -2454,7 +2455,12 @@ public class ScheduleTestImpl implements ScheduleTest
                     roster.setFormAssignment(form);
                     roster.setOrgNodeId(student.getOrgNodeId());
                     roster.setOverrideTestWindow("F");
-                    String password = PasswordGenerator.generatePassword();
+                    String password = null;
+                    if(isWVCustomer)
+                    	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName());
+                    else
+                    	password = PasswordGenerator.generatePassword();
+                    
                     roster.setPassword(password);
                     roster.setScoringStatus("NA");
                     roster.setStudentId(student.getStudentId());
@@ -2476,11 +2482,13 @@ public class ScheduleTestImpl implements ScheduleTest
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
                     } catch (SQLException se) {
-                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-                        while(!validPassword) {
-                            password = PasswordGenerator.generatePassword();
-                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-                        }
+                    	if(!isWVCustomer){
+	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                        while(!validPassword) {
+	                            password = PasswordGenerator.generatePassword();
+	                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                        }
+                    	}
                         roster.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
@@ -2596,6 +2604,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Integer testAdminId = newSession.getTestSession().getTestAdminId();
             String [] validForms = itemSet.getFormsForTest(itemSetId);
             Integer customerId = newSession.getTestSession().getCustomerId();
+            boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             FormAssignmentCount [] formCounts = null;
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
@@ -2635,7 +2644,12 @@ public class ScheduleTestImpl implements ScheduleTest
                     re.setCreatedDateTime(new Date());
                     re.setCustomerId(customerId);
                     re.setActivationStatus("AC");
-                    String password = PasswordGenerator.generatePassword();
+                    String password = null;
+                    
+                    if(isWVCustomer)
+                    	password = PasswordGenerator.generatePasswordForWV(newUnit.getFirstName(), newUnit.getLastName());
+                    else
+                    	password = PasswordGenerator.generatePassword();
                     re.setPassword(password);
                     //testRosterId = rosters.getNextPK();
                     //re.setTestRosterId(testRosterId);
@@ -2664,11 +2678,13 @@ public class ScheduleTestImpl implements ScheduleTest
                     	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
                     } catch (SQLException se) {
-                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-                        while(!validPassword) {
-                            password = PasswordGenerator.generatePassword();
-                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-                        }
+                    	if(!isWVCustomer){
+	                        boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                        while(!validPassword) {
+	                            password = PasswordGenerator.generatePassword();
+	                            validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                        }
+                    	}
                         re.setPassword(password);
                         //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
@@ -3159,7 +3175,12 @@ public class ScheduleTestImpl implements ScheduleTest
                 roster.setFormAssignment(form);
                 roster.setOrgNodeId(sessionStudent.getOrgNodeId());
                 roster.setOverrideTestWindow("F");
-                String password = PasswordGenerator.generatePassword();
+                String password = null;
+                boolean isWVCustomer = rosters.isWVCustomer(customerId).booleanValue();
+                if(isWVCustomer)
+                	password = PasswordGenerator.generatePasswordForWV(student.getFirstName(), student.getLastName());
+                else
+                	password = PasswordGenerator.generatePassword();
                 roster.setPassword(password);
                 roster.setScoringStatus("NA");
                 roster.setStudentId(studentId);
@@ -3180,10 +3201,12 @@ public class ScheduleTestImpl implements ScheduleTest
                 	//rosters.getConnection().setAutoCommit(false);
                     rosters.createNewTestRoster(roster);
                 } catch (SQLException se) {
-                    boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
-                    while(!validPassword) {
-                        password = PasswordGenerator.generatePassword();
-                        validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+                	if(!isWVCustomer){
+	                    boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                    while(!validPassword) {
+	                        password = PasswordGenerator.generatePassword();
+	                        validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
+	                    }
                     }
                     roster.setPassword(password);
                     //rosters.getConnection().setAutoCommit(false);

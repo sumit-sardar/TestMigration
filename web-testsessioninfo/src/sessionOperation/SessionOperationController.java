@@ -982,6 +982,8 @@ public class SessionOperationController extends PageFlowController {
             {
             	ScheduledSession session = populateAndValidateSessionRecord(this.getRequest(), validationFailedInfo, isAddOperation, currentAction); //modified for copy test sesssion
             	
+            	populateFirstLastName(session, this.getRequest()); // Added for WV Customer - Student Password generation
+            	
             	if (includeGEStr != null) {
             		session.getTestSession().setLexingtonVersion(includeGEStr);
             	}
@@ -8822,5 +8824,54 @@ public class SessionOperationController extends PageFlowController {
 		        catch (SQLException se) {
 		    	   se.printStackTrace();
 			    }
+			}
+			
+			private void populateFirstLastName(ScheduledSession session, HttpServletRequest httpServletRequest) {
+				String studentsFLName = RequestUtil.getValueFromRequest(httpServletRequest, RequestUtil.FIRST_LAST_NAME, true, "");
+				int studentCountBeforeSave = 0;
+				if (studentsFLName != null
+						&& studentsFLName.trim().length() > 1) {
+					studentCountBeforeSave = studentsFLName.split("#").length;
+				}
+				
+				SessionStudent[] sessionStuds=session.getStudents();
+				
+				if (studentCountBeforeSave > 0) {
+					String[] studs = studentsFLName.split("#");
+					for (String std : studs) {
+						StringTokenizer st = new StringTokenizer(std, ":");
+						
+						Integer studentId=null;
+						String firstName=null;
+						String lastName=null;
+						
+						while (st.hasMoreTokens()) {
+							StringTokenizer keyVal = new StringTokenizer(st.nextToken(), "=");
+							
+							String key = keyVal.nextToken();
+							String val = null;
+							if(keyVal.countTokens()>0) {
+								val= keyVal.nextToken();
+							}
+	
+							if (key.equalsIgnoreCase("studentId")) {
+								studentId=Integer.valueOf(val);
+							} else if (key.equalsIgnoreCase("firstName")) {
+								firstName=val;
+							} else if (key.equalsIgnoreCase("lastName")) {
+								lastName=val;
+							}
+						}
+						
+						for(SessionStudent sstd:sessionStuds) {
+							if(sstd.getStudentId().intValue()==studentId.intValue()) {
+								sstd.setFirstName(firstName);
+								sstd.setLastName(lastName);
+								break;
+							}
+						}
+					}
+				
+				}
 			}
 }
