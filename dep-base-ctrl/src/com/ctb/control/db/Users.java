@@ -949,5 +949,7 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT MAPPER.USERNAME_3TO8 FROM EOI_3TO8_USER_MAPPING MAPPER WHERE MAPPER.USERNAME_EOI = {eoiUserName}",
             arrayMaxLength = 100000)
     String fetchMapped3to8User(String eoiUserName) throws SQLException;
-
+    
+    @JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1),0,0,1) FROM CUSTOMER_CONFIGURATION WHERE CUSTOMER_CONFIGURATION_NAME = 'WV_Customer' AND CUSTOMER_ID = {customerId}")
+    int isWVCustomer(Integer customerId) throws SQLException;
 }
