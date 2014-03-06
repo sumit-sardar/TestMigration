@@ -3675,8 +3675,8 @@ System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.con
 
 				if ( !datFormat ) {
 
-					cellValue = String.valueOf((new Double (cell.getNumericCellValue())).
-							intValue());
+					cellValue = String.valueOf((new Double (cell.getNumericCellValue())).longValue());
+							
 				}
 
 				// date formatted is true, then format it to mm/dd/yyyy
