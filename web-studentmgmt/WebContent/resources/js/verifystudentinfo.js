@@ -133,9 +133,21 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				var invalidFields = $("#minLengthFormatID").val();  
 				for(var temp=0; temp< str.length; temp++){
 					if(trim(str[temp])== studentIdLabelName)
-						invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " characters");  
+					{
+						if(isStudentIdNumeric == "NU") {
+							invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " digits");
+						}
+						else
+						invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " characters");
+					}  
 					if(trim(str[temp])==studentId2LabelName)
-						invalidFields += (" " + studentId2LabelName +" - " + studentId2MinLength+ " characters");  
+					{
+						if(isStudentId2Numeric == "NU") {
+							invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " digits");
+						}
+						else
+						invalidFields += (" " + studentId2LabelName +" - " + studentId2MinLength+ " characters");
+					}  
 				}
 		
 				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage" , invalidFields);
