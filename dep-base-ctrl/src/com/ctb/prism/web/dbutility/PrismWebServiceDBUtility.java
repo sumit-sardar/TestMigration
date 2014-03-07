@@ -69,7 +69,7 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_ITEM_RESP_CR = "SELECT /*to_char(SUM(decode(length(TRIM(translate(p.final_score,                                                ' +-.0123456789',                                                ' '))),                          NULL,                          p.final_score,                          0)),               '09')*/ p.final_score AS \"crScore\",       p.item_id AS \"itemId\",       setitm.item_sort_order AS \"iremOrder\"  FROM item_datapoint_score p, item_set_item setitm WHERE p.item_reader_id = (SELECT MAX(item_reader_id)                             FROM item_datapoint_score c                            WHERE c.test_roster_id = ?                              AND c.item_id = p.item_id   AND c.student_id = p.student_id)   AND p.test_roster_id = ?   AND p.item_id = setitm.item_id   AND setitm.item_set_id IN       ((SELECT DISTINCT t.item_set_id           FROM item_set_parent t          WHERE t.parent_item_set_id = ?            GROUP BY t.item_set_id))   AND p.student_id = ? AND setitm.field_test <> 'T' /*GROUP BY p.item_id, setitm.item_sort_order*/ ORDER BY setitm.item_sort_order";
 	private static final String GET_ITEM_RESP_GR = "SELECT tab.itemtype  AS itemtype,       tab.response  AS response,       tab.itemid    AS itemid,       tab.itemorder AS itemorder, DECODE(nvl(LENGTH(TRIM(TAB.RESPONSE)), 0), 0, 'O', TAB.RESPSTATUS) AS respstatus  FROM (                SELECT 'GR' AS itemtype,                utl_url.unescape(dbms_lob.substr(crres.constructed_response,                                                 length(crres.constructed_response),                                                 1)) AS response,                critm.item_id AS itemid,                cr_set_itm.item_sort_order AS itemorder, '' AS respstatus          FROM item_response_cr crres, item_set_item cr_set_itm, item critm         WHERE critm.item_id = cr_set_itm.item_id           AND cr_set_itm.item_set_id = crres.item_set_id           AND cr_set_itm.item_id = crres.item_id           AND crres.test_roster_id = ?           AND crres.item_set_id IN               (SELECT DISTINCT t.item_set_id                  FROM item_set_parent t, item_response_cr r ,  item_set itst                WHERE t.parent_item_set_id = ?                   AND r.item_set_id = t.item_set_id                   AND r.test_roster_id = ?        AND itst.item_set_id = t.item_set_id                   AND itst.SAMPLE <> 'T'         GROUP BY t.item_set_id)           AND crres.test_roster_id =               (SELECT MAX(r.test_roster_id)                  FROM item_response_cr r                 WHERE r.test_roster_id = ?                   AND r.item_set_id IN                       (SELECT DISTINCT t.item_set_id                          FROM item_set_parent t, item_response_cr r       ,  item_set itst                  WHERE t.parent_item_set_id = ?                           AND r.item_set_id = t.item_set_id                           AND r.test_roster_id = ?       AND itst.item_set_id = t.item_set_id                   AND itst.SAMPLE <> 'T'                  GROUP BY t.item_set_id)                   AND r.item_id = crres.item_id)           AND upper(critm.answer_area) = ?    AND cr_set_itm.field_test <> 'T'    UNION        SELECT 'GR' AS itemtype,               '                ' AS response,               itm.item_id AS itemid,               itset.item_sort_order AS itemorder,    'O' AS respstatus       FROM item_set_item itset, item itm         WHERE itset.item_set_id IN (SELECT DISTINCT t.item_set_id                                   FROM item_set_parent t    ,  item_set itst                             WHERE t.parent_item_set_id = ?            AND itst.item_set_id = t.item_set_id                   AND itst.SAMPLE <> 'T'                                                  GROUP BY t.item_set_id)           AND itset.item_id = itm.item_id           AND upper(itm.answer_area) =?      AND itset.field_test <> 'T'    AND NOT EXISTS (SELECT 1                  FROM item_response_cr res                 WHERE res.test_roster_id = ?                   AND res.item_set_id=itset.item_set_id                   AND res.item_id = itset.item_id                   AND rownum = 1)) tab ORDER BY itemorder";
 	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       t.proficiency_level                      AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       t.scale_score_range        AS hse_scale_score_range, t.scoring_status AS scoring_status  FROM tasc_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND t.content_areaid = ?";
-	private static final String GET_CONTENT_DETAILS = "SELECT DISTINCT ipp.item_set_name AS \"content_code_name\",                ipp.item_set_id AS \"item_set_id\"  FROM student_item_set_status t,       item_set                s,       item_set_parent         ip,       item_set                ipp WHERE t.test_roster_id = ?   AND s.item_set_id = t.item_set_id   AND ip.item_set_id = s.item_set_id   AND ipp.item_set_id = ip.parent_item_set_id   AND s.SAMPLE = 'F'";
+	private static final String GET_CONTENT_DETAILS = "SELECT DISTINCT ipp.item_set_name AS \"content_code_name\",   ipp.item_set_id AS \"item_set_id\"  , t.completion_status AS \"completion_status\" FROM student_item_set_status t,       item_set                s,       item_set_parent         ip,       item_set                ipp WHERE t.test_roster_id = ?   AND s.item_set_id = t.item_set_id   AND ip.item_set_id = s.item_set_id   AND ipp.item_set_id = ip.parent_item_set_id   AND s.SAMPLE = 'F'";
 	private static final String GET_COMPOSITE_CONTENT_DETAILS = "SELECT t.points_obtained AS \"ncScoreVal\",       t.points_possible AS \"npScoreVal\",       t.scale_score AS \"ssScoreVal\",       0 AS \"hseScoreVal\",       t.national_percentile AS \"prScoreVal\",       t.normal_curve_equivalent AS \"nceScoreVal\",       '' AS \"ssrScoreVal\",       com.name AS \"compName\" ,     to_char(t.test_completion_timestamp, 'MMDDYY') AS \"dtTstTaken\"  FROM tasc_composite_fact t, composite_dim com WHERE t.studentid = ?   AND t.sessionid = ?   AND com.compositeid = t.compositeid";
 	private static final String GET_TEST_TAKEN_DATE = "SELECT to_char(MAX(nvl(t.completion_date_time,t.start_date_time)), 'MMDDYY') AS \"test_taken_dt\"     FROM student_item_set_status t    WHERE t.test_roster_id = ?      AND t.item_set_id IN (SELECT DISTINCT t.item_set_id                              FROM item_set_parent t                             WHERE t.parent_item_set_id = ?                             GROUP BY t.item_set_id)";
 	private static final String GET_SUBTEST_STATUS = "SELECT t.validation_status AS status  FROM student_item_set_status t,item_set its WHERE t.item_set_id = its.item_set_id and its.sample='F' and t.test_roster_id = ?   AND t.item_set_id IN (SELECT DISTINCT it.item_set_id                           FROM item_set_parent it                          WHERE it.parent_item_set_id = ?                          GROUP BY it.item_set_id)";
@@ -615,6 +615,7 @@ public class PrismWebServiceDBUtility {
 			while(rs.next()){
 				String contentCodeName = rs.getString("content_code_name");
 				long itemSetId = rs.getLong("item_set_id");
+				String testStatus = rs.getString("completion_status");
 				Integer contentCode = PrismWebServiceConstant.contentDetailsContentCodeMap.get(contentCodeName);
 				ContentDetailsTO contentDetailsTO = contentDetailsTOMap.get(contentCode);
 				List<ObjectiveScoreDetailsTO> objectiveScoreDetailsList = new ArrayList<ObjectiveScoreDetailsTO>();
@@ -634,27 +635,12 @@ public class PrismWebServiceDBUtility {
 						}
 					}
 					
-					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
-					if(contentCode == PrismWebServiceConstant.wrContentCode){
-						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
-						if(!isCRScorePresent){
-							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.ScoringInProgressCode));
-							sendELA = false;
-							sendOverAll = false;
-							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.ScoringInProgressCode, contentCode, studentId);
-							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
-							continue;
-						}
-					}
-					
 					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, itemSetId));
-					
 					
 					String statusCode = getContentStatusCode(rosterId, itemSetId);
 					if(statusCode != null && !"".equals(statusCode)){
 						contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) != null ? PrismWebServiceConstant.contentDetailsStausCodeMap.get(statusCode) : "");
 					}
-					
 					
 					Object[] contentScoreDetailsObjs = getContentScoreDetails(studentId, sessionId, itemSetId, contentAreaID.get(contentCodeName));
 					
@@ -672,6 +658,20 @@ public class PrismWebServiceDBUtility {
 						objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, statusCode, contentCode, studentId);
 						contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
 						continue;
+					}
+					
+					//Check the CR scoring availability for Writing Sub test, depending on that hold the send scoring for SR item
+					if(contentCode == PrismWebServiceConstant.wrContentCode && (testStatus!=null && !testStatus.equals("" ) 
+							&& !(testStatus.equalsIgnoreCase("SC")|| testStatus.equalsIgnoreCase("NT") || testStatus.equalsIgnoreCase("IP") || testStatus.equalsIgnoreCase("IN")))){
+						boolean isCRScorePresent = checkCRScoreAvailablility(rosterId);
+						if(!isCRScorePresent){
+							contentDetailsTO.setStatusCode(PrismWebServiceConstant.contentDetailsStausCodeMap.get(PrismWebServiceConstant.ScoringInProgressCode));
+							sendELA = false;
+							sendOverAll = false;
+							objectiveScoreDetailsList = getObjectivesForOmSupInvStatus(itemSetId, sessionId, PrismWebServiceConstant.ScoringInProgressCode, contentCode, studentId);
+							contentDetailsTO.getCollObjectiveScoreDetailsTO().addAll(objectiveScoreDetailsList);
+							continue;
+						}
 					}
 					
 					if(scoringStatus != null && !"".equals(scoringStatus) && !PrismWebServiceConstant.VAScoringStatus.equalsIgnoreCase(scoringStatus)){
