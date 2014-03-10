@@ -38,6 +38,8 @@ public class ScheduledSavedTestVo implements Serializable {
 	private String endDate;
 	private TestSessionVO testSession;
 	private boolean isOkAdmin = false;
+	private boolean isWVAdmin = false;
+	private boolean isWVProctor = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
@@ -340,5 +342,21 @@ public class ScheduledSavedTestVo implements Serializable {
 	 */
 	public void setTestingWindowDefaultDays(Integer testingWindowDefaultDays) {
 		this.testingWindowDefaultDays = testingWindowDefaultDays;
+	}
+
+	public boolean isWVAdmin() {
+		return isWVAdmin;
+	}
+
+	public void setWVAdmin(boolean isWVAdmin) {
+		this.isWVAdmin = isWVAdmin;
+	}
+
+	public boolean isWVProctor() {
+		return isWVProctor;
+	}
+
+	public void setWVProctor(boolean isWVProctor) {
+		this.isWVProctor = isWVProctor;
 	}
 }

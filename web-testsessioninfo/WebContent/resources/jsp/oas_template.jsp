@@ -171,6 +171,10 @@ clear: both;
 									        	setMessage("", "", "errorMessage", "Equivalent form test sessions are restricted. Please contact the OK SDE for assistance in making changes to this session.");       
 												$('#displayMessage').show();
 									        	e.stopPropagation(); // Non state admins will not be able to click on select test accordion for EQ test
+									        } else if(isWVBreachProduct && !isWVAdmin) {
+									        	setMessage("", "", "errorMessage", "Breach form test session is restricted.");       
+												$('#displayMessage').show();
+									        	e.stopPropagation(); // Non state admins will not be able to click on select test accordion for Breach test
 									        } else {
 										   		populateSelectTestGrid(wizard,index);
 										   		isFirstAccordSelected = true;

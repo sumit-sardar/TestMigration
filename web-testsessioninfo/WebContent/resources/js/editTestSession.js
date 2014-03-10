@@ -23,6 +23,8 @@
 	var isCopySession = false; //added  for copy test session
 	var isSelectTestDetClicked = false; //added  for copy test session
 	var isOKEQProduct = false; // Added for Oklahoma customer
+	var isWVBreachProduct = false; // Added for WV customer
+	var isWVProctor = false; // Added for WV customer
 		
 	var forceTestBreak = false;
 	var selectGE = null;
@@ -91,11 +93,21 @@
 							isOKAdmin = data.isOkAdmin;
 							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
 									(parseInt(data.savedTestDetails.testSession.productId) == 9003 || 
-									parseInt(data.savedTestDetails.testSession.productId) == 9007)) {
+									parseInt(data.savedTestDetails.testSession.productId) == 9007 || 
+									parseInt(data.savedTestDetails.testSession.productId) == 9011 || 
+									parseInt(data.savedTestDetails.testSession.productId) == 9017)) {
 								isOKEQProduct = true;
 								isOKEQActionPerformed = true;
 							} else {
 								isOKEQProduct = false;
+							}
+							
+							isWVAdmin = data.isWVAdmin;
+							if(data.savedTestDetails != undefined && data.savedTestDetails.testSession != undefined && 
+									(parseInt(data.savedTestDetails.testSession.productId) == 5501)) {
+								isWVBreachProduct = true;
+							} else {
+								isWVBreachProduct = false;
 							}
 							
 							if(data.noTestExists == true){
@@ -457,6 +469,7 @@
 	  }else{
 	  	// Added for Oklahoma customer
 		// All user roles except proctor who are associated with the test session should be able to add/remove student
+		
 		if(isOKEQProduct && !isOKAdmin) {
 			var param = {};
 			param.selectedTestAdminId = selectedTestAdminId;
@@ -513,6 +526,7 @@
 				success:	function(data, textStatus, XMLHttpRequest){
 								var stAccom = 0;
 								savedStudentMap = new Map();
+								isWVProctor = data.isWVProctor;
 								if (data.status.isSuccess){
 									//editDataCache.put(index,data.savedStudentsDetails);
 									cacheObjVal.indexValue = "studentDetails";
@@ -534,6 +548,10 @@
 									
 								    $('#stuWithAcc').text(stAccom);
 									$('#totalStudent').text(AddStudentLocaldata.length);	
+									if(isWVProctor && isWVBreachProduct) {
+										$("#addStudent").hide();
+										hideStudentDelButton = true;
+									}
 									processStudentAccordion();   				
 								}
 								onChangeHandler.register("addStudentId");

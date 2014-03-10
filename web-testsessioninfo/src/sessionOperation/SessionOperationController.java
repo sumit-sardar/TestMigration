@@ -196,6 +196,7 @@ public class SessionOperationController extends PageFlowController {
 	private List fileTypeOptions = null;
 	public boolean isLasLinkCustomer = false;
 	public boolean isOKCustomer = false;
+	public boolean isWVCustomer = false;
 	public boolean isTABECustomer = false;
 	public boolean isTASCCustomer = false;
 	private boolean forceTestBreak = false;
@@ -883,6 +884,12 @@ public class SessionOperationController extends PageFlowController {
             } else {
             	vo.setOkAdmin(false);
             }
+            
+            if(isAdminUser() && this.isWVCustomer && isTopLevelUser()) {
+            	vo.setWVAdmin(true);
+            } else {
+            	vo.setWVAdmin(false);
+            }
     
             vo.setForceTestBreak(this.forceTestBreak);
             if (this.selectGE)
@@ -1433,6 +1440,12 @@ public class SessionOperationController extends PageFlowController {
                 	vo.setOkAdmin(false);
                 }
                 
+                if(isAdminUser() && this.isWVCustomer && isTopLevelUser()) {
+                	vo.setWVAdmin(true);
+                } else {
+                	vo.setWVAdmin(false);
+                }
+                
                 vo.setForceTestBreak(this.forceTestBreak);
                 if ((testSession.getLexingtonVersion() != null) && testSession.getLexingtonVersion().equals("GE-Yes"))               	
                 	vo.setSelectGE(Boolean.TRUE);
@@ -1524,7 +1537,11 @@ public class SessionOperationController extends PageFlowController {
     	    	vo.setClassHierarchyMap(classHierarchy);
                 status.setSuccess(true);
                
-                
+                if(isProctorUser() && this.isWVCustomer) {
+                	vo.setWVProctor(true);
+                } else {
+                	vo.setWVProctor(false);
+                }
     	    	
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -5121,6 +5138,11 @@ public class SessionOperationController extends PageFlowController {
 	            	this.isOKCustomer = true;
 	            	continue;
 	            }
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("WV_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+	            	this.isWVCustomer = true;
+	            	continue;
+	            }
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("GA_Customer") 
 						&& cc.getDefaultValue().equalsIgnoreCase("T")) {
 					isGACustomer = true;
@@ -7133,6 +7155,26 @@ public class SessionOperationController extends PageFlowController {
 		        return false;
 		 }
 		 
+		 private boolean hasAssignFormRosterTopLevelConfig()  {               
+		        for (int i=0; i < this.customerConfigurations.length; i++)  {
+	                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Assign_Roster_Form_Top_Level") && cc.getDefaultValue().equalsIgnoreCase("T")) {	                
+	                	return true;	                    
+	                }
+	            }     
+		        return false;
+		 }
+		 
+		 private boolean hasTopLevelInvalidationOnlyConfig()  {               
+		        for (int i=0; i < this.customerConfigurations.length; i++)  {
+	                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Top_Level_Invalidation_Only") && cc.getDefaultValue().equalsIgnoreCase("T")) {	                
+	                	return true;	                    
+	                }
+	            }     
+		        return false;
+		 }
+		 
 		 private List getRosterFormList(String testAdminId){
 			 List formList = null;
 			 try{
@@ -7196,6 +7238,9 @@ public class SessionOperationController extends PageFlowController {
 				base.setOkCustomer(this.isOKCustomer);
 				base.setTopLevelAdmin(isAdminUser() && isTopLevelUser());
 				base.setTopLevelAdminCord(isAdminCoordinatotUser() && isTopLevelUser());
+				base.setHasAssignFormRosterTopLevelConfig(hasAssignFormRosterTopLevelConfig());
+				base.setHasTopLevelInvalidationOnlyConfig(hasTopLevelInvalidationOnlyConfig());
+				base.setTopLevelUser(isTopLevelUser());
 				base.setHasAssignFormRosterConfig(hasAssignFormRosterConfig());
 				if (hasAssignFormRosterConfig()) {
 					base.setAssignFormList(getRosterFormList(testAdminId));
@@ -7303,6 +7348,8 @@ public class SessionOperationController extends PageFlowController {
 		    	String[] selectedItemSetIds = getRequest().getParameterValues("selectedItemSetIds");
 		    	Base base = prepareSubtestsDetailInformation(testRosterID, selectedItemSetIds, this.subtestValidationAllowed);
 		    	base.setSubtestValidationAllowed(this.subtestValidationAllowed);
+				base.setHasTopLevelInvalidationOnlyConfig(hasTopLevelInvalidationOnlyConfig());
+				base.setTopLevelUser(isTopLevelUser());
 		    	createGson(base);
 		        return null;
 		    }

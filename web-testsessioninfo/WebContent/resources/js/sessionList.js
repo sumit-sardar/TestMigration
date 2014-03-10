@@ -109,6 +109,8 @@ var isOKEQDefaultSelected = false; // Needed to verify whether the default selec
 var isOKEQActionPerformed = false; // As per new requirement, proctors will be added only the first time EQ test is selected.
 var hideProctorDelButton = false; // Only state level admin for oklahoma should be able to add/del proctors
 var hideStudentDelButton = false; // Only state level admin, admin coordinator, coordinator should be able to add/del students
+var isWVBreachDefaultSelected = false; //Needed to verify whether the default selection in select test dropdown is Breach test or not.
+var isWVBreachTestSelected = false;
 
 var forceTestBreak = false;
 var selectGE = null;
@@ -1760,12 +1762,23 @@ function registerDelegate(tree){
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
 						isOKAdmin = data.isOkAdmin;
+						isWVAdmin = data.isWVAdmin;
 						forceTestBreak = data.forceTestBreak;
 						selectGE = data.selectGE;
 						state = "SCHEDULE";
 						defaultDays = data.testingWindowDefaultDays;						
 						classHierarchyMap_editSession = data.classHierarchyMap;
 						hasShowRosterAccomAndHierarchyConfig = data.hasShowRosterAccomAndHierarchy
+						var onlyRestrictedTest = true;
+						for(var i = 0; i < data.product.length; i++ ) {
+							if(data.product[i].productId == '5501' && !isWVAdmin) {
+								continue; // Only state level WV admin should be able to see/schedule/edit 5501 product
+							}
+							onlyRestrictedTest = false;
+						}
+						if(onlyRestrictedTest) {
+							ProductData.noTestExists = true;
+						}
 						if(ProductData.noTestExists == true){
 							noTestExist = true;
 							document.getElementById("testDiv").style.display = "none";
@@ -1783,10 +1796,15 @@ function registerDelegate(tree){
 							//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 							fillDropDown("topOrgNode",data.topNodeDropDownList);
 							var productSelected = $("#testGroupList").val();
-							if(productSelected == '9003' || productSelected == '9007') {
+							if(productSelected == '9003' || productSelected == '9007' || productSelected == '9011' || productSelected == '9017') {
 								isOKEQDefaultSelected = true;
 							} else {
 								isOKEQDefaultSelected = false;
+							}
+							if(productSelected == '5501') {
+								isWVBreachDefaultSelected = true;
+							} else {
+								isWVBreachDefaultSelected = false;
 							}
 							processStudentAccordion();
 							processProctorAccordion();
@@ -1840,8 +1858,11 @@ function registerDelegate(tree){
 			optionHtml += "<option  value='Select a product'>Show All</option>";
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {
-				if((optionList[i].productId == '9003' || optionList[i].productId == '9007') && !isOKAdmin) {
-					continue; // Only state level oklahoma admin should be able to see/schedule/edit 9003 and 9007 products
+				if((optionList[i].productId == '9003' || optionList[i].productId == '9007' || optionList[i].productId == '9011' || optionList[i].productId == '9017') && !isOKAdmin) {
+					continue; // Only state level oklahoma admin should be able to see/schedule/edit 9003, 9007, 9011, 9017 products
+				}
+				if(optionList[i].productId == '5501' && !isWVAdmin) {
+					continue; // Only state level WV admin should be able to see/schedule/edit 5501 product
 				}
 				if(selectedProductId==optionList[i].productId) { 	     
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
@@ -1991,10 +2012,19 @@ function registerDelegate(tree){
 		 if(isOKAdmin) {
 			 isOKProductChanged = true;
 			 var productSelected = $("#testGroupList").val();
-			 if(productSelected == '9003' || productSelected == '9007') {
+			 if(productSelected == '9003' || productSelected == '9007' || productSelected == '9011' || productSelected == '9017') {
 			 	isOKEqTestSelected = true;
 			 } else {
 			 	isOKEqTestSelected = false;
+			 }
+		 }
+		 
+		 if(isWVAdmin) {
+			 var productSelected = $("#testGroupList").val();
+			 if(productSelected == '5501') {
+			 	isWVBreachTestSelected = true;
+			 } else {
+			 	isWVBreachTestSelected = false;
 			 }
 		 }
 		  changeGradeAndLevel();
@@ -2059,8 +2089,11 @@ function registerDelegate(tree){
 		selectProductId = e.options[e.selectedIndex].value;
 		var optionList = ProductData.product;
 		for(var i = 0; i < optionList.length; i++ ) {
-			if((optionList[i].productId == '9003' || optionList[i].productId == '9007') && !isOKAdmin) {
-				continue; // Only state level oklahoma admin should be able to see 9003 and 9007 products
+			if((optionList[i].productId == '9003' || optionList[i].productId == '9007' || optionList[i].productId == '9011' || optionList[i].productId == '9017') && !isOKAdmin) {
+				continue; // Only state level oklahoma admin should be able to see 9003, 9007, 9011, 9017 products
+			}
+			if(optionList[i].productId == '5501' && !isWVAdmin) {
+					continue; // Only state level WV admin should be able to see/schedule/edit 5501 product
 			}
 			if(selectProductId==optionList[i].productId) { 	     
 				$("#productType").val(optionList[i].productType);
@@ -2453,7 +2486,7 @@ function registerDelegate(tree){
 					if (forceTestBreak) {
 						setTestBreakForCustomer();
 					}
-					if(state != 'EDIT' && (previousValue == '9003' || previousValue == '9007') && !isOKEQActionPerformed && isOKAdmin) {
+					if(state != 'EDIT' && (previousValue == '9003' || previousValue == '9007' || previousValue == '9011' || previousValue == '9017') && !isOKEQActionPerformed && isOKAdmin) {
 						isOKEQActionPerformed = true;
 						isOKEqTestSelected = true;
 						$("#Proctor_Tab").css('display', 'block');
@@ -3392,10 +3425,16 @@ function registerDelegate(tree){
  		
  		proctorGridloaded = true;
 		var productSelected = $("#testGroupList").val();
-		if(productSelected == '9003' || productSelected == '9007') {
+		if(productSelected == '9003' || productSelected == '9007' || productSelected == '9011' || productSelected == '9017') {
 			isOKEqTestSelected = true;
 		} else {
 			isOKEqTestSelected = false;
+		}
+		
+		if(productSelected == '5501') {
+			isWVBreachDefaultSelected = true;
+		} else {
+			isWVBreachDefaultSelected = false;
 		}
  		if(state != "EDIT" && noOfProctorAdded == 0) {
 	 		var jsondata = {};
@@ -4561,6 +4600,10 @@ function registerDelegate(tree){
 		   		 var toggleIsOkCustomer = JSON.stringify(obj.isOkCustomer);
 		   		 assignedFormList = obj.assignFormList;
 		   		 hasAssignFormConfig = obj.hasAssignFormRosterConfig;
+		   		 hasAssignFormRosterTopLevelConfig = obj.hasAssignFormRosterTopLevelConfig;
+		   		 isTopLevelAdmin = obj.isTopLevelAdmin;
+		   		 hasTopLevelInvalidationOnly = obj.hasTopLevelInvalidationOnlyConfig;
+		   		 isTopLevelUser = obj.isTopLevelUser;
 		   		 hasShowRosterAccomAndHierarchyConfig = obj.hasShowRosterAccomAndHierarchyConfig;
 		   		 accommodationMapForRoster = obj.accomodationMap;
 		   		 orgNodeHierarchyMapForRoster = obj.orgNodeIdMap;
@@ -4582,14 +4625,24 @@ function registerDelegate(tree){
 		   		 	isOKAdminCord = false;
 		   		 }
 		   		 if(subtestValAllowed == 'false') {
-		   		 	if(isOkCustomer) { // Added for Oklahoma customer as only top level admin can toggle validation for a student.
-		   		 		if(isOKAdmin || isOKAdminCord) {
-		   		 			$("#toggleValidation").show();
-		   		 		} else {
-		   		 			$("#toggleValidation").hide();
-		   		 		}
-		   		 	} else {
-						$("#toggleValidation").show();
+		   		 	if(hasTopLevelInvalidationOnly) {
+		   		 		if(isTopLevelUser) {
+								$("#toggleValidation").show();
+						} else {
+								$("#toggleValidation").hide();
+						}
+		   		 	}
+		   		 	else
+		   		 	{
+				   		 	if(isOkCustomer) { // Added for Oklahoma customer as only top level admin can toggle validation for a student.
+				   		 		if(isOKAdmin || isOKAdminCord) {
+				   		 			$("#toggleValidation").show();
+				   		 		} else {
+				   		 			$("#toggleValidation").hide();
+				   		 		}
+				   		 	} else {
+								$("#toggleValidation").show();
+							}
 					}
 				 } else {
 					$("#toggleValidation").hide();
@@ -4597,8 +4650,18 @@ function registerDelegate(tree){
 				 if(hasAssignFormConfig && hasAssignFormConfig!=undefined) {
 					$("#rosterList").jqGrid("showCol","assignedForm");
 					if ((assignedFormList.length > 1) && obj.rosterElement.length > 0) {
-						$("#assignFormButton").show();
-						$("#assignFormMsg").show();					
+						if(hasAssignFormRosterTopLevelConfig!=undefined && hasAssignFormRosterTopLevelConfig) {
+							if(isTopLevelAdmin) {
+								$("#assignFormButton").show();
+								$("#assignFormMsg").show();				
+							} else {
+								$("#assignFormButton").hide();
+								$("#assignFormMsg").hide();
+							}
+						} else {
+							$("#assignFormButton").show();
+							$("#assignFormMsg").show();	
+						}
 					}else {
 						$("#assignFormButton").hide();
 						$("#assignFormMsg").hide();
@@ -4931,7 +4994,13 @@ function registerDelegate(tree){
 							
 							var html = '<tr class="rosterSubtestHeader">';
 							if(data.subtestValidationAllowed) {
-								html += '<th class="alignCenter rosterSubtestHeader"><span>'+$("#itemsSelectLbl").val()+'</span></th>';
+								if(data.hasTopLevelInvalidationOnlyConfig) {
+		   		 					if(data.isTopLevelUser) {
+										html += '<th class="alignCenter rosterSubtestHeader"><span>'+$("#itemsSelectLbl").val()+'</span></th>';
+									} 
+		   		 				} else {
+									html += '<th class="alignCenter rosterSubtestHeader"><span>'+$("#itemsSelectLbl").val()+'</span></th>';
+								}
 							}
            					html += '<th class="alignLeft rosterSubtestHeader" height="25" width="*">';
                				html += '&nbsp;&nbsp;<span>'+$("#subtestNameLbl").val()+'</span>';
@@ -4980,9 +5049,17 @@ function registerDelegate(tree){
             					html += '</th>';
            					}
            					if(data.subtestValidationAllowed && data.isLaslinkSession) {
-           						html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
-               					html += '&nbsp;&nbsp;<span>'+$("#invalidationReasonLbl").val()+'</span>';
-           						html += '</th>';
+			           			if(data.hasTopLevelInvalidationOnlyConfig) {
+		   		 					if(data.isTopLevelUser) {
+										html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+		               					html += '&nbsp;&nbsp;<span>'+$("#invalidationReasonLbl").val()+'</span>';
+		           						html += '</th>';
+									}
+		   		 				} else {
+									html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+		               				html += '&nbsp;&nbsp;<span>'+$("#invalidationReasonLbl").val()+'</span>';
+		           					html += '</th>';
+								}
            					}
            					html += '</tr>';
             				var row = "";
@@ -4992,14 +5069,27 @@ function registerDelegate(tree){
 								html += '<tr class="sortable" id="'+row.itemSetId+'_viewStatus">';
 								if(row.itemSetType == 'TS') {
 									if(data.subtestValidationAllowed) {
-										html += '<td class="sortable alignCenter">&nbsp;</td>';
+											if(data.hasTopLevelInvalidationOnlyConfig) {
+		   		 								if(data.isTopLevelUser) {
+													html += '<td class="sortable alignCenter">&nbsp;</td>';
+												}
+											} else {
+												html += '<td class="sortable alignCenter">&nbsp;</td>';
+											}
 									}
 									
 									html += '<td class="sortable alignLeft" colspan="'+data.numberColumn+'">';
 									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span></td>';
 								} else {
 									if(data.subtestValidationAllowed) {
-										html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
+										if(data.hasTopLevelInvalidationOnlyConfig) {
+		   		 								if(data.isTopLevelUser) {
+													html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
+												}
+											} else {
+												html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
+											}
+										
 									}
 									html += '<td class="sortable alignCenter"> <span>'+row.subtestName+'</span></td>';
 									if(data.isTabeSession) {
@@ -5058,42 +5148,87 @@ function registerDelegate(tree){
 									}
 									
 									if(data.subtestValidationAllowed && data.isLaslinkSession) {
-										if(row.invalidationReason == undefined || row.invalidationReason == null ) {
-											var temp = 'PS';
-											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
-										
-												for(j=0;j<invalidationReasonIDList.length;j++){
-													if(temp === invalidationReasonIDList[j]){
-													html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
-													}
-													else{
-													html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
-													}
-												//x += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
-												}
-											html +='</select></font></td>';	
-											
-										}
-										else{
-											var temp = row.invalidationReason;
-											html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
+										if(data.hasTopLevelInvalidationOnlyConfig) 
+										{
+		   		 							if(data.isTopLevelUser) 
+		   		 							{
+													if(row.invalidationReason == undefined || row.invalidationReason == null ) {
+													var temp = 'PS';
+													html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
 												
-												for(j=0;j<invalidationReasonIDList.length;j++){
+														for(j=0;j<invalidationReasonIDList.length;j++){
+															if(temp === invalidationReasonIDList[j]){
+															html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+															}
+															else{
+															html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+															}
+														//x += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+														}
+													html +='</select></font></td>';	
 													
-													if(temp === invalidationReasonIDList[j]){
-													html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
-													}
-													else{
-													html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
-													}
-												//y += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
-												
-												//	html += '<option value="null">Please Select</option>'+((temp === 'Absent')?'<option selected ="selected" value="Absent">Absent</option>':'<option value="Absent">Absent</option>')+((temp ==='Exempt')?'<option selected ="selected" value="Exempt">Exempt</option>':'<option value="Exempt">Exempt</option>')+''+((temp === 'Cheating')?'<option selected ="selected" value="Cheating">Cheating</option>':'<option value="Cheating">Cheating</option>')+''+((temp === 'Sound_Quality')?'<option selected ="selected" value="Sound_Quality">Sound Quality</option>':'<option value="Sound_Quality">Sound Quality</option>')+
 												}
-											html +='</select></font></td>';
-										
-										
+												else{
+													var temp = row.invalidationReason;
+													html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
+														
+														for(j=0;j<invalidationReasonIDList.length;j++){
+															
+															if(temp === invalidationReasonIDList[j]){
+															html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+															}
+															else{
+															html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+															}
+														//y += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+														
+														//	html += '<option value="null">Please Select</option>'+((temp === 'Absent')?'<option selected ="selected" value="Absent">Absent</option>':'<option value="Absent">Absent</option>')+((temp ==='Exempt')?'<option selected ="selected" value="Exempt">Exempt</option>':'<option value="Exempt">Exempt</option>')+''+((temp === 'Cheating')?'<option selected ="selected" value="Cheating">Cheating</option>':'<option value="Cheating">Cheating</option>')+''+((temp === 'Sound_Quality')?'<option selected ="selected" value="Sound_Quality">Sound Quality</option>':'<option value="Sound_Quality">Sound Quality</option>')+
+														}
+													html +='</select></font></td>';
+												
+												
+												}
+											} 
+		   		 						} else 
+		   		 						{
+												if(row.invalidationReason == undefined || row.invalidationReason == null ) {
+													var temp = 'PS';
+													html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
+												
+														for(j=0;j<invalidationReasonIDList.length;j++){
+															if(temp === invalidationReasonIDList[j]){
+															html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+															}
+															else{
+															html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+															}
+														//x += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+														}
+													html +='</select></font></td>';	
+													
+												}
+												else{
+													var temp = row.invalidationReason;
+													html += '<td class="sortable alignCenter"><font weight="normal" family="Arial"><Select id ="'+row.itemSetId+'_select" class="sortable alignLeft" style="font-family: Arial,Verdana,Sans Serif;font-size: 12px;" disabled = "disabled">';
+														
+														for(j=0;j<invalidationReasonIDList.length;j++){
+															
+															if(temp === invalidationReasonIDList[j]){
+															html +='<option selected ="selected" value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>';
+															}
+															else{
+															html +='<option value="'+invalidationReasonIDList[j]+'">'+invalidationReasonList[j]+'</option>'
+															}
+														//y += ((temp === invalidationReasonIDList[i])?'<option selected ="selected" value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>':'<option value="'+invalidationReasonIDList[i]+'">'+invalidationReasonList[i]+'</option>')
+														
+														//	html += '<option value="null">Please Select</option>'+((temp === 'Absent')?'<option selected ="selected" value="Absent">Absent</option>':'<option value="Absent">Absent</option>')+((temp ==='Exempt')?'<option selected ="selected" value="Exempt">Exempt</option>':'<option value="Exempt">Exempt</option>')+''+((temp === 'Cheating')?'<option selected ="selected" value="Cheating">Cheating</option>':'<option value="Cheating">Cheating</option>')+''+((temp === 'Sound_Quality')?'<option selected ="selected" value="Sound_Quality">Sound Quality</option>':'<option value="Sound_Quality">Sound Quality</option>')+
+														}
+													html +='</select></font></td>';
+												
+												
+												}
 										}
+											
 									}
 									
 								}
@@ -5101,20 +5236,29 @@ function registerDelegate(tree){
 							}
 							$("#subtestList").html(html);
 							if(data.subtestValidationAllowed) {
-								 var isTASCCustomer = $('#isTASCCustomer').val();
-								 var isAdmin = $('#isAdminUser').val();
-								if(isOkCustomer) { // Added for Oklahoma customer as only state level admin can invalidate a student.
-									if(isOKAdmin || isOKAdminCord) {
+								if(data.hasTopLevelInvalidationOnlyConfig) {
+		   		 					if(data.isTopLevelUser) {
 										$("#toggleValidationSubTest").show();
 										setAnchorButtonState('toggleValidationSubtestButton', true);
 									} else {
 										$("#toggleValidationSubTest").hide();
 									}
-								} else if(isTASCCustomer == 'true' && isAdmin == 'false'){
-									$("#toggleValidationSubTest").hide();
-								} else {
-									$("#toggleValidationSubTest").show();
-									setAnchorButtonState('toggleValidationSubtestButton', true);
+		   		 				} else {
+									var isTASCCustomer = $('#isTASCCustomer').val();
+									var isAdmin = $('#isAdminUser').val();
+									if(isOkCustomer) { // Added for Oklahoma customer as only state level admin can invalidate a student.
+										if(isOKAdmin || isOKAdminCord) {
+											$("#toggleValidationSubTest").show();
+											setAnchorButtonState('toggleValidationSubtestButton', true);
+										} else {
+											$("#toggleValidationSubTest").hide();
+										}
+									} else if(isTASCCustomer == 'true' && isAdmin == 'false'){
+										$("#toggleValidationSubTest").hide();
+									} else {
+										$("#toggleValidationSubTest").show();
+										setAnchorButtonState('toggleValidationSubtestButton', true);
+									}
 								}
 							} else {
 								$("#toggleValidationSubTest").hide();

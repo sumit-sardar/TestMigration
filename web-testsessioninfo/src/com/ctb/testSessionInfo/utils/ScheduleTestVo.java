@@ -39,6 +39,7 @@ public class ScheduleTestVo implements Serializable{
 	private boolean noTestExists = false;
 	private List<String> levelOptions = new ArrayList<String>();// level for subtest
 	private boolean isOkAdmin = false;
+	private boolean isWVAdmin = false;
 	private boolean forceTestBreak = false;
 	private Boolean selectGE = false;
 	private LASLicenseNode nonZeroActivePO = null;
@@ -619,6 +620,16 @@ public class ScheduleTestVo implements Serializable{
 	 */
 	public void setTestingWindowDefaultDays(Integer testingWindowDefaultDays) {
 		this.testingWindowDefaultDays = testingWindowDefaultDays;
+	}
+
+
+	public boolean isWVAdmin() {
+		return isWVAdmin;
+	}
+
+
+	public void setWVAdmin(boolean isWVAdmin) {
+		this.isWVAdmin = isWVAdmin;
 	}
 }
 

@@ -44,6 +44,7 @@ public class Base {
 	private int numberColumn;
 	private boolean subtestValidationAllowed;
 	private boolean isLaslinkSession;
+	private boolean isTopLevelUser;
 	private boolean donotScoreAllowed;
 	Map<Integer,Map> sessionListPAMap;
 	Map<Integer,Map> sessionListCUFUMap;
@@ -53,6 +54,8 @@ public class Base {
 	private boolean isTopLevelAdmin; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean isTopLevelAdminCord; // Added for OAS – OK – 2013 – 014 – invalidate test
 	private boolean hasAssignFormRosterConfig; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
+	private boolean hasAssignFormRosterTopLevelConfig; //Added for B30467 WV TAS - Manual Form Assignment changes by State Level User
+	private boolean hasTopLevelInvalidationOnlyConfig; //Added for B-25933 Invalidation and Breach Form Assignment
 	private List assignFormList; //Added for OAS - OK - 2013 - 010 - Select Form When spiraling
 	private boolean hasShowRosterAccomAndHierarchyConfig;
 	
@@ -357,6 +360,26 @@ public class Base {
 	 */
 	public void setOrgNodeIdMap(HashMap<Integer, ArrayList<ClassHierarchy>> orgNodeIdMap) {
 		this.orgNodeIdMap = orgNodeIdMap;
+	}
+	public boolean isHasAssignFormRosterTopLevelConfig() {
+		return hasAssignFormRosterTopLevelConfig;
+	}
+	public void setHasAssignFormRosterTopLevelConfig(
+			boolean hasAssignFormRosterTopLevelConfig) {
+		this.hasAssignFormRosterTopLevelConfig = hasAssignFormRosterTopLevelConfig;
+	}
+	public boolean isHasTopLevelInvalidationOnlyConfig() {
+		return hasTopLevelInvalidationOnlyConfig;
+	}
+	public void setHasTopLevelInvalidationOnlyConfig(
+			boolean hasTopLevelInvalidationOnlyConfig) {
+		this.hasTopLevelInvalidationOnlyConfig = hasTopLevelInvalidationOnlyConfig;
+	}
+	public boolean isTopLevelUser() {
+		return isTopLevelUser;
+	}
+	public void setTopLevelUser(boolean isTopLevelUser) {
+		this.isTopLevelUser = isTopLevelUser;
 	}
 
 	
