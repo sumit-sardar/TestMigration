@@ -75,7 +75,13 @@ public class TestResultDataCollector {
 	        }
         }
         else if("TS".equals(productType)) {
-        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
+        	String key = String.valueOf(data.getAdminData().getAssessmentId()) + data.getStudentData().getAssignedTestFormName();
+	        cachedCurriculumData = (CurriculumData) SimpleCache.checkCache("curriculumData", key, "scoringUser");
+	        if(cachedCurriculumData == null) {
+	        	cachedCurriculumData = getCurriculumData(data.getAdminData().getAssessmentType());
+	        	SimpleCache.cacheResult("curriculumData", key, cachedCurriculumData, "scoringUser");
+	        }
+	        System.out.println("***** SCORING: TestResultDataCollector: collect: CurriculumData for TASC Cached or Retrieved with key :: " + key);
         }
         ContentArea[] allContentArea = cachedCurriculumData.getContentAreas();
         data.setCurriculumData(filterCurricula(cachedCurriculumData, data.getAdminData().getAssessmentType()));

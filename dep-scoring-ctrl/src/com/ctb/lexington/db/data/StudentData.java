@@ -26,7 +26,7 @@ public class StudentData implements Persistent{
 	private Long ageInYears;
 	private Long ageInMonths;
 	private String orgNode;
-
+	private String assignedTestFormName;
 	private Long oasStudentId;
 	private String extElmId;
 	private String grade;
@@ -445,5 +445,13 @@ public class StudentData implements Persistent{
 
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
+	}
+
+	public String getAssignedTestFormName() {
+		return assignedTestFormName;
+	}
+
+	public void setAssignedTestFormName(String assignedTestFormName) {
+		this.assignedTestFormName = assignedTestFormName;
 	}
 }

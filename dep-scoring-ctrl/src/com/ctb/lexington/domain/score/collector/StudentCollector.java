@@ -54,6 +54,7 @@ public class StudentCollector {
             data.setGrade(SQLUtil.getString(rs, "grade"));
             data.setBarcode(SQLUtil.getString(rs, "barcode"));
             data.setStartDateTime(SQLUtil.getTimestamp(rs, "start_date_time"));
+            data.setAssignedTestFormName(SQLUtil.getString(rs, "FORM_ASSIGNMENT"));
 
             //data.setStudentGrade(SQLUtil.getString(rs, "GRADE"));
             if(data.getBirthDate() != null) {
