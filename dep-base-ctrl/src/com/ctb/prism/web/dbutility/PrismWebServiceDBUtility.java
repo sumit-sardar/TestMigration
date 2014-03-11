@@ -71,8 +71,8 @@ public class PrismWebServiceDBUtility {
 	private static final String GET_CONTENT_SCORE_DETAILS = "SELECT t.points_obtained         AS number_correct,       t.points_possible         AS number_possible,       t.scale_score             AS scale_score,       t.proficiency_level                      AS high_school_equiv,       t.national_percentile     AS percentile_rank,       t.normal_curve_equivalent AS normal_curve_equivalent,       t.scale_score_range        AS hse_scale_score_range, t.scoring_status AS scoring_status  FROM tasc_content_area_fact t WHERE t.studentid = ?   AND t.sessionid = ?   AND t.content_areaid = ?";
 	private static final String GET_CONTENT_DETAILS = "SELECT DISTINCT ipp.item_set_name AS \"content_code_name\",   ipp.item_set_id AS \"item_set_id\"  , t.completion_status AS \"completion_status\" FROM student_item_set_status t,       item_set                s,       item_set_parent         ip,       item_set                ipp WHERE t.test_roster_id = ?   AND s.item_set_id = t.item_set_id   AND ip.item_set_id = s.item_set_id   AND ipp.item_set_id = ip.parent_item_set_id   AND s.SAMPLE = 'F'";
 	private static final String GET_COMPOSITE_CONTENT_DETAILS = "SELECT t.points_obtained AS \"ncScoreVal\",       t.points_possible AS \"npScoreVal\",       t.scale_score AS \"ssScoreVal\",       0 AS \"hseScoreVal\",       t.national_percentile AS \"prScoreVal\",       t.normal_curve_equivalent AS \"nceScoreVal\",       '' AS \"ssrScoreVal\",       com.name AS \"compName\" ,     to_char(t.test_completion_timestamp, 'MMDDYY') AS \"dtTstTaken\"  FROM tasc_composite_fact t, composite_dim com WHERE t.studentid = ?   AND t.sessionid = ?   AND com.compositeid = t.compositeid";
-	private static final String GET_TEST_TAKEN_DATE = "SELECT to_char(MAX(nvl(t.completion_date_time,t.start_date_time)), 'MMDDYY') AS \"test_taken_dt\"     FROM student_item_set_status t    WHERE t.test_roster_id = ?      AND t.item_set_id IN (SELECT DISTINCT t.item_set_id                              FROM item_set_parent t                             WHERE t.parent_item_set_id = ?                             GROUP BY t.item_set_id)";
-	private static final String GET_SUBTEST_STATUS = "SELECT t.validation_status AS status  FROM student_item_set_status t,item_set its WHERE t.item_set_id = its.item_set_id and its.sample='F' and t.test_roster_id = ?   AND t.item_set_id IN (SELECT DISTINCT it.item_set_id                           FROM item_set_parent it                          WHERE it.parent_item_set_id = ?                          GROUP BY it.item_set_id)";
+	private static final String GET_TEST_TAKEN_DATE = "SELECT MAX(nvl(t.completion_date_time,t.start_date_time)) AS \"test_taken_dt\"     FROM student_item_set_status t    WHERE t.test_roster_id = ?      AND t.item_set_id IN (SELECT DISTINCT t.item_set_id   FROM item_set_parent t     WHERE t.parent_item_set_id = ?  GROUP BY t.item_set_id)";
+	private static final String GET_SUBTEST_STATUS = "SELECT t.validation_status AS status  FROM student_item_set_status t,item_set its WHERE t.item_set_id = its.item_set_id and its.sample='F' and t.test_roster_id = ?   AND t.item_set_id IN (SELECT DISTINCT it.item_set_id   FROM item_set_parent it WHERE it.parent_item_set_id = ?   GROUP BY it.item_set_id)";
 	private static final String GET_OBJECTIVE_LIST = "SELECT 'S' AS lvl,       prim.item_set_id AS itemsetid,       prim.item_set_name AS objname, objdet.content_code || objdet.objective_code AS objcode  FROM item_set prim,       item_set_item pisi,       item_set_ancestor pisip,       item_set_category pisc,       item_set sub,       item_set_item isi,       product prod,       item, objective_details objdet WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = pisi.item_id   AND pisip.item_set_id = pisi.item_set_id   AND pisip.ancestor_item_set_id = prim.item_set_id   AND prim.item_set_category_id = pisc.item_set_category_id   AND pisc.item_set_category_level = prod.scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                            WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = pisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') AND objdet.content_code = ?   AND upper(objdet.objective_title) = upper(prim.item_set_name)    UNION     SELECT 'S' AS lvl,       sec.item_set_id AS itemsetid,       sec.item_set_name AS objname, objdet.content_code || objdet.objective_code AS objcode  FROM item_set sec,       item_set_item sisi,       item_set_ancestor sisip,       item_set_category sisc,       item_set sub,       item_set_item isi,       product prod,       item, objective_details objdet WHERE sub.item_set_id IN (SELECT DISTINCT t.item_set_id                             FROM item_set_parent t                            WHERE t.parent_item_set_id = ?                            GROUP BY t.item_set_id)   AND isi.item_set_id = sub.item_set_id   AND isi.item_id = sisi.item_id   AND sisip.item_set_id = sisi.item_set_id   AND sisip.ancestor_item_set_id = sec.item_set_id   AND sec.item_set_category_id = sisc.item_set_category_id   AND sisc.item_set_category_level = prod.sec_scoring_item_set_level   AND prod.product_id IN (SELECT adm.product_id AS prodid                             FROM test_admin adm                           WHERE adm.test_admin_id = ?)   AND prod.parent_product_id = sisc.framework_product_id   AND isi.item_id = item.item_id   AND isi.suppressed = 'F'   AND item.item_type != 'RQ'   AND (sub.item_set_level != 'L' OR prod.product_type = 'TL') AND objdet.content_code = ?   AND upper(objdet.objective_title) = upper(sec.item_set_name) ";
 	private static final String GET_PRIM_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       '' AS objmasscalescorerng,       t.scoring_status AS itmattempflag  FROM tasc_prim_obj_fact t WHERE substr(t.prim_objid, 5)  = ? AND t.studentid = ? AND t.sessionid = ?";
 	private static final String GET_SEC_OBJ_SCORE = "SELECT t.points_obtained AS numcorrect,       t.points_possible AS numpossible,       t.SCALE_SCORE AS scalescore,       t.mastery_levelid AS mastery,       t.scale_score_range AS objmasscalescorerng,       t.scoring_status AS itmattempflag ,       t.condition_code    AS conditioncode  FROM tasc_sec_obj_fact t WHERE substr(t.sec_objid, 5) = ?   AND t.studentid = ?   AND t.sessionid = ?";
@@ -90,6 +90,7 @@ public class PrismWebServiceDBUtility {
 	private static final String SELECT_WS_ERROR_LOG = "SELECT UPDATED_DATE     UPDATEDATE,       WS_ERROR_LOG_KEY LOGKEY,       INVOKE_COUNT     INVKCOUNT,       STUDENT_ID       STDID,       ROSTER_ID        RSTRID,       SESSION_ID       SESSIONID,       WS_TYPE          WSTYP  FROM WS_ERROR_LOG WHERE WS_ERROR_LOG_KEY IN (SELECT WS_ERROR_LOG_KEY                              FROM (SELECT WS_ERROR_LOG_KEY,                                           UPDATED_DATE,                                           RANK() OVER(ORDER BY UPDATED_DATE)                                      FROM WS_ERROR_LOG                                     WHERE STATUS = 'Progress') TAB                             WHERE ROWNUM <= ?) FOR UPDATE SKIP LOCKED ";
 	
 	private static final String CHECK_ROSTER_STATUS = "SELECT 1  FROM TEST_ROSTER T WHERE T.TEST_ROSTER_ID = ?   AND (T.TEST_COMPLETION_STATUS = 'SC' OR T.TEST_COMPLETION_STATUS = 'NT')";
+	private static final String GET_SESSION_TIMEZONE = "SELECT TIME_ZONE as session_time_zone FROM test_admin WHERE TEST_ADMIN_ID = ?";
 	
 	/**
 	 * Get Prism Web Service URL
@@ -611,7 +612,7 @@ public class PrismWebServiceDBUtility {
 			boolean sendOverAll = true;			
 			
 			Map<Integer, ContentDetailsTO> contentDetailsTOMap = getContentDetailsTOMap();
-					
+			String sessionTimeZone = getSessionTimeZone(sessionId);		
 			while(rs.next()){
 				String contentCodeName = rs.getString("content_code_name");
 				long itemSetId = rs.getLong("item_set_id");
@@ -635,7 +636,7 @@ public class PrismWebServiceDBUtility {
 						}
 					}
 					
-					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, itemSetId));
+					contentDetailsTO.setDateTestTaken(getContentTestTakenDt(rosterId, itemSetId, sessionTimeZone));
 					
 					String statusCode = getContentStatusCode(rosterId, itemSetId);
 					if(statusCode != null && !"".equals(statusCode)){
@@ -723,6 +724,33 @@ public class PrismWebServiceDBUtility {
 		}
 		return contentDetailsTOList;
 	}
+	
+	/**
+	 * Return the time zone of a session
+	 * @param sessionId
+	 * @return
+	 */
+    public static String getSessionTimeZone(long sessionId){
+	   PreparedStatement pst = null;
+		Connection con = null;
+		ResultSet rs = null;
+		String sessionTimeZone = "GMT";//default value
+		try {
+			con = openOASDBcon(false);
+			pst = con.prepareStatement(GET_SESSION_TIMEZONE);
+			pst.setLong(1, sessionId);
+			rs = pst.executeQuery();
+			while(rs.next()){
+				sessionTimeZone = rs.getString("session_time_zone");
+			}
+		} catch (Exception e) {
+			System.err.println("Error in the PrismWebServiceDBUtility.getSessionTimeZone() method to execute query : \n " +  GET_SESSION_TIMEZONE);
+			e.printStackTrace();
+		} finally {
+			close(con, pst, rs);
+		}
+		return sessionTimeZone;
+    }
 	
 	/**
 	 * Get the customer config accommodations
@@ -946,7 +974,7 @@ public class PrismWebServiceDBUtility {
 	 * @param itemSetId
 	 * @return
 	 */
-	public static String getContentTestTakenDt(long rosterId, long itemSetId){
+	public static String getContentTestTakenDt(long rosterId, long itemSetId, String sessionTimeZone){
 		PreparedStatement pst = null;
 		Connection con = null;
 		ResultSet rs = null;
@@ -958,7 +986,12 @@ public class PrismWebServiceDBUtility {
 			pst.setLong(2, itemSetId);
 			rs = pst.executeQuery();
 			while(rs.next()){
-				testTakenDt = rs.getString("test_taken_dt");
+				if(rs.getDate("test_taken_dt")!=null){
+					java.util.Date testTakenDate = new java.util.Date(rs.getDate("test_taken_dt").getTime());
+					if(sessionTimeZone != null && !"".equals(sessionTimeZone)){
+						testTakenDt = com.ctb.util.DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(testTakenDate,"GMT",sessionTimeZone,testTakenDate));
+					}
+				}
 			}
 		} catch (Exception e) {
 			System.err.println("Error in the PrismWebServiceDBUtility.getContentTestTakenDt() method to execute query : \n " +  GET_TEST_TAKEN_DATE);
