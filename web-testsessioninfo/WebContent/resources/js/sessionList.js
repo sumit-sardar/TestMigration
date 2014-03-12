@@ -1625,6 +1625,10 @@ function registerDelegate(tree){
 					$("#list6").jqGrid("showCol","itemSetForm"); 
 				}
 				
+				if((isTabeProduct == 'false' || isTabeProduct == false) && (isTabeAdaptiveProduct == 'false' || isTabeAdaptiveProduct == false)) {
+					$("#list6").jqGrid("showCol","itemSetForm");
+				}
+				
 				var showAccommodations = $("#supportAccommodations").val();
 				if(showAccommodations  == 'false') {
 					$("#list6").jqGrid("hideCol","hasAccommodations"); 
